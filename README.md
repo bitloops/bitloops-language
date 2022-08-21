@@ -47,7 +47,8 @@ sure the system does not degrade over time due to bad design decisions.
 The Bitloops Language is the first programming language that aims to address these issues
 by making it much easier to adopt important software engineering principles and patterns
 such as Domain Driven Design and Behavior Driven Development, without requiring many years
-of experience to do so successfully.
+of experience to do so successfully. As a result, the work of senior engineers can be further
+leveraged and the contributions of junior engineers significantly boosted. 
 
 ## Language Goals
 
