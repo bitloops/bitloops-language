@@ -4,8 +4,9 @@ Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https:/
 
 <!--
 Part of the Bitloops Language project, under the GPL-3.0 license
-Exceptions. See /LICENSE for license information.
+See /LICENSE for license information.
 SPDX-License-Identifier: GPL-3.0-only
+The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 -->
 
 <p align="center">
