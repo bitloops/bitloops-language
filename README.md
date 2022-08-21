@@ -32,18 +32,19 @@ SPDX-License-Identifier: GPL-3.0-only
 ## Why build the Bitloops Language?
 
 There are numerous great programming languages out there with massive and growing 
-codebases and investments. However, the most common problem faced by organization 
-that build and maintain systems that more than a couple of developers work on is 
-good architecture and design. Designing a complex system so that it can last through 
+codebases and investments. However, the most common problem faced by organizations 
+that build and maintain systems, with teams of developers working on them, is 
+good architecture and design; Designing a complex system so that it can last through 
 time and that will allow developers (existing and new joiners) to work on its codebase
 with steady (or hopefully) increasing productivity. Good testing is an additional major
 requirement of long lasting products which is also made possible by good architecture
 and design. Unfortunately, there aren't enough knowledgeable and experienced senior 
-engineers around the world to build and maintain great systems. Even when a company has 
-some, it is unable to hire more junior engineers than the senior ones can watch over to 
-make sure they do not degrade the system due to bad design decisions. 
+engineers around the world to build and maintain great systems for all who need them. 
+Even when a company is lucky enough to have some, it is unable to hire more 
+junior engineers than the senior ones can review their work and guide in order to make 
+sure the system does not degrade over time due to bad design decisions. 
 
-The Bitloops Language is the first programming language that tries to address these issues
+The Bitloops Language is the first programming language that aims to address these issues
 by making it much easier to adopt important software engineering principles and patterns
 such as Domain Driven Design and Behavior Driven Development, without requiring many years
 of experience to do so successfully.
