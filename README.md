@@ -58,7 +58,6 @@ leveraged and the contributions of junior engineers significantly boosted.
 * Eliminate the need for boilerplate code
 * Allow software engineers to postpone the need for a microservices architecture until it is needed strictly from a infrastructure perspective to better manage computing resources and if eventually it is needed to be able to do so within hours and not months or years. 
 * Allow for the reuse of existing packages writen in the target language
-* Allow for the creation and reuse of polyglot generic subdomains that will be easily plugged in in any Bitloops system 
 * As a result of the above, significantly increase developer productivity
 
 The Bitloops Language aims to define and retain a simplistic syntax that will be as close to human 
