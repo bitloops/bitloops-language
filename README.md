@@ -1,5 +1,5 @@
 ![Bitloops](https://storage.googleapis.com/wwwbitloopscom/bitloops-logo_320x80.png)
-# Bitloops Language: <br/> Quickly build scalable, maintainable & reliable software
+# Bitloops Language (BL): <br/> Quickly build scalable, maintainable & reliable software
 Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language 
 
 <!--
