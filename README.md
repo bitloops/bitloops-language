@@ -107,7 +107,7 @@ UseCase HelloWorldUseCase {
     const { name } = helloWorldRequestDTO;
     if (name) {
       const nameResult = Name.create({name});
-      return { message: `Hello, ${nameResult.name}!` };
+      return HelloWorldResponseDTO({message: `Hello, ${nameResult.name}!`});
     } else {
       return HelloWorldResponseDTO({message: 'Hello, World!'});
     }
