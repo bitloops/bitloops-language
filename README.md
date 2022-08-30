@@ -101,7 +101,7 @@ Bitloops Langauge code like this (11 lines):
 
 ```node
 // Bitloops Language:
-UseCase HelloWorldUseCase {
+UseCase HelloWorldUseCase (/* Dependencies such as Repositories, Services, and Packages go here in more complex cases */) {
   // Every Bitloops UseCase must implement execute and must return OK and Error types (similar to Either)
   execute(helloWorldRequestDTO: HelloWorldRequestDTO): (OK(HelloWorldResponseDTO), Error(HelloWorldErrors.InvalidName)) {
     const { name } = helloWorldRequestDTO;
