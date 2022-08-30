@@ -97,7 +97,7 @@ It is built out of a consistent set of language constructs that should feel fami
 
 While Bitloops is an Object Oriented Language, it doesn't have a generic class. Specific Bitloops classes are build-in as follows: Aggregate, ValueObject, UseCase, RESTController, GraphQLController, GRPCController, DTO, Props, Config, OK, ApplicationError, DomainError, Error.
 
-Bitloops Langauge code like this (15 lines):
+Bitloops Langauge code like this (11 lines):
 
 ```node
 // Bitloops Language:
@@ -105,16 +105,11 @@ UseCase HelloWorldUseCase {
   // Every Bitloops UseCase must implement execute and must return OK and Error types
   execute(helloWorldRequestDTO: HelloWorldRequestDTO): (OK(HelloWorldResponseDTO), Error(HelloWorldErrors.InvalidName)) {
     const { name } = helloWorldRequestDTO;
-
     if (name) {
       const nameResult = Name.create({name});
-      if (nameResult isNot Error) {
-        return { message: `Hello, ${nameResult.name}!` };
-      } else {
-        return new HelloWorldErrors.InvalidName(name);
-      }
+      return { message: `Hello, ${nameResult.name}!` };
     } else {
-      return { message: 'Hello, World!' };
+      return HelloWorldResponseDTO({message: 'Hello, World!'});
     }
   }
 }
