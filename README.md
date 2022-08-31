@@ -79,14 +79,21 @@ gather a critical mass of interest within the DDD community and outside of it.
 Currently, we have fleshed out several core aspects of the project and the language:
 
 -   The strategy of the Bitloops Language and project.
--   An open-source project structure, governance model, and evolution process.
 -   Critical and foundational aspects of the language design. This
     includes designs for:
     -   Class types
     -   Inheritance
     -   Lexical and syntactic structure
     -   Code organization and modular structure
--   A prototype transpilers that can run example projects.
+-   A prototype transpiler that can run example projects.
+
+There are many things we want to add in the future including 
+
+[ ] CQRS support
+[ ] Event Sourcing support
+[ ] Java target language
+[ ] gRPC support
+[ ] And many more...
 
 If you're interested in contributing, we would love help
 
