@@ -85,7 +85,8 @@ Currently, we have fleshed out several core aspects of the project and the langu
     -   Inheritance
     -   Lexical and syntactic structure
     -   Code organization and modular structure
--   A prototype transpiler that can run example projects.
+-   A prototype transpiler that can run example projects is a few days away.
+-   We are currently writing up documentation to release along with the first version of the transpiler.
 
 There are many things we want to add in the future including 
 
