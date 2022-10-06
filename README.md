@@ -1,4 +1,4 @@
-![Bitloops](https://storage.googleapis.com/wwwbitloopscom/bitloops-logo_320x80.png)
+![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-header.png)
 # Bitloops Language (BL): <br/> Quickly build scalable, maintainable & reliable software
 Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language 
 
@@ -53,8 +53,11 @@ leveraged and the contributions of junior engineers significantly boosted.
 
 ## Language Goals
 
-* Reduce the learning curve needed to build and maintain great software using DDD and BDD, allowing for fast onboarding of new developers
+* Reduce the learning curve needed to build and maintain great software using DDD and BDD, allowing many more software developers around the world to adopt these important principles
+* Allow organizations to have to rely less on developer discipline and more in a structured process
 * Make testing a more integral, collaborative, useful, and fun process
+* Put the focus on the domain and automate everything else as much as possible
+* Make domain logic timeless, platform & (target) language independent
 * Eliminate the need for boilerplate code
 * Allow software engineers to postpone the need for a microservices architecture until it is needed strictly from a infrastructure perspective to better manage computing resources and if eventually it is needed to be able to do so within hours and not months or years. 
 * Allow for the reuse of existing packages writen in the target language
