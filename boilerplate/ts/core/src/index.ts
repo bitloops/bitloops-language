@@ -3,7 +3,7 @@ import { UseCase } from './application/UseCase';
 import { RepoError } from './application/RepoError';
 import { CRUDRepoPort } from './application/ICRUDRepoPort';
 import { DomainError } from './domain/DomainError';
-import { Either } from './Either';
+import { Either, fail, ok } from './Either';
 import { AggregateRoot } from './domain/AggregateRoot';
 import { Entity as EntityImport } from './domain/Entity';
 import { IBaseController as IBaseControllerImport } from './infra/rest/IBaseController';
@@ -31,7 +31,7 @@ namespace Application {
 
   export namespace Repo {
     export class Error extends RepoError {}
-    export type ICRUDPort<Aggregate> = CRUDRepoPort<Aggregate>;
+    export type ICRUDPort<Aggregate, AggregateId> = CRUDRepoPort<Aggregate, AggregateId>;
   }
   export namespace REST {
     export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
@@ -45,4 +45,4 @@ namespace Application {
   }
 }
 
-export { Application, Domain, Either };
+export { Application, Domain, Either, fail, ok };

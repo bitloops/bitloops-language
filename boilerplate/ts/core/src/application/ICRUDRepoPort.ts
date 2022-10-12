@@ -14,10 +14,10 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-export interface CRUDRepoPort<Aggregate> {
+export interface CRUDRepoPort<Aggregate, AggregateId> {
   getAll(): Promise<Aggregate[]>;
-  getById(aggregateRootId: string): Promise<Aggregate>;
+  getById(aggregateRootId: AggregateId): Promise<Aggregate>;
   save(aggregate: Aggregate): Promise<void>;
   update(aggregate: Aggregate): Promise<void>;
-  delete(aggregateRootId: string): Promise<void>;
+  delete(aggregateRootId: AggregateId): Promise<void>;
 }
