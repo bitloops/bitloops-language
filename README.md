@@ -1,4 +1,5 @@
 ![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-header.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 # Bitloops Language (BL): <br/> Quickly build scalable, maintainable & reliable software
 Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language 
 
@@ -157,3 +158,7 @@ export class HelloWorldUseCase implements UseCase<HelloWorldRequestDTO, Promise<
 }
 ```
 # Are you liking what you are seeing? Don't forget to star ⭐ our repo!
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_large)
