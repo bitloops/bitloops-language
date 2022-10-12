@@ -1,0 +1,72 @@
+{
+  "name": "@bitloops/bl-boilerplate-infra-rest-express",
+  "version": "0.0.1",
+  "description": "TypeScript boilerplate code for Bitloops Language generated projects",
+  "engines": {
+    "node": ">= 13"
+  },
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/rest/express",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitloops/bitloops-language"
+  },
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "keywords": [
+    "bitloops language",
+    "bl",
+    "typescript",
+    "bdd",
+    "ddd",
+    "hexagonal architecture",
+    "ports & adapters",
+    "behavior driven development",
+    "boilerplate",
+    "core"
+  ],
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.14",
+    "@types/morgan": "^1.9.3",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  },
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build",
+    "lint": "eslint . --ext .ts --ext .mts --ext .cts"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Bitloops S.A.",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.0.3",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^6.0.0",
+    "morgan": "^1.10.0"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  }
+}
