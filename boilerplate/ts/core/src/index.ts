@@ -6,8 +6,11 @@ import { DomainError } from './domain/DomainError';
 import { Either, fail, ok } from './Either';
 import { AggregateRoot } from './domain/AggregateRoot';
 import { Entity as EntityImport } from './domain/Entity';
-import { IBaseController as IBaseControllerImport } from './infra/rest/IBaseController';
-import { IMQ as IMQImport } from './infra/mq/IMQ';
+import {
+  IBaseController as IBaseControllerImport,
+  ErrorMessage as ErrorMessageImport,
+} from './application/rest/IBaseController';
+import { IMQ as IMQImport } from './application/mq/IMQ';
 import { IBusinessRule as IBusinessRuleImport } from './domain/IBusinessRule';
 import { UniqueEntityID as UniqueEntityIDImport } from './domain/UniqueEntityID';
 import { ValueObject as ValueObjectImport, ValueObjectProps } from './domain/ValueObject';
@@ -35,14 +38,18 @@ namespace Application {
   }
   export namespace REST {
     export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
+    export type ErrorMessage = ErrorMessageImport;
   }
   export namespace MQ {
     export type IMQ<Connection> = IMQImport<Connection>;
   }
+}
+
+namespace Infra {
   export namespace Messaging {
     export class EventBus extends EventBusImport {}
     export class InProcessMessageBus extends InProcessMessageBusImport {}
   }
 }
 
-export { Application, Domain, Either, fail, ok };
+export { Application, Domain, Either, Infra, fail, ok };
