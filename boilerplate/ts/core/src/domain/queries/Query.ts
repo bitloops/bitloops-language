@@ -17,10 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import uuid from "uuid/v4";
-import { QueryMetadata, IQuery } from "./IQuery";
-import { config } from "../../config";
-import { getTopic } from "../../helpers";
+import { v4 as uuid } from 'uuid';
+import { QueryMetadata, IQuery } from './IQuery';
+import { config } from '../../config';
+import { getTopic } from '../../helpers';
 
 const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
 

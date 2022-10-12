@@ -14,12 +14,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { Entity } from "./Entity";
-import { IDomainEvent } from "./events/IDomainEvent";
-import { UniqueEntityID } from "./UniqueEntityID";
+import { Entity } from './Entity';
+import { IDomainEvent } from './events/IDomainEvent';
+import { UniqueEntityID } from './UniqueEntityID';
 // import { IIntegrationEvent } from "./events/IIntegrationEvent";
 // import { IDomainIntegrationEvent } from "./events/IDomainIntegrationEvent";
-import { events } from "./events/Events";
+import { events } from './events/Events';
 
 export abstract class AggregateRoot<T> extends Entity<T> {
   private _domainEvents: IDomainEvent[] = [];
@@ -73,8 +73,8 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     console.info(
       `[Domain Event Created]:`,
       thisClass?.constructor?.name,
-      "==>",
-      domainEventClass?.constructor?.name
+      '==>',
+      domainEventClass?.constructor?.name,
     );
   }
 

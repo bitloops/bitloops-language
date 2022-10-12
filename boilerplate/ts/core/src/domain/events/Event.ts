@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { v4 as uuidv4 } from "uuid";
-import { IEvent } from "./IEvent";
-import { config } from "../../config";
-import { getTopic } from "../../helpers";
-import { CommandMetadata } from "../commands/ICommand";
+import { v4 as uuidv4 } from 'uuid';
+import { IEvent } from './IEvent';
+import { config } from '../../config';
+import { getTopic } from '../../helpers';
+import { CommandMetadata } from '../commands/ICommand';
 
 const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
 

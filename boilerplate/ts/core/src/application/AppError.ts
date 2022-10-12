@@ -17,12 +17,19 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { DomainError } from './DomainError';
+import { ICoreError } from '../ICoreError';
 
-export namespace DomainErrors {
-  export class InvalidInput extends DomainError {
-    public constructor(message: string, errorId?: string) {
-      super(message, errorId);
-    }
+// TODO make errorId mandatory and replace message
+interface IAppError extends ICoreError {
+  errorId?: string;
+}
+
+export abstract class AppError implements IAppError {
+  public readonly message: string;
+  public readonly errorId?: string;
+
+  constructor(message: string, errorId?: string) {
+    this.message = message;
+    if (errorId) this.errorId = errorId;
   }
 }

@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICoreError } from "../../core/ICoreError";
+import { ICoreError } from '../../ICoreError';
 
 export type ErrorMessage = ICoreError;
 

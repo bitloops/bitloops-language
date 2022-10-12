@@ -17,19 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICoreError } from "./ICoreError";
+import { ICoreError } from '../ICoreError';
 
-// TODO make errorId mandatory and replace message
-interface IAppError extends ICoreError {
+interface IDomainError extends ICoreError {
   errorId?: string;
 }
 
-export abstract class AppError implements IAppError {
+export abstract class DomainError implements IDomainError {
   public readonly message: string;
   public readonly errorId?: string;
 
   constructor(message: string, errorId?: string) {
     this.message = message;
-    if (errorId) this.errorId = errorId;
+    this.errorId = errorId;
   }
 }

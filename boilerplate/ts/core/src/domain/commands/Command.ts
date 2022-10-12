@@ -17,10 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { v4 as uuid } from "uuid";
-import { CommandMetadata, ICommand } from "./ICommand";
-import { config } from "../../config";
-import { getTopic } from "../../helpers";
+import { v4 as uuid } from 'uuid';
+import { CommandMetadata, ICommand } from './ICommand';
+import { config } from '../../config';
+import { getTopic } from '../../helpers';
 
 const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
 
@@ -33,11 +33,7 @@ export abstract class Command implements ICommand {
   public readonly commandTopic: string;
   public readonly toContextId: string;
 
-  constructor(
-    commandName: string,
-    toContextId: string,
-    orchestrated?: boolean
-  ) {
+  constructor(commandName: string, toContextId: string, orchestrated?: boolean) {
     this.uuid = uuid();
     this.createdTimestamp = Date.now();
     this.commandTopic = Command.getCommandTopic(commandName, toContextId); //`${toContextId}${TOPIC_DELIMITER}${commandName}`;

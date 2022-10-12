@@ -17,9 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IEvent } from "../../domain/events/IEvent";
-import { IEventBus, EventHandler } from "../../domain/events/IEventBus";
-import { IMessageBus } from "../../domain/messages/IMessageBus";
+import { IEvent } from '../../domain/events/IEvent';
+import { IEventBus, EventHandler } from '../../domain/events/IEventBus';
+import { IMessageBus } from '../../domain/messages/IMessageBus';
 
 //TODO try to add T in class declaration
 export class EventBus implements IEventBus {
@@ -31,13 +31,13 @@ export class EventBus implements IEventBus {
   }
 
   async subscribe(topic: string, eventHandler: EventHandler): Promise<void> {
-    console.log("EventBus subscribe: topic", topic);
+    console.log('EventBus subscribe: topic', topic);
     // @ts-ignore: TS2345
     await this.messageBus.subscribe(topic, eventHandler);
   }
 
   async publish(topic: string, message: IEvent): Promise<void> {
-    console.log("EventBus publish: topic", topic);
+    console.log('EventBus publish: topic', topic);
     return this.messageBus.publish(topic, message);
   }
 

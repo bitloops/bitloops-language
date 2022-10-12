@@ -17,9 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IInProcessMessageBus } from "../../domain/messages/IInProcessMessageBus";
-import { SubscriberHandler } from "../../domain/messages/IMessageBus";
-import { IMessage } from "../../domain/messages/IMessage";
+import { IInProcessMessageBus } from '../../domain/messages/IInProcessMessageBus';
+import { SubscriberHandler } from '../../domain/messages/IMessageBus';
+import { IMessage } from '../../domain/messages/IMessage';
 
 export class InProcessMessageBus implements IInProcessMessageBus {
   private subscribers: Record<string, SubscriberHandler[]> = {};
@@ -41,17 +41,12 @@ export class InProcessMessageBus implements IInProcessMessageBus {
     this.subscribers[topic].push(subscriberHandler);
   }
 
-  public async unsubscribe(
-    topic: string,
-    subscriberHandler: SubscriberHandler
-  ) {
+  public async unsubscribe(topic: string, subscriberHandler: SubscriberHandler) {
     if (!this.subscribers[topic]) {
       return;
     }
 
-    this.subscribers[topic] = this.subscribers[topic].filter(
-      (item) => item !== subscriberHandler
-    );
+    this.subscribers[topic] = this.subscribers[topic].filter((item) => item !== subscriberHandler);
   }
 
   public async publish(topic: string, message: IMessage): Promise<void> {

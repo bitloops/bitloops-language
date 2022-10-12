@@ -19,12 +19,12 @@
  */
 
 enum TOPIC_PREFIXES {
-  Event = "event",
-  Command = "command",
-  Query = "query",
+  Event = 'event',
+  Command = 'command',
+  Query = 'query',
 }
-const TOPIC_DELIMITER = ".";
-const INTEGRATION_EVENT_TOPIC_PREFIX = "integration";
+const TOPIC_DELIMITER = '.';
+const INTEGRATION_EVENT_TOPIC_PREFIX = 'integration';
 
 type Config = {
   TOPIC_PREFIXES: typeof TOPIC_PREFIXES;

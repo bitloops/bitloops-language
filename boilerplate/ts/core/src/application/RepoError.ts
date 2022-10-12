@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICoreError } from './ICoreError';
+import { ICoreError } from '../ICoreError';
 
 // TODO maybe make errorId mandatory
 interface IRepoError extends ICoreError {
