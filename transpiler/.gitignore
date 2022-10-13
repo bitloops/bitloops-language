@@ -1,0 +1,64 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+/lib/
+/output/
+
+# Dependencies
+node_modules/
+
+# Coverage
+coverage
+
+# Transpiled files
+build/
+
+# VS Code
+# .vscode
+!.vscode/tasks.js
+
+# JetBrains IDEs
+.idea/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Misc
+.DS_Store
+src/parser/core/grammar/.antlr
+src/parser/core/grammar/*.interp
+src/parser/core/grammar/*.tokens
+
+src/parser/setup/grammar/.antlr
+src/parser/setup/grammar/*.interp
+src/parser/setup/grammar/*.tokens
+
+src/parser/core/grammar/BitloopsLexer.d.ts
+src/parser/core/grammar/BitloopsLexer.js
+src/parser/core/grammar/BitloopsLexerBase.d.ts
+src/parser/core/grammar/BitloopsLexerBase.js
+src/parser/core/grammar/BitloopsParser.d.ts
+src/parser/core/grammar/BitloopsParser.js
+src/parser/core/grammar/BitloopsParserBase.d.ts
+src/parser/core/grammar/BitloopsParserBase.js
+src/parser/core/grammar/BitloopsParserListener.d.ts
+src/parser/core/grammar/BitloopsParserListener.js
+src/parser/core/grammar/BitloopsParserVisitor.d.ts
+src/parser/core/grammar/BitloopsParserVisitor.js
+
+src/parser/setup/grammar/BitloopsSetupLexer.js
+src/parser/setup/grammar/BitloopsSetupLexer.d.ts
+src/parser/setup/grammar/BitloopsSetupParser.d.ts
+src/parser/setup/grammar/BitloopsSetupParser.js
+src/parser/setup/grammar/BitloopsSetupParserListener.d.ts
+src/parser/setup/grammar/BitloopsSetupParserListener.js
+src/parser/setup/grammar/BitloopsSetupParserVisitor.d.ts
+src/parser/setup/grammar/BitloopsSetupParserVisitor.js
+.env
+
+
+# ANTLR4
