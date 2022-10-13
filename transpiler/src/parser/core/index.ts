@@ -19,14 +19,14 @@ export class BitloopsParser implements IBitloopsParser {
 
   parse(blCode: string): BitloopsLanguageAST | BitloopsParserError {
     const chars = new antlr4.InputStream(blCode);
-    const lexer = new BitloopsLexer(chars);
+    const lexer = new BitloopsLexer(chars) as any;
     const tokens = new antlr4.CommonTokenStream(lexer);
     try {
       const parser = new Parser(tokens);
       const tree = parser.program();
       return tree;
-    } catch (error) {
-      return new BitloopsParserError(error);
+    } catch (error: any) {
+      return new BitloopsParserError(JSON.stringify(error));
     }
   }
 }

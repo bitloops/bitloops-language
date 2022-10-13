@@ -57,6 +57,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@types/antlr4@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@types/antlr4/-/antlr4-4.7.3.tgz#69a12de92a1cce00b34dcd37882561b346a167d2"
+  integrity sha512-arOcP8pp898tMo6OhYrzVF34X7hZzAdXGU8C063nJLa+M4GKk9QGFPKNIXyYHpW+kZ5THKsKEqmkamDCej/gKg==
+
 "@types/json-schema@^7.0.9":
   version "7.0.11"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"

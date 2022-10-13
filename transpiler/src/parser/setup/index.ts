@@ -31,14 +31,14 @@ export interface IBitloopsSetupParser {
 export class BitloopsSetupParser implements IBitloopsSetupParser {
   parse(blCode: string): BitloopsLanguageAST | BitloopsSetupParserError {
     const chars = new antlr4.InputStream(blCode);
-    const lexer = new BitloopsSetupLexer(chars);
+    const lexer: any = new BitloopsSetupLexer(chars) as any;
     const tokens = new antlr4.CommonTokenStream(lexer);
     try {
       const parser = new Parser(tokens);
       const tree = parser.program();
       return tree;
-    } catch (error) {
-      return new BitloopsSetupParserError(error);
+    } catch (error: any) {
+      return new BitloopsSetupParserError(JSON.stringify(error));
     }
 
     // TODO move below to ast folder
