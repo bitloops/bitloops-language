@@ -17,14 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+import { bitloopsPrimitives, TBitloopsPrimitives } from '../types.js';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageSetupAST,
-};
+/**
+ * Define a custom type guard to assert whether an unknown object is a SheepName.
+ */
+export function isBitloopsPrimitive(type: unknown): type is TBitloopsPrimitives {
+  return typeof type === 'string' && bitloopsPrimitives.includes(type as any);
+}

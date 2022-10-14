@@ -17,14 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+const SupportedLanguages = {
+  TypeScript: 'TypeScript',
+  // Java = 'Java',
+};
+
+const languageExtensions: Record<string, string> = {
+  TypeScript: '.ts',
+  // Java: '.java',
+};
+
+const languageSuffixExtensions: Record<string, string> = {
+  TypeScript: 'ts',
+  // Java: 'java',
+};
+
+const isLanguageSupported = (language: string): boolean => {
+  if (SupportedLanguages[language]) return true;
+  return false;
+};
+
+const getLanguageFileExtension = (language: string): string => {
+  return languageExtensions[language];
+};
+
+const getLanguageFileSuffixExtension = (language: string): string => {
+  return languageSuffixExtensions[language];
+};
 
 export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageSetupAST,
+  getLanguageFileExtension,
+  isLanguageSupported,
+  SupportedLanguages,
+  getLanguageFileSuffixExtension,
 };

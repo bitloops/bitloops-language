@@ -28,6 +28,7 @@ export type TModule = {
   DTOs?: TDTO;
   Structs?: TStructs;
   Packages?: TPackages;
+  Rules?: TRules;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
 };
@@ -134,6 +135,14 @@ export type TDomainError = {
   errorId: TString;
   parameters?: TParameterDependencies;
 };
+// TODO finalize TRule
+export type TRule = {
+  parameters?: TParameterDependencies;
+  error: string;
+  // isBrokenIfCondition: TCondition;
+};
+
+export type TRules = Record<string, TRule>;
 
 export type TDomainErrors = Record<string, TDomainError>;
 
@@ -169,56 +178,80 @@ export type TEvaluation = {
     | TRegularEvaluation
     | TStructEvaluation
     | TDTOEvaluation
+    | TValueObjectEvaluation
+    | TEntityEvaluation
     | TInstanceOf
     | TNotInstanceOf
     | TGetClass;
 };
 
 ('f()');
+// export type TCondition = {
+//   evaluateTrue?: TEvaluation;
+//   evaluateFalse?: TEvaluation;
+// };
+
 export type TCondition = {
-  evaluateTrue?: TEvaluation;
-  evaluateFalse?: TEvaluation;
+  condition: TExpression;
 };
 
 export type TIfStatement = {
-  if: {
-    condition: TCondition;
-    statements: TStatements;
+  ifStatement: {
+    condition: TExpression;
+    thenStatements: TStatements;
+    elseStatements?: TStatements;
   };
 };
 
-export type TStructEvaluationFields = ({ name: string } & TExpression)[];
+export type TEvaluationFields = ({ name: string } & TExpression)[];
 
 export type TStructEvaluation = {
   struct: {
-    fields: TStructEvaluationFields;
+    fields: TEvaluationFields;
     name: string;
   };
 };
-
-export type TDTOEvaluationFields = TStructEvaluationFields;
 
 export type TDTOEvaluation = {
   dto: {
-    fields: TDTOEvaluationFields;
+    fields: TEvaluationFields;
     name: string;
   };
 };
 
-export type TExpression = {
-  expression: TCondition | TEvaluation | TClassInstantiation | TBackTickString;
+export type TValueObjectEvaluation = {
+  valueObject: TDomainEvaluation;
 };
+
+export type TEntityEvaluation = {
+  entity: TDomainEvaluation;
+};
+
+export type TDomainEvaluation = {
+  props: TEvaluationFields | TRegularEvaluation;
+  name: string;
+};
+
+export type TExpression = {
+  expression: TExpressionValues;
+};
+
+export type TExpressionValues =
+  | TEvaluation
+  | TClassInstantiation
+  | TBackTickString
+  | TLogicalExpression
+  | TMultiplicativeExpression
+  | TAdditiveExpression
+  | TRelationalExpression
+  | TEqualityExpression
+  | TParenthesizedExpression;
 
 //TODO maybe return should have two keys: ok and error
 export type TReturnStatement = {
   return: TExpression;
 };
 
-export type TElseStatement = {
-  else: {
-    statements: TStatements;
-  };
-};
 export type TReturnOKStatement = {
   returnOK: TExpression;
 };
@@ -239,7 +272,19 @@ export type TConstDeclaration = {
   constDeclaration: {
     name: string;
     type?: string;
-    // expression: TExpression;
+  } & TExpression;
+};
+
+export type TVariableDeclaration = {
+  variableDeclaration: {
+    name: string;
+    type: string;
+  } & TExpression;
+};
+
+export type TThisDeclaration = {
+  thisDeclaration: {
+    name: string;
   } & TExpression;
 };
 
@@ -247,20 +292,18 @@ export type TBreakStatement = 'break';
 
 export type TStatement =
   | TBreakStatement
-  | TIfBlock
-  | TSwitch
+  | TIfStatement
+  | TSwitchStatement
   | TReturnStatement
   | TReturnOKStatement
   | TReturnErrorStatement
   | TConstDecomposition
   | TConstDeclaration
+  | TThisDeclaration
+  | TVariableDeclaration
   | TExpression;
 
 export type TStatements = TStatement[];
-
-export type TIfBlock = {
-  ifBlock: (TIfStatement | TElseStatement)[];
-};
 
 export type TConstantVariable = {
   type: string;
@@ -289,12 +332,12 @@ export type TValueObjectMethodInfo = TDomainPrivateMethod;
 export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TOkErrorReturnType = {
-  ok: string[];
+  ok: string;
   errors?: string[];
 };
 
 export type TDomainCreateMethod = {
-  parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
+  parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
   returnType: TOkErrorReturnType;
   statements: TStatements;
 };
@@ -326,7 +369,7 @@ export type TEntityMethods = TDomainMethods;
 
 export type TEntityCreate = TDomainCreateMethod;
 
-export type TAggregateRoots = TEntities;
+export type TAggregateRoots = Record<string, TEntityValues>;
 
 export type TDTOValues = {
   fields: TVariables;
@@ -395,29 +438,23 @@ export type TGraphQLControllerExecute = {
 export type TGraphQLControllerDependencies = [string]; // e.g. (request)
 
 export type TDefaultCase = {
-  defaultCase: {
-    statements: TStatements;
-  };
+  statements: TStatements;
 };
 
-export type TRegularSwitchCase = {
-  regularCase: {
-    caseValue: TCaseValue;
-    statements: TStatements;
-  };
+export type TRegularCase = {
+  caseValue: string;
+  statements: TStatements;
 };
 
-export type TCaseValue = {
-  value: string;
-};
+// export type TCaseValue = {
+//   value: string;
+// };
 
-export type TCase = TRegularSwitchCase | TDefaultCase;
-
-export type TSwitch = {
-  switch: {
-    expression: TEvaluation;
-    cases: TCase[];
-  };
+export type TSwitchStatement = {
+  switchStatement: {
+    cases: TRegularCase[];
+    defaultCase: TDefaultCase;
+  } & TExpression;
 };
 
 export type TEvaluatePrimitive = {
@@ -465,9 +502,9 @@ export interface ISetupData {
   controllers?: TControllers;
   useCases?: TUseCases;
   useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  setup?: TSetupInfo;
+  setup: TSetupInfo;
   packages?: TPackagesSetup;
-  repos?: TReposSetup;
+  repos: TReposSetup;
 }
 
 export type TUseCases = {
@@ -477,7 +514,9 @@ export type TUseCases = {
 };
 
 export type TUseCasesOfModule = {
-  [UseCaseClassName: string]: TUseCaseDefinitions;
+  [UseCaseClassName: string]: {
+    instances: TUseCaseDefinitions[];
+  };
 };
 
 export type TControllers = {
@@ -494,10 +533,10 @@ export const repoSupportedTypes = ['postgres', 'mysql', 'sqlite', 'mongodb'] as 
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
 
 export type TReposSetup = {
-  connections?: {
+  connections: {
     [connectionName: string]: TRepoConnectionInfo;
   };
-  repoAdapters?: {
+  repoAdapters: {
     [boundedContext: string]: {
       [module: string]: TSetupRepoAdapters;
     };
@@ -514,16 +553,16 @@ export type TRepoAdapters = Record<RepoAdapterInstance, TRepoAdapterAndPortInfo>
 
 export type TRepoConnectionInfo = {
   dbType: TRepoSupportedTypes;
-  host: string;
-  port: number;
-  database: string;
+  host: TSingleExpression;
+  port: TSingleExpression;
+  database: TSingleExpression;
 };
 
 export type TRepoAdapterInfo = {
   dbType: TRepoSupportedTypes;
   repoPort: string;
-  connection: string; // Name of connection instance
-  collection: string;
+  connection: TSingleExpression; // Name of connection instance
+  collection: TSingleExpression;
 };
 
 export enum ControllerTypeOfDefinition {
@@ -556,27 +595,28 @@ export type TGraphQLControllerInstances = {
 };
 
 export type TSetupInfo = {
-  language?: string;
+  language: string;
   servers?: TServers;
   routers?: TRouters;
 };
 
-export type TServers = {
+export type TServers = Partial<{
   [key in TServerType]: {
     serverInstances: (TRESTServerInstance | TGraphQLServerInstance)[];
   };
-};
+}>;
 
 export type TServerType = 'REST.Fastify' | 'REST.Express' | 'GraphQL';
 export type TRouterInstanceName = string;
+export type TRestServerInstanceRouters = Record<TRouterInstanceName, { routerPrefix: string }>;
 export type TRESTServerInstance = {
-  port: string;
+  port: TSingleExpression;
   apiPrefix?: string;
-  routers: Record<TRouterInstanceName, { routerPrefix: string }>;
+  routers: TRestServerInstanceRouters;
 };
 
 export type TGraphQLServerInstance = {
-  port: string;
+  port: TSingleExpression;
   resolvers: TControllerResolverBind[];
 };
 
@@ -599,7 +639,7 @@ export type TRoutes = {
     }
   >;
 };
-type TRouters = Record<TServerType, TRoutersInfo>;
+type TRouters = Partial<Record<TServerType, TRoutersInfo>>;
 export type TRoutersInfo = Record<TRouterInstanceName, TRoutes>;
 
 export type TMethodAndPath = string;
@@ -672,3 +712,160 @@ export type TRepoPort = {
 };
 
 export type TPackageAdapterNames = string[];
+
+/**
+ * Setup Expression
+ */
+// singleExpression
+//     : singleExpression Or singleExpression                                   # LogicalOrExpression
+//     | EnvPrefix OpenParen Identifier Comma literal CloseParen                # EnvPrefixExpression
+//     | envVariable                                                            # EnvVariableExpression
+//     | literal                                                                # LiteralExpression
+//     | identifier                                                             # IdentifierExpression //Identifier or Variable method
+
+export type TSingleExpressionValue = // | TMultiplicativeExpression
+  // | TAdditiveExpression
+  // | TRelationalExpression
+  // | TEqualityExpression
+  // | TParenthesizedExpression;
+  | TLogicalSingleExpression
+  | TEnvVarWithDefaultValueExpression
+  | TEnvironmentVariableExpression
+  | TLiteralExpression
+  | TIdentifierExpression;
+
+export type TSingleExpression = {
+  expression: TSingleExpressionValue;
+};
+// env(FASTIFY_PORT, env(FASTIFY_PORT, 3000))
+// process.env.FASTIFY_PORT || 5001
+export type TEnvVarWithDefaultValueExpression = {
+  envVarDefault: TEnvironmentVariableExpression & {
+    defaultValue: TLiteralExpression; // | TIdentifierExpression;
+  };
+};
+
+export type TEnvironmentVariableExpression = {
+  envVariable: {
+    value: string;
+  };
+};
+
+export type TLiteralExpression = {
+  literal: {
+    type: TBitloopsPrimitives | 'number';
+    value: string;
+  };
+};
+
+export type TIdentifierExpression = {
+  identifier: {
+    value: string;
+  };
+};
+
+export type TLogicalSingleExpression = {
+  logicalExpression:
+    | TNotSingleExpression
+    | TAndSingleExpression
+    | TOrSingleExpression
+    | TXorSingleExpression;
+};
+
+export type TNotSingleExpression = {
+  notExpression: TSingleExpression;
+};
+
+export type TAndSingleExpression = {
+  andExpression: {
+    left: TSingleExpression;
+    right: TSingleExpression;
+  };
+};
+
+export type TOrSingleExpression = {
+  orExpression: {
+    left: TSingleExpression;
+    right: TSingleExpression;
+  };
+};
+
+export type TXorSingleExpression = {
+  xorExpression: {
+    left: TSingleExpression;
+    right: TSingleExpression;
+  };
+};
+
+export type TLogicalExpression = {
+  logicalExpression: TNotExpression | TAndExpression | TOrExpression | TXorExpression;
+};
+
+export type TNotExpression = {
+  notExpression: TExpressionValues;
+};
+
+export type TAndExpression = {
+  andExpression: {
+    left: TExpressionValues;
+    right: TExpressionValues;
+  };
+};
+
+export type TOrExpression = {
+  orExpression: {
+    left: TExpressionValues;
+    right: TExpressionValues;
+  };
+};
+
+export type TXorExpression = {
+  xorExpression: {
+    left: TExpressionValues;
+    right: TExpressionValues;
+  };
+};
+
+export type TMultiplicativeExpression = {
+  multiplicativeExpression: {
+    left: TExpressionValues;
+    operator: TMultiplicativeOperator;
+    right: TExpressionValues;
+  };
+};
+
+export type TMultiplicativeOperator = '*' | '/' | '%';
+
+export type TAdditiveExpression = {
+  additiveExpression: {
+    left: TExpressionValues;
+    operator: TAdditiveOperator;
+    right: TExpressionValues;
+  };
+};
+
+export type TAdditiveOperator = '+' | '-';
+
+export type TRelationalExpression = {
+  relationalExpression: {
+    left: TExpressionValues;
+    operator: TRelationalOperator;
+    right: TExpressionValues;
+  };
+};
+
+export type TRelationalOperator = '<' | '<=' | '>' | '>=';
+
+export type TEqualityExpression = {
+  equalityExpression: {
+    left: TExpressionValues;
+    operator: TEqualityOperator;
+    right: TExpressionValues;
+  };
+};
+
+export type TEqualityOperator = '==' | '!=';
+
+export type TParenthesizedExpression = {
+  parenthesizedExpression: TExpressionValues;
+};

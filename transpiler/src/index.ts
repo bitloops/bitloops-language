@@ -1,6 +1,8 @@
 export {
-  // BitloopsParser,
+  BitloopsParser,
   BitloopsSetupParser,
-  // IBitloopsParser,
+  IBitloopsParser,
   IBitloopsSetupParser,
+  BitloopsLanguageAST,
+  BitloopsLanguageSetupAST,
 } from './parser';

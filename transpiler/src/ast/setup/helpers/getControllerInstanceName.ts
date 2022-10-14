@@ -17,14 +17,20 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+import { lowerCaseFirstLetter } from '../../../helpers/stringManipulations.js';
+import { ISetupData } from '../../../types.js';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageSetupAST,
+export const getControllerInstanceName = (
+  result: ISetupData,
+  boundedContext: string,
+  module: string,
+  controllerClass: string,
+): string => {
+  const controllerInstance =
+    result.controllers?.[boundedContext]?.[module]?.[controllerClass] === undefined
+      ? lowerCaseFirstLetter(controllerClass)
+      : lowerCaseFirstLetter(controllerClass) +
+        result.controllers[boundedContext][module][controllerClass].instances +
+        1;
+  return controllerInstance;
 };

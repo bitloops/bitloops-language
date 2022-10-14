@@ -17,14 +17,22 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+import _ from 'lodash';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageSetupAST,
+const pascalCase = (str: string): string => {
+  return str
+    .replace(/(\w)(\w*)/g, (_, g1, g2) => {
+      return g1.toUpperCase() + g2.toLowerCase();
+    })
+    .replaceAll(' ', '');
 };
+
+const camelCase = (str: string): string => {
+  return _.camelCase(str);
+};
+
+const kebabCase = (str: string): string => {
+  return _.kebabCase(str);
+};
+
+export { pascalCase, kebabCase, camelCase };

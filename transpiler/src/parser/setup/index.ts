@@ -21,15 +21,15 @@ import antlr4 from 'antlr4';
 import BitloopsSetupLexer from './grammar/BitloopsSetupLexer.js';
 import Parser from './grammar/BitloopsSetupParser.js';
 
-export class BitloopsLanguageAST extends Parser.ProgramContext {}
+export class BitloopsLanguageSetupAST extends Parser.ProgramContext {}
 export class BitloopsSetupParserError extends Error {}
 
 export interface IBitloopsSetupParser {
-  parse: (blCode: string) => BitloopsLanguageAST | BitloopsSetupParserError;
+  parse: (blCode: string) => BitloopsLanguageSetupAST | BitloopsSetupParserError;
 }
 
 export class BitloopsSetupParser implements IBitloopsSetupParser {
-  parse(blCode: string): BitloopsLanguageAST | BitloopsSetupParserError {
+  parse(blCode: string): BitloopsLanguageSetupAST | BitloopsSetupParserError {
     const chars = new antlr4.InputStream(blCode);
     const lexer: any = new BitloopsSetupLexer(chars) as any;
     const tokens = new antlr4.CommonTokenStream(lexer);

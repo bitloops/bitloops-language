@@ -17,14 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+import { concatChildren, getNextTypesSubtree } from '../../utils/index.js';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageSetupAST,
+export const getBoundedContextAndModule = (useCaseInstantiation: any): [string, string] => {
+  const boundedContextModuleDeclaration = getNextTypesSubtree(
+    'boundedContextModuleDeclaration',
+    useCaseInstantiation,
+  );
+  const wordsWithSpaces = boundedContextModuleDeclaration.children.filter(
+    (c) => c.type === 'wordsWithSpaces',
+  );
+  const boundedContext = concatChildren(
+    wordsWithSpaces[0].children.map((alphaNumeric) => alphaNumeric.children[0]),
+    ' ',
+  );
+  const module = concatChildren(
+    wordsWithSpaces[1].children.map((alphaNumeric) => alphaNumeric.children[0]),
+    ' ',
+  );
+
+  return [boundedContext, module];
 };

@@ -17,14 +17,16 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+import fs from 'fs';
+// import path, { dirname } from 'path';
+// import { fileURLToPath } from 'url';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageSetupAST,
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
+
+const createDirectory = (filePath: string): void => {
+  // console.log('createDirectoryPath', path.join(__dirname, filePath));
+  fs.mkdirSync(filePath, { recursive: true });
 };
+
+export { createDirectory };
