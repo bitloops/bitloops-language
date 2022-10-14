@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -36,7 +36,8 @@
   },
   "scripts": {
     "clean": "rm -rf ./lib",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/parser/setup/grammar",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && yarn copy-grammars",
     "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
