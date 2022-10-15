@@ -1,4 +1,4 @@
-import { ControllerTypeOfDefinition, ISetupData, TServerType } from '../../../../../../types.js';
+import { ControllerTypeOfDefinition, ISetupData, TServerType } from '../../../../types.js';
 import { getControllerInstanceName } from '../../helpers/getControllerInstanceName.js';
 
 type Params = {

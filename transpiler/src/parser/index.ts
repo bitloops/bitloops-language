@@ -17,8 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core';
-import { BitloopsSetupParser, IBitloopsSetupParser, BitloopsLanguageSetupAST } from './setup';
+import { BitloopsParser, IBitloopsParser, BitloopsLanguageAST } from './core/index.js';
+import {
+  BitloopsSetupParser,
+  IBitloopsSetupParser,
+  BitloopsLanguageSetupAST,
+  BitloopsSetupParserError,
+} from './setup/index.js';
 
 export {
   BitloopsParser,
@@ -27,4 +32,5 @@ export {
   IBitloopsSetupParser,
   BitloopsLanguageAST,
   BitloopsLanguageSetupAST,
+  BitloopsSetupParserError,
 };

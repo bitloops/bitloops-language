@@ -5,4 +5,11 @@ export {
   IBitloopsSetupParser,
   BitloopsLanguageAST,
   BitloopsLanguageSetupAST,
-} from './parser';
+  BitloopsSetupParserError,
+} from './parser/index.js';
+
+export {
+  BitloopsIntermediateSetupASTParser,
+  IBitloopsIntermediateSetupASTParser,
+  BitloopsIntermediateSetupASTParserError,
+} from './ast/setup/index.js';

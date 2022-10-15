@@ -1,9 +1,9 @@
-import { controllerDefinitionIsGraphQL } from '../../../../../../helpers/typeGuards.js';
+import { controllerDefinitionIsGraphQL } from '../../../../helpers/typeGuards.js';
 import {
   ControllerTypeOfDefinition,
   ISetupData,
   TGraphQLServerInstance,
-} from '../../../../../../types.js';
+} from '../../../../types.js';
 import { getControllerInstanceName } from '../../helpers/getControllerInstanceName.js';
 
 export const populateGraphQLAndControllers = (

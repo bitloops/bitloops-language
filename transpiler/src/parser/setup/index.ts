@@ -35,7 +35,7 @@ export class BitloopsSetupParser implements IBitloopsSetupParser {
     const tokens = new antlr4.CommonTokenStream(lexer);
     try {
       const parser = new Parser(tokens);
-      const tree = parser.program();
+      const tree = parser.program() as BitloopsLanguageSetupAST;
       return tree;
     } catch (error: any) {
       return new BitloopsSetupParserError(JSON.stringify(error));

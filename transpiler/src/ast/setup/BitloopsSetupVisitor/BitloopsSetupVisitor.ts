@@ -183,7 +183,6 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
    *  Router Definition
    */
   visitRouterDefinition(ctx: BitloopsSetupParser.RouterDefinitionContext): void {
-    console.log('visitRouterDefinitionStatement');
     const identifier = this.visit(ctx.routerDeclaration());
     const routerExpression = this.visit(ctx.routerExpression());
 
