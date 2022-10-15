@@ -1,6 +1,6 @@
 # Bitloops Language Documentation
 
-You can access the published documentation here: https://bitloops.com/docs/bitloops-language
+You can access the published documentation here: https://bitloops.com/docs/bitloops-language/intro
 
 You should continue reading if you are interested in contributing in the documentation.
 
