@@ -56,7 +56,7 @@ import {
   getFilePathRelativeToModule,
   getTargetFileDestination,
 } from '../getTargetFileDestination.js';
-import { BitloopsTypesMapping, ClassTypes } from '../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { LICENSE } from './license.js';
 import { modelToTargetLanguage } from '../index.js';

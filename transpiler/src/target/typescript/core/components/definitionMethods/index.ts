@@ -19,7 +19,7 @@
  */
 
 import { TDefinitionMethodInfo, TDefinitionMethods } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const definitionMethodInfoToTargetLanguage = (

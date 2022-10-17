@@ -19,7 +19,7 @@
  */
 // import antlr4 from 'antlr4';
 
-import { ClassTypes } from '../../target/typescript/modelToTargetLanguage/helpers/mappings.js';
+import { ClassTypes } from '../../helpers/mappings.js';
 import { TBoundedContexts } from '../../types.js';
 // import { TGetUseCasesResponse } from '../../parser/bitloopsFilesToString/index.js';
 import {

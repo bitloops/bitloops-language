@@ -19,7 +19,7 @@
  */
 import { TVariable, TVariables } from '../../../../../types.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';

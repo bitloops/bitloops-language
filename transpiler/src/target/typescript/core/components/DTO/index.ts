@@ -20,7 +20,7 @@
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import { TDTO, TDTOValues } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): string => {

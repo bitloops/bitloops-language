@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TEvaluation } from '../../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { instanceOfToTargetLanguage, notInstanceOfToTargetLanguage } from './instance.js';
 

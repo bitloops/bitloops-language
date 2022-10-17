@@ -27,7 +27,7 @@ import {
   TContextData,
 } from '../../../types.js';
 import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError.js';
-import { mappingClassTypeToComponentType } from '../helpers/mappings.js';
+import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 
 interface IBitloopsIntermediateASTToTarget {

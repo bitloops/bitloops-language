@@ -19,7 +19,7 @@
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TEntities, TEntityMethods } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables } from '../domain/index.js';

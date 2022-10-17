@@ -19,7 +19,7 @@
  */
 
 import { TExpression } from '../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const expressionToTargetLanguage = (variable: TExpression, targetLanguage: string): string => {
