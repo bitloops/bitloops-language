@@ -17,12 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsTypeToLangMapping } from '../../../helpers/bitloopsPrimitiveToLang.js';
-import { isBitloopsPrimitive } from '../../../helpers/isBitloopsPrimitive.js';
-import { SupportedLanguages } from '../../../helpers/supportedLanguages.js';
-import { TParameterDependencies, TParameterDependency } from '../../../types.js';
-import { BitloopsTypesMapping } from '../../helpers/mappings.js.js';
-import { modelToTargetLanguage } from '../index.js.js';
+import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
+import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
+import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
+import { TParameterDependency, TParameterDependencies } from '../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 // TODO fix parameter dependency to take private, public etc.
 const parameterDependencyToTypescript = (variable: TParameterDependency): string => {

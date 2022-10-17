@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TControllers, TRESTController } from '../../../../types.js';
-import { SupportedLanguages } from '../../../../helpers/supportedLanguages.js';
 import { buildExecuteMethod } from './buildRestExecute.js';
-import { controllerDefinitionIsRest } from '../../../../helpers/typeGuards.js';
 import { buildFieldsFromDependencies } from '../helpers/buildFieldsFromDependencies.js';
+import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
+import { controllerDefinitionIsRest } from '../../../../../../helpers/typeGuards.js';
+import { TRESTController, TControllers } from '../../../../../../types.js';
 
 const getServerImports = (serverType: string): string => {
   let result = '';

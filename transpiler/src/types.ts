@@ -24,6 +24,7 @@ export type TModule = {
   Props?: TProps;
   Controllers?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
+  ApplicationErrors?: TApplicationErrors;
   DomainErrors?: TDomainErrors;
   RootEntities?: TRootEntities;
   Entities?: TEntities;
