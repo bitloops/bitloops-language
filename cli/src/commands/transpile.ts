@@ -42,8 +42,13 @@ import {
 } from '../types.js';
 import { readFromFile } from '../helpers/fileOperations.js';
 import { getBitloopsModulesPreModelData, getBoundedContextModules } from '../functions/index.js';
+import {
+  BitloopsIntermediateSetupASTParser,
+  BitloopsLanguageSetupAST,
+  BitloopsSetupParser,
+  BitloopsSetupParserError,
+} from '../functions/setup/index.js';
 // import main from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupVisitor/main.js';
-// import { tmpdir } from 'os';
 
 interface ICollection {
   targetLanguage: string;
@@ -80,9 +85,21 @@ const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
   // get controller data from model
   const content = readFromFile(`${sourceDirPath}/setup.bl`);
   // const setupData = main(content);
-  // console.log('Setup data fetched!', JSON.stringify(setupData));
-  // return setupData;
-  return content as ISetupData;
+  const parser = new BitloopsSetupParser();
+  const initialModelOutput = parser.parse(content);
+
+  const intermediateParser = new BitloopsIntermediateSetupASTParser();
+  if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
+    const result = intermediateParser.parse(
+      initialModelOutput as unknown as BitloopsLanguageSetupAST,
+    );
+    if (result instanceof BitloopsSetupParserError) {
+      console.log(result);
+      throw new Error('Error parsing setup file');
+    }
+    return result as ISetupData;
+  }
+  throw new Error('Error parsing setup file');
 };
 
 type BoundedContextModules = Record<string, string[]>;
@@ -128,6 +145,23 @@ const generateBitloopsModel = (
   _setupModel: ISetupData,
 ): TBoundedContexts => {
   const bitloopsModel: TBoundedContexts = {};
+  // const parser = new BitloopsParser();
+  // For each file in each module in each bounded context
+  // Create the array
+  // const initialModelOutput = parser.parse([
+  //   {
+  //     boundedContext: 'Test',
+  //     module: 'Test',
+  //     fileId: 'testFile.bl',
+  //     fileContents: blString,
+  //   },
+  // ]);
+  // const intermediateParser = new BitloopsIntermediateASTParser();
+  // if (!(initialModelOutput instanceof BitloopsParserError)) {
+  //   const result = intermediateParser.parse(
+  //     initialModelOutput as unknown as BitloopsLanguageASTContext,
+  //   );
+  // }
   return bitloopsModel;
 };
 
@@ -191,5 +225,9 @@ const transpile = async (source: ICollection): Promise<void> => {
 // (*) Generate BoundedContext files for each module
 
 // (*) Gather BoundedContexts and Modules (in .bl)
+// (*) Generate setup Intermediate model (ast)
+// (*) Generate [boundedContexts, modules] Intermediate model (ast)
+// (*) Generate Target files for setup
+// (*) Generate Target files for [boundedContexts, modules]
 
 export default transpile;
