@@ -34,6 +34,7 @@ import {
   jestTestDeclarationVisitor,
   argumentListVisitor,
   argumentVisitor,
+  regularVariableEvaluationORliteralORexpressionVisitor,
   // regularVariableEvaluationORliteralORexpressionVisitor,
 } from './helpers/index.js';
 
@@ -449,11 +450,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return argumentListVisitor(this, ctx);
   }
 
-  // visitRegularVariableEvaluationORliteralORexpression(
-  //   ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
-  // ) {
-  //   return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
-  // }
+  visitRegularVariableEvaluationORliteralORexpression(
+    ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
+  ) {
+    return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
+  }
 
   visitArgument(ctx: BitloopsParser.ArgumentContext) {
     return argumentVisitor(this, ctx);
