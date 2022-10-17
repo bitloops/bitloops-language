@@ -21,11 +21,15 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const functionBodyVisitor = (
+export const regularVariableMethodEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
+  ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
 ): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return null;
+  const regularVariable = ctx.RegularVariableEvaluation().getText();
+  const methodArguments = thisVisitor.visit(ctx.methodArguments());
+  return {
+    type: 'method',
+    value: regularVariable,
+    argumentDependencies: methodArguments,
+  };
 };

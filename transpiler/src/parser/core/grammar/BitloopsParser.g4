@@ -207,8 +207,8 @@ regularVariableEvaluation
     ;
 
 regularMethodEvaluation
-    : ThisVariableEvaluation methodArguments
-    | RegularVariableEvaluation methodArguments
+    : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
+    | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 
 
