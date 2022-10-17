@@ -21,7 +21,7 @@ import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimit
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TParameterDependency, TParameterDependencies } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 // TODO fix parameter dependency to take private, public etc.

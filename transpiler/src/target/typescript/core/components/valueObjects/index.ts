@@ -24,7 +24,7 @@ import {
   TValueObjectMethods,
   TValueObjects,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
 

@@ -21,7 +21,7 @@
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TRepoPorts, TDefinitionMethods } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const repoPortToTargetLanguage = (repoPorts: TRepoPorts, targetLanguage: string): string => {

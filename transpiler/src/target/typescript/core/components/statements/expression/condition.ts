@@ -20,7 +20,7 @@
 
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TCondition } from '../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const conditionToTargetLanguage = (variable: TCondition, targetLanguage: string): string => {

@@ -20,7 +20,7 @@
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import { TProps, TPropsValues } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const propsToTargetLanguage = (props: TProps, targetLanguage: string): string => {

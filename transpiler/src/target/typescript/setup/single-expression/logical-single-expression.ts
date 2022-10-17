@@ -1,6 +1,6 @@
 import { TLogicalSingleExpression } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
-import { BitloopsTypesMapping } from '../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { isLogicalORExpression } from './type-guards/index.js';
 
 export const logicalSingleExpressionToTargetLanguage = (

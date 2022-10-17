@@ -1,6 +1,6 @@
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TDomainCreateMethod, TStatement } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
 

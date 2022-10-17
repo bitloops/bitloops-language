@@ -20,7 +20,7 @@
 
 import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
 import { TDomainEvaluation } from '../../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const domainEvaluationToTargetLanguage = (

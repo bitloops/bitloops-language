@@ -19,7 +19,7 @@
  */
 
 import { TStructEvaluation } from '../../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 const structToTargetLanguage = (variable: TStructEvaluation, targetLanguage: string): string => {

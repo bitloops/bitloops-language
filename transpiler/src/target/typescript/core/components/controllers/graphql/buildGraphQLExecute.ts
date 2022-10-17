@@ -19,7 +19,7 @@
  */
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TGraphQLControllerExecute } from '../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildExecuteMethod = (execute: TGraphQLControllerExecute, targetLanguage: string): string => {

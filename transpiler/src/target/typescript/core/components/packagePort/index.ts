@@ -19,7 +19,7 @@
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TPackagePort } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const packagePortToTargetLanguage = (
