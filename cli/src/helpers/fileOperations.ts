@@ -67,8 +67,15 @@ const getFilename = (filePath: string): string => {
 const copyFile = (source: string, dest: string): void => {
   fs.copyFileSync(source, dest);
 };
+const clearFolder = (outputDirPath: string): void => {
+  fs.rmSync(path.normalize(`${outputDirPath}/src`), {
+    recursive: true,
+    force: true,
+  });
+};
 
 export {
+  clearFolder,
   writeToFile,
   prependToFile,
   readFromFile,

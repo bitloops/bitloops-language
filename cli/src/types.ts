@@ -896,14 +896,24 @@ export type TBitloopsTargetGeneratorParams = {
   targetLanguage: string;
   prettierConfig?: any;
 };
+// export type TBitloopsTargetContent = {
+//   [boundedContext: TBoundedContextName]: {
+//     [module: TModuleName]: {
+//       [classType in TClassType]: {
+//         [className: TClassName]: {
+//           content: string;
+//         };
+//       };
+//     };
+//   };
+// };
+
 export type TBitloopsTargetContent = {
-  [boundedContext: TBoundedContextName]: {
-    [module: TModuleName]: {
-      [classType in TClassType]: {
-        [className: TClassName]: {
-          content: string;
-        };
-      };
-    };
-  };
-};
+  boundedContext: string;
+  module: string;
+  classType: TClassType;
+  className: TClassName;
+  fileContent: string;
+}[];
+
+export type BoundedContextModules = Record<string, string[]>;

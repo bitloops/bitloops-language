@@ -17,14 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import * as fs from 'fs';
+import { join } from 'path';
+import { writeToFile } from '../helpers/fileOperations.js';
 
-const appendFilesToString = (filePaths: string[]): string => {
-  let res = '';
-  filePaths.forEach((filePath: string) => {
-    res = res + fs.readFileSync(filePath, 'utf-8');
-  });
-  return res;
+export const writeTargetFile = (params: {
+  projectPath: string;
+  filePathObj: { path: string; filename: string };
+  fileContent: string;
+}): void => {
+  const { projectPath, filePathObj, fileContent } = params;
+  const { path, filename } = filePathObj;
+  const filePath = join(projectPath, path, filename);
+
+  writeToFile(fileContent, filePath);
 };
-
-export { appendFilesToString };
