@@ -20,32 +20,18 @@
 
 import inquirer, { QuestionCollection } from 'inquirer';
 import fs from 'fs';
-import path from 'path';
+import path, { join } from 'path';
 
-// import {
-//   getBitloopsModulesPreModelData,
-//   getBoundedContextModules,
-//   TGetUseCasesResponse,
-// } from '../functions/bitloopsLanguageToModel/bitloopsFilesToString/index.js';
-// import { parseBitloops } from '../functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
-// import { parseBitloops as parseBitloopsSetup } from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupParser.js';
-// import { modelToFinalLanguage } from '../functions/modelToTargetLanguage/model-to-final-language/index.js';
 import { copyrightSnippet } from './copyright.js';
-import { generateSetupFiles } from '../helpers/setupFiles.js';
-// import { createDirectory } from '../helpers/createDirectory.js';
 import {
   ISetupData,
+  TBitloopsTargetContent,
   TBoundedContextName,
   TBoundedContexts,
-  TGetUseCasesResponse,
   TModuleName,
 } from '../types.js';
-import { readFromFile } from '../helpers/fileOperations.js';
-import {
-  getBitloopsFilesAndContents,
-  getBitloopsModulesPreModelData,
-  getBoundedContextModules,
-} from '../functions/index.js';
+import { readFromFile, writeToFile } from '../helpers/fileOperations.js';
+import { getBitloopsFilesAndContents, getBoundedContextModules } from '../functions/index.js';
 import {
   BitloopsIntermediateSetupASTParser,
   BitloopsLanguageSetupAST,
@@ -58,6 +44,10 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../functions/core/index.js';
+import { isBitloopsParserError, isBitloopsTargetGeneratorError } from '../helpers/typeGuards.js';
+import { BitloopsTargetGenerator } from '../functions/target/index.js';
+import { SupportedLanguages } from '../helpers/supportedLanguages.js';
+import { getTargetFileDestination } from '../functions/getTargetFileDestination.js';
 // import main from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupVisitor/main.js';
 
 interface ICollection {
@@ -114,41 +104,6 @@ const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
 
 type BoundedContextModules = Record<string, string[]>;
 
-const generateTargetFiles = (
-  boundedContextModules: BoundedContextModules,
-  sourceDirPath: string,
-  _outputDirPath: string,
-): void => {
-  // const bitloopsModel: TBoundedContexts = {};
-  console.log('Generating target files...');
-  // TODO
-  for (const boundedContextName of Object.keys(boundedContextModules)) {
-    // const boundedContextName = Object.keys(boundedContextModule)[0];
-    const modules = boundedContextModules[boundedContextName];
-    // console.log('modules', boundedContextModule, boundedContextName, modules);
-    for (const moduleName of modules) {
-      const modulePath = path.normalize(`${sourceDirPath}/${boundedContextName}/${moduleName}/`);
-      const filesToString: {
-        miscFilesString: string;
-        useCases: TGetUseCasesResponse;
-      } = getBitloopsModulesPreModelData(modulePath);
-      console.log('filesToString', filesToString);
-      // const module = parseBitloops(
-      //   boundedContextName,
-      //   moduleName,
-      //   filesToString.useCases,
-      //   filesToString.miscFilesString,
-      // );
-
-      // const bcName = Object.keys(module)[0];
-      // const modName = Object.keys(module[boundedContextName])[0];
-      // bitloopsModel[bcName] = { [modName]: module[bcName][modName] };
-      // const context = { boundedContext: bcName, module: modName };
-      // modelToFinalLanguage(bitloopsModel, outputDirPath, context, setupData);
-    }
-  }
-};
-
 const generateBitloopsModel = (
   boundedContextModules: BoundedContextModules,
   sourceDirPath: string,
@@ -161,16 +116,88 @@ const generateBitloopsModel = (
   const initialModelOutput = parser.parse(inputFileContents);
   const intermediateParser = new BitloopsIntermediateASTParser();
   if (!(initialModelOutput instanceof BitloopsParserError)) {
-    const result = intermediateParser.parse(
+    const intermediateModelOrError = intermediateParser.parse(
       initialModelOutput as unknown as BitloopsLanguageASTContext,
     );
-    if (result instanceof BitloopsParserError) {
-      console.log(result);
+    if (isBitloopsParserError(intermediateModelOrError)) {
+      console.log(intermediateModelOrError);
       throw new Error('Error parsing setup file');
     }
-    return result as TBoundedContexts;
+    return intermediateModelOrError;
   }
   throw new Error('Error parsing setup file');
+};
+
+const generateTargetFiles = (params: {
+  boundedContextModules: BoundedContextModules;
+  sourceDirPath: string;
+  outputDirPath: string;
+  bitloopsModel: TBoundedContexts;
+  setupData: ISetupData;
+
+  targetLanguage: string;
+}): void => {
+  const {
+    // boundedContextModules,
+    // sourceDirPath,
+    outputDirPath,
+    bitloopsModel,
+    setupData,
+    targetLanguage,
+  } = params;
+  const generator = new BitloopsTargetGenerator();
+  const generatorParams = {
+    intermediateAST: bitloopsModel,
+    setupData,
+    targetLanguage,
+    prettierConfig: {},
+  };
+  const output = generator.generate(generatorParams);
+  if (isBitloopsTargetGeneratorError(output)) {
+    console.log(output);
+    throw new Error('Error generating target files');
+  }
+  // output
+  //Write output to dest files
+  writeGeneratedOutputToFiles(output, outputDirPath);
+};
+
+export const writeTargetFile = (params: {
+  projectPath: string;
+  filePathObj: { path: string; filename: string };
+  fileContent: string;
+}): void => {
+  const { projectPath, filePathObj, fileContent } = params;
+  const { path, filename } = filePathObj;
+  const filePath = join(projectPath, path, filename);
+
+  writeToFile(fileContent, filePath);
+};
+
+const writeGeneratedOutputToFiles = (
+  params: TBitloopsTargetContent,
+  outputDirPath: string,
+): void => {
+  //  Write output to dest files
+  for (const [boundedContextName, boundedContextContent] of Object.entries(params)) {
+    for (const [moduleName, moduleContent] of Object.entries(boundedContextContent)) {
+      for (const [classType, classTypeContent] of Object.entries(moduleContent)) {
+        for (const [className, classContent] of Object.entries(classTypeContent)) {
+          const destination = getTargetFileDestination(
+            boundedContextName,
+            moduleName,
+            classType,
+            className,
+          );
+          writeTargetFile({
+            projectPath: outputDirPath,
+            filePathObj: destination,
+            fileContent: classContent.content,
+          });
+        }
+      }
+    }
+  }
 };
 
 const transpile = async (source: ICollection): Promise<void> => {
@@ -217,12 +244,20 @@ const transpile = async (source: ICollection): Promise<void> => {
     setupData,
   );
 
-  generateSetupFiles(setupData, bitloopsModel, outputDirPath, sourceDirPath);
-  generateTargetFiles(
+  generateTargetFiles({
     boundedContextModules,
-    absoluteSourceDirPath,
-    absoluteOutputDirPath + '/bitloops',
-  );
+    sourceDirPath: absoluteSourceDirPath,
+    outputDirPath: absoluteOutputDirPath,
+    bitloopsModel,
+    setupData,
+    targetLanguage: SupportedLanguages.TypeScript,
+  });
+  // generateSetupFiles(setupData, bitloopsModel, outputDirPath, sourceDirPath);
+  // generateTargetFiles(
+  //   boundedContextModules,
+  //   absoluteSourceDirPath,
+  //   absoluteOutputDirPath + '/bitloops',
+  // );
 };
 
 // (*) Gather BoundedContexts and Modules
