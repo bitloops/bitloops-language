@@ -38,6 +38,23 @@ export type TModule = {
   RepoAdapters?: TRepoAdapters;
 };
 
+export type TClassType =
+  | 'Props'
+  | 'Controllers'
+  | 'UseCases'
+  | 'ApplicationErrors'
+  | 'DomainErrors'
+  | 'RootEntities'
+  | 'Entities'
+  | 'ValueObjects'
+  | 'DTOs'
+  | 'Structs'
+  | 'Packages'
+  | 'Rules'
+  | 'RepoPorts'
+  | 'RepoAdapters';
+export type TClassName = string;
+
 export type TBitloopsClasses =
   | TProps
   | TValueObjects
@@ -871,4 +888,22 @@ export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
+};
+
+export type TBitloopsTargetGeneratorParams = {
+  intermediateAST: TBoundedContexts;
+  setupData: ISetupData;
+  targetLanguage: string;
+  prettierConfig?: any;
+};
+export type TBitloopsTargetContent = {
+  [boundedContext: TBoundedContextName]: {
+    [module: TModuleName]: {
+      [classType in TClassType]: {
+        [className: TClassName]: {
+          content: string;
+        };
+      };
+    };
+  };
 };
