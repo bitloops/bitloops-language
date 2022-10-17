@@ -73,6 +73,25 @@ export type TASTCoreInputData = {
   classes: Record<TClassType, Record<TClassName, TClassInformation>>;
 };
 
+export type TBitloopsTargetContent = {
+  [boundedContext: TBoundedContextName]: {
+    [module: TModuleName]: {
+      [classType in TClassType]: {
+        [className: TClassName]: {
+          content: string;
+        };
+      };
+    };
+  };
+};
+
+export type TBitloopsTargetGeneratorParams = {
+  intermediateAST: TBoundedContexts;
+  setupData: ISetupData;
+  targetLanguage: string;
+  prettierConfig?: any;
+};
+
 export type TBitloopsClasses =
   | TProps
   | TValueObjects
