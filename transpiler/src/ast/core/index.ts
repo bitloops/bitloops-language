@@ -20,13 +20,10 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
         for (const classData of Object.values(classes)) {
           if (migratedTypes.includes(classData.deprecatedAST.type)) {
             const bitloopsVisitor = new BitloopsVisitor();
-            partialBoundedContextsData = bitloopsVisitor.visitChildren(classData.initialAST)[0][0];
-            console.log('partialBoundedContextsData', partialBoundedContextsData);
-            const result: TBoundedContexts = {
-              [boundedContextName]: { [classData.module]: partialBoundedContextsData },
+            const visitorModel = bitloopsVisitor.visitChildren(classData.initialAST)[0][0];
+            partialBoundedContextsData = {
+              [boundedContextName]: { [classData.module]: visitorModel },
             };
-            console.log('RES', result);
-            return result;
           } else {
             partialBoundedContextsData = parseBitloops(
               boundedContextName,

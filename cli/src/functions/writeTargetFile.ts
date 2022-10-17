@@ -17,16 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import fs from 'fs';
-// import path, { dirname } from 'path';
-// import { fileURLToPath } from 'url';
+import { join } from 'path';
+import { writeToFile } from '../helpers/fileOperations.js';
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
+export const writeTargetFile = (params: {
+  projectPath: string;
+  filePathObj: { path: string; filename: string };
+  fileContent: string;
+}): void => {
+  const { projectPath, filePathObj, fileContent } = params;
+  const { path, filename } = filePathObj;
+  const filePath = join(projectPath, path, filename);
 
-const createDirectory = (filePath: string): void => {
-  // console.log('createDirectoryPath', path.join(__dirname, filePath));
-  fs.mkdirSync(filePath, { recursive: true });
+  writeToFile(fileContent, filePath);
 };
-
-export { createDirectory };

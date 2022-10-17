@@ -35,7 +35,9 @@ import {
   argumentListVisitor,
   argumentVisitor,
   regularVariableEvaluationORliteralORexpressionVisitor,
-  // regularVariableEvaluationORliteralORexpressionVisitor,
+  thisVariableMethodEvaluationVisitor,
+  // regularVariableMethodEvaluationVisitor,
+  methodArgumentsVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -218,7 +220,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
     // console.log('RegularEvaluation');
     const regularEvaluation: string = this.visitChildren(ctx)[0];
-    console.log('REGULAR EVALUATION:', regularEvaluation);
     const returnObject = {
       regularEvaluation: regularEvaluation,
     };
@@ -294,12 +295,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const returnObject = {
       ifStatement: {
         condition: condition,
-        thenStatements: thenStatements,
+        thenStatements: thenStatements.statements,
       },
     };
     if (ctx.statement(1)) {
       const elseStatements = this.visit(ctx.statement(1));
-      returnObject.ifStatement['elseStatements'] = elseStatements;
+      returnObject.ifStatement['elseStatements'] = elseStatements.statements;
     }
     return returnObject;
   }
@@ -313,13 +314,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitStatementList(ctx: BitloopsParser.StatementListContext) {
     // console.log('StatementList');
     const statementList = this.visitChildren(ctx);
+    const returnStatementList = [];
     for (let i = 0; i < statementList.length; i++) {
-      if (statementList[i] === undefined) {
-        statementList.splice(i, 1);
+      if (Array.isArray(statementList[i])) {
+        if (statementList[i][0] !== undefined) {
+          returnStatementList.push(statementList[i]);
+        }
+      } else if (statementList[i] !== undefined) {
+        returnStatementList.push(statementList[i]);
       }
     }
     const returnObject = {
-      statements: statementList,
+      statements: returnStatementList,
     };
     return returnObject;
   }
@@ -458,5 +464,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitArgument(ctx: BitloopsParser.ArgumentContext) {
     return argumentVisitor(this, ctx);
+  }
+
+  visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext) {
+    return thisVariableMethodEvaluationVisitor(this, ctx);
+  }
+
+  visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext) {
+    return methodArgumentsVisitor(this, ctx);
   }
 }

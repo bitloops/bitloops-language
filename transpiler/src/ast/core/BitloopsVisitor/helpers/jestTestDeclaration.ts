@@ -26,7 +26,6 @@ export const jestTestDeclarationVisitor = (
   ctx: BitloopsParser.JestTestDeclarationContext,
 ): any => {
   const children = thisVisitor.visitChildren(ctx);
-  console.log('CHILDREN', children[2]);
   const returnObject = {
     Tests: {
       jestTest: children[2],

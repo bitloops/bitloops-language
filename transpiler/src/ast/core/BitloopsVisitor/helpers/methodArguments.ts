@@ -17,14 +17,20 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import * as fs from 'fs';
 
-const appendFilesToString = (filePaths: string[]): string => {
-  let res = '';
-  filePaths.forEach((filePath: string) => {
-    res = res + fs.readFileSync(filePath, 'utf-8');
-  });
-  return res;
+import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsVisitor from '../BitloopsVisitor.js';
+
+export const methodArgumentsVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.MethodArgumentsContext,
+): any => {
+  const argumentList = thisVisitor.visitChildren(ctx);
+  const returnArgumentList = [];
+  for (let i = 0; i < argumentList.length; i++) {
+    if (argumentList[i] !== undefined) {
+      returnArgumentList.push(argumentList[i]);
+    }
+  }
+  return returnArgumentList[0];
 };
-
-export { appendFilesToString };
