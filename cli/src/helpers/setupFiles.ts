@@ -91,8 +91,8 @@ export const generateSetupFiles = (
   const packageJSONTemplate = JSON.parse(readFromFile(packageJSONFilePath));
   const packageJSON = {
     ...packageJSONTemplate,
-    dependencies: setup.getNodeDependencies(),
-    devDependencies: setup.getNodeDevDependencies(),
+    // dependencies: setup.getNodeDependencies(),
+    // devDependencies: setup.getNodeDevDependencies(),
   };
   writeToFile(JSON.stringify(packageJSON, null, 2), packageJSONFilePath);
   console.log('package.json written successfully!');

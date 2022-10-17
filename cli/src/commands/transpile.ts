@@ -75,7 +75,7 @@ const clearFolder = (outputDirPath: string): void => {
   });
 };
 
-const fetchSetupData = (sourceDirPath: string): ISetupData => {
+const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
   console.log('Fetching setup data...', sourceDirPath);
   // get controller data from model
   const content = readFromFile(`${sourceDirPath}/setup.bl`);
@@ -90,9 +90,9 @@ type BoundedContextModules = Record<string, string[]>;
 const generateTargetFiles = (
   boundedContextModules: BoundedContextModules,
   sourceDirPath: string,
-  outputDirPath: string,
+  _outputDirPath: string,
 ): void => {
-  const bitloopsModel: TBoundedContexts = {};
+  // const bitloopsModel: TBoundedContexts = {};
   console.log('Generating target files...');
   // TODO
   for (const boundedContextName of Object.keys(boundedContextModules)) {
@@ -123,9 +123,9 @@ const generateTargetFiles = (
 };
 
 const generateBitloopsModel = (
-  boundedContextModules: BoundedContextModules,
-  sourceDirPath: string,
-  setupModel: ISetupData,
+  _boundedContextModules: BoundedContextModules,
+  _sourceDirPath: string,
+  _setupModel: ISetupData,
 ): TBoundedContexts => {
   const bitloopsModel: TBoundedContexts = {};
   return bitloopsModel;
@@ -168,7 +168,7 @@ const transpile = async (source: ICollection): Promise<void> => {
   // TODO Check if the output directory exists and if it does, ask if the user wants to overwrite it
   clearFolder(outputDirPath);
 
-  const setupData = fetchSetupData(sourceDirPath);
+  const setupData = generateSetupDataModel(sourceDirPath);
   const bitloopsModel = generateBitloopsModel(
     boundedContextModules,
     absoluteSourceDirPath,
