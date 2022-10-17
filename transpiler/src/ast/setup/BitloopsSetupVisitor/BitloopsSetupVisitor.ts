@@ -76,7 +76,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   visitProgram(ctx: BitloopsSetupParser.ProgramContext): ISetupData {
     // console.log('visitProgram');
     const children = this.visitChildren(ctx);
-    if (children?.[0] && children[0].test) {
+    if (this.isJestTestElement(children)) {
       return children[0].test;
     }
     if (this.useCases.length > 0) {
@@ -88,6 +88,9 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     }
 
     return this.result;
+  }
+  private isJestTestElement(children: any): boolean {
+    return children?.[0] && children[0].test;
   }
 
   /**

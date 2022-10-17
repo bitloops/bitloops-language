@@ -1,6 +1,12 @@
 import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
+// import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageAST,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
 
 const feature = loadFeature(
   './__tests__/features/bitloopsLanguageToModel/modelFragments/applicationError.feature',
