@@ -17,11 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import antlr4 from 'antlr4';
+// import antlr4 from 'antlr4';
 
-import { AntlerParser } from '../../../../grammar/AntlerParser.js';
-import { TBoundedContexts } from '../../../../types.js';
-import { TGetUseCasesResponse } from '../../bitloopsFilesToString/index.js';
+import { TBoundedContexts } from '../../types.js';
+// import { TGetUseCasesResponse } from '../../parser/bitloopsFilesToString/index.js';
 import {
   formalParameterList,
   controllerDeclaration,
@@ -76,17 +75,10 @@ const getBitloopsModel = (
   subtree: any,
   contextSourceElement?: TSourceElementContext,
 ): { classType: string; classModel: { key: string; subModel: any } } | any => {
-  // console.log('subTree', subtree);
-
   const value = subtree?.value ? subtree.value : subtree;
   const type = subtree.type;
   const children = subtree.children;
   const numOfChildren = subtree.numOfChildren ? subtree.numOfChildren : 0;
-
-  // console.log('children', children);
-  // console.log('numOfChildren', numOfChildren);
-
-  // console.log('type parser:', type);
   switch (type) {
     case 'sourceElement':
       return getBitloopsModel(children[0]);
@@ -391,57 +383,16 @@ const leaf = (value: string): { value: string } => {
   return { value };
 };
 
-const parseBitloops = (
-  boundedContext: string,
-  moduleName: string,
-  useCases: TGetUseCasesResponse,
-  miscFiles: string,
-): TBoundedContexts => {
-  // console.log('miscFiles:', miscFiles);
-  // Misc files (all excluding Use Cases)
-  let parser: any = new AntlerParser(miscFiles);
-  antlr4.tree.ParseTreeWalker.DEFAULT.walk(parser, parser.tree);
+const parseBitloops = (boundedContext: string, moduleName: string, tree: any): TBoundedContexts => {
   const result: TBoundedContexts = { [boundedContext]: { [moduleName]: {} } };
-  // console.log('parser.bitloopsTree', JSON.stringify(parser.bitloopsTree));
-  if (miscFiles.length > 0)
-    for (const child of parser.bitloopsTree.children) {
-      const { classType, classModel } = getBitloopsModel(child);
-      // console.log('classType', classType);
-      // console.log('classModel', classModel);
+  const { classType, classModel } = getBitloopsModel(tree);
+  const { key, subModel } = classModel;
 
-      const { key, subModel } = classModel;
-      // console.log('key', key);
-      // console.log('subModel', subModel);
-
-      if (!result[boundedContext][moduleName][classType]) {
-        result[boundedContext][moduleName][classType] = {};
-      }
-      result[boundedContext][moduleName][classType][key] = subModel;
-    }
-  // Use Cases
-  for (const [useCase, record] of Object.entries(useCases)) {
-    parser = new AntlerParser(record.filesString) as any;
-    antlr4.tree.ParseTreeWalker.DEFAULT.walk(parser as any, parser.tree);
-    // console.log('tree', JSON.stringify(parser.bitloopsTree));
-    for (const child of parser.bitloopsTree.children) {
-      const { classType, classModel } = getBitloopsModel(child);
-      const { key, subModel } = classModel;
-
-      if (!result[boundedContext][moduleName][classType]) {
-        result[boundedContext][moduleName][classType] = {};
-      }
-
-      result[boundedContext][moduleName][classType][key] = { useCase, ...subModel };
-    }
+  if (!result[boundedContext][moduleName][classType]) {
+    result[boundedContext][moduleName][classType] = {};
   }
-
+  result[boundedContext][moduleName][classType][key] = subModel;
   return result;
 };
 
-const getTree = (data: any): any => {
-  const parser = new AntlerParser(data) as any;
-  antlr4.tree.ParseTreeWalker.DEFAULT.walk(parser, parser.tree);
-  return parser.bitloopsTree;
-};
-
-export { parseBitloops, getBitloopsModel, getTree };
+export { parseBitloops, getBitloopsModel };

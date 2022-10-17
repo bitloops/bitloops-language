@@ -17,28 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  BitloopsParser,
-  IBitloopsParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsParserError,
-} from './core/index.js';
-import {
-  BitloopsSetupParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParserError,
-} from './setup/index.js';
+import * as fs from 'fs';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsLanguageSetupAST,
-  BitloopsParserError,
-  BitloopsSetupParserError,
+const appendFilesToString = (filePaths: string[]): string => {
+  let res = '';
+  filePaths.forEach((filePath: string) => {
+    res = res + fs.readFileSync(filePath, 'utf-8');
+  });
+  return res;
 };
+
+export { appendFilesToString };

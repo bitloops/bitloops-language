@@ -4,7 +4,7 @@ import {
   TGraphQLControllerExecute,
   TGraphQLControllerValues,
   TRESTControllerValues,
-} from '../../../../../types.js';
+} from '../../../types.js';
 
 enum controllers {
   RESTController = 'RESTController',

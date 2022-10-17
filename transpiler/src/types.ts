@@ -1,3 +1,5 @@
+import { BitloopsLanguageAST } from './index.js';
+
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -22,7 +24,7 @@ export type TModule = {
   Controllers?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
   DomainErrors?: TDomainErrors;
-  AggregateRoots?: TAggregateRoots;
+  RootEntities?: TRootEntities;
   Entities?: TEntities;
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
@@ -31,6 +33,44 @@ export type TModule = {
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
+};
+
+export type TClassType =
+  | 'Props'
+  | 'Controllers'
+  | 'UseCases'
+  | 'ApplicationErrors'
+  | 'DomainErrors'
+  | 'RootEntities'
+  | 'Entities'
+  | 'ValueObjects'
+  | 'DTOs'
+  | 'Structs'
+  | 'Packages'
+  | 'Rules'
+  | 'RepoPorts'
+  | 'RepoAdapters';
+
+export type TClassName = string;
+type TClassInformation = {
+  moduleName: TModuleName;
+  fileId: string;
+  contents: BitloopsLanguageAST;
+};
+
+export type TFileId = string;
+type TFileContents = string;
+
+export type TParserCoreInputData = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  fileId: TFileId;
+  fileContents: TFileContents;
+}[];
+
+export type TASTCoreInputData = {
+  boundedContext: string;
+  classes: Record<TClassType, Record<TClassName, TClassInformation>>;
 };
 
 export type TBitloopsClasses =
@@ -42,10 +82,10 @@ export type TBitloopsClasses =
   | TDTO
   | TStructs;
 
-type TModuleName = string;
+export type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, TModule>;
 
-type TBoundedContextName = string;
+export type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export type TVariables = TVariable[];
@@ -369,7 +409,7 @@ export type TEntityMethods = TDomainMethods;
 
 export type TEntityCreate = TDomainCreateMethod;
 
-export type TAggregateRoots = Record<string, TEntityValues>;
+export type TRootEntities = Record<string, TEntityValues>;
 
 export type TDTOValues = {
   fields: TVariables;

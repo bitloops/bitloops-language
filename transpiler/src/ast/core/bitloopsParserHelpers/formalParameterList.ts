@@ -1,4 +1,4 @@
-import { TParameterDependency } from '../../../../../types.js';
+import { TParameterDependency } from '../../../types.js';
 import { getBitloopsModel } from '../BitloopsParser.js';
 
 const formalParameterList = (children: any) => {

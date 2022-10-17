@@ -1,5 +1,5 @@
 import { getNextTypesChildren, getNextTypesSubtree, getNextTypesValue } from '../../utils/index.js';
-import { TRepoPort } from '../../../../../types.js';
+import { TRepoPort } from '../../../types.js';
 import { getBitloopsModel } from '../BitloopsParser.js';
 
 const repoPortDeclaration = (subtree: any): { key: string; subModel: TRepoPort } => {

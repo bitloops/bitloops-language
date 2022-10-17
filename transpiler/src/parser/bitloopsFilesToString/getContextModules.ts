@@ -17,28 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  BitloopsParser,
-  IBitloopsParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsParserError,
-} from './core/index.js';
-import {
-  BitloopsSetupParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParserError,
-} from './setup/index.js';
+import * as fs from 'fs';
+import * as path from 'path';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsLanguageSetupAST,
-  BitloopsParserError,
-  BitloopsSetupParserError,
+const getFolderNamesFromPath = (filePath: string): string[] => {
+  const paths = fs
+    .readdirSync(filePath, { withFileTypes: true })
+    .filter((dirOrFile) => dirOrFile.isDirectory())
+    .map((dir) => path.join(filePath, dir.name));
+  return paths;
 };
+
+export { getFolderNamesFromPath };
