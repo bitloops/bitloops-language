@@ -39,11 +39,6 @@ const BITLOOPS_PRIMITIVES = {
   Void: 'Void',
 };
 
-export const isBitloopsPrimitive = (type: string): boolean => {
-  if (BITLOOPS_PRIMITIVES[type]) return true;
-  return false;
-};
-
 export const bitloopsTypeToLangMapping = {
   [SupportedLanguages.TypeScript]: (type: unknown): string => {
     switch (type) {

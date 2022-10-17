@@ -19,6 +19,7 @@ import { BitloopsLanguageAST } from './index.js';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
 export type TModule = {
   Props?: TProps;
   Controllers?: TRESTController | TGraphQLController;
@@ -51,6 +52,22 @@ export type TClassType =
   | 'RepoPorts'
   | 'RepoAdapters';
 
+export type TComponentType =
+  | 'TProps'
+  | 'TControllers'
+  | 'TUseCase'
+  | 'TApplicationErrors'
+  | 'TDomainErrors'
+  | 'TRootEntities'
+  | 'TEntities'
+  | 'TValueObjects'
+  | 'TDTOs'
+  | 'TStructs'
+  | 'TPackages'
+  | 'TRules'
+  | 'TRepoPorts'
+  | 'TRepoAdapters';
+
 export type TClassName = string;
 type TClassInformation = {
   moduleName: TModuleName;
@@ -73,6 +90,8 @@ export type TASTCoreInputData = {
   classes: Record<TClassType, Record<TClassName, TClassInformation>>;
 };
 
+export type TContextData = { boundedContext: string; module: string };
+
 export type TBitloopsTargetContent = {
   [boundedContext: TBoundedContextName]: {
     [module: TModuleName]: {
@@ -89,7 +108,7 @@ export type TBitloopsTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
   setupData: ISetupData;
   targetLanguage: string;
-  prettierConfig?: any;
+  formatterConfig?: any;
 };
 
 export type TBitloopsClasses =
