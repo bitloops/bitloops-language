@@ -73,6 +73,7 @@ BitOr:                          '|';
 // Or:                             '||';
 And:                            'AND';
 Or:                             'OR';
+Xor:                            'XOR';
 MultiplyAssign:                 '*=';
 DivideAssign:                   '/=';
 ModulusAssign:                  '%=';
@@ -97,12 +98,12 @@ BooleanLiteral:                 'true'
 
 /// Numeric Literals
 
-IntegerLiteral:               DecimalIntegerLiteral
+IntegerLiteral:              '-'? DecimalIntegerLiteral
               ;
 
 
 DecimalLiteral:                 DecimalIntegerLiteral '.' [0-9]* ExponentPart?
-              |                 '.' [0-9]+ ExponentPart?
+              |                 '-'? '.' [0-9]+ ExponentPart?
               |                 DecimalIntegerLiteral ExponentPart?
               ;
 
@@ -144,6 +145,7 @@ As:                             'as';
 From:                           'from';
 ReadOnly:                       'readonly';
 Async:                          'async';
+Throws:                         'throws';
 
 /// Future Reserved Words
 
@@ -177,6 +179,10 @@ Errors:                         'Errors';
 Config:                         'Config';
 PackagePort:                    'PackagePort';
 VO:                             'VO';
+Rule:                           'Rule';
+IsBrokenIf:                     'isBrokenIf';
+Root:                           'Root';
+Constructor:                    'constructor';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
@@ -234,6 +240,7 @@ JestTestStructEvaluation: 'JestTestStructEvaluation';
 JestTestDTOEvaluation: 'JestTestDTOEvaluation';
 JestTestEvaluation: 'JestTestEvaluation';
 JestTestReturnOkErrorType: 'JestTestReturnOkErrorType';
+JestTestExpression: 'JestTestExpression';
 JestTestConstDeclaration: 'JestTestConstDeclaration';
 JestTestMethodDefinitionList: 'JestTestMethodDefinitionList';
 JestTestCreateMethodDeclaration: 'JestTestCreateMethodDeclaration';
@@ -241,6 +248,12 @@ JestTestPrivateMethodDeclaration: 'JestTestPrivateMethodDeclaration';
 JestTestPublicMethodDeclaration: 'JestTestPublicMethodDeclaration';
 JestTestValueObjectDeclaration: 'JestTestValueObjectDeclaration';
 JestTestEntityDeclaration: 'JestTestEntityDeclaration';
+JestTestCondition: 'JestTestCondition';
+JestTestVariableDeclaration: 'JestTestVariableDeclaration';
+JestTestThisDeclaration: 'JestTestThisDeclaration';
+
+JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
+JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
 
 // Abstract: 'abstract';
@@ -269,8 +282,6 @@ OperationQuery:         'GraphQL.Operations.Query';
 OperationSubscription:  'GraphQL.Operations.Subscription';
 
 /// Identifier Names and Identifiers
-
-PropsEvaluationIdentifier:      UpperCaseStart IdentifierPart* Props;
 DTOIdentifier:                  UpperCaseStart IdentifierPart* DTO;
 ValueObjectIdentifier:          UpperCaseStart IdentifierPart* VO;
 EntityIdentifier:               UpperCaseStart IdentifierPart* Entity;
@@ -286,6 +297,7 @@ Identifier:                     IdentifierStart IdentifierPart*;
 
 // RegularVariableEvaluation:              RegularEvaluationStart RegularEvaluationPart? ('.' RegularEvaluationPart?)*;
 RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
+ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
 RegularVariableEvaluation:              RegularEvaluationPart ('.' RegularEvaluationPart)*;
 
 /// String Literals

@@ -29,8 +29,6 @@ import {
 
 const feature = loadFeature('__tests__/ast/core/dtoDeclaration.feature');
 
-// import BitloopsParserListener from '../../../grammar/BitloopsParserListener';
-
 defineFeature(feature, (test) => {
   test('DTO declaration is valid', ({ given, when, then }) => {
     let boundedContext: string;

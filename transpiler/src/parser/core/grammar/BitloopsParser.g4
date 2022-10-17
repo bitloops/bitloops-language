@@ -39,7 +39,7 @@ options {
 // SupportSyntax
 
 initializer
-    : '=' singleExpression
+    : '=' expression
     ;
 
 bindingPattern
@@ -61,24 +61,11 @@ fieldList
     : field (';' field)* SemiColon
     ;
 
-structEvaluationFieldList
-    : structEvaluationField (',' structEvaluationField)*
+evaluationFieldList
+    : evaluationField (',' evaluationField)*
     ;
 
-propsEvaluationFieldList
-    : propsEvaluationField (',' propsEvaluationField)*
-    ;
-
-
-dtoEvaluationFieldList
-    : structEvaluationField (',' structEvaluationField)*
-    ;
-
-structEvaluationField
-    : Identifier ':' expression
-    ;
-
-propsEvaluationField
+evaluationField
     : Identifier ':' expression
     ;
 
@@ -107,15 +94,20 @@ typeArgument
     : type_
     ;
 
+propsIdentifier
+: PropsIdentifier
+;
+
 bitloopsIdentifiers
-    : UseCaseIdentifier
+    : 
+    UseCaseIdentifier
     | dtoIdentifier
     | ControllerIdentifier
     | ErrorIdentifier
-    | UpperCaseIdentifier
-    | PropsIdentifier
+    | propsIdentifier
     | ValueObjectIdentifier
     | EntityIdentifier
+    | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     | RepoPortIdentifier
     ;
 
@@ -174,12 +166,16 @@ identifier
     : Identifier
     ;
 
+upperCaseIdentifier
+    : UpperCaseIdentifier
+    ;
+
 struct
     : UpperCaseIdentifier
     ;
 
 regularEvaluation
-    : regularMethodEvaluation
+    : regularMethodEvaluation   
     | regularStringEvaluation
     | regularVariableEvaluation
     | regularIntegerEvaluation
@@ -205,12 +201,14 @@ closeParen:
 //regularMethodEvaluation
 //    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
 regularVariableEvaluation
-    : RegularVariableEvaluation
-    | Identifier
+    : ThisVariableEvaluation #ThisVariableEvaluationString
+    | RegularVariableEvaluation #RegularVariableEvaluationString
+    | Identifier    #IdentifierString
     ;
 
 regularMethodEvaluation
-    : RegularVariableEvaluation methodArguments
+    : ThisVariableEvaluation methodArguments
+    | RegularVariableEvaluation methodArguments
     ;
 
 
@@ -371,7 +369,7 @@ optionalParameter
     ;
 
 restParameter
-    : '...' singleExpression typeAnnotation?
+    : '...' expression typeAnnotation?
     ;
 
 requiredParameter
@@ -445,7 +443,7 @@ enumMemberList
     ;
 
 enumMember
-    : propertyName ('=' singleExpression)?
+    : propertyName ('=' expression)?
     ;
 
 // A.8 Namespaces
@@ -474,7 +472,7 @@ decorator
 decoratorMemberExpression
     : Identifier
     | decoratorMemberExpression '.' identifierName
-    | '(' singleExpression ')'
+    | '(' expression ')'
     ;
 
 decoratorCallExpression
@@ -502,13 +500,16 @@ sourceElement
     | useCaseDeclaration
     | packagePortDeclaration
     | valueObjectDeclaration
-    | domainCreateDeclaration
+    | domainConstructorDeclaration
+    | domainRuleDeclaration
+    | entityDeclaration
+    | aggregateDeclaration
     | repoPortDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
 jestTestDeclaration
-    : JestTestFunctionBody '{' functionBody '}' SemiColon?  
+    : JestTestFunctionBody '{' functionBody '}' SemiColon?       
     // JestTestExecute '{' functionBody '}' SemiColon?      
     | JestTestStatementList '{' statementList '}' SemiColon?    
     | JestTestStatement '{' statement SemiColon? '}' SemiColon? 
@@ -522,13 +523,18 @@ jestTestDeclaration
     | JestTest '{' restControllerMethodDeclaration '}'  
     | JestTestReturnOkErrorType '{' returnOkErrorType '}' SemiColon?    
     | JestTestConstDeclaration '{' constDeclaration '}' SemiColon?  
-    | JestTestSingleExpression '{' singleExpression '}' SemiColon?  
+    | JestTestExpression '{' expression '}' SemiColon?  
     | JestTestMethodDefinitionList '{' methodDefinitionList '}' SemiColon?
-    | JestTestCreateMethodDeclaration '{' domainCreateDeclaration '}' SemiColon?
+    | JestTestCreateMethodDeclaration '{' domainConstructorDeclaration '}' SemiColon?
     | JestTestPrivateMethodDeclaration '{' privateMethodDeclaration '}' SemiColon?
     | JestTestPublicMethodDeclaration '{' publicMethodDeclaration '}' SemiColon?
     | JestTestValueObjectDeclaration '{' valueObjectDeclaration '}' SemiColon?
     | JestTestEntityDeclaration '{' entityDeclaration '}' SemiColon?
+    | JestTestCondition '{' condition '}' SemiColon?
+    | JestTestVariableDeclaration '{' variableDeclaration '}' SemiColon?
+    | JestTestThisDeclaration '{' thisDeclaration '}' SemiColon?
+    | JestTestValueObjectEvaluation '{' valueObjectEvaluation '}' SemiColon?
+    | JestTestEntityEvaluation '{' entityEvaluation '}' SemiColon?
     ;
 
 evaluation
@@ -536,15 +542,12 @@ evaluation
     | dtoEvaluation
     | structEvaluation
     | valueObjectEvaluation
+    | entityEvaluation
     | propsEvaluation
     ;
 
-// condition
-//     : evaluateTrue | evaluateFalse
-
-expression
-    : evaluation
-    // | condition
+condition
+    : expression
     ;
 
 returnStatement
@@ -552,13 +555,23 @@ returnStatement
     ;
 
 constDeclaration
-    : Const identifier typeAnnotation? '=' expression
+    : Const identifier typeAnnotation? '=' expression  SemiColon?
+    ;
+
+variableDeclaration
+    : identifier typeAnnotation '=' expression  SemiColon?
+    ;
+
+thisDeclaration
+    : ThisVariableEvaluation '=' expression  SemiColon?
     ;
 
 statement
     : block                         
-    | expression
+    | expression    
     | constDeclaration
+    | variableDeclaration
+    | thisDeclaration
     // | expressionStatement
     | emptyStatement_
     | propsDeclaration
@@ -576,7 +589,6 @@ statement
     | arrowFunctionDeclaration
     // | variableStatement
     | typeAliasDeclaration //ADDED
-    | expressionAssignment
     ;
 
 block
@@ -617,9 +629,9 @@ variableDeclarationList
     : variableDeclaration (',' variableDeclaration)*
     ;
 
-variableDeclaration
-    : ( identifierOrKeyWord | arrayLiteral | objectLiteral) typeAnnotation? singleExpression? ('=' typeParameters? singleExpression)? // ECMAScript 6: Array & Object Matching
-    ;
+// variableDeclaration
+//     : ( identifierOrKeyWord | arrayLiteral | objectLiteral) typeAnnotation? expression? ('=' typeParameters? expression)? // ECMAScript 6: Array & Object Matching
+//     ;
 
 emptyStatement_
     : SemiColon
@@ -631,7 +643,7 @@ expressionStatement
     ;
 
 ifStatement
-    : If openParen singleExpression closeParen statement (Else statement)?
+    : If '(' expression ')' statement (Else statement)?
     ;
 
 
@@ -641,9 +653,9 @@ iterationStatement
     | For '(' expressionSequence? SemiColon expressionSequence? SemiColon expressionSequence? ')' statement     # ForStatement
     | For '(' varModifier variableDeclarationList SemiColon expressionSequence? SemiColon expressionSequence? ')'
           statement                                                                                             # ForVarStatement
-    // | For '(' singleExpression (In | Identifier{this.p("of")}?) expressionSequence ')' statement                # ForInStatement
+    // | For '(' expression (In | Identifier{this.p("of")}?) expressionSequence ')' statement                # ForInStatement
     // | For '(' varModifier variableDeclaration (In | Identifier{this.p("of")}?) expressionSequence ')' statement # ForVarInStatement
-    | For '(' singleExpression (In | Identifier?) expressionSequence ')' statement                # ForInStatement
+    | For '(' expression (In | Identifier?) expressionSequence ')' statement                # ForInStatement
     | For '(' varModifier variableDeclaration (In | Identifier?) expressionSequence ')' statement # ForVarInStatement
     ;
 
@@ -686,11 +698,11 @@ withStatement
     ;
 
 switchStatement
-    : Switch '(' singleExpression ')' caseBlock
+    : Switch '(' expression ')' caseBlock
     ;
 
 caseBlock
-    : '{' caseClauses? (defaultClause caseClauses?)? '}'
+    : '{' caseClauses? defaultClause caseClauses? '}'
     ;
 
 caseClauses
@@ -698,11 +710,11 @@ caseClauses
     ;
 
 caseClause
-    : Case singleExpression ':' statementList? Break SemiColon?
+    : Case expression ':' statementList? Break? SemiColon?
     ;
 
 defaultClause
-    : Default ':' statementList? Break SemiColon?
+    : Default ':' statementList? Break? SemiColon?
     ;
 
 labelledStatement
@@ -743,21 +755,36 @@ functionDeclaration
 //     : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?
 //     | GraphQLController ControllerIdentifier formalParameterList '{' graphQLOperationAssignment '}' SemiColon?
 //     ;
+domainFieldDeclaration
+: fieldList 
+;
 
-// aggregateDeclaration 
-// : Aggregate aggregateIdentifier '{' constDeclaration* domainCreateDeclaration privateMethodDeclaration* publicMethodDeclaration*'}' SemiColon?
-// ;
+isBrokenStatement
+: IsBrokenIf '(' expression ')' SemiColon
+;
+
+domainRuleBody
+: functionBody isBrokenStatement
+;
+
+domainRuleDeclaration
+: Rule domainRuleIdentifier formalParameterList? Throws ErrorIdentifier '{' domainRuleBody '}'
+;
+
+aggregateDeclaration
+ : Root entityDeclaration
+ ;
 
 entityDeclaration 
-: Entity entityIdentifier '{' constDeclaration* domainCreateDeclaration privateMethodDeclaration* publicMethodDeclaration*'}' SemiColon?
+    : Entity entityIdentifier '{' constDeclaration*  domainConstructorDeclaration publicMethodDeclaration* privateMethodDeclaration*  '}' SemiColon?
 ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier '{' constDeclaration* domainCreateDeclaration privateMethodDeclaration* '}' SemiColon?
+    : ValueObject valueObjectIdentifier '{' constDeclaration*  domainConstructorDeclaration privateMethodDeclaration* '}' SemiColon?
     ;
 
-domainCreateDeclaration
-    : Create formalParameterList? ':' returnOkErrorType '{' functionBody '}'
+domainConstructorDeclaration
+    : Constructor formalParameterList? ':' returnOkErrorType '{' functionBody '}'
     ;
 
 useCaseIdentifier
@@ -821,24 +848,32 @@ dtoEvaluationIdentifier
     ;
 
 dtoEvaluation
-    : dtoEvaluationIdentifier '(' '{' dtoEvaluationFieldList '}' ')'
+    : dtoEvaluationIdentifier '(' '{' evaluationFieldList '}' ')'
     ;
 
-// //TODO valueObjectEvaluation
 valueObjectEvaluation
-    : ValueObjectIdentifier '{' '(' (dtoEvaluationFieldList) ')' '}'
+    : valueObjectIdentifier domainEvaluationInput
     ;
 
-// TODO remove '{' and '(' from identifier
+domainEvaluationInput
+    : '(' '{' evaluationFieldList '}' ')'
+    | '(' regularEvaluation ')'
+    ;
+
+entityEvaluation
+    : entityIdentifier domainEvaluationInput
+    ;
+
 structEvaluationIdentifier
-    : UpperCaseIdentifier WS* '(' WS* '{';
+    : UpperCaseIdentifier
+    ;
 
 structEvaluation
-    : structEvaluationIdentifier (structEvaluationFieldList) '}' ')'
+    : structEvaluationIdentifier '(' '{' evaluationFieldList '}' ')'
     ;
 
 propsEvaluation
-    : '{' '(' PropsEvaluationIdentifier (propsEvaluationFieldList) '}' ')'
+    : '{' '(' propsIdentifier (evaluationFieldList) '}' ')'
     ;
 
 domainErrorDeclaration
@@ -938,10 +973,14 @@ entityIdentifier
 // : AggregateIdentifier
 // ;
 
+domainRuleIdentifier
+: UpperCaseIdentifier
+;
+
 // TODO valueObjectIdentifier inside bitloops identifiers 
 // TODO change it to something like this dtoIdentifiers | valueObjectIdentifier | type_
 returnOkType
-    : WS* OK WS* OpenParen WS* ( type_ (BitOr type_)* ) WS* CloseParen
+    : OK OpenParen type_ CloseParen
     ;
 
 returnErrorsType
@@ -949,7 +988,7 @@ returnErrorsType
     ;
 
 returnOkErrorType
-    : WS* OpenParen WS* returnOkType WS* Comma WS* returnErrorsType WS* CloseParen
+    : OpenParen returnOkType Comma returnErrorsType CloseParen
     ;
 
 packagePortIdentifier
@@ -1051,7 +1090,7 @@ iteratorBlock
     ;
 
 iteratorDefinition
-    : '[' singleExpression ']' '(' formalParameterList? ')' '{' functionBody '}'
+    : '[' expression ']' '(' formalParameterList? ')' '{' functionBody '}'
     ;
 
 formalParameterList
@@ -1068,7 +1107,7 @@ formalParameterList
     ;
 
 formalParameterArg
-    : decorator? accessibilityModifier? identifierOrKeyWord typeAnnotation? ('=' singleExpression )?      // ECMAScript 6: Initialization
+    : WS* decorator? WS* accessibilityModifier? WS* identifierOrKeyWord WS* typeAnnotation? WS* ('=' WS* expression WS*)?      // ECMAScript 6: Initialization
     ;
 
 lastFormalParameterArg                        // ECMAScript 6: Rest Parameter
@@ -1092,7 +1131,7 @@ elementList
     ;
 
 arrayElement                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (singleExpression | Identifier) ','?
+    : Ellipsis? (expression | Identifier) ','?
     ;
 
 objectLiteral
@@ -1103,20 +1142,21 @@ functionParameters
     : (propertyAssignment (',' propertyAssignment)* ','?)
     ;
 
+regularVariableEvaluationORliteralORexpression
+    : regularVariableEvaluation 
+    | literal 
+    | expression
+    ;
+
 // MODIFIED
 propertyAssignment
-    : propertyName (':' |'=') singleExpression                # PropertyExpressionAssignment
-    | '[' singleExpression ']' ':' singleExpression           # ComputedPropertyExpressionAssignment
+    : propertyName (':' |'=') regularVariableEvaluationORliteralORexpression                # PropertyExpressionAssignment
+    | '[' regularVariableEvaluationORliteralORexpression ']' ':' regularVariableEvaluationORliteralORexpression           # ComputedPropertyExpressionAssignment
     | getAccessor                                             # PropertyGetter
     | setAccessor                                             # PropertySetter
     | generatorMethod                                         # MethodProperty
     | identifierOrKeyWord                                     # PropertyShorthand
     | restParameter                                           # RestParameterInObject
-    ;
-
-expressionAssignment
-    : identifier op='=' expression SemiColon?                   #IdentifierExpressionAssingment
-    | regularVariableEvaluation op='=' expression SemiColon?    #RegularVariableExpressionAssingment
     ;
 
 getAccessor
@@ -1142,65 +1182,66 @@ argumentList
     ;
 
 argument                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (singleExpression | Identifier)
+    : Ellipsis? (regularVariableEvaluationORliteralORexpression)
     ;
 
 expressionSequence
-    : singleExpression (',' singleExpression)*
+    : expression (',' expression)*
     ;
 
 functionExpressionDeclaration
     : Function_ Identifier? '(' formalParameterList? ')' typeAnnotation? '{' functionBody '}'
     ;
 
-singleExpression
-    : Not singleExpression                                                   # NotExpression
-    | singleExpression op=('*' | '/' | '%') singleExpression                 # MultiplicativeExpression
-    | singleExpression op=('+' | '-') singleExpression                       # AdditiveExpression
-    | singleExpression op=('<' | '>' | '<=' | '>=') singleExpression         # RelationalExpression
-    | singleExpression op=('==' | '!=' ) singleExpression                    # EqualityExpression
-    | singleExpression op=And singleExpression                               # LogicalAndExpression
-    | singleExpression op=Or singleExpression                                # LogicalOrExpression
-    | This                                                                   # ThisExpression
-    | literal                                                                # LiteralExpression
-    | regularVariableEvaluation                                              # IdentifierExpression //Identifier or Variable method
-    ;
+expression
+    : Not expression                                             # NotExpression
+    | '(' expression ')'                                         # ParenthesizedExpression
+    | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
+    | expression op=('+' | '-') expression                       # AdditiveExpression
+    | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
+    | expression op=('==' | '!=' ) expression                    # EqualityExpression
+    | expression op=And expression                               # LogicalAndExpression
+    | expression op=Or expression                                # LogicalOrExpression
+    | expression op=Xor expression                               # LogicalXorExpression
+    | This                                                       # ThisExpression
+    | evaluation                                                 # EvaluationExpression 
+    ;   
 
 // more single expressions
     // | functionExpressionDeclaration                                          # FunctionExpression
     // | arrowFunctionDeclaration                                               # ArrowFunctionExpression   // ECMAScript 6
     // | Class Identifier? classTail                                            # ClassExpression
     // | UseCase Identifier? useCaseTail                                        # UseCaseExpression
-    // | singleExpression '[' expressionSequence ']'                            # MemberIndexExpression
+    // | expression '[' expressionSequence ']'                            # MemberIndexExpression
     // Split to try `new Date()` first, then `new Date`.
-    // | New singleExpression typeArguments? arguments                          # NewExpression
-    // | New singleExpression typeArguments?                                    # NewExpression
-    // | singleExpression arguments                                             # ArgumentsExpression
-    // | singleExpression {this.notLineTerminator()}? '++'                      # PostIncrementExpression
-    // | singleExpression {this.notLineTerminator()}? '--'                      # PostDecreaseExpression
-    // | singleExpression '++'                      # PostIncrementExpression
-    // | singleExpression '--'                      # PostDecreaseExpression
-    // | Delete singleExpression                                                # DeleteExpression
-    // | Void singleExpression                                                  # VoidExpression
-    // | Typeof singleExpression                                                # TypeofExpression
-    // | '++' singleExpression                                                  # PreIncrementExpression
-    // | '--' singleExpression                                                  # PreDecreaseExpression
-    // | '+' singleExpression                                                   # UnaryPlusExpression
-    // | '-' singleExpression                                                   # UnaryMinusExpression
-    // | '~' singleExpression                                                   # BitNotExpression
-    // | '!' singleExpression                                                   # NotExpression
-    // | singleExpression ('<<' | '>>' | '>>>') singleExpression                # BitShiftExpression
-    // | singleExpression Instanceof singleExpression                           # InstanceofExpression
-    // | singleExpression In singleExpression                                   # InExpression
-    // | singleExpression '&' singleExpression                                  # BitAndExpression
-    // | singleExpression '^' singleExpression                                  # BitXOrExpression
-    // | singleExpression '|' singleExpression                                  # BitOrExpression
-    // | singleExpression '&&' singleExpression                                 # LogicalAndExpression
-    // | singleExpression '||' singleExpression                                 # LogicalOrExpression
-    // | singleExpression '?' singleExpression ':' singleExpression             # TernaryExpression
-    // | singleExpression '=' singleExpression                                  # AssignmentExpression
-    // | singleExpression assignmentOperator singleExpression                   # AssignmentOperatorExpression
-    // | singleExpression templateStringLiteral                                 # TemplateStringExpression  // ECMAScript 6
+    // | New expression typeArguments? arguments                          # NewExpression
+    // | New expression typeArguments?                                    # NewExpression
+    // | expression arguments                                             # ArgumentsExpression
+    // | expression {this.notLineTerminator()}? '++'                      # PostIncrementExpression
+    // | expression {this.notLineTerminator()}? '--'                      # PostDecreaseExpression
+    // | expression '++'                      # PostIncrementExpression
+    // | expression '--'                      # PostDecreaseExpression
+    // | Delete expression                                                # DeleteExpression
+    // | Void expression                                                  # VoidExpression
+    // | Typeof expression                                                # TypeofExpression
+    // | '++' expression                                                  # PreIncrementExpression
+    // | '--' expression                                                  # PreDecreaseExpression
+    // | '+' expression                                                   # UnaryPlusExpression
+    // | '-' expression                                                   # UnaryMinusExpression
+    // | '~' expression                                                   # BitNotExpression
+    // | '!' expression                                                   # NotExpression
+    // | expression ('<<' | '>>' | '>>>') expression                # BitShiftExpression
+    // | expression Instanceof expression                           # InstanceofExpression
+    // | expression In expression                                   # InExpression
+    // | expression '&' expression                                  # BitAndExpression
+    // | expression '^' expression                                  # BitXOrExpression
+    // | expression '|' expression                                  # BitOrExpression
+    // | expression '&&' expression                                 # LogicalAndExpression
+    // | expression '||' expression                                 # LogicalOrExpression
+    // | expression '?' expression ':' expression             # TernaryExpression
+    // | expression '=' expression                                  # AssignmentExpression
+    // | expression assignmentOperator expression                   # AssignmentOperatorExpression
+    // | expression templateStringLiteral                                 # TemplateStringExpression  // ECMAScript 6
     // | iteratorBlock                                                          # IteratorsExpression // ECMAScript 6
     // | generatorBlock                                                         # GeneratorsExpression // ECMAScript 6
     // | generatorFunctionDeclaration                                           # GeneratorsFunctionExpression // ECMAScript 6
@@ -1210,11 +1251,11 @@ singleExpression
     // | objectLiteral                                                          # ObjectLiteralExpression
     // | '(' expressionSequence ')'                                             # ParenthesizedExpression
     // | typeArguments expressionSequence?                                      # GenericTypes
-    // | singleExpression As asExpression                                       # CastAsExpression
+    // | expression As asExpression                                       # CastAsExpression
 
 asExpression
     : predefinedType ('[' ']')?
-    | singleExpression
+    | expression
     ;
 
 arrowFunctionDeclaration
@@ -1227,7 +1268,7 @@ arrowFunctionParameters
     ;
 
 arrowFunctionBody
-    : singleExpression
+    : expression
     | '{' functionBody '}'
     ;
 
@@ -1260,7 +1301,7 @@ templateStringLiteral
 
 templateStringAtom
     : TemplateStringAtom
-    | TemplateStringStartExpression singleExpression TemplateCloseBrace
+    | TemplateStringStartExpression expression TemplateCloseBrace
     ;
 
 numericLiteral

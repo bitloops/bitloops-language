@@ -39,12 +39,8 @@ src/parser/setup/grammar/*.tokens
 
 src/parser/core/grammar/BitloopsLexer.d.ts
 src/parser/core/grammar/BitloopsLexer.js
-src/parser/core/grammar/BitloopsLexerBase.d.ts
-src/parser/core/grammar/BitloopsLexerBase.js
 src/parser/core/grammar/BitloopsParser.d.ts
 src/parser/core/grammar/BitloopsParser.js
-src/parser/core/grammar/BitloopsParserBase.d.ts
-src/parser/core/grammar/BitloopsParserBase.js
 src/parser/core/grammar/BitloopsParserListener.d.ts
 src/parser/core/grammar/BitloopsParserListener.js
 src/parser/core/grammar/BitloopsParserVisitor.d.ts

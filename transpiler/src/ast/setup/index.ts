@@ -11,7 +11,8 @@ export class BitloopsIntermediateSetupASTParserError extends Error {}
 export class BitloopsIntermediateSetupASTParser implements IBitloopsIntermediateSetupASTParser {
   parse(ast: BitloopsLanguageSetupAST): ISetupData | BitloopsIntermediateSetupASTParserError {
     const bitloopsVisitor = new BitloopsSetupVisitor();
-    bitloopsVisitor.visit(ast);
-    return bitloopsVisitor.result;
+    const result = bitloopsVisitor.visit(ast);
+    // return bitloopsVisitor.result;
+    return result;
   }
 }
