@@ -2,7 +2,7 @@
 // import { readFromFile, writeToFile } from '../helpers/fileOperations.js';
 import chalk from 'chalk';
 import path from 'path';
-import { SetupTypeScript } from '../functions/modelToTargetLanguage/setup/index.js';
+import { SetupTypeScript } from '../functions/setup-to-target.js';
 import { readFromFile, writeToFile } from './fileOperations.js';
 import { ISetupData, TBoundedContexts } from '../types.js';
 // import { mockData } from './mockSetupData.js';

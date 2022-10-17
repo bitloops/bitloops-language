@@ -19,25 +19,30 @@
  */
 
 import inquirer, { QuestionCollection } from 'inquirer';
-import targz from 'tar.gz';
 import fs from 'fs';
 import path from 'path';
-import axios from 'axios';
 
-import {
-  getBitloopsModulesPreModelData,
-  getBoundedContextModules,
-  TGetUseCasesResponse,
-} from '../functions/bitloopsLanguageToModel/bitloopsFilesToString/index.js';
-import { parseBitloops } from '../functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
+// import {
+//   getBitloopsModulesPreModelData,
+//   getBoundedContextModules,
+//   TGetUseCasesResponse,
+// } from '../functions/bitloopsLanguageToModel/bitloopsFilesToString/index.js';
+// import { parseBitloops } from '../functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
 // import { parseBitloops as parseBitloopsSetup } from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupParser.js';
-import { modelToFinalLanguage } from '../functions/modelToTargetLanguage/model-to-final-language/index.js';
+// import { modelToFinalLanguage } from '../functions/modelToTargetLanguage/model-to-final-language/index.js';
 import { copyrightSnippet } from './copyright.js';
 import { generateSetupFiles } from '../helpers/setupFiles.js';
-import { createDirectory } from '../helpers/createDirectory.js';
-import { ISetupData, TBoundedContexts, TRepoAdapters, TSetupRepoAdapters } from '../types.js';
+// import { createDirectory } from '../helpers/createDirectory.js';
+import {
+  ISetupData,
+  TBoundedContextName,
+  TBoundedContexts,
+  TGetUseCasesResponse,
+  TModuleName,
+} from '../types.js';
 import { readFromFile } from '../helpers/fileOperations.js';
-import main from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupVisitor/main.js';
+import { getBitloopsModulesPreModelData, getBoundedContextModules } from '../functions/index.js';
+// import main from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupVisitor/main.js';
 // import { tmpdir } from 'os';
 
 interface ICollection {
@@ -45,7 +50,8 @@ interface ICollection {
   sourceDirPath: string;
   outputDirPath: string;
 }
-const VERSION = '0.0.13'; // TODO Get this dynamically
+// const VERSION = '0.0.13'; // TODO Get this dynamically
+const SETUP_FILE_EXTENSION = 'setup.bl';
 
 const questions: QuestionCollection<ICollection> = [
   {
@@ -73,24 +79,25 @@ const fetchSetupData = (sourceDirPath: string): ISetupData => {
   console.log('Fetching setup data...', sourceDirPath);
   // get controller data from model
   const content = readFromFile(`${sourceDirPath}/setup.bl`);
-  const setupData = main(content);
+  // const setupData = main(content);
   // console.log('Setup data fetched!', JSON.stringify(setupData));
-  return setupData;
+  // return setupData;
+  return content as ISetupData;
 };
 
-type BoundedContextModules = Record<string, string[]>[];
+type BoundedContextModules = Record<string, string[]>;
 
 const generateTargetFiles = (
   boundedContextModules: BoundedContextModules,
   sourceDirPath: string,
   outputDirPath: string,
 ): void => {
-  const setupData = fetchSetupData(sourceDirPath);
   const bitloopsModel: TBoundedContexts = {};
   console.log('Generating target files...');
-  for (const boundedContextModule of boundedContextModules) {
-    const boundedContextName = Object.keys(boundedContextModule)[0];
-    const modules = boundedContextModule[boundedContextName];
+  // TODO
+  for (const boundedContextName of Object.keys(boundedContextModules)) {
+    // const boundedContextName = Object.keys(boundedContextModule)[0];
+    const modules = boundedContextModules[boundedContextName];
     // console.log('modules', boundedContextModule, boundedContextName, modules);
     for (const moduleName of modules) {
       const modulePath = path.normalize(`${sourceDirPath}/${boundedContextName}/${moduleName}/`);
@@ -98,21 +105,30 @@ const generateTargetFiles = (
         miscFilesString: string;
         useCases: TGetUseCasesResponse;
       } = getBitloopsModulesPreModelData(modulePath);
-      const module = parseBitloops(
-        boundedContextName,
-        moduleName,
-        filesToString.useCases,
-        filesToString.miscFilesString,
-      );
+      console.log('filesToString', filesToString);
+      // const module = parseBitloops(
+      //   boundedContextName,
+      //   moduleName,
+      //   filesToString.useCases,
+      //   filesToString.miscFilesString,
+      // );
 
-      const bcName = Object.keys(module)[0];
-      const modName = Object.keys(module[boundedContextName])[0];
-      bitloopsModel[bcName] = { [modName]: module[bcName][modName] };
-      const context = { boundedContext: bcName, module: modName };
-      modelToFinalLanguage(bitloopsModel, outputDirPath, context, setupData);
+      // const bcName = Object.keys(module)[0];
+      // const modName = Object.keys(module[boundedContextName])[0];
+      // bitloopsModel[bcName] = { [modName]: module[bcName][modName] };
+      // const context = { boundedContext: bcName, module: modName };
+      // modelToFinalLanguage(bitloopsModel, outputDirPath, context, setupData);
     }
   }
-  generateSetupFiles(setupData, bitloopsModel, outputDirPath, sourceDirPath);
+};
+
+const generateBitloopsModel = (
+  boundedContextModules: BoundedContextModules,
+  sourceDirPath: string,
+  setupModel: ISetupData,
+): TBoundedContexts => {
+  const bitloopsModel: TBoundedContexts = {};
+  return bitloopsModel;
 };
 
 const transpile = async (source: ICollection): Promise<void> => {
@@ -128,19 +144,43 @@ const transpile = async (source: ICollection): Promise<void> => {
     ? outputDirPath
     : path.normalize(`${process.cwd()}/${outputDirPath}`);
 
-  const boundedContextModules = getBoundedContextModules(absoluteSourceDirPath);
+  const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
+    getBoundedContextModules(absoluteSourceDirPath);
 
-  if (Object.keys(boundedContextModules).length > 0) {
-    // await downloadFile(VERSION, outputDirPath, 'TypeScript');
-    clearFolder(outputDirPath);
-    // await ungunzip(`${outputDirPath}/bitloopsTmp-v${VERSION}.tar.gz`, absoluteOutputDirPath);
-    // await moveBoilerplate(absoluteOutputDirPath, VERSION);
-    generateTargetFiles(
-      boundedContextModules,
-      absoluteSourceDirPath,
-      absoluteOutputDirPath + '/bitloops',
-    );
+  const dirEntries = fs.readdirSync(absoluteSourceDirPath, { withFileTypes: true });
+  const filesNames = dirEntries.filter((entry) => entry.isFile()).map((fileName) => fileName.name);
+  const atLeastOneSetupFileExists = filesNames.some((file) =>
+    file.toLowerCase().endsWith(SETUP_FILE_EXTENSION),
+  );
+  const atLeastOneModuleExists = Object.values(boundedContextModules).some(
+    (modules) => modules.length > 0,
+  );
+  // TODO Gather all errors and display them at once
+  if (!atLeastOneSetupFileExists) {
+    console.log('No setup file found. Please create a setup file in the root of your project.');
+    process.exit(1);
   }
+  if (!atLeastOneModuleExists) {
+    console.log('No modules found. Please create a module inside one of your bounded contexts.');
+    process.exit(1);
+  }
+
+  // TODO Check if the output directory exists and if it does, ask if the user wants to overwrite it
+  clearFolder(outputDirPath);
+
+  const setupData = fetchSetupData(sourceDirPath);
+  const bitloopsModel = generateBitloopsModel(
+    boundedContextModules,
+    absoluteSourceDirPath,
+    setupData,
+  );
+
+  generateSetupFiles(setupData, bitloopsModel, outputDirPath, sourceDirPath);
+  generateTargetFiles(
+    boundedContextModules,
+    absoluteSourceDirPath,
+    absoluteOutputDirPath + '/bitloops',
+  );
 };
 
 // (*) Gather BoundedContexts and Modules
