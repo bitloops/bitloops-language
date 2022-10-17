@@ -17,8 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import prettier from 'prettier';
-import { SupportedLanguages } from '../../../helpers/supportedLanguages.js';
 import {
   TBitloopsTargetContent,
   TBitloopsTargetGeneratorParams,
@@ -29,6 +27,7 @@ import {
 import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError.js';
 import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
+import { formatString } from './codeFormatting.js';
 
 interface IBitloopsIntermediateASTToTarget {
   ASTToTarget(
@@ -45,17 +44,14 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     params: TBitloopsTargetGeneratorParams,
   ): TBitloopsTargetContent | BitloopsTargetGeneratorError {
     const { intermediateAST, setupData, targetLanguage } = params;
-    const result = {};
+    const result = [];
     for (const boundedContextName of Object.keys(intermediateAST)) {
-      result[boundedContextName] = {};
       for (const moduleName of Object.keys(intermediateAST[boundedContextName])) {
-        result[boundedContextName][moduleName] = {};
         const contextData: TContextData = {
           boundedContext: boundedContextName,
           module: moduleName,
         };
         for (const classType of Object.keys(intermediateAST[boundedContextName][moduleName])) {
-          result[boundedContextName][moduleName][classType] = {};
           const componentType = this.getComponentType(classType as TClassType);
           for (const [componentName, component] of Object.entries(
             intermediateAST[boundedContextName][moduleName][classType],
@@ -70,7 +66,13 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
                 model: intermediateAST,
               });
 
-              result[boundedContextName][moduleName][classType][componentName] = generatedString;
+              result.push({
+                boundedContext: boundedContextName,
+                module: moduleName,
+                classType: classType,
+                className: componentName,
+                fileContent: generatedString,
+              });
             } catch (error) {
               return new BitloopsTargetGeneratorError(error.message);
             }
@@ -81,29 +83,18 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     return result;
   }
 
-  formatCode(
-    targetContent: TBitloopsTargetContent,
-    language: string,
-    config?: any,
-  ): TBitloopsTargetContent {
-    const defaultFormatterConfig = { semi: true, parser: 'typescript', singleQuote: true };
-    const formatterConfig = config ?? defaultFormatterConfig;
-    const langMapping = {
-      [SupportedLanguages.TypeScript]: (code: string): string => {
-        return prettier.format(code, formatterConfig);
-      },
-    };
-    const fomattedCode: TBitloopsTargetContent = {};
-    for (const [boundedContextName, boundedContext] of Object.entries(targetContent)) {
-      for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classType, components] of Object.entries(module)) {
-          for (const [componentName, generatedContent] of Object.entries(components)) {
-            fomattedCode[boundedContextName][moduleName][classType][componentName] = langMapping[
-              language
-            ](generatedContent.content);
-          }
-        }
-      }
+  formatCode(targetContent: TBitloopsTargetContent, config?: any): TBitloopsTargetContent {
+    const fomattedCode: TBitloopsTargetContent = [];
+    for (const { boundedContext, classType, module, className, fileContent } of targetContent) {
+      const formattedContent = formatString(fileContent, config);
+
+      fomattedCode.push({
+        boundedContext,
+        module,
+        classType,
+        className,
+        fileContent: formattedContent,
+      });
     }
     return fomattedCode;
   }

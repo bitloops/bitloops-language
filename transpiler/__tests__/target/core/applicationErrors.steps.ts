@@ -18,40 +18,57 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { BitloopsTargetGenerator } from '../../../src/target/index.js';
+import { formatString } from '../../../src/target/typescript/core/codeFormatting.js';
 
 const feature = loadFeature('__tests__/target/core/applicationErrors.feature');
 
 defineFeature(feature, (test) => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const classType = 'ApplicationErrors';
+  const formatterConfig = null;
   let language;
-  let applicationErrorsType;
   let result;
-  let value;
+  let intermediateAST;
 
-  test('ApplicationErrors with messages', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      applicationErrorsType = type;
-    });
-
-    and(/^language is "(.*)"$/, (lang) => {
+  test('ApplicationErrors with messages', ({ given, when, then }) => {
+    given(/^language is "(.*)"$/, (lang) => {
       language = lang;
     });
 
     given(/^I have ApplicationErrors (.*)$/, (applicationErrors) => {
-      value = applicationErrors;
+      intermediateAST = {
+        [boundedContext]: { [module]: { [classType]: JSON.parse(applicationErrors) } },
+      };
     });
 
     when('I generate the code', () => {
-      const applicationErrorsValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: applicationErrorsType,
-        value: applicationErrorsValue,
+      const targetGenerator = new BitloopsTargetGenerator();
+      result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
         targetLanguage: language,
+        setupData: null,
       });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result).toEqual(output);
+      const formattedOutput = formatString(output, formatterConfig);
+      const expectedOutput = [
+        {
+          boundedContext,
+          className: 'InvalidName', //TODO get from feature params
+          module,
+          classType,
+          fileContent: formattedOutput,
+        },
+      ];
+
+      console.log({ result });
+      console.log({ expectedOutput });
+
+      expect(result).toEqual(expectedOutput);
     });
   });
 });

@@ -37,7 +37,6 @@ export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
     else {
       const formattedTargetContent = bitloopsTargetGenerator.formatCode(
         targetContent,
-        params.targetLanguage,
         params.formatterConfig,
       );
       return formattedTargetContent;

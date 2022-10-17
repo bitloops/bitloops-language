@@ -94,16 +94,12 @@ export type TASTCoreInputData = {
 export type TContextData = { boundedContext: string; module: string };
 
 export type TBitloopsTargetContent = {
-  [boundedContext: TBoundedContextName]: {
-    [module: TModuleName]: {
-      [classType in TClassType]: {
-        [className: TClassName]: {
-          content: string;
-        };
-      };
-    };
-  };
-};
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  classType: TClassType;
+  className: TClassName;
+  fileContent: string;
+}[];
 
 export type TBitloopsTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
