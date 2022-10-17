@@ -20,11 +20,14 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { decode, d } from 'bitloops-gherkin';
 
-import main from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsVisitor/main.js';
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/expression.feature',
-);
+const feature = loadFeature('__tests__/ast/core/expression.feature');
 
 defineFeature(feature, (test) => {
   test('Expression is valid', ({ given, when, then }) => {
@@ -37,7 +40,21 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      result = main(blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: 'Test',
+          module: 'Test',
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get (.*)$/, (arg0) => {
