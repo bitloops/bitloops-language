@@ -17,6 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
+export type TGetUseCasesResponse = Record<string, { filesString: string }>;
+export type TBoundedContextName = string;
+export type TModuleName = string;
+
 export type TModule = {
   Props?: TProps;
   Controllers?: TRESTController | TGraphQLController;
@@ -42,10 +47,8 @@ export type TBitloopsClasses =
   | TDTO
   | TStructs;
 
-type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, TModule>;
 
-type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export type TVariables = TVariable[];
@@ -115,7 +118,7 @@ export const bitloopsPrimitives = [
 ] as const;
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
-type TUserDefinedClass = string;
+export type TUserDefinedClass = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedClass;
 

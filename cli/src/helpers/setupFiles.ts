@@ -2,7 +2,7 @@
 // import { readFromFile, writeToFile } from '../helpers/fileOperations.js';
 import chalk from 'chalk';
 import path from 'path';
-import { SetupTypeScript } from '../functions/modelToTargetLanguage/setup/index.js';
+import { SetupTypeScript } from '../functions/setup-to-target.js';
 import { readFromFile, writeToFile } from './fileOperations.js';
 import { ISetupData, TBoundedContexts } from '../types.js';
 // import { mockData } from './mockSetupData.js';
@@ -91,8 +91,8 @@ export const generateSetupFiles = (
   const packageJSONTemplate = JSON.parse(readFromFile(packageJSONFilePath));
   const packageJSON = {
     ...packageJSONTemplate,
-    dependencies: setup.getNodeDependencies(),
-    devDependencies: setup.getNodeDevDependencies(),
+    // dependencies: setup.getNodeDependencies(),
+    // devDependencies: setup.getNodeDevDependencies(),
   };
   writeToFile(JSON.stringify(packageJSON, null, 2), packageJSONFilePath);
   console.log('package.json written successfully!');

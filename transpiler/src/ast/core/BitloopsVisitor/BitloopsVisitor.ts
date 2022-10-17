@@ -1,3 +1,23 @@
+/**
+ *  Bitloops Language CLI
+ *  Copyright (C) 2022 Bitloops S.A.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  For further information you can contact legal(at)bitloops.com.
+ */
+
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
 import { TBoundedContexts } from '../../../types.js';
@@ -8,6 +28,15 @@ import {
   regularStringEvaluation,
 } from '../bitloopsParserHelpers/index.js';
 import { BitloopsIntermediateASTParserError } from '../index.js';
+
+import {
+  functionBodyVisitor,
+  jestTestDeclarationVisitor,
+  argumentListVisitor,
+  argumentVisitor,
+  regularVariableEvaluationORliteralORexpressionVisitor,
+  // regularVariableEvaluationORliteralORexpressionVisitor,
+} from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -189,6 +218,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
     // console.log('RegularEvaluation');
     const regularEvaluation: string = this.visitChildren(ctx)[0];
+    console.log('REGULAR EVALUATION:', regularEvaluation);
     const returnObject = {
       regularEvaluation: regularEvaluation,
     };
@@ -288,7 +318,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
         statementList.splice(i, 1);
       }
     }
-    return statementList;
+    const returnObject = {
+      statements: statementList,
+    };
+    return returnObject;
   }
 
   visitBlock(ctx: BitloopsParser.BlockContext) {
@@ -403,5 +436,27 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitBreakStatement() {
     // console.log('BreakStatement');
+  }
+
+  visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {
+    return functionBodyVisitor(this, ctx);
+  }
+
+  visitJestTestDeclaration(ctx: BitloopsParser.JestTestDeclarationContext) {
+    return jestTestDeclarationVisitor(this, ctx);
+  }
+
+  visitArgumentList(ctx: BitloopsParser.ArgumentListContext) {
+    return argumentListVisitor(this, ctx);
+  }
+
+  visitRegularVariableEvaluationORliteralORexpression(
+    ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
+  ) {
+    return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
+  }
+
+  visitArgument(ctx: BitloopsParser.ArgumentContext) {
+    return argumentVisitor(this, ctx);
   }
 }
