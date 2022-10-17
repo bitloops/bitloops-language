@@ -69,4 +69,38 @@ const getBitloopsModulesPreModelData = (
   };
 };
 
-export { getBoundedContextModules, getBitloopsModulesPreModelData };
+type BoundedContextModules = Record<string, string[]>;
+
+type InputFileInfo = {
+  boundedContext: string;
+  module: string;
+  fileId: string;
+  fileContents: string;
+};
+
+const getBitloopsFilesAndContents = (
+  boundedContextModules: BoundedContextModules,
+  sourceDirPath: string,
+): InputFileInfo[] => {
+  const result: InputFileInfo[] = [];
+  for (const [boundedContextName, modules] of Object.entries(boundedContextModules)) {
+    for (const moduleName of modules) {
+      const modulePath = path.normalize(`${sourceDirPath}/${boundedContextName}/${moduleName}/`);
+      const contextFilePaths = getRecursivelyFileInDirectory(modulePath, BL_SUFFIX);
+      // TODO async read file with Promise.all
+      for (const contextFilePath of contextFilePaths) {
+        const fileContents = fs.readFileSync(contextFilePath, 'utf-8');
+        const fileId = contextFilePath.split('/').pop();
+        result.push({
+          boundedContext: boundedContextName,
+          module: moduleName,
+          fileId,
+          fileContents,
+        });
+      }
+    }
+  }
+  return result;
+};
+
+export { getBoundedContextModules, getBitloopsModulesPreModelData, getBitloopsFilesAndContents };

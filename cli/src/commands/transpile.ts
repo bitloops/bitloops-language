@@ -41,13 +41,23 @@ import {
   TModuleName,
 } from '../types.js';
 import { readFromFile } from '../helpers/fileOperations.js';
-import { getBitloopsModulesPreModelData, getBoundedContextModules } from '../functions/index.js';
+import {
+  getBitloopsFilesAndContents,
+  getBitloopsModulesPreModelData,
+  getBoundedContextModules,
+} from '../functions/index.js';
 import {
   BitloopsIntermediateSetupASTParser,
   BitloopsLanguageSetupAST,
   BitloopsSetupParser,
   BitloopsSetupParserError,
 } from '../functions/setup/index.js';
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../functions/core/index.js';
 // import main from '../functions/bitloopsLanguageToModel/bitloops-parser/setup/BitloopsSetupVisitor/main.js';
 
 interface ICollection {
@@ -140,29 +150,27 @@ const generateTargetFiles = (
 };
 
 const generateBitloopsModel = (
-  _boundedContextModules: BoundedContextModules,
-  _sourceDirPath: string,
+  boundedContextModules: BoundedContextModules,
+  sourceDirPath: string,
   _setupModel: ISetupData,
 ): TBoundedContexts => {
-  const bitloopsModel: TBoundedContexts = {};
-  // const parser = new BitloopsParser();
+  const parser = new BitloopsParser();
   // For each file in each module in each bounded context
   // Create the array
-  // const initialModelOutput = parser.parse([
-  //   {
-  //     boundedContext: 'Test',
-  //     module: 'Test',
-  //     fileId: 'testFile.bl',
-  //     fileContents: blString,
-  //   },
-  // ]);
-  // const intermediateParser = new BitloopsIntermediateASTParser();
-  // if (!(initialModelOutput instanceof BitloopsParserError)) {
-  //   const result = intermediateParser.parse(
-  //     initialModelOutput as unknown as BitloopsLanguageASTContext,
-  //   );
-  // }
-  return bitloopsModel;
+  const inputFileContents = getBitloopsFilesAndContents(boundedContextModules, sourceDirPath);
+  const initialModelOutput = parser.parse(inputFileContents);
+  const intermediateParser = new BitloopsIntermediateASTParser();
+  if (!(initialModelOutput instanceof BitloopsParserError)) {
+    const result = intermediateParser.parse(
+      initialModelOutput as unknown as BitloopsLanguageASTContext,
+    );
+    if (result instanceof BitloopsParserError) {
+      console.log(result);
+      throw new Error('Error parsing setup file');
+    }
+    return result as TBoundedContexts;
+  }
+  throw new Error('Error parsing setup file');
 };
 
 const transpile = async (source: ICollection): Promise<void> => {
