@@ -29,7 +29,13 @@ import {
 } from '../bitloopsParserHelpers/index.js';
 import { BitloopsIntermediateASTParserError } from '../index.js';
 
-import { functionBodyVisitor } from './helpers/index.js';
+import {
+  functionBodyVisitor,
+  jestTestDeclarationVisitor,
+  argumentListVisitor,
+  argumentVisitor,
+  // regularVariableEvaluationORliteralORexpressionVisitor,
+} from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -211,6 +217,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
     // console.log('RegularEvaluation');
     const regularEvaluation: string = this.visitChildren(ctx)[0];
+    console.log('REGULAR EVALUATION:', regularEvaluation);
     const returnObject = {
       regularEvaluation: regularEvaluation,
     };
@@ -310,7 +317,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
         statementList.splice(i, 1);
       }
     }
-    return statementList;
+    const returnObject = {
+      statements: statementList,
+    };
+    return returnObject;
   }
 
   visitBlock(ctx: BitloopsParser.BlockContext) {
@@ -429,5 +439,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {
     return functionBodyVisitor(this, ctx);
+  }
+
+  visitJestTestDeclaration(ctx: BitloopsParser.JestTestDeclarationContext) {
+    return jestTestDeclarationVisitor(this, ctx);
+  }
+
+  visitArgumentList(ctx: BitloopsParser.ArgumentListContext) {
+    return argumentListVisitor(this, ctx);
+  }
+
+  // visitRegularVariableEvaluationORliteralORexpression(
+  //   ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
+  // ) {
+  //   return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
+  // }
+
+  visitArgument(ctx: BitloopsParser.ArgumentContext) {
+    return argumentVisitor(this, ctx);
   }
 }
