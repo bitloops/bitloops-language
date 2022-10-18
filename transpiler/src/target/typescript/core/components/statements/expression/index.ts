@@ -24,7 +24,7 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const expressionToTargetLanguage = (variable: TExpression, targetLanguage: string): string => {
   if (!variable || !variable.expression) {
-    throw new Error(`Unsupported expression: ${variable}`);
+    throw new Error(`Unsupported expression: ${variable.expression}`);
   }
   const { expression } = variable;
   return modelToTargetLanguage({

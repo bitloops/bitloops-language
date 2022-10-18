@@ -55,7 +55,7 @@ const useCaseValuesToTargetLanguage = (
       let result = `type ${responseTypeName} = ${returnTypesResult};`;
       const responseType = `Promise<${responseTypeName}>`;
       result += `export class ${useCaseName} implements UseCase<${
-        inputType ? inputType : 'Void'
+        inputType ? inputType : 'void'
       }, ${responseType}> {`;
       if (!isDependenciesEmpty(dependencies))
         result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {}; `;

@@ -37,20 +37,36 @@ const getServerImports = (serverType: string): string => {
   return result;
 };
 
+const getServerExtends = (serverType: string): string => {
+  let result = '';
+  switch (serverType) {
+    case 'REST.Fastify':
+      result += 'BaseFastifyController';
+      break;
+    case 'REST.Express':
+      throw new Error('Server type not supported');
+    default:
+      throw new Error('Server type not supported');
+  }
+  return result;
+};
+
 const restControllersToTargetLanguage = (
   controllers: TRESTController,
   targetLanguage: string,
   contextData: { boundedContext: string; module: string },
   controllersSetupData: TControllers,
 ): string => {
-  // console.log('controllersSetupData', controllersSetupData);
   const { boundedContext, module } = contextData;
 
   const initialObjectValuesLangMapping = {
-    [SupportedLanguages.TypeScript]: (controllerName: string, serverImports: string) =>
+    [SupportedLanguages.TypeScript]: (
+      controllerName: string,
+      serverImports: string,
+      extendsClass: string,
+    ) =>
       // TODO get framework info (fastify) from config?
-      `${serverImports}
-export class ${controllerName} extends { `,
+      `${serverImports} export class ${controllerName} extends ${extendsClass}{ `,
   };
   // TODO for all controllers
   const controllerName = Object.keys(controllers)[0];
@@ -60,8 +76,13 @@ export class ${controllerName} extends { `,
   }
   const { serverType } = controllerDefinition;
   const serverImports = getServerImports(serverType);
+  const extendsClass = getServerExtends(serverType);
 
-  let result = initialObjectValuesLangMapping[targetLanguage](controllerName, serverImports);
+  let result = initialObjectValuesLangMapping[targetLanguage](
+    controllerName,
+    serverImports,
+    extendsClass,
+  );
   const controller = controllers[controllerName];
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');

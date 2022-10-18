@@ -29,7 +29,7 @@ const regularSwitchCaseToTargetLanguage = (
   targetLanguage: string,
 ): string => {
   if (!variable.caseValue) {
-    throw new Error(`Invalid regular case: ${variable}`);
+    throw new Error(`Invalid regular case: ${JSON.stringify(variable)}`);
   }
   const { statements, caseValue } = variable;
 
@@ -42,7 +42,7 @@ const regularSwitchCaseToTargetLanguage = (
   const regularCaseLangMapping: Record<string, (expression: string, statements: string) => string> =
     {
       [SupportedLanguages.TypeScript]: (caseExpression: string, statements: string) => {
-        return `case ${caseExpression}: {${statements} break;}`;
+        return `case ${caseExpression}: {${statements}}`;
       },
     };
   return regularCaseLangMapping[targetLanguage](caseValue, statementsString);
@@ -66,7 +66,7 @@ const defaultSwitchCaseToTargetLanguage = (
 
   const defaultCaseLangMapping: Record<string, (statements: string) => string> = {
     [SupportedLanguages.TypeScript]: (statements: string) => {
-      return `default: {${statements} break;}`;
+      return `default: {${statements}}`;
     },
   };
   return defaultCaseLangMapping[targetLanguage](statementsString);

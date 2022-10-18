@@ -535,10 +535,6 @@ export type TRegularCase = {
   statements: TStatements;
 };
 
-// export type TCaseValue = {
-//   value: string;
-// };
-
 export type TSwitchStatement = {
   switchStatement: {
     cases: TRegularCase[];
@@ -591,9 +587,9 @@ export interface ISetupData {
   controllers?: TControllers;
   useCases?: TUseCases;
   useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  setup: TSetupInfo;
+  setup?: TSetupInfo;
   packages?: TPackagesSetup;
-  repos: TReposSetup;
+  repos?: TReposSetup;
 }
 
 export type TUseCases = {

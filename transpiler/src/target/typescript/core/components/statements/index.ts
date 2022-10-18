@@ -45,12 +45,11 @@ const statementToTargetLanguage = (variable: TStatement, targetLanguage: string)
       targetLanguage,
     });
   }
-
   const variableKeys = Object.keys(variable);
   const type = variableKeys[0];
 
   if (!keysToTypeMapping[type]) {
-    throw new Error('Unsupported statement:' + variable);
+    throw new Error('Unsupported statement: ' + type);
   }
 
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable, targetLanguage });

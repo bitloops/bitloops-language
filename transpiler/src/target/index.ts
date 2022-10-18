@@ -28,9 +28,7 @@ import { BitloopsIntermediateASTToTarget } from './typescript/core/index.js';
 import { generateSetupFiles } from './typescript/setup/index.js';
 
 export interface IBitloopsTargetGenerator {
-  generate: (
-    params: TBitloopsTargetGeneratorParams,
-  ) => TBitloopsTargetContent | BitloopsTargetGeneratorError;
+  generate: (params: TBitloopsTargetGeneratorParams) => TBitloopsTargetContent;
 
   generateSetup: (
     params: TBitloopsTargetGeneratorParams,
@@ -38,12 +36,10 @@ export interface IBitloopsTargetGenerator {
 }
 
 export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
-  generate(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsTargetContent | BitloopsTargetGeneratorError {
+  generate(params: TBitloopsTargetGeneratorParams): TBitloopsTargetContent {
     const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
     const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
-    if (targetContent instanceof BitloopsTargetGeneratorError) return targetContent;
+    if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
     else {
       const formattedTargetContent = bitloopsTargetGenerator.formatCode(
         targetContent,
