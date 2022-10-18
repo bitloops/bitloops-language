@@ -1,3 +1,5 @@
+# Reporting Security Issues
+
 Bitloops considers security a top priority and places significant effort in ensuring our system is as secure as possible. However, there can still be some vulnerabilities. 
 
 If you discover a vulnerability, please contact us directly on: security@bitloops.com and we will address it as quickly as possible. Your contribution can definitely help us better protect our Users and our system. 
