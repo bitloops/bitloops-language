@@ -18,20 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-
-export const methodArgumentsVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
+export const decimalEvaluation = (value: any): any => {
+  const decimalPart = value.split('.')[1].length;
+  // const decimalValue = Number(value);
+  if (decimalPart <= 7) {
+    return {
+      type: 'float',
+      value: value,
+    };
+  } else {
+    return {
+      type: 'double',
+      value: value,
+    };
   }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
 };

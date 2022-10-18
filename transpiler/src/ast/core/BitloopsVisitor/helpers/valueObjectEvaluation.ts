@@ -20,18 +20,18 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TValueObjectEvaluation } from '../../../../types.js';
 
-export const methodArgumentsVisitor = (
+export const valueObjectEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+  ctx: BitloopsParser.ValueObjectEvaluationContext,
+): TValueObjectEvaluation => {
+  const identifier = ctx.valueObjectIdentifier().getText();
+  const props = thisVisitor.visit(ctx.domainEvaluationInput());
+  return {
+    valueObject: {
+      props,
+      name: identifier,
+    },
+  } as any;
 };

@@ -20,18 +20,21 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TEvaluationFields } from '../../../../types.js';
 
-export const methodArgumentsVisitor = (
+// export type TEvaluationFields = ({ name: string } & TExpression)[];
+export const evaluationFieldListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+  ctx: BitloopsParser.EvaluationFieldListContext,
+): TEvaluationFields => {
+  const evaluationFieldsAndCommas = thisVisitor.visitChildren(ctx);
+  //   console.log('evaluationFieldsAndCommas', evaluationFieldsAndCommas);
+  const evaluationFields = evaluationFieldsAndCommas.filter(
+    (evaluationFieldOrComma) => evaluationFieldOrComma !== undefined,
+  );
+  return evaluationFields as TEvaluationFields;
+
+  //   if (ctx.statementList()) {
+  //     return thisVisitor.visit(ctx.statementList());
+  //   } else return null;
 };

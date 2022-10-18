@@ -856,8 +856,8 @@ valueObjectEvaluation
     ;
 
 domainEvaluationInput
-    : '(' '{' evaluationFieldList '}' ')'
-    | '(' regularEvaluation ')'
+    : '(' '{' evaluationFieldList '}' ')'   # DomainEvaluationInputFieldList
+    | '(' regularEvaluation ')'             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -1287,12 +1287,12 @@ assignmentOperator
     ;
 
 literal
-    : NullLiteral
-    | BooleanLiteral
-    | StringLiteral
-    | templateStringLiteral
-    | RegularExpressionLiteral
-    | numericLiteral
+    : NullLiteral               # NullLiteral
+    | BooleanLiteral            # BooleanLiteral
+    | StringLiteral             # StringLiteral
+    | templateStringLiteral     # TemplateStringLiteralLabel
+    | RegularExpressionLiteral  # RegularExpressionLiteral
+    | numericLiteral            # NumericLiteralLabel
     ;
 
 templateStringLiteral
@@ -1307,10 +1307,10 @@ templateStringAtom
 numericLiteral
     : IntegerLiteral        #IntegerLiteral
     | DecimalLiteral        #DecimalLiteral
-    | HexIntegerLiteral     #HexIntegerLiteral
-    | OctalIntegerLiteral   #OctalIntegerLiteral
-    | OctalIntegerLiteral2  #OctalIntegerLiteral2
-    | BinaryIntegerLiteral  #BinaryIntegerLiteral
+    // | HexIntegerLiteral     #HexIntegerLiteral
+    // | OctalIntegerLiteral   #OctalIntegerLiteral
+    // | OctalIntegerLiteral2  #OctalIntegerLiteral2
+    // | BinaryIntegerLiteral  #BinaryIntegerLiteral
     ;
 
 

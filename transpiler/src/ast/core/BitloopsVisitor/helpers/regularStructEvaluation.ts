@@ -20,18 +20,15 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-
-export const methodArgumentsVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+import { TParam } from '../../../../types.js';
+// export type TEvaluationFields = ({ name: string } & TExpression);
+export const regularStructEvaluationVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.RegularStructEvaluationContext,
+): { type: TParam; value: string } => {
+  const identifier = ctx.UpperCaseIdentifier().getText();
+  return {
+    type: 'struct',
+    value: identifier,
+  };
 };

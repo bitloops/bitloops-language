@@ -17,21 +17,20 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+const BOOL_STRING = 'bool';
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-
-export const methodArgumentsVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
+export const booleanEvaluation = (value: any): any => {
+  const booleanValue = value;
+  if (booleanValue === 'true') {
+    return {
+      type: BOOL_STRING,
+      value: value,
+    };
+  } else if (booleanValue === 'false') {
+    return {
+      type: BOOL_STRING,
+      value: value,
+    };
   }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+  throw new Error(`Boolean value not recognized: ${value}`);
 };

@@ -19,19 +19,16 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { TParameterDependency } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const methodArgumentsVisitor = (
+export const formalParameterListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+  ctx: BitloopsParser.FormalParameterListContext,
+): TParameterDependency[] => {
+  const parameterFieldAndCommas = thisVisitor.visitChildren(ctx);
+  const parameterField = parameterFieldAndCommas.filter(
+    (parameterField) => parameterField !== undefined,
+  );
+  return parameterField as TParameterDependency[];
 };

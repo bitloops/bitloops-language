@@ -17,21 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-
-export const methodArgumentsVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
+export const integerEvaluation = (value: any): any => {
+  const numericValue = Number(value);
+  if (numericValue >= -2147483648 && numericValue <= 2147483647) {
+    return { type: 'int32', value: value };
+  } else if (numericValue >= -9223372036854775808 && numericValue <= 9223372036854775807n) {
+    return { type: 'int64', value: value };
+  } else {
+    throw new Error(`Integer out of range: ${value}`);
   }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
 };
