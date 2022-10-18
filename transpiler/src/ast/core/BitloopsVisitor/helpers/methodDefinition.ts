@@ -21,11 +21,21 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const functionBodyVisitor = (
+import { TDefinitionMethodInfo } from '../../../../types.js';
+
+export const methodDefinitionVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.MethodDefinitionContext,
+): { methodName: string; methodInfo: TDefinitionMethodInfo } => {
+  const identifier = ctx.identifier().getText();
+  const type = thisVisitor.visit(ctx.typeAnnotation());
+  let parameterDependencies = [];
+  if (ctx.formalParameterList()) {
+    parameterDependencies = thisVisitor.visit(ctx.formalParameterList());
+  }
+  const methodInfo: TDefinitionMethodInfo = {
+    parameterDependencies,
+    returnType: type,
+  };
+  return { methodName: identifier, methodInfo };
 };

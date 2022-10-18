@@ -124,6 +124,8 @@ const REQUIRED_NODE_DEV_DEPENDENCIES = {
   typescript: '^4.7.4',
 };
 
+const esmEnabled = false;
+
 export class SetupTypeScript implements ISetup {
   private nodeDependencies: TNodePackages;
   private nodeDevDependencies: TNodePackages;
@@ -160,7 +162,7 @@ export class SetupTypeScript implements ISetup {
         // console.log('module', module);
         const diFileName = `./src/bounded-contexts/${kebabCase(boundedContextName)}/${kebabCase(
           moduleName,
-        )}/DI.ts`;
+        )}/DI${esmEnabled ? '.js' : ''}`;
         let diContent = '';
         // Gather all imports
         if (repos) {
@@ -208,7 +210,9 @@ export class SetupTypeScript implements ISetup {
       // console.log('useCase', useCase);
       // Gather all use case imports
       const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCases, useCaseName);
-      result += `import { ${useCaseName} } from './${path}${filename}';\n`;
+      result += `import { ${useCaseName} } from './${path}${filename}${
+        esmEnabled ? '.js' : ''
+      }';\n`;
     }
     return result;
   }
@@ -220,7 +224,9 @@ export class SetupTypeScript implements ISetup {
         ClassTypes.Controllers,
         controllerName,
       );
-      result += `import { ${controllerName} } from './${path}${filename}';\n`;
+      result += `import { ${controllerName} } from './${path}${filename}${
+        esmEnabled ? '.js' : ''
+      }';\n`;
     }
     return result;
   }
@@ -437,11 +443,11 @@ export class SetupTypeScript implements ISetup {
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify':
         serverPath = 'rest/fastify';
-        imports = "import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';";
+        imports = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
         routes = Object.keys(routesData)
           .map((routerInstanceName) => {
             const methodURLMap = routesData[routerInstanceName as TRouterInstanceName].methodURLMap;
-            let routerDefinition = `const ${routerInstanceName} = async (fastify: FastifyInstance) => {`;
+            let routerDefinition = `const ${routerInstanceName} = async (fastify: Fastify.Instance) => {`;
             Object.keys(methodURLMap).map((methodAndPath: TMethodAndPath) => {
               const [method, path] = methodAndPath.split(' ');
               const { boundedContext, controllerClass, module } = methodURLMap[methodAndPath];
@@ -458,11 +464,11 @@ export class SetupTypeScript implements ISetup {
                   controllerImports.push(
                     `import { ${controllerInstanceName} } from '../../../../../bounded-contexts/${kebabCase(
                       boundedContext,
-                    )}/${kebabCase(module)}/DI';`,
+                    )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';`,
                   );
                 }
               }
-              routerDefinition += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: FastifyRequest, reply: FastifyReply) => {`;
+              routerDefinition += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
               routerDefinition += `\n    return ${controllerInstanceName}.execute(request, reply);`;
               routerDefinition += '\n  });';
             });
@@ -520,9 +526,9 @@ export {${exports}};\n`;
         serverPath = 'rest/express';
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify':
-        importType = "import { FastifyInstance } from 'fastify';";
+        importType = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
         serverPath = 'rest/fastify';
-        routerInstanceType = 'FastifyInstance';
+        routerInstanceType = 'Fastify.Instance';
         // for (const routerInstanceName in routers) {
         //   const routerPrefix = routers[routerInstanceName].routerPrefix;
         // }
@@ -579,17 +585,13 @@ export { routers };
     switch (serverType as TServerType) {
       case 'REST.Express':
         serverPath = 'rest/express';
-        this.nodeDependencies['express'] = '^4.18.1';
-        this.nodeDevDependencies['@types/express'] = '^4.17.14';
+        // this.nodeDependencies['express'] = '^4.18.1';
+        // this.nodeDevDependencies['@types/express'] = '^4.17.14';
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify': {
         serverPath = 'rest/fastify';
-        this.nodeDependencies['fastify'] = '^3.0.0';
-        this.nodeDependencies['@fastify/cors'] = '^7';
-        this.nodeDependencies['@fastify/formbody'] = '^6.0.0';
-        body = `import Fastify from 'fastify';
-import formBodyPlugin from '@fastify/formbody';
-import fastifyCors from '@fastify/cors';
+        this.nodeDependencies['@bitloops/bl-boilerplate-infra-rest-fastify'] = '^0.0.2';
+        body = `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { routers } from './api';
 
 const corsOptions = {
@@ -599,8 +601,8 @@ const corsOptions = {
 const fastify = Fastify({
   logger: true,
 });
-fastify.register(fastifyCors, corsOptions);
-fastify.register(formBodyPlugin);
+fastify.register(Fastify.cors, corsOptions);
+fastify.register(Fastify.formBody);
 fastify.register(routers, {
   prefix: ${serverPrefix},
 });
@@ -621,13 +623,12 @@ start();
       }
       case 'GraphQL': {
         serverPath = 'graphql';
-
         if (!isGraphQLServerInstance(data)) {
           throw new Error(
             'Server instance must be of type GraphQLServerInstance for server type GraphQL',
           );
         }
-        body += "import { ApolloServer, gql } from 'apollo-server';\n";
+        body += "import { GraphQL } from '@bitloops/bl-boilerplate-infra-graphql';\n";
         body += this.generateGraphQLServer(data, bitloopsModel, portStatement);
         break;
       }
@@ -700,8 +701,7 @@ start();
   ): string {
     const { resolvers } = data;
     const serverName = 'server';
-    this.nodeDependencies['apollo-server'] = '^3.10.2';
-    this.nodeDependencies['graphql'] = '^16.6.0';
+    this.nodeDependencies['@bitloops/bl-boilerplate-infra-graphql'] = '^0.0.1';
     const setupData: TGraphQLSetupData = {
       servers: [{ type: 'GraphQL', port: portStatement, name: serverName }],
       resolvers: [],
@@ -726,7 +726,7 @@ start();
 
       importsString += `import { ${controllerInstance} } from '../../../bounded-contexts/${kebabCase(
         boundedContext,
-      )}/${kebabCase(module)}/DI';\n`;
+      )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';\n`;
 
       // const dtos = bitloopsModel[boundedContext][module].DTOs;
       // TODO Check what happens here for same name DTOs from different modules/bounded contexts

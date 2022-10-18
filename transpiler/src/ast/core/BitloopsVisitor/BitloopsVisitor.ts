@@ -20,7 +20,17 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
-import { TBoundedContexts, TParameterDependency } from '../../../types.js';
+import {
+  TBoundedContexts,
+  TEvaluationFields,
+  TParameterDependency,
+  TRegularEvaluation,
+  TRESTControllerDependencies,
+  TRESTControllerExecute,
+  TGraphQLControllerExecute,
+  TGraphQLOperation,
+  TDefinitionMethods,
+} from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
 
@@ -46,11 +56,21 @@ import {
   propsEvaluationVisitor,
   valueObjectEvaluationVisitor,
   formalParameterListVisitor,
+  entityEvaluationVisitor,
+  restControllerMethodDeclarationVisitor,
+  restControllerExecuteDeclarationVisitor,
+  restControllerDeclarationVisitor,
+  graphQLControllerDeclarationVisitor,
+  graphQLResolverOptionsVisitor,
+  graphQLControllerExecuteVisitor,
+  methodDefinitionVisitor,
+  visitMethodDefinitionListVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
   private _result: TBoundedContexts | BitloopsIntermediateASTParserError;
+  // TODO aggregate all individual results (.e.g controllers, props..)
   constructor() {
     super();
   }
@@ -548,13 +568,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return valueObjectEvaluationVisitor(this, ctx);
   }
 
+  visitEntityEvaluation(ctx: BitloopsParser.EntityEvaluationContext): any {
+    return entityEvaluationVisitor(this, ctx);
+  }
+
   visitDomainEvaluationInputFieldList(
     ctx: BitloopsParser.DomainEvaluationInputFieldListContext,
-  ): any {
+  ): TEvaluationFields {
     return this.visit(ctx.evaluationFieldList());
   }
 
-  visitDomainEvaluationInputRegular(ctx: BitloopsParser.DomainEvaluationInputRegularContext): any {
+  visitDomainEvaluationInputRegular(
+    ctx: BitloopsParser.DomainEvaluationInputRegularContext,
+  ): TRegularEvaluation {
     return this.visit(ctx.regularEvaluation());
   }
 
@@ -567,5 +593,64 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
     return formalParameterListVisitor(this, ctx);
+  }
+
+  visitRestControllerExecuteDeclaration(
+    ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
+  ): { execute: TRESTControllerExecute } {
+    return restControllerExecuteDeclarationVisitor(this, ctx);
+  }
+
+  visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
+    return restControllerMethodDeclarationVisitor(this, ctx);
+  }
+
+  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): {
+    dependencies: TRESTControllerDependencies;
+  } {
+    return {
+      dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
+    };
+  }
+
+  // GraphQLControllerDeclaration
+  visitGraphQLControllerDeclaration(ctx: BitloopsParser.GraphQLControllerDeclarationContext): any {
+    return graphQLControllerDeclarationVisitor(this, ctx);
+  }
+
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): any {
+    return restControllerDeclarationVisitor(this, ctx);
+  }
+
+  visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {
+    return graphQLResolverOptionsVisitor(this, ctx);
+  }
+
+  visitGraphQLControllerExecuteDeclaration(
+    ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
+  ): TGraphQLControllerExecute {
+    return graphQLControllerExecuteVisitor(this, ctx);
+  }
+
+  visitGraphQLOperationTypeAssignment(
+    ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext,
+  ): TGraphQLOperation {
+    return ctx.graphQLOperation().getText();
+  }
+
+  visitGraphQLOperationInputTypeAssignment(
+    ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
+  ): string {
+    return ctx.graphQLResolverInputType().getText();
+  }
+
+  visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
+    definitionMethods: TDefinitionMethods;
+  } {
+    return visitMethodDefinitionListVisitor(this, ctx);
+  }
+
+  visitMethodDefinition(ctx: BitloopsParser.MethodDefinitionContext) {
+    return methodDefinitionVisitor(this, ctx);
   }
 }

@@ -18,14 +18,25 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+const graphQLOperationsMapping = {
+  'GraphQL.Operations.Query': 'query',
+  'GraphQL.Operations.Mutation': 'mutation',
+  'GraphQL.Operations.Subscription': 'subscription',
+};
+
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TGraphQLOperation } from '../../../../types.js';
 
-export const functionBodyVisitor = (
+export const graphQLResolverOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.GraphQLResolverOptionsContext,
+): { operationType: TGraphQLOperation; inputType: string } => {
+  const typeAssignment = thisVisitor.visit(ctx.graphQLOperationTypeAssignment());
+  const inputTypeAssignment = thisVisitor.visit(ctx.graphQLOperationInputTypeAssignment());
+  const response = {
+    operationType: graphQLOperationsMapping[typeAssignment],
+    inputType: inputTypeAssignment,
+  };
+  return response;
 };

@@ -20,12 +20,16 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TGraphQLControllerExecute } from '../../../../types.js';
 
-export const functionBodyVisitor = (
+export const graphQLControllerExecuteVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
+): TGraphQLControllerExecute => {
+  // const { dependencies } = this.visit(ctx.graphQLControllerParameters());
+  const dependencies: [string] = [ctx.graphQLControllerParameters().getText()];
+  // Same as execute outputType
+  const returnType = ctx.graphQLControllerReturnType().getText();
+  const { statements } = thisVisitor.visit(ctx.functionBody());
+  return { dependencies, returnType, statements };
 };

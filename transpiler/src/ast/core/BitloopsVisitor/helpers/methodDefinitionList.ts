@@ -21,11 +21,18 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const functionBodyVisitor = (
+import { TDefinitionMethodInfo, TDefinitionMethods } from '../../../../types.js';
+
+export const visitMethodDefinitionListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.MethodDefinitionListContext,
+): { definitionMethods: TDefinitionMethods } => {
+  const childrenResult: { methodName: string; methodInfo: TDefinitionMethodInfo }[] =
+    thisVisitor.visitChildren(ctx);
+
+  const methodDefinitions: TDefinitionMethods = {};
+  for (const child of childrenResult) {
+    methodDefinitions[child.methodName] = child.methodInfo;
+  }
+  return { definitionMethods: methodDefinitions };
 };

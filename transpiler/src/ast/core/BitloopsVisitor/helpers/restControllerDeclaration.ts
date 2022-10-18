@@ -20,12 +20,24 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TRESTControllerValues } from '../../../../types.js';
 
-export const functionBodyVisitor = (
+export const restControllerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.RESTControllerDeclarationContext,
+): { Controllers: { [id: string]: TRESTControllerValues } } => {
+  const identifier = ctx.ControllerIdentifier().getText();
+  const dependencies = thisVisitor.visit(ctx.formalParameterList());
+  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
+  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
+  const response = {
+    Controllers: {
+      [identifier]: {
+        execute,
+        parameterDependencies: dependencies,
+        ...httpMethod,
+      },
+    },
+  };
+  return response;
 };

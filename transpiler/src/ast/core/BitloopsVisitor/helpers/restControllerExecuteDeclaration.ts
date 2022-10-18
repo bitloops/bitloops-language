@@ -20,12 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TRESTControllerExecute } from '../../../../types.js';
 
-export const functionBodyVisitor = (
+export const restControllerExecuteDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
+): { execute: TRESTControllerExecute } => {
+  const { dependencies } = thisVisitor.visit(ctx.restControllerParameters());
+  const { statements } = thisVisitor.visit(ctx.functionBody());
+  const res = {
+    execute: {
+      dependencies,
+      statements,
+    },
+  };
+  return res;
 };

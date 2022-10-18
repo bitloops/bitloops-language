@@ -20,12 +20,32 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TRestMethods } from '../../../../types.js';
 
-export const functionBodyVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+enum REST_METHODS {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
+  OPTIONS = 'OPTIONS',
+}
+
+const REST_METHODS_BL_TO_MODEL_MAPPER = {
+  'REST.Methods.GET': REST_METHODS.GET,
+  'REST.Methods.POST': REST_METHODS.POST,
+  'REST.Methods.PUT': REST_METHODS.PUT,
+  'REST.Methods.PATCH': REST_METHODS.PATCH,
+  'REST.Methods.DELETE': REST_METHODS.DELETE,
+  'REST.Methods.OPTIONS': REST_METHODS.OPTIONS,
+};
+
+export const restControllerMethodDeclarationVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.RestControllerMethodDeclarationContext,
+): { method: TRestMethods } => {
+  const httpMethod = ctx.httpMethod().getText();
+  return {
+    method: REST_METHODS_BL_TO_MODEL_MAPPER[httpMethod],
+  };
 };

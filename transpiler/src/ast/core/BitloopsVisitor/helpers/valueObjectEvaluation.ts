@@ -33,5 +33,5 @@ export const valueObjectEvaluationVisitor = (
       props,
       name: identifier,
     },
-  } as any;
+  } as TValueObjectEvaluation;
 };

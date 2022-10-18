@@ -20,12 +20,18 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TEntityEvaluation } from '../../../../types.js';
 
-export const functionBodyVisitor = (
+export const entityEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FunctionBodyContext,
-): any => {
-  if (ctx.statementList()) {
-    return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  ctx: BitloopsParser.EntityEvaluationContext,
+): TEntityEvaluation => {
+  const identifier = ctx.entityIdentifier().getText();
+  const domainInput = thisVisitor.visit(ctx.domainEvaluationInput());
+  return {
+    entity: {
+      props: domainInput,
+      name: identifier,
+    },
+  };
 };

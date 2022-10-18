@@ -513,8 +513,8 @@ export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControlle
 export type TGraphQLControllerValues = TBaseControllerValues & {
   type: 'graphql';
   operationType: TGraphQLOperation;
-  operationName: string;
   inputType: string;
+  operationName: string;
   execute: TGraphQLControllerExecute;
   outputType: string; // should be same as return type of execute
 };
@@ -749,7 +749,7 @@ export interface IServer {
 
 type TResolvers = TResolver[];
 
-type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
+export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
 
 export type TResolver = {
   boundedContext: string;
