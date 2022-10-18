@@ -1,6 +1,15 @@
 ![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-header.png)
-# Bitloops Language (BL): <br/> Quickly build scalable, maintainable & reliable software
-Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language 
+
+<p align="center">
+  <a href="https://bitloops.com/docs/bitloops-language/category/quick-start)">Quick Start</a> |
+  <a href="https://bitloops-community.slack.com/)">Slack Community</a> |
+  <a href="https://github.com/bitloops/bitloops-language/discussions)">GitHub Discussions</a> |
+  <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
+  <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
+</p>
+
+# <br/> Build scalable, maintainable & reliable software (faster)
+Bitloops Language (BL) is a high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
 
 <!--
 Part of the Bitloops Language project, under the GPL-3.0 license
@@ -9,6 +18,11 @@ SPDX-License-Identifier: GPL-3.0-only
 The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 -->
 
+> ⚠️ Please keep in mind that the Bitloops Language is in its early stages
+> and under very active development. Expect bugs and limitations.
+> Full backward compatibility is not guaranteed before reaching v1.0.0.
+
+
 <p align="center">
   <a href="#why-build-the-bitloops-language">Why?</a> |
   <a href="#language-goals">Goals</a> |
@@ -16,14 +30,13 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
   <a href="#getting-started">
   <a href="#join-us"></a>
 </p>
-
-> ⚠️ Please keep in mind that the Bitloops Language is in its early stages
-> and under very active development. Expect bugs and limitations.
-> Full backward compatibility is not guaranteed before reaching v1.0.0.
+  
+ ---- 
 
 * High-productivity, [fourth generation (4GL)](https://www.techopedia.com/definition/24308/fourth-generation-programming-language-4gl) transpiled programming language
 * Easy to learn and get started with
-* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) with testing as a 1st class citizen
+* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) 
+* Testing is treated as a 1st class citizen
 * Add different API controllers (REST, GraphQL, gRPC) with just a few lines of code
 * Modular Monolith or Microservices architecture? Both! Switch back and forth within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
 * Significantly reduce the amount of boilerplate code you need to write and maintain
