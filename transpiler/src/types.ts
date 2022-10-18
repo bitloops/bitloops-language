@@ -422,7 +422,7 @@ export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TOkErrorReturnType = {
   ok: string;
-  errors?: string[];
+  errors?: string[]; // TODO remove optional if we have empty array for no errors
 };
 
 export type TDomainCreateMethod = {

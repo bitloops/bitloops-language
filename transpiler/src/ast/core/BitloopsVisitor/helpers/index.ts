@@ -47,4 +47,7 @@ export { graphQLControllerDeclarationVisitor } from './graphQLControllerDeclarat
 export { graphQLResolverOptionsVisitor } from './graphQLResolverOptions.js';
 export { graphQLControllerExecuteVisitor } from './graphQLControllerExecute.js';
 export { methodDefinitionVisitor } from './methodDefinition.js';
-export { visitMethodDefinitionListVisitor } from './methodDefinitionList.js';
+export { methodDefinitionListVisitor } from './methodDefinitionList.js';
+export { errorIdentifiersVisitor } from './errorIdentifiers.js';
+export { returnErrorsTypeVisitor } from './returnErrorsType.js';
+export { returnOkErrorTypeVisitor } from './returnOkErrorType.js';

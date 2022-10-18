@@ -21,18 +21,16 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-import { TDefinitionMethodInfo, TDefinitionMethods } from '../../../../types.js';
+import { TOkErrorReturnType } from '../../../../types.js';
 
-export const methodDefinitionListVisitor = (
+export const returnOkErrorTypeVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodDefinitionListContext,
-): { definitionMethods: TDefinitionMethods } => {
-  const childrenResult: { methodName: string; methodInfo: TDefinitionMethodInfo }[] =
-    thisVisitor.visitChildren(ctx);
-
-  const methodDefinitions: TDefinitionMethods = {};
-  for (const child of childrenResult) {
-    methodDefinitions[child.methodName] = child.methodInfo;
-  }
-  return { definitionMethods: methodDefinitions };
+  ctx: BitloopsParser.ReturnOkErrorTypeContext,
+): TOkErrorReturnType => {
+  const ok = thisVisitor.visit(ctx.returnOkType());
+  const errors = thisVisitor.visit(ctx.returnErrorsType());
+  return {
+    ok,
+    errors,
+  };
 };

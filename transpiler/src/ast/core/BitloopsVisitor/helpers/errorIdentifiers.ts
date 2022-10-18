@@ -21,18 +21,11 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-import { TDefinitionMethodInfo, TDefinitionMethods } from '../../../../types.js';
-
-export const methodDefinitionListVisitor = (
+export const errorIdentifiersVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodDefinitionListContext,
-): { definitionMethods: TDefinitionMethods } => {
-  const childrenResult: { methodName: string; methodInfo: TDefinitionMethodInfo }[] =
-    thisVisitor.visitChildren(ctx);
-
-  const methodDefinitions: TDefinitionMethods = {};
-  for (const child of childrenResult) {
-    methodDefinitions[child.methodName] = child.methodInfo;
-  }
-  return { definitionMethods: methodDefinitions };
+  ctx: BitloopsParser.ErrorIdentifiersContext,
+): string[] => {
+  const allErrorsAndBitOrs = thisVisitor.visitChildren(ctx);
+  const errors = allErrorsAndBitOrs.filter((item) => item !== undefined);
+  return errors;
 };
