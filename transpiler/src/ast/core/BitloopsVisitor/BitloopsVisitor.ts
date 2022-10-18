@@ -29,6 +29,7 @@ import {
   TRESTControllerExecute,
   TGraphQLControllerExecute,
   TGraphQLOperation,
+  TDefinitionMethods,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -62,6 +63,8 @@ import {
   graphQLControllerDeclarationVisitor,
   graphQLResolverOptionsVisitor,
   graphQLControllerExecuteVisitor,
+  methodDefinitionVisitor,
+  visitMethodDefinitionListVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -639,5 +642,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
   ): string {
     return ctx.graphQLResolverInputType().getText();
+  }
+
+  visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
+    definitionMethods: TDefinitionMethods;
+  } {
+    return visitMethodDefinitionListVisitor(this, ctx);
+  }
+
+  visitMethodDefinition(ctx: BitloopsParser.MethodDefinitionContext) {
+    return methodDefinitionVisitor(this, ctx);
   }
 }

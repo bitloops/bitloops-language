@@ -46,3 +46,5 @@ export { restControllerDeclarationVisitor } from './restControllerDeclaration.js
 export { graphQLControllerDeclarationVisitor } from './graphQLControllerDeclaration.js';
 export { graphQLResolverOptionsVisitor } from './graphQLResolverOptions.js';
 export { graphQLControllerExecuteVisitor } from './graphQLControllerExecute.js';
+export { methodDefinitionVisitor } from './methodDefinition.js';
+export { visitMethodDefinitionListVisitor } from './methodDefinitionList.js';
