@@ -17,14 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TBitloopsTargetContent, TBitloopsTargetGeneratorParams } from '../types.js';
+import {
+  TBitloopsTargetContent,
+  TBitloopsTargetGeneratorParams,
+  TBitloopsTargetSetupContent,
+} from '../types.js';
 import { BitloopsTargetGeneratorError } from './BitloopsTargetGeneratorError.js';
+import { BitloopsTargetSetupGeneratorError } from './BitloopsTargetSetupGeneratorError.js';
 import { BitloopsIntermediateASTToTarget } from './typescript/core/index.js';
+import { generateSetupFiles } from './typescript/setup/index.js';
 
 export interface IBitloopsTargetGenerator {
   generate: (
     params: TBitloopsTargetGeneratorParams,
   ) => TBitloopsTargetContent | BitloopsTargetGeneratorError;
+
+  generateSetup: (
+    params: TBitloopsTargetGeneratorParams,
+  ) => TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError;
 }
 
 export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
@@ -42,5 +52,12 @@ export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
       return formattedTargetContent;
       // TODO imports
     }
+  }
+
+  generateSetup(
+    params: TBitloopsTargetGeneratorParams,
+  ): TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError {
+    const { setupData, intermediateAST, sourceDirPath } = params;
+    return generateSetupFiles(setupData, intermediateAST, sourceDirPath);
   }
 }

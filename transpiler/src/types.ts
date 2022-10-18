@@ -101,11 +101,18 @@ export type TBitloopsTargetContent = {
   fileContent: string;
 }[];
 
+export type TBitloopsTargetSetupContent = {
+  fileId: string;
+  fileType: string;
+  fileContent: string;
+}[];
+
 export type TBitloopsTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
   setupData: ISetupData;
   targetLanguage: string;
   formatterConfig?: any;
+  sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
 export type TBitloopsClasses =
@@ -943,4 +950,102 @@ export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
+};
+
+export const BitloopsTypesMapping = {
+  TVariable: 'TVariable',
+  TVariables: 'TVariables',
+  TProps: 'TProps',
+  TPropsValues: 'TPropsValues',
+  TEvaluation: 'TEvaluation',
+  TInstanceOf: 'TInstanceOf',
+  TNotInstanceOf: 'TNotInstanceOf',
+  TArgumentDependency: 'TArgumentDependency',
+  TClassInstantiation: 'TClassInstantiation',
+  TParameterDependency: 'TParameterDependency',
+  TParameterDependencies: 'TParameterDependencies',
+  TArgumentDependencies: 'TArgumentDependencies',
+  TRegularEvaluation: 'TRegularEvaluation',
+  TGetClass: 'TGetClass',
+  TStructEvaluation: 'TStructEvaluation',
+  TDTOEvaluation: 'TDTOEvaluation',
+  TCondition: 'TCondition',
+  TExpression: 'TExpression',
+  TReturnStatement: 'TReturnStatement',
+  TConstDeclaration: 'TConstDeclaration',
+  TReturnOKStatement: 'TReturnOKStatement',
+  TReturnErrorStatement: 'TReturnErrorStatement',
+  TConstDecomposition: 'TConstDecomposition',
+  TCase: 'TCase',
+  TDefaultCase: 'TDefaultCase',
+  TRegularCase: 'TRegularCase',
+  TSwitchStatement: 'TSwitchStatement',
+  TBreakStatement: 'TBreakStatement',
+  TStatement: 'TStatement',
+  TStatements: 'TStatements',
+  TStatementsWithoutThis: 'TStatementsWithoutThis',
+  TIfStatement: 'TIfStatement',
+  TDTO: 'TDTO',
+  TDTOValues: 'TDTOValues',
+  TStructs: 'TStructs',
+  TStructDeclaration: 'TStructDeclaration',
+  TOkErrorReturnType: 'TOkErrorReturnType',
+  TValueObjects: 'TValueObjects',
+  TUseCase: 'TUseCase',
+  TRESTController: 'TRESTController',
+  TGraphQLController: 'TGraphQLController',
+  TController: 'TController',
+  TString: 'TString',
+  TBackTickString: 'TBackTickString',
+  TDomainErrors: 'TDomainErrors',
+  TApplicationErrors: 'TApplicationErrors',
+  TEvaluatePrimitive: 'TEvaluatePrimitive',
+  TGraphQLSetupData: 'TGraphQLSetupData',
+  TDefinitionMethodInfo: 'TDefinitionMethodInfo',
+  TDefinitionMethods: 'TDefinitionMethods',
+  TReturnType: 'TReturnType',
+  TPackagePort: 'TPackagePort',
+  TPackages: 'TPackages',
+  TDomainCreateMethod: 'TDomainCreateMethod',
+  TValueObjectEvaluation: 'TValueObjectEvaluation',
+  TEvaluationFields: 'TEvaluationFields',
+  TDomainEvaluation: 'TDomainEvaluation',
+  TEntityEvaluation: 'TEntityEvaluation',
+  TEntities: 'TEntities',
+  TThisDeclaration: 'TThisDeclaration',
+  TRepoPorts: 'TRepoPorts',
+  TRepoAdapters: 'TRepoAdapters',
+  TSingleExpression: 'TSingleExpression',
+  TLogicalExpression: 'TLogicalExpression',
+  TNotExpression: 'TNotExpression',
+  TAndExpression: 'TAndExpression',
+  TOrExpression: 'TOrExpression',
+  TMultiplicativeExpression: 'TMultiplicativeExpression',
+  TMultiplicativeOperator: 'TMultiplicativeOperator',
+  TAdditiveExpression: 'TAdditiveExpression',
+  TAdditiveOperator: 'TAdditiveOperator',
+  TRelationalExpression: 'TRelationalExpression',
+  TRelationalOperator: 'TRelationalOperator',
+  TEqualityOperator: 'TEqualityOperator',
+  TEqualityExpression: 'TEqualityExpression',
+  TXorExpression: 'TXorExpression',
+  TParenthesizedExpression: 'TParenthesizedExpression',
+  TVariableDeclaration: 'TVariableDeclaration',
+  TExpressionValues: ' TExpressionValues',
+};
+
+export const ClassTypes = {
+  Aggregate: 'Aggregate',
+  Entity: 'Entity',
+  ValueObject: 'ValueObject',
+  Props: 'Props',
+  Controller: 'Controller',
+  UseCase: 'UseCase',
+  DomainError: 'DomainError',
+  ApplicationError: 'ApplicationError',
+  DTO: 'DTO',
+  Struct: 'Struct',
+  Package: 'Package',
+  RepoPort: 'RepoPort',
+  RepoAdapter: 'RepoAdapter',
 };

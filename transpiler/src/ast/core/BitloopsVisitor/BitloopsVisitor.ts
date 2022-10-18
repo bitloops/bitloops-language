@@ -35,7 +35,7 @@ import {
   argumentListVisitor,
   argumentVisitor,
   regularVariableEvaluationORliteralORexpressionVisitor,
-  thisVariableMethodEvaluationVisitor,
+  // thisVariableMethodEvaluationVisitor,
   // regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
 } from './helpers/index.js';
@@ -466,9 +466,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return argumentVisitor(this, ctx);
   }
 
-  visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext) {
-    return thisVariableMethodEvaluationVisitor(this, ctx);
-  }
+  // visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext) {
+  //   return thisVariableMethodEvaluationVisitor(this, ctx);
+  // }
 
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext) {
     return methodArgumentsVisitor(this, ctx);

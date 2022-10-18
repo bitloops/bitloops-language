@@ -5,10 +5,10 @@ import {
   TReposSetup,
   TRepoSupportedTypes,
 } from '../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { LICENSE } from '../license.js';
-import { getRepoAdapterClassName } from '../../core/components/repo/helpers/repoAdapterName.js';
+import { BitloopsTypesMapping } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
+import { getRepoAdapterClassName } from '../../core/components/repo/helpers/repoAdapterName.js';
+import { LICENSE } from '../license.js';
 
 type TSetupOutput = { filePath: string; content: string };
 type TCategorizedRepoConnections = Record<
