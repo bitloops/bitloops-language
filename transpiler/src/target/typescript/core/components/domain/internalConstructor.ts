@@ -12,6 +12,7 @@ export const internalConstructor = (
     [SupportedLanguages.TypeScript]: (propsName: string): string => {
       let res = `private constructor(props: ${propsName}) { super(props); `;
       if (statements) {
+        console.log('internalConstructor statements', statements);
         const statementsResult = statementsToTargetLanguage(statements, targetLanguage);
         res += statementsResult;
       }
