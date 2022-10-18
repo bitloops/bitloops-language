@@ -19,6 +19,5 @@ export const constDeclaration = (subtree: any): any => {
     result.constDeclaration.type = typeAnnotation.type;
   }
 
-  console.log('result', result);
   return result;
 };

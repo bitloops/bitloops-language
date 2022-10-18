@@ -18,29 +18,32 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
+
+import { d } from 'bitloops-gherkin';
 import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/applicationErrors.feature');
+const feature = loadFeature('__tests__/target/typescript/core/useCase.feature');
 
 defineFeature(feature, (test) => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const classType = ClassTypes.ApplicationErrors;
+  const classType = ClassTypes.UseCases;
   const formatterConfig = null;
   let language;
-  let result;
   let intermediateAST;
+  let result;
 
-  test('ApplicationErrors with messages', ({ given, when, then }) => {
+  test('UseCase with execute', ({ given, when, then }) => {
     given(/^language is "(.*)"$/, (lang) => {
       language = lang;
     });
 
-    given(/^I have ApplicationErrors (.*)$/, (applicationErrors) => {
+    given(/^I have a useCase (.*)$/, (useCase) => {
+      const value = d(useCase);
       intermediateAST = {
-        [boundedContext]: { [module]: { [classType]: JSON.parse(applicationErrors) } },
+        [boundedContext]: { [module]: { [classType]: JSON.parse(value) } },
       };
     });
 
@@ -55,16 +58,18 @@ defineFeature(feature, (test) => {
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      const formattedOutput = formatString(output, formatterConfig);
-      const expectedOutput = [
-        {
+      const classNamesContent = JSON.parse(d(output));
+      const expectedOutput = [];
+      for (const [className, content] of Object.entries(classNamesContent)) {
+        const formattedOutput = formatString(content as string, formatterConfig);
+        expectedOutput.push({
           boundedContext,
-          className: 'InvalidName', //TODO get from feature params
+          className,
           module,
           classType,
           fileContent: formattedOutput,
-        },
-      ];
+        });
+      }
 
       expect(result).toEqual(expectedOutput);
     });

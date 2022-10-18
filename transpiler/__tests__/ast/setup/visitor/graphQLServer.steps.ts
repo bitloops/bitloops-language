@@ -51,7 +51,6 @@ defineFeature(feature, (test) => {
 
     then(/^I should get (.*)$/, (arg0) => {
       modelOutput = decode(arg0);
-      console.log('result', JSON.stringify(result));
       expect(result).toMatchObject(JSON.parse(modelOutput));
     });
   });
