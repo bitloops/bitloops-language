@@ -18,26 +18,25 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+const graphQLOperationsMapping = {
+  'GraphQL.Operations.Query': 'query',
+  'GraphQL.Operations.Mutation': 'mutation',
+  'GraphQL.Operations.Subscription': 'subscription',
+};
+
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
+import { TGraphQLOperation } from '../../../../types.js';
 
-export const restControllerDeclarationVisitor = (
+export const graphQLResolverOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
-  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
+  ctx: BitloopsParser.GraphQLResolverOptionsContext,
+): { operationType: TGraphQLOperation; inputType: string } => {
+  const typeAssignment = thisVisitor.visit(ctx.graphQLOperationTypeAssignment());
+  const inputTypeAssignment = thisVisitor.visit(ctx.graphQLOperationInputTypeAssignment());
   const response = {
-    Controllers: {
-      [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
-      },
-    },
+    operationType: graphQLOperationsMapping[typeAssignment],
+    inputType: inputTypeAssignment,
   };
   return response;
 };

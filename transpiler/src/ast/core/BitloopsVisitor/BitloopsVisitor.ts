@@ -27,6 +27,8 @@ import {
   TRegularEvaluation,
   TRESTControllerDependencies,
   TRESTControllerExecute,
+  TGraphQLControllerExecute,
+  TGraphQLOperation,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -57,11 +59,15 @@ import {
   restControllerMethodDeclarationVisitor,
   restControllerExecuteDeclarationVisitor,
   restControllerDeclarationVisitor,
+  graphQLControllerDeclarationVisitor,
+  graphQLResolverOptionsVisitor,
+  graphQLControllerExecuteVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
   private _result: TBoundedContexts | BitloopsIntermediateASTParserError;
+  // TODO aggregate all individual results (.e.g controllers, props..)
   constructor() {
     super();
   }
@@ -588,7 +594,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRestControllerExecuteDeclaration(
     ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-  ): TRESTControllerExecute {
+  ): { execute: TRESTControllerExecute } {
     return restControllerExecuteDeclarationVisitor(this, ctx);
   }
 
@@ -600,13 +606,38 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     dependencies: TRESTControllerDependencies;
   } {
     return {
-      dependencies: [ctx.Identifier(0), ctx.Identifier(1)],
+      dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
     };
   }
 
-  // visitGraphQLControllerDeclaration(ctx: BitloopsParser.GraphQLControllerDeclarationContext) {}
+  // GraphQLControllerDeclaration
+  visitGraphQLControllerDeclaration(ctx: BitloopsParser.GraphQLControllerDeclarationContext): any {
+    return graphQLControllerDeclarationVisitor(this, ctx);
+  }
 
-  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext) {
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): any {
     return restControllerDeclarationVisitor(this, ctx);
+  }
+
+  visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {
+    return graphQLResolverOptionsVisitor(this, ctx);
+  }
+
+  visitGraphQLControllerExecuteDeclaration(
+    ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
+  ): TGraphQLControllerExecute {
+    return graphQLControllerExecuteVisitor(this, ctx);
+  }
+
+  visitGraphQLOperationTypeAssignment(
+    ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext,
+  ): TGraphQLOperation {
+    return ctx.graphQLOperation().getText();
+  }
+
+  visitGraphQLOperationInputTypeAssignment(
+    ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
+  ): string {
+    return ctx.graphQLResolverInputType().getText();
   }
 }

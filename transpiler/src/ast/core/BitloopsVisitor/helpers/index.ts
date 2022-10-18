@@ -43,3 +43,6 @@ export { entityEvaluationVisitor } from './entityEvaluation.js';
 export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
 export { restControllerExecuteDeclarationVisitor } from './restControllerExecuteDeclaration.js';
 export { restControllerDeclarationVisitor } from './restControllerDeclaration.js';
+export { graphQLControllerDeclarationVisitor } from './graphQLControllerDeclaration.js';
+export { graphQLResolverOptionsVisitor } from './graphQLResolverOptions.js';
+export { graphQLControllerExecuteVisitor } from './graphQLControllerExecute.js';

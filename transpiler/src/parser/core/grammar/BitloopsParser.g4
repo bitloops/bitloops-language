@@ -903,7 +903,11 @@ restControllerExecuteDeclaration
     ;
 
 restControllerMethodDeclaration
-    : Method ':' httpMethod=(MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions) SemiColon?
+    : Method ':' httpMethod SemiColon?
+    ;
+    
+httpMethod
+    : MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions
     ;
 
 

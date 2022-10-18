@@ -27,5 +27,5 @@ export const functionBodyVisitor = (
 ): any => {
   if (ctx.statementList()) {
     return thisVisitor.visit(ctx.statementList());
-  } else return null;
+  } else return { statements: [] };
 };
