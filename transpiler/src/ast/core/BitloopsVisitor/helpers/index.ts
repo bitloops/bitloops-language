@@ -51,3 +51,7 @@ export { methodDefinitionListVisitor } from './methodDefinitionList.js';
 export { errorIdentifiersVisitor } from './errorIdentifiers.js';
 export { returnErrorsTypeVisitor } from './returnErrorsType.js';
 export { returnOkErrorTypeVisitor } from './returnOkErrorType.js';
+export { fieldListVisitor } from './fieldList.js';
+export { fieldVisitor } from './field.js';
+export { dtoDeclarationVisitor } from './dtoDeclaration.js';
+export { propsDeclarationVisitor } from './propsDeclaration.js';

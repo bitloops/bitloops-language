@@ -31,6 +31,9 @@ import {
   TGraphQLOperation,
   TDefinitionMethods,
   TOkErrorReturnType,
+  TVariables,
+  TVariable,
+  TDTO,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -69,6 +72,10 @@ import {
   returnErrorsTypeVisitor,
   returnOkErrorTypeVisitor,
   errorIdentifiersVisitor,
+  fieldListVisitor,
+  fieldVisitor,
+  dtoDeclarationVisitor,
+  propsDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -676,5 +683,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitReturnOkErrorType(ctx: BitloopsParser.ReturnOkErrorTypeContext): TOkErrorReturnType {
     return returnOkErrorTypeVisitor(this, ctx);
+  }
+
+  visitFieldList(ctx: BitloopsParser.FieldListContext): TVariables {
+    return fieldListVisitor(this, ctx);
+  }
+
+  visitField(ctx: BitloopsParser.FieldContext): TVariable {
+    return fieldVisitor(this, ctx);
+  }
+
+  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): { DTOs: TDTO } {
+    return dtoDeclarationVisitor(this, ctx);
+  }
+  visitPropsDeclaration(ctx: BitloopsParser.PropsDeclarationContext): any {
+    return propsDeclarationVisitor(this, ctx);
   }
 }
