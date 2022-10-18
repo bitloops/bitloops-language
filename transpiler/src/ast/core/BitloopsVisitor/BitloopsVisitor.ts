@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
-import { TBoundedContexts } from '../../../types.js';
+import { TBoundedContexts, TParameterDependency } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
 
@@ -45,6 +45,7 @@ import {
   evaluationVisitor,
   propsEvaluationVisitor,
   valueObjectEvaluationVisitor,
+  formalParameterListVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -555,5 +556,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDomainEvaluationInputRegular(ctx: BitloopsParser.DomainEvaluationInputRegularContext): any {
     return this.visit(ctx.regularEvaluation());
+  }
+
+  visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {
+    return {
+      value: ctx.identifierOrKeyWord().getText(),
+      type: this.visit(ctx.typeAnnotation()),
+    } as TParameterDependency;
+  }
+
+  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
+    return formalParameterListVisitor(this, ctx);
   }
 }

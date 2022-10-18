@@ -38,3 +38,4 @@ export { dtoEvaluationVisitor } from './dtoEvaluation.js';
 export { evaluationVisitor } from './evaluation.js';
 export { propsEvaluationVisitor } from './propsEvaluation.js';
 export { valueObjectEvaluationVisitor } from './valueObjectEvaluation.js';
+export { formalParameterListVisitor } from './formalParameterList.js';
