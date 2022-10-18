@@ -6,3 +6,4 @@ export { regularVariableEvaluationORliteralORexpressionVisitor } from './regular
 export { thisVariableMethodEvaluationVisitor } from './thisVariableMethodEvaluation.js';
 export { regularVariableMethodEvaluationVisitor } from './regularVariableMethodEvaluation.js';
 export { methodArgumentsVisitor } from './methodArguments.js';
+export { regularStructEvaluationVisitor } from './regularStructEvaluation.js';

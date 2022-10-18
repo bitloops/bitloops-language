@@ -35,6 +35,7 @@ import {
   argumentListVisitor,
   argumentVisitor,
   regularVariableEvaluationORliteralORexpressionVisitor,
+  regularStructEvaluationVisitor,
   // thisVariableMethodEvaluationVisitor,
   // regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
@@ -464,6 +465,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitArgument(ctx: BitloopsParser.ArgumentContext) {
     return argumentVisitor(this, ctx);
+  }
+
+  visitRegularStructEvaluationVisitor(ctx: BitloopsParser.RegularStructEvaluationContext) {
+    return regularStructEvaluationVisitor(this, ctx);
   }
 
   // visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext) {
