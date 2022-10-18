@@ -75,18 +75,21 @@ const valueObjectsToTargetLanguage = (params: {
       targetLanguage,
     });
 
-    result += generateGetters(propsName, modelForContext, methods);
+    result += generateGetters(propsName, modelForContext, methods, targetLanguage);
+    console.log('after getters');
 
     // result += valueObjectFields(valueObject.constantVars, targetLanguage);
 
     if (methods) {
       result += valueObjectMethods(methods, targetLanguage);
     }
+    console.log('after methods');
 
     const finalObjValLangMapping: any = {
       [SupportedLanguages.TypeScript]: '}',
     };
     result += finalObjValLangMapping[targetLanguage];
+    console.log('after final');
   }
 
   return result;

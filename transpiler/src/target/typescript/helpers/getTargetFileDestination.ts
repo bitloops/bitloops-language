@@ -23,7 +23,7 @@ import {
   SupportedLanguages,
 } from '../../supportedLanguages.js';
 import { camelCase, pascalCase, kebabCase } from '../../../utils/caseStyles.js';
-import { ClassTypes } from '../../../types.js';
+import { ClassTypes } from '../../../helpers/mappings.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
@@ -44,7 +44,7 @@ const getTargetFileDestination = (
   if (!isLanguageSupported(targetLanguage)) {
     throw new Error(`Language ${targetLanguage} is not supported`);
   }
-  if ((classType === ClassTypes.Controller || classType === ClassTypes.UseCase) && !useCase) {
+  if ((classType === ClassTypes.Controllers || classType === ClassTypes.UseCases) && !useCase) {
     throw new Error('Use case is required');
   }
   const BOUNDED_CONTEXT = {
@@ -70,12 +70,12 @@ const getTargetFileDestination = (
     filename: '',
   };
   switch (classType) {
-    case ClassTypes.Aggregate:
-    case ClassTypes.ValueObject:
+    case ClassTypes.RootEntities:
+    case ClassTypes.ValueObjects:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.DomainError:
+    case ClassTypes.DomainErrors:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = 'errors' + getLanguageFileExtension(targetLanguage);
       break;
@@ -83,27 +83,27 @@ const getTargetFileDestination = (
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.Controller:
+    case ClassTypes.Controllers:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.UseCase:
+    case ClassTypes.UseCases:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/application/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.DTO:
+    case ClassTypes.DTOs:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/dtos/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.Package:
+    case ClassTypes.Packages:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/packages`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.RepoPort:
+    case ClassTypes.RepoPorts:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
-    case ClassTypes.RepoAdapter:
+    case ClassTypes.RepoAdapters:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/repos/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -125,28 +125,28 @@ const getFilePathRelativeToModule = (
   };
   switch (classType) {
     case ClassTypes.Props:
-    case ClassTypes.Aggregate:
-    case ClassTypes.ValueObject:
+    case ClassTypes.RootEntities:
+    case ClassTypes.ValueObjects:
       result.path = 'domain/';
       result.filename = className;
       break;
-    case ClassTypes.DomainError:
+    case ClassTypes.DomainErrors:
       result.path = 'domain/';
       result.filename = 'errors';
       break;
-    case ClassTypes.Controller:
+    case ClassTypes.Controllers:
       result.path = 'infra/';
       result.filename = className;
       break;
-    case ClassTypes.UseCase:
+    case ClassTypes.UseCases:
       result.path = 'application/';
       result.filename = className;
       break;
-    case ClassTypes.DTO:
+    case ClassTypes.DTOs:
       result.path = 'dtos/';
       result.filename = className;
       break;
-    case ClassTypes.Package:
+    case ClassTypes.Packages:
       result.path = 'packages/';
       result.filename = className;
       break;

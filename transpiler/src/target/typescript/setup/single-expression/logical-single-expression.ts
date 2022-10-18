@@ -1,5 +1,5 @@
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { TLogicalSingleExpression } from '../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { isLogicalORExpression } from './type-guards/index.js';
 

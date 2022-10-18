@@ -17,6 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitiveToLang.js';
+import { isBitloopsPrimitive } from '../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../helpers/supportedLanguages.js';
 import { TOkErrorReturnType } from '../../../../types.js';
 
@@ -29,6 +31,11 @@ const okErrorReturnTypeToTargetLanguage = (
   }
   const { errors, ok } = variable;
 
+  let returnOkType = ok;
+  if (isBitloopsPrimitive(returnOkType)) {
+    returnOkType = bitloopsTypeToLangMapping[targetLanguage](returnOkType);
+  }
+
   const LanguageMapping = {
     [SupportedLanguages.TypeScript]: (ok: string, errors: string[]): string => {
       if (errors && errors.length != 0) {
@@ -38,7 +45,7 @@ const okErrorReturnTypeToTargetLanguage = (
       }
     },
   };
-  return LanguageMapping[targetLanguage](ok, errors);
+  return LanguageMapping[targetLanguage](returnOkType, errors);
 };
 
 export { okErrorReturnTypeToTargetLanguage };

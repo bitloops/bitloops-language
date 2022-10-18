@@ -51,11 +51,12 @@ const statementToTargetLanguage = (variable: TStatement, targetLanguage: string)
   if (!keysToTypeMapping[type]) {
     throw new Error('Unsupported statement: ' + type);
   }
-
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable, targetLanguage });
 };
 
 const statementsToTargetLanguage = (variable: TStatements, targetLanguage: string): string => {
+  console.log('statementsToTargetLanguage', variable);
+
   const mapping = {
     [SupportedLanguages.TypeScript]: (variable: TStatements): string => {
       return variable
@@ -75,8 +76,10 @@ const statementsWithoutThisToTargetLanguage = (
   variable: TStatements,
   targetLanguage: string,
 ): string => {
+  console.log('statementsWithoutThisToTargetLanguage', variable);
   const mapping = {
     [SupportedLanguages.TypeScript]: (variable: TStatements): string => {
+      console.log('var', variable);
       return variable
         .map(
           (statement) =>
@@ -87,6 +90,7 @@ const statementsWithoutThisToTargetLanguage = (
         .join(' ');
     },
   };
+  console.log('before return');
   return mapping[targetLanguage](variable);
 };
 

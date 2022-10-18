@@ -56,10 +56,10 @@ import {
   getFilePathRelativeToModule,
   getTargetFileDestination,
 } from '../helpers/getTargetFileDestination.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../types.js';
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { LICENSE } from './license.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
+import { ClassTypes, BitloopsTypesMapping } from '../../../helpers/mappings.js';
 
 type TSetupOutput = { filePath: string; content: string };
 
@@ -207,7 +207,7 @@ export class SetupTypeScript implements ISetup {
     for (const useCaseName of Object.keys(useCases)) {
       // console.log('useCase', useCase);
       // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCase, useCaseName);
+      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCases, useCaseName);
       result += `import { ${useCaseName} } from './${path}${filename}';\n`;
     }
     return result;
@@ -216,7 +216,10 @@ export class SetupTypeScript implements ISetup {
   private generateDIControllersImports(controllers: TControllerOfModule): string {
     let result = '';
     for (const controllerName of Object.keys(controllers)) {
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.Controller, controllerName);
+      const { path, filename } = getFilePathRelativeToModule(
+        ClassTypes.Controllers,
+        controllerName,
+      );
       result += `import { ${controllerName} } from './${path}${filename}';\n`;
     }
     return result;

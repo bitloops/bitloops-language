@@ -18,72 +18,51 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TEntities, TEntityMethods } from '../../../../../types.js';
+import { TBoundedContexts, TContextData, TEntities, TEntityMethods } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
-import { constantVariables } from '../domain/index.js';
-
-// const entityFields = (variables: TConstantVariable[], targetLanguage: string): string => {
-//   let result = '';
-//   const objValConstantVariablesToLangMapping: any = {
-//     [SupportedLanguages.TypeScript]: (variable: TConstantVariable): string => {
-//       const { name, type, value } = variable;
-
-//       let result: string;
-//       if (type) {
-//         let mappedType = type;
-//         if (isBitloopsPrimitive(type)) {
-//           mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](variable.type);
-//         }
-//         result = `private static ${name}: ${mappedType}`;
-//       } else {
-//         result = `private static ${name}`;
-//       }
-//       if (value) {
-//         result += ` = ${value}`;
-//       }
-//       result += ';';
-//       return result;
-//     },
-//   };
-
-//   for (const propVariable of variables) {
-//     result += objValConstantVariablesToLangMapping[targetLanguage](propVariable);
-//   }
-//   return result;
-// };
+import { constantVariables, generateGetters } from '../domain/index.js';
 
 const entityMethods = (objectValueMethods: TEntityMethods, targetLanguage: string): string => {
   return domainMethods(objectValueMethods, targetLanguage);
 };
 
-const entitiesToTargetLanguage = (entities: TEntities, targetLanguage: string): string => {
+const entitiesToTargetLanguage = (params: {
+  entities: TEntities;
+  model: TBoundedContexts;
+  targetLanguage: string;
+  contextData: TContextData;
+}): string => {
+  const { entities, model, targetLanguage, contextData } = params;
+
+  const { boundedContext, module } = contextData;
+
+  const modelForContext = model[boundedContext][module];
+
   const initialObjectValuesLangMapping = {
     [SupportedLanguages.TypeScript]: (entityName: string, propsName: string) =>
       `export class ${entityName} extends Entity<${propsName}> { `,
   };
 
   let result = '';
-  for (const [valueObjectName, valueObject] of Object.entries(entities)) {
-    const { methods, create, constantVars } = valueObject;
+  for (const [entityName, entity] of Object.entries(entities)) {
+    const { methods, create, constantVars } = entity;
     const propsName = create.parameterDependency.type;
 
     if (constantVars) {
       result += constantVariables(constantVars, targetLanguage);
     }
 
-    result += initialObjectValuesLangMapping[targetLanguage](valueObjectName, propsName);
-
-    // result += internalConstructor(propsName, targetLanguage);
-
-    // result += entityFields(valueObject.constantVars, targetLanguage);
+    result += initialObjectValuesLangMapping[targetLanguage](entityName, propsName);
 
     result += modelToTargetLanguage({
       type: BitloopsTypesMapping.TDomainCreateMethod,
       value: create,
       targetLanguage,
     });
+
+    result += generateGetters(propsName, modelForContext, methods, targetLanguage);
 
     if (methods) {
       result += entityMethods(methods, targetLanguage);
