@@ -41,6 +41,7 @@ import {
   booleanEvaluation,
   integerEvaluation,
   decimalEvaluation,
+  dtoEvaluationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -527,5 +528,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDecimalLiteral(ctx: BitloopsParser.DecimalLiteralContext) {
     return decimalEvaluation(ctx.DecimalLiteral().getText());
+  }
+
+  visitDtoEvaluation(ctx: BitloopsParser.DtoEvaluationContext) {
+    return dtoEvaluationVisitor(this, ctx);
   }
 }

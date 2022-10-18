@@ -34,3 +34,4 @@ export { stringEvaluation } from './stringEvaluation.js';
 export { booleanEvaluation } from './booleanEvaluation.js';
 export { decimalEvaluation } from './decimalEvaluation.js';
 export { integerEvaluation } from './integerEvaluation.js';
+export { dtoEvaluationVisitor } from './dtoEvaluation.js';
