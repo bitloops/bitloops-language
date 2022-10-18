@@ -239,6 +239,13 @@ export type TInstanceOf = {
   isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
 };
 
+export type TPropsEvaluation = {
+  props: {
+    fields: TEvaluationFields;
+    name: string;
+  };
+};
+
 export type TNotInstanceOf = {
   isNotInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
 };
@@ -261,13 +268,13 @@ export type TEvaluation = {
     | TStructEvaluation
     | TDTOEvaluation
     | TValueObjectEvaluation
+    | TPropsEvaluation
     | TEntityEvaluation
     | TInstanceOf
     | TNotInstanceOf
     | TGetClass;
 };
 
-('f()');
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;

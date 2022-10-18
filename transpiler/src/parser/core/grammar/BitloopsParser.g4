@@ -856,8 +856,8 @@ valueObjectEvaluation
     ;
 
 domainEvaluationInput
-    : '(' '{' evaluationFieldList '}' ')'
-    | '(' regularEvaluation ')'
+    : '(' '{' evaluationFieldList '}' ')'   # DomainEvaluationInputFieldList
+    | '(' regularEvaluation ')'             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation

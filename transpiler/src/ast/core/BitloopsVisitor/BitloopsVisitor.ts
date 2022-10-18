@@ -42,6 +42,9 @@ import {
   integerEvaluation,
   decimalEvaluation,
   dtoEvaluationVisitor,
+  evaluationVisitor,
+  propsEvaluationVisitor,
+  valueObjectEvaluationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -212,10 +215,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEvaluationExpression(ctx: BitloopsParser.EvaluationExpressionContext) {
     // console.log('EvaluationExpression');
-    const evaluation = this.visit(ctx.evaluation())[0];
+    const evaluation = this.visit(ctx.evaluation());
     const returnObject = {
       expression: {
-        evaluation: evaluation,
+        ...evaluation,
       },
     };
     return returnObject;
@@ -532,5 +535,25 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDtoEvaluation(ctx: BitloopsParser.DtoEvaluationContext) {
     return dtoEvaluationVisitor(this, ctx);
+  }
+  visitEvaluation(ctx: BitloopsParser.EvaluationContext) {
+    return evaluationVisitor(this, ctx);
+  }
+  visitPropsEvaluation(ctx: BitloopsParser.PropsEvaluationContext): any {
+    return propsEvaluationVisitor(this, ctx);
+  }
+
+  visitValueObjectEvaluation(ctx: BitloopsParser.ValueObjectEvaluationContext): any {
+    return valueObjectEvaluationVisitor(this, ctx);
+  }
+
+  visitDomainEvaluationInputFieldList(
+    ctx: BitloopsParser.DomainEvaluationInputFieldListContext,
+  ): any {
+    return this.visit(ctx.evaluationFieldList());
+  }
+
+  visitDomainEvaluationInputRegular(ctx: BitloopsParser.DomainEvaluationInputRegularContext): any {
+    return this.visit(ctx.regularEvaluation());
   }
 }
