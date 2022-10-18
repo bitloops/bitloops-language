@@ -20,18 +20,13 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-
-export const methodArgumentsVisitor = (
+import { TExpression } from '../../../../types.js';
+// export type TEvaluationFields = ({ name: string } & TExpression);
+export const evaluationFieldVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+  ctx: BitloopsParser.EvaluationFieldContext,
+): { name: string } & TExpression => {
+  const identifier = ctx.Identifier().getText();
+  const expression = thisVisitor.visit(ctx.expression());
+  return { name: identifier, ...expression };
 };

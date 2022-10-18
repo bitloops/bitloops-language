@@ -20,18 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TStructEvaluation } from '../../../../types.js';
 
-export const methodArgumentsVisitor = (
+export const structEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+  ctx: BitloopsParser.StructEvaluationContext,
+): TStructEvaluation => {
+  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
+  const identifier = ctx.structEvaluationIdentifier().getText();
+  const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
+  return {
+    struct: {
+      fields: fieldList,
+      name: identifier,
+    },
+  };
 };

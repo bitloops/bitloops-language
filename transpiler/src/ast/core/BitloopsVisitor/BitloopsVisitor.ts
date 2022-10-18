@@ -21,12 +21,7 @@
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
 import { TBoundedContexts } from '../../../types.js';
-import {
-  regularBooleanEvaluation,
-  regularDecimalEvaluation,
-  regularIntegerEvaluation,
-  regularStringEvaluation,
-} from '../bitloopsParserHelpers/index.js';
+
 import { BitloopsIntermediateASTParserError } from '../index.js';
 
 import {
@@ -35,10 +30,17 @@ import {
   argumentListVisitor,
   argumentVisitor,
   regularVariableEvaluationORliteralORexpressionVisitor,
-  regularStructEvaluationVisitor,
-  // thisVariableMethodEvaluationVisitor,
-  // regularVariableMethodEvaluationVisitor,
+  structEvaluationVisitor,
+  evaluationFieldListVisitor,
+  thisVariableMethodEvaluationVisitor,
+  regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
+  evaluationFieldVisitor,
+  regularStructEvaluationVisitor,
+  stringEvaluation,
+  booleanEvaluation,
+  integerEvaluation,
+  decimalEvaluation,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -258,25 +260,25 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     // console.log('RegularIntegerEvaluation');
-    const returnObject = regularIntegerEvaluation(ctx.IntegerLiteral().getText());
+    const returnObject = integerEvaluation(ctx.IntegerLiteral().getText());
     return returnObject;
   }
 
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
     // console.log('RegularDecimalEvaluation');
-    const returnObject = regularDecimalEvaluation(ctx.DecimalLiteral().getText());
+    const returnObject = decimalEvaluation(ctx.DecimalLiteral().getText());
     return returnObject;
   }
 
   visitRegularBooleanEvaluation(ctx: BitloopsParser.RegularBooleanEvaluationContext) {
     // console.log('RegularBooleanEvaluation');
-    const returnObject = regularBooleanEvaluation(ctx.BooleanLiteral().getText());
+    const returnObject = booleanEvaluation(ctx.BooleanLiteral().getText());
     return returnObject;
   }
 
   visitRegularStringEvaluation(ctx: BitloopsParser.RegularStringEvaluationContext) {
     // console.log('RegularStringEvaluation');
-    const returnObject = regularStringEvaluation(ctx.StringLiteral().getText());
+    const returnObject = stringEvaluation(ctx.StringLiteral().getText());
     return returnObject;
   }
 
@@ -463,19 +465,68 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
   }
 
-  visitArgument(ctx: BitloopsParser.ArgumentContext) {
+  visitArgument(ctx: BitloopsParser.ArgumentContext): any {
     return argumentVisitor(this, ctx);
   }
 
-  visitRegularStructEvaluationVisitor(ctx: BitloopsParser.RegularStructEvaluationContext) {
+  visitStructEvaluation(ctx: BitloopsParser.StructEvaluationContext): any {
+    return structEvaluationVisitor(this, ctx);
+  }
+
+  visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext): any {
+    return thisVariableMethodEvaluationVisitor(this, ctx);
+  }
+
+  visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
+    return methodArgumentsVisitor(this, ctx);
+  }
+
+  visitRegularVariableMethodEvaluation(
+    ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
+  ): any {
+    // console.log('visitRegularMethodEvaluation');
+    return regularVariableMethodEvaluationVisitor(this, ctx);
+  }
+
+  visitEvaluationField(ctx: BitloopsParser.EvaluationFieldContext): any {
+    return evaluationFieldVisitor(this, ctx);
+  }
+
+  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+    return evaluationFieldListVisitor(this, ctx);
+  }
+
+  visitRegularStructEvaluation(ctx: BitloopsParser.RegularStructEvaluationContext): any {
     return regularStructEvaluationVisitor(this, ctx);
   }
 
-  // visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext) {
-  //   return thisVariableMethodEvaluationVisitor(this, ctx);
-  // }
+  visitStringLiteral(ctx: BitloopsParser.StringLiteralContext): any {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
 
-  visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext) {
-    return methodArgumentsVisitor(this, ctx);
+  visitNullLiteral(_ctx: BitloopsParser.NullLiteralContext): any {
+    return {
+      type: 'NullValue',
+      value: 'null',
+    };
+  }
+
+  visitBooleanLiteral(ctx: BitloopsParser.BooleanLiteralContext) {
+    return booleanEvaluation(ctx.BooleanLiteral().getText());
+  }
+
+  visitRegularExpressionLiteral(ctx: BitloopsParser.RegularExpressionLiteralContext) {
+    return {
+      type: 'regex',
+      value: ctx.RegularExpressionLiteral().getText(),
+    };
+  }
+
+  visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
+    return integerEvaluation(ctx.IntegerLiteral().getText());
+  }
+
+  visitDecimalLiteral(ctx: BitloopsParser.DecimalLiteralContext) {
+    return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
 }
