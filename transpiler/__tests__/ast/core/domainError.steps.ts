@@ -1,17 +1,64 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 // import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/BitloopsParser.js';
-import expectedModels from '../../../../src/examples/domainError.js';
+// import expectedModels from '../../../../src/examples/domainError.js';
 // import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/BitloopsParser.js';
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
+import {
+  BitloopsParser,
+  BitloopsIntermediateASTParser,
+  BitloopsParserError,
+  BitloopsLanguageASTContext,
+} from '../../../src/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/domainError.feature',
-);
+const feature = loadFeature('__tests__/ast/core/domainError.feature');
+
+const expectedModels = [
+  {
+    'Hello World': {
+      core: {
+        DomainErrors: {
+          InvalidName: {
+            message: { string: 'is an invalid name' },
+            errorId: { string: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
+            parameters: [{ type: 'string', value: 'name' }],
+          },
+        },
+      },
+    },
+  },
+  {
+    'Hello World': {
+      core: {
+        DomainErrors: {
+          InvalidName: {
+            message: { backTickString: 'name is an invalid ${name}' },
+            errorId: { string: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
+            parameters: [{ type: 'string', value: 'name' }],
+          },
+        },
+      },
+    },
+  },
+  {
+    'Hello World': {
+      core: {
+        DomainErrors: {
+          InvalidName: {
+            message: { backTickString: 'name is an invalid ${name}' },
+            errorId: { backTickString: '${errorId}' },
+            parameters: [
+              { type: 'string', value: 'name' },
+              { type: 'string', value: 'errorId' },
+            ],
+          },
+        },
+      },
+    },
+  },
+];
+
 let example_count = 0;
 let blString: string;
-const BOUNDED_CONTEXT = 'Hello World';
 let res: any;
-const MODULE = 'core';
 
 afterEach(() => {
   example_count++;
@@ -23,7 +70,19 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      res = parseBitloops(BOUNDED_CONTEXT, MODULE, {}, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: 'Test',
+          module: 'Test',
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        res = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+      }
     });
 
     then('I should get the right model', () => {
@@ -36,9 +95,19 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      res = function (): void {
-        parseBitloops(BOUNDED_CONTEXT, MODULE, {}, blString);
-      };
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: 'Test',
+          module: 'Test',
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        res = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+      }
     });
 
     then('I should get an error', () => {

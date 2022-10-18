@@ -22,14 +22,12 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 
 import {
   BitloopsIntermediateASTParser,
-  BitloopsLanguageAST,
+  BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/aggregateDeclaration.feature',
-);
+const feature = loadFeature('./__tests__/ast/core/aggregateDeclaration.feature');
 
 defineFeature(feature, (test) => {
   test.skip('Aggregate root declaration is valid', ({ given, when, then }) => {
@@ -60,7 +58,9 @@ defineFeature(feature, (test) => {
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
       if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageAST);
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
       }
     });
 

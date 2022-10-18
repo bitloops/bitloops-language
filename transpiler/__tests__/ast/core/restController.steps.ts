@@ -19,34 +19,48 @@
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d } from 'bitloops-gherkin';
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/restController.feature',
-);
+const feature = loadFeature('__tests__/ast/core/restController.feature');
+
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
 
 defineFeature(feature, (test) => {
   let boundedContext: string;
   let module: string;
   let blString: string;
-  let useCases: any;
   let modelOutput: string;
   let result: any;
   test('Rest Controller is valid', ({ given, when, then }) => {
     given(
       /^Valid bounded context (.*), module (.*), useCases (.*), Rest Controller (.*) strings$/,
-      (arg0, arg1, arg2, arg3) => {
+      (arg0, arg1, _arg2, arg3) => {
         boundedContext = d(arg0);
         module = d(arg1);
-        useCases = d(arg2);
         blString = d(arg3);
       },
     );
 
     when('I generate the model', () => {
-      // TODO fix test when useCase is ready
-      useCases = [];
-      result = parseBitloops(boundedContext, module, useCases, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext,
+          module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get (.*)$/, (arg0) => {
