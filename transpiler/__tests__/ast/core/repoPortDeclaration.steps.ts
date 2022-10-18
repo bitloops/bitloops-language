@@ -19,17 +19,19 @@
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d } from 'bitloops-gherkin';
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/repoPortDeclaration.feature',
-);
+const feature = loadFeature('__tests__/ast/core/repoPortDeclaration.feature');
 
 defineFeature(feature, (test) => {
   let boundedContext: string;
   let module: string;
   let blString: string;
-  let useCases: any = {};
   let modelOutput: string;
   let result: any;
   test('Repo port declaration is valid', ({ given, when, then }) => {
@@ -43,9 +45,21 @@ defineFeature(feature, (test) => {
     );
 
     when('I generate the model', () => {
-      // TODO fix test when useCase is ready
-      useCases = [];
-      result = parseBitloops(boundedContext, module, useCases, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext,
+          module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get (.*)$/, (arg0) => {

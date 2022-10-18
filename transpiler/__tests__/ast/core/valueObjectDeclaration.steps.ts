@@ -22,7 +22,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 
 import {
   BitloopsIntermediateASTParser,
-  BitloopsLanguageAST,
+  BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
@@ -57,7 +57,9 @@ defineFeature(feature, (test) => {
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
       if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageAST);
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
       }
     });
 

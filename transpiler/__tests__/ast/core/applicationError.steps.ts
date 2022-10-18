@@ -1,16 +1,15 @@
 import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
-// import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
+
 import {
   BitloopsIntermediateASTParser,
-  BitloopsLanguageAST,
   BitloopsParser,
   BitloopsParserError,
+  BitloopsLanguageASTContext,
 } from '../../../src/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/applicationError.feature',
-);
+const feature = loadFeature('./__tests__/ast/core/applicationError.feature');
+
 let blString: string;
 const BOUNDED_CONTEXT = 'Hello World';
 let res: any;
@@ -23,13 +22,24 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      res = parseBitloops(BOUNDED_CONTEXT, MODULE, {}, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        res = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+      }
     });
 
     then(/^I should get the right model (.*)$/, (arg0) => {
       const correctOutput = decode(arg0);
       expect(res).toEqual(JSON.parse(correctOutput));
-      // expect(res).toEqual(expectedModels[example_count]);
     });
   });
   test('applicationError is invalid', ({ given, when, then }) => {
@@ -39,7 +49,7 @@ defineFeature(feature, (test) => {
 
     when('I generate the model', () => {
       res = function (): void {
-        parseBitloops(BOUNDED_CONTEXT, MODULE, {}, blString);
+        // parseBitloops(BOUNDED_CONTEXT, MODULE, {});
       };
     });
 

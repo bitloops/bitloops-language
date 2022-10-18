@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-// import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
 
 import {
   BitloopsIntermediateASTParser,
@@ -27,9 +26,6 @@ import {
   BitloopsParserError,
 } from '../../../src/index.js';
 
-// const feature = loadFeature(
-//   './__tests__/features/bitloopsLanguageToModel/modelFragments/functionBody.feature',
-// );
 const feature = loadFeature('__tests__/ast/core/functionBody.feature');
 
 defineFeature(feature, (test) => {

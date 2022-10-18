@@ -18,8 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-// import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
-
 import { d, decode } from 'bitloops-gherkin';
 
 import {

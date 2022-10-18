@@ -425,9 +425,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitCaseClause(ctx: BitloopsParser.CaseClauseContext) {
     // console.log('CaseClause');
     const caseValue = ctx.expression().getText();
-    const caseStatement = this.visit(ctx.statementList())[0];
+    const caseStatement = this.visit(ctx.statementList());
     const returnObject = {
-      statements: caseStatement,
+      statements: caseStatement.statements[0].statements,
       caseValue: caseValue,
     };
     return returnObject;
@@ -435,12 +435,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDefaultClause(ctx: BitloopsParser.DefaultClauseContext) {
     // console.log('DefaultClause');
-    const defaultStatement = this.visit(ctx.statementList())[0];
-    console.log(defaultStatement);
-    const returnObject = {
-      statements: defaultStatement,
-    };
-    return returnObject;
+    const defaultStatement = this.visit(ctx.statementList());
+    // const returnObject = {
+    //   statements: defaultStatement.statements[0].statements,
+    // };
+    return defaultStatement.statements[0];
   }
 
   visitBreakStatement() {

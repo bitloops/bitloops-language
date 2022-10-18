@@ -18,11 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { getTargetFileDestination } from '../../../src/functions/modelToTargetLanguage/getTargetFileDestination.js';
+import { getTargetFileDestination } from '../../src/target/typescript/helpers/getTargetFileDestination.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/getTargetFileDestination.feature',
-);
+const feature = loadFeature('./__tests__/parser/getTargetFileDestination.feature');
 
 interface IResult {
   path: string;

@@ -22,11 +22,9 @@ import path from 'path';
 import {
   getBitloopsModulesPreModelData,
   TGetUseCasesResponse,
-} from '../../../src/functions/bitloopsLanguageToModel/bitloopsFilesToString/index.js';
+} from '../../src/parser/bitloopsFilesToString/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/bitloopsFileToString.feature',
-);
+const feature = loadFeature('./__tests__/parser/bitloopsFileToString.feature');
 
 defineFeature(feature, (test) => {
   test.skip('Valid filepath produces valid string', ({ given, when, then }) => {

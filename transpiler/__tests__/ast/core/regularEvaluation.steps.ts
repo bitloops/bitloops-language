@@ -19,12 +19,14 @@
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d } from 'bitloops-gherkin';
+import {
+  BitloopsParser,
+  BitloopsIntermediateASTParser,
+  BitloopsParserError,
+  BitloopsLanguageASTContext,
+} from '../../../src/index.js';
 
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
-
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/regularEvaluation.feature',
-);
+const feature = loadFeature('__tests__/ast/core/regularEvaluation.feature');
 
 defineFeature(feature, (test) => {
   test('Regular Evaluation is valid', ({ given, when, then }) => {
@@ -39,7 +41,21 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      result = parseBitloops(BOUNDED_CONTEXT, MODULE, {}, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get (.*)$/, (arg0) => {

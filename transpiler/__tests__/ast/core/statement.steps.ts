@@ -18,16 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/statement.feature',
-);
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
+
+const feature = loadFeature('./__tests__/ast/core/statement.feature');
 
 defineFeature(feature, (test) => {
   test('Steatement is valid', ({ given, when, then }) => {
-    const BOUNDED_CONTEXT = 'Hello World';
-    const MODULE = 'core';
     let blString;
     let modelOutput;
     let result;
@@ -37,7 +39,21 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      result = parseBitloops(BOUNDED_CONTEXT, MODULE, {}, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: 'Test',
+          module: 'Test',
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get (.*)$/, (arg0) => {

@@ -19,11 +19,14 @@
  */
 import { d } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/domainConstructorDeclaration.feature',
-);
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
+const feature = loadFeature('__tests__/ast/core/domainConstructorDeclaration.feature');
 
 defineFeature(feature, (test) => {
   test.skip('Domain constructor declaration is valid', ({ given, when, then }) => {
@@ -42,7 +45,21 @@ defineFeature(feature, (test) => {
     );
 
     when('I generate the model', () => {
-      result = parseBitloops(boundedContext, module, {}, blString);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: boundedContext,
+          module: module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get (.*)$/, (arg0) => {

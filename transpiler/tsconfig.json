@@ -18,7 +18,9 @@
     "noImplicitAny": false,
     "noImplicitThis": false,
     "strictNullChecks": false,
+    "resolveJsonModule": true,
     "allowJs": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*", "__tests__/**/*"],
+  "include": ["src/**/*", "__tests__/**/*"]
 }

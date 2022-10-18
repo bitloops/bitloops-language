@@ -51,9 +51,9 @@
   },
   "scripts": {
     "clean": "rm -rf ./lib",
-    "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/parser/setup/grammar",
+    "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/src/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/src/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/src/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/src/parser/setup/grammar",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && yarn copy-grammars",
-    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/src/index.js lib/esm/src/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
     "lint": "eslint . --ext .ts --ext .mts --ext .cts",
