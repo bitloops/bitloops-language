@@ -40,3 +40,6 @@ export { propsEvaluationVisitor } from './propsEvaluation.js';
 export { valueObjectEvaluationVisitor } from './valueObjectEvaluation.js';
 export { formalParameterListVisitor } from './formalParameterList.js';
 export { entityEvaluationVisitor } from './entityEvaluation.js';
+export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
+export { restControllerExecuteDeclarationVisitor } from './restControllerExecuteDeclaration.js';
+export { restControllerDeclarationVisitor } from './restControllerDeclaration.js';

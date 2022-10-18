@@ -903,13 +903,13 @@ restControllerExecuteDeclaration
     ;
 
 restControllerMethodDeclaration
-    : Method ':' (MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions) SemiColon?
+    : Method ':' httpMethod=(MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions) SemiColon?
     ;
 
 
 controllerDeclaration
-    : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?
-    | GraphQLController ControllerIdentifier formalParameterList '{' graphQLResolverOptions graphQLControllerExecuteDeclaration '}' SemiColon?
+    : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?   # RESTControllerDeclaration
+    | GraphQLController ControllerIdentifier formalParameterList '{' graphQLResolverOptions graphQLControllerExecuteDeclaration '}' SemiColon?      # GraphQLControllerDeclaration
     ;
 
 graphQLResolverOptions

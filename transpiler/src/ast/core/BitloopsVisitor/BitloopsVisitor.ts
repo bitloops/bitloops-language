@@ -25,6 +25,8 @@ import {
   TEvaluationFields,
   TParameterDependency,
   TRegularEvaluation,
+  TRESTControllerDependencies,
+  TRESTControllerExecute,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -52,6 +54,9 @@ import {
   valueObjectEvaluationVisitor,
   formalParameterListVisitor,
   entityEvaluationVisitor,
+  restControllerMethodDeclarationVisitor,
+  restControllerExecuteDeclarationVisitor,
+  restControllerDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -579,5 +584,29 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
     return formalParameterListVisitor(this, ctx);
+  }
+
+  visitRestControllerExecuteDeclaration(
+    ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
+  ): TRESTControllerExecute {
+    return restControllerExecuteDeclarationVisitor(this, ctx);
+  }
+
+  visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
+    return restControllerMethodDeclarationVisitor(this, ctx);
+  }
+
+  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): {
+    dependencies: TRESTControllerDependencies;
+  } {
+    return {
+      dependencies: [ctx.Identifier(0), ctx.Identifier(1)],
+    };
+  }
+
+  // visitGraphQLControllerDeclaration(ctx: BitloopsParser.GraphQLControllerDeclarationContext) {}
+
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext) {
+    return restControllerDeclarationVisitor(this, ctx);
   }
 }
