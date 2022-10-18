@@ -30,6 +30,7 @@ import {
   TGraphQLControllerExecute,
   TGraphQLOperation,
   TDefinitionMethods,
+  TOkErrorReturnType,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -64,7 +65,10 @@ import {
   graphQLResolverOptionsVisitor,
   graphQLControllerExecuteVisitor,
   methodDefinitionVisitor,
-  visitMethodDefinitionListVisitor,
+  methodDefinitionListVisitor,
+  returnErrorsTypeVisitor,
+  returnOkErrorTypeVisitor,
+  errorIdentifiersVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -647,10 +651,30 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
     definitionMethods: TDefinitionMethods;
   } {
-    return visitMethodDefinitionListVisitor(this, ctx);
+    return methodDefinitionListVisitor(this, ctx);
   }
 
   visitMethodDefinition(ctx: BitloopsParser.MethodDefinitionContext) {
     return methodDefinitionVisitor(this, ctx);
+  }
+
+  visitErrorIdentifier(ctx: BitloopsParser.ErrorIdentifierContext) {
+    return ctx.ErrorIdentifier().getText();
+  }
+
+  visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): string {
+    return ctx.type_().getText();
+  }
+
+  visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {
+    return errorIdentifiersVisitor(this, ctx);
+  }
+
+  visitReturnErrorsType(ctx: BitloopsParser.ReturnErrorsTypeContext): string[] {
+    return returnErrorsTypeVisitor(this, ctx);
+  }
+
+  visitReturnOkErrorType(ctx: BitloopsParser.ReturnOkErrorTypeContext): TOkErrorReturnType {
+    return returnOkErrorTypeVisitor(this, ctx);
   }
 }

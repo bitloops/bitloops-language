@@ -73,8 +73,8 @@ defineFeature(feature, (test) => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Test',
-          module: 'Test',
+          boundedContext: 'Hello World',
+          module: 'core',
           fileId: 'testFile.bl',
           fileContents: blString,
         },
@@ -89,25 +89,28 @@ defineFeature(feature, (test) => {
       expect(res).toEqual(expectedModels[example_count]);
     });
   });
+
   test('domainError is invalid', ({ given, when, then }) => {
     given(/^An invalid domain error string (.*)$/, (arg0) => {
       blString = arg0;
     });
 
     when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: 'Test',
-          module: 'Test',
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        res = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
-      }
+      res = () => {
+        const parser = new BitloopsParser();
+        const initialModelOutput = parser.parse([
+          {
+            boundedContext: 'Test',
+            module: 'Test',
+            fileId: 'testFile.bl',
+            fileContents: blString,
+          },
+        ]);
+        const intermediateParser = new BitloopsIntermediateASTParser();
+        if (!(initialModelOutput instanceof BitloopsParserError)) {
+          intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+        }
+      };
     });
 
     then('I should get an error', () => {
