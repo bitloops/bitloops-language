@@ -4,6 +4,7 @@ import {
   getAllNextTypesSubtree,
 } from '../../../utils/index.js';
 import { getBitloopsModel } from '../../BitloopsParser.js';
+import { getConstantDeclarations } from '../domain/helpers.js';
 
 const valueObjectDeclaration = (subtree: any): any => {
   const valueObjectIdentifier = getNextTypesChildren('valueObjectIdentifier', subtree);
@@ -15,19 +16,25 @@ const valueObjectDeclaration = (subtree: any): any => {
   const privateMethodTrees = getAllNextTypesSubtree('privateMethodDeclaration', subtree);
 
   const privateMethodDeclarations = getPrivateMethodsObject(privateMethodTrees);
-  const constantVariablesTrees = getAllNextTypesSubtree('constDeclaration', subtree);
-  const constantVariableDeclarations = getConstantDeclarations(constantVariablesTrees);
-  // const domainFieldTrees = getAllNextTypesSubtree('domainFieldDeclaration', subtree);
-  // console.log('domainFieldTrees', domainFieldTrees);
-  // const domainFieldDeclaration = getBitloopsModel(domainFieldTrees[0]);
-  // console.log('domainFieldDeclaration', domainFieldDeclaration);
+
+  const result = {
+    ...domainConstructorDeclaration,
+    methods: privateMethodDeclarations,
+  };
+
+  const domainConstantVariablesTree = getNextTypesSubtree('domainConstDeclaration', subtree);
+  if (domainConstantVariablesTree) {
+    const constantVariablesTrees = getAllNextTypesSubtree(
+      'constDeclaration',
+      domainConstantVariablesTree,
+    );
+    const constantVariableDeclarations = getConstantDeclarations(constantVariablesTrees);
+    result.constantVars = constantVariableDeclarations;
+  }
+
   return {
     key: valueObjectName,
-    subModel: {
-      constantVars: constantVariableDeclarations,
-      ...domainConstructorDeclaration,
-      methods: privateMethodDeclarations,
-    },
+    subModel: result,
   };
 };
 
@@ -38,19 +45,6 @@ const getPrivateMethodsObject = (privateMethodTrees: any) => {
     privateMethodDeclarations = { ...privateMethodDeclarations, ...privateMethodModel };
   }
   return privateMethodDeclarations;
-};
-
-const getConstantDeclarations = (constantVariablesTrees: any) => {
-  const constantDeclarations = [];
-  for (const constantVariablesTree of constantVariablesTrees) {
-    const constantVariableModel = getBitloopsModel(constantVariablesTree);
-    console.log(
-      'constantVariableModel',
-      constantVariableModel.constDeclaration.expression.evaluation,
-    );
-    constantDeclarations.push(constantVariableModel.constDeclaration);
-  }
-  return constantDeclarations;
 };
 
 export { valueObjectDeclaration };

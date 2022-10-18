@@ -9,4 +9,17 @@ const getPrivateMethodsObject = (privateMethodTrees: any) => {
   return privateMethodDeclarations;
 };
 
-export { getPrivateMethodsObject };
+const getConstantDeclarations = (constantVariablesTrees: any) => {
+  const constantDeclarations = [];
+  for (const constantVariablesTree of constantVariablesTrees) {
+    const constantVariableModel = getBitloopsModel(constantVariablesTree);
+    console.log(
+      'constantVariableModel',
+      constantVariableModel.constDeclaration.expression.evaluation,
+    );
+    constantDeclarations.push(constantVariableModel.constDeclaration);
+  }
+  return constantDeclarations;
+};
+
+export { getPrivateMethodsObject, getConstantDeclarations };

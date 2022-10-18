@@ -37,8 +37,8 @@ const expressionValuesToTargetLanguage = (
   expressionValue: TExpressionValues,
   targetLanguage: string,
 ): string => {
-  console.log('expressionValue', expressionValue);
   if (!expressionValue) {
+    console.log('expressionValue', expressionValue);
     throw new Error(`Unsupported expression: ${expressionValue}`);
   }
 
