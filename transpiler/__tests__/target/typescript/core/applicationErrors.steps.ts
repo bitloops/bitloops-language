@@ -18,8 +18,8 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { BitloopsTargetGenerator } from '../../../src/target/index.js';
-import { formatString } from '../../../src/target/typescript/core/codeFormatting.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
 const feature = loadFeature('__tests__/target/core/applicationErrors.feature');
 
