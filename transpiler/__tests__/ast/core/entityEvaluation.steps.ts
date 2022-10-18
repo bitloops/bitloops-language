@@ -42,8 +42,8 @@ defineFeature(feature, (test) => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Test',
-          module: 'test',
+          boundedContext: 'Hello World',
+          module: 'core',
           fileId: 'testFile.bl',
           fileContents: blString,
         },
