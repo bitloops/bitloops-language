@@ -23,6 +23,7 @@ import { d } from 'bitloops-gherkin';
 import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { ISetupData } from '../../../../src/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
 const feature = loadFeature('__tests__/target/typescript/core/valueObjects.feature');
 
@@ -32,8 +33,8 @@ defineFeature(feature, (test) => {
   let value;
   let intermediateAST;
   let props;
-  const entityClassType = ClassTypes.ValueObjects;
-  const valueObjectClassType = ClassTypes.Props;
+  const valueObjectClassType = ClassTypes.ValueObjects;
+  const propsClassType = ClassTypes.Props;
 
   const boundedContext = 'Hello world';
   const module = 'demo';
@@ -51,8 +52,8 @@ defineFeature(feature, (test) => {
       intermediateAST = {
         [boundedContext]: {
           [module]: {
-            [entityClassType]: JSON.parse(value),
-            [valueObjectClassType]: JSON.parse(props),
+            [valueObjectClassType]: JSON.parse(value),
+            [propsClassType]: JSON.parse(props),
           },
         },
       };
@@ -75,8 +76,33 @@ defineFeature(feature, (test) => {
       });
     });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result).toEqual(d(output));
+    then(/^I should see the output VOs (.*) and outputProps (.*)$/, (outputVOs, outputProps) => {
+      console.log('d(outputVOs)', d(outputVOs));
+      const classNamesContent = d(outputVOs);
+
+      const expectedOutput = [];
+      for (const [className, content] of Object.entries(classNamesContent)) {
+        const formattedOutput = formatString(content as string, formatterConfig);
+        expectedOutput.push({
+          boundedContext,
+          className,
+          module,
+          classType: valueObjectClassType,
+          fileContent: formattedOutput,
+        });
+      }
+      // add props to the expected result too
+      const propsContent = formatString(d(outputProps), formatterConfig);
+      const propsName = Object.keys(props)[0];
+      expectedOutput.push({
+        boundedContext,
+        className: propsName,
+        module,
+        classType: propsClassType,
+        fileContent: propsContent,
+      });
+
+      expect(result).toEqual(expectedOutput);
     });
   });
 });

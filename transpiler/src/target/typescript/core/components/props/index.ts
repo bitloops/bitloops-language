@@ -48,6 +48,7 @@ const propsToTargetLanguage = (props: TProps, targetLanguage: string): string =>
 };
 
 const propsValuesToTargetLanguage = (propsValues: TPropsValues, targetLanguage: string): string => {
+  console.log('propsValuesToTargetLanguage', propsValues);
   if (isUndefined(propsValues.variables)) {
     throw new Error('Variables of Prop are not defined');
   }
