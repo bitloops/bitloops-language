@@ -46,7 +46,7 @@ const returnOkToTargetLanguage = (variable: TReturnOKStatement, targetLanguage: 
 
   const expressionValue = modelToTargetLanguage({ type: 'TExpression', value: variable.returnOK });
   const propsVariableLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (expressionValue: string) => `return yay(${expressionValue})`,
+    [SupportedLanguages.TypeScript]: (expressionValue: string) => `return ok(${expressionValue})`,
   };
   return propsVariableLangMapping[targetLanguage](expressionValue);
 };

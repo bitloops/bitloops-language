@@ -120,6 +120,10 @@ import { variableDeclarationToTargetLanguage } from './components/statements/var
 import { repoAdapterToTargetLanguage } from './components/repo/repoAdapter.js';
 import { singleExpressionToTargetLanguage } from '../setup/single-expression/index.js'; // TODO check this
 import { ISetupData, TBoundedContexts, TContextData } from '../../../types.js';
+import {
+  ruleDeclarationToTargetLanguage,
+  rulesDeclarationToTargetLanguage,
+} from './components/rulesDeclaration/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -305,8 +309,6 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRESTController: {
-      console.log('contextData', contextData);
-      console.log('setupData?.controllers', setupData);
       if (contextData && setupData?.controllers) {
         res = restControllersToTargetLanguage(
           value,
@@ -479,6 +481,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TSingleExpression: {
       res = singleExpressionToTargetLanguage(value, targetLanguage);
+      break;
+    }
+    case BitloopsTypesMapping.TRules: {
+      res = rulesDeclarationToTargetLanguage(value, targetLanguage);
+      break;
+    }
+    case BitloopsTypesMapping.TRuleValues: {
+      res = ruleDeclarationToTargetLanguage(value, targetLanguage);
       break;
     }
     default: {

@@ -48,7 +48,7 @@ const repoBodyLangMapping = {
     repoPortInfo: TRepoPort,
   ): string => {
     switch (dbType) {
-      case 'mongodb': {
+      case 'DB.Mongo': {
         let result = `constructor(private client: MongoClient) { this.collection = ${collection}; }`;
         if (repoPortInfo.extendedRepoPorts.includes(CRUDRepoPort)) {
           result += fetchTypeScriptMongoCrudBaseRepo(repoPortInfo.aggregateRootName);

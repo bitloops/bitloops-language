@@ -374,7 +374,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     const rawRepoAdapterType = this.visit(ctx.repoAdapterClassName());
     // console.log('adapterClassName', rawRepoAdapterType);
     const databaseTypesMapping: Record<string, TRepoSupportedTypes> = {
-      'RepoAdapters.Mongo': 'mongodb',
+      'RepoAdapters.Mongo': 'DB.Mongo',
     };
     const dbType = databaseTypesMapping[rawRepoAdapterType];
     if (!dbType) throw new Error('Database type not supported: ' + rawRepoAdapterType);
@@ -415,7 +415,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     const dbConnectionType = this.visit(ctx.repoConnectionType()); //.Mongo().getText());
 
     const databaseTypesMapping: Record<string, TRepoSupportedTypes> = {
-      Mongo: 'mongodb',
+      Mongo: 'DB.Mongo',
     };
     const dbType = databaseTypesMapping[dbConnectionType];
     // Get result of 1st child of repoConnectionOptions (objectProperties)

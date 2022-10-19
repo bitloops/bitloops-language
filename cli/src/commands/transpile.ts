@@ -101,6 +101,7 @@ const transpile = async (source: ICollection): Promise<void> => {
   );
 
   console.log('setupData', setupData);
+  console.log('setupData', JSON.stringify(setupData));
   generateTargetFiles({
     boundedContextModules,
     sourceDirPath: absoluteSourceDirPath,

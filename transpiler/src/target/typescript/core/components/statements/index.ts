@@ -19,7 +19,7 @@
  */
 
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TStatement, TStatements } from '../../../../../types.js';
+import { TConstDeclaration, TEvaluation, TStatement, TStatements } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -55,10 +55,30 @@ const statementToTargetLanguage = (variable: TStatement, targetLanguage: string)
 };
 
 const statementsToTargetLanguage = (variable: TStatements, targetLanguage: string): string => {
+  const elseAdded = [];
   const mapping = {
     [SupportedLanguages.TypeScript]: (variable: TStatements): string => {
       return variable
         .map((statement) => {
+          // eslint-disable-next-line no-prototype-builtins
+          if (statement.hasOwnProperty('constDeclaration')) {
+            const { constDeclaration } = statement as TConstDeclaration;
+            const { expression } = constDeclaration;
+            if ('evaluation' in expression) {
+              const { evaluation } = expression as TEvaluation;
+              if ('entity' in evaluation || 'valueObject' in evaluation) {
+                const evaluationRes = modelToTargetLanguage({
+                  type: BitloopsTypesMapping.TStatement,
+                  value: statement,
+                  targetLanguage,
+                });
+                const ifAdded = `if (!${constDeclaration.name}.isFail()) {`;
+                elseAdded.push(`} else { return fail(${constDeclaration.name}.value) }`);
+                return `${evaluationRes}${ifAdded}`;
+              }
+            }
+          }
+
           const result = modelToTargetLanguage({
             type: BitloopsTypesMapping.TStatement,
             value: statement,
@@ -68,8 +88,14 @@ const statementsToTargetLanguage = (variable: TStatements, targetLanguage: strin
         .join(' ');
     },
   };
+  let finalResult = mapping[targetLanguage](variable);
+  if (elseAdded.length > 0) {
+    for (let i = elseAdded.length - 1; i >= 0; i -= 1) {
+      finalResult += elseAdded[i];
+    }
+  }
 
-  return mapping[targetLanguage](variable);
+  return finalResult;
 };
 
 const statementsWithoutThisToTargetLanguage = (
