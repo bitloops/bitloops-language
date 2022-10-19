@@ -1,0 +1,11 @@
+// declaration
+// Rule IsValidTitle(title: string) throws DomainErrors.InvalidTitleError {
+//     isBrokenIf (title.length > 150 OR title.length < 4);
+//   }
+
+Rule IsValidTitle(title: string) throws DomainErrors.InvalidTitleError {
+  isBrokenIf ((title.length > 150) OR (title.length < 4));
+}
+  
+// execution e.g. inside the domain e.g. value object
+applyRules(IsValidTitle(props.title));

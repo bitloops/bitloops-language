@@ -221,7 +221,8 @@ export type TDomainError = {
 export type TRule = {
   parameters?: TParameterDependencies;
   error: string;
-  // isBrokenIfCondition: TCondition;
+  statements: TStatements;
+  isBrokenIfCondition: TCondition;
 };
 
 export type TRules = Record<string, TRule>;
