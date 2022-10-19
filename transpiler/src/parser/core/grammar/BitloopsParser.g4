@@ -601,7 +601,7 @@ applyRuleStatementRulesList
     ;
 
 applyRulesRule
-    : domainRuleIdentifier formalParameterList
+    : domainRuleIdentifier arguments
     ;
 
 block
