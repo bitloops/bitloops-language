@@ -87,7 +87,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       dbTypes.add(connectionInfo.dbType);
     }
     dbTypes.forEach((dbType) => {
-      result.push(`await import('.${setupTypeMapper[dbType]}');`);
+      result.push(`await import('..${setupTypeMapper[dbType]}');`);
     });
 
     return result;

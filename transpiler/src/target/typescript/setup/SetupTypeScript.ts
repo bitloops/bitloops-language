@@ -700,12 +700,10 @@ start();
     const servers = data.servers;
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
-        const filePath =
-          '/../' +
-          path.normalize(
-            `${setupTypeMapper[`${serverType}.Server`]}app${i}${esmEnabled ? '.js' : ''}`,
-          );
-        imports.push(`await import('.${filePath}');`);
+        const filePath = `${setupTypeMapper[`${serverType}.Server`]}app${i}${
+          esmEnabled ? '.js' : ''
+        }`;
+        imports.push(`await import('..${path.normalize(filePath)}${esmEnabled ? '.js' : ''}');`);
       }
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
