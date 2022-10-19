@@ -101,6 +101,8 @@ export type TBitloopsTargetContent = {
   fileContent: string;
 }[];
 
+export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
+
 export type TBitloopsTargetSetupContent = {
   fileId: string;
   fileType: string;

@@ -1,3 +1,5 @@
+import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
+
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -18,16 +20,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-export type TGetUseCasesResponse = Record<string, { filesString: string }>;
-export type TBoundedContextName = string;
-export type TModuleName = string;
-
 export type TModule = {
   Props?: TProps;
   Controllers?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
+  ApplicationErrors?: TApplicationErrors;
   DomainErrors?: TDomainErrors;
-  AggregateRoots?: TAggregateRoots;
+  RootEntities?: TRootEntities;
   Entities?: TEntities;
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
@@ -53,7 +52,68 @@ export type TClassType =
   | 'Rules'
   | 'RepoPorts'
   | 'RepoAdapters';
+
+export type TComponentType =
+  | 'TProps'
+  | 'TControllers'
+  | 'TUseCase'
+  | 'TApplicationErrors'
+  | 'TDomainErrors'
+  | 'TRootEntities'
+  | 'TEntities'
+  | 'TValueObjects'
+  | 'TDTOs'
+  | 'TStructs'
+  | 'TPackages'
+  | 'TRules'
+  | 'TRepoPorts'
+  | 'TRepoAdapters';
+
 export type TClassName = string;
+type TClassInformation = {
+  moduleName: TModuleName;
+  fileId: string;
+  contents: BitloopsLanguageAST;
+};
+
+export type TFileId = string;
+type TFileContents = string;
+
+export type TParserCoreInputData = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  fileId: TFileId;
+  fileContents: TFileContents;
+}[];
+
+export type TASTCoreInputData = {
+  boundedContext: string;
+  classes: Record<TClassType, Record<TClassName, TClassInformation>>;
+};
+
+export type TContextData = { boundedContext: string; module: string };
+
+export type TBitloopsTargetContent = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  classType: TClassType;
+  className: TClassName;
+  fileContent: string;
+}[];
+
+export type TBitloopsTargetSetupContent = {
+  fileId: string;
+  fileType: string;
+  fileContent: string;
+}[];
+
+export type TBitloopsTargetGeneratorParams = {
+  intermediateAST: TBoundedContexts;
+  setupData: ISetupData;
+  targetLanguage: string;
+  formatterConfig?: any;
+  sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
+};
 
 export type TBitloopsClasses =
   | TProps
@@ -64,8 +124,10 @@ export type TBitloopsClasses =
   | TDTO
   | TStructs;
 
+export type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, TModule>;
 
+export type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export type TVariables = TVariable[];
@@ -131,11 +193,11 @@ export const bitloopsPrimitives = [
   'NullValue',
   'Duration',
   'regex',
-  'Void',
+  'void',
 ] as const;
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
-export type TUserDefinedClass = string;
+type TUserDefinedClass = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedClass;
 
@@ -177,6 +239,13 @@ export type TInstanceOf = {
   isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
 };
 
+export type TPropsEvaluation = {
+  props: {
+    fields: TEvaluationFields;
+    name: string;
+  };
+};
+
 export type TNotInstanceOf = {
   isNotInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
 };
@@ -199,13 +268,13 @@ export type TEvaluation = {
     | TStructEvaluation
     | TDTOEvaluation
     | TValueObjectEvaluation
+    | TPropsEvaluation
     | TEntityEvaluation
     | TInstanceOf
     | TNotInstanceOf
     | TGetClass;
 };
 
-// ('f()');
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;
@@ -353,7 +422,7 @@ export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TOkErrorReturnType = {
   ok: string;
-  errors?: string[];
+  errors?: string[]; // TODO remove optional if we have empty array for no errors
 };
 
 export type TDomainCreateMethod = {
@@ -389,7 +458,7 @@ export type TEntityMethods = TDomainMethods;
 
 export type TEntityCreate = TDomainCreateMethod;
 
-export type TAggregateRoots = Record<string, TEntityValues>;
+export type TRootEntities = Record<string, TEntityValues>;
 
 export type TDTOValues = {
   fields: TVariables;
@@ -444,8 +513,8 @@ export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControlle
 export type TGraphQLControllerValues = TBaseControllerValues & {
   type: 'graphql';
   operationType: TGraphQLOperation;
-  operationName: string;
   inputType: string;
+  operationName: string;
   execute: TGraphQLControllerExecute;
   outputType: string; // should be same as return type of execute
 };
@@ -465,10 +534,6 @@ export type TRegularCase = {
   caseValue: string;
   statements: TStatements;
 };
-
-// export type TCaseValue = {
-//   value: string;
-// };
 
 export type TSwitchStatement = {
   switchStatement: {
@@ -553,10 +618,10 @@ export const repoSupportedTypes = ['postgres', 'mysql', 'sqlite', 'mongodb'] as 
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
 
 export type TReposSetup = {
-  connections?: {
+  connections: {
     [connectionName: string]: TRepoConnectionInfo;
   };
-  repoAdapters?: {
+  repoAdapters: {
     [boundedContext: string]: {
       [module: string]: TSetupRepoAdapters;
     };
@@ -615,7 +680,7 @@ export type TGraphQLControllerInstances = {
 };
 
 export type TSetupInfo = {
-  language?: string;
+  language: string;
   servers?: TServers;
   routers?: TRouters;
 };
@@ -684,7 +749,7 @@ export interface IServer {
 
 type TResolvers = TResolver[];
 
-type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
+export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
 
 export type TResolver = {
   boundedContext: string;
@@ -890,30 +955,4 @@ export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
 };
 
-export type TBitloopsTargetGeneratorParams = {
-  intermediateAST: TBoundedContexts;
-  setupData: ISetupData;
-  targetLanguage: string;
-  prettierConfig?: any;
-};
-// export type TBitloopsTargetContent = {
-//   [boundedContext: TBoundedContextName]: {
-//     [module: TModuleName]: {
-//       [classType in TClassType]: {
-//         [className: TClassName]: {
-//           content: string;
-//         };
-//       };
-//     };
-//   };
-// };
-
-export type TBitloopsTargetContent = {
-  boundedContext: string;
-  module: string;
-  classType: TClassType;
-  className: TClassName;
-  fileContent: string;
-}[];
-
-export type BoundedContextModules = Record<string, string[]>;
+export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;

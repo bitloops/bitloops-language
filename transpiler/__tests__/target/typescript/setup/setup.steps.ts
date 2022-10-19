@@ -29,8 +29,8 @@ import {
   BitloopsSetupParserError,
   BitloopsIntermediateSetupASTParser,
   BitloopsIntermediateSetupASTParserError,
+  BitloopsTargetGenerator,
 } from '../../../../src/index.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 
 import { ISetupData, TBitloopsTargetSetupContent } from '../../../../src/types.js';
 import { BitloopsTargetGeneratorError } from '../../../../src/target/BitloopsTargetGeneratorError.js';

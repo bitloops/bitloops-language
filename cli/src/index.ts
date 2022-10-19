@@ -38,7 +38,9 @@ program.description(copyrightSnippet);
 program
   .command('transpile')
   .description('Initialize Bitloops')
-  .option('-t, --targetLanguage <string>')
+  .option('-l, --targetLanguage <string>')
+  .option('-s, --sourceDirPath <string>')
+  .option('-t, --targetDirPath <string>')
   .action(transpile);
 
 program.command('copyright').description('Print copyright information').action(copyright);
