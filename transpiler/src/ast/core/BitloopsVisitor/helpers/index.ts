@@ -58,3 +58,6 @@ export { propsDeclarationVisitor } from './propsDeclaration.js';
 export { domainConstructorDeclarationVisitor } from './domainConstructorDeclaration.js';
 export { valueObjectDeclarationVisitor } from './valueObjectDeclaration.js';
 export { privateMethodDeclarationVisitor } from './privateMethodDeclaration.js';
+export { privateMethodDeclarationListVisitor } from './privateMethodDeclarationList.js';
+export { returnPrivateMethodTypeVisitor } from './returnPrivateMethodType.js';
+export { domainConstDeclarationListVisitor } from './domainConstDeclarationList.js';

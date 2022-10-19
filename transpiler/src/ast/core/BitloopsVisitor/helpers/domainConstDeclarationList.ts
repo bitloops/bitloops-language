@@ -20,22 +20,16 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityCreate } from '../../../../types.js';
+import { TConstDeclarationValue, TConstDeclaration } from '../../../../types.js';
 
-export const domainConstructorDeclarationVisitor = (
+export const domainConstDeclarationListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.DomainConstructorDeclarationContext,
-): TEntityCreate => {
-  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
-  const functionBody = thisVisitor.visit(ctx.functionBody());
-  const returnType = thisVisitor.visit(ctx.returnOkErrorType());
-  const parameters = thisVisitor.visit(ctx.formalParameterList());
-  console.log({ functionBody });
-  const result: TEntityCreate = {
-    returnType,
-    statements: functionBody.statements,
-    parameterDependency: parameters[0],
-  };
-  //   console.log('result', result);
+  ctx: BitloopsParser.DomainConstDeclarationListContext,
+): TConstDeclarationValue[] => {
+  const children: TConstDeclaration[] = thisVisitor.visitChildren(ctx);
+  if (!children) {
+    return [];
+  }
+  const result: TConstDeclarationValue[] = children.map((el) => el.constDeclaration);
   return result;
 };

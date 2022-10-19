@@ -22,5 +22,5 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "__tests__/**/*"]
+  "include": ["src/**/*", "__tests__/**/*", "src/ast/core/BitloopsVisitor/helpers/.ts"]
 }
