@@ -305,8 +305,6 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRESTController: {
-      console.log('contextData', contextData);
-      console.log('setupData?.controllers', setupData);
       if (contextData && setupData?.controllers) {
         res = restControllersToTargetLanguage(
           value,

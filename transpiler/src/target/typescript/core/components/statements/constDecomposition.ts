@@ -32,7 +32,6 @@ const constDecompositionToTargetLanguage = (
   }
 
   const { evaluation } = variable.constDecomposition;
-  console.log('eval' + evaluation);
   const expressionValue = modelToTargetLanguage({
     type: BitloopsTypesMapping.TEvaluation,
     value: {
