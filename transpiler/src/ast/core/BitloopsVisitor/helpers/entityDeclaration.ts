@@ -21,23 +21,33 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import {
-  TValueObjectValues,
+  TEntityValues,
   TConstDeclarationValue,
-  TValueObjectMethods,
+  TDomainPublicMethod,
+  TDomainPrivateMethod,
 } from '../../../../types.js';
 
-export const valueObjectDeclarationVisitor = (
+export const entityDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ValueObjectDeclarationContext,
-): { ValueObjects: { [identifier: string]: TValueObjectValues } } => {
-  const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
+  ctx: BitloopsParser.EntityDeclarationContext,
+): { Entities: { [identifier: string]: TEntityValues } } => {
+  const valueObjectIdentifier = ctx.entityIdentifier().getText();
   const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
   const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
     ctx.domainConstDeclarationList(),
   );
-  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const publicMethods: Record<string, TDomainPublicMethod> = thisVisitor.visit(
+    ctx.publicMethodDeclarationList(),
+  );
+  const privateMethods: Record<string, TDomainPrivateMethod> = thisVisitor.visit(
+    ctx.privateMethodDeclarationList(),
+  );
+  const methods = {
+    ...publicMethods,
+    ...privateMethods,
+  };
   const result = {
-    ValueObjects: {
+    Entities: {
       [valueObjectIdentifier]: {
         constantVars,
         create: domainConstructorDeclaration,
@@ -45,5 +55,6 @@ export const valueObjectDeclarationVisitor = (
       },
     },
   };
+  // console.log(JSON.stringify(result, null, 2));
   return result;
 };

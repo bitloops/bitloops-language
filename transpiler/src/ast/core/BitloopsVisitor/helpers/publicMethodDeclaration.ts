@@ -21,29 +21,27 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import {
-  TValueObjectValues,
-  TConstDeclarationValue,
-  TValueObjectMethods,
+  TDomainPublicMethod,
+  TParameterDependencies,
+  TOkErrorReturnType,
 } from '../../../../types.js';
 
-export const valueObjectDeclarationVisitor = (
+export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ValueObjectDeclarationContext,
-): { ValueObjects: { [identifier: string]: TValueObjectValues } } => {
-  const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
-  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
-  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
-    ctx.domainConstDeclarationList(),
+  ctx: BitloopsParser.PublicMethodDeclarationContext,
+): { methodName: string; methodInfo: TDomainPublicMethod } => {
+  const methodName = ctx.identifier().getText();
+  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
+    ctx.formalParameterList(),
   );
-  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
-  const result = {
-    ValueObjects: {
-      [valueObjectIdentifier]: {
-        constantVars,
-        create: domainConstructorDeclaration,
-        methods,
-      },
+  const returnType: TOkErrorReturnType = thisVisitor.visit(ctx.returnPublicMethodType())[1];
+  const { statements } = thisVisitor.visit(ctx.functionBody());
+  const methodInfo: TDomainPublicMethod = {
+    publicMethod: {
+      parameterDependencies,
+      returnType,
+      statements,
     },
   };
-  return result;
+  return { methodName, methodInfo };
 };

@@ -20,30 +20,16 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TValueObjectValues,
-  TConstDeclarationValue,
-  TValueObjectMethods,
-} from '../../../../types.js';
+import { TDomainPublicMethod } from '../../../../types.js';
 
-export const valueObjectDeclarationVisitor = (
+export const publicMethodDeclarationListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ValueObjectDeclarationContext,
-): { ValueObjects: { [identifier: string]: TValueObjectValues } } => {
-  const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
-  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
-  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
-    ctx.domainConstDeclarationList(),
-  );
-  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
-  const result = {
-    ValueObjects: {
-      [valueObjectIdentifier]: {
-        constantVars,
-        create: domainConstructorDeclaration,
-        methods,
-      },
-    },
-  };
+  ctx: BitloopsParser.PublicMethodDeclarationListContext,
+): Record<string, TDomainPublicMethod> => {
+  const result: Record<string, TDomainPublicMethod> = {};
+  const visitChildren = thisVisitor.visitChildren(ctx);
+  for (const child of visitChildren) {
+    result[child.methodName] = child.methodInfo;
+  }
   return result;
 };

@@ -15,6 +15,7 @@ const migratedTypes = [
   'dtoDeclaration',
   'propsDeclaration',
   'valueObjectDeclaration',
+  'entityDeclaration',
 ];
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {

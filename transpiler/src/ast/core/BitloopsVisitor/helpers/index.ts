@@ -61,3 +61,6 @@ export { privateMethodDeclarationVisitor } from './privateMethodDeclaration.js';
 export { privateMethodDeclarationListVisitor } from './privateMethodDeclarationList.js';
 export { returnPrivateMethodTypeVisitor } from './returnPrivateMethodType.js';
 export { domainConstDeclarationListVisitor } from './domainConstDeclarationList.js';
+export { entityDeclarationVisitor } from './entityDeclaration.js';
+export { publicMethodDeclarationVisitor } from './publicMethodDeclaration.js';
+export { publicMethodDeclarationListVisitor } from './publicMethodDeclarationList.js';
