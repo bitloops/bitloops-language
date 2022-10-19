@@ -305,6 +305,8 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRESTController: {
+      console.log('contextData', contextData);
+      console.log('setupData?.controllers', setupData);
       if (contextData && setupData?.controllers) {
         res = restControllersToTargetLanguage(
           value,
@@ -313,7 +315,7 @@ const modelToTargetLanguage = (props: {
           setupData?.controllers,
         );
       } else {
-        throw new Error('Missing context data');
+        throw new Error('Missing context data and/or controllers');
       }
       break;
     }

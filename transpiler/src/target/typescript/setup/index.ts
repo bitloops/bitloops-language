@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import prettier from 'prettier';
 import path from 'path';
-import packageJSONTemplate from './package-template.json';
+import { packageJSONTemplate } from './package-template.js';
 import { SetupTypeScript } from './SetupTypeScript.js';
 import { ISetupData, TBitloopsTargetSetupContent, TBoundedContexts } from '../../../types.js';
 import { BitloopsTargetSetupGeneratorError } from '../../BitloopsTargetSetupGeneratorError.js';
