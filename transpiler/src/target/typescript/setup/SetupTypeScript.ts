@@ -59,6 +59,7 @@ import {
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 
 type PackageAdapterName = string;
 type PackageAdapterContent = string;

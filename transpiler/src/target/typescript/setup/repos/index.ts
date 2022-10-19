@@ -9,6 +9,7 @@ import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { getRepoAdapterClassName } from '../../core/components/repo/helpers/repoAdapterName.js';
 // import { LICENSE } from '../license.js';
 import { TSetupOutput } from '../index.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 
 type TCategorizedRepoConnections = Record<
   TRepoSupportedTypes,
