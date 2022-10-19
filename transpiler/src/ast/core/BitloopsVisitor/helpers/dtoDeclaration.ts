@@ -20,24 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
+import { TDTO } from '../../../../types.js';
 
-export const restControllerDeclarationVisitor = (
+export const dtoDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
-  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
-  const response = {
-    Controllers: {
+  ctx: BitloopsParser.DtoDeclarationContext,
+): { DTOs: TDTO } => {
+  const identifier = ctx.DTOIdentifier().getText();
+  const fields = thisVisitor.visit(ctx.fieldList());
+  return {
+    DTOs: {
       [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
+        fields,
       },
     },
   };
-  return response;
 };

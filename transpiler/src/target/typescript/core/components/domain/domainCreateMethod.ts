@@ -23,12 +23,14 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
   }
 
   const propsName = create.parameterDependency.type;
+  const returnOkType = returnType.ok;
 
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
     targetLanguage,
   );
+  console.log('after producedConstructor');
 
   let statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatementsWithoutThis,
@@ -36,11 +38,14 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     targetLanguage,
   });
 
+  console.log('after statementsString');
+
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
     value: parameterDependency,
     targetLanguage,
   });
+  console.log('after parameterString');
 
   const returnTypeString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
@@ -54,7 +59,7 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
       (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
     ).length === 0;
   if (hasReturnStatements || statements.length === 0) {
-    statementsString = statementsString.concat(`return yay(new ${propsName}(props));`);
+    statementsString = statementsString.concat(`return yay(new ${returnOkType}(props));`);
   }
   const ToLanguageMapping = {
     [SupportedLanguages.TypeScript]: (

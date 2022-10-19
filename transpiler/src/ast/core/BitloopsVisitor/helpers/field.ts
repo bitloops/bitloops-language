@@ -20,24 +20,25 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
+import { TVariable } from '../../../../types.js';
 
-export const restControllerDeclarationVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
-  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
-  const response = {
-    Controllers: {
-      [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
-      },
-    },
+export const fieldVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.FieldContext,
+): TVariable => {
+  let type;
+  if (ctx.primitives()) {
+    type = ctx.primitives().getText();
+  } else {
+    type = ctx.struct().getText();
+  }
+  const identifier = ctx.identifier().getText();
+  const result: TVariable = {
+    type,
+    name: identifier,
   };
-  return response;
+  if (ctx.Optional()) {
+    result.optional = true;
+  }
+  return result;
 };

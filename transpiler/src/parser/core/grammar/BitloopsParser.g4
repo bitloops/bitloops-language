@@ -775,12 +775,16 @@ aggregateDeclaration
  : Root entityDeclaration
  ;
 
+domainConstDeclaration
+    : constDeclaration
+    ;
+
 entityDeclaration 
-    : Entity entityIdentifier '{' constDeclaration*  domainConstructorDeclaration publicMethodDeclaration* privateMethodDeclaration*  '}' SemiColon?
+    : Entity entityIdentifier '{' domainConstDeclaration*  domainConstructorDeclaration publicMethodDeclaration* privateMethodDeclaration*  '}' SemiColon?
 ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier '{' constDeclaration*  domainConstructorDeclaration privateMethodDeclaration* '}' SemiColon?
+    : ValueObject valueObjectIdentifier '{' domainConstDeclaration*  domainConstructorDeclaration privateMethodDeclaration* '}' SemiColon?
     ;
 
 domainConstructorDeclaration
@@ -903,7 +907,11 @@ restControllerExecuteDeclaration
     ;
 
 restControllerMethodDeclaration
-    : Method ':' httpMethod=(MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions) SemiColon?
+    : Method ':' httpMethod SemiColon?
+    ;
+    
+httpMethod
+    : MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions
     ;
 
 

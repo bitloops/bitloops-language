@@ -30,7 +30,7 @@ import {
 const feature = loadFeature('./__tests__/ast/core/entityDeclaration.feature');
 
 defineFeature(feature, (test) => {
-  test.skip('Entity declaration is valid', ({ given, when, then }) => {
+  test('Entity declaration is valid', ({ given, when, then }) => {
     let blString: string;
     let boundedContext: string;
     let module: string;

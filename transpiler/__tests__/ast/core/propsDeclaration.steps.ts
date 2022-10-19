@@ -17,8 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
+import { decode } from 'bitloops-gherkin';
+
 import {
   BitloopsIntermediateASTParser,
   BitloopsLanguageASTContext,
@@ -26,23 +27,31 @@ import {
   BitloopsParserError,
 } from '../../../src/index.js';
 
-const feature = loadFeature('./__tests__/ast/core/returnOkErrorType.feature');
+const feature = loadFeature('__tests__/ast/core/propsDeclaration.feature');
 
 defineFeature(feature, (test) => {
-  test('Return OK Error type success', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
-    given(/^I have a return type (.*)$/, (arg0) => {
-      blString = d(arg0);
-    });
+  test('Props declaration is valid', ({ given, when, then }) => {
+    let boundedContext: string;
+    let module: string;
+    let blString: string;
+    let modelOutput: string;
+    let result: any;
+
+    given(
+      /^Valid bounded context (.*), module (.*), propsDeclaration (.*) strings$/,
+      (arg0, arg1, arg2) => {
+        boundedContext = decode(arg0);
+        module = decode(arg1);
+        blString = decode(arg2);
+      },
+    );
 
     when('I generate the model', () => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Hello World',
-          module: 'core',
+          boundedContext,
+          module,
           fileId: 'testFile.bl',
           fileContents: blString,
         },
@@ -55,8 +64,8 @@ defineFeature(feature, (test) => {
       }
     });
 
-    then(/^I should get the (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
+    then(/^I should get (.*)$/, (arg0) => {
+      modelOutput = decode(arg0);
       expect(result).toEqual(JSON.parse(modelOutput));
     });
   });

@@ -1,5 +1,5 @@
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { TSingleExpression } from '../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { literalSingleExpressionToTargetLanguage } from './literal-single-expression.js';
 import { logicalSingleExpressionToTargetLanguage } from './logical-single-expression.js';

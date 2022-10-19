@@ -9,7 +9,12 @@ export interface IBitloopsIntermediateASTParser {
 
 export class BitloopsIntermediateASTParserError extends Error {}
 
-const migratedTypes = ['jestTestDeclaration'];
+const migratedTypes = [
+  'jestTestDeclaration',
+  'controllerDeclaration',
+  'dtoDeclaration',
+  'propsDeclaration',
+];
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
   parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTParserError {

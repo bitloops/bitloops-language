@@ -20,24 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
 
-export const restControllerDeclarationVisitor = (
+import { TDefinitionMethodInfo, TDefinitionMethods } from '../../../../types.js';
+
+export const methodDefinitionListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
-  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
-  const response = {
-    Controllers: {
-      [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
-      },
-    },
-  };
-  return response;
+  ctx: BitloopsParser.MethodDefinitionListContext,
+): { definitionMethods: TDefinitionMethods } => {
+  const childrenResult: { methodName: string; methodInfo: TDefinitionMethodInfo }[] =
+    thisVisitor.visitChildren(ctx);
+
+  const methodDefinitions: TDefinitionMethods = {};
+  for (const child of childrenResult) {
+    methodDefinitions[child.methodName] = child.methodInfo;
+  }
+  return { definitionMethods: methodDefinitions };
 };

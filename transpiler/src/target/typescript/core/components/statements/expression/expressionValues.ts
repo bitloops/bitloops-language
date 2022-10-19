@@ -38,6 +38,7 @@ const expressionValuesToTargetLanguage = (
   targetLanguage: string,
 ): string => {
   if (!expressionValue) {
+    console.log('expressionValue', expressionValue);
     throw new Error(`Unsupported expression: ${expressionValue}`);
   }
 

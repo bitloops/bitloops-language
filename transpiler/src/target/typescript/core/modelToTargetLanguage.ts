@@ -395,7 +395,12 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TEntities: {
-      res = entitiesToTargetLanguage(value, targetLanguage);
+      res = entitiesToTargetLanguage({
+        entities: value,
+        model,
+        targetLanguage,
+        contextData,
+      });
       break;
     }
     case BitloopsTypesMapping.TRepoPorts: {

@@ -20,24 +20,13 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
+import { TVariables } from '../../../../types.js';
 
-export const restControllerDeclarationVisitor = (
+export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
-  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
-  const response = {
-    Controllers: {
-      [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
-      },
-    },
-  };
-  return response;
+  ctx: BitloopsParser.FieldListContext,
+): TVariables => {
+  const fieldsAndSemicolons = thisVisitor.visitChildren(ctx);
+  const fields = fieldsAndSemicolons.filter((field) => field !== undefined);
+  return fields;
 };

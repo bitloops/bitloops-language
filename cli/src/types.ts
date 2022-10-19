@@ -205,7 +205,7 @@ export type TEvaluation = {
     | TGetClass;
 };
 
-('f()');
+// ('f()');
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;

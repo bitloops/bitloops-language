@@ -25,12 +25,14 @@ import { TRESTControllerExecute } from '../../../../types.js';
 export const restControllerExecuteDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-): TRESTControllerExecute => {
-  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
-  const dependencies = thisVisitor.visit(ctx.restControllerParameters());
-  const statements = thisVisitor.visit(ctx.functionBody());
-  return {
-    dependencies,
-    statements,
+): { execute: TRESTControllerExecute } => {
+  const { dependencies } = thisVisitor.visit(ctx.restControllerParameters());
+  const { statements } = thisVisitor.visit(ctx.functionBody());
+  const res = {
+    execute: {
+      dependencies,
+      statements,
+    },
   };
+  return res;
 };

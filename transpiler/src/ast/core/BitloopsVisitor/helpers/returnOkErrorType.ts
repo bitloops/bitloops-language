@@ -20,24 +20,17 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
 
-export const restControllerDeclarationVisitor = (
+import { TOkErrorReturnType } from '../../../../types.js';
+
+export const returnOkErrorTypeVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
-  const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
-  const response = {
-    Controllers: {
-      [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
-      },
-    },
+  ctx: BitloopsParser.ReturnOkErrorTypeContext,
+): TOkErrorReturnType => {
+  const ok = thisVisitor.visit(ctx.returnOkType());
+  const errors = thisVisitor.visit(ctx.returnErrorsType());
+  return {
+    ok,
+    errors,
   };
-  return response;
 };

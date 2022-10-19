@@ -74,6 +74,7 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
                 fileContent: generatedString,
               });
             } catch (error) {
+              console.log('BitloopsTargetGeneratorError', error);
               return new BitloopsTargetGeneratorError(error.message);
             }
           }

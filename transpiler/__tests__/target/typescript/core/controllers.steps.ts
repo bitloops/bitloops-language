@@ -31,7 +31,6 @@ const feature = loadFeature('__tests__/target/typescript/core/controllers.featur
 
 defineFeature(feature, (test) => {
   let language;
-  // let propsType;
   let result;
   let value;
   let serverType;
@@ -63,9 +62,6 @@ defineFeature(feature, (test) => {
     );
 
     when('I generate the code', () => {
-      // const contextData = { boundedContext: 'hello', module: 'hello' };
-
-      // TODO for all controllers
       const propsValue = JSON.parse(value);
       const controllerNames = Object.keys(propsValue);
 
