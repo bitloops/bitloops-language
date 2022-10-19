@@ -24,11 +24,18 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 const applyRulesToTargetLanguage = (variable: TApplyRules, targetLanguage: string): string => {
   const { applyRules } = variable;
 
-  return modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
-    value: applyRules,
-    targetLanguage,
-  });
+  let result = 'const res = applyRules([';
+  for (const applyRule of applyRules) {
+    const parameterDependencies = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TArgumentDependencies,
+      value: applyRule.arguments,
+      targetLanguage,
+    });
+    result += `new ${applyRule.name}${parameterDependencies},`;
+  }
+  result += ']);';
+  result += 'if (res) return fail(res);';
+  return result;
 };
 
 export { applyRulesToTargetLanguage };
