@@ -64,3 +64,4 @@ export { domainConstDeclarationListVisitor } from './domainConstDeclarationList.
 export { entityDeclarationVisitor } from './entityDeclaration.js';
 export { publicMethodDeclarationVisitor } from './publicMethodDeclaration.js';
 export { publicMethodDeclarationListVisitor } from './publicMethodDeclarationList.js';
+export { domainRuleDeclarationVisitor, domainRuleBodyVisitor } from './domainRuleDeclaration.js';

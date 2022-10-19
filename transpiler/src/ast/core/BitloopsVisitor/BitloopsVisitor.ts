@@ -44,6 +44,7 @@ import {
   TReturnStatement,
   TEntities,
   TDomainPublicMethod,
+  TRules,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -95,6 +96,8 @@ import {
   entityDeclarationVisitor,
   publicMethodDeclarationVisitor,
   publicMethodDeclarationListVisitor,
+  domainRuleDeclarationVisitor,
+  domainRuleBodyVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -788,5 +791,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return {
       return: expression,
     };
+  }
+
+  /**
+   * Domain Rule
+   */
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
+    // console.log('visitDomainRuleDeclaration');
+    return domainRuleDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
+    // console.log('visitDomainRuleBody');
+    return domainRuleBodyVisitor(this, ctx);
   }
 }

@@ -5,10 +5,8 @@ import {
 } from '../../../../index.js';
 
 const blString = `
-ValueObject TitleVO {
-    constructor(props: TitleProps): ( OK ( TitleVO ), Errors ( DomainErrors.InvalidTitleError )) {
-      applyRules(IsValidTitle(props.title));
-    }
+Rule IsValidTitle(title: string) throws DomainErrors.InvalidTitleError {
+    isBrokenIf (title > 150 OR title < 4);
   }
 `;
 
@@ -24,5 +22,12 @@ const initialModelOutput = parser.parse([
 const intermediateParser = new BitloopsIntermediateASTParser();
 if (!(initialModelOutput instanceof BitloopsParserError)) {
   const result = intermediateParser.parse(initialModelOutput);
-  console.log('result', result);
+  console.log('result:', JSON.stringify(result, null, 2));
 }
+
+// const a: TRules = {
+//   IsValidTitle: {
+//     error: 'DomainErrors.InvalidTitleError',
+//     parameters: [{ value: 'title', type: 'string' }],
+//   },
+// };
