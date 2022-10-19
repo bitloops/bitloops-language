@@ -21,5 +21,5 @@ import { TRepoSupportedTypes } from '../../../../../../types.js';
 import { StringUtils } from '../../../../../../utils/index.js';
 
 export const getRepoAdapterClassName = (repoPort: string, dbType: TRepoSupportedTypes): string => {
-  return `${repoPort}${StringUtils.upperCaseFirstLetter(dbType)}Adapter`;
+  return `${repoPort}${StringUtils.upperCaseFirstLetter(dbType).replace('DB.', '')}Adapter`;
 };
