@@ -27,7 +27,7 @@ const getServerImports = (serverType: string): string => {
   let result = '';
   switch (serverType) {
     case 'REST.Fastify':
-      result += "import { FastifyRequest, FastifyReply } from 'fastify';\n";
+      result += "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';\n";
       break;
     case 'REST.Express':
       throw new Error('Server type not supported');
@@ -41,7 +41,7 @@ const getServerExtends = (serverType: string): string => {
   let result = '';
   switch (serverType) {
     case 'REST.Fastify':
-      result += 'BaseFastifyController';
+      result += 'Fastify.BaseController';
       break;
     case 'REST.Express':
       throw new Error('Server type not supported');

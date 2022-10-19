@@ -33,7 +33,6 @@ const getTargetFileDestination = (
   classType: string,
   className: string,
   targetLanguage = SupportedLanguages.TypeScript as string,
-  useCase?: string,
 ): { path: string; filename: string } => {
   if (!boundedContext || boundedContext.trim() === '') {
     throw new Error('Bounded context is required');
@@ -43,9 +42,6 @@ const getTargetFileDestination = (
   }
   if (!isLanguageSupported(targetLanguage)) {
     throw new Error(`Language ${targetLanguage} is not supported`);
-  }
-  if ((classType === ClassTypes.Controllers || classType === ClassTypes.UseCases) && !useCase) {
-    throw new Error('Use case is required');
   }
   const BOUNDED_CONTEXT = {
     name: boundedContext,

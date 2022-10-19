@@ -26,8 +26,17 @@ import { BitloopsTargetGeneratorError } from './BitloopsTargetGeneratorError.js'
 import { BitloopsTargetSetupGeneratorError } from './BitloopsTargetSetupGeneratorError.js';
 import { BitloopsIntermediateASTToTarget } from './typescript/core/index.js';
 import { generateSetupFiles } from './typescript/setup/index.js';
+import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
+import { SupportedLanguages } from './supportedLanguages.js';
 
 export interface IBitloopsTargetGenerator {
+  getTargetFileDestination(
+    boundedContext: string,
+    moduleName: string,
+    classType: string,
+    className: string,
+    targetLanguage: string,
+  ): { path: string; filename: string };
   generate: (params: TBitloopsTargetGeneratorParams) => TBitloopsTargetContent;
 
   generateSetup: (
@@ -55,5 +64,21 @@ export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
   ): TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError {
     const { setupData, intermediateAST, sourceDirPath } = params;
     return generateSetupFiles(setupData, intermediateAST, sourceDirPath);
+  }
+
+  getTargetFileDestination(
+    boundedContext: string,
+    moduleName: string,
+    classType: string,
+    className: string,
+    targetLanguage = SupportedLanguages.TypeScript as string,
+  ): { path: string; filename: string } {
+    return getTargetFileDestination(
+      boundedContext,
+      moduleName,
+      classType,
+      className,
+      targetLanguage,
+    );
   }
 }

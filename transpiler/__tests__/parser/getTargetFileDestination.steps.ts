@@ -169,15 +169,14 @@ defineFeature(feature, (test) => {
     let result: IResult | Error;
 
     given(
-      /^I have a bounded context called (.*), a module (.*), a use case (.*), a class type (.*), a class name (.*), and a language (.*)$/,
-      async (boundedContext, moduleName, useCase, classType, className, targetLanguage) => {
+      /^I have a bounded context called (.*), a module (.*), a class type (.*), a class name (.*), and a language (.*)$/,
+      async (boundedContext, moduleName, classType, className, targetLanguage) => {
         result = getTargetFileDestination(
           boundedContext,
           moduleName,
           classType,
           className,
           targetLanguage,
-          useCase,
         );
       },
     );
