@@ -784,7 +784,14 @@ entityDeclaration
 ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier '{' domainConstDeclaration*  domainConstructorDeclaration privateMethodDeclaration* '}' SemiColon?
+    : ValueObject valueObjectIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList '}' SemiColon?
+    ;
+domainConstDeclarationList
+    : domainConstDeclaration*
+    ;
+
+privateMethodDeclarationList
+    : privateMethodDeclaration*
     ;
 
 domainConstructorDeclaration

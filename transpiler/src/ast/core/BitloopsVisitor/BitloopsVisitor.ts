@@ -35,6 +35,8 @@ import {
   TVariable,
   TDTO,
   TEntityCreate,
+  TValueObjectValues,
+  TValueObjectMethods,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -77,6 +79,9 @@ import {
   fieldVisitor,
   dtoDeclarationVisitor,
   propsDeclarationVisitor,
+  domainConstructorDeclarationVisitor,
+  valueObjectDeclarationVisitor,
+  privateMethodDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -704,14 +709,27 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDomainConstructorDeclaration(
     ctx: BitloopsParser.DomainConstructorDeclarationContext,
   ): TEntityCreate {
-    const { statements } = this.visit(ctx.functionBody());
-    const returnType = this.visit(ctx.returnOkErrorType());
-    const parameters = this.visit(ctx.formalParameterList());
-    const result: TEntityCreate = {
-      returnType,
-      statements,
-      parameterDependency: parameters[0],
-    };
-    return result;
+    return domainConstructorDeclarationVisitor(this, ctx);
+  }
+  visitDomainConstDeclarationList(ctx: BitloopsParser.DomainConstDeclarationListContext) {
+    const _children = this.visitChildren(ctx);
+    // manipulare
+    return 'w/e' as any;
+  }
+  visitDomainConstDeclaration(ctx: BitloopsParser.DomainConstDeclarationContext): any {
+    return this.visit(ctx.constDeclaration());
+  }
+
+  visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): {
+    ValueObjects: { [id: string]: TValueObjectValues };
+  } {
+    console.log('visitValueObjectDeclaration');
+    return valueObjectDeclarationVisitor(this, ctx);
+  }
+
+  visitPrivateMethodDeclaration(
+    ctx: BitloopsParser.PrivateMethodDeclarationContext,
+  ): TValueObjectMethods {
+    return privateMethodDeclarationVisitor(this, ctx) as any;
   }
 }
