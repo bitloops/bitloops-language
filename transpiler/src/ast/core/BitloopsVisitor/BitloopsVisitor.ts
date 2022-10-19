@@ -41,6 +41,7 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TConstDeclarationValue,
+  TReturnStatement,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -86,6 +87,9 @@ import {
   domainConstructorDeclarationVisitor,
   valueObjectDeclarationVisitor,
   privateMethodDeclarationVisitor,
+  privateMethodDeclarationListVisitor,
+  returnPrivateMethodTypeVisitor,
+  domainConstDeclarationListVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -726,9 +730,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDomainConstDeclarationList(
     ctx: BitloopsParser.DomainConstDeclarationListContext,
   ): TConstDeclarationValue[] {
-    const children: TConstDeclaration[] = this.visitChildren(ctx);
-    const result: TConstDeclarationValue[] = children.map((el) => el.constDeclaration);
-    return result;
+    return domainConstDeclarationListVisitor(this, ctx);
   }
 
   visitDomainConstDeclaration(
@@ -740,12 +742,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitPrivateMethodDeclarationList(
     ctx: BitloopsParser.PrivateMethodDeclarationListContext,
   ): TValueObjectMethods {
-    const result: TValueObjectMethods = {};
-    const visitChildren = this.visitChildren(ctx);
-    for (const child of visitChildren) {
-      result[child.methodName] = child.methodInfo;
-    }
-    return result;
+    return privateMethodDeclarationListVisitor(this, ctx);
   }
 
   visitPrivateMethodDeclaration(ctx: BitloopsParser.PrivateMethodDeclarationContext): {
@@ -758,9 +755,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitReturnPrivateMethodType(
     ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
   ): TReturnType | TOkErrorReturnType {
-    if (ctx.returnOkErrorType()) {
-      return this.visit(ctx.returnOkErrorType());
-    }
-    return this.visit(ctx.typeAnnotation());
+    return returnPrivateMethodTypeVisitor(this, ctx);
+  }
+
+  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): TReturnStatement {
+    const expression = this.visit(ctx.expression());
+    return {
+      return: expression,
+    };
   }
 }
