@@ -22,9 +22,10 @@ import {
   BoundedContextModules,
   ISetupData,
   TBitloopsTargetContent,
+  TBitloopsTargetSetupContent,
   TBoundedContexts,
 } from '../types.js';
-import { getTargetFileDestination } from './getTargetFileDestination.js';
+// import { getTargetFileDestination } from './getTargetFileDestination.js';
 import { BitloopsTargetGenerator } from '@bitloops/bl-transpiler';
 import { writeTargetFile } from './writeTargetFile.js';
 
@@ -35,8 +36,8 @@ const writeGeneratedOutputToFiles = (
   //  Write output to dest files
   for (const targetFileContent of params) {
     const { boundedContext, module, classType, className, fileContent } = targetFileContent;
-
-    const destination = getTargetFileDestination(boundedContext, module, classType, className);
+    const btg = new BitloopsTargetGenerator();
+    const destination = btg.getTargetFileDestination(boundedContext, module, classType, className);
     writeTargetFile({
       projectPath: outputDirPath,
       filePathObj: destination,
@@ -96,6 +97,27 @@ const generateTargetFiles = (params: {
   // output
   //Write output to dest files
   writeGeneratedOutputToFiles(output, outputDirPath);
+  const setupFilesData = generator.generateSetup({
+    setupData,
+    intermediateAST: bitloopsModel,
+    targetLanguage,
+  });
+  writeGeneratedSetupOutputToFiles(setupFilesData as TBitloopsTargetSetupContent, outputDirPath);
+};
+
+const writeGeneratedSetupOutputToFiles = (
+  params: TBitloopsTargetSetupContent,
+  outputDirPath: string,
+): void => {
+  //  Write output to dest files
+  for (const targetFileContent of params) {
+    const { fileId, fileContent } = targetFileContent;
+    writeTargetFile({
+      projectPath: outputDirPath,
+      filePathObj: { path: '/', filename: fileId },
+      fileContent: fileContent,
+    });
+  }
 };
 
 export { generateTargetFiles };

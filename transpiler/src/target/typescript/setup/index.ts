@@ -7,6 +7,8 @@ import { packageJSONTemplate } from './package-template.js';
 import { SetupTypeScript } from './SetupTypeScript.js';
 import { ISetupData, TBitloopsTargetSetupContent, TBoundedContexts } from '../../../types.js';
 import { BitloopsTargetSetupGeneratorError } from '../../BitloopsTargetSetupGeneratorError.js';
+import { tsConfigJSONTemplate } from './tsconfig-template.js';
+import { nodemonJSONTemplate } from './nodemon-template.js';
 // import { mockData } from './mockSetupData.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
@@ -17,15 +19,17 @@ const setupMapper = {
   OUTPUT_GRAPHQL_FOLDER: 'graphql/',
   OUTPUT_REST_FOLDER: 'rest/',
   OUTPUT_ROUTERS_FOLDER: 'routers/',
-  OUTPUT_SHARED_FOLDER: 'shared/',
+  OUTPUT_SHARED_FOLDER: 'src/shared/',
   OUTPUT_SRC_FOLDER: 'src/',
 }; // TODO optionally get this from the config
 
 const setupTypeMapper = {
   SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
   BOUNDED_CONTEXTS: 'bounded-contexts',
-  startup: '',
+  startup: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
+  DI: '',
   'package.json': '/./',
+  Config: '/./',
   'REST.Fastify.Router': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/routers/`,
   'REST.Fastify.API': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/api/`,
   'REST.Fastify.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/`,
@@ -158,8 +162,22 @@ export const generateSetupFiles = (
   // writeToFile(JSON.stringify(packageJSON, null, 2), packageJSONFilePath);
   result.push({
     fileId: 'package.json',
-    fileType: 'package.json',
+    fileType: 'Config',
     fileContent: prettier.format(JSON.stringify(packageJSON), { parser: 'json' }),
+  });
+  result.push({
+    fileId: 'tsconfig.json',
+    fileType: 'Config',
+    fileContent: prettier.format(JSON.stringify(tsConfigJSONTemplate), {
+      parser: 'json',
+    }),
+  });
+  result.push({
+    fileId: 'nodemon.json',
+    fileType: 'Config',
+    fileContent: prettier.format(JSON.stringify(nodemonJSONTemplate), {
+      parser: 'json',
+    }),
   });
   console.log('package.json written successfully!');
 
