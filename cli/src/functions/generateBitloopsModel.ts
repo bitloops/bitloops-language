@@ -17,13 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isBitloopsParserError } from '../helpers/typeGuards.js';
-import { BoundedContextModules, ISetupData, TBoundedContexts } from '../types.js';
 import {
   BitloopsIntermediateASTParser,
   BitloopsParser,
   BitloopsParserError,
-} from './core/index.js';
+} from '@bitloops/bl-transpiler';
+import { isBitloopsParserError } from '../helpers/typeGuards.js';
+import { BoundedContextModules, ISetupData, TBoundedContexts } from '../types.js';
+
 import { getBitloopsFilesAndContents } from './readFilesContents.js';
 
 const generateBitloopsModel = (

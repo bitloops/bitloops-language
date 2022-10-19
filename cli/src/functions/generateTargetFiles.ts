@@ -25,7 +25,7 @@ import {
   TBoundedContexts,
 } from '../types.js';
 import { getTargetFileDestination } from './getTargetFileDestination.js';
-import { BitloopsTargetGenerator } from './target/index.js';
+import { BitloopsTargetGenerator } from '@bitloops/bl-transpiler';
 import { writeTargetFile } from './writeTargetFile.js';
 
 const writeGeneratedOutputToFiles = (

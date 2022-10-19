@@ -36,7 +36,7 @@ import { clearFolder } from '../helpers/fileOperations.js';
 interface ICollection {
   targetLanguage: string;
   sourceDirPath: string;
-  outputDirPath: string;
+  targetDirPath: string;
 }
 
 const SETUP_FILE_EXTENSION = 'setup.bl';
@@ -50,7 +50,7 @@ const questions: QuestionCollection<ICollection> = [
   },
   {
     type: 'input',
-    name: 'outputDirPath',
+    name: 'targetDirPath',
     message: 'Where would you like your generated files to be exported?',
     default: './output',
   },
@@ -61,13 +61,13 @@ const transpile = async (source: ICollection): Promise<void> => {
   console.log(copyrightSnippet);
   console.log();
   const answers = await inquirer.prompt(questions, source);
-  const { sourceDirPath, outputDirPath } = answers;
+  const { sourceDirPath, targetDirPath } = answers;
   const absoluteSourceDirPath = path.isAbsolute(sourceDirPath)
     ? sourceDirPath
     : path.normalize(`${process.cwd()}/${sourceDirPath}`);
-  const absoluteOutputDirPath = path.isAbsolute(outputDirPath)
-    ? outputDirPath
-    : path.normalize(`${process.cwd()}/${outputDirPath}`);
+  const absoluteOutputDirPath = path.isAbsolute(targetDirPath)
+    ? targetDirPath
+    : path.normalize(`${process.cwd()}/${targetDirPath}`);
 
   const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
     getBoundedContextModules(absoluteSourceDirPath);
@@ -91,7 +91,7 @@ const transpile = async (source: ICollection): Promise<void> => {
   }
 
   // TODO Check if the output directory exists and if it does, ask if the user wants to overwrite it
-  clearFolder(outputDirPath);
+  clearFolder(targetDirPath);
 
   const setupData = generateSetupDataModel(sourceDirPath);
   const bitloopsModel = generateBitloopsModel(
@@ -100,6 +100,7 @@ const transpile = async (source: ICollection): Promise<void> => {
     setupData,
   );
 
+  console.log('setupData', setupData);
   generateTargetFiles({
     boundedContextModules,
     sourceDirPath: absoluteSourceDirPath,

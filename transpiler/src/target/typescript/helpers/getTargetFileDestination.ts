@@ -69,6 +69,7 @@ const getTargetFileDestination = (
     path: '',
     filename: '',
   };
+  console.log('Checking classType', classType);
   switch (classType) {
     case ClassTypes.RootEntities:
     case ClassTypes.ValueObjects:
@@ -84,7 +85,7 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Controllers:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/driving-adapters/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.UseCases:
@@ -135,7 +136,7 @@ const getFilePathRelativeToModule = (
       result.filename = 'errors';
       break;
     case ClassTypes.Controllers:
-      result.path = 'infra/';
+      result.path = 'driving-adapters/';
       result.filename = className;
       break;
     case ClassTypes.UseCases:

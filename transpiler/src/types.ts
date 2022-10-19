@@ -101,6 +101,8 @@ export type TBitloopsTargetContent = {
   fileContent: string;
 }[];
 
+export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
+
 export type TBitloopsTargetSetupContent = {
   fileId: string;
   fileType: string;
@@ -221,7 +223,8 @@ export type TDomainError = {
 export type TRule = {
   parameters?: TParameterDependencies;
   error: string;
-  // isBrokenIfCondition: TCondition;
+  statements: TStatements;
+  isBrokenIfCondition: TCondition;
 };
 
 export type TRules = Record<string, TRule>;
