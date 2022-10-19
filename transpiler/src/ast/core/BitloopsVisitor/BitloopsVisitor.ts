@@ -37,6 +37,10 @@ import {
   TEntityCreate,
   TValueObjectValues,
   TValueObjectMethods,
+  TReturnType,
+  TDomainPrivateMethod,
+  TConstDeclaration,
+  TConstDeclarationValue,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -711,14 +715,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   ): TEntityCreate {
     return domainConstructorDeclarationVisitor(this, ctx);
   }
-  visitDomainConstDeclarationList(ctx: BitloopsParser.DomainConstDeclarationListContext) {
-    const _children = this.visitChildren(ctx);
-    // manipulare
-    return 'w/e' as any;
-  }
-  visitDomainConstDeclaration(ctx: BitloopsParser.DomainConstDeclarationContext): any {
-    return this.visit(ctx.constDeclaration());
-  }
 
   visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): {
     ValueObjects: { [id: string]: TValueObjectValues };
@@ -727,9 +723,44 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return valueObjectDeclarationVisitor(this, ctx);
   }
 
-  visitPrivateMethodDeclaration(
-    ctx: BitloopsParser.PrivateMethodDeclarationContext,
+  visitDomainConstDeclarationList(
+    ctx: BitloopsParser.DomainConstDeclarationListContext,
+  ): TConstDeclarationValue[] {
+    const children: TConstDeclaration[] = this.visitChildren(ctx);
+    const result: TConstDeclarationValue[] = children.map((el) => el.constDeclaration);
+    return result;
+  }
+
+  visitDomainConstDeclaration(
+    ctx: BitloopsParser.DomainConstDeclarationContext,
+  ): TConstDeclaration {
+    return this.visit(ctx.constDeclaration());
+  }
+
+  visitPrivateMethodDeclarationList(
+    ctx: BitloopsParser.PrivateMethodDeclarationListContext,
   ): TValueObjectMethods {
-    return privateMethodDeclarationVisitor(this, ctx) as any;
+    const result: TValueObjectMethods = {};
+    const visitChildren = this.visitChildren(ctx);
+    for (const child of visitChildren) {
+      result[child.methodName] = child.methodInfo;
+    }
+    return result;
+  }
+
+  visitPrivateMethodDeclaration(ctx: BitloopsParser.PrivateMethodDeclarationContext): {
+    methodName: string;
+    methodInfo: TDomainPrivateMethod;
+  } {
+    return privateMethodDeclarationVisitor(this, ctx);
+  }
+
+  visitReturnPrivateMethodType(
+    ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
+  ): TReturnType | TOkErrorReturnType {
+    if (ctx.returnOkErrorType()) {
+      return this.visit(ctx.returnOkErrorType());
+    }
+    return this.visit(ctx.typeAnnotation());
   }
 }

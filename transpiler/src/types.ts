@@ -357,11 +357,13 @@ export type TConstDecomposition = {
   constDecomposition: TConstDecompositionNested;
 };
 
+export type TConstDeclarationValue = {
+  name: string;
+  type?: string;
+} & TExpression;
+
 export type TConstDeclaration = {
-  constDeclaration: {
-    name: string;
-    type?: string;
-  } & TExpression;
+  constDeclaration: TConstDeclarationValue;
 };
 
 export type TVariableDeclaration = {
@@ -439,7 +441,7 @@ export type TDomainMethods = Record<TDomainMethodName, TDomainMethod>;
 export type TValueObjectCreate = TDomainCreateMethod;
 
 export type TValueObjectValues = {
-  constantVars: TConstantVariable[];
+  constantVars: TConstDeclarationValue[]; //TConstantVariable[];
   methods: TValueObjectMethods;
   create: TValueObjectCreate;
 };
@@ -449,7 +451,7 @@ export type TValueObjects = Record<string, TValueObjectValues>;
 export type TEntities = Record<string, TEntityValues>;
 
 export type TEntityValues = {
-  constantVars?: TConstantVariable[];
+  constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
   methods?: TEntityMethods;
   create: TEntityCreate;
 };

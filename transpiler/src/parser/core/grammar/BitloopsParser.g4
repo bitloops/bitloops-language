@@ -1056,12 +1056,12 @@ classExtendsClause
     // | abstractDeclaration     # AbstractMemberDeclaration
 
 methodDeclaration
-    : publicMethodDeclaration            # MethodDeclarationExpression
-    | privateMethodDeclaration           # MethodDeclarationExpression
+    : publicMethodDeclaration            # PublicMethodDeclarationExpression
+    | privateMethodDeclaration           # PrivateMethodDeclarationExpression
     ;
 
 privateMethodDeclaration
-    : Private? identifier formalParameterList? returnPrivateMethodType '{' functionBody '}'                 # PrivatePropertyMethodDeclarationExpression
+    : Private? identifier formalParameterList? returnPrivateMethodType '{' functionBody '}'
     ;
 
 publicMethodDeclaration

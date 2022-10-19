@@ -20,7 +20,11 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TValueObjectValues, TConstantVariable, TValueObjectMethods } from '../../../../types.js';
+import {
+  TValueObjectValues,
+  TConstDeclarationValue,
+  TValueObjectMethods,
+} from '../../../../types.js';
 
 export const valueObjectDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -29,9 +33,11 @@ export const valueObjectDeclarationVisitor = (
   const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
   const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
   console.log({ valueObjectIdentifier, domainConstructorDeclaration });
-  const constantVars: TConstantVariable[] = [];
-  const methods: TValueObjectMethods = {};
-  return {
+  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
+    ctx.domainConstDeclarationList(),
+  );
+  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const result = {
     ValueObjects: {
       [valueObjectIdentifier]: {
         constantVars,
@@ -40,4 +46,6 @@ export const valueObjectDeclarationVisitor = (
       },
     },
   };
+  console.log(JSON.stringify(result, null, 2));
+  return result;
 };
