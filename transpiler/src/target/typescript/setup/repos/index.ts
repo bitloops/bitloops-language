@@ -230,12 +230,12 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       {
         fileId: 'config.ts',
         fileType: `${dbType}.Config`,
-        content: license + content,
+        content: (license || '') + content,
       },
       {
         fileId: 'index.ts',
         fileType: `${dbType}.Index`,
-        content: license + indexContent,
+        content: (license || '') + indexContent,
       },
     ];
   }
@@ -245,7 +245,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     const connectClients =
       'await Promise.all(connections.map((connection) => connection.connect()));';
     return (
-      license +
+      (license || '') +
       `import { ${connectionClients} } from './config';
 
 const connect = async () => {

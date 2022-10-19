@@ -215,7 +215,7 @@ export class SetupTypeScript implements ISetup {
         result.push({
           fileId: diFileName,
           fileType: 'di',
-          content: license + diContent,
+          content: (license || '') + diContent,
           context: {
             boundedContextName,
             moduleName,
@@ -399,7 +399,7 @@ export class SetupTypeScript implements ISetup {
   generatePackageFiles(
     packages: TPackagesSetup,
     sourceDirPath: string,
-    setupTypeMapper: Record<string, string>,
+    _setupTypeMapper: Record<string, string>,
     packageVersions?: TPackageVersions,
   ): TSetupOutput[] {
     const results: TSetupOutput[] = [];
@@ -457,17 +457,17 @@ export class SetupTypeScript implements ISetup {
     license?: string,
   ): TSetupOutput {
     let imports = '';
-    let serverPath = '';
+    // let serverPath = '';
     let body = '';
     let routes = '';
     let exports = '';
     const controllerImports: string[] = [];
     switch (serverType) {
       case 'REST.Express':
-        serverPath = 'rest/express';
+        // serverPath = 'rest/express';
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify':
-        serverPath = 'rest/fastify';
+        // serverPath = 'rest/fastify';
         imports = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
         routes = Object.keys(routesData)
           .map((routerInstanceName) => {
@@ -517,12 +517,12 @@ export {${exports}};\n`;
     return {
       fileId: 'index.ts',
       fileType: `${serverType}.Router`,
-      content: license + body,
+      content: (license || '') + body,
     };
   }
   generateServerRouters(
     data: ISetupData,
-    _bitloopsModel: TBoundedContexts,
+    bitloopsModel: TBoundedContexts,
     license?: string,
   ): TSetupOutput[] {
     const routers = data.setup.routers;
@@ -535,7 +535,7 @@ export {${exports}};\n`;
           routers[serverType],
           serverType as TServerType,
           data.controllers,
-          _bitloopsModel,
+          bitloopsModel,
           license,
         ),
       );
@@ -585,7 +585,7 @@ export { routers };
     return {
       fileId: 'index.ts',
       fileType: `${serverType}.API`,
-      content: license + body,
+      content: (license || '') + body,
     };
   }
   generateAPIs(data: TSetupInfo): TSetupOutput[] {
@@ -603,7 +603,7 @@ export { routers };
   private generateServer(params: GenerateServerParams): TSetupOutput {
     const { serverInstance: data, serverType, bitloopsModel, serverIndex, license } = params;
     // TODO handle CORS
-    let serverPath = '';
+    // let serverPath = '';
     const serverPrefix = isRestServerInstance(data) ? `'${data.apiPrefix || '/'}'` : null;
     // TODO handle special env-variable Expression, and env-variable (like identifier-variable)
     const portStatement = modelToTargetLanguage({
@@ -614,12 +614,12 @@ export { routers };
     let body = '';
     switch (serverType as TServerType) {
       case 'REST.Express':
-        serverPath = 'rest/express';
+        // serverPath = 'rest/express';
         // this.nodeDependencies['express'] = '^4.18.1';
         // this.nodeDevDependencies['@types/express'] = '^4.17.14';
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify': {
-        serverPath = 'rest/fastify';
+        // serverPath = 'rest/fastify';
         this.nodeDependencies['@bitloops/bl-boilerplate-infra-rest-fastify'] = '^0.0.2';
         body = `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { routers } from './api';
@@ -652,7 +652,7 @@ start();
         break;
       }
       case 'GraphQL': {
-        serverPath = 'graphql';
+        // serverPath = 'graphql';
         if (!isGraphQLServerInstance(data)) {
           throw new Error(
             'Server instance must be of type GraphQLServerInstance for server type GraphQL',
@@ -667,8 +667,8 @@ start();
     }
     return {
       fileId: `app${serverIndex}.ts`,
-      fileType: `${serverPath}.Server`,
-      content: license + body,
+      fileType: `${serverType}.Server`,
+      content: (license || '') + body,
     };
   }
   generateServers(data: TSetupInfo, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
@@ -710,7 +710,7 @@ start();
     return {
       fileId: 'index.ts',
       fileType: 'startup',
-      content: license + body,
+      content: (license || '') + body,
     };
   }
 

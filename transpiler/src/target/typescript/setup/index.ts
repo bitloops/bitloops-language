@@ -24,6 +24,7 @@ const setupMapper = {
 const setupTypeMapper = {
   SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
   BOUNDED_CONTEXTS: 'bounded-contexts',
+  startup: '',
   'package.json': '/./',
   'REST.Fastify.Router': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/routers/`,
   'REST.Fastify.API': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/api/`,
