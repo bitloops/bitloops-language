@@ -58,11 +58,13 @@ const statementsToTargetLanguage = (variable: TStatements, targetLanguage: strin
   const mapping = {
     [SupportedLanguages.TypeScript]: (variable: TStatements): string => {
       return variable
-        .map(
-          (statement) =>
-            modelToTargetLanguage({ type: BitloopsTypesMapping.TStatement, value: statement }) +
-            ';',
-        )
+        .map((statement) => {
+          const result = modelToTargetLanguage({
+            type: BitloopsTypesMapping.TStatement,
+            value: statement,
+          });
+          return result + ';';
+        })
         .join(' ');
     },
   };
