@@ -51,7 +51,8 @@ const entitiesToTargetLanguage = (params: {
     const propsName = create.parameterDependency.type;
 
     if (constantVars) {
-      result += constantVariables(constantVars, targetLanguage);
+      // TODO fix with new model/types
+      result += constantVariables(constantVars as any, targetLanguage);
     }
 
     result += initialObjectValuesLangMapping[targetLanguage](entityName, propsName);

@@ -63,7 +63,8 @@ const valueObjectsToTargetLanguage = (params: {
     const propsName = create.parameterDependency.type;
 
     if (constantVars) {
-      result += constantVariables(constantVars, targetLanguage);
+      // TODO FIx with new type
+      result += constantVariables(constantVars as any, targetLanguage);
     }
 
     result += initialObjectValuesLangMapping[targetLanguage](valueObjectName, propsName);
