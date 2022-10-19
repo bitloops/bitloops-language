@@ -58,10 +58,8 @@ import {
 } from '../helpers/getTargetFileDestination.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../types.js';
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
-import { LICENSE } from './license.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
-
-type TSetupOutput = { filePath: string; content: string };
+import { TSetupOutput } from './index.js';
 
 type PackageAdapterName = string;
 type PackageAdapterContent = string;
@@ -72,11 +70,21 @@ type TPackageVersions = {
 };
 
 interface ISetup {
-  generateStartupFile(data: TSetupInfo, reposData: TReposSetup): TSetupOutput;
+  generateStartupFile(
+    data: TSetupInfo,
+    reposData: TReposSetup,
+    setupTypeMapper: Record<string, string>,
+    license?: string,
+  ): TSetupOutput;
   generateAPIs(data: TSetupInfo): TSetupOutput[];
   generateServerRouters(data: ISetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateServers(data: TSetupInfo, bitloopsModel: TBoundedContexts): TSetupOutput[];
-  generateDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateDIs(
+    data: ISetupData,
+    bitloopsModel: TBoundedContexts,
+    setupTypeMapper: Record<string, string>,
+    license?: string,
+  ): TSetupOutput[];
   generateRepoConnections(setupData: ISetupData): TSetupOutput[];
   // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
   // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
@@ -150,7 +158,12 @@ export class SetupTypeScript implements ISetup {
     return this.nodeDevDependencies;
   }
 
-  generateDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[] {
+  generateDIs(
+    data: ISetupData,
+    bitloopsModel: TBoundedContexts,
+    setupTypeMapper: Record<string, string>,
+    license?: string,
+  ): TSetupOutput[] {
     const { controllers, useCases, repos } = data;
     const result: TSetupOutput[] = [];
     // For each module in each bounded context generate 1 DI file that contains all
@@ -160,9 +173,9 @@ export class SetupTypeScript implements ISetup {
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const moduleName of Object.keys(boundedContext)) {
         // console.log('module', module);
-        const diFileName = `./src/bounded-contexts/${kebabCase(boundedContextName)}/${kebabCase(
-          moduleName,
-        )}/DI${esmEnabled ? '.js' : ''}`;
+        const diFileName = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
+          boundedContextName,
+        )}/${kebabCase(moduleName)}/DI${esmEnabled ? '.js' : ''}`;
         let diContent = '';
         // Gather all imports
         if (repos) {
@@ -170,6 +183,7 @@ export class SetupTypeScript implements ISetup {
             data.repos,
             boundedContextName,
             moduleName,
+            setupTypeMapper,
           );
         }
 
@@ -198,7 +212,15 @@ export class SetupTypeScript implements ISetup {
             controllers[boundedContextName][moduleName],
           );
 
-        result.push({ filePath: diFileName, content: diContent });
+        result.push({
+          fileId: diFileName,
+          fileType: 'di',
+          content: license + diContent,
+          context: {
+            boundedContextName,
+            moduleName,
+          },
+        });
       }
     }
     return result;
@@ -374,6 +396,7 @@ export class SetupTypeScript implements ISetup {
   generatePackageFiles(
     packages: TPackagesSetup,
     sourceDirPath: string,
+    setupTypeMapper: Record<string, string>,
     packageVersions?: TPackageVersions,
   ): TSetupOutput[] {
     const results: TSetupOutput[] = [];
@@ -394,7 +417,8 @@ export class SetupTypeScript implements ISetup {
             );
             const adapterContent = adaptersContent[packageAdapter];
             results.push({
-              filePath: `${adapterFilePathObj.path}/${adapterFilePathObj.filename}`,
+              fileType: 'Package.Adapter',
+              fileId: `${adapterFilePathObj.path}/${adapterFilePathObj.filename}`,
               content: adapterContent,
             });
             if (packageVersions) {
@@ -427,6 +451,7 @@ export class SetupTypeScript implements ISetup {
     serverType: TServerType,
     controllers: TControllers,
     _bitloopsModel: TBoundedContexts,
+    license?: string,
   ): TSetupOutput {
     let imports = '';
     let serverPath = '';
@@ -487,11 +512,16 @@ export {${exports}};\n`;
         break;
     }
     return {
-      filePath: `./src/shared/infra/${serverPath}/routers/index.ts`,
-      content: LICENSE + body,
+      fileId: 'index.ts',
+      fileType: `${serverType}.Router`,
+      content: license + body,
     };
   }
-  generateServerRouters(data: ISetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
+  generateServerRouters(
+    data: ISetupData,
+    _bitloopsModel: TBoundedContexts,
+    license?: string,
+  ): TSetupOutput[] {
     const routers = data.setup.routers;
     const output = [];
     for (const serverType of Object.keys(routers)) {
@@ -503,6 +533,7 @@ export {${exports}};\n`;
           serverType as TServerType,
           data.controllers,
           _bitloopsModel,
+          license,
         ),
       );
       // }
@@ -512,19 +543,17 @@ export {${exports}};\n`;
   private registerRouters(
     routers: Record<TRouterInstanceName, { routerPrefix: string }>,
     serverType: TServerType,
+    license?: string,
   ): TSetupOutput {
     let importType = '';
     let routerInstanceType = '';
     let body = '';
-    let serverPath = '';
     let imports = '';
     switch (serverType) {
       case 'REST.Express':
-        serverPath = 'rest/express';
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify':
         importType = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
-        serverPath = 'rest/fastify';
         routerInstanceType = 'Fastify.Instance';
         // for (const routerInstanceName in routers) {
         //   const routerPrefix = routers[routerInstanceName].routerPrefix;
@@ -551,8 +580,9 @@ export { routers };
 `;
     }
     return {
-      filePath: `./src/shared/infra/${serverPath}/api/index.ts`,
-      content: LICENSE + body,
+      fileId: 'index.ts',
+      fileType: `${serverType}.API`,
+      content: license + body,
     };
   }
   generateAPIs(data: TSetupInfo): TSetupOutput[] {
@@ -568,7 +598,7 @@ export { routers };
   }
 
   private generateServer(params: GenerateServerParams): TSetupOutput {
-    const { serverInstance: data, serverType, serverIndex: i, bitloopsModel } = params;
+    const { serverInstance: data, serverType, bitloopsModel, serverIndex, license } = params;
     // TODO handle CORS
     let serverPath = '';
     const serverPrefix = isRestServerInstance(data) ? `'${data.apiPrefix || '/'}'` : null;
@@ -633,8 +663,9 @@ start();
         throw new Error(`Server ${serverType} not supported`);
     }
     return {
-      filePath: `./src/shared/infra/${serverPath}/app${i}.ts`,
-      content: LICENSE + body,
+      fileId: `app${serverIndex}.ts`,
+      fileType: `${serverPath}.Server`,
+      content: license + body,
     };
   }
   generateServers(data: TSetupInfo, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
@@ -654,35 +685,29 @@ start();
     }
     return output;
   }
-  generateStartupFile(data: TSetupInfo, reposData: TReposSetup): TSetupOutput {
+  generateStartupFile(
+    data: TSetupInfo,
+    reposData: TReposSetup,
+    setupTypeMapper: Record<string, string>,
+    license?: string,
+  ): TSetupOutput {
     const imports = [];
     const servers = data.servers;
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
-        switch (serverType as TServerType) {
-          case 'REST.Express':
-            imports.push(`await import('./shared/infra/rest/express/app${i}');`);
-            break;
-          case 'REST.Fastify':
-            imports.push(`await import('./shared/infra/rest/fastify/app${i}');`);
-            break;
-          case 'GraphQL':
-            imports.push(`await import('./shared/infra/graphql/app${i}');`);
-            break;
-          default:
-            throw new Error(`Server ${serverType} not supported`);
-        }
+        imports.push(`await import('./${setupTypeMapper[`${serverType}.Server`]}app${i}');`);
       }
     }
-    const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData);
+    const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
     imports.push(...dbConnections);
     const body = `(async () => {
   ${imports.map((i) => i).join('\n  ')}
 })();
 `;
     return {
-      filePath: './src/startup.ts',
-      content: LICENSE + body,
+      fileId: 'index.ts',
+      fileType: 'startup',
+      content: license + body,
     };
   }
 

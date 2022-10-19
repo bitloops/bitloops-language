@@ -8,9 +8,9 @@ import {
 import { BitloopsTypesMapping } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { getRepoAdapterClassName } from '../../core/components/repo/helpers/repoAdapterName.js';
-import { LICENSE } from '../license.js';
+// import { LICENSE } from '../license.js';
+import { TSetupOutput } from '../index.js';
 
-type TSetupOutput = { filePath: string; content: string };
 type TCategorizedRepoConnections = Record<
   TRepoSupportedTypes,
   {
@@ -39,11 +39,15 @@ const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; versio
 
 export interface ISetupRepos {
   generateRepoConnections(setupData: Readonly<ISetupData>): TSetupOutput[];
-  getStartupImports(reposSetupData: Readonly<TReposSetup>): string[];
+  getStartupImports(
+    reposSetupData: Readonly<TReposSetup>,
+    setupTypeMapper: Record<string, string>,
+  ): string[];
   generateRepoDIImports(
     reposSetupData: Readonly<TReposSetup>,
     boundedContext: string,
     module: string,
+    setupTypeMapper: Record<string, string>,
   ): string;
   generateRepoDIAdapters(
     reposSetupData: Readonly<TReposSetup>,
@@ -54,27 +58,28 @@ export interface ISetupRepos {
 }
 
 export class SetupTypeScriptRepos implements ISetupRepos {
-  private dbTypeToFolderMap: Record<TRepoSupportedTypes, string> = {
-    mongodb: 'mongo',
-    postgres: 'postgres',
-    mysql: 'mysql',
-    sqlite: 'sqlite',
-  };
+  // private dbTypeToFolderMap: Record<TRepoSupportedTypes, string> = {
+  //   mongodb: 'mongo',
+  //   postgres: 'postgres',
+  //   mysql: 'mysql',
+  //   sqlite: 'sqlite',
+  // };
 
-  generateRepoConnections(setupData: Readonly<ISetupData>): TSetupOutput[] {
+  generateRepoConnections(setupData: Readonly<ISetupData>, license?: string): TSetupOutput[] {
     if (!setupData?.repos?.connections) return [];
     const groupedConnectionsPerDb = this.groupRepoConnectionsPerDbType(setupData.repos);
     return Object.entries(groupedConnectionsPerDb).reduce((acc, [dbType, connections]) => {
       const results = this.getDbTypeRepoConnectionsPathsAndContent(
         dbType as TRepoSupportedTypes,
         connections,
+        license,
       );
       acc.push(...results);
       return acc;
     }, [] as TSetupOutput[]);
   }
 
-  getStartupImports(repos: Readonly<TReposSetup>): string[] {
+  getStartupImports(repos: Readonly<TReposSetup>, setupTypeMapper): string[] {
     const dbTypes = new Set<TRepoSupportedTypes>();
     if (!repos?.connections) return [];
     const result: string[] = [];
@@ -82,8 +87,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       dbTypes.add(connectionInfo.dbType);
     }
     dbTypes.forEach((dbType) => {
-      const dbPath = this.dbTypeToFolderMap[dbType];
-      result.push(`await import('./shared/infra/db/${dbPath}');`);
+      result.push(`await import('.${setupTypeMapper[dbType]}');`);
     });
 
     return result;
@@ -93,6 +97,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     reposSetupData: Readonly<TReposSetup>,
     boundedContext: string,
     module: string,
+    setupTypeMapper: Record<string, string>,
   ): string {
     // import { mongoConnection } from '../../../shared/infra/db/mongo/config';
     // import { TodoRepoPortMongodbAdapter } from './infra/repos/todoRepo';
@@ -119,9 +124,10 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     }
     const result = Object.entries(connections).reduce((acc, [dbType, connectionNames]) => {
       if (connectionNames.length === 0) return acc;
-      const dbPath = this.dbTypeToFolderMap[dbType as TRepoSupportedTypes];
       const connectionImports = connectionNames.join(', ');
-      acc.push(`import { ${connectionImports} } from '../../../shared/infra/db/${dbPath}/config';`);
+      acc.push(
+        `import { ${connectionImports} } from '../../../${setupTypeMapper[dbType]}/config';`,
+      );
       return acc;
     }, [] as string[]);
     result.push(...adapterImports);
@@ -186,6 +192,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     connections: {
       [connectionName: string]: TRepoConnectionInfo;
     },
+    license?: string,
   ): TSetupOutput[] {
     let content = '';
 
@@ -212,31 +219,33 @@ export class SetupTypeScriptRepos implements ISetupRepos {
             );
           })
           .join('\n');
-        indexContent = this.getMongoIndexFileContent(Object.keys(connections));
+        indexContent = this.getMongoIndexFileContent(Object.keys(connections), license);
         break;
       }
       default:
         throw new Error('Not implemented yet' + dbType);
     }
-    const dbPath = this.dbTypeToFolderMap[dbType];
+    // const dbPath = this.dbTypeToFolderMap[dbType];
     return [
       {
-        filePath: `./src/shared/infra/db/${dbPath}/config/index.ts`,
-        content: LICENSE + content,
+        fileId: 'config.ts',
+        fileType: `${dbType}.Config`,
+        content: license + content,
       },
       {
-        filePath: `./src/shared/infra/db/${dbPath}/index.ts`,
-        content: indexContent,
+        fileId: 'index.ts',
+        fileType: `${dbType}.Index`,
+        content: license + indexContent,
       },
     ];
   }
 
-  private getMongoIndexFileContent(mongoConnectionInstances: string[]): string {
+  private getMongoIndexFileContent(mongoConnectionInstances: string[], license?: string): string {
     const connectionClients = mongoConnectionInstances.join(', ');
     const connectClients =
       'await Promise.all(connections.map((connection) => connection.connect()));';
     return (
-      LICENSE +
+      license +
       `import { ${connectionClients} } from './config';
 
 const connect = async () => {

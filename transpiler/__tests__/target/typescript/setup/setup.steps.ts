@@ -19,6 +19,9 @@
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d } from 'bitloops-gherkin';
+import { join } from 'path'; // delete temp
+import fs from 'fs'; // delete temp
+import path from 'path'; // delete temp
 
 import {
   BitloopsSetupParser,
@@ -27,13 +30,55 @@ import {
   BitloopsIntermediateSetupASTParser,
   BitloopsIntermediateSetupASTParserError,
 } from '../../../../src/index.js';
-
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 
 import { ISetupData, TBitloopsTargetSetupContent } from '../../../../src/types.js';
 import { BitloopsTargetGeneratorError } from '../../../../src/target/BitloopsTargetGeneratorError.js';
 
 const feature = loadFeature('__tests__/target/typescript/setup/setup.feature');
+
+const ensureDirectoryExistence = (filePath: string): boolean | void => {
+  const dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+};
+
+const writeToFile = (data: string, filePath: string): void => {
+  ensureDirectoryExistence(filePath);
+  // console.log('trying to write to file', filePath);
+  fs.writeFileSync(filePath, data);
+};
+
+export const writeTargetFile = (params: {
+  projectPath: string;
+  filePathObj: { path: string; filename: string };
+  fileContent: string;
+}): void => {
+  const { projectPath, filePathObj, fileContent } = params;
+  const { path, filename } = filePathObj;
+  const filePath = join(projectPath, path, filename);
+
+  writeToFile(fileContent, filePath);
+};
+
+const writeGeneratedOutputToFiles = (
+  params: TBitloopsTargetSetupContent,
+  outputDirPath: string,
+): void => {
+  //  Write output to dest files
+  for (const targetFileContent of params) {
+    const { fileId, fileType, fileContent } = targetFileContent;
+
+    writeTargetFile({
+      projectPath: outputDirPath,
+      filePathObj: { path: '/' + fileType + '/', filename: fileId },
+      fileContent: fileContent,
+    });
+  }
+};
 
 defineFeature(feature, (test) => {
   let setupBl: string;
@@ -64,6 +109,10 @@ defineFeature(feature, (test) => {
 
     then(/^I should get (.*)$/, (output) => {
       const expectedOutput = d(output);
+      writeGeneratedOutputToFiles(
+        result as TBitloopsTargetSetupContent,
+        '/Users/vasilis/Downloads/bitloops/',
+      );
       expect(result).toEqual(expectedOutput);
     });
   });

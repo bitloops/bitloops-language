@@ -1,6 +1,7 @@
 // import { createDirectory } from '../helpers/createDirectory.js';
 // import { readFromFile, writeToFile } from '../helpers/fileOperations.js';
 import chalk from 'chalk';
+import prettier from 'prettier';
 // import path from 'path';
 import packageJSONTemplate from './package-template.json';
 import { SetupTypeScript } from './SetupTypeScript.js';
@@ -8,20 +9,63 @@ import { ISetupData, TBitloopsTargetSetupContent, TBoundedContexts } from '../..
 import { BitloopsTargetSetupGeneratorError } from '../../BitloopsTargetSetupGeneratorError.js';
 // import { mockData } from './mockSetupData.js';
 
-type TSetupOutput = { filePath: string; content: string };
+export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
+
+const setupMapper = {
+  OUTPUT_DB_FOLDER: 'db/',
+  OUTPUT_INFRA_FOLDER: 'infra/',
+  OUTPUT_GRAPHQL_FOLDER: 'graphql/',
+  OUTPUT_REST_FOLDER: 'rest/',
+  OUTPUT_ROUTERS_FOLDER: 'routers/',
+  OUTPUT_SHARED_FOLDER: 'shared/',
+  OUTPUT_SRC_FOLDER: 'src/',
+}; // TODO optionally get this from the config
+
+const setupTypeMapper = {
+  SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
+  BOUNDED_CONTEXTS: 'bounded-contexts',
+  'package.json': '/./',
+  'REST.Fastify.Router': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/routers/`,
+  'REST.Fastify.API': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/api/`,
+  'REST.Fastify.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/`,
+  'GraphQL.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}graphql/`,
+  'DB.Mongo': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
+};
 
 export const generateSetupFiles = (
   setupData: ISetupData,
   _bitloopsModel: TBoundedContexts,
   // outputDirPath: string,
   sourceDirPath: string,
+  formatterConfig?: any,
 ): TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError => {
+  formatterConfig = formatterConfig ?? { semi: true, parser: 'typescript', singleQuote: true };
   console.log('Generating system files...');
   const setup = new SetupTypeScript();
   const pathsAndContents: TSetupOutput[] = [];
 
+  const license = `/**
+*  Bitloops Language
+*  Copyright (C) 2022 Bitloops S.A.
+*
+*  This program is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*
+*  For further information you can contact legal(at)bitloops.com.
+*/`; // TODO get this dynamically from the config file
+
   // Step 1. Generate routes files
-  const routes = setup.generateServerRouters(setupData, _bitloopsModel);
+  const routes = setup.generateServerRouters(setupData, _bitloopsModel, license);
   routes.forEach((router) => {
     pathsAndContents.push(router);
   });
@@ -37,7 +81,7 @@ export const generateSetupFiles = (
   });
 
   // Step 3. Generate DIs
-  const controllerDIs = setup.generateDIs(setupData, _bitloopsModel);
+  const controllerDIs = setup.generateDIs(setupData, _bitloopsModel, setupTypeMapper, license);
   // console.log('controllerDIs:', controllerDIs);
   console.log('--------------------------------');
   controllerDIs.forEach((controllerDI) => {
@@ -59,13 +103,22 @@ export const generateSetupFiles = (
   });
 
   // Step 5. Startup File
-  const startupFile = setup.generateStartupFile(setupData.setup, setupData.repos);
+  const startupFile = setup.generateStartupFile(
+    setupData.setup,
+    setupData.repos,
+    setupTypeMapper,
+    license,
+  );
   // console.log('startupFile:', startupFile);
   // console.log('--------------------------------');
   pathsAndContents.push(startupFile);
 
   // Step 6. Package files
-  const packageFiles = setup.generatePackageFiles(setupData.packages, sourceDirPath);
+  const packageFiles = setup.generatePackageFiles(
+    setupData.packages,
+    sourceDirPath,
+    setupTypeMapper,
+  );
   packageFiles.forEach((packageFile) => {
     pathsAndContents.push(packageFile);
   });
@@ -82,13 +135,18 @@ export const generateSetupFiles = (
   console.log('Writing system files to disk...');
   const result: TBitloopsTargetSetupContent = [];
   pathsAndContents.forEach((pathAndContent) => {
-    const { filePath, content } = pathAndContent;
-    result.push({ fileId: filePath, fileType: 'file', fileContent: content });
+    const { fileType, content, fileId } = pathAndContent;
+    result.push({
+      fileId: `./${setupTypeMapper[fileType]}${fileId}`,
+      fileType: fileType,
+      fileContent: prettier.format(content, formatterConfig),
+    });
   });
   console.log('System files written successfully!');
 
   // Step 8. Write package.json
   console.log('Writing package.json information to disk...');
+  // TODO add project name and other info through setupData config.set(XXX, YYY)
   // const packageJSONFilePath = `${outputDirPath}/package.json`;
   const packageJSON = {
     ...packageJSONTemplate,
@@ -99,7 +157,7 @@ export const generateSetupFiles = (
   result.push({
     fileId: 'package.json',
     fileType: 'package.json',
-    fileContent: JSON.stringify(packageJSON),
+    fileContent: prettier.format(JSON.stringify(packageJSON), { parser: 'json' }),
   });
   console.log('package.json written successfully!');
 

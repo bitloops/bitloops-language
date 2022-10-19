@@ -10,4 +10,5 @@ export type GenerateServerParams = {
   serverType: TServerType;
   serverIndex: number;
   bitloopsModel: TBoundedContexts;
+  license?: string;
 };
