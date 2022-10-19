@@ -47,7 +47,7 @@ export const domainEvaluationToTargetLanguage = (
 
   const instantiateDomainLangMapping = {
     [SupportedLanguages.TypeScript]: (name, props) => {
-      return `new ${name}(${props})`;
+      return `${name}.create(${props});`;
     },
   };
 

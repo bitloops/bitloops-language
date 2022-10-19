@@ -57,7 +57,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: 
       (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
     ).length === 0;
   if (hasReturnStatements || statements.length === 0) {
-    statementsString = statementsString.concat(`return yay(new ${returnOkType}(props));`);
+    statementsString = statementsString.concat(`return ok(new ${returnOkType}(props));`);
   }
   const ToLanguageMapping = {
     [SupportedLanguages.TypeScript]: (
