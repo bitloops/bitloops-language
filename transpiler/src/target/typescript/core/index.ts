@@ -85,11 +85,11 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
   }
 
   formatCode(targetContent: TBitloopsTargetContent, config?: any): TBitloopsTargetContent {
-    const fomattedCode: TBitloopsTargetContent = [];
+    const formattedCode: TBitloopsTargetContent = [];
     for (const { boundedContext, classType, module, className, fileContent } of targetContent) {
       const formattedContent = formatString(fileContent, config);
 
-      fomattedCode.push({
+      formattedCode.push({
         boundedContext,
         module,
         classType,
@@ -97,6 +97,6 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
         fileContent: formattedContent,
       });
     }
-    return fomattedCode;
+    return formattedCode;
   }
 }
