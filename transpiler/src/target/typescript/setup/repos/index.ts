@@ -19,19 +19,19 @@ type TCategorizedRepoConnections = Record<
 >;
 
 const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; version: string }> = {
-  mongodb: {
+  'DB.Mongo': {
     packageName: 'mongodb',
     version: '^4.1.0',
   },
-  mysql: {
+  'DB.MySQL': {
     packageName: 'mysql2',
     version: '^2.3.0',
   },
-  postgres: {
+  'DB.Postgres': {
     packageName: 'pg',
     version: '^8.7.1',
   },
-  sqlite: {
+  'DB.SQLite': {
     packageName: 'sqlite3',
     version: '^5.0.2',
   },
@@ -104,10 +104,10 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     const moduleRepoAdapters = reposSetupData?.repoAdapters?.[boundedContext]?.[module];
     if (!moduleRepoAdapters) return '';
     const connections: Record<TRepoSupportedTypes, string[]> = {
-      mongodb: [],
-      postgres: [],
-      mysql: [],
-      sqlite: [],
+      'DB.Mongo': [],
+      'DB.Postgres': [],
+      'DB.MySQL': [],
+      'DB.SQLite': [],
     };
     const adapterImports: string[] = [];
     for (const [repoInstanceName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
@@ -198,7 +198,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
 
     let indexContent = '';
     switch (dbType) {
-      case 'mongodb': {
+      case 'DB.Mongo': {
         // TODO handle mongo user, pass etc
         content += "import { MongoClient } from 'mongodb';\n";
 

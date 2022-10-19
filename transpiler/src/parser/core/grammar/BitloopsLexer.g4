@@ -146,6 +146,7 @@ From:                           'from';
 ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
+ApplyRules:                     'applyRules';
 
 /// Future Reserved Words
 

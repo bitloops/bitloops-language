@@ -122,6 +122,10 @@ import { singleExpressionToTargetLanguage } from '../setup/single-expression/ind
 import { ISetupData, TBoundedContexts, TContextData } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
+import {
+  ruleDeclarationToTargetLanguage,
+  rulesDeclarationToTargetLanguage,
+} from './components/rulesDeclaration/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -487,6 +491,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TApplyRules: {
       res = applyRulesToTargetLanguage(value, targetLanguage);
+      break;
+    }
+    case BitloopsTypesMapping.TRules: {
+      res = rulesDeclarationToTargetLanguage(value, targetLanguage);
+      break;
+    }
+    case BitloopsTypesMapping.TRuleValues: {
+      res = ruleDeclarationToTargetLanguage(value, targetLanguage);
       break;
     }
     default: {

@@ -633,7 +633,7 @@ export type TControllerOfModule = {
   [ControllerClassName: string]: TRestControllerDefinitions | TGraphQLControllerInstances;
 };
 
-export const repoSupportedTypes = ['postgres', 'mysql', 'sqlite', 'mongodb'] as const;
+export const repoSupportedTypes = ['DB.Postgres', 'DB.MySQL', 'DB.SQLite', 'DB.Mongo'] as const;
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
 
 export type TReposSetup = {

@@ -31,7 +31,7 @@ export const repoAdapterToTargetLanguage = (
   const importMapping = {
     [SupportedLanguages.TypeScript]: (dbType: TRepoSupportedTypes) => {
       switch (dbType) {
-        case 'mongodb': {
+        case 'DB.Mongo': {
           return "import { MongoClient } from 'mongodb';";
         }
         default: {

@@ -239,7 +239,7 @@ regularDTOEvaluation
 
 // | RegularStringEvaluation | RegularBackTicksEvaluation
 field
-    : Optional? (primitives | struct) identifier
+    : Optional? (primitives | struct | valueObjectIdentifier) identifier
     ;
 
 predefinedType
@@ -589,6 +589,19 @@ statement
     | arrowFunctionDeclaration
     // | variableStatement
     | typeAliasDeclaration //ADDED
+    | builtInFunction // Using semantic analysis, allow it only inside domain
+    ;
+
+builtInFunction
+    : ApplyRules '(' applyRuleStatementRulesList ')' SemiColon?
+    ;
+
+applyRuleStatementRulesList
+    : applyRulesRule (',' applyRulesRule)*
+    ;
+
+applyRulesRule
+    : domainRuleIdentifier formalParameterList
     ;
 
 block

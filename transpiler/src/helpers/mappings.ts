@@ -99,6 +99,7 @@ const BitloopsTypesMapping = {
   TExpressionValues: ' TExpressionValues',
   TRootEntities: 'TRootEntities',
   TRules: 'TRules',
+  TRuleValues: 'TRuleValues',
   TEntityCreate: 'TEntityCreate',
   TBuildInFunction: 'TBuildInFunction',
   TApplyRules: 'TApplyRules',
@@ -136,6 +137,7 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Rules]: BitloopsTypesMapping.TRules,
   [ClassTypes.Structs]: BitloopsTypesMapping.TStructs,
   [ClassTypes.ApplicationErrors]: BitloopsTypesMapping.TApplicationErrors,
+  [ClassTypes.Rules]: BitloopsTypesMapping.TRules,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };
