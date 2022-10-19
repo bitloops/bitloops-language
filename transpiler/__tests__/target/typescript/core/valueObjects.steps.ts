@@ -48,7 +48,6 @@ defineFeature(feature, (test) => {
     given(/^I have some value objects (.*) and props (.*)$/, (valueObject, inputProps) => {
       value = d(valueObject);
       props = d(inputProps);
-      console.log('props', props);
       intermediateAST = {
         [boundedContext]: {
           [module]: {
@@ -77,8 +76,7 @@ defineFeature(feature, (test) => {
     });
 
     then(/^I should see the output VOs (.*) and outputProps (.*)$/, (outputVOs, outputProps) => {
-      console.log('d(outputVOs)', d(outputVOs));
-      const classNamesContent = d(outputVOs);
+      const classNamesContent = JSON.parse(d(outputVOs));
 
       const expectedOutput = [];
       for (const [className, content] of Object.entries(classNamesContent)) {
@@ -93,7 +91,7 @@ defineFeature(feature, (test) => {
       }
       // add props to the expected result too
       const propsContent = formatString(d(outputProps), formatterConfig);
-      const propsName = Object.keys(props)[0];
+      const propsName = Object.keys(JSON.parse(props))[0];
       expectedOutput.push({
         boundedContext,
         className: propsName,

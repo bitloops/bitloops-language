@@ -31,7 +31,6 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     targetLanguage,
     ClassTypes.ValueObjects,
   );
-  console.log('after producedConstructor');
 
   let statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatementsWithoutThis,
@@ -39,14 +38,11 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     targetLanguage,
   });
 
-  console.log('after statementsString');
-
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
     value: parameterDependency,
     targetLanguage,
   });
-  console.log('after parameterString');
 
   const returnTypeString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
