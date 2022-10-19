@@ -45,6 +45,7 @@ import {
   TEntities,
   TDomainPublicMethod,
   TRules,
+  TBuildInFunction,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -98,6 +99,7 @@ import {
   publicMethodDeclarationListVisitor,
   domainRuleDeclarationVisitor,
   domainRuleBodyVisitor,
+  applyRulesStatementVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -804,5 +806,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
     // console.log('visitDomainRuleBody');
     return domainRuleBodyVisitor(this, ctx);
+  }
+
+  visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext): TBuildInFunction {
+    return applyRulesStatementVisitor(this, ctx);
   }
 }

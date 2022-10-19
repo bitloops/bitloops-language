@@ -593,7 +593,7 @@ statement
     ;
 
 builtInFunction
-    : ApplyRules '(' applyRuleStatementRulesList ')' SemiColon?
+    : ApplyRules '(' applyRuleStatementRulesList ')' SemiColon? # ApplyRulesStatement
     ;
 
 applyRuleStatementRulesList

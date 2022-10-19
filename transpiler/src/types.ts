@@ -385,12 +385,10 @@ export type TThisDeclaration = {
 export type TBreakStatement = 'break';
 
 export type TApplyRules = {
-  applyRules: [
-    {
-      name: string;
-      parameterDependencies: TParameterDependencies;
-    },
-  ];
+  applyRules: {
+    name: string;
+    arguments: TArgumentDependencies;
+  }[];
 };
 
 export type TBuildInFunction = {
