@@ -5,8 +5,11 @@ import {
 } from '../../../../index.js';
 
 const blString = `
-Rule IsValidTitle(title: string) throws DomainErrors.InvalidTitleError {
-    isBrokenIf (title > 150 OR title < 4);
+Props TodoProps {
+    optional UUIDv4 id; // The id name is reserved for entity ids, based on this id, a TodoEntityId class is automatically generated
+    TitleVO title;
+    // string description; @TODO add description
+    bool completed;
   }
 `;
 
