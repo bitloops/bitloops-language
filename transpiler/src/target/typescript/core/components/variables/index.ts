@@ -33,7 +33,7 @@ const variableToTargetLanguage = (variable: TVariable, targetLanguage: string): 
 
   let mappedType = type;
   if (isBitloopsPrimitive(type)) {
-    mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](variable.type);
+    mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
   }
   return variableLangMapping[targetLanguage](name, mappedType, optional);
 };

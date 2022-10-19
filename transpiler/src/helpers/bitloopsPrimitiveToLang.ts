@@ -17,9 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { TBitloopsPrimitives } from '../types.js';
 import { SupportedLanguages } from './supportedLanguages.js';
 
-const BITLOOPS_PRIMITIVES = {
+const bitloopsPrimitives = {
   string: 'string',
   bool: 'bool',
   double: 'double',
@@ -36,33 +37,33 @@ const BITLOOPS_PRIMITIVES = {
   sfixed64: 'sfixed64',
   bytes: 'bytes',
   regex: 'regex',
-  Void: 'Void',
+  void: 'void',
 };
 
 export const bitloopsTypeToLangMapping = {
-  [SupportedLanguages.TypeScript]: (type: unknown): string => {
+  [SupportedLanguages.TypeScript]: (type: TBitloopsPrimitives): string => {
     switch (type) {
-      case BITLOOPS_PRIMITIVES.string: {
+      case bitloopsPrimitives.string: {
         return 'string';
       }
-      case BITLOOPS_PRIMITIVES.bool: {
+      case bitloopsPrimitives.bool: {
         return 'boolean';
       }
-      case BITLOOPS_PRIMITIVES.double:
-      case BITLOOPS_PRIMITIVES.float:
-      case BITLOOPS_PRIMITIVES.int32:
-      case BITLOOPS_PRIMITIVES.int64:
-      case BITLOOPS_PRIMITIVES.uint32:
-      case BITLOOPS_PRIMITIVES.uint64:
-      case BITLOOPS_PRIMITIVES.sint32:
-      case BITLOOPS_PRIMITIVES.sint64:
-      case BITLOOPS_PRIMITIVES.fixed32:
-      case BITLOOPS_PRIMITIVES.fixed64:
-      case BITLOOPS_PRIMITIVES.sfixed32:
-      case BITLOOPS_PRIMITIVES.sfixed64: {
+      case bitloopsPrimitives.double:
+      case bitloopsPrimitives.float:
+      case bitloopsPrimitives.int32:
+      case bitloopsPrimitives.int64:
+      case bitloopsPrimitives.uint32:
+      case bitloopsPrimitives.uint64:
+      case bitloopsPrimitives.sint32:
+      case bitloopsPrimitives.sint64:
+      case bitloopsPrimitives.fixed32:
+      case bitloopsPrimitives.fixed64:
+      case bitloopsPrimitives.sfixed32:
+      case bitloopsPrimitives.sfixed64: {
         return 'number';
       }
-      case BITLOOPS_PRIMITIVES.bytes:
+      case bitloopsPrimitives.bytes:
         return 'Uint8Array';
 
       // 'bytes',
@@ -73,10 +74,10 @@ export const bitloopsTypeToLangMapping = {
       // 'Map',
       // 'NullValue',
       // 'Duration',
-      case BITLOOPS_PRIMITIVES.regex: {
+      case bitloopsPrimitives.regex: {
         return 'RegExp';
       }
-      case BITLOOPS_PRIMITIVES.Void: {
+      case bitloopsPrimitives.void: {
         return 'void';
       }
       default: {
