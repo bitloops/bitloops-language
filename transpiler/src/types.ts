@@ -384,6 +384,19 @@ export type TThisDeclaration = {
 
 export type TBreakStatement = 'break';
 
+export type TApplyRules = {
+  applyRules: [
+    {
+      name: string;
+      parameterDependencies: TParameterDependencies;
+    },
+  ];
+};
+
+export type TBuildInFunction = {
+  buildInFunction: TApplyRules;
+};
+
 export type TStatement =
   | TBreakStatement
   | TIfStatement
@@ -395,6 +408,7 @@ export type TStatement =
   | TConstDeclaration
   | TThisDeclaration
   | TVariableDeclaration
+  | TBuildInFunction
   | TExpression;
 
 export type TStatements = TStatement[];
