@@ -42,6 +42,9 @@ import {
   TConstDeclaration,
   TConstDeclarationValue,
   TReturnStatement,
+  TEntities,
+  TDomainPublicMethod,
+  TRules,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -90,6 +93,11 @@ import {
   privateMethodDeclarationListVisitor,
   returnPrivateMethodTypeVisitor,
   domainConstDeclarationListVisitor,
+  entityDeclarationVisitor,
+  publicMethodDeclarationVisitor,
+  publicMethodDeclarationListVisitor,
+  domainRuleDeclarationVisitor,
+  domainRuleBodyVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -723,8 +731,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): {
     ValueObjects: { [id: string]: TValueObjectValues };
   } {
-    console.log('visitValueObjectDeclaration');
+    // console.log('visitValueObjectDeclaration');
     return valueObjectDeclarationVisitor(this, ctx);
+  }
+
+  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): { Entities: TEntities } {
+    return entityDeclarationVisitor(this, ctx);
   }
 
   visitDomainConstDeclarationList(
@@ -738,6 +750,22 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   ): TConstDeclaration {
     return this.visit(ctx.constDeclaration());
   }
+
+  // Public method declaration
+  visitPublicMethodDeclarationList(
+    ctx: BitloopsParser.PublicMethodDeclarationListContext,
+  ): Record<string, TDomainPublicMethod> {
+    return publicMethodDeclarationListVisitor(this, ctx);
+  }
+
+  visitPublicMethodDeclaration(ctx: BitloopsParser.PublicMethodDeclarationContext): {
+    methodName: string;
+    methodInfo: TDomainPublicMethod;
+  } {
+    return publicMethodDeclarationVisitor(this, ctx);
+  }
+
+  // Private method declaration
 
   visitPrivateMethodDeclarationList(
     ctx: BitloopsParser.PrivateMethodDeclarationListContext,
@@ -763,5 +791,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return {
       return: expression,
     };
+  }
+
+  /**
+   * Domain Rule
+   */
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
+    // console.log('visitDomainRuleDeclaration');
+    return domainRuleDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
+    // console.log('visitDomainRuleBody');
+    return domainRuleBodyVisitor(this, ctx);
   }
 }

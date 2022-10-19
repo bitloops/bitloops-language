@@ -20,13 +20,13 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TValueObjectMethods } from '../../../../types.js';
+import { TDomainPublicMethod } from '../../../../types.js';
 
-export const privateMethodDeclarationListVisitor = (
+export const publicMethodDeclarationListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.PrivateMethodDeclarationListContext,
-): TValueObjectMethods => {
-  const result: TValueObjectMethods = {};
+  ctx: BitloopsParser.PublicMethodDeclarationListContext,
+): Record<string, TDomainPublicMethod> => {
+  const result: Record<string, TDomainPublicMethod> = {};
   const visitChildren = thisVisitor.visitChildren(ctx);
   if (!visitChildren) {
     return {};

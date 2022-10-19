@@ -23,9 +23,9 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const getDependencyType = (dependency: string): string => {
-  if (dependency === 'request' || dependency === 'req') return 'FastifyRequest';
+  if (dependency === 'request' || dependency === 'req') return 'Fastify.Request';
   else if (dependency === 'response' || dependency === 'reply' || dependency === 'rep')
-    return 'FastifyReply';
+    return 'Fastify.Reply';
   else return 'any';
 };
 

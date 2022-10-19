@@ -177,7 +177,7 @@ export class SetupTypeScript implements ISetup {
         // console.log('module', module);
         const diFileName = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
           boundedContextName,
-        )}/${kebabCase(moduleName)}/DI${esmEnabled ? '.js' : ''}`;
+        )}/${kebabCase(moduleName)}/DI.ts`;
         let diContent = '';
         // Gather all imports
         if (repos) {
@@ -216,7 +216,7 @@ export class SetupTypeScript implements ISetup {
 
         result.push({
           fileId: diFileName,
-          fileType: 'di',
+          fileType: 'DI',
           content: (license || '') + diContent,
           context: {
             boundedContextName,
@@ -630,7 +630,7 @@ const corsOptions = {
   origin: '*',
 };
 
-const fastify = Fastify({
+const fastify = Fastify.Server({
   logger: true,
 });
 fastify.register(Fastify.cors, corsOptions);
@@ -700,9 +700,11 @@ start();
     const servers = data.servers;
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
-        const filePath = path.normalize(
-          `${setupTypeMapper[`${serverType}.Server`]}app${i}${esmEnabled ? '.js' : ''}`,
-        );
+        const filePath =
+          '/../' +
+          path.normalize(
+            `${setupTypeMapper[`${serverType}.Server`]}app${i}${esmEnabled ? '.js' : ''}`,
+          );
         imports.push(`await import('.${filePath}');`);
       }
     }

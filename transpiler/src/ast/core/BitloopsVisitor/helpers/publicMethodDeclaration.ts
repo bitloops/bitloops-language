@@ -20,19 +20,28 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TValueObjectMethods } from '../../../../types.js';
+import {
+  TDomainPublicMethod,
+  TParameterDependencies,
+  TOkErrorReturnType,
+} from '../../../../types.js';
 
-export const privateMethodDeclarationListVisitor = (
+export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.PrivateMethodDeclarationListContext,
-): TValueObjectMethods => {
-  const result: TValueObjectMethods = {};
-  const visitChildren = thisVisitor.visitChildren(ctx);
-  if (!visitChildren) {
-    return {};
-  }
-  for (const child of visitChildren) {
-    result[child.methodName] = child.methodInfo;
-  }
-  return result;
+  ctx: BitloopsParser.PublicMethodDeclarationContext,
+): { methodName: string; methodInfo: TDomainPublicMethod } => {
+  const methodName = ctx.identifier().getText();
+  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
+    ctx.formalParameterList(),
+  );
+  const returnType: TOkErrorReturnType = thisVisitor.visit(ctx.returnPublicMethodType())[1];
+  const { statements } = thisVisitor.visit(ctx.functionBody());
+  const methodInfo: TDomainPublicMethod = {
+    publicMethod: {
+      parameterDependencies,
+      returnType,
+      statements,
+    },
+  };
+  return { methodName, methodInfo };
 };

@@ -780,7 +780,7 @@ domainConstDeclaration
     ;
 
 entityDeclaration 
-    : Entity entityIdentifier '{' domainConstDeclaration*  domainConstructorDeclaration publicMethodDeclaration* privateMethodDeclaration*  '}' SemiColon?
+    : Entity entityIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}' SemiColon?
 ;
 
 valueObjectDeclaration 
@@ -788,6 +788,10 @@ valueObjectDeclaration
     ;
 domainConstDeclarationList
     : domainConstDeclaration*
+    ;
+
+publicMethodDeclarationList
+    : publicMethodDeclaration*
     ;
 
 privateMethodDeclarationList
