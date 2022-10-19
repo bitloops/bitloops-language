@@ -52,6 +52,9 @@ export const primitiveEvaluationToTargetLanguage = (
           return `${+variable.value}`;
         }
 
+        case 'void':
+          return 'void';
+
         // 'bytes',
         // 'enum',
         // 'Timestamp',
