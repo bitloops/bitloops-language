@@ -6,7 +6,8 @@ import { internalConstructor } from './index.js';
 
 const THIS_STATEMENT_DECLARATION = 'thisDeclaration';
 
-export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string): string => {
+// TODO refactor this with domainCreate method which is similar (only the constructor changes)
+export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: string): string => {
   const { parameterDependency, returnType, statements } = create;
 
   const statementsResult = {
@@ -29,7 +30,7 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     propsName,
     statementsResult.thisStatements,
     targetLanguage,
-    ClassTypes.ValueObjects,
+    ClassTypes.Entities,
   );
 
   let statementsString = modelToTargetLanguage({

@@ -90,7 +90,7 @@ import {
 import { returnTypeToDefinitionLanguage } from './components/returnType/index.js';
 import { packagePortToTargetLanguage } from './components/packagePort/index.js';
 import { packagesToTargetLanguage } from './components/packages/index.js';
-import { domainCreate } from './components/domain/index.js';
+import { domainCreate, domainCreateEntity } from './components/domain/index.js';
 import { valueObjectEvaluationToTargetLanguage } from './components/statements/expression/evaluation/valueObjectEvaluation.js';
 import { evaluationFieldsToTargetLanguage } from './components/statements/expression/evaluation/evaluationFields.js';
 import { domainEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEvaluation.js';
@@ -376,6 +376,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDomainCreateMethod: {
       res = domainCreate(value, targetLanguage);
+      break;
+    }
+    case BitloopsTypesMapping.TEntityCreate: {
+      res = domainCreateEntity(value, targetLanguage);
       break;
     }
     case BitloopsTypesMapping.TValueObjectEvaluation: {

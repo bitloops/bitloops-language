@@ -57,7 +57,7 @@ const entitiesToTargetLanguage = (params: {
     result += initialObjectValuesLangMapping[targetLanguage](entityName, propsName);
 
     result += modelToTargetLanguage({
-      type: BitloopsTypesMapping.TDomainCreateMethod,
+      type: BitloopsTypesMapping.TEntityCreate,
       value: create,
       targetLanguage,
     });
