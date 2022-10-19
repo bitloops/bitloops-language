@@ -20,18 +20,43 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TBuildInFunction } from '../../../../types.js';
+import { TArgumentDependencies, TBuildInFunction } from '../../../../types.js';
 
 export const applyRulesStatementVisitor = (
   _thisVisitor: BitloopsVisitor,
   _ctx: BitloopsParser.ApplyRulesStatementContext,
 ): TBuildInFunction => {
-  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
-  // const identifier = ctx.structEvaluationIdentifier().getText();
-  // const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
+  const result = _thisVisitor.visit(_ctx.applyRuleStatementRulesList());
   return {
     buildInFunction: {
-      applyRules: [],
+      applyRules: result,
     },
-  } as any;
+  };
+};
+
+export const applyRuleStatementRulesListVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ApplyRuleStatementRulesListContext,
+): {
+  name: string;
+  arguments: TArgumentDependencies;
+}[] => {
+  const children = thisVisitor.visitChildren(ctx);
+  const result = children.filter((child) => child !== undefined);
+  return result;
+};
+
+export const applyRulesRuleVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ApplyRulesRuleContext,
+): {
+  name: string;
+  arguments: TArgumentDependencies;
+} => {
+  const ruleIdentifier = thisVisitor.visit(ctx.domainRuleIdentifier());
+  const argumentsRes = thisVisitor.visit(ctx.arguments)[1];
+  return {
+    name: ruleIdentifier,
+    arguments: argumentsRes,
+  };
 };

@@ -100,6 +100,8 @@ import {
   domainRuleDeclarationVisitor,
   domainRuleBodyVisitor,
   applyRulesStatementVisitor,
+  applyRuleStatementRulesListVisitor,
+  applyRulesRuleVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -810,5 +812,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext): TBuildInFunction {
     return applyRulesStatementVisitor(this, ctx);
+  }
+
+  visitApplyRuleStatementRulesList(ctx: BitloopsParser.ApplyRuleStatementRulesListContext): any {
+    return applyRuleStatementRulesListVisitor(this, ctx);
+  }
+  visitApplyRulesRule(ctx: BitloopsParser.ApplyRulesRuleContext): any {
+    return applyRulesRuleVisitor(this, ctx);
   }
 }
