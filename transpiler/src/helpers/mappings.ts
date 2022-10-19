@@ -101,6 +101,8 @@ const BitloopsTypesMapping = {
   TRules: 'TRules',
   TRuleValues: 'TRuleValues',
   TEntityCreate: 'TEntityCreate',
+  TBuildInFunction: 'TBuildInFunction',
+  TApplyRules: 'TApplyRules',
 };
 
 const ClassTypes = {

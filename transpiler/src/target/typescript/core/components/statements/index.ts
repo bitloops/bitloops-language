@@ -34,6 +34,7 @@ export const keysToTypeMapping = {
   expression: BitloopsTypesMapping.TExpression,
   thisDeclaration: BitloopsTypesMapping.TThisDeclaration,
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
+  buildInFunction: BitloopsTypesMapping.TBuildInFunction,
 };
 
 const statementToTargetLanguage = (variable: TStatement, targetLanguage: string): string => {
