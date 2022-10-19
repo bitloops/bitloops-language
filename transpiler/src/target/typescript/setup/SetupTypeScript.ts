@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import path from 'path';
 import { kebabCase } from '../../../utils/caseStyles.js';
 import { readFromFile } from '../../../helpers/fileOperations.js';
 import {
@@ -102,6 +103,7 @@ const REQUIRED_NODE_DEPENDENCIES = {
   morgan: '^1.10.0',
   uuid: '^8.3.2',
   validator: '^13.7.0',
+  '@bitloops/bl-boilerplate-core': '^0.0.3',
 };
 
 const REQUIRED_NODE_DEV_DEPENDENCIES = {
@@ -698,7 +700,10 @@ start();
     const servers = data.servers;
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
-        imports.push(`await import('./${setupTypeMapper[`${serverType}.Server`]}app${i}');`);
+        const filePath = path.normalize(
+          `${setupTypeMapper[`${serverType}.Server`]}app${i}${esmEnabled ? '.js' : ''}`,
+        );
+        imports.push(`await import('.${filePath}');`);
       }
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);

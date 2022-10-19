@@ -70,11 +70,10 @@ const writeGeneratedOutputToFiles = (
 ): void => {
   //  Write output to dest files
   for (const targetFileContent of params) {
-    const { fileId, fileType, fileContent } = targetFileContent;
-
+    const { fileId, fileContent } = targetFileContent;
     writeTargetFile({
       projectPath: outputDirPath,
-      filePathObj: { path: '/' + fileType + '/', filename: fileId },
+      filePathObj: { path: '/', filename: fileId },
       fileContent: fileContent,
     });
   }

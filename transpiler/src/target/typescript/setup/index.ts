@@ -2,7 +2,7 @@
 // import { readFromFile, writeToFile } from '../helpers/fileOperations.js';
 import chalk from 'chalk';
 import prettier from 'prettier';
-// import path from 'path';
+import path from 'path';
 import packageJSONTemplate from './package-template.json';
 import { SetupTypeScript } from './SetupTypeScript.js';
 import { ISetupData, TBitloopsTargetSetupContent, TBoundedContexts } from '../../../types.js';
@@ -63,7 +63,8 @@ export const generateSetupFiles = (
 *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *
 *  For further information you can contact legal(at)bitloops.com.
-*/`; // TODO get this dynamically from the config file
+*/
+`; // TODO get this dynamically from the config file
 
   // Step 1. Generate routes files
   const routes = setup.generateServerRouters(setupData, _bitloopsModel, license);
@@ -138,7 +139,7 @@ export const generateSetupFiles = (
   pathsAndContents.forEach((pathAndContent) => {
     const { fileType, content, fileId } = pathAndContent;
     result.push({
-      fileId: `./${setupTypeMapper[fileType]}${fileId}`,
+      fileId: path.normalize(`./${setupTypeMapper[fileType]}${fileId}`),
       fileType: fileType,
       fileContent: prettier.format(content, formatterConfig),
     });
