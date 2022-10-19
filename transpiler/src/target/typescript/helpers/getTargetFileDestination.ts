@@ -68,6 +68,7 @@ const getTargetFileDestination = (
   console.log('Checking classType', classType);
   switch (classType) {
     case ClassTypes.RootEntities:
+    case ClassTypes.Entities:
     case ClassTypes.ValueObjects:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
@@ -102,6 +103,10 @@ const getTargetFileDestination = (
       break;
     case ClassTypes.RepoAdapters:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/repos/`;
+      result.filename = className + getLanguageFileExtension(targetLanguage);
+      break;
+    case ClassTypes.Rules:
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     default:
