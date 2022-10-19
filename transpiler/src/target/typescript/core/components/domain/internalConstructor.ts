@@ -3,7 +3,7 @@ import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js
 import { TStatements } from '../../../../../types.js';
 import { statementsToTargetLanguage } from '../statements/index.js';
 
-//TODO constructor also with id??
+//TODO props now must always have an id field (fix this not to be mandatory)
 export const internalConstructor = (
   propsName: string,
   statements: TStatements,
