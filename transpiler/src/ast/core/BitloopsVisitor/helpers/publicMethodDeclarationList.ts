@@ -28,6 +28,9 @@ export const publicMethodDeclarationListVisitor = (
 ): Record<string, TDomainPublicMethod> => {
   const result: Record<string, TDomainPublicMethod> = {};
   const visitChildren = thisVisitor.visitChildren(ctx);
+  if (!visitChildren) {
+    return {};
+  }
   for (const child of visitChildren) {
     result[child.methodName] = child.methodInfo;
   }

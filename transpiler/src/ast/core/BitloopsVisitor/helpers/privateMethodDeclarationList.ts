@@ -28,6 +28,9 @@ export const privateMethodDeclarationListVisitor = (
 ): TValueObjectMethods => {
   const result: TValueObjectMethods = {};
   const visitChildren = thisVisitor.visitChildren(ctx);
+  if (!visitChildren) {
+    return {};
+  }
   for (const child of visitChildren) {
     result[child.methodName] = child.methodInfo;
   }
