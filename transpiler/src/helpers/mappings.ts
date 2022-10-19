@@ -99,6 +99,7 @@ const BitloopsTypesMapping = {
   TExpressionValues: ' TExpressionValues',
   TRootEntities: 'TRootEntities',
   TRules: 'TRules',
+  TEntityCreate: 'TEntityCreate',
 };
 
 const ClassTypes = {

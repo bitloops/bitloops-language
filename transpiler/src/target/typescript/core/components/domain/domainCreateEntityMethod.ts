@@ -6,7 +6,8 @@ import { internalConstructor } from './index.js';
 
 const THIS_STATEMENT_DECLARATION = 'thisDeclaration';
 
-export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string): string => {
+// TODO refactor this with domainCreate method which is similar (only the constructor changes)
+export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: string): string => {
   const { parameterDependency, returnType, statements } = create;
 
   const statementsResult = {
@@ -29,9 +30,8 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     propsName,
     statementsResult.thisStatements,
     targetLanguage,
-    ClassTypes.ValueObjects,
+    ClassTypes.Entities,
   );
-  console.log('after producedConstructor');
 
   let statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatementsWithoutThis,
@@ -39,14 +39,11 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     targetLanguage,
   });
 
-  console.log('after statementsString');
-
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
     value: parameterDependency,
     targetLanguage,
   });
-  console.log('after parameterString');
 
   const returnTypeString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
