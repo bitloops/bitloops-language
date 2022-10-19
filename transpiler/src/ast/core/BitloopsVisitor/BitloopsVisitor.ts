@@ -34,6 +34,7 @@ import {
   TVariables,
   TVariable,
   TDTO,
+  TEntityCreate,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
@@ -698,5 +699,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitPropsDeclaration(ctx: BitloopsParser.PropsDeclarationContext): any {
     return propsDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainConstructorDeclaration(
+    ctx: BitloopsParser.DomainConstructorDeclarationContext,
+  ): TEntityCreate {
+    const { statements } = this.visit(ctx.functionBody());
+    const returnType = this.visit(ctx.returnOkErrorType());
+    const parameters = this.visit(ctx.formalParameterList());
+    const result: TEntityCreate = {
+      returnType,
+      statements,
+      parameterDependency: parameters[0],
+    };
+    return result;
   }
 }
