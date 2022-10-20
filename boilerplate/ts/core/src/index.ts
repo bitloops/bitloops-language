@@ -11,8 +11,9 @@ import {
   ErrorMessage as ErrorMessageImport,
 } from './application/rest/IBaseController';
 import { IMQ as IMQImport } from './application/mq/IMQ';
-import { IBusinessRule as IBusinessRuleImport } from './domain/IBusinessRule';
-import { UniqueEntityID as UniqueEntityIDImport } from './domain/UniqueEntityID';
+import { IRule as IRuleImport } from './domain/IRule';
+import { applyRules as applyRulesImport } from './domain/applyRule';
+import { UniqueEntityID } from './domain/UniqueEntityID';
 import { ValueObject as ValueObjectImport, ValueObjectProps } from './domain/ValueObject';
 import { ReadModel as ReadModelImport } from './domain/ReadModel';
 import { EventBus as EventBusImport } from './infra/event-bus';
@@ -24,8 +25,9 @@ namespace Domain {
   export class Entity<T> extends EntityImport<T> {}
   export class ValueObject<T extends ValueObjectProps> extends ValueObjectImport<T> {}
   export class ReadModel<T> extends ReadModelImport<T> {}
-  export class UniqueEntityID extends UniqueEntityIDImport {}
-  export type IBusinessRule = IBusinessRuleImport;
+  export class UUIDv4 extends UniqueEntityID {}
+  export type IRule = IRuleImport;
+  export const applyRules = applyRulesImport;
 }
 
 namespace Application {
