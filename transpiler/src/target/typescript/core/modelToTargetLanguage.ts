@@ -341,7 +341,6 @@ const modelToTargetLanguage = (props: {
       res = applicationErrorsToTargetLanguage(value);
       break;
     }
-
     case BitloopsTypesMapping.TEvaluatePrimitive: {
       res = primitiveEvaluationToTargetLanguage(value);
       break;
