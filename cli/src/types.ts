@@ -117,6 +117,14 @@ export type TBitloopsTargetContent = {
   module: TModuleName;
   classType: TClassType;
   className: TClassName;
+  fileContent: TTargetDependenciesTypeScript;
+}[];
+
+export type TBitloopsOutputTargetContent = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  classType: TClassType;
+  className: TClassName;
   fileContent: string;
 }[];
 
@@ -989,4 +997,9 @@ export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
+};
+
+export type TTargetDependenciesTypeScript = {
+  output: string;
+  dependencies: { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
 };

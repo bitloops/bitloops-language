@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TRESTControllerExecute } from '../../../../../../types.js';
+import { TRESTControllerExecute, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
@@ -33,7 +33,7 @@ const buildExecuteMethod = (
   execute: TRESTControllerExecute,
   targetLanguage: string,
   contextData?: { boundedContext: string; module: string },
-): string => {
+): TTargetDependenciesTypeScript => {
   const typedExecuteDependencies = execute.dependencies.map(
     (dependency) => `${dependency}: ${getDependencyType(dependency)}`,
   );
@@ -51,7 +51,10 @@ const buildExecuteMethod = (
     },
   };
 
-  return executeToLangMapping[targetLanguage](paramsString, statementsString);
+  return {
+    output: executeToLangMapping[targetLanguage](paramsString, statementsString.output),
+    dependencies: statementsString.dependencies,
+  };
 };
 
 export { buildExecuteMethod };

@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  TBitloopsOutputTargetContent,
   TBitloopsTargetContent,
   TBitloopsTargetGeneratorParams,
   TClassType,
@@ -84,10 +85,10 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     return result;
   }
 
-  formatCode(targetContent: TBitloopsTargetContent, config?: any): TBitloopsTargetContent {
-    const formattedCode: TBitloopsTargetContent = [];
+  formatCode(targetContent: TBitloopsTargetContent, config?: any): TBitloopsOutputTargetContent {
+    const formattedCode: TBitloopsOutputTargetContent = [];
     for (const { boundedContext, classType, module, className, fileContent } of targetContent) {
-      const formattedContent = formatString(fileContent, config);
+      const formattedContent = formatString(fileContent.output, config);
 
       formattedCode.push({
         boundedContext,

@@ -23,6 +23,7 @@ import {
   TApplicationError,
   TString,
   TBackTickString,
+  TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -30,7 +31,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 const applicationErrorsToTargetLanguage = (
   applicationErrors: TApplicationErrors,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const applicationErrorsNames = Object.keys(applicationErrors);
   let result = 'export namespace ApplicationErrors {';
   for (let i = 0; i < applicationErrorsNames.length; i++) {
@@ -43,14 +44,14 @@ const applicationErrorsToTargetLanguage = (
     );
   }
   result += '}';
-  return result;
+  return { output: result, dependencies: [] };
 };
 
 const applicationErrorToTargetLanguage = (
   variable: TApplicationError,
   applicationErrorName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
   const messageResult = messageToTargetLanguage(message, targetLanguage);
   const errorIdResult = modelToTargetLanguage({
@@ -93,7 +94,7 @@ const applicationErrorToTargetLanguage = (
 const messageToTargetLanguage = (
   message: TString | TBackTickString,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const messageType = Object.keys(message)[0];
   const messageTypesMapping = {
     backTickString: BitloopsTypesMapping.TBackTickString,

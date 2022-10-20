@@ -18,12 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TEvaluatePrimitive } from '../../../../../types.js';
+import { TEvaluatePrimitive, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
 export const primitiveEvaluationToTargetLanguage = (
   variable: TEvaluatePrimitive,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const argDependencyLangMapping: Record<string, (variable: TEvaluatePrimitive) => string> = {
     [SupportedLanguages.TypeScript]: (variable: TEvaluatePrimitive) => {
       switch (variable.type) {
@@ -69,5 +69,5 @@ export const primitiveEvaluationToTargetLanguage = (
       }
     },
   };
-  return argDependencyLangMapping[targetLanguage](variable);
+  return { output: argDependencyLangMapping[targetLanguage](variable), dependencies: [] };
 };

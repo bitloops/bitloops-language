@@ -19,14 +19,14 @@
  */
 
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TConstDecomposition } from '../../../../../types.js';
+import { TConstDecomposition, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const constDecompositionToTargetLanguage = (
   variable: TConstDecomposition,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (!variable.constDecomposition) {
     throw new Error('ConstDecomposition statement must have a constDecomposition value');
   }

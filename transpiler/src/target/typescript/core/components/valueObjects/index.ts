@@ -21,6 +21,7 @@ import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js
 import {
   TBoundedContexts,
   TContextData,
+  TTargetDependenciesTypeScript,
   TValueObjectMethods,
   TValueObjects,
 } from '../../../../../types.js';
@@ -31,13 +32,18 @@ import { constantVariables, domainPrivateMethod, generateGetters } from '../doma
 const valueObjectMethods = (
   valueObjectMethods: TValueObjectMethods,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
+  let dependencies;
   const result = Object.entries(valueObjectMethods).reduce((acc, [methodName, methodInfo]) => {
-    acc += domainPrivateMethod(methodName, methodInfo, targetLanguage);
+    acc += domainPrivateMethod(methodName, methodInfo, targetLanguage).output;
+    dependencies = [
+      ...dependencies,
+      ...domainPrivateMethod(methodName, methodInfo, targetLanguage).dependencies,
+    ];
     return acc;
   }, '');
 
-  return result;
+  return { output: result, dependencies };
 };
 
 const valueObjectsToTargetLanguage = (params: {
@@ -45,7 +51,7 @@ const valueObjectsToTargetLanguage = (params: {
   model: TBoundedContexts;
   targetLanguage: string;
   contextData: TContextData;
-}): string => {
+}): TTargetDependenciesTypeScript => {
   const { valueObjects, model, targetLanguage, contextData } = params;
 
   const { boundedContext, module } = contextData;
@@ -58,13 +64,18 @@ const valueObjectsToTargetLanguage = (params: {
   };
 
   let result = '';
+  let dependencies;
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
     const propsName = create.parameterDependency.type;
 
     if (constantVars) {
       // TODO FIx with new type
-      result += constantVariables(constantVars as any, targetLanguage);
+      result += constantVariables(constantVars as any, targetLanguage).output;
+      dependencies = [
+        ...dependencies,
+        ...constantVariables(constantVars as any, targetLanguage).dependencies,
+      ];
     }
 
     result += initialObjectValuesLangMapping[targetLanguage](valueObjectName, propsName);
@@ -74,12 +85,25 @@ const valueObjectsToTargetLanguage = (params: {
       type: BitloopsTypesMapping.TDomainCreateMethod,
       value: create,
       targetLanguage,
-    });
+    }).output;
+    dependencies = [
+      ...dependencies,
+      modelToTargetLanguage({
+        type: BitloopsTypesMapping.TDomainCreateMethod,
+        value: create,
+        targetLanguage,
+      }).dependencies,
+    ];
 
-    result += generateGetters(propsName, modelForContext, methods, targetLanguage);
+    result += generateGetters(propsName, modelForContext, methods, targetLanguage).output;
+    dependencies = [
+      ...dependencies,
+      ...generateGetters(propsName, modelForContext, methods, targetLanguage).dependencies,
+    ];
 
     if (methods) {
-      result += valueObjectMethods(methods, targetLanguage);
+      result += valueObjectMethods(methods, targetLanguage).output;
+      dependencies = [...dependencies, ...valueObjectMethods(methods, targetLanguage).dependencies];
     }
 
     const finalObjValLangMapping: any = {
@@ -88,7 +112,7 @@ const valueObjectsToTargetLanguage = (params: {
     result += finalObjValLangMapping[targetLanguage];
   }
 
-  return result;
+  return { output: result, dependencies: [] };
 };
 
 export { valueObjectsToTargetLanguage };

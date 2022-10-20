@@ -17,9 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TArgumentDependency, TInstanceOf, TNotInstanceOf } from '../../../../../../../types.js';
+import {
+  TArgumentDependency,
+  TInstanceOf,
+  TNotInstanceOf,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
@@ -31,47 +34,43 @@ const classMappings = {
   Error: 'isOops()',
 };
 
-const instancesLangMapping: any = {
-  [SupportedLanguages.TypeScript]: (instance: InstanceType): string => {
-    if (classMappings[instance.class]) {
-      return `.${classMappings[instance.class]}`;
-    } else {
-      return ` instanceof ${instance.class}`;
-    }
-  },
+const instancesLangMapping = (instance: InstanceType): string => {
+  if (classMappings[instance.class]) {
+    return `.${classMappings[instance.class]}`;
+  } else {
+    return ` instanceof ${instance.class}`;
+  }
 };
 
 const getInstanceResult = (
   value: TArgumentDependency,
   instance: InstanceType,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const argumentDependencyResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TArgumentDependency,
     value,
-    targetLanguage,
   });
 
-  const instanceResult = instancesLangMapping[targetLanguage](instance);
+  const instanceResult = instancesLangMapping(instance);
 
-  return `${argumentDependencyResult}${instanceResult}`;
+  return {
+    output: `${argumentDependencyResult.output}${instanceResult}`,
+    dependencies: argumentDependencyResult.dependencies,
+  };
 };
 
-const instanceOfToTargetLanguage = (variable: TInstanceOf, targetLanguage: string): string => {
+const instanceOfToTargetLanguage = (variable: TInstanceOf): TTargetDependenciesTypeScript => {
   const [value, instance] = variable.isInstanceOf;
 
-  return getInstanceResult(value, instance, targetLanguage);
+  return getInstanceResult(value, instance);
 };
 
-const notInstanceOfToTargetLanguage = (
-  variable: TNotInstanceOf,
-  targetLanguage: string,
-): string => {
+const notInstanceOfToTargetLanguage = (variable: TNotInstanceOf): TTargetDependenciesTypeScript => {
   const [value, instance] = variable.isNotInstanceOf;
 
-  const instanceResult = getInstanceResult(value, instance, targetLanguage);
+  const instanceResult = getInstanceResult(value, instance);
 
-  return `!(${instanceResult})`;
+  return { output: `!(${instanceResult.output})`, dependencies: instanceResult.dependencies };
 };
 
 export { instanceOfToTargetLanguage, notInstanceOfToTargetLanguage };

@@ -18,17 +18,16 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TStructEvaluation } from '../../../../../../../types.js';
+import { TStructEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-const structToTargetLanguage = (variable: TStructEvaluation, targetLanguage: string): string => {
+const structToTargetLanguage = (variable: TStructEvaluation): TTargetDependenciesTypeScript => {
   const structProperties = variable.struct.fields;
 
   return modelToTargetLanguage({
     type: BitloopsTypesMapping.TEvaluationFields,
     value: structProperties,
-    targetLanguage,
   });
 };
 

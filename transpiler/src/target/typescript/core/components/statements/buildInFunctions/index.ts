@@ -18,13 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TBuildInFunction } from '../../../../../../types.js';
+import { TBuildInFunction, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildInFunctionToTargetLanguage = (
   variable: TBuildInFunction,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { buildInFunction } = variable;
   if ('applyRules' in buildInFunction) {
     return modelToTargetLanguage({
@@ -33,7 +33,7 @@ const buildInFunctionToTargetLanguage = (
       targetLanguage,
     });
   } else {
-    throw new Error(`Unsupported buildInFunction: ${buildInFunction}`);
+    throw new Error(`Unsupported buildInFunction: ${buildInFunction.applyRules}`);
   }
 };
 

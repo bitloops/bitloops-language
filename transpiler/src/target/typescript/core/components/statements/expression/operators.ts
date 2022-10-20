@@ -24,6 +24,7 @@ import {
   TAdditiveOperator,
   TEqualityOperator,
   TRelationalOperator,
+  TTargetDependenciesTypeScript,
 } from '../../../../../../types.js';
 
 enum OPERATORS {
@@ -43,7 +44,7 @@ enum OPERATORS {
 export const multiplicativeOperatorToTargetLanguage = (
   operator: TMultiplicativeOperator,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const langMapping: any = {
     [SupportedLanguages.TypeScript]: (operator: TMultiplicativeOperator): string | Error => {
       switch (operator) {
@@ -64,7 +65,7 @@ export const multiplicativeOperatorToTargetLanguage = (
 export const additiveOperatorToTargetLanguage = (
   operator: TAdditiveOperator,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const langMapping: any = {
     [SupportedLanguages.TypeScript]: (operator: TAdditiveOperator): string | Error => {
       switch (operator) {
@@ -83,7 +84,7 @@ export const additiveOperatorToTargetLanguage = (
 export const equalityOperatorToTargetLanguage = (
   operator: TEqualityOperator,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const langMapping: any = {
     [SupportedLanguages.TypeScript]: (operator: TEqualityOperator): string | Error => {
       switch (operator) {
@@ -102,7 +103,7 @@ export const equalityOperatorToTargetLanguage = (
 export const relationalOperatorToTargetLanguage = (
   operator: TRelationalOperator,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const langMapping: any = {
     [SupportedLanguages.TypeScript]: (operator: TRelationalOperator): string | Error => {
       switch (operator) {

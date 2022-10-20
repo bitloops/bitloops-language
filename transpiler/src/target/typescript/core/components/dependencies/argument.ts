@@ -17,73 +17,76 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TArgumentDependencies,
   TArgumentDependency,
   TEvaluatePrimitive,
+  TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const argumentDependenciesToTargetLanguage = (
   variable: TArgumentDependencies,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
+  let dependencies;
   let result = '(';
   if (variable) {
     for (const [index, argument] of variable.entries()) {
       result += modelToTargetLanguage({
         type: 'TArgumentDependency',
         value: argument,
-        targetLanguage,
-      });
+      }).output;
+      dependencies = [
+        ...dependencies,
+        modelToTargetLanguage({
+          type: 'TArgumentDependency',
+          value: argument,
+        }).dependencies,
+      ];
       if (index < variable.length - 1) {
         result += ',';
       }
     }
   }
   result += ')';
-  return result;
+  return { output: result, dependencies: [] };
 };
 
 const argumentDependencyToTargetLanguage = (
   variable: TArgumentDependency,
-  targetLanguage: string,
-): string => {
-  const argDependencyLangMapping: Record<string, (variable: TArgumentDependency) => string> = {
-    [SupportedLanguages.TypeScript]: (variable: TArgumentDependency) => {
-      if (variable.type === 'variable') {
-        return variable.value;
-      } else {
-        const primitive: TEvaluatePrimitive = {
-          type: variable.type,
-          value: variable.value,
-        };
-        return modelToTargetLanguage({
-          type: 'TEvaluatePrimitive',
-          value: primitive,
-          targetLanguage,
-        });
+): TTargetDependenciesTypeScript => {
+  const argDependencyLangMapping = (
+    variable: TArgumentDependency,
+  ): TTargetDependenciesTypeScript => {
+    if (variable.type === 'variable') {
+      return { output: variable.value, dependencies: [] };
+    } else {
+      const primitive: TEvaluatePrimitive = {
+        type: variable.type,
+        value: variable.value,
+      };
+      return modelToTargetLanguage({
+        type: 'TEvaluatePrimitive',
+        value: primitive,
+      });
 
-        // // TODO differentiate 'string' | 'bool' | 'number'
-        // if (variable.type === 'string') {
-        //   return `'${variable.value}'`;
-        // }
-        // if (variable.type === 'bool') {
-        //   if (variable.value !== 'true' && variable.value !== 'false') {
-        //     throw new Error(`Invalid boolean value: ${variable}`);
-        //   }
-        //   return variable.value;
-        // }
-        // if (variable.type === 'number') {
-        //   return `${+variable.value}`;
-        // }
-        // throw new Error(`Unsupported type: ${variable.type}`);
-      }
-    },
+      // // TODO differentiate 'string' | 'bool' | 'number'
+      // if (variable.type === 'string') {
+      //   return `'${variable.value}'`;
+      // }
+      // if (variable.type === 'bool') {
+      //   if (variable.value !== 'true' && variable.value !== 'false') {
+      //     throw new Error(`Invalid boolean value: ${variable}`);
+      //   }
+      //   return variable.value;
+      // }
+      // if (variable.type === 'number') {
+      //   return `${+variable.value}`;
+      // }
+      // throw new Error(`Unsupported type: ${variable.type}`);
+    }
   };
-  return argDependencyLangMapping[targetLanguage](variable);
+  return argDependencyLangMapping(variable);
 };
 
 export { argumentDependenciesToTargetLanguage, argumentDependencyToTargetLanguage };

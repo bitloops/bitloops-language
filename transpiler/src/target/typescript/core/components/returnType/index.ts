@@ -20,12 +20,12 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TDefinitionMethodInfo } from '../../../../../types.js';
+import { TDefinitionMethodInfo, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
 export const returnTypeToDefinitionLanguage = (
   value: TDefinitionMethodInfo,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (targetLanguage === SupportedLanguages.TypeScript) {
     let mappedType;
     if (isBitloopsPrimitive(value)) {
@@ -34,6 +34,6 @@ export const returnTypeToDefinitionLanguage = (
       mappedType = value;
     }
 
-    return ':' + mappedType;
+    return { output: ':' + mappedType, dependencies: [] };
   } else throw new Error(`Not implemented for ${targetLanguage}`);
 };

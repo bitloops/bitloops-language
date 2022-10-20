@@ -19,7 +19,12 @@
  */
 
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TSwitchStatement, TRegularCase, TDefaultCase } from '../../../../../../types.js';
+import {
+  TSwitchStatement,
+  TRegularCase,
+  TDefaultCase,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { switchRegularCasesToTargetLanguage, switchDefaultCaseToTargetLanguage } from './cases.js';
@@ -27,7 +32,7 @@ import { switchRegularCasesToTargetLanguage, switchDefaultCaseToTargetLanguage }
 const switchStatementToTargetLanguage = (
   variable: TSwitchStatement,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (!variable.switchStatement) {
     throw new Error(`Invalid switch statement: ${variable}`);
   }
@@ -52,7 +57,10 @@ const switchStatementToTargetLanguage = (
       )} ${switchDefaultCaseToTargetLanguage(defaultCase, targetLanguage)}}`;
     },
   };
-  return switchStatementLangMapping[targetLanguage](expressionStr, cases, defaultCase);
+  return {
+    output: switchStatementLangMapping[targetLanguage](expressionStr.output, cases, defaultCase),
+    dependencies: [],
+  };
 };
 
 export { switchStatementToTargetLanguage };

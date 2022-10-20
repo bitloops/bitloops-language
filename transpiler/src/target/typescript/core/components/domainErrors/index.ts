@@ -18,14 +18,20 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TDomainErrors, TDomainError, TString, TBackTickString } from '../../../../../types.js';
+import {
+  TDomainErrors,
+  TDomainError,
+  TString,
+  TBackTickString,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const domainErrorsToTargetLanguage = (
   domainErrors: TDomainErrors,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
   let result = 'export namespace DomainErrors {';
   for (let i = 0; i < domainErrorsNames.length; i++) {
@@ -34,14 +40,14 @@ const domainErrorsToTargetLanguage = (
     result += domainErrorToTargetLanguage(domainError, domainErrorName, targetLanguage);
   }
   result += '}';
-  return result;
+  return { output: result, dependencies: [] };
 };
 
 const domainErrorToTargetLanguage = (
   variable: TDomainError,
   domainErrorName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
   const messageResult = messageToTargetLanguage(message, targetLanguage);
   const errorIdResult = modelToTargetLanguage({
@@ -84,7 +90,7 @@ const domainErrorToTargetLanguage = (
 const messageToTargetLanguage = (
   message: TString | TBackTickString,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const messageType = Object.keys(message)[0];
   const messageTypesMapping = {
     backTickString: BitloopsTypesMapping.TBackTickString,

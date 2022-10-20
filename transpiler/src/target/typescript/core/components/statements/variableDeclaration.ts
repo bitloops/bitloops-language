@@ -21,14 +21,14 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TVariableDeclaration } from '../../../../../types.js';
+import { TTargetDependenciesTypeScript, TVariableDeclaration } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const variableDeclarationToTargetLanguage = (
   variable: TVariableDeclaration,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const constDeclarationLangMapping: any = {
     [SupportedLanguages.TypeScript]: (variable: TVariableDeclaration): string => {
       const { name, type } = variable.variableDeclaration;
@@ -49,5 +49,5 @@ export const variableDeclarationToTargetLanguage = (
     targetLanguage,
   });
 
-  return `${declareResult}${expressionResult}`;
+  return { output: `${declareResult}${expressionResult}`, dependencies: [] };
 };

@@ -18,14 +18,23 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TBoundedContexts, TContextData, TEntities, TEntityMethods } from '../../../../../types.js';
+import {
+  TBoundedContexts,
+  TContextData,
+  TEntities,
+  TEntityMethods,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 
-const entityMethods = (objectValueMethods: TEntityMethods, targetLanguage: string): string => {
-  return domainMethods(objectValueMethods, targetLanguage);
+const entityMethods = (
+  objectValueMethods: TEntityMethods,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
+  return { output: domainMethods(objectValueMethods, targetLanguage), dependencies: [] };
 };
 
 const entitiesToTargetLanguage = (params: {
@@ -33,7 +42,7 @@ const entitiesToTargetLanguage = (params: {
   model: TBoundedContexts;
   targetLanguage: string;
   contextData: TContextData;
-}): string => {
+}): TTargetDependenciesTypeScript => {
   const { entities, model, targetLanguage, contextData } = params;
 
   const { boundedContext, module } = contextData;
@@ -75,7 +84,7 @@ const entitiesToTargetLanguage = (params: {
     result += finalObjValLangMapping[targetLanguage];
   }
 
-  return result;
+  return { output: result, dependencies: [] };
 };
 
 export { entitiesToTargetLanguage };

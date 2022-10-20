@@ -26,6 +26,7 @@ import {
   TGraphQLSetupData,
   TProps,
   TResolver,
+  TTargetDependenciesTypeScript,
 } from '../../../../types.js';
 import { mapBitloopsPrimitiveToGraphQL } from './typeMappings.js';
 import { AllResolvers, ResolversBuilder, ResolverValues, SchemaBuilder } from './types.js';
@@ -39,7 +40,7 @@ import { AllResolvers, ResolversBuilder, ResolverValues, SchemaBuilder } from '.
 const graphQLSetupDataToTargetLanguage = (
   setupData: TGraphQLSetupData,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { servers, resolvers, addResolversToServer, bitloopsModel } = setupData;
 
   const resolversSchemasAndHandlers: AllResolvers = {};
@@ -65,7 +66,7 @@ const graphQLSetupDataToTargetLanguage = (
     );
   }
   console.log('-----------------------------');
-  return codeForAllServers;
+  return { output: codeForAllServers, dependencies: [] };
 };
 
 const generateServerCode = (
@@ -73,7 +74,7 @@ const generateServerCode = (
   addResolversToServer: IAddResolversToServer[],
   resolversSchemasAndHandlers: AllResolvers,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   let resultString = '';
 
   const resolversOfInterest = findResolversOfServer(
@@ -101,7 +102,7 @@ const generateServerCode = (
 
   const result = `const ${name} = new ApolloServer({ typeDefs: ${typeDefsName}, resolvers: ${resolversMapName} }); server.listen({ port: ${port} });`;
   resultString += result;
-  return resultString;
+  return { output: resultString, dependencies: [] };
 };
 
 const prepareSchemaAndHandlersOfResolver = (
@@ -166,21 +167,24 @@ const generateGraphQLSchema = (
   resolversOfInterest: AllResolvers,
   typeDefsName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const typeDefsLanguageMapping = {
     [SupportedLanguages.TypeScript]: (typeDefs: string, typeDefsName: string) =>
       `const ${typeDefsName} = gql\`${typeDefs}\`;`,
   };
   const mergedSchema = mergeTypeDefs(resolversOfInterest);
   const typeDefsString = buildSchemaString(mergedSchema);
-  return typeDefsLanguageMapping[targetLanguage](typeDefsString, typeDefsName);
+  return {
+    output: typeDefsLanguageMapping[targetLanguage](typeDefsString, typeDefsName),
+    dependencies: [],
+  };
 };
 
 const generateGraphQLResolverHandlers = (
   resolversOfInterest: AllResolvers,
   resolversMapName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const mergedResolversMap = mergeHandlers(resolversOfInterest);
 
   // const resolversMapName = `${server.name}Resolvers`;
@@ -314,7 +318,7 @@ const buildResolversString = (
   resolvers: ResolversBuilder,
   resolversVarName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const languageMapping = {
     [SupportedLanguages.TypeScript]: (resolvers: ResolversBuilder) => {
       let result = `const ${resolversVarName} = {`;
@@ -337,7 +341,7 @@ const buildResolversString = (
       return result;
     },
   };
-  return languageMapping[targetLanguage](resolvers);
+  return { output: languageMapping[targetLanguage](resolvers), dependencies: [] };
 };
 
 const trimDTOSuffix = (typeName: string): string => {

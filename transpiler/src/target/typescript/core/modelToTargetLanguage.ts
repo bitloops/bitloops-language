@@ -119,7 +119,12 @@ import { parenthesizedExpressionToTargetLanguage } from './components/statements
 import { variableDeclarationToTargetLanguage } from './components/statements/variableDeclaration.js';
 import { repoAdapterToTargetLanguage } from './components/repo/repoAdapter.js';
 import { singleExpressionToTargetLanguage } from '../setup/single-expression/index.js'; // TODO check this
-import { ISetupData, TBoundedContexts, TContextData } from '../../../types.js';
+import {
+  ISetupData,
+  TBoundedContexts,
+  TContextData,
+  TTargetDependenciesTypeScript,
+} from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import {
@@ -134,7 +139,7 @@ const modelToTargetLanguage = (props: {
   contextData?: TContextData;
   setupData?: ISetupData;
   model?: TBoundedContexts;
-}): string => {
+}): TTargetDependenciesTypeScript => {
   const { type, value, contextData, setupData, model } = props;
   let targetLanguage;
   if (!props.targetLanguage) {
@@ -147,154 +152,154 @@ const modelToTargetLanguage = (props: {
     throw new Error(`Language ${targetLanguage} is not supported`);
   }
 
-  let res: string;
+  let res: TTargetDependenciesTypeScript;
   switch (type) {
     case BitloopsTypesMapping.TStatement: {
-      res = statementToTargetLanguage(value, targetLanguage);
+      res = statementToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStatements: {
-      res = statementsToTargetLanguage(value, targetLanguage);
+      res = statementsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStatementsWithoutThis: {
-      res = statementsWithoutThisToTargetLanguage(value, targetLanguage);
+      res = statementsWithoutThisToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TVariable: {
-      res = variableToTargetLanguage(value, targetLanguage);
+      res = variableToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TVariables: {
-      res = variablesToTargetLanguage(value, targetLanguage);
+      res = variablesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TProps: {
-      res = propsToTargetLanguage(value, targetLanguage);
+      res = propsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPropsValues: {
-      res = propsValuesToTargetLanguage(value, targetLanguage);
+      res = propsValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TInstanceOf: {
-      res = instanceOfToTargetLanguage(value, targetLanguage);
+      res = instanceOfToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TNotInstanceOf: {
-      res = notInstanceOfToTargetLanguage(value, targetLanguage);
+      res = notInstanceOfToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRegularEvaluation: {
-      res = regularEvaluationToTargetLanguage(value, targetLanguage);
+      res = regularEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEvaluation: {
-      res = evaluationToTargetLanguage(value, targetLanguage);
+      res = evaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TArgumentDependency: {
-      res = argumentDependencyToTargetLanguage(value, targetLanguage);
+      res = argumentDependencyToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TArgumentDependencies: {
-      res = argumentDependenciesToTargetLanguage(value, targetLanguage);
+      res = argumentDependenciesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TClassInstantiation: {
-      res = classInstantiationToTargetLanguage(value, targetLanguage);
+      res = classInstantiationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TGetClass: {
-      res = getClassToTargetLanguage(value, targetLanguage);
+      res = getClassToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStructEvaluation: {
-      res = structToTargetLanguage(value, targetLanguage);
+      res = structToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStructs: {
-      res = structDeclarationToTargetLanguage(value, targetLanguage);
+      res = structDeclarationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStructDeclaration: {
-      res = structDeclarationValuesToTargetLanguage(value, targetLanguage);
+      res = structDeclarationValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TExpression: {
-      res = expressionToTargetLanguage(value, targetLanguage);
+      res = expressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TExpressionValues: {
-      res = expressionValuesToTargetLanguage(value, targetLanguage);
+      res = expressionValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TParameterDependency: {
-      res = parameterDependencyToTargetLanguage(value, targetLanguage);
+      res = parameterDependencyToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TParameterDependencies: {
-      res = parameterDependenciesToTargetLanguage(value, targetLanguage);
+      res = parameterDependenciesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TCondition: {
-      res = conditionToTargetLanguage(value, targetLanguage);
+      res = conditionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TReturnStatement: {
-      res = returnToTargetLanguage(value, targetLanguage);
+      res = returnToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TReturnOKStatement: {
-      res = returnOkToTargetLanguage(value, targetLanguage);
+      res = returnOkToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TReturnErrorStatement: {
-      res = returnErrorToTargetLanguage(value, targetLanguage);
+      res = returnErrorToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TConstDecomposition: {
-      res = constDecompositionToTargetLanguage(value, targetLanguage);
+      res = constDecompositionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TConstDeclaration: {
-      res = constDeclarationToTargetLanguage(value, targetLanguage);
+      res = constDeclarationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TThisDeclaration: {
-      res = thisDeclarationToTargetLanguage(value, targetLanguage);
+      res = thisDeclarationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDefaultCase: {
-      res = defaultSwitchCaseToTargetLanguage(value, targetLanguage);
+      res = defaultSwitchCaseToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TIfStatement: {
-      res = ifStatementToTargetLanguage(value, targetLanguage);
+      res = ifStatementToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRegularCase: {
-      res = regularSwitchCaseToTargetLanguage(value, targetLanguage);
+      res = regularSwitchCaseToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TSwitchStatement: {
-      res = switchStatementToTargetLanguage(value, targetLanguage);
+      res = switchStatementToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBreakStatement: {
-      res = breakStmtToTargetLanguage(value, targetLanguage);
+      res = breakStmtToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDTO: {
-      res = DTOToTargetLanguage(value, targetLanguage);
+      res = DTOToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDTOValues: {
-      res = DTOValuesToTargetLanguage(value, targetLanguage);
+      res = DTOValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TOkErrorReturnType: {
-      res = okErrorReturnTypeToTargetLanguage(value, targetLanguage);
+      res = okErrorReturnTypeToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TValueObjects: {
@@ -307,7 +312,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TUseCase: {
-      res = useCaseToTargetLanguage(value, targetLanguage);
+      res = useCaseToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRESTController: {
@@ -328,32 +333,32 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TString: {
-      res = stringToTargetLanguage(value, targetLanguage);
+      res = stringToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBackTickString: {
-      res = backTickStringToTargetLanguage(value, targetLanguage);
+      res = backTickStringToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainErrors: {
-      res = domainErrorsToTargetLanguage(value, targetLanguage);
+      res = domainErrorsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TApplicationErrors: {
-      res = applicationErrorsToTargetLanguage(value, targetLanguage);
+      res = applicationErrorsToTargetLanguage(value);
       break;
     }
 
     case BitloopsTypesMapping.TEvaluatePrimitive: {
-      res = primitiveEvaluationToTargetLanguage(value, targetLanguage);
+      res = primitiveEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TGraphQLSetupData: {
-      res = graphQLSetupDataToTargetLanguage(value, targetLanguage);
+      res = graphQLSetupDataToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDTOEvaluation: {
-      res = DTOEvaluationToTargetLanguage(value, targetLanguage);
+      res = DTOEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TControllers: {
@@ -361,47 +366,47 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {
-      res = definitionMethodInfoToTargetLanguage(value, targetLanguage);
+      res = definitionMethodInfoToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethods: {
-      res = definitionMethodsToTargetLanguage(value, targetLanguage);
+      res = definitionMethodsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TReturnType: {
-      res = returnTypeToDefinitionLanguage(value, targetLanguage);
+      res = returnTypeToDefinitionLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPackagePort: {
-      res = packagePortToTargetLanguage(value, targetLanguage);
+      res = packagePortToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPackages: {
-      res = packagesToTargetLanguage(value, targetLanguage);
+      res = packagesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainCreateMethod: {
-      res = domainCreate(value, targetLanguage);
+      res = domainCreate(value);
       break;
     }
     case BitloopsTypesMapping.TEntityCreate: {
-      res = domainCreateEntity(value, targetLanguage);
+      res = domainCreateEntity(value);
       break;
     }
     case BitloopsTypesMapping.TValueObjectEvaluation: {
-      res = valueObjectEvaluationToTargetLanguage(value, targetLanguage);
+      res = valueObjectEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEvaluationFields: {
-      res = evaluationFieldsToTargetLanguage(value, targetLanguage);
+      res = evaluationFieldsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainEvaluation: {
-      res = domainEvaluationToTargetLanguage(value, targetLanguage);
+      res = domainEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEntityEvaluation: {
-      res = entityEvaluationToTargetLanguage(value, targetLanguage);
+      res = entityEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEntities: {
@@ -414,91 +419,91 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRepoPorts: {
-      res = repoPortToTargetLanguage(value, targetLanguage);
+      res = repoPortToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TAdditiveOperator: {
-      res = additiveOperatorToTargetLanguage(value, targetLanguage);
+      res = additiveOperatorToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TMultiplicativeOperator: {
-      res = multiplicativeOperatorToTargetLanguage(value, targetLanguage);
+      res = multiplicativeOperatorToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRelationalOperator: {
-      res = relationalOperatorToTargetLanguage(value, targetLanguage);
+      res = relationalOperatorToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEqualityOperator: {
-      res = equalityOperatorToTargetLanguage(value, targetLanguage);
+      res = equalityOperatorToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEqualityExpression: {
-      res = equalityExpressionToTargetLanguage(value, targetLanguage);
+      res = equalityExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TLogicalExpression: {
-      res = logicalExpressionToTargetLanguage(value, targetLanguage);
+      res = logicalExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TNotExpression: {
-      res = notExpressionToTargetLanguage(value, targetLanguage);
+      res = notExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TAndExpression: {
-      res = andExpressionToTargetLanguage(value, targetLanguage);
+      res = andExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TOrExpression: {
-      res = orExpressionToTargetLanguage(value, targetLanguage);
+      res = orExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TMultiplicativeExpression: {
-      res = multiplicativeExpressionToTargetLanguage(value, targetLanguage);
+      res = multiplicativeExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TAdditiveExpression: {
-      res = additiveExpressionToTargetLanguage(value, targetLanguage);
+      res = additiveExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TXorExpression: {
-      res = xorExpressionToTargetLanguage(value, targetLanguage);
+      res = xorExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRelationalExpression: {
-      res = relationalExpressionToTargetLanguage(value, targetLanguage);
+      res = relationalExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TParenthesizedExpression: {
-      res = parenthesizedExpressionToTargetLanguage(value, targetLanguage);
+      res = parenthesizedExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TVariableDeclaration: {
-      res = variableDeclarationToTargetLanguage(value, targetLanguage);
+      res = variableDeclarationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRepoAdapters: {
-      res = repoAdapterToTargetLanguage(value, targetLanguage);
+      res = repoAdapterToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TSingleExpression: {
-      res = singleExpressionToTargetLanguage(value, targetLanguage);
+      res = singleExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuildInFunction: {
-      res = buildInFunctionToTargetLanguage(value, targetLanguage);
+      res = buildInFunctionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TApplyRules: {
-      res = applyRulesToTargetLanguage(value, targetLanguage);
+      res = applyRulesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRules: {
-      res = rulesDeclarationToTargetLanguage(value, targetLanguage);
+      res = rulesDeclarationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRuleValues: {
-      res = ruleDeclarationToTargetLanguage(value, targetLanguage);
+      res = ruleDeclarationToTargetLanguage(value);
       break;
     }
     default: {

@@ -18,12 +18,20 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TRule, TRules, TParameterDependencies } from '../../../../../types.js';
+import {
+  TRule,
+  TRules,
+  TParameterDependencies,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const getStringWithThisBeforeWord = (word: string, stringToBeReplaced: string): string => {
-  return stringToBeReplaced.replaceAll(word, `this.${word}`);
+const getStringWithThisBeforeWord = (
+  word: string,
+  stringToBeReplaced: string,
+): TTargetDependenciesTypeScript => {
+  return { output: stringToBeReplaced.replaceAll(word, `this.${word}`), dependencies: [] };
 };
 const getStringWithPrivateBeforeWord = (word: string, stringToBeReplaced: string): string => {
   return stringToBeReplaced.replaceAll(word, `private ${word}`);
@@ -71,7 +79,10 @@ const getIsBrokenIfMethod: any = {
   },
 };
 
-export const rulesDeclarationToTargetLanguage = (rules: TRules, targetLanguage: string): string => {
+export const rulesDeclarationToTargetLanguage = (
+  rules: TRules,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   let result = '';
   for (const [ruleName, ruleValues] of Object.entries(rules)) {
     result += initialRuleLangMapping[targetLanguage](ruleName);
@@ -83,10 +94,13 @@ export const rulesDeclarationToTargetLanguage = (rules: TRules, targetLanguage: 
     result += finalRuleLangMapping[targetLanguage];
   }
 
-  return result;
+  return { output: result, dependencies: [] };
 };
 
-export const ruleDeclarationToTargetLanguage = (rule: TRule, targetLanguage: string): string => {
+export const ruleDeclarationToTargetLanguage = (
+  rule: TRule,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   let parameters;
   if (rule.parameters && rule.parameters.length !== 0) {
     parameters = modelToTargetLanguage({
@@ -125,7 +139,7 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule, targetLanguage: str
     rule.parameters.forEach((ruleParam) => {
       isBrokenConditionStringWithThis = getStringWithThisBeforeWord(
         ruleParam.value,
-        isBrokenConditionStringWithThis,
+        isBrokenConditionStringWithThis.output,
       );
       statementsStringWithThis = getStringWithThisBeforeWord(
         ruleParam.value,
@@ -146,5 +160,5 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule, targetLanguage: str
   ${errorString}
   ${isBrokeIfMethod}`;
 
-  return res;
+  return { output: res, dependencies: [] };
 };

@@ -19,14 +19,14 @@
  */
 
 import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TDomainEvaluation } from '../../../../../../../types.js';
+import { TDomainEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const domainProperties = evaluation.props;
   const domainName = evaluation.name;
 
@@ -51,5 +51,8 @@ export const domainEvaluationToTargetLanguage = (
     },
   };
 
-  return instantiateDomainLangMapping[targetLanguage](domainName, resultDomainProps);
+  return {
+    output: instantiateDomainLangMapping[targetLanguage](domainName, resultDomainProps),
+    dependencies: [],
+  };
 };

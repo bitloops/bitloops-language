@@ -19,7 +19,7 @@
  */
 
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TGraphQLController } from '../../../../../../types.js';
+import { TGraphQLController, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { buildFieldsFromDependencies } from '../helpers/buildFieldsFromDependencies.js';
 import { buildExecuteMethod } from './buildGraphQLExecute.js';
 
@@ -27,16 +27,11 @@ const graphQLControllersToTargetLanguage = (
   controllers: TGraphQLController,
   targetLanguage: string,
   contextData: { boundedContext: string; module: string },
-): string => {
-  const initialGraphQLControllerLangMapping = {
-    [SupportedLanguages.TypeScript]: (controllerName: string) =>
-      // TODO get framework info (fastify) from config?
-      `export class ${controllerName} extends BaseGraphQLController<any,any> { `,
-  };
+): TTargetDependenciesTypeScript => {
   // TODO for all controllers
   const controllerName = Object.keys(controllers)[0];
 
-  let result = initialGraphQLControllerLangMapping[targetLanguage](controllerName);
+  let result = `export class ${controllerName} extends BaseGraphQLController<any,any> { `;
   const controller = controllers[controllerName];
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');
@@ -48,13 +43,18 @@ const graphQLControllersToTargetLanguage = (
     contextData,
   );
 
-  result += buildExecuteMethod(controller.execute, targetLanguage);
+  const buildExecuteMethodOutput = buildExecuteMethod(controller.execute, targetLanguage).output;
+  const buildExecuteMethodDependencies = buildExecuteMethod(
+    controller.execute,
+    targetLanguage,
+  ).dependencies;
+  result += buildExecuteMethodOutput;
 
   const finalObjValLangMapping: any = {
     [SupportedLanguages.TypeScript]: '}',
   };
   result += finalObjValLangMapping[targetLanguage];
-  return result;
+  return { output: result, dependencies: [...buildExecuteMethodDependencies] };
 };
 
 export { graphQLControllersToTargetLanguage };

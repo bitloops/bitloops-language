@@ -60,7 +60,7 @@ const buildFieldsFromDependencies = (
       return `constructor${paramsString} { super(); ${constructorBody} }`;
     },
   };
-  result += constructorToLangMapping[targetLanguage](paramsString, params);
+  result += constructorToLangMapping[targetLanguage](paramsString.output, params);
   return result;
 };
 export { buildFieldsFromDependencies };

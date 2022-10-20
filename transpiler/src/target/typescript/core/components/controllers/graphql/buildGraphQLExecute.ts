@@ -18,11 +18,17 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TGraphQLControllerExecute } from '../../../../../../types.js';
+import {
+  TGraphQLControllerExecute,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const buildExecuteMethod = (execute: TGraphQLControllerExecute, targetLanguage: string): string => {
+const buildExecuteMethod = (
+  execute: TGraphQLControllerExecute,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   // We know that graphql controller takes only 1 object parameter - the incoming args/context etc.
   // aka request - (request.args, ...)
   const paramsString = `(${execute.dependencies.map((dep) => `${dep}: any`).join(', ')})`;
@@ -38,7 +44,10 @@ const buildExecuteMethod = (execute: TGraphQLControllerExecute, targetLanguage: 
     },
   };
 
-  return executeToLangMapping[targetLanguage](paramsString, statementsString);
+  return {
+    output: executeToLangMapping[targetLanguage](paramsString, statementsString.output),
+    dependencies: [...statementsString.dependencies],
+  };
 };
 
 export { buildExecuteMethod };

@@ -1,6 +1,6 @@
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
-import { TDomainPublicMethod } from '../../../../../types.js';
+import { TDomainPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -8,7 +8,7 @@ const domainPublicMethod = (
   methodName: string,
   methodInfo: TDomainPublicMethod,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
   const { statements, parameterDependencies, returnType } = publicMethod;
   const statementsString = modelToTargetLanguage({
@@ -43,10 +43,13 @@ const domainPublicMethod = (
   };
   const result = ToLanguageMapping[targetLanguage](
     methodName,
-    mappedReturnType,
-    parametersString,
-    statementsString,
+    mappedReturnType.output,
+    parametersString.output,
+    statementsString.output,
   );
-  return result;
+  return {
+    output: result,
+    dependencies: [...statementsString.dependencies, ...parametersString.dependencies],
+  };
 };
 export { domainPublicMethod };

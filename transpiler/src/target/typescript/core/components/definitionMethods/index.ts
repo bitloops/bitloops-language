@@ -18,14 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TDefinitionMethodInfo, TDefinitionMethods } from '../../../../../types.js';
+import {
+  TDefinitionMethodInfo,
+  TDefinitionMethods,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const definitionMethodInfoToTargetLanguage = (
   value: TDefinitionMethodInfo,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const paramString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: value.parameterDependencies,
@@ -37,7 +41,7 @@ export const definitionMethodInfoToTargetLanguage = (
 export const definitionMethodsToTargetLanguage = (
   definitionMethods: TDefinitionMethods,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   let res = '';
   for (const [definitionMethod, value] of Object.entries(definitionMethods)) {
     res += `${definitionMethod}${definitionMethodInfoToTargetLanguage(value, targetLanguage)}`;
@@ -48,5 +52,5 @@ export const definitionMethodsToTargetLanguage = (
     });
     res += ';';
   }
-  return res;
+  return { output: res, dependencies: [] };
 };

@@ -19,11 +19,11 @@
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
-import { TDTO, TDTOValues } from '../../../../../types.js';
+import { TDTO, TDTOValues, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): string => {
+const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): TTargetDependenciesTypeScript => {
   const initialDTOLangMapping: any = {
     [SupportedLanguages.TypeScript]: (dtoName: string) => `export interface ${dtoName} { `,
   };
@@ -32,23 +32,29 @@ const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): string => {
   };
 
   let result = '';
+  let dependencies;
   const dtoKeys = Object.keys(dto);
   for (let i = 0; i < dtoKeys.length; i++) {
     const dtoName = dtoKeys[i];
     const dtoValues = dto[dtoName];
-    result += initialDTOLangMapping[targetLanguage](dtoName);
-    result += modelToTargetLanguage({
+    const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TDTOValues,
       value: dtoValues,
       targetLanguage,
     });
+    result += initialDTOLangMapping[targetLanguage](dtoName);
+    result += model.output;
     result += finalDTOLangMapping[targetLanguage];
+    dependencies = [...dependencies, ...model.dependencies];
   }
 
-  return result;
+  return { output: result, dependencies };
 };
 
-const DTOValuesToTargetLanguage = (variable: TDTOValues, targetLanguage: string): string => {
+const DTOValuesToTargetLanguage = (
+  variable: TDTOValues,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   if (isUndefined(variable.fields)) {
     throw new Error('Fields of DTO are not defined');
   }

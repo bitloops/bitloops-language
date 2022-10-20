@@ -21,7 +21,11 @@ import { buildExecuteMethod } from './buildRestExecute.js';
 import { buildFieldsFromDependencies } from '../helpers/buildFieldsFromDependencies.js';
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { controllerDefinitionIsRest } from '../../../../../../helpers/typeGuards.js';
-import { TRESTController, TControllers } from '../../../../../../types.js';
+import {
+  TRESTController,
+  TControllers,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 
 const getServerImports = (serverType: string): string => {
   let result = '';
@@ -56,7 +60,7 @@ const restControllersToTargetLanguage = (
   targetLanguage: string,
   contextData: { boundedContext: string; module: string },
   controllersSetupData: TControllers,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { boundedContext, module } = contextData;
 
   const initialObjectValuesLangMapping = {
@@ -93,14 +97,14 @@ const restControllersToTargetLanguage = (
     targetLanguage,
     contextData,
   );
+  const { output, dependencies } = buildExecuteMethod(controller.execute, targetLanguage);
+  result += output;
 
-  result += buildExecuteMethod(controller.execute, targetLanguage);
-
-  const finalObjValLangMapping: any = {
+  const finalObjValLangMapping: Record<string, string> = {
     [SupportedLanguages.TypeScript]: '}',
   };
   result += finalObjValLangMapping[targetLanguage];
-  return result;
+  return { output: result, dependencies: dependencies };
 };
 
 export { restControllersToTargetLanguage };

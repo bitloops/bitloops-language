@@ -17,44 +17,44 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TVariable, TVariables } from '../../../../../types.js';
+import { TTargetDependenciesTypeScript, TVariable, TVariables } from '../../../../../types.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const variableToTargetLanguage = (variable: TVariable, targetLanguage: string): string => {
+const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeScript => {
   const { name, type, optional } = variable;
-  const variableLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (name: string, type: string, optional: boolean) =>
-      `${name}${optional ? '?' : ''}: ${type}`,
-  };
+  const variableLangMapping = (name: string, type: string, optional: boolean): string =>
+    `${name}${optional ? '?' : ''}: ${type}`;
 
   let mappedType = type;
   if (isBitloopsPrimitive(type)) {
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
   }
-  return variableLangMapping[targetLanguage](name, mappedType, optional);
+  return {
+    output: variableLangMapping(name, mappedType, optional),
+    dependencies: [],
+  };
 };
 
-const variablesToTargetLanguage = (variable: TVariables, targetLanguage: string): string => {
-  const variablesLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (variables) => {
-      let result = '';
-      for (const variable of variables) {
-        const variableResult = modelToTargetLanguage({
-          type: BitloopsTypesMapping.TVariable,
-          value: variable,
-          targetLanguage,
-        });
-        result += `${variableResult}; `;
-      }
-      return result;
-    },
+const variablesToTargetLanguage = (variable: TVariables): TTargetDependenciesTypeScript => {
+  let dependencies;
+  const variablesLangMapping = (variables): string => {
+    let result = '';
+    for (const variable of variables) {
+      const variableResult = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TVariable,
+        value: variable,
+      });
+      dependencies = [...dependencies, ...variableResult.dependencies];
+      result += `${variableResult.output}; `;
+    }
+    return result;
   };
 
-  return variablesLangMapping[targetLanguage](variable);
+  return { output: variablesLangMapping(variable), dependencies };
 };
 
 export { variableToTargetLanguage, variablesToTargetLanguage };

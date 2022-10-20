@@ -25,6 +25,7 @@ import {
   TAndExpression,
   TXorExpression,
   TLogicalExpression,
+  TTargetDependenciesTypeScript,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -45,148 +46,136 @@ enum LOGICAL_EXPRESSION_MODEL_IDs {
 export const notExpressionToTargetLanguage = (
   value: TNotExpression,
   targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TNotExpression): string | Error => {
-      const { notExpression } = value;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TNotExpression): TTargetDependenciesTypeScript => {
+    const { notExpression } = value;
 
-      const expression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: notExpression,
-        targetLanguage,
-      });
+    const expression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: notExpression,
+      targetLanguage,
+    });
 
-      return `${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${expression}`;
-    },
+    return {
+      output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${expression.output}`,
+      dependencies: [...expression.dependencies],
+    };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 export const orExpressionToTargetLanguage = (
   value: TOrExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TOrExpression): string | Error => {
-      const { orExpression } = value;
-      const { left, right } = orExpression;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TOrExpression): TTargetDependenciesTypeScript => {
+    const { orExpression } = value;
+    const { left, right } = orExpression;
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+    const leftExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: left,
+    });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+    const rightExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: right,
+    });
 
-      return `${leftExpression} ${LOGICAL_OPERATORS_TYPESCRIPT.OR} ${rightExpression}`;
-    },
+    return {
+      output: `${leftExpression.output} ${LOGICAL_OPERATORS_TYPESCRIPT.OR} ${rightExpression.output}`,
+      dependencies: [...leftExpression.dependencies, ...rightExpression.dependencies],
+    };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 export const andExpressionToTargetLanguage = (
   value: TAndExpression,
   targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TAndExpression): string | Error => {
-      const { andExpression } = value;
-      const { left, right } = andExpression;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TAndExpression): TTargetDependenciesTypeScript => {
+    const { andExpression } = value;
+    const { left, right } = andExpression;
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+    const leftExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: left,
+    });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+    const rightExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: right,
+    });
 
-      return `${leftExpression} ${LOGICAL_OPERATORS_TYPESCRIPT.AND} ${rightExpression}`;
-    },
+    return {
+      output: `${leftExpression.output} ${LOGICAL_OPERATORS_TYPESCRIPT.AND} ${rightExpression.output}`,
+      dependencies: [...leftExpression.dependencies, ...rightExpression.dependencies],
+    };
   };
   return langMapping[targetLanguage](value);
 };
 
 export const xorExpressionToTargetLanguage = (
   value: TXorExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TXorExpression): string | Error => {
-      const { xorExpression } = value;
-      const { left, right } = xorExpression;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TXorExpression): TTargetDependenciesTypeScript => {
+    const { xorExpression } = value;
+    const { left, right } = xorExpression;
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+    const leftExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: left,
+    });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+    const rightExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: right,
+    });
 
-      return `(${leftExpression} ${LOGICAL_OPERATORS_TYPESCRIPT.AND} ${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${rightExpression}) ${LOGICAL_OPERATORS_TYPESCRIPT.OR} (${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${leftExpression} ${LOGICAL_OPERATORS_TYPESCRIPT.AND} ${rightExpression})`;
-    },
+    return {
+      output: `(${leftExpression.output} ${LOGICAL_OPERATORS_TYPESCRIPT.AND} ${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${rightExpression.output}) ${LOGICAL_OPERATORS_TYPESCRIPT.OR} (${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${leftExpression.output} ${LOGICAL_OPERATORS_TYPESCRIPT.AND} ${rightExpression.output})`,
+      dependencies: [...leftExpression.dependencies, ...rightExpression.dependencies],
+    };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 export const logicalExpressionToTargetLanguage = (
   value: TLogicalExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TLogicalExpression): string | Error => {
-      const { logicalExpression } = value;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TLogicalExpression): TTargetDependenciesTypeScript => {
+    const { logicalExpression } = value;
 
-      if (LOGICAL_EXPRESSION_MODEL_IDs.NOT in logicalExpression) {
-        return modelToTargetLanguage({
-          type: BitloopsTypesMapping.TNotExpression,
-          value: logicalExpression,
-          targetLanguage,
-        });
-      }
+    if (LOGICAL_EXPRESSION_MODEL_IDs.NOT in logicalExpression) {
+      return modelToTargetLanguage({
+        type: BitloopsTypesMapping.TNotExpression,
+        value: logicalExpression,
+      });
+    }
 
-      if (LOGICAL_EXPRESSION_MODEL_IDs.OR in logicalExpression) {
-        return modelToTargetLanguage({
-          type: BitloopsTypesMapping.TOrExpression,
-          value: logicalExpression,
-          targetLanguage,
-        });
-      }
+    if (LOGICAL_EXPRESSION_MODEL_IDs.OR in logicalExpression) {
+      return modelToTargetLanguage({
+        type: BitloopsTypesMapping.TOrExpression,
+        value: logicalExpression,
+      });
+    }
 
-      if (LOGICAL_EXPRESSION_MODEL_IDs.AND in logicalExpression) {
-        return modelToTargetLanguage({
-          type: BitloopsTypesMapping.TAndExpression,
-          value: logicalExpression,
-          targetLanguage,
-        });
-      }
+    if (LOGICAL_EXPRESSION_MODEL_IDs.AND in logicalExpression) {
+      return modelToTargetLanguage({
+        type: BitloopsTypesMapping.TAndExpression,
+        value: logicalExpression,
+      });
+    }
 
-      if (LOGICAL_EXPRESSION_MODEL_IDs.XOR in logicalExpression) {
-        return modelToTargetLanguage({
-          type: BitloopsTypesMapping.TXorExpression,
-          value: logicalExpression,
-          targetLanguage,
-        });
-      }
-
-      throw new Error('Unsupported logical expression');
-    },
+    if (LOGICAL_EXPRESSION_MODEL_IDs.XOR in logicalExpression) {
+      return modelToTargetLanguage({
+        type: BitloopsTypesMapping.TXorExpression,
+        value: logicalExpression,
+      });
+    }
+    throw new Error('Unsupported logical expression');
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 // // NOT a

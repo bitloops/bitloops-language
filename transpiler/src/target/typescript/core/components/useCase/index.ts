@@ -18,27 +18,47 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TUseCase, TUseCaseValues, TExecute } from '../../../../../types.js';
+import {
+  TUseCase,
+  TUseCaseValues,
+  TExecute,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const useCaseToTargetLanguage = (useCases: TUseCase, targetLanguage: string): string => {
+const useCaseToTargetLanguage = (
+  useCases: TUseCase,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   const useCasesKeys = Object.keys(useCases);
   let result = '';
+  let dependencies = [];
   for (let i = 0; i < useCasesKeys.length; i++) {
     const useCaseName = useCasesKeys[i];
     const useCaseValues = useCases[useCaseName];
-    result += useCaseValuesToTargetLanguage(useCaseValues, useCaseName, targetLanguage);
+    const useCaseValuesToTargetLanguageOutput = useCaseValuesToTargetLanguage(
+      useCaseValues,
+      useCaseName,
+      targetLanguage,
+    ).output;
+    const useCaseValuesToTargetLanguageDependencies = useCaseValuesToTargetLanguage(
+      useCaseValues,
+      useCaseName,
+      targetLanguage,
+    ).dependencies;
+    dependencies = [...dependencies, ...useCaseValuesToTargetLanguageDependencies];
+    result += useCaseValuesToTargetLanguageOutput;
   }
 
-  return result;
+  return { output: result, dependencies: [...dependencies] };
 };
 
 const useCaseValuesToTargetLanguage = (
   variable: TUseCaseValues,
   useCaseName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { execute, returnTypes, parameterDependencies } = variable;
   const useCaseInputType = execute.parameterDependencies[0]
     ? execute.parameterDependencies[0].type
@@ -81,10 +101,10 @@ const useCaseValuesToTargetLanguage = (
   });
 
   let result = initialUseCaseLangMapping[targetLanguage](
-    useCaseReturnTypesResult,
+    useCaseReturnTypesResult.output,
     useCaseResponseTypeName,
     useCaseInputType,
-    useCaseDependenciesResult,
+    useCaseDependenciesResult.output,
   );
 
   const executeResult = useCaseExecuteToTargetLanguage(
@@ -102,7 +122,7 @@ const useCaseExecuteToTargetLanguage = (
   variable: TExecute,
   responseTypeName: string,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { parameterDependencies, statements } = variable;
   const parameterDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
@@ -126,7 +146,13 @@ const useCaseExecuteToTargetLanguage = (
       return result;
     },
   };
-  return useCaseExecuteLangMapping[targetLanguage](parameterDependenciesResult, statementsResult);
+  return {
+    output: useCaseExecuteLangMapping[targetLanguage](
+      parameterDependenciesResult,
+      statementsResult,
+    ),
+    dependencies: [],
+  };
 };
 const isDependenciesEmpty = (dependencies: string): boolean => {
   const strippedDependencies = dependencies.replace(/\s/g, '');

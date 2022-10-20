@@ -20,7 +20,11 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TParameterDependency, TParameterDependencies } from '../../../../../types.js';
+import {
+  TParameterDependency,
+  TParameterDependencies,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -36,44 +40,40 @@ const parameterDependencyToTypescript = (variable: TParameterDependency): string
 
 const parameterDependencyToTargetLanguage = (
   variable: TParameterDependency,
-  targetLanguage: string,
-): string => {
-  const argumentDependencyMapping: any = {
-    [SupportedLanguages.TypeScript]: parameterDependencyToTypescript,
-  };
-
-  return argumentDependencyMapping[targetLanguage](variable);
+): TTargetDependenciesTypeScript => {
+  return { output: parameterDependencyToTypescript(variable), dependencies: [] };
 };
 
 const parameterDependenciesToTypescript = (
   variable: TParameterDependencies,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   let res = '(';
+  let dependencies = [];
   for (let i = 0; i < variable.length; i += 1) {
     const arg = variable[i];
     res += modelToTargetLanguage({
       type: BitloopsTypesMapping.TParameterDependency,
       value: arg,
-      targetLanguage,
-    });
+    }).output;
+    dependencies = [
+      ...dependencies,
+      ...modelToTargetLanguage({
+        type: BitloopsTypesMapping.TParameterDependency,
+        value: arg,
+      }).dependencies,
+    ];
     if (i !== variable.length - 1) {
       res += ',';
     }
   }
   res += ')';
-  return res;
+  return { output: res, dependencies: [] };
 };
 
 const parameterDependenciesToTargetLanguage = (
   variable: TParameterDependencies,
-  targetLanguage: string,
-): string => {
-  const argumentDependencyMapping: any = {
-    [SupportedLanguages.TypeScript]: parameterDependenciesToTypescript,
-  };
-
-  return argumentDependencyMapping[targetLanguage](variable);
+): TTargetDependenciesTypeScript => {
+  return parameterDependenciesToTypescript(variable);
 };
 
 export { parameterDependencyToTargetLanguage, parameterDependenciesToTargetLanguage };

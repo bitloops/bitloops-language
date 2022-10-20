@@ -1,12 +1,19 @@
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TDomainCreateMethod, TStatement } from '../../../../../types.js';
+import {
+  TDomainCreateMethod,
+  TStatement,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
 
 const THIS_STATEMENT_DECLARATION = 'thisDeclaration';
 
-export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string): string => {
+export const domainCreate = (
+  create: TDomainCreateMethod,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   const { parameterDependency, returnType, statements } = create;
 
   const statementsResult = {
@@ -56,7 +63,10 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
       (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
     ).length === 0;
   if (hasReturnStatements || statements.length === 0) {
-    statementsString = statementsString.concat(`return ok(new ${returnOkType}(props));`);
+    statementsString = {
+      output: statementsString.output.concat(`return ok(new ${returnOkType}(props));`),
+      dependencies: statementsString.dependencies,
+    };
   }
   const ToLanguageMapping = {
     [SupportedLanguages.TypeScript]: (
@@ -68,11 +78,14 @@ export const domainCreate = (create: TDomainCreateMethod, targetLanguage: string
     },
   };
   const result = ToLanguageMapping[targetLanguage](
-    returnTypeString,
-    parameterString,
-    statementsString,
+    returnTypeString.output,
+    parameterString.output,
+    statementsString.output,
   );
-  return result;
+  return {
+    output: result,
+    dependencies: [...statementsString.dependencies, ...parameterString.dependencies],
+  };
 };
 
 const isStatmentThisDeclaration = (statement: TStatement): boolean => {

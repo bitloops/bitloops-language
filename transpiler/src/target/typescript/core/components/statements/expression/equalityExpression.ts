@@ -19,14 +19,14 @@
  */
 
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TEqualityExpression } from '../../../../../../types.js';
+import { TEqualityExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const equalityExpressionToTargetLanguage = (
   value: TEqualityExpression,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const langMapping: any = {
     [SupportedLanguages.TypeScript]: (value: TEqualityExpression): string | Error => {
       const { equalityExpression } = value;

@@ -17,27 +17,22 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TCondition } from '../../../../../../types.js';
+import { TCondition, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const conditionToTargetLanguage = (variable: TCondition, targetLanguage: string): string => {
-  const conditionLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (variable: TCondition): string => {
-      const { condition } = variable;
+const conditionToTargetLanguage = (variable: TCondition): TTargetDependenciesTypeScript => {
+  const conditionLangMapping = (variable: TCondition): TTargetDependenciesTypeScript => {
+    const { condition } = variable;
 
-      const expressionInsideCondition = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpression,
-        value: condition,
-        targetLanguage,
-      });
-      return expressionInsideCondition;
-    },
+    const expressionInsideCondition = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpression,
+      value: condition,
+    });
+    return expressionInsideCondition;
   };
 
-  return conditionLangMapping[targetLanguage](variable);
+  return conditionLangMapping(variable);
 };
 
 export { conditionToTargetLanguage };

@@ -20,11 +20,18 @@
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TRepoPorts, TDefinitionMethods } from '../../../../../types.js';
+import {
+  TRepoPorts,
+  TDefinitionMethods,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-export const repoPortToTargetLanguage = (repoPorts: TRepoPorts, targetLanguage: string): string => {
+export const repoPortToTargetLanguage = (
+  repoPorts: TRepoPorts,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   const initialObjectValuesLangMapping = {
     [SupportedLanguages.TypeScript]: (propName: string) =>
       `export class ${propName} extends ValueObject<${propName}Props> { `,
@@ -55,7 +62,7 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts, targetLanguage: 
       aggregateRootName,
       extendedRepoPorts,
     );
-    return finalResult;
+    return { output: finalResult, dependencies: [] };
   }
 
   const withMethodsRepoPortLangMapping = {
@@ -85,5 +92,5 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts, targetLanguage: 
     extendedRepoPorts,
     definitionMethods,
   );
-  return finalResult;
+  return { output: finalResult, dependencies: [] };
 };

@@ -116,7 +116,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
         type: BitloopsTypesMapping.TSingleExpression,
         value: connection,
       });
-      connections[dbType].push(stringConnection);
+      connections[dbType].push(stringConnection.output);
       const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
       adapterImports.push(
         `import { ${adapterClassName} } from './infra/repos/${repoInstanceName}';`,
@@ -150,7 +150,9 @@ export class SetupTypeScriptRepos implements ISetupRepos {
         value: connection,
       });
       const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
-      result.push(`const ${repoInstanceName} = new ${adapterClassName}(${stringConnection});`);
+      result.push(
+        `const ${repoInstanceName} = new ${adapterClassName}(${stringConnection.output});`,
+      );
     }
     return result.join('\n') + '\n';
   }
@@ -214,7 +216,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
               value: port,
             });
             return (
-              `const ${connectionName}Url = 'mongodb://' + ${transpiledHostExpr} + ':${transpiledPortExpr}';\n` +
+              `const ${connectionName}Url = 'mongodb://' + ${transpiledHostExpr.output} + ':${transpiledPortExpr.output}';\n` +
               `export const ${connectionName} = new MongoClient(${connectionName}Url);\n`
             );
           })

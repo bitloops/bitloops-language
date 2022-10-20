@@ -18,42 +18,49 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TMultiplicativeExpression } from '../../../../../../types.js';
+import {
+  TMultiplicativeExpression,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const multiplicativeExpressionToTargetLanguage = (
   value: TMultiplicativeExpression,
   targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TMultiplicativeExpression): string | Error => {
-      const { multiplicativeExpression } = value;
-      const { left, operator, right } = multiplicativeExpression;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TMultiplicativeExpression): TTargetDependenciesTypeScript => {
+    const { multiplicativeExpression } = value;
+    const { left, operator, right } = multiplicativeExpression;
 
-      const targetLangOperator = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TMultiplicativeOperator,
-        value: operator,
-        targetLanguage,
-      });
+    const targetLangOperator = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TMultiplicativeOperator,
+      value: operator,
+      targetLanguage,
+    });
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+    const leftExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: left,
+      targetLanguage,
+    });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+    const rightExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: right,
+      targetLanguage,
+    });
 
-      return `${leftExpression} ${targetLangOperator} ${rightExpression}`;
-    },
+    return {
+      output: `${leftExpression.output} ${targetLangOperator.output} ${rightExpression.output}`,
+      dependencies: [
+        ...leftExpression.dependencies,
+        ...rightExpression.dependencies,
+        ...targetLangOperator.dependencies,
+      ],
+    };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 // // a * b

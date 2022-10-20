@@ -18,7 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { isGraphQLController } from '../../../../../helpers/typeGuards.js';
-import { TRESTController, TGraphQLController, ISetupData } from '../../../../../types.js';
+import {
+  TRESTController,
+  TGraphQLController,
+  ISetupData,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -27,7 +32,7 @@ const controllersToTargetLanguage = (
   targetLanguage: string,
   contextData?: { boundedContext: string; module: string },
   setupData?: ISetupData,
-): string => {
+): TTargetDependenciesTypeScript => {
   // TODO for all controllers ?
   const controllerName = Object.keys(controllers)[0];
 

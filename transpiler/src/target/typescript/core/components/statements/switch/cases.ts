@@ -19,32 +19,39 @@
  */
 
 import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TRegularCase, TDefaultCase } from '../../../../../../types.js';
+import {
+  TRegularCase,
+  TDefaultCase,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const switchRegularCasesToTargetLanguage = (
   variable: TRegularCase[],
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const switchCases = variable.map((switchCase: TRegularCase) => {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularCase,
       value: switchCase,
       targetLanguage,
-    });
+    }).output;
   });
 
   const switchRegularCasesLangMapping: Record<string, (cases: string[]) => string> = {
     [SupportedLanguages.TypeScript]: (switchCases: string[]) => switchCases.join(' '),
   };
-  return switchRegularCasesLangMapping[targetLanguage](switchCases);
+  return {
+    output: switchRegularCasesLangMapping[targetLanguage](switchCases),
+    dependencies: [],
+  };
 };
 
 const switchDefaultCaseToTargetLanguage = (
   variable: TDefaultCase,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const defaultCase = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDefaultCase,
     value: variable,
@@ -54,7 +61,10 @@ const switchDefaultCaseToTargetLanguage = (
   const switchDefaultCaseLangMapping: Record<string, (defaultCase: string) => string> = {
     [SupportedLanguages.TypeScript]: (defaultCase: string) => defaultCase,
   };
-  return switchDefaultCaseLangMapping[targetLanguage](defaultCase);
+  return {
+    output: switchDefaultCaseLangMapping[targetLanguage](defaultCase.output),
+    dependencies: defaultCase.dependencies,
+  };
 };
 
 export { switchRegularCasesToTargetLanguage, switchDefaultCaseToTargetLanguage };

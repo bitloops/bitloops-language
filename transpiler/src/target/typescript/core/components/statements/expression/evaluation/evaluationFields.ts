@@ -19,14 +19,14 @@
  */
 
 import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TEvaluationFields } from '../../../../../../../types.js';
+import { TEvaluationFields, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const evaluationFieldsToTargetLanguage = (
   properties: TEvaluationFields,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const initializeFieldsLangMapping = {
     [SupportedLanguages.TypeScript]: {},
   };
@@ -55,5 +55,5 @@ export const evaluationFieldsToTargetLanguage = (
         .join(',')}}`;
     },
   };
-  return fieldsFinalLangMapping[targetLanguage](langFields);
+  return { output: fieldsFinalLangMapping[targetLanguage](langFields), dependencies: [] };
 };

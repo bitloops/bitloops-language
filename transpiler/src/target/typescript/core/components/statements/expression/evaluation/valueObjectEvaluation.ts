@@ -18,14 +18,17 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TValueObjectEvaluation } from '../../../../../../../types.js';
+import {
+  TTargetDependenciesTypeScript,
+  TValueObjectEvaluation,
+} from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const valueObjectEvaluationToTargetLanguage = (
   evaluation: TValueObjectEvaluation,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const valueObjectEvaluation = evaluation.valueObject;
 
   const result = modelToTargetLanguage({

@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  TBitloopsOutputTargetContent,
   TBitloopsTargetContent,
   TBitloopsTargetGeneratorParams,
   TBitloopsTargetSetupContent,
@@ -37,7 +38,7 @@ export interface IBitloopsTargetGenerator {
     className: string,
     targetLanguage: string,
   ): { path: string; filename: string };
-  generate: (params: TBitloopsTargetGeneratorParams) => TBitloopsTargetContent;
+  generate: (params: TBitloopsTargetGeneratorParams) => TBitloopsOutputTargetContent;
 
   generateSetup: (
     params: TBitloopsTargetGeneratorParams,
@@ -45,11 +46,12 @@ export interface IBitloopsTargetGenerator {
 }
 
 export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
-  generate(params: TBitloopsTargetGeneratorParams): TBitloopsTargetContent {
+  generate(params: TBitloopsTargetGeneratorParams): TBitloopsOutputTargetContent {
     const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
     const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
     if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
     else {
+      console.log('targetContent', targetContent);
       const formattedTargetContent = bitloopsTargetGenerator.formatCode(
         targetContent,
         params.formatterConfig,

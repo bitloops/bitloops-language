@@ -18,14 +18,14 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TPackages } from '../../../../../types.js';
+import { TPackages, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const packagesToTypescriptTargetLanguage = (
   variable: TPackages,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   let res = '';
   for (const packageData of Object.values(variable)) {
     const { port } = packageData;
@@ -35,13 +35,16 @@ const packagesToTypescriptTargetLanguage = (
       targetLanguage,
     });
   }
-  return res;
+  return { output: res, dependencies: [] };
 };
 
 const packagesToTargetLanguageMapping = {
   [SupportedLanguages.TypeScript]: packagesToTypescriptTargetLanguage,
 };
 
-export const packagesToTargetLanguage = (variable: TPackages, targetLanguage: string): string => {
+export const packagesToTargetLanguage = (
+  variable: TPackages,
+  targetLanguage: string,
+): TTargetDependenciesTypeScript => {
   return packagesToTargetLanguageMapping[targetLanguage](variable, targetLanguage);
 };

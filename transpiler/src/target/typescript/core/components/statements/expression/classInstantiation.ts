@@ -18,27 +18,30 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TClassInstantiation, TArgumentDependency } from '../../../../../../types.js';
+import {
+  TClassInstantiation,
+  TArgumentDependency,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const classInstantiationToTargetLanguage = (
   variable: TClassInstantiation,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { className, argumentDependencies } = variable.classInstantiation;
-  const argDependencyLangMapping: Record<
-    string,
-    (arg1: string, arg2?: TArgumentDependency[]) => string
-  > = {
-    [SupportedLanguages.TypeScript]: (className: string, args?: TArgumentDependency[]) => {
-      let result = `new ${className}`;
-      // (...args)
-      result += modelToTargetLanguage({ type: 'TArgumentDependencies', value: args });
-      return result;
-    },
+  const argDependencyLangMapping = (
+    className: string,
+    args?: TArgumentDependency[],
+  ): TTargetDependenciesTypeScript => {
+    return {
+      output:
+        `new ${className}` +
+        modelToTargetLanguage({ type: 'TArgumentDependencies', value: args }).output,
+      dependencies: modelToTargetLanguage({ type: 'TArgumentDependencies', value: args })
+        .dependencies,
+    };
   };
-  return argDependencyLangMapping[targetLanguage](className, argumentDependencies);
+  return argDependencyLangMapping(className, argumentDependencies);
 };
 
 export { classInstantiationToTargetLanguage };

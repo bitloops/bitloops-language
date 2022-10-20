@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TSingleExpression } from '../../../../types.js';
+import { TSingleExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { literalSingleExpressionToTargetLanguage } from './literal-single-expression.js';
 import { logicalSingleExpressionToTargetLanguage } from './logical-single-expression.js';
@@ -11,17 +11,26 @@ import {
   isLogicalSingleExpression,
 } from './type-guards/index.js';
 
-const singleExpressionToTargetLanguage = (value: TSingleExpression, language: string): string => {
+const singleExpressionToTargetLanguage = (
+  value: TSingleExpression,
+  language: string,
+): TTargetDependenciesTypeScript => {
   if (isLogicalSingleExpression(value.expression)) {
-    return logicalSingleExpressionToTargetLanguage(value.expression, language);
+    return {
+      output: logicalSingleExpressionToTargetLanguage(value.expression, language),
+      dependencies: [],
+    };
   }
 
   if (isLiteralSingleExpression(value.expression)) {
-    return literalSingleExpressionToTargetLanguage(value.expression, language);
+    return {
+      output: literalSingleExpressionToTargetLanguage(value.expression, language),
+      dependencies: [],
+    };
   }
 
   if (isIdentifierSingleExpression(value.expression)) {
-    return value.expression.identifier.value;
+    return { output: value.expression.identifier.value, dependencies: [] };
   }
 
   if (isEnvVarWithDefaultValueExpression(value.expression)) {
@@ -34,12 +43,12 @@ const singleExpressionToTargetLanguage = (value: TSingleExpression, language: st
       value: expression,
       targetLanguage: language,
     });
-    return `process.env.${envVariable.value} || ${evaluatedLiteral}`;
+    return { output: `process.env.${envVariable.value} || ${evaluatedLiteral}`, dependencies: [] };
   }
   if (isEnvironmentVariableExpression(value.expression)) {
     const rawValue = value.expression.envVariable.value.replace(/env\./g, '');
     // console.log('rawValue:', rawValue);
-    return `process.env.${rawValue}`;
+    return { output: `process.env.${rawValue}`, dependencies: [] };
   }
   throw new Error('Expression not supported');
 };

@@ -18,7 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TRepoAdapters, TRepoSupportedTypes } from '../../../../../types.js';
+import {
+  TRepoAdapters,
+  TRepoSupportedTypes,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
@@ -27,7 +31,7 @@ import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 export const repoAdapterToTargetLanguage = (
   repoAdapters: TRepoAdapters,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const importMapping = {
     [SupportedLanguages.TypeScript]: (dbType: TRepoSupportedTypes) => {
       switch (dbType) {
@@ -65,9 +69,12 @@ export const repoAdapterToTargetLanguage = (
   });
   const repoBody = repoBodyLangMapping[targetLanguage](
     dbType,
-    generatedCollectionExpression,
+    generatedCollectionExpression.output,
     repoPortInfo,
   );
   const repoEnd = finalLangMapping[targetLanguage]();
-  return repoImports + repoStart + repoBody + repoEnd;
+  return {
+    output: repoImports + repoStart + repoBody + repoEnd,
+    dependencies: generatedCollectionExpression.dependencies,
+  };
 };

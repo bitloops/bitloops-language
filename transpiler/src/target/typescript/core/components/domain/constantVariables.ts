@@ -1,12 +1,12 @@
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TConstantVariable } from '../../../../../types.js';
+import { TConstantVariable, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
 const NEW_LINE = '\n';
 
 const constantVariables = (
   constantVariables: TConstantVariable[],
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const constVariablesLangMapping: any = {
     [SupportedLanguages.TypeScript]: (variable: TConstantVariable): string => {
       const { name, type, value } = variable;
@@ -26,6 +26,6 @@ const constantVariables = (
     constDeclarationResult += `${constDeclaration}${NEW_LINE}`;
   }
 
-  return constDeclarationResult;
+  return { output: constDeclarationResult, dependencies: [] };
 };
 export { constantVariables };

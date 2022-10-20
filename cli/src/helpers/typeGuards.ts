@@ -22,8 +22,10 @@ import {
   BitloopsIntermediateASTParserError,
   BitloopsParserError,
 } from '../functions/core/index.js';
-import { BitloopsTargetGeneratorError } from '../functions/target/index.js';
-import { TBitloopsTargetContent, TBoundedContexts } from '../types.js';
+
+import { TBitloopsOutputTargetContent, TBoundedContexts } from '../types.js';
+
+export class BitloopsTargetGeneratorError extends Error {}
 
 const isUndefined = (variable) => {
   if (typeof variable === 'undefined') return true;
@@ -39,7 +41,7 @@ const isBitloopsParserError = (
 };
 // const output: TBitloopsTargetContent | BitloopsTargetGeneratorError
 const isBitloopsTargetGeneratorError = (
-  output: TBitloopsTargetContent | BitloopsTargetGeneratorError,
+  output: TBitloopsOutputTargetContent | BitloopsTargetGeneratorError,
 ): output is BitloopsTargetGeneratorError => {
   if (output instanceof BitloopsTargetGeneratorError) return true;
   else return false;

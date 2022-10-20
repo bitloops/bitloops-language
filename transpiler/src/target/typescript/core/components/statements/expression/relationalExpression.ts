@@ -18,42 +18,42 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TRelationalExpression } from '../../../../../../types.js';
+import { TRelationalExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const relationalExpressionToTargetLanguage = (
   value: TRelationalExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TRelationalExpression): string | Error => {
-      const { relationalExpression } = value;
-      const { left, operator, right } = relationalExpression;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TRelationalExpression): TTargetDependenciesTypeScript => {
+    const { relationalExpression } = value;
+    const { left, operator, right } = relationalExpression;
 
-      const targetLangOperator = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TRelationalOperator,
-        value: operator,
-        targetLanguage,
-      });
+    const targetLangOperator = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TRelationalOperator,
+      value: operator,
+    });
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+    const leftExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: left,
+    });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+    const rightExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: right,
+    });
 
-      return `${leftExpression} ${targetLangOperator} ${rightExpression}`;
-    },
+    return {
+      output: `${leftExpression.output} ${targetLangOperator.output} ${rightExpression.output}`,
+      dependencies: [
+        ...leftExpression.dependencies,
+        ...rightExpression.dependencies,
+        ...targetLangOperator.dependencies,
+      ],
+    };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 // // a > b

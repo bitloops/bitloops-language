@@ -17,26 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TGetClass } from '../../../../../../../types.js';
+import { TGetClass, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-const getClassToTargetLanguage = (variable: TGetClass, targetLanguage: string): string => {
+const getClassToTargetLanguage = (variable: TGetClass): TTargetDependenciesTypeScript => {
   const regularEvaluationResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TRegularEvaluation,
     value: variable.getClass,
-    targetLanguage,
   });
 
-  const getClassLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (evaluationResult: string): string => {
-      return `${evaluationResult}.constructor`;
-    },
+  const getClassLangMapping = (evaluationResult: string): string => {
+    return `${evaluationResult}.constructor`;
   };
 
-  return getClassLangMapping[targetLanguage](regularEvaluationResult);
+  return {
+    output: getClassLangMapping(regularEvaluationResult.output),
+    dependencies: regularEvaluationResult.dependencies,
+  };
 };
 
 export { getClassToTargetLanguage };

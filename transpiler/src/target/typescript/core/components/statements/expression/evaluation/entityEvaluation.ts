@@ -18,14 +18,14 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TEntityEvaluation } from '../../../../../../../types.js';
+import { TEntityEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const entityEvaluationToTargetLanguage = (
   evaluation: TEntityEvaluation,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const entityEvaluation = evaluation.entity;
 
   const result = modelToTargetLanguage({

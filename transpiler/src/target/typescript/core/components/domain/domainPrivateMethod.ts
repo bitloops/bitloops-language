@@ -21,7 +21,7 @@ import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimit
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
-import { TDomainPrivateMethod } from '../../../../../types.js';
+import { TDomainPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -29,9 +29,9 @@ const domainPrivateMethod = (
   methodName: string,
   methodInfo: TDomainPrivateMethod,
   targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
-  if (!privateMethod) return '';
+  if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
@@ -43,17 +43,20 @@ const domainPrivateMethod = (
     value: methodInfo.privateMethod.parameterDependencies,
     targetLanguage,
   });
-  let mappedReturnType = methodInfo.privateMethod.returnType;
+  let mappedReturnType = { output: methodInfo.privateMethod.returnType, dependencies: [] };
 
-  if (isOkErrorReturnType(mappedReturnType)) {
+  if (isOkErrorReturnType(mappedReturnType.output)) {
     mappedReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TOkErrorReturnType,
       value: mappedReturnType,
       targetLanguage,
     });
   } else {
-    if (isBitloopsPrimitive(mappedReturnType)) {
-      mappedReturnType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](mappedReturnType);
+    if (isBitloopsPrimitive(mappedReturnType.output)) {
+      mappedReturnType = {
+        output: bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](mappedReturnType.output),
+        dependencies: [],
+      };
     }
   }
   const ToLanguageMapping = {
@@ -68,10 +71,13 @@ const domainPrivateMethod = (
   };
   const result = ToLanguageMapping[targetLanguage](
     methodName,
-    mappedReturnType,
-    parametersString,
-    statementsString,
+    mappedReturnType.output as string,
+    parametersString.output,
+    statementsString.output,
   );
-  return result;
+  return {
+    output: result,
+    dependencies: [...parametersString.dependencies, ...statementsString.dependencies],
+  };
 };
 export { domainPrivateMethod };

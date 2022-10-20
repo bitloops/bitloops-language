@@ -21,7 +21,7 @@ import { isBitloopsTargetGeneratorError } from '../helpers/typeGuards.js';
 import {
   BoundedContextModules,
   ISetupData,
-  TBitloopsTargetContent,
+  TBitloopsOutputTargetContent,
   TBitloopsTargetSetupContent,
   TBoundedContexts,
 } from '../types.js';
@@ -30,7 +30,7 @@ import { BitloopsTargetGenerator } from '@bitloops/bl-transpiler';
 import { writeTargetFile } from './writeTargetFile.js';
 
 const writeGeneratedOutputToFiles = (
-  params: TBitloopsTargetContent,
+  params: TBitloopsOutputTargetContent,
   outputDirPath: string,
 ): void => {
   //  Write output to dest files
