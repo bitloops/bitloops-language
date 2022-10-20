@@ -28,7 +28,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 const domainPrivateMethod = (
   methodName: string,
   methodInfo: TDomainPrivateMethod,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
@@ -36,12 +35,10 @@ const domainPrivateMethod = (
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: statements,
-    targetLanguage,
   });
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: methodInfo.privateMethod.parameterDependencies,
-    targetLanguage,
   });
   let mappedReturnType = { output: methodInfo.privateMethod.returnType, dependencies: [] };
 
@@ -49,7 +46,6 @@ const domainPrivateMethod = (
     mappedReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TOkErrorReturnType,
       value: mappedReturnType,
-      targetLanguage,
     });
   } else {
     if (isBitloopsPrimitive(mappedReturnType.output)) {
@@ -59,17 +55,15 @@ const domainPrivateMethod = (
       };
     }
   }
-  const ToLanguageMapping = {
-    [SupportedLanguages.TypeScript]: (
-      methodName: string,
-      returnType: string,
-      parametersString: string,
-      methodStatements: string,
-    ): string => {
-      return `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
-    },
+  const ToLanguageMapping = (
+    methodName: string,
+    returnType: string,
+    parametersString: string,
+    methodStatements: string,
+  ): string => {
+    return `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
   };
-  const result = ToLanguageMapping[targetLanguage](
+  const result = ToLanguageMapping(
     methodName,
     mappedReturnType.output as string,
     parametersString.output,

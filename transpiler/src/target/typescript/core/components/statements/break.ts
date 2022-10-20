@@ -17,21 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TBreakStatement, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
-const breakStmtToTargetLanguage = (
-  variable: TBreakStatement,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+const breakStmtToTargetLanguage = (variable: TBreakStatement): TTargetDependenciesTypeScript => {
   if (variable !== 'break') {
     throw new Error(`Invalid break statement: ${variable}`);
   }
-  const breakStmtLangMapping = {
-    [SupportedLanguages.TypeScript]: 'break',
-  };
-  return { output: breakStmtLangMapping[targetLanguage], dependencies: [] };
+  return { output: 'break', dependencies: [] };
 };
 
 export { breakStmtToTargetLanguage };

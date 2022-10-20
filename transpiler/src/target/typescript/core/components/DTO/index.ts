@@ -17,20 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import { TDTO, TDTOValues, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): TTargetDependenciesTypeScript => {
-  const initialDTOLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (dtoName: string) => `export interface ${dtoName} { `,
-  };
-  const finalDTOLangMapping: any = {
-    [SupportedLanguages.TypeScript]: '}',
-  };
-
+const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies;
   const dtoKeys = Object.keys(dto);
@@ -40,21 +32,17 @@ const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): TTargetDependen
     const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TDTOValues,
       value: dtoValues,
-      targetLanguage,
     });
-    result += initialDTOLangMapping[targetLanguage](dtoName);
+    result += `export interface ${dtoName} { `;
     result += model.output;
-    result += finalDTOLangMapping[targetLanguage];
+    result += '}';
     dependencies = [...dependencies, ...model.dependencies];
   }
 
   return { output: result, dependencies };
 };
 
-const DTOValuesToTargetLanguage = (
-  variable: TDTOValues,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+const DTOValuesToTargetLanguage = (variable: TDTOValues): TTargetDependenciesTypeScript => {
   if (isUndefined(variable.fields)) {
     throw new Error('Fields of DTO are not defined');
   }
@@ -64,7 +52,6 @@ const DTOValuesToTargetLanguage = (
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: variable.fields,
-    targetLanguage,
   });
   return variablesResult;
 };
