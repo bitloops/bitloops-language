@@ -183,6 +183,7 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
+	| isInstanceOf
     ;
 // regularVariableEvaluation | regularStringEvaluation |
 
@@ -516,6 +517,7 @@ jestTestDeclaration
     | JestTestStructEvaluation '{' structEvaluation ';'? '}'  ';'?  
     | JestTestDTOEvaluation '{' dtoEvaluation ';'? '}'  ';'?    
     | JestTestEvaluation '{' evaluation ';'? '}'  ';'?  
+	| JestTestIsInstanceOf '{' isInstanceOf '}' ';'?  
     | JestTest '{' regularEvaluation SemiColon? '}' SemiColon?  
     | JestTest '{' formalParameterList '}' SemiColon?   
     | JestTest '{' restControllerParameters '}'     
@@ -656,7 +658,7 @@ expressionStatement
     ;
 
 ifStatement
-    : If '(' expression ')' statement (Else statement)?
+    : If '(' condition ')' statement (Else statement)?
     ;
 
 
@@ -711,7 +713,7 @@ withStatement
     ;
 
 switchStatement
-    : Switch '(' expression ')' caseBlock
+    : Switch '(' condition ')' caseBlock
     ;
 
 caseBlock
@@ -1430,3 +1432,7 @@ eos
     // | {this.lineTerminatorAhead()}?
     // | {this.closeBrace()}?
     ;
+
+isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
+
+classTypes: ErrorClass;

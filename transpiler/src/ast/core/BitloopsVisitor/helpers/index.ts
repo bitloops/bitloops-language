@@ -70,3 +70,4 @@ export {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
 } from './applyRulesStatement.js';
+export { isInstanceOfVisitor } from './isInstanceOf.js';

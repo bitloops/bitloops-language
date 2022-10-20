@@ -80,6 +80,7 @@ const getBitloopsModel = (
   const type = subtree.type;
   const children = subtree.children;
   const numOfChildren = subtree.numOfChildren ? subtree.numOfChildren : 0;
+
   switch (type) {
     case 'sourceElement':
       return getBitloopsModel(children[0]);

@@ -252,7 +252,7 @@ JestTestEntityDeclaration: 'JestTestEntityDeclaration';
 JestTestCondition: 'JestTestCondition';
 JestTestVariableDeclaration: 'JestTestVariableDeclaration';
 JestTestThisDeclaration: 'JestTestThisDeclaration';
-
+JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
@@ -281,6 +281,8 @@ Input:                  'input';
 OperationMutation:      'GraphQL.Operations.Mutation';
 OperationQuery:         'GraphQL.Operations.Query';
 OperationSubscription:  'GraphQL.Operations.Subscription';
+
+ErrorClass: 'Error';
 
 /// Identifier Names and Identifiers
 DTOIdentifier:                  UpperCaseStart IdentifierPart* DTO;
