@@ -5,12 +5,28 @@ import {
 } from '../../../../index.js';
 
 const blString = `
-Props TodoProps {
-    optional UUIDv4 id; // The id name is reserved for entity ids, based on this id, a TodoEntityId class is automatically generated
-    TitleVO title;
-    // string description; @TODO add description
-    bool completed;
+DTO CreateTodoRequestDTO {
+  string title;
+}
+
+DTO CreateTodoResponseDTO {
+  string message;
+}
+
+UseCase CreateTodoUseCase (todoRepo: TodoRepoPort) {
+  execute ( requestDTO: CreateTodoRequestDTO ) : ( OK ( CreateTodoResponseDTO ), Errors( DomainErrors.InvalidTitleError ) ) {
+    const title = TitleVO({ title: requestDTO.title });
+
+    const todo = TodoEntity({
+      title,
+      completed: false
+    });
+
+    this.todoRepo.save(todo);
+
+    return CreateTodoResponseDTO ( { message: 'Todo created successfully!' } ) ;
   }
+}
 `;
 
 const parser = new BitloopsParser();

@@ -19,7 +19,6 @@
  */
 import { buildExecuteMethod } from './buildRestExecute.js';
 import { buildFieldsFromDependencies } from '../helpers/buildFieldsFromDependencies.js';
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { controllerDefinitionIsRest } from '../../../../../../helpers/typeGuards.js';
 import {
   TRESTController,

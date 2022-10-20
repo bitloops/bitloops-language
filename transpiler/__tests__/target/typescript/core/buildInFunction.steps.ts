@@ -24,7 +24,6 @@ import { modelToTargetLanguage } from '../../../../src/target/typescript/core/mo
 const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
 
 defineFeature(feature, (test) => {
-  let language;
   let buildInFuncType;
   let result;
   let value;
@@ -34,8 +33,8 @@ defineFeature(feature, (test) => {
       buildInFuncType = type;
     });
 
-    and(/^language is "(.*)"$/, (lang) => {
-      language = lang;
+    and(/^language is "(.*)"$/, (_lang) => {
+      // pass
     });
 
     given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {

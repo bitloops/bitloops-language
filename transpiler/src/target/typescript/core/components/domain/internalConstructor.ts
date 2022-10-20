@@ -1,5 +1,4 @@
 import { ClassTypes } from '../../../../../helpers/mappings.js';
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TStatements, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { statementsToTargetLanguage } from '../statements/index.js';
 
