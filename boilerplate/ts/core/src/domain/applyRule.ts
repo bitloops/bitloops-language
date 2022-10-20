@@ -17,18 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICoreError } from '../ICoreError';
+import { IDomainError } from './DomainError';
+import { IRule } from './IRule';
 
-export interface IDomainError extends ICoreError {
-  errorId?: string;
-}
-
-export abstract class DomainError implements IDomainError {
-  public readonly message: string;
-  public readonly errorId?: string;
-
-  constructor(message: string, errorId?: string) {
-    this.message = message;
-    this.errorId = errorId;
+export const applyRules = (rules: IRule[]): IDomainError | void => {
+  const errors: IDomainError[] = [];
+  for (const rule of rules) {
+    if (rule.isBrokenIf()) errors.push(rule.Error);
   }
-}
+  if (errors.length > 0) return errors[0];
+};

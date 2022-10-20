@@ -17,7 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-export interface IBusinessRule {
-  isBroken(): boolean;
-  message: string;
+import { IDomainError } from './DomainError';
+
+export interface IRule {
+  Error: IDomainError;
+  isBrokenIf(): boolean;
 }
