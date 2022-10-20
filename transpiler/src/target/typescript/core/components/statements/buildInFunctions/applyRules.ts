@@ -21,10 +21,7 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { TApplyRules, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const applyRulesToTargetLanguage = (
-  variable: TApplyRules,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesTypeScript => {
   const { applyRules } = variable;
 
   let result = 'const res = applyRules([';
@@ -33,7 +30,6 @@ const applyRulesToTargetLanguage = (
     const parameterDependencies = modelToTargetLanguage({
       type: BitloopsTypesMapping.TArgumentDependencies,
       value: applyRule.arguments,
-      targetLanguage,
     });
     result += `new ${applyRule.name}${parameterDependencies.output},`;
     dependencies = [...dependencies, ...parameterDependencies.dependencies];

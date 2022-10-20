@@ -1,24 +1,25 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TLogicalSingleExpression } from '../../../../types.js';
+import { TLogicalSingleExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { isLogicalORExpression } from './type-guards/index.js';
 
 export const logicalSingleExpressionToTargetLanguage = (
   expression: TLogicalSingleExpression,
-  language: string,
-): string => {
+): TTargetDependenciesTypeScript => {
+  const dependencies = [];
   if (isLogicalORExpression(expression.logicalExpression)) {
     const left = modelToTargetLanguage({
       type: BitloopsTypesMapping.TSingleExpression,
       value: expression.logicalExpression.orExpression.left,
-      targetLanguage: language,
     });
     const right = modelToTargetLanguage({
       type: BitloopsTypesMapping.TSingleExpression,
       value: expression.logicalExpression.orExpression.right,
-      targetLanguage: language,
     });
-    return `${left} || ${right}`;
+    return {
+      output: `${left.output} || ${right.output}`,
+      dependencies: [...dependencies, ...left.dependencies, ...right.dependencies],
+    };
   }
   throw new Error('Type of Logical Expression not supported');
 };

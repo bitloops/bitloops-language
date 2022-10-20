@@ -27,7 +27,6 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const multiplicativeExpressionToTargetLanguage = (
   value: TMultiplicativeExpression,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const langMapping = (value: TMultiplicativeExpression): TTargetDependenciesTypeScript => {
     const { multiplicativeExpression } = value;
@@ -36,19 +35,16 @@ export const multiplicativeExpressionToTargetLanguage = (
     const targetLangOperator = modelToTargetLanguage({
       type: BitloopsTypesMapping.TMultiplicativeOperator,
       value: operator,
-      targetLanguage,
     });
 
     const leftExpression = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpressionValues,
       value: left,
-      targetLanguage,
     });
 
     const rightExpression = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpressionValues,
       value: right,
-      targetLanguage,
     });
 
     return {

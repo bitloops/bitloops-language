@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TRepoSupportedTypes, TRepoPort } from '../../../../../../types.js';
 
 const CRUDRepoPort = 'CRUDRepoPort';
@@ -41,24 +40,22 @@ const fetchTypeScriptMongoCrudBaseRepo = (entityName: string) => {
   `;
 };
 
-const repoBodyLangMapping = {
-  [SupportedLanguages.TypeScript]: (
-    dbType: TRepoSupportedTypes,
-    collection: string,
-    repoPortInfo: TRepoPort,
-  ): string => {
-    switch (dbType) {
-      case 'DB.Mongo': {
-        let result = `constructor(private client: MongoClient) { this.collection = ${collection}; }`;
-        if (repoPortInfo.extendedRepoPorts.includes(CRUDRepoPort)) {
-          result += fetchTypeScriptMongoCrudBaseRepo(repoPortInfo.aggregateRootName);
-        }
-        return result;
+const repoBodyLangMapping = (
+  dbType: TRepoSupportedTypes,
+  collection: string,
+  repoPortInfo: TRepoPort,
+): string => {
+  switch (dbType) {
+    case 'DB.Mongo': {
+      let result = `constructor(private client: MongoClient) { this.collection = ${collection}; }`;
+      if (repoPortInfo.extendedRepoPorts.includes(CRUDRepoPort)) {
+        result += fetchTypeScriptMongoCrudBaseRepo(repoPortInfo.aggregateRootName);
       }
-      default: {
-        throw new Error(`Unsupported db type: ${dbType}`);
-      }
+      return result;
     }
-  },
+    default: {
+      throw new Error(`Unsupported db type: ${dbType}`);
+    }
+  }
 };
 export { repoBodyLangMapping };

@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TRepoAdapters,
   TRepoSupportedTypes,
@@ -30,49 +29,37 @@ import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 
 export const repoAdapterToTargetLanguage = (
   repoAdapters: TRepoAdapters,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  const importMapping = {
-    [SupportedLanguages.TypeScript]: (dbType: TRepoSupportedTypes) => {
-      switch (dbType) {
-        case 'DB.Mongo': {
-          return "import { MongoClient } from 'mongodb';";
-        }
-        default: {
-          throw new Error(`Unsupported db type: ${dbType}`);
-        }
+  const importMapping = (dbType: TRepoSupportedTypes) => {
+    switch (dbType) {
+      case 'DB.Mongo': {
+        return "import { MongoClient } from 'mongodb';";
       }
-    },
+      default: {
+        throw new Error(`Unsupported db type: ${dbType}`);
+      }
+    }
   };
-  const initialLangMapping = {
-    [SupportedLanguages.TypeScript]: (interfaceName: string, dbType: TRepoSupportedTypes) =>
-      // TODO import mongo collection
-      `export class ${getRepoAdapterClassName(
-        interfaceName,
-        dbType,
-      )} implements ${interfaceName} { private collection:string; `,
-  };
+  const initialLangMapping = (interfaceName: string, dbType: TRepoSupportedTypes) =>
+    // TODO import mongo collection
+    `export class ${getRepoAdapterClassName(
+      interfaceName,
+      dbType,
+    )} implements ${interfaceName} { private collection:string; `;
 
   const repoAdapterInstanceName = Object.keys(repoAdapters)[0];
   const repoAdapter = repoAdapters[repoAdapterInstanceName];
 
   const { dbType, repoPort, repoPortInfo, connection: _connection, collection } = repoAdapter;
-  const repoImports = importMapping[targetLanguage](dbType);
-  const repoStart = initialLangMapping[targetLanguage](repoPort, dbType);
+  const repoImports = importMapping(dbType);
+  const repoStart = initialLangMapping(repoPort, dbType);
 
-  const finalLangMapping = {
-    [SupportedLanguages.TypeScript]: () => '}',
-  };
   const generatedCollectionExpression = modelToTargetLanguage({
     type: BitloopsTypesMapping.TSingleExpression,
     value: collection,
   });
-  const repoBody = repoBodyLangMapping[targetLanguage](
-    dbType,
-    generatedCollectionExpression.output,
-    repoPortInfo,
-  );
-  const repoEnd = finalLangMapping[targetLanguage]();
+  const repoBody = repoBodyLangMapping(dbType, generatedCollectionExpression.output, repoPortInfo);
+  const repoEnd = '}';
   return {
     output: repoImports + repoStart + repoBody + repoEnd,
     dependencies: generatedCollectionExpression.dependencies,

@@ -1,17 +1,16 @@
-import { TLiteralExpression } from '../../../../types.js';
+import { TLiteralExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
 
 export const literalSingleExpressionToTargetLanguage = (
   expression: TLiteralExpression,
-  _language: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { type, value: literalValue } = expression.literal;
   switch (type) {
     case 'string':
-      return `'${literalValue}'`;
+      return { output: `'${literalValue}'`, dependencies: [] };
     case 'number' as any:
-      return `${literalValue}`;
+      return { output: `${literalValue}`, dependencies: [] };
     case 'bool':
-      return `${literalValue}`;
+      return { output: `${literalValue}`, dependencies: [] };
     default:
       throw new Error(`Literal Type ${type} not supported`);
   }

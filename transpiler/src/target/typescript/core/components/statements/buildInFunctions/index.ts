@@ -23,17 +23,15 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildInFunctionToTargetLanguage = (
   variable: TBuildInFunction,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { buildInFunction } = variable;
   if ('applyRules' in buildInFunction) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TApplyRules,
       value: buildInFunction,
-      targetLanguage,
     });
   } else {
-    throw new Error(`Unsupported buildInFunction: ${buildInFunction.applyRules}`);
+    throw new Error(`Unsupported buildInFunction: ${Object.keys(buildInFunction)}`);
   }
 };
 
