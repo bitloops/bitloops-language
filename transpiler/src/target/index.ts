@@ -19,7 +19,6 @@
  */
 import {
   TBitloopsOutputTargetContent,
-  TBitloopsTargetContent,
   TBitloopsTargetGeneratorParams,
   TBitloopsTargetSetupContent,
 } from '../types.js';

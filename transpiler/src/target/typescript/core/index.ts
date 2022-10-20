@@ -44,7 +44,7 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
   ASTToTarget(
     params: TBitloopsTargetGeneratorParams,
   ): TBitloopsTargetContent | BitloopsTargetGeneratorError {
-    const { intermediateAST, setupData, targetLanguage } = params;
+    const { intermediateAST, setupData } = params;
     const result = [];
     for (const boundedContextName of Object.keys(intermediateAST)) {
       for (const moduleName of Object.keys(intermediateAST[boundedContextName])) {
