@@ -11,10 +11,7 @@ import { internalConstructor } from './index.js';
 const THIS_STATEMENT_DECLARATION = 'thisDeclaration';
 
 // TODO refactor this with domainCreate method which is similar (only the constructor changes)
-export const domainCreateEntity = (
-  create: TDomainCreateMethod,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
   const { parameterDependency, returnType, statements } = create;
 
   const statementsResult = {
@@ -36,26 +33,22 @@ export const domainCreateEntity = (
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
-    targetLanguage,
     ClassTypes.Entities,
   );
 
   let statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatementsWithoutThis,
     value: statementsResult.restStatements,
-    targetLanguage,
   });
 
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
     value: parameterDependency,
-    targetLanguage,
   });
 
-  const returnTypeString = modelToTargetLanguage({
+  const returnTypeModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: returnType,
-    targetLanguage,
   });
 
   const statementValues = statements.map((statement) => statement.valueOf());
@@ -69,23 +62,26 @@ export const domainCreateEntity = (
       dependencies: statementsString.dependencies,
     };
   }
-  const ToLanguageMapping = {
-    [SupportedLanguages.TypeScript]: (
-      returnType: string,
-      parameterString: string,
-      methodStatements: string,
-    ): string => {
-      return `${producedConstructor} public static create(${parameterString}): ${returnType} { ${methodStatements} }`;
-    },
+  const ToLanguageMapping = (
+    returnType: string,
+    parameterString: string,
+    methodStatements: string,
+  ): string => {
+    return `${producedConstructor.output} public static create(${parameterString}): ${returnType} { ${methodStatements} }`;
   };
-  const result = ToLanguageMapping[targetLanguage](
-    returnTypeString.output,
+  const result = ToLanguageMapping(
+    returnTypeModel.output,
     parameterString.output,
     statementsString.output,
   );
   return {
     output: result,
-    dependencies: [],
+    dependencies: [
+      ...producedConstructor.dependencies,
+      ...statementsString.dependencies,
+      ...parameterString.dependencies,
+      ...returnTypeModel.dependencies,
+    ],
   };
 };
 
