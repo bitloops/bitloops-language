@@ -24,16 +24,13 @@ import { TDefinitionMethodInfo, TTargetDependenciesTypeScript } from '../../../.
 
 export const returnTypeToDefinitionLanguage = (
   value: TDefinitionMethodInfo,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  if (targetLanguage === SupportedLanguages.TypeScript) {
-    let mappedType;
-    if (isBitloopsPrimitive(value)) {
-      mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](value);
-    } else {
-      mappedType = value;
-    }
+  let mappedType;
+  if (isBitloopsPrimitive(value)) {
+    mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](value);
+  } else {
+    mappedType = value;
+  }
 
-    return { output: ':' + mappedType, dependencies: [] };
-  } else throw new Error(`Not implemented for ${targetLanguage}`);
+  return { output: ':' + mappedType, dependencies: [] };
 };

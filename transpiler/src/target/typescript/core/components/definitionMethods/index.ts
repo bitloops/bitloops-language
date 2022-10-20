@@ -28,29 +28,29 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const definitionMethodInfoToTargetLanguage = (
   value: TDefinitionMethodInfo,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  const paramString = modelToTargetLanguage({
+  const paramModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: value.parameterDependencies,
-    targetLanguage,
   });
-  return paramString;
+  return paramModel;
 };
 
 export const definitionMethodsToTargetLanguage = (
   definitionMethods: TDefinitionMethods,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   let res = '';
+  let dependencies = [];
   for (const [definitionMethod, value] of Object.entries(definitionMethods)) {
-    res += `${definitionMethod}${definitionMethodInfoToTargetLanguage(value, targetLanguage)}`;
-    res += modelToTargetLanguage({
+    const definitionMethodInfo = definitionMethodInfoToTargetLanguage(value);
+    res += `${definitionMethod}${definitionMethodInfo.output};`;
+    const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TReturnType,
       value: value.returnType,
-      targetLanguage,
     });
+    res += model.output;
+    dependencies = [...dependencies, ...model.dependencies, ...definitionMethodInfo.dependencies];
     res += ';';
   }
-  return { output: res, dependencies: [] };
+  return { output: res, dependencies };
 };
