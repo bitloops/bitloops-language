@@ -27,34 +27,33 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const constDeclarationToTargetLanguage = (
   variable: TConstDeclaration,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  const constDeclarationLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (variable: TConstDeclaration): string => {
-      const { name, type } = variable.constDeclaration;
+  const constDeclarationLangMapping = (variable: TConstDeclaration): string => {
+    const { name, type } = variable.constDeclaration;
 
-      if (type) {
-        let tsType = type;
-        if (isBitloopsPrimitive(type)) {
-          tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
-        }
-        return `const ${name}: ${tsType} = `;
-      } else {
-        return `const ${name} = `;
+    if (type) {
+      let tsType = type;
+      if (isBitloopsPrimitive(type)) {
+        tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
       }
-    },
+      return `const ${name}: ${tsType} = `;
+    } else {
+      return `const ${name} = `;
+    }
   };
 
-  const declareResult = constDeclarationLangMapping[targetLanguage](variable);
+  const declareResult = constDeclarationLangMapping(variable);
 
   const { expression } = variable.constDeclaration;
   const expressionResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: { expression },
-    targetLanguage,
   });
 
-  return { output: `${declareResult}${expressionResult}`, dependencies: [] };
+  return {
+    output: `${declareResult}${expressionResult.output}`,
+    dependencies: expressionResult.dependencies,
+  };
 };
 
 export { constDeclarationToTargetLanguage };
