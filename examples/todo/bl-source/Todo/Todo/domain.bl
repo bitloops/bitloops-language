@@ -1,0 +1,50 @@
+Rule IsValidTitle ( title: string )  throws DomainErrors.InvalidTitleError {
+  isBrokenIf  ( title > 150 OR title < 4 ) ;
+}
+
+Props TitleProps {
+  string title;
+}
+
+ValueObject TitleVO {
+  constructor(props: TitleProps): (OK(TitleVO) , Errors(DomainErrors.InvalidTitleError)) {
+    applyRules(IsValidTitle(props.title));
+  }
+}
+
+DomainError InvalidTitleError(title: string)  {
+  message: `Title ${title} is out of range`,
+  errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+}
+
+Props TodoProps {
+  optional UUIDv4 id; // The id name is reserved for entity ids, based on this id, a TodoEntityId class is automatically generated
+  TitleVO title;
+  bool completed;
+}
+
+ReadModel TodoReadModel {
+  string id;
+  string title;
+  bool completed;
+}
+
+
+Root Entity TodoEntity {
+
+  constructor(props: TodoProps): (OK(TodoEntity), Errors()) {}
+
+  // methods that return OK/Errors are automatically public, if you need a private one that returns OK/Errors
+  // you can add "private" before the method name e.g. private increaseSqftPriceBy
+  complete(): (OK(void), Errors()) {
+    this.completed = true;
+  }
+
+  uncomplete(): (OK(void), Errors()) {
+    this.completed = false;
+  }
+
+  updateTitle(title: TitleVO):  (OK(void), Errors()) {
+    this.title = title;
+  }
+}

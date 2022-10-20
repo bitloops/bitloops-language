@@ -1,0 +1,21 @@
+RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
+  method: REST.Methods.POST;
+  execute(request, response) {
+    const dto = CreateTodoRequestDTO({ title: request.body.title });
+
+    const result = createTodoUseCase.execute( dto );
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case DomainErrors.InvalidTitleError: {
+          this.clientError( response, result.message );
+          break;
+        }
+        default:
+          this.clientError( response, result.message );
+      }
+    } else {
+      this.ok( response, result );
+    }
+  }
+}
