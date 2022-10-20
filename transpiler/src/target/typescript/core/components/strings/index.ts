@@ -17,34 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TString, TBackTickString, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
-const stringToTargetLanguage = (
-  variable: TString,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+const stringToTargetLanguage = (variable: TString): TTargetDependenciesTypeScript => {
   const { string } = variable;
-
-  const backTickStringLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (singleQuoteString: string) => `'${singleQuoteString}'`,
-  };
-
-  return { output: backTickStringLangMapping[targetLanguage](string), dependencies: [] };
+  return { output: `'${string}'`, dependencies: [] };
 };
 
 const backTickStringToTargetLanguage = (
   variable: TBackTickString,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { backTickString } = variable;
-
-  const backTickStringLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (backTick: string) => `\`${backTick}\``,
-  };
-
-  return { output: backTickStringLangMapping[targetLanguage](backTickString), dependencies: [] };
+  return { output: `\`${backTickString}\``, dependencies: [] };
 };
 
 export { stringToTargetLanguage, backTickStringToTargetLanguage };
