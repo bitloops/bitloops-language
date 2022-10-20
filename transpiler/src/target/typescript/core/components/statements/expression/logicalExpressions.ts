@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import {
   TNotExpression,
   TOrExpression,
@@ -45,7 +44,6 @@ enum LOGICAL_EXPRESSION_MODEL_IDs {
 
 export const notExpressionToTargetLanguage = (
   value: TNotExpression,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const langMapping = (value: TNotExpression): TTargetDependenciesTypeScript => {
     const { notExpression } = value;
@@ -53,7 +51,6 @@ export const notExpressionToTargetLanguage = (
     const expression = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpressionValues,
       value: notExpression,
-      targetLanguage,
     });
 
     return {
@@ -91,7 +88,6 @@ export const orExpressionToTargetLanguage = (
 
 export const andExpressionToTargetLanguage = (
   value: TAndExpression,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const langMapping = (value: TAndExpression): TTargetDependenciesTypeScript => {
     const { andExpression } = value;
@@ -112,7 +108,7 @@ export const andExpressionToTargetLanguage = (
       dependencies: [...leftExpression.dependencies, ...rightExpression.dependencies],
     };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 export const xorExpressionToTargetLanguage = (

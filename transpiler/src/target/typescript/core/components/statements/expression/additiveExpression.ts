@@ -25,7 +25,6 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const additiveExpressionToTargetLanguage = (
   value: TAdditiveExpression,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const langMapping = (value: TAdditiveExpression): TTargetDependenciesTypeScript => {
     const { additiveExpression } = value;
@@ -34,19 +33,16 @@ export const additiveExpressionToTargetLanguage = (
     const targetLangOperator = modelToTargetLanguage({
       type: BitloopsTypesMapping.TAdditiveOperator,
       value: operator,
-      targetLanguage,
     });
 
     const leftExpression = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpressionValues,
       value: left,
-      targetLanguage,
     });
 
     const rightExpression = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpressionValues,
       value: right,
-      targetLanguage,
     });
 
     return {
