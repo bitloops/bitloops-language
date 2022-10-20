@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-graphql",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "TypeScript boilerplate code for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
