@@ -133,47 +133,54 @@ Bitloops Langauge code like this (11 lines):
 
 ```node
 // Bitloops Language:
-UseCase HelloWorldUseCase (/* Dependencies such as Repositories, Services, and Packages go here in more complex cases */) {
-  // Every Bitloops UseCase must implement execute and must return OK and Error types (similar to Either)
-  execute(helloWorldRequestDTO: HelloWorldRequestDTO): (OK(HelloWorldResponseDTO), Error(HelloWorldErrors.InvalidName)) {
-    const { name } = helloWorldRequestDTO;
-    if (name) {
-      const nameResult = Name.create({name});
-      return HelloWorldResponseDTO({message: `Hello, ${nameResult.name}!`});
-    } else {
-      return HelloWorldResponseDTO({message: 'Hello, World!'});
-    }
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title > 150 OR title < 4);
+}
+
+Props TitleProps {
+  string title;
+}
+
+ValueObject TitleVO {
+  constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+    applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
 ```
-transpiles to this TypeScript code (25 lines):
+transpiles to this TypeScript code (26 lines):
 ```node
 // TypeScript:
-import { HelloWorldRequestDTO } from './HelloWorldRequestDTO';
-import { XOR, yay, oops } from '../../../../shared/core/Result';
-import { UseCase } from '../../../../shared/core/UseCase';
-import { HelloWorldResponseDTO } from './HelloWorldResponseDTO';
-import { Name } from '../../domain/Name';
-import { DomainErrors } from '../../domain/Errors';
-import * as _ from 'lodash';
+import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
+import { DomainErrors } from './DomainErrors';
+import { TitleOutOfBoundsRule } from './Rules';
 
-type Response = XOR<DomainErrors.InvalidName, HelloWorldResponseDTO>;
+export class TitleOutOfBoundsRule implements Domain.IRule {
+  constructor(private title: string) {}
 
-export class HelloWorldUseCase implements UseCase<HelloWorldRequestDTO, Promise<Response>> {
-  async execute(dto: HelloWorldRequestDTO): Promise<Response> {
-    const { name } = dto;
-    if (!_.isNil(name)) {
-      const nameResult = Name.create({ name });
-      if (!nameResult.isOops()) {
-        const reply = { message: `Hello, ${nameResult.value.name}!` };
-        return yay(reply);
-      } else {
-        return oops(new DomainErrors.InvalidName(name));
-      }
-    } else {
-      const reply = { message: 'Hello, World!' };
-      return yay(reply);
-    }
+  public Error = new DomainErrors.TitleOutOfBoundsError(this.title);
+
+  public isBrokenIf(): boolean {
+    return this.title.length > 150 || this.title.length < 4;
+  }
+}
+
+interface TitleProps {
+  title: string;
+}
+
+export class TitleVO extends Domain.ValueObject<TitleProps> {
+  get title(): string {
+    return this.props.title;
+  }
+
+  private constructor(props: TitleProps) {
+    super(props);
+  }
+
+  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBoundsError> {
+    const res = Domain.applyRules([new TitleOutOfBoundsRule(props.title)]);
+    if (res) return fail(res);
+    return ok(new TitleVO(props));
   }
 }
 ```
