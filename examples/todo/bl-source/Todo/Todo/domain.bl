@@ -1,4 +1,4 @@
-Rule IsValidTitle ( title: string )  throws DomainErrors.InvalidTitleError {
+Rule TitleOutOfBoundsRule ( title: string )  throws DomainErrors.TitleOutOfBoundsError {
   isBrokenIf  ( title > 150 OR title < 4 ) ;
 }
 
@@ -7,12 +7,12 @@ Props TitleProps {
 }
 
 ValueObject TitleVO {
-  constructor(props: TitleProps): (OK(TitleVO) , Errors(DomainErrors.InvalidTitleError)) {
-    applyRules(IsValidTitle(props.title));
+  constructor(props: TitleProps): (OK(TitleVO) , Errors(DomainErrors.TitleOutOfBoundsError)) {
+    applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
 
-DomainError InvalidTitleError(title: string)  {
+DomainError TitleOutOfBoundsError(title: string)  {
   message: `Title ${title} is out of range`,
   errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
 }

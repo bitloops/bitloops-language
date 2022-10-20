@@ -7,6 +7,6 @@ export class TitleOutOfBoundsRule implements Domain.IRule {
   public Error = new DomainErrors.TitleOutOfBoundsError(this.title);
 
   public isBrokenIf(): boolean {
-    return this.title.length < 4 || this.title.length > 150;
+    return this.title.length > 150 || this.title.length < 4;
   }
 }

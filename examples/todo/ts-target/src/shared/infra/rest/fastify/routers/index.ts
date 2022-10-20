@@ -19,13 +19,13 @@
  */
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import {
-  todoCreateController,
+  createTodoRESTController,
   todoGetAllController,
 } from '../../../../../bounded-contexts/todo/todo/DI';
 
 const todoRESTRouter = async (fastify: Fastify.Instance) => {
   fastify.post('/', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return todoCreateController.execute(request, reply);
+    return createTodoRESTController.execute(request, reply);
   });
   fastify.get('/', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return todoGetAllController.execute(request, reply);

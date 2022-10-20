@@ -1,7 +1,7 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { TodoCreateUseCase } from '../application/TodoCreateUseCase';
-import { TodoCreateRequestDTO } from '../dtos/TodoCreateRequestDTO';
-import { MockTodoWriteRepo } from '../repos/concretions/MockTodoRepo';
+import { CreateTodoUseCase } from '../application/CreateTodoUseCase';
+import { CreateTodoRequestDTO } from '../dtos/CreateTodoRequestDTO';
+import { MockTodoWriteRepo } from '../repos/concretions/MockTodoWriteRepo';
 import { DomainErrors } from '../domain/DomainErrors';
 
 const feature = loadFeature('src/bounded-contexts/todo/todo/__tests__/CreateTodo.feature');
@@ -17,10 +17,10 @@ defineFeature(feature, (test) => {
     });
 
     then('I should get an OK result', async () => {
-      const dto: TodoCreateRequestDTO = {
+      const dto: CreateTodoRequestDTO = {
         title,
       };
-      const useCase = new TodoCreateUseCase(mockRepo);
+      const useCase = new CreateTodoUseCase(mockRepo);
       const result = await useCase.execute(dto);
       expect(result.value instanceof DomainErrors.TitleOutOfBoundsError).toBeFalse();
     });
@@ -32,10 +32,10 @@ defineFeature(feature, (test) => {
     });
 
     then('I should get a DomainErrors.TitleOutOfBoundsError error', async () => {
-      const dto: TodoCreateRequestDTO = {
+      const dto: CreateTodoRequestDTO = {
         title,
       };
-      const useCase = new TodoCreateUseCase(mockRepo);
+      const useCase = new CreateTodoUseCase(mockRepo);
       const result = await useCase.execute(dto);
       expect(result.value instanceof DomainErrors.TitleOutOfBoundsError).toBeTrue();
     });

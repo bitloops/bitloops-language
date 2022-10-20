@@ -7,15 +7,15 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
 
     if (result is Error) {
       switch (result.getClass()) {
-        case DomainErrors.InvalidTitleError: {
+        case DomainErrors.TitleOutOfBoundsError: {
           this.clientError( response, result.message );
           break;
         }
         default:
-          this.clientError( response, result.message );
+          this.fail( response, result.message );
       }
     } else {
-      this.ok( response, result );
+      this.created( response );
     }
   }
 }
