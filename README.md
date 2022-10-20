@@ -9,7 +9,7 @@
 </p>
 
 # <br/> Build scalable, maintainable & reliable software (faster, much faster)
-Bitloops Language (BL) is a high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
+Bitloops Language (BL) is a transpiled, high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
 
 <!--
 Part of the Bitloops Language project, under the GPL-3.0 license
