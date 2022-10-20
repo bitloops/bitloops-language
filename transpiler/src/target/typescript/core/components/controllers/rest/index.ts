@@ -57,21 +57,11 @@ const getServerExtends = (serverType: string): string => {
 
 const restControllersToTargetLanguage = (
   controllers: TRESTController,
-  targetLanguage: string,
   contextData: { boundedContext: string; module: string },
   controllersSetupData: TControllers,
 ): TTargetDependenciesTypeScript => {
   const { boundedContext, module } = contextData;
 
-  const initialObjectValuesLangMapping = {
-    [SupportedLanguages.TypeScript]: (
-      controllerName: string,
-      serverImports: string,
-      extendsClass: string,
-    ) =>
-      // TODO get framework info (fastify) from config?
-      `${serverImports} export class ${controllerName} extends ${extendsClass}{ `,
-  };
   // TODO for all controllers
   const controllerName = Object.keys(controllers)[0];
   const controllerDefinition = controllersSetupData[boundedContext][module][controllerName];
@@ -82,28 +72,18 @@ const restControllersToTargetLanguage = (
   const serverImports = getServerImports(serverType);
   const extendsClass = getServerExtends(serverType);
 
-  let result = initialObjectValuesLangMapping[targetLanguage](
-    controllerName,
-    serverImports,
-    extendsClass,
-  );
+  let result = `${serverImports} export class ${controllerName} extends ${extendsClass}{ `;
   const controller = controllers[controllerName];
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
 
-  result += buildFieldsFromDependencies(
-    controller.parameterDependencies,
-    targetLanguage,
-    contextData,
-  );
-  const { output, dependencies } = buildExecuteMethod(controller.execute, targetLanguage);
+  result += buildFieldsFromDependencies(controller.parameterDependencies, contextData);
+  const { output, dependencies } = buildExecuteMethod(controller.execute);
   result += output;
 
-  const finalObjValLangMapping: Record<string, string> = {
-    [SupportedLanguages.TypeScript]: '}',
-  };
-  result += finalObjValLangMapping[targetLanguage];
+  const finalObjValLang = '}';
+  result += finalObjValLang;
   return { output: result, dependencies: dependencies };
 };
 

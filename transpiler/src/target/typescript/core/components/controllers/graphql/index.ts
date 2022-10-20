@@ -17,15 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TGraphQLController, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { buildFieldsFromDependencies } from '../helpers/buildFieldsFromDependencies.js';
 import { buildExecuteMethod } from './buildGraphQLExecute.js';
 
 const graphQLControllersToTargetLanguage = (
   controllers: TGraphQLController,
-  targetLanguage: string,
   contextData: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
   // TODO for all controllers
@@ -37,23 +34,14 @@ const graphQLControllersToTargetLanguage = (
     throw new Error('Controller must have execute and parameterDependencies');
   }
 
-  result += buildFieldsFromDependencies(
-    controller.parameterDependencies,
-    targetLanguage,
-    contextData,
-  );
+  result += buildFieldsFromDependencies(controller.parameterDependencies, contextData);
 
-  const buildExecuteMethodOutput = buildExecuteMethod(controller.execute, targetLanguage).output;
-  const buildExecuteMethodDependencies = buildExecuteMethod(
-    controller.execute,
-    targetLanguage,
-  ).dependencies;
+  const buildExecuteMethodOutput = buildExecuteMethod(controller.execute).output;
+  const buildExecuteMethodDependencies = buildExecuteMethod(controller.execute).dependencies;
   result += buildExecuteMethodOutput;
 
-  const finalObjValLangMapping: any = {
-    [SupportedLanguages.TypeScript]: '}',
-  };
-  result += finalObjValLangMapping[targetLanguage];
+  const finalObjValLang = '}';
+  result += finalObjValLang;
   return { output: result, dependencies: [...buildExecuteMethodDependencies] };
 };
 

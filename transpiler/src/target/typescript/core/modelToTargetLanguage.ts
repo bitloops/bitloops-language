@@ -322,7 +322,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TGraphQLController: {
-      res = graphQLControllersToTargetLanguage(value, targetLanguage, contextData);
+      res = graphQLControllersToTargetLanguage(value, contextData);
       break;
     }
     case BitloopsTypesMapping.TString: {

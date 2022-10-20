@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TRESTControllerExecute, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -31,29 +30,22 @@ const getDependencyType = (dependency: string): string => {
 
 const buildExecuteMethod = (
   execute: TRESTControllerExecute,
-  targetLanguage: string,
   contextData?: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
   const typedExecuteDependencies = execute.dependencies.map(
     (dependency) => `${dependency}: ${getDependencyType(dependency)}`,
   );
-  const paramsString = `(${typedExecuteDependencies.join(', ')})`;
-  const statementsString = modelToTargetLanguage({
+  const model = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: execute.statements,
-    targetLanguage,
     contextData,
   });
-
-  const executeToLangMapping = {
-    [SupportedLanguages.TypeScript]: (paramsString: string, statementsString: string): string => {
-      return `async executeImpl${paramsString}: Promise<void> { ${statementsString} }`;
-    },
-  };
+  const paramsString = `(${typedExecuteDependencies.join(', ')})`;
+  const statementsString = model.output;
 
   return {
-    output: executeToLangMapping[targetLanguage](paramsString, statementsString.output),
-    dependencies: statementsString.dependencies,
+    output: `async executeImpl${paramsString}: Promise<void> { ${statementsString} }`,
+    dependencies: model.dependencies,
   };
 };
 
