@@ -17,8 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
 import { TDomainEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
@@ -42,12 +40,8 @@ export const domainEvaluationToTargetLanguage = (
     });
   }
 
-  const instantiateDomainLangMapping = (name, props) => {
-    return `${name}.create(${props});`;
-  };
-
   return {
-    output: instantiateDomainLangMapping(domainName, resultDomainProps),
+    output: `${domainName}.create(${resultDomainProps.output});`,
     dependencies: resultDomainProps.dependencies,
   };
 };

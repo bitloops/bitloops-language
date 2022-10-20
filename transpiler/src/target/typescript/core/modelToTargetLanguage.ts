@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isLanguageSupported, SupportedLanguages } from '../../../helpers/supportedLanguages.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   argumentDependenciesToTargetLanguage,
