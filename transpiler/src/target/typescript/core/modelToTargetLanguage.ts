@@ -355,7 +355,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TControllers: {
-      res = controllersToTargetLanguage(value, targetLanguage, contextData, setupData);
+      res = controllersToTargetLanguage(value, contextData, setupData);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {

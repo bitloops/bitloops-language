@@ -29,7 +29,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const controllersToTargetLanguage = (
   controllers: TRESTController | TGraphQLController,
-  targetLanguage: string,
   contextData?: { boundedContext: string; module: string },
   setupData?: ISetupData,
 ): TTargetDependenciesTypeScript => {
@@ -45,7 +44,6 @@ const controllersToTargetLanguage = (
   return modelToTargetLanguage({
     type,
     value: controllers,
-    targetLanguage,
     contextData,
     setupData,
   });
