@@ -22,6 +22,14 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 > and under very active development. Expect bugs and limitations.
 > Full backward compatibility is not guaranteed before reaching v1.0.0.
 
+> ⚠️ We recently started a big migration and refactoring from private repos to this one.
+> As a result, there are currently several important open issues that do not allow for
+> proper use of the transpiler. We are working on these and expect to have them resolved
+> before the end of October. Our focus is to refactor the code and document it so that we 
+> be able to accept your contributions. In the meantime, feel free to check out the [examples](https://github.com/bitloops/bitloops-language/tree/main/examples)
+> folder to see an example Bitloops Language project and its generated TypeScript version
+> to get a better feel of what the Bitloops Language can do for you. 
+
 
 <p align="center">
   <a href="#why-build-the-bitloops-language">Why?</a> |
