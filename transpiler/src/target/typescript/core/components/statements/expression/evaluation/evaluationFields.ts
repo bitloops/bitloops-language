@@ -18,42 +18,34 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TEvaluationFields } from '../../../../../../../types.js';
+import { TEvaluationFields, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const evaluationFieldsToTargetLanguage = (
   properties: TEvaluationFields,
-  targetLanguage: string,
-): string => {
-  const initializeFieldsLangMapping = {
-    [SupportedLanguages.TypeScript]: {},
-  };
+): TTargetDependenciesTypeScript => {
+  let langFields = {};
 
-  let langFields = initializeFieldsLangMapping[targetLanguage];
+  const addToFieldsLangMapping = (fieldsObject, key, value: TTargetDependenciesTypeScript) => ({
+    ...fieldsObject,
+    [key]: value.output,
+  });
 
-  const addToFieldsLangMapping = {
-    [SupportedLanguages.TypeScript]: (fieldsObject, key, value) => ({
-      ...fieldsObject,
-      [key]: value,
-    }),
-  };
-
+  let dependencies = [];
   for (const { name, expression } of properties) {
-    const value = modelToTargetLanguage({
+    const expressionModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpression,
       value: { expression },
     });
-    langFields = addToFieldsLangMapping[targetLanguage](langFields, name, value);
+    langFields = addToFieldsLangMapping(langFields, name, expressionModel);
+    dependencies = [...dependencies, ...expressionModel.dependencies];
   }
 
-  const fieldsFinalLangMapping = {
-    [SupportedLanguages.TypeScript]: (langFields): string => {
-      return `{${Object.keys(langFields)
-        .map((key) => `${key}:${langFields[key]}`)
-        .join(',')}}`;
-    },
+  const fieldsFinalLangMapping = (langFields): string => {
+    return `{${Object.keys(langFields)
+      .map((key) => `${key}:${langFields[key]}`)
+      .join(',')}}`;
   };
-  return fieldsFinalLangMapping[targetLanguage](langFields);
+  return { output: fieldsFinalLangMapping(langFields), dependencies };
 };

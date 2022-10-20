@@ -17,45 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TReturnStatement,
   TReturnOKStatement,
   TReturnErrorStatement,
+  TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const returnToTargetLanguage = (variable: TReturnStatement, targetLanguage: string): string => {
+const returnToTargetLanguage = (variable: TReturnStatement): TTargetDependenciesTypeScript => {
   if (!variable.return) {
     throw new Error('Return statement must have a return value');
   }
 
   const expressionValue = modelToTargetLanguage({ type: 'TExpression', value: variable.return });
-  const propsVariableLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (expressionValue: string) => `return ${expressionValue}`,
+  const propsVariableLangMapping = (expressionValue: string): string => `return ${expressionValue}`;
+  return {
+    output: propsVariableLangMapping(expressionValue.output),
+    dependencies: expressionValue.dependencies,
   };
-  return propsVariableLangMapping[targetLanguage](expressionValue);
 };
 
 // returnOK
-const returnOkToTargetLanguage = (variable: TReturnOKStatement, targetLanguage: string): string => {
+const returnOkToTargetLanguage = (variable: TReturnOKStatement): TTargetDependenciesTypeScript => {
   if (!variable.returnOK) {
     throw new Error('ReturnOK statement must have a returnOK value');
   }
 
   const expressionValue = modelToTargetLanguage({ type: 'TExpression', value: variable.returnOK });
-  const propsVariableLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (expressionValue: string) => `return ok(${expressionValue})`,
+  const propsVariableLangMapping = (expressionValue: TTargetDependenciesTypeScript): string =>
+    `return ok(${expressionValue.output})`;
+  return {
+    output: propsVariableLangMapping(expressionValue),
+    dependencies: expressionValue.dependencies,
   };
-  return propsVariableLangMapping[targetLanguage](expressionValue);
 };
 
 //returnError
 const returnErrorToTargetLanguage = (
   variable: TReturnErrorStatement,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (!variable.returnError) {
     throw new Error('ReturnError statement must have a returnError value');
   }
@@ -64,10 +65,12 @@ const returnErrorToTargetLanguage = (
     type: 'TExpression',
     value: variable.returnError,
   });
-  const propsVariableLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (expressionValue: string) => `return oops(${expressionValue})`,
+  const propsVariableLangMapping = (expressionValue: TTargetDependenciesTypeScript): string =>
+    `return oops(${expressionValue.output})`;
+  return {
+    output: propsVariableLangMapping(expressionValue),
+    dependencies: expressionValue.dependencies,
   };
-  return propsVariableLangMapping[targetLanguage](expressionValue);
 };
 
 // const returnStatement: TReturnErrorStatement = {

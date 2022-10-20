@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TEvaluation } from '../../../../../../../types.js';
+import { TEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { instanceOfToTargetLanguage, notInstanceOfToTargetLanguage } from './instance.js';
@@ -25,58 +25,50 @@ import { instanceOfToTargetLanguage, notInstanceOfToTargetLanguage } from './ins
 const STRUCT_STRING = 'struct';
 const DTO_STRING = 'dto';
 
-const evaluationToTargetLanguage = (variable: TEvaluation, targetLanguage: string): string => {
+const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesTypeScript => {
   const { evaluation } = variable;
   if ('regularEvaluation' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularEvaluation,
       value: evaluation,
-      targetLanguage,
     });
   } else if ('isInstanceOf' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TInstanceOf,
       value: evaluation,
-      targetLanguage,
     });
   } else if ('isNotInstanceOf' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TNotInstanceOf,
       value: evaluation,
-      targetLanguage,
     });
   } else if ('getClass' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TGetClass,
       value: evaluation,
-      targetLanguage,
     });
   } else if ('valueObject' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TValueObjectEvaluation,
       value: evaluation,
-      targetLanguage,
     });
   } else if ('entity' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TEntityEvaluation,
       value: evaluation,
-      targetLanguage,
     });
   } else if (STRUCT_STRING in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TStructEvaluation,
       value: evaluation,
-      targetLanguage,
     });
   } else if (DTO_STRING in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TDTOEvaluation,
       value: evaluation,
-      targetLanguage,
     });
   } else {
-    throw new Error(`Unsupported evaluation: ${evaluation}`);
+    throw new Error(`Unsupported evaluation: ${evaluation.props.name}`);
   }
 };
 

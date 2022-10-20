@@ -17,41 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
-import { TStructs, TStructDeclaration } from '../../../../../types.js';
+import {
+  TStructs,
+  TStructDeclaration,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const structDeclarationToTargetLanguage = (struct: TStructs, targetLanguage: string): string => {
-  const initialStructLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (structName: string) => `export type ${structName} = { `,
-  };
-  const finalStructLangMapping: any = {
-    [SupportedLanguages.TypeScript]: '};',
-  };
+const structDeclarationToTargetLanguage = (struct: TStructs): TTargetDependenciesTypeScript => {
+  const initialStructLangMapping = (structName: string): string => `export type ${structName} = { `;
+  const finalStructLangMapping = '};';
 
   let result = '';
+  let dependencies = [];
   const structKeys = Object.keys(struct);
   for (let i = 0; i < structKeys.length; i++) {
     const structName = structKeys[i];
     const structValues = struct[structName];
-    result += initialStructLangMapping[targetLanguage](structName);
+    result += initialStructLangMapping(structName);
     result += modelToTargetLanguage({
       type: BitloopsTypesMapping.TStructDeclaration,
       value: structValues,
-      targetLanguage,
-    });
-    result += finalStructLangMapping[targetLanguage];
+    }).output;
+    dependencies = [
+      ...dependencies,
+      ...modelToTargetLanguage({
+        type: BitloopsTypesMapping.TStructDeclaration,
+        value: structValues,
+      }).dependencies,
+    ];
+    result += finalStructLangMapping;
   }
 
-  return result;
+  return { output: result, dependencies };
 };
 
 const structDeclarationValuesToTargetLanguage = (
   variable: TStructDeclaration,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (isUndefined(variable.fields)) {
     throw new Error('Fields of Struct are not defined');
   }
@@ -61,7 +66,6 @@ const structDeclarationValuesToTargetLanguage = (
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: variable.fields,
-    targetLanguage,
   });
   return variablesResult;
 };

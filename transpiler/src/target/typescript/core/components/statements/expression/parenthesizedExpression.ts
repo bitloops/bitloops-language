@@ -17,26 +17,23 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TParenthesizedExpression } from '../../../../../../types.js';
+import {
+  TParenthesizedExpression,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const parenthesizedExpressionToTargetLanguage = (
   value: TParenthesizedExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TParenthesizedExpression): string => {
-      const { parenthesizedExpression } = value;
-      const expression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: parenthesizedExpression,
-        targetLanguage,
-      });
-      return `(${expression})`;
-    },
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TParenthesizedExpression): TTargetDependenciesTypeScript => {
+    const { parenthesizedExpression } = value;
+    const expression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: parenthesizedExpression,
+    });
+    return { output: `(${expression.output})`, dependencies: expression.dependencies };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };

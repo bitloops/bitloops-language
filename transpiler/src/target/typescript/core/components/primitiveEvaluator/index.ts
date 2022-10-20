@@ -17,57 +17,55 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TEvaluatePrimitive } from '../../../../../types.js';
+import { TEvaluatePrimitive, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
 export const primitiveEvaluationToTargetLanguage = (
   variable: TEvaluatePrimitive,
-  targetLanguage: string,
-): string => {
-  const argDependencyLangMapping: Record<string, (variable: TEvaluatePrimitive) => string> = {
-    [SupportedLanguages.TypeScript]: (variable: TEvaluatePrimitive) => {
-      switch (variable.type) {
-        case 'string': {
-          return `'${variable.value}'`;
-        }
-        case 'bool': {
-          if (variable.value !== 'true' && variable.value !== 'false') {
-            throw new Error(`Invalid boolean value: ${variable.value}`);
-          }
-          return variable.value;
-        }
-        case 'double':
-        case 'float':
-        case 'int32':
-        case 'int64':
-        case 'uint32':
-        case 'uint64':
-        case 'sint32':
-        case 'sint64':
-        case 'fixed32':
-        case 'fixed64':
-        case 'sfixed32':
-        case 'sfixed64': {
-          // TODO remove number
-          return `${+variable.value}`;
-        }
-
-        case 'void':
-          return 'void';
-
-        // 'bytes',
-        // 'enum',
-        // 'Timestamp',
-        // 'Any',
-        // 'Struct',
-        // 'Map',
-        // 'NullValue',
-        // 'Duration',
-        default: {
-          throw new Error(`Invalid primitive type: ${variable.type}`);
-        }
+): TTargetDependenciesTypeScript => {
+  const argDependencyLangMapping: (variable: TEvaluatePrimitive) => string = (
+    variable: TEvaluatePrimitive,
+  ) => {
+    switch (variable.type) {
+      case 'string': {
+        return `'${variable.value}'`;
       }
-    },
+      case 'bool': {
+        if (variable.value !== 'true' && variable.value !== 'false') {
+          throw new Error(`Invalid boolean value: ${variable.value}`);
+        }
+        return variable.value;
+      }
+      case 'double':
+      case 'float':
+      case 'int32':
+      case 'int64':
+      case 'uint32':
+      case 'uint64':
+      case 'sint32':
+      case 'sint64':
+      case 'fixed32':
+      case 'fixed64':
+      case 'sfixed32':
+      case 'sfixed64': {
+        // TODO remove number
+        return `${+variable.value}`;
+      }
+
+      case 'void':
+        return 'void';
+
+      // 'bytes',
+      // 'enum',
+      // 'Timestamp',
+      // 'Any',
+      // 'Struct',
+      // 'Map',
+      // 'NullValue',
+      // 'Duration',
+      default: {
+        throw new Error(`Invalid primitive type: ${variable.type}`);
+      }
+    }
   };
-  return argDependencyLangMapping[targetLanguage](variable);
+  return { output: argDependencyLangMapping(variable), dependencies: [] };
 };

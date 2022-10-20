@@ -17,10 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TBoundedContexts,
   TContextData,
+  TTargetDependenciesTypeScript,
   TValueObjectMethods,
   TValueObjects,
 } from '../../../../../types.js';
@@ -30,65 +30,74 @@ import { constantVariables, domainPrivateMethod, generateGetters } from '../doma
 
 const valueObjectMethods = (
   valueObjectMethods: TValueObjectMethods,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
+  let dependencies = [];
   const result = Object.entries(valueObjectMethods).reduce((acc, [methodName, methodInfo]) => {
-    acc += domainPrivateMethod(methodName, methodInfo, targetLanguage);
+    acc += domainPrivateMethod(methodName, methodInfo).output;
+    dependencies = [...dependencies, ...domainPrivateMethod(methodName, methodInfo).dependencies];
     return acc;
   }, '');
 
-  return result;
+  return { output: result, dependencies };
 };
 
 const valueObjectsToTargetLanguage = (params: {
   valueObjects: TValueObjects;
   model: TBoundedContexts;
-  targetLanguage: string;
   contextData: TContextData;
-}): string => {
-  const { valueObjects, model, targetLanguage, contextData } = params;
+}): TTargetDependenciesTypeScript => {
+  const { valueObjects, model, contextData } = params;
 
   const { boundedContext, module } = contextData;
 
   const modelForContext = model[boundedContext][module];
 
-  const initialObjectValuesLangMapping = {
-    [SupportedLanguages.TypeScript]: (voName: string, propsName: string) =>
-      `export class ${voName} extends ValueObject<${propsName}> { `,
-  };
+  const initialObjectValuesLangMapping = (voName: string, propsName: string): string =>
+    `export class ${voName} extends ValueObject<${propsName}> { `;
 
   let result = '';
+  let dependencies = [];
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
     const propsName = create.parameterDependency.type;
 
     if (constantVars) {
       // TODO FIx with new type
-      result += constantVariables(constantVars as any, targetLanguage);
+      result += constantVariables(constantVars as any).output;
+      dependencies = [...dependencies, ...constantVariables(constantVars as any).dependencies];
     }
 
-    result += initialObjectValuesLangMapping[targetLanguage](valueObjectName, propsName);
+    result += initialObjectValuesLangMapping(valueObjectName, propsName);
     // Add this.props to constructor when overriding from bl
 
     result += modelToTargetLanguage({
       type: BitloopsTypesMapping.TDomainCreateMethod,
       value: create,
-      targetLanguage,
-    });
+    }).output;
+    dependencies = [
+      ...dependencies,
+      modelToTargetLanguage({
+        type: BitloopsTypesMapping.TDomainCreateMethod,
+        value: create,
+      }).dependencies,
+    ];
 
-    result += generateGetters(propsName, modelForContext, methods, targetLanguage);
+    result += generateGetters(propsName, modelForContext, methods).output;
+    dependencies = [
+      ...dependencies,
+      ...generateGetters(propsName, modelForContext, methods).dependencies,
+    ];
 
     if (methods) {
-      result += valueObjectMethods(methods, targetLanguage);
+      result += valueObjectMethods(methods).output;
+      dependencies = [...dependencies, ...valueObjectMethods(methods).dependencies];
     }
 
-    const finalObjValLangMapping: any = {
-      [SupportedLanguages.TypeScript]: '}',
-    };
-    result += finalObjValLangMapping[targetLanguage];
+    const finalObjValLangMapping = '}';
+    result += finalObjValLangMapping;
   }
 
-  return result;
+  return { output: result, dependencies: [] };
 };
 
 export { valueObjectsToTargetLanguage };

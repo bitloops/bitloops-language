@@ -17,17 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TRegularCase, TDefaultCase } from '../../../../../../types.js';
+import {
+  TRegularCase,
+  TDefaultCase,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 // simple case
 const regularSwitchCaseToTargetLanguage = (
   variable: TRegularCase,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (!variable.caseValue) {
     throw new Error(`Invalid regular case: ${JSON.stringify(variable)}`);
   }
@@ -36,40 +37,38 @@ const regularSwitchCaseToTargetLanguage = (
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: statements,
-    targetLanguage,
   });
 
-  const regularCaseLangMapping: Record<string, (expression: string, statements: string) => string> =
-    {
-      [SupportedLanguages.TypeScript]: (caseExpression: string, statements: string) => {
-        return `case ${caseExpression}: {${statements}}`;
-      },
-    };
-  return regularCaseLangMapping[targetLanguage](caseValue, statementsString);
+  const regularCaseLangMapping = (caseExpression: string, statements: string): string => {
+    return `case ${caseExpression}: {${statements}}`;
+  };
+  return {
+    output: regularCaseLangMapping(caseValue, statementsString.output),
+    dependencies: statementsString.dependencies,
+  };
 };
 
 //default case
 const defaultSwitchCaseToTargetLanguage = (
   variable: TDefaultCase,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (!variable) {
-    throw new Error(`Invalid default case: ${variable}`);
+    throw new Error(`Invalid default case: ${variable.statements}`);
   }
   const { statements } = variable;
 
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: statements,
-    targetLanguage,
   });
 
-  const defaultCaseLangMapping: Record<string, (statements: string) => string> = {
-    [SupportedLanguages.TypeScript]: (statements: string) => {
-      return `default: {${statements}}`;
-    },
+  const defaultCaseLangMapping = (statements: string): string => {
+    return `default: {${statements}}`;
   };
-  return defaultCaseLangMapping[targetLanguage](statementsString);
+  return {
+    output: defaultCaseLangMapping(statementsString.output),
+    dependencies: statementsString.dependencies,
+  };
 };
 
 export { defaultSwitchCaseToTargetLanguage, regularSwitchCaseToTargetLanguage };

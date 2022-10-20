@@ -17,28 +17,26 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TGraphQLControllerExecute } from '../../../../../../types.js';
+import {
+  TGraphQLControllerExecute,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const buildExecuteMethod = (execute: TGraphQLControllerExecute, targetLanguage: string): string => {
+const buildExecuteMethod = (execute: TGraphQLControllerExecute): TTargetDependenciesTypeScript => {
   // We know that graphql controller takes only 1 object parameter - the incoming args/context etc.
   // aka request - (request.args, ...)
   const paramsString = `(${execute.dependencies.map((dep) => `${dep}: any`).join(', ')})`;
-  const statementsString = modelToTargetLanguage({
+  const model = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: execute.statements,
-    targetLanguage,
   });
-
-  const executeToLangMapping = {
-    [SupportedLanguages.TypeScript]: (paramsString: string, statementsString: string): string => {
-      return `async executeImpl${paramsString}: Promise<any> { ${statementsString} }`;
-    },
+  const statementsString = model.output;
+  return {
+    output: `async executeImpl${paramsString}: Promise<any> { ${statementsString} }`,
+    dependencies: [...model.dependencies],
   };
-
-  return executeToLangMapping[targetLanguage](paramsString, statementsString);
 };
 
 export { buildExecuteMethod };

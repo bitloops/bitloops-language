@@ -17,44 +17,45 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TRegularCase, TDefaultCase } from '../../../../../../types.js';
+import {
+  TRegularCase,
+  TDefaultCase,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const switchRegularCasesToTargetLanguage = (
   variable: TRegularCase[],
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
+  let dependencies = [];
   const switchCases = variable.map((switchCase: TRegularCase) => {
-    return modelToTargetLanguage({
+    const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularCase,
       value: switchCase,
-      targetLanguage,
     });
+    dependencies = [...dependencies, ...model.dependencies];
+    return model.output;
   });
 
-  const switchRegularCasesLangMapping: Record<string, (cases: string[]) => string> = {
-    [SupportedLanguages.TypeScript]: (switchCases: string[]) => switchCases.join(' '),
+  const switchRegularCasesLangMapping = (switchCases: string[]): string => switchCases.join(' ');
+  return {
+    output: switchRegularCasesLangMapping(switchCases),
+    dependencies,
   };
-  return switchRegularCasesLangMapping[targetLanguage](switchCases);
 };
 
 const switchDefaultCaseToTargetLanguage = (
   variable: TDefaultCase,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const defaultCase = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDefaultCase,
     value: variable,
-    targetLanguage,
   });
-
-  const switchDefaultCaseLangMapping: Record<string, (defaultCase: string) => string> = {
-    [SupportedLanguages.TypeScript]: (defaultCase: string) => defaultCase,
+  return {
+    output: defaultCase.output,
+    dependencies: defaultCase.dependencies,
   };
-  return switchDefaultCaseLangMapping[targetLanguage](defaultCase);
 };
 
 export { switchRegularCasesToTargetLanguage, switchDefaultCaseToTargetLanguage };

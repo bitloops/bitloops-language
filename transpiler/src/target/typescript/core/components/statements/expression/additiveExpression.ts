@@ -18,42 +18,43 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TAdditiveExpression } from '../../../../../../types.js';
+// import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
+import { TAdditiveExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const additiveExpressionToTargetLanguage = (
   value: TAdditiveExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TAdditiveExpression): string | Error => {
-      const { additiveExpression } = value;
-      const { left, operator, right } = additiveExpression;
+): TTargetDependenciesTypeScript => {
+  const langMapping = (value: TAdditiveExpression): TTargetDependenciesTypeScript => {
+    const { additiveExpression } = value;
+    const { left, operator, right } = additiveExpression;
 
-      const targetLangOperator = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TAdditiveOperator,
-        value: operator,
-        targetLanguage,
-      });
+    const targetLangOperator = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TAdditiveOperator,
+      value: operator,
+    });
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+    const leftExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: left,
+    });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+    const rightExpression = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpressionValues,
+      value: right,
+    });
 
-      return `${leftExpression} ${targetLangOperator} ${rightExpression}`;
-    },
+    return {
+      output: `${leftExpression.output} ${targetLangOperator.output} ${rightExpression.output}`,
+      dependencies: [
+        ...leftExpression.dependencies,
+        ...rightExpression.dependencies,
+        ...targetLangOperator.dependencies,
+      ],
+    };
   };
-  return langMapping[targetLanguage](value);
+  return langMapping(value);
 };
 
 // // a * b

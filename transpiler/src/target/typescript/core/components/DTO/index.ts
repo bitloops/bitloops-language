@@ -17,38 +17,32 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
-import { TDTO, TDTOValues } from '../../../../../types.js';
+import { TDTO, TDTOValues, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const DTOToTargetLanguage = (dto: TDTO, targetLanguage: string): string => {
-  const initialDTOLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (dtoName: string) => `export interface ${dtoName} { `,
-  };
-  const finalDTOLangMapping: any = {
-    [SupportedLanguages.TypeScript]: '}',
-  };
-
+const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   let result = '';
+  let dependencies = [];
   const dtoKeys = Object.keys(dto);
   for (let i = 0; i < dtoKeys.length; i++) {
     const dtoName = dtoKeys[i];
     const dtoValues = dto[dtoName];
-    result += initialDTOLangMapping[targetLanguage](dtoName);
-    result += modelToTargetLanguage({
+    const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TDTOValues,
       value: dtoValues,
-      targetLanguage,
     });
-    result += finalDTOLangMapping[targetLanguage];
+    result += `export interface ${dtoName} { `;
+    result += model.output;
+    result += '}';
+    dependencies = [...dependencies, ...model.dependencies];
   }
 
-  return result;
+  return { output: result, dependencies };
 };
 
-const DTOValuesToTargetLanguage = (variable: TDTOValues, targetLanguage: string): string => {
+const DTOValuesToTargetLanguage = (variable: TDTOValues): TTargetDependenciesTypeScript => {
   if (isUndefined(variable.fields)) {
     throw new Error('Fields of DTO are not defined');
   }
@@ -58,7 +52,6 @@ const DTOValuesToTargetLanguage = (variable: TDTOValues, targetLanguage: string)
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: variable.fields,
-    targetLanguage,
   });
   return variablesResult;
 };

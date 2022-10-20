@@ -18,24 +18,21 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TIfStatement } from '../../../../../../types.js';
+import { TIfStatement, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const ifStatementToTargetLanguage = (variable: TIfStatement, targetLanguage: string): string => {
+const ifStatementToTargetLanguage = (variable: TIfStatement): TTargetDependenciesTypeScript => {
   const { condition, thenStatements, elseStatements } = variable.ifStatement;
 
   const conditionResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: condition,
-    targetLanguage,
   });
 
   const thenStatementsResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: thenStatements,
-    targetLanguage,
   });
   let elseStatementsResult;
 
@@ -43,29 +40,29 @@ const ifStatementToTargetLanguage = (variable: TIfStatement, targetLanguage: str
     elseStatementsResult = modelToTargetLanguage({
       type: BitloopsTypesMapping.TStatements,
       value: elseStatements,
-      targetLanguage,
     });
   }
 
-  const ifStatementLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (
-      condition: string,
-      thenStatements: string,
-      elseStatements: string | undefined,
-    ): string => {
-      let res = `if (${condition}) { ${thenStatements} }`;
-      if (elseStatements) {
-        res += ` else { ${elseStatements} }`;
-      }
-      return res;
-    },
+  const ifStatementLangMapping = (
+    condition: TTargetDependenciesTypeScript,
+    thenStatements: TTargetDependenciesTypeScript,
+    elseStatements: TTargetDependenciesTypeScript | undefined,
+  ): TTargetDependenciesTypeScript => {
+    let res = `if (${condition.output}) { ${thenStatements.output} }`;
+    if (elseStatements) {
+      res += ` else { ${elseStatements.output} }`;
+    }
+    return {
+      output: res,
+      dependencies: [
+        ...condition.dependencies,
+        ...thenStatements.dependencies,
+        ...(elseStatements?.dependencies || []),
+      ],
+    };
   };
 
-  return ifStatementLangMapping[targetLanguage](
-    conditionResult,
-    thenStatementsResult,
-    elseStatementsResult,
-  );
+  return ifStatementLangMapping(conditionResult, thenStatementsResult, elseStatementsResult);
 };
 
 export { ifStatementToTargetLanguage };

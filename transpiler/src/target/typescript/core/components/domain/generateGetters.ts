@@ -1,13 +1,13 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
-import { TModule, TDomainMethods } from '../../../../../types.js';
+import { TModule, TDomainMethods, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { SupportedLanguages } from '../../../../supportedLanguages.js';
 
 export const generateGetters = (
   propsName: string,
   model: TModule,
   methods: TDomainMethods,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { Props } = model;
 
   let methodNames = [];
@@ -22,7 +22,7 @@ export const generateGetters = (
         const { type, name } = propVariable;
         let returnType = type;
         if (isBitloopsPrimitive(returnType)) {
-          returnType = bitloopsTypeToLangMapping[targetLanguage](returnType);
+          returnType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](returnType);
         }
         const getterName = name;
         //TODO skip if already there
@@ -32,9 +32,9 @@ export const generateGetters = (
         const getter = `get ${getterName}(): ${returnType} { return this.props.${name}; } `;
         gettersResult += getter;
       }
-      return gettersResult;
+      return { output: gettersResult, dependencies: [] };
     }
   }
 
-  return gettersResult;
+  return { output: gettersResult, dependencies: [] };
 };

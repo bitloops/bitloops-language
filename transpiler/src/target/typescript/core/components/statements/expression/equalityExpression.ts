@@ -18,42 +18,39 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
-import { TEqualityExpression } from '../../../../../../types.js';
+import { TEqualityExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const equalityExpressionToTargetLanguage = (
   value: TEqualityExpression,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (value: TEqualityExpression): string | Error => {
-      const { equalityExpression } = value;
-      const { left, operator, right } = equalityExpression;
+): TTargetDependenciesTypeScript => {
+  const { equalityExpression } = value;
+  const { left, operator, right } = equalityExpression;
 
-      const targetLangOperator = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TEqualityOperator,
-        value: operator,
-        targetLanguage,
-      });
+  const targetLangOperator = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TEqualityOperator,
+    value: operator,
+  });
 
-      const leftExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: left,
-        targetLanguage,
-      });
+  const leftExpression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: left,
+  });
 
-      const rightExpression = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TExpressionValues,
-        value: right,
-        targetLanguage,
-      });
+  const rightExpression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: right,
+  });
 
-      return `${leftExpression} ${targetLangOperator} ${rightExpression}`;
-    },
+  return {
+    output: `${leftExpression.output} ${targetLangOperator.output} ${rightExpression.output}`,
+    dependencies: [
+      ...leftExpression.dependencies,
+      ...rightExpression.dependencies,
+      ...targetLangOperator.dependencies,
+    ],
   };
-  return langMapping[targetLanguage](value);
 };
 
 // // a == b

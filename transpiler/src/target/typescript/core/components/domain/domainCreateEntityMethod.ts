@@ -1,5 +1,8 @@
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TDomainCreateMethod, TStatement } from '../../../../../types.js';
+import {
+  TDomainCreateMethod,
+  TStatement,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
@@ -7,7 +10,7 @@ import { internalConstructor } from './index.js';
 const THIS_STATEMENT_DECLARATION = 'thisDeclaration';
 
 // TODO refactor this with domainCreate method which is similar (only the constructor changes)
-export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: string): string => {
+export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
   const { parameterDependency, returnType, statements } = create;
 
   const statementsResult = {
@@ -16,7 +19,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: 
   };
 
   for (const statement of statements) {
-    if (isStatmentThisDeclaration(statement)) {
+    if (isStatementThisDeclaration(statement)) {
       statementsResult.thisStatements.push(statement);
     } else {
       statementsResult.restStatements.push(statement);
@@ -29,26 +32,22 @@ export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: 
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
-    targetLanguage,
     ClassTypes.Entities,
   );
 
   let statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatementsWithoutThis,
     value: statementsResult.restStatements,
-    targetLanguage,
   });
 
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
     value: parameterDependency,
-    targetLanguage,
   });
 
-  const returnTypeString = modelToTargetLanguage({
+  const returnTypeModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: returnType,
-    targetLanguage,
   });
 
   const statementValues = statements.map((statement) => statement.valueOf());
@@ -57,25 +56,34 @@ export const domainCreateEntity = (create: TDomainCreateMethod, targetLanguage: 
       (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
     ).length === 0;
   if (hasReturnStatements || statements.length === 0) {
-    statementsString = statementsString.concat(`return ok(new ${returnOkType}(props));`);
+    statementsString = {
+      output: statementsString.output.concat(`return ok(new ${returnOkType}(props));`),
+      dependencies: statementsString.dependencies,
+    };
   }
-  const ToLanguageMapping = {
-    [SupportedLanguages.TypeScript]: (
-      returnType: string,
-      parameterString: string,
-      methodStatements: string,
-    ): string => {
-      return `${producedConstructor} public static create(${parameterString}): ${returnType} { ${methodStatements} }`;
-    },
+  const ToLanguageMapping = (
+    returnType: string,
+    parameterString: string,
+    methodStatements: string,
+  ): string => {
+    return `${producedConstructor.output} public static create(${parameterString}): ${returnType} { ${methodStatements} }`;
   };
-  const result = ToLanguageMapping[targetLanguage](
-    returnTypeString,
-    parameterString,
-    statementsString,
+  const result = ToLanguageMapping(
+    returnTypeModel.output,
+    parameterString.output,
+    statementsString.output,
   );
-  return result;
+  return {
+    output: result,
+    dependencies: [
+      ...producedConstructor.dependencies,
+      ...statementsString.dependencies,
+      ...parameterString.dependencies,
+      ...returnTypeModel.dependencies,
+    ],
+  };
 };
 
-const isStatmentThisDeclaration = (statement: TStatement): boolean => {
+const isStatementThisDeclaration = (statement: TStatement): boolean => {
   return Object.keys(statement)[0] === THIS_STATEMENT_DECLARATION;
 };

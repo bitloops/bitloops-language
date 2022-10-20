@@ -19,49 +19,52 @@
  */
 
 import { isBitloopsPrimitive } from '../../../../../../../helpers/isBitloopsPrimitive.js';
-import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TRegularEvaluation, TEvaluatePrimitive } from '../../../../../../../types.js';
+import {
+  TRegularEvaluation,
+  TEvaluatePrimitive,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 const regularEvaluationToTargetLanguage = (
   variable: TRegularEvaluation,
-  targetLanguage: string,
-): string => {
-  const regularEvaluationLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (variable: TRegularEvaluation): string => {
-      const { type, value, argumentDependencies } = variable.regularEvaluation;
+): TTargetDependenciesTypeScript => {
+  const regularEvaluationLangMapping = (
+    variable: TRegularEvaluation,
+  ): TTargetDependenciesTypeScript => {
+    const { type, value, argumentDependencies } = variable.regularEvaluation;
 
-      if (isBitloopsPrimitive(type)) {
-        const primitiveObj: TEvaluatePrimitive = {
-          type,
-          value,
-        };
-        return modelToTargetLanguage({
-          type: 'TEvaluatePrimitive',
-          value: primitiveObj,
-          targetLanguage,
+    if (isBitloopsPrimitive(type)) {
+      const primitiveObj: TEvaluatePrimitive = {
+        type,
+        value,
+      };
+      return modelToTargetLanguage({
+        type: 'TEvaluatePrimitive',
+        value: primitiveObj,
+      });
+    }
+
+    switch (type) {
+      case 'variable':
+        return { output: value, dependencies: [] };
+      case 'method': {
+        const argumentDependenciesResult = modelToTargetLanguage({
+          type: BitloopsTypesMapping.TArgumentDependencies,
+          value: argumentDependencies,
         });
+        return {
+          output: `${value}${argumentDependenciesResult.output}`,
+          dependencies: argumentDependenciesResult.dependencies,
+        };
       }
-
-      switch (type) {
-        case 'variable':
-          return value;
-        case 'method': {
-          const argumentDependenciesResult = modelToTargetLanguage({
-            type: BitloopsTypesMapping.TArgumentDependencies,
-            value: argumentDependencies,
-            targetLanguage,
-          });
-          return `${value}${argumentDependenciesResult}`;
-        }
-        default:
-          return value;
-      }
-    },
+      default:
+        return { output: value, dependencies: [] };
+    }
   };
 
-  return regularEvaluationLangMapping[targetLanguage](variable);
+  return regularEvaluationLangMapping(variable);
 };
 
 export { regularEvaluationToTargetLanguage };

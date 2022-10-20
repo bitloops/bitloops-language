@@ -17,50 +17,43 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TParameterDependencies } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildFieldsFromDependencies = (
   params: TParameterDependencies,
-  targetLanguage: string,
   contextData: { boundedContext: string; module: string },
 ): string => {
-  const fieldsToLangMapping = {
-    [SupportedLanguages.TypeScript]: (params: TParameterDependencies): string => {
-      return params
-        .map((parameterDependency) => {
-          const { type, value } = parameterDependency;
-          return `private ${value}: ${type};`;
-        })
-        .join(' ');
-    },
+  const fieldsToLangString = (params: TParameterDependencies): string => {
+    return params
+      .map((parameterDependency) => {
+        const { type, value } = parameterDependency;
+        return `private ${value}: ${type};`;
+      })
+      .join(' ');
   };
 
-  let result = fieldsToLangMapping[targetLanguage](params);
+  let result = fieldsToLangString(params);
 
   const paramsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: params,
-    targetLanguage,
     contextData,
   });
-  const constructorToLangMapping = {
-    [SupportedLanguages.TypeScript]: (
-      paramsString: string,
-      params: TParameterDependencies,
-    ): string => {
-      const constructorBody = params
-        .map((parameterDependency) => {
-          const { value } = parameterDependency;
-          return `this.${value} = ${value};`;
-        })
-        .join(' ');
-      return `constructor${paramsString} { super(); ${constructorBody} }`;
-    },
+  const constructorToLangString = (
+    paramsString: string,
+    params: TParameterDependencies,
+  ): string => {
+    const constructorBody = params
+      .map((parameterDependency) => {
+        const { value } = parameterDependency;
+        return `this.${value} = ${value};`;
+      })
+      .join(' ');
+    return `constructor${paramsString} { super(); ${constructorBody} }`;
   };
-  result += constructorToLangMapping[targetLanguage](paramsString, params);
+  result += constructorToLangString(paramsString.output, params);
   return result;
 };
 export { buildFieldsFromDependencies };

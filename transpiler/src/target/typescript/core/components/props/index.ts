@@ -17,37 +17,38 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
-import { TProps, TPropsValues } from '../../../../../types.js';
+import { TProps, TPropsValues, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const propsToTargetLanguage = (props: TProps, targetLanguage: string): string => {
-  const initialPropsLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (propName: string) => `export interface ${propName} { `,
-  };
-  const finalPropsLangMapping: any = {
-    [SupportedLanguages.TypeScript]: '}',
-  };
-
+const propsToTargetLanguage = (props: TProps): TTargetDependenciesTypeScript => {
+  const initialPropsLangMapping = (propName: string): string => `export interface ${propName} { `;
+  const finalPropsLangMapping = '}';
+  let dependencies = [];
   let result = '';
   const propsKeys = Object.keys(props);
   for (let i = 0; i < propsKeys.length; i++) {
     const propName = propsKeys[i];
     const propsValues = props[propName];
-    result += initialPropsLangMapping[targetLanguage](propName);
+    result += initialPropsLangMapping(propName);
     result += modelToTargetLanguage({
       type: BitloopsTypesMapping.TPropsValues,
       value: propsValues,
-      targetLanguage,
-    });
-    result += finalPropsLangMapping[targetLanguage];
+    }).output;
+    dependencies = [
+      ...dependencies,
+      ...modelToTargetLanguage({
+        type: BitloopsTypesMapping.TPropsValues,
+        value: propsValues,
+      }).dependencies,
+    ];
+    result += finalPropsLangMapping;
   }
-  return result;
+  return { output: result, dependencies };
 };
 
-const propsValuesToTargetLanguage = (propsValues: TPropsValues, targetLanguage: string): string => {
+const propsValuesToTargetLanguage = (propsValues: TPropsValues): TTargetDependenciesTypeScript => {
   console.log('propsValuesToTargetLanguage', propsValues);
   if (isUndefined(propsValues.variables)) {
     throw new Error('Variables of Prop are not defined');
@@ -58,7 +59,6 @@ const propsValuesToTargetLanguage = (propsValues: TPropsValues, targetLanguage: 
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: propsValues.variables,
-    targetLanguage,
   });
   return variablesResult;
 };

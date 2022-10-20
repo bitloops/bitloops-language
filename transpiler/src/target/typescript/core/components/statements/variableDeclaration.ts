@@ -21,33 +21,32 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TVariableDeclaration } from '../../../../../types.js';
+import { TTargetDependenciesTypeScript, TVariableDeclaration } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const variableDeclarationToTargetLanguage = (
   variable: TVariableDeclaration,
-  targetLanguage: string,
-): string => {
-  const constDeclarationLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (variable: TVariableDeclaration): string => {
-      const { name, type } = variable.variableDeclaration;
-      let tsType = type;
-      if (isBitloopsPrimitive(type)) {
-        tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
-      }
-      return `let ${name}: ${tsType} = `;
-    },
+): TTargetDependenciesTypeScript => {
+  const constDeclarationLangMapping = (variable: TVariableDeclaration): string => {
+    const { name, type } = variable.variableDeclaration;
+    let tsType = type;
+    if (isBitloopsPrimitive(type)) {
+      tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
+    }
+    return `let ${name}: ${tsType} = `;
   };
 
-  const declareResult = constDeclarationLangMapping[targetLanguage](variable);
+  const declareResult = constDeclarationLangMapping(variable);
 
   const { expression } = variable.variableDeclaration;
-  const expressionResult = modelToTargetLanguage({
+  const expressionModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: { expression },
-    targetLanguage,
   });
 
-  return `${declareResult}${expressionResult}`;
+  return {
+    output: `${declareResult}${expressionModel.output}`,
+    dependencies: expressionModel.dependencies,
+  };
 };

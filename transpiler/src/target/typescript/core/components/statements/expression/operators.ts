@@ -18,12 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import {
   TMultiplicativeOperator,
   TAdditiveOperator,
   TEqualityOperator,
   TRelationalOperator,
+  TTargetDependenciesTypeScript,
 } from '../../../../../../types.js';
 
 enum OPERATORS {
@@ -42,84 +42,78 @@ enum OPERATORS {
 
 export const multiplicativeOperatorToTargetLanguage = (
   operator: TMultiplicativeOperator,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (operator: TMultiplicativeOperator): string | Error => {
-      switch (operator) {
-        case OPERATORS.MULTIPLICATION:
-          return '*';
-        case OPERATORS.DIVISION:
-          return '/';
-        case OPERATORS.MODULO:
-          return '%';
-        default:
-          throw new Error(`Multiplicative operator: ${operator} is not supported`);
-      }
-    },
+): TTargetDependenciesTypeScript => {
+  const langMapping: any = (operator: TMultiplicativeOperator): string | Error => {
+    switch (operator) {
+      case OPERATORS.MULTIPLICATION:
+        return '*';
+      case OPERATORS.DIVISION:
+        return '/';
+      case OPERATORS.MODULO:
+        return '%';
+      default:
+        throw new Error(`Multiplicative operator: ${operator} is not supported`);
+    }
   };
-  return langMapping[targetLanguage](operator);
+  return {
+    output: langMapping(operator),
+    dependencies: [],
+  };
 };
 
 export const additiveOperatorToTargetLanguage = (
   operator: TAdditiveOperator,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (operator: TAdditiveOperator): string | Error => {
-      switch (operator) {
-        case OPERATORS.ADDITION:
-          return '+';
-        case OPERATORS.SUBTRACTION:
-          return '-';
-        default:
-          throw new Error(`Additive operator: ${operator} is not supported`);
-      }
-    },
+): TTargetDependenciesTypeScript => {
+  const langMapping: any = (operator: TAdditiveOperator): string | Error => {
+    switch (operator) {
+      case OPERATORS.ADDITION:
+        return '+';
+      case OPERATORS.SUBTRACTION:
+        return '-';
+      default:
+        throw new Error(`Additive operator: ${operator} is not supported`);
+    }
   };
-  return langMapping[targetLanguage](operator);
+  return { output: langMapping(operator), dependencies: [] };
 };
 
 export const equalityOperatorToTargetLanguage = (
   operator: TEqualityOperator,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (operator: TEqualityOperator): string | Error => {
-      switch (operator) {
-        case OPERATORS.EQUAL:
-          return '==';
-        case OPERATORS.NOT_EQUAL:
-          return '!=';
-        default:
-          throw new Error(`Equality operator: ${operator} is not supported`);
-      }
-    },
+): TTargetDependenciesTypeScript => {
+  const langMapping: any = (operator: TEqualityOperator): string | Error => {
+    switch (operator) {
+      case OPERATORS.EQUAL:
+        return '==';
+      case OPERATORS.NOT_EQUAL:
+        return '!=';
+      default:
+        throw new Error(`Equality operator: ${operator} is not supported`);
+    }
   };
-  return langMapping[targetLanguage](operator);
+  return {
+    output: langMapping(operator),
+    dependencies: [],
+  };
 };
 
 export const relationalOperatorToTargetLanguage = (
   operator: TRelationalOperator,
-  targetLanguage: string,
-): string => {
-  const langMapping: any = {
-    [SupportedLanguages.TypeScript]: (operator: TRelationalOperator): string | Error => {
-      switch (operator) {
-        case OPERATORS.GREATER_OR_EQUAL_THAN:
-          return '>=';
-        case OPERATORS.GREATER_THAN:
-          return '>';
-        case OPERATORS.LESS_OR_EQUAL_THAN:
-          return '<=';
-        case OPERATORS.LESS_THAN:
-          return '<';
-        default:
-          throw new Error(`Relational operator: ${operator} is not supported`);
-      }
-    },
+): TTargetDependenciesTypeScript => {
+  const langMapping: any = (operator: TRelationalOperator): string | Error => {
+    switch (operator) {
+      case OPERATORS.GREATER_OR_EQUAL_THAN:
+        return '>=';
+      case OPERATORS.GREATER_THAN:
+        return '>';
+      case OPERATORS.LESS_OR_EQUAL_THAN:
+        return '<=';
+      case OPERATORS.LESS_THAN:
+        return '<';
+      default:
+        throw new Error(`Relational operator: ${operator} is not supported`);
+    }
   };
-  return langMapping[targetLanguage](operator);
+  return { output: langMapping(operator), dependencies: [] };
 };
 
 // const multi = multiplicativeOperatorToTargetLanguage('*', SupportedLanguages.TypeScript);

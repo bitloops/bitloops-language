@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TExpressionValues } from '../../../../../../types.js';
+import { TExpressionValues, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { evaluationToTargetLanguage, instanceOfToTargetLanguage } from './evaluation/index.js';
@@ -35,46 +35,40 @@ enum INDICATORS {
 
 const expressionValuesToTargetLanguage = (
   expressionValue: TExpressionValues,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   if (!expressionValue) {
-    console.log('expressionValue', expressionValue);
-    throw new Error(`Unsupported expression: ${expressionValue}`);
+    // console.log('expressionValue', expressionValue);
+    throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
   }
 
   if ('evaluation' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TEvaluation,
       value: expressionValue,
-      targetLanguage,
     });
   }
   if ('classInstantiation' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TClassInstantiation,
       value: expressionValue,
-      targetLanguage,
     });
   }
   if ('struct' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TStructEvaluation,
       value: expressionValue,
-      targetLanguage,
     });
   }
   if ('backTickString' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TBackTickString,
       value: expressionValue,
-      targetLanguage,
     });
   }
   if (INDICATORS.EQUALITY_EXPRESSION in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TEqualityExpression,
       value: expressionValue,
-      targetLanguage,
     });
   }
 
@@ -82,14 +76,12 @@ const expressionValuesToTargetLanguage = (
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TAdditiveExpression,
       value: expressionValue,
-      targetLanguage,
     });
   }
   if (INDICATORS.LOGICAL_EXPRESSION in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TLogicalExpression,
       value: expressionValue,
-      targetLanguage,
     });
   }
 
@@ -97,7 +89,6 @@ const expressionValuesToTargetLanguage = (
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TRelationalExpression,
       value: expressionValue,
-      targetLanguage,
     });
   }
 
@@ -105,14 +96,12 @@ const expressionValuesToTargetLanguage = (
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TMultiplicativeExpression,
       value: expressionValue,
-      targetLanguage,
     });
   }
   if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TParenthesizedExpression,
       value: expressionValue,
-      targetLanguage,
     });
   }
 

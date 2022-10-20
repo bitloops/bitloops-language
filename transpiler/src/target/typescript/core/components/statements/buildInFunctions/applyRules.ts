@@ -18,24 +18,25 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TApplyRules } from '../../../../../../types.js';
+import { TApplyRules, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const applyRulesToTargetLanguage = (variable: TApplyRules, targetLanguage: string): string => {
+const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesTypeScript => {
   const { applyRules } = variable;
 
   let result = 'const res = applyRules([';
+  let dependencies = [];
   for (const applyRule of applyRules) {
     const parameterDependencies = modelToTargetLanguage({
       type: BitloopsTypesMapping.TArgumentDependencies,
       value: applyRule.arguments,
-      targetLanguage,
     });
-    result += `new ${applyRule.name}${parameterDependencies},`;
+    result += `new ${applyRule.name}${parameterDependencies.output},`;
+    dependencies = [...dependencies, ...parameterDependencies.dependencies];
   }
   result += ']);';
   result += 'if (res) return fail(res);';
-  return result;
+  return { output: result, dependencies };
 };
 
 export { applyRulesToTargetLanguage };

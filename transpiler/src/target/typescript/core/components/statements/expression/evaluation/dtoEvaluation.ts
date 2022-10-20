@@ -18,20 +18,16 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TDTOEvaluation } from '../../../../../../../types.js';
+import { TDTOEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-const DTOEvaluationToTargetLanguage = (
-  variable: TDTOEvaluation,
-  targetLanguage: string,
-): string => {
+const DTOEvaluationToTargetLanguage = (variable: TDTOEvaluation): TTargetDependenciesTypeScript => {
   const dtoProperties = variable.dto.fields;
 
   return modelToTargetLanguage({
     type: BitloopsTypesMapping.TEvaluationFields,
     value: dtoProperties,
-    targetLanguage,
   });
 };
 

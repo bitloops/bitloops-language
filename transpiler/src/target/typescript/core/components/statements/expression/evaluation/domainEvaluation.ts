@@ -17,39 +17,31 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../../helpers/supportedLanguages.js';
-import { TDomainEvaluation } from '../../../../../../../types.js';
+import { TDomainEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const domainProperties = evaluation.props;
   const domainName = evaluation.name;
 
-  let resultDomainProps;
+  let resultDomainProps: TTargetDependenciesTypeScript;
   if ('regularEvaluation' in domainProperties) {
     resultDomainProps = modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularEvaluation,
       value: domainProperties,
-      targetLanguage,
     });
   } else {
     resultDomainProps = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEvaluationFields,
       value: domainProperties,
-      targetLanguage,
     });
   }
 
-  const instantiateDomainLangMapping = {
-    [SupportedLanguages.TypeScript]: (name, props) => {
-      return `${name}.create(${props});`;
-    },
+  return {
+    output: `${domainName}.create(${resultDomainProps.output});`,
+    dependencies: resultDomainProps.dependencies,
   };
-
-  return instantiateDomainLangMapping[targetLanguage](domainName, resultDomainProps);
 };

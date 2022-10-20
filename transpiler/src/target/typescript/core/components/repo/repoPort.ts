@@ -19,71 +19,48 @@
  */
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TRepoPorts, TDefinitionMethods } from '../../../../../types.js';
+import { TRepoPorts, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-export const repoPortToTargetLanguage = (repoPorts: TRepoPorts, targetLanguage: string): string => {
-  const initialObjectValuesLangMapping = {
-    [SupportedLanguages.TypeScript]: (propName: string) =>
-      `export class ${propName} extends ValueObject<${propName}Props> { `,
-  };
-  // TODO for all object values
+export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependenciesTypeScript => {
   const repoPortName = Object.keys(repoPorts)[0];
-  initialObjectValuesLangMapping[targetLanguage](repoPortName);
   const firstRepoPort = repoPorts[repoPortName];
   const { definitionMethods, aggregateRootName, extendedRepoPorts } = firstRepoPort;
   const methodNames = Object.keys(definitionMethods);
 
-  const noMethodsRepoPortLangMapping = {
-    [SupportedLanguages.TypeScript]: (
-      portRepoName: string,
-      aggregateRootName: string,
-      extendedRepoPorts: string[],
-    ): string => {
-      const extendedRepoPortsString = extendedRepoPorts
-        .map((extendedRepoPort) => `${extendedRepoPort}<${aggregateRootName}>`)
-        .join(' & ');
-      return `export type ${portRepoName} = ${extendedRepoPortsString};`;
-    },
+  const noMethodsRepoPortLangMapping = (
+    portRepoName: string,
+    aggregateRootName: string,
+    extendedRepoPorts: string[],
+  ): string => {
+    const extendedRepoPortsString = extendedRepoPorts
+      .map((extendedRepoPort) => `${extendedRepoPort}<${aggregateRootName}>`)
+      .join(' & ');
+    return `export type ${portRepoName} = ${extendedRepoPortsString};`;
   };
 
   if (methodNames.length === 0) {
-    const finalResult = noMethodsRepoPortLangMapping[targetLanguage](
+    const finalResult = noMethodsRepoPortLangMapping(
       repoPortName,
       aggregateRootName,
       extendedRepoPorts,
     );
-    return finalResult;
+    return { output: finalResult, dependencies: [] };
   }
 
-  const withMethodsRepoPortLangMapping = {
-    [SupportedLanguages.TypeScript]: (
-      portRepoName: string,
-      aggregateRootName: string,
-      extendedRepoPorts: string[],
-      definitionMethods: TDefinitionMethods,
-    ): string => {
-      const extendedRepoPortsString = extendedRepoPorts
-        .map((extendedRepoPort) => `${extendedRepoPort}<${aggregateRootName}>`)
-        .join(', ');
-      const res =
-        `export interface ${portRepoName} extends ${extendedRepoPortsString} {` +
-        modelToTargetLanguage({
-          type: BitloopsTypesMapping.TDefinitionMethods,
-          value: definitionMethods,
-          targetLanguage: SupportedLanguages.TypeScript,
-        });
-      +'}';
-      return res;
-    },
+  const extendedRepoPortsString = extendedRepoPorts
+    .map((extendedRepoPort) => `${extendedRepoPort}<${aggregateRootName}>`)
+    .join(', ');
+
+  const model = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TDefinitionMethods,
+    value: definitionMethods,
+  });
+  const res =
+    `export interface ${repoPortName} extends ${extendedRepoPortsString} {` + model.output + '}';
+  return {
+    output: res,
+    dependencies: model.dependencies,
   };
-  const finalResult = withMethodsRepoPortLangMapping[targetLanguage](
-    repoPortName,
-    aggregateRootName,
-    extendedRepoPorts,
-    definitionMethods,
-  );
-  return finalResult;
 };

@@ -21,40 +21,39 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TConstDeclaration } from '../../../../../types.js';
+import { TConstDeclaration, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const constDeclarationToTargetLanguage = (
   variable: TConstDeclaration,
-  targetLanguage: string,
-): string => {
-  const constDeclarationLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (variable: TConstDeclaration): string => {
-      const { name, type } = variable.constDeclaration;
+): TTargetDependenciesTypeScript => {
+  const constDeclarationLangMapping = (variable: TConstDeclaration): string => {
+    const { name, type } = variable.constDeclaration;
 
-      if (type) {
-        let tsType = type;
-        if (isBitloopsPrimitive(type)) {
-          tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
-        }
-        return `const ${name}: ${tsType} = `;
-      } else {
-        return `const ${name} = `;
+    if (type) {
+      let tsType = type;
+      if (isBitloopsPrimitive(type)) {
+        tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
       }
-    },
+      return `const ${name}: ${tsType} = `;
+    } else {
+      return `const ${name} = `;
+    }
   };
 
-  const declareResult = constDeclarationLangMapping[targetLanguage](variable);
+  const declareResult = constDeclarationLangMapping(variable);
 
   const { expression } = variable.constDeclaration;
   const expressionResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: { expression },
-    targetLanguage,
   });
 
-  return `${declareResult}${expressionResult}`;
+  return {
+    output: `${declareResult}${expressionResult.output}`,
+    dependencies: expressionResult.dependencies,
+  };
 };
 
 export { constDeclarationToTargetLanguage };

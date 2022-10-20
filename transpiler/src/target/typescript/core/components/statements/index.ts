@@ -17,9 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TConstDeclaration, TEvaluation, TStatement, TStatements } from '../../../../../types.js';
+import {
+  TConstDeclaration,
+  TEvaluation,
+  TStatement,
+  TStatements,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -37,13 +41,12 @@ export const keysToTypeMapping = {
   buildInFunction: BitloopsTypesMapping.TBuildInFunction,
 };
 
-const statementToTargetLanguage = (variable: TStatement, targetLanguage: string): string => {
+const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTypeScript => {
   if (variable === 'break') {
     // TODO break statement object-type like other statements?
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TBreakStatement,
       value: variable,
-      targetLanguage,
     });
   }
   const variableKeys = Object.keys(variable);
@@ -52,71 +55,83 @@ const statementToTargetLanguage = (variable: TStatement, targetLanguage: string)
   if (!keysToTypeMapping[type]) {
     throw new Error('Unsupported statement: ' + type);
   }
-  return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable, targetLanguage });
+  return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable });
 };
 
-const statementsToTargetLanguage = (variable: TStatements, targetLanguage: string): string => {
-  const elseAdded = [];
-  const mapping = {
-    [SupportedLanguages.TypeScript]: (variable: TStatements): string => {
-      return variable
-        .map((statement) => {
-          // eslint-disable-next-line no-prototype-builtins
-          if (statement.hasOwnProperty('constDeclaration')) {
-            const { constDeclaration } = statement as TConstDeclaration;
-            const { expression } = constDeclaration;
-            if ('evaluation' in expression) {
-              const { evaluation } = expression as TEvaluation;
-              if ('entity' in evaluation || 'valueObject' in evaluation) {
-                const evaluationRes = modelToTargetLanguage({
-                  type: BitloopsTypesMapping.TStatement,
-                  value: statement,
-                  targetLanguage,
-                });
-                const ifAdded = `if (!${constDeclaration.name}.isFail()) {`;
-                elseAdded.push(`} else { return fail(${constDeclaration.name}.value) }`);
-                return `${evaluationRes}${ifAdded}`;
-              }
-            }
+const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesTypeScript => {
+  const elseAdded: string[] = [];
+  const mapping = (variable: TStatements): TTargetDependenciesTypeScript[] => {
+    return variable.map((statement) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (statement.hasOwnProperty('constDeclaration')) {
+        const { constDeclaration } = statement as TConstDeclaration;
+        const { expression } = constDeclaration;
+        if ('evaluation' in expression) {
+          const { evaluation } = expression as TEvaluation;
+          if ('entity' in evaluation || 'valueObject' in evaluation) {
+            const evaluationRes = modelToTargetLanguage({
+              type: BitloopsTypesMapping.TStatement,
+              value: statement,
+            });
+            const ifAdded = `if (!${constDeclaration.name}.isFail()) {`;
+            elseAdded.push(`} else { return fail(${constDeclaration.name}.value) }`);
+            return {
+              output: `${evaluationRes.output}${ifAdded}`,
+              dependencies: evaluationRes.dependencies,
+            };
           }
+        }
+      }
 
-          const result = modelToTargetLanguage({
-            type: BitloopsTypesMapping.TStatement,
-            value: statement,
-          });
-          return result + ';';
-        })
-        .join(' ');
-    },
+      const result = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TStatement,
+        value: statement,
+      });
+      return { output: result.output + ';', dependencies: result.dependencies };
+    });
   };
-  let finalResult = mapping[targetLanguage](variable);
+  const targetDependenciesArray = mapping(variable);
+  let finalResult = '';
+  let finalDependencies = [];
+  for (let i = 0; i < targetDependenciesArray.length; i++) {
+    finalResult += targetDependenciesArray[i].output;
+    finalDependencies = finalDependencies.concat(targetDependenciesArray[i].dependencies);
+    // if (i === targetDependenciesArray.length - 1) {
+    //   finalResult += elseAdded.join('');
+    // }
+  }
   if (elseAdded.length > 0) {
     for (let i = elseAdded.length - 1; i >= 0; i -= 1) {
       finalResult += elseAdded[i];
     }
   }
 
-  return finalResult;
+  return { output: finalResult, dependencies: finalDependencies };
 };
 
 const statementsWithoutThisToTargetLanguage = (
   variable: TStatements,
-  targetLanguage: string,
-): string => {
-  console.log('statementsWithoutThisToTargetLanguage', variable);
-  const mapping = {
-    [SupportedLanguages.TypeScript]: (variable: TStatements): string => {
-      return variable
-        .map(
-          (statement) =>
-            modelToTargetLanguage({ type: BitloopsTypesMapping.TStatement, value: statement }) +
-            ';',
-        )
-        .filter((statement) => statement.includes('this'))
-        .join(' ');
-    },
+): TTargetDependenciesTypeScript => {
+  let dependencies = [];
+  const mapping = (variable: TStatements): string => {
+    return variable
+      .map((statement) => {
+        dependencies = [
+          ...dependencies,
+          ...modelToTargetLanguage({
+            type: BitloopsTypesMapping.TStatement,
+            value: statement,
+          }).dependencies,
+        ];
+        return (
+          modelToTargetLanguage({ type: BitloopsTypesMapping.TStatement, value: statement })
+            .output + ';'
+        );
+      })
+      .filter((statement) => statement.includes('this'))
+      .join(' ');
   };
-  return mapping[targetLanguage](variable);
+  return { output: mapping(variable), dependencies };
 };
 
 export {

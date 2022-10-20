@@ -18,19 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TExpression } from '../../../../../../types.js';
+import { TExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const expressionToTargetLanguage = (variable: TExpression, targetLanguage: string): string => {
+const expressionToTargetLanguage = (variable: TExpression): TTargetDependenciesTypeScript => {
   if (!variable || !variable.expression) {
-    throw new Error(`Unsupported expression: ${variable.expression}`);
+    throw new Error(`Unsupported expression: ${JSON.stringify(variable.expression)}`);
   }
   const { expression } = variable;
   return modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpressionValues,
     value: expression,
-    targetLanguage,
   });
 };
 export { expressionToTargetLanguage };

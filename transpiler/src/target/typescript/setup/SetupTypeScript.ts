@@ -639,7 +639,7 @@ fastify.register(routers, {
   prefix: ${serverPrefix},
 });
 
-const port = ${portStatement};
+const port = ${portStatement.output};
 
 const start = async () => {
   try {
@@ -661,7 +661,7 @@ start();
           );
         }
         body += "import { GraphQL } from '@bitloops/bl-boilerplate-infra-graphql';\n";
-        body += this.generateGraphQLServer(data, bitloopsModel, portStatement);
+        body += this.generateGraphQLServer(data, bitloopsModel, portStatement.output);
         break;
       }
       default:
@@ -795,10 +795,7 @@ start();
     }
     // setupData.bitloopsModel = bitloopsModel;
     // TODO Prettier this string
-    const serverContent = graphQLSetupDataToTargetLanguage(
-      setupData,
-      SupportedLanguages.TypeScript,
-    );
-    return formatToLang(importsString + serverContent, SupportedLanguages.TypeScript);
+    const serverContent = graphQLSetupDataToTargetLanguage(setupData);
+    return formatToLang(importsString + serverContent.output, SupportedLanguages.TypeScript);
   }
 }

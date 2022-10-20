@@ -17,116 +17,115 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TUseCase, TUseCaseValues, TExecute } from '../../../../../types.js';
+import {
+  TUseCase,
+  TUseCaseValues,
+  TExecute,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const useCaseToTargetLanguage = (useCases: TUseCase, targetLanguage: string): string => {
+const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
   const useCasesKeys = Object.keys(useCases);
   let result = '';
+  let dependencies = [];
   for (let i = 0; i < useCasesKeys.length; i++) {
     const useCaseName = useCasesKeys[i];
     const useCaseValues = useCases[useCaseName];
-    result += useCaseValuesToTargetLanguage(useCaseValues, useCaseName, targetLanguage);
+    const useCaseValuesToTargetLanguageOutput = useCaseValuesToTargetLanguage(
+      useCaseValues,
+      useCaseName,
+    ).output;
+    const useCaseValuesToTargetLanguageDependencies = useCaseValuesToTargetLanguage(
+      useCaseValues,
+      useCaseName,
+    ).dependencies;
+    dependencies = [...dependencies, ...useCaseValuesToTargetLanguageDependencies];
+    result += useCaseValuesToTargetLanguageOutput;
   }
 
-  return result;
+  return { output: result, dependencies: [...dependencies] };
 };
 
 const useCaseValuesToTargetLanguage = (
   variable: TUseCaseValues,
   useCaseName: string,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { execute, returnTypes, parameterDependencies } = variable;
   const useCaseInputType = execute.parameterDependencies[0]
     ? execute.parameterDependencies[0].type
     : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
-  const initialUseCaseLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (
-      returnTypesResult: string,
-      responseTypeName: string,
-      inputType: string,
-      dependencies: string,
-    ): string => {
-      let result = `type ${responseTypeName} = ${returnTypesResult};`;
-      const responseType = `Promise<${responseTypeName}>`;
-      result += `export class ${useCaseName} implements UseCase<${
-        inputType ? inputType : 'void'
-      }, ${responseType}> {`;
-      if (!isDependenciesEmpty(dependencies))
-        result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {}; `;
-      return result;
-    },
+  const initialUseCaseLangMapping = (
+    returnTypesResult: string,
+    responseTypeName: string,
+    inputType: string,
+    dependencies: string,
+  ): string => {
+    let result = `type ${responseTypeName} = ${returnTypesResult};`;
+    const responseType = `Promise<${responseTypeName}>`;
+    result += `export class ${useCaseName} implements UseCase<${
+      inputType ? inputType : 'void'
+    }, ${responseType}> {`;
+    if (!isDependenciesEmpty(dependencies))
+      result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {}; `;
+    return result;
   };
-  const finalUseCaseLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (): string => {
-      return '}';
-    },
-  };
+  const finalUseCaseLangMapping = '}';
 
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: returnTypes,
-    targetLanguage,
   });
 
   const useCaseDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameterDependencies,
-    targetLanguage,
   });
 
-  let result = initialUseCaseLangMapping[targetLanguage](
-    useCaseReturnTypesResult,
+  let result = initialUseCaseLangMapping(
+    useCaseReturnTypesResult.output,
     useCaseResponseTypeName,
     useCaseInputType,
-    useCaseDependenciesResult,
+    useCaseDependenciesResult.output,
   );
 
-  const executeResult = useCaseExecuteToTargetLanguage(
-    variable.execute,
-    useCaseResponseTypeName,
-    targetLanguage,
-  );
-  result += executeResult;
-  result += finalUseCaseLangMapping[targetLanguage]();
+  const executeResult = useCaseExecuteToTargetLanguage(variable.execute, useCaseResponseTypeName);
+  result += executeResult.output;
+  result += finalUseCaseLangMapping;
 
-  return result;
+  return { output: result, dependencies: executeResult.dependencies };
 };
 
 const useCaseExecuteToTargetLanguage = (
   variable: TExecute,
   responseTypeName: string,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { parameterDependencies, statements } = variable;
   const parameterDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameterDependencies,
-    targetLanguage,
   });
 
   const statementsResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: statements,
-    targetLanguage,
   });
 
-  const useCaseExecuteLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (parameterDependencies: string, statements: string) => {
-      let result = 'async execute';
-      result += `${parameterDependencies}`;
-      result += `: Promise<${responseTypeName}> {`;
-      result += statements;
-      result += '}';
-      return result;
-    },
+  const useCaseExecuteString = (parameterDependencies: string, statements: string): string => {
+    let result = 'async execute';
+    result += `${parameterDependencies}`;
+    result += `: Promise<${responseTypeName}> {`;
+    result += statements;
+    result += '}';
+    return result;
   };
-  return useCaseExecuteLangMapping[targetLanguage](parameterDependenciesResult, statementsResult);
+  return {
+    output: useCaseExecuteString(parameterDependenciesResult.output, statementsResult.output),
+    dependencies: [...parameterDependenciesResult.dependencies, ...statementsResult.dependencies],
+  };
 };
 const isDependenciesEmpty = (dependencies: string): boolean => {
   const strippedDependencies = dependencies.replace(/\s/g, '');

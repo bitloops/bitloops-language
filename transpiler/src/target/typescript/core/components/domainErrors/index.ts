@@ -17,74 +17,68 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { TDomainErrors, TDomainError, TString, TBackTickString } from '../../../../../types.js';
+import {
+  TDomainErrors,
+  TDomainError,
+  TString,
+  TBackTickString,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const domainErrorsToTargetLanguage = (
   domainErrors: TDomainErrors,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
   let result = 'export namespace DomainErrors {';
+  let dependencies = [];
   for (let i = 0; i < domainErrorsNames.length; i++) {
     const domainErrorName = domainErrorsNames[i];
     const domainError = domainErrors[domainErrorName];
-    result += domainErrorToTargetLanguage(domainError, domainErrorName, targetLanguage);
+    const domainErrorToTargetLang = domainErrorToTargetLanguage(domainError, domainErrorName);
+    result += domainErrorToTargetLang.output;
+    dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
   }
   result += '}';
-  return result;
+  return { output: result, dependencies };
 };
 
 const domainErrorToTargetLanguage = (
   variable: TDomainError,
   domainErrorName: string,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
-  const messageResult = messageToTargetLanguage(message, targetLanguage);
+  const messageResult = messageToTargetLanguage(message);
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
     value: errorId,
-    targetLanguage,
   });
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameters ?? [],
-    targetLanguage,
   });
 
-  const domainErrorLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (
-      errorName: string,
-      message: string,
-      errorId: string,
-      parameters: string,
-    ) => {
-      let result = `export class ${errorName} extends DomainError { constructor`;
-      result += parameters;
-      result += '{ super(';
-      result += message;
-      result += ', ';
-      result += errorId;
-      result += '); }}';
-      return result;
-    },
+  let result = `export class ${domainErrorName} extends DomainError { constructor`;
+  result += parametersResult.output;
+  result += '{ super(';
+  result += messageResult.output;
+  result += ', ';
+  result += errorIdResult.output;
+  result += '); }}';
+  return {
+    output: result,
+    dependencies: [
+      ...parametersResult.dependencies,
+      ...messageResult.dependencies,
+      ...errorIdResult.dependencies,
+    ],
   };
-
-  return domainErrorLangMapping[targetLanguage](
-    domainErrorName,
-    messageResult,
-    errorIdResult,
-    parametersResult,
-  );
 };
 
 const messageToTargetLanguage = (
   message: TString | TBackTickString,
-  targetLanguage: string,
-): string => {
+): TTargetDependenciesTypeScript => {
   const messageType = Object.keys(message)[0];
   const messageTypesMapping = {
     backTickString: BitloopsTypesMapping.TBackTickString,
@@ -94,7 +88,6 @@ const messageToTargetLanguage = (
   const messageResult = modelToTargetLanguage({
     type: messageTypesMapping[messageType],
     value: message,
-    targetLanguage,
   });
   return messageResult;
 };
