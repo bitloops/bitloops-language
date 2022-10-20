@@ -8,7 +8,7 @@
   <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>
 
-# <br/> Build scalable, maintainable & reliable software (faster)
+# <br/> Build scalable, maintainable & reliable software (faster, much faster)
 Bitloops Language (BL) is a high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
 
 <!--
