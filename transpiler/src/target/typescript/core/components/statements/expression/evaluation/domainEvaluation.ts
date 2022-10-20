@@ -25,34 +25,29 @@ import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const domainProperties = evaluation.props;
   const domainName = evaluation.name;
 
-  let resultDomainProps;
+  let resultDomainProps: TTargetDependenciesTypeScript;
   if ('regularEvaluation' in domainProperties) {
     resultDomainProps = modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularEvaluation,
       value: domainProperties,
-      targetLanguage,
     });
   } else {
     resultDomainProps = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEvaluationFields,
       value: domainProperties,
-      targetLanguage,
     });
   }
 
-  const instantiateDomainLangMapping = {
-    [SupportedLanguages.TypeScript]: (name, props) => {
-      return `${name}.create(${props});`;
-    },
+  const instantiateDomainLangMapping = (name, props) => {
+    return `${name}.create(${props});`;
   };
 
   return {
-    output: instantiateDomainLangMapping[targetLanguage](domainName, resultDomainProps),
-    dependencies: [],
+    output: instantiateDomainLangMapping(domainName, resultDomainProps),
+    dependencies: resultDomainProps.dependencies,
   };
 };

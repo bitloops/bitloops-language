@@ -24,14 +24,12 @@ import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const entityEvaluationToTargetLanguage = (
   evaluation: TEntityEvaluation,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const entityEvaluation = evaluation.entity;
 
   const result = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDomainEvaluation,
     value: entityEvaluation,
-    targetLanguage,
   });
 
   return result;
