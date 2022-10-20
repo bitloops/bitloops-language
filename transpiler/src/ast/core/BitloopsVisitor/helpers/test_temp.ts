@@ -4,29 +4,9 @@ import {
   BitloopsParserError,
 } from '../../../../index.js';
 
-const blString = `
-DTO CreateTodoRequestDTO {
-  string title;
-}
-
-DTO CreateTodoResponseDTO {
-  string message;
-}
-
-UseCase CreateTodoUseCase (todoRepo: TodoRepoPort) {
-  execute ( requestDTO: CreateTodoRequestDTO ) : ( OK ( CreateTodoResponseDTO ), Errors( DomainErrors.InvalidTitleError ) ) {
-    const title = TitleVO({ title: requestDTO.title });
-
-    const todo = TodoEntity({
-      title,
-      completed: false
-    });
-
-    this.todoRepo.save(todo);
-
-    return CreateTodoResponseDTO ( { message: 'Todo created successfully!' } ) ;
-  }
-}
+const blString = ` 
+JestTestExpression { a OR b AND c OR d }
+// JestTestBuiltInFunction { applyRules ( IsValidTitle ( props.title )  ) }
 `;
 
 const parser = new BitloopsParser();

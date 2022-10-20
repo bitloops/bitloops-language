@@ -537,6 +537,7 @@ jestTestDeclaration
     | JestTestThisDeclaration '{' thisDeclaration '}' SemiColon?
     | JestTestValueObjectEvaluation '{' valueObjectEvaluation '}' SemiColon?
     | JestTestEntityEvaluation '{' entityEvaluation '}' SemiColon?
+    | JestTestBuiltInFunction '{' builtInFunction '}' SemiColon?
     ;
 
 evaluation

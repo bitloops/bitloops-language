@@ -256,6 +256,7 @@ JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
+JestTestBuiltInFunction: 'JestTestBuiltInFunction';
 
 // Abstract: 'abstract';
 
