@@ -9,7 +9,15 @@ export interface IBitloopsIntermediateASTParser {
 
 export class BitloopsIntermediateASTParserError extends Error {}
 
-const migratedTypes = ['jestTestDeclaration'];
+const migratedTypes = [
+  'jestTestDeclaration',
+  'controllerDeclaration',
+  'dtoDeclaration',
+  'propsDeclaration',
+  'valueObjectDeclaration',
+  'entityDeclaration',
+  'domainRuleDeclaration',
+];
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
   parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTParserError {
@@ -20,8 +28,10 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
         for (const classData of Object.values(classes)) {
           if (migratedTypes.includes(classData.deprecatedAST.type)) {
             const bitloopsVisitor = new BitloopsVisitor();
-            const result = bitloopsVisitor.visitChildren(classData.initialAST)[0][0][2];
-            return result;
+            const visitorModel = bitloopsVisitor.visitChildren(classData.initialAST)[0][0];
+            partialBoundedContextsData = {
+              [boundedContextName]: { [classData.module]: visitorModel },
+            };
           } else {
             partialBoundedContextsData = parseBitloops(
               boundedContextName,

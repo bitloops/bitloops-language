@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
@@ -8,8 +8,10 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },
   "files": ["./src/index.ts"],
-  "include": ["src/**/*", "__tests__/**/*"]
+  "include": ["src/**/*", "__tests__/**/*"],
+  "exclude": ["**/*.js", "node_modules", "lib"]
 }

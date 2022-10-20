@@ -19,7 +19,7 @@
  */
 import { IDomainEvent } from './IDomainEvent';
 import { AggregateRoot } from '../AggregateRoot';
-import { UniqueEntityID } from '../UniqueEntityID';
+import { UUIDv4 } from '../UUIDv4';
 import { IEventBus } from './IEventBus';
 // import { IIntegrationEvent } from "./IIntegrationEvent";
 // import { DomainEvent } from './DomainEvent';
@@ -79,7 +79,7 @@ export class Events {
     this.markedAggregates.splice(index, 1);
   }
 
-  private findMarkedAggregateByID(id: UniqueEntityID): AggregateRoot<any> | null {
+  private findMarkedAggregateByID(id: UUIDv4): AggregateRoot<any> | null {
     let found: AggregateRoot<any> | null = null;
     for (const aggregate of this.markedAggregates) {
       if (aggregate.id.equals(id)) {
@@ -90,10 +90,7 @@ export class Events {
     return found;
   }
 
-  public async dispatchEventsForAggregate(
-    id: UniqueEntityID,
-    metadata?: CommandMetadata,
-  ): Promise<void> {
+  public async dispatchEventsForAggregate(id: UUIDv4, metadata?: CommandMetadata): Promise<void> {
     const aggregate = this.findMarkedAggregateByID(id);
 
     if (aggregate) {

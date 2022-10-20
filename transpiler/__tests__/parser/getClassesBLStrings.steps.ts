@@ -20,9 +20,9 @@
 
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import {
-  getClassesBLStrings,
   TBitloopsClassesResult,
-} from '../../../src/functions/bitloopsLanguageToModel/getClassesBLStrings.js';
+  getClassesBLStrings,
+} from '../../src/parser/getClassesBLStrings.js';
 
 const feature = loadFeature(
   './__tests__/features/bitloopsLanguageToModel/getClassesBLStrings.feature',

@@ -16,7 +16,7 @@
  */
 import { Entity } from './Entity';
 import { IDomainEvent } from './events/IDomainEvent';
-import { UniqueEntityID } from './UniqueEntityID';
+import { UUIDv4 } from './UUIDv4';
 // import { IIntegrationEvent } from "./events/IIntegrationEvent";
 // import { IDomainIntegrationEvent } from "./events/IDomainIntegrationEvent";
 import { events } from './events/Events';
@@ -25,7 +25,7 @@ export abstract class AggregateRoot<T> extends Entity<T> {
   private _domainEvents: IDomainEvent[] = [];
   // private _integrationEvents: IIntegrationEvent[] = [];
 
-  get id(): UniqueEntityID {
+  get id(): UUIDv4 {
     return this._id;
   }
 

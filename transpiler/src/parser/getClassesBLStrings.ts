@@ -22,8 +22,8 @@ import {
   addSpacesBeforeAndAfterParentheses,
   removeMultipleSpaces,
   getNextWord,
-} from '../../helpers/stringManipulations.js';
-import { getClosingBracketIndex } from '../../helpers/closingBrackets.js';
+} from '../helpers/stringManipulations.js';
+import { getClosingBracketIndex } from '../helpers/closingBrackets.js';
 
 const BITLOOPS_CLASSES = [
   // 'Aggregate',

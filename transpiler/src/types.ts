@@ -19,10 +19,12 @@ import { BitloopsLanguageAST } from './index.js';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
 export type TModule = {
   Props?: TProps;
   Controllers?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
+  ApplicationErrors?: TApplicationErrors;
   DomainErrors?: TDomainErrors;
   RootEntities?: TRootEntities;
   Entities?: TEntities;
@@ -51,6 +53,22 @@ export type TClassType =
   | 'RepoPorts'
   | 'RepoAdapters';
 
+export type TComponentType =
+  | 'TProps'
+  | 'TControllers'
+  | 'TUseCase'
+  | 'TApplicationErrors'
+  | 'TDomainErrors'
+  | 'TRootEntities'
+  | 'TEntities'
+  | 'TValueObjects'
+  | 'TDTOs'
+  | 'TStructs'
+  | 'TPackages'
+  | 'TRules'
+  | 'TRepoPorts'
+  | 'TRepoAdapters';
+
 export type TClassName = string;
 type TClassInformation = {
   moduleName: TModuleName;
@@ -71,6 +89,40 @@ export type TParserCoreInputData = {
 export type TASTCoreInputData = {
   boundedContext: string;
   classes: Record<TClassType, Record<TClassName, TClassInformation>>;
+};
+
+export type TContextData = { boundedContext: string; module: string };
+
+export type TBitloopsTargetContent = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  classType: TClassType;
+  className: TClassName;
+  fileContent: TTargetDependenciesTypeScript;
+}[];
+
+export type TBitloopsOutputTargetContent = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  classType: TClassType;
+  className: TClassName;
+  fileContent: string;
+}[];
+
+export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
+
+export type TBitloopsTargetSetupContent = {
+  fileId: string;
+  fileType: string;
+  fileContent: string;
+}[];
+
+export type TBitloopsTargetGeneratorParams = {
+  intermediateAST: TBoundedContexts;
+  setupData: ISetupData;
+  targetLanguage: string;
+  formatterConfig?: any;
+  sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
 export type TBitloopsClasses =
@@ -151,7 +203,7 @@ export const bitloopsPrimitives = [
   'NullValue',
   'Duration',
   'regex',
-  'Void',
+  'void',
 ] as const;
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
@@ -179,7 +231,8 @@ export type TDomainError = {
 export type TRule = {
   parameters?: TParameterDependencies;
   error: string;
-  // isBrokenIfCondition: TCondition;
+  statements: TStatements;
+  isBrokenIfCondition: TCondition;
 };
 
 export type TRules = Record<string, TRule>;
@@ -195,6 +248,13 @@ export type TApplicationError = {
 export type TApplicationErrors = Record<string, TDomainError>;
 export type TInstanceOf = {
   isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
+};
+
+export type TPropsEvaluation = {
+  props: {
+    fields: TEvaluationFields;
+    name: string;
+  };
 };
 
 export type TNotInstanceOf = {
@@ -219,13 +279,13 @@ export type TEvaluation = {
     | TStructEvaluation
     | TDTOEvaluation
     | TValueObjectEvaluation
+    | TPropsEvaluation
     | TEntityEvaluation
     | TInstanceOf
     | TNotInstanceOf
     | TGetClass;
 };
 
-('f()');
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;
@@ -308,11 +368,13 @@ export type TConstDecomposition = {
   constDecomposition: TConstDecompositionNested;
 };
 
+export type TConstDeclarationValue = {
+  name: string;
+  type?: string;
+} & TExpression;
+
 export type TConstDeclaration = {
-  constDeclaration: {
-    name: string;
-    type?: string;
-  } & TExpression;
+  constDeclaration: TConstDeclarationValue;
 };
 
 export type TVariableDeclaration = {
@@ -330,6 +392,17 @@ export type TThisDeclaration = {
 
 export type TBreakStatement = 'break';
 
+export type TApplyRules = {
+  applyRules: {
+    name: string;
+    arguments: TArgumentDependencies;
+  }[];
+};
+
+export type TBuildInFunction = {
+  buildInFunction: TApplyRules;
+};
+
 export type TStatement =
   | TBreakStatement
   | TIfStatement
@@ -341,6 +414,7 @@ export type TStatement =
   | TConstDeclaration
   | TThisDeclaration
   | TVariableDeclaration
+  | TBuildInFunction
   | TExpression;
 
 export type TStatements = TStatement[];
@@ -373,7 +447,7 @@ export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TOkErrorReturnType = {
   ok: string;
-  errors?: string[];
+  errors?: string[]; // TODO remove optional if we have empty array for no errors
 };
 
 export type TDomainCreateMethod = {
@@ -390,7 +464,7 @@ export type TDomainMethods = Record<TDomainMethodName, TDomainMethod>;
 export type TValueObjectCreate = TDomainCreateMethod;
 
 export type TValueObjectValues = {
-  constantVars: TConstantVariable[];
+  constantVars: TConstDeclarationValue[]; //TConstantVariable[];
   methods: TValueObjectMethods;
   create: TValueObjectCreate;
 };
@@ -400,7 +474,7 @@ export type TValueObjects = Record<string, TValueObjectValues>;
 export type TEntities = Record<string, TEntityValues>;
 
 export type TEntityValues = {
-  constantVars?: TConstantVariable[];
+  constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
   methods?: TEntityMethods;
   create: TEntityCreate;
 };
@@ -464,8 +538,8 @@ export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControlle
 export type TGraphQLControllerValues = TBaseControllerValues & {
   type: 'graphql';
   operationType: TGraphQLOperation;
-  operationName: string;
   inputType: string;
+  operationName: string;
   execute: TGraphQLControllerExecute;
   outputType: string; // should be same as return type of execute
 };
@@ -485,10 +559,6 @@ export type TRegularCase = {
   caseValue: string;
   statements: TStatements;
 };
-
-// export type TCaseValue = {
-//   value: string;
-// };
 
 export type TSwitchStatement = {
   switchStatement: {
@@ -542,9 +612,9 @@ export interface ISetupData {
   controllers?: TControllers;
   useCases?: TUseCases;
   useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  setup: TSetupInfo;
+  setup?: TSetupInfo;
   packages?: TPackagesSetup;
-  repos: TReposSetup;
+  repos?: TReposSetup;
 }
 
 export type TUseCases = {
@@ -569,7 +639,7 @@ export type TControllerOfModule = {
   [ControllerClassName: string]: TRestControllerDefinitions | TGraphQLControllerInstances;
 };
 
-export const repoSupportedTypes = ['postgres', 'mysql', 'sqlite', 'mongodb'] as const;
+export const repoSupportedTypes = ['DB.Postgres', 'DB.MySQL', 'DB.SQLite', 'DB.Mongo'] as const;
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
 
 export type TReposSetup = {
@@ -704,7 +774,7 @@ export interface IServer {
 
 type TResolvers = TResolver[];
 
-type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
+export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
 
 export type TResolver = {
   boundedContext: string;
@@ -908,4 +978,9 @@ export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
+};
+
+export type TTargetDependenciesTypeScript = {
+  output: string;
+  dependencies: { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
 };

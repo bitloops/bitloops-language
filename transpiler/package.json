@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -11,8 +11,8 @@
     "type": "git",
     "url": "https://github.com/bitloops/bitloops-language"
   },
-  "types": "./lib/cjs/types/index.d.ts",
-  "main": "./lib/cjs/index.js",
+  "types": "./lib/cjs/types/src/index.d.ts",
+  "main": "./lib/cjs/src/index.js",
   "keywords": [
     "bitloops language",
     "bl",
@@ -32,6 +32,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "bitloops-gherkin": "^1.0.2",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "~26.2",
@@ -50,15 +51,16 @@
   },
   "scripts": {
     "clean": "rm -rf ./lib",
-    "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/parser/setup/grammar",
+    "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/src/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/src/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/src/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/src/parser/setup/grammar",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && yarn copy-grammars",
-    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/src/index.js lib/esm/src/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
     "lint": "eslint . --ext .ts --ext .mts --ext .cts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "jest --watch",
     "ts-node-esm": "node --loader ts-node/esm",
+    "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
     "generate-parser-dts": "rimraf src/parser/setup/grammar/Antler*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc src/parser/setup/grammar/Antler*js --declaration --emitDeclarationOnly --allowJs --outDir src/parser/setup/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/setup/grammar/*.d.ts",
     "generate-core-dts": "rimraf src/parser/core/grammar/Bitloops*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc src/parser/core/grammar/Bitloops*js --declaration --emitDeclarationOnly --allowJs --outDir src/parser/core/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/core/grammar/*.d.ts",
     "generate-setup-dts": "rimraf src/parser/setup/grammar/Bitloops*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc src/parser/setup/grammar/Bitloops*js --declaration --emitDeclarationOnly --allowJs --outDir src/parser/setup/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/setup/grammar/*.d.ts",
@@ -76,12 +78,12 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/esm/types/index.d.ts",
-        "default": "./lib/esm/index.mjs"
+        "types": "./lib/esm/types/src/index.d.ts",
+        "default": "./lib/esm/src/index.mjs"
       },
       "require": {
-        "types": "./lib/cjs/types/index.d.ts",
-        "default": "./lib/cjs/index.js"
+        "types": "./lib/cjs/types/src/index.d.ts",
+        "default": "./lib/cjs/src/index.js"
       }
     }
   }

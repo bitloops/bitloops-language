@@ -19,12 +19,14 @@
  */
 import { d } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { getTree } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/BitloopsParser.js';
-import { returnOkErrorType } from '../../../../src/functions/bitloopsLanguageToModel/bitloops-parser/core/bitloopsParserHelpers/returnOkErrorType.js';
+import {
+  BitloopsIntermediateASTParser,
+  BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
+} from '../../../src/index.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/modelFragments/returnOkErrorType.feature',
-);
+const feature = loadFeature('./__tests__/ast/core/returnOkErrorType.feature');
 
 defineFeature(feature, (test) => {
   test('Return OK Error type success', ({ given, when, then }) => {
@@ -36,8 +38,21 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      const subtree = getTree(blString);
-      result = returnOkErrorType(subtree);
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: 'Hello World',
+          module: 'core',
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
     });
 
     then(/^I should get the (.*)$/, (arg0) => {

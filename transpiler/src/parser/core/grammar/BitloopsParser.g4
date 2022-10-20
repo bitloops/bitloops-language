@@ -183,6 +183,7 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
+	| isInstanceOf
     ;
 // regularVariableEvaluation | regularStringEvaluation |
 
@@ -207,8 +208,8 @@ regularVariableEvaluation
     ;
 
 regularMethodEvaluation
-    : ThisVariableEvaluation methodArguments
-    | RegularVariableEvaluation methodArguments
+    : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
+    | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 
 
@@ -239,7 +240,7 @@ regularDTOEvaluation
 
 // | RegularStringEvaluation | RegularBackTicksEvaluation
 field
-    : Optional? (primitives | struct) identifier
+    : Optional? (primitives | struct | valueObjectIdentifier) identifier
     ;
 
 predefinedType
@@ -516,6 +517,7 @@ jestTestDeclaration
     | JestTestStructEvaluation '{' structEvaluation ';'? '}'  ';'?  
     | JestTestDTOEvaluation '{' dtoEvaluation ';'? '}'  ';'?    
     | JestTestEvaluation '{' evaluation ';'? '}'  ';'?  
+	| JestTestIsInstanceOf '{' isInstanceOf '}' ';'?  
     | JestTest '{' regularEvaluation SemiColon? '}' SemiColon?  
     | JestTest '{' formalParameterList '}' SemiColon?   
     | JestTest '{' restControllerParameters '}'     
@@ -535,6 +537,7 @@ jestTestDeclaration
     | JestTestThisDeclaration '{' thisDeclaration '}' SemiColon?
     | JestTestValueObjectEvaluation '{' valueObjectEvaluation '}' SemiColon?
     | JestTestEntityEvaluation '{' entityEvaluation '}' SemiColon?
+    | JestTestBuiltInFunction '{' builtInFunction '}' SemiColon?
     ;
 
 evaluation
@@ -589,6 +592,19 @@ statement
     | arrowFunctionDeclaration
     // | variableStatement
     | typeAliasDeclaration //ADDED
+    | builtInFunction // Using semantic analysis, allow it only inside domain
+    ;
+
+builtInFunction
+    : ApplyRules '(' applyRuleStatementRulesList ')' SemiColon? # ApplyRulesStatement
+    ;
+
+applyRuleStatementRulesList
+    : applyRulesRule (',' applyRulesRule)*
+    ;
+
+applyRulesRule
+    : domainRuleIdentifier arguments
     ;
 
 block
@@ -643,7 +659,7 @@ expressionStatement
     ;
 
 ifStatement
-    : If '(' expression ')' statement (Else statement)?
+    : If '(' condition ')' statement (Else statement)?
     ;
 
 
@@ -698,7 +714,7 @@ withStatement
     ;
 
 switchStatement
-    : Switch '(' expression ')' caseBlock
+    : Switch '(' condition ')' caseBlock
     ;
 
 caseBlock
@@ -775,12 +791,27 @@ aggregateDeclaration
  : Root entityDeclaration
  ;
 
+domainConstDeclaration
+    : constDeclaration
+    ;
+
 entityDeclaration 
-    : Entity entityIdentifier '{' constDeclaration*  domainConstructorDeclaration publicMethodDeclaration* privateMethodDeclaration*  '}' SemiColon?
+    : Entity entityIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}' SemiColon?
 ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier '{' constDeclaration*  domainConstructorDeclaration privateMethodDeclaration* '}' SemiColon?
+    : ValueObject valueObjectIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList '}' SemiColon?
+    ;
+domainConstDeclarationList
+    : domainConstDeclaration*
+    ;
+
+publicMethodDeclarationList
+    : publicMethodDeclaration*
+    ;
+
+privateMethodDeclarationList
+    : privateMethodDeclaration*
     ;
 
 domainConstructorDeclaration
@@ -856,8 +887,8 @@ valueObjectEvaluation
     ;
 
 domainEvaluationInput
-    : '(' '{' evaluationFieldList '}' ')'
-    | '(' regularEvaluation ')'
+    : '(' '{' evaluationFieldList '}' ')'   # DomainEvaluationInputFieldList
+    | '(' regularEvaluation ')'             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -903,13 +934,17 @@ restControllerExecuteDeclaration
     ;
 
 restControllerMethodDeclaration
-    : Method ':' (MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions) SemiColon?
+    : Method ':' httpMethod SemiColon?
+    ;
+    
+httpMethod
+    : MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions
     ;
 
 
 controllerDeclaration
-    : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?
-    | GraphQLController ControllerIdentifier formalParameterList '{' graphQLResolverOptions graphQLControllerExecuteDeclaration '}' SemiColon?
+    : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?   # RESTControllerDeclaration
+    | GraphQLController ControllerIdentifier formalParameterList '{' graphQLResolverOptions graphQLControllerExecuteDeclaration '}' SemiColon?      # GraphQLControllerDeclaration
     ;
 
 graphQLResolverOptions
@@ -1041,12 +1076,12 @@ classExtendsClause
     // | abstractDeclaration     # AbstractMemberDeclaration
 
 methodDeclaration
-    : publicMethodDeclaration            # MethodDeclarationExpression
-    | privateMethodDeclaration           # MethodDeclarationExpression
+    : publicMethodDeclaration            # PublicMethodDeclarationExpression
+    | privateMethodDeclaration           # PrivateMethodDeclarationExpression
     ;
 
 privateMethodDeclaration
-    : Private? identifier formalParameterList? returnPrivateMethodType '{' functionBody '}'                 # PrivatePropertyMethodDeclarationExpression
+    : Private? identifier formalParameterList? returnPrivateMethodType '{' functionBody '}'
     ;
 
 publicMethodDeclaration
@@ -1287,12 +1322,12 @@ assignmentOperator
     ;
 
 literal
-    : NullLiteral
-    | BooleanLiteral
-    | StringLiteral
-    | templateStringLiteral
-    | RegularExpressionLiteral
-    | numericLiteral
+    : NullLiteral               # NullLiteral
+    | BooleanLiteral            # BooleanLiteral
+    | StringLiteral             # StringLiteral
+    | templateStringLiteral     # TemplateStringLiteralLabel
+    | RegularExpressionLiteral  # RegularExpressionLiteral
+    | numericLiteral            # NumericLiteralLabel
     ;
 
 templateStringLiteral
@@ -1307,10 +1342,10 @@ templateStringAtom
 numericLiteral
     : IntegerLiteral        #IntegerLiteral
     | DecimalLiteral        #DecimalLiteral
-    | HexIntegerLiteral     #HexIntegerLiteral
-    | OctalIntegerLiteral   #OctalIntegerLiteral
-    | OctalIntegerLiteral2  #OctalIntegerLiteral2
-    | BinaryIntegerLiteral  #BinaryIntegerLiteral
+    // | HexIntegerLiteral     #HexIntegerLiteral
+    // | OctalIntegerLiteral   #OctalIntegerLiteral
+    // | OctalIntegerLiteral2  #OctalIntegerLiteral2
+    // | BinaryIntegerLiteral  #BinaryIntegerLiteral
     ;
 
 
@@ -1398,3 +1433,7 @@ eos
     // | {this.lineTerminatorAhead()}?
     // | {this.closeBrace()}?
     ;
+
+isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
+
+classTypes: ErrorClass;

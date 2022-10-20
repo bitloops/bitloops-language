@@ -4,7 +4,7 @@
 // import antlr4 from 'antlr4';
 // import BitloopsVisitor from './BitloopsVisitor.js';
 
-export default function main(input: string): void {
+export default function main(_input: string): void {
   // const chars = new antlr4.InputStream(input);
   // const lexer = new BitloopsLexer(chars) as any;
   // const tokens = new antlr4.CommonTokenStream(lexer);

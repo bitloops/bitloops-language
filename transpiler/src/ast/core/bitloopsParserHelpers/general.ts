@@ -1,7 +1,6 @@
 import { getBitloopsModel } from '../BitloopsParser.js';
 
 export const typeAnnotation = (children: any) => {
-  console.log('type children', children);
   return {
     type: children[1].value,
     typeAnnotation: children[0].value,

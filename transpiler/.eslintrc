@@ -20,6 +20,10 @@
     "@typescript-eslint/explicit-function-return-type": "warn",
     "jest/no-standalone-expect": "off",
     "@typescript-eslint/no-namespace": 0,
+    "@typescript-eslint/no-base-to-string": 2,
     "@typescript-eslint/ban-ts-comment": "off"
+  },
+  "parserOptions": {
+    "project": ["tsconfig.json", "tsconfig.esm.json", "tsconfig.cjs.json"]
   }
 }

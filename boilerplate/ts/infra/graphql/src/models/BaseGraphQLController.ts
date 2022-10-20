@@ -23,7 +23,7 @@ import { IBaseController } from './IBaseController';
 export abstract class BaseGraphQLController<TRequest, TResponseData>
   implements IBaseController<TRequest, TResponseData>
 {
-  protected abstract executeImpl(req: TRequest): Promise<TResponseData>;
+  protected abstract executeImpl(req: TRequest): Promise<TResponseData | ApolloError>;
 
   public async execute(req: TRequest): Promise<TResponseData> {
     let result;

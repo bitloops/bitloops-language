@@ -21,3 +21,5 @@ export {
   IBitloopsIntermediateSetupASTParser,
   BitloopsIntermediateSetupASTParserError,
 } from './ast/setup/index.js';
+
+export { BitloopsTargetGenerator } from './target/index.js';

@@ -19,6 +19,7 @@
  */
 // import antlr4 from 'antlr4';
 
+import { ClassTypes } from '../../helpers/mappings.js';
 import { TBoundedContexts } from '../../types.js';
 // import { TGetUseCasesResponse } from '../../parser/bitloopsFilesToString/index.js';
 import {
@@ -79,6 +80,7 @@ const getBitloopsModel = (
   const type = subtree.type;
   const children = subtree.children;
   const numOfChildren = subtree.numOfChildren ? subtree.numOfChildren : 0;
+
   switch (type) {
     case 'sourceElement':
       return getBitloopsModel(children[0]);
@@ -89,30 +91,30 @@ const getBitloopsModel = (
         classModel: { key: 'jestTest', subModel: getBitloopsModel(children[2]) },
       };
     case 'dtoDeclaration':
-      return { classType: 'DTOs', classModel: dtoDeclaration(children) };
+      return { classType: ClassTypes.DTOs, classModel: dtoDeclaration(children) };
     case 'domainErrorDeclaration':
       return {
-        classType: 'DomainErrors',
+        classType: ClassTypes.DomainErrors,
         classModel: domainAndApplicationErrorDeclaration(children),
       };
     case 'applicationErrorDeclaration':
       return {
-        classType: 'ApplicationErrors',
+        classType: ClassTypes.ApplicationErrors,
         classModel: domainAndApplicationErrorDeclaration(children),
       };
     case 'useCaseDeclaration':
       return {
-        classType: 'UseCases',
+        classType: ClassTypes.UseCases,
         classModel: useCaseDeclaration(subtree),
       };
     case 'packagePortDeclaration':
       return {
-        classType: 'Packages',
+        classType: ClassTypes.Packages,
         classModel: packagePortDeclaration(subtree),
       };
     case 'aggregateDeclaration':
       return {
-        classType: 'Aggregates',
+        classType: ClassTypes.RootEntities,
         classModel: aggregateDeclaration(subtree),
       };
     case 'useCaseExecuteDeclaration':
@@ -128,7 +130,7 @@ const getBitloopsModel = (
     case 'objectLiteral':
       return objectLiteral(children);
     case 'controllerDeclaration':
-      return { classType: 'Controllers', classModel: controllerDeclaration(children) };
+      return { classType: ClassTypes.Controllers, classModel: controllerDeclaration(children) };
     case 'restControllerExecuteDeclaration':
       return { execute: restControllerExecuteDeclaration(children) };
     case 'formalParameterList':
@@ -140,7 +142,7 @@ const getBitloopsModel = (
     case 'statement':
       return statement(children, contextSourceElement);
     case 'structDeclaration':
-      return { classType: 'Structs', classModel: structDeclaration(children) };
+      return { classType: ClassTypes.Structs, classModel: structDeclaration(children) };
     case 'restControllerParameters':
       return restControllerParameters(children);
     case 'regularEvaluation':
@@ -201,12 +203,12 @@ const getBitloopsModel = (
       return restControllerMethodDeclaration(children);
     case 'valueObjectDeclaration':
       return {
-        classType: 'ValueObjects',
+        classType: ClassTypes.ValueObjects,
         classModel: valueObjectDeclaration(subtree),
       };
     case 'entityDeclaration':
       return {
-        classType: 'Entities',
+        classType: ClassTypes.Entities,
         classModel: entityDeclaration(subtree),
       };
     case 'domainConstructorDeclaration':
@@ -220,7 +222,7 @@ const getBitloopsModel = (
     case 'returnPublicMethodType':
       return returnPublicMethodType(subtree);
     case 'repoPortDeclaration':
-      return { classType: 'RepoPorts', classModel: repoPortDeclaration(subtree) };
+      return { classType: ClassTypes.RepoPorts, classModel: repoPortDeclaration(subtree) };
     case 'valueObjectEvaluation':
       return valueObjectEvaluation(subtree);
     case 'evaluationFieldList':
