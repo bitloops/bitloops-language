@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TApplicationErrors,
   TApplicationError,
@@ -30,70 +29,58 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const applicationErrorsToTargetLanguage = (
   applicationErrors: TApplicationErrors,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const applicationErrorsNames = Object.keys(applicationErrors);
   let result = 'export namespace ApplicationErrors {';
+  let dependencies;
   for (let i = 0; i < applicationErrorsNames.length; i++) {
     const applicationErrorName = applicationErrorsNames[i];
     const applicationError = applicationErrors[applicationErrorName];
-    result += applicationErrorToTargetLanguage(
+    const applicationErrorToTargetLang = applicationErrorToTargetLanguage(
       applicationError,
       applicationErrorName,
-      targetLanguage,
     );
+    result += applicationErrorToTargetLang.output;
+    dependencies = [...dependencies, ...applicationErrorToTargetLang.dependencies];
   }
   result += '}';
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies };
 };
 
 const applicationErrorToTargetLanguage = (
   variable: TApplicationError,
   applicationErrorName: string,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
-  const messageResult = messageToTargetLanguage(message, targetLanguage);
+  const messageResult = messageToTargetLanguage(message);
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
     value: errorId,
-    targetLanguage,
   });
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameters ?? [],
-    targetLanguage,
   });
 
-  const applicationErrorLangMapping: any = {
-    [SupportedLanguages.TypeScript]: (
-      errorName: string,
-      message: string,
-      errorId: string,
-      parameters: string,
-    ) => {
-      let result = `export class ${errorName} extends ApplicationError { constructor`;
-      result += parameters;
-      result += '{ super(';
-      result += message;
-      result += ', ';
-      result += errorId;
-      result += '); }}';
-      return result;
-    },
+  let result = `export class ${applicationErrorName} extends ApplicationError { constructor`;
+  result += parametersResult.output;
+  result += '{ super(';
+  result += messageResult.output;
+  result += ', ';
+  result += errorIdResult.output;
+  result += '); }}';
+  return {
+    output: result,
+    dependencies: [
+      ...parametersResult.dependencies,
+      ...messageResult.dependencies,
+      ...errorIdResult.dependencies,
+    ],
   };
-
-  return applicationErrorLangMapping[targetLanguage](
-    applicationErrorName,
-    messageResult,
-    errorIdResult,
-    parametersResult,
-  );
 };
 
 const messageToTargetLanguage = (
   message: TString | TBackTickString,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const messageType = Object.keys(message)[0];
   const messageTypesMapping = {
@@ -104,7 +91,6 @@ const messageToTargetLanguage = (
   const messageResult = modelToTargetLanguage({
     type: messageTypesMapping[messageType],
     value: message,
-    targetLanguage,
   });
   return messageResult;
 };
