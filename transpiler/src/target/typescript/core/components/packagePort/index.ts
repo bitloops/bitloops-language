@@ -17,24 +17,20 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TPackagePort, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const packagePortToTargetLanguage = (
   variable: TPackagePort,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  if (targetLanguage === SupportedLanguages.TypeScript) {
-    let res = `export interface ${variable.name} `;
-    res += '{';
-    res += modelToTargetLanguage({
-      type: BitloopsTypesMapping.TDefinitionMethods,
-      value: variable.definitionMethods,
-      targetLanguage,
-    });
-    res += '}';
-    return { output: res, dependencies: [] };
-  } else throw new Error(`Unimplemented for language: ${targetLanguage}`);
+  let res = `export interface ${variable.name} `;
+  res += '{';
+  const model = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TDefinitionMethods,
+    value: variable.definitionMethods,
+  });
+  res += model.output;
+  res += '}';
+  return { output: res, dependencies: model.dependencies };
 };

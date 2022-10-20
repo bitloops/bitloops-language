@@ -17,34 +17,25 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { TPackages, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const packagesToTypescriptTargetLanguage = (
-  variable: TPackages,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+const packagesToTypescriptTargetLanguage = (variable: TPackages): TTargetDependenciesTypeScript => {
   let res = '';
+  let dependencies = [];
   for (const packageData of Object.values(variable)) {
     const { port } = packageData;
-    res += modelToTargetLanguage({
+    const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TPackagePort,
       value: port,
-      targetLanguage,
     });
+    res += model.output;
+    dependencies = [...dependencies, ...model.dependencies];
   }
-  return { output: res, dependencies: [] };
+  return { output: res, dependencies };
 };
 
-const packagesToTargetLanguageMapping = {
-  [SupportedLanguages.TypeScript]: packagesToTypescriptTargetLanguage,
-};
-
-export const packagesToTargetLanguage = (
-  variable: TPackages,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
-  return packagesToTargetLanguageMapping[targetLanguage](variable, targetLanguage);
+export const packagesToTargetLanguage = (variable: TPackages): TTargetDependenciesTypeScript => {
+  return packagesToTypescriptTargetLanguage(variable);
 };
