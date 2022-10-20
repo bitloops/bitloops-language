@@ -135,22 +135,21 @@ import {
 const modelToTargetLanguage = (props: {
   type: string;
   value: any;
-  targetLanguage?: string;
   contextData?: TContextData;
   setupData?: ISetupData;
   model?: TBoundedContexts;
 }): TTargetDependenciesTypeScript => {
   const { type, value, contextData, setupData, model } = props;
-  let targetLanguage;
-  if (!props.targetLanguage) {
-    targetLanguage = SupportedLanguages.TypeScript;
-  } else {
-    targetLanguage = props.targetLanguage;
-  }
+  // let targetLanguage;
+  // if (!props.targetLanguage) {
+  //   targetLanguage = SupportedLanguages.TypeScript;
+  // } else {
+  //   targetLanguage = props.targetLanguage;
+  // }
 
-  if (!isLanguageSupported(targetLanguage)) {
-    throw new Error(`Language ${targetLanguage} is not supported`);
-  }
+  // if (!isLanguageSupported(targetLanguage)) {
+  //   throw new Error(`Language ${targetLanguage} is not supported`);
+  // }
 
   let res: TTargetDependenciesTypeScript;
   switch (type) {
@@ -306,7 +305,6 @@ const modelToTargetLanguage = (props: {
       res = valueObjectsToTargetLanguage({
         valueObjects: value,
         model,
-        targetLanguage,
         contextData,
       });
       break;
@@ -317,12 +315,7 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TRESTController: {
       if (contextData && setupData?.controllers) {
-        res = restControllersToTargetLanguage(
-          value,
-          targetLanguage,
-          contextData,
-          setupData?.controllers,
-        );
+        res = restControllersToTargetLanguage(value, contextData, setupData?.controllers);
       } else {
         throw new Error('Missing context data and/or controllers');
       }

@@ -1,12 +1,12 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { TModule, TDomainMethods, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { SupportedLanguages } from '../../../../supportedLanguages.js';
 
 export const generateGetters = (
   propsName: string,
   model: TModule,
   methods: TDomainMethods,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { Props } = model;
 
@@ -22,7 +22,7 @@ export const generateGetters = (
         const { type, name } = propVariable;
         let returnType = type;
         if (isBitloopsPrimitive(returnType)) {
-          returnType = bitloopsTypeToLangMapping[targetLanguage](returnType);
+          returnType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](returnType);
         }
         const getterName = name;
         //TODO skip if already there
