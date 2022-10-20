@@ -13,19 +13,20 @@ import {
 
 const singleExpressionToTargetLanguage = (
   value: TSingleExpression,
-  language: string,
 ): TTargetDependenciesTypeScript => {
   if (isLogicalSingleExpression(value.expression)) {
+    const model = logicalSingleExpressionToTargetLanguage(value.expression);
     return {
-      output: logicalSingleExpressionToTargetLanguage(value.expression, language),
-      dependencies: [],
+      output: model.output,
+      dependencies: model.dependencies,
     };
   }
 
   if (isLiteralSingleExpression(value.expression)) {
+    const model = literalSingleExpressionToTargetLanguage(value.expression);
     return {
-      output: literalSingleExpressionToTargetLanguage(value.expression, language),
-      dependencies: [],
+      output: model.output,
+      dependencies: model.dependencies,
     };
   }
 
@@ -41,9 +42,11 @@ const singleExpressionToTargetLanguage = (
     const evaluatedLiteral = modelToTargetLanguage({
       type: BitloopsTypesMapping.TSingleExpression,
       value: expression,
-      targetLanguage: language,
     });
-    return { output: `process.env.${envVariable.value} || ${evaluatedLiteral}`, dependencies: [] };
+    return {
+      output: `process.env.${envVariable.value} || ${evaluatedLiteral.output}`,
+      dependencies: evaluatedLiteral.dependencies,
+    };
   }
   if (isEnvironmentVariableExpression(value.expression)) {
     const rawValue = value.expression.envVariable.value.replace(/env\./g, '');
