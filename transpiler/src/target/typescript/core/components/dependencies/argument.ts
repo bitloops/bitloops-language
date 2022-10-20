@@ -38,7 +38,7 @@ const argumentDependenciesToTargetLanguage = (
       }).output;
       dependencies = [
         ...dependencies,
-        modelToTargetLanguage({
+        ...modelToTargetLanguage({
           type: 'TArgumentDependency',
           value: argument,
         }).dependencies,
