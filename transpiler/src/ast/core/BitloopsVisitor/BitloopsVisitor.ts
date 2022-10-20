@@ -102,6 +102,7 @@ import {
   applyRulesStatementVisitor,
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
+  isInstanceOfVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -355,11 +356,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIfStatement(ctx: BitloopsParser.IfStatementContext) {
     // console.log('IfStatement');
-    const condition = this.visit(ctx.expression());
+    const condition = this.visit(ctx.condition());
     const thenStatements = this.visit(ctx.statement(0));
     const returnObject = {
       ifStatement: {
-        condition: condition,
+        ...condition,
         thenStatements: thenStatements.statements,
       },
     };
@@ -453,11 +454,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitSwitchStatement(ctx: BitloopsParser.SwitchStatementContext) {
     // console.log('SwitchStatement');
-    const expressionObject = this.visit(ctx.expression());
+    const expressionObject = this.visit(ctx.condition());
     const caseObject = this.visit(ctx.caseBlock());
     const returnObject = {
       switchStatement: {
-        expression: expressionObject.expression,
+        expression: expressionObject.condition.expression,
         cases: caseObject.cases,
         defaultCase: caseObject.defaultCase,
       },
@@ -819,5 +820,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitApplyRulesRule(ctx: BitloopsParser.ApplyRulesRuleContext): any {
     return applyRulesRuleVisitor(this, ctx);
+  }
+  
+  visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+    return isInstanceOfVisitor(this, ctx);
+  }
+
+  visitClassTypes(ctx: BitloopsParser.ClassTypesContext): any {
+    return ctx.ErrorClass().getText();
   }
 }
