@@ -20,7 +20,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
   };
 
   for (const statement of statements) {
-    if (isStatmentThisDeclaration(statement)) {
+    if (isStatementThisDeclaration(statement)) {
       statementsResult.thisStatements.push(statement);
     } else {
       statementsResult.restStatements.push(statement);
@@ -85,6 +85,6 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
   };
 };
 
-const isStatmentThisDeclaration = (statement: TStatement): boolean => {
+const isStatementThisDeclaration = (statement: TStatement): boolean => {
   return Object.keys(statement)[0] === THIS_STATEMENT_DECLARATION;
 };

@@ -32,23 +32,19 @@ const argumentDependenciesToTargetLanguage = (
   let result = '(';
   if (variable) {
     for (const [index, argument] of variable.entries()) {
-      result += modelToTargetLanguage({
+      const model = modelToTargetLanguage({
         type: 'TArgumentDependency',
         value: argument,
-      }).output;
-      dependencies = [
-        ...dependencies,
-        ...modelToTargetLanguage({
-          type: 'TArgumentDependency',
-          value: argument,
-        }).dependencies,
-      ];
+      });
+      result += model.output;
+      dependencies = [...dependencies, ...model.dependencies];
       if (index < variable.length - 1) {
         result += ',';
       }
     }
   }
   result += ')';
+  console.log('result', result, 'variable', variable);
   return { output: result, dependencies };
 };
 
