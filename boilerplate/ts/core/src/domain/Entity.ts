@@ -14,18 +14,18 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { UniqueEntityID } from './UniqueEntityID';
+import { UUIDv4 } from './UUIDv4';
 
 const isEntity = (v: any): v is Entity<any> => {
   return v instanceof Entity;
 };
 
 export abstract class Entity<T> {
-  protected readonly _id: UniqueEntityID;
+  protected readonly _id: UUIDv4;
   public readonly props: T;
 
-  constructor(props: T, id?: UniqueEntityID) {
-    this._id = id ? id : new UniqueEntityID();
+  constructor(props: T, id?: UUIDv4) {
+    this._id = id ? id : new UUIDv4();
     this.props = props;
   }
 

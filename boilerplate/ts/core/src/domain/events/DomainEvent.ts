@@ -17,19 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { UniqueEntityID } from '../UniqueEntityID';
+import { UUIDv4 } from '../UUIDv4';
 import { Event } from './Event';
 import { IDomainEvent } from './IDomainEvent';
 
 export class DomainEvent extends Event implements IDomainEvent {
-  private aggregateId: UniqueEntityID;
+  private aggregateId: UUIDv4;
 
-  constructor(
-    eventName: string,
-    fromContextId: string,
-    aggregateId: UniqueEntityID,
-    uuid?: string,
-  ) {
+  constructor(eventName: string, fromContextId: string, aggregateId: UUIDv4, uuid?: string) {
     super(eventName, fromContextId, uuid);
     this.aggregateId = aggregateId;
   }

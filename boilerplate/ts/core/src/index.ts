@@ -13,7 +13,7 @@ import {
 import { IMQ as IMQImport } from './application/mq/IMQ';
 import { IRule as IRuleImport } from './domain/IRule';
 import { applyRules as applyRulesImport } from './domain/applyRule';
-import { UniqueEntityID } from './domain/UniqueEntityID';
+import { UUIDv4 as UUIDv4Import } from './domain/UUIDv4';
 import { ValueObject as ValueObjectImport, ValueObjectProps } from './domain/ValueObject';
 import { ReadModel as ReadModelImport } from './domain/ReadModel';
 import { EventBus as EventBusImport } from './infra/event-bus';
@@ -25,7 +25,7 @@ namespace Domain {
   export class Entity<T> extends EntityImport<T> {}
   export class ValueObject<T extends ValueObjectProps> extends ValueObjectImport<T> {}
   export class ReadModel<T> extends ReadModelImport<T> {}
-  export class UUIDv4 extends UniqueEntityID {}
+  export class UUIDv4 extends UUIDv4Import {}
   export type IRule = IRuleImport;
   export const applyRules = applyRulesImport;
 }
