@@ -47,7 +47,6 @@ defineFeature(feature, (test) => {
       result = modelToTargetLanguage({
         type: buildInFuncType,
         value: buildInFunctionValue,
-        targetLanguage: language,
       });
     });
 

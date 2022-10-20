@@ -795,10 +795,7 @@ start();
     }
     // setupData.bitloopsModel = bitloopsModel;
     // TODO Prettier this string
-    const serverContent = graphQLSetupDataToTargetLanguage(
-      setupData,
-      SupportedLanguages.TypeScript,
-    );
+    const serverContent = graphQLSetupDataToTargetLanguage(setupData);
     return formatToLang(importsString + serverContent.output, SupportedLanguages.TypeScript);
   }
 }

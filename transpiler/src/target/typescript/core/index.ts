@@ -63,7 +63,6 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
                 value: { [componentName]: component },
                 setupData,
                 contextData,
-                targetLanguage,
                 model: intermediateAST,
               });
 
