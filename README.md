@@ -1,4 +1,4 @@
-![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-header.png)
+![Bitloops]([https://storage.googleapis.com/bitloops-github-assets/bitloops-language-header.png](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-cover-oct22.png))
 
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start)">Quick Start</a> |
