@@ -17,8 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import {
   TSwitchStatement,
   TRegularCase,
@@ -31,36 +29,31 @@ import { switchRegularCasesToTargetLanguage, switchDefaultCaseToTargetLanguage }
 
 const switchStatementToTargetLanguage = (
   variable: TSwitchStatement,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   if (!variable.switchStatement) {
-    throw new Error(`Invalid switch statement: ${variable}`);
+    throw new Error(`Invalid switch statement: ${JSON.stringify(variable.switchStatement)}`);
   }
   const { expression, cases, defaultCase } = variable.switchStatement;
   const expressionStr = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpressionValues,
     value: expression,
-    targetLanguage,
   });
-  const switchStatementLangMapping: Record<
-    string,
-    (expression: string, cases: TRegularCase[], defaultCase: TDefaultCase) => string
-  > = {
-    [SupportedLanguages.TypeScript]: (
-      expression: string,
-      cases: TRegularCase[],
-      defaultCase: TDefaultCase,
-    ) => {
-      return `switch(${expression}) {${switchRegularCasesToTargetLanguage(
-        cases,
-        targetLanguage,
-      )} ${switchDefaultCaseToTargetLanguage(defaultCase, targetLanguage)}}`;
-    },
+  const switchStatementLangMapping = (
+    expression: string,
+    cases: TRegularCase[],
+    defaultCase: TDefaultCase,
+  ): TTargetDependenciesTypeScript => {
+    const switchRegularCasesToTargetLang = switchRegularCasesToTargetLanguage(cases);
+    const switchDefaultCaseToTargetLang = switchDefaultCaseToTargetLanguage(defaultCase);
+    return {
+      output: `switch(${expression}) {${switchRegularCasesToTargetLang.output} ${switchDefaultCaseToTargetLang.output}}`,
+      dependencies: [
+        ...switchRegularCasesToTargetLang.dependencies,
+        ...switchDefaultCaseToTargetLang.dependencies,
+      ],
+    };
   };
-  return {
-    output: switchStatementLangMapping[targetLanguage](expressionStr.output, cases, defaultCase),
-    dependencies: [],
-  };
+  return switchStatementLangMapping(expressionStr.output, cases, defaultCase);
 };
 
 export { switchStatementToTargetLanguage };
