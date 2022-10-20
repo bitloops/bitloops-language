@@ -24,7 +24,6 @@ import { TOkErrorReturnType, TTargetDependenciesTypeScript } from '../../../../t
 
 const okErrorReturnTypeToTargetLanguage = (
   variable: TOkErrorReturnType,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   if (!variable.ok) {
     throw new Error('Return okError type must have ok property');
@@ -33,19 +32,17 @@ const okErrorReturnTypeToTargetLanguage = (
 
   let returnOkType = ok;
   if (isBitloopsPrimitive(returnOkType)) {
-    returnOkType = bitloopsTypeToLangMapping[targetLanguage](returnOkType);
+    returnOkType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](returnOkType);
   }
 
-  const LanguageMapping = {
-    [SupportedLanguages.TypeScript]: (ok: string, errors: string[]): string => {
-      if (errors && errors.length != 0) {
-        return `XOR<${ok}, ${errors.join(' | ')}>`;
-      } else {
-        return `XOR<${ok}, never>`;
-      }
-    },
+  const xor = (ok: string, errors: string[]): string => {
+    if (errors && errors.length != 0) {
+      return `XOR<${ok}, ${errors.join(' | ')}>`;
+    } else {
+      return `XOR<${ok}, never>`;
+    }
   };
-  return { output: LanguageMapping[targetLanguage](returnOkType, errors), dependencies: [] };
+  return { output: xor(returnOkType, errors), dependencies: [] };
 };
 
 export { okErrorReturnTypeToTargetLanguage };
