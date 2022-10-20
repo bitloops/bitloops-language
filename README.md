@@ -49,7 +49,7 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 * Modular Monolith or Microservices architecture? Both! Switch back and forth within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
 * Significantly reduce the amount of boilerplate code you need to write and maintain
 * Ensure alignment between business and engineering with a natural ubiquitous language
-* Transpiles to widely used programming languages for maximum compatibility with existing code (currently only [TypeScript](https://github.com/microsoft/TypeScript) support, Java, C#, C++ or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the future)
+* Transpiles to widely used programming languages for maximum compatibility with existing code (currently only [TypeScript](https://github.com/microsoft/TypeScript) support, Go, Java, C#, C++ or maybe even Rust or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the future)
 
 ## Why build the Bitloops Language?
 
