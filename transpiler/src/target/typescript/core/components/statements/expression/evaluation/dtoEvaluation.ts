@@ -22,16 +22,12 @@ import { TDTOEvaluation, TTargetDependenciesTypeScript } from '../../../../../..
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-const DTOEvaluationToTargetLanguage = (
-  variable: TDTOEvaluation,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
+const DTOEvaluationToTargetLanguage = (variable: TDTOEvaluation): TTargetDependenciesTypeScript => {
   const dtoProperties = variable.dto.fields;
 
   return modelToTargetLanguage({
     type: BitloopsTypesMapping.TEvaluationFields,
     value: dtoProperties,
-    targetLanguage,
   });
 };
 

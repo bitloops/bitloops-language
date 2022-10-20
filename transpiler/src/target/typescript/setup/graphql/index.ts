@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../helpers/supportedLanguages.js';
 import {
   IAddResolversToServer,
   IServer,
@@ -39,7 +38,6 @@ import { AllResolvers, ResolversBuilder, ResolverValues, SchemaBuilder } from '.
  */
 const graphQLSetupDataToTargetLanguage = (
   setupData: TGraphQLSetupData,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { servers, resolvers, addResolversToServer, bitloopsModel } = setupData;
 
@@ -49,21 +47,19 @@ const graphQLSetupDataToTargetLanguage = (
     const { boundedContext, module } = resolver;
     const DTOs = bitloopsModel[boundedContext][module].DTOs;
     const resolverVariable = resolver.operationName;
-    const resolverValues = prepareSchemaAndHandlersOfResolver(resolver, DTOs, targetLanguage);
+    const resolverValues = prepareSchemaAndHandlersOfResolver(resolver, DTOs);
     resolversSchemasAndHandlers[resolverVariable] = resolverValues;
   }
 
   // console.log('allResolvers:', allResolvers);
   // console.log('========================');
   let codeForAllServers = '';
+  let dependencies = [];
   for (const server of servers) {
     // const typeDefsString = schemaString.replace(/\r?|\r/g, '');
-    codeForAllServers += generateServerCode(
-      server,
-      addResolversToServer,
-      resolversSchemasAndHandlers,
-      targetLanguage,
-    );
+    const result = generateServerCode(server, addResolversToServer, resolversSchemasAndHandlers);
+    codeForAllServers += result.output;
+    dependencies = [...dependencies, ...result.dependencies];
   }
   console.log('-----------------------------');
   return { output: codeForAllServers, dependencies: [] };
@@ -73,7 +69,6 @@ const generateServerCode = (
   server: IServer,
   addResolversToServer: IAddResolversToServer[],
   resolversSchemasAndHandlers: AllResolvers,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   let resultString = '';
 
@@ -86,18 +81,10 @@ const generateServerCode = (
   const typeDefsName = `${server.name}TypeDefs`;
   const resolversMapName = `${server.name}Resolvers`;
 
-  const typeDefsToTargetLanguage = generateGraphQLSchema(
-    resolversOfInterest,
-    typeDefsName,
-    targetLanguage,
-  );
-  const resolversMapString = generateGraphQLResolverHandlers(
-    resolversOfInterest,
-    resolversMapName,
-    targetLanguage,
-  );
+  const typeDefsToTargetLanguage = generateGraphQLSchema(resolversOfInterest, typeDefsName);
+  const resolversMapString = generateGraphQLResolverHandlers(resolversOfInterest, resolversMapName);
 
-  resultString += typeDefsToTargetLanguage + '' + resolversMapString;
+  resultString += typeDefsToTargetLanguage.output + '' + resolversMapString.output;
   const { name, port } = server;
 
   const result = `const ${name} = new ApolloServer({ typeDefs: ${typeDefsName}, resolvers: ${resolversMapName} }); server.listen({ port: ${port} });`;
@@ -105,12 +92,7 @@ const generateServerCode = (
   return { output: resultString, dependencies: [] };
 };
 
-const prepareSchemaAndHandlersOfResolver = (
-  resolver: TResolver,
-  dtos: TDTO,
-  targetLanguage: string,
-): ResolverValues => {
-  console.log('targetLanguage', targetLanguage);
+const prepareSchemaAndHandlersOfResolver = (resolver: TResolver, dtos: TDTO): ResolverValues => {
   const resolverValues: ResolverValues = {
     typeDefs: {
       inputs: {},
@@ -125,7 +107,7 @@ const prepareSchemaAndHandlersOfResolver = (
   };
 
   const { controller, input, output, operationName } = resolver;
-  const inputType = typeof input === 'string' ? trimDTOSuffix(input) : input;
+  const inputType = (typeof input === 'string' ? trimDTOSuffix(input) : input) as string;
   const outputType = trimDTOSuffix(output);
   const operationTypeMapping = {
     query: 'queries',
@@ -166,16 +148,13 @@ const findResolversOfServer = (
 const generateGraphQLSchema = (
   resolversOfInterest: AllResolvers,
   typeDefsName: string,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  const typeDefsLanguageMapping = {
-    [SupportedLanguages.TypeScript]: (typeDefs: string, typeDefsName: string) =>
-      `const ${typeDefsName} = gql\`${typeDefs}\`;`,
-  };
+  const typeDefsLanguageMapping = (typeDefs: string, typeDefsName: string) =>
+    `const ${typeDefsName} = gql\`${typeDefs}\`;`;
   const mergedSchema = mergeTypeDefs(resolversOfInterest);
   const typeDefsString = buildSchemaString(mergedSchema);
   return {
-    output: typeDefsLanguageMapping[targetLanguage](typeDefsString, typeDefsName),
+    output: typeDefsLanguageMapping(typeDefsString, typeDefsName),
     dependencies: [],
   };
 };
@@ -183,16 +162,11 @@ const generateGraphQLSchema = (
 const generateGraphQLResolverHandlers = (
   resolversOfInterest: AllResolvers,
   resolversMapName: string,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const mergedResolversMap = mergeHandlers(resolversOfInterest);
 
   // const resolversMapName = `${server.name}Resolvers`;
-  const resolversMapString = buildResolversString(
-    mergedResolversMap,
-    resolversMapName,
-    targetLanguage,
-  );
+  const resolversMapString = buildResolversString(mergedResolversMap, resolversMapName);
   return resolversMapString;
 };
 
@@ -317,31 +291,28 @@ const buildSchemaString = (schema: SchemaBuilder): string => {
 const buildResolversString = (
   resolvers: ResolversBuilder,
   resolversVarName: string,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  const languageMapping = {
-    [SupportedLanguages.TypeScript]: (resolvers: ResolversBuilder) => {
-      let result = `const ${resolversVarName} = {`;
-      if (Object.keys(resolvers.queries).length > 0) {
-        result += '  Query: {';
-        for (const [field, controller] of Object.entries(resolvers.queries)) {
-          result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
-        }
-        result += '  },';
+  const languageMapping = (resolvers: ResolversBuilder) => {
+    let result = `const ${resolversVarName} = {`;
+    if (Object.keys(resolvers.queries).length > 0) {
+      result += '  Query: {';
+      for (const [field, controller] of Object.entries(resolvers.queries)) {
+        result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
       }
-      if (Object.keys(resolvers.mutations).length > 0) {
-        result += '  Mutation: {';
-        for (const [field, controller] of Object.entries(resolvers.mutations)) {
-          result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
-        }
-        result += '  },';
+      result += '  },';
+    }
+    if (Object.keys(resolvers.mutations).length > 0) {
+      result += '  Mutation: {';
+      for (const [field, controller] of Object.entries(resolvers.mutations)) {
+        result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
       }
-      result += '};';
+      result += '  },';
+    }
+    result += '};';
 
-      return result;
-    },
+    return result;
   };
-  return { output: languageMapping[targetLanguage](resolvers), dependencies: [] };
+  return { output: languageMapping(resolvers), dependencies: [] };
 };
 
 const trimDTOSuffix = (typeName: string): string => {
@@ -360,84 +331,3 @@ const dtoToGraphQLMapping = (dto: TDTOValues): string => {
 };
 
 export { graphQLSetupDataToTargetLanguage };
-
-// TODO discuss useCases, controllers di
-// export const data: TGraphQLSetupData = {
-//   servers: [
-//     { type: 'graphql', name: 'server', port: '4002' },
-//     {
-//       type: 'graphql',
-//       name: 'secondServer',
-//       port: '4003',
-//     },
-//   ],
-//   resolvers: [
-//     {
-//       boundedContext: 'bx',
-//       module: 'mod',
-//       operationType: 'query',
-//       operationName: 'hello',
-//       controller: 'helloWorldController',
-//       input: 'HelloWorldRequestDTO',
-//       output: 'HelloWorldResponseDTO',
-//     },
-//     {
-//       boundedContext: 'bx',
-//       module: 'mod',
-//       operationType: 'mutation',
-//       operationName: 'saveHello',
-//       controller: 'saveHelloController',
-//       input: 'SaveHelloRequestDTO',
-//       output: 'HelloWorldResponseDTO',
-//     },
-//   ],
-//   addResolversToServer: [
-//     {
-//       serverName: 'server',
-//       resolver: {
-//         boundedContext: 'bx',
-//         module: 'mod',
-//         name: 'hello',
-//       },
-//     },
-//     {
-//       serverName: 'secondServer',
-//       resolver: {
-//         boundedContext: 'bx',
-//         module: 'mod',
-//         name: 'saveHello',
-//       },
-//     },
-//   ],
-//   DTOs: {
-//     // Referenced DTOs are also needed
-//     HelloWorldRequestDTO: {
-//       fields: [
-//         {
-//           name: 'name',
-//           type: 'string',
-//           optional: false,
-//         },
-//       ],
-//     },
-//     HelloWorldResponseDTO: {
-//       fields: [
-//         {
-//           name: 'message',
-//           type: 'string',
-//           optional: false,
-//         },
-//       ],
-//     },
-//     SaveHelloRequestDTO: {
-//       fields: [
-//         {
-//           name: 'helloToBeSaved',
-//           type: 'string',
-//           optional: false,
-//         },
-//       ],
-//     },
-//   },
-// };
-// console.log(graphQLSetupDataToTargetLanguage(data, SupportedLanguages.TypeScript));
