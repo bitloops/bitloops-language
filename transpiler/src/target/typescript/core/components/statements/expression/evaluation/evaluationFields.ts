@@ -25,35 +25,28 @@ import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const evaluationFieldsToTargetLanguage = (
   properties: TEvaluationFields,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
-  const initializeFieldsLangMapping = {
-    [SupportedLanguages.TypeScript]: {},
-  };
+  let langFields = {};
 
-  let langFields = initializeFieldsLangMapping[targetLanguage];
+  const addToFieldsLangMapping = (fieldsObject, key, value: TTargetDependenciesTypeScript) => ({
+    ...fieldsObject,
+    [key]: value.output,
+  });
 
-  const addToFieldsLangMapping = {
-    [SupportedLanguages.TypeScript]: (fieldsObject, key, value) => ({
-      ...fieldsObject,
-      [key]: value,
-    }),
-  };
-
+  let dependencies = [];
   for (const { name, expression } of properties) {
-    const value = modelToTargetLanguage({
+    const expressionModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpression,
       value: { expression },
     });
-    langFields = addToFieldsLangMapping[targetLanguage](langFields, name, value);
+    langFields = addToFieldsLangMapping(langFields, name, expressionModel);
+    dependencies = [...dependencies, ...expressionModel.dependencies];
   }
 
-  const fieldsFinalLangMapping = {
-    [SupportedLanguages.TypeScript]: (langFields): string => {
-      return `{${Object.keys(langFields)
-        .map((key) => `${key}:${langFields[key]}`)
-        .join(',')}}`;
-    },
+  const fieldsFinalLangMapping = (langFields): string => {
+    return `{${Object.keys(langFields)
+      .map((key) => `${key}:${langFields[key]}`)
+      .join(',')}}`;
   };
-  return { output: fieldsFinalLangMapping[targetLanguage](langFields), dependencies: [] };
+  return { output: fieldsFinalLangMapping(langFields), dependencies };
 };
