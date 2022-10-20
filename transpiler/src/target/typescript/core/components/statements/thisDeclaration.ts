@@ -17,26 +17,23 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
 import { TTargetDependenciesTypeScript, TThisDeclaration } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const thisDeclarationToTargetLanguage = (
   variable: TThisDeclaration,
-  targetLanguage: string,
 ): TTargetDependenciesTypeScript => {
   const { name: variableName, expression } = variable.thisDeclaration;
 
   const expressionResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: { expression },
-    targetLanguage,
   });
 
-  const thisResult = `${variableName} = ${expressionResult}`;
+  const thisResult = `${variableName} = ${expressionResult.output}`;
 
-  return { output: thisResult, dependencies: [] };
+  return { output: thisResult, dependencies: expressionResult.dependencies };
 };
 
 export { thisDeclarationToTargetLanguage };
