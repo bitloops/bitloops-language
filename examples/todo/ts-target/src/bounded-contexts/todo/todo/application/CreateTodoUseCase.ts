@@ -1,28 +1,27 @@
-import { Application, Either, fail, ok } from '@bitloops/bl-boilerplate-core';
+import { Application, Domain, Either, fail, ok } from '@bitloops/bl-boilerplate-core';
 
 import { CreateTodoRequestDTO } from '../dtos/CreateTodoRequestDTO';
-import { Todo } from '../domain/Todo';
-import { TitleVO } from '../domain/Title';
+import { TodoEntity } from '../domain/TodoEntity';
+import { TitleVO } from '../domain/TitleVO';
 import { DomainErrors } from '../domain/DomainErrors';
-import { TodoId } from '../domain/TodoId';
 
 type CreateTodoUseCaseResponse = Either<void, DomainErrors.TitleOutOfBoundsError>;
 
 export class CreateTodoUseCase
   implements Application.IUseCase<CreateTodoRequestDTO, Promise<CreateTodoUseCaseResponse>>
 {
-  private todoRepo: Application.Repo.ICRUDWritePort<Todo, TodoId>;
+  private todoRepo: Application.Repo.ICRUDWritePort<TodoEntity, Domain.UUIDv4>;
 
-  constructor(todoRepo: Application.Repo.ICRUDWritePort<Todo, TodoId>) {
+  constructor(todoRepo: Application.Repo.ICRUDWritePort<TodoEntity, Domain.UUIDv4>) {
     this.todoRepo = todoRepo;
   }
 
   async execute(request: CreateTodoRequestDTO): Promise<CreateTodoUseCaseResponse> {
-    const titleVO = TitleVO.create({ title: request.title });
-    if (titleVO.isFail()) {
-      return fail(titleVO.value);
+    const title = TitleVO.create({ title: request.title });
+    if (title.isFail()) {
+      return fail(title.value);
     }
-    const todo = Todo.create({ title: titleVO.value, completed: false });
+    const todo = TodoEntity.create({ title: title.value, completed: false });
     if (todo.isFail()) {
       return fail(todo.value);
     }

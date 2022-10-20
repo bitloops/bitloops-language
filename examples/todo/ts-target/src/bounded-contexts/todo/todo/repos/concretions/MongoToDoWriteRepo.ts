@@ -1,12 +1,13 @@
-import { Application } from '@bitloops/bl-boilerplate-core';
+import { Application, Domain } from '@bitloops/bl-boilerplate-core';
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
-import { Todo } from '../../domain/Todo';
-import { TodoId } from '../../domain/TodoId';
+import { TodoEntity } from '../../domain/TodoEntity';
 
 const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'todo';
 const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'todos';
 
-export class MongoTodoWriteRepo implements Application.Repo.ICRUDWritePort<Todo, TodoId> {
+export class MongoTodoWriteRepo
+  implements Application.Repo.ICRUDWritePort<TodoEntity, Domain.UUIDv4>
+{
   private collectionName = MONGO_DB_TODO_COLLECTION;
   private dbName = MONGO_DB_DATABASE;
   private collection: Mongo.Collection;
@@ -15,19 +16,19 @@ export class MongoTodoWriteRepo implements Application.Repo.ICRUDWritePort<Todo,
     this.collection = this.client.db(this.dbName).collection(this.collectionName);
   }
 
-  async getById(todoId: TodoId): Promise<Todo> {
+  async getById(todoId: Domain.UUIDv4): Promise<TodoEntity> {
     return (await this.collection.find({
-      _id: todoId.id.toString(),
-    })) as unknown as Todo;
+      _id: todoId.toString(),
+    })) as unknown as TodoEntity;
   }
 
-  async delete(todoId: TodoId): Promise<void> {
+  async delete(todoId: Domain.UUIDv4): Promise<void> {
     await this.collection.deleteOne({
-      _id: todoId.id.toString(),
+      _id: todoId.toString(),
     });
   }
 
-  async save(todo: Todo): Promise<void> {
+  async save(todo: TodoEntity): Promise<void> {
     await this.collection.insertOne({
       _id: todo.id.toString() as unknown as Mongo.ObjectId,
       title: todo.title.title,
@@ -35,7 +36,7 @@ export class MongoTodoWriteRepo implements Application.Repo.ICRUDWritePort<Todo,
     });
   }
 
-  async update(todo: Todo): Promise<void> {
+  async update(todo: TodoEntity): Promise<void> {
     await this.collection.updateOne(
       {
         _id: todo.id.toString(),
