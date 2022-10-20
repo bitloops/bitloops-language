@@ -1,7 +1,7 @@
 import { AppError } from './application/AppError';
 import { UseCase } from './application/UseCase';
 import { RepoError } from './application/RepoError';
-import { CRUDRepoPort } from './application/ICRUDRepoPort';
+import { CRUDReadRepoPort, CRUDRepoPort, CRUDWriteRepoPort } from './application/ICRUDRepoPort';
 import { DomainError } from './domain/DomainError';
 import { Either, fail, ok } from './Either';
 import { AggregateRoot } from './domain/AggregateRoot';
@@ -37,6 +37,8 @@ namespace Application {
   export namespace Repo {
     export class Error extends RepoError {}
     export type ICRUDPort<Aggregate, AggregateId> = CRUDRepoPort<Aggregate, AggregateId>;
+    export type ICRUDReadPort<ReadModel> = CRUDReadRepoPort<ReadModel>;
+    export type ICRUDWritePort<Aggregate, AggregateId> = CRUDWriteRepoPort<Aggregate, AggregateId>;
   }
   export namespace REST {
     export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
