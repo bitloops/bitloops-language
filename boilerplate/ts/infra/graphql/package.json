@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-graphql",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "TypeScript boilerplate code for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
@@ -47,7 +47,8 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "apollo-server": "^3.10.3"
+    "apollo-server": "^3.10.3",
+    "graphql": "^16.6.0"
   },
   "exports": {
     ".": {
