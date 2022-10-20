@@ -32,7 +32,7 @@ const applicationErrorsToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   const applicationErrorsNames = Object.keys(applicationErrors);
   let result = 'export namespace ApplicationErrors {';
-  let dependencies;
+  let dependencies = [];
   for (let i = 0; i < applicationErrorsNames.length; i++) {
     const applicationErrorName = applicationErrorsNames[i];
     const applicationError = applicationErrors[applicationErrorName];

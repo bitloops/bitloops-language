@@ -25,7 +25,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 const propsToTargetLanguage = (props: TProps): TTargetDependenciesTypeScript => {
   const initialPropsLangMapping = (propName: string): string => `export interface ${propName} { `;
   const finalPropsLangMapping = '}';
-  let dependencies;
+  let dependencies = [];
   let result = '';
   const propsKeys = Object.keys(props);
   for (let i = 0; i < propsKeys.length; i++) {

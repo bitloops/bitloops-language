@@ -31,7 +31,7 @@ import { constantVariables, domainPrivateMethod, generateGetters } from '../doma
 const valueObjectMethods = (
   valueObjectMethods: TValueObjectMethods,
 ): TTargetDependenciesTypeScript => {
-  let dependencies;
+  let dependencies = [];
   const result = Object.entries(valueObjectMethods).reduce((acc, [methodName, methodInfo]) => {
     acc += domainPrivateMethod(methodName, methodInfo).output;
     dependencies = [...dependencies, ...domainPrivateMethod(methodName, methodInfo).dependencies];
@@ -56,7 +56,7 @@ const valueObjectsToTargetLanguage = (params: {
     `export class ${voName} extends ValueObject<${propsName}> { `;
 
   let result = '';
-  let dependencies;
+  let dependencies = [];
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
     const propsName = create.parameterDependency.type;

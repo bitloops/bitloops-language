@@ -28,7 +28,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 const argumentDependenciesToTargetLanguage = (
   variable: TArgumentDependencies,
 ): TTargetDependenciesTypeScript => {
-  let dependencies;
+  let dependencies = [];
   let result = '(';
   if (variable) {
     for (const [index, argument] of variable.entries()) {
@@ -49,7 +49,7 @@ const argumentDependenciesToTargetLanguage = (
     }
   }
   result += ')';
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies };
 };
 
 const argumentDependencyToTargetLanguage = (

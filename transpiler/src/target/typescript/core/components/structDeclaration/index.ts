@@ -31,7 +31,7 @@ const structDeclarationToTargetLanguage = (struct: TStructs): TTargetDependencie
   const finalStructLangMapping = '};';
 
   let result = '';
-  let dependencies;
+  let dependencies = [];
   const structKeys = Object.keys(struct);
   for (let i = 0; i < structKeys.length; i++) {
     const structName = structKeys[i];

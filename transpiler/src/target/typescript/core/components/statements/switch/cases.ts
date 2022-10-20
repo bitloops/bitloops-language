@@ -28,7 +28,7 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 const switchRegularCasesToTargetLanguage = (
   variable: TRegularCase[],
 ): TTargetDependenciesTypeScript => {
-  let dependencies;
+  let dependencies = [];
   const switchCases = variable.map((switchCase: TRegularCase) => {
     const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularCase,

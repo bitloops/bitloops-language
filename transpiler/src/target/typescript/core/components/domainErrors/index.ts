@@ -32,7 +32,7 @@ const domainErrorsToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
   let result = 'export namespace DomainErrors {';
-  let dependencies;
+  let dependencies = [];
   for (let i = 0; i < domainErrorsNames.length; i++) {
     const domainErrorName = domainErrorsNames[i];
     const domainError = domainErrors[domainErrorName];

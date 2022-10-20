@@ -24,7 +24,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   let result = '';
-  let dependencies;
+  let dependencies = [];
   const dtoKeys = Object.keys(dto);
   for (let i = 0; i < dtoKeys.length; i++) {
     const dtoName = dtoKeys[i];

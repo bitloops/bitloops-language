@@ -40,7 +40,7 @@ const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeS
 };
 
 const variablesToTargetLanguage = (variable: TVariables): TTargetDependenciesTypeScript => {
-  let dependencies;
+  let dependencies = [];
   const variablesLangMapping = (variables): string => {
     let result = '';
     for (const variable of variables) {
