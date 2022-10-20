@@ -21,3 +21,15 @@ export interface CRUDRepoPort<Aggregate, AggregateId> {
   update(aggregate: Aggregate): Promise<void>;
   delete(aggregateRootId: AggregateId): Promise<void>;
 }
+
+export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
+  getById(aggregateRootId: AggregateId): Promise<Aggregate>;
+  save(aggregate: Aggregate): Promise<void>;
+  update(aggregate: Aggregate): Promise<void>;
+  delete(aggregateRootId: AggregateId): Promise<void>;
+}
+
+export interface CRUDReadRepoPort<ReadModel> {
+  getAll(): Promise<ReadModel[]>;
+  getById(id: string): Promise<ReadModel>;
+}
