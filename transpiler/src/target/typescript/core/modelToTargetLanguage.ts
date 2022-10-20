@@ -406,7 +406,6 @@ const modelToTargetLanguage = (props: {
       res = entitiesToTargetLanguage({
         entities: value,
         model,
-        targetLanguage,
         contextData,
       });
       break;

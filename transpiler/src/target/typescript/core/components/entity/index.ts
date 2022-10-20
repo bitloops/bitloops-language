@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TBoundedContexts,
   TContextData,
@@ -30,58 +29,58 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 
-const entityMethods = (
-  objectValueMethods: TEntityMethods,
-  targetLanguage: string,
-): TTargetDependenciesTypeScript => {
-  return { output: domainMethods(objectValueMethods, targetLanguage), dependencies: [] };
+const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
+  const result = domainMethods(objectValueMethods);
+  return { output: result.output, dependencies: result.dependencies };
 };
 
 const entitiesToTargetLanguage = (params: {
   entities: TEntities;
   model: TBoundedContexts;
-  targetLanguage: string;
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
-  const { entities, model, targetLanguage, contextData } = params;
+  const { entities, model, contextData } = params;
 
   const { boundedContext, module } = contextData;
 
   const modelForContext = model[boundedContext][module];
 
-  const initialObjectValuesLangMapping = {
-    [SupportedLanguages.TypeScript]: (entityName: string, propsName: string) =>
-      `export class ${entityName} extends Entity<${propsName}> { `,
-  };
+  const initialObjectValuesLangMapping = (entityName: string, propsName: string) =>
+    `export class ${entityName} extends Entity<${propsName}> { `;
 
   let result = '';
+  let dependencies = [];
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
     const propsName = create.parameterDependency.type;
 
     if (constantVars) {
       // TODO fix with new model/types
-      result += constantVariables(constantVars as any, targetLanguage);
+      const constantVariablesModel = constantVariables(constantVars as any);
+      result += constantVariablesModel.output;
+      dependencies = [...dependencies, ...constantVariablesModel.dependencies];
     }
 
-    result += initialObjectValuesLangMapping[targetLanguage](entityName, propsName);
+    result += initialObjectValuesLangMapping(entityName, propsName);
 
-    result += modelToTargetLanguage({
+    const entityCreateModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEntityCreate,
       value: create,
-      targetLanguage,
     });
+    result += entityCreateModel.output;
+    dependencies = [...dependencies, ...entityCreateModel.dependencies];
 
-    result += generateGetters(propsName, modelForContext, methods, targetLanguage);
+    const gettersModel = generateGetters(propsName, modelForContext, methods);
+    result += gettersModel.output;
+    dependencies = [...dependencies, ...gettersModel.dependencies];
 
     if (methods) {
-      result += entityMethods(methods, targetLanguage);
+      const entityMethodsModel = entityMethods(methods);
+      result += entityMethodsModel.output;
+      dependencies = [...dependencies, ...entityMethodsModel.dependencies];
     }
 
-    const finalObjValLangMapping: any = {
-      [SupportedLanguages.TypeScript]: '}',
-    };
-    result += finalObjValLangMapping[targetLanguage];
+    result += '}';
   }
 
   return { output: result, dependencies: [] };
