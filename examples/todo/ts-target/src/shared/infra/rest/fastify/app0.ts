@@ -18,8 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-// import formBodyPlugin from '@fastify/formbody';
-// import fastifyCors from '@fastify/cors';
 import { routers } from './api';
 
 const corsOptions = {
