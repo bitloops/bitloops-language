@@ -24,14 +24,15 @@ import { CreateTodoUseCase } from './application/CreateTodoUseCase';
 import { TodoGetAllUseCase } from './application/TodoGetAllUseCase';
 
 import { CreateTodoRESTController } from './driving-adapters/CreateTodoRESTController';
-import { TodoGetAllController } from './driving-adapters/TodoGetAllController';
-import { TodoGetAllGQLController } from './driving-adapters/TodoGetAllGQLController';
+import { TodoGetAllRESTController } from './driving-adapters/GetAllTodoRESTController';
+import { TodoGetAllGQLController } from './driving-adapters/GetAllTodoGQLController';
+
 import client from '../../../shared/infra/db/mongo';
 
 const createTodoRESTController = new CreateTodoRESTController(
   new CreateTodoUseCase(new MongoTodoWriteRepo(client)),
 );
-const todoGetAllController = new TodoGetAllController(
+const todoGetAllController = new TodoGetAllRESTController(
   new TodoGetAllUseCase(new MongoTodoReadRepo(client)),
 );
 const todoGetAllGQLController = new TodoGetAllGQLController(

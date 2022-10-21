@@ -1,5 +1,5 @@
-Rule TitleOutOfBoundsRule ( title: string )  throws DomainErrors.TitleOutOfBoundsError {
-  isBrokenIf  ( title > 150 OR title < 4 ) ;
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title > 150 OR title < 4);
 }
 
 Props TitleProps {
@@ -7,7 +7,7 @@ Props TitleProps {
 }
 
 ValueObject TitleVO {
-  constructor(props: TitleProps): (OK(TitleVO) , Errors(DomainErrors.TitleOutOfBoundsError)) {
+  constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
     applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
