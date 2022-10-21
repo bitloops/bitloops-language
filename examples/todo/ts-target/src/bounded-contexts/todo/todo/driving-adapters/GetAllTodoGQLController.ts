@@ -1,17 +1,17 @@
 import { GraphQL } from '@bitloops/bl-boilerplate-infra-graphql';
-import { TodoGetAllUseCase } from '../application/TodoGetAllUseCase';
+import { GetAllTodoUseCase } from '../application/GetAllTodoUseCase';
 import { TodoReadModel } from '../domain/TodoReadModel';
 
 type TodoGetAllResponseDTO = {
   todos: TodoReadModel[];
 };
 
-export class TodoGetAllGQLController extends GraphQL.BaseController<
+export class GetAllTodoGQLController extends GraphQL.BaseController<
   GraphQL.TRequest<void>,
   TodoGetAllResponseDTO
 > {
-  private useCase: TodoGetAllUseCase;
-  constructor(useCase: TodoGetAllUseCase) {
+  private useCase: GetAllTodoUseCase;
+  constructor(useCase: GetAllTodoUseCase) {
     super();
     this.useCase = useCase;
   }
