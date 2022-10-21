@@ -18,7 +18,7 @@ DomainError TitleOutOfBoundsError(title: string)  {
 }
 
 Props TodoProps {
-  optional UUIDv4 id; // The id name is reserved for entity ids, based on this id, a TodoEntityId class is automatically generated
+  optional UUIDv4 id;
   TitleVO title;
   bool completed;
 }
@@ -29,11 +29,9 @@ ReadModel TodoReadModel {
   bool completed;
 }
 
-
 Root Entity TodoEntity {
   constructor(props: TodoProps): (OK(TodoEntity), Errors()) {}
-  // methods that return OK/Errors are automatically public, if you need a private one that returns OK/Errors
-  // you can add "private" before the method name e.g. private increaseSqftPriceBy
+
   complete(): (OK(void), Errors()) {
     this.completed = true;
   }
