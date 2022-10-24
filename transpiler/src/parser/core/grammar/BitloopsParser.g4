@@ -188,9 +188,8 @@ regularEvaluation
     ;
 // regularVariableEvaluation | regularStringEvaluation |
 
-regularGetClassEvaluation: 
-    regularVariableEvaluation '.' GetClass #GetClassVariableEvaluation
-    | regularMethodEvaluation '.' GetClass #GetClassMethodEvaluation 
+regularGetClassEvaluation:
+    GetClassEvaluation 
     ;
 
 
@@ -530,7 +529,7 @@ jestTestDeclaration
     | JestTest '{' restControllerParameters '}'     
     | JestTest '{' restControllerExecuteDeclaration '}'    
     | JestTest '{' restControllerMethodDeclaration '}'  
-    | JestTestGetClass '{' getClass '}' 
+    | JestTestGetClass '{' regularGetClassEvaluation '}' 
     | JestTestReturnOkErrorType '{' returnOkErrorType '}' SemiColon?    
     | JestTestConstDeclaration '{' constDeclaration '}' SemiColon?  
     | JestTestExpression '{' expression '}' SemiColon?  
@@ -1454,4 +1453,3 @@ isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
 
 classTypes: ErrorClass;
 
-getClass: regularGetClassEvaluation SemiColon? ;

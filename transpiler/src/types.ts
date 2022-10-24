@@ -262,7 +262,11 @@ export type TNotInstanceOf = {
 };
 
 export type TGetClass = {
-  getClass: TRegularEvaluation;
+  getClass: {
+    type: TParam;
+    value: string;
+    argumentDependencies?: TArgumentDependencies; // ArgumentsDependencies, e.g. name
+  };
 };
 
 export type TRegularEvaluation = {

@@ -18,19 +18,21 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
- import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { TGetClass } from '../../../../types.js';
- import BitloopsVisitor from '../BitloopsVisitor.js';
- 
-//result.getClass()
- export const getClassVisitor = (
-   thisVisitor: BitloopsVisitor,
-   ctx: BitloopsParser.GetClassContext,
- ): TGetClass => {
-    const regularGetClassEvaluation = thisVisitor.visit(ctx.regularGetClassEvaluation());
+import BitloopsVisitor from '../BitloopsVisitor.js';
 
-    return {
-        getClass: regularGetClassEvaluation
-    }
- };
- 
+export const regularGetClassEvaluationVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.RegularGetClassEvaluationContext,
+): TGetClass => {
+  const regularVariableEvaluation = ctx.GetClassEvaluation().getText();
+  let index = regularVariableEvaluation.lastIndexOf('.');
+  const variable = regularVariableEvaluation.slice(0, index);
+  return {
+    getClass: {
+      type: 'variable',
+      value: variable,
+    },
+  };
+};
