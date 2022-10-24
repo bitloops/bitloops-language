@@ -46,9 +46,12 @@ import {
   TDomainPublicMethod,
   TRules,
   TBuildInFunction,
+  TEntityValues,
 } from '../../../types.js';
 
 import { BitloopsIntermediateASTParserError } from '../index.js';
+import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
+import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 
 import {
   functionBodyVisitor,
@@ -742,6 +745,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): { Entities: TEntities } {
     return entityDeclarationVisitor(this, ctx);
+  }
+  visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext) {
+    return aggregateDeclarationVisitor(this, ctx);
+  }
+  visitEntityBody(ctx: BitloopsParser.EntityBodyContext): TEntityValues {
+    return entityBodyVisitor(this, ctx);
   }
 
   visitDomainConstDeclarationList(

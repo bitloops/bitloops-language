@@ -788,7 +788,7 @@ domainRuleDeclaration
 ;
 
 aggregateDeclaration
- : Root entityDeclaration
+ : Root Entity entityIdentifier entityBody SemiColon?
  ;
 
 domainConstDeclaration
@@ -796,8 +796,12 @@ domainConstDeclaration
     ;
 
 entityDeclaration 
-    : Entity entityIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}' SemiColon?
+    : Entity entityIdentifier entityBody SemiColon?
 ;
+
+entityBody
+    : '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}'
+    ;
 
 valueObjectDeclaration 
     : ValueObject valueObjectIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList '}' SemiColon?

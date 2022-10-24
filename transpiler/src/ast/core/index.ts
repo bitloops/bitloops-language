@@ -16,6 +16,7 @@ const migratedTypes = [
   'propsDeclaration',
   'valueObjectDeclaration',
   'entityDeclaration',
+  'aggregateDeclaration',
   'domainRuleDeclaration',
 ];
 

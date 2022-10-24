@@ -1,7 +1,8 @@
 import {
+  getAllNextTypesSubtree,
   getNextTypesChildren,
   getNextTypesSubtree,
-  getAllNextTypesSubtree,
+  // getAllNextTypesSubtree,
 } from '../../../utils/index.js';
 import { getBitloopsModel } from '../../BitloopsParser.js';
 import { getConstantDeclarations, getPrivateMethodsObject } from '../domain/helpers.js';

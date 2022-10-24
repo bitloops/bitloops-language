@@ -62,6 +62,7 @@ export { privateMethodDeclarationListVisitor } from './privateMethodDeclarationL
 export { returnPrivateMethodTypeVisitor } from './returnPrivateMethodType.js';
 export { domainConstDeclarationListVisitor } from './domainConstDeclarationList.js';
 export { entityDeclarationVisitor } from './entityDeclaration.js';
+export { aggregateDeclarationVisitor } from './aggregateDeclarationVisitor.js';
 export { publicMethodDeclarationVisitor } from './publicMethodDeclaration.js';
 export { publicMethodDeclarationListVisitor } from './publicMethodDeclarationList.js';
 export { domainRuleDeclarationVisitor, domainRuleBodyVisitor } from './domainRuleDeclaration.js';
