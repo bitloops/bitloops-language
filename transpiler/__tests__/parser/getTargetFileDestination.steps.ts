@@ -178,14 +178,6 @@ defineFeature(feature, (test) => {
           className,
           targetLanguage,
         );
-        console.log({
-          boundedContext,
-          moduleName,
-          classType,
-          className,
-          targetLanguage,
-          result,
-        });
       },
     );
 

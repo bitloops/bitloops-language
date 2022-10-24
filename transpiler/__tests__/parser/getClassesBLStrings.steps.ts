@@ -24,9 +24,7 @@ import {
   getClassesBLStrings,
 } from '../../src/parser/getClassesBLStrings.js';
 
-const feature = loadFeature(
-  './__tests__/features/bitloopsLanguageToModel/getClassesBLStrings.feature',
-);
+const feature = loadFeature('./__tests__/parser/getClassesBLStrings.feature');
 
 defineFeature(feature, (test) => {
   test('Empty string sent', ({ given, when, then }) => {
