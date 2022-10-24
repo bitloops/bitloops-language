@@ -256,6 +256,7 @@ JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
+JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
 
 // Abstract: 'abstract';
@@ -298,11 +299,14 @@ RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
+GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
 // RegularVariableEvaluation:              RegularEvaluationStart RegularEvaluationPart? ('.' RegularEvaluationPart?)*;
 RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
 RegularVariableEvaluation:              RegularEvaluationPart ('.' RegularEvaluationPart)*;
+
+
 
 /// String Literals
 StringLiteral:                 ('"' DoubleStringCharacter* '"'

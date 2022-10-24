@@ -72,3 +72,4 @@ export {
   applyRulesRuleVisitor,
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
+export { getClassEvaluationVisitor } from './getClassEvaluation.js';
