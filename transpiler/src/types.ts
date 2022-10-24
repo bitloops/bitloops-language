@@ -245,7 +245,7 @@ export type TApplicationError = {
   parameters?: TParameterDependencies;
 };
 
-export type TApplicationErrors = Record<string,TApplicationError>;
+export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
   isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
 };

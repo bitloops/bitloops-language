@@ -119,7 +119,6 @@ export type TBitloopsTargetContent = {
   className: TClassName;
   fileContent: TTargetDependenciesTypeScript;
 }[];
-
 export type TBitloopsOutputTargetContent = {
   boundedContext: TBoundedContextName;
   module: TModuleName;
@@ -264,7 +263,7 @@ export type TApplicationError = {
   parameters?: TParameterDependencies;
 };
 
-export type TApplicationErrors = Record<string, TDomainError>;
+export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
   isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
 };

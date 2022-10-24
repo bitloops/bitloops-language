@@ -55,9 +55,11 @@ const domainErrorToTargetLanguage = (
   const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
   const messageText: TString = { string: messageRegularEval.regularEvaluation.value };
   const messageResult = messageToTargetLanguage(messageText);
+  const errorIdRegularEval = (errorId.expression as TEvaluation).evaluation as TRegularEvaluation;
+  const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
-    value: errorId,
+    value: erroIdText,
   });
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
