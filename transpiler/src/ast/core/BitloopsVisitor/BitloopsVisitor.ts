@@ -106,6 +106,7 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
+  domainErrorDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -805,6 +806,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return {
       return: expression,
     };
+  }
+  /**
+   * Errors
+   */
+  visitDomainErrorDeclaration(ctx: BitloopsParser.DomainErrorDeclarationContext) {
+    return domainErrorDeclarationVisitor(this, ctx);
   }
 
   /**

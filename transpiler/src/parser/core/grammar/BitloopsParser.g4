@@ -912,7 +912,7 @@ propsEvaluation
     ;
 
 domainErrorDeclaration
-    : DomainError domainErrorIdentifier formalParameterList? objectLiteral SemiColon?
+    : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 applicationErrorDeclaration

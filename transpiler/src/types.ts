@@ -223,8 +223,8 @@ export type TString = {
 };
 
 export type TDomainError = {
-  message: TBackTickString | TString;
-  errorId: TString;
+  message: TExpression;
+  errorId: TExpression;
   parameters?: TParameterDependencies;
 };
 // TODO finalize TRule
