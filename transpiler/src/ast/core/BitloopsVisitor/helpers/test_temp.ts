@@ -3,18 +3,10 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../../../../index.js';
-// import { TBuildInFunction } from '../../../../types.js';
 
 const blString = ` 
-// JestTestExpression { a OR b AND c OR d }
-JestTestBuiltInFunction { applyRules ( IsValidTitle ( props.title ), isLongName ( props.name )  ) }
+PackagePort GherkinPackagePort { encode(value: string): bytes; } PackagePort ExamplePackagePort { example(value: string): string; } 
 `;
-
-// const model: TBuildInFunction = {
-//   buildInFunction: {
-//     applyRules: [{ name: 'IsValidTitle', arguments: [{ type: 'variable', value: 'props.title' }] }],
-//   },
-// };
 
 const parser = new BitloopsParser();
 const initialModelOutput = parser.parse([
