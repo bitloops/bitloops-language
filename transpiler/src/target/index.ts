@@ -50,7 +50,7 @@ export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
     const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
     if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
     else {
-      console.log('targetContent', targetContent);
+      // console.log('targetContent', targetContent);
       const formattedTargetContent = bitloopsTargetGenerator.formatCode(
         targetContent,
         params.formatterConfig,

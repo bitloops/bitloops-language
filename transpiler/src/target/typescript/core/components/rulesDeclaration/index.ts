@@ -57,15 +57,17 @@ const getErrorStringMapping: any = (
   return errorStringRes;
 };
 
-const getRuleConstructor: any = (parametersString: string) => {
+const getRuleConstructor = (parametersString: string): string => {
   return `constructor${parametersString} {}`;
 };
 
-const getIsBrokenIfMethod: any = (
-  statementsStringWithThis: string,
+const getIsBrokenIfMethod = (
+  statementsStringWithThis: string | null,
   isBrokenConditionStringWithThis: string,
-) => {
-  return `public isBrokenIf(): boolean { ${statementsStringWithThis} return ${isBrokenConditionStringWithThis}; }`;
+): string => {
+  return `public isBrokenIf(): boolean { ${
+    statementsStringWithThis ?? ''
+  } return ${isBrokenConditionStringWithThis}; }`;
 };
 
 export const rulesDeclarationToTargetLanguage = (rules: TRules): TTargetDependenciesTypeScript => {
@@ -86,15 +88,20 @@ export const rulesDeclarationToTargetLanguage = (rules: TRules): TTargetDependen
 };
 
 export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependenciesTypeScript => {
-  let parameters;
+  let parameters: TTargetDependenciesTypeScript;
   if (rule.parameters && rule.parameters.length !== 0) {
     parameters = modelToTargetLanguage({
       type: BitloopsTypesMapping.TParameterDependencies,
       value: rule.parameters,
     });
-  } else parameters = '()';
+  } else {
+    parameters = {
+      output: '()',
+      dependencies: [],
+    };
+  }
 
-  const ruleConstructor = getRuleConstructor(parameters);
+  const ruleConstructor = getRuleConstructor(parameters.output);
   const { error } = rule;
 
   // TODO which params will be inside it?
@@ -118,7 +125,7 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
   // TODO improve this solution - it will have problems with string manipulation
   // add this to isBrokenConditionString and to statementsStringWithThis and constructorParamsWithPrivate
   let isBrokenConditionStringWithThis = isBrokenConditionString;
-  let statementsStringWithThis = statements;
+  let statementsStringWithThis: TTargetDependenciesTypeScript | null = statements;
   let constructorParamsWithPrivate = ruleConstructor;
   if (rule.parameters && rule.parameters.length !== 0) {
     rule.parameters.forEach((ruleParam) => {
@@ -126,10 +133,12 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
         ruleParam.value,
         isBrokenConditionStringWithThis.output,
       );
-      statementsStringWithThis = getStringWithThisBeforeWord(
-        ruleParam.value,
-        statementsStringWithThis.output,
-      );
+      if (statements) {
+        statementsStringWithThis = getStringWithThisBeforeWord(
+          ruleParam.value,
+          statementsStringWithThis.output,
+        );
+      }
       constructorParamsWithPrivate = getStringWithPrivateBeforeWord(
         ruleParam.value,
         constructorParamsWithPrivate,
@@ -138,8 +147,8 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
   }
 
   const isBrokeIfMethod = getIsBrokenIfMethod(
-    statementsStringWithThis,
-    isBrokenConditionStringWithThis,
+    statementsStringWithThis?.output ?? null,
+    isBrokenConditionStringWithThis.output,
   );
   const res = `${constructorParamsWithPrivate}
   ${errorString}
