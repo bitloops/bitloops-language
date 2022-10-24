@@ -21,7 +21,6 @@
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
 import {
-  TBoundedContexts,
   TEvaluationFields,
   TParameterDependency,
   TRegularEvaluation,
@@ -47,9 +46,9 @@ import {
   TRules,
   TBuildInFunction,
   TEntityValues,
+  TModule,
 } from '../../../types.js';
 
-import { BitloopsIntermediateASTParserError } from '../index.js';
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 
@@ -111,14 +110,31 @@ import {
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
-  private _result: TBoundedContexts | BitloopsIntermediateASTParserError;
   // TODO aggregate all individual results (.e.g controllers, props..)
   constructor() {
     super();
   }
 
-  get result(): TBoundedContexts | BitloopsIntermediateASTParserError {
-    return this._result;
+  visitProgram(ctx: BitloopsParser.ProgramContext): any {
+    const children = this.visitChildren(ctx);
+    const result = this.mergeSourceElements(children);
+    return result;
+  }
+
+  private mergeSourceElements(children: any): TModule {
+    const sourceElementsResult = children.map((c) => c[0]);
+    return sourceElementsResult.reduce((acc, sourceElement) => {
+      const classType = Object.keys(sourceElement)[0];
+      if (acc[classType]) {
+        acc[classType] = {
+          ...acc[classType],
+          ...sourceElement[classType],
+        };
+      } else {
+        acc[classType] = sourceElement[classType];
+      }
+      return acc;
+    }, {});
   }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {

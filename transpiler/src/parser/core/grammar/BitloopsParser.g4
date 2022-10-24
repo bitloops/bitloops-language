@@ -491,10 +491,6 @@ program
     // sourceElements? EOF?
     ;
 
-sourceElements
-    : sourceElement+
-    ;
-
 sourceElement
     : dtoDeclaration
     | domainErrorDeclaration
