@@ -17,23 +17,25 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
+
+import { d, decode } from 'bitloops-gherkin';
+
 import {
-  BitloopsParser,
   BitloopsIntermediateASTParser,
-  BitloopsParserError,
   BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
 } from '../../../src/index.js';
 
-const feature = loadFeature('__tests__/ast/core/publicMethodDeclaration.feature');
+const feature = loadFeature('./__tests__/ast/core/builtinStatement.feature');
 
 defineFeature(feature, (test) => {
-  test.skip('Public method declaration is valid', ({ given, when, then }) => {
-    let blString: string;
-    let modelOutput: string;
-    let result: any;
-    given(/^A public method declaration (.*) string$/, (arg0) => {
+  test('builtIn Statement is valid', ({ given, when, then }) => {
+    let blString;
+    let modelOutput;
+    let result;
+    given(/^A valid built-in statement (.*) string$/, (arg0) => {
       blString = d(arg0);
     });
 
@@ -41,8 +43,8 @@ defineFeature(feature, (test) => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Test',
-          module: 'test',
+          boundedContext: 'Hello World',
+          module: 'core',
           fileId: 'testFile.bl',
           fileContents: blString,
         },
@@ -56,8 +58,8 @@ defineFeature(feature, (test) => {
     });
 
     then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      modelOutput = decode(arg0);
+      expect(result).toEqual(JSON.parse(modelOutput));
     });
   });
 });

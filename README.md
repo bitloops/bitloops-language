@@ -1,6 +1,15 @@
-![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-header.png)
-# Bitloops Language (BL): <br/> Quickly build scalable, maintainable & reliable software
-Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language 
+![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-cover-oct22.png)
+
+<p align="center">
+  <a href="https://bitloops.com/docs/bitloops-language/category/quick-start)">Quick Start</a> |
+  <a href="https://bitloops-community.slack.com/)">Slack Community</a> |
+  <a href="https://github.com/bitloops/bitloops-language/discussions)">GitHub Discussions</a> |
+  <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
+  <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
+</p>
+
+# <br/> Build scalable, maintainable & reliable software (faster, much faster)
+Bitloops Language (BL) is a transpiled, high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
 
 <!--
 Part of the Bitloops Language project, under the GPL-3.0 license
@@ -9,6 +18,19 @@ SPDX-License-Identifier: GPL-3.0-only
 The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 -->
 
+> ⚠️ Please keep in mind that the Bitloops Language is in its early stages
+> and under very active development. Expect bugs and limitations.
+> Full backward compatibility is not guaranteed before reaching v1.0.0.
+
+> ⚠️ We recently started a big migration and refactoring from private repos to this one.
+> As a result, there are currently several important open issues that do not allow for
+> proper use of the transpiler. We are working on these and expect to have them resolved
+> before the end of October. Our focus is to refactor the code and document it so that we 
+> be able to accept your contributions. In the meantime, feel free to check out the [examples](https://github.com/bitloops/bitloops-language/tree/main/examples)
+> folder to see an example Bitloops Language project and its generated TypeScript version
+> to get a better feel of what the Bitloops Language can do for you. 
+
+
 <p align="center">
   <a href="#why-build-the-bitloops-language">Why?</a> |
   <a href="#language-goals">Goals</a> |
@@ -16,19 +38,18 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
   <a href="#getting-started">
   <a href="#join-us"></a>
 </p>
-
-> ⚠️ Please keep in mind that the Bitloops Language is in its early stages
-> and under very active development. Expect bugs and limitations.
-> Full backward compatibility is not guaranteed before reaching v1.0.0.
+  
+ ---- 
 
 * High-productivity, [fourth generation (4GL)](https://www.techopedia.com/definition/24308/fourth-generation-programming-language-4gl) transpiled programming language
 * Easy to learn and get started with
-* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) with testing as a 1st class citizen
+* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) 
+* Testing is treated as a 1st class citizen
 * Add different API controllers (REST, GraphQL, gRPC) with just a few lines of code
 * Modular Monolith or Microservices architecture? Both! Switch back and forth within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
 * Significantly reduce the amount of boilerplate code you need to write and maintain
 * Ensure alignment between business and engineering with a natural ubiquitous language
-* Transpiles to widely used programming languages for maximum compatibility with existing code (currently only [TypeScript](https://github.com/microsoft/TypeScript) support, Java, C#, C++ or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the future)
+* Transpiles to widely used programming languages for maximum compatibility with existing code (currently only [TypeScript](https://github.com/microsoft/TypeScript) support, Go, Java, C#, C++ or maybe even Rust or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the future)
 
 ## Why build the Bitloops Language?
 
@@ -106,53 +127,60 @@ If you're interested in contributing, we would love help
 If you are already aware of the DDD concepts (Aggregates, Value Objects, Use Cases, Controller, etc.) and know how to code in any modern programming language, it should be really easy to pick up the Bitloops Language.
 It is built out of a consistent set of language constructs that should feel familiar and be easy to read and understand.
 
-While Bitloops is an Object Oriented Language, it doesn't have a generic class. Specific Bitloops classes are build-in as follows: Aggregate, ValueObject, UseCase, RESTController, GraphQLController, GRPCController, DTO, Props, Config, OK, ApplicationError, DomainError, Error.
+While Bitloops is an Object Oriented Language, it doesn't have a generic class. Specific Bitloops classes are build-in as follows: ValueObject, Entity, Root Entity, UseCase, RESTController, GraphQLController, GRPCController, DTO, Props, Config, OK, ApplicationError, DomainError, Error etc.
 
 Bitloops Langauge code like this (11 lines):
 
 ```node
 // Bitloops Language:
-UseCase HelloWorldUseCase (/* Dependencies such as Repositories, Services, and Packages go here in more complex cases */) {
-  // Every Bitloops UseCase must implement execute and must return OK and Error types (similar to Either)
-  execute(helloWorldRequestDTO: HelloWorldRequestDTO): (OK(HelloWorldResponseDTO), Error(HelloWorldErrors.InvalidName)) {
-    const { name } = helloWorldRequestDTO;
-    if (name) {
-      const nameResult = Name.create({name});
-      return HelloWorldResponseDTO({message: `Hello, ${nameResult.name}!`});
-    } else {
-      return HelloWorldResponseDTO({message: 'Hello, World!'});
-    }
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title > 150 OR title < 4);
+}
+
+Props TitleProps {
+  string title;
+}
+
+ValueObject TitleVO {
+  constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+    applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
 ```
-transpiles to this TypeScript code (25 lines):
+transpiles to this TypeScript code (26 lines):
 ```node
 // TypeScript:
-import { HelloWorldRequestDTO } from './HelloWorldRequestDTO';
-import { XOR, yay, oops } from '../../../../shared/core/Result';
-import { UseCase } from '../../../../shared/core/UseCase';
-import { HelloWorldResponseDTO } from './HelloWorldResponseDTO';
-import { Name } from '../../domain/Name';
-import { DomainErrors } from '../../domain/Errors';
-import * as _ from 'lodash';
+import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
+import { DomainErrors } from './DomainErrors';
+import { TitleOutOfBoundsRule } from './Rules';
 
-type Response = XOR<DomainErrors.InvalidName, HelloWorldResponseDTO>;
+export class TitleOutOfBoundsRule implements Domain.IRule {
+  constructor(private title: string) {}
 
-export class HelloWorldUseCase implements UseCase<HelloWorldRequestDTO, Promise<Response>> {
-  async execute(dto: HelloWorldRequestDTO): Promise<Response> {
-    const { name } = dto;
-    if (!_.isNil(name)) {
-      const nameResult = Name.create({ name });
-      if (!nameResult.isOops()) {
-        const reply = { message: `Hello, ${nameResult.value.name}!` };
-        return yay(reply);
-      } else {
-        return oops(new DomainErrors.InvalidName(name));
-      }
-    } else {
-      const reply = { message: 'Hello, World!' };
-      return yay(reply);
-    }
+  public Error = new DomainErrors.TitleOutOfBoundsError(this.title);
+
+  public isBrokenIf(): boolean {
+    return this.title.length > 150 || this.title.length < 4;
+  }
+}
+
+interface TitleProps {
+  title: string;
+}
+
+export class TitleVO extends Domain.ValueObject<TitleProps> {
+  get title(): string {
+    return this.props.title;
+  }
+
+  private constructor(props: TitleProps) {
+    super(props);
+  }
+
+  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBoundsError> {
+    const res = Domain.applyRules([new TitleOutOfBoundsRule(props.title)]);
+    if (res) return fail(res);
+    return ok(new TitleVO(props));
   }
 }
 ```

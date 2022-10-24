@@ -30,7 +30,7 @@ import {
 const feature = loadFeature('./__tests__/ast/core/aggregateDeclaration.feature');
 
 defineFeature(feature, (test) => {
-  test.skip('Aggregate root declaration is valid', ({ given, when, then }) => {
+  test('Aggregate root declaration is valid', ({ given, when, then }) => {
     let boundedContext: string;
     let module: string;
     let blString: string;

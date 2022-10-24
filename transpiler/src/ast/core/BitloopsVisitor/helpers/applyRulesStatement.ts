@@ -53,8 +53,8 @@ export const applyRulesRuleVisitor = (
   name: string;
   arguments: TArgumentDependencies;
 } => {
-  const ruleIdentifier = thisVisitor.visit(ctx.domainRuleIdentifier());
-  const argumentsRes = thisVisitor.visit(ctx.arguments)[1];
+  const ruleIdentifier = ctx.domainRuleIdentifier().getText();
+  const argumentsRes = thisVisitor.visit(ctx.arguments())[1];
   return {
     name: ruleIdentifier,
     arguments: argumentsRes,

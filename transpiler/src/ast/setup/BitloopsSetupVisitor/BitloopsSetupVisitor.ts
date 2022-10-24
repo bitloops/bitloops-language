@@ -269,9 +269,9 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
    */
   visitGraphQLServerExpression(ctx: BitloopsSetupParser.GraphQLServerExpressionContext): void {
     const port = this.visit(ctx.graphQLServerInstantiationOptions());
-    console.log({ port });
+    // console.log({ port });
     const resolvers: TControllerResolverBind[] = this.visit(ctx.bindControllerResolvers());
-    console.log({ resolvers });
+    // console.log({ resolvers });
 
     // TODO remove partial,  controllerInstance: string is missing
     const serverOptions: TGraphQLServerInstance = {

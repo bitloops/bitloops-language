@@ -76,16 +76,23 @@ Feature: Get target file and destination for class
     Then I should get an error saying that "Class type InvalidClassType is not supported"
 
     Scenario Template: Supported target language and class type
-    Given I have a bounded context called <boundedContext>, a module <module>, a use case <useCase>, a class type <classType>, a class name <className>, and a language <targetLanguage>
+    Given I have a bounded context called <boundedContext>, a module <module>, a class type <classType>, a class name <className>, and a language <targetLanguage>
     When I call the function
     Then I should get a target path called <path>
     Then I should get a filename called <filename>
 
     Examples:
-      | boundedContext | module              | useCase           | classType   | className            | targetLanguage | path                                                           | filename                |
-      | Hello World    | core                |                   | Props       | NameProps            | TypeScript     | ./src/bounded-contexts/hello-world/core/domain/                | NameProps.ts            |
-      | hello  World   | iam                 |                   | Props       | NameProps            | TypeScript     | ./src/bounded-contexts/hello-world/iam/domain/                 | NameProps.ts            |
-      | Hello World    | Async Notifications |                   | ValueObject | Name                 | TypeScript     | ./src/bounded-contexts/hello-world/async-notifications/domain/ | Name.ts                 |
-      | Hello World    | Invoices            |                   | Aggregate   | Member               | TypeScript     | ./src/bounded-contexts/hello-world/invoices/domain/            | Member.ts               |
-      | Hello World    | Core                | My Hello Use Case | Controller  | HelloWorldController | TypeScript     | ./src/bounded-contexts/hello-world/core/infra/                 | HelloWorldController.ts |
-      | Hello World    | core                | My Hello Use Case | UseCase     | HelloWorldUseCase    | TypeScript     | ./src/bounded-contexts/hello-world/core/application/           | HelloWorldUseCase.ts    |
+      | boundedContext | module              | classType    | className            | targetLanguage | path                                                           | filename                |
+      | Hello World    | core                | Props        | NameProps            | TypeScript     | ./src/bounded-contexts/hello-world/core/domain/                | NameProps.ts            |
+      | hello  World   | iam                 | Props        | NameProps            | TypeScript     | ./src/bounded-contexts/hello-world/iam/domain/                 | NameProps.ts            |
+      | Hello World    | Async Notifications | ValueObjects | Name                 | TypeScript     | ./src/bounded-contexts/hello-world/async-notifications/domain/ | Name.ts                 |
+      | Hello World    | Invoices            | RootEntities | Member               | TypeScript     | ./src/bounded-contexts/hello-world/invoices/domain/            | Member.ts               |
+      | Hello World    | Core                | Controllers  | HelloWorldController | TypeScript     | ./src/bounded-contexts/hello-world/core/driving-adapters/      | HelloWorldController.ts |
+      | Hello World    | core                | UseCases     | HelloWorldUseCase    | TypeScript     | ./src/bounded-contexts/hello-world/core/application/           | HelloWorldUseCase.ts    |
+
+
+# | boundedContext | module | classType | className | targetLanguage | path                                            | filename     |
+# | empty          | core   | Props     | NameProps | TypeScript     | ./src/bounded-contexts/hello-world/core/domain/ | NameProps.ts |
+# | null           | core   | Props     | NameProps | TypeScript     | ./src/bounded-contexts/hello-world/core/domain/ | NameProps.ts |
+# | undefined      | core   | Props     | NameProps | TypeScript     | ./src/bounded-contexts/hello-world/core/domain/ | NameProps.ts |
+# | space          | core   | Props     | NameProps | TypeScript     | ./src/bounded-contexts/hello-world/core/domain/ | NameProps.ts |

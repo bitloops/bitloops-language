@@ -16,6 +16,7 @@ const migratedTypes = [
   'propsDeclaration',
   'valueObjectDeclaration',
   'entityDeclaration',
+  'aggregateDeclaration',
   'domainRuleDeclaration',
 ];
 
@@ -28,6 +29,7 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
         for (const classData of Object.values(classes)) {
           if (migratedTypes.includes(classData.deprecatedAST.type)) {
             const bitloopsVisitor = new BitloopsVisitor();
+            // console.log('result::', bitloopsVisitor.visitChildren(classData.initialAST));
             const visitorModel = bitloopsVisitor.visitChildren(classData.initialAST)[0][0];
             partialBoundedContextsData = {
               [boundedContextName]: { [classData.module]: visitorModel },
@@ -56,17 +58,53 @@ const mergeBoundedContextData = (
 ): TBoundedContexts => {
   const result = { ...mainBoundedContextData };
   for (const [boundedContextName, boundedContextData] of Object.entries(newBoundedContextData)) {
-    for (const [classType, classTypeData] of Object.entries(boundedContextData)) {
-      for (const [className, classData] of Object.entries(classTypeData)) {
-        if (result[boundedContextName] && result[boundedContextName][classType]) {
-          result[boundedContextName][classType][className] = classData;
-        } else if (result[boundedContextName]) {
-          result[boundedContextName][classType] = { [className]: classData };
-        } else {
-          result[boundedContextName] = { [classType]: { [className]: classData } };
+    for (const [moduleName, moduleData] of Object.entries(boundedContextData)) {
+      for (const [classType, classTypeData] of Object.entries(moduleData)) {
+        for (const [className, classData] of Object.entries(classTypeData)) {
+          if (classTypeExists(boundedContextName, moduleName, classType, result)) {
+            result[boundedContextName][moduleName][classType][className] = classData;
+          } else if (moduleExists(boundedContextName, moduleName, result)) {
+            result[boundedContextName][moduleName][classType] = { [className]: classData };
+          } else if (boundedContextExists(boundedContextName, result)) {
+            result[boundedContextName][moduleName] = { [classType]: { [className]: classData } };
+          } else {
+            result[boundedContextName] = {
+              [moduleName]: { [classType]: { [className]: classData } },
+            };
+          }
         }
       }
     }
   }
   return result;
+};
+
+const classTypeExists = (
+  boundedContextName: string,
+  moduleName: string,
+  classType: string,
+  boundedContextsData: TBoundedContexts,
+): boolean => {
+  return (
+    boundedContextsData[boundedContextName] &&
+    boundedContextsData[boundedContextName][moduleName] &&
+    boundedContextsData[boundedContextName][moduleName][classType]
+  );
+};
+
+const moduleExists = (
+  boundedContextName: string,
+  moduleName: string,
+  boundedContextsData: TBoundedContexts,
+): boolean => {
+  return !!(
+    boundedContextsData[boundedContextName] && boundedContextsData[boundedContextName][moduleName]
+  );
+};
+
+const boundedContextExists = (
+  boundedContextName: string,
+  boundedContextsData: TBoundedContexts,
+): boolean => {
+  return !!boundedContextsData[boundedContextName];
 };

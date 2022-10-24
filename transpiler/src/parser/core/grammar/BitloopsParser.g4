@@ -543,6 +543,7 @@ jestTestDeclaration
     | JestTestThisDeclaration '{' thisDeclaration '}' SemiColon?
     | JestTestValueObjectEvaluation '{' valueObjectEvaluation '}' SemiColon?
     | JestTestEntityEvaluation '{' entityEvaluation '}' SemiColon?
+    | JestTestBuiltInFunction '{' builtInFunction '}' SemiColon?
     ;
 
 evaluation
@@ -795,7 +796,7 @@ domainRuleDeclaration
 ;
 
 aggregateDeclaration
- : Root entityDeclaration
+ : Root Entity entityIdentifier entityBody SemiColon?
  ;
 
 domainConstDeclaration
@@ -803,8 +804,12 @@ domainConstDeclaration
     ;
 
 entityDeclaration 
-    : Entity entityIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}' SemiColon?
+    : Entity entityIdentifier entityBody SemiColon?
 ;
+
+entityBody
+    : '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}'
+    ;
 
 valueObjectDeclaration 
     : ValueObject valueObjectIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList '}' SemiColon?
@@ -1452,4 +1457,3 @@ eos
 isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
 
 classTypes: ErrorClass;
-

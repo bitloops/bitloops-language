@@ -6,7 +6,7 @@ Before you begin, please read our code of conduct and check existing issues. You
  
 ## How to Start?
 Firstly, we would like to invite you to our community. Join our slack group, introduce yourself and get to know the rest of the team. There is probably someone working on an issue that interests you, or has at least spent some time thinking about it. 
-Feel free to reach out with questions to Vasilis Danias or [@thebitloops](https://twitter.com/thebitloops) on Twitter, and anyone from the Bitloops team on Slack. If you prefer, you can also simply submit an issue, and a maintainer will guide you!
+Reach out with questions via [Discord](https://discord.gg/cQcnRJQ256) or [@thebitloops](https://twitter.com/thebitloops) on Twitter. You can also add questions through [Bitloops' GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions). If you prefer, you can also simply submit an [issue](https://github.com/bitloops/bitloops-language/issues), and a maintainer will guide you!
 We strongly recommend filing an issue before working on non-trivial changes to the implementation. This lets us reach an agreement on your proposal before you put significant effort into it, and it has a much higher likelihood of being accepted.
  
 ### Code of Conduct
@@ -16,6 +16,8 @@ We want to keep Bitloops open and inclusive so please read and follow our [Code 
 We recommend baby steps so you can get familiar with our contribution process. We have a list of good first issues that contain bugs and have a relatively limited scope, and therefore a great place to start. 
 If you decide to fix an issue, please be sure to check the comments in case somebody is already working on it. If there hasn’t been any activity, then leave a comment stating that you intend to work on it so other people don’t accidentally duplicate your effort.
 If the issue has already been claimed by someone else, but there hasn’t been any recent activity, then feel free to take over after leaving a comment. 
+
+We would also welcome any new issues you may find. We do suggest searching for the particular issue you would like to report in the existing issue list before reporting new ones. In addition, if you do encounter any vulnerability issues, please do follow our [Security Policy](https://github.com/bitloops/bitloops-language/blob/main/.github/SECURITY) instead of creating a new issue. 
  
 ### Create a Pull Request
 After making your changes, open a pull request (PR). Submit your PR and other Bitloopers will review the PR with you. 
@@ -51,8 +53,8 @@ If you’re keen on improving your presenting skills and have signed up as a Spe
 In fact, we would be happy to provide feedback on your talk and help you with some additional material. Please get in touch via contributor@bitloops.com!
 
 ### Help Someone Help Bitloops
-There are many people looking to improve their software development skills with Bitloops, and many post questions on Bitloops Slack Community, GitHub, StackOverflow, Quora or Reddit looking for solutions. Reach out to them or post an answer if you’re confident about it. You can also help by teaching others how to contribute to Bitloops repo!
+There are many people looking to improve their software development skills with Bitloops, and many post questions on [Discord](https://discord.gg/cQcnRJQ256), [GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions), StackOverflow, Quora or Reddit looking for solutions. Reach out to them or post an answer if you’re confident about it. You can also help by teaching others how to contribute to Bitloops repo!
  
 ### Community channels
-Not sure what to do next? Possibly stuck with an issue and need some help? Have any questions? Join the Slack Community or the Github Discussions. We are here to help!
+We're also keen on learning from our Users and fellow developers, and have very interesting discussions on [Discord](https://discord.gg/cQcnRJQ256) on how to build great software. Join us so we can together all become better developers!
  

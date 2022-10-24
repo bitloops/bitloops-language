@@ -4,29 +4,8 @@ import {
   BitloopsParserError,
 } from '../../../../index.js';
 
-const blString = `
-DTO CreateTodoRequestDTO {
-  string title;
-}
-
-DTO CreateTodoResponseDTO {
-  string message;
-}
-
-UseCase CreateTodoUseCase (todoRepo: TodoRepoPort) {
-  execute ( requestDTO: CreateTodoRequestDTO ) : ( OK ( CreateTodoResponseDTO ), Errors( DomainErrors.InvalidTitleError ) ) {
-    const title = TitleVO({ title: requestDTO.title });
-
-    const todo = TodoEntity({
-      title,
-      completed: false
-    });
-
-    this.todoRepo.save(todo);
-
-    return CreateTodoResponseDTO ( { message: 'Todo created successfully!' } ) ;
-  }
-}
+const blString = ` 
+PackagePort GherkinPackagePort { encode(value: string): bytes; } PackagePort ExamplePackagePort { example(value: string): string; } 
 `;
 
 const parser = new BitloopsParser();
@@ -41,7 +20,7 @@ const initialModelOutput = parser.parse([
 const intermediateParser = new BitloopsIntermediateASTParser();
 if (!(initialModelOutput instanceof BitloopsParserError)) {
   const result = intermediateParser.parse(initialModelOutput);
-  console.log('result:', JSON.stringify(result, null, 2));
+  console.log('result:', JSON.stringify(result));
 }
 
 // const a: TRules = {
