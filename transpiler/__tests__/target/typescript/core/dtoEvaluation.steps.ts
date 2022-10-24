@@ -17,40 +17,38 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
+//  import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
+
+import { d } from 'bitloops-gherkin';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+//  const feature = loadFeature('./__tests__/features/toTargetLanguage/dtoEvaluation.feature');
+const feature = loadFeature('__tests__/target/typescript/core/dtoEvaluation.feature');
 
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let dtoType;
   let result;
   let value;
 
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('DTO Evaluation is valid', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      dtoType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have a dtoEvaluation (.*)$/, (dtoEvaluation) => {
+      value = d(dtoEvaluation);
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      });
+      const dtoValue = JSON.parse(value);
+      result = modelToTargetLanguage({ type: dtoType, value: dtoValue });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      expect(result.output).toEqual(d(output));
     });
   });
 });
