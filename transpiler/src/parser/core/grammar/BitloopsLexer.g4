@@ -147,6 +147,7 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+GetClass:                       'getClass';
 
 /// Future Reserved Words
 
@@ -256,6 +257,7 @@ JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
+JestTestGetClass: 'JestTestGetClass';
 
 // Abstract: 'abstract';
 

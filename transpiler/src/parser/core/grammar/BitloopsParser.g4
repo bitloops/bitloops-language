@@ -175,7 +175,8 @@ struct
     ;
 
 regularEvaluation
-    : regularMethodEvaluation   
+    : regularGetClassEvaluation
+    | regularMethodEvaluation   
     | regularStringEvaluation
     | regularVariableEvaluation
     | regularIntegerEvaluation
@@ -186,6 +187,12 @@ regularEvaluation
 	| isInstanceOf
     ;
 // regularVariableEvaluation | regularStringEvaluation |
+
+regularGetClassEvaluation: 
+    regularVariableEvaluation '.' GetClass #GetClassVariableEvaluation
+    | regularMethodEvaluation '.' GetClass #GetClassMethodEvaluation 
+    ;
+
 
 methodArguments
     : '(' (argumentList (',' argumentList)*)? ')'
@@ -523,6 +530,7 @@ jestTestDeclaration
     | JestTest '{' restControllerParameters '}'     
     | JestTest '{' restControllerExecuteDeclaration '}'    
     | JestTest '{' restControllerMethodDeclaration '}'  
+    | JestTestGetClass '{' getClass '}' 
     | JestTestReturnOkErrorType '{' returnOkErrorType '}' SemiColon?    
     | JestTestConstDeclaration '{' constDeclaration '}' SemiColon?  
     | JestTestExpression '{' expression '}' SemiColon?  
@@ -540,7 +548,8 @@ jestTestDeclaration
     ;
 
 evaluation
-    : regularEvaluation
+    : 
+    regularEvaluation
     | dtoEvaluation
     | structEvaluation
     | valueObjectEvaluation
@@ -839,6 +848,13 @@ repoPortIdentifier
     : RepoPortIdentifier
     ;
 
+//TODO change the order of identifier
+// aggregateRootIdentifier
+    // : EntityIdentifier
+    // | DTOIdentifier
+    // | Identifier
+    // | UpperCaseIdentifier 
+    // ;
 aggregateRootIdentifier
     : Identifier
     | UpperCaseIdentifier 
@@ -906,6 +922,7 @@ propsEvaluation
     : '{' '(' propsIdentifier (evaluationFieldList) '}' ')'
     ;
 
+//TODO make objectLiteral more specific
 domainErrorDeclaration
     : DomainError domainErrorIdentifier formalParameterList? objectLiteral SemiColon?
     ;
@@ -1436,3 +1453,5 @@ eos
 isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
 
 classTypes: ErrorClass;
+
+getClass: regularGetClassEvaluation SemiColon? ;
