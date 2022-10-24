@@ -23,6 +23,8 @@ import {
   TString,
   TBackTickString,
   TTargetDependenciesTypeScript,
+  TEvaluation,
+  TRegularEvaluation,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -49,7 +51,10 @@ const domainErrorToTargetLanguage = (
   domainErrorName: string,
 ): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
-  const messageResult = messageToTargetLanguage(message);
+
+  const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
+  const messageText: TString = { string: messageRegularEval.regularEvaluation.value };
+  const messageResult = messageToTargetLanguage(messageText);
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
     value: errorId,
