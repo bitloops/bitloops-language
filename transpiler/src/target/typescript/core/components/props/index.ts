@@ -49,7 +49,6 @@ const propsToTargetLanguage = (props: TProps): TTargetDependenciesTypeScript => 
 };
 
 const propsValuesToTargetLanguage = (propsValues: TPropsValues): TTargetDependenciesTypeScript => {
-  console.log('propsValuesToTargetLanguage', propsValues);
   if (isUndefined(propsValues.variables)) {
     throw new Error('Variables of Prop are not defined');
   }
