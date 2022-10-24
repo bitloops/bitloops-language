@@ -5,8 +5,17 @@ import {
 } from '../../../../index.js';
 
 const blString = ` 
-PackagePort GherkinPackagePort { encode(value: string): bytes; } PackagePort ExamplePackagePort { example(value: string): string; } 
-`;
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title > 150 OR title < 4);
+}
+
+Props NameProps {
+  string name;
+}
+
+Props TitleProps {
+  string title;
+}`;
 
 const parser = new BitloopsParser();
 const initialModelOutput = parser.parse([

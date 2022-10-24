@@ -9,6 +9,7 @@ import {
 import { AntlerParser } from './grammar/AntlerParser.js';
 import BitloopsLexer from './grammar/BitloopsLexer.js';
 import Parser from './grammar/BitloopsParser.js';
+import { isBitloopsParserError } from './guards/index.js';
 
 export class BitloopsLanguageAST extends Parser.ProgramContext {}
 
@@ -82,12 +83,13 @@ export class BitloopsParser implements IBitloopsParser {
           myTree.children.map((child: any) => {
             const bitloopsClass = child.children[0];
             const { classType, className } = getBitloopsClassFromGrammarType(bitloopsClass);
+            // TODO - this can be optimized, since we are creating the same file-tree for each source element of the file
             const initialAST = BitloopsParser.getInitialAST(fileContents);
-            if (initialAST instanceof BitloopsParserError) {
+            if (isBitloopsParserError(initialAST)) {
               throw initialAST;
             }
             const tempClassNameObject = {
-              initialAST: initialAST as unknown as BitloopsLanguageAST,
+              initialAST,
               deprecatedAST: bitloopsClass,
               module,
               fileId,
@@ -125,9 +127,13 @@ export class BitloopsParser implements IBitloopsParser {
   }
 }
 
+// TODO Use a mapper instead of this function
 const getBitloopsClassFromGrammarType = (
   node: any,
 ): { classType: TClassType; className: TClassName } => {
+  if (node.children[0].value === 'Props') {
+    return { classType: 'Props', className: node.children[1].value };
+  }
   return {
     classType:
       node.children[0].value === 'Root'
