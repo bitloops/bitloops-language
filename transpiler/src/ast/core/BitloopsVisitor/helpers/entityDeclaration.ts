@@ -20,39 +20,17 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TEntityValues,
-  TConstDeclarationValue,
-  TDomainPublicMethod,
-  TDomainPrivateMethod,
-} from '../../../../types.js';
+import { TEntityValues } from '../../../../types.js';
 
 export const entityDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityDeclarationContext,
 ): { Entities: { [identifier: string]: TEntityValues } } => {
   const valueObjectIdentifier = ctx.entityIdentifier().getText();
-  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
-  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
-    ctx.domainConstDeclarationList(),
-  );
-  const publicMethods: Record<string, TDomainPublicMethod> = thisVisitor.visit(
-    ctx.publicMethodDeclarationList(),
-  );
-  const privateMethods: Record<string, TDomainPrivateMethod> = thisVisitor.visit(
-    ctx.privateMethodDeclarationList(),
-  );
-  const methods = {
-    ...publicMethods,
-    ...privateMethods,
-  };
+  const body = thisVisitor.visit(ctx.entityBody());
   const result = {
     Entities: {
-      [valueObjectIdentifier]: {
-        constantVars,
-        create: domainConstructorDeclaration,
-        methods,
-      },
+      [valueObjectIdentifier]: body,
     },
   };
   // console.log(JSON.stringify(result, null, 2));
