@@ -175,8 +175,7 @@ struct
     ;
 
 regularEvaluation
-    : regularGetClassEvaluation
-    | regularMethodEvaluation   
+    : regularMethodEvaluation   
     | regularStringEvaluation
     | regularVariableEvaluation
     | regularIntegerEvaluation
@@ -188,7 +187,7 @@ regularEvaluation
     ;
 // regularVariableEvaluation | regularStringEvaluation |
 
-regularGetClassEvaluation:
+getClassEvaluation:
     GetClassEvaluation 
     ;
 
@@ -529,7 +528,7 @@ jestTestDeclaration
     | JestTest '{' restControllerParameters '}'     
     | JestTest '{' restControllerExecuteDeclaration '}'    
     | JestTest '{' restControllerMethodDeclaration '}'  
-    | JestTestGetClass '{' regularGetClassEvaluation '}' 
+    | JestTestGetClass '{' getClassEvaluation '}' 
     | JestTestReturnOkErrorType '{' returnOkErrorType '}' SemiColon?    
     | JestTestConstDeclaration '{' constDeclaration '}' SemiColon?  
     | JestTestExpression '{' expression '}' SemiColon?  
@@ -548,7 +547,8 @@ jestTestDeclaration
 
 evaluation
     : 
-    regularEvaluation
+    getClassEvaluation
+    | regularEvaluation
     | dtoEvaluation
     | structEvaluation
     | valueObjectEvaluation

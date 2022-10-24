@@ -103,7 +103,7 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
-  regularGetClassEvaluationVisitor,
+  getClassEvaluationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -831,7 +831,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.ErrorClass().getText();
   }
 
-  visitRegularGetClassEvaluation(ctx: BitloopsParser.RegularGetClassEvaluationContext): any {
-    return regularGetClassEvaluationVisitor(this, ctx);
+  visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
+    return getClassEvaluationVisitor(this, ctx);
   }
 }

@@ -22,17 +22,19 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { TGetClass } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const regularGetClassEvaluationVisitor = (
+export const getClassEvaluationVisitor = (
   _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RegularGetClassEvaluationContext,
+  ctx: BitloopsParser.GetClassEvaluationContext,
 ): TGetClass => {
   const regularVariableEvaluation = ctx.GetClassEvaluation().getText();
   let index = regularVariableEvaluation.lastIndexOf('.');
   const variable = regularVariableEvaluation.slice(0, index);
   return {
     getClass: {
-      type: 'variable',
-      value: variable,
+      regularEvaluation: {
+        type: 'variable',
+        value: variable,
+      },
     },
   };
 };
