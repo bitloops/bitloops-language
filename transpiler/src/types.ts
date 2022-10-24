@@ -265,7 +265,6 @@ export type TGetClass = {
   getClass: {
     type: TParam;
     value: string;
-    argumentDependencies?: TArgumentDependencies; // ArgumentsDependencies, e.g. name
   };
 };
 
