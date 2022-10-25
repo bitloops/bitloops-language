@@ -17,40 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+const feature = loadFeature('__tests__/target/typescript/core/instanceOf.feature');
 
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let instanceOfType;
   let result;
   let value;
 
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('InstanceOf with declared class', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      instanceOfType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have an instanceOf (.*)$/, (instanceOf) => {
+      value = instanceOf;
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
+      const instanceOfValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      }).output;
+        type: instanceOfType,
+        value: instanceOfValue,
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      expect(result.output).toEqual(output);
     });
   });
 });

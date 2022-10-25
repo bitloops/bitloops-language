@@ -17,40 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+const feature = loadFeature('__tests__/target/typescript/core/notInstanceOf.feature');
 
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let notInstanceOfType;
   let result;
   let value;
 
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('NotInstanceOf with declared class', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      notInstanceOfType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have an notInstanceOf (.*)$/, (notInstanceOf) => {
+      value = notInstanceOf;
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
+      const notInstanceOfValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      }).output;
+        type: notInstanceOfType,
+        value: notInstanceOfValue,
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      expect(result.output).toEqual(output);
     });
   });
 });

@@ -17,40 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { modelToTargetLanguage } from '../../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+const feature = loadFeature('__tests__/target/typescript/core/strings/string.feature');
 
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let stringType;
   let result;
   let value;
 
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('String single quote', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      stringType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have a string (.*)$/, (string) => {
+      value = string;
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
+      const stringValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      }).output;
+        type: stringType,
+        value: stringValue,
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      expect(result.output).toEqual(output);
     });
   });
 });

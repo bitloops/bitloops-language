@@ -17,40 +17,64 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+const feature = loadFeature('__tests__/target/typescript/core/returnOkErrorType.feature');
 
+// TODO check with optional error too
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let propsType;
   let result;
   let value;
 
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('Return OK Error type success to Typescript', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      propsType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have a return type (.*)$/, (returnType) => {
+      value = returnType;
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
+      const propsValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      }).output;
+        type: propsType,
+        value: propsValue,
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('Return OK Error type unsuccessful', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a return type (.*)$/, (returnType) => {
+      value = returnType;
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = () => {
+        modelToTargetLanguage({
+          type: propsType,
+          value: propsValue,
+        });
+      };
+    });
+
+    then(/^I should see the (.*)$/, (error) => {
+      expect(result).toThrow(error);
     });
   });
 });

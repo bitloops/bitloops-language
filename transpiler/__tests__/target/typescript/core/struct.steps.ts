@@ -17,40 +17,61 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+const feature = loadFeature('__tests__/target/typescript/core/struct.feature');
 
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let inputType;
   let result;
   let value;
 
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('Struct success to Typescript object', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      inputType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have a struct (.*)$/, (struct) => {
+      value = struct;
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
+      const inputValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      }).output;
+        type: inputType,
+        value: inputValue,
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('Nested Struct success to Typescript object', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      inputType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a struct (.*)$/, (struct) => {
+      value = struct;
+    });
+
+    when('I generate the code', () => {
+      const inputValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: inputType,
+        value: inputValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
     });
   });
 });

@@ -17,36 +17,32 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
+import { decode } from 'bitloops-gherkin';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/buildInFunction.feature');
+const feature = loadFeature('__tests__/target/typescript/core/packages.feature');
 
 defineFeature(feature, (test) => {
-  let buildInFuncType;
+  let packagesType;
   let result;
   let value;
-
-  test('BuildInFunctions to Typescript', ({ given, and, when, then }) => {
+  test('Valid Packages Without Adapters', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
-      buildInFuncType = type;
+      packagesType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
-    given(/^I have a buildInFunction (.*)$/, (buildInFunction) => {
-      value = decode(buildInFunction);
+    given(/^I have a packages (.*)$/, (packages) => {
+      value = decode(packages);
     });
 
     when('I generate the code', () => {
-      const buildInFunctionValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: buildInFuncType,
-        value: buildInFunctionValue,
-      }).output;
+        type: packagesType,
+        value: JSON.parse(value),
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
