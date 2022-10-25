@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- import { decode } from 'bitloops-gherkin';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/packagePort.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let packagePortType;
-   let result;
-   let value;
-   test('Valid PackagePort', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       packagePortType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a package port (.*)$/, (packagePort) => {
-       value = decode(packagePort);
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: packagePortType,
-         value: propsValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(decode(output));
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { decode } from 'bitloops-gherkin';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/packagePort.feature');
+
+defineFeature(feature, (test) => {
+  let packagePortType;
+  let result;
+  let value;
+  test('Valid PackagePort', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      packagePortType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a package port (.*)$/, (packagePort) => {
+      value = decode(packagePort);
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: packagePortType,
+        value: propsValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(decode(output));
+    });
+  });
+});

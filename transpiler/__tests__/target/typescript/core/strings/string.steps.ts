@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/strings/string.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let stringType;
-   let result;
-   let value;
- 
-   test('String single quote', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       stringType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a string (.*)$/, (string) => {
-       value = string;
-     });
- 
-     when('I generate the code', () => {
-       const stringValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: stringType,
-         value: stringValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/strings/string.feature');
+
+defineFeature(feature, (test) => {
+  let stringType;
+  let result;
+  let value;
+
+  test('String single quote', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      stringType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a string (.*)$/, (string) => {
+      value = string;
+    });
+
+    when('I generate the code', () => {
+      const stringValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: stringType,
+        value: stringValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

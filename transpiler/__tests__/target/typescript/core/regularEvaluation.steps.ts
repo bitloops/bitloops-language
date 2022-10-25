@@ -17,73 +17,65 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/regularEvaluation.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let regularEvaluationType;
-   let result;
-   let value;
- 
-   test('Regular Evaluation for all possible types', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       regularEvaluationType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a regularEvaluation (.*)$/, (regularEvaluation) => {
-       value = regularEvaluation;
-     });
- 
-     when('I generate the code', () => {
-       const regularEvaluationValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: regularEvaluationType,
-         value: regularEvaluationValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- 
-   test('Invalid boolean value', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       regularEvaluationType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a (.*) with invalid (.*)$/, (regularEvaluation) => {
-       value = regularEvaluation;
-     });
- 
-     // eslint-disable-next-line @typescript-eslint/no-empty-function
-     when('I generate the code', () => {});
- 
-     then(
-       /^I should get an error saying that (.*) has invalid (.*)$/,
-       (regularEvaluation, boolean) => {
-         const regularEvaluationValue = JSON.parse(regularEvaluation);
-         expect(() =>
-           modelToTargetLanguage({
-             type: regularEvaluationType,
-             value: regularEvaluationValue,
-             targetLanguage: language,
-           }),
-         ).toThrowError(`Invalid boolean value: ${boolean}`);
-       },
-     );
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/regularEvaluation.feature');
+
+defineFeature(feature, (test) => {
+  let regularEvaluationType;
+  let result;
+  let value;
+
+  test('Regular Evaluation for all possible types', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      regularEvaluationType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a regularEvaluation (.*)$/, (regularEvaluation) => {
+      value = regularEvaluation;
+    });
+
+    when('I generate the code', () => {
+      const regularEvaluationValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: regularEvaluationType,
+        value: regularEvaluationValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('Invalid boolean value', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      regularEvaluationType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a (.*) with invalid (.*)$/, (regularEvaluation) => {
+      value = regularEvaluation;
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    when('I generate the code', () => {});
+
+    then(
+      /^I should get an error saying that (.*) has invalid (.*)$/,
+      (regularEvaluation, boolean) => {
+        const regularEvaluationValue = JSON.parse(regularEvaluation);
+        expect(() =>
+          modelToTargetLanguage({
+            type: regularEvaluationType,
+            value: regularEvaluationValue,
+          }),
+        ).toThrowError(`Invalid boolean value: ${boolean}`);
+      },
+    );
+  });
+});

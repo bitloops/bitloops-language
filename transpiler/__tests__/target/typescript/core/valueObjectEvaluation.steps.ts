@@ -17,44 +17,39 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- import { d } from 'bitloops-gherkin';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/valueObjectEvaluation.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let valueObjectEvaluationType;
-   let result;
-   let value;
- 
-   test('valueObjectEvaluation is valid', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       valueObjectEvaluationType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a valueObjectEvaluation (.*)$/, (valueObjectEvaluation) => {
-       value = d(valueObjectEvaluation);
-     });
- 
-     when('I generate the code', () => {
-       const valueObjectEvaluationValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: valueObjectEvaluationType,
-         value: valueObjectEvaluationValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(d(output));
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { d } from 'bitloops-gherkin';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+//  import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/valueObjectEvaluation.feature');
+
+defineFeature(feature, (test) => {
+  let valueObjectEvaluationType;
+  let result;
+  let value;
+
+  test('valueObjectEvaluation is valid', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      valueObjectEvaluationType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a valueObjectEvaluation (.*)$/, (valueObjectEvaluation) => {
+      value = d(valueObjectEvaluation);
+    });
+
+    when('I generate the code', () => {
+      const valueObjectEvaluationValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: valueObjectEvaluationType,
+        value: valueObjectEvaluationValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(d(output));
+    });
+  });
+});

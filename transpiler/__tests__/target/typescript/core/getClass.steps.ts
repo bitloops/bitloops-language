@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/getClass.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let getClassType;
-   let result;
-   let value;
- 
-   test('GetClass with a regular evaluation', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       getClassType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a getClass (.*)$/, (getClass) => {
-       value = getClass;
-     });
- 
-     when('I generate the code', () => {
-       const getClassValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: getClassType,
-         value: getClassValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/getClass.feature');
+
+defineFeature(feature, (test) => {
+  let getClassType;
+  let result;
+  let value;
+
+  test('GetClass with a regular evaluation', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      getClassType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a getClass (.*)$/, (getClass) => {
+      value = getClass;
+    });
+
+    when('I generate the code', () => {
+      const getClassValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: getClassType,
+        value: getClassValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

@@ -43,7 +43,7 @@ export const definitionMethodsToTargetLanguage = (
   let dependencies = [];
   for (const [definitionMethod, value] of Object.entries(definitionMethods)) {
     const definitionMethodInfo = definitionMethodInfoToTargetLanguage(value);
-    res += `${definitionMethod}${definitionMethodInfo.output};`;
+    res += `${definitionMethod}${definitionMethodInfo.output}`;
     const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TReturnType,
       value: value.returnType,

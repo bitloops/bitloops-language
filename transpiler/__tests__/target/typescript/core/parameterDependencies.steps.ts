@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/parameterDependencies.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let parameterDependenciesType;
-   let result;
-   let value;
- 
-   test('parameterDependencies with valid input', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       parameterDependenciesType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have parameterDependencies (.*)$/, (prop) => {
-       value = prop;
-     });
- 
-     when('I generate the code', () => {
-       const parameterDependenciesValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: parameterDependenciesType,
-         value: parameterDependenciesValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/parameterDependencies.feature');
+
+defineFeature(feature, (test) => {
+  let parameterDependenciesType;
+  let result;
+  let value;
+
+  test('parameterDependencies with valid input', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      parameterDependenciesType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have parameterDependencies (.*)$/, (prop) => {
+      value = prop;
+    });
+
+    when('I generate the code', () => {
+      const parameterDependenciesValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: parameterDependenciesType,
+        value: parameterDependenciesValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

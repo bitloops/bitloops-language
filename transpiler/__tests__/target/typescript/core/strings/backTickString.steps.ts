@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/strings/backTickString.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let backTickStringType;
-   let result;
-   let value;
- 
-   test('BackTick string', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       backTickStringType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a (.*)$/, (backTickString) => {
-       value = backTickString;
-     });
- 
-     when('I generate the code', () => {
-       const backTickStringValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: backTickStringType,
-         value: backTickStringValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/strings/backTickString.feature');
+
+defineFeature(feature, (test) => {
+  let backTickStringType;
+  let result;
+  let value;
+
+  test('BackTick string', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      backTickStringType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a (.*)$/, (backTickString) => {
+      value = backTickString;
+    });
+
+    when('I generate the code', () => {
+      const backTickStringValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: backTickStringType,
+        value: backTickStringValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

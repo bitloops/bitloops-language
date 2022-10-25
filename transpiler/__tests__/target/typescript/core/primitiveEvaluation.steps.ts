@@ -17,37 +17,32 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/primitiveEvaluation.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let argumentDependencyType;
-   let result;
-   let value;
-   test('primitiveEvaluation with valid input', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       argumentDependencyType = type;
-     });
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
-     given(/^I have a primitiveEvaluation (.*)$/, (prop) => {
-       value = prop;
-     });
-     when('I generate the code', () => {
-       const parameterDependencyValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: argumentDependencyType,
-         value: parameterDependencyValue,
-         targetLanguage: language,
-       });
-     });
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/primitiveEvaluation.feature');
+
+defineFeature(feature, (test) => {
+  let argumentDependencyType;
+  let result;
+  let value;
+  test('primitiveEvaluation with valid input', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      argumentDependencyType = type;
+    });
+    and(/^language is "(.*)"$/, (_lang) => {});
+    given(/^I have a primitiveEvaluation (.*)$/, (prop) => {
+      value = prop;
+    });
+    when('I generate the code', () => {
+      const parameterDependencyValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: argumentDependencyType,
+        value: parameterDependencyValue,
+      });
+    });
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

@@ -17,97 +17,91 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/structDeclaration.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let structType;
-   let result;
-   let value;
- 
-   test('Struct declaration success to Typescript object', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       structType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
-       value = structDeclaration;
-     });
- 
-     when('I generate the code', () => {
-       const structValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: structType,
-         value: structValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- 
-   test('Struct declaration with no fields to Typescript', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       structType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
-       value = structDeclaration;
-     });
- 
-     when('I generate the code', () => {
-       const structValue = JSON.parse(value);
-       result = () => {
-         modelToTargetLanguage({ type: structType, value: structValue, targetLanguage: language });
-       };
-     });
- 
-     then(/^I should see the (.*) output$/, (error) => {
-       expect(result).toThrow(error);
-     });
-   });
- 
-   test('Struct declaration with fields not formatted as array to Typescript', ({
-     given,
-     and,
-     when,
-     then,
-   }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       structType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
-       value = structDeclaration;
-     });
- 
-     when('I generate the code', () => {
-       const structValue = JSON.parse(value);
-       result = () => {
-         modelToTargetLanguage({ type: structType, value: structValue, targetLanguage: language });
-       };
-     });
- 
-     then(/^I should see the (.*) output$/, (error) => {
-       expect(result).toThrow(error);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/structDeclaration.feature');
+
+defineFeature(feature, (test) => {
+  let structType;
+  let result;
+  let value;
+
+  test('Struct declaration success to Typescript object', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      structType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {
+    });
+
+    given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
+      value = structDeclaration;
+    });
+
+    when('I generate the code', () => {
+      const structValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: structType,
+        value: structValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('Struct declaration with no fields to Typescript', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      structType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {
+    });
+
+    given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
+      value = structDeclaration;
+    });
+
+    when('I generate the code', () => {
+      const structValue = JSON.parse(value);
+      result = () => {
+        modelToTargetLanguage({ type: structType, value: structValue });
+      };
+    });
+
+    then(/^I should see the (.*) output$/, (error) => {
+      expect(result).toThrow(error);
+    });
+  });
+
+  test('Struct declaration with fields not formatted as array to Typescript', ({
+    given,
+    and,
+    when,
+    then,
+  }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      structType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {
+    });
+
+    given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
+      value = structDeclaration;
+    });
+
+    when('I generate the code', () => {
+      const structValue = JSON.parse(value);
+      result = () => {
+        modelToTargetLanguage({ type: structType, value: structValue, });
+      };
+    });
+
+    then(/^I should see the (.*) output$/, (error) => {
+      expect(result).toThrow(error);
+    });
+  });
+});

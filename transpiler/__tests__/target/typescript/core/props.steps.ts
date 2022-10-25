@@ -17,97 +17,94 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/props.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let propsType;
-   let result;
-   let value;
- 
-   test('Props with one or two variables to Typescript', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       propsType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a prop (.*)$/, (prop) => {
-       value = prop;
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: propsType,
-         value: propsValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- 
-   test('Props with no variables to Typescript', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       propsType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a prop (.*)$/, (prop) => {
-       value = prop;
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       result = () => {
-         modelToTargetLanguage({ type: propsType, value: propsValue, targetLanguage: language });
-       };
-     });
- 
-     then(/^I should see the (.*) output$/, (error) => {
-       expect(result).toThrow(error);
-     });
-   });
- 
-   test('Props with variables not formatted as array to Typescript', ({
-     given,
-     and,
-     when,
-     then,
-   }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       propsType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a prop (.*)$/, (prop) => {
-       value = prop;
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       result = () => {
-         modelToTargetLanguage({ type: propsType, value: propsValue, targetLanguage: language });
-       };
-     });
- 
-     then(/^I should see the (.*) output$/, (error) => {
-       expect(result).toThrow(error);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/props.feature');
+
+defineFeature(feature, (test) => {
+  let propsType;
+  let result;
+  let value;
+
+  test('Props with one or two variables to Typescript', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a prop (.*)$/, (prop) => {
+      value = prop;
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: propsType,
+        value: propsValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('Props with no variables to Typescript', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a prop (.*)$/, (prop) => {
+      value = prop;
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = () => {
+        modelToTargetLanguage({
+          type: propsType,
+          value: propsValue,
+        });
+      };
+    });
+
+    then(/^I should see the (.*) output$/, (error) => {
+      expect(result).toThrow(error);
+    });
+  });
+
+  test('Props with variables not formatted as array to Typescript', ({
+    given,
+    and,
+    when,
+    then,
+  }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a prop (.*)$/, (prop) => {
+      value = prop;
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = () => {
+        modelToTargetLanguage({
+          type: propsType,
+          value: propsValue,
+        });
+      };
+    });
+
+    then(/^I should see the (.*) output$/, (error) => {
+      expect(result).toThrow(error);
+    });
+  });
+});

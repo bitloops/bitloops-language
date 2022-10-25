@@ -17,70 +17,62 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/expression.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let expressionType;
-   let result;
-   let value;
- 
-   test('Expression with all possible expression types', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       expressionType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have an expression (.*)$/, (expression) => {
-       value = expression;
-     });
- 
-     when('I generate the code', () => {
-       const expressionValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: expressionType,
-         value: expressionValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- 
-   test('Unsupported expression type', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       expressionType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have an invalid (.*) with unsupported (.*)$/, (expression) => {
-       value = expression;
-     });
- 
-     // eslint-disable-next-line @typescript-eslint/no-empty-function
-     when('I generate the code', () => {});
- 
-     then(/^I should get an error saying that (.*) is unsupported$/, (expression) => {
-       const expressionValue = JSON.parse(expression);
-       expect(() =>
-         modelToTargetLanguage({
-           type: expressionType,
-           value: expressionValue,
-           targetLanguage: language,
-         }),
-       ).toThrowError(`Unsupported expression: ${expressionValue}`);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/expression.feature');
+
+defineFeature(feature, (test) => {
+  let expressionType;
+  let result;
+  let value;
+
+  test('Expression with all possible expression types', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      expressionType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have an expression (.*)$/, (expression) => {
+      value = expression;
+    });
+
+    when('I generate the code', () => {
+      const expressionValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: expressionType,
+        value: expressionValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('Unsupported expression type', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      expressionType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have an invalid (.*) with unsupported (.*)$/, (expression) => {
+      value = expression;
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    when('I generate the code', () => {});
+
+    then(/^I should get an error saying that (.*) is unsupported$/, (expression) => {
+      const expressionValue = JSON.parse(expression);
+      expect(() =>
+        modelToTargetLanguage({
+          type: expressionType,
+          value: expressionValue,
+        }),
+      ).toThrowError(`Unsupported expression: ${expressionValue}`);
+    });
+  });
+});

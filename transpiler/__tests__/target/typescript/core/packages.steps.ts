@@ -17,41 +17,36 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- import { decode } from 'bitloops-gherkin';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/packages.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let packagesType;
-   let result;
-   let value;
-   test('Valid Packages Without Adapters', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       packagesType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a packages (.*)$/, (packages) => {
-       value = decode(packages);
-     });
- 
-     when('I generate the code', () => {
-       result = modelToTargetLanguage({
-         type: packagesType,
-         value: JSON.parse(value),
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(decode(output));
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { decode } from 'bitloops-gherkin';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/packages.feature');
+
+defineFeature(feature, (test) => {
+  let packagesType;
+  let result;
+  let value;
+  test('Valid Packages Without Adapters', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      packagesType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a packages (.*)$/, (packages) => {
+      value = decode(packages);
+    });
+
+    when('I generate the code', () => {
+      result = modelToTargetLanguage({
+        type: packagesType,
+        value: JSON.parse(value),
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(decode(output));
+    });
+  });
+});

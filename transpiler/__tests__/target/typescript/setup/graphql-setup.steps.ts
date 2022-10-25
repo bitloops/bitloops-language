@@ -17,71 +17,61 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/setup/graphql-setup.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let propsType;
-   let result;
-   let value;
- 
-   test('GraphQL Server setup to Typescript with one server', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       propsType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a graphql setup (.*)$/, (data) => {
-       value = data;
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       // console.log('parsed value', propsValue);
-       result = modelToTargetLanguage({
-         type: propsType,
-         value: propsValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- 
-   test('GraphQL setup to Typescript with two servers', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       propsType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a graphql setup (.*)$/, (data) => {
-       value = data;
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       // console.log('parsed value', propsValue);
-       result = modelToTargetLanguage({
-         type: propsType,
-         value: propsValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/setup/graphql-setup.feature');
+
+defineFeature(feature, (test) => {
+  let propsType;
+  let result;
+  let value;
+
+  test('GraphQL Server setup to Typescript with one server', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a graphql setup (.*)$/, (data) => {
+      value = data;
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: propsType,
+        value: propsValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+
+  test('GraphQL setup to Typescript with two servers', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a graphql setup (.*)$/, (data) => {
+      value = data;
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: propsType,
+        value: propsValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

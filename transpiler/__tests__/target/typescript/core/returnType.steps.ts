@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/returnType.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let returnType;
-   let result;
-   let value;
- 
-   test('Statement with all possible type statements', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       returnType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have a returnType (.*)$/, (returnType) => {
-       value = returnType;
-     });
- 
-     when('I generate the code', () => {
-       const returnTypeValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: returnType,
-         value: returnTypeValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/returnType.feature');
+
+defineFeature(feature, (test) => {
+  let returnType;
+  let result;
+  let value;
+
+  test('Statement with all possible type statements', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      returnType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have a returnType (.*)$/, (returnType) => {
+      value = returnType;
+    });
+
+    when('I generate the code', () => {
+      const returnTypeValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: returnType,
+        value: returnTypeValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

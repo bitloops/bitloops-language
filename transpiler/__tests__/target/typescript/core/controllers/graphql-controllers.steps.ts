@@ -17,46 +17,41 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { decode } from 'bitloops-gherkin';
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature(
-   './__tests__/features/toTargetLanguage/controllers/graphql-controllers.feature',
- );
- 
- defineFeature(feature, (test) => {
-   let language;
-   let propsType;
-   let result;
-   let value;
- 
-   test('GraphQL Controllers success to Typescript', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       propsType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have some graphQL controllers (.*)$/, (controllers) => {
-       value = decode(controllers);
-     });
- 
-     when('I generate the code', () => {
-       const propsValue = JSON.parse(value);
-       // console.log('parsed value', propsValue);
-       result = modelToTargetLanguage({
-         type: propsType,
-         value: propsValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(decode(output));
-     });
-   });
- });
- 
+import { decode } from 'bitloops-gherkin';
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature(
+  '__tests__/target/typescript/core/controllers/graphql-controllers.feature',
+);
+
+defineFeature(feature, (test) => {
+  let propsType;
+  let result;
+  let value;
+
+  test('GraphQL Controllers success to Typescript', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      propsType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have some graphQL controllers (.*)$/, (controllers) => {
+      value = decode(controllers);
+    });
+
+    when('I generate the code', () => {
+      const propsValue = JSON.parse(value);
+
+      result = modelToTargetLanguage({
+        type: propsType,
+        value: propsValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(decode(output));
+    });
+  });
+});

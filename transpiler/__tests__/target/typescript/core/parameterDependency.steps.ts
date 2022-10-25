@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/parameterDependency.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let parameterDependencyType;
-   let result;
-   let value;
- 
-   test('parameterDependency with valid input', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       parameterDependencyType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have an parameterDependency (.*)$/, (prop) => {
-       value = prop;
-     });
- 
-     when('I generate the code', () => {
-       const parameterDependencyValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: parameterDependencyType,
-         value: parameterDependencyValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/parameterDependency.feature');
+
+defineFeature(feature, (test) => {
+  let parameterDependencyType;
+  let result;
+  let value;
+
+  test('parameterDependency with valid input', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      parameterDependencyType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have an parameterDependency (.*)$/, (prop) => {
+      value = prop;
+    });
+
+    when('I generate the code', () => {
+      const parameterDependencyValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: parameterDependencyType,
+        value: parameterDependencyValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});

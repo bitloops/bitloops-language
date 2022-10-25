@@ -18,14 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
  import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- import { d } from 'bitloops-gherkin';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/repoPortDeclaration.feature');
- 
+ import { d } from 'bitloops-gherkin'; 
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+ const feature = loadFeature('__tests__/target/typescript/core/repoPortDeclaration.feature');
+
  defineFeature(feature, (test) => {
-   let language;
    let propsType;
    let result;
    let value;
@@ -35,8 +33,7 @@
        propsType = type;
      });
  
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
+     and(/^language is "(.*)"$/, (_lang) => {
      });
  
      given(/^I have some repo ports (.*)$/, (valueObject) => {
@@ -45,16 +42,14 @@
  
      when('I generate the code', () => {
        const propsValue = JSON.parse(value);
-       // console.log('parsed value', propsValue);
        result = modelToTargetLanguage({
          type: propsType,
          value: propsValue,
-         targetLanguage: language,
        });
      });
  
      then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(d(output));
+       expect(result.output).toEqual(d(output));
      });
    });
  });

@@ -17,43 +17,38 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- import { d } from 'bitloops-gherkin';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/ifStatement.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let ifStatementType;
-   let result;
-   let value;
- 
-   test('IfStatement with a valid condition and statements', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       ifStatementType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have an ifStatement (.*)$/, (ifStatement) => {
-       value = d(ifStatement);
-     });
- 
-     when('I generate the code', () => {
-       const ifStatementValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: ifStatementType,
-         value: ifStatementValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(d(output));
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { d } from 'bitloops-gherkin';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/ifStatement.feature');
+
+defineFeature(feature, (test) => {
+  let ifStatementType;
+  let result;
+  let value;
+
+  test('IfStatement with a valid condition and statements', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      ifStatementType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have an ifStatement (.*)$/, (ifStatement) => {
+      value = d(ifStatement);
+    });
+
+    when('I generate the code', () => {
+      const ifStatementValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: ifStatementType,
+        value: ifStatementValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(d(output));
+    });
+  });
+});

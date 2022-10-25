@@ -17,42 +17,37 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { defineFeature, loadFeature } from 'jest-cucumber';
- import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
- 
- const feature = loadFeature('./__tests__/features/toTargetLanguage/notInstanceOf.feature');
- 
- defineFeature(feature, (test) => {
-   let language;
-   let notInstanceOfType;
-   let result;
-   let value;
- 
-   test('NotInstanceOf with declared class', ({ given, and, when, then }) => {
-     given(/^type is "(.*)"$/, (type) => {
-       notInstanceOfType = type;
-     });
- 
-     and(/^language is "(.*)"$/, (lang) => {
-       language = lang;
-     });
- 
-     given(/^I have an notInstanceOf (.*)$/, (notInstanceOf) => {
-       value = notInstanceOf;
-     });
- 
-     when('I generate the code', () => {
-       const notInstanceOfValue = JSON.parse(value);
-       result = modelToTargetLanguage({
-         type: notInstanceOfType,
-         value: notInstanceOfValue,
-         targetLanguage: language,
-       });
-     });
- 
-     then(/^I should see the (.*) code$/, (output) => {
-       expect(result).toEqual(output);
-     });
-   });
- });
- 
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+
+const feature = loadFeature('__tests__/target/typescript/core/notInstanceOf.feature');
+
+defineFeature(feature, (test) => {
+  let notInstanceOfType;
+  let result;
+  let value;
+
+  test('NotInstanceOf with declared class', ({ given, and, when, then }) => {
+    given(/^type is "(.*)"$/, (type) => {
+      notInstanceOfType = type;
+    });
+
+    and(/^language is "(.*)"$/, (_lang) => {});
+
+    given(/^I have an notInstanceOf (.*)$/, (notInstanceOf) => {
+      value = notInstanceOf;
+    });
+
+    when('I generate the code', () => {
+      const notInstanceOfValue = JSON.parse(value);
+      result = modelToTargetLanguage({
+        type: notInstanceOfType,
+        value: notInstanceOfValue,
+      });
+    });
+
+    then(/^I should see the (.*) code$/, (output) => {
+      expect(result.output).toEqual(output);
+    });
+  });
+});
