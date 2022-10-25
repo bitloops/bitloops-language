@@ -48,6 +48,7 @@ import {
   TEntityValues,
   TModule,
   TUseCase,
+  TStructs,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -127,6 +128,7 @@ import {
   caseClauseVisitor,
   defaultClauseVisitor,
   useCaseExecuteDeclarationVisitor,
+  structDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -654,5 +656,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
     return useCaseExecuteDeclarationVisitor(this, ctx);
+  }
+
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: TStructs } {
+    return structDeclarationVisitor(this, ctx);
+  }
+
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext): any {
+    // return packagePortDeclarationVisitor(this, ctx);
   }
 }

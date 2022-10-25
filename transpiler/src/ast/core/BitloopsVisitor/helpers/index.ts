@@ -99,3 +99,4 @@ export {
   caseClauseVisitor,
   defaultClauseVisitor,
 } from './switchStatement.js';
+export { structDeclarationVisitor } from './structDeclaration.js';
