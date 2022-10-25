@@ -20,22 +20,26 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityCreate } from '../../../../types.js';
+import { TUseCaseValues, TConstDeclarationValue, TValueObjectMethods } from '../../../../types.js';
 
-export const domainConstructorDeclarationVisitor = (
+export const useCaseDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.DomainConstructorDeclarationContext,
-): TEntityCreate => {
-  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
-  const functionBody = thisVisitor.visit(ctx.functionBody());
-  const returnType = thisVisitor.visit(ctx.returnOkErrorType());
-  const parameters = thisVisitor.visit(ctx.formalParameterList());
-  // console.log({ functionBody });
-  const result: TEntityCreate = {
-    returnType,
-    statements: functionBody.statements,
-    parameterDependency: parameters[0],
+  ctx: BitloopsParser.UseCaseDeclarationContext,
+): { UseCases: { [useCaseIdentifier: string]: TUseCaseValues } } => {
+  const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
+  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
+  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
+    ctx.domainConstDeclarationList(),
+  );
+  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const result = {
+    ValueObjects: {
+      [valueObjectIdentifier]: {
+        constantVars,
+        create: domainConstructorDeclaration,
+        methods,
+      },
+    },
   };
-  //   console.log('result', result);
   return result;
 };

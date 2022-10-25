@@ -73,3 +73,4 @@ export {
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 export { getClassEvaluationVisitor } from './getClassEvaluation.js';
+export { useCaseDeclarationVisitor } from './useCaseDeclaration.js';

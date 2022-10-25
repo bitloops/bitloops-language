@@ -47,6 +47,7 @@ import {
   TBuildInFunction,
   TEntityValues,
   TModule,
+  TUseCase,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -106,6 +107,7 @@ import {
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
   getClassEvaluationVisitor,
+  useCaseDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -858,5 +860,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
     return getClassEvaluationVisitor(this, ctx);
+  }
+
+  /**
+   * UseCase Declaration
+   */
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
+    return useCaseDeclarationVisitor(this, ctx);
   }
 }
