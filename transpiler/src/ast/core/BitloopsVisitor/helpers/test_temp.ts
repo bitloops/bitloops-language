@@ -9,7 +9,7 @@ RESTServer({
   server: REST.Fastify,
   port: Env(FASTIFY_PORT, 5001),
   apiPrefix: '/api',
-  corsOptions: '*',
+  corsOptions: { origin: '*' },
 }) {
   '/todo': todoRESTRouter;
 }

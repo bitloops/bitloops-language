@@ -118,13 +118,13 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   visitRestServerExpression(ctx: BitloopsSetupParser.RestServerExpressionContext): void {
     // console.log('visitRestServerExpression');
     const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-    const { port, serverType, apiPrefix, cors } = serverRawOptions;
+    const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
     const serverOptions: any = {
       port,
       apiPrefix,
     };
-    if (cors) {
-      serverOptions.cors = cors;
+    if (corsOptions) {
+      serverOptions.corsOptions = corsOptions;
     }
     const routers = this.visit(ctx.bindServerRoutes());
     serverOptions.routers = routers;
@@ -559,7 +559,8 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   }
 
   visitObjectLiteralExpression(ctx: BitloopsSetupParser.ObjectLiteralExpressionContext) {
-    const objectLiteral = this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+    const children = this.visitChildren(ctx)[0];
+    const objectLiteral = children.filter((listItem) => listItem !== undefined);
     return {
       expression: {
         objectLiteral,
