@@ -37,8 +37,7 @@ const expressionValuesToTargetLanguage = (
   expressionValue: TExpressionValues,
 ): TTargetDependenciesTypeScript => {
   if (!expressionValue) {
-    // console.log('expressionValue', expressionValue);
-    throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
+    throw new Error(`Unsupported expression: ${expressionValue}`);
   }
 
   if ('evaluation' in expressionValue) {
