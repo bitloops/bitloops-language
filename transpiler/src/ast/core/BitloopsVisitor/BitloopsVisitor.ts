@@ -126,6 +126,7 @@ import {
   caseBlockVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
+  useCaseExecuteDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -437,7 +438,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } as TParameterDependency;
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
+  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): TParameterDependency[] {
     return formalParameterListVisitor(this, ctx);
   }
 
@@ -650,5 +651,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
    */
   visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
     return useCaseDeclarationVisitor(this, ctx);
+  }
+  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
+    return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 }

@@ -20,26 +20,57 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TUseCaseValues, TConstDeclarationValue, TValueObjectMethods } from '../../../../types.js';
+import {
+  TUseCaseValues,
+  TOkErrorReturnType,
+  TExecute,
+  TParameterDependency,
+  TParameterDependencies,
+} from '../../../../types.js';
+import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
+
+type UseCaseExecuteDeclarationResult = { returnTypes: TOkErrorReturnType; execute: TExecute };
 
 export const useCaseDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.UseCaseDeclarationContext,
 ): { UseCases: { [useCaseIdentifier: string]: TUseCaseValues } } => {
-  const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
-  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
-  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
-    ctx.domainConstDeclarationList(),
+  const useCaseIdentifier = ctx.useCaseIdentifier().getText();
+  // const returnTypes: TOkErrorReturnType = thisVisitor.visit(ctx.)
+  const { returnTypes, execute }: UseCaseExecuteDeclarationResult = thisVisitor.visit(
+    ctx.useCaseExecuteDeclaration(),
   );
-  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
+    ctx.formalParameterList(),
+  );
+  const { statements } = execute;
+
+  addReturnOkVoidStatement(statements, returnTypes);
   const result = {
-    ValueObjects: {
-      [valueObjectIdentifier]: {
-        constantVars,
-        create: domainConstructorDeclaration,
-        methods,
+    UseCases: {
+      [useCaseIdentifier]: {
+        returnTypes,
+        execute,
+        parameterDependencies,
       },
     },
   };
   return result;
+};
+
+export const useCaseExecuteDeclarationVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.UseCaseExecuteDeclarationContext,
+): UseCaseExecuteDeclarationResult => {
+  const returnTypes: TOkErrorReturnType = thisVisitor.visit(ctx.returnOkErrorType());
+  const formalParameterList: TParameterDependency[] = thisVisitor.visit(ctx.formalParameterList());
+  const { statements } = thisVisitor.visit(ctx.functionBody());
+
+  return {
+    returnTypes,
+    execute: {
+      parameterDependencies: formalParameterList,
+      statements,
+    },
+  };
 };
