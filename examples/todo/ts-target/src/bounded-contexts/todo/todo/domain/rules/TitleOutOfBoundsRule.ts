@@ -1,5 +1,5 @@
 import { Domain } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from './errors';
+import { DomainErrors } from '../errors';
 
 export class TitleOutOfBoundsRule implements Domain.IRule {
   constructor(private title: string) {}
