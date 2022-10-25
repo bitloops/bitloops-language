@@ -10,12 +10,12 @@ Feature: Return OK statement to Typescript target language
     Then I should see the <output> code
 
     Examples:
-      | return-statement                                                                                                                                                                          | output                      |
-      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"string","value":"test"}}}}}                                                                                         | return yay('test')          |
-      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"variable","value":"frog"}}}}}                                                                                       | return yay(frog)            |
-      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"bool","value":"true"}}}}}                                                                                           | return yay(true)            |
-      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"int32","value":"42"}}}}}                                                                                            | return yay(42)              |
-      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"method","value":"multiply","argumentDependencies":[{"value":"2","type":"int32"},{"value":"a","type":"string"}]}}}}} | return yay(multiply(2,'a')) |
-      | {"returnOK":{"expression":{"classInstantiation":{"className":"Name","argumentDependencies":[{"value":"props","type":"variable"}]}}}}                                                      | return yay(new Name(props)) |
+      | return-statement                                                                                                                                                                          | output                     |
+      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"string","value":"test"}}}}}                                                                                         | return ok('test')          |
+      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"variable","value":"frog"}}}}}                                                                                       | return ok(frog)            |
+      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"bool","value":"true"}}}}}                                                                                           | return ok(true)            |
+      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"int32","value":"42"}}}}}                                                                                            | return ok(42)              |
+      | {"returnOK":{"expression":{"evaluation":{"regularEvaluation":{"type":"method","value":"multiply","argumentDependencies":[{"value":"2","type":"int32"},{"value":"a","type":"string"}]}}}}} | return ok(multiply(2,'a')) |
+      | {"returnOK":{"expression":{"classInstantiation":{"className":"Name","argumentDependencies":[{"value":"props","type":"variable"}]}}}}                                                      | return ok(new Name(props)) |
 
 

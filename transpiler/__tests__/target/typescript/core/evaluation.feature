@@ -17,8 +17,8 @@ Feature: Evaluation to Typescript target language
       | {"evaluation":{"regularEvaluation":{"type":"method","value":"this.clientError","argumentDependencies":[{"value":"response","type":"variable"}]}}}                               | this.clientError(response)     |
       | {"evaluation":{"struct":{"fields":[{"name":"message","expression":{"evaluation":{"regularEvaluation":{"type":"string","value":"Hello, World!"}}}}],"name":"HelloWorldStruct"}}} | {message:'Hello, World!'}      |
       | {"evaluation":{"dto":{"fields":[{"name":"message","expression":{"evaluation":{"regularEvaluation":{"type":"string","value":"Hello, World!"}}}}],"name":"HelloWorldDTO"}}}       | {message:'Hello, World!'}      |
-      | {"evaluation":{"valueObject":{"name":"NameVO","props":{"regularEvaluation":{"type":"variable","value":"props"}}}}}                                                              | new NameVO(props)              |
-      | {"evaluation":{"entity":{"name":"NameEntity","props":{"regularEvaluation":{"type":"variable","value":"props"}}}}}                                                               | new NameEntity(props)          |
+      | {"evaluation":{"valueObject":{"name":"NameVO","props":{"regularEvaluation":{"type":"variable","value":"props"}}}}}                                                              | NameVO.create(props);          |
+      | {"evaluation":{"entity":{"name":"NameEntity","props":{"regularEvaluation":{"type":"variable","value":"props"}}}}}                                                               | NameEntity.create(props);      |
 
 
     Scenario Template: Unsupported evaluation type
