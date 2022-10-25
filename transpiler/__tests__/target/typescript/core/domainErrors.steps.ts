@@ -18,36 +18,56 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { ClassTypes } from '../../../../src/helpers/mappings.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
 const feature = loadFeature('__tests__/target/typescript/core/domainErrors.feature');
 
 defineFeature(feature, (test) => {
-  let domainErrorsType;
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const classType = ClassTypes.DomainErrors;
+  const formatterConfig = null;
   let result;
-  let value;
+  let intermediateAST;
+  let language;
 
-  test('DomainErrors with messages', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      domainErrorsType = type;
+  test('DomainErrors with messages', ({ given, when, then }) => {
+    given(/^language is "(.*)"$/, (lang) => {
+      language = lang;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {});
-
     given(/^I have domainErrors (.*)$/, (domainErrors) => {
-      value = domainErrors;
+      intermediateAST = {
+        [boundedContext]: { [module]: { [classType]: JSON.parse(domainErrors) } },
+      };
     });
 
     when('I generate the code', () => {
-      const domainErrorsValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: domainErrorsType,
-        value: domainErrorsValue,
+      const targetGenerator = new BitloopsTargetGenerator();
+      result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
       });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      const classNamesContent = JSON.parse(output);
+      const expectedOutput = [];
+      for (const [className, content] of Object.entries(classNamesContent)) {
+        const formattedOutput = formatString(content as string, formatterConfig);
+        expectedOutput.push({
+          boundedContext,
+          className,
+          module,
+          classType,
+          fileContent: formattedOutput,
+        });
+      }
+      expect(result).toEqual(expectedOutput);
     });
   });
 });
