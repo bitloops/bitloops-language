@@ -68,7 +68,7 @@
     "ant": "java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/core/grammar/BitloopsLexer.g4 && java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/core/grammar/BitloopsParser.g4 && yarn generate-core-dts",
     "ant:setup": "java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/setup/grammar/BitloopsSetupLexer.g4 && java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/setup/grammar/BitloopsSetupParser.g4 && yarn generate-setup-dts",
     "ant:all": "yarn ant && yarn ant:setup",
-    "build:full": "yarn && yarn ant:all & yarn build",
+    "build:full": "yarn && yarn ant:all && yarn build",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "lint": "eslint --quiet . --ext .ts --ext .mts --ext .cts"
   },
