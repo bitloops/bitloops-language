@@ -662,7 +662,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return structDeclarationVisitor(this, ctx);
   }
 
-  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext): any {
+  visitPackagePortDeclaration(_ctx: BitloopsParser.PackagePortDeclarationContext): any {
     // return packagePortDeclarationVisitor(this, ctx);
   }
 }
