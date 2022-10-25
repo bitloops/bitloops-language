@@ -272,6 +272,7 @@ concretedRepoPort
 
 serverInstantiationOptions
     // : OpenCurlyBracket objectProperties CloseCurlyBracket
+    // TODO Remove necessary comma on end of each line
     : OpenCurlyBracket serverInstantiationOption* CloseCurlyBracket
     ;
 
@@ -279,6 +280,7 @@ serverInstantiationOption
     : serverTypeOption    
     | serverApiPrefixOption
     | serverPortOption
+    | customServerOption
     ;
 
 serverTypeOption
@@ -291,6 +293,11 @@ serverApiPrefixOption
 
 serverPortOption
     : Identifier Colon portInformation Comma
+    ;
+
+// Cover any user defined options
+customServerOption
+    : Identifier Colon singleExpression Comma
     ;
 
 portInformation
