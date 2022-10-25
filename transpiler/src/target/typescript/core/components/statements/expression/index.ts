@@ -24,7 +24,7 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const expressionToTargetLanguage = (variable: TExpression): TTargetDependenciesTypeScript => {
   if (!variable || !variable.expression) {
-    throw new Error(`Unsupported expression: ${JSON.stringify(variable.expression)}`);
+    throw new Error(`Unsupported expression: ${variable}`);
   }
   const { expression } = variable;
   return modelToTargetLanguage({

@@ -53,7 +53,7 @@ const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTyp
   const type = variableKeys[0];
 
   if (!keysToTypeMapping[type]) {
-    throw new Error('Unsupported statement: ' + type);
+    throw new Error('Unsupported statement:' + variable);
   }
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable });
 };
