@@ -40,7 +40,11 @@ export const privateMethodDeclarationVisitor = (
     ctx.returnPrivateMethodType(),
   );
   const { statements } = thisVisitor.visit(ctx.functionBody());
-  addReturnOkVoidStatement(statements, returnType as TOkErrorReturnType);
+  const returnOkType = returnType as TOkErrorReturnType;
+  //TODO check this
+  if (returnOkType.ok) {
+    addReturnOkVoidStatement(statements, returnOkType);
+  }
 
   const methodInfo: TDomainPrivateMethod = {
     privateMethod: {
