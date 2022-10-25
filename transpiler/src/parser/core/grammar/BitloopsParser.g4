@@ -502,7 +502,6 @@ sourceElement
     | useCaseDeclaration
     | packagePortDeclaration
     | valueObjectDeclaration
-    | domainConstructorDeclaration
     | domainRuleDeclaration
     | entityDeclaration
     | aggregateDeclaration
