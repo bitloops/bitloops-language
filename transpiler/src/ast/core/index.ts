@@ -18,6 +18,9 @@ const migratedTypes = [
   'entityDeclaration',
   'aggregateDeclaration',
   'domainRuleDeclaration',
+  'useCaseDeclaration',
+  'structDeclaration',
+  'packagePortDeclaration',
 ];
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {

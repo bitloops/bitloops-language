@@ -47,6 +47,8 @@ import {
   TBuildInFunction,
   TEntityValues,
   TModule,
+  TUseCase,
+  TStructs,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -106,6 +108,7 @@ import {
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
   getClassEvaluationVisitor,
+  useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
   logicalAndExpressionVisitor,
@@ -124,6 +127,9 @@ import {
   caseBlockVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
+  useCaseExecuteDeclarationVisitor,
+  structDeclarationVisitor,
+  packagePortDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -435,7 +441,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } as TParameterDependency;
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
+  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): TParameterDependency[] {
     return formalParameterListVisitor(this, ctx);
   }
 
@@ -641,5 +647,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
     return getClassEvaluationVisitor(this, ctx);
+  }
+
+  /**
+   * UseCase Declaration
+   */
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
+    return useCaseDeclarationVisitor(this, ctx);
+  }
+  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
+    return useCaseExecuteDeclarationVisitor(this, ctx);
+  }
+
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: TStructs } {
+    return structDeclarationVisitor(this, ctx);
+  }
+
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
+    return packagePortDeclarationVisitor(this, ctx);
   }
 }

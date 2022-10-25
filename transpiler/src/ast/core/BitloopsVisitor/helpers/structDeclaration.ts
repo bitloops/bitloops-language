@@ -19,22 +19,24 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TGetClass } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TStructs } from '../../../../types.js';
 
-export const getClassEvaluationVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.GetClassEvaluationContext,
-): TGetClass => {
-  const regularVariableEvaluation = ctx.GetClassEvaluation().getText();
-  const index = regularVariableEvaluation.lastIndexOf('.');
-  const variable = regularVariableEvaluation.slice(0, index);
-  return {
-    getClass: {
-      regularEvaluation: {
-        type: 'variable',
-        value: variable,
+export const structDeclarationVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.StructDeclarationContext,
+): { Structs: TStructs } => {
+  try {
+    const identifier = ctx.UpperCaseIdentifier().getText();
+    const fields = thisVisitor.visit(ctx.fieldList());
+    return {
+      Structs: {
+        [identifier]: {
+          fields,
+        },
       },
-    },
-  };
+    };
+  } catch (error) {
+    throw 'Invalid field data';
+  }
 };
