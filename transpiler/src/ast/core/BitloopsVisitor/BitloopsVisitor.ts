@@ -312,8 +312,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return defaultClauseVisitor(this, ctx);
   }
 
-  visitBreakStatement() {
-    // console.log('BreakStatement');
+  visitBreakStatement(ctx: BitloopsParser.BreakStatementContext) {
+    return ctx.Break().getText();
   }
 
   visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {
