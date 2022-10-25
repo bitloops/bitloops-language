@@ -27,7 +27,7 @@ export const getClassEvaluationVisitor = (
   ctx: BitloopsParser.GetClassEvaluationContext,
 ): TGetClass => {
   const regularVariableEvaluation = ctx.GetClassEvaluation().getText();
-  let index = regularVariableEvaluation.lastIndexOf('.');
+  const index = regularVariableEvaluation.lastIndexOf('.');
   const variable = regularVariableEvaluation.slice(0, index);
   return {
     getClass: {

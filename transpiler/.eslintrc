@@ -1,12 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "prettier",
-    "jest",
-    "eslint-plugin-prettier"
-  ],
+  "plugins": ["@typescript-eslint", "prettier", "jest", "eslint-plugin-prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -25,5 +20,6 @@
   },
   "parserOptions": {
     "project": ["tsconfig.json", "tsconfig.esm.json", "tsconfig.cjs.json"]
-  }
+  },
+  "ignorePatterns": ["jest.config.ts"]
 }
