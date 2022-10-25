@@ -558,6 +558,24 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     };
   }
 
+  visitObjectLiteralExpression(ctx: BitloopsSetupParser.ObjectLiteralExpressionContext) {
+    const objectLiteral = this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+    return {
+      expression: {
+        objectLiteral,
+      },
+    };
+  }
+
+  visitPropertyExpressionAssignment(ctx: BitloopsSetupParser.PropertyExpressionAssignmentContext) {
+    const identifier = ctx.propertyName().getText();
+    const singleExpression = this.visit(ctx.singleExpression());
+    return {
+      name: identifier,
+      expression: singleExpression.expression,
+    };
+  }
+
   visitStringLiteralExpression(ctx: BitloopsSetupParser.StringLiteralExpressionContext): {
     type: string;
     value: string;

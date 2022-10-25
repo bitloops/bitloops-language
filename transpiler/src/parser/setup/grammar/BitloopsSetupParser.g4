@@ -134,6 +134,19 @@ serverExpression
     | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerExpression
     ;
 
+propertyName
+    : Identifier
+    | StringLiteral
+    ;
+
+propertyAssignment
+    : propertyName (':' |'=') singleExpression                # PropertyExpressionAssignment
+    ;
+
+objectLiteral
+    : '{' (propertyAssignment (',' propertyAssignment)* ','?)? '}'
+    ;
+
 // TODO Move singleExpression from other grammar 
 singleExpression
     : singleExpression Or singleExpression                                   # LogicalOrExpression
@@ -141,6 +154,7 @@ singleExpression
     | envVariable                                                            # EnvironmentVariableExpression
     | literal                                                                # LiteralExpression
     | identifier                                                             # IdentifierExpression //Identifier or Variable method
+    | objectLiteral                                                          # ObjectLiteralExpression
     // | evaluation                                                 # EvaluationExpression 
     // | regularVariableEvaluation                                              
     ;
