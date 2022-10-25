@@ -1,5 +1,5 @@
 ![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-cover-oct22.png)
-
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
   <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
