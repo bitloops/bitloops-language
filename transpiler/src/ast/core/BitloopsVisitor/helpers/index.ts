@@ -100,3 +100,4 @@ export {
   defaultClauseVisitor,
 } from './switchStatement.js';
 export { structDeclarationVisitor } from './structDeclaration.js';
+export { packagePortDeclarationVisitor } from './packagePortDeclaration.js';

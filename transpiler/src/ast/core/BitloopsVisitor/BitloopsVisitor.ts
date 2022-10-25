@@ -49,6 +49,7 @@ import {
   TModule,
   TUseCase,
   TStructs,
+  TPackagePort,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -129,6 +130,7 @@ import {
   defaultClauseVisitor,
   useCaseExecuteDeclarationVisitor,
   structDeclarationVisitor,
+  packagePortDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -662,7 +664,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return structDeclarationVisitor(this, ctx);
   }
 
-  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext): any {
-    // return packagePortDeclarationVisitor(this, ctx);
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext): TPackagePort {
+    return packagePortDeclarationVisitor(this, ctx);
   }
 }
