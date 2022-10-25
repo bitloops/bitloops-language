@@ -105,3 +105,4 @@ export {
   repoPortDeclarationVisitor,
   repoPortExtendableIdentifierVisitor,
 } from './repoPortDeclaration.js';
+export { readModelDeclarationVisitor } from './readModelDeclaration.js';

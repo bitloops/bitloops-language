@@ -130,6 +130,7 @@ import {
   ruleDeclarationToTargetLanguage,
   rulesDeclarationToTargetLanguage,
 } from './components/rulesDeclaration/index.js';
+import { readModelsToTargetLanguage } from './components/readModels/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -174,6 +175,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TProps: {
       res = propsToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TReadModels: {
+      res = readModelsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPropsValues: {

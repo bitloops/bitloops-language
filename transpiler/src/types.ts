@@ -35,6 +35,7 @@ export type TModule = {
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
+  ReadModels?: TReadModels;
 };
 
 export type TClassType =
@@ -51,7 +52,8 @@ export type TClassType =
   | 'Packages'
   | 'Rules'
   | 'RepoPorts'
-  | 'RepoAdapters';
+  | 'RepoAdapters'
+  | 'ReadModels';
 
 export type TComponentType =
   | 'TProps'
@@ -67,7 +69,8 @@ export type TComponentType =
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
-  | 'TRepoAdapters';
+  | 'TRepoAdapters'
+  | 'TReadModels';
 
 export type TClassName = string;
 type TClassInformation = {
@@ -153,6 +156,11 @@ export type TPropsValues = {
 };
 
 export type TProps = Record<string, TPropsValues>;
+
+export type TReadModelValues = {
+  variables: TVariables;
+};
+export type TReadModels = Record<string, TReadModelValues>;
 
 export type TParamDependencyType = TBitloopsPrimitives | string;
 // (name: string)
