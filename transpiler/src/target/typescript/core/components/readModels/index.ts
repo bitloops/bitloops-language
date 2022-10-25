@@ -25,25 +25,27 @@ import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
 const readModelsToTargetLanguage = (readModels: TReadModels): TTargetDependenciesTypeScript => {
   const initialPropsLangMapping = (propName: string): string => `export interface ${propName} { `;
   const finalPropsLangMapping = '}';
-  let dependencies = [];
-  let result = '';
+  const result: TTargetDependenciesTypeScript = {
+    output: '',
+    dependencies: [],
+  };
 
-  for (const [readModelName, readModelValues] of Object.entries(readModels)) {
-    result += initialPropsLangMapping(readModelName);
-
+  return Object.entries(readModels).reduce((acc, [readModelName, readModelValues]) => {
     guardAgainstUndefinedAndArray(readModelValues.variables);
+    acc.output += initialPropsLangMapping(readModelName);
+
     const readModelIntermediateModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TVariables,
       value: readModelValues.variables,
     });
 
-    result += readModelIntermediateModel.output;
-    dependencies = [...dependencies, ...readModelIntermediateModel.dependencies];
-    result += finalPropsLangMapping;
-  }
-  return { output: result, dependencies };
-};
+    acc.output += readModelIntermediateModel.output;
+    acc.dependencies = [...acc.dependencies, ...readModelIntermediateModel.dependencies];
+    acc.output += finalPropsLangMapping;
 
+    return acc;
+  }, result);
+};
 const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
   if (isUndefined(variables)) {
     throw new Error('Variables of Prop are not defined');
