@@ -279,7 +279,6 @@ serverInstantiationOptions
 serverInstantiationOption
     : serverTypeOption    
     | serverApiPrefixOption
-    | serverPortOption
     | customServerOption
     ;
 
@@ -291,25 +290,18 @@ serverApiPrefixOption
     : ServerApiPrefix Colon pathString Comma
     ;
 
-serverPortOption
-    : Identifier Colon portInformation Comma
-    ;
-
-// Cover any user defined options
 customServerOption
     : Identifier Colon singleExpression Comma
     ;
 
-portInformation
-    : singleExpression
-    ;
+// Cover any user defined options
 
 graphQLServerInstantiationOptions
     : OpenCurlyBracket graphQLServerInstantiationOption CloseCurlyBracket
     ;
 
 graphQLServerInstantiationOption
-    : serverPortOption
+    : customServerOption
     ;
 
 numericLiteral
