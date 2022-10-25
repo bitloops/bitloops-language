@@ -1,8 +1,7 @@
-import { bitloopsPrimitives } from '../../../../helpers/bitloopsPrimitiveToLang.js';
 import { TUseCaseValues } from '../../../../types.js';
 import { getNextTypesChildren, getNextTypesSubtree } from '../../../utils/index.js';
 import { getBitloopsModel } from '../../BitloopsParser.js';
-import { returnOkVoidStatement } from '../../BitloopsVisitor/helpers/specificStatementModels.js';
+import { addReturnOkVoidStatement } from '../../BitloopsVisitor/helpers/addReturnOkVoidStatement.js';
 
 const useCaseDeclaration = (subtree: any): any => {
   const useCaseIdentifier = getNextTypesChildren('useCaseIdentifier', subtree);
@@ -14,13 +13,8 @@ const useCaseDeclaration = (subtree: any): any => {
   const executeDeclaration: TUseCaseValues = getBitloopsModel(executeTree);
   const { execute, returnTypes } = executeDeclaration;
   const { statements } = execute;
-  if (returnTypes.ok === bitloopsPrimitives.void) {
-    const lastElement = statements[statements.length - 1];
-    if (Object.keys(lastElement)[0] === 'returnOK') {
-      console.log('here');
-    }
-    statements.push(returnOkVoidStatement);
-  }
+
+  addReturnOkVoidStatement(statements, returnTypes);
 
   return {
     key: useCaseName,
