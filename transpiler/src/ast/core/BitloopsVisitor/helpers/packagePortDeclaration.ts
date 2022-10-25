@@ -19,13 +19,13 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { TPackagePort } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-// import { TPackagePort } from '../../../../types.js';
 
 export const packagePortDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PackagePortDeclarationContext,
-): any => {
+): { Packages: { [x: string]: { port: TPackagePort; adapters: [] } } } => {
   const packagePortName = ctx.packagePortIdentifier().getText();
   const definitionMethods = thisVisitor.visit(ctx.methodDefinitionList());
   const packageName = packagePortName.replace('Port', '');
