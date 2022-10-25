@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
-  <a href="https://bitloops-community.slack.com/">Slack Community</a> |
+  <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
   <a href="https://github.com/bitloops/bitloops-language/discussions">GitHub Discussions</a> |
   <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
   <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
