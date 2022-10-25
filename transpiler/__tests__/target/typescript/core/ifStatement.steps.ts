@@ -21,7 +21,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d } from 'bitloops-gherkin';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/ifStatement.feature');
+const feature = loadFeature('./__tests__/target/typescript/core/ifStatement.feature');
 
 defineFeature(feature, (test) => {
   let ifStatementType;

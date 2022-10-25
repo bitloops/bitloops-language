@@ -20,7 +20,7 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/statement.feature');
+const feature = loadFeature('./__tests__/target/typescript/core/statement.feature');
 
 defineFeature(feature, (test) => {
   let statementType;

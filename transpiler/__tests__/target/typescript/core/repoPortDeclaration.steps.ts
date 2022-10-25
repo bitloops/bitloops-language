@@ -21,7 +21,7 @@
  import { d } from 'bitloops-gherkin'; 
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
- const feature = loadFeature('__tests__/target/typescript/core/repoPortDeclaration.feature');
+ const feature = loadFeature('./__tests__/target/typescript/core/repoPortDeclaration.feature');
 
  defineFeature(feature, (test) => {
    let propsType;

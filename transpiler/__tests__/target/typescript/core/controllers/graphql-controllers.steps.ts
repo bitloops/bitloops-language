@@ -22,7 +22,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
 const feature = loadFeature(
-  '__tests__/target/typescript/core/controllers/graphql-controllers.feature',
+  './__tests__/target/typescript/core/controllers/graphql-controllers.feature',
 );
 
 defineFeature(feature, (test) => {
