@@ -26,6 +26,7 @@ import {
   TReturnType,
   TOkErrorReturnType,
 } from '../../../../types.js';
+import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
 
 export const privateMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -39,6 +40,8 @@ export const privateMethodDeclarationVisitor = (
     ctx.returnPrivateMethodType(),
   );
   const { statements } = thisVisitor.visit(ctx.functionBody());
+  addReturnOkVoidStatement(statements, returnType as TOkErrorReturnType);
+
   const methodInfo: TDomainPrivateMethod = {
     privateMethod: {
       parameterDependencies,

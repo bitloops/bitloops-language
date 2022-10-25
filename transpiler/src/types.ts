@@ -352,8 +352,9 @@ export type TReturnStatement = {
   return: TExpression;
 };
 
+export const returnOKKey = 'returnOK';
 export type TReturnOKStatement = {
-  returnOK: TExpression;
+  [returnOKKey]: TExpression;
 };
 
 export type TReturnErrorStatement = {

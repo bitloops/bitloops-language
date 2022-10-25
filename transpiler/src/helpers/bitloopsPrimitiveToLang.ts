@@ -20,7 +20,7 @@
 import { TBitloopsPrimitives } from '../types.js';
 import { SupportedLanguages } from './supportedLanguages.js';
 
-const bitloopsPrimitives = {
+export const bitloopsPrimitives = {
   string: 'string',
   bool: 'bool',
   double: 'double',
