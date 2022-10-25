@@ -101,3 +101,4 @@ export {
 } from './switchStatement.js';
 export { structDeclarationVisitor } from './structDeclaration.js';
 export { packagePortDeclarationVisitor } from './packagePortDeclaration.js';
+export { readModelDeclarationVisitor } from './readModelDeclaration.js';
