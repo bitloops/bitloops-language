@@ -33,7 +33,7 @@ RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpression
 OpenBracket:                    '[';
 CloseBracket:                   ']';
 OpenParen:                      '(';
-OpenCloseParen:                 '()';
+// OpenCloseParen:                 '()';
 CloseParen:                     ')';
 OpenBrace:                      '{' {this.ProcessOpenBrace();};
 TemplateCloseBrace:             {this.IsInTemplateString()}? '}' -> popMode;
@@ -302,7 +302,8 @@ Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
 // RegularVariableEvaluation:              RegularEvaluationStart RegularEvaluationPart? ('.' RegularEvaluationPart?)*;
-RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
+// RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
+
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
 RegularVariableEvaluation:              RegularEvaluationPart ('.' RegularEvaluationPart)*;
 
