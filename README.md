@@ -147,21 +147,24 @@ ValueObject TitleVO {
   }
 }
 ```
-transpiles to this TypeScript code (26 lines):
+transpiles to this TypeScript code (28 lines):
 ```node
 // TypeScript:
 import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from './DomainErrors';
-import { TitleOutOfBoundsRule } from './Rules';
+import { DomainErrors } from './errors';
 
 export class TitleOutOfBoundsRule implements Domain.IRule {
   constructor(private title: string) {}
 
-  public Error = new DomainErrors.TitleOutOfBoundsError(this.title);
+  public Error = new DomainErrors.TitleOutOfBounds(this.title);
 
   public isBrokenIf(): boolean {
     return this.title.length > 150 || this.title.length < 4;
   }
+}
+                                                            
+export namespace Rules {
+    export class TitleOutOfBounds extends TitleOutOfBoundsRule {}                                             
 }
 
 interface TitleProps {
@@ -177,8 +180,8 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
     super(props);
   }
 
-  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBoundsError> {
-    const res = Domain.applyRules([new TitleOutOfBoundsRule(props.title)]);
+  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBounds> {
+    const res = Domain.applyRules([new Rules.TitleOutOfBounds(props.title)]);
     if (res) return fail(res);
     return ok(new TitleVO(props));
   }
