@@ -103,6 +103,7 @@ const BitloopsTypesMapping = {
   TEntityCreate: 'TEntityCreate',
   TBuildInFunction: 'TBuildInFunction',
   TApplyRules: 'TApplyRules',
+  TReadModels: 'TReadModels',
 };
 
 const ClassTypes = {
@@ -120,6 +121,7 @@ const ClassTypes = {
   RepoPorts: 'RepoPorts',
   RepoAdapters: 'RepoAdapters',
   Rules: 'Rules',
+  ReadModels: 'ReadModels',
 };
 
 const mappingClassTypeToComponentType = {
@@ -138,6 +140,7 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Structs]: BitloopsTypesMapping.TStructs,
   [ClassTypes.ApplicationErrors]: BitloopsTypesMapping.TApplicationErrors,
   [ClassTypes.Rules]: BitloopsTypesMapping.TRules,
+  [ClassTypes.ReadModels]: BitloopsTypesMapping.TReadModels,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

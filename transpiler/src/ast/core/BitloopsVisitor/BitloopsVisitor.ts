@@ -49,6 +49,7 @@ import {
   TModule,
   TUseCase,
   TStructs,
+  TReadModels,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -130,6 +131,7 @@ import {
   useCaseExecuteDeclarationVisitor,
   structDeclarationVisitor,
   packagePortDeclarationVisitor,
+  readModelDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -665,5 +667,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
     return packagePortDeclarationVisitor(this, ctx);
+  }
+
+  /**
+   * Read model
+   */
+  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): {
+    ReadModels: TReadModels;
+  } {
+    return readModelDeclarationVisitor(this, ctx);
   }
 }

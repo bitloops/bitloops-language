@@ -506,6 +506,7 @@ sourceElement
     | entityDeclaration
     | aggregateDeclaration
     | repoPortDeclaration
+    | readModelDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -835,6 +836,10 @@ useCaseDeclaration
 
 propsDeclaration
     : Props PropsIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    ;
+
+readModelDeclaration
+    : ReadModel ReadModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;

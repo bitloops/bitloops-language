@@ -21,6 +21,7 @@ const migratedTypes = [
   'useCaseDeclaration',
   'structDeclaration',
   'packagePortDeclaration',
+  'readModelDeclaration',
 ];
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
