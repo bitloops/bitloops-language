@@ -73,3 +73,25 @@ export {
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 export { getClassEvaluationVisitor } from './getClassEvaluation.js';
+export {
+  equalityExpressionVisitor,
+  relationalExpressionVisitor,
+  logicalAndExpressionVisitor,
+  logicalOrExpressionVisitor,
+  logicalXorExpressionVisitor,
+  logicalNotExpressionVisitor,
+  multiplicativeExpressionVisitor,
+  additiveExpressionVisitor,
+  parenthesizedExpressionVisitor,
+} from './expressions.js';
+export { ifStatementVisitor } from './ifStatement.js';
+export { statementListVisitor } from './statementList.js';
+export { constDeclarationVisitor } from './constDeclaration.js';
+export { variableDeclarationVisitor } from './variableDeclaration.js';
+export { thisDeclarationVisitor } from './thisDeclaration.js';
+export {
+  switchStatementVisitor,
+  caseBlockVisitor,
+  caseClauseVisitor,
+  defaultClauseVisitor,
+} from './switchStatement.js';

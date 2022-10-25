@@ -1253,7 +1253,6 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
-    | This                                                       # ThisExpression
     | evaluation                                                 # EvaluationExpression 
     ;   
 
