@@ -54,19 +54,19 @@ typeParameters
     ;
 
 typeParameterList
-    : typeParameter (',' typeParameter)*
+    : typeParameter (Comma typeParameter)*
     ;
 
 fieldList
-    : field (';' field)* SemiColon
+    : field (SemiColon field)* SemiColon
     ;
 
 evaluationFieldList
-    : evaluationField (',' evaluationField)*
+    : evaluationField (Comma evaluationField)*
     ;
 
 evaluationField
-    : Identifier ':' expression
+    : Identifier Colon expression
     ;
 
 typeParameter
@@ -83,11 +83,11 @@ typeArguments
     ;
 
 propFields
-    : '{' fieldList? '}'
+    : OpenBrace fieldList? CloseBrace
     ;
 
 typeArgumentList
-    : typeArgument (',' typeArgument)*
+    : typeArgument (Comma typeArgument)*
     ;
 
 typeArgument
@@ -129,7 +129,7 @@ unionOrIntersectionOrPrimaryType
     ;
 
 primaryType
-    : '(' type_ ')'                                 #ParenthesizedPrimType
+    : OpenParen type_ CloseParen                                 #ParenthesizedPrimType
     | predefinedType                                #PredefinedPrimType
     | typeReference                                 #ReferencePrimType
     | objectType                                    #ObjectPrimType
@@ -193,15 +193,15 @@ getClassEvaluation:
 
 
 methodArguments
-    : '(' (argumentList (',' argumentList)*)? ')'
+    : OpenParen (argumentList (Comma argumentList)*)? CloseParen
     ;
 
-openParen:
-    | OpenParen
+openParen
+    : OpenParen
     ;
 
-closeParen:
-    | CloseParen
+closeParen
+    :  CloseParen
     ;
 
 //regularMethodEvaluation
@@ -287,15 +287,15 @@ typeName
     ;
 
 objectType
-    : '{' typeBody? '}'
+    : OpenBrace typeBody? CloseBrace
     ;
 
 typeBody
-    : typeMemberList (SemiColon | ',')?
+    : typeMemberList (SemiColon | Comma)?
     ;
 
 typeMemberList
-    : typeMember ((SemiColon | ',') typeMember)*
+    : typeMember ((SemiColon | Comma) typeMember)*
     ;
 
 typeMember
@@ -324,15 +324,15 @@ tupleType
     ;
 
 tupleElementTypes
-    : type_ (',' type_)*
+    : type_ (Comma type_)*
     ;
 
 functionType
-    : typeParameters? '(' parameterList? ')' '=>' type_
+    : typeParameters? OpenParen parameterList? CloseParen '=>' type_
     ;
 
 constructorType
-    : 'new' typeParameters? '(' parameterList? ')' '=>' type_
+    : 'new' typeParameters? OpenParen parameterList? CloseParen '=>' type_
     ;
 
 typeQuery
@@ -341,7 +341,7 @@ typeQuery
 
 typeQueryExpression
     : Identifier
-    | (identifierName '.')+ identifierName
+    | (identifierName Dot)+ identifierName
     ;
 
 propertySignatur
@@ -349,20 +349,20 @@ propertySignatur
     ;
 
 typeAnnotation
-    : ':' type_
+    : Colon type_
     ;
 
 callSignature
-    : typeParameters? '(' parameterList? ')' typeAnnotation?
+    : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
     ;
 
 parameterList
     : restParameter
-    | parameter (',' parameter)* (',' restParameter)?
+    | parameter (Comma parameter)* (Comma restParameter)?
     ;
 
 requiredParameterList
-    : requiredParameter (',' requiredParameter)*
+    : requiredParameter (Comma requiredParameter)*
     ;
 
 parameter
@@ -375,7 +375,7 @@ optionalParameter
     ;
 
 restParameter
-    : '...' expression typeAnnotation?
+    : Ellipsis expression typeAnnotation?
     ;
 
 requiredParameter
@@ -394,11 +394,11 @@ identifierOrPattern
     ;
 
 constructSignature
-    : 'new' typeParameters? '(' parameterList? ')' typeAnnotation?
+    : 'new' typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
     ;
 
 indexSignature
-    : '[' Identifier ':' (Int32|String) ']' typeAnnotation
+    : '[' Identifier Colon (Int32|String) ']' typeAnnotation
     ;
 
 methodSignature
@@ -431,7 +431,7 @@ interfaceExtendsClause
     ;
 
 classOrInterfaceTypeList
-    : typeReference (',' typeReference)*
+    : typeReference (Comma typeReference)*
     ;
 
 // A.7 Interface
@@ -441,11 +441,11 @@ classOrInterfaceTypeList
 //     ;
 
 enumBody
-    : enumMemberList ','?
+    : enumMemberList Comma?
     ;
 
 enumMemberList
-    : enumMember (',' enumMember)*
+    : enumMember (Comma enumMember)*
     ;
 
 enumMember
@@ -455,11 +455,11 @@ enumMember
 // A.8 Namespaces
 
 namespaceDeclaration
-    : Namespace namespaceName '{' statementList? '}'
+    : Namespace namespaceName OpenBrace statementList? CloseBrace
     ;
 
 namespaceName
-    : Identifier ('.'+ Identifier)*
+    : Identifier (Dot+ Identifier)*
     ;
 
 importAliasDeclaration
@@ -477,8 +477,8 @@ decorator
 
 decoratorMemberExpression
     : Identifier
-    | decoratorMemberExpression '.' identifierName
-    | '(' expression ')'
+    | decoratorMemberExpression Dot identifierName
+    | OpenParen expression CloseParen
     ;
 
 decoratorCallExpression
@@ -511,35 +511,35 @@ sourceElement
 
 // TODO fix JestTestReturnOkErrorType
 jestTestDeclaration
-    : JestTestFunctionBody '{' functionBody '}' SemiColon?       
+    : JestTestFunctionBody OpenBrace functionBody CloseBrace SemiColon?       
     // JestTestExecute '{' functionBody '}' SemiColon?      
-    | JestTestStatementList '{' statementList '}' SemiColon?    
-    | JestTestStatement '{' statement SemiColon? '}' SemiColon? 
-    | JestTestStructEvaluation '{' structEvaluation ';'? '}'  ';'?  
-    | JestTestDTOEvaluation '{' dtoEvaluation ';'? '}'  ';'?    
-    | JestTestEvaluation '{' evaluation ';'? '}'  ';'?  
-	| JestTestIsInstanceOf '{' isInstanceOf '}' ';'?  
-    | JestTest '{' regularEvaluation SemiColon? '}' SemiColon?  
-    | JestTest '{' formalParameterList '}' SemiColon?   
-    | JestTest '{' restControllerParameters '}'     
-    | JestTest '{' restControllerExecuteDeclaration '}'    
-    | JestTest '{' restControllerMethodDeclaration '}'  
-    | JestTestGetClass '{' getClassEvaluation '}' 
-    | JestTestReturnOkErrorType '{' returnOkErrorType '}' SemiColon?    
-    | JestTestConstDeclaration '{' constDeclaration '}' SemiColon?  
-    | JestTestExpression '{' expression '}' SemiColon?  
-    | JestTestMethodDefinitionList '{' methodDefinitionList '}' SemiColon?
-    | JestTestCreateMethodDeclaration '{' domainConstructorDeclaration '}' SemiColon?
-    | JestTestPrivateMethodDeclaration '{' privateMethodDeclaration '}' SemiColon?
-    | JestTestPublicMethodDeclaration '{' publicMethodDeclaration '}' SemiColon?
-    | JestTestValueObjectDeclaration '{' valueObjectDeclaration '}' SemiColon?
-    | JestTestEntityDeclaration '{' entityDeclaration '}' SemiColon?
-    | JestTestCondition '{' condition '}' SemiColon?
-    | JestTestVariableDeclaration '{' variableDeclaration '}' SemiColon?
-    | JestTestThisDeclaration '{' thisDeclaration '}' SemiColon?
-    | JestTestValueObjectEvaluation '{' valueObjectEvaluation '}' SemiColon?
-    | JestTestEntityEvaluation '{' entityEvaluation '}' SemiColon?
-    | JestTestBuiltInFunction '{' builtInFunction '}' SemiColon?
+    | JestTestStatementList OpenBrace statementList CloseBrace SemiColon?    
+    | JestTestStatement OpenBrace statement SemiColon? CloseBrace SemiColon? 
+    | JestTestStructEvaluation OpenBrace structEvaluation SemiColon? CloseBrace  SemiColon?  
+    | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
+    | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
+	| JestTestIsInstanceOf OpenBrace isInstanceOf CloseBrace SemiColon?  
+    | JestTest OpenBrace regularEvaluation SemiColon? CloseBrace SemiColon?  
+    | JestTest OpenBrace formalParameterList CloseBrace SemiColon?   
+    | JestTest OpenBrace restControllerParameters CloseBrace     
+    | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
+    | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
+    | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
+    | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
+    | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
+    | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
+    | JestTestMethodDefinitionList OpenBrace methodDefinitionList CloseBrace SemiColon?
+    | JestTestCreateMethodDeclaration OpenBrace domainConstructorDeclaration CloseBrace SemiColon?
+    | JestTestPrivateMethodDeclaration OpenBrace privateMethodDeclaration CloseBrace SemiColon?
+    | JestTestPublicMethodDeclaration OpenBrace publicMethodDeclaration CloseBrace SemiColon?
+    | JestTestValueObjectDeclaration OpenBrace valueObjectDeclaration CloseBrace SemiColon?
+    | JestTestEntityDeclaration OpenBrace entityDeclaration CloseBrace SemiColon?
+    | JestTestCondition OpenBrace condition CloseBrace SemiColon?
+    | JestTestVariableDeclaration OpenBrace variableDeclaration CloseBrace SemiColon?
+    | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
+    | JestTestValueObjectEvaluation OpenBrace valueObjectEvaluation CloseBrace SemiColon?
+    | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
+    | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
     ;
 
 evaluation
@@ -600,11 +600,11 @@ statement
     ;
 
 builtInFunction
-    : ApplyRules '(' applyRuleStatementRulesList ')' SemiColon? # ApplyRulesStatement
+    : ApplyRules OpenParen applyRuleStatementRulesList CloseParen SemiColon? # ApplyRulesStatement
     ;
 
 applyRuleStatementRulesList
-    : applyRulesRule (',' applyRulesRule)*
+    : applyRulesRule (Comma applyRulesRule)*
     ;
 
 applyRulesRule
@@ -612,7 +612,7 @@ applyRulesRule
     ;
 
 block
-    : '{' statementList? '}'
+    : OpenBrace statementList? CloseBrace
     ;
 
 statementList
@@ -632,7 +632,7 @@ fromBlock
     ;
 
 multipleImportStatement
-    : (identifierName ',')? '{' identifierName (',' identifierName)* '}'
+    : (identifierName Comma)? OpenBrace identifierName (Comma identifierName)* CloseBrace
     ;
 
 // exportStatement
@@ -646,7 +646,7 @@ variableStatement
     ;
 
 variableDeclarationList
-    : variableDeclaration (',' variableDeclaration)*
+    : variableDeclaration (Comma variableDeclaration)*
     ;
 
 // variableDeclaration
@@ -663,20 +663,20 @@ expressionStatement
     ;
 
 ifStatement
-    : If '(' condition ')' statement (Else statement)?
+    : If OpenParen condition CloseParen statement (Else statement)?
     ;
 
 
 iterationStatement
-    : Do statement While '(' expressionSequence ')' eos                                                         # DoStatement
-    | While '(' expressionSequence ')' statement                                                                # WhileStatement
-    | For '(' expressionSequence? SemiColon expressionSequence? SemiColon expressionSequence? ')' statement     # ForStatement
-    | For '(' varModifier variableDeclarationList SemiColon expressionSequence? SemiColon expressionSequence? ')'
+    : Do statement While OpenParen expressionSequence CloseParen eos                                                         # DoStatement
+    | While OpenParen expressionSequence CloseParen statement                                                                # WhileStatement
+    | For OpenParen expressionSequence? SemiColon expressionSequence? SemiColon expressionSequence? CloseParen statement     # ForStatement
+    | For OpenParen varModifier variableDeclarationList SemiColon expressionSequence? SemiColon expressionSequence? CloseParen
           statement                                                                                             # ForVarStatement
     // | For '(' expression (In | Identifier{this.p("of")}?) expressionSequence ')' statement                # ForInStatement
     // | For '(' varModifier variableDeclaration (In | Identifier{this.p("of")}?) expressionSequence ')' statement # ForVarInStatement
-    | For '(' expression (In | Identifier?) expressionSequence ')' statement                # ForInStatement
-    | For '(' varModifier variableDeclaration (In | Identifier?) expressionSequence ')' statement # ForVarInStatement
+    | For OpenParen expression (In | Identifier?) expressionSequence CloseParen statement                # ForInStatement
+    | For OpenParen varModifier variableDeclaration (In | Identifier?) expressionSequence CloseParen statement # ForVarInStatement
     ;
 
 varModifier
@@ -714,15 +714,15 @@ breakStatement
 //     ;
 
 withStatement
-    : With '(' expressionSequence ')' statement
+    : With OpenParen expressionSequence CloseParen statement
     ;
 
 switchStatement
-    : Switch '(' condition ')' caseBlock
+    : Switch OpenParen condition CloseParen caseBlock
     ;
 
 caseBlock
-    : '{' caseClauses? defaultClause caseClauses? '}'
+    : OpenBrace caseClauses? defaultClause caseClauses? CloseBrace
     ;
 
 caseClauses
@@ -730,15 +730,15 @@ caseClauses
     ;
 
 caseClause
-    : Case expression ':' statementList? Break? SemiColon?
+    : Case expression Colon statementList? Break? SemiColon?
     ;
 
 defaultClause
-    : Default ':' statementList? Break? SemiColon?
+    : Default Colon statementList? Break? SemiColon?
     ;
 
 labelledStatement
-    : Identifier ':' statement
+    : Identifier Colon statement
     ;
 
 throwStatement
@@ -751,7 +751,7 @@ tryStatement
     ;
 
 catchProduction
-    : Catch '(' Identifier ')' block
+    : Catch OpenParen Identifier CloseParen block
     ;
 
 finallyProduction
@@ -763,7 +763,7 @@ debuggerStatement
     ;
 
 functionDeclaration
-    : Function_ Identifier callSignature ( ('{' functionBody '}') | SemiColon)
+    : Function_ Identifier callSignature ( (OpenBrace functionBody CloseBrace) | SemiColon)
     ;
 
 //Ovveride ECMA
@@ -780,7 +780,7 @@ domainFieldDeclaration
 ;
 
 isBrokenStatement
-: IsBrokenIf '(' expression ')' SemiColon
+: IsBrokenIf OpenParen expression CloseParen SemiColon
 ;
 
 domainRuleBody
@@ -788,7 +788,7 @@ domainRuleBody
 ;
 
 domainRuleDeclaration
-: Rule domainRuleIdentifier formalParameterList? Throws ErrorIdentifier '{' domainRuleBody '}'
+: Rule domainRuleIdentifier formalParameterList? Throws ErrorIdentifier OpenBrace domainRuleBody CloseBrace
 ;
 
 aggregateDeclaration
@@ -804,11 +804,11 @@ entityDeclaration
 ;
 
 entityBody
-    : '{' domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  '}'
+    : OpenBrace domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  CloseBrace
     ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier '{' domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList '}' SemiColon?
+    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList CloseBrace SemiColon?
     ;
 domainConstDeclarationList
     : domainConstDeclaration*
@@ -823,7 +823,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorDeclaration
-    : Constructor formalParameterList? ':' returnOkErrorType '{' functionBody '}'
+    : Constructor formalParameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
@@ -831,11 +831,11 @@ useCaseIdentifier
     ;
 
 useCaseDeclaration
-    : UseCase useCaseIdentifier formalParameterList? '{' useCaseExecuteDeclaration '}' SemiColon?
+    : UseCase useCaseIdentifier formalParameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
     ;
 
 propsDeclaration
-    : Props PropsIdentifier '{' fieldList '}' SemiColon?
+    : Props PropsIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;
@@ -868,11 +868,11 @@ repoExtendsList
 
 repoPortMethodDefinitions
     // : '{' '}'
-    : '{' methodDefinitionList '}'
+    : OpenBrace methodDefinitionList CloseBrace
     ;
 
 repoPortExtendableIdentifierList
-    : (repoPortExtendableIdentifier) (',' (repoPortExtendableIdentifier))*
+    : (repoPortExtendableIdentifier) (Comma (repoPortExtendableIdentifier))*
     ;
 
 repoPortExtendableIdentifier
@@ -882,11 +882,11 @@ repoPortExtendableIdentifier
     ;
 
 dtoDeclaration
-    : DTO DTOIdentifier '{' fieldList '}' SemiColon?
+    : DTO DTOIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 structDeclaration
-    : Struct UpperCaseIdentifier '{' fieldList '}' ';'?
+    : Struct UpperCaseIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 dtoEvaluationIdentifier
@@ -894,7 +894,7 @@ dtoEvaluationIdentifier
     ;
 
 dtoEvaluation
-    : dtoEvaluationIdentifier '(' '{' evaluationFieldList '}' ')'
+    : dtoEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
 
 valueObjectEvaluation
@@ -902,8 +902,8 @@ valueObjectEvaluation
     ;
 
 domainEvaluationInput
-    : '(' '{' evaluationFieldList '}' ')'   # DomainEvaluationInputFieldList
-    | '(' regularEvaluation ')'             # DomainEvaluationInputRegular
+    : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen   # DomainEvaluationInputFieldList
+    | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -915,11 +915,11 @@ structEvaluationIdentifier
     ;
 
 structEvaluation
-    : structEvaluationIdentifier '(' '{' evaluationFieldList '}' ')'
+    : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
 
 propsEvaluation
-    : '{' '(' propsIdentifier (evaluationFieldList) '}' ')'
+    : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseBrace CloseParen
     ;
 
 //TODO make objectLiteral more specific
@@ -938,19 +938,19 @@ applicationErrorIdentifier
     : UpperCaseIdentifier;
 
 useCaseExecuteDeclaration
-    : Execute formalParameterList? ':' returnOkErrorType '{' functionBody '}'
+    : Execute formalParameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 restControllerParameters
-    : Identifier ',' Identifier
+    : Identifier Comma Identifier
     ;
 
 restControllerExecuteDeclaration
-    : Execute '(' restControllerParameters ')' '{' functionBody '}'
+    : Execute OpenParen restControllerParameters CloseParen OpenBrace functionBody CloseBrace
     ;
 
 restControllerMethodDeclaration
-    : Method ':' httpMethod SemiColon?
+    : Method Colon httpMethod SemiColon?
     ;
     
 httpMethod
@@ -959,8 +959,8 @@ httpMethod
 
 
 controllerDeclaration
-    : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?   # RESTControllerDeclaration
-    | GraphQLController ControllerIdentifier formalParameterList '{' graphQLResolverOptions graphQLControllerExecuteDeclaration '}' SemiColon?      # GraphQLControllerDeclaration
+    : RESTController ControllerIdentifier formalParameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
+    | GraphQLController ControllerIdentifier formalParameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
     ;
 
 graphQLResolverOptions
@@ -971,7 +971,7 @@ graphQLOperationTypeAssignment
     : GraphQLOperation Colon graphQLOperation SemiColon
     ;
 graphQLOperationInputTypeAssignment
-    : Input ':' graphQLResolverInputType SemiColon
+    : Input Colon graphQLResolverInputType SemiColon
     ;
 
 graphQLResolverInputType
@@ -984,7 +984,7 @@ graphQLOperation
     ;
 
 graphQLControllerExecuteDeclaration
-    : Execute '(' graphQLControllerParameters ')' ':' graphQLControllerReturnType '{' functionBody '}'
+    : Execute OpenParen graphQLControllerParameters CloseParen Colon graphQLControllerReturnType OpenBrace functionBody CloseBrace
     ;
     // graphQLControllerParameters
 
@@ -1001,7 +1001,7 @@ dtoIdentifier
     ;
 
 dtoIdentifiers
-    : WS* dtoIdentifier ( WS* BitOr WS* dtoIdentifier)*
+    :  dtoIdentifier (BitOr dtoIdentifier)*
     ;
 
 errorIdentifier
@@ -1047,7 +1047,7 @@ packagePortIdentifier
     ;
 
 packagePortDeclaration
-    : PackagePort packagePortIdentifier '{' methodDefinitionList '}'
+    : PackagePort packagePortIdentifier OpenBrace methodDefinitionList CloseBrace
     ;
 
 // classHeritage
@@ -1097,19 +1097,19 @@ methodDeclaration
     ;
 
 privateMethodDeclaration
-    : Private? identifier formalParameterList? returnPrivateMethodType '{' functionBody '}'
+    : Private? identifier formalParameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? identifier formalParameterList? returnPublicMethodType '{' functionBody '}'    
+    : Public? identifier formalParameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnPublicMethodType
-    : ':' returnOkErrorType
+    : Colon returnOkErrorType
     ;
 
 returnPrivateMethodType
-    : typeAnnotation | (':' returnOkErrorType)
+    : typeAnnotation | (Colon returnOkErrorType)
 ;
 
 propertyMemberBase
@@ -1121,15 +1121,15 @@ indexMemberDeclaration
     ;
 
 generatorMethod
-    : '*'?  Identifier '(' formalParameterList? ')' '{' functionBody '}'
+    : '*'?  Identifier OpenParen formalParameterList? CloseParen OpenBrace functionBody CloseBrace
     ;
 
 generatorFunctionDeclaration
-    : Function_ '*' Identifier? '(' formalParameterList? ')' '{' functionBody '}'
+    : Function_ '*' Identifier? OpenParen formalParameterList? CloseParen OpenBrace functionBody CloseBrace
     ;
 
 generatorBlock
-    : '{' generatorDefinition (',' generatorDefinition)* ','? '}'
+    : OpenBrace generatorDefinition (Comma generatorDefinition)* Comma? CloseBrace
     ;
 
 generatorDefinition
@@ -1137,28 +1137,27 @@ generatorDefinition
     ;
 
 iteratorBlock
-    : '{' iteratorDefinition (',' iteratorDefinition)* ','? '}'
+    : OpenBrace iteratorDefinition (Comma iteratorDefinition)* Comma? CloseBrace
     ;
 
 iteratorDefinition
-    : '[' expression ']' '(' formalParameterList? ')' '{' functionBody '}'
+    : '[' expression ']' OpenParen formalParameterList? CloseParen OpenBrace functionBody CloseBrace
     ;
 
 formalParameterList
-    : '()' 
-    | '('
+    : OpenParen CloseParen 
+    | OpenParen
     (
-    formalParameterArg (',' formalParameterArg)* (',' lastFormalParameterArg)?
+    formalParameterArg (Comma formalParameterArg)* (Comma lastFormalParameterArg)?
     | lastFormalParameterArg
     | arrayLiteral                              // ECMAScript 6: Parameter Context Matching
-    | objectLiteral (':' formalParameterList )? // ECMAScript 6: Parameter Context Matching
+    | objectLiteral (Colon formalParameterList )? // ECMAScript 6: Parameter Context Matching
     )?
-    ')' 
-    | '(' ')'
+    CloseParen 
     ;
 
 formalParameterArg
-    : WS* decorator? WS* accessibilityModifier? WS* identifierOrKeyWord WS* typeAnnotation? WS* ('=' WS* expression WS*)?      // ECMAScript 6: Initialization
+    : decorator? accessibilityModifier? identifierOrKeyWord typeAnnotation? ('=' expression)?      // ECMAScript 6: Initialization
     ;
 
 lastFormalParameterArg                        // ECMAScript 6: Rest Parameter
@@ -1178,19 +1177,19 @@ arrayLiteral
     ;
 
 elementList
-    : arrayElement (','+ arrayElement)*
+    : arrayElement (Comma+ arrayElement)*
     ;
 
 arrayElement                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (expression | Identifier) ','?
+    : Ellipsis? (expression | Identifier) Comma?
     ;
 
 objectLiteral
-    : '{' (propertyAssignment (',' propertyAssignment)* ','?)? '}'
+    : OpenBrace (propertyAssignment (Comma propertyAssignment)* Comma?)? CloseBrace
     ;
 
 functionParameters
-    : (propertyAssignment (',' propertyAssignment)* ','?)
+    : (propertyAssignment (Comma propertyAssignment)* Comma?)
     ;
 
 regularVariableEvaluationORliteralORexpression
@@ -1201,8 +1200,8 @@ regularVariableEvaluationORliteralORexpression
 
 // MODIFIED
 propertyAssignment
-    : propertyName (':' |'=') regularVariableEvaluationORliteralORexpression                # PropertyExpressionAssignment
-    | '[' regularVariableEvaluationORliteralORexpression ']' ':' regularVariableEvaluationORliteralORexpression           # ComputedPropertyExpressionAssignment
+    : propertyName (Colon |'=') regularVariableEvaluationORliteralORexpression                # PropertyExpressionAssignment
+    | '[' regularVariableEvaluationORliteralORexpression ']' Colon regularVariableEvaluationORliteralORexpression           # ComputedPropertyExpressionAssignment
     | getAccessor                                             # PropertyGetter
     | setAccessor                                             # PropertySetter
     | generatorMethod                                         # MethodProperty
@@ -1211,11 +1210,11 @@ propertyAssignment
     ;
 
 getAccessor
-    : getter '(' ')' typeAnnotation? '{' functionBody '}'
+    : getter OpenParen CloseParen typeAnnotation? OpenBrace functionBody CloseBrace
     ;
 
 setAccessor
-    : setter '(' ( Identifier | bindingPattern) typeAnnotation? ')' '{' functionBody '}'
+    : setter OpenParen ( Identifier | bindingPattern) typeAnnotation? CloseParen OpenBrace functionBody CloseBrace
     ;
 
 propertyName
@@ -1225,11 +1224,11 @@ propertyName
     ;
 
 arguments
-    : '(' (argumentList ','?)? ')'
+    : OpenParen (argumentList Comma?)? CloseParen
     ;
 
 argumentList
-    : argument (',' argument)*
+    : argument (Comma argument)*
     ;
 
 argument                      // ECMAScript 6: Spread Operator
@@ -1237,16 +1236,16 @@ argument                      // ECMAScript 6: Spread Operator
     ;
 
 expressionSequence
-    : expression (',' expression)*
+    : expression (Comma expression)*
     ;
 
 functionExpressionDeclaration
-    : Function_ Identifier? '(' formalParameterList? ')' typeAnnotation? '{' functionBody '}'
+    : Function_ Identifier? OpenParen formalParameterList? CloseParen typeAnnotation? OpenBrace functionBody CloseBrace
     ;
 
 expression
     : Not expression                                             # NotExpression
-    | '(' expression ')'                                         # ParenthesizedExpression
+    | OpenParen expression CloseParen                                         # ParenthesizedExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1315,12 +1314,12 @@ arrowFunctionDeclaration
 
 arrowFunctionParameters
     : Identifier
-    | '(' formalParameterList? ')'
+    | OpenParen formalParameterList? CloseParen
     ;
 
 arrowFunctionBody
     : expression
-    | '{' functionBody '}'
+    | OpenBrace functionBody CloseBrace
     ;
 
 assignmentOperator

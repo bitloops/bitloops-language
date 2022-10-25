@@ -1,36 +1,40 @@
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../../index.js';
+// import { BitloopsParser, BitloopsParserError } from '../../../../index.js';
+import antlr4 from 'antlr4';
+import BitloopsLexer from '../../../../parser/core/grammar/BitloopsLexer.js';
 
-const blString = ` 
-Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
-  isBrokenIf(title > 150 OR title < 4);
-}
+// const blString = `JestTest { helloWorldUseCase.execute() }`;
 
-Props NameProps {
-  string name;
-}
+const blString = `
+GraphQLController HelloWorldController ( ) {
+    operation: GraphQL.Operations.Query;
+    input: HelloWorldRequestDTO;
+  
+    execute(request): HelloWorldResponseDTO {
+        this.ok('Hello World!');
+    }
+  }
+  `;
 
-Props TitleProps {
-  string title;
-}`;
+const chars = new antlr4.InputStream(blString);
+const lexer: any = new BitloopsLexer(chars) as any;
+const tokens = new antlr4.CommonTokenStream(lexer);
+const test = lexer.getAllTokens();
+console.log('Tokens: ', tokens);
 
-const parser = new BitloopsParser();
-const initialModelOutput = parser.parse([
-  {
-    boundedContext: 'a',
-    module: 'b',
-    fileId: 'testFile.bl',
-    fileContents: blString,
-  },
-]);
-const intermediateParser = new BitloopsIntermediateASTParser();
-if (!(initialModelOutput instanceof BitloopsParserError)) {
-  const result = intermediateParser.parse(initialModelOutput);
-  console.log('result:', JSON.stringify(result));
-}
+// const parser = new BitloopsParser();
+// const initialModelOutput = parser.parse([
+//   {
+//     boundedContext: 'a',
+//     module: 'b',
+//     fileId: 'testFile.bl',
+//     fileContents: blString,
+//   },
+// ]);
+// const intermediateParser = new BitloopsIntermediateASTParser();
+// if (!(initialModelOutput instanceof BitloopsParserError)) {
+//   const result = intermediateParser.parse(initialModelOutput);
+//   console.log('result:', JSON.stringify(result));
+// }
 
 // const a: TRules = {
 //   IsValidTitle: {
