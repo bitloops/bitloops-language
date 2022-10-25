@@ -12,12 +12,12 @@ Feature: OkError Return Type to Typescript target language
     Examples:
       # Auto format deletes the extra space after the pipe while it shouldn't
       | return-type                                                                                        | output                                                                             |
-      | {"ok":"Name","errors":["DomainErrors.InvalidName"]}                                                | XOR<Name, DomainErrors.InvalidName>                                                |
-      | {"ok":"Name","errors":["DomainErrors.InvalidName", "Unexpected"]}                                  | XOR<Name, DomainErrors.InvalidName \| Unexpected>                                  |
-      | {"ok":"void","errors":["DomainErrors.EmailAlreadyExistsError", "DomainErrors.UsernameTakenError"]} | XOR<void, DomainErrors.EmailAlreadyExistsError \| DomainErrors.UsernameTakenError> |
-      | {"ok":"Name","errors":[]}                                                                          | XOR<Name, never>                                                                   |
-      | {"ok":"Name"}                                                                                      | XOR<Name, never>                                                                   |
-      | {"ok":"void","errors":[]}                                                                          | XOR<void, never>                                                                   |
+      | {"ok":"Name","errors":["DomainErrors.InvalidName"]}                                                | Either<Name, DomainErrors.InvalidName>                                                |
+      | {"ok":"Name","errors":["DomainErrors.InvalidName", "Unexpected"]}                                  | Either<Name, DomainErrors.InvalidName \| Unexpected>                                  |
+      | {"ok":"void","errors":["DomainErrors.EmailAlreadyExistsError", "DomainErrors.UsernameTakenError"]} | Either<void, DomainErrors.EmailAlreadyExistsError \| DomainErrors.UsernameTakenError> |
+      | {"ok":"Name","errors":[]}                                                                          | Either<Name, never>                                                                   |
+      | {"ok":"Name"}                                                                                      | Either<Name, never>                                                                   |
+      | {"ok":"void","errors":[]}                                                                          | Either<void, never>                                                                   |
 
     Scenario Template: Return OK Error type unsuccessful
     Given I have a return type <return-type>

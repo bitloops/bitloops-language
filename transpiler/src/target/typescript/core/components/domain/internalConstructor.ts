@@ -17,7 +17,6 @@ export const internalConstructor = (
   let res = `private constructor(props: ${propsName}) { ${superString}; `;
   let dependencies = [];
   if (statements) {
-    console.log('internalConstructor statements', statements);
     const statementsResult = statementsToTargetLanguage(statements);
     res += statementsResult.output;
     dependencies = statementsResult.dependencies;
