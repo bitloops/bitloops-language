@@ -108,9 +108,11 @@ defineFeature(feature, (test) => {
 
     then(/^I should get (.*)$/, (output) => {
       const expectedOutput = d(output);
+      const pathAfterUsers = process.cwd().split('/Users/')[1];
+      const [username] = pathAfterUsers.split('/');
       writeGeneratedOutputToFiles(
         result as TBitloopsTargetSetupContent,
-        '/Users/vasilis/Downloads/bitloops/',
+        `/Users/${username}/Downloads/bitloops/`,
       );
       expect(result).toEqual(expectedOutput);
     });
