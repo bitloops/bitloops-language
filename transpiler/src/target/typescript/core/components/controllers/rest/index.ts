@@ -24,20 +24,67 @@ import {
   TRESTController,
   TControllers,
   TTargetDependenciesTypeScript,
+  TDependenciesTypeScript,
 } from '../../../../../../types.js';
+import { getParentDependencies } from '../../../dependencies.js';
+import { ClassTypes } from '../../../../../../helpers/mappings.js';
 
-const getServerImports = (serverType: string): string => {
-  let result = '';
+// const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
+//   const useCasesKeys = Object.keys(useCases);
+//   let result = '';
+//   let dependencies: TDependenciesTypeScript = [
+//     {
+//       type: 'absolute',
+//       default: false,
+//       value: 'Application',
+//       from: '@bitloops/bl-boilerplate-core',
+//     },
+//     {
+//       type: 'absolute',
+//       default: false,
+//       value: 'Either',
+//       from: '@bitloops/bl-boilerplate-core',
+//     },
+//     {
+//       type: 'absolute',
+//       default: false,
+//       value: 'ok',
+//       from: '@bitloops/bl-boilerplate-core',
+//     },
+//   ];
+//   for (let i = 0; i < useCasesKeys.length; i++) {
+//     const useCaseName = useCasesKeys[i];
+//     const useCaseValues = useCases[useCaseName];
+//     const useCaseValuesModel = useCaseValuesToTargetLanguage(useCaseValues, useCaseName);
+//     const useCaseValuesToTargetLanguageOutput = useCaseValuesModel.output;
+//     const useCaseValuesToTargetLanguageDependencies = useCaseValuesModel.dependencies;
+
+//     dependencies = [...dependencies, ...useCaseValuesToTargetLanguageDependencies];
+//     result += useCaseValuesToTargetLanguageOutput;
+//   }
+
+//   return { output: result, dependencies: [...dependencies] };
+// };
+
+const getServerImports = (serverType: string): TDependenciesTypeScript => {
   switch (serverType) {
-    case 'REST.Fastify':
-      result += "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';\n";
-      break;
+    case 'REST.Fastify': {
+      // result += "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';\n";
+      const dependencies: TDependenciesTypeScript = [
+        {
+          type: 'absolute',
+          default: false,
+          value: 'Fastify',
+          from: '@bitloops/bl-boilerplate-infra-rest-fastify',
+        },
+      ];
+      return dependencies;
+    }
     case 'REST.Express':
       throw new Error('Server type not supported');
     default:
       throw new Error('Server type not supported');
   }
-  return result;
 };
 
 const getServerExtends = (serverType: string): string => {
@@ -59,6 +106,7 @@ const restControllersToTargetLanguage = (
   contextData: { boundedContext: string; module: string },
   controllersSetupData: TControllers,
 ): TTargetDependenciesTypeScript => {
+  let dependencies = [];
   const { boundedContext, module } = contextData;
 
   // TODO for all controllers
@@ -69,21 +117,34 @@ const restControllersToTargetLanguage = (
   }
   const { serverType } = controllerDefinition;
   const serverImports = getServerImports(serverType);
-  const extendsClass = getServerExtends(serverType);
+  dependencies = [...dependencies, ...serverImports];
 
-  let result = `${serverImports} export class ${controllerName} extends ${extendsClass}{ `;
+  const extendsClass = getServerExtends(serverType);
+  let result = `export class ${controllerName} extends ${extendsClass}{ `;
   const controller = controllers[controllerName];
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
 
-  result += buildFieldsFromDependencies(controller.parameterDependencies, contextData);
-  const { output, dependencies } = buildExecuteMethod(controller.execute);
+  const dependenciesRes = buildFieldsFromDependencies(
+    controller.parameterDependencies,
+    contextData,
+  );
+  result += dependenciesRes.output;
+  dependencies = [...dependencies, ...dependenciesRes.dependencies];
+
+  const { output, dependencies: executeDependencies } = buildExecuteMethod(controller.execute);
   result += output;
 
   const finalObjValLang = '}';
   result += finalObjValLang;
-  return { output: result, dependencies: dependencies };
+
+  dependencies = [...dependencies, ...executeDependencies];
+  const parentDependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.UseCases,
+    className: controllerName,
+  });
+  return { output: result, dependencies: parentDependencies };
 };
 
 export { restControllersToTargetLanguage };
