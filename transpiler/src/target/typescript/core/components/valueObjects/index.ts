@@ -20,13 +20,16 @@
 import {
   TBoundedContexts,
   TContextData,
+  TDependenciesTypeScript,
+  TDependencyChildTypescript,
   TTargetDependenciesTypeScript,
   TValueObjectMethods,
   TValueObjects,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
 const valueObjectMethods = (
   valueObjectMethods: TValueObjectMethods,
@@ -56,10 +59,31 @@ const valueObjectsToTargetLanguage = (params: {
     `export class ${voName} extends ValueObject<${propsName}> { `;
 
   let result = '';
-  let dependencies = [];
+  let parentDependencies;
+  let dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Domain',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Either',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'ok',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
     const propsName = create.parameterDependency.type;
+    dependencies = [...dependencies, ...getChildDependencies(propsName)];
 
     if (constantVars) {
       // TODO FIx with new type
@@ -70,34 +94,33 @@ const valueObjectsToTargetLanguage = (params: {
     result += initialObjectValuesLangMapping(valueObjectName, propsName);
     // Add this.props to constructor when overriding from bl
 
-    result += modelToTargetLanguage({
+    const voCreateModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TDomainCreateMethod,
       value: create,
-    }).output;
-    dependencies = [
-      ...dependencies,
-      modelToTargetLanguage({
-        type: BitloopsTypesMapping.TDomainCreateMethod,
-        value: create,
-      }).dependencies,
-    ];
+    });
+    result += voCreateModel.output;
+    dependencies = [...dependencies, ...voCreateModel.dependencies];
 
-    result += generateGetters(propsName, modelForContext, methods).output;
-    dependencies = [
-      ...dependencies,
-      ...generateGetters(propsName, modelForContext, methods).dependencies,
-    ];
+    const gettersModel = generateGetters(propsName, modelForContext, methods);
+    result += gettersModel.output;
+    dependencies = [...dependencies, ...gettersModel.dependencies];
 
     if (methods) {
-      result += valueObjectMethods(methods).output;
-      dependencies = [...dependencies, ...valueObjectMethods(methods).dependencies];
+      const voMethodsModel = valueObjectMethods(methods);
+      result += voMethodsModel.output;
+      dependencies = [...dependencies, ...voMethodsModel.dependencies];
     }
 
     const finalObjValLangMapping = '}';
     result += finalObjValLangMapping;
+
+    parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+      classType: ClassTypes.ValueObjects,
+      className: valueObjectName,
+    });
   }
 
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies: parentDependencies };
 };
 
 export { valueObjectsToTargetLanguage };
