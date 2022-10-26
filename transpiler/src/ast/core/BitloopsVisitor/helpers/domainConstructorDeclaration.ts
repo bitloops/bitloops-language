@@ -30,7 +30,7 @@ export const domainConstructorDeclarationVisitor = (
   const functionBody = thisVisitor.visit(ctx.functionBody());
   const returnType = thisVisitor.visit(ctx.returnOkErrorType());
   const parameters = thisVisitor.visit(ctx.formalParameterList());
-  console.log({ functionBody });
+  // console.log({ functionBody });
   const result: TEntityCreate = {
     returnType,
     statements: functionBody.statements,

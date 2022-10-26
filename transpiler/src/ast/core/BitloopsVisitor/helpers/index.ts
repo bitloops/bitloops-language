@@ -74,6 +74,10 @@ export {
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 export { getClassEvaluationVisitor } from './getClassEvaluation.js';
 export {
+  useCaseDeclarationVisitor,
+  useCaseExecuteDeclarationVisitor,
+} from './useCaseDeclaration.js';
+export {
   equalityExpressionVisitor,
   relationalExpressionVisitor,
   logicalAndExpressionVisitor,
@@ -95,3 +99,10 @@ export {
   caseClauseVisitor,
   defaultClauseVisitor,
 } from './switchStatement.js';
+export { structDeclarationVisitor } from './structDeclaration.js';
+export { packagePortDeclarationVisitor } from './packagePortDeclaration.js';
+export {
+  repoPortDeclarationVisitor,
+  repoPortExtendableIdentifierVisitor,
+} from './repoPortDeclaration.js';
+export { readModelDeclarationVisitor } from './readModelDeclaration.js';

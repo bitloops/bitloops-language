@@ -47,6 +47,9 @@ import {
   TBuildInFunction,
   TEntityValues,
   TModule,
+  TUseCase,
+  TStructs,
+  TReadModels,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -106,6 +109,7 @@ import {
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
   getClassEvaluationVisitor,
+  useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
   logicalAndExpressionVisitor,
@@ -124,6 +128,12 @@ import {
   caseBlockVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
+  useCaseExecuteDeclarationVisitor,
+  structDeclarationVisitor,
+  packagePortDeclarationVisitor,
+  repoPortDeclarationVisitor,
+  repoPortExtendableIdentifierVisitor,
+  readModelDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -312,8 +322,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return defaultClauseVisitor(this, ctx);
   }
 
-  visitBreakStatement() {
-    // console.log('BreakStatement');
+  visitBreakStatement(ctx: BitloopsParser.BreakStatementContext) {
+    return ctx.Break().getText();
   }
 
   visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {
@@ -435,7 +445,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } as TParameterDependency;
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
+  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): TParameterDependency[] {
     return formalParameterListVisitor(this, ctx);
   }
 
@@ -641,5 +651,53 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
     return getClassEvaluationVisitor(this, ctx);
+  }
+
+  /**
+   * UseCase Declaration
+   */
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
+    return useCaseDeclarationVisitor(this, ctx);
+  }
+  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
+    return useCaseExecuteDeclarationVisitor(this, ctx);
+  }
+
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: TStructs } {
+    return structDeclarationVisitor(this, ctx);
+  }
+
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
+    return packagePortDeclarationVisitor(this, ctx);
+  }
+
+  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {
+    return repoPortDeclarationVisitor(this, ctx);
+  }
+
+  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
+    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+  }
+
+  visitRepoPortExtendableIdentifierList(
+    ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
+  ) {
+    return this.visitChildren(ctx)[0];
+  }
+
+  visitRepoPortExtendableIdentifier(ctx: BitloopsParser.RepoPortExtendableIdentifierContext) {
+    return repoPortExtendableIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoPortMethodDefinitions(ctx: BitloopsParser.RepoPortMethodDefinitionsContext) {
+    return this.visit(ctx.methodDefinitionList());
+  }
+  /**
+   * Read model
+   */
+  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): {
+    ReadModels: TReadModels;
+  } {
+    return readModelDeclarationVisitor(this, ctx);
   }
 }

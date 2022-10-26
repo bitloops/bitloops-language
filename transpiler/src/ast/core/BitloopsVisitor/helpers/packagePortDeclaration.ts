@@ -19,21 +19,24 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TGetClass } from '../../../../types.js';
+import { TPackagePort } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const getClassEvaluationVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.GetClassEvaluationContext,
-): TGetClass => {
-  const regularVariableEvaluation = ctx.GetClassEvaluation().getText();
-  const index = regularVariableEvaluation.lastIndexOf('.');
-  const variable = regularVariableEvaluation.slice(0, index);
+export const packagePortDeclarationVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.PackagePortDeclarationContext,
+): { Packages: { [x: string]: { port: TPackagePort; adapters: [] } } } => {
+  const packagePortName = ctx.packagePortIdentifier().getText();
+  const definitionMethods = thisVisitor.visit(ctx.methodDefinitionList());
+  const packageName = packagePortName.replace('Port', '');
   return {
-    getClass: {
-      regularEvaluation: {
-        type: 'variable',
-        value: variable,
+    Packages: {
+      [packageName]: {
+        port: {
+          name: packagePortName,
+          ...definitionMethods,
+        },
+        adapters: [],
       },
     },
   };

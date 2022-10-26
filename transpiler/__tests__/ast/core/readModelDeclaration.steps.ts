@@ -17,8 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
+import { decode } from 'bitloops-gherkin';
 
 import {
   BitloopsIntermediateASTParser,
@@ -27,26 +27,31 @@ import {
   BitloopsParserError,
 } from '../../../src/index.js';
 
-const feature = loadFeature('__tests__/ast/core/getClass.feature');
+const feature = loadFeature('__tests__/ast/core/readModelDeclaration.feature');
 
 defineFeature(feature, (test) => {
-  test('Get Class is valid', ({ given, when, then }) => {
-    const boundedContext = 'Hello World';
-    //  const module = 'core';
-    let blString;
-    let modelOutput;
-    let result;
+  test('Read model declaration is valid', ({ given, when, then }) => {
+    let boundedContext: string;
+    let module: string;
+    let blString: string;
+    let modelOutput: string;
+    let result: any;
 
-    given(/^A valid getClass (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+    given(
+      /^Valid bounded context (.*), module (.*), readModelDeclaration (.*) strings$/,
+      (arg0, arg1, arg2) => {
+        boundedContext = decode(arg0);
+        module = decode(arg1);
+        blString = decode(arg2);
+      },
+    );
 
     when('I generate the model', () => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
           boundedContext,
-          module: 'core',
+          module,
           fileId: 'testFile.bl',
           fileContents: blString,
         },
@@ -60,7 +65,7 @@ defineFeature(feature, (test) => {
     });
 
     then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
+      modelOutput = decode(arg0);
       expect(result).toEqual(JSON.parse(modelOutput));
     });
   });

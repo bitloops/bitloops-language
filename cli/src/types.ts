@@ -1,5 +1,3 @@
-import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
-
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -19,6 +17,7 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
 export declare type TModule = {
   Props?: TProps;
   Controllers?: TRESTController | TGraphQLController;
@@ -34,6 +33,7 @@ export declare type TModule = {
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
+  ReadModels?: TReadModels;
 };
 export declare type TClassType =
   | 'Props'
@@ -49,7 +49,9 @@ export declare type TClassType =
   | 'Packages'
   | 'Rules'
   | 'RepoPorts'
-  | 'RepoAdapters';
+  | 'RepoAdapters'
+  | 'ReadModels';
+
 export declare type TComponentType =
   | 'TProps'
   | 'TControllers'
@@ -64,7 +66,9 @@ export declare type TComponentType =
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
-  | 'TRepoAdapters';
+  | 'TRepoAdapters'
+  | 'TReadModels';
+
 export declare type TClassName = string;
 declare type TClassInformation = {
   moduleName: TModuleName;
@@ -136,6 +140,12 @@ export declare type TPropsValues = {
   variables: TVariables;
 };
 export declare type TProps = Record<string, TPropsValues>;
+
+export declare type TReadModelValues = {
+  variables: TVariables;
+};
+export declare type TReadModels = Record<string, TReadModelValues>;
+
 export declare type TParamDependencyType = TBitloopsPrimitives | string;
 export declare type TParameterDependency = {
   type: TParamDependencyType;

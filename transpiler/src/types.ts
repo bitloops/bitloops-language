@@ -1,5 +1,3 @@
-import { BitloopsLanguageAST } from './index.js';
-
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -19,6 +17,7 @@ import { BitloopsLanguageAST } from './index.js';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsLanguageAST } from './index.js';
 
 export type TModule = {
   Props?: TProps;
@@ -35,6 +34,7 @@ export type TModule = {
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
+  ReadModels?: TReadModels;
 };
 
 export type TClassType =
@@ -51,7 +51,8 @@ export type TClassType =
   | 'Packages'
   | 'Rules'
   | 'RepoPorts'
-  | 'RepoAdapters';
+  | 'RepoAdapters'
+  | 'ReadModels';
 
 export type TComponentType =
   | 'TProps'
@@ -67,7 +68,8 @@ export type TComponentType =
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
-  | 'TRepoAdapters';
+  | 'TRepoAdapters'
+  | 'TReadModels';
 
 export type TClassName = string;
 type TClassInformation = {
@@ -153,6 +155,11 @@ export type TPropsValues = {
 };
 
 export type TProps = Record<string, TPropsValues>;
+
+export type TReadModelValues = {
+  variables: TVariables;
+};
+export type TReadModels = Record<string, TReadModelValues>;
 
 export type TParamDependencyType = TBitloopsPrimitives | string;
 // (name: string)
@@ -981,7 +988,9 @@ export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
 };
 
+export type TDependenciesTypeScript = { type: 'absolute' | 'relative'; default: boolean; value: string; from?: string }[];
+
 export type TTargetDependenciesTypeScript = {
   output: string;
-  dependencies: { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
+  dependencies: TDependenciesTypeScript;
 };

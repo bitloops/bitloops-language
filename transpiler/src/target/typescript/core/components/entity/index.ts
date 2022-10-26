@@ -20,6 +20,7 @@
 import {
   TBoundedContexts,
   TContextData,
+  TDependenciesTypeScript,
   TEntities,
   TEntityMethods,
   TTargetDependenciesTypeScript,
@@ -49,7 +50,22 @@ const entitiesToTargetLanguage = (params: {
     `export class ${entityName} extends Entity<${propsName}> { `;
 
   let result = '';
-  let dependencies = [];
+  let dependencies: TDependenciesTypeScript = [{
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  }, {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  }, {
+    type: 'absolute',
+    default: false,
+    value: 'ok',
+    from: '@bitloops/bl-boilerplate-core',
+  }];
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
     const propsName = create.parameterDependency.type;
@@ -83,7 +99,7 @@ const entitiesToTargetLanguage = (params: {
     result += '}';
   }
 
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies };
 };
 
 export { entitiesToTargetLanguage };

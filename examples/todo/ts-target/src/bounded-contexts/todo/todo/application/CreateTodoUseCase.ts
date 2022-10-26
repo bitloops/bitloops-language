@@ -3,9 +3,9 @@ import { Application, Domain, Either, fail, ok } from '@bitloops/bl-boilerplate-
 import { CreateTodoRequestDTO } from '../dtos/CreateTodoRequestDTO';
 import { TodoEntity } from '../domain/TodoEntity';
 import { TitleVO } from '../domain/TitleVO';
-import { DomainErrors } from '../domain/DomainErrors';
+import { DomainErrors } from '../domain/errors';
 
-type CreateTodoUseCaseResponse = Either<void, DomainErrors.TitleOutOfBoundsError>;
+type CreateTodoUseCaseResponse = Either<void, DomainErrors.TitleOutOfBounds>;
 
 export class CreateTodoUseCase
   implements Application.IUseCase<CreateTodoRequestDTO, Promise<CreateTodoUseCaseResponse>>

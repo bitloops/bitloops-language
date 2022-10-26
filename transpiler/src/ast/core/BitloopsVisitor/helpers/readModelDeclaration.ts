@@ -19,21 +19,19 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TGetClass } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TReadModels } from '../../../../types.js';
 
-export const getClassEvaluationVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.GetClassEvaluationContext,
-): TGetClass => {
-  const regularVariableEvaluation = ctx.GetClassEvaluation().getText();
-  const index = regularVariableEvaluation.lastIndexOf('.');
-  const variable = regularVariableEvaluation.slice(0, index);
+export const readModelDeclarationVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ReadModelDeclarationContext,
+): { ReadModels: TReadModels } => {
+  const identifier = ctx.ReadModelIdentifier().getText();
+  const variables = thisVisitor.visit(ctx.fieldList());
   return {
-    getClass: {
-      regularEvaluation: {
-        type: 'variable',
-        value: variable,
+    ReadModels: {
+      [identifier]: {
+        variables,
       },
     },
   };
