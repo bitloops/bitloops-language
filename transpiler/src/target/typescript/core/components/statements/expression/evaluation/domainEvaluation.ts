@@ -20,6 +20,7 @@
 import { TDomainEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../../../dependencies.js';
 
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
@@ -40,8 +41,10 @@ export const domainEvaluationToTargetLanguage = (
     });
   }
 
+  const dependencies = [...resultDomainProps.dependencies, ...getChildDependencies(domainName)];
+
   return {
     output: `${domainName}.create(${resultDomainProps.output});`,
-    dependencies: resultDomainProps.dependencies,
+    dependencies,
   };
 };
