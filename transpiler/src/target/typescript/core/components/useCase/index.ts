@@ -22,6 +22,7 @@ import {
   TUseCaseValues,
   TExecute,
   TTargetDependenciesTypeScript,
+  TDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -30,7 +31,26 @@ import { getParentDependencies } from '../../dependencies.js';
 const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
   const useCasesKeys = Object.keys(useCases);
   let result = '';
-  let dependencies = [];
+  let dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Application',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Either',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'ok',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
   for (let i = 0; i < useCasesKeys.length; i++) {
     const useCaseName = useCasesKeys[i];
     const useCaseValues = useCases[useCaseName];
@@ -80,7 +100,6 @@ const useCaseValuesToTargetLanguage = (
   });
   dependencies = [...dependencies, ...useCaseReturnTypesResult.dependencies];
 
-  // TODO .dependencies
   const useCaseDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameterDependencies,
