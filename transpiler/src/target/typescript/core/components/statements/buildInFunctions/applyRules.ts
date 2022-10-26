@@ -19,6 +19,7 @@
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { TApplyRules, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import { getChildDependencies, getValueAndFileNameOfImport } from '../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesTypeScript => {
@@ -26,16 +27,21 @@ const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesT
 
   let result = 'const res = applyRules([';
   let dependencies = [];
+  const domainRules = [];
   for (const applyRule of applyRules) {
-    const parameterDependencies = modelToTargetLanguage({
+    const argumentDependencies = modelToTargetLanguage({
       type: BitloopsTypesMapping.TArgumentDependencies,
       value: applyRule.arguments,
     });
-    result += `new ${applyRule.name}${parameterDependencies.output},`;
-    dependencies = [...dependencies, ...parameterDependencies.dependencies];
+    result += `new ${applyRule.name}${argumentDependencies.output},`;
+    domainRules.push(applyRule.name);
+    dependencies = [...dependencies, ...argumentDependencies.dependencies];
   }
   result += ']);';
   result += 'if (res) return fail(res);';
+
+  const domainRulesDependencies = getChildDependencies(domainRules);
+  dependencies = [...dependencies, ...domainRulesDependencies];
   return { output: result, dependencies };
 };
 

@@ -76,12 +76,19 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
 /**
  * Gets the file name from [class name/=/dependency String]
  */
-const getValueAndFileNameOfImport = (
+export const getValueAndFileNameOfImport = (
   dependencyString: string,
+  classType?: TClassTypesValues,
 ): { value: string; fileName: string } => {
   if (dependencyString.startsWith('DomainErrors.')) {
     return {
       value: 'DomainErrors',
+      fileName: 'index',
+    };
+  }
+  if (classType === ClassTypes.Rules) {
+    return {
+      value: 'Rules',
       fileName: 'index',
     };
   }

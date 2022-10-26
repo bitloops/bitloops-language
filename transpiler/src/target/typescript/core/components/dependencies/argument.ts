@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import {
   TArgumentDependencies,
   TArgumentDependency,
@@ -61,7 +62,7 @@ const argumentDependencyToTargetLanguage = (
         value: variable.value,
       };
       return modelToTargetLanguage({
-        type: 'TEvaluatePrimitive',
+        type: BitloopsTypesMapping.TEvaluatePrimitive,
         value: primitive,
       });
 

@@ -1029,7 +1029,7 @@ entityIdentifier
 // ;
 
 domainRuleIdentifier
-: UpperCaseIdentifier
+: RuleIdentifier
 ;
 
 // TODO valueObjectIdentifier inside bitloops identifiers 

@@ -139,6 +139,10 @@ const getFilePathRelativeToModule = (
       result.path = 'domain/errors/';
       result.filename = 'index';
       break;
+    case ClassTypes.Rules:
+      result.path = 'domain/rules/';
+      result.filename = 'index';
+      break;
     case ClassTypes.Controllers:
       result.path = 'driving-adapters/';
       result.filename = className;
