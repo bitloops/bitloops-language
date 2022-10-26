@@ -159,6 +159,10 @@ const getFilePathRelativeToModule = (
       result.path = 'packages/';
       result.filename = className;
       break;
+    case ClassTypes.RepoPorts:
+      result.path = 'domain/';
+      result.filename = className;
+      break;
     default:
       throw new Error(`Class type ${classType} is not supported`);
   }
