@@ -21,15 +21,16 @@ import {
   TBoundedContexts,
   TContextData,
   TDependenciesTypeScript,
+  TDependencyChildTypescript,
   TEntities,
   TEntityMethods,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
-import { getChildDependencies } from '../../dependencies.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
 const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
   const result = domainMethods(objectValueMethods);
@@ -51,6 +52,7 @@ const entitiesToTargetLanguage = (params: {
     `export class ${entityName} extends Entity<${propsName}> { `;
 
   let result = '';
+  let parentDependencies;
   let dependencies: TDependenciesTypeScript = [
     {
       type: 'absolute',
@@ -103,9 +105,14 @@ const entitiesToTargetLanguage = (params: {
     }
 
     result += '}';
+
+    parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+      classType: ClassTypes.Entities,
+      className: entityName,
+    });
   }
 
-  return { output: result, dependencies };
+  return { output: result, dependencies: parentDependencies };
 };
 
 export { entitiesToTargetLanguage };

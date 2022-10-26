@@ -31,26 +31,7 @@ import { getParentDependencies } from '../../dependencies.js';
 const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
   const useCasesKeys = Object.keys(useCases);
   let result = '';
-  let dependencies: TDependenciesTypeScript = [
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Application',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Either',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'ok',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-  ];
+  let dependencies = [];
   for (let i = 0; i < useCasesKeys.length; i++) {
     const useCaseName = useCasesKeys[i];
     const useCaseValues = useCases[useCaseName];
@@ -87,7 +68,26 @@ const useCaseValuesToTargetLanguage = (
   variable: TUseCaseValues,
   useCaseName: string,
 ): TTargetDependenciesTypeScript => {
-  let dependencies = [];
+  let dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Application',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Either',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'ok',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
   const { execute, returnTypes, parameterDependencies } = variable;
   const useCaseInputType = execute.parameterDependencies[0]
     ? execute.parameterDependencies[0].type

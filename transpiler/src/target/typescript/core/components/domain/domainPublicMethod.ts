@@ -42,7 +42,11 @@ const domainPublicMethod = (
   );
   return {
     output: result,
-    dependencies: [...statementsString.dependencies, ...parametersString.dependencies],
+    dependencies: [
+      ...statementsString.dependencies,
+      ...parametersString.dependencies,
+      ...mappedReturnType.dependencies,
+    ],
   };
 };
 export { domainPublicMethod };

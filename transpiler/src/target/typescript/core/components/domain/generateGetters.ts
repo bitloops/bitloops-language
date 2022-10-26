@@ -2,6 +2,7 @@ import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimit
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { TModule, TDomainMethods, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { SupportedLanguages } from '../../../../supportedLanguages.js';
+import { getChildDependencies } from '../../dependencies.js';
 
 export const generateGetters = (
   propsName: string,
@@ -15,6 +16,7 @@ export const generateGetters = (
 
   // TODO what about optional fields??
   let gettersResult = '';
+  const dependencies = [];
   if (!Props) throw new Error(`No Props Found with name ${propsName}`);
   for (const [propName, propValues] of Object.entries(Props)) {
     if (propName === propsName) {
@@ -30,11 +32,12 @@ export const generateGetters = (
           continue;
         }
         const getter = `get ${getterName}(): ${returnType} { return this.props.${name}; } `;
+        dependencies.push(...getChildDependencies(returnType));
         gettersResult += getter;
       }
-      return { output: gettersResult, dependencies: [] };
+      return { output: gettersResult, dependencies };
     }
   }
 
-  return { output: gettersResult, dependencies: [] };
+  return { output: gettersResult, dependencies };
 };
