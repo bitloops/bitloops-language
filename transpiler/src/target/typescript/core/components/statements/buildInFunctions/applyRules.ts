@@ -19,7 +19,7 @@
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { TApplyRules, TTargetDependenciesTypeScript } from '../../../../../../types.js';
-import { getChildDependencies, getValueAndFileNameOfImport } from '../../../dependencies.js';
+import { getChildDependencies } from '../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesTypeScript => {
