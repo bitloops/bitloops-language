@@ -208,6 +208,7 @@ closeParen
 //    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
 regularVariableEvaluation
     : ThisVariableEvaluation #ThisVariableEvaluationString
+    | ErrorIdentifier #ErrorClassEvaluation
     | RegularVariableEvaluation #RegularVariableEvaluationString
     | Identifier    #IdentifierString
     ;
@@ -847,6 +848,8 @@ readModelDeclaration
 repoPortDeclaration
     : RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList SemiColon?
     | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
+    | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList SemiColon?
+    | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
     ;
 
 repoPortIdentifier

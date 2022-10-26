@@ -15,18 +15,18 @@ const todoWriteRepo = RepoAdapters.Mongo({
   collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
 }) concretes [Todo][Todo]TodoWriteRepoPort;
 
-const todoReadRepo = RepoAdapters.Mongo({
-  connection: mongoConnection,
-  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-}) concretes [Todo][Todo]TodoReadRepoPort;
+// const todoReadRepo = RepoAdapters.Mongo({
+//   connection: mongoConnection,
+//   collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+// }) concretes [Todo][Todo]TodoReadRepoPort;
 
 // USE CASES
 
 const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
-const getAllTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getAll);
-const updateTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.update);
-const deleteTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.delete);
-const getByIdTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getById);
+// const getAllTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getAll);
+// const updateTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.update);
+// const deleteTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.delete);
+// const getByIdTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getById);
 
 // REST ROUTERS
 
@@ -44,7 +44,7 @@ RESTServer({
   server: REST.Fastify,
   port: Env(FASTIFY_PORT, 5001),
   apiPrefix: '/api',
-  corsOptions: { origin: '*' },
+  // corsOptions: { origin: '*' },
 }) {
   '/todo': todoRESTRouter;
 }
