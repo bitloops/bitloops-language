@@ -49,14 +49,13 @@ export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
     const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
     const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
     if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
-    else {
-      const formattedTargetContent = bitloopsTargetGenerator.formatCode(
-        targetContent,
-        params.formatterConfig,
-      );
-      return formattedTargetContent;
-      // TODO imports
-    }
+
+    const targetContentWithImports = bitloopsTargetGenerator.generateImports(targetContent);
+    const formattedTargetContent = bitloopsTargetGenerator.formatCode(
+      targetContentWithImports,
+      params.formatterConfig,
+    );
+    return formattedTargetContent;
   }
 
   generateSetup(

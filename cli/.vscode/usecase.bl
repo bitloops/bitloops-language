@@ -1,0 +1,5 @@
+UseCase CreateTodoUseCase () {
+  execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
+  
+  }
+}

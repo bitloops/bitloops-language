@@ -30,7 +30,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const domainErrorsToTargetLanguage = (
   domainErrors: TDomainErrors,
-  isESMEnabled = false,
 ): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
   let result = '';
@@ -40,12 +39,7 @@ const domainErrorsToTargetLanguage = (
     const domainError = domainErrors[domainErrorName];
     const domainErrorToTargetLang = domainErrorToTargetLanguage(domainError, domainErrorName);
     result += domainErrorToTargetLang.output;
-    dependencies = [{
-      type: 'relative',
-      default: false,
-      value: domainErrorName,
-      from: `./${domainErrorName}${isESMEnabled ? '.js' : ''}`,
-    }, ...dependencies, ...domainErrorToTargetLang.dependencies];
+    dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
   }
   return { output: result, dependencies };
 };
@@ -64,12 +58,14 @@ const domainErrorToTargetLanguage = (
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameters ?? [],
   });
-  const dependencies: TDependenciesTypeScript = [{
-    type: 'absolute',
-    default: false,
-    value: 'Domain',
-    from: '@bitloops/bl-boilerplate-core',
-  }];
+  const dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Domain',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
 
   let result = `export class ${domainErrorName} extends Domain.Error { constructor`;
   result += parametersResult.output;

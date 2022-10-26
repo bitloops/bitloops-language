@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { TClassTypesValues } from './helpers/mappings.js';
 import { BitloopsLanguageAST } from './index.js';
 
 export type TModule = {
@@ -988,7 +989,22 @@ export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
 };
 
-export type TDependenciesTypeScript = { type: 'absolute' | 'relative'; default: boolean; value: string; from?: string }[];
+type TDependencyTypescript = {
+  type: 'absolute' | 'relative';
+  default: boolean;
+  value: string;
+};
+
+export type TDependencyChildTypescript = TDependencyTypescript & {
+  classType: TClassTypesValues;
+  className: string;
+};
+
+export type TDependencyParentTypescript = TDependencyTypescript & {
+  from: string;
+};
+
+export type TDependenciesTypeScript = (TDependencyChildTypescript | TDependencyParentTypescript)[];
 
 export type TTargetDependenciesTypeScript = {
   output: string;

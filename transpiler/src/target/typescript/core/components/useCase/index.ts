@@ -23,8 +23,9 @@ import {
   TExecute,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
   const useCasesKeys = Object.keys(useCases);
@@ -33,14 +34,10 @@ const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScr
   for (let i = 0; i < useCasesKeys.length; i++) {
     const useCaseName = useCasesKeys[i];
     const useCaseValues = useCases[useCaseName];
-    const useCaseValuesToTargetLanguageOutput = useCaseValuesToTargetLanguage(
-      useCaseValues,
-      useCaseName,
-    ).output;
-    const useCaseValuesToTargetLanguageDependencies = useCaseValuesToTargetLanguage(
-      useCaseValues,
-      useCaseName,
-    ).dependencies;
+    const useCaseValuesModel = useCaseValuesToTargetLanguage(useCaseValues, useCaseName);
+    const useCaseValuesToTargetLanguageOutput = useCaseValuesModel.output;
+    const useCaseValuesToTargetLanguageDependencies = useCaseValuesModel.dependencies;
+
     dependencies = [...dependencies, ...useCaseValuesToTargetLanguageDependencies];
     result += useCaseValuesToTargetLanguageOutput;
   }
@@ -48,55 +45,66 @@ const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScr
   return { output: result, dependencies: [...dependencies] };
 };
 
+const initialUseCase = (
+  returnTypesResult: string,
+  responseTypeName: string,
+  inputType: string,
+  dependencies: string,
+  useCaseName: string,
+): string => {
+  const useCaseResponseType = `type ${responseTypeName} = ${returnTypesResult};`;
+  let result = useCaseResponseType;
+  const responseType = `Promise<${responseTypeName}>`;
+  result += `export class ${useCaseName} implements Application.IUseCase<${
+    inputType ? inputType : 'void'
+  }, ${responseType}> {`;
+  if (!isDependenciesEmpty(dependencies))
+    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {}; `;
+  return result;
+};
+
 const useCaseValuesToTargetLanguage = (
   variable: TUseCaseValues,
   useCaseName: string,
 ): TTargetDependenciesTypeScript => {
+  let dependencies = [];
   const { execute, returnTypes, parameterDependencies } = variable;
   const useCaseInputType = execute.parameterDependencies[0]
     ? execute.parameterDependencies[0].type
     : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
-  const initialUseCaseLangMapping = (
-    returnTypesResult: string,
-    responseTypeName: string,
-    inputType: string,
-    dependencies: string,
-  ): string => {
-    let result = `type ${responseTypeName} = ${returnTypesResult};`;
-    const responseType = `Promise<${responseTypeName}>`;
-    result += `export class ${useCaseName} implements UseCase<${
-      inputType ? inputType : 'void'
-    }, ${responseType}> {`;
-    if (!isDependenciesEmpty(dependencies))
-      result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {}; `;
-    return result;
-  };
-  const finalUseCaseLangMapping = '}';
-
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: returnTypes,
   });
+  dependencies = [...dependencies, ...useCaseReturnTypesResult.dependencies];
 
   const useCaseDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameterDependencies,
   });
 
-  let result = initialUseCaseLangMapping(
+  let result = initialUseCase(
     useCaseReturnTypesResult.output,
     useCaseResponseTypeName,
     useCaseInputType,
     useCaseDependenciesResult.output,
+    useCaseName,
   );
 
   const executeResult = useCaseExecuteToTargetLanguage(variable.execute, useCaseResponseTypeName);
-  result += executeResult.output;
-  result += finalUseCaseLangMapping;
 
-  return { output: result, dependencies: executeResult.dependencies };
+  result += executeResult.output;
+  result += '}';
+  dependencies = [...dependencies, ...executeResult.dependencies];
+
+  const parentDependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.UseCases,
+    className: useCaseName,
+  });
+
+  return { output: result, dependencies: parentDependencies };
 };
 
 const useCaseExecuteToTargetLanguage = (

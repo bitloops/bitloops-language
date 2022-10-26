@@ -122,7 +122,11 @@ const ClassTypes = {
   RepoAdapters: 'RepoAdapters',
   Rules: 'Rules',
   ReadModels: 'ReadModels',
-};
+} as const;
+
+type TClassTypesKeys = keyof typeof ClassTypes;
+
+export type TClassTypesValues = typeof ClassTypes[TClassTypesKeys];
 
 const mappingClassTypeToComponentType = {
   [ClassTypes.Controllers]: BitloopsTypesMapping.TControllers,
