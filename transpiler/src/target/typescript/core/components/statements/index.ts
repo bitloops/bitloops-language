@@ -112,26 +112,21 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
 const statementsWithoutThisToTargetLanguage = (
   variable: TStatements,
 ): TTargetDependenciesTypeScript => {
-  let dependencies = [];
+  let finalDependencies = [];
   const mapping = (variable: TStatements): string => {
     return variable
       .map((statement) => {
-        dependencies = [
-          ...dependencies,
-          ...modelToTargetLanguage({
-            type: BitloopsTypesMapping.TStatement,
-            value: statement,
-          }).dependencies,
-        ];
-        return (
-          modelToTargetLanguage({ type: BitloopsTypesMapping.TStatement, value: statement })
-            .output + ';'
-        );
+        const { output, dependencies } = modelToTargetLanguage({
+          type: BitloopsTypesMapping.TStatement,
+          value: statement,
+        });
+        finalDependencies = [...finalDependencies, ...dependencies];
+        return output + ';';
       })
       .filter((statement) => statement.includes('this'))
       .join(' ');
   };
-  return { output: mapping(variable), dependencies };
+  return { output: mapping(variable), dependencies: finalDependencies };
 };
 
 export {
