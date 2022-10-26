@@ -8,54 +8,73 @@ import {
   BitloopsParserError,
   BitloopsLanguageASTContext,
 } from '../../../src/index.js';
+import { TDomainErrors, TModule } from '../../../src/types.js';
 
 const feature = loadFeature('__tests__/ast/core/domainError.feature');
 
-const expectedModels = [
+const expectedModels: TDomainErrors[] = [
   {
-    'Hello World': {
-      core: {
-        DomainErrors: {
-          InvalidName: {
-            message: { string: 'is an invalid name' },
-            errorId: { string: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
-            parameters: [{ type: 'string', value: 'name' }],
+    InvalidName: {
+      message: {
+        expression: {
+          evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
+        },
+      },
+      errorId: {
+        expression: {
+          evaluation: {
+            regularEvaluation: { type: 'string', value: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
           },
         },
       },
+      parameters: [{ type: 'string', value: 'name' }],
     },
   },
   {
-    'Hello World': {
-      core: {
-        DomainErrors: {
-          InvalidName: {
-            message: { backTickString: 'name is an invalid ${name}' },
-            errorId: { string: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
-            parameters: [{ type: 'string', value: 'name' }],
+    InvalidName: {
+      message: {
+        expression: {
+          evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
+        },
+      },
+      errorId: {
+        expression: {
+          evaluation: {
+            regularEvaluation: { type: 'string', value: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
           },
         },
       },
+      parameters: [
+        { type: 'string', value: 'name' },
+        { type: 'string', value: 'hello' },
+      ],
     },
   },
-  {
-    'Hello World': {
-      core: {
-        DomainErrors: {
-          InvalidName: {
-            message: { backTickString: 'name is an invalid ${name}' },
-            errorId: { backTickString: '${errorId}' },
-            parameters: [
-              { type: 'string', value: 'name' },
-              { type: 'string', value: 'errorId' },
-            ],
-          },
-        },
-      },
-    },
-  },
+  // {
+  //   'Hello World': {
+  //     core: {
+  //       DomainErrors: {
+  //         InvalidName: {
+  //           message: { backTickString: 'name is an invalid ${name}' },
+  //           errorId: { backTickString: '${errorId}' },
+  //           parameters: [
+  //             { type: 'string', value: 'name' },
+  //             { type: 'string', value: 'errorId' },
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   },
+  // },
 ];
-
+// TODO make work with backticks and make work to target language
+const expectedOutput: {
+  [bdctx: string]: {
+    core: TModule;
+  };
+}[] = expectedModels.map((expectedModel: TDomainErrors) => ({
+  ['Hello World']: { core: { DomainErrors: expectedModel } },
+}));
 let example_count = 0;
 let blString: string;
 let res: any;
@@ -86,7 +105,7 @@ defineFeature(feature, (test) => {
     });
 
     then('I should get the right model', () => {
-      expect(res).toEqual(expectedModels[example_count]);
+      expect(res).toEqual(expectedOutput[example_count]);
     });
   });
 

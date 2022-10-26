@@ -62,7 +62,7 @@ fieldList
     ;
 
 evaluationFieldList
-    : evaluationField (Comma evaluationField)*
+    : evaluationField (',' evaluationField)* ','?
     ;
 
 evaluationField
@@ -928,7 +928,7 @@ propsEvaluation
 
 //TODO make objectLiteral more specific
 domainErrorDeclaration
-    : DomainError domainErrorIdentifier formalParameterList? objectLiteral SemiColon?
+    : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 applicationErrorDeclaration
