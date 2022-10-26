@@ -202,6 +202,7 @@ export const bitloopsPrimitives = [
   'sfixed64',
   'bool',
   'string',
+  'backTickString',
   'bytes',
   'enum',
   'Timestamp',
