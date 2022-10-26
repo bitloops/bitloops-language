@@ -130,6 +130,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Props:
     case ClassTypes.ReadModels:
     case ClassTypes.RootEntities:
+    case ClassTypes.Entities:
     case ClassTypes.ValueObjects:
       result.path = 'domain/';
       result.filename = className;
