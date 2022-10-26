@@ -23,6 +23,7 @@ export const generateGetters = (
       for (const propVariable of propValues.variables) {
         const { type, name } = propVariable;
         let returnType = type;
+        dependencies.push(...getChildDependencies(returnType));
         if (isBitloopsPrimitive(returnType)) {
           returnType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](returnType);
         }
@@ -32,7 +33,6 @@ export const generateGetters = (
           continue;
         }
         const getter = `get ${getterName}(): ${returnType} { return this.props.${name}; } `;
-        dependencies.push(...getChildDependencies(returnType));
         gettersResult += getter;
       }
       return { output: gettersResult, dependencies };

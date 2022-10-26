@@ -18,7 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { isBitloopsPrimitive } from '../../../helpers/isBitloopsPrimitive.js';
-import { ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import {
+  BitloopsFixedClassTypesArray,
+  ClassTypes,
+  mappingBitloopsFixedClassTypesToLayer,
+  TClassTypesValues,
+} from '../../../helpers/mappings.js';
 import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
 import { getFilePathRelativeToModule } from '../helpers/getTargetFileDestination.js';
 import { findRelativeDiffForImport } from '../utils/findRelativeDiff.js';
@@ -34,6 +39,7 @@ export const getParentDependencies = (
     const { type, value, classType, className } = dependency;
     if (type === 'absolute') {
       parentDependecies.push(dependency as TDependencyParentTypescript);
+      continue;
     }
     const childPathObj = getFilePathRelativeToModule(classType, className);
     const childPath = childPathObj.path;
@@ -58,6 +64,15 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
   for (const dependencyString of dependencyStrings) {
     // for void etc
     if (isBitloopsPrimitive(dependencyString)) {
+      continue;
+    }
+    if (BitloopsFixedClassTypesArray.includes(dependencyString)) {
+      result.push({
+        type: 'absolute',
+        default: false,
+        value: mappingBitloopsFixedClassTypesToLayer[dependencyString],
+        from: '@bitloops/bl-boilerplate-core',
+      });
       continue;
     }
     const { classType } = getClassTypeFromIdentifier(dependencyString);

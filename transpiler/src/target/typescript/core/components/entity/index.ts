@@ -106,6 +106,8 @@ const entitiesToTargetLanguage = (params: {
 
     result += '}';
 
+    console.log({ dependencies });
+
     parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
       classType: ClassTypes.Entities,
       className: entityName,

@@ -997,8 +997,8 @@ type TDependencyTypescript = {
 };
 
 export type TDependencyChildTypescript = TDependencyTypescript & {
-  classType: TClassTypesValues;
-  className: string;
+  classType?: TClassTypesValues;
+  className?: string;
 };
 
 export type TDependencyParentTypescript = TDependencyTypescript & {
