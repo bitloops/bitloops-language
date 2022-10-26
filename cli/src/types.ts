@@ -218,7 +218,8 @@ export declare type TApplicationError = {
   errorId: TString;
   parameters?: TParameterDependencies;
 };
-export declare type TApplicationErrors = Record<string, TDomainError>;
+
+export type TApplicationErrors = Record<string, TApplicationError>;
 export declare type TInstanceOf = {
   isInstanceOf: [
     TArgumentDependency,

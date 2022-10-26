@@ -24,6 +24,8 @@ import {
   TBackTickString,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
+  TEvaluation,
+  TRegularEvaluation,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -49,10 +51,16 @@ const domainErrorToTargetLanguage = (
   domainErrorName: string,
 ): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
-  const messageResult = messageToTargetLanguage(message);
+
+  // TODO: throw error if message is not a string or backtick string
+  const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
+  const messageText: TString = { string: messageRegularEval.regularEvaluation.value };
+  const messageResult = messageToTargetLanguage(messageText);
+  const errorIdRegularEval = (errorId.expression as TEvaluation).evaluation as TRegularEvaluation;
+  const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
-    value: errorId,
+    value: erroIdText,
   });
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
