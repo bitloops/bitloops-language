@@ -24,17 +24,23 @@ import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js
 import { TTargetDependenciesTypeScript, TVariableDeclaration } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../dependencies.js';
 
 export const variableDeclarationToTargetLanguage = (
   variable: TVariableDeclaration,
 ): TTargetDependenciesTypeScript => {
-  const constDeclarationLangMapping = (variable: TVariableDeclaration): string => {
+  const constDeclarationLangMapping = (
+    variable: TVariableDeclaration,
+  ): TTargetDependenciesTypeScript => {
     const { name, type } = variable.variableDeclaration;
     let tsType = type;
     if (isBitloopsPrimitive(type)) {
       tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
     }
-    return `let ${name}: ${tsType} = `;
+    return {
+      output: `let ${name}: ${tsType} = `,
+      dependencies: getChildDependencies(tsType),
+    };
   };
 
   const declareResult = constDeclarationLangMapping(variable);
@@ -46,7 +52,7 @@ export const variableDeclarationToTargetLanguage = (
   });
 
   return {
-    output: `${declareResult}${expressionModel.output}`,
-    dependencies: expressionModel.dependencies,
+    output: `${declareResult.output}${expressionModel.output}`,
+    dependencies: [...declareResult.dependencies, ...expressionModel.dependencies],
   };
 };

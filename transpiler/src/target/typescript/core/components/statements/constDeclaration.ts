@@ -24,11 +24,14 @@ import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js
 import { TConstDeclaration, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../dependencies.js';
 
 const constDeclarationToTargetLanguage = (
   variable: TConstDeclaration,
 ): TTargetDependenciesTypeScript => {
-  const constDeclarationLangMapping = (variable: TConstDeclaration): string => {
+  const constDeclarationLangMapping = (
+    variable: TConstDeclaration,
+  ): TTargetDependenciesTypeScript => {
     const { name, type } = variable.constDeclaration;
 
     if (type) {
@@ -36,9 +39,9 @@ const constDeclarationToTargetLanguage = (
       if (isBitloopsPrimitive(type)) {
         tsType = `${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type)}`;
       }
-      return `const ${name}: ${tsType} = `;
+      return { output: `const ${name}: ${tsType} = `, dependencies: getChildDependencies(tsType) };
     } else {
-      return `const ${name} = `;
+      return { output: `const ${name} = `, dependencies: [] };
     }
   };
 
@@ -51,8 +54,8 @@ const constDeclarationToTargetLanguage = (
   });
 
   return {
-    output: `${declareResult}${expressionResult.output}`,
-    dependencies: expressionResult.dependencies,
+    output: `${declareResult.output}${expressionResult.output}`,
+    dependencies: [...declareResult.dependencies, ...expressionResult.dependencies],
   };
 };
 
