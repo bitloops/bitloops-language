@@ -233,6 +233,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
+    console.log('visitErrorEvaluation')
+    const identifier = ctx.ErrorIdentifier().getText();
+    const argumentDependencies = this.visit(ctx.methodArguments()) || [];
+
+    return {
+      type: 'method',
+      value: identifier,
+      argumentDependencies
+    };
+  }
+
   visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
     const value = ctx.RegularVariableEvaluation().getText();
     return {
@@ -363,6 +375,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularVariableMethodEvaluation(
     ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
   ): any {
+    console.log('visitRegularVariableMethodEvaluation')
     return regularVariableMethodEvaluationVisitor(this, ctx);
   }
 
