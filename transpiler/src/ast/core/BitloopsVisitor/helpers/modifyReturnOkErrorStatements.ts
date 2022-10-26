@@ -41,7 +41,6 @@ export const modifyReturnOkErrorStatements = (
 ) => {
   return statements.map((statement) => {
     if (isReturnStatement(statement)) {
-      console.log('isReturnStatement statement', statement);
       const returnStatement = statement as TReturnStatement;
       if (isReturnOkErrorType(returnType)) {
         if (isReturnOKStatement(returnStatement)) {
@@ -53,7 +52,6 @@ export const modifyReturnOkErrorStatements = (
             returnError: returnStatement.return,
           };
         }
-        console.log('changed statement', statement);
       }
     }
     return statement;

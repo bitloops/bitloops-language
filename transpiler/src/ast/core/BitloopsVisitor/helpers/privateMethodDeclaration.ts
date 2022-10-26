@@ -44,7 +44,6 @@ export const privateMethodDeclarationVisitor = (
   const returnOkType = returnType as TOkErrorReturnType;
 
   const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnOkType);
-  console.log('statementsWithModifiedReturn', statementsWithModifiedReturn);
 
   addReturnOkVoidStatement(statementsWithModifiedReturn, returnOkType);
 
