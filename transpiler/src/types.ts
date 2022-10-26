@@ -988,7 +988,7 @@ export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
 };
 
-export type TDependenciesTypeScript = { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
+export type TDependenciesTypeScript = { type: 'absolute' | 'relative'; default: boolean; value: string; from?: string }[];
 
 export type TTargetDependenciesTypeScript = {
   output: string;

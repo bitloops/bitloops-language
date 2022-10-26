@@ -23,24 +23,30 @@ import {
   TString,
   TBackTickString,
   TTargetDependenciesTypeScript,
+  TDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const domainErrorsToTargetLanguage = (
   domainErrors: TDomainErrors,
+  isESMEnabled = false,
 ): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
-  let result = 'export namespace DomainErrors {';
+  let result = '';
   let dependencies = [];
   for (let i = 0; i < domainErrorsNames.length; i++) {
     const domainErrorName = domainErrorsNames[i];
     const domainError = domainErrors[domainErrorName];
     const domainErrorToTargetLang = domainErrorToTargetLanguage(domainError, domainErrorName);
     result += domainErrorToTargetLang.output;
-    dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
+    dependencies = [{
+      type: 'relative',
+      default: false,
+      value: domainErrorName,
+      from: `./${domainErrorName}${isESMEnabled ? '.js' : ''}`,
+    }, ...dependencies, ...domainErrorToTargetLang.dependencies];
   }
-  result += '}';
   return { output: result, dependencies };
 };
 
@@ -58,8 +64,14 @@ const domainErrorToTargetLanguage = (
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameters ?? [],
   });
+  const dependencies: TDependenciesTypeScript = [{
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  }];
 
-  let result = `export class ${domainErrorName} extends DomainError { constructor`;
+  let result = `export class ${domainErrorName} extends Domain.Error { constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;
@@ -69,6 +81,7 @@ const domainErrorToTargetLanguage = (
   return {
     output: result,
     dependencies: [
+      ...dependencies,
       ...parametersResult.dependencies,
       ...messageResult.dependencies,
       ...errorIdResult.dependencies,
