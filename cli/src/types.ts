@@ -823,5 +823,4 @@ export declare type TTargetDependenciesTypeScript = {
   }[];
 };
 export {};
->>>>>>> main
 //# sourceMappingURL=types.d.ts.map
