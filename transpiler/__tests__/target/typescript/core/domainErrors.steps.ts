@@ -17,30 +17,40 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { decode } from 'bitloops-gherkin';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+// import { decode } from 'bitloops-gherkin';
+// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+// import { ISetupData, ControllerTypeOfDefinition } from '../../../../src/types.js';
+// import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+// import { ClassTypes } from '../../../../src/helpers/mappings.js';
+// import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/domainErrors.feature');
+const feature = loadFeature('./__tests__/target/typescript/core/domainErrors.feature');
 
 defineFeature(feature, (test) => {
-  const boundedContext = 'Hello world';
+  let language: string;
+  let value; // : any;
   const module = 'demo';
   const classType = ClassTypes.DomainErrors;
+  const boundedContext = 'Hello world';
+  let intermediateAST; // : any;
+  let result; // : any;
   const formatterConfig = null;
-  let result;
-  let intermediateAST;
-  let language;
+  const domainImport = "import { Domain } from '@bitloops/bl-boilerplate-core';";
 
   test('DomainErrors with messages', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (lang) => {
-      language = lang;
+    given(/^language is "(.*)"$/, (arg0) => {
+      language = arg0;
     });
 
-    given(/^I have domainErrors (.*)$/, (domainErrors) => {
+    given(/^I have DomainErrors (.*)$/, (domainErrors) => {
+      value = decode(domainErrors);
       intermediateAST = {
-        [boundedContext]: { [module]: { [classType]: JSON.parse(domainErrors) } },
+        [boundedContext]: { [module]: { [classType]: JSON.parse(value) } },
       };
     });
 
@@ -55,10 +65,10 @@ defineFeature(feature, (test) => {
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      const classNamesContent = JSON.parse(output);
+      const classNamesContent = JSON.parse(decode(output));
       const expectedOutput = [];
-      for (const [className, content] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString(content as string, formatterConfig);
+      for (const [className, content ] of Object.entries(classNamesContent)) {
+        const formattedOutput = formatString((domainImport + content) as string, formatterConfig);
         expectedOutput.push({
           boundedContext,
           className,

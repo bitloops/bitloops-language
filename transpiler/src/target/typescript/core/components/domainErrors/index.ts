@@ -45,6 +45,14 @@ const domainErrorsToTargetLanguage = (
   }
   return { output: result, dependencies };
 };
+const convertToString = (value: TRegularEvaluation): TString | TBackTickString => {
+  const body = value.regularEvaluation;
+  if (body.type === 'string') {
+    return { string: body.value };
+  }
+
+  return { backTickString: body.value };
+};
 
 const domainErrorToTargetLanguage = (
   variable: TDomainError,
@@ -54,13 +62,15 @@ const domainErrorToTargetLanguage = (
 
   // TODO: throw error if message is not a string or backtick string
   const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
-  const messageText: TString = { string: messageRegularEval.regularEvaluation.value };
+  const messageText: TString | TBackTickString = convertToString(messageRegularEval);
   const messageResult = messageToTargetLanguage(messageText);
   const errorIdRegularEval = (errorId.expression as TEvaluation).evaluation as TRegularEvaluation;
-  const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
+
+  const errorIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
+  // const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
-    value: erroIdText,
+    value: errorIdText,
   });
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
