@@ -69,6 +69,7 @@ const getTargetFileDestination = (
   switch (classType) {
     case ClassTypes.RootEntities:
     case ClassTypes.Entities:
+    case ClassTypes.ReadModels:
     case ClassTypes.ValueObjects:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
@@ -127,6 +128,7 @@ const getFilePathRelativeToModule = (
   };
   switch (classType) {
     case ClassTypes.Props:
+    case ClassTypes.ReadModels:
     case ClassTypes.RootEntities:
     case ClassTypes.ValueObjects:
       result.path = 'domain/';

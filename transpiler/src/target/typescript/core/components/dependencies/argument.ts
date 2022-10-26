@@ -44,7 +44,6 @@ const argumentDependenciesToTargetLanguage = (
     }
   }
   result += ')';
-  console.log('result', result, 'variable', variable);
   return { output: result, dependencies };
 };
 

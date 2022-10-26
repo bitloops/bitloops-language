@@ -159,6 +159,7 @@ Const:                          'const';
 // Import:                         'import';
 RepoPort:                       'RepoPort';
 Props:                          'Props';
+ReadModel:                      'ReadModel';
 DTO:                            'DTO';
 RESTController:                 'RESTController';
 GraphQLController:              'GraphQLController';
@@ -295,13 +296,13 @@ ControllerIdentifier:           UpperCaseStart IdentifierPart* 'Controller';
 UseCaseIdentifier:              UpperCaseStart IdentifierPart* UseCase;
 PackagePortIdentifier:          UpperCaseStart IdentifierPart* PackagePort;
 PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
+ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
-// RegularVariableEvaluation:              RegularEvaluationStart RegularEvaluationPart? ('.' RegularEvaluationPart?)*;
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;

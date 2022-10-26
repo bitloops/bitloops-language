@@ -214,6 +214,7 @@ regularVariableEvaluation
 
 regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
+    | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 
@@ -502,11 +503,11 @@ sourceElement
     | useCaseDeclaration
     | packagePortDeclaration
     | valueObjectDeclaration
-    | domainConstructorDeclaration
     | domainRuleDeclaration
     | entityDeclaration
     | aggregateDeclaration
     | repoPortDeclaration
+    | readModelDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -836,6 +837,10 @@ useCaseDeclaration
 
 propsDeclaration
     : Props PropsIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    ;
+
+readModelDeclaration
+    : ReadModel ReadModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;
@@ -1253,7 +1258,6 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
-    | This                                                       # ThisExpression
     | evaluation                                                 # EvaluationExpression 
     ;   
 

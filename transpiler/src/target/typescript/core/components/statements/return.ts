@@ -73,7 +73,7 @@ const returnErrorToTargetLanguage = (
     value: variable.returnError,
   });
   const propsVariableLangMapping = (expressionValue: TTargetDependenciesTypeScript): string =>
-    `return oops(${expressionValue.output})`;
+    `return fail(${expressionValue.output})`;
   return {
     output: propsVariableLangMapping(expressionValue),
     dependencies: expressionValue.dependencies,

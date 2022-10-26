@@ -47,6 +47,9 @@ import {
   TBuildInFunction,
   TEntityValues,
   TModule,
+  TUseCase,
+  TStructs,
+  TReadModels,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -106,11 +109,36 @@ import {
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
   getClassEvaluationVisitor,
+  useCaseDeclarationVisitor,
+  equalityExpressionVisitor,
+  relationalExpressionVisitor,
+  logicalAndExpressionVisitor,
+  logicalOrExpressionVisitor,
+  logicalXorExpressionVisitor,
+  logicalNotExpressionVisitor,
+  multiplicativeExpressionVisitor,
+  additiveExpressionVisitor,
+  parenthesizedExpressionVisitor,
+  ifStatementVisitor,
+  statementListVisitor,
+  constDeclarationVisitor,
+  variableDeclarationVisitor,
+  thisDeclarationVisitor,
+  switchStatementVisitor,
+  caseBlockVisitor,
+  caseClauseVisitor,
+  defaultClauseVisitor,
+  useCaseExecuteDeclarationVisitor,
+  structDeclarationVisitor,
+  packagePortDeclarationVisitor,
+  repoPortDeclarationVisitor,
+  repoPortExtendableIdentifierVisitor,
+  readModelDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
-  // TODO aggregate all individual results (.e.g controllers, props..)
+
   constructor() {
     super();
   }
@@ -138,395 +166,176 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {
-    // console.log('EqualityExpression');
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const operator = ctx.op.text;
-    const returnObject = {
-      expression: {
-        equalityExpression: {
-          left: left.expression,
-          right: right.expression,
-          operator: operator,
-        },
-      },
-    };
-    return returnObject;
+    return equalityExpressionVisitor(this, ctx);
   }
 
   visitIdentifierName(ctx: BitloopsParser.IdentifierNameContext) {
-    // console.log('IdentifierName');
-    const identifier = ctx.Identifier().getText();
-    // console.log('identifier:', identifier, typeof identifier);
-    return identifier;
+    return ctx.Identifier().getText();
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
-    // console.log('Identifier');
-    const identifier = ctx.Identifier().getText();
-    // console.log('identifier:', identifier, typeof identifier);
-    return identifier;
+    return ctx.Identifier().getText();
   }
 
   visitRelationalExpression(ctx: BitloopsParser.RelationalExpressionContext) {
-    // const left: string = this.visit(ctx.expression(0));
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const operator = ctx.op.text;
-    const returnObject = {
-      expression: {
-        relationalExpression: {
-          left: left.expression,
-          right: right.expression,
-          operator: operator,
-        },
-      },
-    };
-    return returnObject;
+    return relationalExpressionVisitor(this, ctx);
   }
 
   visitLogicalAndExpression(ctx: BitloopsParser.LogicalAndExpressionContext) {
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const returnObject = {
-      expression: {
-        logicalExpression: {
-          andExpression: {
-            left: left.expression,
-            right: right.expression,
-          },
-        },
-      },
-    };
-    return returnObject;
+    return logicalAndExpressionVisitor(this, ctx);
   }
 
   visitLogicalOrExpression(ctx: BitloopsParser.LogicalOrExpressionContext) {
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const returnObject = {
-      expression: {
-        logicalExpression: {
-          orExpression: {
-            left: left.expression,
-            right: right.expression,
-          },
-        },
-      },
-    };
-    return returnObject;
+    return logicalOrExpressionVisitor(this, ctx);
   }
 
   visitLogicalXorExpression(ctx: BitloopsParser.LogicalXorExpressionContext) {
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const returnObject = {
-      expression: {
-        logicalExpression: {
-          xorExpression: {
-            left: left.expression,
-            right: right.expression,
-          },
-        },
-      },
-    };
-    return returnObject;
+    return logicalXorExpressionVisitor(this, ctx);
   }
 
   visitNotExpression(ctx: BitloopsParser.NotExpressionContext) {
-    const expression = this.visit(ctx.expression());
-    const returnObject = {
-      expression: {
-        logicalExpression: { notExpression: expression.expression },
-      },
-    };
-    return returnObject;
+    return logicalNotExpressionVisitor(this, ctx);
   }
 
   visitMultiplicativeExpression(ctx: BitloopsParser.MultiplicativeExpressionContext) {
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const operator = ctx.op.text;
-    const returnObject = {
-      expression: {
-        multiplicativeExpression: {
-          left: left.expression,
-          right: right.expression,
-          operator: operator,
-        },
-      },
-    };
-    return returnObject;
+    return multiplicativeExpressionVisitor(this, ctx);
   }
 
   visitAdditiveExpression(ctx: BitloopsParser.AdditiveExpressionContext) {
-    const left = this.visit(ctx.expression(0));
-    const right = this.visit(ctx.expression(1));
-    const operator = ctx.op.text;
-    const returnObject = {
-      expression: {
-        additiveExpression: {
-          left: left.expression,
-          right: right.expression,
-          operator: operator,
-        },
-      },
-    };
-    return returnObject;
-  }
-
-  visitThisExpression(ctx: BitloopsParser.ThisExpressionContext) {
-    // console.log('ThisExpression');
-    const thisExpression: string = ctx.This().getText();
-    return thisExpression;
+    return additiveExpressionVisitor(this, ctx);
   }
 
   visitParenthesizedExpression(ctx: BitloopsParser.ParenthesizedExpressionContext) {
-    // console.log('ParenthesizedExpression');
-    const expression = this.visit(ctx.expression());
-    const returnObject = {
-      expression: {
-        parenthesizedExpression: expression.expression,
-      },
-    };
-    return returnObject;
+    return parenthesizedExpressionVisitor(this, ctx);
   }
 
   visitEvaluationExpression(ctx: BitloopsParser.EvaluationExpressionContext) {
-    // console.log('EvaluationExpression');
     const evaluation = this.visit(ctx.evaluation());
-    const returnObject = {
+    return {
       expression: {
         ...evaluation,
       },
     };
-    return returnObject;
   }
 
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
-    // console.log('RegularEvaluation');
     const regularEvaluation: string = this.visitChildren(ctx)[0];
-    const returnObject = {
-      regularEvaluation: regularEvaluation,
+    return {
+      regularEvaluation,
     };
-    return returnObject;
   }
 
   visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {
-    // console.log('ThisVariableEvaluationString');
     const value = ctx.ThisVariableEvaluation().getText();
-    const returnObject = {
+    return {
       type: 'variable',
       value: value,
     };
-    return returnObject;
+  }
+
+  visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
+    console.log('visitErrorEvaluation')
+    const identifier = ctx.ErrorIdentifier().getText();
+    const argumentDependencies = this.visit(ctx.methodArguments()) || [];
+
+    return {
+      type: 'method',
+      value: identifier,
+      argumentDependencies
+    };
   }
 
   visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
-    // console.log('RegularVariableEvaluationString');
     const value = ctx.RegularVariableEvaluation().getText();
-    const returnObject = {
+    return {
       type: 'variable',
       value: value,
     };
-    return returnObject;
   }
 
   visitIdentifierString(ctx: BitloopsParser.IdentifierStringContext) {
-    // console.log('IdentifierString');
-    const returnObject = {
+    return {
       type: 'variable',
       value: ctx.Identifier().getText(),
     };
-    return returnObject;
   }
 
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
-    // console.log('RegularIntegerEvaluation');
-    const returnObject = integerEvaluation(ctx.IntegerLiteral().getText());
-    return returnObject;
+    return integerEvaluation(ctx.IntegerLiteral().getText());
   }
 
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
-    // console.log('RegularDecimalEvaluation');
-    const returnObject = decimalEvaluation(ctx.DecimalLiteral().getText());
-    return returnObject;
+    return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
 
   visitRegularBooleanEvaluation(ctx: BitloopsParser.RegularBooleanEvaluationContext) {
-    // console.log('RegularBooleanEvaluation');
-    const returnObject = booleanEvaluation(ctx.BooleanLiteral().getText());
-    return returnObject;
+    return booleanEvaluation(ctx.BooleanLiteral().getText());
   }
 
   visitRegularStringEvaluation(ctx: BitloopsParser.RegularStringEvaluationContext) {
-    // console.log('RegularStringEvaluation');
-    const returnObject = stringEvaluation(ctx.StringLiteral().getText());
-    return returnObject;
+    return stringEvaluation(ctx.StringLiteral().getText());
   }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
-    // console.log('Condition');
     const condition = this.visit(ctx.expression());
-    const returnObject = {
-      condition: condition,
+    return {
+      condition,
     };
-    return returnObject;
   }
 
   visitIfStatement(ctx: BitloopsParser.IfStatementContext) {
-    // console.log('IfStatement');
-    const condition = this.visit(ctx.condition());
-    const thenStatements = this.visit(ctx.statement(0));
-    const returnObject = {
-      ifStatement: {
-        ...condition,
-        thenStatements: thenStatements.statements,
-      },
-    };
-    if (ctx.statement(1)) {
-      const elseStatements = this.visit(ctx.statement(1));
-      returnObject.ifStatement['elseStatements'] = elseStatements.statements;
-    }
-    return returnObject;
+    return ifStatementVisitor(this, ctx);
   }
 
   visitStatement(ctx: BitloopsParser.StatementContext) {
-    // console.log('Statement');
-    const statement = this.visitChildren(ctx)[0];
-    return statement;
+    return this.visitChildren(ctx)[0];
   }
 
   visitStatementList(ctx: BitloopsParser.StatementListContext) {
-    // console.log('StatementList');
-    const statementList = this.visitChildren(ctx);
-    const returnStatementList = [];
-    for (let i = 0; i < statementList.length; i++) {
-      if (Array.isArray(statementList[i])) {
-        if (statementList[i][0] !== undefined) {
-          returnStatementList.push(statementList[i]);
-        }
-      } else if (statementList[i] !== undefined) {
-        returnStatementList.push(statementList[i]);
-      }
-    }
-    const returnObject = {
-      statements: returnStatementList,
-    };
-    return returnObject;
+    return statementListVisitor(this, ctx);
   }
 
   visitBlock(ctx: BitloopsParser.BlockContext) {
-    // console.log('Block');
-    const block = this.visitChildren(ctx)[1];
-    return block;
+    return this.visitChildren(ctx)[1];
   }
   visitConstDeclaration(ctx: BitloopsParser.ConstDeclarationContext) {
-    // console.log('ConstDeclaration');
-    const left = this.visit(ctx.identifier());
-    const right = this.visit(ctx.expression());
-    const returnObject = {
-      constDeclaration: {
-        name: left,
-        expression: right.expression,
-      },
-    };
-    if (ctx.typeAnnotation()) {
-      const typeAnnotation = this.visit(ctx.typeAnnotation());
-      returnObject.constDeclaration['type'] = typeAnnotation;
-    }
-    return returnObject;
+    return constDeclarationVisitor(this, ctx);
   }
 
   visitVariableDeclaration(ctx: BitloopsParser.VariableDeclarationContext) {
-    // console.log('VariableDeclaration');
-    const left = this.visit(ctx.identifier());
-    const right = this.visit(ctx.expression());
-    const typeAnnotation = this.visit(ctx.typeAnnotation());
-    const returnObject = {
-      variableDeclaration: {
-        name: left,
-        expression: right.expression,
-        type: typeAnnotation,
-      },
-    };
-    return returnObject;
+    return variableDeclarationVisitor(this, ctx);
   }
 
   visitTypeAnnotation(ctx: BitloopsParser.TypeAnnotationContext) {
-    // console.log('TypeAnnotation');
-    const type = ctx.type_().getText();
-    return type;
+    return ctx.type_().getText();
   }
 
   visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
-    // console.log('ThisDeclaration');
-    const thisDeclaration = ctx.ThisVariableEvaluation().getText();
-    const expression = this.visit(ctx.expression());
-    const returnObject = {
-      thisDeclaration: {
-        name: thisDeclaration,
-        expression: expression.expression,
-      },
-    };
-    return returnObject;
+    return thisDeclarationVisitor(this, ctx);
   }
 
   visitSwitchStatement(ctx: BitloopsParser.SwitchStatementContext) {
-    // console.log('SwitchStatement');
-    const expressionObject = this.visit(ctx.condition());
-    const caseObject = this.visit(ctx.caseBlock());
-    const returnObject = {
-      switchStatement: {
-        expression: expressionObject.condition.expression,
-        cases: caseObject.cases,
-        defaultCase: caseObject.defaultCase,
-      },
-    };
-    return returnObject;
+    return switchStatementVisitor(this, ctx);
   }
 
   visitCaseBlock(ctx: BitloopsParser.CaseBlockContext) {
-    // console.log('CaseBlock');
-    const caseClauses = this.visit(ctx.caseClauses(0));
-    if (ctx.caseClauses(1)) {
-      caseClauses.push(this.visit(ctx.caseClauses(1)));
-    }
-    const defaultClause = this.visit(ctx.defaultClause());
-    const returnObject = {
-      cases: caseClauses,
-      defaultCase: defaultClause,
-    };
-    return returnObject;
+    return caseBlockVisitor(this, ctx);
   }
 
   visitCaseClauses(ctx: BitloopsParser.CaseClausesContext) {
-    const caseClauses = this.visitChildren(ctx);
-    return caseClauses;
+    return this.visitChildren(ctx);
   }
 
   visitCaseClause(ctx: BitloopsParser.CaseClauseContext) {
-    // console.log('CaseClause');
-    const caseValue = ctx.expression().getText();
-    const caseStatement = this.visit(ctx.statementList());
-    const returnObject = {
-      statements: caseStatement.statements[0].statements,
-      caseValue: caseValue,
-    };
-    return returnObject;
+    return caseClauseVisitor(this, ctx);
   }
 
   visitDefaultClause(ctx: BitloopsParser.DefaultClauseContext) {
-    // console.log('DefaultClause');
-    const defaultStatement = this.visit(ctx.statementList());
-    // const returnObject = {
-    //   statements: defaultStatement.statements[0].statements,
-    // };
-    return defaultStatement.statements[0];
+    return defaultClauseVisitor(this, ctx);
   }
 
-  visitBreakStatement() {
-    // console.log('BreakStatement');
+  visitBreakStatement(ctx: BitloopsParser.BreakStatementContext) {
+    return ctx.Break().getText();
   }
 
   visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {
@@ -566,7 +375,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularVariableMethodEvaluation(
     ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
   ): any {
-    // console.log('visitRegularMethodEvaluation');
+    console.log('visitRegularVariableMethodEvaluation')
     return regularVariableMethodEvaluationVisitor(this, ctx);
   }
 
@@ -649,7 +458,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } as TParameterDependency;
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): any {
+  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): TParameterDependency[] {
     return formalParameterListVisitor(this, ctx);
   }
 
@@ -756,7 +565,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): {
     ValueObjects: { [id: string]: TValueObjectValues };
   } {
-    // console.log('visitValueObjectDeclaration');
     return valueObjectDeclarationVisitor(this, ctx);
   }
 
@@ -828,12 +636,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
    * Domain Rule
    */
   visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
-    // console.log('visitDomainRuleDeclaration');
     return domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
-    // console.log('visitDomainRuleBody');
     return domainRuleBodyVisitor(this, ctx);
   }
 
@@ -858,5 +664,53 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
     return getClassEvaluationVisitor(this, ctx);
+  }
+
+  /**
+   * UseCase Declaration
+   */
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
+    return useCaseDeclarationVisitor(this, ctx);
+  }
+  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
+    return useCaseExecuteDeclarationVisitor(this, ctx);
+  }
+
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: TStructs } {
+    return structDeclarationVisitor(this, ctx);
+  }
+
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
+    return packagePortDeclarationVisitor(this, ctx);
+  }
+
+  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {
+    return repoPortDeclarationVisitor(this, ctx);
+  }
+
+  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
+    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+  }
+
+  visitRepoPortExtendableIdentifierList(
+    ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
+  ) {
+    return this.visitChildren(ctx)[0];
+  }
+
+  visitRepoPortExtendableIdentifier(ctx: BitloopsParser.RepoPortExtendableIdentifierContext) {
+    return repoPortExtendableIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoPortMethodDefinitions(ctx: BitloopsParser.RepoPortMethodDefinitionsContext) {
+    return this.visit(ctx.methodDefinitionList());
+  }
+  /**
+   * Read model
+   */
+  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): {
+    ReadModels: TReadModels;
+  } {
+    return readModelDeclarationVisitor(this, ctx);
   }
 }
