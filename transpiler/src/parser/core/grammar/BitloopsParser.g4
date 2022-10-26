@@ -62,7 +62,7 @@ fieldList
     ;
 
 evaluationFieldList
-    : evaluationField (',' evaluationField)*
+    : evaluationField (',' evaluationField)* ','?
     ;
 
 evaluationField
@@ -1140,7 +1140,7 @@ formalParameterList
     | lastFormalParameterArg
     | arrayLiteral                              // ECMAScript 6: Parameter Context Matching
     | objectLiteral (':' formalParameterList )? // ECMAScript 6: Parameter Context Matching
-    )?
+    )? 
     ')' 
     | '(' ')'
     ;
