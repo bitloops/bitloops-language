@@ -11,8 +11,9 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
           this.clientError(response, result.message);
           break;
         }
-        default:
+        default: {
           this.fail(response, result.message);
+        }
       }
     } else {
       this.created(response);
