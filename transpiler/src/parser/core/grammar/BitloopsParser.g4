@@ -184,8 +184,12 @@ regularEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
 	| isInstanceOf
+    | regularErrorTypeEvaluation
     ;
 // regularVariableEvaluation | regularStringEvaluation |
+regularErrorTypeEvaluation
+    : errorIdentifier
+    ;
 
 getClassEvaluation:
     GetClassEvaluation 
