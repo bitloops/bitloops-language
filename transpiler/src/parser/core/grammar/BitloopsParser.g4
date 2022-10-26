@@ -864,7 +864,7 @@ aggregateRootIdentifier
     : Identifier
     | UpperCaseIdentifier 
     | EntityIdentifier
-    | DTOIdentifier
+    | ReadModelIdentifier
     ;
 
 repoExtendsList
