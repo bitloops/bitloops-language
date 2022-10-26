@@ -32,6 +32,9 @@ export const getParentDependencies = (
   const parentDependecies: TDependencyParentTypescript[] = [];
   for (const dependency of dependencies) {
     const { type, value, classType, className } = dependency;
+    if (type === 'absolute') {
+      parentDependecies.push(dependency as TDependencyParentTypescript);
+    }
     const childPathObj = getFilePathRelativeToModule(classType, className);
     const childPath = childPathObj.path;
     const importString = findRelativeDiffForImport(parentPath, childPath, className);
@@ -58,15 +61,34 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
       continue;
     }
     const { classType } = getClassTypeFromIdentifier(dependencyString);
+    const { value, fileName } = getValueAndFileNameOfImport(dependencyString);
     result.push({
       type: 'relative',
       default: false,
-      value: dependencyString,
+      value,
       classType,
-      className: dependencyString, // If file name is different from class name, this will be changed
+      className: fileName,
     });
   }
   return result;
+};
+
+/**
+ * Gets the file name from [class name/=/dependency String]
+ */
+const getValueAndFileNameOfImport = (
+  dependencyString: string,
+): { value: string; fileName: string } => {
+  if (dependencyString.startsWith('DomainErrors.')) {
+    return {
+      value: 'DomainErrors',
+      fileName: 'index',
+    };
+  }
+  return {
+    value: dependencyString,
+    fileName: dependencyString,
+  };
 };
 
 const getClassTypeFromIdentifier = (

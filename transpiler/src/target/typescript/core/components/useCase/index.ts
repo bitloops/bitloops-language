@@ -80,6 +80,7 @@ const useCaseValuesToTargetLanguage = (
   });
   dependencies = [...dependencies, ...useCaseReturnTypesResult.dependencies];
 
+  // TODO .dependencies
   const useCaseDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameterDependencies,
@@ -93,6 +94,7 @@ const useCaseValuesToTargetLanguage = (
     useCaseName,
   );
 
+  // TODO fix dependencies (statements, and  execute.parameterDependencies[0], e.g input DTO)
   const executeResult = useCaseExecuteToTargetLanguage(variable.execute, useCaseResponseTypeName);
 
   result += executeResult.output;

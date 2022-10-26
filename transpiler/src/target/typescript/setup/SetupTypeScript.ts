@@ -617,9 +617,9 @@ export { routers };
               classTypeName,
             );
             for (const [className] of Object.entries(classType)) {
-              imports += `import { ${className} } from './${className}';`;
               const classNameWithoutError = className.split('Error')[0];
-              content += `export class ${classNameWithoutError} extends ${className} {}`;
+              imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
+              content += `export class ${className} extends ${classNameWithoutError} {}`;
             }
             content += '}';
             const finalContent = imports + content;

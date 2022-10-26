@@ -44,8 +44,8 @@ const okErrorReturnTypeToTargetLanguage = (
       return `Either<${ok}, never>`;
     }
   };
-  dependencies.push(getChildDependencies(returnOkType));
-  dependencies.push(getChildDependencies(errors));
+  dependencies.push(...getChildDependencies(returnOkType));
+  dependencies.push(...getChildDependencies(errors));
 
   return { output: xor(returnOkType, errors), dependencies };
 };

@@ -993,6 +993,7 @@ type TDependencyTypescript = {
   type: 'absolute' | 'relative';
   default: boolean;
   value: string;
+  from?: string; // children set it only for absolute types
 };
 
 export type TDependencyChildTypescript = TDependencyTypescript & {
