@@ -1,8 +1,7 @@
 Feature: DomainErrors to Typescript target language
 
   Background:
-    Given type is "TDomainErrors"
-    And language is "TypeScript"
+    Given language is "TypeScript"
 
     Scenario Template: DomainErrors with messages
     Given I have domainErrors <domainErrors>

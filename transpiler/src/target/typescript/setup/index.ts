@@ -37,6 +37,7 @@ const setupTypeMapper = {
   'DB.Mongo': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
+  DomainErrors: '',
 };
 
 export const generateSetupFiles = (
@@ -135,6 +136,13 @@ export const generateSetupFiles = (
   repoConnections.forEach((repoConnection) => {
     console.log('repoConnection:', repoConnection);
     pathsAndContents.push(repoConnection);
+  });
+
+  // Step 7. Generate domain and application errors
+  const appDomainerrors = setup.generateAppDomainErrors(_bitloopsModel);
+  appDomainerrors.forEach((appDomainerror) => {
+    // console.log('appDomainerror:', appDomainerror);
+    pathsAndContents.push(appDomainerror);
   });
 
   // console.log('pathsAndContents:', pathsAndContents);

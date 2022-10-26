@@ -602,6 +602,39 @@ export { routers };
     return output;
   }
 
+  generateAppDomainErrors(model: TBoundedContexts): TSetupOutput[] {
+    const output = [];
+    for (const [boundedContextName, boundedContext] of Object.entries(model)) {
+      for (const [moduleName, module] of Object.entries(boundedContext)) {
+        for (const [classTypeName, classType] of Object.entries(module)) {
+          if (classTypeName === ClassTypes.DomainErrors) {
+            let imports = '';
+            let content = `export namespace ${classTypeName} {`;
+            const filePathObj = getTargetFileDestination(
+              boundedContextName,
+              moduleName,
+              classTypeName,
+              classTypeName,
+            );
+            for (const [className] of Object.entries(classType)) {
+              imports += `import { ${className} } from './${className}';`;
+              const classNameWithoutError = className.split('Error')[0];
+              content += `export class ${classNameWithoutError} extends ${className} {}`;
+            }
+            content += '}';
+            const finalContent = imports + content;
+            output.push({
+              fileType: classTypeName,
+              fileId: `${filePathObj.path}/index.ts`,
+              content: finalContent,
+            });
+          }
+        }
+      }
+    }
+    return output;
+  }
+
   private generateServer(params: GenerateServerParams): TSetupOutput {
     const { serverInstance: data, serverType, bitloopsModel, serverIndex, license } = params;
     // TODO handle CORS

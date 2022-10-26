@@ -75,8 +75,8 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.DomainErrors:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
-      result.filename = 'errors' + getLanguageFileExtension(targetLanguage);
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/errors`;
+      result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Props:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
