@@ -26,6 +26,7 @@ import {
   TOkErrorReturnType,
 } from '../../../../types.js';
 import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
+import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 
 export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -37,13 +38,16 @@ export const publicMethodDeclarationVisitor = (
   );
   const returnType: TOkErrorReturnType = thisVisitor.visit(ctx.returnPublicMethodType())[1];
   const { statements } = thisVisitor.visit(ctx.functionBody());
-  addReturnOkVoidStatement(statements, returnType);
+  //change return to returnOk or returnError
+  const statementsWithReturn = modifyReturnOkErrorStatements(statements, returnType);
+
+  addReturnOkVoidStatement(statementsWithReturn, returnType);
 
   const methodInfo: TDomainPublicMethod = {
     publicMethod: {
       parameterDependencies,
       returnType,
-      statements,
+      statements: statementsWithReturn,
     },
   };
   return { methodName, methodInfo };

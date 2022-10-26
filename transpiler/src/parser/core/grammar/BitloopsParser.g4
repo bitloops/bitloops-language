@@ -214,6 +214,7 @@ regularVariableEvaluation
 
 regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
+    | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 

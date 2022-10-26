@@ -2,7 +2,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import { CreateTodoUseCase } from '../application/CreateTodoUseCase';
 import { CreateTodoRequestDTO } from '../dtos/CreateTodoRequestDTO';
 import { MockTodoWriteRepo } from '../repos/concretions/MockTodoWriteRepo';
-import { DomainErrors } from '../domain/DomainErrors';
+import { DomainErrors } from '../domain/errors';
 
 const feature = loadFeature('src/bounded-contexts/todo/todo/__tests__/CreateTodo.feature');
 
@@ -22,7 +22,7 @@ defineFeature(feature, (test) => {
       };
       const useCase = new CreateTodoUseCase(mockRepo);
       const result = await useCase.execute(dto);
-      expect(result.value instanceof DomainErrors.TitleOutOfBoundsError).toBeFalse();
+      expect(result.value instanceof DomainErrors.TitleOutOfBounds).toBeFalse();
     });
   });
 
@@ -37,7 +37,7 @@ defineFeature(feature, (test) => {
       };
       const useCase = new CreateTodoUseCase(mockRepo);
       const result = await useCase.execute(dto);
-      expect(result.value instanceof DomainErrors.TitleOutOfBoundsError).toBeTrue();
+      expect(result.value instanceof DomainErrors.TitleOutOfBounds).toBeTrue();
     });
   });
 });

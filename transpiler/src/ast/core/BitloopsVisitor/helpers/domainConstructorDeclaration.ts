@@ -21,21 +21,25 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { TEntityCreate } from '../../../../types.js';
+import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 
 export const domainConstructorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorDeclarationContext,
 ): TEntityCreate => {
-  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
   const functionBody = thisVisitor.visit(ctx.functionBody());
   const returnType = thisVisitor.visit(ctx.returnOkErrorType());
   const parameters = thisVisitor.visit(ctx.formalParameterList());
-  // console.log({ functionBody });
+
+  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
+    functionBody.statements,
+    returnType,
+  );
+
   const result: TEntityCreate = {
     returnType,
-    statements: functionBody.statements,
+    statements: statementsWithModifiedReturn,
     parameterDependency: parameters[0],
   };
-  //   console.log('result', result);
   return result;
 };

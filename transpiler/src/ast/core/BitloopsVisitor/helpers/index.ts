@@ -101,4 +101,8 @@ export {
 } from './switchStatement.js';
 export { structDeclarationVisitor } from './structDeclaration.js';
 export { packagePortDeclarationVisitor } from './packagePortDeclaration.js';
+export {
+  repoPortDeclarationVisitor,
+  repoPortExtendableIdentifierVisitor,
+} from './repoPortDeclaration.js';
 export { readModelDeclarationVisitor } from './readModelDeclaration.js';

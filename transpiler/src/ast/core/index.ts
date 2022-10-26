@@ -21,6 +21,7 @@ const migratedTypes = [
   'useCaseDeclaration',
   'structDeclaration',
   'packagePortDeclaration',
+  'repoPortDeclaration',
   'readModelDeclaration',
 ];
 
