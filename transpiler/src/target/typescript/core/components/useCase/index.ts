@@ -23,6 +23,7 @@ import {
   TExecute,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
+  TDependencyChildTypescript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -121,7 +122,7 @@ const useCaseValuesToTargetLanguage = (
   result += '}';
   dependencies = [...dependencies, ...executeResult.dependencies];
 
-  const parentDependencies = getParentDependencies(dependencies, {
+  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
     classType: ClassTypes.UseCases,
     className: useCaseName,
   });
