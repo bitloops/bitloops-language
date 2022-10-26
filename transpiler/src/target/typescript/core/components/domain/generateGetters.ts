@@ -14,7 +14,7 @@ export const generateGetters = (
   if (methods) methodNames = Object.keys(methods);
 
   // TODO what about optional fields??
-  let gettersResult = 'get id() { return this._id; }';
+  let gettersResult = '';
   if (!Props) throw new Error(`No Props Found with name ${propsName}`);
   for (const [propName, propValues] of Object.entries(Props)) {
     if (propName === propsName) {

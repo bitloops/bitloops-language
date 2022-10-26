@@ -37,9 +37,9 @@ const okErrorReturnTypeToTargetLanguage = (
 
   const xor = (ok: string, errors: string[]): string => {
     if (errors && errors.length != 0) {
-      return `XOR<${ok}, ${errors.join(' | ')}>`;
+      return `Either<${ok}, ${errors.join(' | ')}>`;
     } else {
-      return `XOR<${ok}, never>`;
+      return `Either<${ok}, never>`;
     }
   };
   return { output: xor(returnOkType, errors), dependencies: [] };

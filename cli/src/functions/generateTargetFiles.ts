@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isBitloopsTargetGeneratorError } from '../helpers/typeGuards.js';
 import {
   BoundedContextModules,
   ISetupData,
@@ -89,11 +88,11 @@ const generateTargetFiles = (params: {
     targetLanguage,
     prettierConfig: {},
   };
-  const output = generator.generate(generatorParams);
-  if (isBitloopsTargetGeneratorError(output)) {
-    console.log(output);
-    throw new Error('Error generating target files');
-  }
+  const output: TBitloopsOutputTargetContent = generator.generate(generatorParams);
+  // if (isBitloopsTargetGeneratorError(output)) {
+  //   console.log(output);
+  //   throw new Error('Error generating target files');
+  // }
   // output
   //Write output to dest files
   writeGeneratedOutputToFiles(output, outputDirPath);

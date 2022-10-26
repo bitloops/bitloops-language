@@ -31,8 +31,10 @@ export const methodDefinitionListVisitor = (
     thisVisitor.visitChildren(ctx);
 
   const methodDefinitions: TDefinitionMethods = {};
-  for (const child of childrenResult) {
-    methodDefinitions[child.methodName] = child.methodInfo;
+  if (childrenResult) {
+    for (const child of childrenResult) {
+      methodDefinitions[child.methodName] = child.methodInfo;
+    }
   }
   return { definitionMethods: methodDefinitions };
 };

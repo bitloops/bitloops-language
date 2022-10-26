@@ -1,9 +1,9 @@
 ![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-cover-oct22.png)
-
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 <p align="center">
-  <a href="https://bitloops.com/docs/bitloops-language/category/quick-start)">Quick Start</a> |
-  <a href="https://bitloops-community.slack.com/)">Slack Community</a> |
-  <a href="https://github.com/bitloops/bitloops-language/discussions)">GitHub Discussions</a> |
+  <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
+  <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
+  <a href="https://github.com/bitloops/bitloops-language/discussions">GitHub Discussions</a> |
   <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
   <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>
@@ -147,21 +147,24 @@ ValueObject TitleVO {
   }
 }
 ```
-transpiles to this TypeScript code (26 lines):
+transpiles to this TypeScript code (28 lines):
 ```node
 // TypeScript:
 import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from './DomainErrors';
-import { TitleOutOfBoundsRule } from './Rules';
+import { DomainErrors } from './errors';
 
 export class TitleOutOfBoundsRule implements Domain.IRule {
   constructor(private title: string) {}
 
-  public Error = new DomainErrors.TitleOutOfBoundsError(this.title);
+  public Error = new DomainErrors.TitleOutOfBounds(this.title);
 
   public isBrokenIf(): boolean {
     return this.title.length > 150 || this.title.length < 4;
   }
+}
+                                                            
+export namespace Rules {
+    export class TitleOutOfBounds extends TitleOutOfBoundsRule {}                                             
 }
 
 interface TitleProps {
@@ -177,8 +180,8 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
     super(props);
   }
 
-  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBoundsError> {
-    const res = Domain.applyRules([new TitleOutOfBoundsRule(props.title)]);
+  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBounds> {
+    const res = Domain.applyRules([new Rules.TitleOutOfBounds(props.title)]);
     if (res) return fail(res);
     return ok(new TitleVO(props));
   }

@@ -20,11 +20,12 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { TStatements } from './../../../../types.js';
 
 export const functionBodyVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FunctionBodyContext,
-): any => {
+): { statements: TStatements } => {
   if (ctx.statementList()) {
     return thisVisitor.visit(ctx.statementList());
   } else return { statements: [] };

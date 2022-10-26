@@ -46,11 +46,11 @@ defineFeature(feature, (test) => {
       result = modelToTargetLanguage({
         type: buildInFuncType,
         value: buildInFunctionValue,
-      }).output;
+      });
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      expect(result).toEqual(decode(output));
+      expect(result.output).toEqual(decode(output));
     });
   });
 });

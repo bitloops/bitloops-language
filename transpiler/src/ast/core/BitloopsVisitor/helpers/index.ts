@@ -51,7 +51,7 @@ export { methodDefinitionListVisitor } from './methodDefinitionList.js';
 export { errorIdentifiersVisitor } from './errorIdentifiers.js';
 export { returnErrorsTypeVisitor } from './returnErrorsType.js';
 export { returnOkErrorTypeVisitor } from './returnOkErrorType.js';
-export {domainErrorDeclarationVisitor} from './domainErrorDeclaration.js'
+export { domainErrorDeclarationVisitor } from './domainErrorDeclaration.js';
 export { fieldListVisitor } from './fieldList.js';
 export { fieldVisitor } from './field.js';
 export { dtoDeclarationVisitor } from './dtoDeclaration.js';
@@ -73,3 +73,37 @@ export {
   applyRulesRuleVisitor,
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
+export { getClassEvaluationVisitor } from './getClassEvaluation.js';
+export {
+  useCaseDeclarationVisitor,
+  useCaseExecuteDeclarationVisitor,
+} from './useCaseDeclaration.js';
+export {
+  equalityExpressionVisitor,
+  relationalExpressionVisitor,
+  logicalAndExpressionVisitor,
+  logicalOrExpressionVisitor,
+  logicalXorExpressionVisitor,
+  logicalNotExpressionVisitor,
+  multiplicativeExpressionVisitor,
+  additiveExpressionVisitor,
+  parenthesizedExpressionVisitor,
+} from './expressions.js';
+export { ifStatementVisitor } from './ifStatement.js';
+export { statementListVisitor } from './statementList.js';
+export { constDeclarationVisitor } from './constDeclaration.js';
+export { variableDeclarationVisitor } from './variableDeclaration.js';
+export { thisDeclarationVisitor } from './thisDeclaration.js';
+export {
+  switchStatementVisitor,
+  caseBlockVisitor,
+  caseClauseVisitor,
+  defaultClauseVisitor,
+} from './switchStatement.js';
+export { structDeclarationVisitor } from './structDeclaration.js';
+export { packagePortDeclarationVisitor } from './packagePortDeclaration.js';
+export {
+  repoPortDeclarationVisitor,
+  repoPortExtendableIdentifierVisitor,
+} from './repoPortDeclaration.js';
+export { readModelDeclarationVisitor } from './readModelDeclaration.js';

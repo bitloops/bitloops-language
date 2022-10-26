@@ -33,7 +33,7 @@ RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpression
 OpenBracket:                    '[';
 CloseBracket:                   ']';
 OpenParen:                      '(';
-OpenCloseParen:                 '()';
+// OpenCloseParen:                 '()';
 CloseParen:                     ')';
 OpenBrace:                      '{' {this.ProcessOpenBrace();};
 TemplateCloseBrace:             {this.IsInTemplateString()}? '}' -> popMode;
@@ -159,6 +159,7 @@ Const:                          'const';
 // Import:                         'import';
 RepoPort:                       'RepoPort';
 Props:                          'Props';
+ReadModel:                      'ReadModel';
 DTO:                            'DTO';
 RESTController:                 'RESTController';
 GraphQLController:              'GraphQLController';
@@ -256,6 +257,7 @@ JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
+JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
 
 // Abstract: 'abstract';
@@ -294,15 +296,20 @@ ControllerIdentifier:           UpperCaseStart IdentifierPart* 'Controller';
 UseCaseIdentifier:              UpperCaseStart IdentifierPart* UseCase;
 PackagePortIdentifier:          UpperCaseStart IdentifierPart* PackagePort;
 PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
+ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
+GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
 // RegularVariableEvaluation:              RegularEvaluationStart RegularEvaluationPart? ('.' RegularEvaluationPart?)*;
-RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
+// RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
+
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
 RegularVariableEvaluation:              RegularEvaluationPart ('.' RegularEvaluationPart)*;
+
+
 
 /// String Literals
 StringLiteral:                 ('"' DoubleStringCharacter* '"'

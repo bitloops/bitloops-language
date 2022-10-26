@@ -1,4 +1,3 @@
 export const ifStatement = (children: any) => {
-  console.log(children)
-}
-
+  console.log(children);
+};
