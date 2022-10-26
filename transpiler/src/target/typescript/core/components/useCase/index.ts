@@ -85,6 +85,7 @@ const useCaseValuesToTargetLanguage = (
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameterDependencies,
   });
+  dependencies = [...dependencies, ...useCaseDependenciesResult.dependencies];
 
   let result = initialUseCase(
     useCaseReturnTypesResult.output,

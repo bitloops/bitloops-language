@@ -27,47 +27,52 @@ import {
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../dependencies.js';
 
 // TODO fix parameter dependency to take private, public etc.
-const parameterDependencyToTypescript = (variable: TParameterDependency): string => {
+const parameterDependencyToTypescript = (
+  variable: TParameterDependency,
+): TTargetDependenciesTypeScript => {
   if (isBitloopsPrimitive(variable.type)) {
-    return `${variable.value}:${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](
-      variable.type,
-    )}`;
+    return {
+      output: `${variable.value}:${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](
+        variable.type,
+      )}`,
+      dependencies: [],
+    };
   }
-  return `${variable.value}:${variable.type}`;
+  return {
+    output: `${variable.value}:${variable.type}`,
+    dependencies: getChildDependencies(variable.type),
+  };
 };
 
 const parameterDependencyToTargetLanguage = (
   variable: TParameterDependency,
 ): TTargetDependenciesTypeScript => {
-  return { output: parameterDependencyToTypescript(variable), dependencies: [] };
+  const { output, dependencies } = parameterDependencyToTypescript(variable);
+  return { output, dependencies };
 };
 
 const parameterDependenciesToTypescript = (
   variable: TParameterDependencies,
 ): TTargetDependenciesTypeScript => {
   let res = '(';
-  let dependencies = [];
+  let finalDependencies = [];
   for (let i = 0; i < variable.length; i += 1) {
     const arg = variable[i];
-    res += modelToTargetLanguage({
+    const { output, dependencies } = modelToTargetLanguage({
       type: BitloopsTypesMapping.TParameterDependency,
       value: arg,
-    }).output;
-    dependencies = [
-      ...dependencies,
-      ...modelToTargetLanguage({
-        type: BitloopsTypesMapping.TParameterDependency,
-        value: arg,
-      }).dependencies,
-    ];
+    });
+    res += output;
+    finalDependencies = [...finalDependencies, ...dependencies];
     if (i !== variable.length - 1) {
       res += ',';
     }
   }
   res += ')';
-  return { output: res, dependencies: [] };
+  return { output: res, dependencies: finalDependencies };
 };
 
 const parameterDependenciesToTargetLanguage = (
