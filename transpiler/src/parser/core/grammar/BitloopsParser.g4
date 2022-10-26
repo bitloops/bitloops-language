@@ -861,10 +861,10 @@ repoPortIdentifier
     // | UpperCaseIdentifier 
     // ;
 aggregateRootIdentifier
-    : Identifier
-    | UpperCaseIdentifier 
-    | EntityIdentifier
+    : EntityIdentifier
     | ReadModelIdentifier
+    | Identifier
+    | UpperCaseIdentifier 
     ;
 
 repoExtendsList
