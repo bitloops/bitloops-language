@@ -29,7 +29,9 @@ defineFeature(feature, (test) => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const rootEntitiesClassType = ClassTypes.RootEntities;
+  const propsClassType = ClassTypes.Props;
   const formatterConfig = null;
+  let valueProps;
   let language;
   let result;
   let intermediateAST;
@@ -39,13 +41,15 @@ defineFeature(feature, (test) => {
       language = lang;
     });
 
-    given(/^I have aggregates (.*)$/, (aggregates) => {
+    given(/^I have aggregates (.*) and props (.*)$/, (aggregates, props) => {
       const valueEntities = JSON.parse(d(aggregates));
+      valueProps = JSON.parse(d(props));
 
       intermediateAST = {
         [boundedContext]: {
           [module]: {
             [rootEntitiesClassType]: valueEntities,
+            [propsClassType]: valueProps,
           },
         },
       };
@@ -61,20 +65,33 @@ defineFeature(feature, (test) => {
       });
     });
 
-    then(/^I should see the outputAggregates (.*)$/, (outputAggregates) => {
-      const classNamesContent = JSON.parse(d(outputAggregates));
-      const expectedOutput = [];
-      for (const [className, content] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString(content as string, formatterConfig);
+    then(
+      /^I should see the outputAggregates (.*) and outputProps (.*)$/,
+      (outputAggregates, outputProps) => {
+        const classNamesContent = JSON.parse(d(outputAggregates));
+        const expectedOutput = [];
+        for (const [className, content] of Object.entries(classNamesContent)) {
+          const formattedOutput = formatString(content as string, formatterConfig);
+          expectedOutput.push({
+            boundedContext,
+            className,
+            module,
+            classType: rootEntitiesClassType,
+            fileContent: formattedOutput,
+          });
+        }
+        const propsContent = formatString(d(outputProps), formatterConfig);
+        const propsName = Object.keys(valueProps)[0];
         expectedOutput.push({
           boundedContext,
-          className,
+          className: propsName,
           module,
-          classType: rootEntitiesClassType,
-          fileContent: formattedOutput,
+          classType: propsClassType,
+          fileContent: propsContent,
         });
-      }
-      expect(result).toEqual(expectedOutput);
-    });
+
+        expect(result).toEqual(expectedOutput);
+      },
+    );
   });
 });

@@ -9,8 +9,7 @@
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
@@ -32,11 +31,21 @@ export const rootEntitiesToTargetLanguage = (params: {
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
   const { rootEntities, model, contextData } = params;
-  return modelToTargetLanguage({
-    type: BitloopsTypesMapping.TEntities,
-    value: rootEntities,
-    model,
-    contextData,
-  });
-};
+  let res = '';
+  let dependencies = [];
+  for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
+    const { create } = rootEntity;
+    const propsName = create.parameterDependency.type;
+    res += `export class ${rootEntityName} extends Domain.Aggregate<${propsName}>`;
+    const values = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TEntityValues,
+      value: rootEntity,
+      model,
+      contextData,
+    });
+    dependencies = [...dependencies, ...values.dependencies];
+    res += values.output;
+  }
 
+  return { output: res, dependencies };
+};
