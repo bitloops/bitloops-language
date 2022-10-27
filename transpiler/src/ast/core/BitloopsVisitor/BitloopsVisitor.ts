@@ -384,7 +384,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularVariableMethodEvaluation(
     ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
   ): any {
-    console.log('visitRegularVariableMethodEvaluation');
     return regularVariableMethodEvaluationVisitor(this, ctx);
   }
 
