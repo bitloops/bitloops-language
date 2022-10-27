@@ -25,20 +25,9 @@ import { TStatements } from '../../../../types.js';
 export const statementListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StatementListContext,
-): { statements: TStatements } => {
+): TStatements => {
   const statementList = thisVisitor.visitChildren(ctx);
-  const returnStatementList = [];
-  for (let i = 0; i < statementList.length; i++) {
-    if (Array.isArray(statementList[i])) {
-      if (statementList[i][0] !== undefined) {
-        returnStatementList.push(statementList[i]);
-      }
-    } else if (statementList[i] !== undefined) {
-      returnStatementList.push(statementList[i]);
-    }
-  }
-  const returnObject = {
-    statements: returnStatementList,
-  };
-  return returnObject;
+  if (Array.isArray(statementList[0])) {
+    return statementList[0];
+  } else return statementList;
 };
