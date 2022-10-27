@@ -61,7 +61,7 @@ const applicationErrorToTargetLanguage = (
     value: parameters ?? [],
   });
 
-  let result = `export class ${applicationErrorName} extends ApplicationError { constructor`;
+  let result = `export class ${applicationErrorName} extends Application.Error { constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;

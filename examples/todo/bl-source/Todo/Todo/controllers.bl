@@ -3,7 +3,7 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
   execute(request, response) {
     const dto = CreateTodoRequestDTO({ title: request.body.title });
 
-    const result = createTodoUseCase.execute(dto);
+    const result = this.createTodoUseCase.execute(dto);
 
     if (result is Error) {
       switch (result.getClass()) {
@@ -11,8 +11,9 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
           this.clientError(response, result.message);
           break;
         }
-        default:
+        default: {
           this.fail(response, result.message);
+        }
       }
     } else {
       this.created(response);

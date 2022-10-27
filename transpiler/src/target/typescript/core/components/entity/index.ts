@@ -49,7 +49,7 @@ const entitiesToTargetLanguage = (params: {
   const modelForContext = model[boundedContext][module];
 
   const initialObjectValuesLangMapping = (entityName: string, propsName: string) =>
-    `export class ${entityName} extends Entity<${propsName}> { `;
+    `export class ${entityName} extends Domain.Entity<${propsName}> { `;
 
   let result = '';
   let parentDependencies;
