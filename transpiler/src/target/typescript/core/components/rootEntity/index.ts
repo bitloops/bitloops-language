@@ -19,6 +19,7 @@
 import {
   TBoundedContexts,
   TContextData,
+  TDependenciesTypeScript,
   TRootEntities,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
@@ -32,7 +33,26 @@ export const rootEntitiesToTargetLanguage = (params: {
 }): TTargetDependenciesTypeScript => {
   const { rootEntities, model, contextData } = params;
   let res = '';
-  let dependencies = [];
+  let dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Domain',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Either',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'ok',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
     const { create } = rootEntity;
     const propsName = create.parameterDependency.type;
