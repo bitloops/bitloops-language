@@ -736,11 +736,13 @@ caseClauses
     ;
 
 caseClause
-    : Case expression Colon statementList? Break? SemiColon?
+    : Case expression Colon OpenBrace statementList? CloseBrace SemiColon?
+    | Case expression Colon statementList? SemiColon?
     ;
 
 defaultClause
-    : Default Colon statementList? Break? SemiColon?
+    : Default Colon OpenBrace statementList? CloseBrace SemiColon?
+    | Default Colon statementList? SemiColon?
     ;
 
 labelledStatement
