@@ -35,17 +35,17 @@ const buildExecuteMethod = (
   const typedExecuteDependencies = execute.dependencies.map(
     (dependency) => `${dependency}: ${getDependencyType(dependency)}`,
   );
-  const model = modelToTargetLanguage({
+  const statementsModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: execute.statements,
     contextData,
   });
   const paramsString = `(${typedExecuteDependencies.join(', ')})`;
-  const statementsString = model.output;
+  const statementsString = statementsModel.output;
 
   return {
     output: `async executeImpl${paramsString}: Promise<void> { ${statementsString} }`,
-    dependencies: model.dependencies,
+    dependencies: statementsModel.dependencies,
   };
 };
 

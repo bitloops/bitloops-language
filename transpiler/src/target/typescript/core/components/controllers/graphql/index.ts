@@ -26,23 +26,24 @@ const graphQLControllersToTargetLanguage = (
   contextData: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
   // TODO for all controllers
+  let dependencies = [];
   const controllerName = Object.keys(controllers)[0];
 
-  let result = `export class ${controllerName} extends BaseGraphQLController<any,any> { `;
+  let result = `export class ${controllerName} extends GraphQL.BaseController<any,any> { `;
   const controller = controllers[controllerName];
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
+  const fieldsModel = buildFieldsFromDependencies(controller.parameterDependencies, contextData);
+  result += fieldsModel.output;
 
-  result += buildFieldsFromDependencies(controller.parameterDependencies, contextData);
-
-  const buildExecuteMethodOutput = buildExecuteMethod(controller.execute).output;
-  const buildExecuteMethodDependencies = buildExecuteMethod(controller.execute).dependencies;
-  result += buildExecuteMethodOutput;
+  const executeModel = buildExecuteMethod(controller.execute);
+  result += executeModel.output;
 
   const finalObjValLang = '}';
   result += finalObjValLang;
-  return { output: result, dependencies: [...buildExecuteMethodDependencies] };
+  dependencies = [...dependencies, ...fieldsModel.dependencies, ...executeModel.dependencies];
+  return { output: result, dependencies };
 };
 
 export { graphQLControllersToTargetLanguage };

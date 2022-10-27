@@ -18,28 +18,39 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TConstantVariable, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { getChildDependencies } from '../../dependencies.js';
 
 const NEW_LINE = '\n';
 
 const constantVariables = (
   constantVariables: TConstantVariable[],
 ): TTargetDependenciesTypeScript => {
-  const constVariablesLangMapping = (variable: TConstantVariable): string => {
+  const constVariablesLangMapping = (
+    variable: TConstantVariable,
+  ): TTargetDependenciesTypeScript => {
     const { name, type, value } = variable;
     if (type) {
-      return `const ${name}: ${type} = ${value};`;
+      return {
+        output: `const ${name}: ${type} = ${value};`,
+        dependencies: getChildDependencies(type),
+      };
     } else {
-      return `const ${name} = ${value};`;
+      return {
+        output: `const ${name} = ${value};`,
+        dependencies: [],
+      };
     }
   };
 
   let constDeclarationResult = '';
+  let dependencies = [];
 
   for (const variable of constantVariables) {
     const constDeclaration = constVariablesLangMapping(variable);
-    constDeclarationResult += `${constDeclaration}${NEW_LINE}`;
+    constDeclarationResult += `${constDeclaration.output}${NEW_LINE}`;
+    dependencies.push(...constDeclaration.dependencies);
   }
 
-  return { output: constDeclarationResult, dependencies: [] };
+  return { output: constDeclarationResult, dependencies };
 };
 export { constantVariables };

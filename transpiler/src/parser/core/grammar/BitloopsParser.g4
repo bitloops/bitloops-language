@@ -62,7 +62,7 @@ fieldList
     ;
 
 evaluationFieldList
-    : evaluationField (Comma evaluationField)*
+    : evaluationField (',' evaluationField)* ','?
     ;
 
 evaluationField
@@ -184,8 +184,13 @@ regularEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
 	| isInstanceOf
+    | regularErrorTypeEvaluation
     ;
+
 // regularVariableEvaluation | regularStringEvaluation |
+regularErrorTypeEvaluation
+    : errorIdentifier
+    ;
 
 getClassEvaluation:
     GetClassEvaluation 
@@ -861,10 +866,10 @@ repoPortIdentifier
     // | UpperCaseIdentifier 
     // ;
 aggregateRootIdentifier
-    : Identifier
+    : EntityIdentifier
+    | ReadModelIdentifier
+    | Identifier
     | UpperCaseIdentifier 
-    | EntityIdentifier
-    | DTOIdentifier
     ;
 
 repoExtendsList
@@ -929,7 +934,7 @@ propsEvaluation
 
 //TODO make objectLiteral more specific
 domainErrorDeclaration
-    : DomainError domainErrorIdentifier formalParameterList? objectLiteral SemiColon?
+    : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 applicationErrorDeclaration
@@ -1030,7 +1035,7 @@ entityIdentifier
 // ;
 
 domainRuleIdentifier
-: UpperCaseIdentifier
+: RuleIdentifier
 ;
 
 // TODO valueObjectIdentifier inside bitloops identifiers 

@@ -5,14 +5,16 @@ import {
 } from '../../../../index.js';
 
 const blString = `
-RESTServer({
-  server: REST.Fastify,
-  port: Env(FASTIFY_PORT, 5001),
-  apiPrefix: '/api',
-  corsOptions: { origin: '*' },
-}) {
-  '/todo': todoRESTRouter;
-}
+JestTestStatement { 
+        switch (result.getClass()) {
+        case DomainErrors.TitleOutOfBoundsError: {
+          this.clientError(response, result.message);
+          break;
+        }
+        default:
+          this.fail(response, result.message);
+      } }
+
   `;
 
 // const parser = new BitloopsParser();

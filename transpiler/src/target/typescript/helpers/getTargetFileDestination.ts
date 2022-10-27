@@ -75,8 +75,8 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.DomainErrors:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
-      result.filename = 'errors' + getLanguageFileExtension(targetLanguage);
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/errors`;
+      result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Props:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
@@ -130,13 +130,18 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Props:
     case ClassTypes.ReadModels:
     case ClassTypes.RootEntities:
+    case ClassTypes.Entities:
     case ClassTypes.ValueObjects:
       result.path = 'domain/';
       result.filename = className;
       break;
     case ClassTypes.DomainErrors:
-      result.path = 'domain/';
-      result.filename = 'errors';
+      result.path = 'domain/errors/';
+      result.filename = 'index';
+      break;
+    case ClassTypes.Rules:
+      result.path = 'domain/rules/';
+      result.filename = 'index';
       break;
     case ClassTypes.Controllers:
       result.path = 'driving-adapters/';
@@ -152,6 +157,10 @@ const getFilePathRelativeToModule = (
       break;
     case ClassTypes.Packages:
       result.path = 'packages/';
+      result.filename = className;
+      break;
+    case ClassTypes.RepoPorts:
+      result.path = 'domain/';
       result.filename = className;
       break;
     default:

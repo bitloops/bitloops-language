@@ -31,7 +31,7 @@ const applicationErrorsToTargetLanguage = (
   applicationErrors: TApplicationErrors,
 ): TTargetDependenciesTypeScript => {
   const applicationErrorsNames = Object.keys(applicationErrors);
-  let result = 'export namespace ApplicationErrors {';
+  let result = '';
   let dependencies = [];
   for (let i = 0; i < applicationErrorsNames.length; i++) {
     const applicationErrorName = applicationErrorsNames[i];
@@ -43,7 +43,6 @@ const applicationErrorsToTargetLanguage = (
     result += applicationErrorToTargetLang.output;
     dependencies = [...dependencies, ...applicationErrorToTargetLang.dependencies];
   }
-  result += '}';
   return { output: result, dependencies };
 };
 
@@ -62,7 +61,7 @@ const applicationErrorToTargetLanguage = (
     value: parameters ?? [],
   });
 
-  let result = `export class ${applicationErrorName} extends ApplicationError { constructor`;
+  let result = `export class ${applicationErrorName} extends Application.Error { constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;

@@ -123,6 +123,24 @@ const ClassTypes = {
   RepoAdapters: 'RepoAdapters',
   Rules: 'Rules',
   ReadModels: 'ReadModels',
+} as const;
+
+type TClassTypesKeys = keyof typeof ClassTypes;
+
+export type TClassTypesValues = typeof ClassTypes[TClassTypesKeys];
+
+const ArchitectureLayers = {
+  Domain: 'Domain',
+};
+
+const BitloopsFixedClassTypes = {
+  UUIDv4: 'UUIDv4',
+};
+
+export const BitloopsFixedClassTypesArray = [BitloopsFixedClassTypes.UUIDv4];
+
+export const mappingBitloopsFixedClassTypesToLayer = {
+  [BitloopsFixedClassTypes.UUIDv4]: ArchitectureLayers.Domain,
 };
 
 const mappingClassTypeToComponentType = {

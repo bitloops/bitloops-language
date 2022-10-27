@@ -162,7 +162,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   visitCustomServerOption(ctx: BitloopsSetupParser.CustomServerOptionContext): {
     [key: string]: TSingleExpression;
   } {
-    console.log('visitCustomServerOption');
+    // console.log('visitCustomServerOption');
     const res = visitCustomServerOption(this, ctx);
     return res;
   }

@@ -20,14 +20,17 @@
 import {
   TBoundedContexts,
   TContextData,
+  TDependenciesTypeScript,
+  TDependencyChildTypescript,
   TEntities,
   TEntityMethods,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
 const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
   const result = domainMethods(objectValueMethods);
@@ -46,13 +49,34 @@ const entitiesToTargetLanguage = (params: {
   const modelForContext = model[boundedContext][module];
 
   const initialObjectValuesLangMapping = (entityName: string, propsName: string) =>
-    `export class ${entityName} extends Entity<${propsName}> { `;
+    `export class ${entityName} extends Domain.Entity<${propsName}> { `;
 
   let result = '';
-  let dependencies = [];
+  let parentDependencies;
+  let dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Domain',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Either',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'ok',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
     const propsName = create.parameterDependency.type;
+    dependencies = [...dependencies, ...getChildDependencies(propsName)];
 
     if (constantVars) {
       // TODO fix with new model/types
@@ -81,9 +105,14 @@ const entitiesToTargetLanguage = (params: {
     }
 
     result += '}';
+
+    parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+      classType: ClassTypes.Entities,
+      className: entityName,
+    });
   }
 
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies: parentDependencies };
 };
 
 export { entitiesToTargetLanguage };
