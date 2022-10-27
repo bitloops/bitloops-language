@@ -27,6 +27,7 @@ export const statementListVisitor = (
   ctx: BitloopsParser.StatementListContext,
 ): { statements: TStatements } => {
   const statementList = thisVisitor.visitChildren(ctx);
+  console.log('Statements', statementList);
   const returnStatementList = [];
   for (let i = 0; i < statementList.length; i++) {
     if (Array.isArray(statementList[i])) {
