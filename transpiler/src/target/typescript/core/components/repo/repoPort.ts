@@ -26,16 +26,24 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependenciesTypeScript => {
   const repoPortName = Object.keys(repoPorts)[0];
   const firstRepoPort = repoPorts[repoPortName];
-  const { definitionMethods, aggregateRootName, extendedRepoPorts } = firstRepoPort;
+  const { definitionMethods, aggregateRootName, readModelName, extendedRepoPorts } = firstRepoPort;
+
+  let repoDependencyName;
+  if (aggregateRootName !== undefined) {
+    repoDependencyName = aggregateRootName;
+  } else if (readModelName !== undefined) {
+    repoDependencyName = readModelName;
+  }
+
   const methodNames = Object.keys(definitionMethods);
 
   const noMethodsRepoPortLangMapping = (
     portRepoName: string,
-    aggregateRootName: string,
+    repoDependencyName: string,
     extendedRepoPorts: string[],
   ): string => {
     const extendedRepoPortsString = extendedRepoPorts
-      .map((extendedRepoPort) => `${extendedRepoPort}<${aggregateRootName}>`)
+      .map((extendedRepoPort) => `${extendedRepoPort}<${repoDependencyName}>`)
       .join(' & ');
     return `export type ${portRepoName} = ${extendedRepoPortsString};`;
   };
@@ -43,7 +51,7 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependen
   if (methodNames.length === 0) {
     const finalResult = noMethodsRepoPortLangMapping(
       repoPortName,
-      aggregateRootName,
+      repoDependencyName,
       extendedRepoPorts,
     );
     return { output: finalResult, dependencies: [] };

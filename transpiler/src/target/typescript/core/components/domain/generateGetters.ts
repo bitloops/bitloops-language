@@ -28,7 +28,6 @@ export const generateGetters = (
           returnType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](returnType);
         }
         const getterName = name;
-        //TODO skip if already there
         if (methodNames.includes(getterName)) {
           continue;
         }
