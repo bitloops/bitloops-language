@@ -9,7 +9,7 @@ export interface IBitloopsIntermediateASTParser {
 
 export class BitloopsIntermediateASTParserError extends Error {}
 
-const toBeMigratedTypes = ['applicationErrorDeclaration'];
+const toBeMigratedTypes = [];
 // const migratedTypes = [
 //   'jestTestDeclaration',
 //   'controllerDeclaration',

@@ -940,14 +940,14 @@ domainErrorDeclaration
     ;
 
 applicationErrorDeclaration
-    : ApplicationError applicationErrorIdentifier formalParameterList? objectLiteral SemiColon?
+    : ApplicationError applicationErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 domainErrorIdentifier
-    : UpperCaseIdentifier;
+    : DomainErrorIdentifier;
 
 applicationErrorIdentifier
-    : UpperCaseIdentifier;
+    : DomainErrorIdentifier;
 
 useCaseExecuteDeclaration
     : Execute formalParameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
