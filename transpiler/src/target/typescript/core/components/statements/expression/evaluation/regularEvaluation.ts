@@ -26,7 +26,6 @@ import {
 } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
-import { getChildDependencies } from '../../../../dependencies.js';
 
 const regularEvaluationToTargetLanguage = (
   variable: TRegularEvaluation,
