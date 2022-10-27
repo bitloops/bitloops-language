@@ -27,12 +27,18 @@ export const repoPortDeclarationVisitor = (
   ctx: BitloopsParser.RepoPortDeclarationContext,
 ): { RepoPorts: { [x: string]: TRepoPort } } => {
   const repoPortName = ctx.repoPortIdentifier().getText();
-  const aggregateRootName = ctx.aggregateRootIdentifier().getText();
+  let aggregateRootName;
+
   const extendedRepoPorts = thisVisitor.visit(ctx.repoExtendsList());
   let definitionMethods = { definitionMethods: {} };
   if (ctx.repoPortMethodDefinitions()) {
     definitionMethods = thisVisitor.visit(ctx.repoPortMethodDefinitions());
   }
+
+  if(ctx.aggregateRootIdentifier().getText()){
+    aggregateRootName = ctx.aggregateRootIdentifier().getText();
+  }
+  
   // TODO Handle Identifier with < > if we want to extend a repoPort with a generic type
   // TODO Method definitions of user
 

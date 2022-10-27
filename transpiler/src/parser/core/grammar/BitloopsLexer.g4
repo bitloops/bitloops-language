@@ -307,7 +307,7 @@ GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluat
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
-RegularVariableEvaluation:              RegularEvaluationPart ('.' RegularEvaluationPart)*;
+RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
 
 
 

@@ -235,7 +235,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
-    console.log('visitErrorEvaluation');
     const identifier = ctx.ErrorIdentifier().getText();
     const argumentDependencies = this.visit(ctx.methodArguments()) || [];
 
