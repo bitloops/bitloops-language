@@ -7,7 +7,6 @@ export const returnPublicMethodType = (subtree: any): any => {
   let result;
   if (returnOkErrorTypeTree) {
     const returnOkErrorType = getBitloopsModel(returnOkErrorTypeTree);
-    console.log('returnOkErrorType publicMethod', returnOkErrorType);
     result = {
       returnType: returnOkErrorType,
     };

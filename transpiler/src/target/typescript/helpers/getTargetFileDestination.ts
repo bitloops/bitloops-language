@@ -65,7 +65,7 @@ const getTargetFileDestination = (
     path: '',
     filename: '',
   };
-  console.log('Checking classType', classType);
+  // console.log('Checking classType', classType);
   switch (classType) {
     case ClassTypes.RootEntities:
     case ClassTypes.Entities:
