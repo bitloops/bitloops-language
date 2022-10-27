@@ -852,6 +852,8 @@ readModelDeclaration
 repoPortDeclaration
     : RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList SemiColon?
     | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
+    | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList SemiColon?
+    | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
     ;
 
 repoPortIdentifier
