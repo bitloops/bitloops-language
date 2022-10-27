@@ -303,7 +303,6 @@ UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
-// RegularVariableEvaluation:              RegularEvaluationStart RegularEvaluationPart? ('.' RegularEvaluationPart?)*;
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;

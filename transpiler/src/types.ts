@@ -1,5 +1,3 @@
-import { BitloopsLanguageAST } from './index.js';
-
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -19,6 +17,7 @@ import { BitloopsLanguageAST } from './index.js';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsLanguageAST } from './index.js';
 
 export type TModule = {
   Props?: TProps;
@@ -997,7 +996,9 @@ export type TParenthesizedExpression = {
   parenthesizedExpression: TExpressionValues;
 };
 
+export type TDependenciesTypeScript = { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
+
 export type TTargetDependenciesTypeScript = {
   output: string;
-  dependencies: { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
+  dependencies: TDependenciesTypeScript;
 };

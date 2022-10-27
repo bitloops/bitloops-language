@@ -28,6 +28,7 @@ import {
   TParameterDependencies,
 } from '../../../../types.js';
 import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
+import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 
 type UseCaseExecuteDeclarationResult = { returnTypes: TOkErrorReturnType; execute: TExecute };
 
@@ -66,11 +67,13 @@ export const useCaseExecuteDeclarationVisitor = (
   const formalParameterList: TParameterDependency[] = thisVisitor.visit(ctx.formalParameterList());
   const { statements } = thisVisitor.visit(ctx.functionBody());
 
+  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnTypes);
+
   return {
     returnTypes,
     execute: {
       parameterDependencies: formalParameterList,
-      statements,
+      statements: statementsWithModifiedReturn,
     },
   };
 };

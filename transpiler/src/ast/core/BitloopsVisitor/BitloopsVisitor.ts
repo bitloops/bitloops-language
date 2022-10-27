@@ -131,6 +131,8 @@ import {
   useCaseExecuteDeclarationVisitor,
   structDeclarationVisitor,
   packagePortDeclarationVisitor,
+  repoPortDeclarationVisitor,
+  repoPortExtendableIdentifierVisitor,
   readModelDeclarationVisitor,
 } from './helpers/index.js';
 
@@ -228,6 +230,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return {
       type: 'variable',
       value: value,
+    };
+  }
+
+  visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
+    console.log('visitErrorEvaluation')
+    const identifier = ctx.ErrorIdentifier().getText();
+    const argumentDependencies = this.visit(ctx.methodArguments()) || [];
+
+    return {
+      type: 'method',
+      value: identifier,
+      argumentDependencies
     };
   }
 
@@ -361,6 +375,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularVariableMethodEvaluation(
     ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
   ): any {
+    console.log('visitRegularVariableMethodEvaluation')
     return regularVariableMethodEvaluationVisitor(this, ctx);
   }
 
@@ -669,6 +684,27 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return packagePortDeclarationVisitor(this, ctx);
   }
 
+  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {
+    return repoPortDeclarationVisitor(this, ctx);
+  }
+
+  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
+    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+  }
+
+  visitRepoPortExtendableIdentifierList(
+    ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
+  ) {
+    return this.visitChildren(ctx)[0];
+  }
+
+  visitRepoPortExtendableIdentifier(ctx: BitloopsParser.RepoPortExtendableIdentifierContext) {
+    return repoPortExtendableIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoPortMethodDefinitions(ctx: BitloopsParser.RepoPortMethodDefinitionsContext) {
+    return this.visit(ctx.methodDefinitionList());
+  }
   /**
    * Read model
    */

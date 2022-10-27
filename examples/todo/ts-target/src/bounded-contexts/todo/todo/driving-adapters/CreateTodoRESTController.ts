@@ -1,6 +1,6 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { CreateTodoUseCase } from '../application/CreateTodoUseCase';
-import { DomainErrors } from '../domain/DomainErrors';
+import { DomainErrors } from '../domain/errors';
 import { CreateTodoRequestDTO } from '../dtos/CreateTodoRequestDTO';
 
 export class CreateTodoRESTController extends Fastify.BaseController {
@@ -16,7 +16,7 @@ export class CreateTodoRESTController extends Fastify.BaseController {
     const result = await this.createTodoUseCase.execute(dto);
     if (result.isFail()) {
       switch (result.value.constructor) {
-        case DomainErrors.TitleOutOfBoundsError: {
+        case DomainErrors.TitleOutOfBounds: {
           this.clientError(response, result.value.message);
           break;
         }
