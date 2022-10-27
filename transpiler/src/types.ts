@@ -852,7 +852,8 @@ export type TSingleExpressionValue = // | TMultiplicativeExpression
   | TEnvVarWithDefaultValueExpression
   | TEnvironmentVariableExpression
   | TLiteralExpression
-  | TIdentifierExpression;
+  | TIdentifierExpression
+  | TObjectLiteral;
 
 export type TSingleExpression = {
   expression: TSingleExpressionValue;
@@ -863,6 +864,13 @@ export type TEnvVarWithDefaultValueExpression = {
   envVarDefault: TEnvironmentVariableExpression & {
     defaultValue: TLiteralExpression; // | TIdentifierExpression;
   };
+};
+
+export type TObjectLiteral = {
+  objectLiteral: {
+    name: string;
+    expression: TSingleExpressionValue;
+  }[];
 };
 
 export type TEnvironmentVariableExpression = {

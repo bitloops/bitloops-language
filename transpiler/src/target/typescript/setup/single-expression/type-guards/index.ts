@@ -6,6 +6,7 @@ import {
   TLiteralExpression,
   TLogicalSingleExpression,
   TNotSingleExpression,
+  TObjectLiteral,
   TOrSingleExpression,
   TSingleExpressionValue,
   TXorSingleExpression,
@@ -44,6 +45,13 @@ const isEnvironmentVariableExpression = (
   else return false;
 };
 
+const isObjectLiteralExpression = (
+  expression: TSingleExpressionValue,
+): expression is TObjectLiteral => {
+  if ('objectLiteral' in expression) return true;
+  else return false;
+};
+
 const isLogicalORExpression = (
   logicalExpression:
     | TNotSingleExpression
@@ -61,4 +69,5 @@ export {
   isEnvVarWithDefaultValueExpression,
   isEnvironmentVariableExpression,
   isLogicalORExpression,
+  isObjectLiteralExpression,
 };

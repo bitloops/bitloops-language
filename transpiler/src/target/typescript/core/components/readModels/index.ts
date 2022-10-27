@@ -46,6 +46,7 @@ const readModelsToTargetLanguage = (readModels: TReadModels): TTargetDependencie
     return acc;
   }, result);
 };
+
 const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
   if (isUndefined(variables)) {
     throw new Error('Variables of Prop are not defined');
