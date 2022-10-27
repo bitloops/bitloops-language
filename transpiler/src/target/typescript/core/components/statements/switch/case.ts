@@ -39,12 +39,14 @@ const regularSwitchCaseToTargetLanguage = (
     value: statements,
   });
 
-  const regularCaseLangMapping = (caseExpression: string, statements: string): string => {
-    return `case ${caseExpression}: {${statements}}`;
-  };
+  const caseValueExpression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: caseValue,
+  });
+
   return {
-    output: regularCaseLangMapping(caseValue, statementsString.output),
-    dependencies: statementsString.dependencies,
+    output: `case ${caseValueExpression.output}: {${statementsString.output}}`,
+    dependencies: [...caseValueExpression.dependencies, ...statementsString.dependencies],
   };
 };
 
