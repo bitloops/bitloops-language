@@ -55,17 +55,18 @@ defineFeature(feature, (test) => {
     });
 
     then(/^I should see the (.*) code$/, (output) => {
-      const formattedOutput = formatString(output, formatterConfig);
-      const expectedOutput = [
-        {
+      const classNamesContent = JSON.parse(output);
+      const expectedOutput = [];
+      for (const [className, content] of Object.entries(classNamesContent)) {
+        const formattedOutput = formatString(content as string, formatterConfig);
+        expectedOutput.push({
           boundedContext,
-          className: 'InvalidName', //TODO get from feature params
+          className,
           module,
           classType,
           fileContent: formattedOutput,
-        },
-      ];
-
+        });
+      }
       expect(result).toEqual(expectedOutput);
     });
   });

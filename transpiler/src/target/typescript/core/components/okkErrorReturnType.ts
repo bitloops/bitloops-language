@@ -21,10 +21,12 @@ import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitive
 import { isBitloopsPrimitive } from '../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../helpers/supportedLanguages.js';
 import { TOkErrorReturnType, TTargetDependenciesTypeScript } from '../../../../types.js';
+import { getChildDependencies } from '../dependencies.js';
 
 const okErrorReturnTypeToTargetLanguage = (
   variable: TOkErrorReturnType,
 ): TTargetDependenciesTypeScript => {
+  let dependencies = [];
   if (!variable.ok) {
     throw new Error('Return okError type must have ok property');
   }
@@ -42,7 +44,12 @@ const okErrorReturnTypeToTargetLanguage = (
       return `Either<${ok}, never>`;
     }
   };
-  return { output: xor(returnOkType, errors), dependencies: [] };
+  dependencies.push(...getChildDependencies(returnOkType));
+  if (errors) {
+    dependencies.push(...getChildDependencies(errors));
+  }
+
+  return { output: xor(returnOkType, errors), dependencies };
 };
 
 export { okErrorReturnTypeToTargetLanguage };

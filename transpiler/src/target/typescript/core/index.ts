@@ -24,6 +24,7 @@ import {
   TClassType,
   TComponentType,
   TContextData,
+  TDependencyParentTypescript,
 } from '../../../types.js';
 import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError.js';
 import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
@@ -34,6 +35,11 @@ interface IBitloopsIntermediateASTToTarget {
   ASTToTarget(
     params: TBitloopsTargetGeneratorParams,
   ): TBitloopsTargetContent | BitloopsTargetGeneratorError;
+  formatCode(
+    targetContent: TBitloopsOutputTargetContent,
+    config?: any,
+  ): TBitloopsOutputTargetContent;
+  generateImports(params: TBitloopsTargetContent): TBitloopsOutputTargetContent;
 }
 
 export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateASTToTarget {
@@ -84,10 +90,33 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     return result;
   }
 
-  formatCode(targetContent: TBitloopsTargetContent, config?: any): TBitloopsOutputTargetContent {
+  generateImports(params: TBitloopsTargetContent): TBitloopsOutputTargetContent {
+    const formattedCode: TBitloopsOutputTargetContent = [];
+    for (const { boundedContext, classType, module, className, fileContent } of params) {
+      const { output } = fileContent;
+      const parentDependecies = fileContent.dependencies as TDependencyParentTypescript[];
+
+      const importsResult = this.generateDepndenciesString(parentDependecies, false);
+      const finalContent = importsResult + output;
+
+      formattedCode.push({
+        boundedContext,
+        module,
+        classType,
+        className,
+        fileContent: finalContent,
+      });
+    }
+    return formattedCode;
+  }
+
+  formatCode(
+    targetContent: TBitloopsOutputTargetContent,
+    config?: any,
+  ): TBitloopsOutputTargetContent {
     const formattedCode: TBitloopsOutputTargetContent = [];
     for (const { boundedContext, classType, module, className, fileContent } of targetContent) {
-      const formattedContent = formatString(fileContent.output, config);
+      const formattedContent = formatString(fileContent, config);
 
       formattedCode.push({
         boundedContext,
@@ -98,5 +127,24 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
       });
     }
     return formattedCode;
+  }
+
+  private generateDepndenciesString(
+    dependencies: TDependencyParentTypescript[],
+    esm = false,
+  ): string {
+    let result = '';
+    for (const dependency of dependencies) {
+      const { type, value, default: dependencyDefault, from } = dependency;
+
+      result += `import ${dependencyDefault ? value : '{' + value + '}'} from`;
+      if (type === 'absolute') {
+        result += `'${from}'`;
+      } else {
+        result += esm ? `'${from}.js'` : `'${from}'`;
+      }
+      result += ';';
+    }
+    return result;
   }
 }

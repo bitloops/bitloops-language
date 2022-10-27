@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
-
+ 
  export type TModule = {
    Props?: TProps;
    Controllers?: TRESTController | TGraphQLController;
@@ -201,6 +201,7 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
    'sfixed64',
    'bool',
    'string',
+   'backTickString',
    'bytes',
    'enum',
    'Timestamp',
@@ -230,8 +231,8 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
  };
  
  export type TDomainError = {
-   message: TBackTickString | TString;
-   errorId: TString;
+   message: TExpression;
+   errorId: TExpression;
    parameters?: TParameterDependencies;
  };
  // TODO finalize TRule
@@ -252,7 +253,7 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
    parameters?: TParameterDependencies;
  };
  
- export type TApplicationErrors = Record<string, TDomainError>;
+ export type TApplicationErrors = Record<string, TApplicationError>;
  export type TInstanceOf = {
    isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
  };
@@ -996,8 +997,23 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
    parenthesizedExpression: TExpressionValues;
  };
  
- export type TDependenciesTypeScript = { type: 'absolute' | 'relative'; default: boolean; value: string; from: string }[];
+ type TDependencyTypescript = {
+   type: 'absolute' | 'relative';
+   default: boolean;
+   value: string;
+   from?: string; // children set it only for absolute types
+ };
  
+ export type TDependencyChildTypescript = TDependencyTypescript & {
+   classType?: TClassTypesValues;
+   className?: string;
+ };
+ 
+ export type TDependencyParentTypescript = TDependencyTypescript & {
+   from: string;
+ };
+ 
+ export type TDependenciesTypeScript = (TDependencyChildTypescript | TDependencyParentTypescript)[];
  export type TTargetDependenciesTypeScript = {
    output: string;
    dependencies: TDependenciesTypeScript;

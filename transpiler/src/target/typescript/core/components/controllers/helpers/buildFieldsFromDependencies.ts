@@ -17,14 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TParameterDependencies } from '../../../../../../types.js';
+import { TParameterDependencies, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildFieldsFromDependencies = (
   params: TParameterDependencies,
   contextData: { boundedContext: string; module: string },
-): string => {
+): TTargetDependenciesTypeScript => {
   const fieldsToLangString = (params: TParameterDependencies): string => {
     return params
       .map((parameterDependency) => {
@@ -36,7 +36,7 @@ const buildFieldsFromDependencies = (
 
   let result = fieldsToLangString(params);
 
-  const paramsString = modelToTargetLanguage({
+  const parametersModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: params,
     contextData,
@@ -53,7 +53,8 @@ const buildFieldsFromDependencies = (
       .join(' ');
     return `constructor${paramsString} { super(); ${constructorBody} }`;
   };
-  result += constructorToLangString(paramsString.output, params);
-  return result;
+  result += constructorToLangString(parametersModel.output, params);
+
+  return { output: result, dependencies: parametersModel.dependencies };
 };
 export { buildFieldsFromDependencies };

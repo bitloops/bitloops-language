@@ -59,8 +59,12 @@ const regularEvaluationToTargetLanguage = (
           dependencies: argumentDependenciesResult.dependencies,
         };
       }
-      default:
-        return { output: value, dependencies: [] };
+      default: {
+        // User-Defined Class
+        // const dependencies = getChildDependencies(type);
+        const dependencies = [];
+        return { output: value, dependencies };
+      }
     }
   };
 

@@ -23,6 +23,9 @@ import {
   TString,
   TBackTickString,
   TTargetDependenciesTypeScript,
+  TDependenciesTypeScript,
+  TEvaluation,
+  TRegularEvaluation,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -31,7 +34,7 @@ const domainErrorsToTargetLanguage = (
   domainErrors: TDomainErrors,
 ): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
-  let result = 'export namespace DomainErrors {';
+  let result = '';
   let dependencies = [];
   for (let i = 0; i < domainErrorsNames.length; i++) {
     const domainErrorName = domainErrorsNames[i];
@@ -40,8 +43,15 @@ const domainErrorsToTargetLanguage = (
     result += domainErrorToTargetLang.output;
     dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
   }
-  result += '}';
   return { output: result, dependencies };
+};
+const convertToString = (value: TRegularEvaluation): TString | TBackTickString => {
+  const body = value.regularEvaluation;
+  if (body.type === 'string') {
+    return { string: body.value };
+  }
+
+  return { backTickString: body.value };
 };
 
 const domainErrorToTargetLanguage = (
@@ -49,17 +59,33 @@ const domainErrorToTargetLanguage = (
   domainErrorName: string,
 ): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
-  const messageResult = messageToTargetLanguage(message);
+
+  // TODO: throw error if message is not a string or backtick string
+  const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
+  const messageText: TString | TBackTickString = convertToString(messageRegularEval);
+  const messageResult = messageToTargetLanguage(messageText);
+  const errorIdRegularEval = (errorId.expression as TEvaluation).evaluation as TRegularEvaluation;
+
+  const errorIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
+  // const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
-    value: errorId,
+    value: errorIdText,
   });
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameters ?? [],
   });
+  const dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Domain',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
 
-  let result = `export class ${domainErrorName} extends DomainError { constructor`;
+  let result = `export class ${domainErrorName} extends Domain.Error { constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;
@@ -69,6 +95,7 @@ const domainErrorToTargetLanguage = (
   return {
     output: result,
     dependencies: [
+      ...dependencies,
       ...parametersResult.dependencies,
       ...messageResult.dependencies,
       ...errorIdResult.dependencies,

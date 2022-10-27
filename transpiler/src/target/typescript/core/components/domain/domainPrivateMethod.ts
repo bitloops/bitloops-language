@@ -40,17 +40,22 @@ const domainPrivateMethod = (
     type: BitloopsTypesMapping.TParameterDependencies,
     value: methodInfo.privateMethod.parameterDependencies,
   });
-  let mappedReturnType = { output: methodInfo.privateMethod.returnType, dependencies: [] };
+  const mappedReturnTypeOutput = methodInfo.privateMethod.returnType;
+  let mappedReturnType;
 
-  if (isOkErrorReturnType(mappedReturnType.output)) {
-    mappedReturnType = modelToTargetLanguage({
+  if (isOkErrorReturnType(mappedReturnTypeOutput)) {
+    const resOkErrorReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TOkErrorReturnType,
       value: mappedReturnType,
     });
+    mappedReturnType = {
+      output: resOkErrorReturnType.output,
+      dependencies: resOkErrorReturnType.dependencies,
+    };
   } else {
-    if (isBitloopsPrimitive(mappedReturnType.output)) {
+    if (isBitloopsPrimitive(mappedReturnTypeOutput)) {
       mappedReturnType = {
-        output: bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](mappedReturnType.output),
+        output: bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](mappedReturnTypeOutput),
         dependencies: [],
       };
     }
@@ -71,7 +76,11 @@ const domainPrivateMethod = (
   );
   return {
     output: result,
-    dependencies: [...parametersString.dependencies, ...statementsString.dependencies],
+    dependencies: [
+      ...parametersString.dependencies,
+      ...statementsString.dependencies,
+      ...mappedReturnType.dependencies,
+    ],
   };
 };
 export { domainPrivateMethod };
