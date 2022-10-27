@@ -9,6 +9,7 @@ import {
   isIdentifierSingleExpression,
   isLiteralSingleExpression,
   isLogicalSingleExpression,
+  isObjectLiteralExpression,
 } from './type-guards/index.js';
 
 const singleExpressionToTargetLanguage = (
@@ -53,6 +54,24 @@ const singleExpressionToTargetLanguage = (
     // console.log('rawValue:', rawValue);
     return { output: `process.env.${rawValue}`, dependencies: [] };
   }
+
+  if (isObjectLiteralExpression(value.expression)) {
+    const properties = value.expression.objectLiteral;
+    let result = '{';
+    let dependencies = [];
+    for (const property of properties) {
+      const { name, expression } = property;
+      const evaluatedExpression = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TSingleExpression,
+        value: expression,
+      });
+      result += `${name}: ${evaluatedExpression.output},`;
+      dependencies = [...dependencies, ...evaluatedExpression.dependencies];
+    }
+    result += '}';
+    return { output: result, dependencies };
+  }
+
   throw new Error('Expression not supported');
 };
 
