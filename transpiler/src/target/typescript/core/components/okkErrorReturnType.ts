@@ -45,7 +45,9 @@ const okErrorReturnTypeToTargetLanguage = (
     }
   };
   dependencies.push(...getChildDependencies(returnOkType));
-  dependencies.push(...getChildDependencies(errors));
+  if (errors) {
+    dependencies.push(...getChildDependencies(errors));
+  }
 
   return { output: xor(returnOkType, errors), dependencies };
 };
