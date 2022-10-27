@@ -68,7 +68,7 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       value: evaluation,
     });
   } else {
-    throw new Error(`Unsupported evaluation: ${evaluation}`);
+    throw new Error(`Unsupported evaluation: ${JSON.stringify(evaluation)}`);
   }
 };
 

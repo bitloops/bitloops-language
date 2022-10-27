@@ -186,6 +186,7 @@ regularEvaluation
 	| isInstanceOf
     | regularErrorTypeEvaluation
     ;
+
 // regularVariableEvaluation | regularStringEvaluation |
 regularErrorTypeEvaluation
     : errorIdentifier
