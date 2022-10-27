@@ -27,7 +27,6 @@ import {
 } from '@bitloops/bl-transpiler';
 
 const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
-  console.log('Fetching setup data...', sourceDirPath);
   // TODO handle possibly multiple setup files
   const content = readFromFile(`${sourceDirPath}/setup.bl`);
   // const setupData = main(content);
@@ -39,7 +38,6 @@ const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
     const result = intermediateParser.parse(
       initialModelOutput as unknown as BitloopsLanguageSetupAST,
     );
-    console.log('result', result);
     if (result instanceof BitloopsSetupParserError) {
       console.log(result);
       throw new Error('Error parsing setup file');

@@ -299,6 +299,7 @@ PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
 ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
 RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
+DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;

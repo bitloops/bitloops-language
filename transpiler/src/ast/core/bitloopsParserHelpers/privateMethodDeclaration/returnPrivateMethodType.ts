@@ -13,7 +13,6 @@ export const returnPrivateMethodType = (subtree: any): any => {
     };
   } else if (returnOkErrorTypeTree) {
     const returnOkErrorType = getBitloopsModel(returnOkErrorTypeTree);
-    console.log('returnOkErrorType privateMethod', returnOkErrorType);
     result = {
       returnType: returnOkErrorType,
     };

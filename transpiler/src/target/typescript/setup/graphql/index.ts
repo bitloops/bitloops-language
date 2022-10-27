@@ -61,7 +61,7 @@ const graphQLSetupDataToTargetLanguage = (
     codeForAllServers += result.output;
     dependencies = [...dependencies, ...result.dependencies];
   }
-  console.log('-----------------------------');
+  // console.log('-----------------------------');
   return { output: codeForAllServers, dependencies: [] };
 };
 

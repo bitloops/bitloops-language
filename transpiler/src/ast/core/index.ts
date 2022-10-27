@@ -1,6 +1,6 @@
 import { BitloopsLanguageASTContext } from '../../index.js';
 import { TBoundedContexts } from '../../types.js';
-import { parseBitloops } from './BitloopsParser.js';
+// import { parseBitloops } from './BitloopsParser.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 
 export interface IBitloopsIntermediateASTParser {
@@ -9,24 +9,6 @@ export interface IBitloopsIntermediateASTParser {
 
 export class BitloopsIntermediateASTParserError extends Error {}
 
-const toBeMigratedTypes = ['applicationErrorDeclaration'];
-// const migratedTypes = [
-//   'jestTestDeclaration',
-//   'controllerDeclaration',
-//   'dtoDeclaration',
-//   'propsDeclaration',
-//   'valueObjectDeclaration',
-//   'entityDeclaration',
-//   'aggregateDeclaration',
-//   'domainRuleDeclaration',
-//   'domainErrorDeclaration',
-//   'useCaseDeclaration',
-//   'structDeclaration',
-//   'packagePortDeclaration',
-//   'repoPortDeclaration',
-//   'readModelDeclaration',
-// ];
-
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
   parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTParserError {
     let boundedContextsData: TBoundedContexts = {};
@@ -34,20 +16,12 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
     for (const [boundedContextName, boundedContext] of Object.entries(ast)) {
       for (const classes of Object.values(boundedContext)) {
         for (const classData of Object.values(classes)) {
-          if (!toBeMigratedTypes.includes(classData.deprecatedAST.type)) {
-            const bitloopsVisitor = new BitloopsVisitor();
-            // console.log('result::', bitloopsVisitor.visitChildren(classData.initialAST));
-            const visitorModel = bitloopsVisitor.visit(classData.initialAST);
-            partialBoundedContextsData = {
-              [boundedContextName]: { [classData.module]: visitorModel },
-            };
-          } else {
-            partialBoundedContextsData = parseBitloops(
-              boundedContextName,
-              classData.module,
-              classData.deprecatedAST,
-            );
-          }
+          const bitloopsVisitor = new BitloopsVisitor();
+          // console.log('result::', bitloopsVisitor.visitChildren(classData.initialAST));
+          const visitorModel = bitloopsVisitor.visit(classData.initialAST);
+          partialBoundedContextsData = {
+            [boundedContextName]: { [classData.module]: visitorModel },
+          };
           boundedContextsData = mergeBoundedContextData(
             boundedContextsData,
             partialBoundedContextsData,
