@@ -7,11 +7,10 @@ import { domainStatementsToTargetLanguage } from './domainStatements.js';
 const domainPublicMethod = (
   methodName: string,
   methodInfo: TDomainPublicMethod,
-  methodNames: string[],
 ): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
   const { statements, parameterDependencies, returnType } = publicMethod;
-  const statementsString = domainStatementsToTargetLanguage(statements, methodNames);
+  const statementsString = domainStatementsToTargetLanguage(statements);
 
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,

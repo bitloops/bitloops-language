@@ -29,12 +29,11 @@ import { domainStatementsToTargetLanguage } from './domainStatements.js';
 const domainPrivateMethod = (
   methodName: string,
   methodInfo: TDomainPrivateMethod,
-  methodNames: string[],
 ): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;
-  const statementsString = domainStatementsToTargetLanguage(statements, methodNames);
+  const statementsString = domainStatementsToTargetLanguage(statements);
 
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,

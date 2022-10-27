@@ -17,7 +17,7 @@ export const internalConstructor = (
   let res = `private constructor(props: ${propsName}) { ${superString}; `;
   let dependencies = [];
   if (statements) {
-    const statementsResult = domainStatementsToTargetLanguage(statements, []);
+    const statementsResult = domainStatementsToTargetLanguage(statements);
     res += statementsResult.output;
     dependencies = statementsResult.dependencies;
   }

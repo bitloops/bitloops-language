@@ -35,16 +35,10 @@ const valueObjectMethods = (
   valueObjectMethods: TValueObjectMethods,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
-  const methodNames = [];
-  for (const [methodName] of Object.entries(valueObjectMethods)) {
-    methodNames.push(methodName);
-  }
+
   const result = Object.entries(valueObjectMethods).reduce((acc, [methodName, methodInfo]) => {
-    acc += domainPrivateMethod(methodName, methodInfo, methodNames).output;
-    dependencies = [
-      ...dependencies,
-      ...domainPrivateMethod(methodName, methodInfo, methodNames).dependencies,
-    ];
+    acc += domainPrivateMethod(methodName, methodInfo).output;
+    dependencies = [...dependencies, ...domainPrivateMethod(methodName, methodInfo).dependencies];
     return acc;
   }, '');
 

@@ -26,12 +26,9 @@ import {
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 // TODO move this.props addition to second model
-// constructor doesnt know about methodNames and it will add this.props
-// what about same name with props and methods of domain?
-// if else wrapping is not working in domain statements
+// if else wrapping of evaluations is not working in domain statements
 export const domainStatementsToTargetLanguage = (
   statements: TStatements,
-  methodNames: string[],
 ): TTargetDependenciesTypeScript => {
   let finalDependencies = [];
   let finalOutput = '';
@@ -39,7 +36,7 @@ export const domainStatementsToTargetLanguage = (
     let result;
     // eslint-disable-next-line no-prototype-builtins
     if (statement.hasOwnProperty('thisDeclaration')) {
-      result = domainThisDeclarationToTargetLanguage(statement as TThisDeclaration, methodNames);
+      result = domainThisDeclarationToTargetLanguage(statement as TThisDeclaration);
     } else {
       result = modelToTargetLanguage({
         type: BitloopsTypesMapping.TStatement,
@@ -54,7 +51,6 @@ export const domainStatementsToTargetLanguage = (
 
 const domainThisDeclarationToTargetLanguage = (
   variable: TThisDeclaration,
-  methodNames: string[],
 ): TTargetDependenciesTypeScript => {
   const { name: variableName, expression } = variable.thisDeclaration;
 
@@ -63,10 +59,7 @@ const domainThisDeclarationToTargetLanguage = (
     value: { expression },
   });
   const thisDeclarationName = variableName.split('this.')[1];
-  let finalName = variableName;
-  if (!methodNames.includes(thisDeclarationName)) {
-    finalName = `this.props.${thisDeclarationName}`;
-  }
+  const finalName = `this.props.${thisDeclarationName}`;
 
   const thisResult = `${finalName} = ${expressionResult.output}`;
 
