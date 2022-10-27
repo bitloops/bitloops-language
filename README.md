@@ -134,7 +134,7 @@ Bitloops Langauge code like this (11 lines):
 ```node
 // Bitloops Language:
 Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
-  isBrokenIf(title > 150 OR title < 4);
+  isBrokenIf(title.length > 150 OR title.length < 4);
 }
 
 Props TitleProps {
