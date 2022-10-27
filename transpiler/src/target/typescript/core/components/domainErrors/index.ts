@@ -31,7 +31,7 @@ const domainErrorsToTargetLanguage = (
   domainErrors: TDomainErrors,
 ): TTargetDependenciesTypeScript => {
   const domainErrorsNames = Object.keys(domainErrors);
-  let result = 'export namespace DomainErrors {';
+  let result = 'export namespace Domain.Error {';
   let dependencies = [];
   for (let i = 0; i < domainErrorsNames.length; i++) {
     const domainErrorName = domainErrorsNames[i];
@@ -59,7 +59,7 @@ const domainErrorToTargetLanguage = (
     value: parameters ?? [],
   });
 
-  let result = `export class ${domainErrorName} extends DomainError { constructor`;
+  let result = `export class ${domainErrorName} extends Domain.Error { constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;

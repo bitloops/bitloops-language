@@ -28,7 +28,7 @@ const graphQLControllersToTargetLanguage = (
   // TODO for all controllers
   const controllerName = Object.keys(controllers)[0];
 
-  let result = `export class ${controllerName} extends BaseGraphQLController<any,any> { `;
+  let result = `export class ${controllerName} extends GraphQL.BaseController<any,any> { `;
   const controller = controllers[controllerName];
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');

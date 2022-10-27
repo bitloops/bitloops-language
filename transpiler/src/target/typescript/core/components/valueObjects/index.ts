@@ -53,7 +53,7 @@ const valueObjectsToTargetLanguage = (params: {
   const modelForContext = model[boundedContext][module];
 
   const initialObjectValuesLangMapping = (voName: string, propsName: string): string =>
-    `export class ${voName} extends ValueObject<${propsName}> { `;
+    `export class ${voName} extends Domain.ValueObject<${propsName}> { `;
 
   let result = '';
   let dependencies = [];
