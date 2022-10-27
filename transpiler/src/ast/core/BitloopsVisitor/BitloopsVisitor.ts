@@ -305,7 +305,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBlock(ctx: BitloopsParser.BlockContext) {
-    return this.visitChildren(ctx)[1];
+    return this.visit(ctx.statementList());
   }
   visitConstDeclaration(ctx: BitloopsParser.ConstDeclarationContext) {
     return constDeclarationVisitor(this, ctx);

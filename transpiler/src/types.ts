@@ -566,7 +566,7 @@ export type TDefaultCase = {
 };
 
 export type TRegularCase = {
-  caseValue: string;
+  caseValue: TExpressionValues;
   statements: TStatements;
 };
 
