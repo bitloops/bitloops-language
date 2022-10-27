@@ -123,7 +123,7 @@ export type TBitloopsTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
   setupData: ISetupData;
   targetLanguage: string;
-  formatterConfig?: any;
+  formatterConfig?: unknown;
   sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 

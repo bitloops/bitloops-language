@@ -18,11 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import {
-  BitloopsIntermediateASTParserError,
-  BitloopsParserError,
-} from '../functions/core/index.js';
-
+import { BitloopsIntermediateASTParserError, BitloopsParserError } from '@bitloops/bl-transpiler';
 import { TBitloopsOutputTargetContent, TBoundedContexts } from '../types.js';
 
 export class BitloopsTargetGeneratorError extends Error {}
