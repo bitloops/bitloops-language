@@ -1,13 +1,19 @@
 {
-  "name": "bitloops-language-cli",
-  "version": "0.0.1",
+  "name": "@bitloops/bitloops-language-cli",
+  "version": "0.0.3",
   "description": "Bitloops Language CLI",
   "type": "module",
   "engines": {
     "node": ">= 16.13 <17"
   },
   "bin": {
-    "bitloops-language": "./lib/src/index.js"
+    "bitloops-language": "./lib/src/index.js",
+    "bl": "./lib/src/index.js"
+  },
+  "homepage": "https://github.com/bitloops/bitloops-language/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitloops/bitloops-language"
   },
   "devDependencies": {
     "@types/eslint": "^8.4.6",
@@ -53,7 +59,7 @@
     "build:release": "npm run clean && tsc -p tsconfig.release.json",
     "build": "yarn clean && tsc -p . && yarn copy-files && chmod +x lib/src/index.js",
     "install:local": "yarn build && npm i -g",
-    "lint": "eslint . --ext .ts --ext .mts",
+    "lint": "eslint --quiet . --ext .ts --ext .mts --ext .cts",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "prettier": "prettier --config .prettierrc --write .",
@@ -63,8 +69,7 @@
     "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
     "package": "pkg ./dist/bitloops-language.bundle.js --targets node16-macos-x64 --output ./dist/bitloops-language --assets *.flf",
     "caxa": "npx caxa --input \"/Users/vasilis/Code/Bitloops/bitloops-language-cli\"  --output \"/Users/vasilis/Code/Bitloops/bitloops-language-cli/dist/Bitloops Language.app\" -- \"{{caxa}}/node_modules/.bin/node\" \"{{caxa}}/lib/src/index.js\" \"transpile\"",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "lint": "eslint --quiet . --ext .ts --ext .mts --ext .cts"
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "files": [
     "dist"
@@ -84,7 +89,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@bitloops/bl-transpiler": "^0.0.8",
-    "axios": "^0.27.2",
+    "axios": "^1.1.3",
     "chalk": "5.0.1",
     "commander": "^9.4.0",
     "figlet": "1.5.2",

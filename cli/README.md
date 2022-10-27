@@ -13,15 +13,15 @@
 
 ### yarn
 
-`yarn global add bitloops-language`
+`yarn global add @bitloops/bitloops-language-cli`
 
 ### npm
 
-`npm install -g bitloops-language`
+`npm install -g @bitloops/bitloops-language-cli`
 
 ## Usage
 
-To use the CLI run `bitloops-language transpile` and follow the instructions
+To use the CLI run `bitloops-language transpile` or `bl transpile` and follow the instructions
 
 ## Development
 
