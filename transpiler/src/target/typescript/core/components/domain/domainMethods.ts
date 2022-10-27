@@ -14,13 +14,18 @@ import { domainPrivateMethod } from './index.js';
 export const domainMethods = (domainMethods: TDomainMethods): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
+  const methodNames = [];
+  for (const [methodName] of Object.entries(domainMethods)) {
+    methodNames.push(methodName);
+  }
+
   for (const [methodName, methodInfo] of Object.entries(domainMethods)) {
     if (isPrivateMethod(methodInfo)) {
-      const model = domainPrivateMethod(methodName, methodInfo);
+      const model = domainPrivateMethod(methodName, methodInfo, methodNames);
       result += model.output;
       dependencies = [...dependencies, ...model.dependencies];
     } else if (isPublicMethod(methodInfo)) {
-      const model = domainPublicMethod(methodName, methodInfo);
+      const model = domainPublicMethod(methodName, methodInfo, methodNames);
       result += model.output;
       dependencies = [...dependencies, ...model.dependencies];
     } else {
