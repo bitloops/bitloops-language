@@ -90,6 +90,9 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
       continue;
     }
     const { classType } = getClassTypeFromIdentifier(dependencyString);
+    if (classType === undefined) {
+      continue;
+    }
     const { value, fileName } = getValueAndFileNameOfImport(dependencyString);
     result.push({
       type: 'relative',
@@ -191,5 +194,10 @@ const getClassTypeFromIdentifier = (
   //   };
   // }
 
-  throw new Error(`Unknown class type for ${dependencyName}`);
+  // TODO We are not throwing because of structs
+  // console.error(`Unknown class type for ${dependencyName}`)
+  // throw new Error(`Unknown class type for ${dependencyName}`);
+  return {
+    classType: undefined,
+  };
 };
