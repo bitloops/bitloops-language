@@ -61,12 +61,14 @@ export const caseClauseVisitor = (
 ): TRegularCase => {
   const caseValue = thisVisitor.visit(ctx.expression());
   const caseStatement = thisVisitor.visit(ctx.statementList());
-  let returnCaseStatement = caseStatement.statements;
-  if (caseStatement.statements[0].statement !== undefined) {
-    returnCaseStatement = caseStatement.statements[0].statements;
+  let caseStatements = caseStatement;
+  if (Array.isArray(caseStatement.statements)) {
+    if ('statements' in caseStatement.statements[0]) {
+      caseStatements = caseStatement.statements[0];
+    }
   }
   return {
-    statements: returnCaseStatement,
+    ...caseStatements,
     caseValue: caseValue.expression,
   };
 };
@@ -76,11 +78,11 @@ export const defaultClauseVisitor = (
   ctx: BitloopsParser.DefaultClauseContext,
 ): TDefaultCase => {
   const defaultStatement = thisVisitor.visit(ctx.statementList());
-  let returnDefaultStatement = defaultStatement.statements;
-  if (defaultStatement.statements[0].statement !== undefined) {
-    returnDefaultStatement = defaultStatement.statements[0].statements;
+  let defaultCases = defaultStatement;
+  if (Array.isArray(defaultStatement.statements)) {
+    if ('statements' in defaultStatement.statements[0]) {
+      defaultCases = defaultStatement.statements[0];
+    }
   }
-  return {
-    statements: returnDefaultStatement,
-  };
+  return defaultCases;
 };
