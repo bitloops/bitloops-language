@@ -1,3 +1,0 @@
-Props TitleProps {
-  string title;
-}
