@@ -14,7 +14,7 @@ const feature = loadFeature('__tests__/ast/core/domainError.feature');
 
 const expectedModels: TDomainErrors[] = [
   {
-    InvalidName: {
+    InvalidNameError: {
       message: {
         expression: {
           evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
@@ -31,7 +31,7 @@ const expectedModels: TDomainErrors[] = [
     },
   },
   {
-    InvalidName: {
+    InvalidNameError: {
       message: {
         expression: {
           evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
@@ -54,7 +54,7 @@ const expectedModels: TDomainErrors[] = [
   //   'Hello World': {
   //     core: {
   //       DomainErrors: {
-  //         InvalidName: {
+  //         InvalidNameError: {
   //           message: { backTickString: 'name is an invalid ${name}' },
   //           errorId: { backTickString: '${errorId}' },
   //           parameters: [

@@ -736,11 +736,13 @@ caseClauses
     ;
 
 caseClause
-    : Case expression Colon statementList? Break? SemiColon?
+    : Case expression Colon OpenBrace statementList? CloseBrace SemiColon?
+    | Case expression Colon statementList? SemiColon?
     ;
 
 defaultClause
-    : Default Colon statementList? Break? SemiColon?
+    : Default Colon OpenBrace statementList? CloseBrace SemiColon?
+    | Default Colon statementList? SemiColon?
     ;
 
 labelledStatement
@@ -940,14 +942,14 @@ domainErrorDeclaration
     ;
 
 applicationErrorDeclaration
-    : ApplicationError applicationErrorIdentifier formalParameterList? objectLiteral SemiColon?
+    : ApplicationError applicationErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 domainErrorIdentifier
-    : UpperCaseIdentifier;
+    : DomainErrorIdentifier;
 
 applicationErrorIdentifier
-    : UpperCaseIdentifier;
+    : DomainErrorIdentifier;
 
 useCaseExecuteDeclaration
     : Execute formalParameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace

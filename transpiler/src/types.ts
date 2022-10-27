@@ -249,8 +249,8 @@ export type TRules = Record<string, TRule>;
 export type TDomainErrors = Record<string, TDomainError>;
 
 export type TApplicationError = {
-  message: TBackTickString | TString;
-  errorId: TString;
+  message: TExpression; // TBackTickString | TString;
+  errorId: TExpression;
   parameters?: TParameterDependencies;
 };
 
