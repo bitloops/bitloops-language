@@ -32,6 +32,7 @@ import {
 } from '../functions/index.js';
 import { SupportedLanguages } from '../helpers/supportedLanguages.js';
 import { clearFolder } from '../helpers/fileOperations.js';
+import chalk from 'chalk';
 
 interface ICollection {
   targetLanguage: string;
@@ -100,8 +101,6 @@ const transpile = async (source: ICollection): Promise<void> => {
     setupData,
   );
 
-  console.log('setupData', setupData);
-  console.log('setupData', JSON.stringify(setupData));
   generateTargetFiles({
     boundedContextModules,
     sourceDirPath: absoluteSourceDirPath,
@@ -110,6 +109,8 @@ const transpile = async (source: ICollection): Promise<void> => {
     setupData,
     targetLanguage: SupportedLanguages.TypeScript,
   });
+  const greenColor = chalk.hex('#00ff00');
+  console.log(greenColor('Project generated successfully!'));
 };
 
 // (*) Gather BoundedContexts and Modules
