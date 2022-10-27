@@ -40,6 +40,7 @@ import {
 import { GraphQLServerResolverBind } from './graphql/types.js';
 import { populateGraphQLAndControllers } from './graphql/populatateGraphQLAndControllers.js';
 import { REST_METHOD_MAPPER } from './constants.js';
+import { visitCustomServerOption } from './helpers/index.js';
 
 export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   [x: string]: any;
@@ -117,11 +118,14 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   visitRestServerExpression(ctx: BitloopsSetupParser.RestServerExpressionContext): void {
     // console.log('visitRestServerExpression');
     const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-    const { port, serverType, apiPrefix } = serverRawOptions;
+    const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
     const serverOptions: any = {
       port,
       apiPrefix,
     };
+    if (corsOptions) {
+      serverOptions.corsOptions = corsOptions;
+    }
     const routers = this.visit(ctx.bindServerRoutes());
     serverOptions.routers = routers;
 
@@ -155,11 +159,12 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     return { apiPrefix };
   }
 
-  visitServerPortOption(ctx: BitloopsSetupParser.ServerPortOptionContext): {
-    port: TSingleExpression;
+  visitCustomServerOption(ctx: BitloopsSetupParser.CustomServerOptionContext): {
+    [key: string]: TSingleExpression;
   } {
-    const port = this.visit(ctx.portInformation())[0];
-    return { port };
+    console.log('visitCustomServerOption');
+    const res = visitCustomServerOption(this, ctx);
+    return res;
   }
 
   visitBindServerRoutes(
@@ -295,7 +300,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   visitGraphQLServerInstantiationOption(
     ctx: BitloopsSetupParser.GraphQLServerInstantiationOptionContext,
   ): TSingleExpression {
-    const { port } = this.visit(ctx.serverPortOption()); // ctx.serverPortOption().getText();
+    const { port } = this.visit(ctx.customServerOption());
     return port;
   }
 
@@ -550,6 +555,25 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     return {
       type: 'number', // TODO: check correct BitloopsPrimitive
       value: result,
+    };
+  }
+
+  visitObjectLiteralExpression(ctx: BitloopsSetupParser.ObjectLiteralExpressionContext) {
+    const children = this.visitChildren(ctx)[0];
+    const objectLiteral = children.filter((listItem) => listItem !== undefined);
+    return {
+      expression: {
+        objectLiteral,
+      },
+    };
+  }
+
+  visitPropertyExpressionAssignment(ctx: BitloopsSetupParser.PropertyExpressionAssignmentContext) {
+    const identifier = ctx.propertyName().getText();
+    const singleExpression = this.visit(ctx.singleExpression());
+    return {
+      name: identifier,
+      expression: singleExpression.expression,
     };
   }
 

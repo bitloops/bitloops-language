@@ -134,6 +134,19 @@ serverExpression
     | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerExpression
     ;
 
+propertyName
+    : Identifier
+    | StringLiteral
+    ;
+
+propertyAssignment
+    : propertyName (':' |'=') singleExpression                # PropertyExpressionAssignment
+    ;
+
+objectLiteral
+    : '{' (propertyAssignment (',' propertyAssignment)* ','?)? '}'
+    ;
+
 // TODO Move singleExpression from other grammar 
 singleExpression
     : singleExpression Or singleExpression                                   # LogicalOrExpression
@@ -141,6 +154,7 @@ singleExpression
     | envVariable                                                            # EnvironmentVariableExpression
     | literal                                                                # LiteralExpression
     | identifier                                                             # IdentifierExpression //Identifier or Variable method
+    | objectLiteral                                                          # ObjectLiteralExpression
     // | evaluation                                                 # EvaluationExpression 
     // | regularVariableEvaluation                                              
     ;
@@ -272,13 +286,14 @@ concretedRepoPort
 
 serverInstantiationOptions
     // : OpenCurlyBracket objectProperties CloseCurlyBracket
+    // TODO Remove necessary comma on end of each line
     : OpenCurlyBracket serverInstantiationOption* CloseCurlyBracket
     ;
 
 serverInstantiationOption
     : serverTypeOption    
     | serverApiPrefixOption
-    | serverPortOption
+    | customServerOption
     ;
 
 serverTypeOption
@@ -289,20 +304,18 @@ serverApiPrefixOption
     : ServerApiPrefix Colon pathString Comma
     ;
 
-serverPortOption
-    : Identifier Colon portInformation Comma
+customServerOption
+    : Identifier Colon singleExpression Comma
     ;
 
-portInformation
-    : singleExpression
-    ;
+// Cover any user defined options
 
 graphQLServerInstantiationOptions
     : OpenCurlyBracket graphQLServerInstantiationOption CloseCurlyBracket
     ;
 
 graphQLServerInstantiationOption
-    : serverPortOption
+    : customServerOption
     ;
 
 numericLiteral
