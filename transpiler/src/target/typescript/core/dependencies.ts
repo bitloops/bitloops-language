@@ -51,16 +51,19 @@ export const getParentDependencies = (
       from: importString,
     });
   }
-  const finalParentDependencies = removeParentDuplicates(parentDependecies);
+  const finalParentDependencies = removeParentDuplicates(parentDependecies, className);
   return finalParentDependencies;
 };
 
-const removeParentDuplicates = (parentDependecies: TDependencyParentTypescript[]) => {
+const removeParentDuplicates = (
+  parentDependecies: TDependencyParentTypescript[],
+  className: string,
+) => {
   const isAlreadySet = [];
   const parentDependenciesRemovedDuplicates: TDependencyParentTypescript[] = [];
   for (const parentDependency of parentDependecies) {
     const key = `${parentDependency.value}${parentDependency.from}`;
-    if (!isAlreadySet.includes(key)) {
+    if (!isAlreadySet.includes(key) && parentDependency.value !== className) {
       isAlreadySet.push(key);
       parentDependenciesRemovedDuplicates.push(parentDependency);
     }
