@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -42,7 +42,6 @@
     "jest-cucumber": "^3.0.1",
     "jest-extended": "^3.0.2",
     "jest-ts-auto-mock": "^2.1.0",
-    "prettier": "^2.7.1",
     "ts-auto-mock": "^3.6.2",
     "ts-jest": "~28.0",
     "ts-node": "^10.9.1",
@@ -78,7 +77,8 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "antlr4": "^4.11.0"
+    "antlr4": "^4.11.0",
+    "prettier": "^2.7.1"
   },
   "husky": {
     "hooks": {
