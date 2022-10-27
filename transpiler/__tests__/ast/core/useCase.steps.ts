@@ -29,7 +29,7 @@ import {
 const feature = loadFeature('__tests__/ast/core/useCase.feature');
 
 defineFeature(feature, (test) => {
-  test.skip('UseCase is valid', ({ given, when, then }) => {
+  test('UseCase is valid', ({ given, when, then }) => {
     let boundedContext: string;
     let module: string;
     let blString: string;

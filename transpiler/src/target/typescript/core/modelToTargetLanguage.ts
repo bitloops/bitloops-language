@@ -131,6 +131,8 @@ import {
   rulesDeclarationToTargetLanguage,
 } from './components/rulesDeclaration/index.js';
 import { readModelsToTargetLanguage } from './components/readModels/index.js';
+import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
+import { entitityValuesToTargetLanguage } from './components/entityValues/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -405,6 +407,15 @@ const modelToTargetLanguage = (props: {
       res = entityEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TEntityValues: {
+      res = entitityValuesToTargetLanguage({
+        entityValues: value,
+        model,
+        contextData,
+      });
+      break;
+    }
+
     case BitloopsTypesMapping.TEntities: {
       res = entitiesToTargetLanguage({
         entities: value,
@@ -499,6 +510,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TRuleValues: {
       res = ruleDeclarationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TRootEntities: {
+      res = rootEntitiesToTargetLanguage({
+        rootEntities: value,
+        model,
+        contextData,
+      });
       break;
     }
     default: {
