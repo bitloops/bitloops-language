@@ -129,7 +129,7 @@ It is built out of a consistent set of language constructs that should feel fami
 
 While Bitloops is an Object Oriented Language, it doesn't have a generic class. Specific Bitloops classes are build-in as follows: ValueObject, Entity, Root Entity, UseCase, RESTController, GraphQLController, GRPCController, DTO, Props, Config, OK, ApplicationError, DomainError, Error etc.
 
-Bitloops Langauge code like this (11 lines):
+Bitloops Language code like this (11 lines):
 
 ```node
 // Bitloops Language:
