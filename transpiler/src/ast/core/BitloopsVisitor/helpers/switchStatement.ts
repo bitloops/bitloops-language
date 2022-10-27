@@ -72,6 +72,5 @@ export const defaultClauseVisitor = (
   ctx: BitloopsParser.DefaultClauseContext,
 ): TDefaultCase => {
   const defaultStatement = thisVisitor.visit(ctx.statementList());
-  console.log('Default', defaultStatement);
   return defaultStatement.statements[0];
 };
