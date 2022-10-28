@@ -47,7 +47,7 @@ export const generateSetupFiles = (
   formatterConfig?: any,
 ): TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError => {
   formatterConfig = formatterConfig ?? { semi: true, parser: 'typescript', singleQuote: true };
-  console.log('Generating system files...');
+  // console.log('Generating system files...');
   const setup = new SetupTypeScript();
   const pathsAndContents: TSetupOutput[] = [];
 

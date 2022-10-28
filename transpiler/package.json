@@ -54,7 +54,7 @@
     "clean": "rm -rf ./lib",
     "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/src/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/src/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/src/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/src/parser/setup/grammar",
     "copy-grammars-types": "cp -r ./src/parser/core/grammar ./lib/cjs/types/src/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/types/src/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/types/src/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/types/src/parser/setup/grammar",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && yarn copy-grammars && yarn copy-grammars-types",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/src/index.js lib/esm/src/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
