@@ -103,7 +103,7 @@ const REQUIRED_NODE_DEPENDENCIES = {
   morgan: '^1.10.0',
   uuid: '^8.3.2',
   validator: '^13.7.0',
-  '@bitloops/bl-boilerplate-core': '^0.0.3',
+  '@bitloops/bl-boilerplate-core': '^0.0.6',
 };
 
 const REQUIRED_NODE_DEV_DEPENDENCIES = {
