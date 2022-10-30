@@ -99,8 +99,6 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     module: string,
     setupTypeMapper: Record<string, string>,
   ): string {
-    // import { mongoConnection } from '../../../shared/infra/db/mongo/config';
-    // import { TodoRepoPortMongodbAdapter } from './infra/repos/todoRepo';
     const moduleRepoAdapters = reposSetupData?.repoAdapters?.[boundedContext]?.[module];
     if (!moduleRepoAdapters) return '';
     const connections: Record<TRepoSupportedTypes, string[]> = {
@@ -110,7 +108,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       'DB.SQLite': [],
     };
     const adapterImports: string[] = [];
-    for (const [repoInstanceName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
+    for (const repoAdapterInfo of Object.values(moduleRepoAdapters)) {
       const { connection, dbType, repoPort } = repoAdapterInfo;
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TSingleExpression,
@@ -119,14 +117,14 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       connections[dbType].push(stringConnection.output);
       const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
       adapterImports.push(
-        `import { ${adapterClassName} } from './infra/repos/${repoInstanceName}';`,
+        `import { ${adapterClassName} } from './infra/repos/${adapterClassName}';`,
       );
     }
     const result = Object.entries(connections).reduce((acc, [dbType, connectionNames]) => {
       if (connectionNames.length === 0) return acc;
       const connectionImports = connectionNames.join(', ');
       acc.push(
-        `import { ${connectionImports} } from '../../../${setupTypeMapper[dbType]}/config';`,
+        `import { ${connectionImports} } from '../../..${setupTypeMapper[dbType]}config';`,
       );
       return acc;
     }, [] as string[]);
