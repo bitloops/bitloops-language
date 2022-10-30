@@ -23,38 +23,40 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../dependencies.js';
 
 const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeScript => {
   const { name, type, optional } = variable;
-  const variableLangMapping = (name: string, type: string, optional: boolean): string =>
-    `${name}${optional ? '?' : ''}: ${type}`;
-
+  let dependencies = [];
   let mappedType = type;
+
   if (isBitloopsPrimitive(type)) {
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
+  } else {
+    // If not primitive, then we have a dependency
+    dependencies = getChildDependencies(type);
   }
+
+  const result = `${name}${optional ? '?' : ''}: ${mappedType}`;
   return {
-    output: variableLangMapping(name, mappedType, optional),
-    dependencies: [],
+    output: result,
+    dependencies,
   };
 };
 
-const variablesToTargetLanguage = (variable: TVariables): TTargetDependenciesTypeScript => {
+const variablesToTargetLanguage = (variables: TVariables): TTargetDependenciesTypeScript => {
   let dependencies = [];
-  const variablesLangMapping = (variables): string => {
-    let result = '';
-    for (const variable of variables) {
-      const variableResult = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TVariable,
-        value: variable,
-      });
-      dependencies = [...dependencies, ...variableResult.dependencies];
-      result += `${variableResult.output}; `;
-    }
-    return result;
-  };
+  let result = '';
+  for (const variable of variables) {
+    const variableResult = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TVariable,
+      value: variable,
+    });
+    dependencies = [...dependencies, ...variableResult.dependencies];
+    result += `${variableResult.output}; `;
+  }
 
-  return { output: variablesLangMapping(variable), dependencies };
+  return { output: result, dependencies };
 };
 
 export { variableToTargetLanguage, variablesToTargetLanguage };
