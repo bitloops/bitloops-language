@@ -312,10 +312,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitloops/bl-transpiler@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.0.9.tgz#6292d56432fb0d6080e2c225c3f15be906312cd4"
-  integrity sha512-5ni5tMl1W/DBZr/cDZ6VvUv7q3U0lm1l4cQdSX6mTptni+Gi6JVMzkLwDgFjqvI1abV1Tyws3ghZRr9jK+I89A==
+"@bitloops/bl-transpiler@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.0.10.tgz#f37317ebbd9412639bf43611b4e557c84287f7c9"
+  integrity sha512-jmTY7xKLOQXnSIVtLJgoW9ENpGKJMZ6dHdNGUJrq7HprCL7Me1mxybyPFUvn3eUz6R6ctetoOQ/BXL6lYiCgVA==
   dependencies:
     antlr4 "^4.11.0"
     prettier "^2.7.1"
