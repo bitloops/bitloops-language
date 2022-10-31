@@ -17,15 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TRESTController, TStatement } from '../../../../../../../types.js';
-import { isUseCaseExecuteStatement } from '../helpers/index.js';
-
-const prependAwaitToExecute = (value: TStatement): TStatement => {
-  return value;
-};
+import { TRESTController } from '../../../../../../types.js';
+import { deepClone } from '../../../../../../utils/deepClone.js';
+import { isUseCaseExecuteStatement, prependAwaitToExecute } from './helpers/index.js';
 
 const transformRestControllerIntermediateAST = (controllers: TRESTController): TRESTController => {
-  for (const controllerValues of Object.values(controllers)) {
+  const controllersCopy = deepClone(controllers);
+  for (const controllerValues of Object.values(controllersCopy)) {
     const { statements } = controllerValues.execute;
 
     const newStatements = statements.map((statement) => {
@@ -39,7 +37,7 @@ const transformRestControllerIntermediateAST = (controllers: TRESTController): T
     controllerValues.execute.statements = newStatements;
   }
 
-  return controllers;
+  return controllersCopy;
 };
 
 export { transformRestControllerIntermediateAST };

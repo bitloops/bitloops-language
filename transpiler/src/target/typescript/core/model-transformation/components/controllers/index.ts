@@ -21,7 +21,7 @@ import { isGraphQLController } from '../../../../../../helpers/typeGuards.js';
 import { TRESTController, TGraphQLController } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTypescriptModel } from '../../modelToTsModel.js';
-export { transformRestControllerIntermediateAST } from './rest/index.js';
+export { transformRestControllerIntermediateAST } from './rest.js';
 
 const controllersToTargetLanguage = (
   controllers: TRESTController | TGraphQLController,
