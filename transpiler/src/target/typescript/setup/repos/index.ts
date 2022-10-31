@@ -124,7 +124,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       if (connectionNames.length === 0) return acc;
       const connectionImports = connectionNames.join(', ');
       acc.push(
-        `import { ${connectionImports} } from '../../..${setupTypeMapper[dbType]}config';`,
+        `import { ${connectionImports} } from '../../../..${setupTypeMapper[dbType]}config';`,
       );
       return acc;
     }, [] as string[]);

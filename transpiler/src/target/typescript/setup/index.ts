@@ -37,6 +37,7 @@ const setupTypeMapper = {
   'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   DomainErrors: '',
+  Rules: '',
 };
 
 export const generateSetupFiles = (
@@ -144,7 +145,7 @@ export const generateSetupFiles = (
     pathsAndContents.push(appDomainerror);
   });
 
-  // Step 8. Generate rules
+  // Step 9. Generate rules
   const rules = setup.generateRules(_bitloopsModel);
   rules.forEach((rule) => {
     // console.log('rule:', rule);
