@@ -37,7 +37,7 @@ const getStringWithPrivateBeforeWord = (word: string, stringToBeReplaced: string
 };
 
 const initialRuleLangMapping: any = (ruleName: string) =>
-  `export class ${ruleName} implements IRule { `;
+  `export class ${ruleName} implements Domain.IRule { `;
 
 const finalRuleLangMapping: any = '}';
 

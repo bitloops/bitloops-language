@@ -103,7 +103,7 @@ const REQUIRED_NODE_DEPENDENCIES = {
   morgan: '^1.10.0',
   uuid: '^8.3.2',
   validator: '^13.7.0',
-  '@bitloops/bl-boilerplate-core': '^0.0.3',
+  '@bitloops/bl-boilerplate-core': '^0.0.6',
 };
 
 const REQUIRED_NODE_DEV_DEPENDENCIES = {
@@ -620,6 +620,39 @@ export { routers };
               const classNameWithoutError = className.split('Error')[0];
               imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
               content += `export class ${className} extends ${classNameWithoutError} {}`;
+            }
+            content += '}';
+            const finalContent = imports + content;
+            output.push({
+              fileType: classTypeName,
+              fileId: `${filePathObj.path}/index.ts`,
+              content: finalContent,
+            });
+          }
+        }
+      }
+    }
+    return output;
+  }
+
+  generateRules(model: TBoundedContexts): TSetupOutput[] {
+    const output = [];
+    for (const [boundedContextName, boundedContext] of Object.entries(model)) {
+      for (const [moduleName, module] of Object.entries(boundedContext)) {
+        for (const [classTypeName, classType] of Object.entries(module)) {
+          if (classTypeName === ClassTypes.Rules) {
+            let imports = '';
+            let content = `export namespace ${classTypeName} {`;
+            const filePathObj = getTargetFileDestination(
+              boundedContextName,
+              moduleName,
+              classTypeName,
+              classTypeName,
+            );
+            for (const [className] of Object.entries(classType)) {
+              const classNameWithoutRule = className.split('Rule')[0];
+              imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
+              content += `export class ${className} extends ${classNameWithoutRule} {}`;
             }
             content += '}';
             const finalContent = imports + content;

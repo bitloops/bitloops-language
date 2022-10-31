@@ -37,6 +37,7 @@ const setupTypeMapper = {
   'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   DomainErrors: '',
+  Rules: '',
 };
 
 export const generateSetupFiles = (
@@ -137,17 +138,24 @@ export const generateSetupFiles = (
     pathsAndContents.push(repoConnection);
   });
 
-  // Step 7. Generate domain and application errors
+  // Step 8. Generate domain and application errors
   const appDomainerrors = setup.generateAppDomainErrors(_bitloopsModel);
   appDomainerrors.forEach((appDomainerror) => {
     // console.log('appDomainerror:', appDomainerror);
     pathsAndContents.push(appDomainerror);
   });
 
+  // Step 9. Generate rules
+  const rules = setup.generateRules(_bitloopsModel);
+  rules.forEach((rule) => {
+    // console.log('rule:', rule);
+    pathsAndContents.push(rule);
+  });
+
   // console.log('pathsAndContents:', pathsAndContents);
   // TODO Move template files also
 
-  // Step 7. Write files
+  // Step 10. Write files
   const result: TBitloopsTargetSetupContent = [];
   pathsAndContents.forEach((pathAndContent) => {
     const { fileType, content, fileId } = pathAndContent;
@@ -158,7 +166,7 @@ export const generateSetupFiles = (
     });
   });
 
-  // Step 8. Write package.json
+  // Step 11. Write package.json
   // TODO add project name and other info through setupData config.set(XXX, YYY)
   // const packageJSONFilePath = `${outputDirPath}/package.json`;
   const packageJSON = {
