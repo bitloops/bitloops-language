@@ -135,6 +135,7 @@ import {
   repoPortExtendableIdentifierVisitor,
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
+  applicationErrorDeclarationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -304,7 +305,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBlock(ctx: BitloopsParser.BlockContext) {
-    return this.visitChildren(ctx)[1];
+    return this.visit(ctx.statementList());
   }
   visitConstDeclaration(ctx: BitloopsParser.ConstDeclarationContext) {
     return constDeclarationVisitor(this, ctx);
@@ -643,6 +644,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
    */
   visitDomainErrorDeclaration(ctx: BitloopsParser.DomainErrorDeclarationContext) {
     return domainErrorDeclarationVisitor(this, ctx);
+  }
+
+  visitApplicationErrorDeclaration(ctx: BitloopsParser.ApplicationErrorDeclarationContext) {
+    return applicationErrorDeclarationVisitor(this, ctx);
   }
 
   /**

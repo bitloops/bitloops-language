@@ -65,7 +65,7 @@ const getTargetFileDestination = (
     path: '',
     filename: '',
   };
-  console.log('Checking classType', classType);
+  // console.log('Checking classType', classType);
   switch (classType) {
     case ClassTypes.RootEntities:
     case ClassTypes.Entities:
@@ -75,7 +75,7 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.DomainErrors:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/errors`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/errors/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Props:
@@ -95,7 +95,7 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Packages:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/packages`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/packages/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.RepoPorts:
@@ -107,7 +107,7 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Rules:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/rules/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     default:

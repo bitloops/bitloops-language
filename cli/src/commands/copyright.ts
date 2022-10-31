@@ -20,7 +20,7 @@
 
 const transpile = (): void => {
   console.log(
-    'You can view our license information at: https://github.com/bitloops/bitloops-language-cli/blob/main/LICENSE',
+    'You can view our license information at: https://github.com/bitloops/bitloops-language/blob/main/cli/LICENSE',
   );
   console.log();
 };

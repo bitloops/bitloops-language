@@ -1,10 +1,5 @@
 import { getNextTypesChildren, getNextTypesSubtree, getNextTypesValue } from '../../utils/index.js';
-import {
-  TAggregateRepoPort,
-  TDefinitionMethods,
-  TReadModelRepoPort,
-  TRepoPort,
-} from '../../../types.js';
+import { TRepoPort } from '../../../types.js';
 import { getBitloopsModel } from '../BitloopsParser.js';
 
 const repoPortDeclaration = (subtree: any): { key: string; subModel: TRepoPort } => {
@@ -13,40 +8,24 @@ const repoPortDeclaration = (subtree: any): { key: string; subModel: TRepoPort }
     'repoPortExtendableIdentifierList',
     subtree,
   );
-  const extendedRepoPorts: string[] = repoPortExtendableIdentifierList
+  const extendedRepoPorts = repoPortExtendableIdentifierList
     .filter((listItem) => listItem !== 'repoPortExtendableIdentifier')
     .map((listItem) => listItem.value); // TODO Handle Identifier with < > if we want to extend a repoPort with a generic type
 
   const methodsTree = getNextTypesSubtree('methodDefinitionList', subtree);
 
-  let definitionMethods: TDefinitionMethods;
+  let definitionMethods = {};
   if (methodsTree) {
     const methods = getBitloopsModel(methodsTree);
     definitionMethods = methods.definitionMethods;
   }
+  const subModel: TRepoPort = {
+    aggregateRootName: getNextTypesValue('aggregateRootIdentifier', subtree),
+    extendedRepoPorts,
+    // TODO definitions
 
-  let subModel: TRepoPort;
-
-  const aggregateRootName: string = getNextTypesValue('aggregateRootIdentifier', subtree);
-  const readModelName = getNextTypesValue('ReadModelIdentifier', subtree);
-  console.log('aggregateRootName', aggregateRootName);
-  console.log('readModelName', readModelName);
-
-  if (aggregateRootName) {
-    const subModelAggregate: TAggregateRepoPort = {
-      extendedRepoPorts,
-      definitionMethods,
-      aggregateRootName,
-    };
-    subModel = subModelAggregate;
-  } else if (readModelName) {
-    const subModelReadModel: TReadModelRepoPort = {
-      extendedRepoPorts,
-      definitionMethods,
-      readModelName,
-    };
-    subModel = subModelReadModel;
-  }
+    definitionMethods,
+  };
 
   return {
     key: repoPortName,

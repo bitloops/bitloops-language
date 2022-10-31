@@ -13,10 +13,10 @@ const getConstantDeclarations = (constantVariablesTrees: any) => {
   const constantDeclarations = [];
   for (const constantVariablesTree of constantVariablesTrees) {
     const constantVariableModel = getBitloopsModel(constantVariablesTree);
-    console.log(
-      'constantVariableModel',
-      constantVariableModel.constDeclaration.expression.evaluation,
-    );
+    // console.log(
+    //   'constantVariableModel',
+    //   constantVariableModel.constDeclaration.expression.evaluation,
+    // );
     constantDeclarations.push(constantVariableModel.constDeclaration);
   }
   return constantDeclarations;

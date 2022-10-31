@@ -123,7 +123,7 @@ export type TBitloopsTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
   setupData: ISetupData;
   targetLanguage: string;
-  formatterConfig?: any;
+  formatterConfig?: unknown;
   sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
@@ -248,8 +248,8 @@ export type TRules = Record<string, TRule>;
 export type TDomainErrors = Record<string, TDomainError>;
 
 export type TApplicationError = {
-  message: TBackTickString | TString;
-  errorId: TString;
+  message: TExpression; // TBackTickString | TString;
+  errorId: TExpression;
   parameters?: TParameterDependencies;
 };
 
@@ -565,7 +565,7 @@ export type TDefaultCase = {
 };
 
 export type TRegularCase = {
-  caseValue: string;
+  caseValue: TExpressionValues;
   statements: TStatements;
 };
 
@@ -1005,7 +1005,7 @@ type TDependencyTypescript = {
 };
 
 export type TDependencyChildTypescript = TDependencyTypescript & {
-  classType?: TClassTypesValues;
+  classType?: string;
   className?: string;
 };
 
