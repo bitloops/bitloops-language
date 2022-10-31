@@ -22,6 +22,10 @@ import {
   transformRestControllerIntermediateAST,
 } from './components/controllers/index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { transformEntityIntermediateAST } from './components/entity.js';
+import { transformDomainMethodsIntermediateAST } from './components/domain/domainMethods.js';
+import { transformDomainPrivateMethodIntermediateAST } from './components/domain/domainPrivateMethod.js';
+import { transformDomainPublicMethodIntermediateAST } from './components/domain/domainPublicMethod.js';
 
 const modelToTypescriptModel = (props: {
   type: string;
@@ -40,10 +44,22 @@ const modelToTypescriptModel = (props: {
       res = transformRestControllerIntermediateAST(value);
       break;
     }
-    // case BitloopsTypesMapping.TGraphQLController: {
-    //   res = graphQLControllersToTargetLanguage(value, contextData);
-    //   break;
-    // }
+    case BitloopsTypesMapping.TEntities: {
+      res = transformEntityIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainMethods: {
+      res = transformDomainMethodsIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainPublicMethod: {
+      res = transformDomainPublicMethodIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainPrivateMethod: {
+      res = transformDomainPrivateMethodIntermediateAST(value);
+      break;
+    }
     default: {
       return value;
     }

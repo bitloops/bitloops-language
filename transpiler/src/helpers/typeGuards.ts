@@ -1,4 +1,11 @@
-import { TConstDeclaration, TStatement } from './../types.js';
+import {
+  TConstDeclaration,
+  TDomainMethod,
+  TDomainPrivateMethod,
+  TDomainPublicMethod,
+  TStatement,
+  TThisDeclaration,
+} from './../types.js';
 import {
   TGraphQLControllerInstances,
   TGraphQLControllerValues,
@@ -76,6 +83,22 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
+  if ('publicMethod' in value) return true;
+  else return false;
+};
+
+const isDomainPrivateMethod = (value: TDomainMethod): value is TDomainPrivateMethod => {
+  if ('privateMethod' in value) return true;
+  else return false;
+};
+
+const isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('thisDeclaration' in value) return true;
+  else return false;
+};
+
 export {
   isUndefined,
   isArray,
@@ -87,4 +110,7 @@ export {
   isOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
+  isDomainPublicMethod,
+  isDomainPrivateMethod,
+  isThisDeclaration,
 };
