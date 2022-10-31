@@ -825,11 +825,21 @@ export type TPackage = {
 
 export type TRepoPorts = Record<string, TRepoPort>;
 
-export type TRepoPort = {
+export type TAggregateRepoPort = {
+  readModelName?: never;
   aggregateRootName: string;
   extendedRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
 };
+
+export type TReadModelRepoPort = {
+  readModelName: string;
+  aggregateRootName?: never;
+  extendedRepoPorts: string[];
+  definitionMethods: TDefinitionMethods;
+};
+
+export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 

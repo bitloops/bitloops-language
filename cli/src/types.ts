@@ -1,4 +1,3 @@
-import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -18,6 +17,7 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
 
 export type TModule = {
   Props?: TProps;
