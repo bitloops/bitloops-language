@@ -102,7 +102,8 @@ const valueObjectsToTargetLanguage = (params: {
     result += voCreateModel.output;
     dependencies = [...dependencies, ...voCreateModel.dependencies];
 
-    const gettersModel = generateGetters(propsName, modelForContext, methods);
+    const IS_VALUE_OBJECT = true;
+    const gettersModel = generateGetters(propsName, modelForContext, methods, IS_VALUE_OBJECT);
     result += gettersModel.output;
     dependencies = [...dependencies, ...gettersModel.dependencies];
 
