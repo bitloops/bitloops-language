@@ -1,6 +1,6 @@
 import { isConstDeclaration } from '../../../../../../../helpers/typeGuards.js';
 import { deepClone } from '../../../../../../../utils/deepClone.js';
-import { TConstDeclaration, TStatement } from './../../../../../../../types.js';
+import { TConstDeclaration, TStatement } from '../../../../../../../types.js';
 
 const isUseCaseExecuteStatement = (value: TStatement): value is TConstDeclaration => {
   if (!isConstDeclaration(value)) {
@@ -31,5 +31,9 @@ const prependAwaitToExecute = (_value: TConstDeclaration): TConstDeclaration => 
   expression['evaluation'].regularEvaluation.value = `await ${methodValue}`;
   return value;
 };
+const findUseCaseExecuteResultIdentifier = (value: TConstDeclaration): string => {
+  const { name } = value.constDeclaration;
+  return name;
+};
 
-export { isUseCaseExecuteStatement, prependAwaitToExecute };
+export { isUseCaseExecuteStatement, prependAwaitToExecute, findUseCaseExecuteResultIdentifier };
