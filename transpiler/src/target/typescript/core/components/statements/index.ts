@@ -58,6 +58,7 @@ const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTyp
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable });
 };
 
+// TODO move if/else wrapping to second model
 const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesTypeScript => {
   const elseAdded: string[] = [];
   const mapping = (variable: TStatements): TTargetDependenciesTypeScript[] => {

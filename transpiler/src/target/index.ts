@@ -48,8 +48,8 @@ export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
   generate(params: TBitloopsTargetGeneratorParams): TBitloopsOutputTargetContent {
     const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
     const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
-    if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
 
+    if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
     const targetContentWithImports = bitloopsTargetGenerator.generateImports(targetContent);
     const formattedTargetContent = bitloopsTargetGenerator.formatCode(
       targetContentWithImports,

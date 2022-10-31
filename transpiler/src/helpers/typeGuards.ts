@@ -1,3 +1,4 @@
+import { TConstDeclaration, TStatement } from './../types.js';
 import {
   TGraphQLControllerInstances,
   TGraphQLControllerValues,
@@ -7,6 +8,7 @@ import {
   TRESTServerInstance,
   ControllerTypeOfDefinition,
   TOkErrorReturnType,
+  TIfStatement,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -62,6 +64,18 @@ const isOkErrorReturnType = (
   else return false;
 };
 
+const isIfStatement = (value: TStatement): value is TIfStatement => {
+  if (typeof value === 'string') return false;
+  if ('ifStatement' in value) return true;
+  return false;
+};
+
+const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('constDeclaration' in value) return true;
+  return false;
+};
+
 export {
   isUndefined,
   isArray,
@@ -71,4 +85,6 @@ export {
   controllerDefinitionIsRest,
   controllerDefinitionIsGraphQL,
   isOkErrorReturnType,
+  isIfStatement,
+  isConstDeclaration,
 };

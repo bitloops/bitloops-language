@@ -21,6 +21,7 @@
 import inquirer, { QuestionCollection } from 'inquirer';
 import fs from 'fs';
 import path from 'path';
+import ora, { Ora } from 'ora';
 
 import { copyrightSnippet } from './copyright.js';
 import { TBoundedContextName, TModuleName } from '../types.js';
@@ -32,7 +33,7 @@ import {
 } from '../functions/index.js';
 import { SupportedLanguages } from '../helpers/supportedLanguages.js';
 import { clearFolder } from '../helpers/fileOperations.js';
-import chalk from 'chalk';
+import { purpleColor, stopSpinner, greenColor, TAB, redColor } from '../utils/oraUtils.js';
 
 interface ICollection {
   targetLanguage: string;
@@ -70,47 +71,63 @@ const transpile = async (source: ICollection): Promise<void> => {
     ? targetDirPath
     : path.normalize(`${process.cwd()}/${targetDirPath}`);
 
-  const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
-    getBoundedContextModules(absoluteSourceDirPath);
+  let throbber: Ora;
+  try {
+    const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
+      getBoundedContextModules(absoluteSourceDirPath);
 
-  const dirEntries = fs.readdirSync(absoluteSourceDirPath, { withFileTypes: true });
-  const filesNames = dirEntries.filter((entry) => entry.isFile()).map((fileName) => fileName.name);
-  const atLeastOneSetupFileExists = filesNames.some((file) =>
-    file.toLowerCase().endsWith(SETUP_FILE_EXTENSION),
-  );
-  const atLeastOneModuleExists = Object.values(boundedContextModules).some(
-    (modules) => modules.length > 0,
-  );
-  // TODO Gather all errors and display them at once
-  if (!atLeastOneSetupFileExists) {
-    console.log('No setup file found. Please create a setup file in the root of your project.');
-    process.exit(1);
+    const dirEntries = fs.readdirSync(absoluteSourceDirPath, { withFileTypes: true });
+    const filesNames = dirEntries
+      .filter((entry) => entry.isFile())
+      .map((fileName) => fileName.name);
+    const atLeastOneSetupFileExists = filesNames.some((file) =>
+      file.toLowerCase().endsWith(SETUP_FILE_EXTENSION),
+    );
+    const atLeastOneModuleExists = Object.values(boundedContextModules).some(
+      (modules) => modules.length > 0,
+    );
+    // TODO Gather all errors and display them at once
+    if (!atLeastOneSetupFileExists) {
+      console.log('No setup file found. Please create a setup file in the root of your project.');
+      process.exit(1);
+    }
+    if (!atLeastOneModuleExists) {
+      console.log('No modules found. Please create a module inside one of your bounded contexts.');
+      process.exit(1);
+    }
+
+    // TODO Check if the output directory exists and if it does, ask if the user wants to overwrite it
+    clearFolder(targetDirPath);
+
+    throbber = ora(purpleColor('🔨 Transpiling... ')).start();
+    const setupData = generateSetupDataModel(sourceDirPath);
+    const bitloopsModel = generateBitloopsModel(
+      boundedContextModules,
+      absoluteSourceDirPath,
+      setupData,
+    );
+
+    stopSpinner(throbber, greenColor('Transpiled'), '🔨');
+
+    throbber = ora(purpleColor('🕒 Writing system files to disk...')).start();
+    generateTargetFiles({
+      boundedContextModules,
+      sourceDirPath: absoluteSourceDirPath,
+      outputDirPath: absoluteOutputDirPath,
+      bitloopsModel,
+      setupData,
+      targetLanguage: SupportedLanguages.TypeScript,
+    });
+
+    stopSpinner(throbber, greenColor('System files written'), '⏰');
+
+    // console.log(greenColor('Project generated successfully!'));
+
+    console.log(greenColor(TAB + '🦎 Project generated successfully!\n'));
+  } catch (err) {
+    throbber.stop();
+    console.error(redColor(TAB + '❌ ' + err));
   }
-  if (!atLeastOneModuleExists) {
-    console.log('No modules found. Please create a module inside one of your bounded contexts.');
-    process.exit(1);
-  }
-
-  // TODO Check if the output directory exists and if it does, ask if the user wants to overwrite it
-  clearFolder(targetDirPath);
-
-  const setupData = generateSetupDataModel(sourceDirPath);
-  const bitloopsModel = generateBitloopsModel(
-    boundedContextModules,
-    absoluteSourceDirPath,
-    setupData,
-  );
-
-  generateTargetFiles({
-    boundedContextModules,
-    sourceDirPath: absoluteSourceDirPath,
-    outputDirPath: absoluteOutputDirPath,
-    bitloopsModel,
-    setupData,
-    targetLanguage: SupportedLanguages.TypeScript,
-  });
-  const greenColor = chalk.hex('#00ff00');
-  console.log(greenColor('Project generated successfully!'));
 };
 
 // (*) Gather BoundedContexts and Modules

@@ -30,6 +30,7 @@ import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError
 import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
+import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
 
 interface IBitloopsIntermediateASTToTarget {
   ASTToTarget(
@@ -64,9 +65,13 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
             intermediateAST[boundedContextName][moduleName][classType],
           )) {
             try {
-              const generatedString = modelToTargetLanguage({
+              const transformedIntermediateAST = modelToTypescriptModel({
                 type: componentType,
                 value: { [componentName]: component },
+              });
+              const generatedString = modelToTargetLanguage({
+                type: componentType,
+                value: transformedIntermediateAST,
                 setupData,
                 contextData,
                 model: intermediateAST,

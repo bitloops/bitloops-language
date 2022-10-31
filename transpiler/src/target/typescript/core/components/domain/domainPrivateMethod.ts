@@ -24,6 +24,7 @@ import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import { TDomainPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { domainStatementsToTargetLanguage } from './domainStatements.js';
 
 const domainPrivateMethod = (
   methodName: string,
@@ -32,10 +33,8 @@ const domainPrivateMethod = (
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;
-  const statementsString = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TStatements,
-    value: statements,
-  });
+  const statementsString = domainStatementsToTargetLanguage(statements);
+
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
     value: methodInfo.privateMethod.parameterDependencies,

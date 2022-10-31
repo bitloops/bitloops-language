@@ -16,7 +16,7 @@ Feature: Regular Evaluation to Typescript target language
       | {"regularEvaluation":{"type":"method","value":"this.clientError","argumentDependencies":[{"value":"response","type":"variable"}]}}                                              | this.clientError(response)                |
       | {"regularEvaluation":{"type":"string","value":"result"}}                                                                                                                        | 'result'                                  |
       | {"regularEvaluation":{"type":"int32","value":"2"}}                                                                                                                              | 2                                         |
-      | {"regularEvaluation":{"type":"DomainError","value":"specificDomainError"}}                                                                                                      | specificDomainError                       |
+      | {"regularEvaluation":{"type":"DomainErrors.specificDomainError","value":"DomainErrors.specificDomainError"}}                                                                    | DomainErrors.specificDomainError          |
       | {"regularEvaluation":{"type": "bool","value": "false"}}                                                                                                                         | false                                     |
       | {"regularEvaluation":{"type": "bool","value": "true"}}                                                                                                                          | true                                      |
 

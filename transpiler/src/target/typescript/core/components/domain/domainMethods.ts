@@ -14,6 +14,7 @@ import { domainPrivateMethod } from './index.js';
 export const domainMethods = (domainMethods: TDomainMethods): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
+
   for (const [methodName, methodInfo] of Object.entries(domainMethods)) {
     if (isPrivateMethod(methodInfo)) {
       const model = domainPrivateMethod(methodName, methodInfo);

@@ -132,7 +132,7 @@ import {
 } from './components/rulesDeclaration/index.js';
 import { readModelsToTargetLanguage } from './components/readModels/index.js';
 import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
-import { entitityValuesToTargetLanguage } from './components/entityValues/index.js';
+import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -408,7 +408,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TEntityValues: {
-      res = entitityValuesToTargetLanguage({
+      res = entityValuesToTargetLanguage({
         entityValues: value,
         model,
         contextData,
