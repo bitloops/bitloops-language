@@ -2,7 +2,6 @@ import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import { TDomainPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { domainStatementsToTargetLanguage } from './domainStatements.js';
 
 const domainPublicMethod = (
   methodName: string,
@@ -10,7 +9,10 @@ const domainPublicMethod = (
 ): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
   const { statements, parameterDependencies, returnType } = publicMethod;
-  const statementsString = domainStatementsToTargetLanguage(statements);
+  const statementsString = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TStatements,
+    value: statements,
+  });
 
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
