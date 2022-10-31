@@ -1,4 +1,3 @@
-import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -18,6 +17,8 @@ import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
+import { BitloopsLanguageAST } from '@bitloops/bl-transpiler';
 
 export type TModule = {
   Props?: TProps;
@@ -123,7 +124,7 @@ export type TBitloopsTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
   setupData: ISetupData;
   targetLanguage: string;
-  formatterConfig?: unknown;
+  formatterConfig?: any;
   sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
@@ -824,11 +825,21 @@ export type TPackage = {
 
 export type TRepoPorts = Record<string, TRepoPort>;
 
-export type TRepoPort = {
+export type TAggregateRepoPort = {
+  readModelName?: never;
   aggregateRootName: string;
   extendedRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
 };
+
+export type TReadModelRepoPort = {
+  readModelName: string;
+  aggregateRootName?: never;
+  extendedRepoPorts: string[];
+  definitionMethods: TDefinitionMethods;
+};
+
+export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 
@@ -1005,7 +1016,7 @@ type TDependencyTypescript = {
 };
 
 export type TDependencyChildTypescript = TDependencyTypescript & {
-  classType?: string;
+  classType?: any;
   className?: string;
 };
 

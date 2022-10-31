@@ -27,7 +27,8 @@ export const repoPortDeclarationVisitor = (
   ctx: BitloopsParser.RepoPortDeclarationContext,
 ): { RepoPorts: { [x: string]: TRepoPort } } => {
   const repoPortName = ctx.repoPortIdentifier().getText();
-  let aggregateRootName;
+  let aggregateRootName: string;
+  let readModelName: string;
 
   const extendedRepoPorts = thisVisitor.visit(ctx.repoExtendsList());
   let definitionMethods = { definitionMethods: {} };
@@ -35,22 +36,37 @@ export const repoPortDeclarationVisitor = (
     definitionMethods = thisVisitor.visit(ctx.repoPortMethodDefinitions());
   }
 
-  if(ctx.aggregateRootIdentifier().getText()){
-    aggregateRootName = ctx.aggregateRootIdentifier().getText();
+  let result;
+  if (ctx.ReadModelIdentifier()?.getText()) {
+    readModelName = ctx.ReadModelIdentifier().getText();
+    result = {
+      RepoPorts: {
+        [repoPortName]: {
+          readModelName,
+          extendedRepoPorts,
+          ...definitionMethods,
+        },
+      },
+    };
   }
-  
+
+  if (ctx.aggregateRootIdentifier()?.getText()) {
+    aggregateRootName = ctx.aggregateRootIdentifier().getText();
+    result = {
+      RepoPorts: {
+        [repoPortName]: {
+          aggregateRootName,
+          extendedRepoPorts,
+          ...definitionMethods,
+        },
+      },
+    };
+  }
+
   // TODO Handle Identifier with < > if we want to extend a repoPort with a generic type
   // TODO Method definitions of user
 
-  return {
-    RepoPorts: {
-      [repoPortName]: {
-        aggregateRootName,
-        extendedRepoPorts,
-        ...definitionMethods,
-      },
-    },
-  };
+  return result;
 };
 
 export const repoPortExtendableIdentifierVisitor = (

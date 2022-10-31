@@ -109,6 +109,7 @@ bitloopsIdentifiers
     | EntityIdentifier
     | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     | RepoPortIdentifier
+    | ReadModelIdentifier
     ;
 
 type_
@@ -852,10 +853,10 @@ readModelDeclaration
 
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;
 repoPortDeclaration
-    : RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList SemiColon?
-    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
-    | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList SemiColon?
+    : RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList SemiColon?
     | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
+    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList SemiColon?
+    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
     ;
 
 repoPortIdentifier
@@ -881,7 +882,6 @@ repoExtendsList
     ;
 
 repoPortMethodDefinitions
-    // : '{' '}'
     : OpenBrace methodDefinitionList CloseBrace
     ;
 
