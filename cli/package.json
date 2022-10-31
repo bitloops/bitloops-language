@@ -1,10 +1,10 @@
 {
   "name": "@bitloops/bitloops-language-cli",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Bitloops Language CLI",
   "type": "module",
   "engines": {
-    "node": ">= 16.13 <17"
+    "node": ">= 12"
   },
   "bin": {
     "bitloops-language": "./lib/src/index.js",
@@ -85,7 +85,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.0.10",
+    "@bitloops/bl-transpiler": "^0.0.11",
     "axios": "^1.1.3",
     "chalk": "5.0.1",
     "commander": "^9.4.0",
