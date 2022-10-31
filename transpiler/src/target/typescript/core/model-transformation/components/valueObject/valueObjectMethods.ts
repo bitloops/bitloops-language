@@ -17,27 +17,21 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TEntities } from '../../../../../types.js';
-import { modelToTypescriptModel } from '../modelToTsModel.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { TValueObjectMethods } from '../../../../../../types.js';
+import { modelToTypescriptModel } from '../../modelToTsModel.js';
 
-const transformEntityIntermediateAST = (entities: TEntities): TEntities => {
-  for (const entityValues of Object.values(entities)) {
-    if (entityValues.methods) {
-      const updatedMethods = modelToTypescriptModel({
-        type: BitloopsTypesMapping.TDomainMethods,
-        value: entityValues.methods,
-      });
-      entityValues.methods = updatedMethods;
-    }
-    const updatedCreate = modelToTypescriptModel({
-      type: BitloopsTypesMapping.TDomainCreateMethod,
-      value: entityValues.create,
+const transformValueObjectMethodsIntermediateAST = (
+  domainMethods: TValueObjectMethods,
+): TValueObjectMethods => {
+  for (let domainMethodsValue of Object.values(domainMethods)) {
+    domainMethodsValue = modelToTypescriptModel({
+      type: BitloopsTypesMapping.TDomainPrivateMethod,
+      value: domainMethodsValue,
     });
-    entityValues.create = updatedCreate;
   }
 
-  return entities;
+  return domainMethods;
 };
 
-export { transformEntityIntermediateAST };
+export { transformValueObjectMethodsIntermediateAST };

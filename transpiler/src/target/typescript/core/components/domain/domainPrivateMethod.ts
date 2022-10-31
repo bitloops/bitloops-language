@@ -47,7 +47,7 @@ const domainPrivateMethod = (
   if (isOkErrorReturnType(mappedReturnTypeOutput)) {
     const resOkErrorReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TOkErrorReturnType,
-      value: mappedReturnType,
+      value: mappedReturnTypeOutput,
     });
     mappedReturnType = {
       output: resOkErrorReturnType.output,

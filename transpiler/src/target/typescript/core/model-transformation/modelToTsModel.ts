@@ -26,6 +26,9 @@ import { transformEntityIntermediateAST } from './components/entity.js';
 import { transformDomainMethodsIntermediateAST } from './components/domain/domainMethods.js';
 import { transformDomainPrivateMethodIntermediateAST } from './components/domain/domainPrivateMethod.js';
 import { transformDomainPublicMethodIntermediateAST } from './components/domain/domainPublicMethod.js';
+import { transformValueObjectIntermediateAST } from './components/valueObject/index.js';
+import { transformValueObjectMethodsIntermediateAST } from './components/valueObject/valueObjectMethods.js';
+import { transformDomainCreateMethodIntermediateAST } from './components/domain/domainCreateMethod.js';
 
 const modelToTypescriptModel = (props: {
   type: string;
@@ -48,8 +51,20 @@ const modelToTypescriptModel = (props: {
       res = transformEntityIntermediateAST(value);
       break;
     }
+    case BitloopsTypesMapping.TValueObjects: {
+      res = transformValueObjectIntermediateAST(value);
+      break;
+    }
     case BitloopsTypesMapping.TDomainMethods: {
       res = transformDomainMethodsIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TValueObjectMethods: {
+      res = transformValueObjectMethodsIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainCreateMethod: {
+      res = transformDomainCreateMethodIntermediateAST(value);
       break;
     }
     case BitloopsTypesMapping.TDomainPublicMethod: {

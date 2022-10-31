@@ -17,27 +17,22 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TEntities } from '../../../../../types.js';
-import { modelToTypescriptModel } from '../modelToTsModel.js';
+import { TDomainCreateMethod } from '../../../../../../types.js';
+import { domainThisDeclarationIntermediateAST } from './domainThisDeclaration.js';
+import { isThisDeclaration } from '../../../../../../helpers/typeGuards.js';
 
-const transformEntityIntermediateAST = (entities: TEntities): TEntities => {
-  for (const entityValues of Object.values(entities)) {
-    if (entityValues.methods) {
-      const updatedMethods = modelToTypescriptModel({
-        type: BitloopsTypesMapping.TDomainMethods,
-        value: entityValues.methods,
-      });
-      entityValues.methods = updatedMethods;
+const transformDomainCreateMethodIntermediateAST = (
+  domainCreateMethod: TDomainCreateMethod,
+): TDomainCreateMethod => {
+  const statements = domainCreateMethod.statements;
+
+  for (let statement of statements) {
+    if (isThisDeclaration(statement)) {
+      statement = domainThisDeclarationIntermediateAST(statement);
     }
-    const updatedCreate = modelToTypescriptModel({
-      type: BitloopsTypesMapping.TDomainCreateMethod,
-      value: entityValues.create,
-    });
-    entityValues.create = updatedCreate;
   }
 
-  return entities;
+  return domainCreateMethod;
 };
 
-export { transformEntityIntermediateAST };
+export { transformDomainCreateMethodIntermediateAST };

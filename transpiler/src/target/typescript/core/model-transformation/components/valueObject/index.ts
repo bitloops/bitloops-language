@@ -17,27 +17,27 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TEntities } from '../../../../../types.js';
-import { modelToTypescriptModel } from '../modelToTsModel.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { TValueObjects } from '../../../../../../types.js';
+import { modelToTypescriptModel } from '../../modelToTsModel.js';
 
-const transformEntityIntermediateAST = (entities: TEntities): TEntities => {
-  for (const entityValues of Object.values(entities)) {
-    if (entityValues.methods) {
+const transformValueObjectIntermediateAST = (valueObjects: TValueObjects): TValueObjects => {
+  for (const valueObjectValues of Object.values(valueObjects)) {
+    if (valueObjectValues.methods) {
       const updatedMethods = modelToTypescriptModel({
-        type: BitloopsTypesMapping.TDomainMethods,
-        value: entityValues.methods,
+        type: BitloopsTypesMapping.TValueObjectMethods,
+        value: valueObjectValues.methods,
       });
-      entityValues.methods = updatedMethods;
+      valueObjectValues.methods = updatedMethods;
     }
     const updatedCreate = modelToTypescriptModel({
       type: BitloopsTypesMapping.TDomainCreateMethod,
-      value: entityValues.create,
+      value: valueObjectValues.create,
     });
-    entityValues.create = updatedCreate;
+    valueObjectValues.create = updatedCreate;
   }
 
-  return entities;
+  return valueObjects;
 };
 
-export { transformEntityIntermediateAST };
+export { transformValueObjectIntermediateAST };
