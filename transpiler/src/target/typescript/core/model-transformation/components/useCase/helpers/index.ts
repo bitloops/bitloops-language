@@ -21,7 +21,6 @@ import {
   isExpression,
   isIfStatement,
   isSwitchStatement,
-  isReturnStatement,
 } from '../../../../../../../helpers/typeGuards.js';
 import { TStatement, TExpression, TRegularCase } from './../../../../../../../types.js';
 
