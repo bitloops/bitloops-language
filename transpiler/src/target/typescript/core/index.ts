@@ -31,6 +31,7 @@ import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
 import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
+import { deepClone } from '../../../utils/deepClone.js';
 
 interface IBitloopsIntermediateASTToTarget {
   ASTToTarget(
@@ -65,9 +66,10 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
             intermediateAST[boundedContextName][moduleName][classType],
           )) {
             try {
+              const componentCopy = deepClone(component);
               const transformedIntermediateAST = modelToTypescriptModel({
                 type: componentType,
-                value: { [componentName]: component },
+                value: { [componentName]: componentCopy },
               });
               const generatedString = modelToTargetLanguage({
                 type: componentType,
