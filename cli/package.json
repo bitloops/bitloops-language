@@ -40,6 +40,7 @@
     "jest-extended": "^3.0.2",
     "jest-ts-auto-mock": "^2.1.0",
     "pkg": "^5.8.0",
+    "prettier": "^2.7.1",
     "rimraf": "~3.0",
     "ts-auto-mock": "^3.6.2",
     "ts-jest": "~28.0",
@@ -91,7 +92,7 @@
     "commander": "^9.4.0",
     "figlet": "1.5.2",
     "inquirer": "9.1.1",
-    "prettier": "^2.7.1"
+    "ora": "^6.1.2"
   },
   "volta": {
     "node": "16.13.0"

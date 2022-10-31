@@ -34,7 +34,7 @@ const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesT
   return { output: result.output, dependencies: result.dependencies };
 };
 
-const entitityValuesToTargetLanguage = (params: {
+const entityValuesToTargetLanguage = (params: {
   entityValues: TEntityValues;
   model: TBoundedContexts;
   contextData: TContextData;
@@ -76,7 +76,7 @@ const entitityValuesToTargetLanguage = (params: {
 
   result += '}';
 
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies };
 };
 
-export { entitityValuesToTargetLanguage };
+export { entityValuesToTargetLanguage };

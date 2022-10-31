@@ -19,11 +19,13 @@
 import {
   TBoundedContexts,
   TContextData,
+  TDependenciesTypeScript,
   TRootEntities,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getChildDependencies, getParentDependencies } from './../../dependencies.js';
 
 export const rootEntitiesToTargetLanguage = (params: {
   rootEntities: TRootEntities;
@@ -32,10 +34,31 @@ export const rootEntitiesToTargetLanguage = (params: {
 }): TTargetDependenciesTypeScript => {
   const { rootEntities, model, contextData } = params;
   let res = '';
-  let dependencies = [];
+  let dependencies: TDependenciesTypeScript = [
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Domain',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'Either',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+    {
+      type: 'absolute',
+      default: false,
+      value: 'ok',
+      from: '@bitloops/bl-boilerplate-core',
+    },
+  ];
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
     const { create } = rootEntity;
     const propsName = create.parameterDependency.type;
+    const propsDeps = getChildDependencies(propsName);
+    dependencies = [...dependencies, ...propsDeps];
     res += `export class ${rootEntityName} extends Domain.Aggregate<${propsName}>`;
     const values = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEntityValues,
@@ -45,6 +68,11 @@ export const rootEntitiesToTargetLanguage = (params: {
     });
     dependencies = [...dependencies, ...values.dependencies];
     res += values.output;
+
+    dependencies = getParentDependencies(dependencies, {
+      classType: ClassTypes.RootEntities,
+      className: rootEntityName,
+    });
   }
 
   return { output: res, dependencies };

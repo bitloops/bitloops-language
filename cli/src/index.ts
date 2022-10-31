@@ -32,7 +32,7 @@ const CURRENT_VERSION = '0.0.16';
 // Check if current version is the latest
 const checkVersion = async (): Promise<void> => {
   return await axios
-    .post(VERSION_CHECK_URL, {version: CURRENT_VERSION})
+    .post(VERSION_CHECK_URL, { version: CURRENT_VERSION })
     .then((res) => {
       const latestVersion = res.data.version;
       const latestVersionArray = latestVersion.split('.');

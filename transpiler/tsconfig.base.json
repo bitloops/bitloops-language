@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "checkJs": true,
+    "checkJs": false,
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
@@ -13,5 +13,5 @@
   },
   "files": ["./src/index.ts"],
   "include": ["src/**/*", "__tests__/**/*"],
-  "exclude": ["**/*.js", "node_modules", "lib"]
+  "exclude": ["node_modules", "lib"]
 }

@@ -19,31 +19,30 @@
  */
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import { TProps, TPropsValues, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from './../../dependencies.js';
 
 const propsToTargetLanguage = (props: TProps): TTargetDependenciesTypeScript => {
-  const initialPropsLangMapping = (propName: string): string => `export interface ${propName} { `;
-  const finalPropsLangMapping = '}';
   let dependencies = [];
   let result = '';
   const propsKeys = Object.keys(props);
   for (let i = 0; i < propsKeys.length; i++) {
     const propName = propsKeys[i];
     const propsValues = props[propName];
-    result += initialPropsLangMapping(propName);
-    result += modelToTargetLanguage({
+    result += `export interface ${propName} { `;
+
+    const propsValuesModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TPropsValues,
       value: propsValues,
-    }).output;
-    dependencies = [
-      ...dependencies,
-      ...modelToTargetLanguage({
-        type: BitloopsTypesMapping.TPropsValues,
-        value: propsValues,
-      }).dependencies,
-    ];
-    result += finalPropsLangMapping;
+    });
+    result += propsValuesModel.output;
+    dependencies = [...dependencies, ...propsValuesModel.dependencies];
+    dependencies = getParentDependencies(dependencies, {
+      classType: ClassTypes.Props,
+      className: propName,
+    });
+    result += '}';
   }
   return { output: result, dependencies };
 };
