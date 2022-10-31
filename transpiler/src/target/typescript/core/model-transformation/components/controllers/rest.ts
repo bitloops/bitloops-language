@@ -19,18 +19,32 @@
  */
 import { TRESTController } from '../../../../../../types.js';
 import { deepClone } from '../../../../../../utils/deepClone.js';
-import { isUseCaseExecuteStatement, prependAwaitToExecute } from './helpers/index.js';
+import {
+  findUseCaseExecuteResultIdentifier,
+  isUseCaseExecuteStatement,
+  prependAwaitToExecute,
+} from './helpers/prependAwait.js';
+import { scanStatementForUseCaseResult } from './helpers/useCaseResultValue.js';
 
 const transformRestControllerIntermediateAST = (controllers: TRESTController): TRESTController => {
   const controllersCopy = deepClone(controllers);
   for (const controllerValues of Object.values(controllersCopy)) {
     const { statements } = controllerValues.execute;
 
+    let useCaseExecuteFound = false;
+    let useCaseResultIdentifier = '';
     const newStatements = statements.map((statement) => {
       if (isUseCaseExecuteStatement(statement)) {
+        useCaseExecuteFound = true;
         const statementWithAwait = prependAwaitToExecute(statement);
+        useCaseResultIdentifier = findUseCaseExecuteResultIdentifier(statementWithAwait);
         return statementWithAwait;
       }
+
+      if (useCaseExecuteFound) {
+        return scanStatementForUseCaseResult(statement, useCaseResultIdentifier);
+      }
+
       return statement;
     });
 

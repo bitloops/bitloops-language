@@ -1,4 +1,10 @@
-import { TConstDeclaration, TStatement } from './../types.js';
+import {
+  TConstDeclaration,
+  TExpression,
+  TReturnStatement,
+  TStatement,
+  TSwitchStatement,
+} from './../types.js';
 import {
   TGraphQLControllerInstances,
   TGraphQLControllerValues,
@@ -76,6 +82,24 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+const isExpression = (value: TStatement): value is TExpression => {
+  if (typeof value === 'string') return false;
+  if ('expression' in value) return true;
+  return false;
+};
+
+const isSwitchStatement = (value: TStatement): value is TSwitchStatement => {
+  if (typeof value === 'string') return false;
+  if ('switchStatement' in value) return true;
+  return false;
+};
+
+const isReturnStatement = (value: TStatement): value is TReturnStatement => {
+  if (typeof value === 'string') return false;
+  if ('return' in value) return true;
+  return false;
+};
+
 export {
   isUndefined,
   isArray,
@@ -87,4 +111,7 @@ export {
   isOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
+  isExpression,
+  isSwitchStatement,
+  isReturnStatement,
 };
