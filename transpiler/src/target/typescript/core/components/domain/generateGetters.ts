@@ -8,6 +8,7 @@ export const generateGetters = (
   propsName: string,
   model: TModule,
   methods: TDomainMethods,
+  isValueObject = false,
 ): TTargetDependenciesTypeScript => {
   const { Props } = model;
 
@@ -15,8 +16,14 @@ export const generateGetters = (
   if (methods) methodNames = Object.keys(methods);
   methodNames.push('id');
 
+  let gettersResult = '';
   // TODO what about optional fields??
-  let gettersResult = 'get id() { return this._id; }';
+
+  //TODO in previous Step source to model tha params should be finalized
+  // and here we shouldnt check if props are missing
+  if (!isValueObject) {
+    gettersResult = 'get id() { return this._id; }';
+  }
   const dependencies = [];
   if (!Props) throw new Error(`No Props Found with name ${propsName}`);
   for (const [propName, propValues] of Object.entries(Props)) {
