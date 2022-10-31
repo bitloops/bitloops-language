@@ -27,12 +27,12 @@ import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
 
 const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
-const CURRENT_VERSION = '0.0.15';
+const CURRENT_VERSION = '0.0.16';
 
 // Check if current version is the latest
 const checkVersion = async (): Promise<void> => {
   return await axios
-    .get(VERSION_CHECK_URL)
+    .post(VERSION_CHECK_URL, {version: CURRENT_VERSION})
     .then((res) => {
       const latestVersion = res.data.version;
       const latestVersionArray = latestVersion.split('.');
