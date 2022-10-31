@@ -21,28 +21,68 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import figlet from 'figlet';
+import axios from 'axios';
 
 import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
 
-const program = new Command();
+const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
+const CURRENT_VERSION = '0.0.16';
 
-const purpleColor = chalk.hex('#7700e5');
-console.log(purpleColor(figlet.textSync('Bitloops Language', { horizontalLayout: 'default' })));
+// Check if current version is the latest
+const checkVersion = async (): Promise<void> => {
+  return await axios
+    .post(VERSION_CHECK_URL, {version: CURRENT_VERSION})
+    .then((res) => {
+      const latestVersion = res.data.version;
+      const latestVersionArray = latestVersion.split('.');
+      const currentVersionArray = CURRENT_VERSION.split('.');
+      if (
+        Number(latestVersionArray[0]) > Number(currentVersionArray[0]) ||
+        Number(latestVersionArray[1]) > Number(currentVersionArray[1]) ||
+        Number(latestVersionArray[2]) > Number(currentVersionArray[2])
+      ) {
+        console.log(
+          chalk.yellow('A new version of the Bitloops Language CLI is available: ') +
+            chalk.green(`v${latestVersion}`),
+        );
+        console.log(chalk.yellow('To update run:'));
+        console.log(chalk.yellow('npm install -g @bitloops/bitloops-language-cli'));
+        console.log('or');
+        console.log(chalk.yellow('yarn global add @bitloops/bitloops-language-cli'));
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
 
-program.version('0.0.1').description('The Bitloops Language CLI');
-program.summary(
-  'The Bitloops Language CLI is a command line utility for transpiling Bitloops Language files into your preferred target language (currently only TypeScript is supported).',
-);
-program.description(copyrightSnippet);
-program
-  .command('transpile')
-  .description('Initialize Bitloops')
-  .option('-l, --targetLanguage <string>')
-  .option('-s, --sourceDirPath <string>')
-  .option('-t, --targetDirPath <string>')
-  .action(transpile);
+(async (): Promise<void> => {
+  try {
+    await checkVersion();
+    const program = new Command();
 
-program.command('copyright').description('Print copyright information').action(copyright);
+    const purpleColor = chalk.hex('#7700e5');
+    console.log(purpleColor(figlet.textSync('BL', { horizontalLayout: 'default' })));
+    console.log(purpleColor('Bitloops Language'));
 
-program.parse(process.argv);
+    program.version(`v${CURRENT_VERSION}`).description('The Bitloops Language CLI');
+    program.summary(
+      'The Bitloops Language CLI is a command line utility for transpiling Bitloops Language files into your preferred target language (currently only TypeScript is supported).',
+    );
+    program.description(copyrightSnippet);
+    program
+      .command('transpile')
+      .description('Transpile a BL project')
+      .option('-l, --targetLanguage <string>')
+      .option('-s, --sourceDirPath <string>')
+      .option('-t, --targetDirPath <string>')
+      .action(transpile);
+
+    program.command('copyright').description('Print copyright information').action(copyright);
+
+    program.parse(process.argv);
+  } catch (e) {
+    console.error(e);
+  }
+})();
