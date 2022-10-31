@@ -22,6 +22,14 @@ import {
   transformRestControllerIntermediateAST,
 } from './components/controllers/index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { transformEntityIntermediateAST } from './components/entity.js';
+import { transformDomainMethodsIntermediateAST } from './components/domain/domainMethods.js';
+import { transformDomainPrivateMethodIntermediateAST } from './components/domain/domainPrivateMethod.js';
+import { transformDomainPublicMethodIntermediateAST } from './components/domain/domainPublicMethod.js';
+import { transformValueObjectIntermediateAST } from './components/valueObject/index.js';
+import { transformValueObjectMethodsIntermediateAST } from './components/valueObject/valueObjectMethods.js';
+import { transformDomainCreateMethodIntermediateAST } from './components/domain/domainCreateMethod.js';
+import { transformRootEntityIntermediateAST } from './components/rootEntity.js';
 import { transformUseCaseIntermediateAST } from './components/useCase/index.js';
 
 const modelToTypescriptModel = (props: {
@@ -39,6 +47,38 @@ const modelToTypescriptModel = (props: {
     }
     case BitloopsTypesMapping.TRESTController: {
       res = transformRestControllerIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TEntities: {
+      res = transformEntityIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TRootEntities: {
+      res = transformRootEntityIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TValueObjects: {
+      res = transformValueObjectIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainMethods: {
+      res = transformDomainMethodsIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TValueObjectMethods: {
+      res = transformValueObjectMethodsIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainCreateMethod: {
+      res = transformDomainCreateMethodIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainPublicMethod: {
+      res = transformDomainPublicMethodIntermediateAST(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainPrivateMethod: {
+      res = transformDomainPrivateMethodIntermediateAST(value);
       break;
     }
     // case BitloopsTypesMapping.TGraphQLController: {

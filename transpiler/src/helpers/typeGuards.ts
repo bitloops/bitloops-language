@@ -1,5 +1,9 @@
 import {
   TConstDeclaration,
+  TDomainMethod,
+  TDomainPrivateMethod,
+  TDomainPublicMethod,
+  TThisDeclaration,
   TExpression,
   TReturnStatement,
   TStatement,
@@ -82,6 +86,22 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
+  if ('publicMethod' in value) return true;
+  else return false;
+};
+
+const isDomainPrivateMethod = (value: TDomainMethod): value is TDomainPrivateMethod => {
+  if ('privateMethod' in value) return true;
+  else return false;
+};
+
+const isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('thisDeclaration' in value) return true;
+  else return false;
+};
+
 const isExpression = (value: TStatement): value is TExpression => {
   if (typeof value === 'string') return false;
   if ('expression' in value) return true;
@@ -111,6 +131,9 @@ export {
   isOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
+  isDomainPublicMethod,
+  isDomainPrivateMethod,
+  isThisDeclaration,
   isExpression,
   isSwitchStatement,
   isReturnStatement,

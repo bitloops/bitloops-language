@@ -105,6 +105,10 @@ const BitloopsTypesMapping = {
   TBuildInFunction: 'TBuildInFunction',
   TApplyRules: 'TApplyRules',
   TReadModels: 'TReadModels',
+  TDomainMethods: 'TDomainMethods',
+  TDomainPublicMethod: 'TDomainPublicMethod',
+  TDomainPrivateMethod: 'TDomainPrivateMethod',
+  TValueObjectMethods: 'TValueObjectMethods',
 };
 
 const ClassTypes = {
