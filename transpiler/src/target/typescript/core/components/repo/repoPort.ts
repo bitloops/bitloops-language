@@ -58,7 +58,7 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependen
   }
 
   const extendedRepoPortsString = extendedRepoPorts
-    .map((extendedRepoPort) => `${extendedRepoPort}<${aggregateRootName}>`)
+    .map((extendedRepoPort) => `${extendedRepoPort}<${repoDependencyName}>`)
     .join(', ');
 
   const model = modelToTargetLanguage({
