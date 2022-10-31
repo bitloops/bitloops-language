@@ -184,7 +184,6 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
-	| isInstanceOf
     | regularErrorTypeEvaluation
     ;
 
@@ -550,8 +549,8 @@ jestTestDeclaration
     ;
 
 evaluation
-    : 
-    getClassEvaluation
+    : isInstanceOf 
+    | getClassEvaluation
     | regularEvaluation
     | dtoEvaluation
     | structEvaluation
