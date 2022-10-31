@@ -30,6 +30,7 @@ import { transformValueObjectIntermediateAST } from './components/valueObject/in
 import { transformValueObjectMethodsIntermediateAST } from './components/valueObject/valueObjectMethods.js';
 import { transformDomainCreateMethodIntermediateAST } from './components/domain/domainCreateMethod.js';
 import { transformRootEntityIntermediateAST } from './components/rootEntity.js';
+import { transformUseCaseIntermediateAST } from './components/useCase/index.js';
 
 const modelToTypescriptModel = (props: {
   type: string;
@@ -78,6 +79,14 @@ const modelToTypescriptModel = (props: {
     }
     case BitloopsTypesMapping.TDomainPrivateMethod: {
       res = transformDomainPrivateMethodIntermediateAST(value);
+      break;
+    }
+    // case BitloopsTypesMapping.TGraphQLController: {
+    //   res = graphQLControllersToTargetLanguage(value, contextData);
+    //   break;
+    // }
+    case BitloopsTypesMapping.TUseCase: {
+      res = transformUseCaseIntermediateAST(value);
       break;
     }
     default: {

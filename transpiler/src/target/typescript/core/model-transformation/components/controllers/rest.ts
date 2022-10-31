@@ -27,8 +27,7 @@ import {
 import { scanStatementForUseCaseResult } from './helpers/useCaseResultValue.js';
 
 const transformRestControllerIntermediateAST = (controllers: TRESTController): TRESTController => {
-  const controllersCopy = deepClone(controllers);
-  for (const controllerValues of Object.values(controllersCopy)) {
+  for (const controllerValues of Object.values(controllers)) {
     const { statements } = controllerValues.execute;
 
     let useCaseExecuteFound = false;
@@ -51,7 +50,7 @@ const transformRestControllerIntermediateAST = (controllers: TRESTController): T
     controllerValues.execute.statements = newStatements;
   }
 
-  return controllersCopy;
+  return controllers;
 };
 
 export { transformRestControllerIntermediateAST };
