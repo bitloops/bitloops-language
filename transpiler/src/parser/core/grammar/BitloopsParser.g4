@@ -109,6 +109,7 @@ bitloopsIdentifiers
     | EntityIdentifier
     | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     | RepoPortIdentifier
+    | ReadModelIdentifier
     ;
 
 type_
@@ -879,7 +880,6 @@ repoExtendsList
     ;
 
 repoPortMethodDefinitions
-    // : '{' '}'
     : OpenBrace methodDefinitionList CloseBrace
     ;
 
