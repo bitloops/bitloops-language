@@ -1,9 +1,12 @@
-# Bitloops Transpiler
+[![npm version][npmimg]][npm]
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 
-## What is a transpiler
+# Bitloops Language Transpiler
+
+## What is a transpiler?
  A [transpiler](https://en.wikipedia.org/wiki/Source-to-source_compiler) is a type of translator that takes the source code of a program written in a programming language as its input and produces an equivalent source code in the same or a different programming language.
 
-## Bitloops Transpiler structure
+## Structure
 Transpiler is composed by the following building blocks: 
 - Code in the original language
 - [Parser](https://en.wikipedia.org/wiki/Parsing#Parser)
@@ -33,5 +36,6 @@ The transpiler folder structure can be found at *transpiler/src*. More specifica
 
 - Folder *transpiler/src/ast* contains the implementation for the part AST -> Intermediate Model. The setup functionality may be found at the *transpiler/src/ast/setup*. All the others elements of the language, which can be found in the *transpiler/src/ast/core* 
 - Folder *transpiler/src/target* contains the implementation from the intermediate model to the target language. Currently only implementation for typescript as a target language exists.
-   
 
+[npmimg]: https://img.shields.io/npm/v/@bitloops/bl-transpiler.svg
+[npm]: https://www.npmjs.com/package/@bitloops/bl-transpiler
