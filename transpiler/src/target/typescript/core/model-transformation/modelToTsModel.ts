@@ -22,6 +22,7 @@ import {
   transformRestControllerIntermediateAST,
 } from './components/controllers/index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { transformUseCaseIntermediateAST } from './components/useCase/index.js';
 
 const modelToTypescriptModel = (props: {
   type: string;
@@ -44,6 +45,10 @@ const modelToTypescriptModel = (props: {
     //   res = graphQLControllersToTargetLanguage(value, contextData);
     //   break;
     // }
+    case BitloopsTypesMapping.TUseCase: {
+      res = transformUseCaseIntermediateAST(value);
+      break;
+    }
     default: {
       return value;
     }
