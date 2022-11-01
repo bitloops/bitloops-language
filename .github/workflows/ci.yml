@@ -37,6 +37,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       
+      # https://www.antlr.org/download/antlr-4.11.1-complete.jar
+      - name: Install Antlr
+        shell: bash
+        run: |
+          curl -sSL -o /usr/local/lib https://www.antlr.org/download/antlr-4.11.1-complete.jar
+      
       - name: "Produce Antlr files"
         working-directory: ./transpiler
         run: npm run ant
