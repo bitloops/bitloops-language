@@ -16,11 +16,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: "☁️ checkout repository"
-        working-directory: ./transpiler
         uses: actions/checkout@v2
 
       - name: "🔧 setup node"
-        working-directory: ./transpiler
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 17
@@ -55,11 +53,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: "☁️ checkout repository"
-        working-directory: ./transpiler
         uses: actions/checkout@v2
 
       - name: "🔧 setup node"
-        uses: actions/setup-node@v2.1.5
         with:
           node-version: 17
 
