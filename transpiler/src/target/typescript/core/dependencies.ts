@@ -96,7 +96,7 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
     if (classType === undefined) {
       continue;
     }
-    const { value, fileName } = getValueAndFileNameOfImport(dependencyString);
+    const { value, fileName } = getValueAndFileNameOfImport(dependencyString, classType);
     result.push({
       type: 'relative',
       default: false,
@@ -115,7 +115,7 @@ export const getValueAndFileNameOfImport = (
   dependencyString: string,
   classType?: TClassTypesValues,
 ): { value: string; fileName: string } => {
-  if (dependencyString.startsWith('DomainErrors.')) {
+  if (classType === ClassTypes.DomainErrors) {
     return {
       value: 'DomainErrors',
       fileName: 'index',
