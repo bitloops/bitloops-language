@@ -18,50 +18,79 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  TBoundedContexts,
+  TDependenciesTypeScript,
   TRepoAdapters,
   TRepoSupportedTypes,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { ClassTypes } from '../../../../../helpers/mappings.js';
 import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+
+const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
+  switch (dbType) {
+    case 'DB.Mongo': {
+      const dependencies: TDependenciesTypeScript = [
+        {
+          type: 'absolute',
+          default: false,
+          value: 'Mongo',
+          from: '@bitloops/bl-boilerplate-infra-mongo',
+        },
+      ];
+      return dependencies;
+    }
+    default:
+      throw new Error(`Unsupported db type: ${dbType}`);
+  }
+};
+const getRepoHeader = (
+  repoPort: string,
+  dbType: TRepoSupportedTypes,
+): TTargetDependenciesTypeScript => {
+  const str = `export class ${getRepoAdapterClassName(
+    repoPort,
+    dbType,
+  )} implements ${repoPort} { private collection:string; `;
+  const dependencies = getChildDependencies(repoPort);
+  return {
+    output: str,
+    dependencies,
+  };
+};
 
 export const repoAdapterToTargetLanguage = (
   repoAdapters: TRepoAdapters,
+  contextData: { boundedContext: string; module: string },
+  model: TBoundedContexts,
 ): TTargetDependenciesTypeScript => {
-  const importMapping = (dbType: TRepoSupportedTypes) => {
-    switch (dbType) {
-      case 'DB.Mongo': {
-        return "import { MongoClient } from 'mongodb';";
-      }
-      default: {
-        throw new Error(`Unsupported db type: ${dbType}`);
-      }
-    }
-  };
-  const initialLangMapping = (interfaceName: string, dbType: TRepoSupportedTypes) =>
-    // TODO import mongo collection
-    `export class ${getRepoAdapterClassName(
-      interfaceName,
-      dbType,
-    )} implements ${interfaceName} { private collection:string; `;
+  const { boundedContext, module: moduleName } = contextData;
 
   const repoAdapterInstanceName = Object.keys(repoAdapters)[0];
   const repoAdapter = repoAdapters[repoAdapterInstanceName];
 
-  const { dbType, repoPort, repoPortInfo, connection: _connection, collection } = repoAdapter;
-  const repoImports = importMapping(dbType);
-  const repoStart = initialLangMapping(repoPort, dbType);
+  const { dbType, repoPort, connection: _connection, collection } = repoAdapter;
 
-  const generatedCollectionExpression = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TSingleExpression,
-    value: collection,
-  });
-  const repoBody = repoBodyLangMapping(dbType, generatedCollectionExpression.output, repoPortInfo);
+  const repoPortInfo = model[boundedContext][moduleName].RepoPorts[repoPort];
+  if (!repoPortInfo) {
+    throw new Error(`Repo port ${repoPort} not found in model!`);
+  }
+
+  let dependencies = getDbTypeImports(dbType);
+
+  const repoStart = getRepoHeader(repoPort, dbType);
+  const repoBody = repoBodyLangMapping(dbType, collection, repoPortInfo);
   const repoEnd = '}';
+
+  dependencies = [...dependencies, ...repoStart.dependencies, ...repoBody.dependencies];
+  const parentDependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.RepoAdapters,
+    className: repoAdapterInstanceName,
+  });
   return {
-    output: repoImports + repoStart + repoBody + repoEnd,
-    dependencies: generatedCollectionExpression.dependencies,
+    output: repoStart.output + repoBody.output + repoEnd,
+    dependencies: parentDependencies,
   };
 };

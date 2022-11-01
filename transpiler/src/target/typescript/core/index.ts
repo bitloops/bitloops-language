@@ -21,10 +21,12 @@ import {
   TBitloopsOutputTargetContent,
   TBitloopsTargetContent,
   TBitloopsTargetGeneratorParams,
+  TBoundedContexts,
   TClassType,
   TComponentType,
   TContextData,
   TDependencyParentTypescript,
+  ISetupData,
 } from '../../../types.js';
 import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError.js';
 import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
@@ -60,6 +62,13 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
           boundedContext: boundedContextName,
           module: moduleName,
         };
+
+        if (this.moduleHasRepoAdaptersDefined(setupData, { boundedContextName, moduleName })) {
+          this.injectRepoAdaptersFromSetupToModel(intermediateAST, setupData, {
+            boundedContextName,
+            moduleName,
+          });
+        }
         for (const classType of Object.keys(intermediateAST[boundedContextName][moduleName])) {
           const componentType = this.getComponentType(classType as TClassType);
           for (const [componentName, component] of Object.entries(
@@ -153,5 +162,22 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
       result += ';';
     }
     return result;
+  }
+
+  private moduleHasRepoAdaptersDefined(
+    setupData: ISetupData,
+    { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
+  ): boolean {
+    return !!setupData.repos?.repoAdapters?.[boundedContextName]?.[moduleName];
+  }
+
+  private injectRepoAdaptersFromSetupToModel(
+    intermediateAST: TBoundedContexts,
+    setupData: Readonly<ISetupData>,
+    { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
+  ): void {
+    intermediateAST[boundedContextName][moduleName].RepoAdapters = deepClone(
+      setupData.repos.repoAdapters[boundedContextName][moduleName],
+    );
   }
 }

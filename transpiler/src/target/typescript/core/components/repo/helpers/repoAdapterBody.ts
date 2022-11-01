@@ -17,9 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TRepoSupportedTypes, TRepoPort } from '../../../../../../types.js';
+import {
+  TRepoSupportedTypes,
+  TRepoPort,
+  TTargetDependenciesTypeScript,
+  TSingleExpression,
+} from '../../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const CRUDRepoPort = 'CRUDRepoPort';
+const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
+// const CRUDReadRepoPort = 'CRUDReadRepoPort';
 
 const fetchTypeScriptMongoCrudBaseRepo = (entityName: string) => {
   return `async getAll(): Promise<${entityName}[]> {
@@ -42,20 +50,30 @@ const fetchTypeScriptMongoCrudBaseRepo = (entityName: string) => {
 
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
-  collection: string,
+  collectionExpression: TSingleExpression,
   repoPortInfo: TRepoPort,
-): string => {
+): TTargetDependenciesTypeScript => {
+  const collection = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TSingleExpression,
+    value: collectionExpression,
+  });
+  const dependencies = [...collection.dependencies];
+  let result = '';
   switch (dbType) {
     case 'DB.Mongo': {
-      let result = `constructor(private client: MongoClient) { this.collection = ${collection}; }`;
-      if (repoPortInfo.extendedRepoPorts.includes(CRUDRepoPort)) {
+      result = `constructor(private client: Mongo.Client) { this.collection = ${collection.output}; }`;
+      if (repoPortInfo.extendedRepoPorts.includes(CRUDWriteRepoPort)) {
         result += fetchTypeScriptMongoCrudBaseRepo(repoPortInfo.aggregateRootName);
       }
-      return result;
+      break;
     }
     default: {
       throw new Error(`Unsupported db type: ${dbType}`);
     }
   }
+  return {
+    output: result,
+    dependencies,
+  };
 };
 export { repoBodyLangMapping };

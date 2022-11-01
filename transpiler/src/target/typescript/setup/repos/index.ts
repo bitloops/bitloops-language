@@ -20,20 +20,20 @@ type TCategorizedRepoConnections = Record<
 
 const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; version: string }> = {
   'DB.Mongo': {
-    packageName: 'mongodb',
-    version: '^4.1.0',
+    packageName: '@bitloops/bl-boilerplate-infra-mongo',
+    version: '*',
   },
   'DB.MySQL': {
-    packageName: 'mysql2',
-    version: '^2.3.0',
+    packageName: '@bitloops/bl-boilerplate-infra-mysql',
+    version: '*',
   },
   'DB.Postgres': {
-    packageName: 'pg',
-    version: '^8.7.1',
+    packageName: '@bitloops/bl-boilerplate-infra-pg',
+    version: '*',
   },
   'DB.SQLite': {
-    packageName: 'sqlite3',
-    version: '^5.0.2',
+    packageName: '@bitloops/bl-boilerplate-infra-sqlite3',
+    version: '*',
   },
 };
 
@@ -108,16 +108,16 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       'DB.SQLite': [],
     };
     const adapterImports: string[] = [];
-    for (const repoAdapterInfo of Object.values(moduleRepoAdapters)) {
-      const { connection, dbType, repoPort } = repoAdapterInfo;
+    for (const [adapterClassName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
+      const { connection, dbType, instanceIdentifier } = repoAdapterInfo;
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TSingleExpression,
         value: connection,
       });
       connections[dbType].push(stringConnection.output);
-      const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
+      // const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
       adapterImports.push(
-        `import { ${adapterClassName} } from './infra/repos/${adapterClassName}';`,
+        `import { ${adapterClassName} } from './repos/concretions/${adapterClassName}';`,
       );
     }
     const result = Object.entries(connections).reduce((acc, [dbType, connectionNames]) => {
@@ -141,15 +141,15 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     const moduleRepoAdapters = reposSetupData?.repoAdapters?.[boundedContext]?.[module];
     if (!moduleRepoAdapters) return '';
     const result: string[] = [];
-    for (const [repoInstanceName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
-      const { connection, dbType, repoPort } = repoAdapterInfo;
+    for (const [adapterClassName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
+      const { connection, instanceIdentifier } = repoAdapterInfo;
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TSingleExpression,
         value: connection,
       });
-      const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
+
       result.push(
-        `const ${repoInstanceName} = new ${adapterClassName}(${stringConnection.output});`,
+        `const ${instanceIdentifier} = new ${adapterClassName}(${stringConnection.output});`,
       );
     }
     return result.join('\n') + '\n';

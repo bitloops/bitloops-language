@@ -103,7 +103,7 @@ const getTargetFileDestination = (
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.RepoAdapters:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/repos/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/repos/concretions/`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Rules:
@@ -161,6 +161,10 @@ const getFilePathRelativeToModule = (
       break;
     case ClassTypes.RepoPorts:
       result.path = 'domain/';
+      result.filename = className;
+      break;
+    case ClassTypes.RepoAdapters:
+      result.path = 'repos/concretions';
       result.filename = className;
       break;
     default:

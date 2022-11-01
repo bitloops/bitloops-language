@@ -666,10 +666,7 @@ export type TReposSetup = {
 type RepoAdapterInstance = string;
 export type TSetupRepoAdapters = Record<RepoAdapterInstance, TRepoAdapterInfo>;
 
-type TRepoAdapterAndPortInfo = TRepoAdapterInfo & {
-  repoPortInfo: TRepoPort;
-};
-export type TRepoAdapters = Record<RepoAdapterInstance, TRepoAdapterAndPortInfo>;
+export type TRepoAdapters = Record<RepoAdapterInstance, TRepoAdapterInfo>;
 
 export type TRepoConnectionInfo = {
   dbType: TRepoSupportedTypes;
