@@ -16,3 +16,5 @@ Feature: ParameterDependencies to Typescript target language
       | [{"value": "arg3", "type": "Person" }]                                                                                   | (arg3:Person)                                |
       | [{"value": "arg4", "type": "Person" }, {"value": "arg5", "type": "string" }]                                             | (arg4:Person,arg5:string)                    |
       | [{"value": "name", "type": "string" }, {"value": "age", "type": "int32" }, {"value": "children", "type": "Children[]" }] | (name:string,age:number,children:Children[]) |
+      | [{"type":"UUIDv4","value":"id"}]                                                                                         | (id:Domain.UUIDv4)                           |                        
+

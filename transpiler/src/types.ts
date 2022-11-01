@@ -147,7 +147,7 @@ export type TVariables = TVariable[];
 
 export type TVariable = {
   optional?: boolean;
-  type: string;
+  type: TBitloopsPrimaryType;
   name: string;
 };
 
@@ -162,7 +162,7 @@ export type TReadModelValues = {
 };
 export type TReadModels = Record<string, TReadModelValues>;
 
-export type TParamDependencyType = TBitloopsPrimitives | string;
+export type TParamDependencyType = TBitloopsPrimaryType;
 // (name: string)
 export type TParameterDependency = {
   type: TParamDependencyType;
@@ -216,9 +216,20 @@ export const bitloopsPrimitives = [
 ] as const;
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
+export const BitloopsBuildInClassNames = {
+  UUIDv4: 'UUIDv4',
+};
+export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
+export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
+
 type TUserDefinedClass = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedClass;
+
+export type TBitloopsPrimaryType =
+  | TBitloopsPrimitives
+  | TBitloopsBuildInClasses
+  | TUserDefinedClass;
 
 export type TReturnType = TBitloopsPrimitives | TUserDefinedClass;
 
@@ -380,7 +391,7 @@ export type TConstDecomposition = {
 
 export type TConstDeclarationValue = {
   name: string;
-  type?: string;
+  type?: TBitloopsPrimaryType;
 } & TExpression;
 
 export type TConstDeclaration = {
@@ -390,7 +401,7 @@ export type TConstDeclaration = {
 export type TVariableDeclaration = {
   variableDeclaration: {
     name: string;
-    type: string;
+    type: TBitloopsPrimaryType;
   } & TExpression;
 };
 
@@ -456,7 +467,7 @@ export type TValueObjectMethodInfo = TDomainPrivateMethod;
 export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TOkErrorReturnType = {
-  ok: string;
+  ok: TBitloopsPrimaryType;
   errors?: string[]; // TODO remove optional if we have empty array for no errors
 };
 

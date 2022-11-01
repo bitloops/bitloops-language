@@ -18,6 +18,7 @@ Feature: OkError Return Type to Typescript target language
       | {"ok":"Name","errors":[]}                                                                          | Either<Name, never>                                                                   |
       | {"ok":"Name"}                                                                                      | Either<Name, never>                                                                   |
       | {"ok":"void","errors":[]}                                                                          | Either<void, never>                                                                   |
+      | {"ok":"UUIDv4","errors":[]}                                                                        | Either<Domain.UUIDv4, never>                                                          |
 
     Scenario Template: Return OK Error type unsuccessful
     Given I have a return type <return-type>
