@@ -31,13 +31,19 @@ jobs:
         working-directory: ./transpiler
         run: npm install
       
+      - name: install Java
+          uses: actions/setup-java@v3
+          with:
+            distribution: 'temurin'
+            java-version: '17'
+      
       - name: "Produce Antlr files"
         working-directory: ./transpiler
         run: npm run ant
       
       - name: "Produce Antlr files for setup"
         working-directory: ./transpiler
-        run: npm run ant
+        run: npm run ant:setup
       
       - name: "Build"
         working-directory: ./transpiler
