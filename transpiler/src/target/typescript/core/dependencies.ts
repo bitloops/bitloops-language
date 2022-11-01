@@ -67,6 +67,9 @@ const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => 
       mergedDependenciesMap[key] = parentDependency;
       continue;
     }
+    if (mergedDependenciesMap[key].value.includes(parentDependency.value)) {
+      continue
+    }
     const dependencies = [mergedDependenciesMap[key].value, parentDependency.value].sort();
     mergedDependenciesMap[key].value = dependencies.join(delimeter);
   }
@@ -209,6 +212,7 @@ const getClassTypeFromIdentifier = (
     };
   }
   //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
+
   //   return {
   //     classType: ClassTypes.Structs,
   //   };
