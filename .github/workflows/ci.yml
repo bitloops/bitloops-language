@@ -28,7 +28,6 @@ jobs:
         run: npm i -g npm@latest
 
       - name: "📦 install dependencies"
-        working-directory: ./transpiler
         uses: bahmutov/npm-install@v1
       
       - name: "Produce Antlr files"
