@@ -25,7 +25,7 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesTypeScript => {
   const { applyRules } = variable;
 
-  let result = 'const res = applyRules([';
+  let result = 'const res = Domain.applyRules([';
   let dependencies = [];
   const domainRules = [];
   for (const applyRule of applyRules) {

@@ -110,6 +110,7 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
   return { output: finalResult, dependencies: finalDependencies };
 };
 
+// TODO remove this is probably not needed
 const statementsWithoutThisToTargetLanguage = (
   variable: TStatements,
 ): TTargetDependenciesTypeScript => {
