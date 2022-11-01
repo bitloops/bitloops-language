@@ -17,14 +17,23 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { scanStatementForDepsToPrependAwait } from './helpers/index.js';
+import {
+  scanStatementForDepsToPrependAwait,
+  // scanStatementToAppendValueIfThereIsAValueObjectExpression,
+  isAValueObjectVariableOrConstDeclaration,
+} from './helpers/index.js';
 import { TUseCase } from '../../../../../../types.js';
 
 const transformUseCaseIntermediateAST = (useCases: TUseCase): TUseCase => {
+  console.log('inside transformUseCaseIntermediateAST');
   for (const useCaseValues of Object.values(useCases)) {
     const { statements } = useCaseValues.execute;
 
     const newStatements = statements.map((statement) => {
+      console.log('statement', JSON.stringify(statement));
+      if (isAValueObjectVariableOrConstDeclaration(statement)) {
+        
+      }
       return scanStatementForDepsToPrependAwait(statement);
     });
 

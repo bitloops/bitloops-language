@@ -21,8 +21,9 @@ import {
   isExpression,
   isIfStatement,
   isSwitchStatement,
+  isConstDeclaration,
 } from '../../../../../../../helpers/typeGuards.js';
-import { TStatement, TExpression, TRegularCase } from './../../../../../../../types.js';
+import { TStatement, TExpression, TRegularCase, TConstDeclaration, TVariableDeclaration } from './../../../../../../../types.js';
 
 const expressionUsesDependency = (value: TExpression): boolean => {
   const { expression } = value;
@@ -90,4 +91,46 @@ const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement =
   return statement;
 };
 
-export { scanStatementForDepsToPrependAwait };
+// const scanStatementToAppendValueIfThereIsAValueObjectExpression = (statement: TStatement): any => {
+//   // TODO add check for variable declaration as well
+//   if (isConstDeclaration(statement)) {
+//     console.log('isConstDeclaration true');
+//     return scanStatementToAppendValueIfThereIsAValueObjectExpression(statement.constDeclaration);
+//   }
+
+//   if (isExpression(statement)) {
+//     console.log('isExpression true');
+//     scanStatementToAppendValueIfThereIsAValueObjectExpression(statement.)
+//   }
+
+//   // if (isEvaluation(statement)) {
+
+//   // }
+// };
+
+const isAValueObjectVariableOrConstDeclaration = (statement: TStatement): statement is TConstDeclaration | TVariableDeclaration  => {
+  // TODO add check for variable declaration as well
+  if (!isConstDeclaration(statement)) {
+    return false;
+  }
+
+  if (!isExpression(statement.constDeclaration)) {
+    return false;
+  }
+  // TODO different expression if variable declaration
+  let expression = statement.constDeclaration.expression; 
+
+  if (expression?.['evaluation']?.valueObject) {
+    return true;
+  }
+
+  return false;
+}
+
+
+
+export {
+  scanStatementForDepsToPrependAwait,
+  // scanStatementToAppendValueIfThereIsAValueObjectExpression,
+  isAValueObjectVariableOrConstDeclaration
+};
