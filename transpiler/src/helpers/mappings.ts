@@ -109,6 +109,7 @@ const BitloopsTypesMapping = {
   TDomainPublicMethod: 'TDomainPublicMethod',
   TDomainPrivateMethod: 'TDomainPrivateMethod',
   TValueObjectMethods: 'TValueObjectMethods',
+  TBitloopsPrimaryType: 'TBitloopsPrimaryType',
 };
 
 const ClassTypes = {
@@ -141,9 +142,10 @@ const BitloopsFixedClassTypes = {
   UUIDv4: 'UUIDv4',
 };
 
-export const BitloopsFixedClassTypesArray = [BitloopsFixedClassTypes.UUIDv4];
+export const BitloopsFixedClassTypesArray = [BitloopsFixedClassTypes.UUIDv4]; // TODO use bitloopsBuildInClasses from types instead
 
 export const mappingBitloopsFixedClassTypesToLayer = {
+  //TODO change name
   [BitloopsFixedClassTypes.UUIDv4]: ArchitectureLayers.Domain,
 };
 

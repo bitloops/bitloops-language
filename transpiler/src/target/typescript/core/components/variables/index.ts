@@ -18,29 +18,21 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TTargetDependenciesTypeScript, TVariable, TVariables } from '../../../../../types.js';
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
-import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { getChildDependencies } from '../../dependencies.js';
 
 const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeScript => {
   const { name, type, optional } = variable;
-  let dependencies = [];
-  let mappedType = type;
 
-  if (isBitloopsPrimitive(type)) {
-    mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
-  } else {
-    // If not primitive, then we have a dependency
-    dependencies = getChildDependencies(type);
-  }
+  const mappedType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: type,
+  });
 
-  const result = `${name}${optional ? '?' : ''}: ${mappedType}`;
+  const result = `${name}${optional ? '?' : ''}: ${mappedType.output}`;
   return {
     output: result,
-    dependencies,
+    dependencies: mappedType.dependencies,
   };
 };
 
