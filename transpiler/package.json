@@ -82,11 +82,6 @@
     "antlr4": "^4.11.0",
     "prettier": "^2.7.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier-format && npm run lint"
-    }
-  },
   "exports": {
     ".": {
       "import": {
