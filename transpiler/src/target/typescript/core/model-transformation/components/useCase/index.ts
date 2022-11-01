@@ -18,15 +18,14 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  scanStatementForDepsToPrependAwait,
-  appendDotValueInStatement,
-  isAValueObjectVariableOrConstDeclaration,
-  getValueObjectVariableOrConstDeclarationIdentifier,
-} from './helpers/index.js';
+  scanStatementForIdentifierToAppendDotValue,
+  isVariableOrConstDeclarationWithDomainEvaluation,
+  getVariableOrConstDeclarationIdentifier,
+} from './helpers/appendDotValue.js';
+import { scanStatementForDepsToPrependAwait } from './helpers/prependAwait.js';
 import { TUseCase } from '../../../../../../types.js';
 
 const transformUseCaseIntermediateAST = (useCases: TUseCase): TUseCase => {
-  console.log('inside transformUseCaseIntermediateAST');
   for (const useCaseValues of Object.values(useCases)) {
     const { statements } = useCaseValues.execute;
 
@@ -39,14 +38,13 @@ const transformUseCaseIntermediateAST = (useCases: TUseCase): TUseCase => {
     });
     const newStatements = statementsWithAwait.reduce((acc, statement) => {
       const { identifiers, statements } = acc;
-      if (isAValueObjectVariableOrConstDeclaration(statement)) {
-        const evaluationIdentifier = getValueObjectVariableOrConstDeclarationIdentifier(statement);
+
+      // Check this statement for identifiers
+      const newStatement = scanStatementForIdentifierToAppendDotValue(statement, identifiers);
+      statements.push(newStatement);
+      if (isVariableOrConstDeclarationWithDomainEvaluation(statement)) {
+        const evaluationIdentifier = getVariableOrConstDeclarationIdentifier(statement);
         identifiers.add(evaluationIdentifier);
-        statements.push(statement);
-      } else {
-        // Check this statement for identifiers
-        const newStatement = appendDotValueInStatement(statement, identifiers);
-        statements.push(newStatement);
       }
       return acc;
     }, initialReducerStruct);

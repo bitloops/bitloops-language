@@ -129,8 +129,33 @@ const isReturnStatement = (value: TStatement): value is TReturnStatement => {
 
 const isExpressionAValueObjectEvaluation = (expressionStatement: TExpression): boolean => {
   const { expression } = expressionStatement;
-
   if (expression?.['evaluation']?.valueObject) {
+    return true;
+  }
+
+  return false;
+};
+
+const isExpressionAnEntityEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.entity) {
+    return true;
+  }
+
+  return false;
+};
+const isExpressionAVariableRegularEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.regularEvaluation?.type === 'variable') {
+    return true;
+  }
+
+  return false;
+};
+
+const isExpressionAMethodRegularEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
     return true;
   }
 
@@ -156,4 +181,7 @@ export {
   isReturnStatement,
   isVariableDeclaration,
   isExpressionAValueObjectEvaluation,
+  isExpressionAnEntityEvaluation,
+  isExpressionAVariableRegularEvaluation,
+  isExpressionAMethodRegularEvaluation,
 };
