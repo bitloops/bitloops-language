@@ -8,6 +8,7 @@ import {
   TReturnStatement,
   TStatement,
   TSwitchStatement,
+  TVariableDeclaration,
 } from './../types.js';
 import {
   TGraphQLControllerInstances,
@@ -86,6 +87,12 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('variableDeclaration' in value) return true;
+  return false;
+};
+
 const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
   if ('publicMethod' in value) return true;
   else return false;
@@ -120,6 +127,16 @@ const isReturnStatement = (value: TStatement): value is TReturnStatement => {
   return false;
 };
 
+const isExpressionAValueObjectEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+
+  if (expression?.['evaluation']?.valueObject) {
+    return true;
+  }
+
+  return false;
+};
+
 export {
   isUndefined,
   isArray,
@@ -137,4 +154,6 @@ export {
   isExpression,
   isSwitchStatement,
   isReturnStatement,
+  isVariableDeclaration,
+  isExpressionAValueObjectEvaluation,
 };

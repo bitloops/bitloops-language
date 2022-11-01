@@ -22,8 +22,17 @@ import {
   isIfStatement,
   isSwitchStatement,
   isConstDeclaration,
+  isVariableDeclaration,
+  isExpressionAValueObjectEvaluation,
 } from '../../../../../../../helpers/typeGuards.js';
-import { TStatement, TExpression, TRegularCase, TConstDeclaration, TVariableDeclaration } from './../../../../../../../types.js';
+import {
+  TStatement,
+  TExpression,
+  TRegularCase,
+  TConstDeclaration,
+  TVariableDeclaration,
+  TDomainEvaluation,
+} from './../../../../../../../types.js';
 
 const expressionUsesDependency = (value: TExpression): boolean => {
   const { expression } = value;
@@ -108,29 +117,105 @@ const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement =
 //   // }
 // };
 
-const isAValueObjectVariableOrConstDeclaration = (statement: TStatement): statement is TConstDeclaration | TVariableDeclaration  => {
+const isAValueObjectVariableOrConstDeclaration = (
+  statement: TStatement,
+): statement is TConstDeclaration | TVariableDeclaration => {
   // TODO add check for variable declaration as well
-  if (!isConstDeclaration(statement)) {
+  if (!isConstDeclaration(statement) && !isVariableDeclaration(statement)) {
     return false;
   }
 
-  if (!isExpression(statement.constDeclaration)) {
-    return false;
+  if (isConstDeclaration(statement)) {
+    const expression = statement.constDeclaration;
+    return isExpressionAValueObjectEvaluation(expression);
   }
-  // TODO different expression if variable declaration
-  let expression = statement.constDeclaration.expression; 
+  const expression = statement.variableDeclaration;
+  return isExpressionAValueObjectEvaluation(expression);
+};
 
-  if (expression?.['evaluation']?.valueObject) {
-    return true;
+const getValueObjectVariableOrConstDeclarationIdentifier = (
+  statement: TConstDeclaration | TVariableDeclaration,
+): string => {
+  if (isConstDeclaration(statement)) {
+    return statement.constDeclaration.name;
+  }
+  if (isVariableDeclaration(statement)) {
+    return statement.variableDeclaration.name;
+  }
+  throw new Error('Statement is not constDeclaration or variableDeclaration');
+};
+
+// if (expression?.['evaluation']?.valueObject) {
+const appendDotValueInValueObjectEvaluation = (
+  valueObject: TDomainEvaluation,
+  identifiers: Set<string>,
+) => {
+  const { props } = valueObject;
+  // if TEvaluationFields
+  if (Array.isArray(props)) {
+    valueObject.props = props;
+    console.log(identifiers);
+  }
+  return valueObject;
+};
+
+const appendDotValueInExpression = (
+  statement: TExpression,
+  identifiers: Set<string>,
+): TExpression => {
+  // Handle entity and object evaluation arguments, method calls arguments
+  if (isExpressionAValueObjectEvaluation(statement)) {
+    statement.expression['evaluation'].valueObject;
+    const newValueObject = appendDotValueInValueObjectEvaluation(
+      statement.expression['evaluation'].valueObject,
+      identifiers,
+    );
+    statement.expression['evaluation'].valueObject = newValueObject;
+  }
+  return statement;
+};
+
+const appendDotValueInStatement = (
+  statement: TStatement,
+  identifiers: Readonly<Set<string>>,
+): TStatement => {
+  if (isExpression(statement)) {
+    return appendDotValueInExpression(statement, identifiers);
   }
 
-  return false;
-}
+  // TODO Abstract these code replication
+  if (isIfStatement(statement)) {
+    const { thenStatements, elseStatements } = statement.ifStatement;
+    statement.ifStatement.thenStatements = thenStatements.map((st) =>
+      appendDotValueInStatement(st, identifiers),
+    );
+    if (!thenStatements) {
+      return statement;
+    }
+    statement.ifStatement.elseStatements = elseStatements.map((st) =>
+      appendDotValueInStatement(st, identifiers),
+    );
+    return statement;
+  }
 
+  if (isSwitchStatement(statement)) {
+    const { cases, defaultCase } = statement.switchStatement;
+    statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
+      ...switchCase,
+      statements: switchCase.statements.map((st) => appendDotValueInStatement(st, identifiers)),
+    }));
+    statement.switchStatement.defaultCase.statements = defaultCase.statements.map((st) =>
+      appendDotValueInStatement(st, identifiers),
+    );
+    return statement;
+  }
 
-
+  return statement;
+};
 export {
   scanStatementForDepsToPrependAwait,
   // scanStatementToAppendValueIfThereIsAValueObjectExpression,
-  isAValueObjectVariableOrConstDeclaration
+  isAValueObjectVariableOrConstDeclaration,
+  getValueObjectVariableOrConstDeclarationIdentifier,
+  appendDotValueInStatement,
 };

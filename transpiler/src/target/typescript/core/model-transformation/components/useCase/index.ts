@@ -19,8 +19,9 @@
  */
 import {
   scanStatementForDepsToPrependAwait,
-  // scanStatementToAppendValueIfThereIsAValueObjectExpression,
+  appendDotValueInStatement,
   isAValueObjectVariableOrConstDeclaration,
+  getValueObjectVariableOrConstDeclarationIdentifier,
 } from './helpers/index.js';
 import { TUseCase } from '../../../../../../types.js';
 
@@ -29,15 +30,28 @@ const transformUseCaseIntermediateAST = (useCases: TUseCase): TUseCase => {
   for (const useCaseValues of Object.values(useCases)) {
     const { statements } = useCaseValues.execute;
 
-    const newStatements = statements.map((statement) => {
-      console.log('statement', JSON.stringify(statement));
-      if (isAValueObjectVariableOrConstDeclaration(statement)) {
-        
-      }
+    const initialReducerStruct = {
+      identifiers: new Set<string>(),
+      statements: [],
+    };
+    const statementsWithAwait = statements.map((statement) => {
       return scanStatementForDepsToPrependAwait(statement);
     });
+    const newStatements = statementsWithAwait.reduce((acc, statement) => {
+      const { identifiers, statements } = acc;
+      if (isAValueObjectVariableOrConstDeclaration(statement)) {
+        const evaluationIdentifier = getValueObjectVariableOrConstDeclarationIdentifier(statement);
+        identifiers.add(evaluationIdentifier);
+        statements.push(statement);
+      } else {
+        // Check this statement for identifiers
+        const newStatement = appendDotValueInStatement(statement, identifiers);
+        statements.push(newStatement);
+      }
+      return acc;
+    }, initialReducerStruct);
 
-    useCaseValues.execute.statements = newStatements;
+    useCaseValues.execute.statements = newStatements.statements;
   }
 
   return useCases;
