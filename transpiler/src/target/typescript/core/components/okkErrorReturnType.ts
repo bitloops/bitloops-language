@@ -17,11 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitiveToLang.js';
-import { isBitloopsPrimitive } from '../../../../helpers/isBitloopsPrimitive.js';
-import { SupportedLanguages } from '../../../../helpers/supportedLanguages.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { TOkErrorReturnType, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { getChildDependencies } from '../dependencies.js';
+import { modelToTargetLanguage } from '../modelToTargetLanguage.js';
 
 const okErrorReturnTypeToTargetLanguage = (
   variable: TOkErrorReturnType,
@@ -32,10 +31,10 @@ const okErrorReturnTypeToTargetLanguage = (
   }
   const { errors, ok } = variable;
 
-  let returnOkType = ok;
-  if (isBitloopsPrimitive(returnOkType)) {
-    returnOkType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](returnOkType);
-  }
+  const returnOkType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: ok,
+  });
 
   const xor = (ok: string, errors: string[]): string => {
     if (errors && errors.length != 0) {
@@ -44,12 +43,12 @@ const okErrorReturnTypeToTargetLanguage = (
       return `Either<${ok}, never>`;
     }
   };
-  dependencies.push(...getChildDependencies(returnOkType));
+  dependencies.push(...returnOkType.dependencies);
   if (errors) {
     dependencies.push(...getChildDependencies(errors));
   }
 
-  return { output: xor(returnOkType, errors), dependencies };
+  return { output: xor(returnOkType.output, errors), dependencies };
 };
 
 export { okErrorReturnTypeToTargetLanguage };

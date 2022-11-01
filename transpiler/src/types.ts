@@ -438,7 +438,7 @@ export type TStatement =
 export type TStatements = TStatement[];
 
 export type TConstantVariable = {
-  type: TBitloopsPrimaryType;
+  type: string;
   value: string;
   name: string;
 };
