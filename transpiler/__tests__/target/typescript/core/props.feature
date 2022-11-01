@@ -22,6 +22,7 @@ Feature: Props to Typescript target language
       | {"FClassProp":{"variables":[{"name":"fixed_small","type":"fixed32"},{"name":"fixed_big","type":"fixed64"}]}}                                                       | export interface FClassProp { fixed_small: number; fixed_big: number; }                                          |
       | {"SFClassProp":{"variables":[{"name":"sfixed_small","type":"sfixed32","optional":true},{"name":"sfixed_big","type":"sfixed64","optional":false}]}}                 | export interface SFClassProp { sfixed_small?: number; sfixed_big: number; }                                      |
       | {"BoolProp":{"variables":[{"name":"isTrue","type":"bool"}]}}                                                                                                       | export interface BoolProp { isTrue: boolean; }                                                                   |
+      | {"TodoProps":{"variables":[{"optional":true,"type":"UUIDv4","name":"id"}]}}                                                                                        | export interface TodoProps { id?: Domain.UUIDv4; }                                                               |
 
 
     Scenario Template: Props with no variables to Typescript
