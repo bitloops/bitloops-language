@@ -216,7 +216,10 @@ export const bitloopsPrimitives = [
 ] as const;
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
-export const bitloopsBuildInClasses = ['UUIDv4'] as const;
+export const BitloopsBuildInClassNames = {
+  UUIDv4: 'UUIDv4',
+};
+export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
 export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
 
 type TUserDefinedClass = string;
@@ -438,7 +441,7 @@ export type TStatement =
 export type TStatements = TStatement[];
 
 export type TConstantVariable = {
-  type: TBitloopsPrimaryType;
+  type: string;
   value: string;
   name: string;
 };

@@ -35,6 +35,7 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
   } else if (isBitloopsBuildInClass(type)) {
     mappedType = `${mappingBitloopsBuildInClassToLayer[type]}.${type}`;
+    dependencies = getChildDependencies(type);
   } else {
     // If not primitive, then we have a dependency
     dependencies = getChildDependencies(type);
