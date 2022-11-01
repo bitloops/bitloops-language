@@ -21,14 +21,37 @@ import { TDomainCreateMethod, TTargetDependenciesTypeScript } from '../../../../
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
+import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 
 export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
   const { parameterDependency, returnType, statements } = create;
 
+  const statementsResult = {
+    thisStatements: [],
+    restStatements: [],
+  };
+
+  for (const statement of statements) {
+    if (isThisDeclaration(statement)) {
+      statementsResult.thisStatements.push(statement);
+    } else {
+      statementsResult.restStatements.push(statement);
+    }
+  }
+
   const propsName = create.parameterDependency.type;
   const returnOkType = returnType.ok;
 
-  const producedConstructor = internalConstructor(propsName, statements, ClassTypes.ValueObjects);
+  const producedConstructor = internalConstructor(
+    propsName,
+    statementsResult.thisStatements,
+    ClassTypes.ValueObjects,
+  );
+
+  let statementsModel = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TStatements,
+    value: statementsResult.restStatements,
+  });
 
   const parameterModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
@@ -40,8 +63,19 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
     value: returnType,
   });
 
-  const returnOkCreateStatement = `return ok(new ${returnOkType}(props));`;
-  const result = `${producedConstructor.output} public static create(${parameterModel.output}): ${returnTypeModel.output} { ${returnOkCreateStatement} }`;
+  const statementValues = statements.map((statement) => statement.valueOf());
+  const hasReturnStatements: boolean =
+    statementValues.filter(
+      (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
+    ).length === 0;
+  if (hasReturnStatements || statements.length === 0) {
+    statementsModel = {
+      output: statementsModel.output.concat(`return ok(new ${returnOkType}(props));`),
+      dependencies: statementsModel.dependencies,
+    };
+  }
+
+  const result = `${producedConstructor.output} public static create(${parameterModel.output}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {
     output: result,
@@ -49,6 +83,7 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
       ...parameterModel.dependencies,
       ...producedConstructor.dependencies,
       ...returnTypeModel.dependencies,
+      ...statementsModel.dependencies,
     ],
   };
 };
