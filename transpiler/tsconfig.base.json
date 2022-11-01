@@ -8,6 +8,8 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },

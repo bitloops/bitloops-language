@@ -125,8 +125,8 @@ const transpile = async (source: ICollection): Promise<void> => {
 
     console.log(greenColor(TAB + '🦎 Project generated successfully!\n'));
   } catch (err) {
-    throbber.stop();
     console.error(redColor(TAB + '❌ ' + err));
+    throbber.stop();
   }
 };
 

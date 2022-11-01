@@ -6,7 +6,6 @@ import {
   TRepoSupportedTypes,
 } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
-import { getRepoAdapterClassName } from '../../core/components/repo/helpers/repoAdapterName.js';
 // import { LICENSE } from '../license.js';
 import { TSetupOutput } from '../index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
@@ -109,7 +108,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     };
     const adapterImports: string[] = [];
     for (const [adapterClassName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
-      const { connection, dbType, instanceIdentifier } = repoAdapterInfo;
+      const { connection, dbType } = repoAdapterInfo;
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TSingleExpression,
         value: connection,

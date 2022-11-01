@@ -23,5 +23,6 @@ import { StringUtils } from '../../../../../../utils/index.js';
 export const getRepoAdapterClassName = (repoPort: string, dbType: TRepoSupportedTypes): string => {
   const suffixToRemove = 'Port';
   const repoPortBaseName = repoPort.slice(0, repoPort.length - suffixToRemove.length);
-  return `${repoPortBaseName}${StringUtils.upperCaseFirstLetter(dbType).replace('DB.', '')}Adapter`;
+  const dbTypeName = StringUtils.upperCaseFirstLetter(dbType).replace('DB.', '');
+  return `${dbTypeName}${repoPortBaseName}`;
 };

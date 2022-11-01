@@ -663,10 +663,10 @@ export type TReposSetup = {
   };
 };
 
-type RepoAdapterInstance = string;
-export type TSetupRepoAdapters = Record<RepoAdapterInstance, TRepoAdapterInfo>;
+type RepoAdapterName = string;
+export type TSetupRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
 
-export type TRepoAdapters = Record<RepoAdapterInstance, TRepoAdapterInfo>;
+export type TRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
 
 export type TRepoConnectionInfo = {
   dbType: TRepoSupportedTypes;
@@ -680,6 +680,7 @@ export type TRepoAdapterInfo = {
   repoPort: string;
   connection: TSingleExpression; // Name of connection instance
   collection: TSingleExpression;
+  instanceIdentifier: string;
 };
 
 export enum ControllerTypeOfDefinition {

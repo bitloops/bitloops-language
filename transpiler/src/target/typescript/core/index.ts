@@ -168,7 +168,7 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     setupData: ISetupData,
     { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
   ): boolean {
-    return !!setupData.repos?.repoAdapters?.[boundedContextName]?.[moduleName];
+    return !!setupData?.repos?.repoAdapters?.[boundedContextName]?.[moduleName];
   }
 
   private injectRepoAdaptersFromSetupToModel(
