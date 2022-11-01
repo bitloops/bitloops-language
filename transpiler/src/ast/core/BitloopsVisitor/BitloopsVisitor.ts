@@ -227,13 +227,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
-    const stringChars: any = ctx.templateStringAtom(null)
+    const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
     return {
       type: 'backTickString',
-      value: value
-    }
-
+      value: value,
+    };
   }
 
   visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {

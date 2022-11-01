@@ -53,7 +53,7 @@ const getRepoHeader = (
   const str = `export class ${getRepoAdapterClassName(
     repoPort,
     dbType,
-  )} implements ${repoPort} { private collection:string; `;
+  )} implements ${repoPort} { private collection: Mongo.Collection;; `;
   const dependencies = getChildDependencies(repoPort);
   return {
     output: str,
@@ -72,6 +72,7 @@ export const repoAdapterToTargetLanguage = (
   const repoAdapter = repoAdapters[repoAdapterInstanceName];
 
   const { dbType, repoPort, connection: _connection, collection } = repoAdapter;
+  // TODO Get db name from connection of this repoAdapter
 
   const repoPortInfo = model[boundedContext][moduleName].RepoPorts[repoPort];
   if (!repoPortInfo) {
@@ -81,7 +82,12 @@ export const repoAdapterToTargetLanguage = (
   let dependencies = getDbTypeImports(dbType);
 
   const repoStart = getRepoHeader(repoPort, dbType);
-  const repoBody = repoBodyLangMapping(dbType, collection, repoPortInfo);
+
+  const { aggregateRootName } = repoPortInfo;
+  const aggregateModel = model[boundedContext][moduleName].RootEntities[aggregateRootName];
+  const aggregatePropsName = aggregateModel.create.parameterDependency.type;
+  const propsModel = model[boundedContext][moduleName].Props[aggregatePropsName];
+  const repoBody = repoBodyLangMapping(dbType, collection, repoPortInfo, propsModel);
   const repoEnd = '}';
 
   dependencies = [...dependencies, ...repoStart.dependencies, ...repoBody.dependencies];
