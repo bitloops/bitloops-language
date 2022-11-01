@@ -27,8 +27,9 @@ jobs:
         working-directory: ./transpiler
         run: npm i -g npm@latest
 
-      - name: "📦 install dependencies"
-        uses: bahmutov/npm-install@v1
+      - name: npm install
+        working-directory: ./transpiler
+        run: npm install
       
       - name: "Produce Antlr files"
         working-directory: ./transpiler
@@ -62,6 +63,10 @@ jobs:
       - name: "🔧 install npm@latest"
         working-directory: ./transpiler
         run: npm i -g npm@latest
+      
+      - name: npm install
+        working-directory: ./transpiler
+        run: npm install
 
       - name: "🔍 lint code"
         working-directory: ./transpiler
