@@ -19,6 +19,7 @@
  */
 import {
   TConstDeclaration,
+  TDependenciesTypeScript,
   TEvaluation,
   TStatement,
   TStatements,
@@ -40,6 +41,15 @@ export const keysToTypeMapping = {
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
   buildInFunction: BitloopsTypesMapping.TBuildInFunction,
 };
+
+const FAIL_DEPENDENCY: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'fail',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 
 const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTypeScript => {
   if (variable === 'break') {
@@ -76,9 +86,10 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
             });
             const ifAdded = `if (!${constDeclaration.name}.isFail()) {`;
             elseAdded.push(`} else { return fail(${constDeclaration.name}.value) }`);
+            const dependencies = [...evaluationRes.dependencies, ...FAIL_DEPENDENCY];
             return {
               output: `${evaluationRes.output}${ifAdded}`,
-              dependencies: evaluationRes.dependencies,
+              dependencies,
             };
           }
         }

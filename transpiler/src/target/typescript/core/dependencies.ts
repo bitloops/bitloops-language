@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { isBitloopsBuildInClass } from '../../../helpers/isBitloopsBuildInClass.js';
 import { isBitloopsPrimitive } from '../../../helpers/isBitloopsPrimitive.js';
 import {
-  BitloopsFixedClassTypesArray,
   ClassTypes,
-  mappingBitloopsFixedClassTypesToLayer,
+  mappingBitloopsBuildInClassToLayer,
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
 import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
@@ -51,10 +51,30 @@ export const getParentDependencies = (
       from: importString,
     });
   }
-  const finalParentDependencies = removeParentDuplicates(parentDependecies, className);
+  let finalParentDependencies = removeParentDuplicates(parentDependecies, className);
+  finalParentDependencies = mergeDependencies(finalParentDependencies);
   return finalParentDependencies;
 };
 
+const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => {
+  // const sources = [];
+  const delimeter = ','
+  let mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
+  for (const parentDependency of parentDependecies) {
+    const key = parentDependency.from;
+    const sources = Object.keys(mergedDependenciesMap);
+    if (!sources.includes(key)) {
+      mergedDependenciesMap[key] = parentDependency;
+      continue;
+    }
+    if (mergedDependenciesMap[key].value.includes(parentDependency.value)) {
+      continue
+    }
+    const dependencies = [mergedDependenciesMap[key].value, parentDependency.value].sort();
+    mergedDependenciesMap[key].value = dependencies.join(delimeter);
+  }
+  return Object.values(mergedDependenciesMap);
+}
 const removeParentDuplicates = (
   parentDependecies: TDependencyParentTypescript[],
   className: string,
@@ -83,11 +103,11 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
     if (isBitloopsPrimitive(dependencyString)) {
       continue;
     }
-    if (BitloopsFixedClassTypesArray.includes(dependencyString)) {
+    if (isBitloopsBuildInClass(dependencyString)) {
       result.push({
         type: 'absolute',
         default: false,
-        value: mappingBitloopsFixedClassTypesToLayer[dependencyString],
+        value: mappingBitloopsBuildInClassToLayer[dependencyString],
         from: '@bitloops/bl-boilerplate-core',
       });
       continue;
@@ -192,6 +212,7 @@ const getClassTypeFromIdentifier = (
     };
   }
   //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
+
   //   return {
   //     classType: ClassTypes.Structs,
   //   };
