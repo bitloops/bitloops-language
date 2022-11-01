@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { isBitloopsBuildInClass } from '../../../helpers/isBitloopsBuildInClass.js';
 import { isBitloopsPrimitive } from '../../../helpers/isBitloopsPrimitive.js';
 import {
-  BitloopsFixedClassTypesArray,
   ClassTypes,
-  mappingBitloopsFixedClassTypesToLayer,
+  mappingBitloopsBuildInClassToLayer,
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
 import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
@@ -83,11 +83,11 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
     if (isBitloopsPrimitive(dependencyString)) {
       continue;
     }
-    if (BitloopsFixedClassTypesArray.includes(dependencyString)) {
+    if (isBitloopsBuildInClass(dependencyString)) {
       result.push({
         type: 'absolute',
         default: false,
-        value: mappingBitloopsFixedClassTypesToLayer[dependencyString],
+        value: mappingBitloopsBuildInClassToLayer[dependencyString],
         from: '@bitloops/bl-boilerplate-core',
       });
       continue;

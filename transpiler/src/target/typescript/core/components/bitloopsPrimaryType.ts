@@ -20,7 +20,7 @@
 import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsBuildInClass } from '../../../../helpers/isBitloopsBuildInClass.js';
 import { isBitloopsPrimitive } from '../../../../helpers/isBitloopsPrimitive.js';
-import { mappingBitloopsFixedClassTypesToLayer } from '../../../../helpers/mappings.js';
+import { mappingBitloopsBuildInClassToLayer } from '../../../../helpers/mappings.js';
 import { TBitloopsPrimaryType, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { SupportedLanguages } from '../../../supportedLanguages.js';
 import { getChildDependencies } from '../dependencies.js';
@@ -34,7 +34,7 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
   if (isBitloopsPrimitive(type)) {
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
   } else if (isBitloopsBuildInClass(type)) {
-    mappedType = `${mappingBitloopsFixedClassTypesToLayer[type]}.${type}`;
+    mappedType = `${mappingBitloopsBuildInClassToLayer[type]}.${type}`;
   } else {
     // If not primitive, then we have a dependency
     dependencies = getChildDependencies(type);

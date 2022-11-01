@@ -17,6 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsBuildInClassNames } from '../types.js';
+
 const BitloopsTypesMapping = {
   TVariable: 'TVariable',
   TVariables: 'TVariables',
@@ -138,15 +140,8 @@ const ArchitectureLayers = {
   Domain: 'Domain',
 };
 
-const BitloopsFixedClassTypes = {
-  UUIDv4: 'UUIDv4',
-};
-
-export const BitloopsFixedClassTypesArray = [BitloopsFixedClassTypes.UUIDv4]; // TODO use bitloopsBuildInClasses from types instead
-
-export const mappingBitloopsFixedClassTypesToLayer = {
-  //TODO change name
-  [BitloopsFixedClassTypes.UUIDv4]: ArchitectureLayers.Domain,
+export const mappingBitloopsBuildInClassToLayer = {
+  [BitloopsBuildInClassNames.UUIDv4]: ArchitectureLayers.Domain,
 };
 
 const mappingClassTypeToComponentType = {
