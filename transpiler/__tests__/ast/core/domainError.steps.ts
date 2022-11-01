@@ -17,7 +17,7 @@ const expectedModels: TDomainErrors[] = [
     InvalidNameError: {
       message: {
         expression: {
-          evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
+          evaluation: { regularEvaluation: { type: 'backTickString', value: 'is an invalid ${name}' } },
         },
       },
       errorId: {

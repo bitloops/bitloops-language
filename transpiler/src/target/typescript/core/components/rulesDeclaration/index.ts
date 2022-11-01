@@ -22,9 +22,20 @@ import {
   TRules,
   TParameterDependencies,
   TTargetDependenciesTypeScript,
+  TDependencyChildTypescript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+
+const RULE_DEPENDENCIES: TDependencyChildTypescript[] = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 
 const getStringWithThisBeforeWord = (
   word: string,
@@ -74,26 +85,37 @@ export const rulesDeclarationToTargetLanguage = (rules: TRules): TTargetDependen
   let result = '';
   const dependencies = [];
   for (const [ruleName, ruleValues] of Object.entries(rules)) {
+    const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
+
     result += initialRuleLangMapping(ruleName);
     const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TRuleValues,
       value: ruleValues,
     });
     result += model.output;
-    dependencies.push(...model.dependencies);
+
+    childDependencies.push(...model.dependencies);
+    const parentDependencies = getParentDependencies(childDependencies, {
+      classType: ClassTypes.Rules,
+      className: ruleName,
+    });
+    dependencies.push(...parentDependencies);
+
     result += finalRuleLangMapping;
   }
 
-  return { output: result, dependencies: [] };
+  return { output: result, dependencies };
 };
 
 export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependenciesTypeScript => {
+  const dependencies = [];
   let parameters: TTargetDependenciesTypeScript;
   if (rule.parameters && rule.parameters.length !== 0) {
     parameters = modelToTargetLanguage({
       type: BitloopsTypesMapping.TParameterDependencies,
       value: rule.parameters,
     });
+    dependencies.push(...parameters.dependencies);
   } else {
     parameters = {
       output: '()',
@@ -104,6 +126,7 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
   const ruleConstructor = getRuleConstructor(parameters.output);
   const { error } = rule;
 
+  dependencies.push(...getChildDependencies(error));
   // TODO which params will be inside it?
   const errorString = getErrorStringMapping(error, rule.parameters);
 
@@ -113,6 +136,7 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
       type: BitloopsTypesMapping.TStatements,
       value: rule.statements,
     });
+    dependencies.push(...statements.dependencies);
   }
 
   const { isBrokenIfCondition } = rule;
@@ -121,6 +145,7 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
     type: BitloopsTypesMapping.TCondition,
     value: isBrokenIfCondition,
   });
+  dependencies.push(...isBrokenConditionString.dependencies);
 
   // TODO improve this solution - it will have problems with string manipulation
   // add this to isBrokenConditionString and to statementsStringWithThis and constructorParamsWithPrivate
@@ -154,5 +179,5 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
   ${errorString}
   ${isBrokeIfMethod}`;
 
-  return { output: res, dependencies: [] };
+  return { output: res, dependencies };
 };

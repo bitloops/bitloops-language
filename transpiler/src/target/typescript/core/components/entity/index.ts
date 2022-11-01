@@ -32,6 +32,27 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
+const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'ok',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
+
 const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
   const result = domainMethods(objectValueMethods);
   return { output: result.output, dependencies: result.dependencies };
@@ -48,31 +69,13 @@ const entitiesToTargetLanguage = (params: {
 
   const modelForContext = model[boundedContext][module];
 
-  const initialObjectValuesLangMapping = (entityName: string, propsName: string) =>
+  const initialEntityLangMapping = (entityName: string, propsName: string) =>
     `export class ${entityName} extends Domain.Entity<${propsName}> { `;
 
   let result = '';
   let parentDependencies;
-  let dependencies: TDependenciesTypeScript = [
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Domain',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Either',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'ok',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-  ];
+  let dependencies = ENTITY_DEPENDENCIES;
+
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
     const propsName = create.parameterDependency.type;
@@ -85,7 +88,7 @@ const entitiesToTargetLanguage = (params: {
       dependencies = [...dependencies, ...constantVariablesModel.dependencies];
     }
 
-    result += initialObjectValuesLangMapping(entityName, propsName);
+    result += initialEntityLangMapping(entityName, propsName);
 
     const entityCreateModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEntityCreate,

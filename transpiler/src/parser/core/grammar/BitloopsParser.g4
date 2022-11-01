@@ -178,13 +178,13 @@ struct
 regularEvaluation
     : regularMethodEvaluation   
     | regularStringEvaluation
+    | templateStringLiteral
     | regularVariableEvaluation
     | regularIntegerEvaluation
     | regularDecimalEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
-	| isInstanceOf
     | regularErrorTypeEvaluation
     ;
 
@@ -550,8 +550,8 @@ jestTestDeclaration
     ;
 
 evaluation
-    : 
-    getClassEvaluation
+    : isInstanceOf 
+    | getClassEvaluation
     | regularEvaluation
     | dtoEvaluation
     | structEvaluation

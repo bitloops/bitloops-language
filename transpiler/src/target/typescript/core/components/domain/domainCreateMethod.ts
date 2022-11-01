@@ -17,16 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TDomainCreateMethod,
-  TStatement,
-  TTargetDependenciesTypeScript,
-} from '../../../../../types.js';
+import { TDomainCreateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
-
-const THIS_STATEMENT_DECLARATION = 'thisDeclaration';
+import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 
 export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
   const { parameterDependency, returnType, statements } = create;
@@ -37,7 +32,7 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
   };
 
   for (const statement of statements) {
-    if (isStatementThisDeclaration(statement)) {
+    if (isThisDeclaration(statement)) {
       statementsResult.thisStatements.push(statement);
     } else {
       statementsResult.restStatements.push(statement);
@@ -54,7 +49,7 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
   );
 
   let statementsModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TStatementsWithoutThis,
+    type: BitloopsTypesMapping.TStatements,
     value: statementsResult.restStatements,
   });
 
@@ -79,29 +74,16 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
       dependencies: statementsModel.dependencies,
     };
   }
-  const ToLanguageMapping = (
-    returnType: string,
-    parameterString: string,
-    methodStatements: string,
-  ): string => {
-    return `${producedConstructor.output} public static create(${parameterString}): ${returnType} { ${methodStatements} }`;
-  };
-  const result = ToLanguageMapping(
-    returnTypeModel.output,
-    parameterModel.output,
-    statementsModel.output,
-  );
+
+  const result = `${producedConstructor.output} public static create(${parameterModel.output}): ${returnTypeModel.output} { ${statementsModel.output} }`;
+
   return {
     output: result,
     dependencies: [
-      ...statementsModel.dependencies,
       ...parameterModel.dependencies,
       ...producedConstructor.dependencies,
       ...returnTypeModel.dependencies,
+      ...statementsModel.dependencies,
     ],
   };
-};
-
-const isStatementThisDeclaration = (statement: TStatement): boolean => {
-  return Object.keys(statement)[0] === THIS_STATEMENT_DECLARATION;
 };
