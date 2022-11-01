@@ -31,6 +31,27 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
+const VO_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'ok',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
+
 const valueObjectMethods = (
   valueObjectMethods: TValueObjectMethods,
 ): TTargetDependenciesTypeScript => {
@@ -61,26 +82,8 @@ const valueObjectsToTargetLanguage = (params: {
 
   let result = '';
   let parentDependencies;
-  let dependencies: TDependenciesTypeScript = [
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Domain',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Either',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'ok',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-  ];
+  let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
+
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
     const propsName = create.parameterDependency.type;
