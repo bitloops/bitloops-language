@@ -51,10 +51,27 @@ export const getParentDependencies = (
       from: importString,
     });
   }
-  const finalParentDependencies = removeParentDuplicates(parentDependecies, className);
+  let finalParentDependencies = removeParentDuplicates(parentDependecies, className);
+  finalParentDependencies = mergeDependencies(finalParentDependencies);
   return finalParentDependencies;
 };
 
+const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => {
+  // const sources = [];
+  const delimeter = ','
+  let mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
+  for (const parentDependency of parentDependecies) {
+    const key = parentDependency.from;
+    const sources = Object.keys(mergedDependenciesMap);
+    if (!sources.includes(key)) {
+      mergedDependenciesMap[key] = parentDependency;
+      continue;
+    }
+    const dependencies = [mergedDependenciesMap[key].value, parentDependency.value].sort();
+    mergedDependenciesMap[key].value = dependencies.join(delimeter);
+  }
+  return Object.values(mergedDependenciesMap);
+}
 const removeParentDuplicates = (
   parentDependecies: TDependencyParentTypescript[],
   className: string,
