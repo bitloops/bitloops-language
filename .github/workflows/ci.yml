@@ -40,7 +40,8 @@ jobs:
       # https://www.antlr.org/download/antlr-4.11.1-complete.jar
       - name: Install Antlr
         shell: bash
-        run: curl -sSL -o /usr/local/lib/antlr-4.11.1-complete.jar https://www.antlr.org/download/antlr-4.11.1-complete.jar
+        run: wget https://www.antlr.org/download/antlr-4.11.1-complete.jar
+        # run: curl -sSL -o /usr/local/lib/antlr-4.11.1-complete.jar https://www.antlr.org/download/antlr-4.11.1-complete.jar
       
       - name: "Produce Antlr files"
         working-directory: ./transpiler
