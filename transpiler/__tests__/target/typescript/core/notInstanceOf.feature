@@ -11,5 +11,5 @@ Feature: NotInstanceOf to Typescript target language
 
     Examples:
     | notInstanceOf                                                                    | output                         |
-    | {"isNotInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}     | !(result.isOops())             |
+    | {"isNotInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}     | !(result.isFail())             |
     | {"isNotInstanceOf":[{"value":"result","type":"variable"},{"class":"ClassName"}]} | !(result instanceof ClassName) |

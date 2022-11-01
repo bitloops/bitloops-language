@@ -106,7 +106,7 @@ const transpile = async (source: ICollection): Promise<void> => {
       absoluteSourceDirPath,
       setupData,
     );
-
+   
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 
     throbber = ora(purpleColor('🕒 Writing system files to disk...')).start();
@@ -125,8 +125,8 @@ const transpile = async (source: ICollection): Promise<void> => {
 
     console.log(greenColor(TAB + '🦎 Project generated successfully!\n'));
   } catch (err) {
-    throbber.stop();
     console.error(redColor(TAB + '❌ ' + err));
+    throbber.stop();
   }
 };
 

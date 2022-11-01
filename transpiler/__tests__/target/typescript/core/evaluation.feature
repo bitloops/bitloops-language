@@ -11,7 +11,7 @@ Feature: Evaluation to Typescript target language
 
     Examples:
       | evaluation                                                                                                                                                                      | output                         |
-      | {"evaluation":{"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}}                                                                                        | result.isOops()                |
+      | {"evaluation":{"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}}                                                                                        | result.isFail()                |
       | {"evaluation":{"isNotInstanceOf":[{"value":"result","type":"variable"},{"class":"ClassName"}]}}                                                                                 | !(result instanceof ClassName) |
       | {"evaluation":{"getClass":{"regularEvaluation":{"type":"variable","value":"result"}}}}                                                                                          | result.constructor             |
       | {"evaluation":{"regularEvaluation":{"type":"method","value":"this.clientError","argumentDependencies":[{"value":"response","type":"variable"}]}}}                               | this.clientError(response)     |

@@ -28,6 +28,15 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
+const RULE_DEPENDENCIES: TDependencyChildTypescript[] = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
+
 const getStringWithThisBeforeWord = (
   word: string,
   stringToBeReplaced: string,
@@ -76,14 +85,7 @@ export const rulesDeclarationToTargetLanguage = (rules: TRules): TTargetDependen
   let result = '';
   const dependencies = [];
   for (const [ruleName, ruleValues] of Object.entries(rules)) {
-    const childDependencies: TDependencyChildTypescript[] = [
-      {
-        type: 'absolute',
-        default: false,
-        value: 'Domain',
-        from: '@bitloops/bl-boilerplate-core',
-      },
-    ];
+    const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
 
     result += initialRuleLangMapping(ruleName);
     const model = modelToTargetLanguage({

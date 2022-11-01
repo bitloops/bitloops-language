@@ -18,22 +18,35 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TApplyRules, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import {
+  TApplyRules,
+  TDependenciesTypeScript,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { getChildDependencies } from '../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
+
+const APPLY_RULES_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'fail',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 
 const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesTypeScript => {
   const { applyRules } = variable;
 
   let result = 'const res = Domain.applyRules([';
-  let dependencies = [];
+  let dependencies = APPLY_RULES_DEPENDENCIES;
   const domainRules = [];
   for (const applyRule of applyRules) {
     const argumentDependencies = modelToTargetLanguage({
       type: BitloopsTypesMapping.TArgumentDependencies,
       value: applyRule.arguments,
     });
-    result += `new ${applyRule.name}${argumentDependencies.output},`;
+    result += `new Rules.${applyRule.name}${argumentDependencies.output},`;
     domainRules.push(applyRule.name);
     dependencies = [...dependencies, ...argumentDependencies.dependencies];
   }

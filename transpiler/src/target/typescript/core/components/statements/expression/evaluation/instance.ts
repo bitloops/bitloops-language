@@ -31,7 +31,7 @@ type InstanceType = {
 };
 
 const classMappings = {
-  Error: 'isOops()',
+  Error: 'isFail()',
 };
 
 const instancesLangMapping = (instance: InstanceType): string => {

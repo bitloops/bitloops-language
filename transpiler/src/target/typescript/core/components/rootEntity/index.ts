@@ -26,6 +26,29 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getChildDependencies, getParentDependencies } from './../../dependencies.js';
+import { constantVariables, generateGetters } from '../domain/index.js';
+import { domainMethods } from '../domain/domainMethods.js';
+
+const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'ok',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 
 export const rootEntitiesToTargetLanguage = (params: {
   rootEntities: TRootEntities;
@@ -33,41 +56,49 @@ export const rootEntitiesToTargetLanguage = (params: {
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
   const { rootEntities, model, contextData } = params;
+  const { boundedContext, module } = contextData;
+  const modelForContext = model[boundedContext][module];
+
+  //TODO check extends
+  const initialRootEntityLangMapping = (rootEntityName: string, propsName: string) =>
+    `export class ${rootEntityName} extends Domain.Aggregate<${propsName}> { `;
+
   let res = '';
-  let dependencies: TDependenciesTypeScript = [
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Domain',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Either',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'ok',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-  ];
+  let dependencies = ROOT_ENTITY_DEPENDENCIES;
+
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
-    const { create } = rootEntity;
+    const { create, methods, constantVars } = rootEntity;
     const propsName = create.parameterDependency.type;
     const propsDeps = getChildDependencies(propsName);
     dependencies = [...dependencies, ...propsDeps];
-    res += `export class ${rootEntityName} extends Domain.Aggregate<${propsName}>`;
-    const values = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TEntityValues,
-      value: rootEntity,
-      model,
-      contextData,
+
+    if (constantVars) {
+      // TODO fix with new model/types
+      const constantVariablesModel = constantVariables(constantVars as any);
+      res += constantVariablesModel.output;
+      dependencies = [...dependencies, ...constantVariablesModel.dependencies];
+    }
+
+    res += initialRootEntityLangMapping(rootEntityName, propsName);
+
+    const aggregateCreateModel = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TEntityCreate,
+      value: create,
     });
-    dependencies = [...dependencies, ...values.dependencies];
-    res += values.output;
+    res += aggregateCreateModel.output;
+    dependencies = [...dependencies, ...aggregateCreateModel.dependencies];
+
+    const gettersModel = generateGetters(propsName, modelForContext, methods);
+    res += gettersModel.output;
+    dependencies = [...dependencies, ...gettersModel.dependencies];
+
+    if (methods) {
+      const entityMethodsModel = domainMethods(methods);
+      res += entityMethodsModel.output;
+      dependencies = [...dependencies, ...entityMethodsModel.dependencies];
+    }
+
+    res += '}';
 
     dependencies = getParentDependencies(dependencies, {
       classType: ClassTypes.RootEntities,
