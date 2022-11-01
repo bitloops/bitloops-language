@@ -11,5 +11,5 @@ Feature: InstanceOf to Typescript target language
 
     Examples:
     | instanceOf                                                                    | output                      |
-    | {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}     | result.isOops()             |
+    | {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}     | result.isFail()             |
     | {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"ClassName"}]} | result instanceof ClassName |

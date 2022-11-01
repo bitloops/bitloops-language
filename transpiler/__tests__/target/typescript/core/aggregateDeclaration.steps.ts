@@ -42,13 +42,13 @@ defineFeature(feature, (test) => {
     });
 
     given(/^I have aggregates (.*) and props (.*)$/, (aggregates, props) => {
-      const valueEntities = JSON.parse(d(aggregates));
+      const rootEntities = JSON.parse(d(aggregates));
       valueProps = JSON.parse(d(props));
 
       intermediateAST = {
         [boundedContext]: {
           [module]: {
-            [rootEntitiesClassType]: valueEntities,
+            [rootEntitiesClassType]: rootEntities,
             [propsClassType]: valueProps,
           },
         },
