@@ -18,11 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  isExpression,
-  isIfStatement,
-  isSwitchStatement,
-  isConstDeclaration,
-  isVariableDeclaration,
   isExpressionAValueObjectEvaluation,
   isExpressionAnEntityEvaluation,
   isExpressionAVariableRegularEvaluation,
@@ -38,16 +33,20 @@ import {
   TEvaluationFields,
   TArgumentDependency,
 } from '../../../../../../../types.js';
+import { StatementTypeGuards } from '../../../../guards/statement.js';
 
 const isVariableOrConstDeclarationWithDomainEvaluation = (
   statement: TStatement,
 ): statement is TConstDeclaration | TVariableDeclaration => {
   // TODO add check for variable declaration as well
-  if (!isConstDeclaration(statement) && !isVariableDeclaration(statement)) {
+  if (
+    !StatementTypeGuards.isConstDeclaration(statement) &&
+    !StatementTypeGuards.isVariableDeclaration(statement)
+  ) {
     return false;
   }
 
-  if (isConstDeclaration(statement)) {
+  if (StatementTypeGuards.isConstDeclaration(statement)) {
     const expression = statement.constDeclaration;
     return (
       isExpressionAValueObjectEvaluation(expression) || isExpressionAnEntityEvaluation(expression)
@@ -62,10 +61,10 @@ const isVariableOrConstDeclarationWithDomainEvaluation = (
 const getVariableOrConstDeclarationIdentifier = (
   statement: TConstDeclaration | TVariableDeclaration,
 ): string => {
-  if (isConstDeclaration(statement)) {
+  if (StatementTypeGuards.isConstDeclaration(statement)) {
     return statement.constDeclaration.name;
   }
-  if (isVariableDeclaration(statement)) {
+  if (StatementTypeGuards.isVariableDeclaration(statement)) {
     return statement.variableDeclaration.name;
   }
   throw new Error('Statement is not constDeclaration or variableDeclaration');
@@ -137,11 +136,11 @@ const scanStatementForIdentifierToAppendDotValue = (
   statement: TStatement,
   identifiers: Readonly<Set<string>>,
 ): TStatement => {
-  if (isExpression(statement)) {
+  if (StatementTypeGuards.isExpression(statement)) {
     return appendDotValueInExpression(statement, identifiers);
   }
 
-  if (isConstDeclaration(statement)) {
+  if (StatementTypeGuards.isConstDeclaration(statement)) {
     const expression = statement.constDeclaration.expression;
     const newExpression = scanStatementForIdentifierToAppendDotValue(
       { expression },
@@ -152,7 +151,7 @@ const scanStatementForIdentifierToAppendDotValue = (
   }
 
   // TODO Abstract these code replication
-  if (isIfStatement(statement)) {
+  if (StatementTypeGuards.isIfStatement(statement)) {
     const { thenStatements, elseStatements } = statement.ifStatement;
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForIdentifierToAppendDotValue(st, identifiers),
@@ -166,7 +165,7 @@ const scanStatementForIdentifierToAppendDotValue = (
     return statement;
   }
 
-  if (isSwitchStatement(statement)) {
+  if (StatementTypeGuards.isSwitchStatement(statement)) {
     const { cases, defaultCase } = statement.switchStatement;
     statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
       ...switchCase,

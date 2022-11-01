@@ -9,8 +9,6 @@ import {
   TStatement,
   TSwitchStatement,
   TVariableDeclaration,
-} from './../types.js';
-import {
   TGraphQLControllerInstances,
   TGraphQLControllerValues,
   TGraphQLServerInstance,

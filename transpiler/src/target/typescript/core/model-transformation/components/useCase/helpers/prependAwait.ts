@@ -17,14 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  isExpression,
-  isIfStatement,
-  isSwitchStatement,
-  isConstDeclaration,
-  isVariableDeclaration,
-} from '../../../../../../../helpers/typeGuards.js';
 import { TExpression, TRegularCase, TStatement } from '../../../../../../../types.js';
+import { StatementTypeGuards } from '../../../../guards/statement.js';
 
 const expressionUsesDependency = (value: TExpression): boolean => {
   const { expression } = value;
@@ -52,25 +46,25 @@ const replaceUseCaseResultInExpression = (statement: TExpression): TExpression =
 };
 
 const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement => {
-  if (isExpression(statement)) {
+  if (StatementTypeGuards.isExpression(statement)) {
     return replaceUseCaseResultInExpression(statement);
   }
 
-  if (isConstDeclaration(statement)) {
+  if (StatementTypeGuards.isConstDeclaration(statement)) {
     const expression = statement.constDeclaration.expression;
     const newExpression = scanStatementForDepsToPrependAwait({ expression }) as TExpression;
     statement.constDeclaration.expression = newExpression.expression;
     return statement;
   }
 
-  if (isVariableDeclaration(statement)) {
+  if (StatementTypeGuards.isVariableDeclaration(statement)) {
     const expression = statement.variableDeclaration.expression;
     const newExpression = scanStatementForDepsToPrependAwait({ expression }) as TExpression;
     statement.variableDeclaration.expression = newExpression.expression;
     return statement;
   }
 
-  if (isIfStatement(statement)) {
+  if (StatementTypeGuards.isIfStatement(statement)) {
     const { thenStatements, elseStatements } = statement.ifStatement;
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForDepsToPrependAwait(st),
@@ -84,7 +78,7 @@ const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement =
     return statement;
   }
 
-  if (isSwitchStatement(statement)) {
+  if (StatementTypeGuards.isSwitchStatement(statement)) {
     const { cases, defaultCase } = statement.switchStatement;
     statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
       ...switchCase,
