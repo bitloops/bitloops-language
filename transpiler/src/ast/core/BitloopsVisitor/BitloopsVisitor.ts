@@ -226,6 +226,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       regularEvaluation,
     };
   }
+  visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
+    const stringChars: any = ctx.templateStringAtom(null)
+    const value = stringChars.map((sc) => sc.getText()).join('');
+    return {
+      type: 'backTickString',
+      value: value
+    }
+
+  }
 
   visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {
     const value = ctx.ThisVariableEvaluation().getText();
