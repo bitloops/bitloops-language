@@ -19,14 +19,45 @@
  */
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
-import { TRepoPorts, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import {
+  TDependenciesTypeScript,
+  TDependencyChildTypescript,
+  // TDependencyParentTypescript,
+  TRepoPorts,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from '../../dependencies.js';
 
+const REPO_PORT_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Application',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
+const mapPortIdentifier = (id: string): string => {
+  return `Application.Repo.I${id}`;
+};
+const mapExtendedRepoPorts = (repoPorts: string[], repoDependencyName): string[] => {
+  return repoPorts.map(
+    (extendedRepoPort) =>
+      `${mapPortIdentifier(extendedRepoPort)}<${repoDependencyName},Domain.UUIDv4>`,
+  );
+};
 export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependenciesTypeScript => {
   const repoPortName = Object.keys(repoPorts)[0];
   const firstRepoPort = repoPorts[repoPortName];
   const { definitionMethods, aggregateRootName, readModelName, extendedRepoPorts } = firstRepoPort;
+  let dependencies = REPO_PORT_DEPENDENCIES;
 
   let repoDependencyName;
   if (aggregateRootName !== undefined) {
@@ -42,9 +73,10 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependen
     repoDependencyName: string,
     extendedRepoPorts: string[],
   ): string => {
-    const extendedRepoPortsString = extendedRepoPorts
-      .map((extendedRepoPort) => `${extendedRepoPort}<${repoDependencyName}>`)
-      .join(' & ');
+    const extendedRepoPortsString = mapExtendedRepoPorts(
+      extendedRepoPorts,
+      repoDependencyName,
+    ).join(' & ');
     return `export type ${portRepoName} = ${extendedRepoPortsString};`;
   };
 
@@ -54,21 +86,32 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependen
       repoDependencyName,
       extendedRepoPorts,
     );
-    return { output: finalResult, dependencies: [] };
+    const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+      classType: ClassTypes.RepoPorts,
+      className: repoPortName,
+    });
+
+    return { output: finalResult, dependencies: parentDependencies };
   }
 
-  const extendedRepoPortsString = extendedRepoPorts
-    .map((extendedRepoPort) => `${extendedRepoPort}<${repoDependencyName}>`)
-    .join(', ');
+  const extendedRepoPortsString = mapExtendedRepoPorts(extendedRepoPorts, repoDependencyName).join(
+    ', ',
+  );
 
   const model = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDefinitionMethods,
     value: definitionMethods,
   });
+  dependencies = [...dependencies, ...model.dependencies];
+  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+    classType: ClassTypes.RepoPorts,
+    className: repoPortName,
+  });
+
   const res =
     `export interface ${repoPortName} extends ${extendedRepoPortsString} {` + model.output + '}';
   return {
     output: res,
-    dependencies: model.dependencies,
+    dependencies: parentDependencies,
   };
 };
