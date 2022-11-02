@@ -17,12 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  isExpression,
-  isIfStatement,
-  isSwitchStatement,
-} from '../../../../../../../helpers/typeGuards.js';
-import { TStatement, TExpression, TRegularCase } from './../../../../../../../types.js';
+import { TExpression, TRegularCase, TStatement } from '../../../../../../../types.js';
+import { StatementTypeIdentifiers } from '../../../../type-identifiers/statement.js';
 
 const expressionUsesDependency = (value: TExpression): boolean => {
   const { expression } = value;
@@ -34,6 +30,7 @@ const expressionUsesDependency = (value: TExpression): boolean => {
   }
   return false;
 };
+
 const prependAwaitToMethodCall = (value: TExpression): TExpression => {
   const { expression } = value;
   const methodValue = expression?.['evaluation']?.regularEvaluation?.value;
@@ -49,11 +46,25 @@ const replaceUseCaseResultInExpression = (statement: TExpression): TExpression =
 };
 
 const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement => {
-  if (isExpression(statement)) {
+  if (StatementTypeIdentifiers.isExpression(statement)) {
     return replaceUseCaseResultInExpression(statement);
   }
 
-  if (isIfStatement(statement)) {
+  if (StatementTypeIdentifiers.isConstDeclaration(statement)) {
+    const expression = statement.constDeclaration.expression;
+    const newExpression = scanStatementForDepsToPrependAwait({ expression }) as TExpression;
+    statement.constDeclaration.expression = newExpression.expression;
+    return statement;
+  }
+
+  if (StatementTypeIdentifiers.isVariableDeclaration(statement)) {
+    const expression = statement.variableDeclaration.expression;
+    const newExpression = scanStatementForDepsToPrependAwait({ expression }) as TExpression;
+    statement.variableDeclaration.expression = newExpression.expression;
+    return statement;
+  }
+
+  if (StatementTypeIdentifiers.isIfStatement(statement)) {
     const { thenStatements, elseStatements } = statement.ifStatement;
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForDepsToPrependAwait(st),
@@ -67,7 +78,7 @@ const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement =
     return statement;
   }
 
-  if (isSwitchStatement(statement)) {
+  if (StatementTypeIdentifiers.isSwitchStatement(statement)) {
     const { cases, defaultCase } = statement.switchStatement;
     statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
       ...switchCase,

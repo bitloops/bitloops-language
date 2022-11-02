@@ -17,9 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
-import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
 import {
   TParameterDependency,
   TParameterDependencies,
@@ -27,23 +24,18 @@ import {
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { getChildDependencies } from '../../dependencies.js';
 
 // TODO fix parameter dependency to take private, public etc.
 const parameterDependencyToTypescript = (
   variable: TParameterDependency,
 ): TTargetDependenciesTypeScript => {
-  if (isBitloopsPrimitive(variable.type)) {
-    return {
-      output: `${variable.value}:${bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](
-        variable.type,
-      )}`,
-      dependencies: [],
-    };
-  }
+  const mappedType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: variable.type,
+  });
   return {
-    output: `${variable.value}:${variable.type}`,
-    dependencies: getChildDependencies(variable.type),
+    output: `${variable.value}:${mappedType.output}`,
+    dependencies: mappedType.dependencies,
   };
 };
 

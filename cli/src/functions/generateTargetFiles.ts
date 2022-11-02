@@ -17,6 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsTargetGenerator } from '@bitloops/bl-transpiler';
+
 import {
   BoundedContextModules,
   ISetupData,
@@ -24,8 +26,6 @@ import {
   TBitloopsTargetSetupContent,
   TBoundedContexts,
 } from '../types.js';
-// import { getTargetFileDestination } from './getTargetFileDestination.js';
-import { BitloopsTargetGenerator } from '@bitloops/bl-transpiler';
 import { writeTargetFile } from './writeTargetFile.js';
 
 const writeGeneratedOutputToFiles = (
@@ -43,25 +43,6 @@ const writeGeneratedOutputToFiles = (
       fileContent: fileContent,
     });
   }
-  // for (const [boundedContextName, boundedContextContent] of Object.entries(params)) {
-  //   for (const [moduleName, moduleContent] of Object.entries(boundedContextContent)) {
-  //     for (const [classType, classTypeContent] of Object.entries(moduleContent)) {
-  //       for (const [className, classContent] of Object.entries(classTypeContent)) {
-  //         const destination = getTargetFileDestination(
-  //           boundedContextName,
-  //           moduleName,
-  //           classType,
-  //           className,
-  //         );
-  //         writeTargetFile({
-  //           projectPath: outputDirPath,
-  //           filePathObj: destination,
-  //           fileContent: classContent.content,
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
 };
 
 const generateTargetFiles = (params: {
@@ -73,17 +54,10 @@ const generateTargetFiles = (params: {
 
   targetLanguage: string;
 }): void => {
-  const {
-    // boundedContextModules,
-    // sourceDirPath,
-    outputDirPath,
-    bitloopsModel,
-    setupData,
-    targetLanguage,
-  } = params;
+  const { outputDirPath, bitloopsModel, setupData, targetLanguage } = params;
   const generator = new BitloopsTargetGenerator();
   const generatorParams = {
-    intermediateAST: bitloopsModel,
+    intermediateAST: bitloopsModel as any, // TODO fix this
     setupData,
     targetLanguage,
     prettierConfig: {},
@@ -98,7 +72,7 @@ const generateTargetFiles = (params: {
   writeGeneratedOutputToFiles(output, outputDirPath);
   const setupFilesData = generator.generateSetup({
     setupData,
-    intermediateAST: bitloopsModel,
+    intermediateAST: bitloopsModel as any, // TODO fix this (type clashes even if same type from package and local file)
     targetLanguage,
   });
   writeGeneratedSetupOutputToFiles(setupFilesData as TBitloopsTargetSetupContent, outputDirPath);

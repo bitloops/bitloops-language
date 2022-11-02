@@ -10,7 +10,12 @@
     "sourceType": "module",
     "ecmaVersion": 2020
   },
-  "plugins": ["@typescript-eslint", "jest", "eslint-plugin-prettier", "prettier"],
+  "plugins": [
+    "@typescript-eslint",
+    "jest",
+    "eslint-plugin-prettier",
+    "prettier"
+  ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -25,9 +30,14 @@
     // disable it, or understand what it enforces.
     // https://typescript-eslint.io/rules/explicit-function-return-type/
     "prettier/prettier": 2, // Means error
-    "quotes": [2, "single", "avoid-escape"],
+    "quotes": [
+      2,
+      "single",
+      "avoid-escape"
+    ],
     "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/no-var-requires": 0,
     "jest/no-standalone-expect": "off"
     // "@typescript-eslint/no-explicit-any": "off"
- }
+  }
 }
