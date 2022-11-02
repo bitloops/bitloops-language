@@ -490,7 +490,10 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRepoAdapters: {
-      res = repoAdapterToTargetLanguage(value);
+      if (contextData === undefined) {
+        throw new Error('Context data cannot be undefined for Repo adapters');
+      }
+      res = repoAdapterToTargetLanguage(value, contextData, model);
       break;
     }
     case BitloopsTypesMapping.TSingleExpression: {

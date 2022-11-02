@@ -23,9 +23,40 @@ import {
   SupportedLanguages,
 } from '../../supportedLanguages.js';
 import { camelCase, pascalCase, kebabCase } from '../../../utils/caseStyles.js';
-import { ClassTypes } from '../../../helpers/mappings.js';
+import { ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
+
+enum PROJECT_RELATIVE_PATHS {
+  DOMAIN = 'domain/',
+  DOMAIN_ERRORS = 'domain/errors/',
+  DRIVING_ADAPTERS = 'driving-adapters/',
+  APPLICATION = 'application/',
+  DTOs = 'dtos/',
+  PACKAGES = 'packages/',
+  REPO_ADAPTERS = 'repos/concretions',
+  RULES = 'domain/rules/',
+  PORTS = 'ports/',
+  STRUCTS = 'structs/',
+}
+
+const ClassTypesPaths: Record<TClassTypesValues, string> = {
+  [ClassTypes.Props]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.ReadModels]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.RootEntities]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.Entities]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
+  [ClassTypes.Rules]: PROJECT_RELATIVE_PATHS.RULES,
+  [ClassTypes.Controllers]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
+  [ClassTypes.UseCases]: PROJECT_RELATIVE_PATHS.APPLICATION,
+  [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
+  [ClassTypes.Packages]: PROJECT_RELATIVE_PATHS.PACKAGES,
+  [ClassTypes.RepoPorts]: PROJECT_RELATIVE_PATHS.PORTS,
+  [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION,
+  [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
+  [ClassTypes.Structs]: PROJECT_RELATIVE_PATHS.STRUCTS,
+};
 
 const getTargetFileDestination = (
   boundedContext: string,
@@ -71,43 +102,16 @@ const getTargetFileDestination = (
     case ClassTypes.Entities:
     case ClassTypes.ReadModels:
     case ClassTypes.ValueObjects:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.DomainErrors:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/errors/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.Props:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.Controllers:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/driving-adapters/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.UseCases:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/application/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.DTOs:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/dtos/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.Packages:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/packages/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.RepoPorts:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.RepoAdapters:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/repos/`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
-      break;
     case ClassTypes.Rules:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/rules/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     default:
@@ -132,36 +136,19 @@ const getFilePathRelativeToModule = (
     case ClassTypes.RootEntities:
     case ClassTypes.Entities:
     case ClassTypes.ValueObjects:
-      result.path = 'domain/';
+    case ClassTypes.Controllers:
+    case ClassTypes.UseCases:
+    case ClassTypes.DTOs:
+    case ClassTypes.Packages:
+    case ClassTypes.RepoAdapters:
+    case ClassTypes.RepoPorts:
+      result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
     case ClassTypes.DomainErrors:
-      result.path = 'domain/errors/';
-      result.filename = 'index';
-      break;
     case ClassTypes.Rules:
-      result.path = 'domain/rules/';
+      result.path = ClassTypesPaths[classType];
       result.filename = 'index';
-      break;
-    case ClassTypes.Controllers:
-      result.path = 'driving-adapters/';
-      result.filename = className;
-      break;
-    case ClassTypes.UseCases:
-      result.path = 'application/';
-      result.filename = className;
-      break;
-    case ClassTypes.DTOs:
-      result.path = 'dtos/';
-      result.filename = className;
-      break;
-    case ClassTypes.Packages:
-      result.path = 'packages/';
-      result.filename = className;
-      break;
-    case ClassTypes.RepoPorts:
-      result.path = 'domain/';
-      result.filename = className;
       break;
     default:
       throw new Error(`Class type ${classType} is not supported`);

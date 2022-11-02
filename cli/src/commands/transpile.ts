@@ -18,9 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import inquirer, { QuestionCollection } from 'inquirer';
 import fs from 'fs';
-import path from 'path';
 import ora, { Ora } from 'ora';
 
 import { copyrightSnippet } from './copyright.js';
@@ -34,26 +32,28 @@ import {
 import { SupportedLanguages } from '../helpers/supportedLanguages.js';
 import { clearFolder } from '../helpers/fileOperations.js';
 import { purpleColor, stopSpinner, greenColor, TAB, redColor } from '../utils/oraUtils.js';
+import { inquirerFuzzy as inquirerPath, printError } from '../utils/inquirer.js';
+import { Question } from 'inquirer';
 
 interface ICollection {
   targetLanguage: string;
   sourceDirPath: string;
   targetDirPath: string;
 }
-
 const SETUP_FILE_EXTENSION = 'setup.bl';
 
-const questions: QuestionCollection<ICollection> = [
+// 😑 question messages don't work with chalk
+const questions: Question[] = [
   {
     type: 'input',
     name: 'sourceDirPath',
-    message: 'Where are your source files located?',
+    message: '📦 Where are your source files located?',
     default: '.',
   },
   {
     type: 'input',
     name: 'targetDirPath',
-    message: 'Where would you like your generated files to be exported?',
+    message: '🎯 Where would you like your generated files to be exported?',
     default: './output',
   },
 ];
@@ -62,21 +62,17 @@ const transpile = async (source: ICollection): Promise<void> => {
   console.log();
   console.log(copyrightSnippet);
   console.log();
-  const answers = await inquirer.prompt(questions, source);
-  const { sourceDirPath, targetDirPath } = answers;
-  const absoluteSourceDirPath = path.isAbsolute(sourceDirPath)
-    ? sourceDirPath
-    : path.normalize(`${process.cwd()}/${sourceDirPath}`);
-  const absoluteOutputDirPath = path.isAbsolute(targetDirPath)
-    ? targetDirPath
-    : path.normalize(`${process.cwd()}/${targetDirPath}`);
-
+  const answers = [];
+  for (const q of questions) {
+    answers.push(await inquirerPath(q, source));
+  }
+  const [sourceDirPath, targetDirPath] = answers;
   let throbber: Ora;
   try {
     const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
-      getBoundedContextModules(absoluteSourceDirPath);
+      getBoundedContextModules(sourceDirPath);
 
-    const dirEntries = fs.readdirSync(absoluteSourceDirPath, { withFileTypes: true });
+    const dirEntries = fs.readdirSync(sourceDirPath, { withFileTypes: true });
     const filesNames = dirEntries
       .filter((entry) => entry.isFile())
       .map((fileName) => fileName.name);
@@ -88,32 +84,29 @@ const transpile = async (source: ICollection): Promise<void> => {
     );
     // TODO Gather all errors and display them at once
     if (!atLeastOneSetupFileExists) {
-      console.log('No setup file found. Please create a setup file in the root of your project.');
+      printError('No setup file found. Please create a setup file in the root of your project.');
       process.exit(1);
     }
     if (!atLeastOneModuleExists) {
-      console.log('No modules found. Please create a module inside one of your bounded contexts.');
+      printError('No modules found. Please create a module inside one of your bounded contexts.');
       process.exit(1);
     }
 
-    // TODO Check if the output directory exists and if it does, ask if the user wants to overwrite it
+    // TODO Check if the output directory exists and if it does ask if the user wants to overwrite it
     clearFolder(targetDirPath);
 
     throbber = ora(purpleColor('🔨 Transpiling... ')).start();
     const setupData = generateSetupDataModel(sourceDirPath);
-    const bitloopsModel = generateBitloopsModel(
-      boundedContextModules,
-      absoluteSourceDirPath,
-      setupData,
-    );
+
+    const bitloopsModel = generateBitloopsModel(boundedContextModules, sourceDirPath, setupData);
 
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 
     throbber = ora(purpleColor('🕒 Writing system files to disk...')).start();
     generateTargetFiles({
       boundedContextModules,
-      sourceDirPath: absoluteSourceDirPath,
-      outputDirPath: absoluteOutputDirPath,
+      sourceDirPath: sourceDirPath,
+      outputDirPath: targetDirPath,
       bitloopsModel,
       setupData,
       targetLanguage: SupportedLanguages.TypeScript,
@@ -129,17 +122,5 @@ const transpile = async (source: ICollection): Promise<void> => {
     throbber.stop();
   }
 };
-
-// (*) Gather BoundedContexts and Modules
-// ( ) Scan for servers (REST Fastify, REST Express, gRPC, GraphQL, etc.)
-// (*) Copy boilerplate to output
-// ( ) Delete unnecessary server files from infra
-// (*) Add routes for BoundedContexts
-// (*) Generate BoundedContext files for each module
-
-// (*) Gather BoundedContexts and Modules (in .bl)
-// (*) Generate setup Intermediate model (ast)
-// (*) Generate [boundedContexts, modules] Intermediate model (ast)
-// (*) Generate Target files
 
 export default transpile;

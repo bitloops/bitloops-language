@@ -41,6 +41,7 @@ import { GraphQLServerResolverBind } from './graphql/types.js';
 import { populateGraphQLAndControllers } from './graphql/populatateGraphQLAndControllers.js';
 import { REST_METHOD_MAPPER } from './constants.js';
 import { visitCustomServerOption } from './helpers/index.js';
+import { getRepoAdapterClassName } from '../../../target/typescript/core/components/repo/helpers/repoAdapterName.js';
 
 export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   [x: string]: any;
@@ -397,7 +398,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
 
     const repoPort = this.visit(ctx.concretedRepoPort()); //getNextTypesValue('concretedRepoPort', repoAdapterExpression);
     const { boundedContext, module } = this.visit(ctx.boundedContextModuleDeclaration());
-    const repoAdapterInfo: TRepoAdapterInfo = {
+    const repoAdapterInfo: Partial<TRepoAdapterInfo> = {
       collection,
       connection,
       repoPort,
@@ -696,8 +697,12 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     if (!this._result.repos.repoAdapters[boundedContext][module]) {
       this._result.repos.repoAdapters[boundedContext][module] = {};
     }
-    this._result.repos.repoAdapters[boundedContext][module][repoAdapterInstanceIdentifier] =
-      repoAdapterInfo;
+    const { repoPort, dbType } = repoAdapterInfo;
+    const repoAdapterClassName = getRepoAdapterClassName(repoPort, dbType);
+    this._result.repos.repoAdapters[boundedContext][module][repoAdapterClassName] = {
+      ...repoAdapterInfo,
+      instanceIdentifier: repoAdapterInstanceIdentifier,
+    };
   }
 
   protected checkObjectHasProperties(

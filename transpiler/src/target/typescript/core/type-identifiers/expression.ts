@@ -17,12 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TRepoSupportedTypes } from '../../../../../../types.js';
-import { StringUtils } from '../../../../../../utils/index.js';
 
-export const getRepoAdapterClassName = (repoPort: string, dbType: TRepoSupportedTypes): string => {
-  const suffixToRemove = 'Port';
-  const repoPortBaseName = repoPort.slice(0, repoPort.length - suffixToRemove.length);
-  const dbTypeName = StringUtils.upperCaseFirstLetter(dbType).replace('DB.', '');
-  return `${dbTypeName}${repoPortBaseName}`;
-};
+import { TExpression } from './../../../../types.js';
+
+export class ExpressionTypeIdentifiers {
+  static isMethodCallExpression(expressionStatement: TExpression): boolean {
+    const { expression } = expressionStatement;
+    if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+      return true;
+    }
+    return false;
+  }
+
+  static isGetClassExpression(expressionStatement: TExpression): boolean {
+    const { expression } = expressionStatement;
+
+    if (expression?.['evaluation']?.getClass) {
+      return true;
+    }
+    return false;
+  }
+}

@@ -8,8 +8,7 @@ import {
   TReturnStatement,
   TStatement,
   TSwitchStatement,
-} from './../types.js';
-import {
+  TVariableDeclaration,
   TGraphQLControllerInstances,
   TGraphQLControllerValues,
   TGraphQLServerInstance,
@@ -86,6 +85,12 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('variableDeclaration' in value) return true;
+  return false;
+};
+
 const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
   if ('publicMethod' in value) return true;
   else return false;
@@ -120,6 +125,45 @@ const isReturnStatement = (value: TStatement): value is TReturnStatement => {
   return false;
 };
 
+const isVO = (name): boolean => {
+  return name.endsWith('VO');
+};
+
+const isExpressionAValueObjectEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.valueObject) {
+    return true;
+  }
+
+  return false;
+};
+
+const isExpressionAnEntityEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.entity) {
+    return true;
+  }
+
+  return false;
+};
+const isExpressionAVariableRegularEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.regularEvaluation?.type === 'variable') {
+    return true;
+  }
+
+  return false;
+};
+
+const isExpressionAMethodRegularEvaluation = (expressionStatement: TExpression): boolean => {
+  const { expression } = expressionStatement;
+  if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+    return true;
+  }
+
+  return false;
+};
+
 export {
   isUndefined,
   isArray,
@@ -137,4 +181,10 @@ export {
   isExpression,
   isSwitchStatement,
   isReturnStatement,
+  isVO,
+  isVariableDeclaration,
+  isExpressionAValueObjectEvaluation,
+  isExpressionAnEntityEvaluation,
+  isExpressionAVariableRegularEvaluation,
+  isExpressionAMethodRegularEvaluation,
 };

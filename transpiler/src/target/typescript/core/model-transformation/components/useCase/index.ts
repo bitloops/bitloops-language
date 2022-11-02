@@ -17,18 +17,40 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { scanStatementForDepsToPrependAwait } from './helpers/index.js';
+import {
+  scanStatementForIdentifierToAppendDotValue,
+  isVariableOrConstDeclarationWithDomainEvaluation,
+  getVariableOrConstDeclarationIdentifier,
+} from './helpers/appendDotValue.js';
+import { scanStatementForDepsToPrependAwait } from './helpers/prependAwait.js';
 import { TUseCase } from '../../../../../../types.js';
 
 const transformUseCaseIntermediateAST = (useCases: TUseCase): TUseCase => {
   for (const useCaseValues of Object.values(useCases)) {
     const { statements } = useCaseValues.execute;
 
-    const newStatements = statements.map((statement) => {
+    const statementsWithAwait = statements.map((statement) => {
       return scanStatementForDepsToPrependAwait(statement);
     });
 
-    useCaseValues.execute.statements = newStatements;
+    const initialReducerStruct = {
+      identifiers: new Set<string>(),
+      statements: [],
+    };
+    const newStatements = statementsWithAwait.reduce((acc, statement) => {
+      const { identifiers, statements } = acc;
+
+      // Check this statement for identifiers
+      const newStatement = scanStatementForIdentifierToAppendDotValue(statement, identifiers);
+      statements.push(newStatement);
+      if (isVariableOrConstDeclarationWithDomainEvaluation(statement)) {
+        const evaluationIdentifier = getVariableOrConstDeclarationIdentifier(statement);
+        identifiers.add(evaluationIdentifier);
+      }
+      return acc;
+    }, initialReducerStruct);
+
+    useCaseValues.execute.statements = newStatements.statements;
   }
 
   return useCases;

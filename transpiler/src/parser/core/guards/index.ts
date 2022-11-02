@@ -8,5 +8,4 @@ const isBitloopsParserError = (
   }
   return false;
 };
-
 export { isBitloopsParserError };

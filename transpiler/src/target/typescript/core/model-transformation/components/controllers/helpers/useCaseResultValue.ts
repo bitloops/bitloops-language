@@ -24,6 +24,7 @@ import {
   isReturnStatement,
 } from '../../../../../../../helpers/typeGuards.js';
 import { deepClone } from '../../../../../../../utils/deepClone.js';
+import { ExpressionTypeIdentifiers } from '../../../../type-identifiers/expression.js';
 import {
   TArgumentDependency,
   TStatement,
@@ -37,7 +38,7 @@ const replaceUseCaseResultInExpression = (
 ): TExpression => {
   const { expression } = statement;
 
-  if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+  if (ExpressionTypeIdentifiers.isMethodCallExpression(statement)) {
     const newArgs = expression['evaluation'].regularEvaluation.argumentDependencies?.map(
       (arg: TArgumentDependency) => {
         if (arg.value.includes(useCaseResultIdentifier)) {
@@ -50,6 +51,12 @@ const replaceUseCaseResultInExpression = (
       },
     );
     expression['evaluation'].regularEvaluation.argumentDependencies = newArgs;
+  } else if (ExpressionTypeIdentifiers.isGetClassExpression(statement)) {
+    const previousValue = expression['evaluation'].getClass.regularEvaluation.value;
+
+    if (previousValue.includes(useCaseResultIdentifier)) {
+      expression['evaluation'].getClass.regularEvaluation.value = `${previousValue}.value`;
+    }
   }
   return statement;
 };
@@ -78,7 +85,11 @@ const scanStatementForUseCaseResult = (
   }
 
   if (isSwitchStatement(statement)) {
-    const { cases, defaultCase } = statement.switchStatement;
+    const { cases, defaultCase, expression } = statement.switchStatement;
+    statement.switchStatement.expression = (
+      scanStatementForUseCaseResult({ expression }, useCaseResultIdentifier) as TExpression
+    ).expression;
+
     statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
       ...switchCase,
       statements: switchCase.statements.map((st) =>
