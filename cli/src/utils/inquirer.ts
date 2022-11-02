@@ -1,25 +1,28 @@
 import inquirer, { Question } from 'inquirer';
-import { PathPrompt } from 'inquirer-path';
+import fz from 'inquirer-fuzzy-path';
+import path from 'path';
 
 import { TAB, redColor } from '../utils/oraUtils.js';
 
-export const inquirerFuzzy = async (q: Question, source): Promise<string> => {
-  inquirer.registerPrompt('path', PathPrompt);
+export const inquirerFuzzy = async (q: Question, source: any): Promise<string> => {
+  inquirer.registerPrompt('fuzzypath', fz);
   const answer = await inquirer.prompt(
     [
       {
-        type: 'path',
+        type: 'fuzzypath',
         name: q.name,
-        directoryOnly: true,
+        itemType: 'directory',
+        rootPath: './',
         default: q.default,
         message: q.message,
-        cwd: '.',
+        suggestOnly: false,
+        depthLimit: 5,
       },
     ],
     source,
   );
   const inputPath = answer[q.name];
-  return inputPath;
+  return path.normalize(`${process.cwd()}/${inputPath}`);
 };
 
 export const printError = (message: string): void => {
