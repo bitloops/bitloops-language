@@ -29,13 +29,14 @@ const transformUseCaseIntermediateAST = (useCases: TUseCase): TUseCase => {
   for (const useCaseValues of Object.values(useCases)) {
     const { statements } = useCaseValues.execute;
 
+    const statementsWithAwait = statements.map((statement) => {
+      return scanStatementForDepsToPrependAwait(statement);
+    });
+
     const initialReducerStruct = {
       identifiers: new Set<string>(),
       statements: [],
     };
-    const statementsWithAwait = statements.map((statement) => {
-      return scanStatementForDepsToPrependAwait(statement);
-    });
     const newStatements = statementsWithAwait.reduce((acc, statement) => {
       const { identifiers, statements } = acc;
 
