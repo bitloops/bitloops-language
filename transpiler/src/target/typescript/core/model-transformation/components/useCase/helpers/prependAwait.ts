@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TExpression, TRegularCase, TStatement } from '../../../../../../../types.js';
-import { StatementTypeIdentifiers } from '../../../../guards/statement.js';
+import { StatementTypeIdentifiers } from '../../../../type-identifiers/statement.js';
 
 const expressionUsesDependency = (value: TExpression): boolean => {
   const { expression } = value;

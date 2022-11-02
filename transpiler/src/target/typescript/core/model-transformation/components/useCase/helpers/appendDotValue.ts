@@ -33,7 +33,7 @@ import {
   TEvaluationFields,
   TArgumentDependency,
 } from '../../../../../../../types.js';
-import { StatementTypeIdentifiers } from '../../../../guards/statement.js';
+import { StatementTypeIdentifiers } from '../../../../type-identifiers/statement.js';
 
 const isVariableOrConstDeclarationWithDomainEvaluation = (
   statement: TStatement,
