@@ -40,11 +40,11 @@ const generateBitloopsModel = (
   const intermediateParser = new BitloopsIntermediateASTParser();
   if (!(initialModelOutput instanceof BitloopsParserError)) {
     const intermediateModelOrError = intermediateParser.parse(initialModelOutput);
-    if (isBitloopsParserError(intermediateModelOrError)) {
+    if (isBitloopsParserError(intermediateModelOrError as any)) {
       console.log(intermediateModelOrError);
       throw new Error('Error parsing setup file');
     }
-    return intermediateModelOrError;
+    return intermediateModelOrError as any;
   }
   throw new Error('Error parsing setup file');
 };

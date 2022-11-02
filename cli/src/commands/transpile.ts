@@ -49,13 +49,13 @@ const SETUP_FILE_EXTENSION = 'setup.bl';
 // 😑 question messages don't work with chalk
 const questions: Question[] = [
   {
-    type: 'input',
+    // type: 'input',
     name: 'sourceDirPath',
     message: '📦 Where are your source files located?',
     default: '.',
   },
   {
-    type: 'input',
+    // type: 'input',
     name: 'targetDirPath',
     message: '🎯 Where would you like your generated files to be exported?',
     default: './output',
@@ -76,10 +76,10 @@ const transpile = async (source: ICollection): Promise<void> => {
   } else {
     const ans = await inquirerSimpleConfirm(
       'Overwrite',
-      TAB + '⚠️  Target directory already exists. Overwrite?',
+      '⚠️  Target directory already exists. Overwrite?',
       'n',
     );
-    if (ans === 'n') return;
+    if (!ans) return;
   }
   let throbber: Ora;
   try {
