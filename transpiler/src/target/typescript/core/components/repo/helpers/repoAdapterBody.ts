@@ -23,17 +23,72 @@ import {
   TTargetDependenciesTypeScript,
   TSingleExpression,
   TPropsValues,
+  TModule,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { getChildDependencies } from '../../../dependencies.js';
+import { isVO } from '../../../../../../helpers/typeGuards.js';
 
 const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 // const CRUDReadRepoPort = 'CRUDReadRepoPort';
 
+const getVOProps = (voName: string, model: TModule): TPropsValues => {
+  const voModel = model.ValueObjects[voName];
+  const voPropsName = voModel.create.parameterDependency.type;
+  const voProps = model.Props[voPropsName];
+  return voProps;
+};
+
+const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
+  let voDeepFields = [];
+  voProps.variables.forEach((variable) => {
+    const { name, type } = variable;
+    if (isVO(type)) {
+      const nestedVOProps = getVOProps(type, model);
+      const nestedVOResult = getVODeepFields(nestedVOProps, model);
+      const nestedFields = [];
+      nestedVOResult.forEach((fieldsString) => {
+        nestedFields.push(`${name}.${fieldsString}`);
+      });
+      voDeepFields.push(...nestedFields);
+    } else {
+      voDeepFields.push(name);
+    }
+  });
+  return voDeepFields;
+};
+
+const getAggregateDeepFields = (
+  aggregatePropsModel: TPropsValues,
+  aggregateName: string,
+  model: TModule,
+): string => {
+  return aggregatePropsModel.variables
+    .filter((variable) => variable.name !== 'id')
+    .map((variable) => {
+      const { name, type } = variable;
+      if (isVO(type)) {
+        const voProps = getVOProps(type, model);
+        const deepFieldsVO = getVODeepFields(voProps, model);
+        return deepFieldsVO
+          .map((fieldsString) => {
+            const splitFields = fieldsString.split('.');
+            const voFieldName = splitFields[splitFields.length - 1];
+            return `${voFieldName}: ${aggregateName}.${name}.${fieldsString}`;
+          })
+          .join(', ');
+      }
+      // TODO check if is Entity and maybe get the id only
+      return `${name}: ${aggregateName}.${name}`;
+    })
+    .join(', ');
+};
+
 const fetchTypeScriptMongoCrudBaseRepo = (
   entityName: string,
-  propsModel: TPropsValues,
+  aggregatePropsModel: TPropsValues,
+  model: TModule,
 ): TTargetDependenciesTypeScript => {
   // TODO get type of entity ID From the entity, don't assume it's Domain.UUIdv4
   let dependencies = [];
@@ -42,13 +97,8 @@ const fetchTypeScriptMongoCrudBaseRepo = (
     entityName.length - 'Entity'.length,
   );
 
-  const propsMapper = propsModel.variables
-    .filter((variable) => variable.name !== 'id')
-    .map((variable) => {
-      const { name } = variable;
-      return `${name}: ${lowerCaseEntityName}.${name}`;
-    })
-    .join(', ');
+  const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
+
   const aggregateRootId = lowerCaseEntityName + 'Id';
   const output = `
   async getAll(): Promise<${entityName}[]> {
@@ -67,9 +117,7 @@ const fetchTypeScriptMongoCrudBaseRepo = (
   async save(${lowerCaseEntityName}: ${entityName}): Promise<void> {
     await this.collection.insertOne({
       _id: ${lowerCaseEntityName}.id.toString() as unknown as Mongo.ObjectId,
-      ${propsMapper}
-      // title: ${lowerCaseEntityName}.title.title,
-      // completed: ${lowerCaseEntityName}.completed,
+      ${deepFields}
     });
   }
   async update(${lowerCaseEntityName}: ${entityName}): Promise<void> {
@@ -79,9 +127,7 @@ const fetchTypeScriptMongoCrudBaseRepo = (
       },
       {
         $set: {
-      ${propsMapper}
-          // title: ${lowerCaseEntityName}.title.title,
-          // completed: ${lowerCaseEntityName}.completed,
+      ${deepFields}
         },
       },
     );
@@ -100,6 +146,7 @@ const repoBodyLangMapping = (
   collectionExpression: TSingleExpression,
   repoPortInfo: TRepoPort,
   propsModel: TPropsValues,
+  model: TModule,
 ): TTargetDependenciesTypeScript => {
   const collection = modelToTargetLanguage({
     type: BitloopsTypesMapping.TSingleExpression,
@@ -118,6 +165,7 @@ const repoBodyLangMapping = (
         const methodsResult = fetchTypeScriptMongoCrudBaseRepo(
           repoPortInfo.aggregateRootName,
           propsModel,
+          model,
         );
         result += methodsResult.output;
         dependencies = [...dependencies, ...methodsResult.dependencies];

@@ -120,6 +120,10 @@ const isReturnStatement = (value: TStatement): value is TReturnStatement => {
   return false;
 };
 
+const isVO = (name): boolean => {
+  return name.endsWith('VO');
+};
+
 export {
   isUndefined,
   isArray,
@@ -137,4 +141,5 @@ export {
   isExpression,
   isSwitchStatement,
   isReturnStatement,
+  isVO,
 };
