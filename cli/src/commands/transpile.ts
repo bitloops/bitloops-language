@@ -18,9 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-// import inquirer, { QuestionCollection } from 'inquirer';
 import fs from 'fs';
-// import path from 'path';
 import ora, { Ora } from 'ora';
 
 import { copyrightSnippet } from './copyright.js';
@@ -63,8 +61,6 @@ const transpile = async (source: ICollection): Promise<void> => {
   console.log();
   console.log(copyrightSnippet);
   console.log();
-  // const answers = await inquirer.prompt(questions, source);
-  // const answers = questions.map(async (q) => { return await inquirerFuzzy(q, source); });
   const answers = [];
   for (const q of questions) {
     answers.push(await inquirerFuzzy(q, source));
@@ -128,17 +124,5 @@ const transpile = async (source: ICollection): Promise<void> => {
     throbber.stop();
   }
 };
-
-// (*) Gather BoundedContexts and Modules
-// ( ) Scan for servers (REST Fastify, REST Express, gRPC, GraphQL, etc.)
-// (*) Copy boilerplate to output
-// ( ) Delete unnecessary server files from infra
-// (*) Add routes for BoundedContexts
-// (*) Generate BoundedContext files for each module
-
-// (*) Gather BoundedContexts and Modules (in .bl)
-// (*) Generate setup Intermediate model (ast)
-// (*) Generate [boundedContexts, modules] Intermediate model (ast)
-// (*) Generate Target files
 
 export default transpile;
