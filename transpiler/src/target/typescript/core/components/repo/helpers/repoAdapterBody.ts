@@ -25,6 +25,7 @@ import {
   TPropsValues,
   TModule,
   ISetupData,
+  TVariable,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -86,6 +87,13 @@ const getAggregateDeepFields = (
     .join(', ');
 };
 
+const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable => {
+  const [aggregateIdVariable] = aggregatePropsModel.variables
+    .filter((variable) => variable.name === 'id')
+    .map((variable) => variable);
+  return aggregateIdVariable;
+};
+
 const fetchTypeScriptMongoCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TPropsValues,
@@ -98,6 +106,12 @@ const fetchTypeScriptMongoCrudBaseRepo = (
     entityName.length - 'Entity'.length,
   );
 
+  const aggregateIdVariable = getAggregateIdVariable(aggregatePropsModel);
+  const mappedAggregateType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: aggregateIdVariable.type,
+  });
+
   const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
 
   const aggregateRootId = lowerCaseEntityName + 'Id';
@@ -105,12 +119,12 @@ const fetchTypeScriptMongoCrudBaseRepo = (
   async getAll(): Promise<${entityName}[]> {
     throw new Error('Method not implemented.');
   }
-  async getById(${aggregateRootId}: Domain.UUIDv4): Promise<${entityName}> {
+  async getById(${aggregateRootId}: ${mappedAggregateType.output}): Promise<${entityName}> {
     return (await this.collection.find({
       _id: ${aggregateRootId}.toString(),
     })) as unknown as ${entityName};
   }
-  async delete(${aggregateRootId}: Domain.UUIDv4): Promise<void> {
+  async delete(${aggregateRootId}: ${mappedAggregateType.output}): Promise<void> {
     await this.collection.deleteOne({
       _id: ${aggregateRootId}.toString(),
     });
@@ -134,8 +148,8 @@ const fetchTypeScriptMongoCrudBaseRepo = (
     );
   }
   `;
-  const domainIdDependency = getChildDependencies(['UUIDv4', entityName]);
-  dependencies = [...dependencies, ...domainIdDependency];
+  const entityNameDependency = getChildDependencies(entityName);
+  dependencies = [...dependencies, ...entityNameDependency, ...mappedAggregateType.dependencies];
   return {
     output,
     dependencies,
