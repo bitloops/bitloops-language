@@ -92,7 +92,7 @@
     "commander": "^9.4.0",
     "figlet": "1.5.2",
     "inquirer": "9.1.1",
-    "inquirer-path": "^2.3.0",
+    "inquirer-path": "^1.0.0-beta5",
     "ora": "^6.1.2"
   },
   "volta": {

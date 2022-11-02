@@ -3486,7 +3486,7 @@ ini@~1.3.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
-inquirer-path@^2.3.0:
+inquirer-path@^1.0.0-beta5:
   version "1.0.0-beta5"
   resolved "https://registry.yarnpkg.com/inquirer-path/-/inquirer-path-1.0.0-beta5.tgz#b80e41715a94475c24c3870d84af44c144606657"
   integrity sha512-a1r6aqWRM7AXVvJgyI/WTx1xR1J2PG7ojf4uhMfdpfiibErV4WbZ8TMRVtdsRiUjSTZcQO135aVnl63p9hksHA==
