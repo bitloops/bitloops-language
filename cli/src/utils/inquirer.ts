@@ -22,6 +22,22 @@ export const inquirerFuzzy = async (q: Question, source): Promise<string> => {
   return inputPath;
 };
 
+export const inquirerSimpleConfirm = async (
+  name: string,
+  message = '',
+  def = '',
+): Promise<string> => {
+  const question = [
+    {
+      type: 'confirm',
+      name: name,
+      default: def,
+      message: message,
+    },
+  ];
+  const answers = await inquirer.prompt(question);
+  return answers[name];
+};
 export const printError = (message: string): void => {
   console.log(TAB + '❌ ' + redColor(message));
 };
