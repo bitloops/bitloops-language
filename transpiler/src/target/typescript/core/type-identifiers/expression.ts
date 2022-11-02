@@ -17,3 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
+import { TExpression } from './../../../../types.js';
+
+export class ExpressionTypeIdentifiers {
+  static isMethodCallExpression(expressionStatement: TExpression): boolean {
+    const { expression } = expressionStatement;
+    if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+      return true;
+    }
+    return false;
+  }
+
+  static isGetClassExpression(expressionStatement: TExpression): boolean {
+    const { expression } = expressionStatement;
+
+    if (expression?.['evaluation']?.getClass) {
+      return true;
+    }
+    return false;
+  }
+}
