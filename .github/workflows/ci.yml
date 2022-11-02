@@ -41,7 +41,7 @@ jobs:
       - name: Install Antlr
         shell: bash
         # run: wget https://www.antlr.org/download/antlr-4.11.1-complete.jar
-        run: curl -sSL -o ./output/antlr-4.11.1-complete.jar https://www.antlr.org/download/antlr-4.11.1-complete.jar
+        run: curl -s -o /usr/local/lib/antlr-4.11.1-complete.jar https://www.antlr.org/download/antlr-4.11.1-complete.jar
       
       - name: "Produce Antlr files"
         working-directory: ./transpiler
@@ -57,7 +57,7 @@ jobs:
 
       - name: "🔍 run tests"
         working-directory: ./transpiler
-        run: npm run test --if-present
+        run: npm run test
 
   lint:
     name: Code standards
