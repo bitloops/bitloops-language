@@ -27,6 +27,17 @@ import { ClassTypes } from '../../../helpers/mappings.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
+enum PROJECT_RELATIVE_PATHS {
+  DOMAIN = 'domain/',
+  DOMAIN_ERRORS = 'domain/errors/',
+  DRIVING_ADAPTERS = 'driving-adapters/',
+  APPLICATION = 'application/',
+  DTOs = 'dtos/',
+  PACKAGES = 'packages/',
+  REPO_ADAPTERS = 'infra/repos/',
+  RULES = 'domain/rules/',
+}
+
 const getTargetFileDestination = (
   boundedContext: string,
   moduleName: string,
@@ -71,43 +82,43 @@ const getTargetFileDestination = (
     case ClassTypes.Entities:
     case ClassTypes.ReadModels:
     case ClassTypes.ValueObjects:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.DOMAIN}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.DomainErrors:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/errors/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Props:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.DOMAIN}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Controllers:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/driving-adapters/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.UseCases:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/application/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.APPLICATION}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.DTOs:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/dtos/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.DTOs}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Packages:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/packages/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.PACKAGES}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.RepoPorts:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.DOMAIN}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.RepoAdapters:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/infra/repos/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.REPO_ADAPTERS}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     case ClassTypes.Rules:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/domain/rules/`;
+      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${PROJECT_RELATIVE_PATHS.RULES}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     default:
@@ -132,35 +143,35 @@ const getFilePathRelativeToModule = (
     case ClassTypes.RootEntities:
     case ClassTypes.Entities:
     case ClassTypes.ValueObjects:
-      result.path = 'domain/';
+      result.path = `${PROJECT_RELATIVE_PATHS.DOMAIN}`;
       result.filename = className;
       break;
     case ClassTypes.DomainErrors:
-      result.path = 'domain/errors/';
+      result.path = `${PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS}`;
       result.filename = 'index';
       break;
     case ClassTypes.Rules:
-      result.path = 'domain/rules/';
+      result.path = `${PROJECT_RELATIVE_PATHS.RULES}`;
       result.filename = 'index';
       break;
     case ClassTypes.Controllers:
-      result.path = 'driving-adapters/';
+      result.path = `${PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS}`;
       result.filename = className;
       break;
     case ClassTypes.UseCases:
-      result.path = 'application/';
+      result.path = `${PROJECT_RELATIVE_PATHS.APPLICATION}`;
       result.filename = className;
       break;
     case ClassTypes.DTOs:
-      result.path = 'dtos/';
+      result.path = `${PROJECT_RELATIVE_PATHS.DTOs}`;
       result.filename = className;
       break;
     case ClassTypes.Packages:
-      result.path = 'packages/';
+      result.path = `${PROJECT_RELATIVE_PATHS.PACKAGES}`;
       result.filename = className;
       break;
     case ClassTypes.RepoPorts:
-      result.path = 'domain/';
+      result.path = `${PROJECT_RELATIVE_PATHS.DOMAIN}`;
       result.filename = className;
       break;
     default:
