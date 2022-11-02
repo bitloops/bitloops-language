@@ -99,7 +99,6 @@ const fetchTypeScriptMongoCrudBaseRepo = (
   aggregatePropsModel: TPropsValues,
   model: TModule,
 ): TTargetDependenciesTypeScript => {
-  // TODO get type of entity ID From the entity, don't assume it's Domain.UUIdv4
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(
     0,
