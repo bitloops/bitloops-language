@@ -28,7 +28,7 @@ import {
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { getParentDependencies } from '../../dependencies.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
 const REPO_PORT_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -65,6 +65,7 @@ export const repoPortToTargetLanguage = (repoPorts: TRepoPorts): TTargetDependen
   } else if (readModelName !== undefined) {
     repoDependencyName = readModelName;
   }
+  dependencies = [...dependencies, ...getChildDependencies(repoDependencyName)];
 
   const methodNames = Object.keys(definitionMethods);
 
