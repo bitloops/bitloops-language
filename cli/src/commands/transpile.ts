@@ -101,7 +101,6 @@ const transpile = async (source: ICollection): Promise<void> => {
 
     const bitloopsModel = generateBitloopsModel(boundedContextModules, targetDirPath, setupData);
 
-
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 
     throbber = ora(purpleColor('🕒 Writing system files to disk...')).start();
