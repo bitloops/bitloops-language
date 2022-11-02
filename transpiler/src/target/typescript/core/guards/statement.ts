@@ -9,7 +9,7 @@ import {
   TIfStatement,
 } from '../../../../types.js';
 
-export class StatementTypeGuards {
+export class StatementTypeIdentifiers {
   static isIfStatement = (value: TStatement): value is TIfStatement => {
     if (typeof value === 'string') return false;
     if ('ifStatement' in value) return true;

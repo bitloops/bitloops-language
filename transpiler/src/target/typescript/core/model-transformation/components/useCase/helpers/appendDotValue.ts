@@ -33,20 +33,20 @@ import {
   TEvaluationFields,
   TArgumentDependency,
 } from '../../../../../../../types.js';
-import { StatementTypeGuards } from '../../../../guards/statement.js';
+import { StatementTypeIdentifiers } from '../../../../guards/statement.js';
 
 const isVariableOrConstDeclarationWithDomainEvaluation = (
   statement: TStatement,
 ): statement is TConstDeclaration | TVariableDeclaration => {
   // TODO add check for variable declaration as well
   if (
-    !StatementTypeGuards.isConstDeclaration(statement) &&
-    !StatementTypeGuards.isVariableDeclaration(statement)
+    !StatementTypeIdentifiers.isConstDeclaration(statement) &&
+    !StatementTypeIdentifiers.isVariableDeclaration(statement)
   ) {
     return false;
   }
 
-  if (StatementTypeGuards.isConstDeclaration(statement)) {
+  if (StatementTypeIdentifiers.isConstDeclaration(statement)) {
     const expression = statement.constDeclaration;
     return (
       isExpressionAValueObjectEvaluation(expression) || isExpressionAnEntityEvaluation(expression)
@@ -61,10 +61,10 @@ const isVariableOrConstDeclarationWithDomainEvaluation = (
 const getVariableOrConstDeclarationIdentifier = (
   statement: TConstDeclaration | TVariableDeclaration,
 ): string => {
-  if (StatementTypeGuards.isConstDeclaration(statement)) {
+  if (StatementTypeIdentifiers.isConstDeclaration(statement)) {
     return statement.constDeclaration.name;
   }
-  if (StatementTypeGuards.isVariableDeclaration(statement)) {
+  if (StatementTypeIdentifiers.isVariableDeclaration(statement)) {
     return statement.variableDeclaration.name;
   }
   throw new Error('Statement is not constDeclaration or variableDeclaration');
@@ -136,11 +136,11 @@ const scanStatementForIdentifierToAppendDotValue = (
   statement: TStatement,
   identifiers: Readonly<Set<string>>,
 ): TStatement => {
-  if (StatementTypeGuards.isExpression(statement)) {
+  if (StatementTypeIdentifiers.isExpression(statement)) {
     return appendDotValueInExpression(statement, identifiers);
   }
 
-  if (StatementTypeGuards.isConstDeclaration(statement)) {
+  if (StatementTypeIdentifiers.isConstDeclaration(statement)) {
     const expression = statement.constDeclaration.expression;
     const newExpression = scanStatementForIdentifierToAppendDotValue(
       { expression },
@@ -151,7 +151,7 @@ const scanStatementForIdentifierToAppendDotValue = (
   }
 
   // TODO Abstract these code replication
-  if (StatementTypeGuards.isIfStatement(statement)) {
+  if (StatementTypeIdentifiers.isIfStatement(statement)) {
     const { thenStatements, elseStatements } = statement.ifStatement;
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForIdentifierToAppendDotValue(st, identifiers),
@@ -165,7 +165,7 @@ const scanStatementForIdentifierToAppendDotValue = (
     return statement;
   }
 
-  if (StatementTypeGuards.isSwitchStatement(statement)) {
+  if (StatementTypeIdentifiers.isSwitchStatement(statement)) {
     const { cases, defaultCase } = statement.switchStatement;
     statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
       ...switchCase,
