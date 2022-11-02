@@ -24,6 +24,7 @@ import {
   TSingleExpression,
   TPropsValues,
   TModule,
+  ISetupData,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -41,7 +42,7 @@ const getVOProps = (voName: string, model: TModule): TPropsValues => {
 };
 
 const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
-  let voDeepFields = [];
+  const voDeepFields = [];
   voProps.variables.forEach((variable) => {
     const { name, type } = variable;
     if (isVO(type)) {
@@ -144,20 +145,36 @@ const fetchTypeScriptMongoCrudBaseRepo = (
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
   collectionExpression: TSingleExpression,
+  connectionExpression: TSingleExpression,
   repoPortInfo: TRepoPort,
   propsModel: TPropsValues,
   model: TModule,
+  setupData: ISetupData,
 ): TTargetDependenciesTypeScript => {
   const collection = modelToTargetLanguage({
     type: BitloopsTypesMapping.TSingleExpression,
     value: collectionExpression,
   });
-  let dependencies = [...collection.dependencies];
+  const connection = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TSingleExpression,
+    value: connectionExpression,
+  });
+  const { database } = setupData.repos.connections[connection.output];
+  const dbName = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TSingleExpression,
+    value: database,
+  });
+
+  let dependencies = [
+    ...collection.dependencies,
+    ...connection.dependencies,
+    ...dbName.dependencies,
+  ];
   let result = '';
   switch (dbType) {
     case 'DB.Mongo': {
       result = `constructor(private client: Mongo.Client) { 
-        const dbName = 'todoFixMe';
+        const dbName = ${dbName.output};
       const collection = ${collection.output};
       this.collection = this.client.db(dbName).collection(collection);
      }`;

@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  ISetupData,
   TBoundedContexts,
   TDependenciesTypeScript,
   TRepoAdapters,
@@ -65,13 +66,14 @@ export const repoAdapterToTargetLanguage = (
   repoAdapters: TRepoAdapters,
   contextData: { boundedContext: string; module: string },
   model: TBoundedContexts,
+  setupData: ISetupData,
 ): TTargetDependenciesTypeScript => {
   const { boundedContext, module: moduleName } = contextData;
 
   const repoAdapterInstanceName = Object.keys(repoAdapters)[0];
   const repoAdapter = repoAdapters[repoAdapterInstanceName];
 
-  const { dbType, repoPort, connection: _connection, collection } = repoAdapter;
+  const { dbType, repoPort, connection, collection } = repoAdapter;
   // TODO Get db name from connection of this repoAdapter
 
   const repoPortInfo = model[boundedContext][moduleName].RepoPorts[repoPort];
@@ -90,9 +92,11 @@ export const repoAdapterToTargetLanguage = (
   const repoBody = repoBodyLangMapping(
     dbType,
     collection,
+    connection,
     repoPortInfo,
     propsModel,
     model[boundedContext][moduleName],
+    setupData,
   );
   const repoEnd = '}';
 
