@@ -58,7 +58,7 @@ export const getParentDependencies = (
 
 const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => {
   // const sources = [];
-  const delimeter = ','
+  const delimeter = ',';
   let mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
   for (const parentDependency of parentDependecies) {
     const key = parentDependency.from;
@@ -68,13 +68,13 @@ const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => 
       continue;
     }
     if (mergedDependenciesMap[key].value.includes(parentDependency.value)) {
-      continue
+      continue;
     }
     const dependencies = [mergedDependenciesMap[key].value, parentDependency.value].sort();
     mergedDependenciesMap[key].value = dependencies.join(delimeter);
   }
   return Object.values(mergedDependenciesMap);
-}
+};
 const removeParentDuplicates = (
   parentDependecies: TDependencyParentTypescript[],
   className: string,
@@ -96,7 +96,6 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
   if (typeof args === 'string') {
     dependencyStrings = [args];
   }
-
   const result: TDependencyChildTypescript[] = [];
   for (const dependencyString of dependencyStrings) {
     // for void etc
