@@ -32,7 +32,7 @@ import {
 import { SupportedLanguages } from '../helpers/supportedLanguages.js';
 import { clearFolder } from '../helpers/fileOperations.js';
 import { purpleColor, stopSpinner, greenColor, TAB, redColor } from '../utils/oraUtils.js';
-import { inquirerFuzzy, printError } from '../utils/inquirer.js';
+import { inquirerFuzzy as inquirerPath, printError } from '../utils/inquirer.js';
 import { Question } from 'inquirer';
 
 interface ICollection {
@@ -42,17 +42,18 @@ interface ICollection {
 }
 const SETUP_FILE_EXTENSION = 'setup.bl';
 
+// 😑 question messages don't work with chalk
 const questions: Question[] = [
   {
     type: 'input',
     name: 'sourceDirPath',
-    message: 'Where are your source files located?',
+    message: '📦 Where are your source files located?',
     default: '.',
   },
   {
     type: 'input',
     name: 'targetDirPath',
-    message: 'Where would you like your generated files to be exported?',
+    message: '🎯 Where would you like your generated files to be exported?',
     default: './output',
   },
 ];
@@ -63,17 +64,15 @@ const transpile = async (source: ICollection): Promise<void> => {
   console.log();
   const answers = [];
   for (const q of questions) {
-    answers.push(await inquirerFuzzy(q, source));
+    answers.push(await inquirerPath(q, source));
   }
   const [sourceDirPath, targetDirPath] = answers;
-  console.log(answers);
-
   let throbber: Ora;
   try {
     const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
       getBoundedContextModules(sourceDirPath);
 
-    const dirEntries = fs.readdirSync(targetDirPath, { withFileTypes: true });
+    const dirEntries = fs.readdirSync(sourceDirPath, { withFileTypes: true });
     const filesNames = dirEntries
       .filter((entry) => entry.isFile())
       .map((fileName) => fileName.name);
@@ -99,14 +98,14 @@ const transpile = async (source: ICollection): Promise<void> => {
     throbber = ora(purpleColor('🔨 Transpiling... ')).start();
     const setupData = generateSetupDataModel(sourceDirPath);
 
-    const bitloopsModel = generateBitloopsModel(boundedContextModules, targetDirPath, setupData);
+    const bitloopsModel = generateBitloopsModel(boundedContextModules, sourceDirPath, setupData);
 
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 
     throbber = ora(purpleColor('🕒 Writing system files to disk...')).start();
     generateTargetFiles({
       boundedContextModules,
-      sourceDirPath: targetDirPath,
+      sourceDirPath: sourceDirPath,
       outputDirPath: targetDirPath,
       bitloopsModel,
       setupData,
@@ -120,7 +119,7 @@ const transpile = async (source: ICollection): Promise<void> => {
     console.log(greenColor(TAB + '🦎 Project generated successfully!\n'));
   } catch (err) {
     console.error(redColor(TAB + '❌ ' + err));
-    throbber?.stop();
+    throbber.stop();
   }
 };
 
