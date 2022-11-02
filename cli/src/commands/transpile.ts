@@ -32,7 +32,11 @@ import {
 import { SupportedLanguages } from '../helpers/supportedLanguages.js';
 import { clearFolder } from '../helpers/fileOperations.js';
 import { purpleColor, stopSpinner, greenColor, TAB, redColor } from '../utils/oraUtils.js';
-import { inquirerFuzzy as inquirerPath, printError } from '../utils/inquirer.js';
+import {
+  inquirerFuzzy as inquirerPath,
+  inquirerSimpleConfirm,
+  printError,
+} from '../utils/inquirer.js';
 import { Question } from 'inquirer';
 
 interface ICollection {
@@ -67,6 +71,16 @@ const transpile = async (source: ICollection): Promise<void> => {
     answers.push(await inquirerPath(q, source));
   }
   const [sourceDirPath, targetDirPath] = answers;
+  if (!fs.existsSync(targetDirPath)) {
+    fs.mkdirSync(targetDirPath);
+  } else {
+    const ans = await inquirerSimpleConfirm(
+      'Overwrite',
+      TAB + '⚠️  Target directory already exists. Overwrite?',
+      'n',
+    );
+    if (ans === 'n') return;
+  }
   let throbber: Ora;
   try {
     const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =

@@ -5,6 +5,7 @@ const SPINNER_COLOR = 'magenta';
 const greenColor = chalk.hex('#00ff00');
 const redColor = chalk.hex('#ff0000');
 const purpleColor = chalk.hex('#800080');
+const yellowColor = chalk.hex('#ffff00');
 const timeout = async (
   ms: number,
   throbber: any,
@@ -27,4 +28,4 @@ const stopSpinner = (throbber: any, persistMessage: string, icon: string): void 
   });
 };
 
-export { greenColor, redColor, purpleColor, timeout, stopSpinner, TAB };
+export { greenColor, redColor, purpleColor, yellowColor, timeout, stopSpinner, TAB };
