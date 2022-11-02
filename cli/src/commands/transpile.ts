@@ -73,7 +73,6 @@ const transpile = async (source: ICollection): Promise<void> => {
       getBoundedContextModules(sourceDirPath);
 
     const dirEntries = fs.readdirSync(sourceDirPath, { withFileTypes: true });
-    console.log(dirEntries);
     const filesNames = dirEntries
       .filter((entry) => entry.isFile())
       .map((fileName) => fileName.name);
