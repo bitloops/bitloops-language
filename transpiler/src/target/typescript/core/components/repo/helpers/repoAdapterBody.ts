@@ -17,45 +17,168 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TRepoSupportedTypes, TRepoPort } from '../../../../../../types.js';
+import {
+  TRepoSupportedTypes,
+  TRepoPort,
+  TTargetDependenciesTypeScript,
+  TSingleExpression,
+  TPropsValues,
+  TModule,
+} from '../../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../../dependencies.js';
+import { isVO } from '../../../../../../helpers/typeGuards.js';
 
-const CRUDRepoPort = 'CRUDRepoPort';
+const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
+// const CRUDReadRepoPort = 'CRUDReadRepoPort';
 
-const fetchTypeScriptMongoCrudBaseRepo = (entityName: string) => {
-  return `async getAll(): Promise<${entityName}[]> {
+const getVOProps = (voName: string, model: TModule): TPropsValues => {
+  const voModel = model.ValueObjects[voName];
+  const voPropsName = voModel.create.parameterDependency.type;
+  const voProps = model.Props[voPropsName];
+  return voProps;
+};
+
+const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
+  let voDeepFields = [];
+  voProps.variables.forEach((variable) => {
+    const { name, type } = variable;
+    if (isVO(type)) {
+      const nestedVOProps = getVOProps(type, model);
+      const nestedVOResult = getVODeepFields(nestedVOProps, model);
+      const nestedFields = [];
+      nestedVOResult.forEach((fieldsString) => {
+        nestedFields.push(`${name}.${fieldsString}`);
+      });
+      voDeepFields.push(...nestedFields);
+    } else {
+      voDeepFields.push(name);
+    }
+  });
+  return voDeepFields;
+};
+
+const getAggregateDeepFields = (
+  aggregatePropsModel: TPropsValues,
+  aggregateName: string,
+  model: TModule,
+): string => {
+  return aggregatePropsModel.variables
+    .filter((variable) => variable.name !== 'id')
+    .map((variable) => {
+      const { name, type } = variable;
+      if (isVO(type)) {
+        const voProps = getVOProps(type, model);
+        const deepFieldsVO = getVODeepFields(voProps, model);
+        return deepFieldsVO
+          .map((fieldsString) => {
+            const splitFields = fieldsString.split('.');
+            const voFieldName = splitFields[splitFields.length - 1];
+            return `${voFieldName}: ${aggregateName}.${name}.${fieldsString}`;
+          })
+          .join(', ');
+      }
+      // TODO check if is Entity and maybe get the id only
+      return `${name}: ${aggregateName}.${name}`;
+    })
+    .join(', ');
+};
+
+const fetchTypeScriptMongoCrudBaseRepo = (
+  entityName: string,
+  aggregatePropsModel: TPropsValues,
+  model: TModule,
+): TTargetDependenciesTypeScript => {
+  // TODO get type of entity ID From the entity, don't assume it's Domain.UUIdv4
+  let dependencies = [];
+  const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(
+    0,
+    entityName.length - 'Entity'.length,
+  );
+
+  const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
+
+  const aggregateRootId = lowerCaseEntityName + 'Id';
+  const output = `
+  async getAll(): Promise<${entityName}[]> {
     throw new Error('Method not implemented.');
   }
-  async getById(aggregateRootId: string): Promise<${entityName}> {
-    throw new Error('Method not implemented.');
+  async getById(${aggregateRootId}: Domain.UUIDv4): Promise<${entityName}> {
+    return (await this.collection.find({
+      _id: ${aggregateRootId}.toString(),
+    })) as unknown as ${entityName};
   }
-  async save(aggregateRootId:  ${entityName}): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(${aggregateRootId}: Domain.UUIDv4): Promise<void> {
+    await this.collection.deleteOne({
+      _id: ${aggregateRootId}.toString(),
+    });
   }
-  async update(aggregate:  ${entityName}): Promise<void> {
-    throw new Error('Method not implemented.');
+  async save(${lowerCaseEntityName}: ${entityName}): Promise<void> {
+    await this.collection.insertOne({
+      _id: ${lowerCaseEntityName}.id.toString() as unknown as Mongo.ObjectId,
+      ${deepFields}
+    });
   }
-  async delete(aggregateRootId: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async update(${lowerCaseEntityName}: ${entityName}): Promise<void> {
+    await this.collection.updateOne(
+      {
+        _id: ${lowerCaseEntityName}.id.toString(),
+      },
+      {
+        $set: {
+      ${deepFields}
+        },
+      },
+    );
   }
   `;
+  const domainIdDependency = getChildDependencies(['UUIDv4', entityName]);
+  dependencies = [...dependencies, ...domainIdDependency];
+  return {
+    output,
+    dependencies,
+  };
 };
 
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
-  collection: string,
+  collectionExpression: TSingleExpression,
   repoPortInfo: TRepoPort,
-): string => {
+  propsModel: TPropsValues,
+  model: TModule,
+): TTargetDependenciesTypeScript => {
+  const collection = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TSingleExpression,
+    value: collectionExpression,
+  });
+  let dependencies = [...collection.dependencies];
+  let result = '';
   switch (dbType) {
     case 'DB.Mongo': {
-      let result = `constructor(private client: MongoClient) { this.collection = ${collection}; }`;
-      if (repoPortInfo.extendedRepoPorts.includes(CRUDRepoPort)) {
-        result += fetchTypeScriptMongoCrudBaseRepo(repoPortInfo.aggregateRootName);
+      result = `constructor(private client: Mongo.Client) { 
+        const dbName = 'todoFixMe';
+      const collection = ${collection.output};
+      this.collection = this.client.db(dbName).collection(collection);
+     }`;
+      if (repoPortInfo.extendedRepoPorts.includes(CRUDWriteRepoPort)) {
+        const methodsResult = fetchTypeScriptMongoCrudBaseRepo(
+          repoPortInfo.aggregateRootName,
+          propsModel,
+          model,
+        );
+        result += methodsResult.output;
+        dependencies = [...dependencies, ...methodsResult.dependencies];
       }
-      return result;
+      break;
     }
     default: {
       throw new Error(`Unsupported db type: ${dbType}`);
     }
   }
+  return {
+    output: result,
+    dependencies,
+  };
 };
 export { repoBodyLangMapping };

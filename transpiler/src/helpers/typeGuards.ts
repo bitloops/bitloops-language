@@ -125,6 +125,10 @@ const isReturnStatement = (value: TStatement): value is TReturnStatement => {
   return false;
 };
 
+const isVO = (name): boolean => {
+  return name.endsWith('VO');
+};
+
 const isExpressionAValueObjectEvaluation = (expressionStatement: TExpression): boolean => {
   const { expression } = expressionStatement;
   if (expression?.['evaluation']?.valueObject) {
@@ -177,6 +181,7 @@ export {
   isExpression,
   isSwitchStatement,
   isReturnStatement,
+  isVO,
   isVariableDeclaration,
   isExpressionAValueObjectEvaluation,
   isExpressionAnEntityEvaluation,

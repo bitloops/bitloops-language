@@ -607,7 +607,10 @@ export { routers };
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
         for (const [classTypeName, classType] of Object.entries(module)) {
-          if (classTypeName === ClassTypes.DomainErrors || classTypeName === ClassTypes.ApplicationErrors) {
+          if (
+            classTypeName === ClassTypes.DomainErrors ||
+            classTypeName === ClassTypes.ApplicationErrors
+          ) {
             let imports = '';
             let content = `export namespace ${classTypeName} {`;
             const filePathObj = getTargetFileDestination(
@@ -688,7 +691,7 @@ export { routers };
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify': {
         // serverPath = 'rest/fastify';
-        this.nodeDependencies['@bitloops/bl-boilerplate-infra-rest-fastify'] = '^0.0.2';
+        this.nodeDependencies['@bitloops/bl-boilerplate-infra-rest-fastify'] = '^0.0.3';
         body = `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { routers } from './api';
 
