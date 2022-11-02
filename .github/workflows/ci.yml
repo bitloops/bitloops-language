@@ -22,14 +22,6 @@ jobs:
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 17
-
-      - name: "🔧 install npm@latest"
-        working-directory: ./transpiler
-        run: npm i -g npm@latest
-
-      - name: npm install
-        working-directory: ./transpiler
-        run: npm install
       
       - name: Install Java
         uses: actions/setup-java@v3
@@ -40,6 +32,14 @@ jobs:
       - name: Install Antlr
         shell: bash
         run: curl -s -o antlr-4.11.1-complete.jar https://www.antlr.org/download/antlr-4.11.1-complete.jar
+
+      - name: "🔧 install npm@latest"
+        working-directory: ./transpiler
+        run: npm i -g npm@latest
+
+      - name: npm install
+        working-directory: ./transpiler
+        run: npm install
       
       - name: "Produce Antlr files"
         working-directory: ./transpiler
@@ -57,27 +57,27 @@ jobs:
         working-directory: ./transpiler
         run: npm run test
 
-  lint:
-    name: Code standards
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v2
+  # lint:
+  #   name: Code standards
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 10
+  #   steps:
+  #     - name: "☁️ checkout repository"
+  #       uses: actions/checkout@v2
 
-      - name: "🔧 setup node"
-        uses: actions/setup-node@v2.1.5
-        with:
-          node-version: 17
+  #     - name: "🔧 setup node"
+  #       uses: actions/setup-node@v2.1.5
+  #       with:
+  #         node-version: 17
 
-      - name: "🔧 install npm@latest"
-        working-directory: ./transpiler
-        run: npm i -g npm@latest
+  #     - name: "🔧 install npm@latest"
+  #       working-directory: ./transpiler
+  #       run: npm i -g npm@latest
       
-      - name: npm install
-        working-directory: ./transpiler
-        run: npm install
+  #     - name: npm install
+  #       working-directory: ./transpiler
+  #       run: npm install
 
-      - name: "🔍 lint code"
-        working-directory: ./transpiler
-        run: npm run lint --if-present
+  #     - name: "🔍 lint code"
+  #       working-directory: ./transpiler
+  #       run: npm run lint --if-present
