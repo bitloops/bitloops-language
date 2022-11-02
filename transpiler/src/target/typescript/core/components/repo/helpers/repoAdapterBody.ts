@@ -24,6 +24,8 @@ import {
   TSingleExpression,
   TPropsValues,
   TModule,
+  ISetupData,
+  TVariable,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -41,7 +43,7 @@ const getVOProps = (voName: string, model: TModule): TPropsValues => {
 };
 
 const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
-  let voDeepFields = [];
+  const voDeepFields = [];
   voProps.variables.forEach((variable) => {
     const { name, type } = variable;
     if (isVO(type)) {
@@ -85,17 +87,29 @@ const getAggregateDeepFields = (
     .join(', ');
 };
 
+const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable => {
+  const [aggregateIdVariable] = aggregatePropsModel.variables
+    .filter((variable) => variable.name === 'id')
+    .map((variable) => variable);
+  return aggregateIdVariable;
+};
+
 const fetchTypeScriptMongoCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TPropsValues,
   model: TModule,
 ): TTargetDependenciesTypeScript => {
-  // TODO get type of entity ID From the entity, don't assume it's Domain.UUIdv4
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(
     0,
     entityName.length - 'Entity'.length,
   );
+
+  const aggregateIdVariable = getAggregateIdVariable(aggregatePropsModel);
+  const mappedAggregateType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: aggregateIdVariable.type,
+  });
 
   const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
 
@@ -104,12 +118,12 @@ const fetchTypeScriptMongoCrudBaseRepo = (
   async getAll(): Promise<${entityName}[]> {
     throw new Error('Method not implemented.');
   }
-  async getById(${aggregateRootId}: Domain.UUIDv4): Promise<${entityName}> {
+  async getById(${aggregateRootId}: ${mappedAggregateType.output}): Promise<${entityName}> {
     return (await this.collection.find({
       _id: ${aggregateRootId}.toString(),
     })) as unknown as ${entityName};
   }
-  async delete(${aggregateRootId}: Domain.UUIDv4): Promise<void> {
+  async delete(${aggregateRootId}: ${mappedAggregateType.output}): Promise<void> {
     await this.collection.deleteOne({
       _id: ${aggregateRootId}.toString(),
     });
@@ -133,8 +147,8 @@ const fetchTypeScriptMongoCrudBaseRepo = (
     );
   }
   `;
-  const domainIdDependency = getChildDependencies(['UUIDv4', entityName]);
-  dependencies = [...dependencies, ...domainIdDependency];
+  const entityNameDependency = getChildDependencies(entityName);
+  dependencies = [...dependencies, ...entityNameDependency, ...mappedAggregateType.dependencies];
   return {
     output,
     dependencies,
@@ -144,20 +158,36 @@ const fetchTypeScriptMongoCrudBaseRepo = (
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
   collectionExpression: TSingleExpression,
+  connectionExpression: TSingleExpression,
   repoPortInfo: TRepoPort,
   propsModel: TPropsValues,
   model: TModule,
+  setupData: ISetupData,
 ): TTargetDependenciesTypeScript => {
   const collection = modelToTargetLanguage({
     type: BitloopsTypesMapping.TSingleExpression,
     value: collectionExpression,
   });
-  let dependencies = [...collection.dependencies];
+  const connection = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TSingleExpression,
+    value: connectionExpression,
+  });
+  const { database } = setupData.repos.connections[connection.output];
+  const dbName = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TSingleExpression,
+    value: database,
+  });
+
+  let dependencies = [
+    ...collection.dependencies,
+    ...connection.dependencies,
+    ...dbName.dependencies,
+  ];
   let result = '';
   switch (dbType) {
     case 'DB.Mongo': {
       result = `constructor(private client: Mongo.Client) { 
-        const dbName = 'todoFixMe';
+        const dbName = ${dbName.output};
       const collection = ${collection.output};
       this.collection = this.client.db(dbName).collection(collection);
      }`;
