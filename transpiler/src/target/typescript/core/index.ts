@@ -63,6 +63,7 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
           module: moduleName,
         };
 
+        // TODO this may be moved to a previous model not specifically for typescript
         if (this.moduleHasRepoAdaptersDefined(setupData, { boundedContextName, moduleName })) {
           this.injectRepoAdaptersFromSetupToModel(intermediateAST, setupData, {
             boundedContextName,
