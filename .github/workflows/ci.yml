@@ -41,6 +41,9 @@ jobs:
         working-directory: ./transpiler
         run: npm install
       
+      - name: make antlr jar executable
+        run: chmod +x antlr-4.11.1-complete.jar
+      
       - name: "Produce Antlr files"
         working-directory: ./transpiler
         run: npm run ant:ci
