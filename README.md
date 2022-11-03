@@ -9,6 +9,7 @@
 </p>
 
 # <br/> Build scalable, maintainable & reliable software (faster, much faster)
+
 Bitloops Language (BL) is a transpiled, high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
 
 <!--
@@ -68,25 +69,25 @@ yarn global add @bitloops/bitloops-language-cli
 
 4. Install the npm packages
 
-  ```console
-  npm install
-  ```
+```console
+npm install
+```
 
-  or
+or
 
-  ```console
-  yarn install
-  ```
+```console
+yarn install
+```
 
 5. Make sure you have a running instance of MongoDB
 
-  5.1 If you don't have MongoDB already installed on your system, the easiest and "cleaner" way is to run MongoDB through [Docker](https://www.docker.com/) so install it and launch it
+5.1 If you don't have MongoDB already installed on your system, the easiest and "cleaner" way is to run MongoDB through [Docker](https://www.docker.com/) so install it and launch it
 
-  5.1.1 Install MongoDB in Docker
+5.1.1 Install MongoDB in Docker
 
-  ```console
-  docker pull mongo
-  ```
+```console
+docker pull mongo
+```
 
   5.1.2 Start the MongoDB container
 
@@ -96,12 +97,13 @@ yarn global add @bitloops/bitloops-language-cli
 
 6. Start your TypeScript Todo backend
   
-  ```console
-  yarn start:dev
-  ```
+```console
+yarn start:dev
+```
 
 7. Start sending requests to the Todo app using [Postman](https://www.postman.com/) or curl (or any other way you like)
-  7.1 Example using curl
+
+    7.1. Example using curl
 
     ```console
     curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
@@ -115,11 +117,11 @@ yarn global add @bitloops/bitloops-language-cli
   <a href="#join-us"></a>
 </p>
   
- ---- 
+ ----
 
 * High-productivity, [fourth generation (4GL)](https://www.techopedia.com/definition/24308/fourth-generation-programming-language-4gl) transpiled programming language
 * Easy to learn and get started with
-* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) 
+* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development))
 * Testing is treated as a 1st class citizen
 * Add different API controllers (REST, GraphQL, gRPC) with just a few lines of code
 * Modular Monolith or Microservices architecture? Both! Switch back and forth within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
@@ -129,24 +131,24 @@ yarn global add @bitloops/bitloops-language-cli
 
 ## Why build the Bitloops Language?
 
-There are numerous great programming languages out there with massive and growing 
-codebases and investments. However, the most common problem faced by organizations 
-that build and maintain systems, with teams of developers working on them, is 
-good architecture and design; Designing a complex system so that it can last through 
+There are numerous great programming languages out there with massive and growing
+codebases and investments. However, the most common problem faced by organizations
+that build and maintain systems, with teams of developers working on them, is
+good architecture and design; Designing a complex system so that it can last through
 time and that will allow developers (existing and new joiners) to work on its codebase
 with steady (or hopefully) increasing productivity. Good testing is an additional major
 requirement of long lasting products which is also made possible by good architecture
-and design. Unfortunately, there aren't enough knowledgeable and experienced senior 
-engineers around the world to build and maintain great systems for all who need them. 
-Even when a company is lucky enough to have some, it is unable to hire more 
-junior engineers than the senior ones can review their work and guide in order to make 
-sure the system does not degrade over time due to bad design decisions. 
+and design. Unfortunately, there aren't enough knowledgeable and experienced senior
+engineers around the world to build and maintain great systems for all who need them.
+Even when a company is lucky enough to have some, it is unable to hire more
+junior engineers than the senior ones can review their work and guide in order to make
+sure the system does not degrade over time due to bad design decisions.
 
 The Bitloops Language is the first programming language that aims to address these issues
 by making it much easier to adopt important software engineering principles and patterns
 such as Domain Driven Design and Behavior Driven Development, without requiring many years
 of experience to do so successfully. As a result, the work of senior engineers can be further
-leveraged and the contributions of junior engineers significantly boosted. 
+leveraged and the contributions of junior engineers significantly boosted.
 
 ## Language Goals
 
@@ -156,39 +158,39 @@ leveraged and the contributions of junior engineers significantly boosted.
 * Put the focus on the domain and automate everything else as much as possible
 * Make domain logic timeless, platform & (target) language independent
 * Eliminate the need for boilerplate code
-* Allow software engineers to postpone the need for a microservices architecture until it is needed strictly from a infrastructure perspective to better manage computing resources and if eventually it is needed to be able to do so within hours and not months or years. 
+* Allow software engineers to postpone the need for a microservices architecture until it is needed strictly from a infrastructure perspective to better manage computing resources and if eventually it is needed to be able to do so within hours and not months or years.
 * Allow for the reuse of existing packages writen in the target language
 * As a result of the above, significantly increase developer productivity
 
-The Bitloops Language aims to define and retain a simplistic syntax that will be as close to human 
-language and business logic as possible that will become timeless, helping adopt and use a ubiquitous 
-language within each module or bounded context. Making the Bitloops Language a transpiled language 
-was a core decision to achieve exactly this. By allowing oraganisations to write their business logic 
-in a timeless language that can be transpiled to powerful but also changing target languages without 
-burdening the users of the Bitloops Language with this task. The Bitloops Language will make sure it 
+The Bitloops Language aims to define and retain a simplistic syntax that will be as close to human
+language and business logic as possible that will become timeless, helping adopt and use a ubiquitous
+language within each module or bounded context. Making the Bitloops Language a transpiled language
+was a core decision to achieve exactly this. By allowing oraganisations to write their business logic
+in a timeless language that can be transpiled to powerful but also changing target languages without
+burdening the users of the Bitloops Language with this task. The Bitloops Language will make sure it
 transpiles to optimized code of relevant, up-to-date, and right-for-the-task languages.
 
 ## Project status
 
 The Bitloops Language is currently in early stages. Its transpiler has been created as a proof of concept
-and is not meant to cover the full range of developer creative code writing at this stage. 
+and is not meant to cover the full range of developer creative code writing at this stage.
 
-We want to better understand whether we can build a language that meets your needs, and whether we can 
+We want to better understand whether we can build a language that meets your needs, and whether we can
 gather a critical mass of interest within the DDD community and outside of it.
 
 Currently, we have fleshed out several core aspects of the project and the language:
 
--   The strategy of the Bitloops Language and project.
--   Critical and foundational aspects of the language design. This
+* The strategy of the Bitloops Language and project.
+* Critical and foundational aspects of the language design. This
     includes designs for:
-    -   Class types
-    -   Inheritance
-    -   Lexical and syntactic structure
-    -   Code organization and modular structure
--   A prototype transpiler that can run example projects is a few days away.
--   We are currently writing up documentation to release along with the first version of the transpiler.
+  * Class types
+  * Inheritance
+  * Lexical and syntactic structure
+  * Code organization and modular structure
+* A prototype transpiler that can run example projects is a few days away.
+* We are currently writing up documentation to release along with the first version of the transpiler.
 
-There are many things we want to add in the future including 
+There are many things we want to add in the future including
 
 [ ] CQRS support
 [ ] Event Sourcing support
@@ -223,7 +225,9 @@ ValueObject TitleVO {
   }
 }
 ```
+
 transpiles to this TypeScript code (28 lines):
+
 ```node
 // TypeScript:
 import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
@@ -263,4 +267,5 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
   }
 }
 ```
-# Are you liking what you are seeing? Don't forget to star ⭐ our repo!
+
+# Are you liking what you are seeing? Don't forget to star ⭐ our repo
