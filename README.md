@@ -92,7 +92,7 @@ docker pull mongo
   5.1.2 Start the MongoDB container
 
   ```console
-  docker run -d --name mongo -p 27017:27017
+  docker run -d --name mongo -p 27017:27017 mongo
   ```
 
 6. Start your TypeScript Todo backend
