@@ -800,7 +800,7 @@ start();
   ): string {
     const { resolvers } = data;
     const serverName = 'server';
-    this.nodeDependencies['@bitloops/bl-boilerplate-infra-graphql'] = '^0.0.1';
+    this.nodeDependencies['@bitloops/bl-boilerplate-infra-graphql'] = '^0.0.4';
     const setupData: TGraphQLSetupData = {
       servers: [{ type: 'GraphQL', port: portStatement, name: serverName }],
       resolvers: [],
