@@ -248,9 +248,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const argumentDependencies = this.visit(ctx.methodArguments()) || [];
 
     return {
-      type: 'method',
-      value: identifier,
-      argumentDependencies,
+      errorEvaluation: {
+        name: identifier,
+        argumentDependencies,
+      },
     };
   }
 

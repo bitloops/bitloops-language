@@ -2,6 +2,20 @@ DTO CreateTodoRequestDTO {
   string title;
 }
 
+DTO UpdateTodoRequestDTO {
+  string title;
+  string id;
+  bool completed;
+}
+
+DTO DeleteTodoRequestDTO {
+  string id;
+}
+
+DTO GetByIdTodoRequestDTO {
+  string id;
+}
+
 UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
     const title = TitleVO({ title: requestDTO.title });
@@ -9,3 +23,47 @@ UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
     this.todoRepo.save(todo);
   }
 }
+
+// UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
+//   execute (requestDTO: UpdateTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+//     const requestId = UUIDv4(requestDTO.id);
+//     const todoFound = this.todoRepo.getById(requestId);
+//     if(NOT todoFound) {
+//       // const requestIdString = requestId.toString(); 
+//       return ApplicationErrors.ToDoNotFoundError(requestId);
+//     }
+
+//     const title = TitleVO({ title: requestDTO.title });
+
+//     const todo = TodoEntity({ title: title, completed: false, id: requestId });
+//     this.todoRepo.update(todo);
+//   }
+// }
+
+// UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
+//   execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+//     const requestId = UUIDv4(requestDTO.id);
+
+//     const todoFound = this.todoRepo.getById(requestId);
+//     if(NOT todoFound) {
+//       // TODO this is not working
+//       // const requestIdString = requestId.toString(); 
+//       return ApplicationErrors.ToDoNotFoundError(requestId);
+//     }
+
+//     this.todoRepo.delete(requestId);
+//   }
+// }
+
+// UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
+//   execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError) {
+//     const requestId = requestDTO.id;
+//     const todo = this.todoRepo.getById(requestId);
+
+//     if(NOT todo) {
+//       return ApplicationErrors.ToDoNotFoundError(requestId);
+//     }
+
+//     return todo;
+//   }
+// }

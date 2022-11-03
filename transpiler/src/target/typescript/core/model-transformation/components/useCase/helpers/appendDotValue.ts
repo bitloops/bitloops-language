@@ -159,9 +159,12 @@ const scanStatementForIdentifierToAppendDotValue = (
     if (!elseStatements) {
       return statement;
     }
-    statement.ifStatement.elseStatements = elseStatements.map((st) =>
-      scanStatementForIdentifierToAppendDotValue(st, identifiers),
-    );
+    if (statement.ifStatement.elseStatements?.length > 0) {
+      statement.ifStatement.elseStatements = elseStatements.map((st) =>
+        scanStatementForIdentifierToAppendDotValue(st, identifiers),
+      );
+    }
+
     return statement;
   }
 

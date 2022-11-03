@@ -119,9 +119,17 @@ export class SetupTypeScriptRepos implements ISetupRepos {
         `import { ${adapterClassName} } from './repos/concretions/${adapterClassName}';`,
       );
     }
+
     const result = Object.entries(connections).reduce((acc, [dbType, connectionNames]) => {
       if (connectionNames.length === 0) return acc;
-      const connectionImports = connectionNames.join(', ');
+
+      const connectionImports = connectionNames
+        .sort()
+        .filter((item: string, pos: number) => {
+          return connectionNames.indexOf(item) == pos;
+        })
+        .join(', ');
+
       acc.push(
         `import { ${connectionImports} } from '../../../..${setupTypeMapper[dbType]}config';`,
       );

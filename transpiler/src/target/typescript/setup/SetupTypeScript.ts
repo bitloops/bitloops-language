@@ -606,20 +606,21 @@ export { routers };
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classTypeName, classType] of Object.entries(module)) {
+        for (const [classTypeName, errorModel] of Object.entries(module)) {
           if (
             classTypeName === ClassTypes.DomainErrors ||
             classTypeName === ClassTypes.ApplicationErrors
           ) {
             let imports = '';
             let content = `export namespace ${classTypeName} {`;
+
             const filePathObj = getTargetFileDestination(
               boundedContextName,
               moduleName,
               classTypeName,
               classTypeName,
             );
-            for (const [className] of Object.entries(classType)) {
+            for (const [className] of Object.entries(errorModel)) {
               const classNameWithoutError = className.split('Error')[0];
               imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
               content += `export class ${className} extends ${classNameWithoutError} {}`;
