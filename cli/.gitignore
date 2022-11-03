@@ -4,11 +4,12 @@ logs
 npm-debug.log*
 /lib/
 /output/
+/bl/
 
 # Dependencies
 node_modules/
 
-# Coverage
+# CoveragedomainObjectIdType
 coverage
 
 # Transpiled files
