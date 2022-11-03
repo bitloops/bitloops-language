@@ -20,3 +20,49 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
     }
   }
 }
+
+RESTController UpdateTodoRESTController (updateTodoUseCase: UpdateTodoUseCase) {
+  method: REST.Methods.PUT;
+  execute(request, response) {
+    const dto = UpdateTodoRequestDTO({ id: request.params.id });
+
+    const result = this.updateTodoUseCase.execute(dto);
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.ToDoNotFound: {
+          this.notFound(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.created(response);
+    }
+  }
+}
+
+RESTController DeleteTodoRESTController (deleteTodoUseCase: DeleteTodoUseCase) {
+  method: REST.Methods.DELETE;
+  execute(request, response) {
+    const dto = DeleteTodoRequestDTO({ id: request.params.id });
+
+    const result = this.deleteTodoUseCase.execute(dto);
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.ToDoNotFound: {
+          this.notFound(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.ok(response);
+    }
+  }
+}

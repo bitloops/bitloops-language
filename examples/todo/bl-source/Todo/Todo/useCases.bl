@@ -2,10 +2,49 @@ DTO CreateTodoRequestDTO {
   string title;
 }
 
+DTO UpdateTodoRequestDTO {
+  string title;
+  UUIDv4 id;
+  bool completed;
+}
+
+DTO DeleteTodoRequestDTO {
+  UUIDv4 id;
+}
+
+
 UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
     const title = TitleVO({ title: requestDTO.title });
     const todo = TodoEntity({ title: title, completed: false });
     this.todoRepo.save(todo);
+  }
+}
+
+UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
+  execute (requestDTO: UpdateTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFound)) {
+    const requestId = requestDTO.id;
+    const todoFound = this.todoRepo.getById(requestId);
+    if(!todoFound) {
+      return ApplicationErrors.ToDoNotFound(requestId);
+    }
+
+    const title = TitleVO({ title: requestDTO.title });
+
+    const todo = TodoEntity({ title: title, completed: false, id: requestId });
+    this.todoRepo.update(todo);
+  }
+}
+
+UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
+  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFound)) {
+    const requestId = requestDTO.id;
+
+    const todoFound = this.todoRepo.getById(requestId);
+    if(!todoFound) {
+      return ApplicationErrors.ToDoNotFound(requestId);
+    }
+
+    this.todoRepo.delete(requestId);
   }
 }
