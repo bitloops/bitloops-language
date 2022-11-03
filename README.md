@@ -24,25 +24,29 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 
 ## Quick Start
 
-The fastest way to see how the Bitloops Language works is to run our Todo example.
+The fastest way to see how the Bitloops Language works is to run our [Todo example](https://github.com/bitloops/bitloops-language/tree/main/examples/todo/bl-source).
 
 ### Transpiler Installation
 
 Until we create binaries, the best way to install and run the transpiler is to install the Bitloops Language CLI as a global npm package:
 
-> npm install -g @bitloops/bitloops-language-cli
+```console
+npm install -g @bitloops/bitloops-language-cli
+```
 
 or
 
-> yarn global add @bitloops/bitloops-language-cli
+```console
+yarn global add @bitloops/bitloops-language-cli
+```
 
 ### Transpiling the example Todo application
 
 1. Clone this repo
 
-   ```console
-   git clone https://github.com/bitloops/bitloops-language.git
-   ```
+  ```console
+  git clone https://github.com/bitloops/bitloops-language.git
+  ```
 
 2. Run the transpiler
 
