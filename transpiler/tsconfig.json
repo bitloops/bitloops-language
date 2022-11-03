@@ -19,8 +19,7 @@
     "noImplicitThis": false,
     "strictNullChecks": false,
     "resolveJsonModule": true,
-    "allowJs": true,
-    "resolveJsonModule": true
+    "allowJs": true
   },
   "include": ["src/**/*", "__tests__/**/*", "src/ast/core/BitloopsVisitor/helpers/.ts"]
 }

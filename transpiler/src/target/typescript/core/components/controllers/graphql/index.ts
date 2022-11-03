@@ -49,10 +49,12 @@ const graphQLControllersToTargetLanguage = (
 
   const controller = controllers[controllerName];
   const { inputType, outputType } = controller;
-  let result = `export class ${controllerName} extends GraphQL.BaseController<GraphQL.TRequest<${inputType}>,${outputType}> { `;
+  const tsInputType = inputType !== null ? inputType : 'void';
+  let result = `export class ${controllerName} extends GraphQL.BaseController<GraphQL.TRequest<${tsInputType}>,${outputType}> { `;
 
-  const inputAndOutputDependencies = getChildDependencies([inputType, outputType]);
-  dependencies = dependencies.concat(inputAndOutputDependencies);
+  const inputDependency = inputType ? getChildDependencies(inputType) : [];
+  const outputDependency = getChildDependencies(outputType);
+  dependencies = dependencies.concat(inputDependency, outputDependency);
   if (!controller.execute || !controller.parameterDependencies) {
     throw new Error('Controller must have execute and parameterDependencies');
   }

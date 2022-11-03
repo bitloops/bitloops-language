@@ -805,12 +805,10 @@ start();
       servers: [{ type: 'GraphQL', port: portStatement, name: serverName }],
       resolvers: [],
       addResolversToServer: [],
-      // DTOs: {},
       bitloopsModel,
     };
 
     let importsString = '';
-    // const dtosOfBoundedCtxAndModules = {};
     for (const resolver of resolvers) {
       const {
         boundedContext,
@@ -819,9 +817,6 @@ start();
         dependencies: _dependencies,
         controllerInstance,
       } = resolver;
-      // const useCase = kebabCase(
-      //   bitloopsModel[boundedContext][module]['Controllers'][controllerClassName].useCase,
-      // );
 
       importsString += `import { ${controllerInstance} } from '../../../bounded-contexts/${kebabCase(
         boundedContext,
