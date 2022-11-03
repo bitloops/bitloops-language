@@ -302,6 +302,7 @@ export type TEvaluation = {
     | TPropsEvaluation
     | TEntityEvaluation
     | TInstanceOf
+    | TErrorEvaluation
     | TNotInstanceOf
     | TGetClass;
 };
@@ -927,6 +928,13 @@ export type TAndSingleExpression = {
   andExpression: {
     left: TSingleExpression;
     right: TSingleExpression;
+  };
+};
+
+export type TErrorEvaluation = {
+  errorEvaluation: {
+    name: string;
+    argumentDependencies?: TArgumentDependencies;
   };
 };
 
