@@ -15,11 +15,14 @@ export class DeleteTodoUseCase
   }
 
   async execute(request: DeleteTodoRequestDTO): Promise<DeleteTodoUseCaseResponse> {
-    const todoFound = await this.todoRepo.getById(request.id);
+    const requestId = new Domain.UUIDv4(request.id);
+    const todoFound = await this.todoRepo.getById(requestId);
+
     if (!todoFound) {
-      return fail(new ApplicationErrors.ToDoNotFound(request.id));
+      return fail(new ApplicationErrors.ToDoNotFound(requestId));
     }
-    await this.todoRepo.delete(request.id);
+
+    await this.todoRepo.delete(requestId);
     return ok();
   }
 }

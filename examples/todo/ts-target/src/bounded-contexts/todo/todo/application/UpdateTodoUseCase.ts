@@ -17,7 +17,9 @@ export class UpdateTodoUseCase
   }
 
   async execute(request: UpdateTodoRequestDTO): Promise<UpdateTodoUseCaseResponse> {
-    const { id: requestId, completed } = request;
+    const { completed } = request;
+    const requestId = new Domain.UUIDv4(request.id);
+
     const todoFound = await this.todoRepo.getById(requestId);
 
     if (!todoFound) {

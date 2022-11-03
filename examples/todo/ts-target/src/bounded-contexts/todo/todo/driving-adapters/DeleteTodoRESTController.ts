@@ -12,9 +12,10 @@ export class DeleteTodoRESTController extends Fastify.BaseController {
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const dto: DeleteTodoRequestDTO = {
-      id: new Domain.UUIDv4((request.params as any).id),
+      id: (request.params as any).id,
     };
     const result = await this.deleteTodoUseCase.execute(dto);
+
     if (result.isFail()) {
       switch (result.value.constructor) {
         case ApplicationErrors.ToDoNotFound: {
