@@ -66,3 +66,26 @@ RESTController DeleteTodoRESTController (deleteTodoUseCase: DeleteTodoUseCase) {
     }
   }
 }
+
+// RESTController GetTodoRESTController (getByIdTodoUseCase: GetByIdTodoUseCase) {
+//   method: REST.Methods.GET;
+//   execute(request, response) {
+//     const dto = GetByIdTodoRequestDTO({ id: request.params.id });
+
+//     const result = this.getByIdTodoUseCase.execute(dto);
+
+//     if (result is Error) {
+//       switch (result.getClass()) {
+//         case ApplicationErrors.ToDoNotFoundError: {
+//           this.notFound(response, result);
+//           break;
+//         }
+//         default: {
+//           this.fail(response, result.message);
+//         }
+//       }
+//     } else {
+//       this.ok(response);
+//     }
+//   }
+// }

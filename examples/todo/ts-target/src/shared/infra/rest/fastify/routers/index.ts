@@ -23,6 +23,7 @@ import {
   todoGetAllController,
   updateTodoController,
   deleteTodoController,
+  todoGetByIdRESTController,
 } from '../../../../../bounded-contexts/todo/todo/DI';
 
 const todoRESTRouter = async (fastify: Fastify.Instance) => {
@@ -31,6 +32,9 @@ const todoRESTRouter = async (fastify: Fastify.Instance) => {
   });
   fastify.get('/', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return todoGetAllController.execute(request, reply);
+  });
+  fastify.get('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+    return todoGetByIdRESTController.execute(request, reply);
   });
   fastify.put('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return updateTodoController.execute(request, reply);

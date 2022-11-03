@@ -19,7 +19,7 @@ export class DeleteTodoUseCase
     const todoFound = await this.todoRepo.getById(requestId);
 
     if (!todoFound) {
-      return fail(new ApplicationErrors.ToDoNotFound(requestId));
+      return fail(new ApplicationErrors.ToDoNotFound(requestId.toString()));
     }
 
     await this.todoRepo.delete(requestId);

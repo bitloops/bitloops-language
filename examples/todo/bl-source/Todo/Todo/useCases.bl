@@ -12,6 +12,9 @@ DTO DeleteTodoRequestDTO {
   string id;
 }
 
+DTO GetByIdTodoRequestDTO {
+  string id;
+}
 
 UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
@@ -26,6 +29,7 @@ UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
     const requestId = UUIDv4(requestDTO.id);
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {
+      // const requestIdString = requestId.toString(); 
       return ApplicationErrors.ToDoNotFoundError(requestId);
     }
 
@@ -42,9 +46,24 @@ UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
 
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {
+      // TODO this is not working
+      // const requestIdString = requestId.toString(); 
       return ApplicationErrors.ToDoNotFoundError(requestId);
     }
 
     this.todoRepo.delete(requestId);
   }
 }
+
+// UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
+//   execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError) {
+//     const requestId = requestDTO.id;
+//     const todo = this.todoRepo.getById(requestId);
+
+//     if(NOT todo) {
+//       return ApplicationErrors.ToDoNotFoundError(requestId);
+//     }
+
+//     return todo;
+//   }
+// }
