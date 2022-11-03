@@ -21,7 +21,10 @@ import {
   ISetupData,
   TBoundedContexts,
   TDependenciesTypeScript,
+  TModule,
+  TPropsValues,
   TRepoAdapters,
+  TRepoPort,
   TRepoSupportedTypes,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
@@ -29,6 +32,7 @@ import { ClassTypes } from '../../../../../helpers/mappings.js';
 import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
   switch (dbType) {
@@ -62,6 +66,23 @@ const getRepoHeader = (
   };
 };
 
+const getPropsModel = (repoPortInfo: TRepoPort, module: TModule): TPropsValues => {
+  let propsModel;
+  if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
+    const { aggregateRootName } = repoPortInfo;
+    const aggregateModel = module.RootEntities[aggregateRootName];
+    const aggregatePropsName = aggregateModel.create.parameterDependency.type;
+    propsModel = module.Props[aggregatePropsName];
+  } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
+    const { readModelName } = repoPortInfo;
+    const readModelValues = module.ReadModels[readModelName];
+    propsModel = readModelValues;
+  } else {
+    throw new Error(`Invalid repo port ${JSON.stringify(repoPortInfo)}`);
+  }
+  return propsModel;
+};
+
 export const repoAdapterToTargetLanguage = (
   repoAdapters: TRepoAdapters,
   contextData: { boundedContext: string; module: string },
@@ -74,9 +95,9 @@ export const repoAdapterToTargetLanguage = (
   const repoAdapter = repoAdapters[repoAdapterInstanceName];
 
   const { dbType, repoPort, connection, collection } = repoAdapter;
-  // TODO Get db name from connection of this repoAdapter
 
-  const repoPortInfo = model[boundedContext][moduleName].RepoPorts[repoPort];
+  const module = model[boundedContext][moduleName];
+  const repoPortInfo = module.RepoPorts[repoPort];
   if (!repoPortInfo) {
     throw new Error(`Repo port ${repoPort} not found in model!`);
   }
@@ -85,17 +106,15 @@ export const repoAdapterToTargetLanguage = (
 
   const repoStart = getRepoHeader(repoPort, dbType);
 
-  const { aggregateRootName } = repoPortInfo;
-  const aggregateModel = model[boundedContext][moduleName].RootEntities[aggregateRootName];
-  const aggregatePropsName = aggregateModel.create.parameterDependency.type;
-  const propsModel = model[boundedContext][moduleName].Props[aggregatePropsName];
+  const propsModel = getPropsModel(repoPortInfo, module);
+
   const repoBody = repoBodyLangMapping(
     dbType,
     collection,
     connection,
     repoPortInfo,
     propsModel,
-    model[boundedContext][moduleName],
+    module,
     setupData,
   );
   const repoEnd = '}';
