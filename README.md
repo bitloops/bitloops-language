@@ -22,14 +22,86 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 > and under very active development. Expect bugs and limitations.
 > Full backward compatibility is not guaranteed before reaching v1.0.0.
 
-> ⚠️ We recently started a big migration and refactoring from private repos to this one.
-> As a result, there are currently more than a few open issues that do not allow for
-> proper use of the transpiler. We are working on these and expect to have them resolved
-> over the coming days. Our focus is to refactor the code and document it so that we 
-> be able to accept your contributions. In the meantime, feel free to check out the [examples](https://github.com/bitloops/bitloops-language/tree/main/examples)
-> folder to see an example Bitloops Language project and its generated TypeScript version
-> to get a better feel of what the Bitloops Language can do for you. 
+## Quick Start
 
+The fastest way to see how the Bitloops Language works is to run our Todo example.
+
+### Transpiler Installation
+
+Until we create binaries, the best way to install and run the transpiler is to install the Bitloops Language CLI as a global npm package:
+
+> npm install -g @bitloops/bitloops-language-cli
+
+or
+
+> yarn global add @bitloops/bitloops-language-cli
+
+### Transpiling the example Todo application
+
+1. Clone this repo
+
+   ```console
+   git clone https://github.com/bitloops/bitloops-language.git
+   ```
+
+2. Run the transpiler
+
+  ```console
+  bl transpile -s bitloops-language/examples/todo/bl-source/ -t output
+  ```
+
+  or
+
+  ```console
+  bitloops-language transpile
+  ```
+
+3. After the transpilation finishes, go into the output dir
+
+  ```console
+  cd output
+  ```
+
+4. Install the npm packages
+
+  ```console
+  npm install
+  ```
+
+  or
+
+  ```console
+  yarn install
+  ```
+
+5. Make sure you have a running instance of MongoDB
+
+  5.1 If you don't have MongoDB already installed on your system, the easiest and "cleaner" way is to run MongoDB through [Docker](https://www.docker.com/) so install it and launch it
+
+  5.1.1 Install MongoDB in Docker
+
+  ```console
+  docker pull mongo
+  ```
+
+  5.1.2 Start the MongoDB container
+
+  ```console
+  docker run -d --name mongo -p 27017:27017
+  ```
+
+6. Start your TypeScript Todo backend
+  
+  ```console
+  yarn start:dev
+  ```
+
+7. Start sending requests to the Todo app using [Postman](https://www.postman.com/) or curl (or any other way you like)
+  7.1 Example using curl
+
+    ```console
+    curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
+    ```
 
 <p align="center">
   <a href="#why-build-the-bitloops-language">Why?</a> |
