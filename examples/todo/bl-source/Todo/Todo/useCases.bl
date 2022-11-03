@@ -4,12 +4,12 @@ DTO CreateTodoRequestDTO {
 
 DTO UpdateTodoRequestDTO {
   string title;
-  UUIDv4 id;
+  string id;
   bool completed;
 }
 
 DTO DeleteTodoRequestDTO {
-  UUIDv4 id;
+  string id;
 }
 
 
@@ -23,7 +23,7 @@ UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 
 UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: UpdateTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
-    const requestId = requestDTO.id;
+    const requestId = UUIDv4(requestDTO.id);
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {
       return ApplicationErrors.ToDoNotFoundError(requestId);
@@ -38,7 +38,7 @@ UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 
 UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
-    const requestId = requestDTO.id;
+    const requestId = UUIDv4(requestDTO.id);
 
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {

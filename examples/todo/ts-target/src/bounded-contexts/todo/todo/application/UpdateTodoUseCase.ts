@@ -17,7 +17,6 @@ export class UpdateTodoUseCase
   }
 
   async execute(request: UpdateTodoRequestDTO): Promise<UpdateTodoUseCaseResponse> {
-    const { completed } = request;
     const requestId = new Domain.UUIDv4(request.id);
 
     const todoFound = await this.todoRepo.getById(requestId);
@@ -34,7 +33,7 @@ export class UpdateTodoUseCase
     const todoToUpdate = await TodoEntity.create({
       id: requestId,
       title: titleToUpdate.value,
-      completed,
+      completed: request.completed,
     });
 
     if (todoToUpdate.isFail()) {
