@@ -835,7 +835,7 @@ export type TPackage = {
 export type TRepoPorts = Record<string, TRepoPort>;
 
 export type TAggregateRepoPort = {
-  readModelName?: never;
+  readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
   aggregateRootName: string;
   extendedRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
