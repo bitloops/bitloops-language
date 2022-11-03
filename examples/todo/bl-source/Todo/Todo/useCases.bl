@@ -22,11 +22,11 @@ UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 }
 
 UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
-  execute (requestDTO: UpdateTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFound)) {
+  execute (requestDTO: UpdateTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
     const requestId = requestDTO.id;
     const todoFound = this.todoRepo.getById(requestId);
-    if(!todoFound) {
-      return ApplicationErrors.ToDoNotFound(requestId);
+    if(NOT todoFound) {
+      return ApplicationErrors.ToDoNotFoundError(requestId);
     }
 
     const title = TitleVO({ title: requestDTO.title });
@@ -37,12 +37,12 @@ UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 }
 
 UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
-  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFound)) {
+  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
     const requestId = requestDTO.id;
 
     const todoFound = this.todoRepo.getById(requestId);
-    if(!todoFound) {
-      return ApplicationErrors.ToDoNotFound(requestId);
+    if(NOT todoFound) {
+      return ApplicationErrors.ToDoNotFoundError(requestId);
     }
 
     this.todoRepo.delete(requestId);

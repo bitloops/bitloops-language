@@ -613,7 +613,6 @@ export { routers };
           ) {
             let imports = '';
             let content = `export namespace ${classTypeName} {`;
-            console.log('classTypeName', classTypeName);
 
             const filePathObj = getTargetFileDestination(
               boundedContextName,
@@ -621,7 +620,6 @@ export { routers };
               classTypeName,
               classTypeName,
             );
-            console.log('filePathObj', filePathObj);
             for (const [className] of Object.entries(errorModel)) {
               const classNameWithoutError = className.split('Error')[0];
               imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
@@ -636,7 +634,6 @@ export { routers };
             });
           }
         }
-        console.log('output', output);
       }
     }
     return output;

@@ -93,7 +93,7 @@ export const fetchTypeScriptAggregateCrudBaseRepo = (
       throw new Error('Method not implemented.');
     }
     async getById(${aggregateRootId}: ${mappedAggregateType.output}): Promise<${entityName}> {
-      return (await this.collection.find({
+      return (await this.collection.findOne({
         _id: ${aggregateRootId}.toString(),
       })) as unknown as ${entityName};
     }
