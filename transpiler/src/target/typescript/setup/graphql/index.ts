@@ -87,7 +87,7 @@ const generateServerCode = (
   resultString += typeDefsToTargetLanguage.output + '' + resolversMapString.output;
   const { name, port } = server;
 
-  const result = `const ${name} = new ApolloServer({ typeDefs: ${typeDefsName}, resolvers: ${resolversMapName} }); server.listen({ port: ${port} });`;
+  const result = `const ${name} = new GraphQL.ApolloServer({ typeDefs: ${typeDefsName}, resolvers: ${resolversMapName} }); server.listen({ port: ${port} });`;
   resultString += result;
   return { output: resultString, dependencies: [] };
 };
@@ -150,7 +150,7 @@ const generateGraphQLSchema = (
   typeDefsName: string,
 ): TTargetDependenciesTypeScript => {
   const typeDefsLanguageMapping = (typeDefs: string, typeDefsName: string) =>
-    `const ${typeDefsName} = gql\`${typeDefs}\`;`;
+    `const ${typeDefsName} = GraphQL.gql\`${typeDefs}\`;`;
   const mergedSchema = mergeTypeDefs(resolversOfInterest);
   const typeDefsString = buildSchemaString(mergedSchema);
   return {
