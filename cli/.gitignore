@@ -4,6 +4,7 @@ logs
 npm-debug.log*
 /lib/
 /output/
+/bl/
 
 # Dependencies
 node_modules/

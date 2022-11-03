@@ -96,7 +96,7 @@ import { domainEvaluationToTargetLanguage } from './components/statements/expres
 import { entityEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityEvaluation.js';
 import { entitiesToTargetLanguage } from './components/entity/index.js';
 import { thisDeclarationToTargetLanguage } from './components/statements/thisDeclaration.js';
-import { repoPortToTargetLanguage } from './components/repo/repoPort.js';
+import { repoPortToTargetLanguage } from './components/repo/repoPort/repoPort.js';
 import {
   additiveOperatorToTargetLanguage,
   equalityOperatorToTargetLanguage,
@@ -426,7 +426,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRepoPorts: {
-      res = repoPortToTargetLanguage(value);
+      res = repoPortToTargetLanguage(value, model, contextData);
       break;
     }
     case BitloopsTypesMapping.TAdditiveOperator: {

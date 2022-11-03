@@ -23,17 +23,7 @@ export const packageJSONTemplate = {
       'pre-push': 'npm run build',
     },
   },
-  repository: {
-    type: 'git',
-    url: 'git+https://github.com/bitloops/bitloops-ermis-gateway.git',
-  },
   keywords: [],
-  author: '',
-  license: 'ISC',
-  bugs: {
-    url: 'https://github.com/bitloops/bitloops-ermis-gateway/issues',
-  },
-  homepage: 'https://github.com/bitloops/bitloops-ermis-gateway#readme',
   dependencies: {
     '@types/bcrypt-nodejs': '0.0.31',
     compression: '^1.7.4',

@@ -25,11 +25,14 @@ import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { TBitloopsOutputTargetContent } from '../../../../src/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
+import { TBoundedContexts, TContextData } from './../../../../src/types.js';
 const feature = loadFeature('./__tests__/target/typescript/core/repoPortDeclaration.feature');
 
 defineFeature(feature, (test) => {
   let result: TBitloopsOutputTargetContent;
   let value;
+  let bitloopsModel: TBoundedContexts;
+  let contextData: TContextData;
   let intermediateAST;
   const repoPortsClassType = ClassTypes.RepoPorts;
   const formatterConfig = null;
@@ -44,19 +47,23 @@ defineFeature(feature, (test) => {
       language = _lang;
     });
 
-    given(/^I have some repo ports (.*)$/, (valueObject) => {
-      value = d(valueObject);
+    given(/^I have some repo ports (.*), (.*), (.*)$/, (arg0, arg1, arg2) => {
+      value = d(arg0);
+      bitloopsModel = JSON.parse(d(arg1));
+      contextData = JSON.parse(d(arg2));
     });
 
     when('I generate the code', () => {
       const propsValue = JSON.parse(value);
-      const boundedContext = 'Hello world';
-      const module = 'demo';
+      const boundedContext = contextData.boundedContext;
+      const module = contextData.module;
 
+      const extraInfo = bitloopsModel[boundedContext][module];
       intermediateAST = {
         [boundedContext]: {
           [module]: {
             [repoPortsClassType]: propsValue,
+            ...extraInfo,
           },
         },
       };
