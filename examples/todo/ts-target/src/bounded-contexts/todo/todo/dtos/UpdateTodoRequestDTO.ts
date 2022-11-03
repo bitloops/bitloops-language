@@ -1,7 +1,5 @@
-import { Domain } from '@bitloops/bl-boilerplate-core';
-
 export interface UpdateTodoRequestDTO {
-  id: Domain.UUIDv4;
+  id: string;
   title: string;
   completed: boolean;
 }

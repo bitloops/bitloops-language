@@ -15,7 +15,7 @@ export class UpdateTodoRESTController extends Fastify.BaseController {
     const requestParams = request.params as any;
 
     const dto: UpdateTodoRequestDTO = {
-      id: new Domain.UUIDv4(requestParams.id),
+      id: requestParams.id,
       title: requestBody.title,
       completed: requestBody.completed,
     };
@@ -23,7 +23,7 @@ export class UpdateTodoRESTController extends Fastify.BaseController {
     if (result.isFail()) {
       switch (result.value.constructor) {
         case ApplicationErrors.ToDoNotFound: {
-          this.clientError(response, result.value.message);
+          this.notFound(response, result.value);
           break;
         }
         default:
