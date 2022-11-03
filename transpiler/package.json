@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
