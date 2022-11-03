@@ -555,6 +555,7 @@ evaluation
     | regularEvaluation
     | dtoEvaluation
     | structEvaluation
+    | customClassEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
@@ -930,6 +931,10 @@ structEvaluationIdentifier
 
 structEvaluation
     : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    ;
+    
+customClassEvaluation
+    : UpperCaseIdentifier OpenParen evaluationFieldList CloseParen
     ;
 
 propsEvaluation
