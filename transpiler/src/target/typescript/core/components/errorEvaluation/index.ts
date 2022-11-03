@@ -28,8 +28,7 @@ export const bitloopsErrorEvaluationToTargetLanguage = (
   let output = `new ${name}(`;
   if (argumentDependencies && argumentDependencies.length > 0) {
     argumentDependencies.forEach((argument) => {
-        console.log('argument')
-      output += `${argument},`;
+      output += `${argument.value},`;
     });
     output = output.slice(0, -1);
   }
