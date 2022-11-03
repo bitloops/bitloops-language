@@ -25,5 +25,4 @@ export const tsConfigJSONTemplate = {
   },
   include: ['src/*.ts', 'src/**/*.ts', 'src/**/*.js', 'global.d.ts'],
   exclude: ['node_modules', 'src/**/*.spec.ts', 'src/**/*.spec.js'],
-  files: ['global.d.ts'],
 };
