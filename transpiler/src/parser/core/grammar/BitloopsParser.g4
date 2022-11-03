@@ -978,7 +978,7 @@ controllerDeclaration
     ;
 
 graphQLResolverOptions
-    : graphQLOperationTypeAssignment graphQLOperationInputTypeAssignment
+    : graphQLOperationTypeAssignment graphQLOperationInputTypeAssignment?
     ;
 
 graphQLOperationTypeAssignment

@@ -560,7 +560,7 @@ export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControlle
 export type TGraphQLControllerValues = TBaseControllerValues & {
   type: 'graphql';
   operationType: TGraphQLOperation;
-  inputType: string;
+  inputType: null | string;
   operationName: string;
   execute: TGraphQLControllerExecute;
   outputType: string; // should be same as return type of execute
@@ -801,7 +801,7 @@ export type TResolver = {
   module: string;
   operationType: TGraphQLOperation;
   operationName: string;
-  input: string | TProps; // an existing DTO or any type
+  input: string | null; // a DTO or nothing for no input
   output: string; // a DTO
   controller: string;
 };
