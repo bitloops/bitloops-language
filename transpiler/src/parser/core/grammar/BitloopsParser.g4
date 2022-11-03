@@ -255,6 +255,17 @@ field
     : Optional? (primitives | struct | valueObjectIdentifier) identifier
     ;
 
+bitloopsPrimaryType
+    : primitives                                    #PrimitivePrimType
+    | struct                                        #StructPrimType
+    | valueObjectIdentifier                         #ValueObjectPrimType
+    // | bitloopsBuildInClasses                        #BitloopsBuildInClassesPrimType
+    | bitloopsPrimaryType OpenBracket CloseBracket  #ArrayBitloopsPrimType
+    ;
+
+// bitloopsBuildInClasses
+//     : 
+
 predefinedType
     : Any
     | Int32
@@ -321,14 +332,6 @@ methodDefinition
     : identifier formalParameterList? typeAnnotation SemiColon
     ;
 
-arrayType
-    // : primaryType {notLineTerminator()}? '[' ']'
-    : primaryType '[' ']'
-    ;
-
-tupleType
-    : '[' tupleElementTypes ']'
-    ;
 
 tupleElementTypes
     : type_ (Comma type_)*
@@ -1164,8 +1167,6 @@ formalParameterList
     (
     formalParameterArg (Comma formalParameterArg)* (Comma lastFormalParameterArg)?
     | lastFormalParameterArg
-    | arrayLiteral                              // ECMAScript 6: Parameter Context Matching
-    | objectLiteral (Colon formalParameterList )? // ECMAScript 6: Parameter Context Matching
     )?
     CloseParen 
     ;
@@ -1187,15 +1188,16 @@ functionBody
 //     ;
 
 arrayLiteral
-    : ('[' elementList? ']')
+    : OpenBracket elementList? CloseBracket
     ;
 
 elementList
-    : arrayElement (Comma+ arrayElement)*
+    : arrayElement (Comma arrayElement)*
     ;
 
 arrayElement                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (expression | Identifier) Comma?
+    :  expression 
+    // : Ellipsis? (expression | Identifier) Comma?
     ;
 
 objectLiteral
@@ -1268,6 +1270,7 @@ expression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
     | evaluation                                                 # EvaluationExpression 
+    | arrayLiteral                                               # ArrayLiteralExpression
     ;   
 
 // more single expressions
