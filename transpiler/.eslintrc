@@ -19,7 +19,7 @@
     "@typescript-eslint/ban-ts-comment": "off"
   },
   "parserOptions": {
-    "project": ["tsconfig.json", "tsconfig.esm.json", "tsconfig.cjs.json"]
+    "project": ["tsconfig.base.json", "tsconfig.esm.json", "tsconfig.cjs.json"]
   },
   "ignorePatterns": ["jest.config.ts"]
 }
