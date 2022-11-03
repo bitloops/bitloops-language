@@ -62,7 +62,7 @@ const graphQLSetupDataToTargetLanguage = (
     dependencies = [...dependencies, ...result.dependencies];
   }
   // console.log('-----------------------------');
-  return { output: codeForAllServers, dependencies: [] };
+  return { output: codeForAllServers, dependencies };
 };
 
 const generateServerCode = (
@@ -149,12 +149,11 @@ const generateGraphQLSchema = (
   resolversOfInterest: AllResolvers,
   typeDefsName: string,
 ): TTargetDependenciesTypeScript => {
-  const typeDefsLanguageMapping = (typeDefs: string, typeDefsName: string) =>
-    `const ${typeDefsName} = GraphQL.gql\`${typeDefs}\`;`;
   const mergedSchema = mergeTypeDefs(resolversOfInterest);
   const typeDefsString = buildSchemaString(mergedSchema);
   return {
-    output: typeDefsLanguageMapping(typeDefsString, typeDefsName),
+    output: `const ${typeDefsName} = GraphQL.gql\`${typeDefsString}\`;`,
+
     dependencies: [],
   };
 };
@@ -257,32 +256,21 @@ const generateTypesAndInputsFromDTOs = (
 
 const buildSchemaString = (schema: SchemaBuilder): string => {
   let result = '';
-  for (const type of Object.values(schema.inputs)) {
-    result += `${type}`;
-    // console.log(type);
-  }
-
-  for (const type of Object.values(schema.types)) {
-    result += `${type}`;
-    // console.log(type);
-  }
+  result += Object.values(schema.inputs).join('');
+  result += Object.values(schema.types).join('');
 
   if (Object.keys(schema.queries).length > 0) {
     result += 'type Query {';
-
-    for (const query of Object.values(schema.queries)) {
-      result += `${query} `;
-      // console.log(type);
-    }
+    result += Object.values(schema.queries).join(' ');
     result += '}';
+  } else {
+    // Validation of Schema fails if no Query type is defined
+    result += 'type Query { empty: String }';
   }
+
   if (Object.keys(schema.mutations).length > 0) {
     result += 'type Mutation {';
-
-    for (const mutation of Object.values(schema.mutations)) {
-      result += `${mutation} `;
-      // console.log(type);
-    }
+    result += Object.values(schema.mutations).join(' ');
     result += '}';
   }
   return result;
@@ -292,27 +280,24 @@ const buildResolversString = (
   resolvers: ResolversBuilder,
   resolversVarName: string,
 ): TTargetDependenciesTypeScript => {
-  const languageMapping = (resolvers: ResolversBuilder) => {
-    let result = `const ${resolversVarName} = {`;
-    if (Object.keys(resolvers.queries).length > 0) {
-      result += '  Query: {';
-      for (const [field, controller] of Object.entries(resolvers.queries)) {
-        result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
-      }
-      result += '  },';
+  let result = `const ${resolversVarName} = {`;
+  if (Object.keys(resolvers.queries).length > 0) {
+    result += '  Query: {';
+    for (const [field, controller] of Object.entries(resolvers.queries)) {
+      result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
     }
-    if (Object.keys(resolvers.mutations).length > 0) {
-      result += '  Mutation: {';
-      for (const [field, controller] of Object.entries(resolvers.mutations)) {
-        result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
-      }
-      result += '  },';
+    result += '  },';
+  }
+  if (Object.keys(resolvers.mutations).length > 0) {
+    result += '  Mutation: {';
+    for (const [field, controller] of Object.entries(resolvers.mutations)) {
+      result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
     }
-    result += '};';
+    result += '  },';
+  }
+  result += '};';
 
-    return result;
-  };
-  return { output: languageMapping(resolvers), dependencies: [] };
+  return { output: result, dependencies: [] };
 };
 
 const trimDTOSuffix = (typeName: string): string => {
