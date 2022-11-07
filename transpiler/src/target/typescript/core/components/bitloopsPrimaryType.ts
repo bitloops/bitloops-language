@@ -18,27 +18,35 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitiveToLang.js';
-import { isBitloopsBuildInClass } from '../../../../helpers/isBitloopsBuildInClass.js';
-import { isBitloopsPrimitive } from '../../../../helpers/isBitloopsPrimitive.js';
 import { mappingBitloopsBuildInClassToLayer } from '../../../../helpers/mappings.js';
 import { TBitloopsPrimaryType, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { SupportedLanguages } from '../../../supportedLanguages.js';
+import { extractBaseTypeOfPrimaryType } from '../../utils/extractPrimaryTypeBaseType.js';
 import { getChildDependencies } from '../dependencies.js';
+import { BitloopsPrimTypeIdentifiers } from '../type-identifiers/bitloopsPrimType.js';
 
 export const bitloopsPrimaryTypeToTargetLanguage = (
   type: TBitloopsPrimaryType,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
-  let mappedType = type;
+  let mappedType: string;
 
-  if (isBitloopsPrimitive(type)) {
+  if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
-  } else if (isBitloopsBuildInClass(type)) {
+  } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuildInClass(type)) {
     mappedType = `${mappingBitloopsBuildInClassToLayer[type]}.${type}`;
     dependencies = getChildDependencies(type);
+  } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
+    const { value } = type.arrayType;
+    const arrayPrimType = bitloopsPrimaryTypeToTargetLanguage(value);
+    const { output, dependencies: arrayPrimTypeDependencies } = arrayPrimType;
+    mappedType = `${output}[]`;
+    dependencies = [...dependencies, ...arrayPrimTypeDependencies];
   } else {
+    mappedType = type;
     // If not primitive, then we have a dependency
-    dependencies = getChildDependencies(type);
+    const baseType = extractBaseTypeOfPrimaryType(type);
+    dependencies = getChildDependencies(baseType);
   }
 
   return {

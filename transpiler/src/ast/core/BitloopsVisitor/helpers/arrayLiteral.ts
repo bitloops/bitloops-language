@@ -20,20 +20,21 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariable } from '../../../../types.js';
+import { TArrayLiteralExpression } from '../../../../types.js';
 
-export const fieldVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FieldContext,
-): TVariable => {
-  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  const identifier = ctx.identifier().getText();
-  const result: TVariable = {
-    type,
-    name: identifier,
-  };
-  if (ctx.Optional()) {
-    result.optional = true;
+export const arrayLiteralVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ArrayLiteralContext,
+): TArrayLiteralExpression => {
+  // index 0 is the '['
+  const children = thisVisitor.visitChildren(ctx)?.[1];
+  if (!children) {
+    return {
+      arrayLiteral: [],
+    };
   }
-  return result;
+  const expressions = children.filter((child) => child !== undefined);
+  return {
+    arrayLiteral: expressions,
+  };
 };

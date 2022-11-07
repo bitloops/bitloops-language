@@ -259,8 +259,12 @@ JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
 JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
+JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
 
 // Abstract: 'abstract';
+
+// BuiltInClasses
+UUIDv4: 'UUIDv4';
 
 Is: 'is';
 

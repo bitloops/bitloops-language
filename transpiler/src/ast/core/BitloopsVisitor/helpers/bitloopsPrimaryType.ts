@@ -20,20 +20,23 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariable } from '../../../../types.js';
+import { ArrayBitloopsPrimType, TBitloopsPrimitives } from '../../../../types.js';
 
-export const fieldVisitor = (
+export const primitivePrimTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FieldContext,
-): TVariable => {
-  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  const identifier = ctx.identifier().getText();
-  const result: TVariable = {
-    type,
-    name: identifier,
+  ctx: BitloopsParser.PrimitivePrimTypeContext,
+): TBitloopsPrimitives => {
+  return ctx.primitives().getText();
+};
+
+export const arrayBitloopsPrimTypeVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,
+): ArrayBitloopsPrimType => {
+  const value = thisVisitor.visit(ctx.bitloopsPrimaryType());
+  return {
+    arrayType: {
+      value,
+    },
   };
-  if (ctx.Optional()) {
-    result.optional = true;
-  }
-  return result;
 };

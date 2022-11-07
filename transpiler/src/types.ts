@@ -218,20 +218,27 @@ export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' 
 
 export const BitloopsBuildInClassNames = {
   UUIDv4: 'UUIDv4',
-};
+} as const;
 export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
 export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
 
-type TUserDefinedClass = string;
+type TBitloopsIdentifier = string;
 
-export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedClass;
+export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBitloopsPrimaryType =
   | TBitloopsPrimitives
   | TBitloopsBuildInClasses
-  | TUserDefinedClass;
+  | TBitloopsIdentifier
+  | ArrayBitloopsPrimType;
 
-export type TReturnType = TBitloopsPrimitives | TUserDefinedClass;
+export type ArrayBitloopsPrimType = {
+  arrayType: {
+    value: TBitloopsPrimaryType;
+  };
+};
+
+export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBackTickString = {
   backTickString: string;
@@ -366,7 +373,12 @@ export type TExpressionValues =
   | TAdditiveExpression
   | TRelationalExpression
   | TEqualityExpression
-  | TParenthesizedExpression;
+  | TParenthesizedExpression
+  | TArrayLiteralExpression;
+
+export type TArrayLiteralExpression = {
+  arrayLiteral: TExpression[];
+};
 
 //TODO maybe return should have two keys: ok and error
 export type TReturnStatement = {

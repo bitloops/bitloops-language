@@ -31,6 +31,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -79,6 +80,10 @@ const entitiesToTargetLanguage = (params: {
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
     const propsName = create.parameterDependency.type;
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+      throw new Error(`Entity props type of ${entityName} cannot be an array`);
+    }
+
     dependencies = [...dependencies, ...getChildDependencies(propsName)];
 
     if (constantVars) {
