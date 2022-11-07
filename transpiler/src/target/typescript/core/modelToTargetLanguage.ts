@@ -134,6 +134,7 @@ import { readModelsToTargetLanguage } from './components/readModels/index.js';
 import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
+import { customClassEvaluationToTargetLanguage } from './components/customClass/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -526,6 +527,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TCustomClassEvaluation: {
+      res = customClassEvaluationToTargetLanguage(value);
       break;
     }
     default: {

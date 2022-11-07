@@ -112,6 +112,7 @@ const BitloopsTypesMapping = {
   TDomainPrivateMethod: 'TDomainPrivateMethod',
   TValueObjectMethods: 'TValueObjectMethods',
   TBitloopsPrimaryType: 'TBitloopsPrimaryType',
+  TCustomClassEvaluation: 'TCustomClassEvaluation',
 };
 
 const ClassTypes = {
