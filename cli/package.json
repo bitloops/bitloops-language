@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bitloops-language-cli",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Bitloops Language CLI",
   "type": "module",
   "engines": {
