@@ -30,6 +30,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 
 const VO_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -87,6 +88,11 @@ const valueObjectsToTargetLanguage = (params: {
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
     const propsName = create.parameterDependency.type;
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+      throw new Error(
+        `Value Object ${valueObjectName} has an array as a property. This is not supported yet.`,
+      );
+    }
     dependencies = [...dependencies, ...getChildDependencies(propsName)];
 
     if (constantVars) {

@@ -25,8 +25,12 @@ import {
   TContextData,
   TBitloopsPrimaryType,
 } from '../../../../../../../types.js';
-import { ClassTypes, TClassTypesValues } from '../../../../../../../helpers/mappings.js';
-import { bitloopsPrimaryTypeToTargetLanguage } from '../../../bitloopsPrimaryType.js';
+import {
+  BitloopsTypesMapping,
+  ClassTypes,
+  TClassTypesValues,
+} from '../../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const findIdOfRepoDomainObject = (
   repoDependencyName: string,
@@ -40,14 +44,17 @@ export const findIdOfRepoDomainObject = (
     if (!aggregate) {
       throw new Error(`${type} ${repoDependencyName} not found`);
     }
-    const aggregateProps = aggregate.create.parameterDependency.type;
+    const aggregateProps = aggregate.create.parameterDependency.type as string;
     const propsModel = bitloopsModel[boundedContext][module].Props[aggregateProps];
     if (!propsModel) {
       throw new Error(`Props ${aggregateProps} not found`);
     }
     const idProp = propsModel.variables.find((prop) => prop.name === 'id');
     const idType: TBitloopsPrimaryType = idProp.type;
-    const idTypeRes = bitloopsPrimaryTypeToTargetLanguage(idType);
+    const idTypeRes = modelToTargetLanguage({
+      value: idType,
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    });
     return idTypeRes;
   } else if (type === ClassTypes.ReadModels) {
     const readModel = bitloopsModel[boundedContext][module][type][repoDependencyName];
@@ -57,7 +64,10 @@ export const findIdOfRepoDomainObject = (
 
     const idProp = readModel.variables.find((prop) => prop.name === 'id');
     const idType: TBitloopsPrimaryType = idProp.type;
-    const idTypeRes = bitloopsPrimaryTypeToTargetLanguage(idType);
+    const idTypeRes = modelToTargetLanguage({
+      value: idType,
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    });
     return idTypeRes;
   }
   throw new Error(`Unsupported type ${type}`);

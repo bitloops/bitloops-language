@@ -229,7 +229,9 @@ export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedC
 export type TBitloopsPrimaryType =
   | TBitloopsPrimitives
   | TBitloopsBuildInClasses
-  | TUserDefinedClass;
+  | TUserDefinedClass
+  | ArrayBitloopsPrimType;
+
 export type ArrayBitloopsPrimType = {
   arrayType: {
     value: TBitloopsPrimaryType;

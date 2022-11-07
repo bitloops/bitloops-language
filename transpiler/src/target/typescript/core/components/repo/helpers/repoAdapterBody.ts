@@ -31,6 +31,7 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { getChildDependencies } from '../../../dependencies.js';
 import { isVO } from '../../../../../../helpers/typeGuards.js';
+import { BitloopsPrimTypeIdentifiers } from './../../../type-identifiers/bitloopsPrimType.js';
 
 const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 // const CRUDReadRepoPort = 'CRUDReadRepoPort';
@@ -38,6 +39,9 @@ const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 const getVOProps = (voName: string, model: TModule): TPropsValues => {
   const voModel = model.ValueObjects[voName];
   const voPropsName = voModel.create.parameterDependency.type;
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsName)) {
+    throw new Error('Props of VO cannot be of type array');
+  }
   const voProps = model.Props[voPropsName];
   return voProps;
 };

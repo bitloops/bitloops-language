@@ -87,7 +87,7 @@ export const repoAdapterToTargetLanguage = (
 
   const { aggregateRootName } = repoPortInfo;
   const aggregateModel = model[boundedContext][moduleName].RootEntities[aggregateRootName];
-  const aggregatePropsName = aggregateModel.create.parameterDependency.type;
+  const aggregatePropsName = aggregateModel.create.parameterDependency.type as string;
   const propsModel = model[boundedContext][moduleName].Props[aggregatePropsName];
   const repoBody = repoBodyLangMapping(
     dbType,
