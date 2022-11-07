@@ -185,7 +185,7 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
-    | regularErrorTypeEvaluation
+    | regularErrorTypeEvaluation 
     ;
 
 // regularVariableEvaluation | regularStringEvaluation |
@@ -220,7 +220,6 @@ regularVariableEvaluation
 
 regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-    | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 
@@ -553,15 +552,20 @@ jestTestDeclaration
     | JestTestBitloopsPrimaryType OpenBrace bitloopsPrimaryType CloseBrace SemiColon?
     ;
 
+errorEvaluation
+    : ErrorIdentifier methodArguments SemiColon?
+    ;
+
 evaluation
     : isInstanceOf 
     | getClassEvaluation
+    | errorEvaluation
     | regularEvaluation
     | dtoEvaluation
-    | structEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
+    | structEvaluation
     ;
 
 condition

@@ -40,7 +40,7 @@ const getBitloopsFilesAndContents = (
   const result: InputFileInfo[] = [];
   for (const [boundedContextName, modules] of Object.entries(boundedContextModules)) {
     for (const moduleName of modules) {
-      const modulePath = path.normalize(`${sourceDirPath}/${boundedContextName}/${moduleName}/`);
+      const modulePath = path.join(sourceDirPath, boundedContextName, moduleName);
       const contextFilePaths = getRecursivelyFileInDirectory(modulePath, BL_SUFFIX);
       // TODO async read file with Promise.all
       for (const contextFilePath of contextFilePaths) {
