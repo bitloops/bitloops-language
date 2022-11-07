@@ -56,9 +56,7 @@ defineFeature(feature, (test) => {
       evaluationType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {
-     
-    });
+    and(/^language is "(.*)"$/, (_lang) => {});
 
     given(/^I have an invalid (.*) with unsupported (.*)$/, (evaluation) => {
       value = evaluation;
@@ -74,7 +72,7 @@ defineFeature(feature, (test) => {
           type: evaluationType,
           value: evaluationValue,
         }),
-      ).toThrowError(`Unsupported evaluation: ${evaluationValue}`);
+      ).toThrowError(`Unsupported evaluation: ${JSON.stringify(evaluationValue)}`);
     });
   });
 });
