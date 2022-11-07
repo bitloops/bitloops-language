@@ -136,6 +136,10 @@ import {
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
+  primitivePrimTypeVisitor,
+  structPrimTypeVisitor,
+  valueObjectPrimTypeVisitor,
+  arrayBitloopsPrimTypeVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -738,5 +742,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ReadModels: TReadModels;
   } {
     return readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {
+    return primitivePrimTypeVisitor(this, ctx);
+  }
+
+  visitStructPrimType(ctx: BitloopsParser.StructPrimTypeContext) {
+    return structPrimTypeVisitor(this, ctx);
+  }
+  visitValueObjectPrimType(ctx: BitloopsParser.ValueObjectPrimTypeContext) {
+    return valueObjectPrimTypeVisitor(this, ctx);
+  }
+  visitArrayBitloopsPrimType(ctx: BitloopsParser.ArrayBitloopsPrimTypeContext) {
+    return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
 }

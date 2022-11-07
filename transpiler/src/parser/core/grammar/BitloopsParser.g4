@@ -252,7 +252,7 @@ regularDTOEvaluation
 
 // | RegularStringEvaluation | RegularBackTicksEvaluation
 field
-    : Optional? (primitives | struct | valueObjectIdentifier) identifier
+    : Optional? bitloopsPrimaryType identifier
     ;
 
 bitloopsPrimaryType

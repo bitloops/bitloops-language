@@ -230,6 +230,11 @@ export type TBitloopsPrimaryType =
   | TBitloopsPrimitives
   | TBitloopsBuildInClasses
   | TUserDefinedClass;
+export type ArrayBitloopsPrimType = {
+  arrayType: {
+    value: TBitloopsPrimaryType;
+  };
+};
 
 export type TReturnType = TBitloopsPrimitives | TUserDefinedClass;
 

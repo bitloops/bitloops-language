@@ -20,27 +20,36 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariable } from '../../../../types.js';
+import { ArrayBitloopsPrimType, TBitloopsPrimitives } from '../../../../types.js';
 
-export const fieldVisitor = (
+export const primitivePrimTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FieldContext,
-): TVariable => {
-  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  // if (ctx.primitives()) {
-  //   type = ctx.primitives().getText();
-  // } else if (ctx.valueObjectIdentifier()) {
-  //   type = ctx.valueObjectIdentifier().getText();
-  // } else {
-  //   type = ctx.struct().getText();
-  // }
-  const identifier = ctx.identifier().getText();
-  const result: TVariable = {
-    type,
-    name: identifier,
+  ctx: BitloopsParser.PrimitivePrimTypeContext,
+): TBitloopsPrimitives => {
+  return ctx.primitives().getText();
+};
+
+export const structPrimTypeVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.StructPrimTypeContext,
+): string => {
+  return ctx.struct().getText();
+};
+export const valueObjectPrimTypeVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ValueObjectPrimTypeContext,
+): string => {
+  return ctx.valueObjectIdentifier().getText();
+};
+
+export const arrayBitloopsPrimTypeVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,
+): ArrayBitloopsPrimType => {
+  const value = thisVisitor.visit(ctx.bitloopsPrimaryType());
+  return {
+    arrayType: {
+      value,
+    },
   };
-  if (ctx.Optional()) {
-    result.optional = true;
-  }
-  return result;
 };

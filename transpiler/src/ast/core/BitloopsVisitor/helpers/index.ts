@@ -108,3 +108,10 @@ export {
 } from './repoPortDeclaration.js';
 export { readModelDeclarationVisitor } from './readModelDeclaration.js';
 export { applicationErrorDeclarationVisitor } from './applicationErrorDeclaration.js';
+
+export {
+  primitivePrimTypeVisitor,
+  structPrimTypeVisitor,
+  valueObjectPrimTypeVisitor,
+  arrayBitloopsPrimTypeVisitor,
+} from './bitloopsPrimaryType.js';
