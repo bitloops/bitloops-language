@@ -309,6 +309,7 @@ export type TEvaluation = {
     | TPropsEvaluation
     | TEntityEvaluation
     | TInstanceOf
+    | TErrorEvaluation
     | TNotInstanceOf
     | TGetClass;
 };
@@ -847,7 +848,7 @@ export type TPackage = {
 export type TRepoPorts = Record<string, TRepoPort>;
 
 export type TAggregateRepoPort = {
-  readModelName?: never;
+  readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
   aggregateRootName: string;
   extendedRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
@@ -939,6 +940,13 @@ export type TAndSingleExpression = {
   andExpression: {
     left: TSingleExpression;
     right: TSingleExpression;
+  };
+};
+
+export type TErrorEvaluation = {
+  errorEvaluation: {
+    name: string;
+    argumentDependencies?: TArgumentDependencies;
   };
 };
 

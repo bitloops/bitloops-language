@@ -30,6 +30,7 @@ const BOUNDED_CONTEXTS = 'bounded-contexts';
 enum PROJECT_RELATIVE_PATHS {
   DOMAIN = 'domain/',
   DOMAIN_ERRORS = 'domain/errors/',
+  APPLICATION_ERRORS = 'application/errors/',
   DRIVING_ADAPTERS = 'driving-adapters/',
   APPLICATION = 'application/',
   DTOs = 'dtos/',
@@ -53,7 +54,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
   [ClassTypes.Packages]: PROJECT_RELATIVE_PATHS.PACKAGES,
   [ClassTypes.RepoPorts]: PROJECT_RELATIVE_PATHS.PORTS,
-  [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION,
+  [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Structs]: PROJECT_RELATIVE_PATHS.STRUCTS,
 };
@@ -103,6 +104,7 @@ const getTargetFileDestination = (
     case ClassTypes.ReadModels:
     case ClassTypes.ValueObjects:
     case ClassTypes.DomainErrors:
+    case ClassTypes.ApplicationErrors:
     case ClassTypes.Props:
     case ClassTypes.Controllers:
     case ClassTypes.UseCases:
@@ -146,6 +148,7 @@ const getFilePathRelativeToModule = (
       result.filename = className;
       break;
     case ClassTypes.DomainErrors:
+    case ClassTypes.ApplicationErrors:
     case ClassTypes.Rules:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';

@@ -140,6 +140,12 @@ export const getValueAndFileNameOfImport = (
       fileName: 'index',
     };
   }
+  if (classType === ClassTypes.ApplicationErrors) {
+    return {
+      value: 'ApplicationErrors',
+      fileName: 'index',
+    };
+  }
   if (classType === ClassTypes.Rules) {
     return {
       value: 'Rules',

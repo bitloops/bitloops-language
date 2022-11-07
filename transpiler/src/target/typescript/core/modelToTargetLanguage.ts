@@ -135,6 +135,7 @@ import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
+import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -531,6 +532,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TArrayLiteralExpression: {
       res = arrayLiteralExpressionToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TErrorEvaluation: {
+      res = bitloopsErrorEvaluationToTargetLanguage(value);
       break;
     }
     default: {

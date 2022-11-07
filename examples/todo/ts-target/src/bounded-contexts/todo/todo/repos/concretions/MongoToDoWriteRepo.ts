@@ -17,9 +17,10 @@ export class MongoTodoWriteRepo
   }
 
   async getById(todoId: Domain.UUIDv4): Promise<TodoEntity> {
-    return (await this.collection.find({
+    const res = await this.collection.findOne({
       _id: todoId.toString(),
-    })) as unknown as TodoEntity;
+    });
+    return res as unknown as TodoEntity;
   }
 
   async delete(todoId: Domain.UUIDv4): Promise<void> {

@@ -26,8 +26,14 @@ import { GetAllTodoUseCase } from './application/GetAllTodoUseCase';
 import { CreateTodoRESTController } from './driving-adapters/CreateTodoRESTController';
 import { GetAllTodoRESTController } from './driving-adapters/GetAllTodoRESTController';
 import { GetAllTodoGQLController } from './driving-adapters/GetAllTodoGQLController';
+import { DeleteTodoRESTController } from './driving-adapters/DeleteTodoRESTController';
+import { UpdateTodoRESTController } from './driving-adapters/UpdateTodoRestCotroller';
+import { GetByIdTodoRESTController } from './driving-adapters/GetByIdTodoRESTController';
 
 import client from '../../../shared/infra/db/mongo';
+import { UpdateTodoUseCase } from './application/UpdateTodoUseCase';
+import { DeleteTodoUseCase } from './application/DeleteToDoUseCase';
+import { GetByIdTodoUseCase } from './application/GetByIdTodoUseCase';
 
 const createTodoRESTController = new CreateTodoRESTController(
   new CreateTodoUseCase(new MongoTodoWriteRepo(client)),
@@ -35,8 +41,26 @@ const createTodoRESTController = new CreateTodoRESTController(
 const todoGetAllController = new GetAllTodoRESTController(
   new GetAllTodoUseCase(new MongoTodoReadRepo(client)),
 );
+const todoGetByIdRESTController = new GetByIdTodoRESTController(
+  new GetByIdTodoUseCase(new MongoTodoReadRepo(client)),
+);
 const todoGetAllGQLController = new GetAllTodoGQLController(
   new GetAllTodoUseCase(new MongoTodoReadRepo(client)),
 );
 
-export { createTodoRESTController, todoGetAllController, todoGetAllGQLController };
+const updateTodoController = new UpdateTodoRESTController(
+  new UpdateTodoUseCase(new MongoTodoWriteRepo(client)),
+);
+
+const deleteTodoController = new DeleteTodoRESTController(
+  new DeleteTodoUseCase(new MongoTodoWriteRepo(client)),
+);
+
+export {
+  createTodoRESTController,
+  todoGetAllController,
+  todoGetAllGQLController,
+  updateTodoController,
+  deleteTodoController,
+  todoGetByIdRESTController,
+};

@@ -113,6 +113,7 @@ const BitloopsTypesMapping = {
   TValueObjectMethods: 'TValueObjectMethods',
   TBitloopsPrimaryType: 'TBitloopsPrimaryType',
   TArrayLiteralExpression: 'TArrayLiteralExpression',
+  TErrorEvaluation: 'TErrorEvaluation',
 };
 
 const ClassTypes = {
