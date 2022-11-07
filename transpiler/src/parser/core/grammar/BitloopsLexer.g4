@@ -30,6 +30,7 @@ MultiLineComment:               '/*' .*? '*/'             -> channel(HIDDEN);
 SingleLineComment:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
 RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpressionChar* {this.IsRegexPossible()}? '/' IdentifierPart*;
 
+ToStringEvaluation:              'toString';
 OpenBracket:                    '[';
 CloseBracket:                   ']';
 OpenParen:                      '(';
@@ -302,15 +303,13 @@ RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
-Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
-ToStringEvaluation:              'toString';
 
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 
 ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
 RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
-
+Identifier:                     IdentifierStart IdentifierPart*;
 
 
 /// String Literals

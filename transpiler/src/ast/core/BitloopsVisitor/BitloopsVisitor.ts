@@ -212,7 +212,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return parenthesizedExpressionVisitor(this, ctx);
   }
 
-  visitToStringCall(ctx: BitloopsParser.ToStringCallContext) {
+  visitToStringCall(ctx: BitloopsParser.ToStringEvaluationContext) {
     return toStringCallVisitor(this, ctx);
   }
 

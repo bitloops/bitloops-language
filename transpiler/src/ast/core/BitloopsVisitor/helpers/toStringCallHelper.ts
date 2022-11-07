@@ -19,15 +19,16 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TToString } from '../../../../types.js';
+// import { TToString } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const toStringCallVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ToStringCallContext,
-): TToString => {
-  const identifier = thisVisitor.visit(ctx.Identifier());
+  ctx: BitloopsParser.ToStringEvaluationContext,
+): { toString: boolean } => {
+  // const identifier = thisVisitor.visit(ctx.regularEvaluation());
+  console.log('ctx', ctx, thisVisitor);
   return {
-    toString: identifier,
+    toString: true,
   };
 };

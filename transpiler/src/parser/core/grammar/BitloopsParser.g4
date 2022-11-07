@@ -222,7 +222,6 @@ regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
     | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
-    | Identifier Dot ToStringIdetifier #RegularVariableMethodEvaluation
     ;
 
 
@@ -553,6 +552,7 @@ jestTestDeclaration
 
 evaluation
     : isInstanceOf 
+    | toStringEvaluation
     | getClassEvaluation
     | regularEvaluation
     | dtoEvaluation
@@ -560,7 +560,6 @@ evaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
-    | toStringCall
     ;
 
 condition
@@ -589,7 +588,6 @@ statement
     | constDeclaration
     | variableDeclaration
     | thisDeclaration
-    | toStringCall
     // | expressionStatement
     | emptyStatement_
     | propsDeclaration
@@ -1339,8 +1337,8 @@ arrowFunctionBody
     | OpenBrace functionBody CloseBrace
     ;
 
-toStringCall
-    : Identifier Dot ToStringIdetifier '()'
+toStringEvaluation
+    : identifier Dot ToStringEvaluation OpenParen CloseParen
     ;
 
 assignmentOperator
