@@ -38,19 +38,10 @@ const graphQLSetupDataToTargetLanguage = (
     graphQLGenerator.generateResolversSchemasAndHandlers(resolvers, bitloopsModel);
 
   const graphQLServerGenerator = new GraphQLServerGenerator();
-  return servers.reduce(
-    (acc, server) => {
-      const { output, dependencies } = graphQLServerGenerator.generateServerCode(
-        server,
-        addResolversToServer,
-        resolversSchemasAndHandlers,
-      );
-
-      acc.output += output;
-      acc.dependencies = [...acc.dependencies, ...dependencies];
-      return acc;
-    },
-    { output: '', dependencies: [] },
+  return graphQLServerGenerator.generateAllServersCode(
+    servers,
+    addResolversToServer,
+    resolversSchemasAndHandlers,
   );
 };
 

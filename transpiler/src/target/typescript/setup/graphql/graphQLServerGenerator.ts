@@ -6,6 +6,27 @@ import {
 import { AllResolvers, ResolversBuilder, SchemaBuilder } from './types.js';
 
 export class GraphQLServerGenerator {
+  generateAllServersCode(
+    servers: IServer[],
+    addResolversToServer: IAddResolversToServer[],
+    resolversSchemasAndHandlers: AllResolvers,
+  ): TTargetDependenciesTypeScript {
+    return servers.reduce(
+      (acc, server) => {
+        const { output, dependencies } = this.generateServerCode(
+          server,
+          addResolversToServer,
+          resolversSchemasAndHandlers,
+        );
+
+        acc.output += output;
+        acc.dependencies = [...acc.dependencies, ...dependencies];
+        return acc;
+      },
+      { output: '', dependencies: [] },
+    );
+  }
+
   generateServerCode(
     server: IServer,
     addResolversToServer: IAddResolversToServer[],

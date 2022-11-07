@@ -86,14 +86,9 @@ export class GraphQLSchemaGenerator {
     const dtos = moduleModel.DTOs;
     // Generate operation arguments if not primitive
     if (typeof inputType === 'string') {
-      const dto = dtos[inputType];
-      if (!dto) {
-        throw new Error(`DTO ${inputType} not found`);
-      }
-      // TODO handle nested/complex DTOs, e.g. DTOs with other DTOs/ReadModels/Arrays as properties
-      const result = this.dtoToGraphQLMapping(dto);
-      const typeName = this.trimDTOSuffix(inputType);
-      resolverValues.typeDefs.inputs[inputType] = `input ${typeName} ${result}`;
+      const res = this.generateResolverInputTypeDefs(moduleModel, inputType);
+      const { input, types: _types } = res;
+      resolverValues.typeDefs.inputs[inputType] = input;
     }
 
     // Generate operation's return Type
@@ -105,6 +100,28 @@ export class GraphQLSchemaGenerator {
     const typeName = this.trimDTOSuffix(output);
     resolverValues.typeDefs.types[output] = `type ${typeName} ${result}`;
     return resolverValues;
+  }
+
+  private generateResolverInputTypeDefs(
+    moduleModel: TModule,
+    inputType: string,
+  ): {
+    input: string;
+    types: { [key: string]: string };
+  } {
+    const dtos = moduleModel.DTOs;
+    const dto = dtos[inputType];
+    if (!dto) {
+      throw new Error(`DTO ${inputType} not found`);
+    }
+    // TODO handle nested/complex DTOs, e.g. DTOs with other DTOs/ReadModels/Arrays as properties
+    const result = this.dtoToGraphQLMapping(dto);
+    const typeName = this.trimDTOSuffix(inputType);
+    // resolverValues.typeDefs.inputs[inputType] =
+    return {
+      input: `input ${typeName} ${result}`,
+      types: {},
+    };
   }
 
   private trimDTOSuffix(typeName: string): string {
