@@ -31,7 +31,6 @@ const SETUP_FILE_NAME = 'setup.bl';
 const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
   // TODO handle possibly multiple setup files
   const setupFilePath = path.join(sourceDirPath, SETUP_FILE_NAME);
-  console.log(setupFilePath);
   const content = readFromFile(setupFilePath);
   // const setupData = main(content);
   const parser = new BitloopsSetupParser();

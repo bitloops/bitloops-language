@@ -40,7 +40,6 @@ const getBoundedContextModules = (
     const boundedContextName = path.basename(boundedContextsPath);
     contextModules[boundedContextName] = moduleNames;
   }
-  console.log(contextModules);
   return contextModules;
 };
 

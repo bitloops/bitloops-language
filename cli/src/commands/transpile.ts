@@ -82,7 +82,7 @@ const transpile = async (source: ICollection): Promise<void> => {
     if (!ans) return;
   }
   let throbber: Ora;
-  console.log(sourceDirPath);
+
   try {
     const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
       getBoundedContextModules(sourceDirPath);

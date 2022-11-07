@@ -21,7 +21,6 @@ export const inquirerFuzzy = async (q: Question, source): Promise<string> => {
   );
 
   const inputPath: string = answer[q.name];
-  //inputPath = inputPath.replaceAll('\\\\', '\\');
   return inputPath;
 };
 
