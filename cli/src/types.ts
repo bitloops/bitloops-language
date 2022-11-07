@@ -218,20 +218,27 @@ export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' 
 
 export const BitloopsBuildInClassNames = {
   UUIDv4: 'UUIDv4',
-};
+} as const;
 export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
 export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
 
-type TUserDefinedClass = string;
+type TBitloopsIdentifier = string;
 
-export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedClass;
+export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBitloopsPrimaryType =
   | TBitloopsPrimitives
   | TBitloopsBuildInClasses
-  | TUserDefinedClass;
+  | TBitloopsIdentifier
+  | ArrayBitloopsPrimType;
 
-export type TReturnType = TBitloopsPrimitives | TUserDefinedClass;
+export type ArrayBitloopsPrimType = {
+  arrayType: {
+    value: TBitloopsPrimaryType;
+  };
+};
+
+export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBackTickString = {
   backTickString: string;
@@ -302,6 +309,7 @@ export type TEvaluation = {
     | TPropsEvaluation
     | TEntityEvaluation
     | TInstanceOf
+    | TErrorEvaluation
     | TNotInstanceOf
     | TGetClass;
 };
@@ -365,7 +373,12 @@ export type TExpressionValues =
   | TAdditiveExpression
   | TRelationalExpression
   | TEqualityExpression
-  | TParenthesizedExpression;
+  | TParenthesizedExpression
+  | TArrayLiteralExpression;
+
+export type TArrayLiteralExpression = {
+  arrayLiteral: TExpression[];
+};
 
 //TODO maybe return should have two keys: ok and error
 export type TReturnStatement = {
@@ -559,7 +572,7 @@ export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControlle
 export type TGraphQLControllerValues = TBaseControllerValues & {
   type: 'graphql';
   operationType: TGraphQLOperation;
-  inputType: string;
+  inputType: null | string;
   operationName: string;
   execute: TGraphQLControllerExecute;
   outputType: string; // should be same as return type of execute
@@ -800,7 +813,7 @@ export type TResolver = {
   module: string;
   operationType: TGraphQLOperation;
   operationName: string;
-  input: string | TProps; // an existing DTO or any type
+  input: string | null; // a DTO or nothing for no input
   output: string; // a DTO
   controller: string;
 };
@@ -835,7 +848,7 @@ export type TPackage = {
 export type TRepoPorts = Record<string, TRepoPort>;
 
 export type TAggregateRepoPort = {
-  readModelName?: never;
+  readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
   aggregateRootName: string;
   extendedRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
@@ -927,6 +940,13 @@ export type TAndSingleExpression = {
   andExpression: {
     left: TSingleExpression;
     right: TSingleExpression;
+  };
+};
+
+export type TErrorEvaluation = {
+  errorEvaluation: {
+    name: string;
+    argumentDependencies?: TArgumentDependencies;
   };
 };
 
