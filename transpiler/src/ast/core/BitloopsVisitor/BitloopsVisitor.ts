@@ -138,7 +138,6 @@ import {
   applicationErrorDeclarationVisitor,
   primitivePrimTypeVisitor,
   structPrimTypeVisitor,
-  valueObjectPrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
 } from './helpers/index.js';
@@ -766,14 +765,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitStructPrimType(ctx: BitloopsParser.StructPrimTypeContext) {
     return structPrimTypeVisitor(this, ctx);
   }
-  visitValueObjectPrimType(ctx: BitloopsParser.ValueObjectPrimTypeContext) {
-    return valueObjectPrimTypeVisitor(this, ctx);
-  }
   visitArrayBitloopsPrimType(ctx: BitloopsParser.ArrayBitloopsPrimTypeContext) {
     return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
 
   visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
     return ctx.bitloopsBuildInClass().getText();
+  }
+  visitUserDefinedClassPrimType(ctx: BitloopsParser.UserDefinedClassPrimTypeContext) {
+    return ctx.userDefinedClass().getText();
   }
 }

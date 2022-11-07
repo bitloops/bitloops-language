@@ -112,7 +112,6 @@ export { applicationErrorDeclarationVisitor } from './applicationErrorDeclaratio
 export {
   primitivePrimTypeVisitor,
   structPrimTypeVisitor,
-  valueObjectPrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
 } from './bitloopsPrimaryType.js';
 export { arrayLiteralVisitor } from './arrayLiteral.js';

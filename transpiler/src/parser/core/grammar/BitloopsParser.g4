@@ -257,14 +257,25 @@ field
 
 bitloopsPrimaryType
     : primitives                                    #PrimitivePrimType
-    | struct                                        #StructPrimType
-    | valueObjectIdentifier                         #ValueObjectPrimType
     | bitloopsBuildInClass                          #BitloopsBuildInClassPrimType
     | bitloopsPrimaryType OpenBracket CloseBracket  #ArrayBitloopsPrimType
+    | userDefinedClass                              #UserDefinedClassPrimType
+    // | valueObjectIdentifier                         #ValueObjectPrimType
+    | struct                                        #StructPrimType
     ;
 
 bitloopsBuildInClass
     : UUIDv4
+    ;
+
+userDefinedClass
+    : DTOIdentifier
+    // | ControllerIdentifier
+    // | UseCaseIdentifier
+    // | RepoPortIdentifier
+    | ReadModelIdentifier
+    | ValueObjectIdentifier
+    | EntityIdentifier
     ;
 
 predefinedType

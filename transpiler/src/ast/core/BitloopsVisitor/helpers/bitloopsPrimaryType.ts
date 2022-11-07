@@ -35,12 +35,6 @@ export const structPrimTypeVisitor = (
 ): string => {
   return ctx.struct().getText();
 };
-export const valueObjectPrimTypeVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ValueObjectPrimTypeContext,
-): string => {
-  return ctx.valueObjectIdentifier().getText();
-};
 
 export const arrayBitloopsPrimTypeVisitor = (
   thisVisitor: BitloopsVisitor,
