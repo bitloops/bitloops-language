@@ -372,7 +372,12 @@ export type TExpressionValues =
   | TAdditiveExpression
   | TRelationalExpression
   | TEqualityExpression
-  | TParenthesizedExpression;
+  | TParenthesizedExpression
+  | TArrayLiteralExpression;
+
+export type TArrayLiteralExpression = {
+  arrayLiteral: TExpression[];
+};
 
 //TODO maybe return should have two keys: ok and error
 export type TReturnStatement = {

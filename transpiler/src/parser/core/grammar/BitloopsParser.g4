@@ -1193,12 +1193,7 @@ arrayLiteral
     ;
 
 elementList
-    : arrayElement (Comma arrayElement)*
-    ;
-
-arrayElement                      // ECMAScript 6: Spread Operator
-    :  expression 
-    // : Ellipsis? (expression | Identifier) Comma?
+    : expression (Comma expression)*
     ;
 
 objectLiteral

@@ -115,3 +115,4 @@ export {
   valueObjectPrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
 } from './bitloopsPrimaryType.js';
+export { arrayLiteralVisitor } from './arrayLiteral.js';

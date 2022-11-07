@@ -140,6 +140,7 @@ import {
   structPrimTypeVisitor,
   valueObjectPrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
+  arrayLiteralVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -222,6 +223,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
         ...evaluation,
       },
     };
+  }
+
+  visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
+    const arrayLiteral = this.visit(ctx.arrayLiteral());
+    return {
+      expression: {
+        ...arrayLiteral,
+      },
+    };
+  }
+
+  visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {
+    return arrayLiteralVisitor(this, ctx);
   }
 
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
