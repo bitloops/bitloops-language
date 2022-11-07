@@ -29,13 +29,6 @@ export const primitivePrimTypeVisitor = (
   return ctx.primitives().getText();
 };
 
-export const structPrimTypeVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.StructPrimTypeContext,
-): string => {
-  return ctx.struct().getText();
-};
-
 export const arrayBitloopsPrimTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,

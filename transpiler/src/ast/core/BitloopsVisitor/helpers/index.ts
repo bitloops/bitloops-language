@@ -109,9 +109,5 @@ export {
 export { readModelDeclarationVisitor } from './readModelDeclaration.js';
 export { applicationErrorDeclarationVisitor } from './applicationErrorDeclaration.js';
 
-export {
-  primitivePrimTypeVisitor,
-  structPrimTypeVisitor,
-  arrayBitloopsPrimTypeVisitor,
-} from './bitloopsPrimaryType.js';
+export { primitivePrimTypeVisitor, arrayBitloopsPrimTypeVisitor } from './bitloopsPrimaryType.js';
 export { arrayLiteralVisitor } from './arrayLiteral.js';

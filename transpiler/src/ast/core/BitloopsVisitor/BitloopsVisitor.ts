@@ -137,7 +137,6 @@ import {
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
   primitivePrimTypeVisitor,
-  structPrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
 } from './helpers/index.js';
@@ -762,9 +761,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return primitivePrimTypeVisitor(this, ctx);
   }
 
-  visitStructPrimType(ctx: BitloopsParser.StructPrimTypeContext) {
-    return structPrimTypeVisitor(this, ctx);
-  }
   visitArrayBitloopsPrimType(ctx: BitloopsParser.ArrayBitloopsPrimTypeContext) {
     return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
@@ -772,7 +768,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
     return ctx.bitloopsBuildInClass().getText();
   }
-  visitUserDefinedClassPrimType(ctx: BitloopsParser.UserDefinedClassPrimTypeContext) {
-    return ctx.userDefinedClass().getText();
+  visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
+    return ctx.bitloopsIdentifiers().getText();
   }
 }

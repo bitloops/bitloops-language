@@ -107,9 +107,9 @@ bitloopsIdentifiers
     | propsIdentifier
     | ValueObjectIdentifier
     | EntityIdentifier
-    | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     | RepoPortIdentifier
     | ReadModelIdentifier
+    | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     ;
 
 type_
@@ -256,26 +256,14 @@ field
     ;
 
 bitloopsPrimaryType
-    : primitives                                    #PrimitivePrimType
-    | bitloopsBuildInClass                          #BitloopsBuildInClassPrimType
-    | bitloopsPrimaryType OpenBracket CloseBracket  #ArrayBitloopsPrimType
-    | userDefinedClass                              #UserDefinedClassPrimType
-    // | valueObjectIdentifier                         #ValueObjectPrimType
-    | struct                                        #StructPrimType
+    : primitives                                        #PrimitivePrimType
+    | bitloopsBuildInClass                              #BitloopsBuildInClassPrimType
+    | bitloopsPrimaryType OpenBracket CloseBracket      #ArrayBitloopsPrimType
+    | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
     ;
 
 bitloopsBuildInClass
     : UUIDv4
-    ;
-
-userDefinedClass
-    : DTOIdentifier
-    // | ControllerIdentifier
-    // | UseCaseIdentifier
-    // | RepoPortIdentifier
-    | ReadModelIdentifier
-    | ValueObjectIdentifier
-    | EntityIdentifier
     ;
 
 predefinedType
