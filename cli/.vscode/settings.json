@@ -16,7 +16,4 @@
   "cSpell.words": [
     "Fastify"
   ],
-  "[typescript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  }
 }
