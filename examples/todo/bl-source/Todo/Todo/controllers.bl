@@ -39,7 +39,7 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
 //         }
 //       }
 //     } else {
-//       this.created(response);
+//       this.ok(response);
 //     }
 //   }
 // }
@@ -85,7 +85,7 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
 //         }
 //       }
 //     } else {
-//       this.ok(response);
+//       this.ok(response, result);
 //     }
 //   }
 // }
