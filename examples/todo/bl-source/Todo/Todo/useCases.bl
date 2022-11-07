@@ -55,15 +55,15 @@ UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 //   }
 // }
 
-// UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
-//   execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError) {
-//     const requestId = requestDTO.id;
-//     const todo = this.todoRepo.getById(requestId);
+UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
+  execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = requestDTO.id;
+    const todo = this.todoRepo.getById(requestId);
 
-//     if(NOT todo) {
-//       return ApplicationErrors.ToDoNotFoundError(requestId);
-//     }
+    if(NOT todo) {
+      return ApplicationErrors.ToDoNotFoundError(requestId);
+    }
 
-//     return todo;
-//   }
-// }
+    return todo;
+  }
+}

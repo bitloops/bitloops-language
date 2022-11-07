@@ -185,6 +185,7 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
+    | regularErrorTypeEvaluation 
     ;
 
 // regularVariableEvaluation | regularStringEvaluation |
@@ -548,18 +549,18 @@ jestTestDeclaration
     ;
 
 errorEvaluation
-    :   ErrorIdentifier methodArguments SemiColon?
+    : ErrorIdentifier methodArguments SemiColon?
     ;
 
 evaluation
     : isInstanceOf 
     | getClassEvaluation
+    | errorEvaluation
     | regularEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
-    | errorEvaluation
     | structEvaluation
     ;
 
