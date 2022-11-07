@@ -37,15 +37,16 @@ const getBoundedContextModules = (
   const contextModules: Record<string, string[]> = {};
   for (const boundedContextsPath of boundedContextPaths) {
     const moduleNames = getContextModuleNames(boundedContextsPath);
-    const boundedContextName = boundedContextsPath.split('/').pop();
+    const boundedContextName = path.basename(boundedContextsPath);
     contextModules[boundedContextName] = moduleNames;
   }
+  console.log(contextModules);
   return contextModules;
 };
 
 const getContextModuleNames = (filePath: string): string[] => {
   const contextModuleNames = getFolderNamesFromPath(filePath).map((boundedContextPath) => {
-    return boundedContextPath.split('/').pop();
+    return path.basename(boundedContextPath);
   });
   return contextModuleNames;
 };
