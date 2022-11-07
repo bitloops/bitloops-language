@@ -18,21 +18,21 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TErrorEvaluation, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const bitloopsErrorEvaluationToTargetLanguage = (
   variable: TErrorEvaluation,
 ): TTargetDependenciesTypeScript => {
   const { errorEvaluation } = variable;
   const { name, argumentDependencies } = errorEvaluation;
-  let output = `new ${name}(`;
-  if (argumentDependencies && argumentDependencies.length > 0) {
-    argumentDependencies.forEach((argument) => {
-      output += `${argument.value},`;
-    });
-    output = output.slice(0, -1);
-  }
-  output += ')';
+
+  const argumentDependenciesResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TArgumentDependencies,
+    value: argumentDependencies,
+  });
+  const output = `new ${name}${argumentDependenciesResult.output}`;
   return {
     output,
     dependencies: [],
