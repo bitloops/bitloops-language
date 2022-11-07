@@ -293,6 +293,13 @@ export type TRegularEvaluation = {
   };
 };
 
+export type TCustomClassEvaluation = {
+  customClass: {
+    className: string;
+    argumentDependencies: TArgumentDependencies;
+  };
+};
+
 export type TEvaluation = {
   evaluation:
     | TRegularEvaluation
@@ -303,7 +310,8 @@ export type TEvaluation = {
     | TEntityEvaluation
     | TInstanceOf
     | TNotInstanceOf
-    | TGetClass;
+    | TGetClass
+    | TCustomClassEvaluation;
 };
 
 // export type TCondition = {
