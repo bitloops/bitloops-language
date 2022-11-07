@@ -67,6 +67,7 @@ export { aggregateDeclarationVisitor } from './aggregateDeclarationVisitor.js';
 export { publicMethodDeclarationVisitor } from './publicMethodDeclaration.js';
 export { publicMethodDeclarationListVisitor } from './publicMethodDeclarationList.js';
 export { domainRuleDeclarationVisitor, domainRuleBodyVisitor } from './domainRuleDeclaration.js';
+export { toStringCallVisitor } from './toStringCallHelper.js';
 export {
   applyRulesStatementVisitor,
   applyRuleStatementRulesListVisitor,

@@ -304,6 +304,7 @@ ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
+ToStringEvaluation:              'toString';
 
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 

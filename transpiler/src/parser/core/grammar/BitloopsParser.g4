@@ -222,6 +222,7 @@ regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
     | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
+    | Identifier Dot ToStringIdetifier #RegularVariableMethodEvaluation
     ;
 
 
@@ -514,6 +515,7 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | statement
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -558,6 +560,7 @@ evaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
+    | toStringCall
     ;
 
 condition
@@ -586,6 +589,7 @@ statement
     | constDeclaration
     | variableDeclaration
     | thisDeclaration
+    | toStringCall
     // | expressionStatement
     | emptyStatement_
     | propsDeclaration
@@ -1333,6 +1337,10 @@ arrowFunctionParameters
 arrowFunctionBody
     : expression
     | OpenBrace functionBody CloseBrace
+    ;
+
+toStringCall
+    : Identifier Dot ToStringIdetifier '()'
     ;
 
 assignmentOperator

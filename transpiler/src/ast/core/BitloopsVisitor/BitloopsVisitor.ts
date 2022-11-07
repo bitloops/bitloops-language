@@ -136,6 +136,7 @@ import {
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
+  toStringCallVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -209,6 +210,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitParenthesizedExpression(ctx: BitloopsParser.ParenthesizedExpressionContext) {
     return parenthesizedExpressionVisitor(this, ctx);
+  }
+
+  visitToStringCall(ctx: BitloopsParser.ToStringCallContext) {
+    return toStringCallVisitor(this, ctx);
   }
 
   visitEvaluationExpression(ctx: BitloopsParser.EvaluationExpressionContext) {

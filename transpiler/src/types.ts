@@ -307,6 +307,10 @@ export type TEvaluation = {
     | TGetClass;
 };
 
+export type TToString = {
+  toString: TIdentifierExpression;
+};
+
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;
