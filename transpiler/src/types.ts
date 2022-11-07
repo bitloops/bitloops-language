@@ -294,7 +294,7 @@ export type TRegularEvaluation = {
 };
 
 export type TCustomClassEvaluation = {
-  customClass: {
+  builtInClass: {
     className: string;
     argumentDependencies: TArgumentDependencies;
   };

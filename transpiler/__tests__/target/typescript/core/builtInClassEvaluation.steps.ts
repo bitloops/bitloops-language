@@ -20,16 +20,16 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/customClassEvaluation.feature');
+const feature = loadFeature('__tests__/target/typescript/core/builtInClassEvaluation.feature');
 
 defineFeature(feature, (test) => {
-  let customClassEvaluationType;
+  let builtInClassEvaluationType;
   let result;
   let value;
 
   test('Custom Class evaluation', ({ given, and, when, then }) => {
     given(/^type is "(.*)"$/, (arg0) => {
-      customClassEvaluationType = arg0;
+      builtInClassEvaluationType = arg0;
     });
 
     and(/^language is "(.*)"$/, (_arg0) => {});
@@ -39,11 +39,10 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the code', () => {
-      console.log('value', value);
-      const customClassEvaluationValue = JSON.parse(value);
+      const builtInClassEvaluationValue = JSON.parse(value);
       result = modelToTargetLanguage({
-        type: customClassEvaluationType,
-        value: customClassEvaluationValue,
+        type: builtInClassEvaluationType,
+        value: builtInClassEvaluationValue,
       });
     });
 
