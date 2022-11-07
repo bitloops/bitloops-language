@@ -771,4 +771,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitArrayBitloopsPrimType(ctx: BitloopsParser.ArrayBitloopsPrimTypeContext) {
     return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
+
+  visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
+    return ctx.bitloopsBuildInClass().getText();
+  }
 }

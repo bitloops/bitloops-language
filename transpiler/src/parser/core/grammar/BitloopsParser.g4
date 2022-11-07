@@ -259,12 +259,13 @@ bitloopsPrimaryType
     : primitives                                    #PrimitivePrimType
     | struct                                        #StructPrimType
     | valueObjectIdentifier                         #ValueObjectPrimType
-    // | bitloopsBuildInClasses                        #BitloopsBuildInClassesPrimType
+    | bitloopsBuildInClass                          #BitloopsBuildInClassPrimType
     | bitloopsPrimaryType OpenBracket CloseBracket  #ArrayBitloopsPrimType
     ;
 
-// bitloopsBuildInClasses
-//     : 
+bitloopsBuildInClass
+    : UUIDv4
+    ;
 
 predefinedType
     : Any

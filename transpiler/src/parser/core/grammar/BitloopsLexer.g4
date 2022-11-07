@@ -263,6 +263,9 @@ JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
 
 // Abstract: 'abstract';
 
+// BuiltInClasses
+UUIDv4: 'UUIDv4';
+
 Is: 'is';
 
 //

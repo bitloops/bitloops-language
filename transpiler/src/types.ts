@@ -218,7 +218,7 @@ export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' 
 
 export const BitloopsBuildInClassNames = {
   UUIDv4: 'UUIDv4',
-};
+} as const;
 export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
 export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
 
