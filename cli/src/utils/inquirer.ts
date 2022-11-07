@@ -1,4 +1,5 @@
 import inquirer, { Question } from 'inquirer';
+// import path from 'path';
 import { PathPrompt } from 'inquirer-path';
 
 import { TAB, redColor } from '../utils/oraUtils.js';
@@ -18,7 +19,8 @@ export const inquirerFuzzy = async (q: Question, source): Promise<string> => {
     ],
     source,
   );
-  const inputPath = answer[q.name];
+
+  const inputPath: string = answer[q.name];
   return inputPath;
 };
 
@@ -36,6 +38,7 @@ export const inquirerSimpleConfirm = async (
     },
   ];
   const answers = await inquirer.prompt(question);
+
   return answers[name];
 };
 export const printError = (message: string): void => {
