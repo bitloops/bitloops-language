@@ -545,6 +545,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.type_().getText();
   }
 
+  visitCustomClassIdentifier(ctx: BitloopsParser.CustomClassIdentifierContext) {
+    return ctx.CustomClassIdentifier().getText();
+  }
+
+  visitCustomClassEvaluation(ctx: BitloopsParser.CustomClassEvaluationContext) {
+    return customClassEvaluation(this, ctx);
+  }
+
   visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {
     return errorIdentifiersVisitor(this, ctx);
   }

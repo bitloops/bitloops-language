@@ -301,6 +301,7 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+CustomClassIdentifier: 'UUID';
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';

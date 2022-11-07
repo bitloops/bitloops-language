@@ -932,9 +932,13 @@ structEvaluationIdentifier
 structEvaluation
     : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
+
+customClassIdentifier
+    : CustomClassIdentifier
+    ;
     
 customClassEvaluation
-    : UpperCaseIdentifier OpenParen evaluationFieldList CloseParen
+    : customClassIdentifier (Dot identifier)? OpenParen evaluationFieldList CloseParen
     ;
 
 propsEvaluation
