@@ -20,6 +20,7 @@
 
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TErrorEvaluation, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { getChildDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const bitloopsErrorEvaluationToTargetLanguage = (
@@ -33,8 +34,14 @@ export const bitloopsErrorEvaluationToTargetLanguage = (
     value: argumentDependencies,
   });
   const output = `new ${name}${argumentDependenciesResult.output}`;
+  let dependencies;
+  if (argumentDependenciesResult.dependencies && argumentDependenciesResult.dependencies.length > 0) {
+    dependencies = [...getChildDependencies(name), ...argumentDependenciesResult.dependencies]
+  } else {
+    dependencies = [...getChildDependencies(name)];
+  }
   return {
     output,
-    dependencies: [],
+    dependencies,
   };
 };

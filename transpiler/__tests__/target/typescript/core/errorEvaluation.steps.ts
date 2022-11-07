@@ -23,11 +23,10 @@ import { modelToTargetLanguage } from '../../../../src/target/typescript/core/mo
 const feature = loadFeature('__tests__/target/typescript/core/errorEvaluation.feature');
 
 defineFeature(feature, (test) => {
-  let errorEvaluationType;
-  let result;
-  let value;
-
   test('Error Evaluation for all possible types', ({ given, and, when, then }) => {
+    let errorEvaluationType;
+    let result;
+    let value;
     given(/^type is "(.*)"$/, (arg0) => {
       errorEvaluationType = arg0;
     });
@@ -46,8 +45,12 @@ defineFeature(feature, (test) => {
       });
     });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
-    });
+    then(
+      /^I should see the (.*) code with the corresponding dependencies (.*)$/,
+      (output, dependencies) => {
+        expect(result.output).toEqual(output);
+        expect(result.dependencies).toEqual(JSON.parse(dependencies));
+      },
+    );
   });
 });
