@@ -56,7 +56,7 @@ UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 // }
 
 // UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
-//   execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError) {
+//   execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError)) {
 //     const requestId = requestDTO.id;
 //     const todo = this.todoRepo.getById(requestId);
 
