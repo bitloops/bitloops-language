@@ -185,7 +185,6 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
-    | regularErrorTypeEvaluation
     ;
 
 // regularVariableEvaluation | regularStringEvaluation |
@@ -220,7 +219,6 @@ regularVariableEvaluation
 
 regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-    | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 
@@ -549,15 +547,20 @@ jestTestDeclaration
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
     ;
 
+errorEvaluation
+    :   ErrorIdentifier methodArguments SemiColon?
+    ;
+
 evaluation
     : isInstanceOf 
     | getClassEvaluation
     | regularEvaluation
     | dtoEvaluation
-    | structEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
+    | errorEvaluation
+    | structEvaluation
     ;
 
 condition
