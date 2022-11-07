@@ -33,6 +33,7 @@ import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
+import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
   switch (dbType) {
@@ -72,6 +73,10 @@ const getPropsModel = (repoPortInfo: TRepoPort, module: TModule): TPropsValues =
     const { aggregateRootName } = repoPortInfo;
     const aggregateModel = module.RootEntities[aggregateRootName];
     const aggregatePropsName = aggregateModel.create.parameterDependency.type;
+
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsName)) {
+      throw new Error('Array props are not supported');
+    }
     propsModel = module.Props[aggregatePropsName];
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
     const { readModelName } = repoPortInfo;
