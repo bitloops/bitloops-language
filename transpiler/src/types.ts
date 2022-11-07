@@ -222,14 +222,14 @@ export const BitloopsBuildInClassNames = {
 export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
 export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
 
-type TUserDefinedClass = string;
+type TBitloopsIdentifier = string;
 
-export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TUserDefinedClass;
+export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBitloopsPrimaryType =
   | TBitloopsPrimitives
   | TBitloopsBuildInClasses
-  | TUserDefinedClass
+  | TBitloopsIdentifier
   | ArrayBitloopsPrimType;
 
 export type ArrayBitloopsPrimType = {
@@ -238,7 +238,7 @@ export type ArrayBitloopsPrimType = {
   };
 };
 
-export type TReturnType = TBitloopsPrimitives | TUserDefinedClass;
+export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBackTickString = {
   backTickString: string;
