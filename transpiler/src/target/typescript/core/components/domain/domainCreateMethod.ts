@@ -22,6 +22,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
 import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
+import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
   const { parameterDependency, returnType, statements } = create;
@@ -41,6 +42,14 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
 
   const propsName = create.parameterDependency.type;
   const returnOkType = returnType.ok;
+
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+    throw new Error('Entity props type of  createMethod cannot be an array');
+  }
+
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(returnOkType)) {
+    throw new Error('Entity return type of createMethod cannot be an array');
+  }
 
   const producedConstructor = internalConstructor(
     propsName,

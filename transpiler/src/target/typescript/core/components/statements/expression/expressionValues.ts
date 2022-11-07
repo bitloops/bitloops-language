@@ -21,6 +21,7 @@ import { TExpressionValues, TTargetDependenciesTypeScript } from '../../../../..
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { evaluationToTargetLanguage, instanceOfToTargetLanguage } from './evaluation/index.js';
+import { ExpressionTypeIdentifiers } from './../../../type-identifiers/expression.js';
 
 export { evaluationToTargetLanguage, instanceOfToTargetLanguage };
 
@@ -37,12 +38,18 @@ const expressionValuesToTargetLanguage = (
   expressionValue: TExpressionValues,
 ): TTargetDependenciesTypeScript => {
   if (!expressionValue) {
-    throw new Error(`Unsupported expression: ${expressionValue}`);
+    throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
   }
 
   if ('evaluation' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TEvaluation,
+      value: expressionValue,
+    });
+  }
+  if (ExpressionTypeIdentifiers.isArrayLiteralExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TArrayLiteralExpression,
       value: expressionValue,
     });
   }

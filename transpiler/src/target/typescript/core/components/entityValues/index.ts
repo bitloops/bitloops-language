@@ -1,3 +1,4 @@
+import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -49,6 +50,9 @@ const entityValuesToTargetLanguage = (params: {
   let dependencies = [];
   const { methods, create, constantVars } = entityValues;
   const propsName = create.parameterDependency.type;
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+    throw new Error('Array is not supported as entity props type');
+  }
 
   if (constantVars) {
     // TODO fix with new model/types

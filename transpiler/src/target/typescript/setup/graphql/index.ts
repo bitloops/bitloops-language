@@ -31,6 +31,7 @@ import {
 import { deepClone } from '../../../../utils/deepClone.js';
 import { mapBitloopsPrimitiveToGraphQL } from './typeMappings.js';
 import { AllResolvers, ResolversBuilder, ResolverValues, SchemaBuilder } from './types.js';
+import { BitloopsPrimTypeIdentifiers } from './../../core/type-identifiers/bitloopsPrimType.js';
 
 /**
  *  Gather for each resolver, the typeDefs and Query&Mutations associated with it
@@ -313,8 +314,13 @@ const dtoToGraphQLMapping = (dto: TDTOValues): string => {
   let result = '';
   for (const field of dto.fields) {
     const { name, type, optional } = field;
-    const fieldType = mapBitloopsPrimitiveToGraphQL(type, optional);
-    result += `${name}: ${fieldType}`;
+    if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
+      const fieldType = mapBitloopsPrimitiveToGraphQL(type, optional);
+      result += `${name}: ${fieldType}`;
+    } else {
+      // TODO handle arrays/structs/nested dtos etc
+      throw new Error(`Unsupported type ${JSON.stringify(type)}`);
+    }
   }
 
   return '{' + result + '}';

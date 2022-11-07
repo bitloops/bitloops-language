@@ -136,6 +136,9 @@ import {
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
+  primitivePrimTypeVisitor,
+  arrayBitloopsPrimTypeVisitor,
+  arrayLiteralVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -218,6 +221,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
         ...evaluation,
       },
     };
+  }
+
+  visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
+    const arrayLiteral = this.visit(ctx.arrayLiteral());
+    return {
+      expression: {
+        ...arrayLiteral,
+      },
+    };
+  }
+
+  visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {
+    return arrayLiteralVisitor(this, ctx);
   }
 
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
@@ -739,5 +755,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ReadModels: TReadModels;
   } {
     return readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {
+    return primitivePrimTypeVisitor(this, ctx);
+  }
+
+  visitArrayBitloopsPrimType(ctx: BitloopsParser.ArrayBitloopsPrimTypeContext) {
+    return arrayBitloopsPrimTypeVisitor(this, ctx);
+  }
+
+  visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
+    return ctx.bitloopsBuildInClass().getText();
+  }
+  visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
+    return ctx.bitloopsIdentifiers().getText();
   }
 }

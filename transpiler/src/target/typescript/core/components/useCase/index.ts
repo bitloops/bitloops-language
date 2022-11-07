@@ -28,6 +28,7 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
+import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
   const useCasesKeys = Object.keys(useCases);
@@ -106,6 +107,12 @@ const useCaseValuesToTargetLanguage = (
     value: parameterDependencies,
   });
   dependencies = [...dependencies, ...useCaseDependenciesResult.dependencies];
+
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(useCaseInputType)) {
+    throw new Error(
+      `UseCase ${useCaseName} has an array as input type. This is not supported in Bitloops`,
+    );
+  }
 
   let result = initialUseCase(
     useCaseReturnTypesResult.output,
