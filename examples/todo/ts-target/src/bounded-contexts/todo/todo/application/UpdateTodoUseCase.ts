@@ -22,7 +22,7 @@ export class UpdateTodoUseCase
     const todoFound = await this.todoRepo.getById(requestId);
 
     if (!todoFound) {
-      return fail(new ApplicationErrors.ToDoNotFound(requestId));
+      return fail(new ApplicationErrors.ToDoNotFound(requestId.toString()));
     }
 
     const titleToUpdate = TitleVO.create({ title: request.title });
