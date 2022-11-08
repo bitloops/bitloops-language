@@ -22,13 +22,16 @@ import {
   IServer,
   TDTO,
   TDTOValues,
+  TGraphQLOperation,
   TGraphQLSetupData,
   TProps,
   TResolver,
   TTargetDependenciesTypeScript,
 } from '../../../../types.js';
+import { deepClone } from '../../../../utils/deepClone.js';
 import { mapBitloopsPrimitiveToGraphQL } from './typeMappings.js';
 import { AllResolvers, ResolversBuilder, ResolverValues, SchemaBuilder } from './types.js';
+import { BitloopsPrimTypeIdentifiers } from './../../core/type-identifiers/bitloopsPrimType.js';
 
 /**
  *  Gather for each resolver, the typeDefs and Query&Mutations associated with it
@@ -62,7 +65,7 @@ const graphQLSetupDataToTargetLanguage = (
     dependencies = [...dependencies, ...result.dependencies];
   }
   // console.log('-----------------------------');
-  return { output: codeForAllServers, dependencies: [] };
+  return { output: codeForAllServers, dependencies };
 };
 
 const generateServerCode = (
@@ -87,13 +90,13 @@ const generateServerCode = (
   resultString += typeDefsToTargetLanguage.output + '' + resolversMapString.output;
   const { name, port } = server;
 
-  const result = `const ${name} = new ApolloServer({ typeDefs: ${typeDefsName}, resolvers: ${resolversMapName} }); server.listen({ port: ${port} });`;
+  const result = `const ${name} = new GraphQL.ApolloServer({ typeDefs: ${typeDefsName}, resolvers: ${resolversMapName} }); server.listen({ port: ${port} });`;
   resultString += result;
   return { output: resultString, dependencies: [] };
 };
 
 const prepareSchemaAndHandlersOfResolver = (resolver: TResolver, dtos: TDTO): ResolverValues => {
-  const resolverValues: ResolverValues = {
+  let resolverValues: ResolverValues = {
     typeDefs: {
       inputs: {},
       types: {},
@@ -107,21 +110,27 @@ const prepareSchemaAndHandlersOfResolver = (resolver: TResolver, dtos: TDTO): Re
   };
 
   const { controller, input, output, operationName } = resolver;
-  const inputType = (typeof input === 'string' ? trimDTOSuffix(input) : input) as string;
+  const inputType: string | null = typeof input === 'string' ? trimDTOSuffix(input) : input;
   const outputType = trimDTOSuffix(output);
-  const operationTypeMapping = {
+  const operationTypeMapping: Record<TGraphQLOperation, string> = {
     query: 'queries',
     mutation: 'mutations',
+    subscription: 'subscriptions',
   };
   const operationType = operationTypeMapping[resolver.operationType];
   if (!operationType) {
     throw new Error(`Operation type ${resolver.operationType} not supported`);
   }
 
-  generateTypesAndInputsFromDTOs(input, output, dtos, resolverValues);
-  resolverValues.typeDefs[operationType][
-    operationName
-  ] = `${operationName}(input: ${inputType}): ${outputType}`;
+  resolverValues = generateTypesAndInputsFromDTOs(input, output, dtos, resolverValues);
+
+  if (inputType) {
+    resolverValues.typeDefs[operationType][
+      operationName
+    ] = `${operationName}(input: ${inputType}): ${outputType}`;
+  } else {
+    resolverValues.typeDefs[operationType][operationName] = `${operationName}: ${outputType}`;
+  }
   resolverValues.handlers[operationType][operationName] = controller;
   return resolverValues;
 };
@@ -149,12 +158,11 @@ const generateGraphQLSchema = (
   resolversOfInterest: AllResolvers,
   typeDefsName: string,
 ): TTargetDependenciesTypeScript => {
-  const typeDefsLanguageMapping = (typeDefs: string, typeDefsName: string) =>
-    `const ${typeDefsName} = gql\`${typeDefs}\`;`;
   const mergedSchema = mergeTypeDefs(resolversOfInterest);
   const typeDefsString = buildSchemaString(mergedSchema);
   return {
-    output: typeDefsLanguageMapping(typeDefsString, typeDefsName),
+    output: `const ${typeDefsName} = GraphQL.gql\`${typeDefsString}\`;`,
+
     dependencies: [],
   };
 };
@@ -223,26 +231,22 @@ const mergeHandlers = (resolvers: AllResolvers): ResolversBuilder => {
 };
 
 const generateTypesAndInputsFromDTOs = (
-  inputType: string | TProps,
+  inputType: string | null | TProps,
   output: string,
   dtos: TDTO,
-  resolverValues: ResolverValues,
-): void => {
+  _resolverValues: ResolverValues,
+): ResolverValues => {
+  const resolverValues = deepClone(_resolverValues);
   // Generate operation arguments if not primitive
-  // if (isBitloopsPrimitive(inputType)) {
-  //   continue;
-  // }
   if (typeof inputType === 'string') {
     const dto = dtos[inputType];
     if (!dto) {
       throw new Error(`DTO ${inputType} not found`);
     }
-    // console.log('dto', dto);
+    // TODO handle nested/complex DTOs, e.g. DTOs with other DTOs/ReadModels/Arrays as properties
     const result = dtoToGraphQLMapping(dto);
     const typeName = trimDTOSuffix(inputType);
     resolverValues.typeDefs.inputs[inputType] = `input ${typeName} ${result}`;
-  } else {
-    // custom prop type, TODO or remove as option
   }
 
   // Generate operation's return Type
@@ -253,36 +257,26 @@ const generateTypesAndInputsFromDTOs = (
   const result = dtoToGraphQLMapping(dto);
   const typeName = trimDTOSuffix(output);
   resolverValues.typeDefs.types[output] = `type ${typeName} ${result}`;
+  return resolverValues;
 };
 
 const buildSchemaString = (schema: SchemaBuilder): string => {
   let result = '';
-  for (const type of Object.values(schema.inputs)) {
-    result += `${type}`;
-    // console.log(type);
-  }
-
-  for (const type of Object.values(schema.types)) {
-    result += `${type}`;
-    // console.log(type);
-  }
+  result += Object.values(schema.inputs).join('');
+  result += Object.values(schema.types).join('');
 
   if (Object.keys(schema.queries).length > 0) {
     result += 'type Query {';
-
-    for (const query of Object.values(schema.queries)) {
-      result += `${query} `;
-      // console.log(type);
-    }
+    result += Object.values(schema.queries).join(' ');
     result += '}';
+  } else {
+    // Validation of Schema fails if no Query type is defined
+    result += 'type Query { empty: String }';
   }
+
   if (Object.keys(schema.mutations).length > 0) {
     result += 'type Mutation {';
-
-    for (const mutation of Object.values(schema.mutations)) {
-      result += `${mutation} `;
-      // console.log(type);
-    }
+    result += Object.values(schema.mutations).join(' ');
     result += '}';
   }
   return result;
@@ -292,27 +286,24 @@ const buildResolversString = (
   resolvers: ResolversBuilder,
   resolversVarName: string,
 ): TTargetDependenciesTypeScript => {
-  const languageMapping = (resolvers: ResolversBuilder) => {
-    let result = `const ${resolversVarName} = {`;
-    if (Object.keys(resolvers.queries).length > 0) {
-      result += '  Query: {';
-      for (const [field, controller] of Object.entries(resolvers.queries)) {
-        result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
-      }
-      result += '  },';
+  let result = `const ${resolversVarName} = {`;
+  if (Object.keys(resolvers.queries).length > 0) {
+    result += '  Query: {';
+    for (const [field, controller] of Object.entries(resolvers.queries)) {
+      result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
     }
-    if (Object.keys(resolvers.mutations).length > 0) {
-      result += '  Mutation: {';
-      for (const [field, controller] of Object.entries(resolvers.mutations)) {
-        result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
-      }
-      result += '  },';
+    result += '  },';
+  }
+  if (Object.keys(resolvers.mutations).length > 0) {
+    result += '  Mutation: {';
+    for (const [field, controller] of Object.entries(resolvers.mutations)) {
+      result += `${field}: async(_parent: any, args: any, context: any): Promise<any> => { const result = await ${controller}.execute({ args: args.input, context }); return result; },`;
     }
-    result += '};';
+    result += '  },';
+  }
+  result += '};';
 
-    return result;
-  };
-  return { output: languageMapping(resolvers), dependencies: [] };
+  return { output: result, dependencies: [] };
 };
 
 const trimDTOSuffix = (typeName: string): string => {
@@ -323,8 +314,13 @@ const dtoToGraphQLMapping = (dto: TDTOValues): string => {
   let result = '';
   for (const field of dto.fields) {
     const { name, type, optional } = field;
-    const fieldType = mapBitloopsPrimitiveToGraphQL(type, optional);
-    result += `${name}: ${fieldType}`;
+    if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
+      const fieldType = mapBitloopsPrimitiveToGraphQL(type, optional);
+      result += `${name}: ${fieldType}`;
+    } else {
+      // TODO handle arrays/structs/nested dtos etc
+      throw new Error(`Unsupported type ${JSON.stringify(type)}`);
+    }
   }
 
   return '{' + result + '}';

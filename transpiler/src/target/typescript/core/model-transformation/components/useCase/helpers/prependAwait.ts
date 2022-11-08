@@ -69,7 +69,7 @@ const scanStatementForDepsToPrependAwait = (statement: TStatement): TStatement =
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForDepsToPrependAwait(st),
     );
-    if (!thenStatements) {
+    if (!elseStatements) {
       return statement;
     }
     if (statement.ifStatement.elseStatements && statement.ifStatement.elseStatements.length > 0)

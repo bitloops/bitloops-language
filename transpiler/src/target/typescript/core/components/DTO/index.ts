@@ -19,8 +19,9 @@
  */
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import { TDTO, TDTOValues, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   let result = '';
@@ -37,6 +38,11 @@ const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
     result += model.output;
     result += '}';
     dependencies = [...dependencies, ...model.dependencies];
+
+    dependencies = getParentDependencies(dependencies, {
+      classType: ClassTypes.DTOs,
+      className: dtoName,
+    });
   }
 
   return { output: result, dependencies };

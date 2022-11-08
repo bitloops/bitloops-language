@@ -23,10 +23,10 @@ const todoReadRepo = RepoAdapters.Mongo({
 // USE CASES
 
 const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
-const getAllTodoUseCase = [Todo][Todo]GetAllTodoUseCase(todoReadRepo);
-const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
-const deleteTodoUseCase = [Todo][Todo]DeleteTodoUseCase(todoWriteRepo);
-const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
+// const getAllTodoUseCase = [Todo][Todo]GetAllTodoUseCase(todoReadRepo);
+// const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
+// const deleteTodoUseCase = [Todo][Todo]DeleteTodoUseCase(todoWriteRepo);
+// const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
 
 // const getAllTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getAll);
 // const updateTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.update);
@@ -37,10 +37,11 @@ const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
 
 const todoRESTRouter = RESTRouter(REST.Fastify) {
   Post('/'): [Todo][Todo]CreateTodoRESTController(createTodoUseCase);
-  Get('/'): [Todo][Todo]GetAllTodoRESTController(getAllTodoUseCase);
-  Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
-  Delete('/:id'): [Todo][Todo]DeleteTodoRESTController(deleteTodoUseCase);
-  Get('/:id'): [Todo][Todo]GetTodoRESTController(getByIdTodoUseCase);
+  // Get('/'): [Todo][Todo]GetAllTodoRESTController(getAllTodoUseCase);
+  // Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
+  // Delete('/:id'): [Todo][Todo]DeleteTodoRESTController(deleteTodoUseCase);
+  // Get('/:id'): [Todo][Todo]GetTodoRESTController(getByIdTodoUseCase);
+  
   // Get('/:id'): [Todo][Todo]AutoRESTController(getByIdTodoUseCase);
 }
 

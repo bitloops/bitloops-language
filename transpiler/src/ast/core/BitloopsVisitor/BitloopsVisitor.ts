@@ -138,6 +138,9 @@ import {
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
   builtInClassEvaluationVisitor,
+  primitivePrimTypeVisitor,
+  arrayBitloopsPrimTypeVisitor,
+  arrayLiteralVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -222,6 +225,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
+    const arrayLiteral = this.visit(ctx.arrayLiteral());
+    return {
+      expression: {
+        ...arrayLiteral,
+      },
+    };
+  }
+
+  visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {
+    return arrayLiteralVisitor(this, ctx);
+  }
+
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
     const regularEvaluation: string = this.visitChildren(ctx)[0];
     return {
@@ -250,9 +266,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const argumentDependencies = this.visit(ctx.methodArguments()) || [];
 
     return {
-      type: 'method',
-      value: identifier,
-      argumentDependencies,
+      errorEvaluation: {
+        name: identifier,
+        argumentDependencies,
+      },
     };
   }
 
@@ -547,10 +564,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.type_().getText();
   }
 
-  visitBuiltInClassIdentifier(ctx: BitloopsParser.BuiltInClassIdentifierContext): string {
-    return ctx.BuiltInClassIdentifier().getText();
-  }
-
   visitBuiltInClassEvaluation(
     ctx: BitloopsParser.BuiltInClassEvaluationContext,
   ): TBuiltInClassEvaluation {
@@ -750,5 +763,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ReadModels: TReadModels;
   } {
     return readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {
+    return primitivePrimTypeVisitor(this, ctx);
+  }
+
+  visitArrayBitloopsPrimType(ctx: BitloopsParser.ArrayBitloopsPrimTypeContext) {
+    return arrayBitloopsPrimTypeVisitor(this, ctx);
+  }
+
+  visitBitloopsBuiltInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
+    return ctx.bitloopsBuiltInClass().getText();
+  }
+  visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
+    return ctx.bitloopsIdentifiers().getText();
   }
 }

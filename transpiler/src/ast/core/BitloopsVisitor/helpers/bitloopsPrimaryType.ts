@@ -17,11 +17,26 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsBuildInClasses, TBitloopsBuildInClasses } from '../types.js';
 
-/**
- * Define a custom type guard to assert whether an unknown object is a Bitloops build in class.
- */
-export function isBitloopsBuildInClass(type: unknown): type is TBitloopsBuildInClasses {
-  return typeof type === 'string' && bitloopsBuildInClasses.includes(type as any);
-}
+import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsVisitor from '../BitloopsVisitor.js';
+import { ArrayBitloopsPrimType, TBitloopsPrimitives } from '../../../../types.js';
+
+export const primitivePrimTypeVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.PrimitivePrimTypeContext,
+): TBitloopsPrimitives => {
+  return ctx.primitives().getText();
+};
+
+export const arrayBitloopsPrimTypeVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,
+): ArrayBitloopsPrimType => {
+  const value = thisVisitor.visit(ctx.bitloopsPrimaryType());
+  return {
+    arrayType: {
+      value,
+    },
+  };
+};

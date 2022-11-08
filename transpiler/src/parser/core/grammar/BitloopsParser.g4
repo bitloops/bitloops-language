@@ -107,10 +107,9 @@ bitloopsIdentifiers
     | propsIdentifier
     | ValueObjectIdentifier
     | EntityIdentifier
-    | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     | RepoPortIdentifier
     | ReadModelIdentifier
-    | builtInClassIdentifier
+    | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     ;
 
 type_
@@ -186,7 +185,7 @@ regularEvaluation
     | regularBooleanEvaluation
     | regularDTOEvaluation
     | regularStructEvaluation
-    | regularErrorTypeEvaluation
+    | regularErrorTypeEvaluation 
     ;
 
 // regularVariableEvaluation | regularStringEvaluation |
@@ -221,7 +220,6 @@ regularVariableEvaluation
 
 regularMethodEvaluation
     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-    | ErrorIdentifier methodArguments SemiColon? #ErrorEvaluation
     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
     ;
 
@@ -253,9 +251,20 @@ regularDTOEvaluation
 
 // | RegularStringEvaluation | RegularBackTicksEvaluation
 field
-    : Optional? (primitives | struct | valueObjectIdentifier | builtInClassIdentifier) identifier
+    : Optional? bitloopsPrimaryType identifier
     ;
 
+bitloopsPrimaryType
+    : primitives                                        #PrimitivePrimType
+    | bitloopsBuiltInClass                              #BitloopsBuiltInClassPrimType
+    | bitloopsPrimaryType OpenBracket CloseBracket      #ArrayBitloopsPrimType
+    | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
+    ;
+
+bitloopsBuiltInClass
+    : UUIDv4
+    ;
+    
 predefinedType
     : Any
     | Int32
@@ -322,14 +331,6 @@ methodDefinition
     : identifier formalParameterList? typeAnnotation SemiColon
     ;
 
-arrayType
-    // : primaryType {notLineTerminator()}? '[' ']'
-    : primaryType '[' ']'
-    ;
-
-tupleType
-    : '[' tupleElementTypes ']'
-    ;
 
 tupleElementTypes
     : type_ (Comma type_)*
@@ -549,18 +550,24 @@ jestTestDeclaration
     | JestTestValueObjectEvaluation OpenBrace valueObjectEvaluation CloseBrace SemiColon?
     | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
+    | JestTestBitloopsPrimaryType OpenBrace bitloopsPrimaryType CloseBrace SemiColon?
+    ;
+
+errorEvaluation
+    : ErrorIdentifier methodArguments SemiColon?
     ;
 
 evaluation
     : isInstanceOf 
     | getClassEvaluation
+    | builtInClassEvaluation
+    | errorEvaluation
     | regularEvaluation
     | dtoEvaluation
-    | structEvaluation
-    | builtInClassEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
+    | structEvaluation
     ;
 
 condition
@@ -934,13 +941,9 @@ structEvaluationIdentifier
 structEvaluation
     : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
-
-builtInClassIdentifier
-    : BuiltInClassIdentifier
-    ;
     
 builtInClassEvaluation
-    : builtInClassIdentifier (Dot identifier)? methodArguments SemiColon?
+    : bitloopsBuiltInClass (Dot identifier)? methodArguments SemiColon?
     ;
 
 propsEvaluation
@@ -989,7 +992,7 @@ controllerDeclaration
     ;
 
 graphQLResolverOptions
-    : graphQLOperationTypeAssignment graphQLOperationInputTypeAssignment
+    : graphQLOperationTypeAssignment graphQLOperationInputTypeAssignment?
     ;
 
 graphQLOperationTypeAssignment
@@ -1175,8 +1178,6 @@ formalParameterList
     (
     formalParameterArg (Comma formalParameterArg)* (Comma lastFormalParameterArg)?
     | lastFormalParameterArg
-    | arrayLiteral                              // ECMAScript 6: Parameter Context Matching
-    | objectLiteral (Colon formalParameterList )? // ECMAScript 6: Parameter Context Matching
     )?
     CloseParen 
     ;
@@ -1198,15 +1199,11 @@ functionBody
 //     ;
 
 arrayLiteral
-    : ('[' elementList? ']')
+    : OpenBracket elementList? CloseBracket
     ;
 
 elementList
-    : arrayElement (Comma+ arrayElement)*
-    ;
-
-arrayElement                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (expression | Identifier) Comma?
+    : expression (Comma expression)*
     ;
 
 objectLiteral
@@ -1279,6 +1276,7 @@ expression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
     | evaluation                                                 # EvaluationExpression 
+    | arrayLiteral                                               # ArrayLiteralExpression
     ;   
 
 // more single expressions

@@ -150,13 +150,13 @@ const scanStatementForIdentifierToAppendDotValue = (
     return statement;
   }
 
-  // TODO Abstract these code replication
+  // TODO Abstract this code replication
   if (StatementTypeIdentifiers.isIfStatement(statement)) {
     const { thenStatements, elseStatements } = statement.ifStatement;
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForIdentifierToAppendDotValue(st, identifiers),
     );
-    if (!thenStatements) {
+    if (!elseStatements) {
       return statement;
     }
     if (statement.ifStatement.elseStatements?.length > 0) {

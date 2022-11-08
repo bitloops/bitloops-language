@@ -8,10 +8,14 @@ import {
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitloopsPrimType.js';
 
 const getVOProps = (voName: string, model: TModule): TPropsValues => {
   const voModel = model.ValueObjects[voName];
   const voPropsName = voModel.create.parameterDependency.type;
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsName)) {
+    throw new Error('Array props are not supported');
+  }
   const voProps = model.Props[voPropsName];
   return voProps;
 };

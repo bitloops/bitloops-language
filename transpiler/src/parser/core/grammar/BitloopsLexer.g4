@@ -260,8 +260,12 @@ JestTestSingleExpression: 'JestTestSingleExpression';
 JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
 JestTestBuiltInClass: 'JestTestBuiltInClass';
+JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
 
 // Abstract: 'abstract';
+
+// BuiltInClasses
+UUIDv4: 'UUIDv4';
 
 Is: 'is';
 
@@ -302,7 +306,6 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
-BuiltInClassIdentifier: 'UUIDv4';
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';

@@ -6,7 +6,7 @@ export const builtInClassEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.BuiltInClassEvaluationContext,
 ): TBuiltInClassEvaluation => {
-  const className = ctx.builtInClassIdentifier().getText();
+  const className = ctx.bitloopsBuiltInClass().getText();
   const argumentDependencies = thisVisitor.visit(ctx.methodArguments());
   const result = {
     builtInClass: {

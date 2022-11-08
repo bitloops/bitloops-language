@@ -125,7 +125,7 @@ const isReturnStatement = (value: TStatement): value is TReturnStatement => {
   return false;
 };
 
-const isVO = (name): boolean => {
+const isVO = (name): name is string => {
   return name.endsWith('VO');
 };
 
