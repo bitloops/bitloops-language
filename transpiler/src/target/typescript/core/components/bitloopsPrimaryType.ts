@@ -30,8 +30,6 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   let mappedType: string;
-  console.log('type', type);
-  console.log('isArrayPrimType(type)', BitloopsPrimTypeIdentifiers.isArrayPrimType(type));
 
   if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
