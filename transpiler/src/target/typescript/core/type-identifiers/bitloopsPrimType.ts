@@ -48,4 +48,12 @@ export class BitloopsPrimTypeIdentifiers {
     if (typeof primaryType !== 'string') return false;
     return bitloopsPrimitives.includes(primaryType as any);
   }
+
+  static isReadModelIdentifier(primaryType: TBitloopsPrimaryType): boolean {
+    return typeof primaryType === 'string' && primaryType.endsWith('ReadModel');
+  }
+
+  static isDTOIdentifier(primaryType: TBitloopsPrimaryType): boolean {
+    return typeof primaryType === 'string' && primaryType.endsWith('DTO');
+  }
 }

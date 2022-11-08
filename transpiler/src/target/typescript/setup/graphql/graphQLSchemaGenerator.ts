@@ -1,13 +1,11 @@
 import {
   TBoundedContexts,
-  TDTOValues,
   TGraphQLOperation,
   TModule,
   TResolver,
   TResolvers,
 } from '../../../../types.js';
-import { BitloopsPrimTypeIdentifiers } from '../../core/type-identifiers/bitloopsPrimType.js';
-import { mapBitloopsPrimitiveToGraphQL } from './typeMappings.js';
+import { ClassTypeToGraphQLMapping } from './dtoToGraphQLMapping.js';
 import { AllResolvers, ResolverValues } from './types.js';
 
 export class GraphQLSchemaGenerator {
@@ -83,64 +81,48 @@ export class GraphQLSchemaGenerator {
         mutations: {},
       },
     };
-    const dtos = moduleModel.DTOs;
     // Generate operation arguments if not primitive
     if (typeof inputType === 'string') {
-      const res = this.generateResolverInputTypeDefs(moduleModel, inputType);
-      const { input, types: _types } = res;
-      resolverValues.typeDefs.inputs[inputType] = input;
+      const graphQLTypes = this.generateResolverInputTypeDefs(moduleModel, inputType);
+
+      const { [inputType]: inputSchema, ...restTypes } = graphQLTypes;
+      const typeName = this.trimDTOSuffix(inputType);
+
+      resolverValues.typeDefs.inputs[inputType] = `input ${typeName} ${inputSchema}`;
+      for (const [typeName, typeSchema] of Object.entries(restTypes)) {
+        resolverValues.typeDefs.types[typeName] = `type ${typeName} ${typeSchema}`;
+      }
     }
 
-    // Generate operation's return Type
-    const dto = dtos[output];
-    if (!dto) {
-      throw new Error(`DTO ${output} not found`);
-    }
-    const result = this.dtoToGraphQLMapping(dto);
+    const mapper = new ClassTypeToGraphQLMapping();
+    const graphQLTypes = mapper.generateGraphQLTypes(output, moduleModel);
+    const { [output]: outputSchema, ...restTypes } = graphQLTypes;
+    console.log('restTypes', restTypes);
     const typeName = this.trimDTOSuffix(output);
-    resolverValues.typeDefs.types[output] = `type ${typeName} ${result}`;
+    resolverValues.typeDefs.types[output] = `type ${typeName} ${outputSchema}`;
+    for (const [typeName, typeSchema] of Object.entries(restTypes)) {
+      resolverValues.typeDefs.types[typeName] = `type ${typeName} ${typeSchema}`;
+    }
     return resolverValues;
   }
 
   private generateResolverInputTypeDefs(
     moduleModel: TModule,
     inputType: string,
-  ): {
-    input: string;
-    types: { [key: string]: string };
-  } {
+  ): Record<string, string> {
     const dtos = moduleModel.DTOs;
     const dto = dtos[inputType];
     if (!dto) {
       throw new Error(`DTO ${inputType} not found`);
     }
-    // TODO handle nested/complex DTOs, e.g. DTOs with other DTOs/ReadModels/Arrays as properties
-    const result = this.dtoToGraphQLMapping(dto);
-    const typeName = this.trimDTOSuffix(inputType);
-    // resolverValues.typeDefs.inputs[inputType] =
-    return {
-      input: `input ${typeName} ${result}`,
-      types: {},
-    };
+
+    const mapper = new ClassTypeToGraphQLMapping();
+    const graphQLTypes = mapper.generateGraphQLTypes(inputType, moduleModel);
+
+    return graphQLTypes;
   }
 
   private trimDTOSuffix(typeName: string): string {
     return typeName.endsWith('DTO') ? typeName.slice(0, -3) : typeName;
-  }
-
-  private dtoToGraphQLMapping(dto: TDTOValues): string {
-    let result = '';
-    for (const field of dto.fields) {
-      const { name, type, optional } = field;
-      if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
-        const fieldType = mapBitloopsPrimitiveToGraphQL(type, optional);
-        result += `${name}: ${fieldType}`;
-      } else {
-        // TODO handle arrays/structs/nested dtos etc
-        throw new Error(`Unsupported type ${JSON.stringify(type)}`);
-      }
-    }
-
-    return '{' + result + '}';
   }
 }
