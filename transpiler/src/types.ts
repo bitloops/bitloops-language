@@ -815,7 +815,7 @@ export interface IServer {
   port: string;
 }
 
-type TResolvers = TResolver[];
+export type TResolvers = TResolver[];
 
 export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
 
