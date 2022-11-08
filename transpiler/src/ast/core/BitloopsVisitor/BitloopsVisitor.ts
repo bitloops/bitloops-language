@@ -228,7 +228,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {
     // TODO Create new model for this type of expression
     //  and not have to use evaluation.regularEvaluation
-    const regularEvaluation: string = this.visitChildren(ctx)[0];
+    const regularEvaluation = this.visitChildren(ctx)[0];
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation,
+        },
+      },
+    };
+  }
+
+  visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {
+    // TODO Create new model for this type of expression
+    //  and not have to use evaluation.regularEvaluation
+    const regularEvaluation = this.visitChildren(ctx)[0];
     return {
       expression: {
         evaluation: {

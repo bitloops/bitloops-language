@@ -1268,6 +1268,7 @@ functionExpressionDeclaration
 expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                                         # ParenthesizedExpression
+    | regularMethodEvaluation                                    # MethodCallExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
