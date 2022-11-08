@@ -1261,7 +1261,8 @@ functionExpressionDeclaration
 
 expression
     : Not expression                                             # NotExpression
-    | OpenParen expression CloseParen                                         # ParenthesizedExpression
+    | expression '.' identifierName                              # MemberDotExpression
+    | expression arguments                                       # ArgumentsExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1269,6 +1270,10 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
+    | identifierName expression?                                 # IdentifierExpression
+    | This                                                       # ThisExpression
+    | expression ToStringEvaluation arguments                    # ToStringExpression
+    | OpenParen expression CloseParen                            # ParenthesizedExpression
     | evaluation                                                 # EvaluationExpression 
     ;   
 
@@ -1314,6 +1319,7 @@ expression
     // | Super                                                                  # SuperExpression
     // | arrayLiteral                                                           # ArrayLiteralExpression
     // | objectLiteral                                                          # ObjectLiteralExpression
+
     // | '(' expressionSequence ')'                                             # ParenthesizedExpression
     // | typeArguments expressionSequence?                                      # GenericTypes
     // | expression As asExpression                                       # CastAsExpression
@@ -1338,7 +1344,7 @@ arrowFunctionBody
     ;
 
 toStringEvaluation
-    : identifier Dot ToStringEvaluation OpenParen CloseParen
+    : Identifier ToStringEvaluation 
     ;
 
 assignmentOperator
