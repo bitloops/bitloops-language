@@ -176,8 +176,8 @@ struct
     ;
 
 regularEvaluation
-    : regularMethodEvaluation   
-    | regularStringEvaluation
+    // : regularMethodEvaluation   
+    : regularStringEvaluation
     | templateStringLiteral
     | regularIntegerEvaluation
     | regularDecimalEvaluation
