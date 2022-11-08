@@ -1267,7 +1267,7 @@ functionExpressionDeclaration
 
 expression
     : Not expression                                             # NotExpression
-    | OpenParen expression CloseParen                                         # ParenthesizedExpression
+    | OpenParen expression CloseParen                            # ParenthesizedExpression
     | regularMethodEvaluation                                    # MethodCallExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
@@ -1277,7 +1277,7 @@ expression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
     | evaluation                                                 # EvaluationExpression 
-    | regularIdentifier                                         # IdentifierExpression
+    | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     ;   
 
