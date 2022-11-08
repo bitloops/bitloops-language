@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TArrayLiteralExpression, TExpression, TExpressionValues } from './../../../../types.js';
+import { TArrayLiteralExpression, TExpression, TExpressionValues, TEvaluation } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
   static isMethodCallExpression(expressionStatement: TExpression): boolean {
@@ -42,6 +42,15 @@ export class ExpressionTypeIdentifiers {
     expressionValue: TExpressionValues,
   ): expressionValue is TArrayLiteralExpression => {
     if ('arrayLiteral' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isEvaluationExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TEvaluation => {
+    if ('evaluation' in expressionValue) {
       return true;
     }
     return false;

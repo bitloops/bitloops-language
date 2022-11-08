@@ -300,24 +300,23 @@ export type TRegularEvaluation = {
   };
 };
 
+export type TEvaluationValues = 
+  | TRegularEvaluation
+  | TStructEvaluation
+  | TDTOEvaluation
+  | TValueObjectEvaluation
+  | TPropsEvaluation
+  | TEntityEvaluation
+  | TInstanceOf
+  | TErrorEvaluation
+  | TNotInstanceOf
+  | TGetClass;
+
+
 export type TEvaluation = {
-  evaluation:
-    | TRegularEvaluation
-    | TStructEvaluation
-    | TDTOEvaluation
-    | TValueObjectEvaluation
-    | TPropsEvaluation
-    | TEntityEvaluation
-    | TInstanceOf
-    | TErrorEvaluation
-    | TNotInstanceOf
-    | TGetClass;
+  evaluation: TEvaluationValues
 };
 
-// export type TCondition = {
-//   evaluateTrue?: TEvaluation;
-//   evaluateFalse?: TEvaluation;
-// };
 
 export type TCondition = {
   condition: TExpression;
