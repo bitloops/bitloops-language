@@ -19,12 +19,12 @@
  */
 
 import { BitloopsTypesMapping, mappingBitloopsBuildInClassToLayer } from '../../../../../helpers/mappings.js';
-import { TCustomClassEvaluation, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { TBuiltInClassEvaluation, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { getChildDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const builtInClassEvaluationToTargetLanguage = (
-  value: TCustomClassEvaluation,
+  value: TBuiltInClassEvaluation,
 ): TTargetDependenciesTypeScript => {
   const { builtInClass } = value;
   const { className, argumentDependencies } = builtInClass;

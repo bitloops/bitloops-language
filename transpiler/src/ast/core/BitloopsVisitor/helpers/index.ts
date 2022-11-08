@@ -108,3 +108,4 @@ export {
 } from './repoPortDeclaration.js';
 export { readModelDeclarationVisitor } from './readModelDeclaration.js';
 export { applicationErrorDeclarationVisitor } from './applicationErrorDeclaration.js';
+export { builtInClassEvaluationVisitor } from './builtInClassEvaluationVisitor.js'

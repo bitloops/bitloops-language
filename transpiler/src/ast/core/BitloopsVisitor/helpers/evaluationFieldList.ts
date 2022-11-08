@@ -28,13 +28,8 @@ export const evaluationFieldListVisitor = (
   ctx: BitloopsParser.EvaluationFieldListContext,
 ): TEvaluationFields => {
   const evaluationFieldsAndCommas = thisVisitor.visitChildren(ctx);
-  //   console.log('evaluationFieldsAndCommas', evaluationFieldsAndCommas);
   const evaluationFields = evaluationFieldsAndCommas.filter(
     (evaluationFieldOrComma) => evaluationFieldOrComma !== undefined,
   );
   return evaluationFields as TEvaluationFields;
-
-  //   if (ctx.statementList()) {
-  //     return thisVisitor.visit(ctx.statementList());
-  //   } else return null;
 };

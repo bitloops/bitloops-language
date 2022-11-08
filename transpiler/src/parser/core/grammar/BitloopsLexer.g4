@@ -259,7 +259,7 @@ JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
 JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
-JestTestCustomClass: 'JestTestCustomClass';
+JestTestBuiltInClass: 'JestTestBuiltInClass';
 
 // Abstract: 'abstract';
 
@@ -302,7 +302,7 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
-CustomClassIdentifier: 'UUIDv4';
+BuiltInClassIdentifier: 'UUIDv4';
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
 GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
@@ -400,7 +400,7 @@ fragment ExponentPart
     : [eE] [+-]? [0-9]+
     ;
 fragment RegularEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
+// fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
 // fragment RegularEvaluationPart
 //     : RegularEvaluationStart
 //     | [\p{Mn}]

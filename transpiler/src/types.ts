@@ -293,7 +293,7 @@ export type TRegularEvaluation = {
   };
 };
 
-export type TCustomClassEvaluation = {
+export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
     argumentDependencies: TArgumentDependencies;
@@ -311,7 +311,7 @@ export type TEvaluation = {
     | TInstanceOf
     | TNotInstanceOf
     | TGetClass
-    | TCustomClassEvaluation;
+    | TBuiltInClassEvaluation;
 };
 
 // export type TCondition = {

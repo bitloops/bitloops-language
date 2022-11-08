@@ -252,7 +252,7 @@ regularDTOEvaluation
 
 // | RegularStringEvaluation | RegularBackTicksEvaluation
 field
-    : Optional? (primitives | struct | valueObjectIdentifier) identifier
+    : Optional? (primitives | struct | valueObjectIdentifier | builtInClassIdentifier) identifier
     ;
 
 predefinedType
@@ -532,7 +532,7 @@ jestTestDeclaration
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
     | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
-    | JestTestCustomClass OpenBrace customClassEvaluation CloseBrace 
+    | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
     | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
@@ -556,7 +556,7 @@ evaluation
     | regularEvaluation
     | dtoEvaluation
     | structEvaluation
-    | customClassEvaluation
+    | builtInClassEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
@@ -934,12 +934,12 @@ structEvaluation
     : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
 
-customClassIdentifier
-    : CustomClassIdentifier
+builtInClassIdentifier
+    : BuiltInClassIdentifier
     ;
     
-customClassEvaluation
-    : customClassIdentifier (Dot identifier)? OpenParen evaluationFieldList CloseParen
+builtInClassEvaluation
+    : builtInClassIdentifier (Dot identifier)? methodArguments SemiColon?
     ;
 
 propsEvaluation

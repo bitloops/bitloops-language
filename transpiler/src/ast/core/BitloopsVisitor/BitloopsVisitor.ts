@@ -50,7 +50,7 @@ import {
   TUseCase,
   TStructs,
   TReadModels,
-  TCustomClassEvaluation,
+  TBuiltInClassEvaluation,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -137,7 +137,7 @@ import {
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
-  customClassEvaluationVisitor,
+  builtInClassEvaluationVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -547,14 +547,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.type_().getText();
   }
 
-  visitCustomClassIdentifier(ctx: BitloopsParser.CustomClassIdentifierContext): string {
-    return ctx.CustomClassIdentifier().getText();
+  visitBuiltInClassIdentifier(ctx: BitloopsParser.BuiltInClassIdentifierContext): string {
+    return ctx.BuiltInClassIdentifier().getText();
   }
 
-  visitCustomClassEvaluation(
-    ctx: BitloopsParser.CustomClassEvaluationContext,
-  ): TCustomClassEvaluation {
-    return customClassEvaluationVisitor(this, ctx);
+  visitBuiltInClassEvaluation(
+    ctx: BitloopsParser.BuiltInClassEvaluationContext,
+  ): TBuiltInClassEvaluation {
+    return builtInClassEvaluationVisitor(this, ctx);
   }
 
   visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {

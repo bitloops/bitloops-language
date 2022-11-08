@@ -31,6 +31,8 @@ export const fieldVisitor = (
     type = ctx.primitives().getText();
   } else if (ctx.valueObjectIdentifier()) {
     type = ctx.valueObjectIdentifier().getText();
+  } else if(ctx.builtInClassIdentifier().getText()) {
+    type = ctx.builtInClassIdentifier().getText();
   } else {
     type = ctx.struct().getText();
   }

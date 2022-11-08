@@ -134,7 +134,7 @@ import { readModelsToTargetLanguage } from './components/readModels/index.js';
 import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
-import { builtInClassEvaluationToTargetLanguage } from './components/customClass/index.js';
+import { builtInClassEvaluationToTargetLanguage } from './components/builtInClass/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
