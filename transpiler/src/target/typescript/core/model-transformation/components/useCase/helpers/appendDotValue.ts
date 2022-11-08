@@ -113,20 +113,22 @@ const appendDotValueInExpression = (
     }
   } else if (isExpressionAMethodRegularEvaluation(statement)) {
     const { argumentDependencies } = statement.expression['evaluation'].regularEvaluation;
-    const newArgs = argumentDependencies.map((arg: TArgumentDependency) => {
-      const { value, type } = arg;
-      if (type !== 'variable') {
+    if (argumentDependencies && argumentDependencies.length > 0) {
+      const newArgs = argumentDependencies.map((arg: TArgumentDependency) => {
+        const { value, type } = arg;
+        if (type !== 'variable') {
+          return arg;
+        }
+        if (identifiers.has(value)) {
+          return {
+            ...arg,
+            value: `${value}.value`,
+          };
+        }
         return arg;
-      }
-      if (identifiers.has(value)) {
-        return {
-          ...arg,
-          value: `${value}.value`,
-        };
-      }
-      return arg;
-    });
-    statement.expression['evaluation'].regularEvaluation.argumentDependencies = newArgs;
+      });
+      statement.expression['evaluation'].regularEvaluation.argumentDependencies = newArgs;
+    }
   }
 
   return statement;
