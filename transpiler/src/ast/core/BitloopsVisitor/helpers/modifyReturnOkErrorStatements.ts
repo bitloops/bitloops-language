@@ -1,14 +1,12 @@
+import { EvaluationTypeIdentifiers } from '../../../../helpers/type-identifiers/evaluation.js';
+import { isIfStatement } from '../../../../helpers/typeGuards.js';
 import {
   TStatement,
   TOkErrorReturnType,
   TStatements,
   TReturnStatement,
-  TRegularEvaluation,
   TEvaluation,
 } from '../../../../types.js';
-
-const DOMAIN_ERRORS_PREFIX = 'DomainErrors';
-const APPLICATION_ERRORS_PREFIX = 'ApplicationErrors';
 
 const isReturnOkErrorType = (returnType: TOkErrorReturnType) => {
   return returnType.ok !== undefined && returnType.errors !== undefined;
@@ -25,35 +23,49 @@ const isReturnOKStatement = (statement: TReturnStatement): boolean => {
 const isReturnErrorStatement = (statement: TReturnStatement): boolean => {
   const returnEvaluation = (statement.return.expression as TEvaluation).evaluation;
 
-  const returnEvaluationValue = (returnEvaluation as TRegularEvaluation)?.regularEvaluation?.value;
-  //If not regular Evaluation it is not error
-  if (returnEvaluationValue === undefined) return false;
+  if (EvaluationTypeIdentifiers.isErrorEvaluation(returnEvaluation)) {
+    return true;
+  }
+  return false;
+};
 
-  return (
-    returnEvaluationValue.includes(DOMAIN_ERRORS_PREFIX) ||
-    returnEvaluationValue.includes(APPLICATION_ERRORS_PREFIX)
-  );
+const modifyReturnOkErrorStatement = (statement: TStatement, returnType: TOkErrorReturnType) => {
+  if (isReturnStatement(statement)) {
+    const returnStatement = statement as TReturnStatement;
+    if (isReturnOkErrorType(returnType)) {
+      if (isReturnOKStatement(returnStatement)) {
+        statement = {
+          returnOK: returnStatement.return,
+        };
+      } else if (isReturnErrorStatement(returnStatement)) {
+        statement = {
+          returnError: returnStatement.return,
+        };
+      }
+    }
+  }
+  return statement;
 };
 
 export const modifyReturnOkErrorStatements = (
   statements: TStatements,
   returnType: TOkErrorReturnType,
 ) => {
-  return statements.map((statement) => {
-    if (isReturnStatement(statement)) {
-      const returnStatement = statement as TReturnStatement;
-      if (isReturnOkErrorType(returnType)) {
-        if (isReturnOKStatement(returnStatement)) {
-          statement = {
-            returnOK: returnStatement.return,
-          };
-        } else if (isReturnErrorStatement(returnStatement)) {
-          statement = {
-            returnError: returnStatement.return,
-          };
+  const newStatements = statements.map((statement) => {
+    // TODO this has to be called recursively (if inside an if etc)
+    if (isIfStatement(statement)) {
+      const { thenStatements, elseStatements } = statement.ifStatement;
+
+      for (let i = 0; i < thenStatements.length; i += 1) {
+        thenStatements[i] = modifyReturnOkErrorStatement(thenStatements[i], returnType);
+      }
+      if (elseStatements && elseStatements.length > 0) {
+        for (let i = 0; i < elseStatements.length; i += 1) {
+          elseStatements[i] = modifyReturnOkErrorStatement(elseStatements[i], returnType);
         }
       }
     }
-    return statement;
+    return modifyReturnOkErrorStatement(statement, returnType);
   });
+  return newStatements;
 };
