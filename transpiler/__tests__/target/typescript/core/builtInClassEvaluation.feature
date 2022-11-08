@@ -2,7 +2,6 @@ Feature: CustomClass Evaluation to Typescript target language
 
     Background:
         Given type is "TBuiltInClassEvaluation"
-        And language is "TypeScript"
 
         Scenario Template: BuiltIn Class evaluation
         Given I have a builtIn class evaluation <builtInClassEvaluation>

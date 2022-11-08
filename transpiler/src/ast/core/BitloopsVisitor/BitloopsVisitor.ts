@@ -343,7 +343,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitTypeAnnotation(ctx: BitloopsParser.TypeAnnotationContext) {
-    return ctx.type_().getText();
+    return this.visit(ctx.bitloopsPrimaryType());
   }
 
   visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
@@ -561,7 +561,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): string {
-    return ctx.type_().getText();
+    return this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
   }
 
   visitBuiltInClassEvaluation(
