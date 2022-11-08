@@ -280,6 +280,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
     const regularEvaluation: string = this.visitChildren(ctx)[0];
+    // console.log(regularEvaluation);
     return {
       regularEvaluation,
     };
@@ -337,7 +338,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText());
+    return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
 
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
@@ -488,6 +489,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
+    return this.visit(ctx.literal());
+  }
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText());
   }

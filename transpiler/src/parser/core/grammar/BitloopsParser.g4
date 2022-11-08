@@ -177,7 +177,6 @@ struct
 
 regularEvaluation
     : regularMethodEvaluation   
-    | literal
     ;
 
 // regularVariableEvaluation | regularStringEvaluation |
@@ -1264,7 +1263,6 @@ functionExpressionDeclaration
 expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                                         # ParenthesizedExpression
-    | regularMethodEvaluation                                    # MethodCallExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1272,6 +1270,7 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
+    | literal                                                   # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
     | regularIdentifier                                         # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
