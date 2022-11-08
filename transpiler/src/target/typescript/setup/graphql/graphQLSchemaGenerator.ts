@@ -8,6 +8,12 @@ import {
 import { ClassTypeToGraphQLMapping } from './dtoToGraphQLMapping.js';
 import { AllResolvers, ResolverValues } from './types.js';
 
+const operationTypeMapping: Record<TGraphQLOperation, string> = {
+  query: 'queries',
+  mutation: 'mutations',
+  subscription: 'subscriptions',
+};
+
 export class GraphQLSchemaGenerator {
   generateResolversSchemasAndHandlers(
     resolvers: TResolvers,
@@ -32,17 +38,12 @@ export class GraphQLSchemaGenerator {
     const { controller, input, output, operationName } = resolver;
     const inputType: string | null = typeof input === 'string' ? this.trimDTOSuffix(input) : input;
     const outputType = this.trimDTOSuffix(output);
-    const operationTypeMapping: Record<TGraphQLOperation, string> = {
-      query: 'queries',
-      mutation: 'mutations',
-      subscription: 'subscriptions',
-    };
+
+    const resolverValues = this.generateInputAndTypesOfResolver(input, output, moduleModel);
     const operationType = operationTypeMapping[resolver.operationType];
     if (!operationType) {
       throw new Error(`Operation type ${resolver.operationType} not supported`);
     }
-
-    const resolverValues = this.generateTypesAndInputsFromDTOs(input, output, moduleModel);
 
     resolverValues.typeDefs[operationType][operationName] = this.generateOperationString(
       operationName,
@@ -64,7 +65,7 @@ export class GraphQLSchemaGenerator {
     return `${operationName}: ${outputType}`;
   }
 
-  private generateTypesAndInputsFromDTOs(
+  private generateInputAndTypesOfResolver(
     inputType: string | null,
     output: string,
     moduleModel: TModule,
@@ -81,24 +82,17 @@ export class GraphQLSchemaGenerator {
         mutations: {},
       },
     };
-    // Generate operation arguments if not primitive
-    if (typeof inputType === 'string') {
+
+    if (inputType !== null && typeof inputType === 'string') {
       const { input, types } = this.generateResolverInputTypeDefs(moduleModel, inputType);
 
       resolverValues.typeDefs.inputs = { ...resolverValues.typeDefs.inputs, ...input };
       resolverValues.typeDefs.types = { ...resolverValues.typeDefs.types, ...types };
     }
 
-    // TODO use this.generateResolverOutputTypeDefs(moduleModel, inputType);
-    const mapper = new ClassTypeToGraphQLMapping();
-    const graphQLTypes = mapper.generateGraphQLTypes(output, moduleModel);
-    const { [output]: outputSchema, ...restTypes } = graphQLTypes;
-    console.log('restTypes', restTypes);
-    const typeName = this.trimDTOSuffix(output);
-    resolverValues.typeDefs.types[output] = `type ${typeName} ${outputSchema}`;
-    for (const [typeName, typeSchema] of Object.entries(restTypes)) {
-      resolverValues.typeDefs.types[typeName] = `type ${typeName} ${typeSchema}`;
-    }
+    const { types } = this.generateResolverOutputTypeDefs(moduleModel, output);
+    resolverValues.typeDefs.types = { ...resolverValues.typeDefs.types, ...types };
+
     return resolverValues;
   }
 
@@ -106,20 +100,12 @@ export class GraphQLSchemaGenerator {
     moduleModel: TModule,
     inputType: string,
   ): { input: Record<string, string>; types: Record<string, string> } {
-    const dtos = moduleModel.DTOs;
-    const dto = dtos[inputType];
-    if (!dto) {
-      throw new Error(`DTO ${inputType} not found`);
-    }
-
     const mapper = new ClassTypeToGraphQLMapping();
     const graphQLTypes = mapper.generateGraphQLTypes(inputType, moduleModel);
 
-    // return graphQLTypes;
     const { [inputType]: inputSchema, ...restTypes } = graphQLTypes;
     const typeName = this.trimDTOSuffix(inputType);
 
-    // resolverValues.typeDefs.inputs[inputType] = `input ${typeName} ${inputSchema}`;
     const types = {};
     for (const [typeName, typeSchema] of Object.entries(restTypes)) {
       types[typeName] = `type ${typeName} ${typeSchema}`;
@@ -127,6 +113,27 @@ export class GraphQLSchemaGenerator {
 
     return {
       input: { [inputType]: `input ${typeName} ${inputSchema}` },
+      types,
+    };
+  }
+
+  private generateResolverOutputTypeDefs(
+    moduleModel: TModule,
+    output: string,
+  ): { types: Record<string, string> } {
+    const mapper = new ClassTypeToGraphQLMapping();
+    const graphQLTypes = mapper.generateGraphQLTypes(output, moduleModel);
+    const { [output]: outputSchema, ...restTypes } = graphQLTypes;
+    const typeName = this.trimDTOSuffix(output);
+
+    const types = {
+      [output]: `type ${typeName} ${outputSchema}`,
+    };
+    for (const [typeName, typeSchema] of Object.entries(restTypes)) {
+      types[typeName] = `type ${typeName} ${typeSchema}`;
+    }
+
+    return {
       types,
     };
   }
