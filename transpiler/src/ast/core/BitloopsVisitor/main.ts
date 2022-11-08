@@ -6,7 +6,7 @@
 
 export default function main(_input: string): void {
   // const chars = new antlr4.InputStream(input);
-  // const lexer = new BitloopsLexer(chars) as any;
+  // lexer.getAllTokens(str)
   // const tokens = new antlr4.CommonTokenStream(lexer);
   // const parser = new BitloopsParser(tokens);
   // const tree = parser.program();

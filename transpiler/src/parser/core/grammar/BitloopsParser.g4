@@ -256,15 +256,15 @@ field
 
 bitloopsPrimaryType
     : primitives                                        #PrimitivePrimType
-    | bitloopsBuildInClass                              #BitloopsBuildInClassPrimType
+    | bitloopsBuiltInClass                              #BitloopsBuiltInClassPrimType
     | bitloopsPrimaryType OpenBracket CloseBracket      #ArrayBitloopsPrimType
     | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
     ;
 
-bitloopsBuildInClass
+bitloopsBuiltInClass
     : UUIDv4
     ;
-
+    
 predefinedType
     : Any
     | Int32
@@ -534,6 +534,7 @@ jestTestDeclaration
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
     | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
+    | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
     | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
@@ -559,6 +560,7 @@ errorEvaluation
 evaluation
     : isInstanceOf 
     | getClassEvaluation
+    | builtInClassEvaluation
     | errorEvaluation
     | regularEvaluation
     | dtoEvaluation
@@ -938,6 +940,10 @@ structEvaluationIdentifier
 
 structEvaluation
     : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    ;
+    
+builtInClassEvaluation
+    : bitloopsBuiltInClass (Dot identifier)? methodArguments SemiColon?
     ;
 
 propsEvaluation

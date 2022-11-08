@@ -20,9 +20,9 @@
 
 import {
   ArrayBitloopsPrimType,
-  bitloopsBuildInClasses,
+  bitloopsBuiltInClasses,
   bitloopsPrimitives,
-  TBitloopsBuildInClasses,
+  TBitloopsBuiltInClasses,
   TBitloopsPrimaryType,
   TBitloopsPrimitives,
 } from '../../../../types.js';
@@ -38,8 +38,8 @@ export class BitloopsPrimTypeIdentifiers {
   /**
    * Define a custom type guard to assert whether an unknown object is a Bitloops build in class.
    */
-  static isBitloopsBuildInClass = (type: unknown): type is TBitloopsBuildInClasses => {
-    return typeof type === 'string' && bitloopsBuildInClasses.includes(type as any);
+  static isBitloopsBuiltInClass = (type: unknown): type is TBitloopsBuiltInClasses => {
+    return typeof type === 'string' && bitloopsBuiltInClasses.includes(type as any);
   };
 
   static isBitloopsPrimitive(
@@ -47,5 +47,13 @@ export class BitloopsPrimTypeIdentifiers {
   ): primaryType is TBitloopsPrimitives {
     if (typeof primaryType !== 'string') return false;
     return bitloopsPrimitives.includes(primaryType as any);
+  }
+
+  static isReadModelIdentifier(primaryType: TBitloopsPrimaryType): boolean {
+    return typeof primaryType === 'string' && primaryType.endsWith('ReadModel');
+  }
+
+  static isDTOIdentifier(primaryType: TBitloopsPrimaryType): boolean {
+    return typeof primaryType === 'string' && primaryType.endsWith('DTO');
   }
 }

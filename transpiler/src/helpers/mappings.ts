@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsBuildInClassNames } from '../types.js';
+import { BitloopsBuiltInClassNames } from '../types.js';
 
 const BitloopsTypesMapping = {
   TVariable: 'TVariable',
@@ -112,6 +112,7 @@ const BitloopsTypesMapping = {
   TDomainPrivateMethod: 'TDomainPrivateMethod',
   TValueObjectMethods: 'TValueObjectMethods',
   TBitloopsPrimaryType: 'TBitloopsPrimaryType',
+  TBuiltInClassEvaluation: 'TBuiltInClassEvaluation',
   TArrayLiteralExpression: 'TArrayLiteralExpression',
   TErrorEvaluation: 'TErrorEvaluation',
 };
@@ -142,8 +143,8 @@ const ArchitectureLayers = {
   Domain: 'Domain',
 };
 
-export const mappingBitloopsBuildInClassToLayer = {
-  [BitloopsBuildInClassNames.UUIDv4]: ArchitectureLayers.Domain,
+export const mappingBitloopsBuiltInClassToLayer = {
+  [BitloopsBuiltInClassNames.UUIDv4]: ArchitectureLayers.Domain,
 };
 
 const mappingClassTypeToComponentType = {
