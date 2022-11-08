@@ -67,3 +67,11 @@ UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
 //     return todo;
 //   }
 // }
+
+UseCase GetAllTodosUseCase (todoRepo: TodoReadRepoPort) {
+  execute (): (OK(TodoReadModel[]), Errors()) {
+    const todos = this.todoRepo.getAll();
+
+    return todos;
+  }
+}

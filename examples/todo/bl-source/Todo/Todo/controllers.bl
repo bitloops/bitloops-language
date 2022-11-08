@@ -89,3 +89,12 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
 //     }
 //   }
 // }
+
+RESTController GetTodosRESTController (getAllTodosUseCase: GetAllTodosUseCase) {
+  method: REST.Methods.GET;
+  execute(request, response) {
+    const result = this.getAllTodosUseCase.execute();
+
+    this.ok(response, result);
+  }
+}
