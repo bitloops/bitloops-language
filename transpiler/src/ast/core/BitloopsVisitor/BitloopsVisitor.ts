@@ -278,13 +278,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return arrayLiteralVisitor(this, ctx);
   }
 
-  visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
-    const regularEvaluation: string = this.visitChildren(ctx)[0];
-    // console.log(regularEvaluation);
-    return {
-      regularEvaluation,
-    };
-  }
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');

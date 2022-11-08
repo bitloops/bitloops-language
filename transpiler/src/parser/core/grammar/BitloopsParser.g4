@@ -175,9 +175,6 @@ struct
     : UpperCaseIdentifier
     ;
 
-regularEvaluation
-    : regularMethodEvaluation   
-    ;
 
 // regularVariableEvaluation | regularStringEvaluation |
 regularErrorTypeEvaluation
@@ -522,7 +519,6 @@ jestTestDeclaration
     | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
     | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
 	| JestTestIsInstanceOf OpenBrace isInstanceOf CloseBrace SemiColon?  
-    | JestTest OpenBrace regularEvaluation SemiColon? CloseBrace SemiColon?  
     | JestTest OpenBrace formalParameterList CloseBrace SemiColon?   
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
@@ -556,7 +552,6 @@ evaluation
     | getClassEvaluation
     | builtInClassEvaluation
     | errorEvaluation
-    | regularEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
@@ -1262,7 +1257,8 @@ functionExpressionDeclaration
 
 expression
     : Not expression                                             # NotExpression
-    | OpenParen expression CloseParen                                         # ParenthesizedExpression
+    | OpenParen expression CloseParen                            # ParenthesizedExpression
+    | regularMethodEvaluation                                    # MethodCallExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1272,7 +1268,7 @@ expression
     | expression op=Xor expression                               # LogicalXorExpression
     | literal                                                   # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
-    | regularIdentifier                                         # IdentifierExpression
+    | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     ;   
 
