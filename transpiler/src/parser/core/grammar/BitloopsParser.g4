@@ -179,13 +179,9 @@ regularEvaluation
     : regularMethodEvaluation   
     | regularStringEvaluation
     | templateStringLiteral
-    | regularVariableEvaluation
     | regularIntegerEvaluation
     | regularDecimalEvaluation
     | regularBooleanEvaluation
-    | regularDTOEvaluation
-    | regularStructEvaluation
-    | regularErrorTypeEvaluation 
     ;
 
 // regularVariableEvaluation | regularStringEvaluation |
@@ -212,10 +208,13 @@ closeParen
 
 //regularMethodEvaluation
 //    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
-regularVariableEvaluation
+regularIdentifier
     : ThisVariableEvaluation #ThisVariableEvaluationString
     | RegularVariableEvaluation #RegularVariableEvaluationString
     | Identifier    #IdentifierString
+    | regularDTOEvaluation # RegularDTOEvaluationString
+    | regularStructEvaluation # RegularStructEvaluationString
+    | regularErrorTypeEvaluation  # RegularErrorTypeEvaluationString
     ;
 
 regularMethodEvaluation
@@ -927,7 +926,8 @@ valueObjectEvaluation
 
 domainEvaluationInput
     : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen   # DomainEvaluationInputFieldList
-    | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
+    | OpenParen expression CloseParen             # DomainEvaluationInputRegular
+    // | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -1215,7 +1215,7 @@ functionParameters
     ;
 
 regularVariableEvaluationORliteralORexpression
-    : regularVariableEvaluation 
+    : regularIdentifier 
     | literal 
     | expression
     ;
@@ -1276,6 +1276,7 @@ expression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
     | evaluation                                                 # EvaluationExpression 
+    | regularIdentifier                                         # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     ;   
 
@@ -1471,6 +1472,6 @@ eos
     // | {this.closeBrace()}?
     ;
 
-isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
+isInstanceOf: regularIdentifier Is classTypes SemiColon?;
 
 classTypes: ErrorClass;

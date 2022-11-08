@@ -225,6 +225,33 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {
+    // TODO Create new model for this type of expression
+    //  and not have to use evaluation.regularEvaluation
+    const regularEvaluation: string = this.visitChildren(ctx)[0];
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation,
+        },
+      },
+    };
+  }
+
+  visitRegularStructEvaluationString(ctx: BitloopsParser.RegularStructEvaluationStringContext) {
+    return this.visit(ctx.regularStructEvaluation());
+  }
+
+  visitRegularErrorTypeEvaluationString(
+    ctx: BitloopsParser.RegularErrorTypeEvaluationStringContext,
+  ) {
+    return this.visit(ctx.regularErrorTypeEvaluation());
+  }
+
+  visitRegularDTOEvaluationString(ctx: BitloopsParser.RegularDTOEvaluationStringContext) {
+    return this.visit(ctx.regularDTOEvaluation());
+  }
+
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
     const arrayLiteral = this.visit(ctx.arrayLiteral());
     return {
@@ -483,7 +510,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDomainEvaluationInputRegular(
     ctx: BitloopsParser.DomainEvaluationInputRegularContext,
   ): TRegularEvaluation {
-    return this.visit(ctx.regularEvaluation());
+    // TODO fix model to have expression/ not assume that expression is always regular evaluation
+    const expressionResult = this.visit(ctx.expression());
+    const { expression } = expressionResult;
+    const value = expression.evaluation;
+    return value;
   }
 
   visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {
