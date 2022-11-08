@@ -83,17 +83,13 @@ export class GraphQLSchemaGenerator {
     };
     // Generate operation arguments if not primitive
     if (typeof inputType === 'string') {
-      const graphQLTypes = this.generateResolverInputTypeDefs(moduleModel, inputType);
+      const { input, types } = this.generateResolverInputTypeDefs(moduleModel, inputType);
 
-      const { [inputType]: inputSchema, ...restTypes } = graphQLTypes;
-      const typeName = this.trimDTOSuffix(inputType);
-
-      resolverValues.typeDefs.inputs[inputType] = `input ${typeName} ${inputSchema}`;
-      for (const [typeName, typeSchema] of Object.entries(restTypes)) {
-        resolverValues.typeDefs.types[typeName] = `type ${typeName} ${typeSchema}`;
-      }
+      resolverValues.typeDefs.inputs = { ...resolverValues.typeDefs.inputs, ...input };
+      resolverValues.typeDefs.types = { ...resolverValues.typeDefs.types, ...types };
     }
 
+    // TODO use this.generateResolverOutputTypeDefs(moduleModel, inputType);
     const mapper = new ClassTypeToGraphQLMapping();
     const graphQLTypes = mapper.generateGraphQLTypes(output, moduleModel);
     const { [output]: outputSchema, ...restTypes } = graphQLTypes;
@@ -109,7 +105,7 @@ export class GraphQLSchemaGenerator {
   private generateResolverInputTypeDefs(
     moduleModel: TModule,
     inputType: string,
-  ): Record<string, string> {
+  ): { input: Record<string, string>; types: Record<string, string> } {
     const dtos = moduleModel.DTOs;
     const dto = dtos[inputType];
     if (!dto) {
@@ -119,7 +115,20 @@ export class GraphQLSchemaGenerator {
     const mapper = new ClassTypeToGraphQLMapping();
     const graphQLTypes = mapper.generateGraphQLTypes(inputType, moduleModel);
 
-    return graphQLTypes;
+    // return graphQLTypes;
+    const { [inputType]: inputSchema, ...restTypes } = graphQLTypes;
+    const typeName = this.trimDTOSuffix(inputType);
+
+    // resolverValues.typeDefs.inputs[inputType] = `input ${typeName} ${inputSchema}`;
+    const types = {};
+    for (const [typeName, typeSchema] of Object.entries(restTypes)) {
+      types[typeName] = `type ${typeName} ${typeSchema}`;
+    }
+
+    return {
+      input: { [inputType]: `input ${typeName} ${inputSchema}` },
+      types,
+    };
   }
 
   private trimDTOSuffix(typeName: string): string {
