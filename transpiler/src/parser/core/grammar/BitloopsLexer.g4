@@ -259,6 +259,7 @@ JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
 JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
+JestTestBuiltInClass: 'JestTestBuiltInClass';
 JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
 
 // Abstract: 'abstract';
@@ -402,7 +403,7 @@ fragment ExponentPart
     : [eE] [+-]? [0-9]+
     ;
 fragment RegularEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
+// fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
 // fragment RegularEvaluationPart
 //     : RegularEvaluationStart
 //     | [\p{Mn}]

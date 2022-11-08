@@ -34,7 +34,6 @@ import { fetchTypeScriptReadModelCrudBaseRepo } from './mongo/readModelCrudRepo.
 const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 const CRUDReadRepoPort = 'CRUDReadRepoPort';
 
-
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
   collectionExpression: TSingleExpression,

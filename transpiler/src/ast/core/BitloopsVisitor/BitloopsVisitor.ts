@@ -50,6 +50,7 @@ import {
   TUseCase,
   TStructs,
   TReadModels,
+  TBuiltInClassEvaluation,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -136,6 +137,7 @@ import {
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
+  builtInClassEvaluationVisitor,
   primitivePrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
@@ -562,6 +564,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.type_().getText();
   }
 
+  visitBuiltInClassEvaluation(
+    ctx: BitloopsParser.BuiltInClassEvaluationContext,
+  ): TBuiltInClassEvaluation {
+    return builtInClassEvaluationVisitor(this, ctx);
+  }
+
   visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {
     return errorIdentifiersVisitor(this, ctx);
   }
@@ -765,8 +773,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
 
-  visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
-    return ctx.bitloopsBuildInClass().getText();
+  visitBitloopsBuiltInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
+    return ctx.bitloopsBuiltInClass().getText();
   }
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
     return ctx.bitloopsIdentifiers().getText();

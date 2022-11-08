@@ -67,6 +67,11 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       type: BitloopsTypesMapping.TDTOEvaluation,
       value: evaluation,
     });
+  } else if ('builtInClass' in evaluation) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBuiltInClassEvaluation,
+      value: evaluation,
+    });
   } else if ('errorEvaluation' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TErrorEvaluation,

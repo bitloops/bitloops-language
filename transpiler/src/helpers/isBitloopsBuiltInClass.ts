@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsBuildInClasses, TBitloopsBuildInClasses } from '../types.js';
+import { bitloopsBuiltInClasses, TBitloopsBuiltInClasses } from '../types.js';
 
 /**
  * Define a custom type guard to assert whether an unknown object is a Bitloops build in class.
  */
-export function isBitloopsBuildInClass(type: unknown): type is TBitloopsBuildInClasses {
-  return typeof type === 'string' && bitloopsBuildInClasses.includes(type as any);
+export function isBitloopsBuiltInClass(type: unknown): type is TBitloopsBuiltInClasses {
+  return typeof type === 'string' && bitloopsBuiltInClasses.includes(type as any);
 }
