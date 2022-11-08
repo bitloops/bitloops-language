@@ -110,6 +110,7 @@ bitloopsIdentifiers
     | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     | RepoPortIdentifier
     | ReadModelIdentifier
+    | builtInClassIdentifier
     ;
 
 type_
