@@ -339,6 +339,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'execute',
     };
   }
+  visitDeleteKeyword(_ctx: BitloopsParser.DeleteKeywordContext) {
+    return {
+      type: 'variable',
+      value: 'delete',
+    };
+  }
 
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText())[0];
