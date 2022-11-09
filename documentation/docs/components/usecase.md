@@ -1,7 +1,7 @@
 # UseCase
 
 ### Definition
-***UseCases*** (also known as Application Services) are the main features of the application. They coordinate among [Entities](https://bitloops.com/docs/bitloops-language/components/entity), Domain Services, handle database commands/queries and can issue out Integration Events. They perform either a COMMAND(like *createTodo*) or a QUERY(like *getTodoById*) against the system.
+***UseCases*** (also known as Application Services) are the main features of the application. They coordinate among [Entities](https://bitloops.com/docs/bitloops-language/components/entity), Domain Services, handle database commands/queries and can issue out [Integration Events](https://bitloops.com/docs/bitloops-language/components/integration-event). They perform either a COMMAND(like *createTodo*) or a QUERY(like *getTodoById*) against the system.
 
 We should strive to push all business domain logic into the domain model, whether that be in [Aggregates](https://bitloops.com/docs/bitloops-language/components/entity), [ValueObjects](https://bitloops.com/docs/bitloops-language/components/value-object) or
 Domain Services. Keep Application Services thin, using them only to coordinate tasks on the model. [^VaughnVernon2013]
