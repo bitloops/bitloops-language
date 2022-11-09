@@ -244,19 +244,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  // visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {
-  //   // TODO Create new model for this type of expression
-  //   //  and not have to use evaluation.regularEvaluation
-  //   const regularEvaluation = this.visitChildren(ctx)[0];
-  //   return {
-  //     expression: {
-  //       evaluation: {
-  //         regularEvaluation,
-  //       },
-  //     },
-  //   };
-  // }
-
   visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext): TExpression {
     const leftExpression = this.visit(ctx.expression());
     const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
@@ -275,7 +262,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  visitThisExpression(_ctx: BitloopsParser.MemberDotExpressionContext): TExpression {
+  visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext): TExpression {
     return {
       expression: {
         evaluation: {
@@ -377,6 +364,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return {
       type: 'variable',
       value: ctx.Identifier().getText(),
+    };
+  }
+
+  visitExecuteExpression(_ctx: BitloopsParser.ExecuteExpressionContext) {
+    return {
+      type: 'variable',
+      value: 'execute',
     };
   }
 

@@ -206,7 +206,7 @@ regularIdentifier
     | regularStructEvaluation # RegularStructEvaluationString
     | regularErrorTypeEvaluation  # RegularErrorTypeEvaluationString
     // TODO think if there is better solution for this
-    | Execute                      # ExecuteString
+    | Execute                                                   # ExecuteExpression
     ;
 
 // regularMethodEvaluation
@@ -1241,7 +1241,7 @@ argumentList
     ;
 
 argument                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (regularVariableEvaluationORliteralORexpression)
+    : (regularVariableEvaluationORliteralORexpression)
     ;
 
 expressionSequence
