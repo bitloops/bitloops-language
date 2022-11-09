@@ -308,12 +308,12 @@ DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
-GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
+// GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 
-ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
-RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
+// ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
+// RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
 
 
 

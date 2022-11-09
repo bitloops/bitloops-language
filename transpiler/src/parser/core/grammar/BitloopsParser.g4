@@ -201,18 +201,18 @@ closeParen
 //regularMethodEvaluation
 //    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
 regularIdentifier
-    : ThisVariableEvaluation #ThisVariableEvaluationString
-    | RegularVariableEvaluation #RegularVariableEvaluationString
-    | Identifier    #IdentifierString
+    // : ThisVariableEvaluation #ThisVariableEvaluationString
+    // | RegularVariableEvaluation #RegularVariableEvaluationString
+    : Identifier    #IdentifierString
     | regularDTOEvaluation # RegularDTOEvaluationString
     | regularStructEvaluation # RegularStructEvaluationString
     | regularErrorTypeEvaluation  # RegularErrorTypeEvaluationString
     ;
 
-regularMethodEvaluation
-    : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-    | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
-    ;
+// regularMethodEvaluation
+//     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
+//     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
+//     ;
 
 
 
@@ -1204,8 +1204,6 @@ objectLiteral
 //     ;
 
 regularVariableEvaluationORliteralORexpression
-    // : regularIdentifier 
-    // : literal 
     : expression
     ;
 
@@ -1257,7 +1255,9 @@ functionExpressionDeclaration
 expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                            # ParenthesizedExpression
-    | regularMethodEvaluation                                    # MethodCallExpression
+    | expression '.' regularIdentifier                              # MemberDotExpression
+    // | regularMethodEvaluation                                    # MethodCallExpression
+    | expression arguments                                       # MethodCallExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
