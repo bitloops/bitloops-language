@@ -34,6 +34,7 @@ const BitloopsTypesMapping = {
   TArgumentDependencies: 'TArgumentDependencies',
   TRegularEvaluation: 'TRegularEvaluation',
   TGetClass: 'TGetClass',
+  TToStringExpression: 'TToStringExpression',
   TStructEvaluation: 'TStructEvaluation',
   TDTOEvaluation: 'TDTOEvaluation',
   TCondition: 'TCondition',
