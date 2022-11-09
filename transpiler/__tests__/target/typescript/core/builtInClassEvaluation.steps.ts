@@ -27,12 +27,10 @@ defineFeature(feature, (test) => {
   let result;
   let value;
 
-  test('BuiltIn Class evaluation', ({ given, and, when, then }) => {
+  test('BuiltIn Class evaluation', ({ given, when, then }) => {
     given(/^type is "(.*)"$/, (arg0) => {
       builtInClassEvaluationType = arg0;
     });
-
-    and(/^language is "(.*)"$/, (_arg0) => {});
 
     given(/^I have a builtIn class evaluation (.*)$/, (arg0) => {
       value = arg0;

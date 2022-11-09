@@ -49,13 +49,13 @@ bindingPattern
 // Bitloops SPart
 // A.1 Types
 
-typeParameters
-    : '<' typeParameterList? '>'
-    ;
+// typeParameters
+//     : '<' typeParameterList? '>'
+//     ;
 
-typeParameterList
-    : typeParameter (Comma typeParameter)*
-    ;
+// typeParameterList
+//     : typeParameter (Comma typeParameter)*
+//     ;
 
 fieldList
     : field (SemiColon field)* SemiColon
@@ -69,30 +69,30 @@ evaluationField
     : Identifier Colon expression
     ;
 
-typeParameter
-    : Identifier constraint?
-    | typeParameters
-    ;
+// typeParameter
+//     : Identifier constraint?
+//     | typeParameters
+//     ;
 
-constraint
-    : 'extends' type_
-    ;
+// constraint
+//     : 'extends' type_
+//     ;
 
-typeArguments
-    : '<' typeArgumentList? '>'
-    ;
+// typeArguments
+//     : '<' typeArgumentList? '>'
+//     ;
 
 propFields
     : OpenBrace fieldList? CloseBrace
     ;
 
-typeArgumentList
-    : typeArgument (Comma typeArgument)*
-    ;
+// typeArgumentList
+//     : typeArgument (Comma typeArgument)*
+//     ;
 
-typeArgument
-    : type_
-    ;
+// typeArgument
+//     : type_
+//     ;
 
 propsIdentifier
 : PropsIdentifier
@@ -112,35 +112,35 @@ bitloopsIdentifiers
     | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     ;
 
-type_
-    : unionOrIntersectionOrPrimaryType
-    | functionType
-    | constructorType
-    | typeGeneric
-    | StringLiteral
-    | bitloopsIdentifiers
-    | type_ '[' ']' 
-    ;
+// type_
+//     : unionOrIntersectionOrPrimaryType
+//     | functionType
+//     | constructorType
+//     | typeGeneric
+//     | StringLiteral
+//     | bitloopsIdentifiers
+//     | type_ '[' ']' 
+//     ;
 
-unionOrIntersectionOrPrimaryType
-    : unionOrIntersectionOrPrimaryType '|' unionOrIntersectionOrPrimaryType #Union
-    | unionOrIntersectionOrPrimaryType '&' unionOrIntersectionOrPrimaryType #Intersection
-    // | primaryType #Primary
-    | primitives #Primmitives
-    ;
+// unionOrIntersectionOrPrimaryType
+//     : unionOrIntersectionOrPrimaryType '|' unionOrIntersectionOrPrimaryType #Union
+//     | unionOrIntersectionOrPrimaryType '&' unionOrIntersectionOrPrimaryType #Intersection
+//     // | primaryType #Primary
+//     | primitives #Primmitives
+//     ;
 
-primaryType
-    : OpenParen type_ CloseParen                                 #ParenthesizedPrimType
-    | predefinedType                                #PredefinedPrimType
-    | typeReference                                 #ReferencePrimType
-    | objectType                                    #ObjectPrimType
-    // | primaryType {notLineTerminator()}? '[' ']'    #ArrayPrimType
-    | primaryType '[' ']'    #ArrayPrimType
-    | '[' tupleElementTypes ']'                     #TuplePrimType
-    | typeQuery                                     #QueryPrimType
-    | This                                          #ThisPrimType
-    | typeReference Is primaryType                  #RedefinitionOfType
-    ;
+// primaryType
+//     : OpenParen type_ CloseParen                                 #ParenthesizedPrimType
+//     | predefinedType                                #PredefinedPrimType
+//     | typeReference                                 #ReferencePrimType
+//     | objectType                                    #ObjectPrimType
+//     // | primaryType {notLineTerminator()}? '[' ']'    #ArrayPrimType
+//     | primaryType '[' ']'    #ArrayPrimType
+//     | '[' tupleElementTypes ']'                     #TuplePrimType
+//     | typeQuery                                     #QueryPrimType
+//     | This                                          #ThisPrimType
+//     | typeReference Is primaryType                  #RedefinitionOfType
+//     ;
 
 primitives
     : Any
@@ -250,14 +250,14 @@ predefinedType
     | Void
     ;
 
-typeReference
-    : typeName nestedTypeGeneric?
-    ;
+// typeReference
+//     : typeName nestedTypeGeneric?
+//     ;
 
-nestedTypeGeneric
-    : typeIncludeGeneric
-    | typeGeneric
-    ;
+// nestedTypeGeneric
+//     : typeIncludeGeneric
+//     | typeGeneric
+//     ;
 
 // I tried recursive include, but it's not working.
 // typeGeneric
@@ -266,38 +266,38 @@ nestedTypeGeneric
 //
 // TODO: Fix recursive
 //
-typeGeneric
-    : '<' typeArgumentList '>'
-    ;
+// typeGeneric
+//     : '<' typeArgumentList '>'
+//     ;
 
-typeIncludeGeneric
-    :'<' typeArgumentList '<' typeArgumentList ('>' bindingPattern '>' | '>>')
-    ;
+// typeIncludeGeneric
+//     :'<' typeArgumentList '<' typeArgumentList ('>' bindingPattern '>' | '>>')
+//     ;
 
 typeName
     : Identifier
     | namespaceName
     ;
 
-objectType
-    : OpenBrace typeBody? CloseBrace
-    ;
+// objectType
+//     : OpenBrace typeBody? CloseBrace
+//     ;
 
-typeBody
-    : typeMemberList (SemiColon | Comma)?
-    ;
+// typeBody
+//     : typeMemberList (SemiColon | Comma)?
+//     ;
 
-typeMemberList
-    : typeMember ((SemiColon | Comma) typeMember)*
-    ;
+// typeMemberList
+//     : typeMember ((SemiColon | Comma) typeMember)*
+//     ;
 
-typeMember
-    : propertySignatur
-    | callSignature
-    | constructSignature
-    | indexSignature
-    | methodSignature ('=>' type_)?
-    ;
+// typeMember
+//     : propertySignatur
+//     | callSignature
+//     | constructSignature
+//     | indexSignature
+//     | methodSignature ('=>' type_)?
+//     ;
 
 methodDefinitionList
     : methodDefinition*
@@ -308,17 +308,17 @@ methodDefinition
     ;
 
 
-tupleElementTypes
-    : type_ (Comma type_)*
-    ;
+// tupleElementTypes
+//     : type_ (Comma type_)*
+//     ;
 
-functionType
-    : typeParameters? OpenParen parameterList? CloseParen '=>' type_
-    ;
+// functionType
+//     : typeParameters? OpenParen parameterList? CloseParen '=>' type_
+    // ;
 
-constructorType
-    : 'new' typeParameters? OpenParen parameterList? CloseParen '=>' type_
-    ;
+// constructorType
+//     : 'new' typeParameters? OpenParen parameterList? CloseParen '=>' type_
+//     ;
 
 typeQuery
     : 'typeof' typeQueryExpression
@@ -329,17 +329,17 @@ typeQueryExpression
     | (identifierName Dot)+ identifierName
     ;
 
-propertySignatur
-    : ReadOnly? propertyName '?'? typeAnnotation? ('=>' type_)?
-    ;
+// propertySignatur
+//     : ReadOnly? propertyName '?'? typeAnnotation? ('=>' type_)?
+//     ;
 
 typeAnnotation
-    : Colon type_
+    : Colon bitloopsPrimaryType
     ;
 
-callSignature
-    : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
-    ;
+// callSignature
+//     : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
+//     ;
 
 parameterList
     : restParameter
@@ -378,21 +378,21 @@ identifierOrPattern
     | bindingPattern
     ;
 
-constructSignature
-    : 'new' typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
-    ;
+// constructSignature
+//     : 'new' typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
+//     ;
 
 indexSignature
     : '[' Identifier Colon (Int32|String) ']' typeAnnotation
     ;
 
-methodSignature
-    : propertyName '?'? callSignature
-    ;
+// methodSignature
+//     : propertyName '?'? callSignature
+//     ;
 
-typeAliasDeclaration
-    : 'type' Identifier typeParameters? '=' type_ SemiColon
-    ;
+// typeAliasDeclaration
+//     : 'type' Identifier typeParameters? '=' type_ SemiColon
+//     ;
 
 // constructorDeclaration
 //     : accessibilityModifier? Constructor '(' formalParameterList? ')' ( ('{' functionBody '}') | SemiColon)?
@@ -411,13 +411,13 @@ typeAliasDeclaration
 //     : Props Identifier typeParameters? interfaceExtendsClause? objectType SemiColon?
 //     ;
 
-interfaceExtendsClause
-    : Extends classOrInterfaceTypeList
-    ;
+// interfaceExtendsClause
+//     : Extends classOrInterfaceTypeList
+//     ;
 
-classOrInterfaceTypeList
-    : typeReference (Comma typeReference)*
-    ;
+// classOrInterfaceTypeList
+//     : typeReference (Comma typeReference)*
+//     ;
 
 // A.7 Interface
 
@@ -584,10 +584,10 @@ statement
     // | labelledStatement
     | throwStatement
     | tryStatement
-    | functionDeclaration
+    // | functionDeclaration
     | arrowFunctionDeclaration
     // | variableStatement
-    | typeAliasDeclaration //ADDED
+    // | typeAliasDeclaration //ADDED
     | builtInFunction // Using semantic analysis, allow it only inside domain
     ;
 
@@ -756,9 +756,9 @@ debuggerStatement
     : Debugger eos
     ;
 
-functionDeclaration
-    : Function_ Identifier callSignature ( (OpenBrace functionBody CloseBrace) | SemiColon)
-    ;
+// functionDeclaration
+//     : Function_ Identifier callSignature ( (OpenBrace functionBody CloseBrace) | SemiColon)
+//     ;
 
 //Ovveride ECMA
 // classDeclaration
@@ -1031,10 +1031,8 @@ domainRuleIdentifier
 : RuleIdentifier
 ;
 
-// TODO valueObjectIdentifier inside bitloops identifiers 
-// TODO change it to something like this dtoIdentifiers | valueObjectIdentifier | type_
 returnOkType
-    : OK OpenParen type_ CloseParen
+    : OK OpenParen bitloopsPrimaryType CloseParen
     ;
 
 returnErrorsType
@@ -1061,9 +1059,9 @@ packagePortDeclaration
 //     :  '{' classElement* '}'
 //     ;
 
-classExtendsClause
-    : Extends typeReference
-    ;
+// classExtendsClause
+//     : Extends typeReference
+//     ;
 
 // useCaseTail
 //     :  '{' useCaseElement* '}'
@@ -1152,7 +1150,7 @@ formalParameterList
     | OpenParen
     (
     formalParameterArg (Comma formalParameterArg)* (Comma lastFormalParameterArg)?
-    | lastFormalParameterArg
+    | lastFormalParameterArg 
     )?
     CloseParen 
     ;

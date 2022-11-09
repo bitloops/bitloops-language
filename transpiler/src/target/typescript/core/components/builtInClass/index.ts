@@ -18,7 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BitloopsTypesMapping, mappingBitloopsBuiltInClassToLayer } from '../../../../../helpers/mappings.js';
+import {
+  BitloopsTypesMapping,
+  mappingBitloopsBuiltInClassToLayer,
+} from '../../../../../helpers/mappings.js';
 import { TBuiltInClassEvaluation, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { getChildDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -34,7 +37,10 @@ export const builtInClassEvaluationToTargetLanguage = (
   });
 
   const output = `new ${mappingBitloopsBuiltInClassToLayer[className]}.${className}${argumentDependenciesResult.output}`;
-  const dependencies = [...getChildDependencies(className), ...argumentDependenciesResult.dependencies];
+  const dependencies = [
+    ...getChildDependencies(className),
+    ...argumentDependenciesResult.dependencies,
+  ];
 
   return {
     output,
