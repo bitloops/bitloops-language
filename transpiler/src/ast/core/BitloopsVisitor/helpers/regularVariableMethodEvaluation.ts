@@ -18,18 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
+// import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+// import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const regularVariableMethodEvaluationVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
-): any => {
-  const regularVariable = ctx.RegularVariableEvaluation().getText();
-  const methodArguments = thisVisitor.visit(ctx.methodArguments());
-  return {
-    type: 'method',
-    value: regularVariable,
-    argumentDependencies: methodArguments,
-  };
-};
+// export const regularVariableMethodEvaluationVisitor = (
+//   thisVisitor: BitloopsVisitor,
+//   ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
+// ): any => {
+//   const regularVariable = ctx.RegularVariableEvaluation().getText();
+//   const methodArguments = thisVisitor.visit(ctx.methodArguments());
+//   return {
+//     type: 'method',
+//     value: regularVariable,
+//     argumentDependencies: methodArguments,
+//   };
+// };

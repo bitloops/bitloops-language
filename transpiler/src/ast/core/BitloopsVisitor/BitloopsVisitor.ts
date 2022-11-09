@@ -64,8 +64,8 @@ import {
   regularVariableEvaluationORliteralORexpressionVisitor,
   structEvaluationVisitor,
   evaluationFieldListVisitor,
-  thisVariableMethodEvaluationVisitor,
-  regularVariableMethodEvaluationVisitor,
+  // thisVariableMethodEvaluationVisitor,
+  // regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
   evaluationFieldVisitor,
   regularStructEvaluationVisitor,
@@ -287,13 +287,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {
-    const value = ctx.ThisVariableEvaluation().getText();
-    return {
-      type: 'variable',
-      value: value,
-    };
-  }
+  // visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {
+  //   const value = ctx.ThisVariableEvaluation().getText();
+  //   return {
+  //     type: 'variable',
+  //     value: value,
+  //   };
+  // }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
     const identifier = ctx.ErrorIdentifier().getText();
@@ -307,13 +307,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
-    const value = ctx.RegularVariableEvaluation().getText();
-    return {
-      type: 'variable',
-      value: value,
-    };
-  }
+  // visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
+  //   const value = ctx.RegularVariableEvaluation().getText();
+  //   return {
+  //     type: 'variable',
+  //     value: value,
+  //   };
+  // }
 
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {
     const value = ctx.errorIdentifier().getText();
@@ -434,19 +434,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return structEvaluationVisitor(this, ctx);
   }
 
-  visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext): any {
-    return thisVariableMethodEvaluationVisitor(this, ctx);
-  }
+  // visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext): any {
+  //   return thisVariableMethodEvaluationVisitor(this, ctx);
+  // }
 
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
     return methodArgumentsVisitor(this, ctx);
   }
 
-  visitRegularVariableMethodEvaluation(
-    ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
-  ): any {
-    return regularVariableMethodEvaluationVisitor(this, ctx);
-  }
+  // visitRegularVariableMethodEvaluation(
+  //   ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
+  // ): any {
+  //   return regularVariableMethodEvaluationVisitor(this, ctx);
+  // }
 
   visitEvaluationField(ctx: BitloopsParser.EvaluationFieldContext): any {
     return evaluationFieldVisitor(this, ctx);

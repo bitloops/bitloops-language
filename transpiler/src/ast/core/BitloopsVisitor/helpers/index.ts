@@ -23,8 +23,8 @@ export { jestTestDeclarationVisitor } from './jestTestDeclaration.js';
 export { argumentListVisitor } from './argumentList.js';
 export { argumentVisitor } from './argument.js';
 export { regularVariableEvaluationORliteralORexpressionVisitor } from './regularVariableEvaluationORliteralORexpression.js';
-export { thisVariableMethodEvaluationVisitor } from './thisVariableMethodEvaluation.js';
-export { regularVariableMethodEvaluationVisitor } from './regularVariableMethodEvaluation.js';
+// export { thisVariableMethodEvaluationVisitor } from './thisVariableMethodEvaluation.js';
+// export { regularVariableMethodEvaluationVisitor } from './regularVariableMethodEvaluation.js';
 export { methodArgumentsVisitor } from './methodArguments.js';
 export { structEvaluationVisitor } from './structEvaluation.js';
 export { evaluationFieldListVisitor } from './evaluationFieldList.js';
@@ -108,6 +108,6 @@ export {
 } from './repoPortDeclaration.js';
 export { readModelDeclarationVisitor } from './readModelDeclaration.js';
 export { applicationErrorDeclarationVisitor } from './applicationErrorDeclaration.js';
-export { builtInClassEvaluationVisitor } from './builtInClassEvaluationVisitor.js'
+export { builtInClassEvaluationVisitor } from './builtInClassEvaluationVisitor.js';
 export { primitivePrimTypeVisitor, arrayBitloopsPrimTypeVisitor } from './bitloopsPrimaryType.js';
 export { arrayLiteralVisitor } from './arrayLiteral.js';
