@@ -383,7 +383,14 @@ export type TExpressionValues =
   | TRelationalExpression
   | TEqualityExpression
   | TParenthesizedExpression
-  | TArrayLiteralExpression;
+  | TArrayLiteralExpression
+  | TToStringExpression;
+
+export type TToStringExpression = {
+  toString: {
+    value: string;
+  };
+};
 
 export type TArrayLiteralExpression = {
   arrayLiteral: TExpression[];

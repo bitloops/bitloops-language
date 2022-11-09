@@ -18,16 +18,27 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
+import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsVisitor from '../../BitloopsVisitor.js';
+import { TExpression } from '../../../../../types.js';
 
-export const regularVariableEvaluationORliteralORexpressionVisitor = (
+export const getClassExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
-): any => {
-  const res = thisVisitor.visitChildren(ctx)[0];
-  if (res?.expression?.evaluation?.regularEvaluation) {
-    return res.expression.evaluation.regularEvaluation;
-  }
-  return res;
+  ctx: BitloopsParser.GetClassExpressionContext,
+): TExpression => {
+  const expressionResult = thisVisitor.visit(ctx.expression());
+
+  const value = expressionResult.expression.evaluation.regularEvaluation.value;
+  return {
+    expression: {
+      evaluation: {
+        getClass: {
+          regularEvaluation: {
+            type: 'variable',
+            value,
+          },
+        },
+      },
+    },
+  };
 };
