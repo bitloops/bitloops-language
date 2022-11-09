@@ -7,7 +7,7 @@ They are defined only by their properties and their equality is not based on ide
 
 ### Examples
 
-### Declaring a ValueObject
+##### Declaring a ValueObject
 ```
 ValueObject TitleVO {
   constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
@@ -25,21 +25,19 @@ const title = TitleVO({ title: requestDTO.title });
 
 ##### Declaring a Value Object
 
-Declaring a ValueObject is described below:
-
-```
+```typescript
 ValueObject <identifier name with a VO suffix> { 
 
-  <!-- constant variable declarations -->
+  //constant variable declarations
   const <identifier> : <type> = <expression>;
   
-  <!-- constructor declaration, here we define whatever needs specific handling during the creation of the value object and 
-  we use applyRules to ensure its validation. By default automatic getters are generated. -->
+  // constructor declaration, here we define whatever needs specific handling during the creation of the value object and 
+  //we use applyRules to ensure its validation. By default automatic getters are generated.
   constructor(<props of the ValueObject>) : (OK(<type>), Errors(<DomainErrorIdentifier> '|' <DomainErrorIdentifier>...)) {
     <statements>
   }
   
-  <!-- private method declaration -->
+  // private method declaration
   <[optional] private> <method identifier> (<arg, arg...>): <type> {
     <statements>
   }
