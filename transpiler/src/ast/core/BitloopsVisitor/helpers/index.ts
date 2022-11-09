@@ -111,3 +111,11 @@ export { applicationErrorDeclarationVisitor } from './applicationErrorDeclaratio
 export { builtInClassEvaluationVisitor } from './builtInClassEvaluationVisitor.js';
 export { primitivePrimTypeVisitor, arrayBitloopsPrimTypeVisitor } from './bitloopsPrimaryType.js';
 export { arrayLiteralVisitor } from './arrayLiteral.js';
+export {
+  memberDotExpressionVisitor,
+  methodCallExpressionVisitor,
+  getClassExpressionVisitor,
+  toStringExpressionVisitor,
+  assignmentExpressionVisitor,
+  identifierExpressionVisitor,
+} from './expression/index.js';

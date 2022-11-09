@@ -143,6 +143,12 @@ import {
   primitivePrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
+  memberDotExpressionVisitor,
+  methodCallExpressionVisitor,
+  getClassExpressionVisitor,
+  toStringExpressionVisitor,
+  assignmentExpressionVisitor,
+  identifierExpressionVisitor,
 } from './helpers/index.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -228,87 +234,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext): TExpression {
-    const leftExpression = this.visit(ctx.expression());
-    const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
-    const identifier = this.visit(ctx.regularIdentifier());
-    const identifierValue = identifier.value;
-    const stringResult = `${leftExpressionValue}.${identifierValue}`;
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation: {
-            type: 'variable',
-            value: stringResult,
-          },
-        },
-      },
-    };
+    return memberDotExpressionVisitor(this, ctx);
   }
 
   visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext): TExpression {
-    const leftExpression = this.visit(ctx.expression());
-    const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
-    const argumentList = this.visit(ctx.methodArguments());
-    const value = {
-      type: 'method',
-      value: leftExpressionValue,
-      argumentDependencies: argumentList,
-    };
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation: value,
-        },
-      },
-    };
+    return methodCallExpressionVisitor(this, ctx);
   }
 
   visitGetClassExpression(ctx: BitloopsParser.GetClassExpressionContext): TExpression {
-    const expressionResult = this.visit(ctx.expression());
-
-    const value = expressionResult.expression.evaluation.regularEvaluation.value;
-    return {
-      expression: {
-        evaluation: {
-          getClass: {
-            regularEvaluation: {
-              type: 'variable',
-              value,
-            },
-          },
-        },
-      },
-    };
+    return getClassExpressionVisitor(this, ctx);
   }
 
   visitToStringExpression(ctx: BitloopsParser.ToStringExpressionContext): TExpression {
-    const expressionResult = this.visit(ctx.expression());
-
-    const value = expressionResult.expression.evaluation.regularEvaluation.value;
-    return {
-      expression: {
-        toString: {
-          value,
-        },
-      },
-    };
+    return toStringExpressionVisitor(this, ctx);
   }
 
   visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext): TThisDeclaration {
-    const leftExpression = this.visit(ctx.expression(0));
-    const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
-    const rightExpression = this.visit(ctx.expression(1));
-    // TODO Fix model so that thisDeclaration is not a statement, but an expression
-    if (leftExpressionValue.startsWith('this.')) {
-      return {
-        thisDeclaration: {
-          name: leftExpressionValue,
-          expression: rightExpression.expression,
-        },
-      };
-    }
-
-    throw new Error('Not implemented');
+    return assignmentExpressionVisitor(this, ctx);
   }
 
   visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext): TExpression {
@@ -325,16 +267,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {
-    // TODO Create new model for this type of expression
-    //  and not have to use evaluation.regularEvaluation
-    const regularEvaluation = this.visitChildren(ctx)[0];
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation,
-        },
-      },
-    };
+    return identifierExpressionVisitor(this, ctx);
   }
 
   visitRegularStructEvaluationString(ctx: BitloopsParser.RegularStructEvaluationStringContext) {
@@ -373,14 +306,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  // visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {
-  //   const value = ctx.ThisVariableEvaluation().getText();
-  //   return {
-  //     type: 'variable',
-  //     value: value,
-  //   };
-  // }
-
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
     const identifier = ctx.ErrorIdentifier().getText();
     const argumentDependencies = this.visit(ctx.methodArguments()) || [];
@@ -392,14 +317,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       },
     };
   }
-
-  // visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
-  //   const value = ctx.RegularVariableEvaluation().getText();
-  //   return {
-  //     type: 'variable',
-  //     value: value,
-  //   };
-  // }
 
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {
     const value = ctx.errorIdentifier().getText();
@@ -527,19 +444,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return structEvaluationVisitor(this, ctx);
   }
 
-  // visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext): any {
-  //   return thisVariableMethodEvaluationVisitor(this, ctx);
-  // }
-
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
     return methodArgumentsVisitor(this, ctx);
   }
-
-  // visitRegularVariableMethodEvaluation(
-  //   ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
-  // ): any {
-  //   return regularVariableMethodEvaluationVisitor(this, ctx);
-  // }
 
   visitEvaluationField(ctx: BitloopsParser.EvaluationFieldContext): any {
     return evaluationFieldVisitor(this, ctx);

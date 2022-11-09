@@ -176,15 +176,9 @@ struct
     ;
 
 
-// regularVariableEvaluation | regularStringEvaluation |
 regularErrorTypeEvaluation
     : errorIdentifier
     ;
-
-// getClassEvaluation:
-//     GetClassEvaluation 
-//     ;
-
 
 methodArguments
     : OpenParen (argumentList (Comma argumentList)*)? CloseParen
@@ -199,22 +193,13 @@ closeParen
     ;
 
 regularIdentifier
-    // : ThisVariableEvaluation #ThisVariableEvaluationString
-    // | RegularVariableEvaluation #RegularVariableEvaluationString
     : Identifier    #IdentifierString
     | regularDTOEvaluation # RegularDTOEvaluationString
     | regularStructEvaluation # RegularStructEvaluationString
     | regularErrorTypeEvaluation  # RegularErrorTypeEvaluationString
-    // TODO think if there is better solution for this
+    // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
     | Execute                                                   # ExecuteExpression
     ;
-
-// regularMethodEvaluation
-//     : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-//     | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
-//     ;
-
-
 
 regularStringEvaluation
     : StringLiteral
@@ -1257,7 +1242,6 @@ expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                            # ParenthesizedExpression
     | expression Dot regularIdentifier                              # MemberDotExpression
-    // | regularMethodEvaluation                                    # MethodCallExpression
     | expression methodArguments                                       # MethodCallExpression
     | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
     | expression Dot ToString OpenParen CloseParen               # ToStringExpression
