@@ -536,7 +536,7 @@ jestTestDeclaration
     | JestTestEntityDeclaration OpenBrace entityDeclaration CloseBrace SemiColon?
     | JestTestCondition OpenBrace condition CloseBrace SemiColon?
     | JestTestVariableDeclaration OpenBrace variableDeclaration CloseBrace SemiColon?
-    | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
+    // | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
     | JestTestValueObjectEvaluation OpenBrace valueObjectEvaluation CloseBrace SemiColon?
     | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
@@ -575,9 +575,9 @@ variableDeclaration
     : identifier typeAnnotation '=' expression  SemiColon?
     ;
 
-thisDeclaration
-    : ThisVariableEvaluation '=' expression  SemiColon?
-    ;
+// thisDeclaration
+//     : ThisVariableEvaluation '=' expression  SemiColon?
+//     ;
 
 
 statement
@@ -585,7 +585,7 @@ statement
     | expression    
     | constDeclaration
     | variableDeclaration
-    | thisDeclaration
+    // | thisDeclaration
     // | expressionStatement
     | emptyStatement_
     | propsDeclaration
@@ -1260,6 +1260,7 @@ expression
     // | regularMethodEvaluation                                    # MethodCallExpression
     | expression methodArguments                                       # MethodCallExpression
     | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
+    | expression Dot ToString OpenParen CloseParen               # ToStringExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression

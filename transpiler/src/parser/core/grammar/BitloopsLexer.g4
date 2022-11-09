@@ -269,6 +269,7 @@ UUIDv4: 'UUIDv4';
 
 Is: 'is';
 GetClass: 'getClass';
+ToString: 'toString';
 
 //
 // Ext.2 Additions to 1.8: Decorators

@@ -93,7 +93,7 @@ export { ifStatementVisitor } from './ifStatement.js';
 export { statementListVisitor } from './statementList.js';
 export { constDeclarationVisitor } from './constDeclaration.js';
 export { variableDeclarationVisitor } from './variableDeclaration.js';
-export { thisDeclarationVisitor } from './thisDeclaration.js';
+// export { thisDeclarationVisitor } from './thisDeclaration.js';
 export {
   switchStatementVisitor,
   caseBlockVisitor,

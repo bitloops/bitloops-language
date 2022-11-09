@@ -126,7 +126,7 @@ import {
   statementListVisitor,
   constDeclarationVisitor,
   variableDeclarationVisitor,
-  thisDeclarationVisitor,
+  // thisDeclarationVisitor,
   switchStatementVisitor,
   caseBlockVisitor,
   caseClauseVisitor,
@@ -276,6 +276,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
               value,
             },
           },
+        },
+      },
+    };
+  }
+
+  visitToStringExpression(ctx: BitloopsParser.ToStringExpressionContext): TExpression {
+    const expressionResult = this.visit(ctx.expression());
+
+    const value = expressionResult.expression.evaluation.regularEvaluation.value;
+    return {
+      expression: {
+        toString: {
+          value,
         },
       },
     };
@@ -460,9 +473,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.type_().getText();
   }
 
-  visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
-    return thisDeclarationVisitor(this, ctx);
-  }
+  // visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
+  //   return thisDeclarationVisitor(this, ctx);
+  // }
 
   visitSwitchStatement(ctx: BitloopsParser.SwitchStatementContext) {
     return switchStatementVisitor(this, ctx);

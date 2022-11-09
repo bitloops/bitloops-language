@@ -311,7 +311,7 @@ export type TBuiltInClassEvaluation = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;
 // };
-export type TEvaluationValues = 
+export type TEvaluationValues =
   | TRegularEvaluation
   | TStructEvaluation
   | TDTOEvaluation
@@ -324,11 +324,9 @@ export type TEvaluationValues =
   | TGetClass
   | TBuiltInClassEvaluation;
 
-
 export type TEvaluation = {
-  evaluation: TEvaluationValues
+  evaluation: TEvaluationValues;
 };
-
 
 export type TCondition = {
   condition: TExpression;
@@ -385,7 +383,14 @@ export type TExpressionValues =
   | TRelationalExpression
   | TEqualityExpression
   | TParenthesizedExpression
-  | TArrayLiteralExpression;
+  | TArrayLiteralExpression
+  | TToStringExpression;
+
+export type TToStringExpression = {
+  toString: {
+    value: string;
+  };
+};
 
 export type TArrayLiteralExpression = {
   arrayLiteral: TExpression[];
