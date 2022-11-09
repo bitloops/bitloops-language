@@ -645,11 +645,11 @@ multipleImportStatement
 //     : Export Default? (fromBlock | statement)
 //     ;
 
-variableStatement
-    : bindingPattern typeAnnotation? initializer SemiColon?
-    | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
-    | Declare varModifier? variableDeclarationList SemiColon?
-    ;
+// variableStatement
+//     : bindingPattern typeAnnotation? initializer SemiColon?
+//     | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
+//     | Declare varModifier? variableDeclarationList SemiColon?
+//     ;
 
 variableDeclarationList
     : variableDeclaration (Comma variableDeclaration)*
@@ -940,7 +940,6 @@ propsEvaluation
     : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseBrace CloseParen
     ;
 
-//TODO make objectLiteral more specific
 domainErrorDeclaration
     : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
@@ -1200,14 +1199,14 @@ objectLiteral
     : OpenBrace (propertyAssignment (Comma propertyAssignment)* Comma?)? CloseBrace
     ;
 
-functionParameters
-    : (propertyAssignment (Comma propertyAssignment)* Comma?)
-    ;
+// functionParameters
+//     : (propertyAssignment (Comma propertyAssignment)* Comma?)
+//     ;
 
 regularVariableEvaluationORliteralORexpression
-    : regularIdentifier 
-    | literal 
-    | expression
+    // : regularIdentifier 
+    // : literal 
+    : expression
     ;
 
 // MODIFIED
