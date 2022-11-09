@@ -23,7 +23,7 @@ You are familiar with the **`[Demo][Hello World]`** syntax by now which indicate
 
 You've defined your [PackagePort](https://bitloops.com/docs/bitloops-language/components/package-port) and your concrete [PackageAdapter](https://bitloops.com/docs/bitloops-language/components/package-adapter) and now you want to instantiate it in the setup. So, when you use the package in your application it will use the adapter that you have specified in the setup.
 
-## Example
+### Example
 
 #### **`setup.bl`**
 
@@ -35,4 +35,18 @@ You can use the above package in your application like this:
 
 ```ts
 const bytes = GherkinPackage.encode(value);
+```
+
+## UseCase
+
+You've defined your [UseCase](https://bitloops.com/docs/bitloops-language/components/usecase) and now you want to instantiate it in the setup. Bounded Context and Module must be placed in front `[Todo][Todo]` and the dependencies passed as arguments `todoWriteRepo`, as it seems below:
+
+_For multiple dependencies separate them by comma_
+
+### Example
+
+#### **`setup.bl`**
+
+```ts
+const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
 ```
