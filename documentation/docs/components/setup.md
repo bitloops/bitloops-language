@@ -50,3 +50,31 @@ _For multiple dependencies separate them by comma_
 ```ts
 const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
 ```
+
+## RESTController
+
+You've defined your [RESTController](https://bitloops.com/docs/bitloops-language/components/rest-controller) and now you want to use it in the setup. You need to create a Rest Router that will link the REST API method and path with your controller. You then need to create a Rest Server that will use this Rest Router, in order to be able to run your server and make requests.
+
+### Example
+
+#### **`setup.bl`**
+
+The Rest Router requires the web framework and inside to declare the REST API method and path with the controller.
+
+```ts
+const todoRESTRouter = RESTRouter(REST.Fastify) {
+  Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
+}
+```
+
+The Rest Server requires the web framework, the port, the api prefix and inside to declare the route paths with the routers.
+
+```ts
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+}) {
+  '/todo': todoRESTRouter;
+}
+```
