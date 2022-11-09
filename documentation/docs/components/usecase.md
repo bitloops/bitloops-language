@@ -27,12 +27,6 @@ Domain Services. Keep Application Services thin, using them only to coordinate t
 }
 ```
 
-##### Creating a UseCase
-The creation of the ***UseCase*** happens in the `setup.bl` file. With the Bounded Context and Module in front `[Todo][Todo]` and the dependencies passed as arguments `todoWriteRepo`, as it seems below:
-```typescript
-  const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
-```
-
 ##### Using a UseCase
 The ***UseCase*** is used inside a controller like this:
 ```typescript
@@ -42,24 +36,19 @@ The ***UseCase*** is used inside a controller like this:
 ### Syntax
 
 ##### Declaring a UseCase
-
 ```typescript
   UseCase <identifier name with a UseCase suffix> (<dependencies of UseCase>) {
-      execute (<requestDTO>): (OK(<bitloopsPrimaryType>), Errors(<errorIdentifier '|' errorIdentifier...>)) {
+      execute (<DTO>): (OK(<bitloopsPrimaryType>), Errors(<errorIdentifier '|' errorIdentifier...>)) {
           <statements>
       }
   }
 ```
-
-##### Creating a UseCase
-```typescript
-  const <identifier name> = [<Bounded Context name>][<Module name>]<identifier name with a UseCase suffix>(<dependencies of UseCase>);
-```
-
 ##### Using a UseCase
 ```typescript
   const <identifier name> = this.<use case identifier name>.execute(<dto identifier name>);
 ```
+References for the above:
+* [DTO](https://bitloops.com/docs/bitloops-language/components/dto)
 
 ### Further reading
 * [Application Layer Use Cases](https://khalilstemmler.com/articles/enterprise-typescript-nodejs/application-layer-use-cases/)
