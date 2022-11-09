@@ -47,6 +47,7 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
+
   if (ExpressionTypeIdentifiers.isArrayLiteralExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TArrayLiteralExpression,
@@ -107,6 +108,12 @@ const expressionValuesToTargetLanguage = (
   if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TParenthesizedExpression,
+      value: expressionValue,
+    });
+  }
+  if ('toString' in expressionValue) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
