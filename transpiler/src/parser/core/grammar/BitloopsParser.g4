@@ -181,9 +181,9 @@ regularErrorTypeEvaluation
     : errorIdentifier
     ;
 
-getClassEvaluation:
-    GetClassEvaluation 
-    ;
+// getClassEvaluation:
+//     GetClassEvaluation 
+//     ;
 
 
 methodArguments
@@ -523,7 +523,7 @@ jestTestDeclaration
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
-    | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
+    // | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
     | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
@@ -549,7 +549,7 @@ errorEvaluation
 
 evaluation
     : isInstanceOf 
-    | getClassEvaluation
+    // | getClassEvaluation
     | builtInClassEvaluation
     | errorEvaluation
     | dtoEvaluation
@@ -578,6 +578,7 @@ variableDeclaration
 thisDeclaration
     : ThisVariableEvaluation '=' expression  SemiColon?
     ;
+
 
 statement
     : block                         
@@ -1255,9 +1256,10 @@ functionExpressionDeclaration
 expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                            # ParenthesizedExpression
-    | expression '.' regularIdentifier                              # MemberDotExpression
+    | expression Dot regularIdentifier                              # MemberDotExpression
     // | regularMethodEvaluation                                    # MethodCallExpression
     | expression methodArguments                                       # MethodCallExpression
+    | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1265,6 +1267,7 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
+    // | expression '=' expression                                  # AssignmentExpression
     | literal                                                   # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
     | regularIdentifier                                          # IdentifierExpression

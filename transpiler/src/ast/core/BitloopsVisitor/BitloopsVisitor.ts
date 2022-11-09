@@ -110,7 +110,7 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
-  getClassEvaluationVisitor,
+  // getClassEvaluationVisitor,
   useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
@@ -257,6 +257,24 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       expression: {
         evaluation: {
           regularEvaluation: value,
+        },
+      },
+    };
+  }
+
+  visitGetClassExpression(ctx: BitloopsParser.GetClassExpressionContext): TExpression {
+    const expressionResult = this.visit(ctx.expression());
+
+    const value = expressionResult.expression.evaluation.regularEvaluation.value;
+    return {
+      expression: {
+        evaluation: {
+          getClass: {
+            regularEvaluation: {
+              type: 'variable',
+              value,
+            },
+          },
         },
       },
     };
@@ -813,9 +831,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.ErrorClass().getText();
   }
 
-  visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
-    return getClassEvaluationVisitor(this, ctx);
-  }
+  // visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
+  //   return getClassEvaluationVisitor(this, ctx);
+  // }
 
   /**
    * UseCase Declaration
