@@ -483,7 +483,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
-    return this.visit(ctx.literal());
+    const literalRes = this.visit(ctx.literal());
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation: literalRes,
+        },
+      },
+    };
   }
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText());
