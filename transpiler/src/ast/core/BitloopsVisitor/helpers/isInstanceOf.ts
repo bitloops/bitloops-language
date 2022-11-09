@@ -28,9 +28,7 @@ export const isInstanceOfVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IsInstanceOfContext,
 ): TInstanceOf => {
-  const regularVariableEvaluation: TArgumentDependency = thisVisitor.visit(
-    ctx.regularVariableEvaluation(),
-  );
+  const regularVariableEvaluation: TArgumentDependency = thisVisitor.visit(ctx.regularIdentifier());
   const classToCompare = ctx.classTypes().getText();
   return {
     isInstanceOf: [regularVariableEvaluation, { class: classToCompare }],

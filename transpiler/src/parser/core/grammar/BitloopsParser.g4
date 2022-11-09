@@ -175,28 +175,10 @@ struct
     : UpperCaseIdentifier
     ;
 
-regularEvaluation
-    : regularMethodEvaluation   
-    | regularStringEvaluation
-    | templateStringLiteral
-    | regularVariableEvaluation
-    | regularIntegerEvaluation
-    | regularDecimalEvaluation
-    | regularBooleanEvaluation
-    | regularDTOEvaluation
-    | regularStructEvaluation
-    | regularErrorTypeEvaluation 
-    ;
 
-// regularVariableEvaluation | regularStringEvaluation |
 regularErrorTypeEvaluation
     : errorIdentifier
     ;
-
-getClassEvaluation:
-    GetClassEvaluation 
-    ;
-
 
 methodArguments
     : OpenParen (argumentList (Comma argumentList)*)? CloseParen
@@ -210,20 +192,15 @@ closeParen
     :  CloseParen
     ;
 
-//regularMethodEvaluation
-//    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
-regularVariableEvaluation
-    : ThisVariableEvaluation #ThisVariableEvaluationString
-    | RegularVariableEvaluation #RegularVariableEvaluationString
-    | Identifier    #IdentifierString
+regularIdentifier
+    : Identifier                                                #IdentifierString
+    | regularDTOEvaluation                                      # RegularDTOEvaluationString
+    | regularStructEvaluation                                   # RegularStructEvaluationString
+    | regularErrorTypeEvaluation                                # RegularErrorTypeEvaluationString
+    // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
+    | Execute                                                   # ExecuteExpression
+    | Delete                                                    # DeleteKeyword
     ;
-
-regularMethodEvaluation
-    : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-    | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
-    ;
-
-
 
 regularStringEvaluation
     : StringLiteral
@@ -528,12 +505,11 @@ jestTestDeclaration
     | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
     | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
 	| JestTestIsInstanceOf OpenBrace isInstanceOf CloseBrace SemiColon?  
-    | JestTest OpenBrace regularEvaluation SemiColon? CloseBrace SemiColon?  
     | JestTest OpenBrace formalParameterList CloseBrace SemiColon?   
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
-    | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
+    // | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
     | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
@@ -546,7 +522,7 @@ jestTestDeclaration
     | JestTestEntityDeclaration OpenBrace entityDeclaration CloseBrace SemiColon?
     | JestTestCondition OpenBrace condition CloseBrace SemiColon?
     | JestTestVariableDeclaration OpenBrace variableDeclaration CloseBrace SemiColon?
-    | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
+    // | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
     | JestTestValueObjectEvaluation OpenBrace valueObjectEvaluation CloseBrace SemiColon?
     | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
@@ -559,10 +535,9 @@ errorEvaluation
 
 evaluation
     : isInstanceOf 
-    | getClassEvaluation
+    // | getClassEvaluation
     | builtInClassEvaluation
     | errorEvaluation
-    | regularEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
@@ -586,16 +561,17 @@ variableDeclaration
     : identifier typeAnnotation '=' expression  SemiColon?
     ;
 
-thisDeclaration
-    : ThisVariableEvaluation '=' expression  SemiColon?
-    ;
+// thisDeclaration
+//     : ThisVariableEvaluation '=' expression  SemiColon?
+//     ;
+
 
 statement
     : block                         
     | expression    
     | constDeclaration
     | variableDeclaration
-    | thisDeclaration
+    // | thisDeclaration
     // | expressionStatement
     | emptyStatement_
     | propsDeclaration
@@ -656,11 +632,11 @@ multipleImportStatement
 //     : Export Default? (fromBlock | statement)
 //     ;
 
-variableStatement
-    : bindingPattern typeAnnotation? initializer SemiColon?
-    | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
-    | Declare varModifier? variableDeclarationList SemiColon?
-    ;
+// variableStatement
+//     : bindingPattern typeAnnotation? initializer SemiColon?
+//     | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
+//     | Declare varModifier? variableDeclarationList SemiColon?
+//     ;
 
 variableDeclarationList
     : variableDeclaration (Comma variableDeclaration)*
@@ -927,7 +903,8 @@ valueObjectEvaluation
 
 domainEvaluationInput
     : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen   # DomainEvaluationInputFieldList
-    | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
+    | OpenParen expression CloseParen             # DomainEvaluationInputRegular
+    // | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -950,7 +927,6 @@ propsEvaluation
     : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseBrace CloseParen
     ;
 
-//TODO make objectLiteral more specific
 domainErrorDeclaration
     : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
@@ -1208,14 +1184,12 @@ objectLiteral
     : OpenBrace (propertyAssignment (Comma propertyAssignment)* Comma?)? CloseBrace
     ;
 
-functionParameters
-    : (propertyAssignment (Comma propertyAssignment)* Comma?)
-    ;
+// functionParameters
+//     : (propertyAssignment (Comma propertyAssignment)* Comma?)
+//     ;
 
 regularVariableEvaluationORliteralORexpression
-    : regularVariableEvaluation 
-    | literal 
-    | expression
+    : expression
     ;
 
 // MODIFIED
@@ -1252,7 +1226,7 @@ argumentList
     ;
 
 argument                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (regularVariableEvaluationORliteralORexpression)
+    : (regularVariableEvaluationORliteralORexpression)
     ;
 
 expressionSequence
@@ -1265,7 +1239,11 @@ functionExpressionDeclaration
 
 expression
     : Not expression                                             # NotExpression
-    | OpenParen expression CloseParen                                         # ParenthesizedExpression
+    | OpenParen expression CloseParen                            # ParenthesizedExpression
+    | expression Dot regularIdentifier                              # MemberDotExpression
+    | expression methodArguments                                       # MethodCallExpression
+    | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
+    | expression Dot ToString OpenParen CloseParen               # ToStringExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1273,8 +1251,12 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
+    | expression '=' expression                                  # AssignmentExpression
+    | literal                                                   # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
+    | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
+    | This                                                       # ThisExpression
     ;   
 
 // more single expressions
@@ -1469,6 +1451,6 @@ eos
     // | {this.closeBrace()}?
     ;
 
-isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
+isInstanceOf: regularIdentifier Is classTypes SemiColon?;
 
 classTypes: ErrorClass;
