@@ -17,27 +17,27 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d } from 'bitloops-gherkin';
+import { defineFeature, loadFeature } from 'jest-cucumber';
+
 import {
-  BitloopsParser,
   BitloopsIntermediateASTParser,
-  BitloopsParserError,
   BitloopsLanguageASTContext,
+  BitloopsParser,
+  BitloopsParserError,
 } from '../../../src/index.js';
 
-const feature = loadFeature('__tests__/ast/core/regularEvaluation.feature');
+const feature = loadFeature('__tests__/ast/core/toString.feature');
 
-// TODO Regular evaluation is to be removed, its children have been removed to different rules
 defineFeature(feature, (test) => {
-  test.skip('Regular Evaluation is valid', ({ given, when, then }) => {
-    const BOUNDED_CONTEXT = 'Hello World';
-    const MODULE = 'core';
+  test('toStringCall is valid', ({ given, when, then }) => {
+    const boundedContext = 'Hello World';
+    //  const module = 'core';
     let blString;
     let modelOutput;
     let result;
 
-    given(/^A valid Regular Evaluation (.*) string$/, (arg0) => {
+    given(/^A valid toStringCall (.*) string$/, (arg0) => {
       blString = d(arg0);
     });
 
@@ -45,8 +45,8 @@ defineFeature(feature, (test) => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
+          boundedContext,
+          module: 'core',
           fileId: 'testFile.bl',
           fileContents: blString,
         },
