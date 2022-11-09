@@ -65,7 +65,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test.skip('Method call valid', ({ given, when, then }) => {
+  test('Method call valid', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;

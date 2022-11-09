@@ -205,6 +205,8 @@ regularIdentifier
     | regularDTOEvaluation # RegularDTOEvaluationString
     | regularStructEvaluation # RegularStructEvaluationString
     | regularErrorTypeEvaluation  # RegularErrorTypeEvaluationString
+    // TODO think if there is better solution for this
+    | Execute                      # ExecuteString
     ;
 
 // regularMethodEvaluation
@@ -1255,7 +1257,7 @@ expression
     | OpenParen expression CloseParen                            # ParenthesizedExpression
     | expression '.' regularIdentifier                              # MemberDotExpression
     // | regularMethodEvaluation                                    # MethodCallExpression
-    | expression arguments                                       # MethodCallExpression
+    | expression methodArguments                                       # MethodCallExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
