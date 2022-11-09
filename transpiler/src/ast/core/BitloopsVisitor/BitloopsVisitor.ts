@@ -52,6 +52,7 @@ import {
   TReadModels,
   TBuiltInClassEvaluation,
   TExpression,
+  TThisDeclaration,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -278,6 +279,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
         },
       },
     };
+  }
+
+  visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext): TThisDeclaration {
+    const leftExpression = this.visit(ctx.expression(0));
+    const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
+    const rightExpression = this.visit(ctx.expression(1));
+    // TODO Fix model so that thisDeclaration is not a statement, but an expression
+    if (leftExpressionValue.startsWith('this.')) {
+      return {
+        thisDeclaration: {
+          name: leftExpressionValue,
+          expression: rightExpression.expression,
+        },
+      };
+    }
+
+    throw new Error('Not implemented');
   }
 
   visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext): TExpression {
