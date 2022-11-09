@@ -65,7 +65,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test('Method call valid', ({ given, when, then }) => {
+  test.skip('Method call valid', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -108,6 +108,41 @@ defineFeature(feature, (test) => {
     let result;
 
     given(/^A valid literal (.*) string$/, (arg0) => {
+      blString = decode(arg0);
+    });
+
+    when('I generate the model', () => {
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext,
+          module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+      }
+    });
+
+    then(/^I should get (.*)$/, (arg0) => {
+      modelOutput = d(arg0);
+      expect(result).toEqual(JSON.parse(modelOutput));
+    });
+  });
+
+  test('Member dot expression', ({ given, when, then }) => {
+    const boundedContext = 'Hello World';
+    const module = 'core';
+    let blString;
+    let modelOutput;
+    let result;
+
+    given(/^A valid dot expression (.*) string$/, (arg0) => {
       blString = decode(arg0);
     });
 

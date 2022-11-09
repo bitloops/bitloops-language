@@ -51,6 +51,7 @@ import {
   TStructs,
   TReadModels,
   TBuiltInClassEvaluation,
+  TExpression,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -221,6 +222,37 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return {
       expression: {
         ...evaluation,
+      },
+    };
+  }
+
+  visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext): TExpression {
+    const leftExpression = this.visit(ctx.expression());
+    const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
+    const identifier = this.visit(ctx.regularIdentifier());
+    const identifierValue = identifier.value;
+    const stringResult = `${leftExpressionValue}.${identifierValue}`;
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation: {
+            type: 'variable',
+            value: stringResult,
+          },
+        },
+      },
+    };
+  }
+
+  visitThisExpression(_ctx: BitloopsParser.MemberDotExpressionContext): TExpression {
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation: {
+            type: 'variable',
+            value: 'this',
+          },
+        },
       },
     };
   }

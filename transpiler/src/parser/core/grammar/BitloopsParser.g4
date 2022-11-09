@@ -198,8 +198,6 @@ closeParen
     :  CloseParen
     ;
 
-//regularMethodEvaluation
-//    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
 regularIdentifier
     // : ThisVariableEvaluation #ThisVariableEvaluationString
     // | RegularVariableEvaluation #RegularVariableEvaluationString
@@ -1269,6 +1267,7 @@ expression
     | evaluation                                                 # EvaluationExpression 
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
+    | This                                                       # ThisExpression
     ;   
 
 // more single expressions
