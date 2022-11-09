@@ -5,7 +5,7 @@ ValueObjects are objects that have no conceptual identity and describe some char
 They are defined only by their properties and their equality is not based on identity. 
 
 
-#### Examples
+### Examples
 
 ### Declaring a ValueObject
 ```
@@ -16,7 +16,7 @@ ValueObject TitleVO {
 }
 ```
 
-#### Using a ValueObject
+##### Using a ValueObject
 ```
 const title = TitleVO({ title: requestDTO.title });
 ```
