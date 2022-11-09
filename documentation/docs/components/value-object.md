@@ -59,4 +59,4 @@ References for the above:
 
 
 ### Further reading
-
+- [Value Objects-Martin Fowler](https://martinfowler.com/bliki/ValueObject.html)
