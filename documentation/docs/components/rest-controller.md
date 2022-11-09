@@ -43,8 +43,8 @@
       method: REST.Methods.<REST API Methods>;
       execute (<request>, <response>) {
         <statements>
-        const result = this.useCase.execute(<DTO>);
-        <statements> (handle result...)
+        <UseCase execution statement>
+        <statements>
       }
   }
 ```
@@ -52,7 +52,6 @@
 References for the above:
 
 - [UseCase](https://bitloops.com/docs/bitloops-language/components/usecase)
-- [DTO](https://bitloops.com/docs/bitloops-language/components/dto)
 
 ### Further reading
 
