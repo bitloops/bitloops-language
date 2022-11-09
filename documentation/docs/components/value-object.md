@@ -8,7 +8,8 @@ They are defined only by their properties and their equality is not based on ide
 ### Examples
 
 ##### Declaring a ValueObject
-```
+
+```typescript
 ValueObject TitleVO {
   constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
     applyRules(TitleOutOfBoundsRule(props.title));
