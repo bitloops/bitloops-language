@@ -492,6 +492,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       },
     };
   }
+  visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
+    return this.visitChildren(ctx)[0];
+  }
+
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText());
   }
