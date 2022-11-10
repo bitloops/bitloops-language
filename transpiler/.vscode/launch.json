@@ -11,7 +11,7 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/ast/core/BitloopsVisitor/helpers/test_temp.ts",
       // "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/lib/**/*.js"]
+      "outFiles": ["${workspaceFolder}/lib/esm/**/*.js"]
     },
     {
       "name": "Jest file",

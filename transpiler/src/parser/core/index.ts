@@ -18,7 +18,6 @@ export type BitloopsLanguageASTContext = {
     [classType in TClassType]: {
       [className: TClassName]: {
         initialAST: BitloopsLanguageAST;
-        deprecatedAST: any;
         module: TModuleName;
         fileId: string;
       };
@@ -88,20 +87,19 @@ export class BitloopsParser implements IBitloopsParser {
             if (isBitloopsParserError(initialAST)) {
               throw initialAST;
             }
-            const tempClassNameObject = {
+            const classNameObject = {
               initialAST,
-              deprecatedAST: bitloopsClass,
               module,
               fileId,
             };
             if (boundedContexts[boundedContext] === null) {
               // first time we come across this boundedContext
               boundedContexts[boundedContext] = {
-                [classType]: { [className]: tempClassNameObject },
+                [classType]: { [className]: classNameObject },
               };
             } else if (boundedContexts[boundedContext][classType] === undefined) {
               // first time we come across this classType
-              boundedContexts[boundedContext][classType] = { [className]: tempClassNameObject };
+              boundedContexts[boundedContext][classType] = { [className]: classNameObject };
             } else {
               // we already have this classType and we must check if
               // this className is unique in the bounded context
@@ -110,7 +108,7 @@ export class BitloopsParser implements IBitloopsParser {
                   `Duplicate class name ${className} found in bounded context ${boundedContext} in file ${fileId}`,
                 );
               } else {
-                boundedContexts[boundedContext][classType][className] = tempClassNameObject;
+                boundedContexts[boundedContext][classType][className] = classNameObject;
               }
             }
             return null;
