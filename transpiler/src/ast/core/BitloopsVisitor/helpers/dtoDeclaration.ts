@@ -28,11 +28,8 @@ export const dtoDeclarationVisitor = (
 ): { DTOs: TDTO } => {
   const identifier = ctx.DTOIdentifier().getText();
   const fields = thisVisitor.visit(ctx.fieldList());
+  const dto = thisVisitor.dtoDirector.buildDTO(identifier, fields);
   return {
-    DTOs: {
-      [identifier]: {
-        fields,
-      },
-    },
+    DTOs: dto,
   };
 };

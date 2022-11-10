@@ -21,6 +21,11 @@
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
 import {
+  DTOBuilder,
+  DTODirector,
+  IDTODirector,
+} from '../../../refactoring-arch/IntermediateASTBuilder.js';
+import {
   TEvaluationFields,
   TParameterDependency,
   TRegularEvaluation,
@@ -143,9 +148,15 @@ import {
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
+  private _dtoDirector: IDTODirector;
 
   constructor() {
     super();
+    this._dtoDirector = new DTODirector(new DTOBuilder());
+  }
+
+  get dtoDirector() {
+    return this._dtoDirector;
   }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {
