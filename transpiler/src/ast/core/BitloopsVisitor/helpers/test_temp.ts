@@ -8,10 +8,10 @@ import {
 
 const blString = `
 DTO CreateTodoResponseDTO {
-  message: title;
+  string title;
 }
 
-GraphQLController CreateTodoGrapQLController(createTodoUseCase: CreateTodoUseCase) {
+GraphQLController CreateTodoGraphQLController(createTodoUseCase: CreateTodoUseCase) {
   operation: GraphQL.Operations.Mutation;
   input: CreateTodoRequestDTO;
 

@@ -1,6 +1,5 @@
 import { BitloopsLanguageASTContext } from '../../index.js';
 import { TBoundedContexts } from '../../types.js';
-// import { parseBitloops } from './BitloopsParser.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 
 export interface IBitloopsIntermediateASTParser {
@@ -17,7 +16,6 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
       for (const classes of Object.values(boundedContext)) {
         for (const classData of Object.values(classes)) {
           const bitloopsVisitor = new BitloopsVisitor();
-          // console.log('result::', bitloopsVisitor.visitChildren(classData.initialAST));
           const visitorModel = bitloopsVisitor.visit(classData.initialAST);
           partialBoundedContextsData = {
             [boundedContextName]: { [classData.module]: visitorModel },
