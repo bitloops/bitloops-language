@@ -28,12 +28,12 @@ export const fieldVisitor = (
 ): TVariable => {
   const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
   const identifier = ctx.identifier().getText();
-  const result: TVariable = {
-    type,
-    name: identifier,
-  };
+  let result: TVariable;
   if (ctx.Optional()) {
-    result.optional = true;
+    result = _thisVisitor.variableBuilderDirector.buildOptionalVariable(type, identifier);
+  } else {
+    result = _thisVisitor.variableBuilderDirector.buildVariable(type, identifier);
   }
+
   return result;
 };

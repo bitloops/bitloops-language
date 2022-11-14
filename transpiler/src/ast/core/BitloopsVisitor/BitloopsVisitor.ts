@@ -23,8 +23,21 @@ import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVi
 import {
   DTOBuilder,
   DTODirector,
-  IDTODirector,
-} from '../../../refactoring-arch/IntermediateASTBuilder.js';
+} from '../../../refactoring-arch/intermediate-ast-builders/DTO.js';
+// import {
+//   EvaluationBuilder,
+//   EvaluationBuilderDirector,
+//   IEvaluationBuilder,
+// } from '../../../refactoring-arch/intermediate-ast-builders/evaluations/evaluation.js';
+// import { RegularEvaluationBuilder } from '../../../refactoring-arch/intermediate-ast-builders/evaluations/regularEvaluation.js';
+// import {
+//   ExpressionBuilder,
+//   IExpressionBuilder,
+// } from '../../../refactoring-arch/intermediate-ast-builders/expressions/expression.js';
+import {
+  VariableBuilder,
+  VariableBuilderDirector,
+} from '../../../refactoring-arch/intermediate-ast-builders/VariableBuilder.js';
 import {
   TEvaluationFields,
   TParameterDependency,
@@ -148,16 +161,40 @@ import {
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
-  private _dtoDirector: IDTODirector;
+  private _dtoDirector: DTODirector;
+  private _variableBuilderDirector: VariableBuilderDirector;
+  // private _expressionBuilder: IExpressionBuilder;
+  // private _evaluationBuilder: IEvaluationBuilder;
+  // private _evaluationBuilderDirector: EvaluationBuilderDirector;
 
   constructor() {
     super();
     this._dtoDirector = new DTODirector(new DTOBuilder());
+    this._variableBuilderDirector = new VariableBuilderDirector(new VariableBuilder());
+    // this._evaluationBuilderDirector = new EvaluationBuilderDirector(new RegularEvaluationBuilder());
+    // this._expressionBuilder = new ExpressionBuilder();
+    // this._evaluationBuilder = new EvaluationBuilder();
   }
 
   get dtoDirector() {
     return this._dtoDirector;
   }
+
+  get variableBuilderDirector() {
+    return this._variableBuilderDirector;
+  }
+
+  // get expressionBuilder(): IExpressionBuilder {
+  //   return this._expressionBuilder;
+  // }
+
+  // get evaluationBuilder(): IEvaluationBuilder {
+  //   return this._evaluationBuilder;
+  // }
+
+  // get evaluationBuilderDirector(): EvaluationBuilderDirector {
+  //   return this._evaluationBuilderDirector;
+  // }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {
     const children = this.visitChildren(ctx);
@@ -227,6 +264,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEvaluationExpression(ctx: BitloopsParser.EvaluationExpressionContext) {
     const evaluation = this.visit(ctx.evaluation());
+    // const expression = this.expressionBuilder.withExpressionValues(evaluation).build();
+    // return expression;
     return {
       expression: {
         ...evaluation,
@@ -249,10 +288,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
     const regularEvaluation: string = this.visitChildren(ctx)[0];
+    // return regularEvaluation;
     return {
       regularEvaluation,
     };
   }
+
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
@@ -284,6 +325,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
     const value = ctx.RegularVariableEvaluation().getText();
+    // const regularVariableEvaluation =
+    //   this.evaluationBuilderDirector.buildRegularVariableEvaluation(value);
+    // return regularVariableEvaluation;
     return {
       type: 'variable',
       value: value,

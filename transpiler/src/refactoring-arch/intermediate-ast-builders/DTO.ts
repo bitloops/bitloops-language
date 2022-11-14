@@ -1,19 +1,12 @@
-import { TDTO, TVariables } from '../types.js';
-
-export interface IDTODirector {
-  buildDTO(identifier: string, variables: TVariables): TDTO;
-}
-
-export interface IBuilder<T> {
-  build(): T;
-}
+import { TDTO, TVariables } from '../../types.js';
+import { IBuilder } from './IBuilder.js';
 
 export interface IDTOBuilder extends IBuilder<TDTO> {
   withIdentifier(identifier: string): IDTOBuilder;
   withVariables(variables: TVariables): IDTOBuilder;
 }
 
-export class DTODirector implements IDTODirector {
+export class DTODirector {
   private builder: IDTOBuilder;
 
   constructor(builder: IDTOBuilder) {
@@ -30,17 +23,17 @@ export class DTOBuilder implements IDTOBuilder {
   private identifier: string;
   private variables: TVariables;
 
-  withIdentifier(identifier: string): IDTOBuilder {
+  public withIdentifier(identifier: string): IDTOBuilder {
     this.identifier = identifier;
     return this;
   }
 
-  withVariables(variables: TVariables): IDTOBuilder {
+  public withVariables(variables: TVariables): IDTOBuilder {
     this.variables = variables;
     return this;
   }
 
-  build(): TDTO {
+  public build(): TDTO {
     return {
       [this.identifier]: {
         fields: this.variables,
