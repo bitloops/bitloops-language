@@ -26,6 +26,8 @@ export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldListContext,
 ): TVariables => {
+  // thisVisitor.composite.addChild('fields');
+
   const fieldsAndSemicolons = thisVisitor.visitChildren(ctx);
   const fields: TVariables = fieldsAndSemicolons.filter((field) => field !== undefined);
   return fields;

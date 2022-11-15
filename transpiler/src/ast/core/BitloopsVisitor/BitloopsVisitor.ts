@@ -23,7 +23,7 @@ import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVi
 import {
   DTOBuilder,
   DTODirector,
-} from '../../../refactoring-arch/intermediate-ast-builders/DTO.js';
+} from '../../../refactoring-arch/intermediate-ast/builders/DTO.js';
 // import {
 //   EvaluationBuilder,
 //   EvaluationBuilderDirector,
@@ -37,7 +37,9 @@ import {
 import {
   VariableBuilder,
   VariableBuilderDirector,
-} from '../../../refactoring-arch/intermediate-ast-builders/VariableBuilder.js';
+} from '../../../refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
+import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/intermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../refactoring-arch/intermediate-ast/nodes/RootNode.js';
 import {
   TEvaluationFields,
   TParameterDependency,
@@ -166,6 +168,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   // private _expressionBuilder: IExpressionBuilder;
   // private _evaluationBuilder: IEvaluationBuilder;
   // private _evaluationBuilderDirector: EvaluationBuilderDirector;
+  private _intermediateASTTree: IntermediateASTTree;
 
   constructor() {
     super();
@@ -174,6 +177,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     // this._evaluationBuilderDirector = new EvaluationBuilderDirector(new RegularEvaluationBuilder());
     // this._expressionBuilder = new ExpressionBuilder();
     // this._evaluationBuilder = new EvaluationBuilder();
+    this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
   get dtoDirector() {
@@ -195,6 +199,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   // get evaluationBuilderDirector(): EvaluationBuilderDirector {
   //   return this._evaluationBuilderDirector;
   // }
+
+  get intermediateASTTree() {
+    return this._intermediateASTTree;
+  }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {
     const children = this.visitChildren(ctx);
@@ -824,6 +832,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.bitloopsBuildInClass().getText();
   }
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
-    return ctx.bitloopsIdentifiers().getText();
+    const text = ctx.bitloopsIdentifiers().getText();
+    this.composite.addChild(text);
+    return text;
   }
 }

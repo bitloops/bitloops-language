@@ -21,15 +21,25 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { TDTO } from '../../../../types.js';
+import { DTONode } from '../../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
+import { IdentifierNode } from '../../../../refactoring-arch/intermediate-ast/nodes/IdentifierNode.js';
 
 export const dtoDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DtoDeclarationContext,
 ): { DTOs: TDTO } => {
   const identifier = ctx.DTOIdentifier().getText();
+  const dtoNode = new DTONode();
+  const identifierNode = new IdentifierNode();
+  thisVisitor.intermediateASTTree.insertChild(dtoNode);
+  thisVisitor.intermediateASTTree.insertChild(identifierNode);
+
   const fields = thisVisitor.visit(ctx.fieldList());
-  const dto = thisVisitor.dtoDirector.buildDTO(identifier, fields);
+
+  dtoNode.buildDTO(identifier, fields);
+
+  thisVisitor.intermediateASTTree.setCurrentNodeToRoot();
   return {
-    DTOs: dto,
+    DTOs: dtoNode.value,
   };
 };

@@ -1,4 +1,4 @@
-import { TRegularEvaluation, TArgumentDependencies, TParam } from '../../../types.js';
+import { TRegularEvaluation, TArgumentDependencies, TParam } from '../../../../types.js';
 import { IBuilder } from '../IBuilder.js';
 
 export interface IRegularEvaluationBuilder extends IBuilder<TRegularEvaluation> {

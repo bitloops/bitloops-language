@@ -26,8 +26,10 @@ export const fieldVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldContext,
 ): TVariable => {
-  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
   const identifier = ctx.identifier().getText();
+  // _thisVisitor.composite.addChild(identifier);
+
+  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
   let result: TVariable;
   if (ctx.Optional()) {
     result = _thisVisitor.variableBuilderDirector.buildOptionalVariable(type, identifier);

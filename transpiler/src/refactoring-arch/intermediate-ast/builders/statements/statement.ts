@@ -1,4 +1,4 @@
-import { TIfStatement, TStatements, TExpression } from '../../../types.js';
+import { TIfStatement, TStatements, TExpression } from '../../../../types.js';
 import { IBuilder } from '../IBuilder.js';
 
 export interface IIfStatementBuilder extends IBuilder<TIfStatement> {

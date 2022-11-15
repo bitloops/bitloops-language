@@ -1,4 +1,4 @@
-import { TDTO, TVariables } from '../../types.js';
+import { TDTO, TVariables } from '../../../types.js';
 import { IBuilder } from './IBuilder.js';
 
 export interface IDTOBuilder extends IBuilder<TDTO> {

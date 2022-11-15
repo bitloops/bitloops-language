@@ -1,4 +1,4 @@
-import { TBitloopsPrimaryType, TVariable } from '../../types.js';
+import { TBitloopsPrimaryType, TVariable } from '../../../types.js';
 import { IBuilder } from './IBuilder.js';
 
 export interface IVariableBuilder extends IBuilder<TVariable> {

@@ -1,4 +1,4 @@
-import { TEvaluation, TEvaluationValues, TRegularEvaluation } from '../../../types.js';
+import { TEvaluation, TEvaluationValues, TRegularEvaluation } from '../../../../types.js';
 import { IBuilder } from '../IBuilder.js';
 import { IRegularEvaluationBuilder } from './regularEvaluation.js';
 
