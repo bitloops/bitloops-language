@@ -1,7 +1,11 @@
 import { BitloopsLanguageASTContext } from '../../index.js';
-import { TBoundedContexts } from '../../types.js';
+import { IntermediateASTTree } from '../../refactoring-arch/intermediate-ast/intermediateASTTree.js';
+// import { TBoundedContexts } from '../../types.js';
 // import { parseBitloops } from './BitloopsParser.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
+
+export type TBoundedContexts = Record<string, TBoundedContext>;
+export type TBoundedContext = Record<string, IntermediateASTTree>;
 
 export interface IBitloopsIntermediateASTParser {
   parse: (ast: BitloopsLanguageASTContext) => TBoundedContexts | BitloopsIntermediateASTParserError;
@@ -18,9 +22,10 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
         for (const classData of Object.values(classes)) {
           const bitloopsVisitor = new BitloopsVisitor();
           // console.log('result::', bitloopsVisitor.visitChildren(classData.initialAST));
-          const visitorModel = bitloopsVisitor.visit(classData.initialAST);
+          bitloopsVisitor.visit(classData.initialAST);
+          const { intermediateASTTree } = bitloopsVisitor;
           partialBoundedContextsData = {
-            [boundedContextName]: { [classData.module]: visitorModel },
+            [boundedContextName]: { [classData.module]: intermediateASTTree },
           };
           boundedContextsData = mergeBoundedContextData(
             boundedContextsData,
@@ -47,11 +52,11 @@ const mergeBoundedContextData = (
           } else if (moduleExists(boundedContextName, moduleName, result)) {
             result[boundedContextName][moduleName][classType] = { [className]: classData };
           } else if (boundedContextExists(boundedContextName, result)) {
-            result[boundedContextName][moduleName] = { [classType]: { [className]: classData } };
+            // result[boundedContextName][moduleName] = { [classType]: { [className]: classData } };
           } else {
-            result[boundedContextName] = {
-              [moduleName]: { [classType]: { [className]: classData } },
-            };
+            // result[boundedContextName] = {
+            //   [moduleName]: { [classType]: { [className]: classData } },
+            // };
           }
         }
       }

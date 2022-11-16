@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { TVariable, TBitloopsPrimaryType } from '../../../types.js';
-import { VariableBuilderDirector, VariableBuilder } from '../builders/VariableBuilder.js';
+import { VariableBuilderDirector } from '../builders/VariableBuilder.js';
 import { IntermediateASTNode } from './intermediateASTNode.js';
 
 export class FieldNode extends IntermediateASTNode {
@@ -9,7 +9,7 @@ export class FieldNode extends IntermediateASTNode {
 
   constructor(lines?: string) {
     super(BitloopsTypesMapping.TVariable, lines);
-    this.builderDirector = new VariableBuilderDirector(new VariableBuilder());
+    this.builderDirector = new VariableBuilderDirector();
   }
 
   get value(): TVariable {

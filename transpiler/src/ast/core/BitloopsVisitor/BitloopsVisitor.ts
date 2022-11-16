@@ -34,10 +34,10 @@ import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVi
 //   ExpressionBuilder,
 //   IExpressionBuilder,
 // } from '../../../refactoring-arch/intermediate-ast-builders/expressions/expression.js';
-import {
-  // VariableBuilder,
-  VariableBuilderDirector,
-} from '../../../refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
+// import {
+// VariableBuilder,
+//   VariableBuilderDirector,
+// } from '../../../refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/intermediateASTTree.js';
 import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
 import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
@@ -183,13 +183,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
-  get dtoDirector() {
-    return this._dtoDirector;
-  }
+  // get dtoDirector() {
+  //   return this._dtoDirector;
+  // }
 
-  get variableBuilderDirector() {
-    return this._variableBuilderDirector;
-  }
+  // get variableBuilderDirector() {
+  //   return this._variableBuilderDirector;
+  // }
 
   // get expressionBuilder(): IExpressionBuilder {
   //   return this._expressionBuilder;

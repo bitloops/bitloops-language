@@ -24,7 +24,7 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
-import { DTOBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/DTO.js';
+// import { DTOBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/DTO.js';
 import { VariableBuilderDirector } from '../../../src/refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
 import { DTONode } from '../../../src/refactoring-arch/intermediate-ast/nodes/DTONode.js';
 import { DTOIdentifierNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/DTOIdentifierNode.js';
@@ -42,7 +42,7 @@ const testExamplesDTO = [
   },
 ];
 
-const expectedDTONode = (): DTONode => {
+const expectedDTONode = (): DTONode[] => {
   const rootNode = new IntermediateASTRootNode();
   const dtoNode = new DTONode();
   dtoNode.setClassType(ClassTypes.DTOs);
@@ -55,7 +55,7 @@ const expectedDTONode = (): DTONode => {
 
   dtoNode.addChild(identifierNode);
   dtoNode.addChild(fieldListNode);
-  return dtoNode;
+  return [dtoNode];
 };
 
 // const expectedOutputTree = {
@@ -88,20 +88,22 @@ test('DTO declaration is valid', () => {
     ]);
 
     if (!(initialModelOutput instanceof BitloopsParserError)) {
-      resultTree = intermediateParser.parse(
+      const result = intermediateParser.parse(
         initialModelOutput as unknown as BitloopsLanguageASTContext,
       );
+      resultTree = result[BOUNDED_CONTEXT][MODULE];
     }
-    const expectedDTOValue = new DTOBuilder()
-      .withIdentifier(testDTO.identifier)
-      .withVariables(testDTO.variables)
-      .build();
+    // const expectedDTOValue = new DTOBuilder()
+    //   .withIdentifier(testDTO.identifier)
+    //   .withVariables(testDTO.variables)
+    //   .build();
+    console.log({ resultTree });
 
     const expectedNodes = expectedDTONode();
-    const actualNodes = resultTree.getDTOS();
+    const actualNodes = resultTree.getClassTypeNodes(ClassTypes.DTOs);
 
-    expect(resultTree).toEqual(expectedOutputTree);
-    expect(resultValue).toEqual(expectedDTOValue);
+    expect(actualNodes).toEqual(expectedNodes);
+    // expect(resultValue).toEqual(expectedDTOValue);
   });
 });
 
