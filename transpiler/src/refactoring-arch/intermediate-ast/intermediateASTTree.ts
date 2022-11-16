@@ -1,3 +1,4 @@
+import { TBitloopsTypesValues, TClassTypesValues } from '../../helpers/mappings.js';
 import { IntermediateASTNode } from './nodes/intermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 
@@ -7,6 +8,7 @@ export class IntermediateASTTree {
 
   constructor(rootNode: IntermediateASTRootNode) {
     this.rootNode = rootNode;
+    this.currentNode = rootNode;
   }
 
   /**
@@ -14,6 +16,9 @@ export class IntermediateASTTree {
    * and makes it the new currentNode
    */
   public insertChild(childNode: IntermediateASTNode): void {
+    console.log('childNode', childNode);
+    console.log('this', this);
+
     this.currentNode.addChild(childNode);
     this.currentNode = childNode;
   }
@@ -35,6 +40,14 @@ export class IntermediateASTTree {
     this.currentNode = this.rootNode;
   }
 
+  public getCurrentNode(): IntermediateASTNode {
+    return this.currentNode;
+  }
+
+  public getCurrentNodeClassType(): TClassTypesValues {
+    return this.currentNode.getClassType();
+  }
+
   // private getContextNodesByType(
   //   nodeType: NODE_TYPES,
   //   contextNode: IntermediateASTNode,
@@ -54,22 +67,38 @@ export class IntermediateASTTree {
   //   }
   // }
 
-  private traverse() {
-    // ignore root -- root acts as a container
-    let node = this.rootNode.getFirstChild();
-    while (node != null) {
-      if (node.hasChildren()) {
-        node = node.getFirstChild();
-      } else {
-        // leaf, find the parent level
-        while (node.getNextSibling() == null && node != this.rootNode) {
-          // use child-parent link to get to the parent level
-          node = node.getParent();
-        }
-        node = node.getNextSibling();
-      }
-    }
-  }
+  // private getNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
+
+  //   for (const child of children) {
+  //     if (nodeType === child.getType()) {
+  //     }
+  //   }
+
+  //   while (children.length != 0) {
+  //     for (const child of children) {
+  //       if (nodeType === child.getType()) {
+  //       }
+  //       children = child.getChildren();
+  //     }
+  //   }
+  // }
+
+  // private traverse() {
+  //   // ignore root -- root acts as a container
+  //   let node = this.rootNode.getFirstChild();
+  //   while (node != null) {
+  //     if (node.hasChildren()) {
+  //       node = node.getFirstChild();
+  //     } else {
+  //       // leaf, find the parent level
+  //       while (node.getNextSibling() == null && node != this.rootNode) {
+  //         // use child-parent link to get to the parent level
+  //         node = node.getParent();
+  //       }
+  //       node = node.getNextSibling();
+  //     }
+  //   }
+  // }
 
   // public getAllUseCases(): IntermediateASTNode[] {
   //   return this.findNodes(NODE_TYPES.USE_CASE);

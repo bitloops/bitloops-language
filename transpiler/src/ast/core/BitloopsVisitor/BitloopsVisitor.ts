@@ -20,10 +20,10 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
-import {
-  DTOBuilder,
-  DTODirector,
-} from '../../../refactoring-arch/intermediate-ast/builders/DTO.js';
+// import {
+//   DTOBuilder,
+//   DTODirector,
+// } from '../../../refactoring-arch/intermediate-ast/builders/DTO.js';
 // import {
 //   EvaluationBuilder,
 //   EvaluationBuilderDirector,
@@ -35,10 +35,13 @@ import {
 //   IExpressionBuilder,
 // } from '../../../refactoring-arch/intermediate-ast-builders/expressions/expression.js';
 import {
-  VariableBuilder,
+  // VariableBuilder,
   VariableBuilderDirector,
 } from '../../../refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/intermediateASTTree.js';
+import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
+import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
+import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
 import { IntermediateASTRootNode } from '../../../refactoring-arch/intermediate-ast/nodes/RootNode.js';
 import {
   TEvaluationFields,
@@ -50,9 +53,9 @@ import {
   TGraphQLOperation,
   TDefinitionMethods,
   TOkErrorReturnType,
-  TVariables,
-  TVariable,
-  TDTO,
+  // TVariables,
+  // TVariable,
+  // TDTO,
   TEntityCreate,
   TValueObjectValues,
   TValueObjectMethods,
@@ -163,8 +166,8 @@ import {
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
-  private _dtoDirector: DTODirector;
-  private _variableBuilderDirector: VariableBuilderDirector;
+  // private _dtoDirector: DTODirector;
+  // private _variableBuilderDirector: VariableBuilderDirector;
   // private _expressionBuilder: IExpressionBuilder;
   // private _evaluationBuilder: IEvaluationBuilder;
   // private _evaluationBuilderDirector: EvaluationBuilderDirector;
@@ -172,8 +175,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   constructor() {
     super();
-    this._dtoDirector = new DTODirector(new DTOBuilder());
-    this._variableBuilderDirector = new VariableBuilderDirector(new VariableBuilder());
+    // this._dtoDirector = new DTODirector(new DTOBuilder());
+    // this._variableBuilderDirector = new VariableBuilderDirector(new VariableBuilder());
     // this._evaluationBuilderDirector = new EvaluationBuilderDirector(new RegularEvaluationBuilder());
     // this._expressionBuilder = new ExpressionBuilder();
     // this._evaluationBuilder = new EvaluationBuilder();
@@ -637,15 +640,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return returnOkErrorTypeVisitor(this, ctx);
   }
 
-  visitFieldList(ctx: BitloopsParser.FieldListContext): TVariables {
+  visitFieldList(ctx: BitloopsParser.FieldListContext): FieldListNode {
     return fieldListVisitor(this, ctx);
   }
 
-  visitField(ctx: BitloopsParser.FieldContext): TVariable {
+  visitField(ctx: BitloopsParser.FieldContext): FieldNode {
     return fieldVisitor(this, ctx);
   }
 
-  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): { DTOs: TDTO } {
+  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): { DTOs: DTONode } {
     return dtoDeclarationVisitor(this, ctx);
   }
   visitPropsDeclaration(ctx: BitloopsParser.PropsDeclarationContext): any {

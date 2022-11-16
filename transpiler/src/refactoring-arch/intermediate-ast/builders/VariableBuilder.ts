@@ -1,17 +1,11 @@
 import { TBitloopsPrimaryType, TVariable } from '../../../types.js';
 import { IBuilder } from './IBuilder.js';
 
-export interface IVariableBuilder extends IBuilder<TVariable> {
-  withType(type: TBitloopsPrimaryType): IVariableBuilder;
-  withName(name: string): IVariableBuilder;
-  withOptional(optional: boolean): IVariableBuilder;
-}
-
 export class VariableBuilderDirector {
-  private builder: IVariableBuilder;
+  private builder: VariableBuilder;
 
-  constructor(builder: IVariableBuilder) {
-    this.builder = builder;
+  constructor() {
+    this.builder = new VariableBuilder();
   }
 
   buildVariable(type: TBitloopsPrimaryType, name: string): TVariable {
@@ -25,22 +19,22 @@ export class VariableBuilderDirector {
   }
 }
 
-export class VariableBuilder implements IVariableBuilder {
+export class VariableBuilder implements IBuilder<TVariable> {
   private optional?: boolean;
   private type: TBitloopsPrimaryType;
   private name: string;
 
-  public withType(type: TBitloopsPrimaryType): IVariableBuilder {
+  public withType(type: TBitloopsPrimaryType): VariableBuilder {
     this.type = type;
     return this;
   }
 
-  public withName(name: string): IVariableBuilder {
+  public withName(name: string): VariableBuilder {
     this.name = name;
     return this;
   }
 
-  public withOptional(optional: boolean): IVariableBuilder {
+  public withOptional(optional: boolean): VariableBuilder {
     this.optional = optional;
     return this;
   }

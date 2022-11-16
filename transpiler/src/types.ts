@@ -38,6 +38,7 @@ export type TModule = {
   ReadModels?: TReadModels;
 };
 
+// TODO merge with TClassTypesValues from `transpiler/src/helpers/mappings.ts`
 export type TClassType =
   | 'Props'
   | 'Controllers'
@@ -300,7 +301,7 @@ export type TRegularEvaluation = {
   };
 };
 
-export type TEvaluationValues = 
+export type TEvaluationValues =
   | TRegularEvaluation
   | TStructEvaluation
   | TDTOEvaluation
@@ -312,11 +313,9 @@ export type TEvaluationValues =
   | TNotInstanceOf
   | TGetClass;
 
-
 export type TEvaluation = {
-  evaluation: TEvaluationValues
+  evaluation: TEvaluationValues;
 };
-
 
 export type TCondition = {
   condition: TExpression;
@@ -531,7 +530,8 @@ export type TExecute = {
   statements: TStatements;
 };
 
-export type TDTO = Record<string, TDTOValues>;
+export type TDTOIdentifier = string;
+export type TDTO = Record<TDTOIdentifier, TDTOValues>;
 
 export type TStructs = Record<string, TStructDeclaration>;
 

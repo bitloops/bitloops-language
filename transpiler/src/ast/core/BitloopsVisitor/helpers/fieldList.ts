@@ -21,14 +21,26 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { TVariables } from '../../../../types.js';
+import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
 
 export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldListContext,
-): TVariables => {
-  // thisVisitor.composite.addChild('fields');
+): FieldListNode => {
+  const classType = thisVisitor.intermediateASTTree.getCurrentNodeClassType();
+  const fieldListNode = new FieldListNode();
+  fieldListNode.setClassType(classType);
 
   const fieldsAndSemicolons = thisVisitor.visitChildren(ctx);
-  const fields: TVariables = fieldsAndSemicolons.filter((field) => field !== undefined);
-  return fields;
+
+  const variables: TVariables = [];
+  fieldsAndSemicolons.forEach((fieldNode) => {
+    if (fieldNode !== undefined) {
+      fieldListNode.addChild(fieldNode);
+      variables.push(fieldNode.value);
+    }
+  });
+  fieldListNode.buildVariables(variables);
+  // return fieldListNode
+  return fieldListNode;
 };

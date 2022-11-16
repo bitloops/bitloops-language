@@ -17,54 +17,98 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { decode } from 'bitloops-gherkin';
-
+import { bitloopsPrimitives } from '../../../src/helpers/bitloopsPrimitiveToLang.js';
 import {
   BitloopsIntermediateASTParser,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
+import { DTOBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/DTO.js';
+import { VariableBuilderDirector } from '../../../src/refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
+import { DTONode } from '../../../src/refactoring-arch/intermediate-ast/nodes/DTONode.js';
+import { DTOIdentifierNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/DTOIdentifierNode.js';
+import { IntermediateASTRootNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/RootNode.js';
+import { FieldListNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
+import { ClassTypes } from '../../../src/helpers/mappings.js';
 
-const feature = loadFeature('__tests__/ast/core/dtoDeclaration.feature');
+const testExamplesDTO = [
+  {
+    inputBLString: 'DTO HelloWorldRequestDTO{ optional string name; }',
+    variables: [
+      new VariableBuilderDirector().buildOptionalVariable(bitloopsPrimitives.string, 'name'),
+    ],
+    identifier: 'HelloWorldRequestDTO',
+  },
+];
 
-defineFeature(feature, (test) => {
-  test('DTO declaration is valid', ({ given, when, then }) => {
-    let boundedContext: string;
-    let module: string;
-    let blString: string;
-    let modelOutput: string;
-    let result: any;
+const expectedDTONode = (): DTONode => {
+  const rootNode = new IntermediateASTRootNode();
+  const dtoNode = new DTONode();
+  dtoNode.setClassType(ClassTypes.DTOs);
+  rootNode.addChild(dtoNode);
 
-    given(/^Valid bounded context (.*), module (.*), DTO (.*) strings$/, (arg0, arg1, arg2) => {
-      boundedContext = decode(arg0);
-      module = decode(arg1);
-      blString = decode(arg2);
-    });
+  const identifierNode = new DTOIdentifierNode();
+  identifierNode.setClassType(ClassTypes.DTOs);
+  const fieldListNode = new FieldListNode();
+  fieldListNode.setClassType(ClassTypes.DTOs);
 
-    when('I generate the model', () => {
-      // TODO check for use case DTOs
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
+  dtoNode.addChild(identifierNode);
+  dtoNode.addChild(fieldListNode);
+  return dtoNode;
+};
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
-    });
+// const expectedOutputTree = {
+//   'Hello World': {
+//     core: {
+//       DTOs: {
+//         HelloWorldRequestDTO: { fields: [{ optional: true, type: 'string', name: 'name' }] },
+//       },
+//     },
+//   },
+// };
+
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
+
+test('DTO declaration is valid', () => {
+  let resultTree: any;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  testExamplesDTO.forEach((testDTO) => {
+    const initialModelOutput = parser.parse([
+      {
+        boundedContext: BOUNDED_CONTEXT,
+        module: MODULE,
+        fileId: 'testFile.bl',
+        fileContents: testDTO.inputBLString,
+      },
+    ]);
+
+    if (!(initialModelOutput instanceof BitloopsParserError)) {
+      resultTree = intermediateParser.parse(
+        initialModelOutput as unknown as BitloopsLanguageASTContext,
+      );
+    }
+    const expectedDTOValue = new DTOBuilder()
+      .withIdentifier(testDTO.identifier)
+      .withVariables(testDTO.variables)
+      .build();
+
+    const expectedNodes = expectedDTONode();
+    const actualNodes = resultTree.getDTOS();
+
+    expect(resultTree).toEqual(expectedOutputTree);
+    expect(resultValue).toEqual(expectedDTOValue);
   });
 });
+
+// const buildTree = (identifierName: string) => {
+//   const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+//   const dtoNode = new DTONode();
+//   const identifierNode = new DTOIdentifierNode().buildDTOIdentifier(identifierName);
+//   tree.insertChild(dtoNode);
+//   tree.insertChild(identifierNode);
+// };

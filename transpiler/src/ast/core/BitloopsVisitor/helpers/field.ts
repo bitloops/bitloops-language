@@ -20,22 +20,23 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariable } from '../../../../types.js';
+// import { TVariable } from '../../../../types.js';
+import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
 
 export const fieldVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldContext,
-): TVariable => {
+): FieldNode => {
+  const fieldNode = new FieldNode();
   const identifier = ctx.identifier().getText();
-  // _thisVisitor.composite.addChild(identifier);
 
   const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  let result: TVariable;
   if (ctx.Optional()) {
-    result = _thisVisitor.variableBuilderDirector.buildOptionalVariable(type, identifier);
+    fieldNode.buildOptionalVariable(type, identifier);
   } else {
-    result = _thisVisitor.variableBuilderDirector.buildVariable(type, identifier);
+    fieldNode.buildVariable(type, identifier);
   }
 
-  return result;
+  // return fieldNode
+  return fieldNode;
 };

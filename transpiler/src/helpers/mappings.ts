@@ -114,7 +114,12 @@ const BitloopsTypesMapping = {
   TBitloopsPrimaryType: 'TBitloopsPrimaryType',
   TArrayLiteralExpression: 'TArrayLiteralExpression',
   TErrorEvaluation: 'TErrorEvaluation',
+  TDTOIdentifier: 'TDTOIdentifier',
 };
+
+type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
+
+export type TBitloopsTypesValues = typeof BitloopsTypesMapping[TBitloopsTypesKeys];
 
 const ClassTypes = {
   RootEntities: 'RootEntities',

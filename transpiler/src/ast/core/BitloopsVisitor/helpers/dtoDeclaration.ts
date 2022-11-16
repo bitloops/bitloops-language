@@ -20,26 +20,28 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TDTO } from '../../../../types.js';
 import { DTONode } from '../../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
-import { IdentifierNode } from '../../../../refactoring-arch/intermediate-ast/nodes/IdentifierNode.js';
+import { DTOIdentifierNode } from '../../../../refactoring-arch/intermediate-ast/nodes/DTOIdentifierNode.js';
 
 export const dtoDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DtoDeclarationContext,
-): { DTOs: TDTO } => {
-  const identifier = ctx.DTOIdentifier().getText();
+): { DTOs: DTONode } => {
+  const identifierName = ctx.DTOIdentifier().getText();
   const dtoNode = new DTONode();
-  const identifierNode = new IdentifierNode();
+  const identifierNode = new DTOIdentifierNode();
+  identifierNode.buildDTOIdentifier(identifierName);
+
   thisVisitor.intermediateASTTree.insertChild(dtoNode);
   thisVisitor.intermediateASTTree.insertChild(identifierNode);
 
-  const fields = thisVisitor.visit(ctx.fieldList());
+  const fieldListNode = thisVisitor.visit(ctx.fieldList());
+  thisVisitor.intermediateASTTree.insertSibling(fieldListNode);
 
-  dtoNode.buildDTO(identifier, fields);
+  dtoNode.buildDTO(identifierName, fieldListNode.value);
 
   thisVisitor.intermediateASTTree.setCurrentNodeToRoot();
   return {
-    DTOs: dtoNode.value,
+    DTOs: dtoNode,
   };
 };
