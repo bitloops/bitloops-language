@@ -17,46 +17,38 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsPrimitives } from '../../../src/helpers/bitloopsPrimitiveToLang.js';
 import {
   BitloopsIntermediateASTParser,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
-// import { DTOBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/DTO.js';
-import { VariableBuilderDirector } from '../../../src/refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
-import { DTONode } from '../../../src/refactoring-arch/intermediate-ast/nodes/DTONode.js';
-import { DTOIdentifierNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/DTOIdentifierNode.js';
-import { IntermediateASTRootNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/RootNode.js';
-import { FieldListNode } from '../../../src/refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
 import { ClassTypes } from '../../../src/helpers/mappings.js';
+import { buildDTONode } from '../../helpers/builders.js';
 
 const testExamplesDTO = [
   {
     inputBLString: 'DTO HelloWorldRequestDTO{ optional string name; }',
-    variables: [
-      new VariableBuilderDirector().buildOptionalVariable(bitloopsPrimitives.string, 'name'),
-    ],
+    variables: [{ type: 'string', name: 'name', optional: true }],
     identifier: 'HelloWorldRequestDTO',
   },
 ];
 
-const expectedDTONode = (): DTONode[] => {
-  const rootNode = new IntermediateASTRootNode();
-  const dtoNode = new DTONode();
-  dtoNode.setClassType(ClassTypes.DTOs);
-  rootNode.addChild(dtoNode);
+// const expectedDTONode = (): DTONode[] => {
+//   const rootNode = new IntermediateASTRootNode();
+//   const dtoNode = new DTONode();
+//   dtoNode.setClassType(ClassTypes.DTOs);
+//   rootNode.addChild(dtoNode);
 
-  const identifierNode = new DTOIdentifierNode();
-  identifierNode.setClassType(ClassTypes.DTOs);
-  const fieldListNode = new FieldListNode();
-  fieldListNode.setClassType(ClassTypes.DTOs);
+//   const identifierNode = new DTOIdentifierNode();
+//   identifierNode.setClassType(ClassTypes.DTOs);
+//   const fieldListNode = new FieldListNode();
+//   fieldListNode.setClassType(ClassTypes.DTOs);
 
-  dtoNode.addChild(identifierNode);
-  dtoNode.addChild(fieldListNode);
-  return [dtoNode];
-};
+//   dtoNode.addChild(identifierNode);
+//   dtoNode.addChild(fieldListNode);
+//   return [dtoNode];
+// };
 
 // const expectedOutputTree = {
 //   'Hello World': {
@@ -93,24 +85,12 @@ test('DTO declaration is valid', () => {
       );
       resultTree = result[BOUNDED_CONTEXT][MODULE];
     }
-    // const expectedDTOValue = new DTOBuilder()
-    //   .withIdentifier(testDTO.identifier)
-    //   .withVariables(testDTO.variables)
-    //   .build();
     console.log({ resultTree });
 
-    const expectedNodes = expectedDTONode();
+    const expectedNode = buildDTONode(testDTO.identifier, testDTO.variables);
     const actualNodes = resultTree.getClassTypeNodes(ClassTypes.DTOs);
 
-    expect(actualNodes).toEqual(expectedNodes);
+    expect(actualNodes).toEqual([expectedNode]);
     // expect(resultValue).toEqual(expectedDTOValue);
   });
 });
-
-// const buildTree = (identifierName: string) => {
-//   const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-//   const dtoNode = new DTONode();
-//   const identifierNode = new DTOIdentifierNode().buildDTOIdentifier(identifierName);
-//   tree.insertChild(dtoNode);
-//   tree.insertChild(identifierNode);
-// };
