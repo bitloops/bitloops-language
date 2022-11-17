@@ -20,25 +20,7 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
-// import {
-//   DTOBuilder,
-//   DTODirector,
-// } from '../../../refactoring-arch/intermediate-ast/builders/DTO.js';
-// import {
-//   EvaluationBuilder,
-//   EvaluationBuilderDirector,
-//   IEvaluationBuilder,
-// } from '../../../refactoring-arch/intermediate-ast-builders/evaluations/evaluation.js';
-// import { RegularEvaluationBuilder } from '../../../refactoring-arch/intermediate-ast-builders/evaluations/regularEvaluation.js';
-// import {
-//   ExpressionBuilder,
-//   IExpressionBuilder,
-// } from '../../../refactoring-arch/intermediate-ast-builders/expressions/expression.js';
-// import {
-// VariableBuilder,
-//   VariableBuilderDirector,
-// } from '../../../refactoring-arch/intermediate-ast/builders/VariableBuilder.js';
-import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/intermediateASTTree.js';
+import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
 import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
 import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
@@ -166,42 +148,12 @@ import {
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
-  // private _dtoDirector: DTODirector;
-  // private _variableBuilderDirector: VariableBuilderDirector;
-  // private _expressionBuilder: IExpressionBuilder;
-  // private _evaluationBuilder: IEvaluationBuilder;
-  // private _evaluationBuilderDirector: EvaluationBuilderDirector;
   private _intermediateASTTree: IntermediateASTTree;
 
   constructor() {
     super();
-    // this._dtoDirector = new DTODirector(new DTOBuilder());
-    // this._variableBuilderDirector = new VariableBuilderDirector(new VariableBuilder());
-    // this._evaluationBuilderDirector = new EvaluationBuilderDirector(new RegularEvaluationBuilder());
-    // this._expressionBuilder = new ExpressionBuilder();
-    // this._evaluationBuilder = new EvaluationBuilder();
     this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
-
-  // get dtoDirector() {
-  //   return this._dtoDirector;
-  // }
-
-  // get variableBuilderDirector() {
-  //   return this._variableBuilderDirector;
-  // }
-
-  // get expressionBuilder(): IExpressionBuilder {
-  //   return this._expressionBuilder;
-  // }
-
-  // get evaluationBuilder(): IEvaluationBuilder {
-  //   return this._evaluationBuilder;
-  // }
-
-  // get evaluationBuilderDirector(): EvaluationBuilderDirector {
-  //   return this._evaluationBuilderDirector;
-  // }
 
   get intermediateASTTree() {
     return this._intermediateASTTree;
@@ -835,8 +787,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.bitloopsBuildInClass().getText();
   }
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
-    const text = ctx.bitloopsIdentifiers().getText();
-    this.composite.addChild(text);
-    return text;
+    return ctx.bitloopsIdentifiers().getText();
   }
 }

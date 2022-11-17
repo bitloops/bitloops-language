@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { TVariables } from '../../../types.js';
-import { IntermediateASTNode } from './intermediateASTNode.js';
+import { IntermediateASTNode } from './IntermediateASTNode.js';
 
 export class FieldListNode extends IntermediateASTNode {
   private _value: TVariables;
@@ -13,7 +13,7 @@ export class FieldListNode extends IntermediateASTNode {
     return this._value;
   }
 
-  public buildVariables(variables: TVariables) {
+  public setValue(variables: TVariables) {
     this._value = variables;
   }
 }

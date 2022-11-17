@@ -1,5 +1,5 @@
 import { TClassTypesValues } from '../../helpers/mappings.js';
-import { IntermediateASTNode } from './nodes/intermediateASTNode.js';
+import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 
 export class IntermediateASTTree {

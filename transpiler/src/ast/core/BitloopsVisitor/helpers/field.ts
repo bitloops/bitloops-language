@@ -20,23 +20,23 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-// import { TVariable } from '../../../../types.js';
 import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
+import { FieldNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldNodeBuilder.js';
 
 export const fieldVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldContext,
 ): FieldNode => {
-  const fieldNode = new FieldNode();
   const identifier = ctx.identifier().getText();
 
   const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  if (ctx.Optional()) {
-    fieldNode.buildOptionalVariable(type, identifier);
-  } else {
-    fieldNode.buildVariable(type, identifier);
-  }
+  const optionalValue = ctx.Optional() ? true : false;
 
-  // return fieldNode
+  const fieldNode = new FieldNodeBuilder(_thisVisitor.intermediateASTTree)
+    .withType(type)
+    .withName(identifier)
+    .withOptional(optionalValue)
+    .build();
+
   return fieldNode;
 };

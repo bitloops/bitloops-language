@@ -1,4 +1,4 @@
-import { IntermediateASTNode } from './intermediateASTNode.js';
+import { IntermediateASTNode } from './IntermediateASTNode.js';
 
 export class IntermediateASTRootNode extends IntermediateASTNode {
   constructor(lines?: string) {

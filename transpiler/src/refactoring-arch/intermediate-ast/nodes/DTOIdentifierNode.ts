@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { IntermediateASTNode } from './intermediateASTNode.js';
+import { IntermediateASTNode } from './IntermediateASTNode.js';
 
 export class DTOIdentifierNode extends IntermediateASTNode {
   private _value: string;
@@ -12,7 +12,7 @@ export class DTOIdentifierNode extends IntermediateASTNode {
     return this._value;
   }
 
-  buildDTOIdentifier(identifier: string) {
+  setValue(identifier: string) {
     this._value = identifier;
   }
 }

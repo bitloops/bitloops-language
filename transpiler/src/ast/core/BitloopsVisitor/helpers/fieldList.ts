@@ -20,27 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariables } from '../../../../types.js';
 import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
+import { FieldListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldListNodeBuilder.js';
 
 export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldListContext,
 ): FieldListNode => {
-  const classType = thisVisitor.intermediateASTTree.getCurrentNodeClassType();
-  const fieldListNode = new FieldListNode();
-  fieldListNode.setClassType(classType);
-
   const fieldsAndSemicolons = thisVisitor.visitChildren(ctx);
+  const fields = fieldsAndSemicolons.filter((field) => field !== undefined);
 
-  const variables: TVariables = [];
-  fieldsAndSemicolons.forEach((fieldNode) => {
-    if (fieldNode !== undefined) {
-      fieldListNode.addChild(fieldNode);
-      variables.push(fieldNode.value);
-    }
-  });
-  fieldListNode.buildVariables(variables);
-  // return fieldListNode
+  const fieldListNode = new FieldListNodeBuilder(thisVisitor.intermediateASTTree)
+    .withFields(fields)
+    .build();
+
   return fieldListNode;
 };
