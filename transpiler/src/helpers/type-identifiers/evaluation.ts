@@ -18,17 +18,15 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TEvaluationValues, TErrorEvaluation } from "../../types.js";
+import { TEvaluationValues, TErrorEvaluation } from '../../types.js';
 
- export class EvaluationTypeIdentifiers {
- 
-   static isErrorEvaluation = (
-     evaluationValue: TEvaluationValues,
-   ): evaluationValue is TErrorEvaluation => {
-     if ('errorEvaluation' in evaluationValue) {
-       return true;
-     }
-     return false;
-   };
- }
- 
+export class EvaluationTypeIdentifiers {
+  static isErrorEvaluation = (
+    evaluationValue: TEvaluationValues,
+  ): evaluationValue is TErrorEvaluation => {
+    if ('errorEvaluation' in evaluationValue) {
+      return true;
+    }
+    return false;
+  };
+}

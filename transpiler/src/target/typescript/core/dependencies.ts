@@ -59,7 +59,7 @@ export const getParentDependencies = (
 const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => {
   // const sources = [];
   const delimeter = ',';
-  let mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
+  const mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
   for (const parentDependency of parentDependecies) {
     const key = parentDependency.from;
     const sources = Object.keys(mergedDependenciesMap);

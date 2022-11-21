@@ -19,25 +19,11 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { FieldNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
-import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
+import { OptionalBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/OptionalBuilder.js';
+import { OptionalNode } from '../../../../refactoring-arch/intermediate-ast/nodes/OptionalNode.js';
 
-export const fieldVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.FieldContext,
-): FieldNode => {
-  const identifierNode = _thisVisitor.visit(ctx.identifier());
-
-  const typeNode = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-
-  const optionalNode = _thisVisitor.visit(ctx.optional());
-
-  const fieldNode = new FieldNodeBuilder()
-    .withType(typeNode)
-    .withName(identifierNode)
-    .withOptional(optionalNode)
-    .build();
-
-  return fieldNode;
+export const optionalVisitor = (ctx: BitloopsParser.OptionalContext): OptionalNode => {
+  const optionalValue = ctx.Optional() ? true : false;
+  const optionalNode = new OptionalBuilder().withOptional(optionalValue).build();
+  return optionalNode;
 };

@@ -20,23 +20,31 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { ArrayBitloopsPrimType, TBitloopsPrimitives } from '../../../../types.js';
+import { ArrayPrimaryTypeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
+import { ArrayPrimaryTypeNode } from '../../../../refactoring-arch/intermediate-ast/nodes/BitloopsPrimaryType/ArrayPrimaryTypeNode.js';
+import { PrimitiveTypeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
+import { PrimitiveTypeNode } from '../../../../refactoring-arch/intermediate-ast/nodes/BitloopsPrimaryType/PrimitiveTypeNode.js';
 
 export const primitivePrimTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PrimitivePrimTypeContext,
-): TBitloopsPrimitives => {
-  return ctx.primitives().getText();
+): PrimitiveTypeNode => {
+  const primitiveType = ctx.primitives().getText();
+  const primitiveTypeNode = new PrimitiveTypeBuilder().withType(primitiveType).build();
+  return primitiveTypeNode;
 };
 
 export const arrayBitloopsPrimTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,
-): ArrayBitloopsPrimType => {
+): ArrayPrimaryTypeNode => {
   const value = thisVisitor.visit(ctx.bitloopsPrimaryType());
-  return {
-    arrayType: {
-      value,
-    },
-  };
+  const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder().withPrimaryType(value).build();
+
+  return arrayBitloopsPrimaryTypeNode;
+  // return {
+  //   arrayType: {
+  //     value,
+  //   },
+  // };
 };

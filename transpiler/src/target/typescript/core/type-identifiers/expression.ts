@@ -18,7 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TArrayLiteralExpression, TExpression, TExpressionValues, TEvaluation } from './../../../../types.js';
+import {
+  TArrayLiteralExpression,
+  TExpression,
+  TExpressionValues,
+  TEvaluation,
+} from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
   static isMethodCallExpression(expressionStatement: TExpression): boolean {

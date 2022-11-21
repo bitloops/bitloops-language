@@ -1,4 +1,4 @@
-import { TClassTypesValues, TBitloopsTypesValues } from '../../../helpers/mappings.js';
+import { TBitloopsTypesValues } from '../../../helpers/mappings.js';
 
 export type TNodeMetadata = {
   lines: string;
@@ -6,7 +6,6 @@ export type TNodeMetadata = {
 
 export abstract class IntermediateASTNode {
   private nodeType: TBitloopsTypesValues;
-  private classType: TClassTypesValues;
   private children: IntermediateASTNode[];
   private nextSibling: IntermediateASTNode;
   private parent: IntermediateASTNode;
@@ -22,7 +21,7 @@ export abstract class IntermediateASTNode {
     this.nodeType = nodeType;
     this.metaData = metadata;
     this.children = [];
-    this.setName(name);
+    this.name = name;
   }
 
   public getValue(): any {
@@ -31,14 +30,6 @@ export abstract class IntermediateASTNode {
 
   public setValue(value: any): any {
     this.value = value;
-  }
-
-  public getName(): any {
-    return this.name;
-  }
-
-  public setName(name: any): any {
-    this.name = name;
   }
 
   public getNodeType(): TBitloopsTypesValues {
@@ -56,40 +47,20 @@ export abstract class IntermediateASTNode {
     return this.children.length == 0;
   }
 
-  public getClassType(): TClassTypesValues {
-    return this.classType;
-  }
-
-  public getLines(): string {
+  public getMetadata(): TNodeMetadata {
     return this.metaData;
   }
 
-  public setLines(metaData: TNodeMetadata) {
+  public setMetadata(metaData: TNodeMetadata) {
     this.metaData = metaData;
-  }
-
-  public setNodeType(value: TBitloopsTypesValues) {
-    this.nodeType = value;
-  }
-
-  public setClassType(classType: TClassTypesValues): void {
-    this.classType = classType;
   }
 
   private setParent(parent: IntermediateASTNode) {
     this.parent = parent;
   }
 
-  private isRootNode(): boolean {
-    return this.nodeType === 'Root';
-  }
-
   public addChild(childNode: IntermediateASTNode): void {
     childNode.setParent(this);
-    //set the classType when adding children
-    if (!this.isRootNode()) {
-      childNode.setClassType(this.classType);
-    }
     const numOfChildren = this.children.length;
     if (numOfChildren > 0) {
       const previousSibling = this.children[numOfChildren - 1];
@@ -99,7 +70,6 @@ export abstract class IntermediateASTNode {
   }
 
   private addSibling(siblingNode: IntermediateASTNode): void {
-    siblingNode.setClassType(this.classType);
     this.nextSibling = siblingNode;
   }
 
@@ -128,6 +98,14 @@ export abstract class IntermediateASTNode {
     this.value = { [this.name]: {} };
     children.forEach((child) => {
       this.value[this.name][child.name] = child.value;
+    });
+  }
+
+  public buildObject2Value() {
+    const children = this.getChildren();
+    this.value = { [this.name]: {} };
+    children.forEach((child) => {
+      this.value[this.name] = { ...this.value[this.name], ...child.value };
     });
   }
 }

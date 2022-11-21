@@ -43,7 +43,7 @@ const constantVariables = (
   };
 
   let constDeclarationResult = '';
-  let dependencies = [];
+  const dependencies = [];
 
   for (const variable of constantVariables) {
     const constDeclaration = constVariablesLangMapping(variable);

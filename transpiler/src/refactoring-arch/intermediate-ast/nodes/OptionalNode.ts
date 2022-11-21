@@ -1,10 +1,10 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { IntermediateASTNode } from './IntermediateASTNode.js';
 
-const NAME = 'field';
+const NAME = 'optional';
 
-export class FieldNode extends IntermediateASTNode {
+export class OptionalNode extends IntermediateASTNode {
   constructor(lines?: string) {
-    super(BitloopsTypesMapping.TVariable, { lines }, NAME);
+    super(BitloopsTypesMapping.TOptional, { lines }, NAME);
   }
 }

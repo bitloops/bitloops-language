@@ -20,11 +20,14 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
+import { BitloopsIdentifierTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
+import { BuildInClassTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
 import { DTOIdentifierNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { IdentifierBuilder } from '../../../refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
-import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
-import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
+import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
+import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../../../refactoring-arch/intermediate-ast/nodes/RootNode.js';
 import {
   TEvaluationFields,
@@ -143,6 +146,7 @@ import {
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
 } from './helpers/index.js';
+import { optionalVisitor } from './helpers/optional.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -192,7 +196,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
     const identifierName = ctx.Identifier().getText();
-    const identifierNode = new IdentifierNodeBuilder().withName(identifierName).build();
+    const identifierNode = new IdentifierBuilder().withName(identifierName).build();
     return identifierNode;
   }
 
@@ -787,13 +791,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
-    return ctx.bitloopsBuildInClass().getText();
+    const buildInClassType = ctx.bitloopsBuildInClass().getText();
+    const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
+    return buildInClassTypeNode;
   }
+
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
-    return ctx.bitloopsIdentifiers().getText();
+    const bitloopsIdentifierType = ctx.bitloopsIdentifiers().getText();
+    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder()
+      .withType(bitloopsIdentifierType)
+      .build();
+    return bitloopsIdentifierTypeNode;
   }
 
   visitOptional(ctx: BitloopsParser.OptionalContext) {
-    return ctx.Optional().getText();
+    return optionalVisitor(ctx);
   }
 }

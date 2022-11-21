@@ -4,7 +4,7 @@ import BitloopsLexer from './BitloopsLexer.js';
 export default class JavaScriptLexerBase extends antlr4.Lexer {
   constructor(input) {
     super(input);
-    this.scopeStrictModes = new Array();
+    this.scopeStrictModes = [];
     this.lastToken = null;
     this.useStrictDefault = false;
     this.useStrictCurrent = false;
