@@ -27,12 +27,12 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
 
   public build(): DTONode {
     this.intermediateASTTree.insertChild(this.dtoNode);
-    this.intermediateASTTree.insertSibling(this.identifierNode);
+    this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.variablesNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
     // this.dtoNode.setValue(this.identifierNode.value, this.variablesNode.value);
-    this.dtoNode.buildValue();
+    this.dtoNode.buildObjectValue();
 
     return this.dtoNode;
   }

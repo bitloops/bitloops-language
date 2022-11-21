@@ -111,7 +111,7 @@ export abstract class IntermediateASTNode {
     });
   }
 
-  public buildValue() {
+  public buildObjectValue() {
     const children = this.getChildren();
     this.value = { [this.name]: {} };
     children.forEach((child) => {

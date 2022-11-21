@@ -1,4 +1,4 @@
-import { ClassTypes, TClassTypesValues } from '../../helpers/mappings.js';
+import { TClassTypesValues } from '../../helpers/mappings.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 

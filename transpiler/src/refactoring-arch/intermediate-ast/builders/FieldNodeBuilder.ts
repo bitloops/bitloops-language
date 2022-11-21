@@ -43,7 +43,7 @@ export class FieldNodeBuilder implements IBuilder<FieldNode> {
 
     // this.fieldNode.setValue({ type: this.type, name: this.name, optional: this.optional });
 
-    this.fieldNode.buildValue();
+    this.fieldNode.buildObjectValue();
 
     return this.fieldNode;
   }
