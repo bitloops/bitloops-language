@@ -16,7 +16,7 @@ export function Builder<T>(): IBuilder<T> {
   const builder = new Proxy(
     {},
     {
-      get(target, prop) {
+      get(_target, prop) {
         if ('build' === prop) {
           return () => built;
         }

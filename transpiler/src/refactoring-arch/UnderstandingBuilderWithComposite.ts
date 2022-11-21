@@ -45,7 +45,7 @@ class TagNode {
     return res;
   }
 }
-class TagBuilder {
+export class TagBuilder {
   private rootNode: TagNode;
   private currentNode: TagNode;
   //   private parentNode: TagNode;

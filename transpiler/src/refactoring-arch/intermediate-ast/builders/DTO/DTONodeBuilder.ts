@@ -32,6 +32,7 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
     this.intermediateASTTree.setCurrentNodeToRoot();
 
     this.dtoNode.buildObjectValue();
+    this.intermediateASTTree.traverse(this.dtoNode, (node) => console.log(node.getName()));
 
     return this.dtoNode;
   }
