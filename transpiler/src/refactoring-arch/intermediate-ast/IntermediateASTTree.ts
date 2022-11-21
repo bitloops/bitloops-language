@@ -1,4 +1,4 @@
-import { TClassTypesValues } from '../../helpers/mappings.js';
+import { ClassTypes, TClassTypesValues } from '../../helpers/mappings.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 
@@ -113,7 +113,7 @@ export class IntermediateASTTree {
   // }
 
   // public getAllExpressionsOfUseCase(): ExpressionNode[] {
-  //   const useCases = this.getAllUseCases();
+  //   const useCases = this.getClassTypeNodes(ClassTypes.UseCases);
   //   const expressions: ExpressionNode[] = [];
   //   for (const useCase of useCases) {
   //     const expressionNodes = this.getContextNodesByType(NODE_TYPES.EXPRESSION, useCase);

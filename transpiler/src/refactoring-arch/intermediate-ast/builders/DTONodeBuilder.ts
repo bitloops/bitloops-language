@@ -16,8 +16,7 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
   }
 
   public withIdentifier(identifierName: string): DTONodeBuilder {
-    this.identifierNode = new DTOIdentifierNode();
-    this.identifierNode.setValue(identifierName);
+    this.identifierNode = new DTOIdentifierNode(identifierName);
     return this;
   }
 
@@ -28,11 +27,12 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
 
   public build(): DTONode {
     this.intermediateASTTree.insertChild(this.dtoNode);
-    this.intermediateASTTree.insertChild(this.identifierNode);
+    this.intermediateASTTree.insertSibling(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.variablesNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
-    this.dtoNode.setValue(this.identifierNode.value, this.variablesNode.value);
+    // this.dtoNode.setValue(this.identifierNode.value, this.variablesNode.value);
+    this.dtoNode.buildValue();
 
     return this.dtoNode;
   }

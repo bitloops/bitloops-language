@@ -1,4 +1,4 @@
-import { TVariables } from '../../../types.js';
+// import { TVariables } from '../../../types.js';
 import { IBuilder } from './IBuilder.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
 import { FieldListNode } from '../nodes/FieldListNode.js';
@@ -23,12 +23,12 @@ export class FieldListNodeBuilder implements IBuilder<FieldListNode> {
   }
 
   public build(): FieldListNode {
-    const variables: TVariables = [];
+    // const variables: TVariables = [];
     this.fieldNodes.forEach((fieldNode) => {
       this.fieldListNode.addChild(fieldNode);
-      variables.push(fieldNode.value);
+      // variables.push(fieldNode.value);
     });
-    this.fieldListNode.setValue(variables);
+    this.fieldListNode.buildArrayValue();
 
     return this.fieldListNode;
   }

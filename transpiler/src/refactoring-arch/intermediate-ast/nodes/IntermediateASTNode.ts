@@ -7,11 +7,29 @@ export abstract class IntermediateASTNode {
   private nextSibling: IntermediateASTNode;
   private parent: IntermediateASTNode;
   private lines: string; // e.g. 15-18
+  private value: any;
+  private name: string;
 
   constructor(nodeType: TBitloopsTypesValues, lines = '10') {
     this.nodeType = nodeType;
     this.lines = lines;
     this.children = [];
+  }
+
+  public getValue(): any {
+    return this.value;
+  }
+
+  public setValue(value: any): any {
+    this.value = value;
+  }
+
+  public getName(): any {
+    return this.name;
+  }
+
+  public setName(name: any): any {
+    this.name = name;
   }
 
   public getNodeType(): TBitloopsTypesValues {
@@ -83,5 +101,21 @@ export abstract class IntermediateASTNode {
 
   public hasChildren(): boolean {
     return this.children.length > 0;
+  }
+
+  public buildArrayValue() {
+    this.value = [];
+    const children = this.getChildren();
+    children.forEach((child) => {
+      this.value.push(child.value);
+    });
+  }
+
+  public buildValue() {
+    const children = this.getChildren();
+    this.value = { [this.name]: {} };
+    children.forEach((child) => {
+      this.value[this.name][child.name] = child.value;
+    });
   }
 }

@@ -115,6 +115,8 @@ const BitloopsTypesMapping = {
   TArrayLiteralExpression: 'TArrayLiteralExpression',
   TErrorEvaluation: 'TErrorEvaluation',
   TDTOIdentifier: 'TDTOIdentifier',
+  TIdentifier: 'TIdentifier',
+  TOptional: 'TOptional',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

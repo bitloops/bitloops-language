@@ -146,10 +146,12 @@ export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export type TVariables = TVariable[];
 
+export type TIdentifier = string;
+export type TOptional = boolean;
 export type TVariable = {
-  optional?: boolean;
+  optional?: TOptional;
   type: TBitloopsPrimaryType;
-  name: string;
+  name: TIdentifier;
 };
 
 export type TPropsValues = {
