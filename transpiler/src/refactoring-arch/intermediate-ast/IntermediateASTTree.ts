@@ -1,4 +1,5 @@
-import { TClassTypesValues } from '../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes, TClassTypesValues } from '../../helpers/mappings.js';
+import { ExpressionNode } from './nodes/ExpressionNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 
@@ -110,10 +111,10 @@ export class IntermediateASTTree {
 
   /**    A
    *  B -   F
-   * C-E   G-O-O
-   * D          O
+   * C-E   G-H-I
+   * D          K
    */
-  public traverse(currentNode: IntermediateASTNode, cb?: (node: IntermediateASTNode) => any) {
+  public traverse(currentNode: IntermediateASTNode, cb?: (node: IntermediateASTNode) => any): void {
     if (currentNode.isLeaf()) {
       return cb(currentNode);
     }
@@ -125,7 +126,10 @@ export class IntermediateASTTree {
     }
   }
 
-  public traverseBFS(currentNode: IntermediateASTNode, cb?: (node: IntermediateASTNode) => any) {
+  public traverseBFS(
+    currentNode: IntermediateASTNode,
+    cb?: (node: IntermediateASTNode) => any,
+  ): void {
     if (currentNode.isLeaf()) {
       return cb(currentNode);
     }
@@ -143,13 +147,18 @@ export class IntermediateASTTree {
   //   return this.findNodes(NODE_TYPES.USE_CASE);
   // }
 
-  // public getAllExpressionsOfUseCase(): ExpressionNode[] {
-  //   const useCases = this.getClassTypeNodes(ClassTypes.UseCases);
-  //   const expressions: ExpressionNode[] = [];
-  //   for (const useCase of useCases) {
-  //     const expressionNodes = this.getContextNodesByType(NODE_TYPES.EXPRESSION, useCase);
-  //     expressions.push(...expressionNodes);
-  //   }
-  //   return expressions;
-  // }
+  public getAllExpressionsOfUseCase(): ExpressionNode[] {
+    // Set root Node as current, or pass it to getClassTypeNodes
+    const useCases = this.getClassTypeNodes(ClassTypes.UseCases);
+
+    // TODO typeGuard
+    const isExpressionNode = (node: IntermediateASTNode): node is ExpressionNode =>
+      node.getNodeType() === BitloopsTypesMapping.TExpression;
+
+    const expressions: ExpressionNode[] = [];
+    for (const useCaseNode of useCases) {
+      this.traverse(useCaseNode, (node) => isExpressionNode(node) && expressions.push(node));
+    }
+    return expressions;
+  }
 }
