@@ -45,7 +45,7 @@
 //     return res;
 //   }
 // }
-// class TagBuilder {
+// export class TagBuilder {
 //   private rootNode: TagNode;
 //   private currentNode: TagNode;
 //   //   private parentNode: TagNode;
@@ -97,56 +97,56 @@
 //   }
 // }
 
-// (1)
-// const tagBuilderXML = new TagBuilder('flavors').toXml();
-// console.log('tagBuilderXML', tagBuilderXML);
+// // (1)
+// // const tagBuilderXML = new TagBuilder('flavors').toXml();
+// // console.log('tagBuilderXML', tagBuilderXML);
 
-// (2)
-// const tagBuilderWithChildren = new TagBuilder('flavors');
-// tagBuilderWithChildren.addChild('flavor');
-// const xmlWithChildren = tagBuilderWithChildren.toXml();
-// console.log('xmlWithChildren', xmlWithChildren);
+// // (2)
+// // const tagBuilderWithChildren = new TagBuilder('flavors');
+// // tagBuilderWithChildren.addChild('flavor');
+// // const xmlWithChildren = tagBuilderWithChildren.toXml();
+// // console.log('xmlWithChildren', xmlWithChildren);
 
-//(3)
-// const tagBuilderWithMoreChildren = new TagBuilder('flavors');
-// tagBuilderWithMoreChildren.addChild('flavor');
-// tagBuilderWithMoreChildren.addChild('requirements');
-// tagBuilderWithMoreChildren.addChild('requirement');
-// const xmlWithMoreChildren = tagBuilderWithMoreChildren.toXml();
-// console.log('xmlWithMoreChildren', xmlWithMoreChildren);
+// //(3)
+// // const tagBuilderWithMoreChildren = new TagBuilder('flavors');
+// // tagBuilderWithMoreChildren.addChild('flavor');
+// // tagBuilderWithMoreChildren.addChild('requirements');
+// // tagBuilderWithMoreChildren.addChild('requirement');
+// // const xmlWithMoreChildren = tagBuilderWithMoreChildren.toXml();
+// // console.log('xmlWithMoreChildren', xmlWithMoreChildren);
 
-// (4) adding sibling
-// const siblingBuilder = new TagBuilder('flavors');
-// siblingBuilder.addChild('flavor1');
-// siblingBuilder.addSibling('flavor2');
-// console.log('siblingBuilder.toXml()',siblingBuilder.toXml());
+// // (4) adding sibling
+// // const siblingBuilder = new TagBuilder('flavors');
+// // siblingBuilder.addChild('flavor1');
+// // siblingBuilder.addSibling('flavor2');
+// // console.log('siblingBuilder.toXml()',siblingBuilder.toXml());
 
-// //(5)
+// // //(5)
 
-// const root = new TagNode('root');
-// console.log('tagWithParents.getParent():', root.getParent());
-// const tagChild = new TagNode('child');
-// root.add(tagChild);
-// console.log('tagWithParents.tagChild():', tagChild.getParent());
+// // const root = new TagNode('root');
+// // console.log('tagWithParents.getParent():', root.getParent());
+// // const tagChild = new TagNode('child');
+// // root.add(tagChild);
+// // console.log('tagWithParents.tagChild():', tagChild.getParent());
 
-// const complexBuilder = new TagBuilder('flavors');
-// for (let i = 0; i < 2; i++) {
-//   complexBuilder.addToParent('flavors', 'flavor');
-//   complexBuilder.addChild('requirements');
-//   complexBuilder.addChild('requirement');
-// }
-// console.log('complexBuilder.toXml()', complexBuilder.toXml());
+// // const complexBuilder = new TagBuilder('flavors');
+// // for (let i = 0; i < 2; i++) {
+// //   complexBuilder.addToParent('flavors', 'flavor');
+// //   complexBuilder.addChild('requirements');
+// //   complexBuilder.addChild('requirement');
+// // }
+// // console.log('complexBuilder.toXml()', complexBuilder.toXml());
 
-// (6) with attributes
+// // (6) with attributes
 
-// const builderWithAttributes = new TagBuilder('flavor');
-// builderWithAttributes.addAttribute('name', 'Test-Driven Development');
-// builderWithAttributes.addChild('requirements');
-// builderWithAttributes.addToParent('requirements', 'requirement');
-// builderWithAttributes.addAttribute('type', 'hardware');
-// builderWithAttributes.addValue('1 computer for every 2 participants');
-// builderWithAttributes.addToParent('requirements', 'requirement');
-// builderWithAttributes.addAttribute('type', 'software');
-// builderWithAttributes.addValue('IDE');
+// // const builderWithAttributes = new TagBuilder('flavor');
+// // builderWithAttributes.addAttribute('name', 'Test-Driven Development');
+// // builderWithAttributes.addChild('requirements');
+// // builderWithAttributes.addToParent('requirements', 'requirement');
+// // builderWithAttributes.addAttribute('type', 'hardware');
+// // builderWithAttributes.addValue('1 computer for every 2 participants');
+// // builderWithAttributes.addToParent('requirements', 'requirement');
+// // builderWithAttributes.addAttribute('type', 'software');
+// // builderWithAttributes.addValue('IDE');
 
-// console.log('builderWithAttributes', builderWithAttributes.toXml());
+// // console.log('builderWithAttributes', builderWithAttributes.toXml());
