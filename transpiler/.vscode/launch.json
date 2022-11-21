@@ -14,24 +14,20 @@
       "outFiles": ["${workspaceFolder}/lib/**/*.js"]
     },
     {
-      "name": "Jest file",
-      "type": "pwa-node",
+      "name": "Jest: current file",
+      "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/jest",
-      "args": [
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--experimental-vm-modules",
+        "${workspaceRoot}/node_modules/.bin/jest",
         "${fileBasenameNoExtension}",
-        "--runInBand",
-        "--watch",
-        "--coverage=false",
-        "--no-cache"
+        "--runInBand"
       ],
-      "cwd": "${workspaceRoot}",
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "sourceMaps": true,
-      "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      }
+      "preLaunchTask": "Build",
+      "internalConsoleOptions": "neverOpen"
+      // "disableOptimisticBPs": true
     }
   ]
 }
