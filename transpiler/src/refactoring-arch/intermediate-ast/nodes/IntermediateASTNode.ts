@@ -1,19 +1,28 @@
 import { TClassTypesValues, TBitloopsTypesValues } from '../../../helpers/mappings.js';
 
+export type TNodeMetadata = {
+  lines: string;
+};
+
 export abstract class IntermediateASTNode {
   private nodeType: TBitloopsTypesValues;
   private classType: TClassTypesValues;
   private children: IntermediateASTNode[];
   private nextSibling: IntermediateASTNode;
   private parent: IntermediateASTNode;
-  private lines: string; // e.g. 15-18
+  private metaData: TNodeMetadata;
   private value: any;
   private name: string;
 
-  constructor(nodeType: TBitloopsTypesValues, lines = '10') {
+  constructor(
+    nodeType: TBitloopsTypesValues,
+    metadata: TNodeMetadata = { lines: '10' },
+    name: string,
+  ) {
     this.nodeType = nodeType;
-    this.lines = lines;
+    this.metaData = metadata;
     this.children = [];
+    this.setName(name);
   }
 
   public getValue(): any {
@@ -49,11 +58,11 @@ export abstract class IntermediateASTNode {
   }
 
   public getLines(): string {
-    return this.lines;
+    return this.metaData;
   }
 
-  public setLines(value: string) {
-    this.lines = value;
+  public setLines(metaData: TNodeMetadata) {
+    this.metaData = metaData;
   }
 
   public setNodeType(value: TBitloopsTypesValues) {

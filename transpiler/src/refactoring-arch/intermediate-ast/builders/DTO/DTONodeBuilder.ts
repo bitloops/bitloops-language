@@ -1,8 +1,8 @@
-import { IntermediateASTTree } from '../IntermediateASTTree.js';
-import { DTOIdentifierNode } from '../nodes/DTOIdentifierNode.js';
-import { DTONode } from '../nodes/DTONode.js';
-import { FieldListNode } from '../nodes/FieldListNode.js';
-import { IBuilder } from './IBuilder.js';
+import { IntermediateASTTree } from '../../IntermediateASTTree.js';
+import { DTOIdentifierNode } from '../../nodes/DTOIdentifierNode.js';
+import { DTONode } from '../../nodes/DTONode.js';
+import { FieldListNode } from '../../nodes/FieldListNode.js';
+import { IBuilder } from '../IBuilder.js';
 
 export class DTONodeBuilder implements IBuilder<DTONode> {
   private dtoNode: DTONode;
@@ -15,8 +15,8 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
     this.dtoNode = new DTONode();
   }
 
-  public withIdentifier(identifierName: string): DTONodeBuilder {
-    this.identifierNode = new DTOIdentifierNode(identifierName);
+  public withIdentifier(dtoIdentifierNode: DTOIdentifierNode): DTONodeBuilder {
+    this.identifierNode = dtoIdentifierNode;
     return this;
   }
 
@@ -31,7 +31,6 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
     this.intermediateASTTree.insertSibling(this.variablesNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
-    // this.dtoNode.setValue(this.identifierNode.value, this.variablesNode.value);
     this.dtoNode.buildObjectValue();
 
     return this.dtoNode;

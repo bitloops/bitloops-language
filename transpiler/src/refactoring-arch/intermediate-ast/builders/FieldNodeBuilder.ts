@@ -1,6 +1,5 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { TBitloopsPrimaryType } from '../../../types.js';
-import { IntermediateASTTree } from '../IntermediateASTTree.js';
 import { FieldNode } from '../nodes/FieldNode.js';
 import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 import { IBuilder } from './IBuilder.js';
@@ -12,13 +11,9 @@ export class FieldNodeBuilder implements IBuilder<FieldNode> {
   private identifierNode: IdentifierNode;
   private optionalNode?: OptionalNode;
   private fieldNode: FieldNode;
-  private intermediateASTTree: IntermediateASTTree;
 
-  constructor(intermediateASTTree: IntermediateASTTree) {
+  constructor() {
     this.fieldNode = new FieldNode();
-    this.intermediateASTTree = intermediateASTTree;
-    const classType = this.intermediateASTTree.getCurrentNodeClassType();
-    this.fieldNode.setClassType(classType);
   }
 
   public withType(type: TBitloopsPrimaryType): FieldNodeBuilder {
@@ -40,8 +35,6 @@ export class FieldNodeBuilder implements IBuilder<FieldNode> {
     this.fieldNode.addChild(this.typeNode);
     this.fieldNode.addChild(this.identifierNode);
     if (this.optionalNode) this.fieldNode.addChild(this.optionalNode);
-
-    // this.fieldNode.setValue({ type: this.type, name: this.name, optional: this.optional });
 
     this.fieldNode.buildObjectValue();
 

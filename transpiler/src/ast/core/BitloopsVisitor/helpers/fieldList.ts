@@ -22,17 +22,16 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
 import { FieldListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldListNodeBuilder.js';
+import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
 
 export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldListContext,
 ): FieldListNode => {
   const fieldsAndSemicolons = thisVisitor.visitChildren(ctx);
-  const fields = fieldsAndSemicolons.filter((field) => field !== undefined);
+  const fields: FieldNode[] = fieldsAndSemicolons.filter((field) => field !== undefined);
 
-  const fieldListNode = new FieldListNodeBuilder(thisVisitor.intermediateASTTree)
-    .withFields(fields)
-    .build();
+  const fieldListNode = new FieldListNodeBuilder().withFields(fields).build();
 
   return fieldListNode;
 };

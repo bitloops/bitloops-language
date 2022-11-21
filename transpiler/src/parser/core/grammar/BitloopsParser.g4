@@ -249,9 +249,12 @@ regularDTOEvaluation
     : DTOIdentifier
     ;
 
+optional
+    : Optional;
+
 // | RegularStringEvaluation | RegularBackTicksEvaluation
 field
-    : Optional? bitloopsPrimaryType identifier
+    : optional? bitloopsPrimaryType identifier
     ;
 
 bitloopsPrimaryType
@@ -350,7 +353,7 @@ typeQuery
 
 typeQueryExpression
     : Identifier
-    | (identifierName Dot)+ identifierName
+    | (identifier Dot)+ identifier
     ;
 
 propertySignatur
@@ -398,7 +401,7 @@ accessibilityModifier
     ;
 
 identifierOrPattern
-    : identifierName
+    : identifier
     | bindingPattern
     ;
 
@@ -486,7 +489,7 @@ decorator
 
 decoratorMemberExpression
     : Identifier
-    | decoratorMemberExpression Dot identifierName
+    | decoratorMemberExpression Dot identifier
     | OpenParen expression CloseParen
     ;
 
@@ -643,11 +646,11 @@ statementList
 //     ;
 
 fromBlock
-    : (Multiply | multipleImportStatement) (As identifierName)? From StringLiteral eos
+    : (Multiply | multipleImportStatement) (As identifier)? From StringLiteral eos
     ;
 
 multipleImportStatement
-    : (identifierName Comma)? OpenBrace identifierName (Comma identifierName)* CloseBrace
+    : (identifier Comma)? OpenBrace identifier (Comma identifier)* CloseBrace
     ;
 
 // exportStatement
@@ -904,19 +907,15 @@ repoPortExtendableIdentifier
     ;
 
 dtoDeclaration
-    : DTO DTOIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 structDeclaration
     : Struct UpperCaseIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
-dtoEvaluationIdentifier
-    : dtoIdentifier 
-    ;
-
 dtoEvaluation
-    : dtoEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    : dtoIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
 
 valueObjectEvaluation
@@ -1234,7 +1233,7 @@ setAccessor
     ;
 
 propertyName
-    : identifierName
+    : identifier
     | StringLiteral
     | numericLiteral
     ;
@@ -1377,11 +1376,6 @@ numericLiteral
     // | OctalIntegerLiteral   #OctalIntegerLiteral
     // | OctalIntegerLiteral2  #OctalIntegerLiteral2
     // | BinaryIntegerLiteral  #BinaryIntegerLiteral
-    ;
-
-
-identifierName
-    : Identifier
     ;
 
 identifierOrKeyWord

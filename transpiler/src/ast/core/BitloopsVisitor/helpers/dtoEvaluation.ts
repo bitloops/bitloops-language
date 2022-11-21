@@ -26,7 +26,7 @@ export const dtoEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DtoEvaluationContext,
 ): TDTOEvaluation => {
-  const identifier = ctx.dtoEvaluationIdentifier().getText();
+  const identifier = thisVisitor.visit(ctx.dtoIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
   return {
     dto: {

@@ -27,15 +27,17 @@ export const fieldVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldContext,
 ): FieldNode => {
-  const identifier = ctx.identifier().getText();
+  const identifierNode = _thisVisitor.visit(ctx.identifier());
 
-  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  const optionalValue = ctx.Optional() ? true : false;
+  const typeNode = _thisVisitor.visit(ctx.bitloopsPrimaryType());
 
-  const fieldNode = new FieldNodeBuilder(_thisVisitor.intermediateASTTree)
-    .withType(type)
-    .withName(identifier)
-    .withOptional(optionalValue)
+  // const optionalValue = ctx.Optional() ? true : false;
+  const optionalNode = _thisVisitor.visit(ctx.optional());
+
+  const fieldNode = new FieldNodeBuilder()
+    .withType(typeNode)
+    .withName(identifierNode)
+    .withOptional(optionalNode)
     .build();
 
   return fieldNode;

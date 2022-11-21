@@ -20,6 +20,7 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
+import { DTOIdentifierNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTONode.js';
 import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
@@ -35,9 +36,6 @@ import {
   TGraphQLOperation,
   TDefinitionMethods,
   TOkErrorReturnType,
-  // TVariables,
-  // TVariable,
-  // TDTO,
   TEntityCreate,
   TValueObjectValues,
   TValueObjectMethods,
@@ -148,6 +146,7 @@ import {
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
+
   private _intermediateASTTree: IntermediateASTTree;
 
   constructor() {
@@ -185,12 +184,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return equalityExpressionVisitor(this, ctx);
   }
 
-  visitIdentifierName(ctx: BitloopsParser.IdentifierNameContext) {
-    return ctx.Identifier().getText();
+  visitDtoIdentifier(ctx: BitloopsParser.DtoIdentifierContext) {
+    const identifierName = ctx.DTOIdentifier().getText();
+    const dtoIdentifierNode = new DTOIdentifierNodeBuilder().withName(identifierName).build();
+    return dtoIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
-    return ctx.Identifier().getText();
+    const identifierName = ctx.Identifier().getText();
+    const identifierNode = new IdentifierNodeBuilder().withName(identifierName).build();
+    return identifierNode;
   }
 
   visitRelationalExpression(ctx: BitloopsParser.RelationalExpressionContext) {
@@ -788,5 +791,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
     return ctx.bitloopsIdentifiers().getText();
+  }
+
+  visitOptional(ctx: BitloopsParser.OptionalContext) {
+    return ctx.Optional().getText();
   }
 }
