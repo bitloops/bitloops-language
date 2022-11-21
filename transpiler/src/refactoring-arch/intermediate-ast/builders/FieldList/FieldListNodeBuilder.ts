@@ -1,6 +1,6 @@
-import { IBuilder } from './IBuilder.js';
-import { FieldListNode } from '../nodes/FieldListNode.js';
-import { FieldNode } from '../nodes/FieldNode.js';
+import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
+import { FieldNode } from '../../nodes/FieldList/FieldNode.js';
+import { IBuilder } from '../IBuilder.js';
 
 export class FieldListNodeBuilder implements IBuilder<FieldListNode> {
   private fieldListNode: FieldListNode;

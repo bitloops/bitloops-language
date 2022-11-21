@@ -17,37 +17,35 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { d } from 'bitloops-gherkin';
- import { defineFeature, loadFeature } from 'jest-cucumber';
+import { d } from 'bitloops-gherkin';
+import { defineFeature, loadFeature } from 'jest-cucumber';
 
- import {
+import {
   BitloopsIntermediateASTParser,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
- 
- const feature = loadFeature(
-   './__tests__/ast/core/domainConstructorDeclaration.feature',
- );
- 
- defineFeature(feature, (test) => {
-   test.skip('Domain constructor declaration is valid', ({ given, when, then }) => {
-     let boundedContext: string;
-     let module: string;
-     let blString: string;
-     let modelOutput: string;
-     let result: any;
-     given(
-       /^A Valid bounded context (.*), module (.*), constructor declaration (.*) string$/,
-       (arg0, arg1, arg2) => {
-         boundedContext = d(arg0);
-         module = d(arg1);
-         blString = d(arg2);
-       },
-     );
- 
-     when('I generate the model', () => {
+
+const feature = loadFeature('./__tests__/ast/core/domainConstructorDeclaration.feature');
+
+defineFeature(feature, (test) => {
+  test.skip('Domain constructor declaration is valid', ({ given, when, then }) => {
+    let boundedContext: string;
+    let module: string;
+    let blString: string;
+    let modelOutput: string;
+    let result: any;
+    given(
+      /^A Valid bounded context (.*), module (.*), constructor declaration (.*) string$/,
+      (arg0, arg1, arg2) => {
+        boundedContext = d(arg0);
+        module = d(arg1);
+        blString = d(arg2);
+      },
+    );
+
+    when('I generate the model', () => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
@@ -63,12 +61,11 @@
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
       }
-     });
- 
-     then(/^I should get (.*)$/, (arg0) => {
-       modelOutput = d(arg0);
-       expect(result).toMatchObject(JSON.parse(modelOutput));
-     });
-   });
- });
- 
+    });
+
+    then(/^I should get (.*)$/, (arg0) => {
+      modelOutput = d(arg0);
+      expect(result).toMatchObject(JSON.parse(modelOutput));
+    });
+  });
+});

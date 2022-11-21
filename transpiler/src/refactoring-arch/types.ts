@@ -5,9 +5,6 @@ export type TIntermediateModel = any;
 export type TTargetLanguageAST = any;
 export type TCodeInTargetLanguage = any;
 
-
-
-
 export interface IOriginalLanguageASTToIntermediateModelTransformer {
   transform: (initialAST: TOriginalLanguageAST) => TIntermediateModel;
 }
@@ -17,13 +14,13 @@ export interface IIntermediateModelToASTTargetLanguageTransformer {
 }
 
 export interface ITargetLanguageASTToTargetCodeGenerator {
-    generate: (targetLanguageAST: TTargetLanguageAST) => TCodeInTargetLanguage;
-  }
+  generate: (targetLanguageAST: TTargetLanguageAST) => TCodeInTargetLanguage;
+}
 
 export interface IBitloopsParser {
-    parse: (bitloopsCode: TCodeInOriginalLanguage) => TOriginalLanguageAST;
+  parse: (bitloopsCode: TCodeInOriginalLanguage) => TOriginalLanguageAST;
 }
 
 export interface IIntermediateModelBuilder {
-    build(initialAST: TOriginalLanguageAST): TIntermediateModel;
+  build(initialAST: TOriginalLanguageAST): TIntermediateModel;
 }

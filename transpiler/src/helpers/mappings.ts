@@ -117,6 +117,10 @@ const BitloopsTypesMapping = {
   TDTOIdentifier: 'TDTOIdentifier',
   TIdentifier: 'TIdentifier',
   TOptional: 'TOptional',
+  TBitloopsPrimitives: 'TBitloopsPrimitives',
+  ArrayBitloopsPrimType: 'ArrayBitloopsPrimType',
+  TBitloopsIdentifier: 'TBitloopsIdentifier',
+  TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

@@ -1,4 +1,4 @@
-import { DTOIdentifierNode } from '../../nodes/DTOIdentifierNode.js';
+import { DTOIdentifierNode } from '../../nodes/DTO/DTOIdentifierNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class DTOIdentifierNodeBuilder implements IBuilder<DTOIdentifierNode> {

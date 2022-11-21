@@ -1,5 +1,5 @@
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { IntermediateASTNode } from './IntermediateASTNode.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { IntermediateASTNode } from '../IntermediateASTNode.js';
 
 const NAME = 'fieldList';
 

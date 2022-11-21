@@ -1,10 +1,8 @@
 // import { TOriginalLanguageAST, IBitloopsParser, TCodeInOriginalLanguage } from "./Parser.js";
 
-
 // type TIntermediateModel = any;
 // type TTargetLanguageAST = any;
 // type TCodeInTargetLanguage = any;
-
 
 // interface IOriginalLanguageASTToIntermediateModelTransformer {
 //   transform: (initialAST: TOriginalLanguageAST) => TIntermediateModel;
@@ -16,7 +14,6 @@
 // interface ITargetLanguageASTToTargetCodeGenerator {
 //     generate: (targetLanguageAST: TTargetLanguageAST) => TCodeInTargetLanguage;
 //   }
-
 
 // class Transpiler {
 

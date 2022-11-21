@@ -225,7 +225,7 @@ export const BitloopsBuildInClassNames = {
 export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
 export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
 
-type TBitloopsIdentifier = string;
+export type TBitloopsIdentifier = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 

@@ -1,101 +1,101 @@
-class TagNode {
-  private attributes = '';
-  private children: TagNode[] = [];
-  private parent: TagNode = null;
-  private value = '';
+// class TagNode {
+//   private attributes = '';
+//   private children: TagNode[] = [];
+//   private parent: TagNode = null;
+//   private value = '';
 
-  constructor(private tagName: string) {
-    this.tagName = tagName;
-  }
+//   constructor(private tagName: string) {
+//     this.tagName = tagName;
+//   }
 
-  public add(childNode: TagNode): void {
-    childNode.setParent(this);
-    this.children.push(childNode);
-  }
+//   public add(childNode: TagNode): void {
+//     childNode.setParent(this);
+//     this.children.push(childNode);
+//   }
 
-  public getName(): string {
-    return this.tagName;
-  }
+//   public getName(): string {
+//     return this.tagName;
+//   }
 
-  public setParent(parent: TagNode) {
-    this.parent = parent;
-  }
+//   public setParent(parent: TagNode) {
+//     this.parent = parent;
+//   }
 
-  public getParent() {
-    return this.parent;
-  }
+//   public getParent() {
+//     return this.parent;
+//   }
 
-  public addAttribute(attribute: string, value: string) {
-    this.attributes += ' ';
-    this.attributes += attribute;
-    this.attributes += "='";
-    this.attributes += value;
-    this.attributes += "'";
-  }
-  public addValue(value: string): void {
-    this.value = value;
-  }
+//   public addAttribute(attribute: string, value: string) {
+//     this.attributes += ' ';
+//     this.attributes += attribute;
+//     this.attributes += "='";
+//     this.attributes += value;
+//     this.attributes += "'";
+//   }
+//   public addValue(value: string): void {
+//     this.value = value;
+//   }
 
-  public toString(): string {
-    let res = '<' + this.tagName + this.attributes + '>';
-    this.children.forEach((tagNode) => {
-      res += tagNode.toString();
-    });
-    res += this.value + '</' + this.tagName + '>';
-    return res;
-  }
-}
-class TagBuilder {
-  private rootNode: TagNode;
-  private currentNode: TagNode;
-  //   private parentNode: TagNode;
+//   public toString(): string {
+//     let res = '<' + this.tagName + this.attributes + '>';
+//     this.children.forEach((tagNode) => {
+//       res += tagNode.toString();
+//     });
+//     res += this.value + '</' + this.tagName + '>';
+//     return res;
+//   }
+// }
+// class TagBuilder {
+//   private rootNode: TagNode;
+//   private currentNode: TagNode;
+//   //   private parentNode: TagNode;
 
-  constructor(rootTagName: string) {
-    this.rootNode = new TagNode(rootTagName);
-    this.currentNode = this.rootNode;
-  }
+//   constructor(rootTagName: string) {
+//     this.rootNode = new TagNode(rootTagName);
+//     this.currentNode = this.rootNode;
+//   }
 
-  public addChild(childTagName: string): void {
-    this.addTo(this.currentNode, childTagName);
-  }
+//   public addChild(childTagName: string): void {
+//     this.addTo(this.currentNode, childTagName);
+//   }
 
-  public addSibling(siblingTagName: string): void {
-    this.addTo(this.currentNode.getParent(), siblingTagName);
-  }
+//   public addSibling(siblingTagName: string): void {
+//     this.addTo(this.currentNode.getParent(), siblingTagName);
+//   }
 
-  public addToParent(parentTagName: string, childTagName: string): void {
-    const parentNode = this.findParentBy(parentTagName);
-    if (!parentNode) throw new Error('missing parent tag: ' + parentTagName);
-    this.addTo(parentNode, childTagName);
-  }
+//   public addToParent(parentTagName: string, childTagName: string): void {
+//     const parentNode = this.findParentBy(parentTagName);
+//     if (!parentNode) throw new Error('missing parent tag: ' + parentTagName);
+//     this.addTo(parentNode, childTagName);
+//   }
 
-  public addAttribute(name: string, value: string): void {
-    this.currentNode.addAttribute(name, value);
-  }
+//   public addAttribute(name: string, value: string): void {
+//     this.currentNode.addAttribute(name, value);
+//   }
 
-  public addValue(value): void {
-    this.currentNode.addValue(value);
-  }
+//   public addValue(value): void {
+//     this.currentNode.addValue(value);
+//   }
 
-  private addTo(parentNode: TagNode, tagName: string) {
-    this.currentNode = new TagNode(tagName);
-    parentNode.add(this.currentNode);
-  }
+//   private addTo(parentNode: TagNode, tagName: string) {
+//     this.currentNode = new TagNode(tagName);
+//     parentNode.add(this.currentNode);
+//   }
 
-  // implementation of chain of responsibility pattern
-  private findParentBy(parentName: string) {
-    let parentNode = this.currentNode;
-    while (parentNode !== undefined && parentNode !== null) {
-      if (parentName === parentNode.getName()) return parentNode;
-      parentNode = parentNode.getParent();
-    }
-    return null;
-  }
+//   // implementation of chain of responsibility pattern
+//   private findParentBy(parentName: string) {
+//     let parentNode = this.currentNode;
+//     while (parentNode !== undefined && parentNode !== null) {
+//       if (parentName === parentNode.getName()) return parentNode;
+//       parentNode = parentNode.getParent();
+//     }
+//     return null;
+//   }
 
-  public toXml(): string {
-    return this.rootNode.toString();
-  }
-}
+//   public toXml(): string {
+//     return this.rootNode.toString();
+//   }
+// }
 
 // (1)
 // const tagBuilderXML = new TagBuilder('flavors').toXml();

@@ -19,16 +19,18 @@
  */
 import {
   BitloopsIntermediateASTParser,
+  BitloopsIntermediateASTParserError,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
-import { ClassTypes } from '../../../src/helpers/mappings.js';
-import { buildDTONode } from '../../helpers/builders.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { TDTOIdentifier, TVariables } from '../../../src/types.js';
+import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const testExamplesDTO = [
   {
-    inputBLString: 'DTO HelloWorldRequestDTO{ optional string name; }',
+    inputBLString: 'DTO HelloWorldRequestDTO{ optional string[] name; }',
     variables: [{ type: 'string', name: 'name', optional: true }],
     identifier: 'HelloWorldRequestDTO',
   },
@@ -64,7 +66,7 @@ const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
 test('DTO declaration is valid', () => {
-  let resultTree: any;
+  let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
@@ -83,14 +85,33 @@ test('DTO declaration is valid', () => {
       const result = intermediateParser.parse(
         initialModelOutput as unknown as BitloopsLanguageASTContext,
       );
-      resultTree = result[BOUNDED_CONTEXT][MODULE];
+      if (!(result instanceof BitloopsIntermediateASTParserError)) {
+        resultTree = result[BOUNDED_CONTEXT][MODULE];
+      }
     }
     console.log({ resultTree });
 
-    const expectedNode = buildDTONode(testDTO.identifier, testDTO.variables);
-    const actualNodes = resultTree.getClassTypeNodes(ClassTypes.DTOs);
+    const expectedNodeValues = getExpectedDTOValues(testDTO.variables, testDTO.identifier);
+    const actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
 
-    expect(actualNodes).toEqual([expectedNode]);
+    expect(actualNodes[0].getValue()).toMatchObject(expectedNodeValues);
     // expect(resultValue).toEqual(expectedDTOValue);
   });
 });
+
+const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
+  const dtoValue = {
+    DTOIdentifier: identifier,
+    fieldList: [
+      {
+        field: {
+          optional: true,
+          identifier: 'name',
+          type: 'string',
+        },
+      },
+    ],
+  };
+
+  return dtoValue;
+};

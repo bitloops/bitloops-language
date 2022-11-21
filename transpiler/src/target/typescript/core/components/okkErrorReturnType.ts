@@ -25,7 +25,7 @@ import { modelToTargetLanguage } from '../modelToTargetLanguage.js';
 const okErrorReturnTypeToTargetLanguage = (
   variable: TOkErrorReturnType,
 ): TTargetDependenciesTypeScript => {
-  let dependencies = [];
+  const dependencies = [];
   if (!variable.ok) {
     throw new Error('Return okError type must have ok property');
   }

@@ -35,8 +35,11 @@ export const bitloopsErrorEvaluationToTargetLanguage = (
   });
   const output = `new ${name}${argumentDependenciesResult.output}`;
   let dependencies;
-  if (argumentDependenciesResult.dependencies && argumentDependenciesResult.dependencies.length > 0) {
-    dependencies = [...getChildDependencies(name), ...argumentDependenciesResult.dependencies]
+  if (
+    argumentDependenciesResult.dependencies &&
+    argumentDependenciesResult.dependencies.length > 0
+  ) {
+    dependencies = [...getChildDependencies(name), ...argumentDependenciesResult.dependencies];
   } else {
     dependencies = [...getChildDependencies(name)];
   }

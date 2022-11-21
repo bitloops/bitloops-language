@@ -1,7 +1,7 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { DTOIdentifierNode } from '../../nodes/DTOIdentifierNode.js';
-import { DTONode } from '../../nodes/DTONode.js';
-import { FieldListNode } from '../../nodes/FieldListNode.js';
+import { DTOIdentifierNode } from '../../nodes/DTO/DTOIdentifierNode.js';
+import { DTONode } from '../../nodes/DTO/DTONode.js';
+import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class DTONodeBuilder implements IBuilder<DTONode> {

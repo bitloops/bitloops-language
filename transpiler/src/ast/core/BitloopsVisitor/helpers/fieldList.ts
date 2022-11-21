@@ -19,10 +19,10 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { FieldListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
+import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldListNode.js';
-import { FieldListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldListNodeBuilder.js';
-import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldNode.js';
 
 export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,

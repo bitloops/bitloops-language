@@ -1,4 +1,4 @@
-import { TClassTypesValues } from '../../helpers/mappings.js';
+import { TBitloopsTypesValues } from '../../helpers/mappings.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 
@@ -41,15 +41,11 @@ export class IntermediateASTTree {
     return this.currentNode;
   }
 
-  public getCurrentNodeClassType(): TClassTypesValues {
-    return this.currentNode.getClassType();
-  }
-
-  public getClassTypeNodes(classType: TClassTypesValues): IntermediateASTNode[] {
+  public getClassTypeNodes(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
     const rootChildren = this.rootNode.getChildren();
     const classTypeNodes = [];
     for (const child of rootChildren) {
-      if (child.getClassType() === classType) {
+      if (child.getNodeType() === nodeType) {
         classTypeNodes.push(child);
       }
     }
