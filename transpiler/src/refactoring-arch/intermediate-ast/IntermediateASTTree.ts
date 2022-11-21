@@ -108,6 +108,37 @@ export class IntermediateASTTree {
   //   }
   // }
 
+  /**    A
+   *  B -   F
+   * C-E   G-O-O
+   * D          O
+   */
+  public traverse(currentNode: IntermediateASTNode, cb?: (node: IntermediateASTNode) => any) {
+    if (currentNode.isLeaf()) {
+      return cb(currentNode);
+    }
+    cb(currentNode);
+    const nodeChildren = currentNode.getChildren();
+
+    for (const child of nodeChildren) {
+      this.traverse(child, cb);
+    }
+  }
+
+  public traverseBFS(currentNode: IntermediateASTNode, cb?: (node: IntermediateASTNode) => any) {
+    if (currentNode.isLeaf()) {
+      return cb(currentNode);
+    }
+    cb(currentNode);
+    const nodeChildren = currentNode.getChildren();
+    for (const child of nodeChildren) {
+      cb(child);
+    }
+    for (const child of nodeChildren) {
+      this.traverseBFS(child, cb);
+    }
+  }
+
   // public getAllUseCases(): IntermediateASTNode[] {
   //   return this.findNodes(NODE_TYPES.USE_CASE);
   // }

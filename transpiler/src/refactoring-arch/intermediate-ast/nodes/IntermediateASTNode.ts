@@ -43,6 +43,9 @@ export abstract class IntermediateASTNode {
   public getChildren(): IntermediateASTNode[] {
     return this.children;
   }
+  public isLeaf(): boolean {
+    return this.children.length == 0;
+  }
 
   public getClassType(): TClassTypesValues {
     return this.classType;
