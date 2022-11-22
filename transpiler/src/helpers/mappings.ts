@@ -119,6 +119,7 @@ const BitloopsTypesMapping = {
   TErrorEvaluation: 'TErrorEvaluation',
   TDTOIdentifier: 'TDTOIdentifier',
   TIdentifier: 'TIdentifier',
+  Toperator: 'Toperator',
   TOptional: 'TOptional',
   TBitloopsPrimitives: 'TBitloopsPrimitives',
   ArrayBitloopsPrimType: 'ArrayBitloopsPrimType',

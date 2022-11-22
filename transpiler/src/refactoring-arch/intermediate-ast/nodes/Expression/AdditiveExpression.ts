@@ -8,7 +8,9 @@ export class AdditiveExpressionNode extends ExpressionNode {
     super(BitloopsTypesMapping.TAdditiveExpression, { lines: lines! }, NAME);
   }
 
-  getExpressions(num: 0 | 1 | null): ExpressionNode | ExpressionNode[] {
+  // 🟡 index 1 is the operator
+
+  getExpressions(num: 0 | 2 | null): ExpressionNode | ExpressionNode[] {
     if (num === null) {
       return this.getChildren() as ExpressionNode[];
     }
