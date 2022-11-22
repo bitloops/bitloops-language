@@ -26,7 +26,7 @@ import {
 import { scanStatementForUseCaseResult } from './helpers/useCaseResultValue.js';
 import { IntermediateASTTree } from './../../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { StatementNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Statement.js';
-import { MethodCallExpressionNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/ExpressionNode.js';
+import { MethodCallExpressionNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 
 const transformRestControllerIntermediateAST = (controllers: TRESTController): TRESTController => {
   for (const controllerValues of Object.values(controllers)) {
@@ -62,7 +62,7 @@ type RestControllerNode = any;
 /**
  * Tree
  */
-const transformRestControllerIR = (
+export const transformRestControllerIR = (
   controllerNode: RestControllerNode,
   tree: IntermediateASTTree,
 ): RestControllerNode => {

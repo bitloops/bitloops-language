@@ -2,7 +2,6 @@ import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
 const NAME = 'MethodCallExpression';
-// This would extend the ExpressionNode class instead
 export class MethodCallExpressionNode extends ExpressionNode {
   constructor(lines?: string) {
     super(BitloopsTypesMapping.TMethodCallExpression, { lines: lines! }, NAME);
@@ -15,6 +14,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
   }
 
   prepend(prefix: string): void {
+    // TODO fix
     const newVal = prefix + this.getValue();
     this.setValue(newVal);
   }

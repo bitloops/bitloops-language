@@ -10,8 +10,8 @@ export class ArgumentListNodeBuilder implements IBuilder<ArgumentListNode> {
     this.argumentListNode = new ArgumentListNode();
   }
 
-  public withArguments(_arguments: ArgumentNode[]): ArgumentListNodeBuilder {
-    this.argumentNodes = _arguments;
+  public withArguments(arguments_: ArgumentNode[]): ArgumentListNodeBuilder {
+    this.argumentNodes = arguments_;
     return this;
   }
 
