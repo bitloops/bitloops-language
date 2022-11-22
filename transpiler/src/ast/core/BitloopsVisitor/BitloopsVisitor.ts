@@ -56,6 +56,9 @@ import {
   TUseCase,
   TStructs,
   TReadModels,
+  TBuiltInClassEvaluation,
+  TExpression,
+  TThisDeclaration,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -69,8 +72,8 @@ import {
   regularVariableEvaluationORliteralORexpressionVisitor,
   structEvaluationVisitor,
   evaluationFieldListVisitor,
-  thisVariableMethodEvaluationVisitor,
-  regularVariableMethodEvaluationVisitor,
+  // thisVariableMethodEvaluationVisitor,
+  // regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
   evaluationFieldVisitor,
   regularStructEvaluationVisitor,
@@ -114,7 +117,7 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
-  getClassEvaluationVisitor,
+  // getClassEvaluationVisitor,
   useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
@@ -129,7 +132,7 @@ import {
   statementListVisitor,
   constDeclarationVisitor,
   variableDeclarationVisitor,
-  thisDeclarationVisitor,
+  // thisDeclarationVisitor,
   switchStatementVisitor,
   caseBlockVisitor,
   caseClauseVisitor,
@@ -142,9 +145,16 @@ import {
   readModelDeclarationVisitor,
   domainErrorDeclarationVisitor,
   applicationErrorDeclarationVisitor,
+  builtInClassEvaluationVisitor,
   primitivePrimTypeVisitor,
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
+  memberDotExpressionVisitor,
+  methodCallExpressionVisitor,
+  getClassExpressionVisitor,
+  toStringExpressionVisitor,
+  assignmentExpressionVisitor,
+  identifierExpressionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 
@@ -243,6 +253,57 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext): TExpression {
+    return memberDotExpressionVisitor(this, ctx);
+  }
+
+  visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext): TExpression {
+    return methodCallExpressionVisitor(this, ctx);
+  }
+
+  visitGetClassExpression(ctx: BitloopsParser.GetClassExpressionContext): TExpression {
+    return getClassExpressionVisitor(this, ctx);
+  }
+
+  visitToStringExpression(ctx: BitloopsParser.ToStringExpressionContext): TExpression {
+    return toStringExpressionVisitor(this, ctx);
+  }
+
+  visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext): TThisDeclaration {
+    return assignmentExpressionVisitor(this, ctx);
+  }
+
+  visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext): TExpression {
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation: {
+            type: 'variable',
+            value: 'this',
+          },
+        },
+      },
+    };
+  }
+
+  visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {
+    return identifierExpressionVisitor(this, ctx);
+  }
+
+  visitRegularStructEvaluationString(ctx: BitloopsParser.RegularStructEvaluationStringContext) {
+    return this.visit(ctx.regularStructEvaluation());
+  }
+
+  visitRegularErrorTypeEvaluationString(
+    ctx: BitloopsParser.RegularErrorTypeEvaluationStringContext,
+  ) {
+    return this.visit(ctx.regularErrorTypeEvaluation());
+  }
+
+  visitRegularDTOEvaluationString(ctx: BitloopsParser.RegularDTOEvaluationStringContext) {
+    return this.visit(ctx.regularDTOEvaluation());
+  }
+
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
     const arrayLiteral = this.visit(ctx.arrayLiteral());
     return {
@@ -256,27 +317,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return arrayLiteralVisitor(this, ctx);
   }
 
-  visitRegularEvaluation(ctx: BitloopsParser.RegularEvaluationContext) {
-    const regularEvaluation: string = this.visitChildren(ctx)[0];
-    // return regularEvaluation;
-    return {
-      regularEvaluation,
-    };
-  }
-
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
     return {
       type: 'backTickString',
-      value: value,
-    };
-  }
-
-  visitThisVariableEvaluationString(ctx: BitloopsParser.ThisVariableEvaluationStringContext) {
-    const value = ctx.ThisVariableEvaluation().getText();
-    return {
-      type: 'variable',
       value: value,
     };
   }
@@ -290,17 +335,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
         name: identifier,
         argumentDependencies,
       },
-    };
-  }
-
-  visitRegularVariableEvaluationString(ctx: BitloopsParser.RegularVariableEvaluationStringContext) {
-    const value = ctx.RegularVariableEvaluation().getText();
-    // const regularVariableEvaluation =
-    //   this.evaluationBuilderDirector.buildRegularVariableEvaluation(value);
-    // return regularVariableEvaluation;
-    return {
-      type: 'variable',
-      value: value,
     };
   }
 
@@ -319,8 +353,21 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitExecuteExpression(_ctx: BitloopsParser.ExecuteExpressionContext) {
+    return {
+      type: 'variable',
+      value: 'execute',
+    };
+  }
+  visitDeleteKeyword(_ctx: BitloopsParser.DeleteKeywordContext) {
+    return {
+      type: 'variable',
+      value: 'delete',
+    };
+  }
+
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText());
+    return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
 
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
@@ -366,12 +413,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitTypeAnnotation(ctx: BitloopsParser.TypeAnnotationContext) {
-    return ctx.type_().getText();
+    return this.visit(ctx.bitloopsPrimaryType());
   }
 
-  visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
-    return thisDeclarationVisitor(this, ctx);
-  }
+  // visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
+  //   return thisDeclarationVisitor(this, ctx);
+  // }
 
   visitSwitchStatement(ctx: BitloopsParser.SwitchStatementContext) {
     return switchStatementVisitor(this, ctx);
@@ -423,18 +470,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return structEvaluationVisitor(this, ctx);
   }
 
-  visitThisVariableMethodEvaluation(ctx: BitloopsParser.ThisVariableMethodEvaluationContext): any {
-    return thisVariableMethodEvaluationVisitor(this, ctx);
-  }
-
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
     return methodArgumentsVisitor(this, ctx);
-  }
-
-  visitRegularVariableMethodEvaluation(
-    ctx: BitloopsParser.RegularVariableMethodEvaluationContext,
-  ): any {
-    return regularVariableMethodEvaluationVisitor(this, ctx);
   }
 
   visitEvaluationField(ctx: BitloopsParser.EvaluationFieldContext): any {
@@ -469,6 +506,24 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       type: 'regex',
       value: ctx.RegularExpressionLiteral().getText(),
     };
+  }
+
+  visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
+    const literalRes = this.visit(ctx.literal());
+    return {
+      expression: {
+        evaluation: {
+          regularEvaluation: literalRes,
+        },
+      },
+    };
+  }
+  visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
+    return this.visitChildren(ctx)[0];
+  }
+
+  visitTemplateStringLiteralLabel(ctx: BitloopsParser.TemplateStringLiteralLabelContext) {
+    return this.visitChildren(ctx)[0];
   }
 
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
@@ -506,7 +561,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDomainEvaluationInputRegular(
     ctx: BitloopsParser.DomainEvaluationInputRegularContext,
   ): TRegularEvaluation {
-    return this.visit(ctx.regularEvaluation());
+    // TODO fix model to have expression/ not assume that expression is always regular evaluation
+    const expressionResult = this.visit(ctx.expression());
+    const { expression } = expressionResult;
+    const value = expression.evaluation;
+    return value;
   }
 
   visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {
@@ -584,7 +643,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): string {
-    return ctx.type_().getText();
+    return this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
+  }
+
+  visitBuiltInClassEvaluation(
+    ctx: BitloopsParser.BuiltInClassEvaluationContext,
+  ): TBuiltInClassEvaluation {
+    return builtInClassEvaluationVisitor(this, ctx);
   }
 
   visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {
@@ -730,9 +795,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.ErrorClass().getText();
   }
 
-  visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
-    return getClassEvaluationVisitor(this, ctx);
-  }
+  // visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
+  //   return getClassEvaluationVisitor(this, ctx);
+  // }
 
   /**
    * UseCase Declaration

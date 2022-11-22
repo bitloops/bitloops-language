@@ -23,7 +23,7 @@ You are familiar with the **`[Demo][Hello World]`** syntax by now which indicate
 
 You've defined your [PackagePort](https://bitloops.com/docs/bitloops-language/components/package-port) and your concrete [PackageAdapter](https://bitloops.com/docs/bitloops-language/components/package-adapter) and now you want to instantiate it in the setup. So, when you use the package in your application it will use the adapter that you have specified in the setup.
 
-## Example
+### Example
 
 #### **`setup.bl`**
 
@@ -35,4 +35,46 @@ You can use the above package in your application like this:
 
 ```ts
 const bytes = GherkinPackage.encode(value);
+```
+
+## UseCase
+
+You've defined your [UseCase](https://bitloops.com/docs/bitloops-language/components/usecase) and now you want to instantiate it in the setup. Bounded Context and Module must be placed in front `[Todo][Todo]` and the dependencies passed as arguments `todoWriteRepo`, as it seems below:
+
+_For multiple dependencies separate them by comma_
+
+### Example
+
+#### **`setup.bl`**
+
+```ts
+const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
+```
+
+## RESTController
+
+You've defined your [RESTController](https://bitloops.com/docs/bitloops-language/components/rest-controller) and now you want to use it in the setup. You need to create a Rest Router that will link the REST API method and path with your controller. You then need to create a Rest Server that will use this Rest Router, in order to be able to run your server and make requests.
+
+### Example
+
+#### **`setup.bl`**
+
+The Rest Router requires the web framework and inside to declare the REST API method and path with the controller.
+
+```ts
+const todoRESTRouter = RESTRouter(REST.Fastify) {
+  Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
+}
+```
+
+The Rest Server requires the web framework, the port, the api prefix and inside to declare the route paths with the routers.
+
+```ts
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+}) {
+  '/todo': todoRESTRouter;
+}
 ```

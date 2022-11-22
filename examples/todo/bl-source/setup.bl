@@ -23,7 +23,7 @@ const todoReadRepo = RepoAdapters.Mongo({
 // USE CASES
 
 const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
-// const getAllTodoUseCase = [Todo][Todo]GetAllTodoUseCase(todoReadRepo);
+const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);
 // const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
 // const deleteTodoUseCase = [Todo][Todo]DeleteTodoUseCase(todoWriteRepo);
 // const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
@@ -37,7 +37,7 @@ const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
 
 const todoRESTRouter = RESTRouter(REST.Fastify) {
   Post('/'): [Todo][Todo]CreateTodoRESTController(createTodoUseCase);
-  // Get('/'): [Todo][Todo]GetAllTodoRESTController(getAllTodoUseCase);
+  Get('/'): [Todo][Todo]GetTodosRESTController(getAllTodoUseCase);
   // Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
   // Delete('/:id'): [Todo][Todo]DeleteTodoRESTController(deleteTodoUseCase);
   // Get('/:id'): [Todo][Todo]GetTodoRESTController(getByIdTodoUseCase);

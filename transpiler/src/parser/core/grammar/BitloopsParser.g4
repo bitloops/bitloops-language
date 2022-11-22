@@ -49,13 +49,13 @@ bindingPattern
 // Bitloops SPart
 // A.1 Types
 
-typeParameters
-    : '<' typeParameterList? '>'
-    ;
+// typeParameters
+//     : '<' typeParameterList? '>'
+//     ;
 
-typeParameterList
-    : typeParameter (Comma typeParameter)*
-    ;
+// typeParameterList
+//     : typeParameter (Comma typeParameter)*
+//     ;
 
 fieldList
     : field (SemiColon field)* SemiColon
@@ -69,30 +69,30 @@ evaluationField
     : Identifier Colon expression
     ;
 
-typeParameter
-    : Identifier constraint?
-    | typeParameters
-    ;
+// typeParameter
+//     : Identifier constraint?
+//     | typeParameters
+//     ;
 
-constraint
-    : 'extends' type_
-    ;
+// constraint
+//     : 'extends' type_
+//     ;
 
-typeArguments
-    : '<' typeArgumentList? '>'
-    ;
+// typeArguments
+//     : '<' typeArgumentList? '>'
+//     ;
 
 propFields
     : OpenBrace fieldList? CloseBrace
     ;
 
-typeArgumentList
-    : typeArgument (Comma typeArgument)*
-    ;
+// typeArgumentList
+//     : typeArgument (Comma typeArgument)*
+//     ;
 
-typeArgument
-    : type_
-    ;
+// typeArgument
+//     : type_
+//     ;
 
 propsIdentifier
 : PropsIdentifier
@@ -112,35 +112,35 @@ bitloopsIdentifiers
     | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
     ;
 
-type_
-    : unionOrIntersectionOrPrimaryType
-    | functionType
-    | constructorType
-    | typeGeneric
-    | StringLiteral
-    | bitloopsIdentifiers
-    | type_ '[' ']' 
-    ;
+// type_
+//     : unionOrIntersectionOrPrimaryType
+//     | functionType
+//     | constructorType
+//     | typeGeneric
+//     | StringLiteral
+//     | bitloopsIdentifiers
+//     | type_ '[' ']' 
+//     ;
 
-unionOrIntersectionOrPrimaryType
-    : unionOrIntersectionOrPrimaryType '|' unionOrIntersectionOrPrimaryType #Union
-    | unionOrIntersectionOrPrimaryType '&' unionOrIntersectionOrPrimaryType #Intersection
-    // | primaryType #Primary
-    | primitives #Primmitives
-    ;
+// unionOrIntersectionOrPrimaryType
+//     : unionOrIntersectionOrPrimaryType '|' unionOrIntersectionOrPrimaryType #Union
+//     | unionOrIntersectionOrPrimaryType '&' unionOrIntersectionOrPrimaryType #Intersection
+//     // | primaryType #Primary
+//     | primitives #Primmitives
+//     ;
 
-primaryType
-    : OpenParen type_ CloseParen                                 #ParenthesizedPrimType
-    | predefinedType                                #PredefinedPrimType
-    | typeReference                                 #ReferencePrimType
-    | objectType                                    #ObjectPrimType
-    // | primaryType {notLineTerminator()}? '[' ']'    #ArrayPrimType
-    | primaryType '[' ']'    #ArrayPrimType
-    | '[' tupleElementTypes ']'                     #TuplePrimType
-    | typeQuery                                     #QueryPrimType
-    | This                                          #ThisPrimType
-    | typeReference Is primaryType                  #RedefinitionOfType
-    ;
+// primaryType
+//     : OpenParen type_ CloseParen                                 #ParenthesizedPrimType
+//     | predefinedType                                #PredefinedPrimType
+//     | typeReference                                 #ReferencePrimType
+//     | objectType                                    #ObjectPrimType
+//     // | primaryType {notLineTerminator()}? '[' ']'    #ArrayPrimType
+//     | primaryType '[' ']'    #ArrayPrimType
+//     | '[' tupleElementTypes ']'                     #TuplePrimType
+//     | typeQuery                                     #QueryPrimType
+//     | This                                          #ThisPrimType
+//     | typeReference Is primaryType                  #RedefinitionOfType
+//     ;
 
 primitives
     : Any
@@ -175,28 +175,10 @@ struct
     : UpperCaseIdentifier
     ;
 
-regularEvaluation
-    : regularMethodEvaluation   
-    | regularStringEvaluation
-    | templateStringLiteral
-    | regularVariableEvaluation
-    | regularIntegerEvaluation
-    | regularDecimalEvaluation
-    | regularBooleanEvaluation
-    | regularDTOEvaluation
-    | regularStructEvaluation
-    | regularErrorTypeEvaluation 
-    ;
 
-// regularVariableEvaluation | regularStringEvaluation |
 regularErrorTypeEvaluation
     : errorIdentifier
     ;
-
-getClassEvaluation:
-    GetClassEvaluation 
-    ;
-
 
 methodArguments
     : OpenParen (argumentList (Comma argumentList)*)? CloseParen
@@ -210,20 +192,15 @@ closeParen
     :  CloseParen
     ;
 
-//regularMethodEvaluation
-//    : regularVariableEvaluation openParen regularVariableEvaluation closeParen;
-regularVariableEvaluation
-    : ThisVariableEvaluation #ThisVariableEvaluationString
-    | RegularVariableEvaluation #RegularVariableEvaluationString
-    | Identifier    #IdentifierString
+regularIdentifier
+    : Identifier                                                #IdentifierString
+    | regularDTOEvaluation                                      # RegularDTOEvaluationString
+    | regularStructEvaluation                                   # RegularStructEvaluationString
+    | regularErrorTypeEvaluation                                # RegularErrorTypeEvaluationString
+    // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
+    | Execute                                                   # ExecuteExpression
+    | Delete                                                    # DeleteKeyword
     ;
-
-regularMethodEvaluation
-    : ThisVariableEvaluation methodArguments    #ThisVariableMethodEvaluation
-    | RegularVariableEvaluation methodArguments #RegularVariableMethodEvaluation
-    ;
-
-
 
 regularStringEvaluation
     : StringLiteral
@@ -259,15 +236,15 @@ field
 
 bitloopsPrimaryType
     : primitives                                        #PrimitivePrimType
-    | bitloopsBuildInClass                              #BitloopsBuildInClassPrimType
+    | bitloopsBuiltInClass                              #BitloopsBuiltInClassPrimType
     | bitloopsPrimaryType OpenBracket CloseBracket      #ArrayBitloopsPrimType
     | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
     ;
 
-bitloopsBuildInClass
+bitloopsBuiltInClass
     : UUIDv4
     ;
-
+    
 predefinedType
     : Any
     | Int32
@@ -277,14 +254,14 @@ predefinedType
     | Void
     ;
 
-typeReference
-    : typeName nestedTypeGeneric?
-    ;
+// typeReference
+//     : typeName nestedTypeGeneric?
+//     ;
 
-nestedTypeGeneric
-    : typeIncludeGeneric
-    | typeGeneric
-    ;
+// nestedTypeGeneric
+//     : typeIncludeGeneric
+//     | typeGeneric
+//     ;
 
 // I tried recursive include, but it's not working.
 // typeGeneric
@@ -293,38 +270,38 @@ nestedTypeGeneric
 //
 // TODO: Fix recursive
 //
-typeGeneric
-    : '<' typeArgumentList '>'
-    ;
+// typeGeneric
+//     : '<' typeArgumentList '>'
+//     ;
 
-typeIncludeGeneric
-    :'<' typeArgumentList '<' typeArgumentList ('>' bindingPattern '>' | '>>')
-    ;
+// typeIncludeGeneric
+//     :'<' typeArgumentList '<' typeArgumentList ('>' bindingPattern '>' | '>>')
+//     ;
 
 typeName
     : Identifier
     | namespaceName
     ;
 
-objectType
-    : OpenBrace typeBody? CloseBrace
-    ;
+// objectType
+//     : OpenBrace typeBody? CloseBrace
+//     ;
 
-typeBody
-    : typeMemberList (SemiColon | Comma)?
-    ;
+// typeBody
+//     : typeMemberList (SemiColon | Comma)?
+//     ;
 
-typeMemberList
-    : typeMember ((SemiColon | Comma) typeMember)*
-    ;
+// typeMemberList
+//     : typeMember ((SemiColon | Comma) typeMember)*
+//     ;
 
-typeMember
-    : propertySignatur
-    | callSignature
-    | constructSignature
-    | indexSignature
-    | methodSignature ('=>' type_)?
-    ;
+// typeMember
+//     : propertySignatur
+//     | callSignature
+//     | constructSignature
+//     | indexSignature
+//     | methodSignature ('=>' type_)?
+//     ;
 
 methodDefinitionList
     : methodDefinition*
@@ -335,17 +312,17 @@ methodDefinition
     ;
 
 
-tupleElementTypes
-    : type_ (Comma type_)*
-    ;
+// tupleElementTypes
+//     : type_ (Comma type_)*
+//     ;
 
-functionType
-    : typeParameters? OpenParen parameterList? CloseParen '=>' type_
-    ;
+// functionType
+//     : typeParameters? OpenParen parameterList? CloseParen '=>' type_
+    // ;
 
-constructorType
-    : 'new' typeParameters? OpenParen parameterList? CloseParen '=>' type_
-    ;
+// constructorType
+//     : 'new' typeParameters? OpenParen parameterList? CloseParen '=>' type_
+//     ;
 
 typeQuery
     : 'typeof' typeQueryExpression
@@ -356,17 +333,17 @@ typeQueryExpression
     | (identifier Dot)+ identifier
     ;
 
-propertySignatur
-    : ReadOnly? propertyName '?'? typeAnnotation? ('=>' type_)?
-    ;
+// propertySignatur
+//     : ReadOnly? propertyName '?'? typeAnnotation? ('=>' type_)?
+//     ;
 
 typeAnnotation
-    : Colon type_
+    : Colon bitloopsPrimaryType
     ;
 
-callSignature
-    : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
-    ;
+// callSignature
+//     : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
+//     ;
 
 parameterList
     : restParameter
@@ -405,21 +382,21 @@ identifierOrPattern
     | bindingPattern
     ;
 
-constructSignature
-    : 'new' typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
-    ;
+// constructSignature
+//     : 'new' typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
+//     ;
 
 indexSignature
     : '[' Identifier Colon (Int32|String) ']' typeAnnotation
     ;
 
-methodSignature
-    : propertyName '?'? callSignature
-    ;
+// methodSignature
+//     : propertyName '?'? callSignature
+//     ;
 
-typeAliasDeclaration
-    : 'type' Identifier typeParameters? '=' type_ SemiColon
-    ;
+// typeAliasDeclaration
+//     : 'type' Identifier typeParameters? '=' type_ SemiColon
+//     ;
 
 // constructorDeclaration
 //     : accessibilityModifier? Constructor '(' formalParameterList? ')' ( ('{' functionBody '}') | SemiColon)?
@@ -438,13 +415,13 @@ typeAliasDeclaration
 //     : Props Identifier typeParameters? interfaceExtendsClause? objectType SemiColon?
 //     ;
 
-interfaceExtendsClause
-    : Extends classOrInterfaceTypeList
-    ;
+// interfaceExtendsClause
+//     : Extends classOrInterfaceTypeList
+//     ;
 
-classOrInterfaceTypeList
-    : typeReference (Comma typeReference)*
-    ;
+// classOrInterfaceTypeList
+//     : typeReference (Comma typeReference)*
+//     ;
 
 // A.7 Interface
 
@@ -531,12 +508,12 @@ jestTestDeclaration
     | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
     | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
 	| JestTestIsInstanceOf OpenBrace isInstanceOf CloseBrace SemiColon?  
-    | JestTest OpenBrace regularEvaluation SemiColon? CloseBrace SemiColon?  
     | JestTest OpenBrace formalParameterList CloseBrace SemiColon?   
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
-    | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
+    // | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
+    | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
     | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
@@ -548,7 +525,7 @@ jestTestDeclaration
     | JestTestEntityDeclaration OpenBrace entityDeclaration CloseBrace SemiColon?
     | JestTestCondition OpenBrace condition CloseBrace SemiColon?
     | JestTestVariableDeclaration OpenBrace variableDeclaration CloseBrace SemiColon?
-    | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
+    // | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
     | JestTestValueObjectEvaluation OpenBrace valueObjectEvaluation CloseBrace SemiColon?
     | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
@@ -561,9 +538,9 @@ errorEvaluation
 
 evaluation
     : isInstanceOf 
-    | getClassEvaluation
+    // | getClassEvaluation
+    | builtInClassEvaluation
     | errorEvaluation
-    | regularEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
@@ -587,16 +564,17 @@ variableDeclaration
     : identifier typeAnnotation '=' expression  SemiColon?
     ;
 
-thisDeclaration
-    : ThisVariableEvaluation '=' expression  SemiColon?
-    ;
+// thisDeclaration
+//     : ThisVariableEvaluation '=' expression  SemiColon?
+//     ;
+
 
 statement
     : block                         
     | expression    
     | constDeclaration
     | variableDeclaration
-    | thisDeclaration
+    // | thisDeclaration
     // | expressionStatement
     | emptyStatement_
     | propsDeclaration
@@ -610,10 +588,10 @@ statement
     // | labelledStatement
     | throwStatement
     | tryStatement
-    | functionDeclaration
+    // | functionDeclaration
     | arrowFunctionDeclaration
     // | variableStatement
-    | typeAliasDeclaration //ADDED
+    // | typeAliasDeclaration //ADDED
     | builtInFunction // Using semantic analysis, allow it only inside domain
     ;
 
@@ -657,11 +635,11 @@ multipleImportStatement
 //     : Export Default? (fromBlock | statement)
 //     ;
 
-variableStatement
-    : bindingPattern typeAnnotation? initializer SemiColon?
-    | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
-    | Declare varModifier? variableDeclarationList SemiColon?
-    ;
+// variableStatement
+//     : bindingPattern typeAnnotation? initializer SemiColon?
+//     | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
+//     | Declare varModifier? variableDeclarationList SemiColon?
+//     ;
 
 variableDeclarationList
     : variableDeclaration (Comma variableDeclaration)*
@@ -782,9 +760,9 @@ debuggerStatement
     : Debugger eos
     ;
 
-functionDeclaration
-    : Function_ Identifier callSignature ( (OpenBrace functionBody CloseBrace) | SemiColon)
-    ;
+// functionDeclaration
+//     : Function_ Identifier callSignature ( (OpenBrace functionBody CloseBrace) | SemiColon)
+//     ;
 
 //Ovveride ECMA
 // classDeclaration
@@ -924,7 +902,8 @@ valueObjectEvaluation
 
 domainEvaluationInput
     : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen   # DomainEvaluationInputFieldList
-    | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
+    | OpenParen expression CloseParen             # DomainEvaluationInputRegular
+    // | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -938,12 +917,15 @@ structEvaluationIdentifier
 structEvaluation
     : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
+    
+builtInClassEvaluation
+    : bitloopsBuiltInClass (Dot identifier)? methodArguments SemiColon?
+    ;
 
 propsEvaluation
     : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseBrace CloseParen
     ;
 
-//TODO make objectLiteral more specific
 domainErrorDeclaration
     : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
@@ -1049,10 +1031,8 @@ domainRuleIdentifier
 : RuleIdentifier
 ;
 
-// TODO valueObjectIdentifier inside bitloops identifiers 
-// TODO change it to something like this dtoIdentifiers | valueObjectIdentifier | type_
 returnOkType
-    : OK OpenParen type_ CloseParen
+    : OK OpenParen bitloopsPrimaryType CloseParen
     ;
 
 returnErrorsType
@@ -1079,9 +1059,9 @@ packagePortDeclaration
 //     :  '{' classElement* '}'
 //     ;
 
-classExtendsClause
-    : Extends typeReference
-    ;
+// classExtendsClause
+//     : Extends typeReference
+//     ;
 
 // useCaseTail
 //     :  '{' useCaseElement* '}'
@@ -1170,7 +1150,7 @@ formalParameterList
     | OpenParen
     (
     formalParameterArg (Comma formalParameterArg)* (Comma lastFormalParameterArg)?
-    | lastFormalParameterArg
+    | lastFormalParameterArg 
     )?
     CloseParen 
     ;
@@ -1203,14 +1183,12 @@ objectLiteral
     : OpenBrace (propertyAssignment (Comma propertyAssignment)* Comma?)? CloseBrace
     ;
 
-functionParameters
-    : (propertyAssignment (Comma propertyAssignment)* Comma?)
-    ;
+// functionParameters
+//     : (propertyAssignment (Comma propertyAssignment)* Comma?)
+//     ;
 
 regularVariableEvaluationORliteralORexpression
-    : regularVariableEvaluation 
-    | literal 
-    | expression
+    : expression
     ;
 
 // MODIFIED
@@ -1247,7 +1225,7 @@ argumentList
     ;
 
 argument                      // ECMAScript 6: Spread Operator
-    : Ellipsis? (regularVariableEvaluationORliteralORexpression)
+    : (regularVariableEvaluationORliteralORexpression)
     ;
 
 expressionSequence
@@ -1260,7 +1238,11 @@ functionExpressionDeclaration
 
 expression
     : Not expression                                             # NotExpression
-    | OpenParen expression CloseParen                                         # ParenthesizedExpression
+    | OpenParen expression CloseParen                            # ParenthesizedExpression
+    | expression Dot regularIdentifier                              # MemberDotExpression
+    | expression methodArguments                                       # MethodCallExpression
+    | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
+    | expression Dot ToString OpenParen CloseParen               # ToStringExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
     | expression op=('+' | '-') expression                       # AdditiveExpression
     | expression op=('<' | '>' | '<=' | '>=') expression         # RelationalExpression
@@ -1268,8 +1250,12 @@ expression
     | expression op=And expression                               # LogicalAndExpression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
+    | expression '=' expression                                  # AssignmentExpression
+    | literal                                                   # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
+    | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
+    | This                                                       # ThisExpression
     ;   
 
 // more single expressions
@@ -1459,6 +1445,6 @@ eos
     // | {this.closeBrace()}?
     ;
 
-isInstanceOf: regularVariableEvaluation Is classTypes SemiColon?;
+isInstanceOf: regularIdentifier Is classTypes SemiColon?;
 
 classTypes: ErrorClass;

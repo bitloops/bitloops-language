@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitiveToLang.js';
-import { mappingBitloopsBuildInClassToLayer } from '../../../../helpers/mappings.js';
+import { mappingBitloopsBuiltInClassToLayer } from '../../../../helpers/mappings.js';
 import { TBitloopsPrimaryType, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { SupportedLanguages } from '../../../supportedLanguages.js';
 import { extractBaseTypeOfPrimaryType } from '../../utils/extractPrimaryTypeBaseType.js';
@@ -33,8 +33,8 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
 
   if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](type);
-  } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuildInClass(type)) {
-    mappedType = `${mappingBitloopsBuildInClassToLayer[type]}.${type}`;
+  } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
+    mappedType = `${mappingBitloopsBuiltInClassToLayer[type]}.${type}`;
     dependencies = getChildDependencies(type);
   } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
     const { value } = type.arrayType;

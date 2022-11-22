@@ -219,11 +219,11 @@ export const bitloopsPrimitives = [
 ] as const;
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
-export const BitloopsBuildInClassNames = {
+export const BitloopsBuiltInClassNames = {
   UUIDv4: 'UUIDv4',
 } as const;
-export const bitloopsBuildInClasses = [BitloopsBuildInClassNames.UUIDv4] as const;
-export type TBitloopsBuildInClasses = typeof bitloopsBuildInClasses[number];
+export const bitloopsBuiltInClasses = [BitloopsBuiltInClassNames.UUIDv4] as const;
+export type TBitloopsBuiltInClasses = typeof bitloopsBuiltInClasses[number];
 
 export type TBitloopsIdentifier = string;
 
@@ -231,7 +231,7 @@ export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIden
 
 export type TBitloopsPrimaryType =
   | TBitloopsPrimitives
-  | TBitloopsBuildInClasses
+  | TBitloopsBuiltInClasses
   | TBitloopsIdentifier
   | ArrayBitloopsPrimType;
 
@@ -303,6 +303,17 @@ export type TRegularEvaluation = {
   };
 };
 
+export type TBuiltInClassEvaluation = {
+  builtInClass: {
+    className: string;
+    argumentDependencies: TArgumentDependencies;
+  };
+};
+
+// export type TCondition = {
+//   evaluateTrue?: TEvaluation;
+//   evaluateFalse?: TEvaluation;
+// };
 export type TEvaluationValues =
   | TRegularEvaluation
   | TStructEvaluation
@@ -313,7 +324,8 @@ export type TEvaluationValues =
   | TInstanceOf
   | TErrorEvaluation
   | TNotInstanceOf
-  | TGetClass;
+  | TGetClass
+  | TBuiltInClassEvaluation;
 
 export type TEvaluation = {
   evaluation: TEvaluationValues;
@@ -374,7 +386,14 @@ export type TExpressionValues =
   | TRelationalExpression
   | TEqualityExpression
   | TParenthesizedExpression
-  | TArrayLiteralExpression;
+  | TArrayLiteralExpression
+  | TToStringExpression;
+
+export type TToStringExpression = {
+  toString: {
+    value: string;
+  };
+};
 
 export type TArrayLiteralExpression = {
   arrayLiteral: TExpression[];
@@ -805,7 +824,7 @@ export interface IServer {
   port: string;
 }
 
-type TResolvers = TResolver[];
+export type TResolvers = TResolver[];
 
 export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
 
