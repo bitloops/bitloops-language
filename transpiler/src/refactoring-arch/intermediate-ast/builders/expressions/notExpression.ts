@@ -1,4 +1,3 @@
-// import { TBitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/type.js';
 import { NotExpressionNode } from '../../nodes/Expression/NotExpression.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IBuilder } from '../IBuilder.js';
