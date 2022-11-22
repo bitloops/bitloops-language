@@ -125,6 +125,7 @@ const BitloopsTypesMapping = {
   TBitloopsIdentifier: 'TBitloopsIdentifier',
   TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
   TMethodCallExpression: 'TMethodCallExpression',
+  TThisExpression: 'TThisExpression',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
