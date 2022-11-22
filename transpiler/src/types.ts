@@ -327,6 +327,14 @@ export type TEvaluationValues =
   | TGetClass
   | TBuiltInClassEvaluation;
 
+export type TMethodCallExpression = {
+  methodCallExpression: {
+    // TODO change to expression
+    identifierValue: string; // Perhaps
+    argumentDependencies?: TArgumentDependencies; // ArgumentsDependencies, e.g. name
+  };
+};
+
 export type TEvaluation = {
   evaluation: TEvaluationValues;
 };
@@ -387,7 +395,8 @@ export type TExpressionValues =
   | TEqualityExpression
   | TParenthesizedExpression
   | TArrayLiteralExpression
-  | TToStringExpression;
+  | TToStringExpression
+  | TMethodCallExpression;
 
 export type TToStringExpression = {
   toString: {

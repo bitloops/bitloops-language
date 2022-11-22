@@ -123,6 +123,7 @@ const BitloopsTypesMapping = {
   ArrayBitloopsPrimType: 'ArrayBitloopsPrimType',
   TBitloopsIdentifier: 'TBitloopsIdentifier',
   TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
+  TMethodCallExpression: 'TMethodCallExpression',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

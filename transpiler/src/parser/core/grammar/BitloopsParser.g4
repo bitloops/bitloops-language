@@ -1239,8 +1239,8 @@ functionExpressionDeclaration
 expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                            # ParenthesizedExpression
-    | expression Dot regularIdentifier                              # MemberDotExpression
-    | expression methodArguments                                       # MethodCallExpression
+    | expression Dot regularIdentifier                           # MemberDotExpression
+    | expression methodArguments                                 # MethodCallExpression
     | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
     | expression Dot ToString OpenParen CloseParen               # ToStringExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
