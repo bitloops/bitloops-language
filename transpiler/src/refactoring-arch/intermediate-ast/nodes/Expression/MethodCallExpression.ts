@@ -7,7 +7,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
     super(BitloopsTypesMapping.TMethodCallExpression, { lines: lines! }, NAME);
   }
 
-  getMethodName(): string {
+  getExpressionIdentifier(): string {
     const children = this.getChildren();
     const methodNameNode = children.find((child) => child.getNodeType() === 'TIdentifier');
     return methodNameNode.getValue();
