@@ -855,8 +855,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
 
-  visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuildInClassPrimTypeContext) {
-    const buildInClassType = ctx.bitloopsBuildInClass().getText();
+  visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
+    const buildInClassType = ctx.bitloopsBuiltInClass().getText();
     const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
     return buildInClassTypeNode;
   }

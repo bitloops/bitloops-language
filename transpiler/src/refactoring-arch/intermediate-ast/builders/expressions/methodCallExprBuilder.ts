@@ -1,4 +1,4 @@
-import { TBitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/type.js';
+import { ArgumentListNode } from '../../nodes/ArgumentList/ArgumentListNode.js';
 import { MethodCallExpressionNode } from '../../nodes/Expression/MethodCallExpression.js';
 import { IdentifierNode } from '../../nodes/IdentifierNode.js';
 import { OptionalNode } from '../../nodes/OptionalNode.js';
@@ -20,8 +20,8 @@ export class MethodCallNodeBuilder implements IBuilder<MethodCallExpressionNode>
     return this;
   }
 
-  public withArgumentsList(argumentsListNode: ArgumentsListNode): MethodCallNodeBuilder {
-    this.argumentListNode = argumentsListNode;
+  public withArgumentsList(argumentListNode: ArgumentListNode): MethodCallNodeBuilder {
+    this.argumentListNode = argumentListNode;
     return this;
   }
 

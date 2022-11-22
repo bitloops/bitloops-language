@@ -1,5 +1,5 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping, ClassTypes } from '../../helpers/mappings.js';
-import { ExpressionNode } from './nodes/ExpressionNode.js';
+import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 

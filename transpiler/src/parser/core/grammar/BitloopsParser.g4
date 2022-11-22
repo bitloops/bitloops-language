@@ -1218,9 +1218,8 @@ argumentList
     : argument (Comma argument)*
     ;
 
-argument                      // ECMAScript 6: Spread Operator
-    // TODO remove this nesting
-    : (regularVariableEvaluationORliteralORexpression)
+argument 
+    : expression
     ;
 
 expressionSequence

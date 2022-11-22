@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { ExpressionNode } from './ExpressionNode.js';
+import { ExpressionNode } from './Expression/ExpressionNode.js';
 import { IntermediateASTNode } from './IntermediateASTNode.js';
 
 const NAME = 'ConstDeclaration';
