@@ -3,6 +3,7 @@ import { IBuilder } from '../IBuilder.js';
 
 export class BitloopsPrimaryTypeBuilder implements IBuilder<BitloopsPrimaryTypeNode> {
   private bitloopsPrimaryTypeNode: BitloopsPrimaryTypeNode;
+  private nodeName = 'type';
 
   public withType(primaryTypeNode: BitloopsPrimaryTypeNode): BitloopsPrimaryTypeBuilder {
     this.bitloopsPrimaryTypeNode = primaryTypeNode;
@@ -10,7 +11,7 @@ export class BitloopsPrimaryTypeBuilder implements IBuilder<BitloopsPrimaryTypeN
   }
 
   public build(): BitloopsPrimaryTypeNode {
-    this.bitloopsPrimaryTypeNode.setNodeName('type');
+    this.bitloopsPrimaryTypeNode.setNodeName(this.nodeName);
 
     return this.bitloopsPrimaryTypeNode;
   }
