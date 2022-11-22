@@ -24,6 +24,7 @@ import { TExpression } from '../../../../types.js';
 import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/additiveExpresssion.js';
 import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
 import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
+import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/multiplicativeExpression.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -130,18 +131,19 @@ export const logicalNotExpressionVisitor = (
 export const multiplicativeExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MultiplicativeExpressionContext,
-): TExpression => {
+): { expression: AdditiveExpressionNode } => {
   const left = thisVisitor.visit(ctx.expression(0));
   const right = thisVisitor.visit(ctx.expression(1));
-  const operator = ctx.op.text;
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new MultiplicativeExpressionBuilder()
+    .withLeftExpression(left)
+    .withRightExpression(right)
+    .withOperator(operator)
+    .build();
+
   return {
-    expression: {
-      multiplicativeExpression: {
-        left: left.expression,
-        right: right.expression,
-        operator: operator,
-      },
-    },
+    expression: node,
   };
 };
 

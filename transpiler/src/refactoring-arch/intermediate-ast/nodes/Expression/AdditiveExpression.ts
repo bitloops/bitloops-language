@@ -8,12 +8,11 @@ export class AdditiveExpressionNode extends ExpressionNode {
     super(BitloopsTypesMapping.TAdditiveExpression, { lines: lines! }, NAME);
   }
 
-  // 🟡 index 1 is the operator
-
-  getExpressions(num: 0 | 2 | null): ExpressionNode | ExpressionNode[] {
+  getExpressions(num: 0 | 1 | null): ExpressionNode | ExpressionNode[] {
+    const expressions = this.getChildren().filter((child) => child instanceof ExpressionNode);
     if (num === null) {
-      return this.getChildren() as ExpressionNode[];
+      return expressions as ExpressionNode[];
     }
-    return this.getChildren()[num] as ExpressionNode;
+    return expressions[num] as ExpressionNode;
   }
 }

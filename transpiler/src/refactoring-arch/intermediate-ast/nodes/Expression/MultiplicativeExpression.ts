@@ -9,10 +9,11 @@ export class MultiplicativeExpressionNode extends ExpressionNode {
   }
 
   /* 🔧 TODO: make a Base class for left Right expressions and paste this  */
-  getExpressions(num: 0 | 2 | null): ExpressionNode | ExpressionNode[] {
+  getExpressions(num: 0 | 1 | null): ExpressionNode | ExpressionNode[] {
+    const expressions = this.getChildren().filter((child) => child instanceof ExpressionNode);
     if (num === null) {
-      return this.getChildren() as ExpressionNode[];
+      return expressions as ExpressionNode[];
     }
-    return this.getChildren()[num] as ExpressionNode;
+    return expressions[num] as ExpressionNode;
   }
 }
