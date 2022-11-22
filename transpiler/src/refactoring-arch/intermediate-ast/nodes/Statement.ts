@@ -14,7 +14,7 @@ export abstract class StatementNode extends IntermediateASTNode {
 
     const expressionNode = this.getExpression();
     if (expressionNode.isMethodCallExpression()) {
-      const methodName = expressionNode.getMethodName();
+      const methodName = expressionNode.getExpressionIdentifier();
       // Todo check for this & (.) operator
       if (methodName === 'execute') {
         return true;

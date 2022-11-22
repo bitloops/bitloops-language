@@ -156,6 +156,7 @@ import {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  arrayLiteralExpressionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 
@@ -306,12 +307,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
-    const arrayLiteral = this.visit(ctx.arrayLiteral());
-    return {
-      expression: {
-        ...arrayLiteral,
-      },
-    };
+    return arrayLiteralExpressionVisitor(this, ctx);
   }
 
   visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {

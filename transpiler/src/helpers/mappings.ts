@@ -125,6 +125,14 @@ const BitloopsTypesMapping = {
   TBitloopsIdentifier: 'TBitloopsIdentifier',
   TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
   TMethodCallExpression: 'TMethodCallExpression',
+  TThisExpression: 'TThisExpression',
+  TStringLiteral: 'TStringLiteral',
+  TNullLiteral: 'TNullLiteral',
+  TBooleanLiteral: 'TBooleanLiteral',
+  TDecimalLiteral: 'TDecimalLiteral',
+  TIntegerLiteral: 'TIntegerLiteral',
+  TLiteralValue: 'TLiteralValue',
+  TLiteralType: 'TLiteralType',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
