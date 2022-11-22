@@ -26,9 +26,12 @@ export const jestTestDeclarationVisitor = (
   ctx: BitloopsParser.JestTestDeclarationContext,
 ): any => {
   const children = thisVisitor.visitChildren(ctx);
+  const jestTest = children[2];
+  // Put jestTest inside tree?
+  //  (thisVisitor.intermediateASTTree)
   const returnObject = {
     Tests: {
-      jestTest: children[2],
+      jestTest,
     },
   };
   return returnObject;

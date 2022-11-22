@@ -18,6 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-export const stringEvaluation = (value: any): any => {
-  return { type: 'string', value: value.substring(1, value.length - 1) };
+import { StringLiteralBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { StringLiteralNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+
+export const stringEvaluation = (value: any): StringLiteralNode => {
+  // return { type: 'string', value: value.substring(1, value.length - 1) };
+
+  const trimmedValue = value.substring(1, value.length - 1);
+  const literalNode = new StringLiteralBuilder().withValue(trimmedValue).build();
+  return literalNode;
 };

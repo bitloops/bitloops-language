@@ -30,10 +30,8 @@ export { structEvaluationVisitor } from './structEvaluation.js';
 export { evaluationFieldListVisitor } from './evaluationFieldList.js';
 export { evaluationFieldVisitor } from './evaluationField.js';
 export { regularStructEvaluationVisitor } from './regularStructEvaluation.js';
-export { stringEvaluation } from './stringEvaluation.js';
+export { stringEvaluation } from './expression/literal/stringLiteral.js';
 export { booleanEvaluation } from './booleanEvaluation.js';
-export { decimalEvaluation } from './decimalEvaluation.js';
-export { integerEvaluation } from './integerEvaluation.js';
 export { dtoEvaluationVisitor } from './dtoEvaluation.js';
 export { evaluationVisitor } from './evaluation.js';
 export { propsEvaluationVisitor } from './propsEvaluation.js';
@@ -120,3 +118,6 @@ export {
   identifierExpressionVisitor,
   arrayLiteralExpressionVisitor,
 } from './expression/index.js';
+
+export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
+export { integerEvaluation } from './expression/literal/integerLiteral.js';
