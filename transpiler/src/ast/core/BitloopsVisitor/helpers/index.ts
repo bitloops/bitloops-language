@@ -118,4 +118,5 @@ export {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  arrayLiteralExpressionVisitor,
 } from './expression/index.js';

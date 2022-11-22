@@ -30,7 +30,7 @@ import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-
 
 const testExamplesDTO = [
   {
-    inputBLString: 'DTO HelloWorldRequestDTO{ optional string[] name; }',
+    inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
     variables: [{ type: 'string', name: 'name', optional: true }],
     identifier: 'HelloWorldRequestDTO',
   },
@@ -101,16 +101,24 @@ test('DTO declaration is valid', () => {
 
 const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
   const dtoValue = {
-    DTOIdentifier: identifier,
-    fieldList: [
-      {
-        field: {
-          optional: true,
-          identifier: 'name',
-          type: 'string',
+    DTO: {
+      DTOIdentifier: identifier,
+      fieldList: [
+        {
+          field: {
+            optional: true,
+            identifier: 'name',
+            type: {
+              arrayPrimaryType: {
+                arrayPrimaryType: {
+                  primitiveType: 'string',
+                },
+              },
+            },
+          },
         },
-      },
-    ],
+      ],
+    },
   };
 
   return dtoValue;

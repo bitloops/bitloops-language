@@ -29,11 +29,10 @@ defineFeature(feature, (test) => {
   let argumentDependencyType;
   let result;
   let value;
-  test('argumentDependency with valid input', ({ given, and, when, then }) => {
+  test('argumentDependency with valid input', ({ given, when, then }) => {
     given(/^type is "(.*)"$/, (type) => {
       argumentDependencyType = type;
     });
-    and(/^language is "(.*)"$/, (_lang) => {});
     given(/^I have an argumentDependency (.*)$/, (prop) => {
       value = prop;
     });

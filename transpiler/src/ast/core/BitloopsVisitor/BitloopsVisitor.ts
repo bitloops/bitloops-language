@@ -62,6 +62,7 @@ import {
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
+import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 
 import {
@@ -155,6 +156,7 @@ import {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  arrayLiteralExpressionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 
@@ -305,12 +307,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
-    const arrayLiteral = this.visit(ctx.arrayLiteral());
-    return {
-      expression: {
-        ...arrayLiteral,
-      },
-    };
+    return arrayLiteralExpressionVisitor(this, ctx);
   }
 
   visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {
@@ -845,6 +842,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ReadModels: TReadModels;
   } {
     return readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitBitloopsPrimaryType(ctx: BitloopsParser.BitloopsPrimaryTypeContext) {
+    return bitloopsPrimaryTypeVisitor(this, ctx);
   }
 
   visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {

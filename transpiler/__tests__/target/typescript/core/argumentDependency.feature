@@ -2,7 +2,6 @@ Feature: ArgumentDependency to Typescript target language
 
   Background:
     Given type is "TArgumentDependency"
-    And language is "TypeScript"
 
     Scenario Template: argumentDependency with valid input
     Given I have an argumentDependency <argumentDependency>

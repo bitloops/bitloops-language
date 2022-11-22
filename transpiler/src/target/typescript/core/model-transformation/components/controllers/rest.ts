@@ -24,9 +24,9 @@ import {
   prependAwaitToExecute,
 } from './helpers/prependAwait.js';
 import { scanStatementForUseCaseResult } from './helpers/useCaseResultValue.js';
-import { IntermediateASTTree } from './../../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import { StatementNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Statement.js';
-import { MethodCallExpressionNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/MethodCallExpression.js';
+// import { IntermediateASTTree } from './../../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+// import { StatementNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Statement.js';
+// import { MethodCallExpressionNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 
 const transformRestControllerIntermediateAST = (controllers: TRESTController): TRESTController => {
   for (const controllerValues of Object.values(controllers)) {
@@ -57,32 +57,32 @@ const transformRestControllerIntermediateAST = (controllers: TRESTController): T
 
 export { transformRestControllerIntermediateAST };
 
-type RestControllerNode = any;
+// type RestControllerNode = any;
 
 /**
  * Tree
  */
-export const transformRestControllerIR = (
-  controllerNode: RestControllerNode,
-  tree: IntermediateASTTree,
-): RestControllerNode => {
-  const executeNode = controllerNode.executeNode();
-  const statementsList = executeNode.statementsList();
+// export const transformRestControllerIR = (
+//   controllerNode: RestControllerNode,
+//   tree: IntermediateASTTree,
+// ): RestControllerNode => {
+//   const executeNode = controllerNode.executeNode();
+//   const statementsList = executeNode.statementsList();
 
-  let useCaseExecuteFound = false;
+//   let useCaseExecuteFound = false;
 
-  tree.traverse(statementsList, (node) => {
-    if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-      const methodCallNode = node.getExpression() as MethodCallExpressionNode;
-      methodCallNode.prepend('await ');
-      useCaseExecuteFound = true;
-      return;
-    }
+//   tree.traverse(statementsList, (node) => {
+//     if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
+//       const methodCallNode = node.getExpression() as MethodCallExpressionNode;
+//       methodCallNode.prepend('await ');
+//       useCaseExecuteFound = true;
+//       return;
+//     }
 
-    if (useCaseExecuteFound) {
-      // scanStatementForUseCaseResult(statement, useCaseResultIdentifier);
-    }
-  });
+//     if (useCaseExecuteFound) {
+//       // scanStatementForUseCaseResult(statement, useCaseResultIdentifier);
+//     }
+//   });
 
-  return controllerNode;
-};
+//   return controllerNode;
+// };
