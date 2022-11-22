@@ -131,6 +131,8 @@ const BitloopsTypesMapping = {
   TBooleanLiteral: 'TBooleanLiteral',
   TDecimalLiteral: 'TDecimalLiteral',
   TIntegerLiteral: 'TIntegerLiteral',
+  TLiteralValue: 'TLiteralValue',
+  TLiteralType: 'TLiteralType',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
