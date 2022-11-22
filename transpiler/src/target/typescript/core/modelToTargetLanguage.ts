@@ -134,6 +134,10 @@ import { readModelsToTargetLanguage } from './components/readModels/index.js';
 import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
+import { builtInClassEvaluationToTargetLanguage } from './components/builtInClass/index.js';
+import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
+import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
+import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
 
 const modelToTargetLanguage = (props: {
   type: string;
@@ -220,6 +224,11 @@ const modelToTargetLanguage = (props: {
       res = getClassToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TToStringExpression: {
+      res = toStringToTarget(value);
+      break;
+    }
+
     case BitloopsTypesMapping.TStructEvaluation: {
       res = structToTargetLanguage(value);
       break;
@@ -526,6 +535,18 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TBuiltInClassEvaluation: {
+      res = builtInClassEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TArrayLiteralExpression: {
+      res = arrayLiteralExpressionToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TErrorEvaluation: {
+      res = bitloopsErrorEvaluationToTargetLanguage(value);
       break;
     }
     default: {

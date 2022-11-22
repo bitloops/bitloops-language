@@ -75,7 +75,7 @@ const scanStatementForUseCaseResult = (
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForUseCaseResult(st, useCaseResultIdentifier),
     );
-    if (!thenStatements) {
+    if (!elseStatements) {
       return statement;
     }
     statement.ifStatement.elseStatements = elseStatements.map((st) =>

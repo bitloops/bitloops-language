@@ -28,6 +28,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getChildDependencies, getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
+import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 
 const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -69,6 +70,9 @@ export const rootEntitiesToTargetLanguage = (params: {
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
     const { create, methods, constantVars } = rootEntity;
     const propsName = create.parameterDependency.type;
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+      throw new Error('Root entity cannot take array as props yet.');
+    }
     const propsDeps = getChildDependencies(propsName);
     dependencies = [...dependencies, ...propsDeps];
 

@@ -28,8 +28,9 @@ import {
 
 const feature = loadFeature('__tests__/ast/core/regularEvaluation.feature');
 
+// TODO Regular evaluation is to be removed, its children have been removed to different rules
 defineFeature(feature, (test) => {
-  test('Regular Evaluation is valid', ({ given, when, then }) => {
+  test.skip('Regular Evaluation is valid', ({ given, when, then }) => {
     const BOUNDED_CONTEXT = 'Hello World';
     const MODULE = 'core';
     let blString;

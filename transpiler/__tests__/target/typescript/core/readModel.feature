@@ -10,6 +10,6 @@ Feature: Read Model to Typescript target language
     Then I should see the <output> code
 
     Examples:
-      | readModel                                                                                                                  | output                                                                    |
-      | {"NameReadModel":{"variables":[{"type":"string","name":"name","optional":false}]}}                                         | export interface NameReadModel { name: string; }                          |
-      | {"ClassReadModel":{"variables":[{"type":"string","name":"name"},{"type":"int32","name":"numOfTeachers","optional":true}]}} | export interface ClassReadModel { name: string; numOfTeachers?: number; } |
+      | readModel                                                                                                                  | output                                                                         |
+      | {"NameReadModel":{"variables":[{"type":"string","name":"name","optional":false}]}}                                         | export type NameReadModel = { name: string; } \| null                          |
+      | {"ClassReadModel":{"variables":[{"type":"string","name":"name"},{"type":"int32","name":"numOfTeachers","optional":true}]}} | export type ClassReadModel = { name: string; numOfTeachers?: number; } \| null |

@@ -113,20 +113,22 @@ const appendDotValueInExpression = (
     }
   } else if (isExpressionAMethodRegularEvaluation(statement)) {
     const { argumentDependencies } = statement.expression['evaluation'].regularEvaluation;
-    const newArgs = argumentDependencies.map((arg: TArgumentDependency) => {
-      const { value, type } = arg;
-      if (type !== 'variable') {
+    if (argumentDependencies && argumentDependencies.length > 0) {
+      const newArgs = argumentDependencies.map((arg: TArgumentDependency) => {
+        const { value, type } = arg;
+        if (type !== 'variable') {
+          return arg;
+        }
+        if (identifiers.has(value)) {
+          return {
+            ...arg,
+            value: `${value}.value`,
+          };
+        }
         return arg;
-      }
-      if (identifiers.has(value)) {
-        return {
-          ...arg,
-          value: `${value}.value`,
-        };
-      }
-      return arg;
-    });
-    statement.expression['evaluation'].regularEvaluation.argumentDependencies = newArgs;
+      });
+      statement.expression['evaluation'].regularEvaluation.argumentDependencies = newArgs;
+    }
   }
 
   return statement;
@@ -150,18 +152,21 @@ const scanStatementForIdentifierToAppendDotValue = (
     return statement;
   }
 
-  // TODO Abstract these code replication
+  // TODO Abstract this code replication
   if (StatementTypeIdentifiers.isIfStatement(statement)) {
     const { thenStatements, elseStatements } = statement.ifStatement;
     statement.ifStatement.thenStatements = thenStatements.map((st) =>
       scanStatementForIdentifierToAppendDotValue(st, identifiers),
     );
-    if (!thenStatements) {
+    if (!elseStatements) {
       return statement;
     }
-    statement.ifStatement.elseStatements = elseStatements.map((st) =>
-      scanStatementForIdentifierToAppendDotValue(st, identifiers),
-    );
+    if (statement.ifStatement.elseStatements?.length > 0) {
+      statement.ifStatement.elseStatements = elseStatements.map((st) =>
+        scanStatementForIdentifierToAppendDotValue(st, identifiers),
+      );
+    }
+
     return statement;
   }
 

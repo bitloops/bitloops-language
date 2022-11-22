@@ -31,9 +31,11 @@ import { TGraphQLOperation } from '../../../../types.js';
 export const graphQLResolverOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.GraphQLResolverOptionsContext,
-): { operationType: TGraphQLOperation; inputType: string } => {
+): { operationType: TGraphQLOperation; inputType: string | null } => {
   const typeAssignment = thisVisitor.visit(ctx.graphQLOperationTypeAssignment());
-  const inputTypeAssignment = thisVisitor.visit(ctx.graphQLOperationInputTypeAssignment());
+  const inputTypeAssignment = ctx.graphQLOperationInputTypeAssignment()
+    ? thisVisitor.visit(ctx.graphQLOperationInputTypeAssignment())
+    : null;
   const response = {
     operationType: graphQLOperationsMapping[typeAssignment],
     inputType: inputTypeAssignment,

@@ -26,14 +26,7 @@ export const fieldVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldContext,
 ): TVariable => {
-  let type;
-  if (ctx.primitives()) {
-    type = ctx.primitives().getText();
-  } else if (ctx.valueObjectIdentifier()) {
-    type = ctx.valueObjectIdentifier().getText();
-  } else {
-    type = ctx.struct().getText();
-  }
+  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
   const identifier = ctx.identifier().getText();
   const result: TVariable = {
     type,

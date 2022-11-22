@@ -27,7 +27,7 @@ import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
 
 const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
-const CURRENT_VERSION = '0.0.19';
+const CURRENT_VERSION = '0.0.22';
 
 // Check if current version is the latest
 const checkVersion = async (): Promise<void> => {

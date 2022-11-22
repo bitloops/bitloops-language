@@ -25,5 +25,9 @@ export const regularVariableEvaluationORliteralORexpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
 ): any => {
-  return thisVisitor.visitChildren(ctx)[0];
+  const res = thisVisitor.visitChildren(ctx)[0];
+  if (res?.expression?.evaluation?.regularEvaluation) {
+    return res.expression.evaluation.regularEvaluation;
+  }
+  return res;
 };

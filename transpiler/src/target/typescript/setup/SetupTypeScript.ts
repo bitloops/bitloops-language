@@ -606,20 +606,21 @@ export { routers };
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classTypeName, classType] of Object.entries(module)) {
+        for (const [classTypeName, errorModel] of Object.entries(module)) {
           if (
             classTypeName === ClassTypes.DomainErrors ||
             classTypeName === ClassTypes.ApplicationErrors
           ) {
             let imports = '';
             let content = `export namespace ${classTypeName} {`;
+
             const filePathObj = getTargetFileDestination(
               boundedContextName,
               moduleName,
               classTypeName,
               classTypeName,
             );
-            for (const [className] of Object.entries(classType)) {
+            for (const [className] of Object.entries(errorModel)) {
               const classNameWithoutError = className.split('Error')[0];
               imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
               content += `export class ${className} extends ${classNameWithoutError} {}`;
@@ -800,17 +801,15 @@ start();
   ): string {
     const { resolvers } = data;
     const serverName = 'server';
-    this.nodeDependencies['@bitloops/bl-boilerplate-infra-graphql'] = '^0.0.1';
+    this.nodeDependencies['@bitloops/bl-boilerplate-infra-graphql'] = '^0.0.4';
     const setupData: TGraphQLSetupData = {
       servers: [{ type: 'GraphQL', port: portStatement, name: serverName }],
       resolvers: [],
       addResolversToServer: [],
-      // DTOs: {},
       bitloopsModel,
     };
 
     let importsString = '';
-    // const dtosOfBoundedCtxAndModules = {};
     for (const resolver of resolvers) {
       const {
         boundedContext,
@@ -819,9 +818,6 @@ start();
         dependencies: _dependencies,
         controllerInstance,
       } = resolver;
-      // const useCase = kebabCase(
-      //   bitloopsModel[boundedContext][module]['Controllers'][controllerClassName].useCase,
-      // );
 
       importsString += `import { ${controllerInstance} } from '../../../bounded-contexts/${kebabCase(
         boundedContext,

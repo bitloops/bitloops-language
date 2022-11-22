@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isBitloopsBuildInClass } from '../../../helpers/isBitloopsBuildInClass.js';
+import { isBitloopsBuiltInClass } from '../../../helpers/isBitloopsBuiltInClass.js';
 import { isBitloopsPrimitive } from '../../../helpers/isBitloopsPrimitive.js';
 import {
   ClassTypes,
-  mappingBitloopsBuildInClassToLayer,
+  mappingBitloopsBuiltInClassToLayer,
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
 import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
@@ -59,7 +59,7 @@ export const getParentDependencies = (
 const mergeDependencies = (parentDependecies): TDependencyParentTypescript[] => {
   // const sources = [];
   const delimeter = ',';
-  let mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
+  const mergedDependenciesMap: { [key: string]: TDependencyParentTypescript } = {};
   for (const parentDependency of parentDependecies) {
     const key = parentDependency.from;
     const sources = Object.keys(mergedDependenciesMap);
@@ -102,11 +102,11 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
     if (isBitloopsPrimitive(dependencyString)) {
       continue;
     }
-    if (isBitloopsBuildInClass(dependencyString)) {
+    if (isBitloopsBuiltInClass(dependencyString)) {
       result.push({
         type: 'absolute',
         default: false,
-        value: mappingBitloopsBuildInClassToLayer[dependencyString],
+        value: mappingBitloopsBuiltInClassToLayer[dependencyString],
         from: '@bitloops/bl-boilerplate-core',
       });
       continue;
@@ -137,6 +137,12 @@ export const getValueAndFileNameOfImport = (
   if (classType === ClassTypes.DomainErrors) {
     return {
       value: 'DomainErrors',
+      fileName: 'index',
+    };
+  }
+  if (classType === ClassTypes.ApplicationErrors) {
+    return {
+      value: 'ApplicationErrors',
       fileName: 'index',
     };
   }

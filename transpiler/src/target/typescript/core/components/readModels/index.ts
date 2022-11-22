@@ -23,8 +23,8 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
 
 const readModelsToTargetLanguage = (readModels: TReadModels): TTargetDependenciesTypeScript => {
-  const initialPropsLangMapping = (propName: string): string => `export interface ${propName} { `;
-  const finalPropsLangMapping = '}';
+  const initialPropsLangMapping = (propName: string): string => `export type ${propName} = { `;
+  const finalPropsLangMapping = '} | null';
   const result: TTargetDependenciesTypeScript = {
     output: '',
     dependencies: [],

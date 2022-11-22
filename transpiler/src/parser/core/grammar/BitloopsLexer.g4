@@ -259,10 +259,17 @@ JestTestEntityEvaluation: 'JestTestEntityEvaluation';
 JestTestSingleExpression: 'JestTestSingleExpression';
 JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
+JestTestBuiltInClass: 'JestTestBuiltInClass';
+JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
 
 // Abstract: 'abstract';
 
+// BuiltInClasses
+UUIDv4: 'UUIDv4';
+
 Is: 'is';
+GetClass: 'getClass';
+ToString: 'toString';
 
 //
 // Ext.2 Additions to 1.8: Decorators
@@ -303,12 +310,12 @@ DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
-GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
+// GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
 
 // RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
 
-ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
-RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
+// ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
+// RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
 
 
 
@@ -398,7 +405,7 @@ fragment ExponentPart
     : [eE] [+-]? [0-9]+
     ;
 fragment RegularEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
+// fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
 // fragment RegularEvaluationPart
 //     : RegularEvaluationStart
 //     | [\p{Mn}]

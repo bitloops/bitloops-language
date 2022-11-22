@@ -23,8 +23,17 @@ import {
   TReturnOKStatement,
   TReturnErrorStatement,
   TTargetDependenciesTypeScript,
+  TDependenciesTypeScript,
+  TDependencyChildTypescript,
 } from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+
+const FAIL_DEPENDENCY: TDependencyChildTypescript = {
+  type: 'absolute',
+  default: false,
+  value: 'fail',
+  from: '@bitloops/bl-boilerplate-core',
+};
 
 const returnToTargetLanguage = (variable: TReturnStatement): TTargetDependenciesTypeScript => {
   if (!variable.return) {
@@ -67,6 +76,7 @@ const returnErrorToTargetLanguage = (
   if (!variable.returnError) {
     throw new Error('ReturnError statement must have a returnError value');
   }
+  const dependencies: TDependenciesTypeScript = [FAIL_DEPENDENCY];
 
   const expressionValue = modelToTargetLanguage({
     type: 'TExpression',
@@ -74,24 +84,13 @@ const returnErrorToTargetLanguage = (
   });
   const propsVariableLangMapping = (expressionValue: TTargetDependenciesTypeScript): string =>
     `return fail(${expressionValue.output})`;
+
+  dependencies.push(...expressionValue.dependencies);
+
   return {
     output: propsVariableLangMapping(expressionValue),
-    dependencies: expressionValue.dependencies,
+    dependencies,
   };
 };
-
-// const returnStatement: TReturnErrorStatement = {
-//   returnError: {
-//     evaluation: {
-//       regularEvaluation: {
-//         type: 'string',
-//         value: 'test',
-//       },
-//     },
-//   },
-// };
-// console.log(JSON.stringify(returnStatement));
-
-// console.log(returnErrorToTargetLanguage(returnStatement, SupportedLanguages.TypeScript));
 
 export { returnToTargetLanguage, returnOkToTargetLanguage, returnErrorToTargetLanguage };

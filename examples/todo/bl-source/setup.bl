@@ -15,14 +15,19 @@ const todoWriteRepo = RepoAdapters.Mongo({
   collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
 }) concretes [Todo][Todo]TodoWriteRepoPort;
 
-// const todoReadRepo = RepoAdapters.Mongo({
-//   connection: mongoConnection,
-//   collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-// }) concretes [Todo][Todo]TodoReadRepoPort;
+const todoReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+}) concretes [Todo][Todo]TodoReadRepoPort;
 
 // USE CASES
 
 const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
+const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);
+// const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
+// const deleteTodoUseCase = [Todo][Todo]DeleteTodoUseCase(todoWriteRepo);
+// const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
+
 // const getAllTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getAll);
 // const updateTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.update);
 // const deleteTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.delete);
@@ -32,9 +37,11 @@ const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
 
 const todoRESTRouter = RESTRouter(REST.Fastify) {
   Post('/'): [Todo][Todo]CreateTodoRESTController(createTodoUseCase);
-  // Get('/'): [Todo][Todo]AutoRESTController(getAllTodoUseCase);
-  // Patch('/:id'): [Todo][Todo]AutoRESTController(updateTodoUseCase);
-  // Delete('/:id'): [Todo][Todo]AutoRESTController(deleteTodoUseCase);
+  Get('/'): [Todo][Todo]GetTodosRESTController(getAllTodoUseCase);
+  // Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
+  // Delete('/:id'): [Todo][Todo]DeleteTodoRESTController(deleteTodoUseCase);
+  // Get('/:id'): [Todo][Todo]GetTodoRESTController(getByIdTodoUseCase);
+  
   // Get('/:id'): [Todo][Todo]AutoRESTController(getByIdTodoUseCase);
 }
 
