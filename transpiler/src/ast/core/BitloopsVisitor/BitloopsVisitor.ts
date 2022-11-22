@@ -23,6 +23,7 @@ import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVi
 import { BitloopsIdentifierTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BuildInClassTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
 import { DTOIdentifierNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { IntegerLiteralBuilder } from '../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/IntegerLiteralBuilder.js';
 import { IdentifierBuilder } from '../../../refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
@@ -64,6 +65,7 @@ import {
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
+import { LiteralExpressionVisitor } from './helpers/expressions.js';
 
 import {
   functionBodyVisitor,
@@ -506,14 +508,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
-    const literalRes = this.visit(ctx.literal());
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation: literalRes,
-        },
-      },
-    };
+    return LiteralExpressionVisitor(this, ctx);
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     return this.visitChildren(ctx)[0];
@@ -524,7 +519,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText());
+    const { type, value } = integerEvaluation(ctx.IntegerLiteral().getText());
+    console.log(value);
+    return new IntegerLiteralBuilder().withType(type).withValue(value).build();
   }
 
   visitDecimalLiteral(ctx: BitloopsParser.DecimalLiteralContext) {

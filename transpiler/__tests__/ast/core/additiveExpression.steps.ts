@@ -30,10 +30,10 @@ import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-
 
 const additiveExpression = [
   {
-    inputBLString: 'JestTestExpression { temp1 + temp2}',
+    inputBLString: 'JestTestExpression { 1 + 2}',
     parameters: {
-      leftValue: 'temp1',
-      rightValue: 'temp2',
+      leftValue: 1,
+      rightValue: 2,
       operator: '+',
     },
   },
@@ -85,8 +85,8 @@ test('DTO declaration is valid', () => {
 });
 
 const getExpectedAdditiveExpressionValues = (
-  leftValue: string,
-  rightValue: string,
+  leftValue: any,
+  rightValue: any,
   operator: TAdditiveOperator,
 ) => {
   const expected: { Tests: { JestTest: TExpression } } = {

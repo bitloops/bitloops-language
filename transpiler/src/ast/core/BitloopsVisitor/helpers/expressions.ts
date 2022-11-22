@@ -25,6 +25,7 @@ import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermed
 import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
 import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
 import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/multiplicativeExpression.js';
+import { MultiplicativeExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/MultiplicativeExpression.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -131,7 +132,7 @@ export const logicalNotExpressionVisitor = (
 export const multiplicativeExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MultiplicativeExpressionContext,
-): { expression: AdditiveExpressionNode } => {
+): { expression: MultiplicativeExpressionNode } => {
   const left = thisVisitor.visit(ctx.expression(0));
   const right = thisVisitor.visit(ctx.expression(1));
   const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
@@ -153,6 +154,8 @@ export const additiveExpressionVisitor = (
 ): { expression: AdditiveExpressionNode } => {
   const left = thisVisitor.visit(ctx.expression(0));
   const right = thisVisitor.visit(ctx.expression(1));
+
+  console.log('left', ctx.expression(0).getText());
   const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
   console.log(operator.getValue());
 
@@ -175,6 +178,17 @@ export const parenthesizedExpressionVisitor = (
   return {
     expression: {
       parenthesizedExpression: expression.expression,
+    },
+  };
+};
+export const LiteralExpressionVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctxLiteral: BitloopsParser.LiteralExpressionContext,
+): { expression: any } => {
+  const literal = thisVisitor.visit(ctxLiteral.literal());
+  return {
+    expression: {
+      literal,
     },
   };
 };
