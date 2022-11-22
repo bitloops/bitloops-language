@@ -2,13 +2,17 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
+  <a href="#What-are-the-benefits-of-using-Bitloops-Language?">Benefits</a> |
+  <a href="#why-build-the-bitloops-language">Why?</a> |
+  <a href="#language-goals">Goals</a> |
+  <a href="#project-status">Status</a>
   <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
   <a href="https://github.com/bitloops/bitloops-language/discussions">GitHub Discussions</a> |
   <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
   <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>
 
-# <br/> Build scalable, maintainable & reliable software (faster, much faster)
+## 🗞 Build well-designed high-quality software (faster, much faster)
 
 Bitloops Language (BL) is a transpiled, high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
 
@@ -23,33 +27,34 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 > and under very active development. Expect bugs and limitations.
 > Full backward compatibility is not guaranteed before reaching v1.0.0.
 
+&nbsp; 
+
 ## Quick Start
 
-The fastest way to see how the Bitloops Language works is to run our [Todo example](https://github.com/bitloops/bitloops-language/tree/main/examples/todo/bl-source).
+The best and fastest way to understand how Bitloops Language helps you write clean code and great software is to follow the instructions below. With this tutorial, you will run and execute a Bitloops ToDo App, learn how Bitloops works, and see the output files in TypeScript and appreciate how the Bitloops Language works. 
 
-### Transpiler Installation
-
-Until we create binaries, the best way to install and run the transpiler is to install the Bitloops Language CLI as a global npm package:
+### 1 - Install the Transpiler
+Bitloops still hasn't created binaries, so the best way to install and run the transpiler is to install the Bitloops Language CLI as a global npm package. Copy the following and run it in your IDE:
 
 ```console
 npm install -g @bitloops/bitloops-language-cli
 ```
 
-or
+Alternatively, you can use yarn: 
 
 ```console
 yarn global add @bitloops/bitloops-language-cli
 ```
 
-### Transpiling the example Todo application
-
-1. Clone this repo
+### 2 - Clone the ToDo App example repo
+The Bitloops [ToDo App](https://github.com/bitloops/bitloops-language/tree/main/examples/todo/bl-source) is readily available for cloning. You can extract the files following the link or clone it using the command beloe:
 
   ```console
   git clone https://github.com/bitloops/bitloops-language.git
   ```
 
-2. Run the transpiler
+### 3 - Run the Bitloops Transpiler
+The next step is to transpile the ToDo App code from Bitloops Language Code into TypeScript code. Transpile comes from the word Transcompile, and means the translation of code from one programming language to another. 
 
   ```console
   bl transpile -s bitloops-language/examples/todo/bl-source/ -t output
@@ -61,13 +66,14 @@ yarn global add @bitloops/bitloops-language-cli
   bitloops-language transpile
   ```
 
-3. After the transpilation finishes, go into the output dir
+### 4 - Go into the output directory
+Once the transpilation has concluded, you need to go into the folder into which the transpilation was run. If you followed the instructions above, you should only need to type the following:
 
   ```console
   cd output
   ```
-
-4. Install the npm packages
+### 5 - Install the ToDo App depepdencies
+In order for the ToDo App to work, you'll need to install the required npm packages. Use the following commands:
 
 ```console
 npm install
@@ -79,45 +85,55 @@ or
 yarn install
 ```
 
-5. Make sure you have a running instance of MongoDB
+### 5 - Run an instance of MongoDB
+For the Bitloops ToDo App to run, you'll need MongoDB installed on your system. If you already have an MongoDB service installed, then proceed to step 5.4. 
+If you don't have MongoDB installed on your system, then we recommend you follow these easy steps to run MongoDB through Docker:
 
-5.1 If you don't have MongoDB already installed on your system, the easiest and "cleaner" way is to run MongoDB through [Docker](https://www.docker.com/) so install it and launch it
+5.1 Install Docker using this [link](https://www.docker.com/). If you already have Docker installed, move to the next step. 
 
-5.1.1 Install MongoDB in Docker
+5.2 Launch Docker on your system. The Docker service normally starts when booting a system, but you might want to confirm this before moving to the next step.
+
+5.3 Install MongoDB in Docker using the following command.
 
 ```console
 docker pull mongo
 ```
 
-  5.1.2 Start the MongoDB container
+5.4 Start the MongoDB container
 
   ```console
   docker run -d --name mongo -p 27017:27017 mongo
   ```
 
-6. Start your TypeScript Todo backend
+
+### 6 - Run the Bitloops ToDo App
+The final step is to execute the TypeScript backend code and run the Bitloops ToDo App. Use one of the following commands:
   
+```console
+npm run start:dev
+```
+
+or
+
 ```console
 yarn start:dev
 ```
 
-7. Start sending requests to the Todo app using [Postman](https://www.postman.com/) or curl (or any other way you like)
+### 7 - Create tasks!
+Start sending requests to the Todo app using [Postman](https://www.postman.com/) or [curl](https://curl.se/), or any other way you prefer!
 
-    7.1. Example using curl
+7.1. Example using curl
 
-    ```console
-    curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
-    ```
+```console
+curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
+```
 
-<p align="center">
-  <a href="#why-build-the-bitloops-language">Why?</a> |
-  <a href="#language-goals">Goals</a> |
-  <a href="#project-status">Status</a>
-  <a href="#getting-started">
-  <a href="#join-us"></a>
-</p>
+&nbsp; 
+&nbsp; 
   
- ----
+----
+
+## What are the benefits of using Bitloops Language?
 
 * High-productivity, [fourth generation (4GL)](https://www.techopedia.com/definition/24308/fourth-generation-programming-language-4gl) transpiled programming language
 * Easy to learn and get started with
@@ -198,7 +214,9 @@ There are many things we want to add in the future including
 [ ] gRPC support
 [ ] And many more...
 
-If you're interested in contributing, we would love help
+If you're interested in contributing, we would love help!
+  
+----
 
 ## Bitloops -> TypeScript Transpilation
 
@@ -268,4 +286,4 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
 }
 ```
 
-# Are you liking what you are seeing? Don't forget to star ⭐ our repo
+# Like what you are seeing? Don't forget to star ⭐ our repo
