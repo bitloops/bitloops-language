@@ -1,4 +1,4 @@
-import { TBitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/type.js';
+import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { FieldNode } from '../../nodes/FieldList/FieldNode.js';
 import { IdentifierNode } from '../../nodes/IdentifierNode.js';
 import { OptionalNode } from '../../nodes/OptionalNode.js';
@@ -7,7 +7,7 @@ import { IBuilder } from '../IBuilder.js';
 export class FieldNodeBuilder implements IBuilder<FieldNode> {
   public readonly NAME = 'field';
 
-  private typeNode: TBitloopsPrimaryTypeNode;
+  private typeNode: BitloopsPrimaryTypeNode;
   private identifierNode: IdentifierNode;
   private optionalNode?: OptionalNode;
   private fieldNode: FieldNode;
@@ -16,7 +16,7 @@ export class FieldNodeBuilder implements IBuilder<FieldNode> {
     this.fieldNode = new FieldNode();
   }
 
-  public withType(typeNode: TBitloopsPrimaryTypeNode): FieldNodeBuilder {
+  public withType(typeNode: BitloopsPrimaryTypeNode): FieldNodeBuilder {
     this.typeNode = typeNode;
     return this;
   }

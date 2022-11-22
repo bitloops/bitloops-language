@@ -1,9 +1,9 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { BitloopsPrimaryTypeNode } from './BitloopsPrimaryTypeNode.js';
 
 const NAME = 'buildInClassType';
 
-export class BuildInClassTypeNode extends IntermediateASTNode {
+export class BuildInClassTypeNode extends BitloopsPrimaryTypeNode {
   constructor(lines?: string) {
     super(BitloopsTypesMapping.TBitloopsBuildInClasses, { lines }, NAME);
   }
