@@ -101,11 +101,25 @@ export abstract class IntermediateASTNode {
     });
   }
 
-  public buildObject2Value() {
+  public setNodeName(nodeName: string) {
+    this.name = nodeName;
+  }
+
+  public buildRecursionValue() {
     const children = this.getChildren();
     this.value = { [this.name]: {} };
     children.forEach((child) => {
-      this.value[this.name] = { ...this.value[this.name], ...child.value };
+      //If it is object it's not the first time of the recursion, so we only
+      //need to append the value
+      if (this.isObject(child.value)) {
+        this.value[this.name] = child.value;
+      } else {
+        this.value[this.name][child.name] = child.value;
+      }
     });
+  }
+
+  private isObject(value: any) {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
   }
 }

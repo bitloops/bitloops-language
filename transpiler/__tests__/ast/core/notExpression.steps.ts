@@ -1,4 +1,4 @@
-/**
+/*
  *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
  *
@@ -30,37 +30,11 @@ import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-
 
 const testExamplesDTO = [
   {
-    inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
+    inputBLString: 'NOT name',
     variables: [{ type: 'string', name: 'name', optional: true }],
     identifier: 'HelloWorldRequestDTO',
   },
 ];
-
-// const expectedDTONode = (): DTONode[] => {
-//   const rootNode = new IntermediateASTRootNode();
-//   const dtoNode = new DTONode();
-//   dtoNode.setClassType(ClassTypes.DTOs);
-//   rootNode.addChild(dtoNode);
-
-//   const identifierNode = new DTOIdentifierNode();
-//   identifierNode.setClassType(ClassTypes.DTOs);
-//   const fieldListNode = new FieldListNode();
-//   fieldListNode.setClassType(ClassTypes.DTOs);
-
-//   dtoNode.addChild(identifierNode);
-//   dtoNode.addChild(fieldListNode);
-//   return [dtoNode];
-// };
-
-// const expectedOutputTree = {
-//   'Hello World': {
-//     core: {
-//       DTOs: {
-//         HelloWorldRequestDTO: { fields: [{ optional: true, type: 'string', name: 'name' }] },
-//       },
-//     },
-//   },
-// };
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -101,24 +75,16 @@ test('DTO declaration is valid', () => {
 
 const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
   const dtoValue = {
-    DTO: {
-      DTOIdentifier: identifier,
-      fieldList: [
-        {
-          field: {
-            optional: true,
-            identifier: 'name',
-            type: {
-              arrayPrimaryType: {
-                arrayPrimaryType: {
-                  primitiveType: 'string',
-                },
-              },
-            },
-          },
+    DTOIdentifier: identifier,
+    fieldList: [
+      {
+        field: {
+          optional: true,
+          identifier: 'name',
+          type: 'string',
         },
-      ],
-    },
+      },
+    ],
   };
 
   return dtoValue;

@@ -1,16 +1,16 @@
 import { ArrayPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/ArrayPrimaryTypeNode.js';
-import { TBitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/type.js';
+import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class ArrayPrimaryTypeBuilder implements IBuilder<ArrayPrimaryTypeNode> {
   private arrayPrimaryTypeNode: ArrayPrimaryTypeNode;
-  private bitloopsPrimaryTypeNode: TBitloopsPrimaryTypeNode;
+  private bitloopsPrimaryTypeNode: BitloopsPrimaryTypeNode;
 
   constructor() {
     this.arrayPrimaryTypeNode = new ArrayPrimaryTypeNode();
   }
 
-  public withPrimaryType(primaryTypeNode: TBitloopsPrimaryTypeNode): ArrayPrimaryTypeBuilder {
+  public withPrimaryType(primaryTypeNode: BitloopsPrimaryTypeNode): ArrayPrimaryTypeBuilder {
     this.bitloopsPrimaryTypeNode = primaryTypeNode;
     return this;
   }
@@ -18,7 +18,7 @@ export class ArrayPrimaryTypeBuilder implements IBuilder<ArrayPrimaryTypeNode> {
   public build(): ArrayPrimaryTypeNode {
     this.arrayPrimaryTypeNode.addChild(this.bitloopsPrimaryTypeNode);
 
-    this.arrayPrimaryTypeNode.buildObjectValue();
+    this.arrayPrimaryTypeNode.buildRecursionValue();
 
     return this.arrayPrimaryTypeNode;
   }
