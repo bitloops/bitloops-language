@@ -575,7 +575,6 @@ statement
     | constDeclaration
     | variableDeclaration
     // | thisDeclaration
-    // | expressionStatement
     | emptyStatement_
     | propsDeclaration
     | namespaceDeclaration //ADDED
@@ -651,11 +650,6 @@ variableDeclarationList
 
 emptyStatement_
     : SemiColon
-    ;
-
-expressionStatement
-    // : {this.notOpenBraceAndNotFunction()}? expressionSequence SemiColon?
-    : expressionSequence SemiColon?
     ;
 
 ifStatement
@@ -1225,6 +1219,7 @@ argumentList
     ;
 
 argument                      // ECMAScript 6: Spread Operator
+    // TODO remove this nesting
     : (regularVariableEvaluationORliteralORexpression)
     ;
 
