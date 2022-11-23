@@ -1,7 +1,7 @@
 // import { createDirectory } from '../helpers/createDirectory.js';
 // import { readFromFile, writeToFile } from '../helpers/fileOperations.js';
 import prettier from 'prettier';
-import path from 'path';
+// import path from 'path';
 import { packageJSONTemplate } from './package-template.js';
 import { SetupTypeScript } from './SetupTypeScript.js';
 import { ISetupData, TBitloopsTargetSetupContent, TBoundedContexts } from '../../../types.js';
@@ -161,7 +161,7 @@ export const generateSetupFiles = (
   pathsAndContents.forEach((pathAndContent) => {
     const { fileType, content, fileId } = pathAndContent;
     result.push({
-      fileId: path.normalize(`./${setupTypeMapper[fileType]}${fileId}`),
+      fileId: `./${setupTypeMapper[fileType]}${fileId}`,
       fileType: fileType,
       fileContent: prettier.format(content, formatterConfig),
     });

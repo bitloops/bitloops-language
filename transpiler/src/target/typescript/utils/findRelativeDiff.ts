@@ -35,7 +35,9 @@ export const findRelativeDiffForImport = (
   dependencyDirPath: string,
   dependencyFileName: string,
 ): string => {
-  const relativePathDif = relative(importerDirPath, dependencyDirPath);
+  let relativePathDif = relative(importerDirPath, dependencyDirPath);
+  // this is for windows impl
+  relativePathDif = relativePathDif.replace(/\\/g, '/');
   // console.log('relativePathDif', relativePathDif, pathOfImporter, pathToBeImported);
   if (sameDirectory(relativePathDif)) {
     return `./${dependencyFileName}`;

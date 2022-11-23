@@ -86,7 +86,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.0.13",
+    "@bitloops/bl-transpiler": "^0.0.14",
     "axios": "^1.1.3",
     "chalk": "5.0.1",
     "commander": "^9.4.0",
