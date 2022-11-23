@@ -312,14 +312,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitloops/bl-transpiler@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.0.13.tgz#c37d5699c8ae072d091c66afb57ef75f51868b26"
-  integrity sha512-d35kFHNHYn+EEzNzVqW8w2zG7H7f9UQL0PGQ2uHMplDru70aOOOSrBk16doIe395937hN6p2pPwOLsmZuZwPJg==
-  dependencies:
-    antlr4 "^4.11.0"
-    prettier "^2.7.1"
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -1567,11 +1559,6 @@ ansi-styles@^6.1.0:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
-
-antlr4@^4.11.0:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/antlr4/-/antlr4-4.11.0.tgz#d7466f5044fa6e333c0ec821b30c6157f6b004ae"
-  integrity sha512-GUGlpE2JUjAN+G8G5vY+nOoeyNhHsXoIJwP1XF1oRw89vifA1K46T6SEkwLwr7drihN7I/lf0DIjKc4OZvBX8w==
 
 anymatch@^2.0.0:
   version "2.0.0"
