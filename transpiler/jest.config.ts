@@ -12,8 +12,7 @@ export default {
     '^(\\.{1,2}/.*)\\.(m)?js$': '$1',
   },
 
-  //testRegex: ' (/__tests__/.*|(\\.|/)(.*)(test|spec|steps))\\.[jt]sx?$',
-  testMatch: ['**/*.steps.ts'],
+  testRegex: '(__tests__\\/)(.*)(test|spec|steps)(\\.)(m)?ts$',
   coverageDirectory: 'coverage',
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.mts', '!src/**/*.d.ts', '!src/**/*.d.mts'],
   setupFilesAfterEnv: ['jest-extended/all'],
