@@ -568,10 +568,6 @@ export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
 
-export type TDTOValues = {
-  fields: TVariables;
-};
-
 export type TStructDeclaration = {
   fields: TVariables;
 };
@@ -583,9 +579,13 @@ export type TExecute = {
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
-export type TDTO = {
+
+export type TDTOValues = {
   [DTOIdentifierKey]: TDTOIdentifier;
   [fieldsKey]: TVariables;
+};
+export type TDTO = {
+  [identifier: TDTOIdentifier]: TDTOValues;
 };
 
 export type TStructs = Record<string, TStructDeclaration>;
