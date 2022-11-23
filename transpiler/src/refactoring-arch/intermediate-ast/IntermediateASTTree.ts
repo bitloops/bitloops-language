@@ -1,6 +1,7 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping, ClassTypes } from '../../helpers/mappings.js';
 import { ConstDeclarationNode } from './nodes/ConstDeclaration.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
+import { IdentifierNode } from './nodes/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/Statement.js';
@@ -175,5 +176,31 @@ export class IntermediateASTTree {
       }
     });
     return resultNode ?? null;
+  }
+
+  getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
+    let resultNode: IdentifierNode;
+    this.traverse(rootNode, (node) => {
+      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
+        resultNode = node;
+        resultNode = node.getIdentifier();
+      }
+    });
+    return resultNode ?? null;
+  }
+
+  getNodesAfterUseCaseExecute(rootNode: IntermediateASTNode): IntermediateASTNode[] {
+    const resultNodes: IntermediateASTNode[] = [];
+    let useCaseExecuteFound = false;
+    this.traverse(rootNode, (node) => {
+      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
+        useCaseExecuteFound = true;
+        return;
+      }
+      if (useCaseExecuteFound) {
+        resultNodes.push(node);
+      }
+    });
+    return resultNodes;
   }
 }

@@ -14,12 +14,8 @@ export class RestControllerNodeTransformer extends Transformer<RestControllerNod
     this.transformAwait();
     this.transformDotValue();
   }
-  private transformAwait() {
-    // Find
-    /**
-     * const execute = tree.getIsUseCaseExecuteStatementOf(this.node)
-     * executeStatement.methodCall
-     */
+
+  private transformAwait(): void {
     const executeStatement = this.tree.getUseCaseExecuteStatementOf(this.node);
     if (!executeStatement) {
       return;
@@ -33,10 +29,17 @@ export class RestControllerNodeTransformer extends Transformer<RestControllerNod
     return;
   }
 
-  private transformDotValue() {
-    // Get identifier of useCaseExecute Statement
-    // Replace identifier afterwards wherever used with identifier.value
+  private transformDotValue(): void {
+    const identifierNode = this.tree.getUseCaseExecuteIdentifier(this.node);
+    if (!identifierNode) {
+      return;
+    }
+    const nodes = this.tree.getNodesAfterUseCaseExecute(this.node);
+    console.log(nodes);
+    // this.tree.replaceIdentifierInNodes(nodes, identifierNode, 'value');
   }
+  // Get identifier of useCaseExecute Statement
+  // Replace identifier afterwards wherever used with identifier.value
   //   const policy = (node) => {
   //     if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
   //       const methodCallNode = node.getExpression() as MethodCallExpressionNode;
