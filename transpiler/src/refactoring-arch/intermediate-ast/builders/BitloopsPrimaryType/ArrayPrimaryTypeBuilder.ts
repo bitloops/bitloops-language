@@ -18,7 +18,7 @@ export class ArrayPrimaryTypeBuilder implements IBuilder<ArrayPrimaryTypeNode> {
   public build(): ArrayPrimaryTypeNode {
     this.arrayPrimaryTypeNode.addChild(this.bitloopsPrimaryTypeNode);
 
-    this.arrayPrimaryTypeNode.buildRecursionValue();
+    this.arrayPrimaryTypeNode.buildObjectValue();
 
     return this.arrayPrimaryTypeNode;
   }

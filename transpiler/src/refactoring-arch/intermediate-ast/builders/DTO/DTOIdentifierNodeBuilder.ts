@@ -15,7 +15,7 @@ export class DTOIdentifierNodeBuilder implements IBuilder<DTOIdentifierNode> {
   }
 
   public build(): DTOIdentifierNode {
-    this.dtoIdentifierNode.setValue(this.name);
+    this.dtoIdentifierNode.buildLeafValue(this.name);
 
     return this.dtoIdentifierNode;
   }

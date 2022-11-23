@@ -18,7 +18,7 @@ export class OptionalBuilder implements IBuilder<OptionalNode> {
   }
 
   public build(): OptionalNode {
-    this.optionalNode.setValue(this.optional);
+    this.optionalNode.buildLeafValue(this.optional);
 
     return this.optionalNode;
   }

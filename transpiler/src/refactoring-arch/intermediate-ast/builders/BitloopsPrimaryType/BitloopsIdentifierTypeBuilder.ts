@@ -16,7 +16,7 @@ export class BitloopsIdentifierTypeBuilder implements IBuilder<BitloopsIdentifie
   }
 
   public build(): BitloopsIdentifierTypeNode {
-    this.bitloopsIdentifierTypeNode.setValue(this.type);
+    this.bitloopsIdentifierTypeNode.buildLeafValue(this.type);
 
     return this.bitloopsIdentifierTypeNode;
   }

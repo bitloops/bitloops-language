@@ -16,7 +16,7 @@ export class PrimitiveTypeBuilder implements IBuilder<PrimitiveTypeNode> {
   }
 
   public build(): PrimitiveTypeNode {
-    this.primitiveTypeNode.setValue(this.type);
+    this.primitiveTypeNode.buildLeafValue(this.type);
 
     return this.primitiveTypeNode;
   }
