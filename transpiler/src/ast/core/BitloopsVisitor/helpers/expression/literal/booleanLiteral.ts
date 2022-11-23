@@ -17,20 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-const BOOL_STRING = 'bool';
 
-export const booleanEvaluation = (value: any): any => {
+import { BooleanLiteralBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
+
+export const booleanLiteralVisitor = (value: any): any => {
   const booleanValue = value;
-  if (booleanValue === 'true') {
-    return {
-      type: BOOL_STRING,
-      value: value,
-    };
-  } else if (booleanValue === 'false') {
-    return {
-      type: BOOL_STRING,
-      value: value,
-    };
+  if (!(booleanValue in ['true', 'false'])) {
+    throw new Error(`Boolean value not recognized: ${value}`);
   }
-  throw new Error(`Boolean value not recognized: ${value}`);
+
+  const literalNode = new BooleanLiteralBuilder().withValue(value).build();
+  return literalNode;
 };

@@ -18,7 +18,7 @@ export class RestControllerNodeTransformer extends Transformer<RestControllerNod
     // Find
     /**
      * const execute = tree.getIsUseCaseExecuteStatementOf(this.node)
-     *
+     * executeStatement.methodCall
      *
      */
   }
