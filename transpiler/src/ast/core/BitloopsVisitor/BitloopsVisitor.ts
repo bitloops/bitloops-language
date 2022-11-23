@@ -52,7 +52,7 @@ import {
   TRules,
   TBuildInFunction,
   TEntityValues,
-  TModule,
+  // TModule,
   TUseCase,
   TStructs,
   TReadModels,
@@ -62,7 +62,6 @@ import {
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
-import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 
 import {
@@ -175,26 +174,26 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {
-    const children = this.visitChildren(ctx);
-    const result = this.mergeSourceElements(children);
-    return result;
+    this.visitChildren(ctx);
+    // const result = this.mergeSourceElements(children);
+    // return result;
   }
 
-  private mergeSourceElements(children: any): TModule {
-    const sourceElementsResult = children.map((c) => c[0]);
-    return sourceElementsResult.reduce((acc, sourceElement) => {
-      const classType = Object.keys(sourceElement)[0];
-      if (acc[classType]) {
-        acc[classType] = {
-          ...acc[classType],
-          ...sourceElement[classType],
-        };
-      } else {
-        acc[classType] = sourceElement[classType];
-      }
-      return acc;
-    }, {});
-  }
+  // private mergeSourceElements(children: any): TModule {
+  //   const sourceElementsResult = children.map((c) => c[0]);
+  //   return sourceElementsResult.reduce((acc, sourceElement) => {
+  //     const classType = Object.keys(sourceElement)[0];
+  //     if (acc[classType]) {
+  //       acc[classType] = {
+  //         ...acc[classType],
+  //         ...sourceElement[classType],
+  //       };
+  //     } else {
+  //       acc[classType] = sourceElement[classType];
+  //     }
+  //     return acc;
+  //   }, {});
+  // }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {
     return equalityExpressionVisitor(this, ctx);
@@ -844,10 +843,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ReadModels: TReadModels;
   } {
     return readModelDeclarationVisitor(this, ctx);
-  }
-
-  visitBitloopsPrimaryType(ctx: BitloopsParser.BitloopsPrimaryTypeContext) {
-    return bitloopsPrimaryTypeVisitor(this, ctx);
   }
 
   visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {

@@ -53,6 +53,13 @@ export class IntermediateASTTree {
     return classTypeNodes;
   }
 
+  public mergeWithTree(tree: IntermediateASTTree): IntermediateASTTree {
+    tree.rootNode.getChildren().map((childNode) => {
+      this.rootNode.addChild(childNode);
+    });
+    return this;
+  }
+
   // private getContextNodesByType(
   //   nodeType: NODE_TYPES,
   //   contextNode: IntermediateASTNode,

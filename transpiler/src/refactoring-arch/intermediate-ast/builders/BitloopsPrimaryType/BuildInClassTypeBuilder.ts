@@ -16,7 +16,7 @@ export class BuildInClassTypeBuilder implements IBuilder<BuildInClassTypeNode> {
   }
 
   public build(): BuildInClassTypeNode {
-    this.buildInClassTypeNode.setValue(this.type);
+    this.buildInClassTypeNode.buildLeafValue(this.type);
 
     return this.buildInClassTypeNode;
   }

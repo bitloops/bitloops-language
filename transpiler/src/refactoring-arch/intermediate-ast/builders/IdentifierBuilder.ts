@@ -18,7 +18,7 @@ export class IdentifierBuilder implements IBuilder<IdentifierNode> {
   }
 
   public build(): IdentifierNode {
-    this.identifierNode.setValue(this.name);
+    this.identifierNode.buildLeafValue(this.name);
 
     return this.identifierNode;
   }
