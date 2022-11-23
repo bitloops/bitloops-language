@@ -44,7 +44,7 @@ export const packageJSONTemplate = {
     '@types/validator': '^13.7.4',
     // '@typescript-eslint/eslint-plugin': '^5.30.6',
     // '@typescript-eslint/parser': '^5.30.6',
-    'env-cmd': '^10.1.0',
+    // 'env-cmd': '^10.1.0',
     // eslint: '^8.19.0',
     // 'eslint-config-prettier': '^8.5.0',
     // 'eslint-plugin-prettier': '^4.2.1',
