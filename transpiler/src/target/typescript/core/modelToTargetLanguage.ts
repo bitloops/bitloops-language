@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../helpers/mappings.js';
 import {
   argumentDependenciesToTargetLanguage,
   argumentDependencyToTargetLanguage,
@@ -118,12 +118,7 @@ import { parenthesizedExpressionToTargetLanguage } from './components/statements
 import { variableDeclarationToTargetLanguage } from './components/statements/variableDeclaration.js';
 import { repoAdapterToTargetLanguage } from './components/repo/repoAdapter.js';
 import { singleExpressionToTargetLanguage } from '../setup/single-expression/index.js'; // TODO check this
-import {
-  ISetupData,
-  TBoundedContexts,
-  TContextData,
-  TTargetDependenciesTypeScript,
-} from '../../../types.js';
+import { ISetupData, TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import {
@@ -138,18 +133,17 @@ import { builtInClassEvaluationToTargetLanguage } from './components/builtInClas
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
 import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
-import { IntermediateASTNode } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
+import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const modelToTargetLanguage = (props: {
-  intermediateASTNode: IntermediateASTNode;
+  type: TBitloopsTypesValues;
+  value: any;
   contextData?: TContextData;
   setupData?: ISetupData;
   model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
-  const { intermediateASTNode, contextData, setupData, model } = props;
+  const { type, value, contextData, setupData, model } = props;
 
-  const type = intermediateASTNode.getNodeType();
-  const value = intermediateASTNode.getValue();
   let res: TTargetDependenciesTypeScript;
   switch (type) {
     case BitloopsTypesMapping.TStatement: {

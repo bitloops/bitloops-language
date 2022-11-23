@@ -32,7 +32,7 @@ import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError
 // import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
-import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
+// import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
 // import { deepClone } from '../../../utils/deepClone.js';
 // import { IntermediateASTNode } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 import { ClassTypeNode } from '../../../refactoring-arch/intermediate-ast/nodes/ClassTypeNode.js';
@@ -75,9 +75,11 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
         const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
         classTypeNodes.forEach((intermediateASTNode) => {
           // copy intermediateASTNode??
-          modelToTypescriptModel(intermediateASTNode);
+          //TODO uncomment
+          // modelToTypescriptModel(intermediateASTNode);
           const generatedString = modelToTargetLanguage({
-            intermediateASTNode,
+            type: intermediateASTNode.getNodeType(),
+            value: intermediateASTNode.getValue(),
             setupData,
             contextData,
             model: intermediateASTTree,

@@ -113,11 +113,17 @@ const useCaseValuesToTargetLanguage = (
       `UseCase ${useCaseName} has an array as input type. This is not supported in Bitloops`,
     );
   }
+  const { output: useCaseInputName, dependencies: useCaseTypeDependencies } = modelToTargetLanguage(
+    {
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: useCaseInputType,
+    },
+  );
 
   let result = initialUseCase(
     useCaseReturnTypesResult.output,
     useCaseResponseTypeName,
-    useCaseInputType,
+    useCaseInputName,
     useCaseDependenciesResult.output,
     useCaseName,
   );
@@ -127,7 +133,7 @@ const useCaseValuesToTargetLanguage = (
 
   result += executeResult.output;
   result += '}';
-  dependencies = [...dependencies, ...executeResult.dependencies];
+  dependencies = [...dependencies, ...executeResult.dependencies, ...useCaseTypeDependencies];
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
     classType: ClassTypes.UseCases,

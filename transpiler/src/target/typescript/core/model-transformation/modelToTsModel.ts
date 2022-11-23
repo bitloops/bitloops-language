@@ -32,12 +32,8 @@ import { transformDomainCreateMethodIntermediateAST } from './components/domain/
 import { transformRootEntityIntermediateAST } from './components/rootEntity.js';
 import { transformUseCaseIntermediateAST } from './components/useCase/index.js';
 import { transformGraphQLControllerIntermediateAST } from './components/controllers/graphQL.js';
-import { IntermediateASTNode } from '../../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 
-const modelToTypescriptModel = (node: IntermediateASTNode): any => {
-  const type = node.getNodeType();
-  const value = node.getValue();
-
+const modelToTypescriptModel = (type: string, value: any): any => {
   let res: any;
   switch (type) {
     case BitloopsTypesMapping.TControllers: {

@@ -27,12 +27,14 @@ import {
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import { DTODeclarationBuilder } from './dtoDeclaration.builder.js';
+// import { DTODeclarationBuilder } from './dtoDeclaration.builder.js';
 
 const var2: TVariable = {
   optional: true,
   identifier: 'name',
-  primitiveType: 'string',
+  type: {
+    primitiveType: 'string',
+  },
 };
 
 const testExamplesDTO = [
@@ -83,29 +85,31 @@ test('DTO declaration is valid', () => {
 });
 
 // DTONodeBuilder.withIdentifier().withFieldList()
-const getExpectedDTOValues = (variables: TVariables, identifier: TDTOIdentifier) => {
-  const dtoValue = new DTODeclarationBuilder()
-    .withIdentifier(identifier)
-    .withVariables(variables)
-    .build();
-  // const dtoValue = {
-  //   DTO: {
-  //     DTOIdentifier: identifier,
-  //     fieldList: [
-  //       {
-  //         field: {
-  //           optional: true,
-  //           identifier: 'name',
-  //           arrayPrimaryType: {
-  //             arrayPrimaryType: {
-  //               primitiveType: 'string',
-  //             },
-  //           },
-  //         },
-  //       },
-  //     ],
-  //   },
-  // };
+const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
+  // const dtoValue = new DTODeclarationBuilder()
+  //   .withIdentifier(identifier)
+  //   .withVariables(variables)
+  //   .build();
+  const dtoValue = {
+    DTO: {
+      HelloWorldRequestDTO: {
+        DTOIdentifier: identifier,
+        fieldList: [
+          {
+            field: {
+              optional: true,
+              identifier: 'name',
+              arrayPrimaryType: {
+                arrayPrimaryType: {
+                  primitiveType: 'string',
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  };
 
   return dtoValue;
 };

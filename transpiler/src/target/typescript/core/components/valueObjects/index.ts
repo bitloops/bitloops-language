@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TBoundedContexts,
   TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
@@ -29,8 +28,9 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
-import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { getParentDependencies } from '../../dependencies.js';
 import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
+import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const VO_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -69,7 +69,7 @@ const valueObjectMethods = (
 
 const valueObjectsToTargetLanguage = (params: {
   valueObjects: TValueObjects;
-  model: TBoundedContexts;
+  model: IntermediateASTTree;
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
   const { valueObjects, model, contextData } = params;
@@ -87,13 +87,17 @@ const valueObjectsToTargetLanguage = (params: {
 
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
-    const propsName = create.parameterDependency.type;
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+    const propsNameType = create.parameterDependency.type;
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error(
         `Value Object ${valueObjectName} has an array as a property. This is not supported yet.`,
       );
     }
-    dependencies = [...dependencies, ...getChildDependencies(propsName)];
+    const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: propsNameType,
+    });
+    dependencies = [...dependencies, ...propsTypeDependencies];
 
     if (constantVars) {
       // TODO FIx with new type

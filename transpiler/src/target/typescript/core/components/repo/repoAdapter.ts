@@ -19,7 +19,6 @@
  */
 import {
   ISetupData,
-  TBoundedContexts,
   TDependenciesTypeScript,
   TModule,
   TPropsValues,
@@ -28,12 +27,14 @@ import {
   TRepoSupportedTypes,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { ClassTypes } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
+import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
   switch (dbType) {
@@ -67,16 +68,27 @@ const getRepoHeader = (
   };
 };
 
-const getPropsModel = (repoPortInfo: TRepoPort, module: TModule): TPropsValues => {
-  let propsModel;
+const getPropsModel = (
+  repoPortInfo: TRepoPort,
+  module: TModule,
+): { output: TPropsValues; dependencies: TDependenciesTypeScript } => {
+  let propsModel: TPropsValues;
+  let dependencies = [];
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
     const { aggregateRootName } = repoPortInfo;
     const aggregateModel = module.RootEntities[aggregateRootName];
-    const aggregatePropsName = aggregateModel.create.parameterDependency.type;
+    const aggregatePropsNameType = aggregateModel.create.parameterDependency.type;
 
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsName)) {
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsNameType)) {
       throw new Error('Array props are not supported');
     }
+    const { output: aggregatePropsName, dependencies: aggregatePropsTypeDependencies } =
+      modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: aggregatePropsNameType,
+      });
+    dependencies = [...dependencies, ...aggregatePropsTypeDependencies];
+
     propsModel = module.Props[aggregatePropsName];
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
     const { readModelName } = repoPortInfo;
@@ -85,13 +97,13 @@ const getPropsModel = (repoPortInfo: TRepoPort, module: TModule): TPropsValues =
   } else {
     throw new Error(`Invalid repo port ${JSON.stringify(repoPortInfo)}`);
   }
-  return propsModel;
+  return { output: propsModel, dependencies };
 };
 
 export const repoAdapterToTargetLanguage = (
   repoAdapters: TRepoAdapters,
   contextData: { boundedContext: string; module: string },
-  model: TBoundedContexts,
+  model: IntermediateASTTree,
   setupData: ISetupData,
 ): TTargetDependenciesTypeScript => {
   const { boundedContext, module: moduleName } = contextData;
@@ -111,7 +123,10 @@ export const repoAdapterToTargetLanguage = (
 
   const repoStart = getRepoHeader(repoPort, dbType);
 
-  const propsModel = getPropsModel(repoPortInfo, module);
+  const { output: propsModel, dependencies: propsDependencies } = getPropsModel(
+    repoPortInfo,
+    module,
+  );
 
   const repoBody = repoBodyLangMapping(
     dbType,
@@ -124,7 +139,12 @@ export const repoAdapterToTargetLanguage = (
   );
   const repoEnd = '}';
 
-  dependencies = [...dependencies, ...repoStart.dependencies, ...repoBody.dependencies];
+  dependencies = [
+    ...dependencies,
+    ...repoStart.dependencies,
+    ...repoBody.dependencies,
+    ...propsDependencies,
+  ];
   const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.RepoAdapters,
     className: repoAdapterInstanceName,

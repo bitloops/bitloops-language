@@ -157,7 +157,8 @@ export type TOptional = boolean;
 export type TVariable = {
   [optionalKey]?: TOptional;
   [identifierKey]: TIdentifier;
-} & TBitloopsPrimaryType;
+  [bitloopsPrimaryTypeKey]: TBitloopsPrimaryType;
+};
 
 export type TPropsValues = {
   variables: TVariables;
@@ -254,6 +255,7 @@ export type ArrayBitloopsPrimTypeObject = {
   [arrayPrimaryTypeKey]: TBitloopsPrimaryType;
 };
 
+export const bitloopsPrimaryTypeKey = 'type';
 export type TBitloopsPrimaryType =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject

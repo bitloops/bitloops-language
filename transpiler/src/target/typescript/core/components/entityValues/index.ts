@@ -19,7 +19,6 @@ import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPr
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TBoundedContexts,
   TContextData,
   TEntityMethods,
   TEntityValues,
@@ -29,6 +28,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
+import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
   const result = domainMethods(objectValueMethods);
@@ -37,7 +37,7 @@ const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesT
 
 const entityValuesToTargetLanguage = (params: {
   entityValues: TEntityValues;
-  model: TBoundedContexts;
+  model: IntermediateASTTree;
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
   const { entityValues, model, contextData } = params;
@@ -49,10 +49,15 @@ const entityValuesToTargetLanguage = (params: {
   let result = '{';
   let dependencies = [];
   const { methods, create, constantVars } = entityValues;
-  const propsName = create.parameterDependency.type;
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+  const propsNameType = create.parameterDependency.type;
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
     throw new Error('Array is not supported as entity props type');
   }
+  const { output: propsName, dependencies: entityPropsTypeDependencies } = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: propsNameType,
+  });
+  dependencies = [...dependencies, ...entityPropsTypeDependencies];
 
   if (constantVars) {
     // TODO fix with new model/types
