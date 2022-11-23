@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import path from 'path';
+//import path from 'path';
 import { kebabCase } from '../../../utils/caseStyles.js';
 import { readFromFile } from '../../../helpers/fileOperations.js';
 import {
@@ -773,7 +773,7 @@ start();
         const filePath = `${setupTypeMapper[`${serverType}.Server`]}app${i}${
           esmEnabled ? '.js' : ''
         }`;
-        imports.push(`await import('..${path.normalize(filePath)}${esmEnabled ? '.js' : ''}');`);
+        imports.push(`await import('..${filePath}${esmEnabled ? '.js' : ''}');`);
       }
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);

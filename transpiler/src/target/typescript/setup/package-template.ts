@@ -10,7 +10,7 @@ export const packageJSONTemplate = {
     'build:public': 'cd public/app && npm run build',
     'start:public': 'cd public/app && npm run start',
     build: 'rimraf ./dist && tsc',
-    'start:dev': 'NODE_ENV=development ./node_modules/.bin/env-cmd --silent -f .env.dev nodemon ',
+    'start:dev': 'nodemon ',
     start: 'node dist/index',
     test: 'jest --coverage',
     'test:dev': 'jest --watchAll',
