@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # 💡The Bitloops (Big Idea) Vision
 
 So why did we decide to build Bitloops? What’s the ultimate vision behind Bitloops? 
