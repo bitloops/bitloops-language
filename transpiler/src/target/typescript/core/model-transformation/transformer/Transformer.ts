@@ -6,7 +6,7 @@ class RestControllerNode extends IntermediateASTNode {}
 export abstract class Transformer<Node extends IntermediateASTNode> {
   constructor(protected tree: IntermediateASTTree, protected node: Node) {}
 
-  abstract run();
+  abstract run(): void;
 }
 
 export class RestControllerNodeTransformer extends Transformer<RestControllerNode> {

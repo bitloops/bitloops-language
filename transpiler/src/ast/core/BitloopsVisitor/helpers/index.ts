@@ -116,7 +116,6 @@ export {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
-  arrayLiteralExpressionVisitor,
 } from './expression/index.js';
 
 export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
