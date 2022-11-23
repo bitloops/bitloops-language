@@ -22,6 +22,55 @@ import { TDTO, TDTOValues, TTargetDependenciesTypeScript } from '../../../../../
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
+import { DTONode } from '../../../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
+
+const DTONodeToTargetLanguage = (dto: DTONode): TTargetDependenciesTypeScript => {
+  const identifierNode = dto.getIdentifierNode();
+  const fieldListNode = dto.getFieldListNode();
+
+  const { output: dtoName, dependencies: identifierDependencies } = modelToTargetLanguage({
+    intermediateASTNode: identifierNode,
+  });
+  const { output: fields, dependencies: fieldsDependencies } = modelToTargetLanguage({
+    intermediateASTNode: fieldListNode,
+  });
+
+  let result = `export interface ${dtoName} { `;
+  result += fields;
+  result += '}';
+
+  let dependencies = [fieldsDependencies, identifierDependencies];
+  dependencies = getParentDependencies(dependencies, {
+    classType: dto.getClassType(),
+    className: dtoName,
+  });
+
+  return { output: result, dependencies };
+};
+
+// let result = '';
+// let dependencies = [];
+// const dtoKeys = Object.keys(dto);
+// for (let i = 0; i < dtoKeys.length; i++) {
+//   const dtoName = dtoKeys[i];
+//   const dtoValues = dto[dtoName];
+//   const model = modelToTargetLanguage({
+//     type: BitloopsTypesMapping.TDTOValues,
+//     value: dtoValues,
+//   });
+//   result += `export interface ${dtoName} { `;
+//   result += model.output;
+//   result += '}';
+//   dependencies = [...dependencies, ...model.dependencies];
+
+//   dependencies = getParentDependencies(dependencies, {
+//     classType: ClassTypes.DTOs,
+//     className: dtoName,
+//   });
+// }
+
+// return { output: result, dependencies };
+// };
 
 const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   let result = '';

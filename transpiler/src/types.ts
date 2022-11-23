@@ -19,6 +19,7 @@
  */
 import { TClassTypesValues } from './helpers/mappings.js';
 import { BitloopsLanguageAST } from './index.js';
+import { IntermediateASTTree } from './refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 export type TModule = {
   Props?: TProps;
@@ -139,7 +140,7 @@ export type TBitloopsClasses =
   | TStructs;
 
 export type TModuleName = string;
-export type TBoundedContext = Record<TModuleName, TModule>;
+export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
 
 export type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;

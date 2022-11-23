@@ -17,6 +17,8 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
 
   public withIdentifier(dtoIdentifierNode: DTOIdentifierNode): DTONodeBuilder {
     this.identifierNode = dtoIdentifierNode;
+    const dtoName = dtoIdentifierNode.getIdentifierName();
+    this.dtoNode.setClassName(dtoName);
     return this;
   }
 

@@ -11,17 +11,17 @@ export abstract class IntermediateASTNode {
   private parent: IntermediateASTNode;
   private metaData: TNodeMetadata;
   private value: any;
-  private name: string;
+  private classNodeName: string;
 
   constructor(
     nodeType: TBitloopsTypesValues,
     metadata: TNodeMetadata = { lines: '10' },
-    name: string,
+    classNodeName: string,
   ) {
     this.nodeType = nodeType;
     this.metaData = metadata;
     this.children = [];
-    this.name = name;
+    this.classNodeName = classNodeName;
   }
 
   public getValue(): any {
@@ -34,6 +34,10 @@ export abstract class IntermediateASTNode {
 
   public getNodeType(): TBitloopsTypesValues {
     return this.nodeType;
+  }
+
+  public getClassNodeName(): string {
+    return this.classNodeName;
   }
 
   public getParent(): IntermediateASTNode {
@@ -87,23 +91,23 @@ export abstract class IntermediateASTNode {
 
   public buildArrayValue() {
     const children = this.getChildren();
-    this.value = { [this.name]: [] };
+    this.value = { [this.classNodeName]: [] };
     children.forEach((child) => {
-      this.value[this.name].push(child.value);
+      this.value[this.classNodeName].push(child.value);
     });
   }
 
   public buildLeafValue(value: any) {
     this.value = {
-      [this.name]: value,
+      [this.classNodeName]: value,
     };
   }
 
   public buildObjectValue() {
     const children = this.getChildren();
-    this.value = { [this.name]: {} };
+    this.value = { [this.classNodeName]: {} };
     children.forEach((child) => {
-      this.value[this.name] = { ...this.value[this.name], ...child.value };
+      this.value[this.classNodeName] = { ...this.value[this.classNodeName], ...child.value };
     });
   }
 }

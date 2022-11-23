@@ -138,26 +138,18 @@ import { builtInClassEvaluationToTargetLanguage } from './components/builtInClas
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
 import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
+import { IntermediateASTNode } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 
 const modelToTargetLanguage = (props: {
-  type: string;
-  value: any;
+  intermediateASTNode: IntermediateASTNode;
   contextData?: TContextData;
   setupData?: ISetupData;
-  model?: TBoundedContexts;
+  model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
-  const { type, value, contextData, setupData, model } = props;
-  // let targetLanguage;
-  // if (!props.targetLanguage) {
-  //   targetLanguage = SupportedLanguages.TypeScript;
-  // } else {
-  //   targetLanguage = props.targetLanguage;
-  // }
+  const { intermediateASTNode, contextData, setupData, model } = props;
 
-  // if (!isLanguageSupported(targetLanguage)) {
-  //   throw new Error(`Language ${targetLanguage} is not supported`);
-  // }
-
+  const type = intermediateASTNode.getNodeType();
+  const value = intermediateASTNode.getValue();
   let res: TTargetDependenciesTypeScript;
   switch (type) {
     case BitloopsTypesMapping.TStatement: {

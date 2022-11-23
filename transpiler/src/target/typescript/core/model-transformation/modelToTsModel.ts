@@ -32,13 +32,11 @@ import { transformDomainCreateMethodIntermediateAST } from './components/domain/
 import { transformRootEntityIntermediateAST } from './components/rootEntity.js';
 import { transformUseCaseIntermediateAST } from './components/useCase/index.js';
 import { transformGraphQLControllerIntermediateAST } from './components/controllers/graphQL.js';
+import { IntermediateASTNode } from '../../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 
-const modelToTypescriptModel = (props: {
-  type: string;
-  value: any;
-  // Replace any with types of all source elements
-}): any => {
-  const { type, value } = props;
+const modelToTypescriptModel = (node: IntermediateASTNode): any => {
+  const type = node.getNodeType();
+  const value = node.getValue();
 
   let res: any;
   switch (type) {
