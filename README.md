@@ -85,28 +85,28 @@ or
 yarn install
 ```
 
-### 5 - Run an instance of MongoDB
+### 6 - Run an instance of MongoDB
 For the Bitloops ToDo App to run, you'll need MongoDB installed on your system. If you already have an MongoDB service installed, then proceed to step 5.4. 
 If you don't have MongoDB installed on your system, then we recommend you follow these easy steps to run MongoDB through Docker:
 
-5.1 Install Docker using this [link](https://www.docker.com/). If you already have Docker installed, move to the next step. 
+6.1 Install Docker using this [link](https://www.docker.com/). If you already have Docker installed, move to the next step. 
 
-5.2 Launch Docker on your system. The Docker service normally starts when booting a system, but you might want to confirm this before moving to the next step.
+6.2 Launch Docker on your system. The Docker service normally starts when booting a system, but you might want to confirm this before moving to the next step.
 
-5.3 Install MongoDB in Docker using the following command.
+6.3 Install MongoDB in Docker using the following command.
 
 ```console
 docker pull mongo
 ```
 
-5.4 Start the MongoDB container
+6.4 Start the MongoDB container
 
   ```console
   docker run -d --name mongo -p 27017:27017 mongo
   ```
 
 
-### 6 - Run the Bitloops ToDo App
+### 7 - Run the Bitloops ToDo App
 The final step is to execute the TypeScript backend code and run the Bitloops ToDo App. Use one of the following commands:
   
 ```console
@@ -119,10 +119,9 @@ or
 yarn start:dev
 ```
 
-### 7 - Create tasks!
+### 8 - Create tasks!
 Start sending requests to the Todo app using [Postman](https://www.postman.com/) or [curl](https://curl.se/), or any other way you prefer!
-
-7.1. Example using curl
+Here is an example using curl
 
 ```console
 curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
@@ -286,4 +285,7 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
 }
 ```
 
-# Like what you are seeing? Don't forget to star ⭐ our repo
+# Like what you are seeing? Please star ⭐ our repo!
+
+<p align="center">
+    <img src="Star Us Gif.gif" alt="Star Bitloops" width="350">
