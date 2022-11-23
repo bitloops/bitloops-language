@@ -17,7 +17,7 @@ export class IdentifierExpressionBuilder implements IBuilder<IdentifierExpressio
   }
 
   public build(): IdentifierExpressionNode {
-    this.identifierExpressionNode.setValue(this.identifierValue);
+    this.identifierExpressionNode.buildLeafValue(this.identifierValue);
 
     return this.identifierExpressionNode;
   }

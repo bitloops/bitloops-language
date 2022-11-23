@@ -11,7 +11,7 @@ export class NullLiteralBuilder implements IBuilder<NullLiteralNode> {
   }
 
   public build(): NullLiteralNode {
-    this.nullLiteralNode.setValue('null');
+    this.nullLiteralNode.buildLeafValue('null');
 
     return this.nullLiteralNode;
   }

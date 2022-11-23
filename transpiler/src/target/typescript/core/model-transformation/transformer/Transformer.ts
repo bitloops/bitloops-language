@@ -19,8 +19,18 @@ export class RestControllerNodeTransformer extends Transformer<RestControllerNod
     /**
      * const execute = tree.getIsUseCaseExecuteStatementOf(this.node)
      * executeStatement.methodCall
-     *
      */
+    const executeStatement = this.tree.getUseCaseExecuteStatementOf(this.node);
+    if (!executeStatement) {
+      return;
+    }
+
+    const expression = executeStatement.getExpression();
+    if (!expression.isMethodCallExpression()) {
+      return;
+    }
+    expression.prependMethodName('await ');
+    return;
   }
 
   private transformDotValue() {

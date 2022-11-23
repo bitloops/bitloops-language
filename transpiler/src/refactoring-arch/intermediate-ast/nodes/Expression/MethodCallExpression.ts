@@ -13,7 +13,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return methodNameNode.getValue();
   }
 
-  prepend(prefix: string): void {
+  prependMethodName(prefix: string): void {
     // TODO fix
     const newVal = prefix + this.getValue();
     this.setValue(newVal);

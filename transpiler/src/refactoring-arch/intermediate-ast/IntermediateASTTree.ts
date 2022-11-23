@@ -1,7 +1,9 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping, ClassTypes } from '../../helpers/mappings.js';
+import { ConstDeclarationNode } from './nodes/ConstDeclaration.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
+import { StatementNode } from './nodes/Statement.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -163,5 +165,15 @@ export class IntermediateASTTree {
       this.traverse(useCaseNode, (node) => isExpressionNode(node) && expressions.push(node));
     }
     return expressions;
+  }
+
+  getUseCaseExecuteStatementOf(rootNode: IntermediateASTNode): ConstDeclarationNode | null {
+    let resultNode: ConstDeclarationNode;
+    this.traverse(rootNode, (node) => {
+      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
+        resultNode = node;
+      }
+    });
+    return resultNode ?? null;
   }
 }
