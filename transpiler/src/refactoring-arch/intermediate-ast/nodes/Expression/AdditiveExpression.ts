@@ -8,6 +8,7 @@ export class AdditiveExpressionNode extends ExpressionNode {
     super(BitloopsTypesMapping.TAdditiveExpression, { lines: lines! }, NAME);
   }
 
+  /* 🔧 TODO: implement left and right getters */
   getExpressions(num: 0 | 1 | null): ExpressionNode | ExpressionNode[] {
     const expressions = this.getChildren().filter((child) => child instanceof ExpressionNode);
     if (num === null) {

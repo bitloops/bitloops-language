@@ -16,7 +16,7 @@ export class AdditiveExpressionBuilder implements IBuilder<AdditiveExpressionNod
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): AdditiveExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.LeftexpressionNode = expressionNode;
     return this;
   }
   public withRightExpression(expressionNode: ExpressionNode): AdditiveExpressionBuilder {
