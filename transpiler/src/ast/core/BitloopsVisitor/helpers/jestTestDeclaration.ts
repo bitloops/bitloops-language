@@ -27,8 +27,8 @@ export const jestTestDeclarationVisitor = (
 ): any => {
   const children = thisVisitor.visitChildren(ctx);
   const jestTest = children[2];
-  // Put jestTest inside tree?
-  //  (thisVisitor.intermediateASTTree)
+
+  thisVisitor.intermediateASTTree.insertChild(jestTest);
   const returnObject = {
     Tests: {
       jestTest,

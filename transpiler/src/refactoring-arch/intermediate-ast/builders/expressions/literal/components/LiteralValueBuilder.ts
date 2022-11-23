@@ -17,7 +17,7 @@ export class LiteralValueBuilder implements IBuilder<LiteralValueNode> {
   }
 
   public build(): LiteralValueNode {
-    this.literalValueNode.setValue(this.value);
+    this.literalValueNode.buildLeafValue(this.value);
 
     return this.literalValueNode;
   }
