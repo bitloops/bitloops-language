@@ -145,15 +145,19 @@ export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
 export type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
+export const fieldsKey = 'fields';
 export type TVariables = TVariable[];
 
+export const identifierKey = 'identifier';
 export type TIdentifier = string;
+
+export const optionalKey = 'optional';
 export type TOptional = boolean;
+
 export type TVariable = {
-  optional?: TOptional;
-  type: TBitloopsPrimaryType;
-  name: TIdentifier;
-};
+  [optionalKey]?: TOptional;
+  [identifierKey]: TIdentifier;
+} & TBitloopsPrimaryType;
 
 export type TPropsValues = {
   variables: TVariables;
@@ -230,17 +234,31 @@ export type TBitloopsIdentifier = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 
-export type TBitloopsPrimaryType =
-  | TBitloopsPrimitives
-  | TBitloopsBuiltInClasses
-  | TBitloopsIdentifier
-  | ArrayBitloopsPrimType;
-
-export type ArrayBitloopsPrimType = {
-  arrayType: {
-    value: TBitloopsPrimaryType;
-  };
+export const primitivesTypeKey = 'primitiveType';
+export type TBitloopsPrimitivesObject = {
+  [primitivesTypeKey]: TBitloopsPrimitives;
 };
+
+export const buildInClassTypeKey = 'buildInClassType';
+export type TBitloopsBuiltInClassesObject = {
+  [buildInClassTypeKey]: TBitloopsBuiltInClasses;
+};
+
+export const bitloopsIdentifiersTypeKey = 'bitloopsIdentifierType';
+export type TBitloopsIdentifierObject = {
+  [bitloopsIdentifiersTypeKey]: TBitloopsIdentifier;
+};
+
+export const arrayPrimaryTypeKey = 'arrayPrimaryType';
+export type ArrayBitloopsPrimTypeObject = {
+  [arrayPrimaryTypeKey]: TBitloopsPrimaryType;
+};
+
+export type TBitloopsPrimaryType =
+  | TBitloopsPrimitivesObject
+  | TBitloopsBuiltInClassesObject
+  | TBitloopsIdentifierObject
+  | ArrayBitloopsPrimTypeObject;
 
 export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
 
@@ -562,7 +580,11 @@ export type TExecute = {
 };
 
 export type TDTOIdentifier = string;
-export type TDTO = Record<TDTOIdentifier, TDTOValues>;
+export const DTOIdentifierKey = 'DTOIdentifier';
+export type TDTO = {
+  [DTOIdentifierKey]: TDTOIdentifier;
+  [fieldsKey]: TVariables;
+};
 
 export type TStructs = Record<string, TStructDeclaration>;
 
