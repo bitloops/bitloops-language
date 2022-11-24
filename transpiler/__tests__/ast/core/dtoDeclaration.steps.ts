@@ -30,37 +30,12 @@ import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-
 
 const testExamplesDTO = [
   {
+    //description:
     inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
-    variables: [{ type: 'string', name: 'name', optional: true }],
+    variables: [{ type: 'string', name: 'name', optional: true }], //new VariableBuilder().withType('string').withName('name').build()
     identifier: 'HelloWorldRequestDTO',
   },
 ];
-
-// const expectedDTONode = (): DTONode[] => {
-//   const rootNode = new IntermediateASTRootNode();
-//   const dtoNode = new DTONode();
-//   dtoNode.setClassType(ClassTypes.DTOs);
-//   rootNode.addChild(dtoNode);
-
-//   const identifierNode = new DTOIdentifierNode();
-//   identifierNode.setClassType(ClassTypes.DTOs);
-//   const fieldListNode = new FieldListNode();
-//   fieldListNode.setClassType(ClassTypes.DTOs);
-
-//   dtoNode.addChild(identifierNode);
-//   dtoNode.addChild(fieldListNode);
-//   return [dtoNode];
-// };
-
-// const expectedOutputTree = {
-//   'Hello World': {
-//     core: {
-//       DTOs: {
-//         HelloWorldRequestDTO: { fields: [{ optional: true, type: 'string', name: 'name' }] },
-//       },
-//     },
-//   },
-// };
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -93,12 +68,14 @@ test('DTO declaration is valid', () => {
 
     const expectedNodeValues = getExpectedDTOValues(testDTO.variables, testDTO.identifier);
     const actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+    const value = actualNodes[0].getValue();
 
-    expect(actualNodes[0].getValue()).toMatchObject(expectedNodeValues);
+    expect(value).toMatchObject(expectedNodeValues);
     // expect(resultValue).toEqual(expectedDTOValue);
   });
 });
 
+// DTONodeBuilder.withIdentifier().withFieldList()
 const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
   const dtoValue = {
     DTO: {
@@ -108,11 +85,9 @@ const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier
           field: {
             optional: true,
             identifier: 'name',
-            type: {
+            arrayPrimaryType: {
               arrayPrimaryType: {
-                arrayPrimaryType: {
-                  primitiveType: 'string',
-                },
+                primitiveType: 'string',
               },
             },
           },

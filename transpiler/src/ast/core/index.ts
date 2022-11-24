@@ -1,11 +1,10 @@
 import { BitloopsLanguageASTContext } from '../../index.js';
 import { IntermediateASTTree } from '../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-// import { TBoundedContexts } from '../../types.js';
-// import { parseBitloops } from './BitloopsParser.js';
+import { TModuleName, TBoundedContextName } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 
-export type TBoundedContexts = Record<string, TBoundedContext>;
-export type TBoundedContext = Record<string, IntermediateASTTree>;
+export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
+export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export interface IBitloopsIntermediateASTParser {
   parse: (ast: BitloopsLanguageASTContext) => TBoundedContexts | BitloopsIntermediateASTParserError;
@@ -15,82 +14,30 @@ export class BitloopsIntermediateASTParserError extends Error {}
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
   parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTParserError {
-    // let boundedContextsData: TBoundedContexts = {};
-    let partialBoundedContextsData: TBoundedContexts = {};
+    const boundedContexts: TBoundedContexts = {};
     for (const [boundedContextName, boundedContext] of Object.entries(ast)) {
-      for (const classes of Object.values(boundedContext)) {
-        for (const classData of Object.values(classes)) {
+      for (const [moduleName, module] of Object.entries(boundedContext)) {
+        for (const [_fileId, ASTData] of Object.entries(module)) {
           const bitloopsVisitor = new BitloopsVisitor();
-          // console.log('result::', bitloopsVisitor.visitChildren(classData.initialAST));
-          bitloopsVisitor.visit(classData.initialAST);
+          bitloopsVisitor.visit(ASTData.initialAST);
           const { intermediateASTTree } = bitloopsVisitor;
-          partialBoundedContextsData = {
-            [boundedContextName]: { [classData.module]: intermediateASTTree },
-          };
-          // boundedContextsData = mergeBoundedContextData(
-          //   boundedContextsData,
-          //   partialBoundedContextsData,
-          // );
+          //TODO intermediateASTTree.setMetadata(_fileId, lines)
+
+          if (boundedContexts[boundedContextName] === undefined) {
+            boundedContexts[boundedContextName] = {
+              [moduleName]: intermediateASTTree,
+            };
+          } else if (boundedContexts[boundedContextName][moduleName] === undefined) {
+            boundedContexts[boundedContextName][moduleName] = intermediateASTTree;
+          } else {
+            // merge trees
+            const existingTree = boundedContexts[boundedContextName][moduleName];
+            boundedContexts[boundedContextName][moduleName] =
+              existingTree.mergeWithTree(intermediateASTTree);
+          }
         }
       }
     }
-    return partialBoundedContextsData;
+    return boundedContexts;
   }
 }
-
-// const mergeBoundedContextData = (
-//   mainBoundedContextData: TBoundedContexts,
-//   newBoundedContextData: TBoundedContexts,
-// ): TBoundedContexts => {
-//   const result = { ...mainBoundedContextData };
-//   for (const [boundedContextName, boundedContextData] of Object.entries(newBoundedContextData)) {
-//     for (const [moduleName, moduleData] of Object.entries(boundedContextData)) {
-//       for (const [classType, classTypeData] of Object.entries(moduleData)) {
-//         for (const [className, classData] of Object.entries(classTypeData)) {
-//           if (classTypeExists(boundedContextName, moduleName, classType, result)) {
-//             result[boundedContextName][moduleName][classType][className] = classData;
-//           } else if (moduleExists(boundedContextName, moduleName, result)) {
-//             result[boundedContextName][moduleName][classType] = { [className]: classData };
-//           } else if (boundedContextExists(boundedContextName, result)) {
-// result[boundedContextName][moduleName] = { [classType]: { [className]: classData } };
-// } else {
-// result[boundedContextName] = {
-//   [moduleName]: { [classType]: { [className]: classData } },
-// };
-//           }
-//         }
-//       }
-//     }
-//   }
-//   return result;
-// };
-
-// const classTypeExists = (
-//   boundedContextName: string,
-//   moduleName: string,
-//   classType: string,
-//   boundedContextsData: TBoundedContexts,
-// ): boolean => {
-//   return (
-//     boundedContextsData[boundedContextName] &&
-//     boundedContextsData[boundedContextName][moduleName] &&
-//     boundedContextsData[boundedContextName][moduleName][classType]
-//   );
-// };
-
-// const moduleExists = (
-//   boundedContextName: string,
-//   moduleName: string,
-//   boundedContextsData: TBoundedContexts,
-// ): boolean => {
-//   return !!(
-//     boundedContextsData[boundedContextName] && boundedContextsData[boundedContextName][moduleName]
-//   );
-// };
-
-// const boundedContextExists = (
-//   boundedContextName: string,
-//   boundedContextsData: TBoundedContexts,
-// ): boolean => {
-//   return !!boundedContextsData[boundedContextName];
-// };

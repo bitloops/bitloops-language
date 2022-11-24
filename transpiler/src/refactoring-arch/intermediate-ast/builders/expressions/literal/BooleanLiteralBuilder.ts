@@ -17,7 +17,7 @@ export class BooleanLiteralBuilder implements IBuilder<BooleanLiteralNode> {
   }
 
   public build(): BooleanLiteralNode {
-    this.booleanLiteralNode.setValue(this.booleanValue);
+    this.booleanLiteralNode.buildLeafValue(this.booleanValue);
 
     return this.booleanLiteralNode;
   }

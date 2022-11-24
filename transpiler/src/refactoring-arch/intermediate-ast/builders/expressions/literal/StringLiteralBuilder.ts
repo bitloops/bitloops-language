@@ -17,7 +17,7 @@ export class StringLiteralBuilder implements IBuilder<StringLiteralNode> {
   }
 
   public build(): StringLiteralNode {
-    this.stringLiteralNode.setValue(this.strValue);
+    this.stringLiteralNode.buildLeafValue(this.strValue);
 
     return this.stringLiteralNode;
   }

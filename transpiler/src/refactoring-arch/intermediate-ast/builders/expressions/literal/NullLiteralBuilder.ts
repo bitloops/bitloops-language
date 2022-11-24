@@ -1,7 +1,7 @@
 import { NullLiteralNode } from '../../../nodes/Expression/Literal/NullLiteralNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class BooleanLiteralBuilder implements IBuilder<NullLiteralNode> {
+export class NullLiteralBuilder implements IBuilder<NullLiteralNode> {
   //   public readonly NAME = 'nullLiteral';
 
   private nullLiteralNode: NullLiteralNode;
@@ -11,7 +11,7 @@ export class BooleanLiteralBuilder implements IBuilder<NullLiteralNode> {
   }
 
   public build(): NullLiteralNode {
-    this.nullLiteralNode.setValue('null');
+    this.nullLiteralNode.buildLeafValue('null');
 
     return this.nullLiteralNode;
   }
