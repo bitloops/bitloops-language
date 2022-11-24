@@ -181,7 +181,7 @@ regularErrorTypeEvaluation
     ;
 
 methodArguments
-    : OpenParen (argumentList (Comma argumentList)*)? CloseParen
+    : OpenParen argumentList? CloseParen
     ;
 
 openParen

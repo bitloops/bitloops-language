@@ -24,14 +24,6 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 export const methodArgumentsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodArgumentsContext,
-): any => {
-  const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  // console.log('returnArgumentList', returnArgumentList);
-  return returnArgumentList[0];
+) => {
+  return thisVisitor.visit(ctx.argumentList());
 };

@@ -18,19 +18,16 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { ArgumentListNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { ArgumentListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 
 export const argumentListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArgumentListContext,
-): any => {
+): ArgumentListNode => {
   const argumentList = thisVisitor.visitChildren(ctx);
-  const returnArgumentList = [];
-  for (let i = 0; i < argumentList.length; i++) {
-    if (argumentList[i] !== undefined) {
-      returnArgumentList.push(argumentList[i]);
-    }
-  }
-  return returnArgumentList;
+  const returnArgumentList = argumentList.filter((arg) => arg !== undefined);
+  return new ArgumentListNodeBuilder().withArguments(returnArgumentList).build();
 };

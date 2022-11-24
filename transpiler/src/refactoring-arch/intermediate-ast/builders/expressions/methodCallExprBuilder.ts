@@ -14,7 +14,7 @@ export class MethodCallNodeBuilder implements IBuilder<MethodCallExpressionNode>
     this.methodCallExpressionNode = new MethodCallExpressionNode();
   }
 
-  public withName(expr: ExpressionNode): MethodCallNodeBuilder {
+  public withExpression(expr: ExpressionNode): MethodCallNodeBuilder {
     this.expression = expr;
     return this;
   }

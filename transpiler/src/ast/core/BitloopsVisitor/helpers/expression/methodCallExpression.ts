@@ -20,25 +20,30 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TExpression } from '../../../../../types.js';
+import { MethodCallNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
+import { ExpressionNode } from '../../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const methodCallExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodCallExpressionContext,
-): TExpression => {
+): ExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
-  const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
   const argumentList = thisVisitor.visit(ctx.methodArguments());
-  const value = {
-    type: 'method',
-    value: leftExpressionValue,
-    argumentDependencies: argumentList,
-  };
-  return {
-    expression: {
-      evaluation: {
-        regularEvaluation: value,
-      },
-    },
-  };
+  const node = new MethodCallNodeBuilder()
+    .withExpression(leftExpression)
+    .withArgumentsList(argumentList)
+    .build();
+  return node;
+  // const value = {
+  //   type: 'method',
+  //   value: leftExpressionValue,
+  //   argumentDependencies: argumentList,
+  // };
+  // return {
+  //   expression: {
+  //     evaluation: {
+  //       regularEvaluation: value,
+  //     },
+  //   },
+  // };
 };

@@ -261,7 +261,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return memberDotExpressionVisitor(this, ctx);
   }
 
-  visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext): TExpression {
+  visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {
     return methodCallExpressionVisitor(this, ctx);
   }
 
