@@ -136,6 +136,7 @@ const BitloopsTypesMapping = {
   TLiteralValue: 'TLiteralValue',
   TLiteralType: 'TLiteralType',
   TMemberDotExpression: 'TMemberDotExpression',
+  TAssignmentExpression: 'TAssignmentExpression',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

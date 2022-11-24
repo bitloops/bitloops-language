@@ -19,25 +19,34 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
+import { AssignmentExpressionNode } from './../../../../../refactoring-arch/intermediate-ast/nodes/Expression/AssignmentExpression.js';
+import { AssignmentExpressionNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TThisDeclaration } from '../../../../../types.js';
 
 export const assignmentExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.AssignmentExpressionContext,
-): TThisDeclaration => {
+): AssignmentExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression(0));
-  const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
   const rightExpression = thisVisitor.visit(ctx.expression(1));
-  // TODO Fix model so that thisDeclaration is not a statement, but an expression
-  if (leftExpressionValue.startsWith('this.')) {
-    return {
-      thisDeclaration: {
-        name: leftExpressionValue,
-        expression: rightExpression.expression,
-      },
-    };
-  }
+  return new AssignmentExpressionNodeBuilder()
+    .withLeftExpression(leftExpression)
+    .withRightExpression(rightExpression)
+    .build();
+
+  // TODO Remove thisDeclaration completely
+  // const leftExpression = thisVisitor.visit(ctx.expression(0));
+  // const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
+  // const rightExpression = thisVisitor.visit(ctx.expression(1));
+  // // TODO Fix model so that thisDeclaration is not a statement, but an expression
+  // if (leftExpressionValue.startsWith('this.')) {
+  //   return {
+  //     thisDeclaration: {
+  //       name: leftExpressionValue,
+  //       expression: rightExpression.expression,
+  //     },
+  //   };
+  // }
 
   throw new Error('Not implemented');
 };

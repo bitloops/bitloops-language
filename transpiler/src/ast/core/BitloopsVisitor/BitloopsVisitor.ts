@@ -271,7 +271,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return toStringExpressionVisitor(this, ctx);
   }
 
-  visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext): TThisDeclaration {
+  visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext) {
     return assignmentExpressionVisitor(this, ctx);
   }
 
