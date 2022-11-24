@@ -1,11 +1,11 @@
-![Bitloops](https://storage.googleapis.com/bitloops-github-assets/bitloops-language-cover-oct22-v2.png)
+![Bitloops](https://storage.googleapis.com/bitloops-github-assets/github-readme-image.png)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
   <a href="#What-are-the-benefits-of-using-Bitloops-Language?">Benefits</a> |
   <a href="#why-build-the-bitloops-language">Why?</a> |
   <a href="#language-goals">Goals</a> |
-  <a href="#project-status">Status</a>
+  <a href="#project-status">Status</a> |
   <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
   <a href="https://github.com/bitloops/bitloops-language/discussions">GitHub Discussions</a> |
   <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
@@ -207,11 +207,11 @@ Currently, we have fleshed out several core aspects of the project and the langu
 
 There are many things we want to add in the future including
 
-[ ] CQRS support
-[ ] Event Sourcing support
-[ ] Java target language
-[ ] gRPC support
-[ ] And many more...
+- [ ] CQRS support
+- [ ] Event Sourcing support
+- [ ] Java target language
+- [ ] gRPC support
+- [ ] And many more...
 
 If you're interested in contributing, we would love help!
   
@@ -285,7 +285,37 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
 }
 ```
 
-# Like what you are seeing? Please star ⭐ our repo!
+## Questions
+
+For questions and support please use our official [Discord channel](https://discord.gg/vj8EdZx8gK). Feel free to join if you're looking to learn more about software development design patterns. 
+
+## Contributing
+
+We are a small team on a mission to democratize well-designed code and high-quality software, and we'll take all the help we can get! If you'd like to get involved, please check out thour [Contribution Guidelines](https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md) to learn how and where we could use your help. We aim to identify **good-first-issues** so you can quickly start contributing and learning. 
+
+## Issues 
+
+Please make sure to read our [Reporting Issues](https://github.com/bitloops/bitloops-language/blob/main/.github/SECURITY.md) guidelines before opening an issue. Issues not conforming to the guidelines may be closed immediately.
+   
+    
+## Community support & staying in touch
+
+For general help using Bitloops Language, please use one of these channels:
+
+- Community -      [Discord](https://discord.gg/vj8EdZx8gK) \(For live discussion with the Community and Bitloops team\)
+- Forum -          [Discussions](https://github.com/bitloops/bitloops-language/discussions) \(For deeper conversations about features, connectors, or problems\)
+- Contributions -  [GitHub](https://github.com/bitloops/bitloops-language) \(Bug reports, Contributions\)
+- Demonstrations - [One-to-One Discussion](https://calendly.com/bitloops/30min?month=2022-11) \(Live informal 30-minute video call sessions with the Bitloops team\)
+- Website -        [https://bitloops.org](https://bitloops.org/bitloops-language)
+- Co-Founder -     [Vasilis Danias](https://www.linkedin.com/in/danias/)
+- Co-Founder -     [Sergio Pereira](https://www.linkedin.com/in/sergiopreira/)
+
+
+## License
+
+Bitloops Language has a GNU General Public License v3.0. See the [LICENSE](https://github.com/bitloops/bitloops-language/blob/main/LICENSE) file for licensing information.
+
+## Like what you are seeing? Show us your appreciation!
 
 <p align="center">
-    <img src="Star Us Gif.gif" alt="Star Bitloops" width="350">
+    <img src="https://storage.googleapis.com/bitloops-github-assets/star-us.gif">
