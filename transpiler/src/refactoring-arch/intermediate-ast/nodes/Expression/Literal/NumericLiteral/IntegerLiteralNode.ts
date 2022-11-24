@@ -14,4 +14,10 @@ export class IntegerLiteralNode extends NumericLiteralNode {
   constructor(lines?: string) {
     super(BitloopsTypesMapping.TIntegerLiteral, { lines: lines! }, NAME);
   }
+  public getType(): TBitloopsPrimitives {
+    return this.getChildren()[0].getValue();
+  }
+  public getValue(): TBitloopsPrimitives {
+    return this.getChildren()[1].getValue();
+  }
 }

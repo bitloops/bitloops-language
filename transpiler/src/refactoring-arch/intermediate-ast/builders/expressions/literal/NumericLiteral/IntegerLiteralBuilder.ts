@@ -5,7 +5,6 @@ import { IBuilder } from '../../../IBuilder.js';
 
 export class IntegerLiteralBuilder implements IBuilder<IntegerLiteralNode> {
   //   public readonly NAME = 'integerLiteral';
-
   private type: LiteralTypeNode;
   private value: LiteralValueNode;
   private integerLiteralNode: IntegerLiteralNode;

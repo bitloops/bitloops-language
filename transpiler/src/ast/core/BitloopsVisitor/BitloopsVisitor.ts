@@ -64,6 +64,7 @@ import {
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
+import { LiteralExpressionVisitor } from './helpers/expressions.js';
 
 import {
   functionBodyVisitor,
@@ -506,16 +507,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
-    // const literalRes = this.visit(ctx.literal());
-    // return {
-    //   expression: {
-    //     evaluation: {
-    //       regularEvaluation: literalRes,
-    //     },
-    //   },
-    // };
-    const literalRes = this.visit(ctx.literal());
-    return literalRes;
+    return LiteralExpressionVisitor(this, ctx);
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     return this.visitChildren(ctx)[0];
@@ -526,7 +518,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText());
+    const node = integerEvaluation(ctx.IntegerLiteral().getText());
+    return node;
   }
 
   visitDecimalLiteral(ctx: BitloopsParser.DecimalLiteralContext) {
