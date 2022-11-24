@@ -154,10 +154,13 @@ export type TIdentifier = string;
 export const optionalKey = 'optional';
 export type TOptional = boolean;
 
+export const fieldKey = 'field';
 export type TVariable = {
-  [optionalKey]?: TOptional;
-  [identifierKey]: TIdentifier;
-  [bitloopsPrimaryTypeKey]: TBitloopsPrimaryType;
+  [fieldKey]: {
+    [optionalKey]?: TOptional;
+    [identifierKey]: TIdentifier;
+    [bitloopsPrimaryTypeKey]: TBitloopsPrimaryType;
+  };
 };
 
 export type TPropsValues = {
@@ -633,9 +636,12 @@ export type TExecute = {
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
 
+export const DTOKey = 'DTO';
 export type TDTO = {
-  [DTOIdentifierKey]: TDTOIdentifier;
-  [fieldsKey]: TVariables;
+  [DTOKey]: {
+    [DTOIdentifierKey]: TDTOIdentifier;
+    [fieldsKey]: TVariables;
+  };
 };
 
 export type TStructs = Record<string, TStructDeclaration>;

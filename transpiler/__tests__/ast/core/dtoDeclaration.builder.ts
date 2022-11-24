@@ -1,6 +1,7 @@
 import { IBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
 import {
   DTOIdentifierKey,
+  DTOKey,
   fieldsKey,
   TDTO,
   TDTOIdentifier,
@@ -23,8 +24,10 @@ export class DTODeclarationBuilder implements IBuilder<TDTO> {
 
   public build(): TDTO {
     const dto = {
-      [DTOIdentifierKey]: this.identifierName,
-      [fieldsKey]: this.fields,
+      [DTOKey]: {
+        [DTOIdentifierKey]: this.identifierName,
+        [fieldsKey]: this.fields,
+      },
     };
 
     return dto;

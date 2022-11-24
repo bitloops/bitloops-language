@@ -2,6 +2,7 @@ import { IntermediateASTTree } from '../../../../refactoring-arch/intermediate-a
 import {
   bitloopsIdentifiersTypeKey,
   buildInClassTypeKey,
+  fieldKey,
   primitivesTypeKey,
   TBitloopsPrimaryType,
   TVariables,
@@ -20,7 +21,7 @@ export class ClassTypeToGraphQLMapping {
 
     const fieldStrings = [];
     for (const field of fields) {
-      const { identifier, type, optional } = field;
+      const { identifier, type, optional } = field[fieldKey];
       if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
         const fieldType = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
         fieldStrings.push(`${identifier}: ${fieldType}`);

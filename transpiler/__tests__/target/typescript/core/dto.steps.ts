@@ -17,138 +17,106 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
 import { ClassTypes } from '../../../../src/helpers/mappings.js';
-// import { DTOIdentifierNodeBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
-// import { DTONodeBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/DTO/DTONodeBuilder.js';
-// import { FieldListNodeBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
-// import { FieldNodeBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
-// import { IdentifierBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
-// import { OptionalBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/OptionalBuilder.js';
-// import { IntermediateASTTree } from '../../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-// import { IntermediateASTRootNode } from '../../../../src/refactoring-arch/intermediate-ast/nodes/RootNode.js';
+import { DTONodeBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/DTO/DTONodeBuilder.js';
+import { IntermediateASTTree } from '../../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/refactoring-arch/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_DTO_TEST_CASES, VALID_TWO_DTOS_TEST_CASES } from './mocks/dto.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/dto.feature');
-
-// const optionalNode = new OptionalBuilder().withOptional(true).build();
-// const identifierNode = new IdentifierBuilder().withName('todo').build();
-// const typeNode = new TypeBuilder
-// const fieldNode = new FieldNodeBuilder()
-//   .withName(identifierNode)
-//   .withOptional(optionalNode)
-//   .withType()
-//   .build();
-// const fieldListNode = new FieldListNodeBuilder().withFields([fieldNode]).build();
-
-// const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-// const dtoIdentifierNode = new DTOIdentifierNodeBuilder().withName('TodoDTO').build();
-// const dtoNode = new DTONodeBuilder(tree)
-//   .withIdentifier(dtoIdentifierNode)
-//   .withVariables(fieldListNode)
-//   .build();
-
-defineFeature(feature, (test) => {
+describe('Valid DTO with fields to Typescript', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const classType = ClassTypes.DTOs;
   const formatterConfig = null;
-  let language;
-  let result;
-  let intermediateAST;
+  const language = 'TypeScript';
 
-  test('DTO with fields to Typescript', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (lang) => {
-      language = lang;
-    });
+  VALID_DTO_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const dtoNode = new DTONodeBuilder(tree)
+        .withIdentifier(testCase.dtoIdentifierNode)
+        .withVariables(testCase.fieldListNode)
+        .build();
 
-    given(/^I have a dto (.*)$/, (dto) => {
-      intermediateAST = {
-        [boundedContext]: { [module]: { [classType]: JSON.parse(dto) } },
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
       };
-    });
 
-    when('I generate the code', () => {
       const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
+      const result = targetGenerator.generate({
         intermediateAST,
         formatterConfig,
         targetLanguage: language,
         setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      const classNamesContent = JSON.parse(output);
-      const expectedOutput = [];
-      for (const [className, content] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString(content as string, formatterConfig);
-        expectedOutput.push({
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      const expectedOutput = [
+        {
           boundedContext,
-          className,
+          className: dtoNode.getClassName(),
           module,
           classType,
           fileContent: formattedOutput,
-        });
-      }
+        },
+      ];
       expect(result).toEqual(expectedOutput);
     });
   });
+});
 
-  // test('DTO with no fields to Typescript', ({ given, when, then }) => {
-  //   given(/^language is "(.*)"$/, (lang) => {
-  //     language = lang;
-  //   });
+describe('Valid two DTOs with fields to Typescript', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const classType = ClassTypes.DTOs;
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  //   given(/^I have a dto (.*)$/, (dto) => {
-  //     intermediateAST = {
-  //       [boundedContext]: { [module]: { [classType]: JSON.parse(dto) } },
-  //     };
-  //   });
+  VALID_TWO_DTOS_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const dtoNode = new DTONodeBuilder(tree)
+        .withIdentifier(testCase.dtoIdentifierNode)
+        .withVariables(testCase.fieldListNode)
+        .build();
+      const secondDTONode = new DTONodeBuilder(tree)
+        .withIdentifier(testCase.secondDTOIdentifierNode)
+        .withVariables(testCase.secondFieldListNode)
+        .build();
 
-  //   when('I generate the code', () => {
-  //     const targetGenerator = new BitloopsTargetGenerator();
-  //     result = () => {
-  //       targetGenerator.generate({
-  //         intermediateAST,
-  //         formatterConfig,
-  //         targetLanguage: language,
-  //         setupData: null,
-  //       });
-  //     };
-  //   });
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
+      };
 
-  //   then(/^I should see the (.*) output$/, (error) => {
-  //     expect(result).toThrow(error);
-  //   });
-  // });
+      const targetGenerator = new BitloopsTargetGenerator();
+      const result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
+      });
 
-  // test('DTO with fields not formatted as array to Typescript', ({ given, when, then }) => {
-  //   given(/^language is "(.*)"$/, (lang) => {
-  //     language = lang;
-  //   });
-
-  //   given(/^I have a dto (.*)$/, (dto) => {
-  //     intermediateAST = {
-  //       [boundedContext]: { [module]: { [classType]: JSON.parse(dto) } },
-  //     };
-  //   });
-
-  //   when('I generate the code', () => {
-  //     const targetGenerator = new BitloopsTargetGenerator();
-  //     result = () => {
-  //       targetGenerator.generate({
-  //         intermediateAST,
-  //         formatterConfig,
-  //         targetLanguage: language,
-  //         setupData: null,
-  //       });
-  //     };
-  //   });
-
-  //   then(/^I should see the (.*) output$/, (error) => {
-  //     expect(result).toThrow(error);
-  //   });
-  // });
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      const formattedSecondOutput = formatString(testCase.secondOutput as string, formatterConfig);
+      const expectedOutput = [
+        {
+          boundedContext,
+          className: dtoNode.getClassName(),
+          module,
+          classType,
+          fileContent: formattedOutput,
+        },
+        {
+          boundedContext,
+          className: secondDTONode.getClassName(),
+          module,
+          classType,
+          fileContent: formattedSecondOutput,
+        },
+      ];
+      expect(result).toEqual(expectedOutput);
+    });
+  });
 });

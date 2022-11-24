@@ -3,6 +3,7 @@ import {
   TPropsValues,
   TVariable,
   TTargetDependenciesTypeScript,
+  fieldKey,
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
@@ -11,9 +12,9 @@ const DOCUMENT_NAME = 'document';
 
 const getReadModelFields = (readModelValues: TPropsValues): string => {
   return readModelValues.variables
-    .filter((variable) => variable.identifier !== 'id')
+    .filter((variable) => variable[fieldKey].identifier !== 'id')
     .map((variable) => {
-      const { identifier } = variable;
+      const { identifier } = variable[fieldKey];
       return `${identifier}: ${DOCUMENT_NAME}.${identifier}`;
     })
     .join(', ');
@@ -21,7 +22,7 @@ const getReadModelFields = (readModelValues: TPropsValues): string => {
 
 const getReadModelIdVariable = (readModelValues: TPropsValues): TVariable => {
   const [aggregateIdVariable] = readModelValues.variables
-    .filter((variable) => variable.identifier === 'id')
+    .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
 };
@@ -38,7 +39,7 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
   const readModelIdVariable = getReadModelIdVariable(readModelValues);
   const mappedReadModelIdType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: readModelIdVariable.type,
+    value: readModelIdVariable[fieldKey].type,
   });
 
   const readModelFields = getReadModelFields(readModelValues);

@@ -17,8 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
-import { TDTO, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  DTOIdentifierKey,
+  DTOKey,
+  fieldsKey,
+  TDTO,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
@@ -26,43 +31,26 @@ import { getParentDependencies } from '../../dependencies.js';
 const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
-  const dtoKeys = Object.keys(dto);
-  for (let i = 0; i < dtoKeys.length; i++) {
-    const dtoName = dtoKeys[i];
-    // const dtoValues = dto[dtoName];
-    // const model = modelToTargetLanguage({
-    //   type: BitloopsTypesMapping.TDTOValues,
-    //   value: dtoValues,
-    // });
+  const dtoValues = dto[DTOKey];
+  const dtoName = dtoValues[DTOIdentifierKey];
 
-    //TODO use code form dtoValues
-    const model = { output: '', dependencies: [] };
-    result += `export interface ${dtoName} { `;
-    result += model.output;
-    result += '}';
-    dependencies = [...dependencies, ...model.dependencies];
+  const fields = dtoValues[fieldsKey];
+  const variablesResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TVariables,
+    value: fields,
+  });
 
-    dependencies = getParentDependencies(dependencies, {
-      classType: ClassTypes.DTOs,
-      className: dtoName,
-    });
-  }
+  result += `export interface ${dtoName} { `;
+  result += variablesResult.output;
+  result += '}';
+  dependencies.push(...variablesResult.dependencies);
+
+  dependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.DTOs,
+    className: dtoName,
+  });
 
   return { output: result, dependencies };
 };
 
-const DTOValuesToTargetLanguage = (variable: TDTO): TTargetDependenciesTypeScript => {
-  if (isUndefined(variable.fields)) {
-    throw new Error('Fields of DTO are not defined');
-  }
-  if (!isArray(variable.fields)) {
-    throw new Error('Fields of DTO are not array');
-  }
-  const variablesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TVariables,
-    value: variable.fields,
-  });
-  return variablesResult;
-};
-
-export { DTOToTargetLanguage, DTOValuesToTargetLanguage };
+export { DTOToTargetLanguage };

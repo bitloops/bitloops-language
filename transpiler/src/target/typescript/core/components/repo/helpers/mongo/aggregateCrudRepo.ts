@@ -5,6 +5,7 @@ import {
   TModule,
   TTargetDependenciesTypeScript,
   TVariable,
+  fieldKey,
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
@@ -27,7 +28,7 @@ const getVOProps = (voName: string, model: TModule): TPropsValues => {
 const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
   const voDeepFields = [];
   voProps.variables.forEach((variable) => {
-    const { identifier, type } = variable;
+    const { identifier, type } = variable[fieldKey];
     if (isVO(type)) {
       const nestedVOProps = getVOProps(type, model);
       const nestedVOResult = getVODeepFields(nestedVOProps, model);
@@ -49,9 +50,9 @@ const getAggregateDeepFields = (
   model: TModule,
 ): string => {
   return aggregatePropsModel.variables
-    .filter((variable) => variable.identifier !== 'id')
+    .filter((variable) => variable[fieldKey].identifier !== 'id')
     .map((variable) => {
-      const { identifier: name, type } = variable;
+      const { identifier: name, type } = variable[fieldKey];
       if (isVO(type)) {
         const voProps = getVOProps(type, model);
         const deepFieldsVO = getVODeepFields(voProps, model);
@@ -71,7 +72,7 @@ const getAggregateDeepFields = (
 
 const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable => {
   const [aggregateIdVariable] = aggregatePropsModel.variables
-    .filter((variable) => variable.identifier === 'id')
+    .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
 };
@@ -90,7 +91,7 @@ export const fetchTypeScriptAggregateCrudBaseRepo = (
   const aggregateIdVariable = getAggregateIdVariable(aggregatePropsModel);
   const mappedAggregateType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: aggregateIdVariable.type,
+    value: aggregateIdVariable[fieldKey].type,
   });
 
   const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);

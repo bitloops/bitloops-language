@@ -1,5 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TModule, TDomainMethods, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  TModule,
+  TDomainMethods,
+  TTargetDependenciesTypeScript,
+  fieldKey,
+} from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const generateGetters = (
@@ -27,7 +32,7 @@ export const generateGetters = (
   for (const [propName, propValues] of Object.entries(Props)) {
     if (propName === propsName) {
       for (const propVariable of propValues.variables) {
-        const { type, identifier } = propVariable;
+        const { type, identifier } = propVariable[fieldKey];
         const res = modelToTargetLanguage({
           value: type,
           type: BitloopsTypesMapping.TBitloopsPrimaryType,
