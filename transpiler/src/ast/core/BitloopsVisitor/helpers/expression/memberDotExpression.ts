@@ -20,25 +20,38 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TExpression } from '../../../../../types.js';
+import { MemberDotExpressionNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { MemberDotExpressionNode } from './../../../../../refactoring-arch/intermediate-ast/nodes/Expression/MemberDot/MemberDotExpression.js';
+import { IdentifierExpressionBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
 
 export const memberDotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MemberDotExpressionContext,
-): TExpression => {
+): MemberDotExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
-  const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
+
+  // When regularIdentifier is updated to use the new IdentifierExpressionBuilder,
   const identifier = thisVisitor.visit(ctx.regularIdentifier());
-  const identifierValue = identifier.value;
-  const stringResult = `${leftExpressionValue}.${identifierValue}`;
-  return {
-    expression: {
-      evaluation: {
-        regularEvaluation: {
-          type: 'variable',
-          value: stringResult,
-        },
-      },
-    },
-  };
+
+  // this won't need to build a new IdentifierExpressionBuilder
+  const identifierExpr = new IdentifierExpressionBuilder().withValue(identifier.value).build();
+  return new MemberDotExpressionNodeBuilder()
+    .withExpression(leftExpression)
+    .withIdentifier(identifierExpr)
+    .build();
+  // const leftExpression = thisVisitor.visit(ctx.expression());
+  // const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
+  // const identifier = thisVisitor.visit(ctx.regularIdentifier());
+  // const identifierValue = identifier.value;
+  // const stringResult = `${leftExpressionValue}.${identifierValue}`;
+  // return {
+  //   expression: {
+  //     evaluation: {
+  //       regularEvaluation: {
+  //         type: 'variable',
+  //         value: stringResult,
+  //       },
+  //     },
+  //   },
+  // };
 };
