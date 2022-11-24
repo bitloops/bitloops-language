@@ -1,11 +1,18 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
-const NAME = 'AdditiveExpression';
 // This would extend the ExpressionNode class instead
 export class AdditiveExpressionNode extends ExpressionNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TAdditiveExpression, { lines: lines! }, NAME);
+  private static NAME = 'additiveExpression';
+  // constructor(lines?: string) {
+  //   super(BitloopsTypesMapping.TAdditiveExpression, { lines: lines! }, NAME);
+  // }
+
+  constructor(metadata?: TNodeMetadata) {
+    super(metadata);
+    this.classNodeName = AdditiveExpressionNode.NAME;
+    this.nodeType = BitloopsTypesMapping.TAdditiveExpression;
   }
 
   /* 🔧 TODO: implement left and right getters */
