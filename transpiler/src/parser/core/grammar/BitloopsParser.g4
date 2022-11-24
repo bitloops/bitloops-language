@@ -1249,7 +1249,7 @@ expression
     | expression op=Or expression                                # LogicalOrExpression
     | expression op=Xor expression                               # LogicalXorExpression
     | expression '=' expression                                  # AssignmentExpression
-    | literal                                                   # LiteralExpression
+    | literal                                                    # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
