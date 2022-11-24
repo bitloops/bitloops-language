@@ -1,3 +1,14 @@
-import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
-export abstract class BitloopsPrimaryTypeNode extends IntermediateASTNode {}
+export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
+  private static classNodeName = 'type';
+
+  constructor(metadata?: TNodeMetadata) {
+    super(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+      metadata,
+      BitloopsPrimaryTypeNode.classNodeName,
+    );
+  }
+}

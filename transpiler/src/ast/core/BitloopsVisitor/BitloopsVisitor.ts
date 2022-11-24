@@ -62,6 +62,7 @@ import {
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
+import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 
 import {
@@ -841,6 +842,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ReadModels: TReadModels;
   } {
     return readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitBitloopsPrimaryType(ctx: BitloopsParser.BitloopsPrimaryTypeContext) {
+    return bitloopsPrimaryTypeVisitor(this, ctx);
   }
 
   visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {

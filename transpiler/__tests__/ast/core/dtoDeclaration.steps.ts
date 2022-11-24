@@ -25,24 +25,31 @@ import {
   BitloopsParserError,
 } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
+import {
+  TDTOIdentifier,
+  TVariables,
+  primitivesTypeKey,
+  arrayPrimaryTypeKey,
+} from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-// import { DTODeclarationBuilder } from './dtoDeclaration.builder.js';
-
-const var2: TVariable = {
-  optional: true,
-  identifier: 'name',
-  type: {
-    primitiveType: 'string',
-  },
-};
+import { DTODeclarationBuilder } from './dtoDeclaration.builder.js';
+import { FieldBuilder } from './field.builder.js';
+import { IdentifierBuilder } from './identifier.builder.js';
 
 const testExamplesDTO = [
   {
     //description:
     inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
-    variables: [var2], //new VariableBuilder().withType('string').withName('name').build()
-    identifier: 'HelloWorldRequestDTO',
+    variables: [
+      new FieldBuilder()
+        .withArrayPrimaryType({
+          [arrayPrimaryTypeKey]: { [arrayPrimaryTypeKey]: { [primitivesTypeKey]: 'string' } },
+        })
+        .withName('name')
+        .withOptional(true)
+        .build(),
+    ],
+    identifier: new IdentifierBuilder().withDTOName('HelloWorldRequestDTO').build(),
   },
 ];
 
@@ -80,36 +87,13 @@ test('DTO declaration is valid', () => {
     const value = actualNodes[0].getValue();
 
     expect(value).toMatchObject(expectedNodeValues);
-    // expect(resultValue).toEqual(expectedDTOValue);
   });
 });
-
-// DTONodeBuilder.withIdentifier().withFieldList()
-const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
-  // const dtoValue = new DTODeclarationBuilder()
-  //   .withIdentifier(identifier)
-  //   .withVariables(variables)
-  //   .build();
-  const dtoValue = {
-    DTO: {
-      HelloWorldRequestDTO: {
-        DTOIdentifier: identifier,
-        fieldList: [
-          {
-            field: {
-              optional: true,
-              identifier: 'name',
-              arrayPrimaryType: {
-                arrayPrimaryType: {
-                  primitiveType: 'string',
-                },
-              },
-            },
-          },
-        ],
-      },
-    },
-  };
+const getExpectedDTOValues = (variables: TVariables, identifier: TDTOIdentifier) => {
+  const dtoValue = new DTODeclarationBuilder()
+    .withIdentifier(identifier)
+    .withVariables(variables)
+    .build();
 
   return dtoValue;
 };
