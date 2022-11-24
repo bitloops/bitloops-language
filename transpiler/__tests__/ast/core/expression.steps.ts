@@ -286,7 +286,7 @@ defineFeature(feature, (test) => {
       expect(result).toEqual(JSON.parse(modelOutput));
     });
   });
-  test('Additive Expression', ({ given, when, then }) => {
+  test.only('Additive Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -318,13 +318,13 @@ defineFeature(feature, (test) => {
         throw result;
       }
       resultTree = result[boundedContext][module];
-
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
+      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {
       modelOutput = d(arg0);
-      expect(actualNodes[0].getValue()).toMatchObject(modelOutput);
+      expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
 });
