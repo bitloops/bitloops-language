@@ -17,12 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TTargetDependenciesTypeScript, TVariable, TVariables } from '../../../../../types.js';
+import {
+  fieldKey,
+  TTargetDependenciesTypeScript,
+  TVariable,
+  TVariables,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeScript => {
-  const { identifier, type, optional } = variable;
+  const { identifier, type, optional } = variable[fieldKey];
 
   const mappedType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,

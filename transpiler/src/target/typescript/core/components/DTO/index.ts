@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
-import { TDTO, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { fieldKey, TDTO, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
@@ -52,15 +52,16 @@ const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
 };
 
 const DTOValuesToTargetLanguage = (variable: TDTO): TTargetDependenciesTypeScript => {
-  if (isUndefined(variable.fields)) {
+  const dtoVariable = variable[fieldKey];
+  if (isUndefined(dtoVariable.fields)) {
     throw new Error('Fields of DTO are not defined');
   }
-  if (!isArray(variable.fields)) {
+  if (!isArray(dtoVariable.fields)) {
     throw new Error('Fields of DTO are not array');
   }
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
-    value: variable.fields,
+    value: dtoVariable.fields,
   });
   return variablesResult;
 };
