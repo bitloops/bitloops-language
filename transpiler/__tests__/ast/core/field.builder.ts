@@ -57,7 +57,7 @@ export class FieldBuilder implements IBuilder<TVariable> {
       },
     };
     if (this.optional !== undefined) {
-      field[optionalKey] = this.optional;
+      field[fieldKey][optionalKey] = this.optional;
     }
 
     return field;
