@@ -214,7 +214,7 @@ defineFeature(feature, (test) => {
       expect(result).toEqual(JSON.parse(modelOutput));
     });
   });
-  test('Additive expression', ({ given, when, then }) => {
+  test('Additive Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
