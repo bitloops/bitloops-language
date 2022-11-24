@@ -1,10 +1,12 @@
 import { IBuilder } from '../IBuilder.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { AssignmentExpressionNode } from '../../nodes/Expression/AssignmentExpression.js';
+import { LeftExpressionBuilder } from './leftExpressionBuilder.js';
+import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js';
 
 export class AssignmentExpressionNodeBuilder implements IBuilder<AssignmentExpressionNode> {
   private assignmentExpressionNode: AssignmentExpressionNode;
-  private leftExpression: ExpressionNode;
+  private leftExpression: LeftExpressionNode;
   private rightExpression: ExpressionNode;
 
   constructor() {
@@ -12,7 +14,7 @@ export class AssignmentExpressionNodeBuilder implements IBuilder<AssignmentExpre
   }
 
   public withLeftExpression(expr: ExpressionNode): AssignmentExpressionNodeBuilder {
-    this.leftExpression = expr;
+    this.leftExpression = new LeftExpressionBuilder().withExpression(expr).build();
     return this;
   }
 

@@ -214,10 +214,11 @@ export class IntermediateASTTree {
   }
 
   updateIdentifiersInNodes(
-    _nodes: IntermediateASTNode[],
-    _identifierNode: IdentifierNode,
-    // _{ suffix },
+    __nodes: IntermediateASTNode[],
+    __identifierNode: IdentifierNode,
+    { suffix },
   ) {
+    console.log(suffix);
     // const valueToUpdate = identifierNode.getIdentifier();
     // nodes.forEach((node) => {
     //   this.traverse(node, (node) => {
