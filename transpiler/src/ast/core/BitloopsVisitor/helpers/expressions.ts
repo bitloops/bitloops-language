@@ -33,6 +33,7 @@ import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/no
 import { ParenthesizedExpressionNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { RelationalExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
 import { EqualityExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
+import { LogicalAndExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalAndExpressionBuilder.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -81,19 +82,23 @@ export const relationalExpressionVisitor = (
 export const logicalAndExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.LogicalAndExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  return {
-    expression: {
-      logicalExpression: {
-        andExpression: {
-          left: left.expression,
-          right: right.expression,
-        },
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new LogicalAndExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const logicalOrExpressionVisitor = (
