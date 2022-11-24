@@ -25,7 +25,6 @@ import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermed
 // import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
 import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
 import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/multiplicativeExpression.js';
-import { MultiplicativeExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/MultiplicativeExpression.js';
 import { LeftExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
 import { LiteralBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
 import { RightExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
@@ -137,9 +136,12 @@ export const logicalNotExpressionVisitor = (
 export const multiplicativeExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MultiplicativeExpressionContext,
-): { expression: MultiplicativeExpressionNode } => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
   const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
 
   const node = new MultiplicativeExpressionBuilder()
@@ -148,9 +150,9 @@ export const multiplicativeExpressionVisitor = (
     .withOperator(operator)
     .build();
 
-  return {
-    expression: node,
-  };
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const additiveExpressionVisitor = (

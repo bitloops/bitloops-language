@@ -4,7 +4,7 @@ import { ExpressionNode } from './ExpressionNode.js';
 
 // This would extend the ExpressionNode class instead
 export class MultiplicativeExpressionNode extends ExpressionNode {
-  private static NAME = 'MultiplicativeExpression';
+  private static NAME = 'multiplicativeExpression';
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
     this.classNodeName = MultiplicativeExpressionNode.NAME;
