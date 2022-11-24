@@ -25,15 +25,15 @@ import {
   BitloopsParserError,
 } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { TExpression, TAdditiveOperator } from '../../../src/types.js';
+import { TAdditiveOperator } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const additiveExpression = [
   {
     inputBLString: 'JestTestExpression { 1 + 2 }',
     parameters: {
-      leftValue: 1,
-      rightValue: 2,
+      leftValue: '1',
+      rightValue: '2',
       operator: '+',
     },
   },
@@ -89,30 +89,26 @@ const getExpectedAdditiveExpressionValues = (
   rightValue: any,
   operator: TAdditiveOperator,
 ) => {
-  const expected: { Tests: { JestTest: TExpression } } = {
-    Tests: {
-      JestTest: {
-        expression: {
-          additiveExpression: {
-            left: {
-              evaluation: {
-                regularEvaluation: {
-                  type: 'variable',
-                  value: leftValue,
-                },
-              },
+  const expected: any = {
+    expression: {
+      additiveExpression: {
+        left: {
+          literal: {
+            numericLiteral: {
+              type: 'int32',
+              value: leftValue,
             },
-            right: {
-              evaluation: {
-                regularEvaluation: {
-                  type: 'variable',
-                  value: rightValue,
-                },
-              },
-            },
-            operator: operator,
           },
         },
+        right: {
+          literal: {
+            numericLiteral: {
+              type: 'int32',
+              value: rightValue,
+            },
+          },
+        },
+        operator: operator,
       },
     },
   };
