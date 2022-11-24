@@ -157,7 +157,9 @@ export const additiveExpressionVisitor = (
 ): any => {
   const leftExp = thisVisitor.visit(ctx.expression(0));
   const left = new LeftExpressionBuilder().withExpression(leftExp).build();
-  const right = thisVisitor.visit(ctx.expression(1));
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+  console.log(left, right);
 
   const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
 
