@@ -1,9 +1,7 @@
-import { StringLiteralNode as BooleanLiteralNode } from '../../../nodes/Expression/Literal/StringLiteralNode.js';
+import { BooleanLiteralNode } from '../../../nodes/Expression/Literal/BooleanLiteralNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class BooleanLiteralBuilder implements IBuilder<BooleanLiteralNode> {
-  //   public readonly NAME = 'booleanLiteral';
-
   private booleanValue: string;
   private booleanLiteralNode: BooleanLiteralNode;
 

@@ -22,7 +22,7 @@ import { BooleanLiteralBuilder } from '../../../../../../refactoring-arch/interm
 
 export const booleanLiteralVisitor = (value: any): any => {
   const booleanValue = value;
-  if (!(booleanValue in ['true', 'false'])) {
+  if (!['true', 'false'].includes(booleanValue)) {
     throw new Error(`Boolean value not recognized: ${value}`);
   }
 

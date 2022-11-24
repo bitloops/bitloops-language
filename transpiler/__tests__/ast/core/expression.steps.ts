@@ -100,7 +100,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test('Literal is valid', ({ given, when, then }) => {
+  test.only('Literal is valid', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;

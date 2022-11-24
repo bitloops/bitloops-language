@@ -18,6 +18,8 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { ExpressionNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ExpressionBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { TExpression } from '../../../../types.js';
@@ -26,7 +28,6 @@ import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermed
 import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
 import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/multiplicativeExpression.js';
 import { MultiplicativeExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/MultiplicativeExpression.js';
-import { LiteralNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
 import { LeftExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
 import { LiteralBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
 
@@ -184,7 +185,8 @@ export const parenthesizedExpressionVisitor = (
 export const LiteralExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctxLiteral: BitloopsParser.LiteralExpressionContext,
-): LiteralNode => {
+): ExpressionNode => {
   const actualLiteral = thisVisitor.visit(ctxLiteral.literal());
-  return new LiteralBuilder().withLiteral(actualLiteral).build();
+  const literalExpr = new LiteralBuilder().withLiteral(actualLiteral).build();
+  return new ExpressionBuilder().withExpression(literalExpr).build();
 };
