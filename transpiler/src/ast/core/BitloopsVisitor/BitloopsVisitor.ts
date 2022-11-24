@@ -23,6 +23,7 @@ import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVi
 import { BitloopsIdentifierTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BuildInClassTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
 import { DTOIdentifierNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { ThisExpressionNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { IdentifierBuilder } from '../../../refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
@@ -273,17 +274,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return assignmentExpressionVisitor(this, ctx);
   }
 
-  visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext): TExpression {
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation: {
-            type: 'variable',
-            value: 'this',
-          },
-        },
-      },
-    };
+  visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext) {
+    return new ThisExpressionNodeBuilder().build();
+    // return {
+    //   expression: {
+    //     evaluation: {
+    //       regularEvaluation: {
+    //         type: 'variable',
+    //         value: 'this',
+    //       },
+    //     },
+    //   },
+    // };
   }
 
   visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {

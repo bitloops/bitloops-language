@@ -2,8 +2,6 @@ import { IdentifierExpressionNode } from '../../nodes/Expression/IdentifierExpre
 import { IBuilder } from '../IBuilder.js';
 
 export class IdentifierExpressionBuilder implements IBuilder<IdentifierExpressionNode> {
-  //   public readonly NAME = 'booleanLiteral';
-
   private identifierValue: string;
   private identifierExpressionNode: IdentifierExpressionNode;
 

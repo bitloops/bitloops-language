@@ -1,9 +1,7 @@
 import { ThisExpressionNode } from '../../nodes/Expression/ThisExpressionNode.js';
 import { IBuilder } from '../IBuilder.js';
 
-export class MethodCallNodeBuilder implements IBuilder<ThisExpressionNode> {
-  public readonly NAME = 'MethodCallExpression';
-
+export class ThisExpressionNodeBuilder implements IBuilder<ThisExpressionNode> {
   private thisExpressionNode: ThisExpressionNode;
 
   constructor() {
