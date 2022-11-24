@@ -18,4 +18,3 @@ export class ExpressionNode extends IntermediateASTNode {
     return this.getNodeType() === BitloopsTypesMapping.TMethodCallExpression;
   }
 }
-export class BitloopsPrimaryTypeNode extends IntermediateASTNode {}
