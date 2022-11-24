@@ -81,16 +81,6 @@ type TClassInformation = {
   contents: BitloopsLanguageAST;
 };
 
-export type TFileId = string;
-type TFileContents = string;
-
-export type TParserCoreInputData = {
-  boundedContext: TBoundedContextName;
-  module: TModuleName;
-  fileId: TFileId;
-  fileContents: TFileContents;
-}[];
-
 export type TASTCoreInputData = {
   boundedContext: string;
   classes: Record<TClassType, Record<TClassName, TClassInformation>>;
@@ -106,29 +96,7 @@ export type TBitloopsTargetContent = {
   fileContent: TTargetDependenciesTypeScript;
 }[];
 
-export type TBitloopsOutputTargetContent = {
-  boundedContext: TBoundedContextName;
-  module: TModuleName;
-  classType: TClassType;
-  className: TClassName;
-  fileContent: string;
-}[];
-
 export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
-
-export type TBitloopsTargetSetupContent = {
-  fileId: string;
-  fileType: string;
-  fileContent: string;
-}[];
-
-export type TBitloopsTargetGeneratorParams = {
-  intermediateAST: TBoundedContexts;
-  setupData: ISetupData;
-  targetLanguage: string;
-  formatterConfig?: any;
-  sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
-};
 
 export type TBitloopsClasses =
   | TProps

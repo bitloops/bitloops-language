@@ -18,30 +18,17 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  BitloopsTargetGeneratorError,
+  BitloopsTargetSetupGeneratorError,
+  IBitloopsTargetGenerator,
   TBitloopsOutputTargetContent,
   TBitloopsTargetGeneratorParams,
   TBitloopsTargetSetupContent,
-} from '../types.js';
-import { BitloopsTargetGeneratorError } from './BitloopsTargetGeneratorError.js';
-import { BitloopsTargetSetupGeneratorError } from './BitloopsTargetSetupGeneratorError.js';
+} from './types.js';
 import { BitloopsIntermediateASTToTarget } from './typescript/core/index.js';
 import { generateSetupFiles } from './typescript/setup/index.js';
 import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
-
-export interface IBitloopsTargetGenerator {
-  getTargetFileDestination(
-    boundedContext: string,
-    moduleName: string,
-    classType: string,
-    className: string,
-    targetLanguage: string,
-  ): { path: string; filename: string };
-  generate: (params: TBitloopsTargetGeneratorParams) => TBitloopsOutputTargetContent;
-  generateSetup: (
-    params: TBitloopsTargetGeneratorParams,
-  ) => TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError;
-}
 
 export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
   generate(params: TBitloopsTargetGeneratorParams): TBitloopsOutputTargetContent {
