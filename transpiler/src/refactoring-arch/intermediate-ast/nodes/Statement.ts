@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { ConstDeclarationNode } from './ConstDeclaration.js';
+// import { MethodCallExpressionNode } from './Expression/MethodCallExpression.js';
 import { IntermediateASTNode } from './IntermediateASTNode.js';
 
 export abstract class StatementNode extends IntermediateASTNode {
