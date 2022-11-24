@@ -77,6 +77,7 @@ const BitloopsTypesMapping = {
   TDomainCreateMethod: 'TDomainCreateMethod',
   TValueObjectEvaluation: 'TValueObjectEvaluation',
   TEvaluationFields: 'TEvaluationFields',
+  TEvaluationField: 'TEvaluationField',
   TDomainEvaluation: 'TDomainEvaluation',
   TEntityEvaluation: 'TEntityEvaluation',
   TEntities: 'TEntities',
