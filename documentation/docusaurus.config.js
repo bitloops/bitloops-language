@@ -78,12 +78,12 @@ const config = {
           src: 'img/Bitloops-Logo.svg',
         },
         items: [
-          {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Bitloops Language',
-          },
+          // {
+          //   type: 'category',
+          //   docId: 'introduction',
+          //   position: 'left',
+          //   label: 'Bitloops Language',
+          // },
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
             href: 'https://github.com/bitloops/bitloops-language',
@@ -100,7 +100,7 @@ const config = {
             items: [
               {
                 label: 'Bitloops Language',
-                to: '/docs/bitloops-language/intro',
+                to: '/docs/bitloops-language/category/introduction',
               },
             ],
           },
