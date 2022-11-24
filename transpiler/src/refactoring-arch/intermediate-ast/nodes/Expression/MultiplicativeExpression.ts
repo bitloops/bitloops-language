@@ -1,11 +1,14 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
-const NAME = 'MultiplicativeExpression';
 // This would extend the ExpressionNode class instead
 export class MultiplicativeExpressionNode extends ExpressionNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TMultiplicativeExpression, { lines: lines! }, NAME);
+  private static NAME = 'MultiplicativeExpression';
+  constructor(metadata?: TNodeMetadata) {
+    super(metadata);
+    this.classNodeName = MultiplicativeExpressionNode.NAME;
+    this.nodeType = BitloopsTypesMapping.TMultiplicativeExpression;
   }
 
   /* 🔧 TODO: make a Base class for left Right expressions and paste this  */

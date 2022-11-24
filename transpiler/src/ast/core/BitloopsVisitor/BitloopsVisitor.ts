@@ -59,7 +59,6 @@ import {
   TReadModels,
   TBuiltInClassEvaluation,
   TExpression,
-  TThisDeclaration,
 } from '../../../types.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
