@@ -306,7 +306,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitRegularDTOEvaluationString(ctx: BitloopsParser.RegularDTOEvaluationStringContext) {
-    return this.visit(ctx.regularDTOEvaluation());
+    return { value: this.visit(ctx.regularDTOEvaluation()) };
+  }
+  visitRegularDTOEvaluation(ctx: BitloopsParser.RegularDTOEvaluationContext) {
+    return ctx.DTOIdentifier().getText();
   }
 
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {

@@ -23,6 +23,7 @@ import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 import { MemberDotExpressionNode } from './../../../../../refactoring-arch/intermediate-ast/nodes/Expression/MemberDot/MemberDotExpression.js';
 import { IdentifierExpressionBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
+import { ExpressionBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 
 export const memberDotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -35,10 +36,11 @@ export const memberDotExpressionVisitor = (
 
   // this won't need to build a new IdentifierExpressionBuilder
   const identifierExpr = new IdentifierExpressionBuilder().withValue(identifier.value).build();
-  return new MemberDotExpressionNodeBuilder()
+  const memberExpr = new MemberDotExpressionNodeBuilder()
     .withExpression(leftExpression)
     .withIdentifier(identifierExpr)
     .build();
+  return new ExpressionBuilder().withExpression(memberExpr).build();
   // const leftExpression = thisVisitor.visit(ctx.expression());
   // const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
   // const identifier = thisVisitor.visit(ctx.regularIdentifier());

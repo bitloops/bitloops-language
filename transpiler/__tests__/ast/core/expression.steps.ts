@@ -138,6 +138,44 @@ defineFeature(feature, (test) => {
     });
   });
 
+  test.only('Identifier expression', ({ given, when, then }) => {
+    const boundedContext = 'Hello World';
+    const module = 'core';
+    let blString;
+    let modelOutput;
+    let result;
+
+    given(/^A valid identifier (.*) string$/, (arg0) => {
+      blString = decode(arg0);
+    });
+
+    when('I generate the model', () => {
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext,
+          module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
+        console.log({ result });
+      }
+    });
+
+    then(/^I should get (.*)$/, (arg0) => {
+      modelOutput = d(arg0);
+      expect(result).toEqual(JSON.parse(modelOutput));
+    });
+  });
+
   test('Member dot expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
@@ -173,7 +211,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test.only('Array Literal expression', ({ given, when, then }) => {
+  test('Array Literal expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;

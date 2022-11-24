@@ -22,6 +22,7 @@ import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { MethodCallNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
 import { ExpressionNode } from '../../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ExpressionBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 
 export const methodCallExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -33,7 +34,7 @@ export const methodCallExpressionVisitor = (
     .withExpression(leftExpression)
     .withArgumentsList(argumentList)
     .build();
-  return node;
+  return new ExpressionBuilder().withExpression(node).build();
   // const value = {
   //   type: 'method',
   //   value: leftExpressionValue,

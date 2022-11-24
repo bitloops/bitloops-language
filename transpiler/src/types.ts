@@ -418,8 +418,12 @@ export type TExpressionValues =
   | TArrayLiteralExpression
   | TToStringExpression
   | TLiteral
+  | TIdentifierExpr
   | TMethodCallExpression;
 
+export type TIdentifierExpr = {
+  identifier: string;
+};
 export type TToStringExpression = {
   toString: {
     value: string;

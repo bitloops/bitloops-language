@@ -21,15 +21,17 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { IdentifierExpressionBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
-import { IdentifierExpressionNode } from './../../../../../refactoring-arch/intermediate-ast/nodes/Expression/IdentifierExpression.js';
+import { ExpressionBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const identifierExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IdentifierExpressionContext,
-): IdentifierExpressionNode => {
+): ExpressionNode => {
   const regularEvaluation = thisVisitor.visitChildren(ctx)[0];
   const { value } = regularEvaluation;
-  return new IdentifierExpressionBuilder().withValue(value).build();
+  const identifierExpr = new IdentifierExpressionBuilder().withValue(value).build();
+  return new ExpressionBuilder().withExpression(identifierExpr).build();
   // return {
   //   expression: {
   //     evaluation: {
