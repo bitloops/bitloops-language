@@ -21,6 +21,7 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { AssignmentExpressionNode } from './../../../../../refactoring-arch/intermediate-ast/nodes/Expression/AssignmentExpression.js';
 import { AssignmentExpressionNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
+import { ExpressionBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 
 export const assignmentExpressionVisitor = (
@@ -29,10 +30,11 @@ export const assignmentExpressionVisitor = (
 ): AssignmentExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression(0));
   const rightExpression = thisVisitor.visit(ctx.expression(1));
-  return new AssignmentExpressionNodeBuilder()
+  const assignmentNode = new AssignmentExpressionNodeBuilder()
     .withLeftExpression(leftExpression)
     .withRightExpression(rightExpression)
     .build();
+  return new ExpressionBuilder().withExpression(assignmentNode).build();
 
   // TODO Remove thisDeclaration completely
   // const leftExpression = thisVisitor.visit(ctx.expression(0));

@@ -421,7 +421,14 @@ export type TExpressionValues =
   | TIdentifierExpr
   | TMethodCallExpression
   | TThisExpression
-  | TMemberDotExpression;
+  | TMemberDotExpression
+  | TAssignmentExpression;
+
+export type TAssignmentExpression = {
+  assignmentExpression: {
+    left: TExpression;
+  } & TExpression;
+};
 
 export type TMemberDotExpression = {
   memberDotExpression: TExpression & {
