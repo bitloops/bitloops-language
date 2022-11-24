@@ -1,10 +1,14 @@
 import { IBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
 import {
+  ArrayBitloopsPrimTypeObject,
   DTOIdentifierKey,
   fieldsKey,
   identifierKey,
   optionalKey,
+  TBitloopsBuiltInClassesObject,
+  TBitloopsIdentifierObject,
   TBitloopsPrimaryType,
+  TBitloopsPrimitivesObject,
   TIdentifier,
   TOptional,
   TVariable,
@@ -15,8 +19,23 @@ export class FieldBuilder implements IBuilder<TVariable> {
   private name: TIdentifier;
   private optional: TOptional;
 
-  public withType(identifierName: TBitloopsPrimaryType): FieldBuilder {
-    this.type = identifierName;
+  public withPrimitivesType(primitiveType: TBitloopsPrimitivesObject): FieldBuilder {
+    this.type = primitiveType;
+    return this;
+  }
+
+  public withBuiltInClassType(type: TBitloopsBuiltInClassesObject): FieldBuilder {
+    this.type = type;
+    return this;
+  }
+
+  public withBitloopsIdentifierType(type: TBitloopsIdentifierObject): FieldBuilder {
+    this.type = type;
+    return this;
+  }
+
+  public withArrayPrimaryType(arrayType: ArrayBitloopsPrimTypeObject): FieldBuilder {
+    this.type = arrayType;
     return this;
   }
 
