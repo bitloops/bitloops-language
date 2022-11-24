@@ -6,7 +6,7 @@ import { IBuilder } from '../../builders/IBuilder.js';
 import { LogicalAndExpressionNode } from '../../nodes/Expression/LogicalAndExpression.js';
 
 export class LogicalAndExpressionBuilder implements IBuilder<LogicalAndExpressionNode> {
-  public readonly NAME = 'logicalAndExpression';
+  public readonly NAME = 'andExpression';
 
   private logicalAndExpressionNode: LogicalAndExpressionNode;
   private LeftexpressionNode: LeftExpressionNode;

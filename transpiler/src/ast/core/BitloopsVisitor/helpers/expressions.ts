@@ -34,6 +34,8 @@ import { ParenthesizedExpressionNodeBuilder } from '../../../../refactoring-arch
 import { RelationalExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
 import { EqualityExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
 import { LogicalAndExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalAndExpressionBuilder.js';
+import { LogicalOrExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalOrExpressionBuilder.js';
+import { LogicalXorExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalXorExpressionBuilder.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -104,37 +106,45 @@ export const logicalAndExpressionVisitor = (
 export const logicalOrExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.LogicalOrExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  return {
-    expression: {
-      logicalExpression: {
-        orExpression: {
-          left: left.expression,
-          right: right.expression,
-        },
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new LogicalOrExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const logicalXorExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.LogicalXorExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  return {
-    expression: {
-      logicalExpression: {
-        xorExpression: {
-          left: left.expression,
-          right: right.expression,
-        },
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new LogicalXorExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const logicalNotExpressionVisitor = (
