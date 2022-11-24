@@ -1,10 +1,17 @@
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../helpers/mappings.js';
+import { ClassTypeNode } from '../ClassTypeNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 
-const NAME = 'DTO';
+export class DTONode extends ClassTypeNode {
+  private static classType = ClassTypes.DTOs;
+  private static classNodeName = 'DTO';
 
-export class DTONode extends IntermediateASTNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TDTO, { lines }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super({
+      classType: DTONode.classType,
+      nodeType: BitloopsTypesMapping.TDTO,
+      metadata,
+      classNodeName: DTONode.classNodeName,
+    });
   }
 }

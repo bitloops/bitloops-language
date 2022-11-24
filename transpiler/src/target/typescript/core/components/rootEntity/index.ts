@@ -17,7 +17,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TBoundedContexts,
   TContextData,
   TDependenciesTypeScript,
   TRootEntities,
@@ -25,10 +24,11 @@ import {
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { getChildDependencies, getParentDependencies } from './../../dependencies.js';
+import { getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
+import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -53,7 +53,7 @@ const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
 
 export const rootEntitiesToTargetLanguage = (params: {
   rootEntities: TRootEntities;
-  model: TBoundedContexts;
+  model: IntermediateASTTree;
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
   const { rootEntities, model, contextData } = params;
@@ -69,12 +69,16 @@ export const rootEntitiesToTargetLanguage = (params: {
 
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
     const { create, methods, constantVars } = rootEntity;
-    const propsName = create.parameterDependency.type;
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+    const propsNameType = create.parameterDependency.type;
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error('Root entity cannot take array as props yet.');
     }
-    const propsDeps = getChildDependencies(propsName);
-    dependencies = [...dependencies, ...propsDeps];
+    const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
+      modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: propsNameType,
+      });
+    dependencies = [...dependencies, ...rootEntityPropsTypeDependencies];
 
     if (constantVars) {
       // TODO fix with new model/types

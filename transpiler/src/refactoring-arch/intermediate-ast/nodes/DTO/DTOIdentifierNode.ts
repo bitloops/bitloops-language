@@ -1,9 +1,17 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
-const NAME = 'DTOIdentifier';
 export class DTOIdentifierNode extends IntermediateASTNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TDTOIdentifier, { lines }, NAME);
+  private static classNodeName = 'DTOIdentifier';
+
+  constructor(metadata?: TNodeMetadata) {
+    super(BitloopsTypesMapping.TDTOIdentifier, metadata, DTOIdentifierNode.classNodeName);
+  }
+
+  getIdentifierName(): string {
+    const identifierClassNodeName = this.getClassNodeName();
+    const identifierValue = this.getValue();
+    const dtoIdentifierName: string = identifierValue[identifierClassNodeName];
+    return dtoIdentifierName;
   }
 }

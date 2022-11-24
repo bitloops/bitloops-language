@@ -11,17 +11,17 @@ const DOCUMENT_NAME = 'document';
 
 const getReadModelFields = (readModelValues: TPropsValues): string => {
   return readModelValues.variables
-    .filter((variable) => variable.name !== 'id')
+    .filter((variable) => variable.identifier !== 'id')
     .map((variable) => {
-      const { name } = variable;
-      return `${name}: ${DOCUMENT_NAME}.${name}`;
+      const { identifier } = variable;
+      return `${identifier}: ${DOCUMENT_NAME}.${identifier}`;
     })
     .join(', ');
 };
 
 const getReadModelIdVariable = (readModelValues: TPropsValues): TVariable => {
   const [aggregateIdVariable] = readModelValues.variables
-    .filter((variable) => variable.name === 'id')
+    .filter((variable) => variable.identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
 };

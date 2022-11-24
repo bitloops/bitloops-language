@@ -21,7 +21,6 @@
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
 import {
   TTargetDependenciesTypeScript,
-  TBoundedContexts,
   TContextData,
   TBitloopsPrimaryType,
 } from '../../../../../../../types.js';
@@ -31,10 +30,11 @@ import {
   TClassTypesValues,
 } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 export const findIdOfRepoDomainObject = (
   repoDependencyName: string,
-  bitloopsModel: TBoundedContexts,
+  bitloopsModel: IntermediateASTTree,
   type: TClassTypesValues,
   context: TContextData,
 ): TTargetDependenciesTypeScript => {

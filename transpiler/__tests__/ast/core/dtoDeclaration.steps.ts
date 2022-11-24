@@ -25,14 +25,23 @@ import {
   BitloopsParserError,
 } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { TDTOIdentifier, TVariables } from '../../../src/types.js';
+import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+// import { DTODeclarationBuilder } from './dtoDeclaration.builder.js';
+
+const var2: TVariable = {
+  optional: true,
+  identifier: 'name',
+  type: {
+    primitiveType: 'string',
+  },
+};
 
 const testExamplesDTO = [
   {
     //description:
     inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
-    variables: [{ type: 'string', name: 'name', optional: true }], //new VariableBuilder().withType('string').withName('name').build()
+    variables: [var2], //new VariableBuilder().withType('string').withName('name').build()
     identifier: 'HelloWorldRequestDTO',
   },
 ];
@@ -77,22 +86,28 @@ test('DTO declaration is valid', () => {
 
 // DTONodeBuilder.withIdentifier().withFieldList()
 const getExpectedDTOValues = (_variables: TVariables, identifier: TDTOIdentifier) => {
+  // const dtoValue = new DTODeclarationBuilder()
+  //   .withIdentifier(identifier)
+  //   .withVariables(variables)
+  //   .build();
   const dtoValue = {
     DTO: {
-      DTOIdentifier: identifier,
-      fieldList: [
-        {
-          field: {
-            optional: true,
-            identifier: 'name',
-            arrayPrimaryType: {
+      HelloWorldRequestDTO: {
+        DTOIdentifier: identifier,
+        fieldList: [
+          {
+            field: {
+              optional: true,
+              identifier: 'name',
               arrayPrimaryType: {
-                primitiveType: 'string',
+                arrayPrimaryType: {
+                  primitiveType: 'string',
+                },
               },
             },
           },
-        },
-      ],
+        ],
+      },
     },
   };
 

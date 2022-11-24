@@ -22,14 +22,14 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeScript => {
-  const { name, type, optional } = variable;
+  const { identifier, type, optional } = variable;
 
   const mappedType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: type,
   });
 
-  const result = `${name}${optional ? '?' : ''}: ${mappedType.output}`;
+  const result = `${identifier}${optional ? '?' : ''}: ${mappedType.output}`;
   return {
     output: result,
     dependencies: mappedType.dependencies,

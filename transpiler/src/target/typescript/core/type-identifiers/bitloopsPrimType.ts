@@ -19,41 +19,64 @@
  */
 
 import {
-  ArrayBitloopsPrimType,
+  ArrayBitloopsPrimTypeObject,
+  arrayPrimaryTypeKey,
   bitloopsBuiltInClasses,
   bitloopsPrimitives,
-  TBitloopsBuiltInClasses,
   TBitloopsPrimaryType,
-  TBitloopsPrimitives,
+  TBitloopsIdentifierObject,
+  primitivesTypeKey,
+  TBitloopsPrimitivesObject,
+  buildInClassTypeKey,
+  bitloopsIdentifiersTypeKey,
+  TBitloopsBuiltInClassesObject,
 } from '../../../../types.js';
 
 export class BitloopsPrimTypeIdentifiers {
-  static isArrayPrimType(primaryType: TBitloopsPrimaryType): primaryType is ArrayBitloopsPrimType {
+  static isArrayPrimType(
+    primaryType: TBitloopsPrimaryType,
+  ): primaryType is ArrayBitloopsPrimTypeObject {
     if (!primaryType) return false;
     if (typeof primaryType === 'string') return false;
-    if ('arrayType' in primaryType) return true;
+    if (arrayPrimaryTypeKey in primaryType) return true;
     return false;
   }
 
   /**
-   * Define a custom type guard to assert whether an unknown object is a Bitloops build in class.
+   * Define a custom type guard to assert whether an unknown object is a Bitloops built in class.
    */
-  static isBitloopsBuiltInClass = (type: unknown): type is TBitloopsBuiltInClasses => {
-    return typeof type === 'string' && bitloopsBuiltInClasses.includes(type as any);
+  static isBitloopsBuiltInClass = (
+    type: TBitloopsPrimaryType,
+  ): type is TBitloopsBuiltInClassesObject => {
+    if (buildInClassTypeKey in type) {
+      return bitloopsBuiltInClasses.includes(type[buildInClassTypeKey]);
+    }
+    return false;
   };
 
   static isBitloopsPrimitive(
     primaryType: TBitloopsPrimaryType,
-  ): primaryType is TBitloopsPrimitives {
-    if (typeof primaryType !== 'string') return false;
-    return bitloopsPrimitives.includes(primaryType as any);
+  ): primaryType is TBitloopsPrimitivesObject {
+    if (primitivesTypeKey in primaryType) {
+      return bitloopsPrimitives.includes(primaryType[primitivesTypeKey]);
+    }
+    return false;
   }
 
-  static isReadModelIdentifier(primaryType: TBitloopsPrimaryType): boolean {
-    return typeof primaryType === 'string' && primaryType.endsWith('ReadModel');
+  static isBitloopsIdentifierType(
+    primaryType: TBitloopsPrimaryType,
+  ): primaryType is TBitloopsIdentifierObject {
+    if (bitloopsIdentifiersTypeKey in primaryType) {
+      return typeof primaryType[bitloopsIdentifiersTypeKey] === 'string';
+    }
+    return false;
   }
 
-  static isDTOIdentifier(primaryType: TBitloopsPrimaryType): boolean {
-    return typeof primaryType === 'string' && primaryType.endsWith('DTO');
+  static isReadModelIdentifier(primaryType: string): boolean {
+    return primaryType.endsWith('ReadModel');
+  }
+
+  static isDTOIdentifier(primaryType: string): boolean {
+    return primaryType.endsWith('DTO');
   }
 }

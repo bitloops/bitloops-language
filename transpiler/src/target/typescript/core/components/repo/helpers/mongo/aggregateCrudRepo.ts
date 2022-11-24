@@ -12,10 +12,14 @@ import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitl
 
 const getVOProps = (voName: string, model: TModule): TPropsValues => {
   const voModel = model.ValueObjects[voName];
-  const voPropsName = voModel.create.parameterDependency.type;
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsName)) {
+  const voPropsNameType = voModel.create.parameterDependency.type;
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsNameType)) {
     throw new Error('Array props are not supported');
   }
+  const { output: voPropsName } = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: voPropsNameType,
+  });
   const voProps = model.Props[voPropsName];
   return voProps;
 };
@@ -23,17 +27,17 @@ const getVOProps = (voName: string, model: TModule): TPropsValues => {
 const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
   const voDeepFields = [];
   voProps.variables.forEach((variable) => {
-    const { name, type } = variable;
+    const { identifier, type } = variable;
     if (isVO(type)) {
       const nestedVOProps = getVOProps(type, model);
       const nestedVOResult = getVODeepFields(nestedVOProps, model);
       const nestedFields = [];
       nestedVOResult.forEach((fieldsString) => {
-        nestedFields.push(`${name}.${fieldsString}`);
+        nestedFields.push(`${identifier}.${fieldsString}`);
       });
       voDeepFields.push(...nestedFields);
     } else {
-      voDeepFields.push(name);
+      voDeepFields.push(identifier);
     }
   });
   return voDeepFields;
@@ -45,9 +49,9 @@ const getAggregateDeepFields = (
   model: TModule,
 ): string => {
   return aggregatePropsModel.variables
-    .filter((variable) => variable.name !== 'id')
+    .filter((variable) => variable.identifier !== 'id')
     .map((variable) => {
-      const { name, type } = variable;
+      const { identifier: name, type } = variable;
       if (isVO(type)) {
         const voProps = getVOProps(type, model);
         const deepFieldsVO = getVODeepFields(voProps, model);
@@ -67,7 +71,7 @@ const getAggregateDeepFields = (
 
 const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable => {
   const [aggregateIdVariable] = aggregatePropsModel.variables
-    .filter((variable) => variable.name === 'id')
+    .filter((variable) => variable.identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
 };

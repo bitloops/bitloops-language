@@ -27,18 +27,18 @@ export const generateGetters = (
   for (const [propName, propValues] of Object.entries(Props)) {
     if (propName === propsName) {
       for (const propVariable of propValues.variables) {
-        const { type, name } = propVariable;
+        const { type, identifier } = propVariable;
         const res = modelToTargetLanguage({
           value: type,
           type: BitloopsTypesMapping.TBitloopsPrimaryType,
         });
         const returnType = res.output;
         dependencies.push(...res.dependencies);
-        const getterName = name;
+        const getterName = identifier;
         if (methodNames.includes(getterName)) {
           continue;
         }
-        const getter = `get ${getterName}(): ${returnType} { return this.props.${name}; } `;
+        const getter = `get ${getterName}(): ${returnType} { return this.props.${identifier}; } `;
         gettersResult += getter;
       }
       return { output: gettersResult, dependencies };

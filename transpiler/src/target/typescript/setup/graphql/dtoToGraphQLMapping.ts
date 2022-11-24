@@ -1,19 +1,29 @@
-import { TBitloopsPrimaryType, TModule, TVariables } from '../../../../types.js';
+import { IntermediateASTTree } from '../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import {
+  bitloopsIdentifiersTypeKey,
+  buildInClassTypeKey,
+  primitivesTypeKey,
+  TBitloopsPrimaryType,
+  TVariables,
+} from '../../../../types.js';
 import { BitloopsPrimTypeIdentifiers } from '../../core/type-identifiers/bitloopsPrimType.js';
 import { mapBitloopsPrimitiveToGraphQL } from './typeMappings.js';
 
 export class ClassTypeToGraphQLMapping {
-  generateGraphQLTypes(classTypeName: string, moduleModel: TModule): Record<string, string> {
+  generateGraphQLTypes(
+    classTypeName: string,
+    moduleModel: IntermediateASTTree,
+  ): Record<string, string> {
     let graphQLTypes = {};
 
     const fields = this.fetchClassTypeFields(classTypeName, moduleModel);
 
     const fieldStrings = [];
     for (const field of fields) {
-      const { name, type, optional } = field;
+      const { identifier, type, optional } = field;
       if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
-        const fieldType = mapBitloopsPrimitiveToGraphQL(type, optional);
-        fieldStrings.push(`${name}: ${fieldType}`);
+        const fieldType = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
+        fieldStrings.push(`${identifier}: ${fieldType}`);
       } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
         const fieldTypeRes = this.findFieldFromArray(type, optional);
 
@@ -22,7 +32,7 @@ export class ClassTypeToGraphQLMapping {
           graphQLTypes = { ...graphQLTypes, ...depType };
         }
 
-        fieldStrings.push(`${name}: ${fieldTypeRes.result}`);
+        fieldStrings.push(`${identifier}: ${fieldTypeRes.result}`);
       } else {
         // TODO handle arrays/structs/nested dtos etc
         throw new Error(`Unsupported type ${JSON.stringify(type)}`);
@@ -33,12 +43,15 @@ export class ClassTypeToGraphQLMapping {
     return graphQLTypes;
   }
 
-  private fetchClassTypeFields(classTypeName: string, moduleModel: TModule): TVariables {
+  private fetchClassTypeFields(
+    classTypeName: string,
+    moduleModel: IntermediateASTTree,
+  ): TVariables {
     let fields: TVariables = [];
     if (BitloopsPrimTypeIdentifiers.isDTOIdentifier(classTypeName)) {
-      fields = moduleModel.DTOs[classTypeName].fields;
+      fields = moduleModel['DTOs'][classTypeName].fields;
     } else if (BitloopsPrimTypeIdentifiers.isReadModelIdentifier(classTypeName)) {
-      fields = moduleModel.ReadModels[classTypeName].variables;
+      fields = moduleModel['ReadModels'][classTypeName].variables;
     } else {
       throw new Error(`Dependency ${classTypeName} is not a DTO or ReadModel`);
     }
@@ -53,13 +66,20 @@ export class ClassTypeToGraphQLMapping {
     fieldDependency: string | null;
   } {
     if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
-      const result = mapBitloopsPrimitiveToGraphQL(type, optional);
+      const result = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
       return { result, fieldDependency: null };
     } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
-      const res = this.findFieldFromArray(type.arrayType.value, optional);
+      const res = this.findFieldFromArray(type.arrayPrimaryType, optional);
       return { result: '[' + res.result + ']', fieldDependency: res.fieldDependency };
+    } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
+      return { result: type[buildInClassTypeKey], fieldDependency: type[buildInClassTypeKey] };
+    } else if (BitloopsPrimTypeIdentifiers.isBitloopsIdentifierType(type)) {
+      return {
+        result: type[bitloopsIdentifiersTypeKey],
+        fieldDependency: type[bitloopsIdentifiersTypeKey],
+      };
     } else {
-      return { result: type, fieldDependency: type };
+      throw new Error(`Invalid primary type ${type}`);
     }
   }
 }

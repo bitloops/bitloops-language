@@ -33,13 +33,7 @@ import { transformRootEntityIntermediateAST } from './components/rootEntity.js';
 import { transformUseCaseIntermediateAST } from './components/useCase/index.js';
 import { transformGraphQLControllerIntermediateAST } from './components/controllers/graphQL.js';
 
-const modelToTypescriptModel = (props: {
-  type: string;
-  value: any;
-  // Replace any with types of all source elements
-}): any => {
-  const { type, value } = props;
-
+const modelToTypescriptModel = (type: string, value: any): any => {
   let res: any;
   switch (type) {
     case BitloopsTypesMapping.TControllers: {

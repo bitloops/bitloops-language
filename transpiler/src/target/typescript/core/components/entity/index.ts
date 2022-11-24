@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TBoundedContexts,
   TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
@@ -30,8 +29,9 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
-import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { getParentDependencies } from '../../dependencies.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
+import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -61,7 +61,7 @@ const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesT
 
 const entitiesToTargetLanguage = (params: {
   entities: TEntities;
-  model: TBoundedContexts;
+  model: IntermediateASTTree;
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
   const { entities, model, contextData } = params;
@@ -79,12 +79,16 @@ const entitiesToTargetLanguage = (params: {
 
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
-    const propsName = create.parameterDependency.type;
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+    const propsNameType = create.parameterDependency.type;
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error(`Entity props type of ${entityName} cannot be an array`);
     }
+    const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: propsNameType,
+    });
 
-    dependencies = [...dependencies, ...getChildDependencies(propsName)];
+    dependencies = [...dependencies, ...propsTypeDependencies];
 
     if (constantVars) {
       // TODO fix with new model/types

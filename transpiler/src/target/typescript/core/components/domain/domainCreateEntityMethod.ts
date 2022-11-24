@@ -22,16 +22,28 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
     }
   }
 
-  const propsName = create.parameterDependency.type;
+  const propsNameType = create.parameterDependency.type;
   const returnOkType = returnType.ok;
 
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
     throw new Error('Entity props type of createMethod cannot be an array');
   }
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(returnOkType)) {
     throw new Error('Entity return type of createMethod cannot be an array');
   }
+
+  const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: propsNameType,
+  });
+
+  const { output: returnOkTypeName, dependencies: returnOkTypeDependencies } =
+    modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: returnOkType,
+    });
+
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
@@ -60,7 +72,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
     ).length === 0;
   if (hasReturnStatements || statements.length === 0) {
     statementsModel = {
-      output: statementsModel.output.concat(`return ok(new ${returnOkType}(props));`),
+      output: statementsModel.output.concat(`return ok(new ${returnOkTypeName}(props));`),
       dependencies: statementsModel.dependencies,
     };
   }
@@ -74,6 +86,8 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
       ...parameterString.dependencies,
       ...returnTypeModel.dependencies,
       ...statementsModel.dependencies,
+      ...propsTypeDependencies,
+      ...returnOkTypeDependencies,
     ],
   };
 };

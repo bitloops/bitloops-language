@@ -19,6 +19,7 @@
  */
 import { TClassTypesValues } from './helpers/mappings.js';
 import { BitloopsLanguageAST } from './index.js';
+import { IntermediateASTTree } from './refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 
 export type TModule = {
   Props?: TProps;
@@ -139,19 +140,24 @@ export type TBitloopsClasses =
   | TStructs;
 
 export type TModuleName = string;
-export type TBoundedContext = Record<TModuleName, TModule>;
+export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
 
 export type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
+export const fieldsKey = 'fields';
 export type TVariables = TVariable[];
 
+export const identifierKey = 'identifier';
 export type TIdentifier = string;
+
+export const optionalKey = 'optional';
 export type TOptional = boolean;
+
 export type TVariable = {
-  optional?: TOptional;
-  type: TBitloopsPrimaryType;
-  name: TIdentifier;
+  [optionalKey]?: TOptional;
+  [identifierKey]: TIdentifier;
+  [bitloopsPrimaryTypeKey]: TBitloopsPrimaryType;
 };
 
 export type TPropsValues = {
@@ -229,17 +235,32 @@ export type TBitloopsIdentifier = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 
-export type TBitloopsPrimaryType =
-  | TBitloopsPrimitives
-  | TBitloopsBuiltInClasses
-  | TBitloopsIdentifier
-  | ArrayBitloopsPrimType;
-
-export type ArrayBitloopsPrimType = {
-  arrayType: {
-    value: TBitloopsPrimaryType;
-  };
+export const primitivesTypeKey = 'primitiveType';
+export type TBitloopsPrimitivesObject = {
+  [primitivesTypeKey]: TBitloopsPrimitives;
 };
+
+export const buildInClassTypeKey = 'buildInClassType';
+export type TBitloopsBuiltInClassesObject = {
+  [buildInClassTypeKey]: TBitloopsBuiltInClasses;
+};
+
+export const bitloopsIdentifiersTypeKey = 'bitloopsIdentifierType';
+export type TBitloopsIdentifierObject = {
+  [bitloopsIdentifiersTypeKey]: TBitloopsIdentifier;
+};
+
+export const arrayPrimaryTypeKey = 'arrayPrimaryType';
+export type ArrayBitloopsPrimTypeObject = {
+  [arrayPrimaryTypeKey]: TBitloopsPrimaryType;
+};
+
+export const bitloopsPrimaryTypeKey = 'type';
+export type TBitloopsPrimaryType =
+  | TBitloopsPrimitivesObject
+  | TBitloopsBuiltInClassesObject
+  | TBitloopsIdentifierObject
+  | ArrayBitloopsPrimTypeObject;
 
 export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
 
@@ -547,10 +568,6 @@ export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
 
-export type TDTOValues = {
-  fields: TVariables;
-};
-
 export type TStructDeclaration = {
   fields: TVariables;
 };
@@ -561,7 +578,15 @@ export type TExecute = {
 };
 
 export type TDTOIdentifier = string;
-export type TDTO = Record<TDTOIdentifier, TDTOValues>;
+export const DTOIdentifierKey = 'DTOIdentifier';
+
+export type TDTOValues = {
+  [DTOIdentifierKey]: TDTOIdentifier;
+  [fieldsKey]: TVariables;
+};
+export type TDTO = {
+  [identifier: TDTOIdentifier]: TDTOValues;
+};
 
 export type TStructs = Record<string, TStructDeclaration>;
 

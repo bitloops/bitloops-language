@@ -1,10 +1,6 @@
 import { BitloopsLanguageASTContext } from '../../index.js';
-import { IntermediateASTTree } from '../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import { TModuleName, TBoundedContextName } from '../../types.js';
+import { TBoundedContexts } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
-
-export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
-export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export interface IBitloopsIntermediateASTParser {
   parse: (ast: BitloopsLanguageASTContext) => TBoundedContexts | BitloopsIntermediateASTParserError;
