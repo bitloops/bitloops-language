@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Introduction
+# 👀 Bitloops @ a Glance
 
 ![Bitloops](https://storage.googleapis.com/wwwbitloopscom/bitloops-logo_320x80.png)
 
