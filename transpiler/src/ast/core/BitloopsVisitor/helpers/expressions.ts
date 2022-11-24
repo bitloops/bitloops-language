@@ -22,10 +22,12 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { TExpression } from '../../../../types.js';
 import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/additiveExpresssion.js';
-import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
+// import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
 import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
 import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/multiplicativeExpression.js';
 import { MultiplicativeExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/MultiplicativeExpression.js';
+import { LiteralNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
+import { LeftExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -151,13 +153,12 @@ export const multiplicativeExpressionVisitor = (
 export const additiveExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.AdditiveExpressionContext,
-): { expression: AdditiveExpressionNode } => {
-  const left = thisVisitor.visit(ctx.expression(0));
+): any => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
   const right = thisVisitor.visit(ctx.expression(1));
 
-  console.log('left', ctx.expression(0).getText());
   const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
-  console.log(operator.getValue());
 
   const node = new AdditiveExpressionBuilder()
     .withLeftExpression(left)
@@ -165,9 +166,7 @@ export const additiveExpressionVisitor = (
     .withOperator(operator)
     .build();
 
-  return {
-    expression: node,
-  };
+  return node;
 };
 
 export const parenthesizedExpressionVisitor = (
@@ -184,11 +183,7 @@ export const parenthesizedExpressionVisitor = (
 export const LiteralExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctxLiteral: BitloopsParser.LiteralExpressionContext,
-): { expression: any } => {
+): LiteralNode => {
   const literal = thisVisitor.visit(ctxLiteral.literal());
-  return {
-    expression: {
-      literal,
-    },
-  };
+  return literal;
 };

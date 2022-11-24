@@ -214,20 +214,20 @@ export class IntermediateASTTree {
   }
 
   updateIdentifiersInNodes(
-    nodes: IntermediateASTNode[],
-    identifierNode: IdentifierNode,
-    { suffix },
+    _nodes: IntermediateASTNode[],
+    _identifierNode: IdentifierNode,
+    // _{ suffix },
   ) {
     // const valueToUpdate = identifierNode.getIdentifier();
-    nodes.forEach((node) => {
-      this.traverse(node, (node) => {
-        //Update it in every possible node that uses identifier expression
-        // if (node instanceof IdentifierNode) {
-        // update identifier
-        // node.updateIdentifierSuffix(identifierNode, valueToUpdate, suffix);
-        // }
-        // }
-      });
-    });
+    // nodes.forEach((node) => {
+    //   this.traverse(node, (node) => {
+    //     Update it in every possible node that uses identifier expression
+    //     if (node instanceof IdentifierNode) {
+    //     update identifier
+    //     node.updateIdentifierSuffix(identifierNode, valueToUpdate, suffix);
+    //     }
+    //     }
+    //   });
+    // });
   }
 }

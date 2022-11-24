@@ -1,5 +1,6 @@
 import { AdditiveExpressionNode } from '../../nodes/Expression/AdditiveExpression.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
+import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js';
 import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
 import { IBuilder } from '../IBuilder.js';
 
@@ -7,7 +8,7 @@ export class AdditiveExpressionBuilder implements IBuilder<AdditiveExpressionNod
   public readonly NAME = 'additiveExpression';
 
   private AdditiveExpressionNode: AdditiveExpressionNode;
-  private LeftexpressionNode: ExpressionNode;
+  private LeftexpressionNode: LeftExpressionNode;
   private RightexpressionNode: ExpressionNode;
   private operator: OperatorNode;
 

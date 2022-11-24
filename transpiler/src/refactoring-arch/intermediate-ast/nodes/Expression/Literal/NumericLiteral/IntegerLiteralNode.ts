@@ -17,7 +17,4 @@ export class IntegerLiteralNode extends NumericLiteralNode {
   public getType(): TBitloopsPrimitives {
     return this.getChildren()[0].getValue();
   }
-  public getValue(): TBitloopsPrimitives {
-    return this.getChildren()[1].getValue();
-  }
 }

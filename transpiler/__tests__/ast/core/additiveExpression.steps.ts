@@ -30,7 +30,7 @@ import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-
 
 const additiveExpression = [
   {
-    inputBLString: 'JestTestExpression { 1 + 2}',
+    inputBLString: 'JestTestExpression { 1 + 2 }',
     parameters: {
       leftValue: 1,
       rightValue: 2,
