@@ -60,7 +60,7 @@ import {
   variablesToTargetLanguage,
   variableToTargetLanguage,
 } from './components/variables/index.js';
-import { DTOToTargetLanguage, DTOValuesToTargetLanguage } from './components/DTO/index.js';
+import { DTOToTargetLanguage } from './components/DTO/index.js';
 import { switchStatementToTargetLanguage } from './components/statements/switch/index.js';
 import { breakStmtToTargetLanguage } from './components/statements/break.js';
 import { okErrorReturnTypeToTargetLanguage } from './components/okkErrorReturnType.js';
@@ -293,10 +293,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDTO: {
       res = DTOToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TDTOValues: {
-      res = DTOValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TOkErrorReturnType: {

@@ -234,14 +234,14 @@ field
     : optional? bitloopsPrimaryType identifier
     ;
 
-// bitloopsPrimaryType: 
-//   bitloopsPrimaryTypeValues
-//   ;
+bitloopsPrimaryType:
+  bitloopsPrimaryTypeValues
+  ;
 
-bitloopsPrimaryType
+bitloopsPrimaryTypeValues
     : primitives                                        #PrimitivePrimType
     | bitloopsBuiltInClass                              #BitloopsBuiltInClassPrimType
-    | bitloopsPrimaryType OpenBracket CloseBracket      #ArrayBitloopsPrimType
+    | bitloopsPrimaryTypeValues OpenBracket CloseBracket      #ArrayBitloopsPrimType
     | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
     ;
 

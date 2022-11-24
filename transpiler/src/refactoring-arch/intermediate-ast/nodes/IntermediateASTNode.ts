@@ -5,13 +5,13 @@ export type TNodeMetadata = {
 };
 
 export abstract class IntermediateASTNode {
-  private nodeType: TBitloopsTypesValues;
+  protected nodeType: TBitloopsTypesValues;
   private children: IntermediateASTNode[];
   private nextSibling: IntermediateASTNode;
   private parent: IntermediateASTNode;
   private metaData: TNodeMetadata;
   private value: any;
-  private classNodeName: string;
+  protected classNodeName: string;
 
   constructor(
     nodeType: TBitloopsTypesValues,
@@ -34,6 +34,14 @@ export abstract class IntermediateASTNode {
 
   public getNodeType(): TBitloopsTypesValues {
     return this.nodeType;
+  }
+
+  public setNodeType(nodeType: string) {
+    this.nodeType = nodeType;
+  }
+
+  public setClassNodeName(classNodeName: string) {
+    this.classNodeName = classNodeName;
   }
 
   public getClassNodeName(): string {

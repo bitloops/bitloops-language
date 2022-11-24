@@ -1,8 +1,7 @@
 import { IBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
 import {
   ArrayBitloopsPrimTypeObject,
-  DTOIdentifierKey,
-  fieldsKey,
+  bitloopsPrimaryTypeKey,
   identifierKey,
   optionalKey,
   TBitloopsBuiltInClassesObject,
@@ -52,7 +51,7 @@ export class FieldBuilder implements IBuilder<TVariable> {
   public build(): TVariable {
     const field = {
       [identifierKey]: this.name,
-      ...this.type,
+      [bitloopsPrimaryTypeKey]: this.type,
     };
     if (this.optional !== undefined) {
       field[optionalKey] = this.optional;

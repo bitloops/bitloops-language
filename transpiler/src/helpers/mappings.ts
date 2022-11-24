@@ -55,7 +55,6 @@ const BitloopsTypesMapping = {
   TStatementsWithoutThis: 'TStatementsWithoutThis',
   TIfStatement: 'TIfStatement',
   TDTO: 'TDTO',
-  TDTOValues: 'TDTOValues',
   TStructs: 'TStructs',
   TStructDeclaration: 'TStructDeclaration',
   TOkErrorReturnType: 'TOkErrorReturnType',

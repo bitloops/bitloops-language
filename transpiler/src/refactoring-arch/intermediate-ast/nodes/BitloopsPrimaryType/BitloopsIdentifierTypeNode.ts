@@ -1,10 +1,13 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { BitloopsPrimaryTypeNode } from './BitloopsPrimaryTypeNode.js';
 
-const NAME = 'bitloopsIdentifierType';
-
 export class BitloopsIdentifierTypeNode extends BitloopsPrimaryTypeNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TBitloopsIdentifier, { lines }, NAME);
+  private static blIdentifierClassNodeName = 'bitloopsIdentifierType';
+
+  constructor(metadata?: TNodeMetadata) {
+    super(metadata);
+    this.classNodeName = BitloopsIdentifierTypeNode.blIdentifierClassNodeName;
+    this.nodeType = BitloopsTypesMapping.TBitloopsIdentifier;
   }
 }

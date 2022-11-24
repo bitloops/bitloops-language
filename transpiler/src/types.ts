@@ -580,12 +580,9 @@ export type TExecute = {
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
 
-export type TDTOValues = {
+export type TDTO = {
   [DTOIdentifierKey]: TDTOIdentifier;
   [fieldsKey]: TVariables;
-};
-export type TDTO = {
-  [identifier: TDTOIdentifier]: TDTOValues;
 };
 
 export type TStructs = Record<string, TStructDeclaration>;
