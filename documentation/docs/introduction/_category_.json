@@ -1,0 +1,8 @@
+{
+  "label": "Introduction",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn more about Bitloops Language and how Bitloops can help you write well-designed code and build high-quality software."
+  }
+}
