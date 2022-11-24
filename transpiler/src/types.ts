@@ -417,11 +417,41 @@ export type TExpressionValues =
   | TParenthesizedExpression
   | TArrayLiteralExpression
   | TToStringExpression
+  | TLiteral
   | TMethodCallExpression;
 
 export type TToStringExpression = {
   toString: {
     value: string;
+  };
+};
+
+export type TLiteral = {
+  literal: StringLiteral | BooleanLiteral | NumericLiteral | NullLiteral;
+};
+type StringLiteral = {
+  stringLiteral: string;
+};
+type BooleanLiteral = {
+  booleanLiteral: string;
+};
+type NullLiteral = {
+  nullLiteral: string;
+};
+
+type NumericLiteral = {
+  numericLiteral: IntegerLiteral | DecimalLiteral;
+};
+export type IntegerLiteral = {
+  integerLiteral: {
+    value: string;
+    type: any;
+  };
+};
+export type DecimalLiteral = {
+  decimalLiteral: {
+    value: string;
+    type: any;
   };
 };
 

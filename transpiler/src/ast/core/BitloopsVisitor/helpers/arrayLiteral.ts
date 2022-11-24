@@ -40,6 +40,7 @@ import { ArrayLiteralExpressionNode } from '../../../../refactoring-arch/interme
 //     arrayLiteral: expressions,
 //   };
 // };
+
 export const arrayLiteralVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrayLiteralContext,
@@ -51,10 +52,8 @@ export const arrayLiteralVisitor = (
   }
 
   const expressionNodes: ExpressionNode[] = children.filter((child) => child !== undefined);
-  const arrayLiteralExpressionNode = new ArrayLiteralExpressionNodeBuilder()
-    .withArrayElements(expressionNodes)
-    .build();
-  return arrayLiteralExpressionNode;
+
+  return new ArrayLiteralExpressionNodeBuilder().withArrayElements(expressionNodes).build();
 };
 
 // export const dtoDeclarationVisitor = (

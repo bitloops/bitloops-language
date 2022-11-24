@@ -23,6 +23,7 @@ import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVi
 import { BitloopsIdentifierTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BuildInClassTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
 import { DTOIdentifierNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { ExpressionBuilder } from '../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { IdentifierBuilder } from '../../../refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
@@ -309,7 +310,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
-    return this.visit(ctx.arrayLiteral());
+    const arrayLiteralExpressionNode = this.visit(ctx.arrayLiteral());
+    return new ExpressionBuilder().withExpression(arrayLiteralExpressionNode).build();
   }
 
   visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {
