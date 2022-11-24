@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 👋 Welcome (potential) Bitloops Developer!
+# 👋 Welcome Bitloops Developer!
 
 You’ve probably found Bitloops because you are keen on writing code and developing software in a way that makes it easy for colleagues (current and future) to easily understand what you’ve built and quickly start contributing to your code base. 
 
