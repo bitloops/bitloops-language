@@ -28,6 +28,7 @@ import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/in
 import { MultiplicativeExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/MultiplicativeExpression.js';
 import { LiteralNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
 import { LeftExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
+import { LiteralBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -184,6 +185,6 @@ export const LiteralExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctxLiteral: BitloopsParser.LiteralExpressionContext,
 ): LiteralNode => {
-  const literal = thisVisitor.visit(ctxLiteral.literal());
-  return literal;
+  const actualLiteral = thisVisitor.visit(ctxLiteral.literal());
+  return new LiteralBuilder().withLiteral(actualLiteral).build();
 };

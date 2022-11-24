@@ -59,8 +59,8 @@ import {
   TReadModels,
   TBuiltInClassEvaluation,
   TExpression,
-  TThisDeclaration,
 } from '../../../types.js';
+import { NumericLiteralBuilder } from './../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
@@ -511,7 +511,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return LiteralExpressionVisitor(this, ctx);
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
-    return this.visitChildren(ctx)[0];
+    const actualNumericLiteral = this.visitChildren(ctx)[0];
+    return new NumericLiteralBuilder().withNumericLiteral(actualNumericLiteral).build();
   }
 
   visitTemplateStringLiteralLabel(ctx: BitloopsParser.TemplateStringLiteralLabelContext) {
