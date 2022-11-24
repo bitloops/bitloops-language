@@ -111,6 +111,6 @@ export const errorCases = [
   {
     description: 'DTO with error in parsing',
     fileId: 'testFile.bl',
-    inputBLString: 'DTO HelloWorldRequestDTO{ string[][] DTO; }',
+    inputBLString: 'DTO HelloWorldRequestDTO{ string[][] 64; }',
   },
 ];

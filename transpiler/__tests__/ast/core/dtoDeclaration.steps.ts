@@ -28,7 +28,7 @@ import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { DTODeclarationBuilder } from './builders/dtoDeclaration.js';
-import { validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
+import { errorCases, validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -104,24 +104,30 @@ describe('DTO declaration with multiple dtos is valid', () => {
   });
 });
 
-// describe.only('DTO declaration is invalid', () => {
-//   const parser = new BitloopsParser();
+describe('DTO declaration is invalid', () => {
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+  errorCases.forEach((testDTO) => {
+    test(`${testDTO.description}`, () => {
+      const res = function (): void {
+        const initialModelOutput = parser.parse([
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testDTO.fileId,
+            fileContents: testDTO.inputBLString,
+          },
+        ]);
 
-//   errorCases.forEach((testDTO) => {
-//     test(`${testDTO.description}`, () => {
-//       const initialModelOutput = parser.parse([
-//         {
-//           boundedContext: BOUNDED_CONTEXT,
-//           module: MODULE,
-//           fileId: testDTO.fileId,
-//           fileContents: testDTO.inputBLString,
-//         },
-//       ]);
+        if (!(initialModelOutput instanceof BitloopsParserError)) {
+          intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+        }
+      };
 
-//       expect(initialModelOutput).toThrow(TypeError);
-//     });
-//   });
-// });
+      expect(res).toThrow(TypeError);
+    });
+  });
+});
 
 const getExpectedDTOOutput = (variables: TVariables, identifier: TDTOIdentifier) => {
   const dtoValue = new DTODeclarationBuilder()
