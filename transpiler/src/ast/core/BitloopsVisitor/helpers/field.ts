@@ -20,6 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { FieldNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
+import { OptionalBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/OptionalBuilder.js';
 import { FieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
@@ -31,7 +32,8 @@ export const fieldVisitor = (
 
   const typeNode = _thisVisitor.visit(ctx.bitloopsPrimaryType());
 
-  const optionalNode = _thisVisitor.visit(ctx.optional());
+  const optionalValue = ctx.optional() ? true : false;
+  const optionalNode = new OptionalBuilder().withOptional(optionalValue).build();
 
   const fieldNode = new FieldNodeBuilder()
     .withType(typeNode)

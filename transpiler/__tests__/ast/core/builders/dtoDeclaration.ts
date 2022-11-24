@@ -1,12 +1,12 @@
-import { IBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
+import { IBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
 import {
-  DTOIdentifierKey,
-  DTOKey,
-  fieldsKey,
   TDTO,
   TDTOIdentifier,
   TVariables,
-} from '../../../src/types.js';
+  DTOKey,
+  DTOIdentifierKey,
+  fieldsKey,
+} from '../../../../src/types.js';
 
 export class DTODeclarationBuilder implements IBuilder<TDTO> {
   private identifierName: TDTOIdentifier;

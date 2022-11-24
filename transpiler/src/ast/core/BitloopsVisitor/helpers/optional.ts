@@ -24,6 +24,7 @@ import { OptionalNode } from '../../../../refactoring-arch/intermediate-ast/node
 
 export const optionalVisitor = (ctx: BitloopsParser.OptionalContext): OptionalNode => {
   const optionalValue = ctx.Optional() ? true : false;
+  console.log('optionalValue');
   const optionalNode = new OptionalBuilder().withOptional(optionalValue).build();
   return optionalNode;
 };
