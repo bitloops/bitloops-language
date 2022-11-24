@@ -4,11 +4,11 @@ import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
 import { MultiplicativeExpressionNode } from '../../nodes/Expression/MultiplicativeExpression.js';
 
 export class MultiplicativeExpressionBuilder implements IBuilder<MultiplicativeExpressionNode> {
-  public readonly NAME = 'MultiplicativeExpression';
+  public readonly NAME = 'multiplicativeExpression';
 
   private MultiplicativeExpressionNode: MultiplicativeExpressionNode;
-  private LeftexpressionNode: ExpressionNode;
-  private RightexpressionNode: ExpressionNode;
+  private LeftExpressionNode: ExpressionNode;
+  private RightExpressionNode: ExpressionNode;
   private operatorNode: OperatorNode;
 
   constructor() {
@@ -16,11 +16,11 @@ export class MultiplicativeExpressionBuilder implements IBuilder<MultiplicativeE
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): MultiplicativeExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.LeftExpressionNode = expressionNode;
     return this;
   }
   public withRightExpression(expressionNode: ExpressionNode): MultiplicativeExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.RightExpressionNode = expressionNode;
     return this;
   }
   public withOperator(operatorNode: OperatorNode): MultiplicativeExpressionBuilder {
@@ -28,9 +28,9 @@ export class MultiplicativeExpressionBuilder implements IBuilder<MultiplicativeE
     return this;
   }
   public build(): MultiplicativeExpressionNode {
-    this.MultiplicativeExpressionNode.addChild(this.LeftexpressionNode);
+    this.MultiplicativeExpressionNode.addChild(this.LeftExpressionNode);
     this.MultiplicativeExpressionNode.addChild(this.operatorNode);
-    this.MultiplicativeExpressionNode.addChild(this.RightexpressionNode);
+    this.MultiplicativeExpressionNode.addChild(this.RightExpressionNode);
     this.MultiplicativeExpressionNode.buildObjectValue();
 
     return this.MultiplicativeExpressionNode;
