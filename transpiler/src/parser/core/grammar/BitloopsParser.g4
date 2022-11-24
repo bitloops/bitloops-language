@@ -193,7 +193,7 @@ closeParen
     ;
 
 regularIdentifier
-    : Identifier                                                #IdentifierString
+    : Identifier                                                # IdentifierString
     | regularDTOEvaluation                                      # RegularDTOEvaluationString
     | regularStructEvaluation                                   # RegularStructEvaluationString
     | regularErrorTypeEvaluation                                # RegularErrorTypeEvaluationString

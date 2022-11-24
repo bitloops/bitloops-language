@@ -349,10 +349,10 @@ export type TEvaluationValues =
   | TBuiltInClassEvaluation;
 
 export type TMethodCallExpression = {
-  methodCallExpression: {
-    // TODO change to expression
-    identifierValue: string; // Perhaps
-    argumentDependencies?: TArgumentDependencies; // ArgumentsDependencies, e.g. name
+  methodCallExpression: TExpression & {
+    argumentList: {
+      argument: TExpression;
+    }[];
   };
 };
 

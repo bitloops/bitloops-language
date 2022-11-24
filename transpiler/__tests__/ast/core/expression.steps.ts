@@ -68,7 +68,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test('Method call valid', ({ given, when, then }) => {
+  test.only('Method call valid', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -91,9 +91,11 @@ defineFeature(feature, (test) => {
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
       if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+        result = intermediateParser.parse(initialModelOutput);
+
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
+        console.log(JSON.stringify(result, null, 2));
       }
     });
 
@@ -126,9 +128,7 @@ defineFeature(feature, (test) => {
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
       if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+        result = intermediateParser.parse(initialModelOutput);
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
       }
@@ -163,9 +163,7 @@ defineFeature(feature, (test) => {
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
       if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+        result = intermediateParser.parse(initialModelOutput);
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
       }
@@ -177,7 +175,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test.only('Member dot expression', ({ given, when, then }) => {
+  test('Member dot expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -206,7 +204,6 @@ defineFeature(feature, (test) => {
 
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
-        console.log({ result });
       }
     });
 

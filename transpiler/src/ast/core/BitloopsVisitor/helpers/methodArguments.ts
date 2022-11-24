@@ -19,11 +19,16 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { ArgumentListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const methodArgumentsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodArgumentsContext,
 ) => {
+  if (!ctx.argumentList()) {
+    return new ArgumentListNodeBuilder().withArguments([]).build();
+  }
+
   return thisVisitor.visit(ctx.argumentList());
 };
