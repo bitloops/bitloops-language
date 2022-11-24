@@ -16,7 +16,6 @@ export class LiteralBuilder implements IBuilder<LiteralNode> {
 
   public build(): LiteralNode {
     this.literalWrapper.addChild(this.actualLiteral);
-
     this.literalWrapper.buildObjectValue();
 
     return this.literalWrapper;
