@@ -18,7 +18,7 @@ export class OperatorBuilder implements IBuilder<OperatorNode> {
   }
 
   public build(): OperatorNode {
-    this.operatorNode.setValue(this.symbol);
+    this.operatorNode.buildLeafValue(this.symbol);
     return this.operatorNode;
   }
 }

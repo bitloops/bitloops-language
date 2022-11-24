@@ -18,8 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { ExpressionNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { ExpressionBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { TExpression } from '../../../../types.js';
@@ -31,6 +29,8 @@ import { MultiplicativeExpressionNode } from '../../../../refactoring-arch/inter
 import { LeftExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
 import { LiteralBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
 import { RightExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
+import { ExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -156,12 +156,11 @@ export const multiplicativeExpressionVisitor = (
 export const additiveExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.AdditiveExpressionContext,
-): any => {
+): ExpressionNode => {
   const leftExp = thisVisitor.visit(ctx.expression(0));
   const left = new LeftExpressionBuilder().withExpression(leftExp).build();
   const rightExp = thisVisitor.visit(ctx.expression(1));
   const right = new RightExpressionBuilder().withExpression(rightExp).build();
-  console.log(left, right);
 
   const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
 
@@ -170,8 +169,9 @@ export const additiveExpressionVisitor = (
     .withRightExpression(right)
     .withOperator(operator)
     .build();
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
 
-  return node;
+  return expressionNode;
 };
 
 export const parenthesizedExpressionVisitor = (

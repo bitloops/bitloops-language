@@ -22,10 +22,13 @@ import { decode, d } from 'bitloops-gherkin';
 
 import {
   BitloopsIntermediateASTParser,
+  BitloopsIntermediateASTParserError,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
+import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 
 const feature = loadFeature('__tests__/ast/core/expression.feature');
 
@@ -247,6 +250,47 @@ defineFeature(feature, (test) => {
     then(/^I should get (.*)$/, (arg0) => {
       modelOutput = d(arg0);
       expect(result).toEqual(JSON.parse(modelOutput));
+    });
+  });
+  test('Additive Expression', ({ given, when, then }) => {
+    const boundedContext = 'Hello World';
+    const module = 'core';
+    let blString;
+    let modelOutput;
+    let actualNodes;
+    let result;
+    let resultTree: IntermediateASTTree;
+
+    given(/^An additive expression (.*) string$/, (arg0) => {
+      blString = decode(arg0);
+    });
+
+    when('I generate the model', () => {
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext,
+          module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      result = intermediateParser.parse(
+        initialModelOutput as unknown as BitloopsLanguageASTContext,
+      );
+
+      if (result instanceof BitloopsIntermediateASTParserError) {
+        throw result;
+      }
+      resultTree = result[boundedContext][module];
+
+      actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
+    });
+
+    then(/^I should get (.*)$/, (arg0) => {
+      modelOutput = d(arg0);
+      expect(actualNodes[0].getValue()).toMatchObject(modelOutput);
     });
   });
 });
