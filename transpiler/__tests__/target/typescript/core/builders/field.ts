@@ -28,10 +28,15 @@ export class FieldBuilderDirector {
   }
 
   buildRequiredPrimitiveField(name: string, type: TBitloopsPrimitives): FieldNode {
+    const optionalNode = new OptionalBuilder().withOptional(false).build();
     const identifierNode = new IdentifierBuilder().withName(name).build();
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
     const typeNode = new BitloopsPrimaryTypeBuilder().withPrimaryType(primitiveTypeNode).build();
-    const fieldNode = this.builder.withName(identifierNode).withType(typeNode).build();
+    const fieldNode = this.builder
+      .withName(identifierNode)
+      .withType(typeNode)
+      .withOptional(optionalNode)
+      .build();
     return fieldNode;
   }
 

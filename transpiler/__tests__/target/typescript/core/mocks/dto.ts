@@ -51,8 +51,31 @@ export const VALID_DTO_TEST_CASES = [
   {
     description: 'DTO with empty fields',
     fieldListNode: new FieldListNodeBuilder().build(),
-    dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('FinalDTO').build(),
-    output: 'export interface FinalDTO { }',
+    dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('EmptyDTO').build(),
+    output: 'export interface EmptyDTO { }',
+  },
+  {
+    description: 'DTO with different primitive types',
+    fieldListNode: new FieldListNodeBuilder()
+      .withFields([
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name1', 'int32'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name2', 'int64'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name3', 'double'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name4', 'uint32'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name5', 'uint64'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name6', 'sint32'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name7', 'sint64'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name8', 'fixed32'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name9', 'fixed64'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name0', 'sfixed32'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('name10', 'sfixed64'),
+      ])
+      .build(),
+    dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('FullDTO').build(),
+    output:
+      'export interface FullDTO' +
+      '{ name1: number; name2: number; name3: number; name4: number; name5: number;' +
+      'name6: number; name7: number; name8: number; name9: number; name0: number; name10: number; }',
   },
 ];
 
