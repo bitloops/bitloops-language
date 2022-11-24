@@ -1,10 +1,13 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
-const NAME = 'MethodCallExpression';
+const NAME = 'methodCallExpression';
 export class MethodCallExpressionNode extends ExpressionNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TMethodCallExpression, { lines: lines! }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super(metadata);
+    this.nodeType = BitloopsTypesMapping.TMethodCallExpression;
+    this.classNodeName = NAME;
   }
 
   getExpressionIdentifier(): string {

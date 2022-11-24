@@ -1,9 +1,12 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { LiteralNode } from './LiteralNode.js';
 
-const NAME = 'NullLiteral';
+const NAME = 'nullLiteral';
 export class NullLiteralNode extends LiteralNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TNullLiteral, { lines: lines! }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super(metadata);
+    this.nodeType = BitloopsTypesMapping.TNullLiteral;
+    this.classNodeName = NAME;
   }
 }
