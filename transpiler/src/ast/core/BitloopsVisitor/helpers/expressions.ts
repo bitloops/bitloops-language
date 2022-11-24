@@ -31,23 +31,28 @@ import { RightExpressionBuilder } from '../../../../refactoring-arch/intermediat
 import { ExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { RelationalExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
+import { EqualityExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EqualityExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  const operator = ctx.op.text;
-  return {
-    expression: {
-      equalityExpression: {
-        left: left.expression,
-        right: right.expression,
-        operator: operator,
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new EqualityExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const relationalExpressionVisitor = (

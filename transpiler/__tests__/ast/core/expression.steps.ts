@@ -409,4 +409,45 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
+  test.only('Equality Expression', ({ given, when, then }) => {
+    const boundedContext = 'Hello World';
+    const module = 'core';
+    let blString;
+    let modelOutput;
+    let actualNodes;
+    let result;
+    let resultTree: IntermediateASTTree;
+
+    given(/^An equality expression (.*) string$/, (arg0) => {
+      blString = decode(arg0);
+    });
+
+    when('I generate the model', () => {
+      const parser = new BitloopsParser();
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext,
+          module,
+          fileId: 'testFile.bl',
+          fileContents: blString,
+        },
+      ]);
+      const intermediateParser = new BitloopsIntermediateASTParser();
+      result = intermediateParser.parse(
+        initialModelOutput as unknown as BitloopsLanguageASTContext,
+      );
+
+      if (result instanceof BitloopsIntermediateASTParserError) {
+        throw result;
+      }
+      resultTree = result[boundedContext][module];
+      actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
+      console.log(actualNodes);
+    });
+
+    then(/^I should get (.*)$/, (arg0) => {
+      modelOutput = d(arg0);
+      expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
+    });
+  });
 });
