@@ -16,9 +16,11 @@ export class FieldListNodeBuilder implements IBuilder<FieldListNode> {
   }
 
   public build(): FieldListNode {
-    this.fieldNodes.forEach((fieldNode) => {
-      this.fieldListNode.addChild(fieldNode);
-    });
+    if (this.fieldNodes) {
+      this.fieldNodes.forEach((fieldNode) => {
+        this.fieldListNode.addChild(fieldNode);
+      });
+    }
     this.fieldListNode.buildArrayValue();
 
     return this.fieldListNode;

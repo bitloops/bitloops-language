@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import {
   DTOIdentifierKey,
   DTOKey,
@@ -36,12 +35,6 @@ const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   const dtoName = dtoValues[DTOIdentifierKey];
 
   const fields = dtoValues[fieldsKey];
-  if (isUndefined(fields)) {
-    throw new Error('Fields of DTO are not defined');
-  }
-  if (!isArray(fields)) {
-    throw new Error('Fields of DTO are not array');
-  }
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: fields,
