@@ -9,7 +9,7 @@ export class ThisExpressionNodeBuilder implements IBuilder<ThisExpressionNode> {
   }
 
   public build(): ThisExpressionNode {
-    this.thisExpressionNode.setValue('this');
+    this.thisExpressionNode.buildLeafValue('this');
 
     return this.thisExpressionNode;
   }

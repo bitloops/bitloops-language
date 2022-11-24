@@ -278,7 +278,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext) {
-    return new ThisExpressionNodeBuilder().build();
+    const thisExprNode = new ThisExpressionNodeBuilder().build();
+    return new ExpressionBuilder().withExpression(thisExprNode).build();
     // return {
     //   expression: {
     //     evaluation: {

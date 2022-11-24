@@ -131,7 +131,6 @@ defineFeature(feature, (test) => {
         );
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
-        console.log({ result });
       }
     });
 
@@ -141,7 +140,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test.only('Identifier expression', ({ given, when, then }) => {
+  test('Identifier expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -169,7 +168,6 @@ defineFeature(feature, (test) => {
         );
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
-        console.log({ result });
       }
     });
 
@@ -179,7 +177,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test('Member dot expression', ({ given, when, then }) => {
+  test.only('Member dot expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -205,6 +203,10 @@ defineFeature(feature, (test) => {
         result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
+
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
+        console.log({ result });
       }
     });
 

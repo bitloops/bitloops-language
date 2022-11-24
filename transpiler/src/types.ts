@@ -419,7 +419,15 @@ export type TExpressionValues =
   | TToStringExpression
   | TLiteral
   | TIdentifierExpr
-  | TMethodCallExpression;
+  | TMethodCallExpression
+  | TThisExpression
+  | TMemberDotExpression;
+
+export type TMemberDotExpression = {
+  memberDotExpression: TExpression & {
+    identifier: string;
+  };
+};
 
 export type TIdentifierExpr = {
   identifier: string;
@@ -457,6 +465,10 @@ export type DecimalLiteral = {
     value: string;
     type: any;
   };
+};
+
+export type TThisExpression = {
+  thisExpression: 'this';
 };
 
 export type TArrayLiteralExpression = {
