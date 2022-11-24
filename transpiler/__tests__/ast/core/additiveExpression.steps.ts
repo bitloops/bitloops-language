@@ -31,9 +31,9 @@ import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-
 const additiveExpression = [
   {
     inputBLString: 'JestTestExpression { 1 + 2 }',
-    parameters: {
-      leftValue: '1',
-      rightValue: '2',
+    vairiables: {
+      leftValue: { type: 'int32', value: '1' },
+      rightValue: { type: 'int32', value: '2' },
       operator: '+',
     },
   },
@@ -69,16 +69,14 @@ test('DTO declaration is valid', () => {
       throw result;
     }
     resultTree = result[BOUNDED_CONTEXT][MODULE];
-    console.log({ resultTree });
-    const { leftValue, rightValue, operator } = curr.parameters;
+    const { leftValue, rightValue, operator } = curr.vairiables;
 
     const expectedNodeValues = getExpectedAdditiveExpressionValues(
       leftValue,
       rightValue,
       operator as TAdditiveOperator,
     );
-    const actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TAdditiveExpression);
-    console.log(actualNodes);
+    const actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
     expect(actualNodes[0].getValue()).toMatchObject(expectedNodeValues);
     // expect(resultValue).toEqual(expectedDTOValue);
   });
@@ -93,18 +91,26 @@ const getExpectedAdditiveExpressionValues = (
     expression: {
       additiveExpression: {
         left: {
-          literal: {
-            numericLiteral: {
-              type: 'int32',
-              value: leftValue,
+          expression: {
+            literal: {
+              numericLiteral: {
+                integerLiteral: {
+                  type: leftValue.type,
+                  value: leftValue.value,
+                },
+              },
             },
           },
         },
         right: {
-          literal: {
-            numericLiteral: {
-              type: 'int32',
-              value: rightValue,
+          expression: {
+            literal: {
+              numericLiteral: {
+                integerLiteral: {
+                  type: rightValue.type,
+                  value: rightValue.value,
+                },
+              },
             },
           },
         },
