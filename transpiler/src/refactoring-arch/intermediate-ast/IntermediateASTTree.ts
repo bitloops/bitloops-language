@@ -190,10 +190,19 @@ export class IntermediateASTTree {
   }
 
   getNodesAfterUseCaseExecute(rootNode: IntermediateASTNode): IntermediateASTNode[] {
+    const policy = (node: IntermediateASTNode): boolean =>
+      node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
+    return this.getNodesAfterPolicy(rootNode, policy);
+  }
+
+  private getNodesAfterPolicy(
+    rootNode: IntermediateASTNode,
+    predicate: (node: IntermediateASTNode) => boolean,
+  ): IntermediateASTNode[] {
     const resultNodes: IntermediateASTNode[] = [];
     let useCaseExecuteFound = false;
     this.traverse(rootNode, (node) => {
-      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
+      if (predicate(node)) {
         useCaseExecuteFound = true;
         return;
       }
@@ -202,5 +211,23 @@ export class IntermediateASTTree {
       }
     });
     return resultNodes;
+  }
+
+  updateIdentifiersInNodes(
+    nodes: IntermediateASTNode[],
+    identifierNode: IdentifierNode,
+    { suffix },
+  ) {
+    // const valueToUpdate = identifierNode.getIdentifier();
+    nodes.forEach((node) => {
+      this.traverse(node, (node) => {
+        //Update it in every possible node that uses identifier expression
+        // if (node instanceof IdentifierNode) {
+        // update identifier
+        // node.updateIdentifierSuffix(identifierNode, valueToUpdate, suffix);
+        // }
+        // }
+      });
+    });
   }
 }

@@ -36,15 +36,6 @@ export class RestControllerNodeTransformer extends Transformer<RestControllerNod
     }
     const nodes = this.tree.getNodesAfterUseCaseExecute(this.node);
     console.log(nodes);
-    // this.tree.replaceIdentifierInNodes(nodes, identifierNode, 'value');
+    this.tree.updateIdentifiersInNodes(nodes, identifierNode, { suffix: '.value' });
   }
-  // Get identifier of useCaseExecute Statement
-  // Replace identifier afterwards wherever used with identifier.value
-  //   const policy = (node) => {
-  //     if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-  //       const methodCallNode = node.getExpression() as MethodCallExpressionNode;
-  //       methodCallNode.prepend('await ');
-  //       useCaseExecuteFound = true;
-  //       return;
-  //     }
 }
