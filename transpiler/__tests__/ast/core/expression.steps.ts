@@ -327,6 +327,7 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
+
   test.only('Multiplicative Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';

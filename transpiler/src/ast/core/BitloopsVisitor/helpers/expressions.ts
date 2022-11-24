@@ -30,6 +30,7 @@ import { LiteralBuilder } from '../../../../refactoring-arch/intermediate-ast/bu
 import { RightExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ParenthesizedExpressionNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -179,13 +180,17 @@ export const additiveExpressionVisitor = (
 export const parenthesizedExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ParenthesizedExpressionContext,
-): TExpression => {
+) => {
   const expression = thisVisitor.visit(ctx.expression());
-  return {
-    expression: {
-      parenthesizedExpression: expression.expression,
-    },
-  };
+  const parenthesizedExpr = new ParenthesizedExpressionNodeBuilder()
+    .withExpression(expression)
+    .build();
+  return new ExpressionBuilder().withExpression(parenthesizedExpr).build();
+  // return {
+  //   expression: {
+  //     parenthesizedExpression: expression.expression,
+  //   },
+  // };
 };
 export const LiteralExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
