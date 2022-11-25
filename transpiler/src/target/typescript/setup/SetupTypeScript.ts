@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import path from 'path';
+//import path from 'path';
 import { kebabCase } from '../../../utils/caseStyles.js';
 import { readFromFile } from '../../../helpers/fileOperations.js';
 import {
@@ -115,7 +115,7 @@ const REQUIRED_NODE_DEV_DEPENDENCIES = {
   '@types/validator': '^13.7.4',
   '@typescript-eslint/eslint-plugin': '^5.30.6',
   '@typescript-eslint/parser': '^5.30.6',
-  'env-cmd': '^10.1.0',
+  // 'env-cmd': '^10.1.0',
   eslint: '^8.19.0',
   'eslint-config-prettier': '^8.5.0',
   'eslint-plugin-prettier': '^4.2.1',
@@ -773,7 +773,7 @@ start();
         const filePath = `${setupTypeMapper[`${serverType}.Server`]}app${i}${
           esmEnabled ? '.js' : ''
         }`;
-        imports.push(`await import('..${path.normalize(filePath)}${esmEnabled ? '.js' : ''}');`);
+        imports.push(`await import('..${filePath}${esmEnabled ? '.js' : ''}');`);
       }
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
