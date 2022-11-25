@@ -56,8 +56,13 @@ The Bitloops [ToDo App](https://github.com/bitloops/bitloops-language/tree/main/
 ### 3 - Run the Bitloops Transpiler
 The next step is to transpile the ToDo App code from Bitloops Language Code into TypeScript code. Transpile comes from the word Transcompile, and means the translation of code from one programming language to another. 
 
+  macOS / Linux
   ```console
   bl transpile -s bitloops-language/examples/todo/bl-source/ -t output
+  ```
+  Windows
+  ```console
+  bl transpile -s bitloops-language\examples\todo\bl-source\ -t output
   ```
 
   or
@@ -127,8 +132,8 @@ Here is an example using curl
 curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
 ```
 
-&nbsp; 
-&nbsp; 
+&nbsp;
+&nbsp;
   
 ----
 
@@ -287,17 +292,16 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
 
 ## Questions
 
-For questions and support please use our official [Discord channel](https://discord.gg/vj8EdZx8gK). Feel free to join if you're looking to learn more about software development design patterns. 
+For questions and support please use our official [Discord channel](https://discord.gg/vj8EdZx8gK). Feel free to join if you're looking to learn more about software development design patterns.
 
 ## Contributing
 
-We are a small team on a mission to democratize well-designed code and high-quality software, and we'll take all the help we can get! If you'd like to get involved, please check out thour [Contribution Guidelines](https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md) to learn how and where we could use your help. We aim to identify **good-first-issues** so you can quickly start contributing and learning. 
+We are a small team on a mission to democratize well-designed code and high-quality software, and we'll take all the help we can get! If you'd like to get involved, please check out thour [Contribution Guidelines](https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md) to learn how and where we could use your help. We aim to identify **good-first-issues** so you can quickly start contributing and learning.
 
-## Issues 
+## Issues
 
 Please make sure to read our [Reporting Issues](https://github.com/bitloops/bitloops-language/blob/main/.github/SECURITY.md) guidelines before opening an issue. Issues not conforming to the guidelines may be closed immediately.
-   
-    
+
 ## Community support & staying in touch
 
 For general help using Bitloops Language, please use one of these channels:
@@ -309,7 +313,6 @@ For general help using Bitloops Language, please use one of these channels:
 - Website -        [https://bitloops.org](https://bitloops.org/bitloops-language)
 - Co-Founder -     [Vasilis Danias](https://www.linkedin.com/in/danias/)
 - Co-Founder -     [Sergio Pereira](https://www.linkedin.com/in/sergiopreira/)
-
 
 ## License
 
