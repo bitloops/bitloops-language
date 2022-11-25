@@ -69,14 +69,19 @@ The Bitloops [ToDo App](https://github.com/bitloops/bitloops-language/tree/main/
 ### 3 - Run the Bitloops Transpiler
 The next step is to transpile the ToDo App code from Bitloops Language Code into TypeScript code. Transpile comes from the word Transcompile, and means the translation of code from one programming language to another. 
 
+macOS / Linux
   ```console
   bl transpile -s bitloops-language/examples/todo/bl-source/ -t output
   ```
 
-  or, if you're using Windows:
-
+Windows
   ```console
   bl transpile -s bitloops-language\examples\todo\bl-source\ -t output
+  ```
+
+or
+  ```console
+  bitloops-language transpile
   ```
 
 ### 4 - Go into the output directory
