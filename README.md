@@ -2,19 +2,30 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
-  <a href="#What-are-the-benefits-of-using-Bitloops-Language?">Benefits</a> |
-  <a href="#why-build-the-bitloops-language">Why?</a> |
-  <a href="#language-goals">Goals</a> |
-  <a href="#project-status">Status</a> |
+  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#-what-are-the-benefits-of-using-bitloops-language">Benefits</a> |
+  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#%EF%B8%8F-why-build-the-bitloops-language">Why?</a> |
+  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#-language-goals">Goals</a> |
+  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#-project-status">Project Status</a> |
   <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
   <a href="https://github.com/bitloops/bitloops-language/discussions">GitHub Discussions</a> |
   <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
   <a href="https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>
 
-## 🗞 Build well-designed high-quality software (faster, much faster)
+## 🚀 Build better software faster, much faster
 
-Bitloops Language (BL) is a transpiled, high-productivity, fourth generation, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused programming language. BL has been built to empower any software developer to build high-quality and well designed software, particularly applications that have complex, and frequently changing, business requirements.
+Bitloops Language (BL) is a high-productivity, fourth generation programming language that has been designed and built by incorporating software development best practices and design methodologies such as [DDD](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design), [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) and [Layered/Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/). 
+
+The Bitloops Language guides and empowers any software developer to write clean code and build high-quality & well designed software. This is particularly relevant for applications that have complex, and frequently changing business requirements. Through Bitloops, developers can build software using principles such as separation of concerns, loose coupling, high cohesion and command query responsibility segregation (CQRS), which ensure systems are easier to understand, maintain and change. 
+
+With Bitloops Language, developers are able to:
+1. **Write clean code** in an intuitive and structured approach
+2. Follow **best practices** to ensure the code and software can be easily understood by other developers
+3. Create objects with **high cohesion and loose coupling** between each other
+4. **Separate the busienss logic** from the **technical aspects** which leads to more **robust and flexible systems**
+5. **Focus on the core domain** or problem, and not worry about boilerplate code
+
+In essence, software developers can focus on what they do best: **solving problems!** With Bitloops Language develoeprs write code that will allow other developers (and even themselves in 6 months) to easily understand and build on top of that code.  
 
 <!--
 Part of the Bitloops Language project, under the GPL-3.0 license
@@ -23,13 +34,15 @@ SPDX-License-Identifier: GPL-3.0-only
 The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 -->
 
+&nbsp; 
+
 > ⚠️ Please keep in mind that the Bitloops Language is in its early stages
 > and under very active development. Expect bugs and limitations.
 > Full backward compatibility is not guaranteed before reaching v1.0.0.
 
 &nbsp; 
 
-## Quick Start
+## 👨‍💻  Quick Start
 
 The best and fastest way to understand how Bitloops Language helps you write clean code and great software is to follow the instructions below. With this tutorial, you will run and execute a Bitloops ToDo App, learn how Bitloops works, and see the output files in TypeScript and appreciate how the Bitloops Language works. 
 
@@ -60,10 +73,10 @@ The next step is to transpile the ToDo App code from Bitloops Language Code into
   bl transpile -s bitloops-language/examples/todo/bl-source/ -t output
   ```
 
-  or
+  or, if you're using Windows:
 
   ```console
-  bitloops-language transpile
+  bl transpile -s bitloops-language\examples\todo\bl-source\ -t output
   ```
 
 ### 4 - Go into the output directory
@@ -132,27 +145,32 @@ curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"
   
 ----
 
-## What are the benefits of using Bitloops Language?
+## 👏 What are the benefits of using Bitloops Language?
 
-* High-productivity, [fourth generation (4GL)](https://www.techopedia.com/definition/24308/fourth-generation-programming-language-4gl) transpiled programming language
-* Easy to learn and get started with
-* Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development))
-* Testing is treated as a 1st class citizen
+* Software you'll be proud of! Well designed and written, easy to understand and follow!
+* High productivity by focusing on the core domain/problem, having less boilerplate code to build, manage and debug and more quickly being able to develop new features 
+* Easy to learn and intuitive syntax 
+* Learn about key software development best practices, patterns and methodologies such as [Domain-Driven Design (DDD)](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design), [Behavior-Driven Development (BDD)](https://en.wikipedia.org/wiki/Behavior-driven_development), [Test-Driven Development (TDD)](http://agiledata.org/essays/tdd.html) and [Layered / Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/).
+* Testing is treated as a 1st class citizen in the software development process
 * Add different API controllers (REST, GraphQL, gRPC) with just a few lines of code
-* Modular Monolith or Microservices architecture? Both! Switch back and forth within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
-* Significantly reduce the amount of boilerplate code you need to write and maintain
-* Ensure alignment between business and engineering with a natural ubiquitous language
-* Transpiles to widely used programming languages for maximum compatibility with existing code (currently only [TypeScript](https://github.com/microsoft/TypeScript) support, Go, Java, C#, C++ or maybe even Rust or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the future)
+* Switch between Modular Monolith or Microservices architecture within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
+* Significantly reduce the amount of boilerplate code you need to write, maintain and debug
+* Improved alignment between business and engineering with a natural ubiquitous language
+* Ability to transpiles to widely used programming languages for maximum compatibility with existing code (currently [TypeScript](https://github.com/microsoft/TypeScript) support, Go, Java, C#, C++ or maybe even Rust or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the near future)
 
-## Why build the Bitloops Language?
+
+## 🤷‍♀️ Why build the Bitloops Language?
 
 There are numerous great programming languages out there with massive and growing
 codebases and investments. However, the most common problem faced by organizations
 that build and maintain systems, with teams of developers working on them, is
-good architecture and design; Designing a complex system so that it can last through
-time and that will allow developers (existing and new joiners) to work on its codebase
-with steady (or hopefully) increasing productivity. Good testing is an additional major
-requirement of long lasting products which is also made possible by good architecture
+good architecture and design; 
+
+Designing a complex system so that it can last through
+time and will allow developers (existing and new joiners) to work on its codebase
+with steady (or hopefully) increasing productivity is very difficult. 
+
+Good testing is an additional major requirement of long lasting products which is also made possible by good architecture
 and design. Unfortunately, there aren't enough knowledgeable and experienced senior
 engineers around the world to build and maintain great systems for all who need them.
 Even when a company is lucky enough to have some, it is unable to hire more
@@ -161,31 +179,43 @@ sure the system does not degrade over time due to bad design decisions.
 
 The Bitloops Language is the first programming language that aims to address these issues
 by making it much easier to adopt important software engineering principles and patterns
-such as Domain Driven Design and Behavior Driven Development, without requiring many years
+such as [Domain-Driven Design](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design) and Behavior-Driven Development, without requiring many years
 of experience to do so successfully. As a result, the work of senior engineers can be further
 leveraged and the contributions of junior engineers significantly boosted.
 
-## Language Goals
 
-* Reduce the learning curve needed to build and maintain great software using DDD and BDD, allowing many more software developers around the world to adopt these important principles
-* Allow organizations to have to rely less on developer discipline and more in a structured process
+## 🥅 Language Goals
+
+Every software engineer has a common goal: we want to write better code and build better software, and we want to do this faster! 
+
+However, this can only be achieved with significant and continuous dedication, learning and experience, which takes a lot of time. Bitloops wants to significantly reduce the time it takes a developer to start building high-quality software, and we have built the Bitloops Language that already incorporates many of the software development best practices and design methodologies. 
+
+Ultimately, Bitloops' goals are to:
+
+* Increase significantly developer productivity, not only at the start of a project, but for the entire duration of a project!
+* Reduce the learning curve (specifically of DDD, BDD and Layered/Hexagonal Architecture) needed to build and maintain great software
+* Empower many more software developers around the world to learn and adopt these important principles and best practices
+* Reduce the need to depend on developer discipline through a more structured process in the code development process
 * Make testing a more integral, collaborative, useful, and fun process
 * Put the focus on the domain and automate everything else as much as possible
-* Make domain logic timeless, platform & (target) language independent
+* Make domain logic timeless as well as platform & language independent
 * Eliminate the need for boilerplate code
-* Allow software engineers to postpone the need for a microservices architecture until it is needed strictly from a infrastructure perspective to better manage computing resources and if eventually it is needed to be able to do so within hours and not months or years.
-* Allow for the reuse of existing packages writen in the target language
-* As a result of the above, significantly increase developer productivity
+* Reduce the time and cost to build new features and products
+* Empower software engineers to postpone the need for a microservices architecture until it is strictly needed from a infrastructure perspective to better manage computing and engineering resources (reduce intial costs! 💰💰💰) 
+* Allow systems to be converted from a modular monolith to a microservices architecture in hours, not months or years
+* Enable the reuse of existing packages writen in any language
 
 The Bitloops Language aims to define and retain a simplistic syntax that will be as close to human
 language and business logic as possible that will become timeless, helping adopt and use a ubiquitous
-language within each module or bounded context. Making the Bitloops Language a transpiled language
-was a core decision to achieve exactly this. By allowing oraganisations to write their business logic
+language within each module or bounded context. 
+
+Making the Bitloops Language a transpiled language was a core decision to achieve exactly this. By allowing oraganisations to write their business logic
 in a timeless language that can be transpiled to powerful but also changing target languages without
 burdening the users of the Bitloops Language with this task. The Bitloops Language will make sure it
 transpiles to optimized code of relevant, up-to-date, and right-for-the-task languages.
 
-## Project status
+
+## 📌 Project status
 
 The Bitloops Language is currently in early stages. Its transpiler has been created as a proof of concept
 and is not meant to cover the full range of developer creative code writing at this stage.
@@ -217,7 +247,7 @@ If you're interested in contributing, we would love help!
   
 ----
 
-## Bitloops -> TypeScript Transpilation
+## 🏗 Bitloops -> TypeScript Transpilation
 
 If you are already aware of the DDD concepts (Aggregates, Value Objects, Use Cases, Controller, etc.) and know how to code in any modern programming language, it should be really easy to pick up the Bitloops Language.
 It is built out of a consistent set of language constructs that should feel familiar and be easy to read and understand.
@@ -285,37 +315,37 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
 }
 ```
 
-## Questions
+## ❓ Questions
 
 For questions and support please use our official [Discord channel](https://discord.gg/vj8EdZx8gK). Feel free to join if you're looking to learn more about software development design patterns. 
 
-## Contributing
+## 🙌 Contributing
 
-We are a small team on a mission to democratize well-designed code and high-quality software, and we'll take all the help we can get! If you'd like to get involved, please check out thour [Contribution Guidelines](https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md) to learn how and where we could use your help. We aim to identify **good-first-issues** so you can quickly start contributing and learning. 
+We are a small team on a mission to democratize well-designed code and high-quality software, and we'll take all the help we can get! If you'd like to get involved, please check out our [Contribution Guidelines](https://github.com/bitloops/bitloops-language/blob/main/CONTRIBUTING.md) to learn how and where we could use your help. We aim to identify **good-first-issues** so you can quickly start contributing and learning. 
 
-## Issues 
+## 🐛 Issues 
 
 Please make sure to read our [Reporting Issues](https://github.com/bitloops/bitloops-language/blob/main/.github/SECURITY.md) guidelines before opening an issue. Issues not conforming to the guidelines may be closed immediately.
    
     
-## Community support & staying in touch
+## 💙Community support & staying in touch
 
 For general help using Bitloops Language, please use one of these channels:
 
-- Community -      [Discord](https://discord.gg/vj8EdZx8gK) \(For live discussion with the Community and Bitloops team\)
-- Forum -          [Discussions](https://github.com/bitloops/bitloops-language/discussions) \(For deeper conversations about features, connectors, or problems\)
-- Contributions -  [GitHub](https://github.com/bitloops/bitloops-language) \(Bug reports, Contributions\)
-- Demonstrations - [One-to-One Discussion](https://calendly.com/bitloops/30min?month=2022-11) \(Live informal 30-minute video call sessions with the Bitloops team\)
-- Website -        [https://bitloops.org](https://bitloops.org/bitloops-language)
-- Co-Founder -     [Vasilis Danias](https://www.linkedin.com/in/danias/)
-- Co-Founder -     [Sergio Pereira](https://www.linkedin.com/in/sergiopreira/)
+- 🗺 Community: [Discord](https://discord.gg/vj8EdZx8gK) \(For live discussion with the Community and Bitloops team\)
+- 💬 Forum: [Discussions](https://github.com/bitloops/bitloops-language/discussions) \(For deeper conversations about features, connectors, or problems\)
+- 🙌 Contributions: [GitHub](https://github.com/bitloops/bitloops-language) \(Bug reports, Contributions\)
+- 📯 Demonstrations: [One-to-One Discussion](https://calendly.com/bitloops/30min?month=2022-11) \(Live informal 30-minute video call sessions with the Bitloops team\)
+- 📚 Documentation: [Bitloops Docs](https://bitloops.com/docs/bitloops-language/category/introduction) \(All available documentation regarding Bitloops Language. We're working hard on releasing more!)
+- 🌐 Website: [www.bitloops.org](https://bitloops.org/bitloops-language) \(The official Bitloops website with additional information and documentation)
 
 
-## License
+
+## 📑 License
 
 Bitloops Language has a GNU General Public License v3.0. See the [LICENSE](https://github.com/bitloops/bitloops-language/blob/main/LICENSE) file for licensing information.
 
-## Like what you are seeing? Show us your appreciation!
+## 🌟 Like what you are seeing? Show us your appreciation!
 
 <p align="center">
     <img src="https://storage.googleapis.com/bitloops-github-assets/star-us.gif">
