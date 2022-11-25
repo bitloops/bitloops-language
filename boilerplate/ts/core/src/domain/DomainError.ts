@@ -19,7 +19,7 @@
  */
 import { ICoreError } from '../ICoreError';
 
-interface IDomainError extends ICoreError {
+export interface IDomainError extends ICoreError {
   errorId?: string;
 }
 

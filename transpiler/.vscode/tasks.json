@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": {
+        "kind": "build"
+        // "isDefault": true
+      },
+      "label": "tsc: watch - tsconfig.json"
+    },
+    {
+      "label": "build cjs",
+      "type": "typescript",
+      "tsconfig": "tsconfig.cjs.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": "build"
+    },
+    {
+      "label": "build esm",
+      "type": "typescript",
+      "tsconfig": "tsconfig.esm.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": "build"
+    },
+    {
+      "label": "Build",
+      "dependsOn": ["build cjs", "build esm"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

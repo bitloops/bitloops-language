@@ -1,0 +1,97 @@
+{
+  "name": "@bitloops/bl-transpiler",
+  "version": "0.0.14",
+  "description": "The one and only Bitloops Language transpiler",
+  "engines": {
+    "node": ">= 13"
+  },
+  "type": "module",
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/transpiler",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitloops/bitloops-language"
+  },
+  "types": "./lib/cjs/types/src/index.d.ts",
+  "main": "./lib/cjs/src/index.js",
+  "keywords": [
+    "bitloops language",
+    "bl",
+    "typescript",
+    "bdd",
+    "ddd",
+    "hexagonal architecture",
+    "ports & adapters",
+    "behavior driven development",
+    "transpiler",
+    "core"
+  ],
+  "devDependencies": {
+    "@types/antlr4": "^4.7.3",
+    "@types/eslint": "^8.4.6",
+    "@types/jest": "^29.1.2",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "bitloops-gherkin": "^1.0.2",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "~26.2",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "jest": "~28.1",
+    "jest-cucumber": "^3.0.1",
+    "jest-extended": "^3.0.2",
+    "jest-ts-auto-mock": "^2.1.0",
+    "lint-staged": "^13.0.3",
+    "ts-auto-mock": "^3.6.2",
+    "ts-jest": "~28.0",
+    "ts-node": "^10.9.1",
+    "tsutils": "~3.21",
+    "ttypescript": "^1.5.13",
+    "typescript": "^4.8.4"
+  },
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "copy-grammars": "cp -r ./src/parser/core/grammar ./lib/cjs/src/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/src/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/src/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/src/parser/setup/grammar",
+    "copy-grammars-types": "cp -r ./src/parser/core/grammar ./lib/cjs/types/src/parser/core/grammar && cp -r ./src/parser/core/grammar ./lib/esm/types/src/parser/core/grammar && cp -r ./src/parser/setup/grammar ./lib/cjs/types/src/parser/setup/grammar && cp -r ./src/parser/setup/grammar ./lib/esm/types/src/parser/setup/grammar",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/src/index.js lib/esm/src/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "jest --watch",
+    "ts-node-esm": "node --loader ts-node/esm",
+    "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
+    "generate-parser-dts": "rimraf src/parser/setup/grammar/Antler*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc src/parser/setup/grammar/Antler*.js --declaration --emitDeclarationOnly --allowJs --outDir src/parser/setup/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/setup/grammar/*.d.ts",
+    "generate-core-dts": "rimraf src/parser/core/grammar/Bitloops*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc ./src/parser/core/grammar/*.js --declaration --emitDeclarationOnly --allowJs --outDir ./src/parser/core/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/core/grammar/*.d.ts",
+    "generate-setup-dts": "rimraf src/parser/setup/grammar/Bitloops*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc ./src/parser/setup/grammar/Bitloops*.js --declaration --emitDeclarationOnly --allowJs --outDir ./src/parser/setup/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/setup/grammar/*.d.ts",
+    "ant": "java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/core/grammar/BitloopsLexer.g4 && java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/core/grammar/BitloopsParser.g4 && yarn generate-core-dts",
+    "ant:setup": "java -jar /usr/local/lib/antlr-4.10.1-complete.jar  -listener -visitor -Dlanguage=JavaScript src/parser/setup/grammar/BitloopsSetupLexer.g4 && java -jar /usr/local/lib/antlr-4.10.1-complete.jar -listener -visitor -Dlanguage=JavaScript src/parser/setup/grammar/BitloopsSetupParser.g4 && yarn generate-setup-dts",
+    "ant:all": "yarn ant && yarn ant:setup",
+    "build:full": "yarn && yarn ant:all && yarn build",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "lint": "eslint --quiet . --ext .ts --ext .mts --ext .cts",
+    "prepare": "cd ../ && husky install ./transpiler/.husky"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Bitloops S.A.",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "antlr4": "^4.11.0",
+    "prettier": "^2.7.1"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/src/index.d.ts",
+        "default": "./lib/esm/src/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/src/index.d.ts",
+        "default": "./lib/cjs/src/index.js"
+      }
+    }
+  }
+}
