@@ -73,12 +73,10 @@ macOS / Linux
   ```console
   bl transpile -s bitloops-language/examples/todo/bl-source/ -t output
   ```
-
 Windows
   ```console
   bl transpile -s bitloops-language\examples\todo\bl-source\ -t output
   ```
-
 or
   ```console
   bitloops-language transpile
@@ -145,8 +143,8 @@ Here is an example using curl
 curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
 ```
 
-&nbsp; 
-&nbsp; 
+&nbsp;
+&nbsp;
   
 ----
 
@@ -322,7 +320,7 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
 
 ## ❓ Questions
 
-For questions and support please use our official [Discord channel](https://discord.gg/vj8EdZx8gK). Feel free to join if you're looking to learn more about software development design patterns. 
+For questions and support please use our official [Discord channel](https://discord.gg/vj8EdZx8gK). Feel free to join if you're looking to learn more about software development design patterns.
 
 ## 🙌 Contributing
 
@@ -343,8 +341,6 @@ For general help using Bitloops Language, please use one of these channels:
 - 📯 Demonstrations: [One-to-One Discussion](https://calendly.com/bitloops/30min?month=2022-11) \(Live informal 30-minute video call sessions with the Bitloops team\)
 - 📚 Documentation: [Bitloops Docs](https://bitloops.com/docs/bitloops-language/category/introduction) \(All available documentation regarding Bitloops Language. We're working hard on releasing more!)
 - 🌐 Website: [www.bitloops.org](https://bitloops.org/bitloops-language) \(The official Bitloops website with additional information and documentation)
-
-
 
 ## 📑 License
 
