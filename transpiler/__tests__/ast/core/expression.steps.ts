@@ -361,7 +361,6 @@ defineFeature(feature, (test) => {
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {

@@ -114,6 +114,7 @@ export type TBoundedContextName = string;
 export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export const fieldsKey = 'fields';
+export const evaluationFieldsKey = 'fields';
 export type TVariables = TVariable[];
 
 export const identifierKey = 'identifier';
@@ -343,7 +344,11 @@ export type TIfStatement = {
   };
 };
 
-export type TEvaluationFields = ({ name: string } & TExpression)[];
+export type TEvaluationField = {
+  evaluationField: { name: string } & TExpression;
+};
+export type TEvaluationFields = TEvaluationField[];
+// export type TEvaluationFields = ({ name: string } & TExpression)[];
 
 export type TStructEvaluation = {
   struct: {

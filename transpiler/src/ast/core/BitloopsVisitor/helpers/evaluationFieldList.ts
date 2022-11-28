@@ -20,16 +20,32 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEvaluationFields } from '../../../../types.js';
+import { EvaluationFieldListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
+import { EvaluationFieldListNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 
 // export type TEvaluationFields = ({ name: string } & TExpression)[];
+// export const evaluationFieldListVisitor = (
+//   thisVisitor: BitloopsVisitor,
+//   ctx: BitloopsParser.EvaluationFieldListContext,
+// ): TEvaluationFields => {
+//   const evaluationFieldsAndCommas = thisVisitor.visitChildren(ctx);
+//   const evaluationFields = evaluationFieldsAndCommas.filter(
+//     (evaluationFieldOrComma) => evaluationFieldOrComma !== undefined,
+//   );
+//   return evaluationFields as TEvaluationFields;
+// };
+
 export const evaluationFieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EvaluationFieldListContext,
-): TEvaluationFields => {
+): EvaluationFieldListNode => {
   const evaluationFieldsAndCommas = thisVisitor.visitChildren(ctx);
   const evaluationFields = evaluationFieldsAndCommas.filter(
     (evaluationFieldOrComma) => evaluationFieldOrComma !== undefined,
   );
-  return evaluationFields as TEvaluationFields;
+  const evaluationFieldListNode = new EvaluationFieldListNodeBuilder()
+    .withEvaluationFields(evaluationFields)
+    .build();
+
+  return evaluationFieldListNode;
 };

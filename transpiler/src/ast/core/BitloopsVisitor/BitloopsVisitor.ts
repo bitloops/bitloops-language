@@ -250,11 +250,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const evaluation = this.visit(ctx.evaluation());
     // const expression = this.expressionBuilder.withExpressionValues(evaluation).build();
     // return expression;
-    return {
-      expression: {
-        ...evaluation,
-      },
-    };
+
+    return new ExpressionBuilder().withExpression(evaluation).build();
+    // return {
+    //   expression: {
+    //     ...evaluation,
+    //   },
+    // };
   }
 
   visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext) {

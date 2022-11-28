@@ -1,7 +1,6 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TDomainError, TEvaluationFields } from '../../../../types.js';
+import { TDomainError } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { evaluationFieldListVisitor } from './evaluationFieldList.js';
 import { formalParameterListVisitor } from './formalParameterList.js';
 
 export const domainErrorDeclarationVisitor = (
@@ -13,10 +12,9 @@ export const domainErrorDeclarationVisitor = (
   };
 } => {
   const errorName: string = ctx.domainErrorIdentifier().getText();
-  const fieldsList: TEvaluationFields = evaluationFieldListVisitor(
-    thisVisitor,
-    ctx.evaluationFieldList(),
-  );
+  // TEvaluationFields, TODO fix temp as any
+  // const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;
+  const fieldsList = thisVisitor.visit(ctx.evaluationFieldList());
   if (fieldsList.length != 2) {
     throw new TypeError('DomainErrorDeclaration must have two fields: ErrorId and message');
   }

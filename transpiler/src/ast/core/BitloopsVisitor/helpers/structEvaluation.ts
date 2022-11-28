@@ -20,19 +20,23 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TStructEvaluation } from '../../../../types.js';
+import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
+import { StructEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/StructEvaluationBuilder.js';
+import { StructEvaluationNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/StructEvaluation.js';
 
 export const structEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StructEvaluationContext,
-): TStructEvaluation => {
-  // console.log('ctx', ctx.structEvaluationIdentifier().getText());
+): StructEvaluationNode => {
   const identifier = ctx.structEvaluationIdentifier().getText();
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
-  return {
-    struct: {
-      fields: fieldList,
-      name: identifier,
-    },
-  };
+
+  const nameNode = new NameNodeBuilder().withName(identifier).build();
+
+  const structEvaluationNode = new StructEvaluationNodeBuilder()
+    .withName(nameNode)
+    .withEvaluationFieldList(fieldList)
+    .build();
+
+  return structEvaluationNode;
 };
