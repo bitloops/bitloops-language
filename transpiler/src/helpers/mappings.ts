@@ -20,6 +20,7 @@
 import { BitloopsBuiltInClassNames } from '../types.js';
 
 const BitloopsTypesMapping = {
+  TClassName: 'TClassName',
   TVariable: 'TVariable',
   TVariables: 'TVariables',
   TProps: 'TProps',
