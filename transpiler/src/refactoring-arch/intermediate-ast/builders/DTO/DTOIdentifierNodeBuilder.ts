@@ -1,12 +1,13 @@
 import { DTOIdentifierNode } from '../../nodes/DTO/DTOIdentifierNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class DTOIdentifierNodeBuilder implements IBuilder<DTOIdentifierNode> {
   private dtoIdentifierNode: DTOIdentifierNode;
   private name: string;
 
-  constructor() {
-    this.dtoIdentifierNode = new DTOIdentifierNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.dtoIdentifierNode = new DTOIdentifierNode(metadata);
   }
 
   public withName(identifierName: string): DTOIdentifierNodeBuilder {

@@ -22,18 +22,18 @@ import { decode, d } from 'bitloops-gherkin';
 
 import {
   BitloopsIntermediateASTParser,
-  BitloopsIntermediateASTParserError,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';
 
 const feature = loadFeature('__tests__/ast/core/expression.feature');
 
 defineFeature(feature, (test) => {
-  test('Expression is valid', ({ given, when, then }) => {
+  test.skip('Expression is valid', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -95,7 +95,6 @@ defineFeature(feature, (test) => {
 
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
-        console.log(JSON.stringify(result, null, 2));
       }
     });
 
@@ -211,7 +210,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test.only('Assignment expression', ({ given, when, then }) => {
+  test('Assignment expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -238,7 +237,6 @@ defineFeature(feature, (test) => {
 
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
-        console.log(JSON.stringify(result, null, 2));
       }
     });
 
@@ -277,7 +275,6 @@ defineFeature(feature, (test) => {
 
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
-        console.log({ result });
       }
     });
 
@@ -286,7 +283,7 @@ defineFeature(feature, (test) => {
       expect(result).toEqual(JSON.parse(modelOutput));
     });
   });
-  test.only('Additive Expression', ({ given, when, then }) => {
+  test('Additive Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -310,16 +307,13 @@ defineFeature(feature, (test) => {
         },
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
-      result = intermediateParser.parse(
-        initialModelOutput as unknown as BitloopsLanguageASTContext,
-      );
+      result = intermediateParser.parse(initialModelOutput as any);
 
       if (result instanceof BitloopsIntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {
@@ -328,7 +322,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test.only('Multiplicative Expression', ({ given, when, then }) => {
+  test('Multiplicative Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -352,9 +346,7 @@ defineFeature(feature, (test) => {
         },
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
-      result = intermediateParser.parse(
-        initialModelOutput as unknown as BitloopsLanguageASTContext,
-      );
+      result = intermediateParser.parse(initialModelOutput as any);
 
       if (result instanceof BitloopsIntermediateASTParserError) {
         throw result;
@@ -368,7 +360,7 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
-  test.only('Relational Expression', ({ given, when, then }) => {
+  test('Relational Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -392,16 +384,13 @@ defineFeature(feature, (test) => {
         },
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
-      result = intermediateParser.parse(
-        initialModelOutput as unknown as BitloopsLanguageASTContext,
-      );
+      result = intermediateParser.parse(initialModelOutput as any);
 
       if (result instanceof BitloopsIntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {
@@ -409,7 +398,7 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
-  test.only('Equality Expression', ({ given, when, then }) => {
+  test('Equality Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -442,7 +431,6 @@ defineFeature(feature, (test) => {
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {
@@ -450,7 +438,7 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
-  test.only('Logical And Expression', ({ given, when, then }) => {
+  test('Logical And Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -483,7 +471,6 @@ defineFeature(feature, (test) => {
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {
@@ -491,7 +478,7 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
-  test.only('Logical Or Expression', ({ given, when, then }) => {
+  test('Logical Or Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -523,7 +510,6 @@ defineFeature(feature, (test) => {
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {
@@ -531,7 +517,7 @@ defineFeature(feature, (test) => {
       expect(actualNodes[0].getValue()).toMatchObject(JSON.parse(modelOutput));
     });
   });
-  test.only('Logical Xor Expression', ({ given, when, then }) => {
+  test('Logical Xor Expression', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -563,7 +549,6 @@ defineFeature(feature, (test) => {
       }
       resultTree = result[boundedContext][module];
       actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TExpression);
-      console.log(actualNodes);
     });
 
     then(/^I should get (.*)$/, (arg0) => {

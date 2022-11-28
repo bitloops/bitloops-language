@@ -33,6 +33,8 @@ defineFeature(feature, (test) => {
   let blString;
   let modelOutput;
   let result;
+  const boundedContext = 'Hello World';
+  const module = 'core';
 
   test('BuiltIn Class is valid', ({ given, when, then }) => {
     given(/^A valid builtIn class (.*) string$/, (arg0) => {
@@ -43,8 +45,8 @@ defineFeature(feature, (test) => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Hello World',
-          module: 'core',
+          boundedContext,
+          module,
           fileId: 'testFile.bl',
           fileContents: blString,
         },
@@ -54,6 +56,9 @@ defineFeature(feature, (test) => {
         result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
+
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
       }
     });
 

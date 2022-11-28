@@ -277,7 +277,7 @@ export type TApplicationError = {
 
 export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
-  isInstanceOf: [TArgument, { class: string }]; // ArgumentsDependencies, e.g. name
+  isInstanceOf: TExpression & { class: string };
 };
 
 export type TPropsEvaluation = {
@@ -288,7 +288,7 @@ export type TPropsEvaluation = {
 };
 
 export type TNotInstanceOf = {
-  isNotInstanceOf: [TArgument, { class: string }]; // ArgumentsDependencies, e.g. name
+  isNotInstanceOf: TExpression & { class: string }; //[TArgument, { class: string }]; // ArgumentsDependencies, e.g. name
 };
 
 export type TGetClass = {
@@ -306,7 +306,7 @@ export type TRegularEvaluation = {
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
-    argumentDependencies: TArgumentList;
+    argumentList: TArgumentList;
   };
 };
 

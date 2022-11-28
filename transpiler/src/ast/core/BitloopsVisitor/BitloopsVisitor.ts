@@ -56,7 +56,6 @@ import {
   TUseCase,
   TStructs,
   TReadModels,
-  TBuiltInClassEvaluation,
   TExpression,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from './../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -162,6 +161,7 @@ import {
   errorEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
+import { produceMetadata } from './metadata.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -193,13 +193,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDtoIdentifier(ctx: BitloopsParser.DtoIdentifierContext) {
     const identifierName = ctx.DTOIdentifier().getText();
-    const dtoIdentifierNode = new DTOIdentifierNodeBuilder().withName(identifierName).build();
+    const metadata = produceMetadata(ctx, this);
+    const dtoIdentifierNode = new DTOIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
     return dtoIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
     const identifierName = ctx.Identifier().getText();
-    const identifierNode = new IdentifierBuilder().withName(identifierName).build();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierBuilder(metadata).withName(identifierName).build();
     return identifierNode;
   }
 
@@ -621,9 +625,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
   }
 
-  visitBuiltInClassEvaluation(
-    ctx: BitloopsParser.BuiltInClassEvaluationContext,
-  ): TBuiltInClassEvaluation {
+  visitBuiltInClassEvaluation(ctx: BitloopsParser.BuiltInClassEvaluationContext) {
     return builtInClassEvaluationVisitor(this, ctx);
   }
 
@@ -762,7 +764,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return applyRulesRuleVisitor(this, ctx);
   }
 
-  visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  // visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  //   return isInstanceOfVisitor(this, ctx);
+  // }
+
+  visitIsInstanceOfExpression(ctx: BitloopsParser.IsInstanceOfExpressionContext): any {
     return isInstanceOfVisitor(this, ctx);
   }
 
