@@ -19,7 +19,6 @@
  */
 import {
   BitloopsIntermediateASTParser,
-  BitloopsIntermediateASTParserError,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
@@ -29,6 +28,7 @@ import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
 import { DTODeclarationBuilder } from './builders/dtoDeclaration.js';
 import { errorCases, validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
+import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';

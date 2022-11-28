@@ -12,8 +12,8 @@ export {
 
 export {
   BitloopsIntermediateASTParser,
-  IBitloopsIntermediateASTParser,
-  BitloopsIntermediateASTParserError,
+  // IBitloopsIntermediateASTParser,
+  // BitloopsIntermediateASTParserError,
 } from './ast/core/index.js';
 
 export {
