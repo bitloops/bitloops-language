@@ -30,10 +30,10 @@ export const builtInClassEvaluationToTargetLanguage = (
   value: TBuiltInClassEvaluation,
 ): TTargetDependenciesTypeScript => {
   const { builtInClass } = value;
-  const { className, argumentDependencies } = builtInClass;
+  const { className, argumentList } = builtInClass;
   const argumentDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TArgumentDependencies,
-    value: argumentDependencies,
+    value: argumentList,
   });
 
   const output = `new ${mappingBitloopsBuiltInClassToLayer[className]}.${className}${argumentDependenciesResult.output}`;

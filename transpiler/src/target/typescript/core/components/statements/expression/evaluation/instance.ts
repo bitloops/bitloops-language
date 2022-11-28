@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TArgument,
+  TExpression,
   TInstanceOf,
   TNotInstanceOf,
   TTargetDependenciesTypeScript,
@@ -43,12 +43,12 @@ const instancesLangMapping = (instance: InstanceType): string => {
 };
 
 const getInstanceResult = (
-  value: TArgument,
+  expression: TExpression,
   instance: InstanceType,
 ): TTargetDependenciesTypeScript => {
   const argumentDependencyResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TArgumentDependency,
-    value,
+    type: BitloopsTypesMapping.TExpression,
+    value: expression,
   });
 
   const instanceResult = instancesLangMapping(instance);
@@ -60,15 +60,16 @@ const getInstanceResult = (
 };
 
 const instanceOfToTargetLanguage = (variable: TInstanceOf): TTargetDependenciesTypeScript => {
-  const [value, instance] = variable.isInstanceOf;
+  const { class: classInstance, expression } = variable.isInstanceOf;
+  // const [value, instance] = variable.isInstanceOf;
 
-  return getInstanceResult(value, instance);
+  return getInstanceResult({ expression }, { class: classInstance });
 };
 
 const notInstanceOfToTargetLanguage = (variable: TNotInstanceOf): TTargetDependenciesTypeScript => {
-  const [value, instance] = variable.isNotInstanceOf;
+  const { expression, class: instanceClass } = variable.isNotInstanceOf;
 
-  const instanceResult = getInstanceResult(value, instance);
+  const instanceResult = getInstanceResult({ expression }, { class: instanceClass });
 
   return { output: `!(${instanceResult.output})`, dependencies: instanceResult.dependencies };
 };

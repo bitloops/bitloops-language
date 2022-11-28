@@ -29,13 +29,16 @@ import { BitloopsIntermediateASTToTarget } from './typescript/core/index.js';
 import { generateSetupFiles } from './typescript/setup/index.js';
 import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
+import { isBitloopsTargetGeneratorError } from './typescript/guards/index.js';
 
 export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
-  generate(params: TBitloopsTargetGeneratorParams): TBitloopsOutputTargetContent {
+  generate(
+    params: TBitloopsTargetGeneratorParams,
+  ): TBitloopsOutputTargetContent | BitloopsTargetGeneratorError {
     const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
     const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
 
-    if (targetContent instanceof BitloopsTargetGeneratorError) throw targetContent;
+    if (isBitloopsTargetGeneratorError(targetContent)) return targetContent;
     const targetContentWithImports = bitloopsTargetGenerator.generateImports(targetContent);
     const formattedTargetContent = bitloopsTargetGenerator.formatCode(
       targetContentWithImports,

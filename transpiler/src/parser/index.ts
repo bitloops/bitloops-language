@@ -24,12 +24,12 @@ import {
   BitloopsLanguageASTContext,
   BitloopsParserError,
 } from './core/types.js';
+import { BitloopsSetupParser } from './setup/index.js';
 import {
-  BitloopsSetupParser,
-  IBitloopsSetupParser,
   BitloopsLanguageSetupAST,
   BitloopsSetupParserError,
-} from './setup/index.js';
+  IBitloopsSetupParser,
+} from './setup/types.js';
 
 export {
   BitloopsParser,

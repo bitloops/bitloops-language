@@ -511,7 +511,6 @@ jestTestDeclaration
     | JestTestStructEvaluation OpenBrace structEvaluation SemiColon? CloseBrace  SemiColon?  
     | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
     | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
-	| JestTestIsInstanceOf OpenBrace isInstanceOf CloseBrace SemiColon?  
     | JestTest OpenBrace formalParameterList CloseBrace SemiColon?   
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
@@ -541,9 +540,9 @@ errorEvaluation
     ;
 
 evaluation
-    : isInstanceOf 
+    // : isInstanceOf 
     // | getClassEvaluation
-    | builtInClassEvaluation
+    : builtInClassEvaluation
     | errorEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
@@ -1251,6 +1250,7 @@ expression
     | expression '=' expression                                  # AssignmentExpression
     | literal                                                    # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
+    | expression Is classTypes                                   # IsInstanceOfExpression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
@@ -1443,6 +1443,5 @@ eos
     // | {this.closeBrace()}?
     ;
 
-isInstanceOf: regularIdentifier Is classTypes SemiColon?;
 
 classTypes: ErrorClass;

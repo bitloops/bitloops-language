@@ -56,7 +56,6 @@ import {
   TUseCase,
   TStructs,
   TReadModels,
-  TBuiltInClassEvaluation,
   TExpression,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from './../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -626,9 +625,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
   }
 
-  visitBuiltInClassEvaluation(
-    ctx: BitloopsParser.BuiltInClassEvaluationContext,
-  ): TBuiltInClassEvaluation {
+  visitBuiltInClassEvaluation(ctx: BitloopsParser.BuiltInClassEvaluationContext) {
     return builtInClassEvaluationVisitor(this, ctx);
   }
 
@@ -767,7 +764,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return applyRulesRuleVisitor(this, ctx);
   }
 
-  visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  // visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  //   return isInstanceOfVisitor(this, ctx);
+  // }
+
+  visitIsInstanceOfExpression(ctx: BitloopsParser.IsInstanceOfExpressionContext): any {
     return isInstanceOfVisitor(this, ctx);
   }
 

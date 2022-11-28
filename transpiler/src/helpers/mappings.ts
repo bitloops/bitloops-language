@@ -20,6 +20,7 @@
 import { BitloopsBuiltInClassNames } from '../types.js';
 
 const BitloopsTypesMapping = {
+  TClassName: 'TClassName',
   TVariable: 'TVariable',
   TVariables: 'TVariables',
   TProps: 'TProps',
@@ -142,6 +143,7 @@ const BitloopsTypesMapping = {
   TMemberDotExpression: 'TMemberDotExpression',
   TAssignmentExpression: 'TAssignmentExpression',
   TName: 'TName',
+  TClass: 'TClass',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
