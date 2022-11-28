@@ -1,3 +1,4 @@
+import { NameNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/NameBuilder';
 /**
  *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
@@ -29,8 +30,9 @@ export const valueObjectEvaluationVisitor = (
 ) => {
   const identifier = ctx.valueObjectIdentifier().getText();
   const props = thisVisitor.visit(ctx.domainEvaluationInput());
+  const nameNode = new NameNodeBuilder().withName(identifier).build();
   const domainEvaluation = new DomainEvaluationNodeBuilder()
-    .withName(identifier)
+    .withName(nameNode)
     .withProps(props)
     .build();
   const node = new ValueObjectEvaluationNodeBuilder()

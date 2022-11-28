@@ -9,7 +9,7 @@ export class DomainEvaluationPropsNodeBuilder implements IBuilder<DomainEvaluati
   private domainEvaluationPropsNode: DomainEvaluationPropsNode;
 
   constructor() {
-    this.evaluationFieldListNode = new DomainEvaluationPropsNode();
+    this.domainEvaluationPropsNode = new DomainEvaluationPropsNode();
   }
 
   public withEvaluationFieldList(
