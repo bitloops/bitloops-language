@@ -16,10 +16,11 @@ export {
   // BitloopsIntermediateASTParserError,
 } from './ast/core/index.js';
 
+export { BitloopsIntermediateSetupASTParser } from './ast/setup/index.js';
+
 export {
-  BitloopsIntermediateSetupASTParser,
   IBitloopsIntermediateSetupASTParser,
   BitloopsIntermediateSetupASTParserError,
-} from './ast/setup/index.js';
+} from './ast/setup/types.js';
 
 export { BitloopsTargetGenerator } from './target/index.js';
