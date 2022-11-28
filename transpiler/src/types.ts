@@ -306,7 +306,7 @@ export type TRegularEvaluation = {
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
-    argumentDependencies: TArgumentList;
+    argumentList: TArgumentList;
   };
 };
 
