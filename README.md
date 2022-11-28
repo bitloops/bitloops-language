@@ -348,7 +348,7 @@ Bitloops Language has a GNU General Public License v3.0. See the [LICENSE](https
 
 ## 🧑‍🚀 Recruitment
 
-Bitloops is always looking for great people to contribute to the Bitloops Language and Platform. If you're keen on joining a team that wants to radically improve how software is built going forward, then send your CV + Cover Letter (very important) + GitHub Profile to: recruitment@bitloops.com
+Bitloops is always looking for great people to contribute to the Bitloops Language and Platform. If you're keen on joining a team that wants to radically improve how software is built going forward, then send your CV + Cover Letter (very important) + GitHub Profile to: careers@bitloops.com
 
 ## 🌟 Like what you are seeing? Show us your appreciation!
 
