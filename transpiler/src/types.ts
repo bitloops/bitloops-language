@@ -372,10 +372,22 @@ export type TEntityEvaluation = {
   entity: TDomainEvaluation;
 };
 
+// export type TDomainEvaluation = {
+//   props: TEvaluationFields | TRegularEvaluation;
+//   name: string;
+// };
 export type TDomainEvaluation = {
-  props: TEvaluationFields | TRegularEvaluation;
-  name: string;
+  domainEvaluation: {
+    name: string;
+    props: TDomainEvaluationExpression;
+  };
 };
+
+export type TDomainEvaluationExpression =
+  | {
+      fields: TEvaluationFields;
+    }
+  | TExpression;
 
 export type TExpression = {
   expression: TExpressionValues;

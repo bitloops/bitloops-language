@@ -18,20 +18,23 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { DomainEvaluationNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TValueObjectEvaluation } from '../../../../types.js';
+import { ValueObjectEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/ValueObjectEvaluationBuilder.js';
 
 export const valueObjectEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ValueObjectEvaluationContext,
-): TValueObjectEvaluation => {
+) => {
   const identifier = ctx.valueObjectIdentifier().getText();
   const props = thisVisitor.visit(ctx.domainEvaluationInput());
-  return {
-    valueObject: {
-      props,
-      name: identifier,
-    },
-  };
+  const domainEvaluation = new DomainEvaluationNodeBuilder()
+    .withName(identifier)
+    .withProps(props)
+    .build();
+  const node = new ValueObjectEvaluationNodeBuilder()
+    .withDomainEvaluation(domainEvaluation)
+    .build();
+  return node;
 };

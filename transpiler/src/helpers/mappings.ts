@@ -80,6 +80,7 @@ const BitloopsTypesMapping = {
   TEvaluationFields: 'TEvaluationFields',
   TEvaluationField: 'TEvaluationField',
   TDomainEvaluation: 'TDomainEvaluation',
+  TDomainEvaluationProps: 'TDomainEvaluationProps',
   TEntityEvaluation: 'TEntityEvaluation',
   TEntities: 'TEntities',
   TEntityValues: 'TEntityValues',

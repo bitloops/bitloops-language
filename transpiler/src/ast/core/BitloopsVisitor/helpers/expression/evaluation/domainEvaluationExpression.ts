@@ -17,23 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { DomainEvaluationPropsNodeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityEvaluation } from '../../../../types.js';
+import BitloopsVisitor from '../../../BitloopsVisitor.js';
+import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
+import { DomainEvaluationPropsNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluationProps.js';
 
-export const entityEvaluationVisitor = (
+export const domainEvaluationInputRegularVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.EntityEvaluationContext,
-): TEntityEvaluation => {
-  const identifier = ctx.entityIdentifier().getText();
-  const domainInput = thisVisitor.visit(ctx.domainEvaluationInput());
-  return {
-    entity: {
-      domainEvaluation: {
-        props: domainInput,
-        name: identifier,
-      },
-    },
-  };
+  ctx: BitloopsParser.DomainEvaluationInputRegularContext,
+): DomainEvaluationPropsNode => {
+  const expression = thisVisitor.visit(ctx.expression());
+  const props = new DomainEvaluationPropsNodeBuilder().withExpression(expression).build();
+  return props;
 };

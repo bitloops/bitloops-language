@@ -899,8 +899,8 @@ valueObjectEvaluation
     ;
 
 domainEvaluationInput
-    : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen   # DomainEvaluationInputFieldList
-    | OpenParen expression CloseParen             # DomainEvaluationInputRegular
+    : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen     # DomainEvaluationInputFieldList
+    | OpenParen expression CloseParen                                   # DomainEvaluationInputRegular
     // | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 

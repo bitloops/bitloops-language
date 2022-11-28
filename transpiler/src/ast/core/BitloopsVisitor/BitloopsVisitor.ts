@@ -32,9 +32,7 @@ import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/
 import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../../../refactoring-arch/intermediate-ast/nodes/RootNode.js';
 import {
-  TEvaluationFields,
   TParameterDependency,
-  TRegularEvaluation,
   TRESTControllerDependencies,
   TRESTControllerExecute,
   TGraphQLControllerExecute,
@@ -159,6 +157,8 @@ import {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  domainEvaluationInputRegularVisitor,
+  domainEvaluationInputFieldListVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 
@@ -554,20 +554,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return entityEvaluationVisitor(this, ctx);
   }
 
-  visitDomainEvaluationInputFieldList(
-    ctx: BitloopsParser.DomainEvaluationInputFieldListContext,
-  ): TEvaluationFields {
-    return this.visit(ctx.evaluationFieldList());
+  visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {
+    return domainEvaluationInputFieldListVisitor(this, ctx);
   }
 
-  visitDomainEvaluationInputRegular(
-    ctx: BitloopsParser.DomainEvaluationInputRegularContext,
-  ): TRegularEvaluation {
-    // TODO fix model to have expression/ not assume that expression is always regular evaluation
-    const expressionResult = this.visit(ctx.expression());
-    const { expression } = expressionResult;
-    const value = expression.evaluation;
-    return value;
+  visitDomainEvaluationInputRegular(ctx: BitloopsParser.DomainEvaluationInputRegularContext) {
+    return domainEvaluationInputRegularVisitor(this, ctx);
   }
 
   visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {
