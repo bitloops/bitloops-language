@@ -56,6 +56,9 @@ defineFeature(feature, (test) => {
         result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
+
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
       }
     });
 
