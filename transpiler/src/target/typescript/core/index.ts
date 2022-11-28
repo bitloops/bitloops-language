@@ -18,9 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TBitloopsOutputTargetContent,
   TBitloopsTargetContent,
-  TBitloopsTargetGeneratorParams,
   // TBoundedContexts,
   // TClassType,
   // TComponentType,
@@ -28,7 +26,6 @@ import {
   TDependencyParentTypescript,
   // ISetupData,
 } from '../../../types.js';
-import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError.js';
 // import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
@@ -36,6 +33,11 @@ import { formatString } from './codeFormatting.js';
 // import { deepClone } from '../../../utils/deepClone.js';
 // import { IntermediateASTNode } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 import { ClassTypeNode } from '../../../refactoring-arch/intermediate-ast/nodes/ClassTypeNode.js';
+import {
+  BitloopsTargetGeneratorError,
+  TBitloopsOutputTargetContent,
+  TBitloopsTargetGeneratorParams,
+} from '../../types.js';
 
 interface IBitloopsIntermediateASTToTarget {
   ASTToTarget(

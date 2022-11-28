@@ -4,10 +4,10 @@ import prettier from 'prettier';
 import path from 'path';
 import { packageJSONTemplate } from './package-template.js';
 import { SetupTypeScript } from './SetupTypeScript.js';
-import { ISetupData, TBitloopsTargetSetupContent, TBoundedContexts } from '../../../types.js';
-import { BitloopsTargetSetupGeneratorError } from '../../BitloopsTargetSetupGeneratorError.js';
+import { ISetupData, TBoundedContexts } from '../../../types.js';
 import { tsConfigJSONTemplate } from './tsconfig-template.js';
 import { nodemonJSONTemplate } from './nodemon-template.js';
+import { BitloopsTargetSetupGeneratorError, TBitloopsTargetSetupContent } from '../../types.js';
 // import { mockData } from './mockSetupData.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
