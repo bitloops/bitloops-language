@@ -921,7 +921,7 @@ builtInClassEvaluation
     ;
 
 propsEvaluation
-    : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseBrace CloseParen
+    : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseParen CloseBrace
     ;
 
 domainErrorDeclaration

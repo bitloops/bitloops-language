@@ -18,20 +18,26 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { DTOIdentifierNode } from './../../../../refactoring-arch/intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
+import { DTOEvaluationNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/DTOEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TDTOEvaluation } from '../../../../types.js';
+import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
+import { DTOEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
 
 export const dtoEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DtoEvaluationContext,
-): TDTOEvaluation => {
-  const identifier = thisVisitor.visit(ctx.dtoIdentifier());
+): DTOEvaluationNode => {
+  const dtoIdentifierNode: DTOIdentifierNode = thisVisitor.visit(ctx.dtoIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
-  return {
-    dto: {
-      fields: fieldList,
-      name: identifier,
-    },
-  };
+
+  const nameNode = new NameNodeBuilder().withName(dtoIdentifierNode.getIdentifierName()).build();
+
+  const dtoEvaluationNode = new DTOEvaluationNodeBuilder()
+    .withName(nameNode)
+    .withEvaluationFieldList(fieldList)
+    .build();
+
+  return dtoEvaluationNode;
 };
