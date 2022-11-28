@@ -1,6 +1,6 @@
-import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TNodeMetadata } from '../../../IntermediateASTNode.js';
-import { EvaluationNode } from '../EvaluationNode.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { EvaluationNode } from './EvaluationNode.js';
 
 const NAME = 'errorEvaluation';
 export class ErrorEvaluationNode extends EvaluationNode {

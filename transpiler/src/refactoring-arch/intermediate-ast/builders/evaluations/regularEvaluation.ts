@@ -1,16 +1,16 @@
-import { TRegularEvaluation, TArgumentDependencies, TParam } from '../../../../types.js';
+import { TRegularEvaluation, TArgumentList, TParam } from '../../../../types.js';
 import { IBuilder } from '../IBuilder.js';
 
 export interface IRegularEvaluationBuilder extends IBuilder<TRegularEvaluation> {
   withType(type: TParam): IRegularEvaluationBuilder;
   withValue(value: string): IRegularEvaluationBuilder;
-  withArgumentDependencies(argumentDependencies: TArgumentDependencies): IRegularEvaluationBuilder;
+  withArgumentDependencies(argumentDependencies: TArgumentList): IRegularEvaluationBuilder;
 }
 
 export class RegularEvaluationBuilder implements IRegularEvaluationBuilder {
   private type: TParam;
   private value: string;
-  private argumentDependencies?: TArgumentDependencies;
+  private argumentDependencies?: TArgumentList;
 
   withType(type: TParam): IRegularEvaluationBuilder {
     this.type = type;
@@ -22,7 +22,7 @@ export class RegularEvaluationBuilder implements IRegularEvaluationBuilder {
     return this;
   }
 
-  withArgumentDependencies(argumentDependencies: TArgumentDependencies): IRegularEvaluationBuilder {
+  withArgumentDependencies(argumentDependencies: TArgumentList): IRegularEvaluationBuilder {
     this.argumentDependencies = argumentDependencies;
     return this;
   }

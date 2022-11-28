@@ -20,7 +20,7 @@
 
 import {
   TClassInstantiation,
-  TArgumentDependency,
+  TArgument,
   TTargetDependenciesTypeScript,
 } from '../../../../../../types.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -31,7 +31,7 @@ const classInstantiationToTargetLanguage = (
   const { className, argumentDependencies } = variable.classInstantiation;
   const argDependencyLangMapping = (
     className: string,
-    args?: TArgumentDependency[],
+    args?: TArgument[],
   ): TTargetDependenciesTypeScript => {
     return {
       output:

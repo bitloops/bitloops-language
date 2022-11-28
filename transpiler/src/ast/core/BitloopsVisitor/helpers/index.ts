@@ -35,7 +35,7 @@ export { booleanLiteralVisitor as booleanEvaluation } from './expression/literal
 export { dtoEvaluationVisitor } from './dtoEvaluation.js';
 export { evaluationVisitor } from './evaluation.js';
 export { propsEvaluationVisitor } from './propsEvaluation.js';
-export { valueObjectEvaluationVisitor } from './valueObjectEvaluation.js';
+export { valueObjectEvaluationVisitor } from './expression/evaluation/valueObjectEvaluation.js';
 export { formalParameterListVisitor } from './formalParameterList.js';
 export { entityEvaluationVisitor } from './entityEvaluation.js';
 export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
@@ -122,3 +122,4 @@ export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
 export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
+export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';

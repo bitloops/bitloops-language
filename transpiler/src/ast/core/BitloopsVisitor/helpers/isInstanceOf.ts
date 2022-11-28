@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TArgumentDependency, TInstanceOf } from '../../../../types.js';
+import { TArgument, TInstanceOf } from '../../../../types.js';
 
 // result is Error
 // {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}
@@ -28,7 +28,7 @@ export const isInstanceOfVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IsInstanceOfContext,
 ): TInstanceOf => {
-  const regularVariableEvaluation: TArgumentDependency = thisVisitor.visit(ctx.regularIdentifier());
+  const regularVariableEvaluation: TArgument = thisVisitor.visit(ctx.regularIdentifier());
   const classToCompare = ctx.classTypes().getText();
   return {
     isInstanceOf: [regularVariableEvaluation, { class: classToCompare }],

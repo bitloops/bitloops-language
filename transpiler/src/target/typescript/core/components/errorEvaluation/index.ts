@@ -27,11 +27,11 @@ export const bitloopsErrorEvaluationToTargetLanguage = (
   variable: TErrorEvaluation,
 ): TTargetDependenciesTypeScript => {
   const { errorEvaluation } = variable;
-  const { name, argumentDependencies } = errorEvaluation;
+  const { name, argumentList } = errorEvaluation;
 
   const argumentDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TArgumentDependencies,
-    value: argumentDependencies,
+    value: argumentList,
   });
   const output = `new ${name}${argumentDependenciesResult.output}`;
   let dependencies;

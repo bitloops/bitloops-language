@@ -159,6 +159,7 @@ import {
   identifierExpressionVisitor,
   domainEvaluationInputRegularVisitor,
   domainEvaluationInputFieldListVisitor,
+  errorEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 
@@ -322,15 +323,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
-    const identifier = ctx.ErrorIdentifier().getText();
-    const argumentDependencies = this.visit(ctx.methodArguments()) || [];
-
-    return {
-      errorEvaluation: {
-        name: identifier,
-        argumentDependencies,
-      },
-    };
+    return errorEvaluationVisitor(this, ctx);
   }
 
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {

@@ -1,4 +1,3 @@
-import { NameNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/NameBuilder';
 /**
  *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
@@ -19,10 +18,11 @@ import { NameNodeBuilder } from './../../../../refactoring-arch/intermediate-ast
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { DomainEvaluationNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-import { ValueObjectEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/ValueObjectEvaluationBuilder.js';
+import { DomainEvaluationNodeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
+import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsVisitor from '../../../BitloopsVisitor.js';
+import { ValueObjectEvaluationNodeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/ValueObjectEvaluationBuilder.js';
+import { NameNodeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
 
 export const valueObjectEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,

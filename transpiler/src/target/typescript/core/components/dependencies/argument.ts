@@ -19,15 +19,15 @@
  */
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import {
-  TArgumentDependencies,
-  TArgumentDependency,
-  TEvaluatePrimitive,
+  TArgumentList,
+  TArgument,
+  // TEvaluatePrimitive,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const argumentDependenciesToTargetLanguage = (
-  variable: TArgumentDependencies,
+  variable: TArgumentList,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   let result = '(';
@@ -49,40 +49,39 @@ const argumentDependenciesToTargetLanguage = (
 };
 
 const argumentDependencyToTargetLanguage = (
-  variable: TArgumentDependency,
+  argumentVariable: TArgument,
 ): TTargetDependenciesTypeScript => {
-  const argDependencyLangMapping = (
-    variable: TArgumentDependency,
-  ): TTargetDependenciesTypeScript => {
-    if (variable.type === 'variable') {
-      return { output: variable.value, dependencies: [] };
-    } else {
-      const primitive: TEvaluatePrimitive = {
-        type: variable.type,
-        value: variable.value,
-      };
-      return modelToTargetLanguage({
-        type: BitloopsTypesMapping.TEvaluatePrimitive,
-        value: primitive,
-      });
+  return modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: argumentVariable.argument,
+  });
+  // const { argument: variable } = argumentVariable;
+  // if (variable.type === 'variable') {
+  //   return { output: variable.value, dependencies: [] };
+  // } else {
+  //   const primitive: TEvaluatePrimitive = {
+  //     type: variable.type,
+  //     value: variable.value,
+  //   };
+  //   return modelToTargetLanguage({
+  //     type: BitloopsTypesMapping.TEvaluatePrimitive,
+  //     value: primitive,
+  //   });
 
-      // // TODO differentiate 'string' | 'bool' | 'number'
-      // if (variable.type === 'string') {
-      //   return `'${variable.value}'`;
-      // }
-      // if (variable.type === 'bool') {
-      //   if (variable.value !== 'true' && variable.value !== 'false') {
-      //     throw new Error(`Invalid boolean value: ${variable}`);
-      //   }
-      //   return variable.value;
-      // }
-      // if (variable.type === 'number') {
-      //   return `${+variable.value}`;
-      // }
-      // throw new Error(`Unsupported type: ${variable.type}`);
-    }
-  };
-  return argDependencyLangMapping(variable);
+  // // TODO differentiate 'string' | 'bool' | 'number'
+  // if (variable.type === 'string') {
+  //   return `'${variable.value}'`;
+  // }
+  // if (variable.type === 'bool') {
+  //   if (variable.value !== 'true' && variable.value !== 'false') {
+  //     throw new Error(`Invalid boolean value: ${variable}`);
+  //   }
+  //   return variable.value;
+  // }
+  // if (variable.type === 'number') {
+  //   return `${+variable.value}`;
+  // }
+  // throw new Error(`Unsupported type: ${variable.type}`);
 };
 
 export { argumentDependenciesToTargetLanguage, argumentDependencyToTargetLanguage };

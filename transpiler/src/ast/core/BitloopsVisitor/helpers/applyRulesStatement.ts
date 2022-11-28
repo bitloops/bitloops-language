@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TArgumentDependencies, TBuildInFunction } from '../../../../types.js';
+import { TArgumentList, TBuildInFunction } from '../../../../types.js';
 
 export const applyRulesStatementVisitor = (
   _thisVisitor: BitloopsVisitor,
@@ -39,7 +39,7 @@ export const applyRuleStatementRulesListVisitor = (
   ctx: BitloopsParser.ApplyRuleStatementRulesListContext,
 ): {
   name: string;
-  arguments: TArgumentDependencies;
+  arguments: TArgumentList;
 }[] => {
   const children = thisVisitor.visitChildren(ctx);
   const result = children.filter((child) => child !== undefined);
@@ -51,7 +51,7 @@ export const applyRulesRuleVisitor = (
   ctx: BitloopsParser.ApplyRulesRuleContext,
 ): {
   name: string;
-  arguments: TArgumentDependencies;
+  arguments: TArgumentList;
 } => {
   const ruleIdentifier = ctx.domainRuleIdentifier().getText();
   const argumentsRes = thisVisitor.visit(ctx.arguments())[1];

@@ -153,17 +153,24 @@ export type TParameterDependencies = TParameterDependency[];
 
 export type TArgumentDependencyType = TBitloopsPrimitives | 'variable';
 // (name)
-export type TArgumentDependency = {
-  value: string;
-  type: TArgumentDependencyType;
+// This is the old
+// export type TArgumentDependency = {
+//   value: string;
+//   type: TArgumentDependencyType;
+// };
+
+// The old TArgumentDependency
+export type TArgument = {
+  argument: TExpression;
 };
 
-export type TArgumentDependencies = TArgumentDependency[];
+// The old TArgumentDependencies
+export type TArgumentList = TArgument[];
 
 export type TClassInstantiation = {
   classInstantiation: {
     className: string;
-    argumentDependencies?: TArgumentDependencies;
+    argumentDependencies?: TArgumentList;
   };
 };
 
@@ -270,7 +277,7 @@ export type TApplicationError = {
 
 export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
-  isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
+  isInstanceOf: [TArgument, { class: string }]; // ArgumentsDependencies, e.g. name
 };
 
 export type TPropsEvaluation = {
@@ -281,7 +288,7 @@ export type TPropsEvaluation = {
 };
 
 export type TNotInstanceOf = {
-  isNotInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
+  isNotInstanceOf: [TArgument, { class: string }]; // ArgumentsDependencies, e.g. name
 };
 
 export type TGetClass = {
@@ -292,14 +299,14 @@ export type TRegularEvaluation = {
   regularEvaluation: {
     type: TParam;
     value: string;
-    argumentDependencies?: TArgumentDependencies; // ArgumentsDependencies, e.g. name
+    argumentDependencies?: TArgumentList; // ArgumentsDependencies, e.g. name
   };
 };
 
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
-    argumentDependencies: TArgumentDependencies;
+    argumentDependencies: TArgumentList;
   };
 };
 
@@ -322,9 +329,7 @@ export type TEvaluationValues =
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & {
-    argumentList: {
-      argument: TExpression;
-    }[];
+    argumentList: TArgumentList;
   };
 };
 
@@ -519,7 +524,7 @@ export type TBreakStatement = 'break';
 export type TApplyRules = {
   applyRules: {
     name: string;
-    arguments: TArgumentDependencies;
+    arguments: TArgumentList;
   }[];
 };
 
@@ -1041,7 +1046,7 @@ export type TAndSingleExpression = {
 export type TErrorEvaluation = {
   errorEvaluation: {
     name: string;
-    argumentDependencies?: TArgumentDependencies;
+    argumentList?: TArgumentList;
   };
 };
 
