@@ -2,10 +2,10 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
-  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#-what-are-the-benefits-of-using-bitloops-language">Benefits</a> |
-  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#%EF%B8%8F-why-build-the-bitloops-language">Why?</a> |
-  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#-language-goals">Goals</a> |
-  <a href="https://github.com/bitloops/bitloops-language/edit/main/README.md#-project-status">Project Status</a> |
+  <a href="https://github.com/bitloops/bitloops-language#-what-are-the-benefits-of-using-bitloops-language">Benefits</a> |
+  <a href="https://github.com/bitloops/bitloops-language#%EF%B8%8F-why-build-the-bitloops-language">Why?</a> |
+  <a href="https://github.com/bitloops/bitloops-language#-language-goals">Goals</a> |
+  <a href="https://github.com/bitloops/bitloops-language#-project-status">Project Status</a> |
   <a href="https://discord.gg/vj8EdZx8gK">Discord</a> |
   <a href="https://github.com/bitloops/bitloops-language/discussions">GitHub Discussions</a> |
   <a href="https://github.com/bitloops/bitloops-language/issues">GitHub Issues</a> |
@@ -195,18 +195,17 @@ However, this can only be achieved with significant and continuous dedication, l
 
 Ultimately, Bitloops' goals are to:
 
-* Increase significantly developer productivity, not only at the start of a project, but for the entire duration of a project!
+* Increase developer productivity significantly, not only at the start of a project, but for the entire lifecycle!
+* Reduce the time and cost to build new features and products, even on large / complex projects
 * Reduce the learning curve (specifically of DDD, BDD and Layered/Hexagonal Architecture) needed to build and maintain great software
-* Empower many more software developers around the world to learn and adopt these important principles and best practices
-* Reduce the need to depend on developer discipline through a more structured process in the code development process
+* Empower many more software developers to learn & adopt these important principles and best practices
+* Reduce the dependency on developer discipline during  the code development process, with a structured process
 * Make testing a more integral, collaborative, useful, and fun process
 * Put the focus on the domain and automate everything else as much as possible
 * Make domain logic timeless as well as platform & language independent
-* Eliminate the need for boilerplate code
-* Reduce the time and cost to build new features and products
+* Eliminate the need for boilerplate code & enable the reuse of existing packages writen in any language
 * Empower software engineers to postpone the need for a microservices architecture until it is strictly needed from a infrastructure perspective to better manage computing and engineering resources (reduce intial costs! 💰💰💰) 
-* Allow systems to be converted from a modular monolith to a microservices architecture in hours, not months or years
-* Enable the reuse of existing packages writen in any language
+* Allow systems to be converted from a modular monolith to a microservices architecture in hours, not months
 
 The Bitloops Language aims to define and retain a simplistic syntax that will be as close to human
 language and business logic as possible that will become timeless, helping adopt and use a ubiquitous
@@ -345,6 +344,11 @@ For general help using Bitloops Language, please use one of these channels:
 ## 📑 License
 
 Bitloops Language has a GNU General Public License v3.0. See the [LICENSE](https://github.com/bitloops/bitloops-language/blob/main/LICENSE) file for licensing information.
+
+
+## 🧑‍🚀 Recruitment
+
+Bitloops is always looking for great people to contribute to the Bitloops Language and Platform. If you're keen on joining a team that wants to radically improve how software is built going forward, then send your CV + Cover Letter (very important) + GitHub Profile to: recruitment@bitloops.com
 
 ## 🌟 Like what you are seeing? Show us your appreciation!
 
