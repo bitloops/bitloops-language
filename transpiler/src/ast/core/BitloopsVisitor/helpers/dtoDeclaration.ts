@@ -24,6 +24,7 @@ import { DTOIdentifierNode } from '../../../../refactoring-arch/intermediate-ast
 import { DTONode } from '../../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
 import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
 
 export const dtoDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -33,18 +34,7 @@ export const dtoDeclarationVisitor = (
 
   const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
 
-  const ctxToParse = ctx as any;
-  const metadata = {
-    start: {
-      line: ctxToParse.start.line,
-      column: ctxToParse.start.column,
-    },
-    end: {
-      line: ctxToParse.stop.line,
-      column: ctxToParse.stop.column,
-    },
-    file: thisVisitor.currentFile,
-  };
+  const metadata = produceMetadata(ctx, thisVisitor);
 
   const dtoNode = new DTONodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(dtoIdentifierNode)
