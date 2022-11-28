@@ -32,9 +32,7 @@ import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/
 import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../../../refactoring-arch/intermediate-ast/nodes/RootNode.js';
 import {
-  TEvaluationFields,
   TParameterDependency,
-  TRegularEvaluation,
   TRESTControllerDependencies,
   TRESTControllerExecute,
   TGraphQLControllerExecute,
@@ -159,6 +157,9 @@ import {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  domainEvaluationInputRegularVisitor,
+  domainEvaluationInputFieldListVisitor,
+  errorEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 
@@ -166,9 +167,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
 
   private _intermediateASTTree: IntermediateASTTree;
+  private _currentFile: string;
 
-  constructor() {
+  constructor(currentFile: string) {
     super();
+    this._currentFile = currentFile;
     this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
@@ -176,27 +179,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return this._intermediateASTTree;
   }
 
-  visitProgram(ctx: BitloopsParser.ProgramContext): any {
-    this.visitChildren(ctx);
-    // const result = this.mergeSourceElements(children);
-    // return result;
+  public get currentFile(): string {
+    return this._currentFile;
   }
 
-  // private mergeSourceElements(children: any): TModule {
-  //   const sourceElementsResult = children.map((c) => c[0]);
-  //   return sourceElementsResult.reduce((acc, sourceElement) => {
-  //     const classType = Object.keys(sourceElement)[0];
-  //     if (acc[classType]) {
-  //       acc[classType] = {
-  //         ...acc[classType],
-  //         ...sourceElement[classType],
-  //       };
-  //     } else {
-  //       acc[classType] = sourceElement[classType];
-  //     }
-  //     return acc;
-  //   }, {});
-  // }
+  visitProgram(ctx: BitloopsParser.ProgramContext): any {
+    this.visitChildren(ctx);
+  }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {
     return equalityExpressionVisitor(this, ctx);
@@ -250,11 +239,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const evaluation = this.visit(ctx.evaluation());
     // const expression = this.expressionBuilder.withExpressionValues(evaluation).build();
     // return expression;
-    return {
-      expression: {
-        ...evaluation,
-      },
-    };
+
+    return new ExpressionBuilder().withExpression(evaluation).build();
+    // return {
+    //   expression: {
+    //     ...evaluation,
+    //   },
+    // };
   }
 
   visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext) {
@@ -332,15 +323,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
-    const identifier = ctx.ErrorIdentifier().getText();
-    const argumentDependencies = this.visit(ctx.methodArguments()) || [];
-
-    return {
-      errorEvaluation: {
-        name: identifier,
-        argumentDependencies,
-      },
-    };
+    return errorEvaluationVisitor(this, ctx);
   }
 
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {
@@ -552,20 +535,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return entityEvaluationVisitor(this, ctx);
   }
 
-  visitDomainEvaluationInputFieldList(
-    ctx: BitloopsParser.DomainEvaluationInputFieldListContext,
-  ): TEvaluationFields {
-    return this.visit(ctx.evaluationFieldList());
+  visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {
+    return domainEvaluationInputFieldListVisitor(this, ctx);
   }
 
-  visitDomainEvaluationInputRegular(
-    ctx: BitloopsParser.DomainEvaluationInputRegularContext,
-  ): TRegularEvaluation {
-    // TODO fix model to have expression/ not assume that expression is always regular evaluation
-    const expressionResult = this.visit(ctx.expression());
-    const { expression } = expressionResult;
-    const value = expression.evaluation;
-    return value;
+  visitDomainEvaluationInputRegular(ctx: BitloopsParser.DomainEvaluationInputRegularContext) {
+    return domainEvaluationInputRegularVisitor(this, ctx);
   }
 
   visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {

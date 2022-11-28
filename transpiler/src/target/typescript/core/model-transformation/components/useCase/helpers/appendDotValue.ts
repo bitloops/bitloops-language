@@ -31,7 +31,7 @@ import {
   TVariableDeclaration,
   TDomainEvaluation,
   TEvaluationFields,
-  TArgumentDependency,
+  TArgument,
 } from '../../../../../../../types.js';
 import { StatementTypeIdentifiers } from '../../../../type-identifiers/statement.js';
 
@@ -114,7 +114,7 @@ const appendDotValueInExpression = (
   } else if (isExpressionAMethodRegularEvaluation(statement)) {
     const { argumentDependencies } = statement.expression['evaluation'].regularEvaluation;
     if (argumentDependencies && argumentDependencies.length > 0) {
-      const newArgs = argumentDependencies.map((arg: TArgumentDependency) => {
+      const newArgs = argumentDependencies.map((arg: TArgument) => {
         const { value, type } = arg;
         if (type !== 'variable') {
           return arg;

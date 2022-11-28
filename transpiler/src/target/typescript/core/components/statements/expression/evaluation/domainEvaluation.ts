@@ -25,8 +25,8 @@ import { getChildDependencies } from '../../../../dependencies.js';
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
 ): TTargetDependenciesTypeScript => {
-  const domainProperties = evaluation.props;
-  const domainName = evaluation.name;
+  const domainProperties = evaluation.domainEvaluation.props;
+  const domainName = evaluation.domainEvaluation.name;
 
   let resultDomainProps: TTargetDependenciesTypeScript;
   if ('regularEvaluation' in domainProperties) {

@@ -2,6 +2,7 @@ import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { DTOIdentifierNode } from '../../nodes/DTO/DTOIdentifierNode.js';
 import { DTONode } from '../../nodes/DTO/DTONode.js';
 import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class DTONodeBuilder implements IBuilder<DTONode> {
@@ -10,9 +11,9 @@ export class DTONodeBuilder implements IBuilder<DTONode> {
   private variablesNode: FieldListNode;
   private intermediateASTTree: IntermediateASTTree;
 
-  constructor(intermediateASTTree: IntermediateASTTree) {
+  constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
-    this.dtoNode = new DTONode();
+    this.dtoNode = new DTONode(metadata);
   }
 
   public withIdentifier(dtoIdentifierNode: DTOIdentifierNode): DTONodeBuilder {

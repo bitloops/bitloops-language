@@ -1,20 +1,19 @@
 import { ArgumentListNode } from '../../../nodes/ArgumentList/ArgumentListNode.js';
-import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
-import { MethodCallExpressionNode } from '../../../nodes/Expression/MethodCallExpression.js';
+import { ErrorEvaluationNode } from '../../../nodes/Expression/Evaluation/ErrorEvaluation.js';
 import { NameNode } from '../../../nodes/NameNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class ErrorEvaluationNodeBuilder implements IBuilder<MethodCallExpressionNode> {
-  private methodCallExpressionNode: MethodCallExpressionNode;
+export class ErrorEvaluationNodeBuilder implements IBuilder<ErrorEvaluationNode> {
+  private errorEvaluationNode: ErrorEvaluationNode;
   private name: NameNode;
   private argumentListNode?: ArgumentListNode;
 
   constructor() {
-    this.methodCallExpressionNode = new MethodCallExpressionNode();
+    this.errorEvaluationNode = new ErrorEvaluationNode();
   }
 
-  public withName(expr: ExpressionNode): ErrorEvaluationNodeBuilder {
-    this.name = expr;
+  public withName(name: NameNode): ErrorEvaluationNodeBuilder {
+    this.name = name;
     return this;
   }
 
@@ -23,12 +22,14 @@ export class ErrorEvaluationNodeBuilder implements IBuilder<MethodCallExpression
     return this;
   }
 
-  public build(): MethodCallExpressionNode {
-    this.methodCallExpressionNode.addChild(this.name);
-    this.methodCallExpressionNode.addChild(this.argumentListNode);
+  public build(): ErrorEvaluationNode {
+    this.errorEvaluationNode.addChild(this.name);
+    if (this.argumentListNode) {
+      this.errorEvaluationNode.addChild(this.argumentListNode);
+    }
 
-    this.methodCallExpressionNode.buildObjectValue();
+    this.errorEvaluationNode.buildObjectValue();
 
-    return this.methodCallExpressionNode;
+    return this.errorEvaluationNode;
   }
 }

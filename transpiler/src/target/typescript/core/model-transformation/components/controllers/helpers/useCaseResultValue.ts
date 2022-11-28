@@ -25,12 +25,7 @@ import {
 } from '../../../../../../../helpers/typeGuards.js';
 import { deepClone } from '../../../../../../../utils/deepClone.js';
 import { ExpressionTypeIdentifiers } from '../../../../type-identifiers/expression.js';
-import {
-  TArgumentDependency,
-  TStatement,
-  TExpression,
-  TRegularCase,
-} from './../../../../../../../types.js';
+import { TArgument, TStatement, TExpression, TRegularCase } from './../../../../../../../types.js';
 
 const replaceUseCaseResultInExpression = (
   statement: TExpression,
@@ -40,7 +35,7 @@ const replaceUseCaseResultInExpression = (
 
   if (ExpressionTypeIdentifiers.isMethodCallExpression(statement)) {
     const newArgs = expression['evaluation'].regularEvaluation.argumentDependencies?.map(
-      (arg: TArgumentDependency) => {
+      (arg: TArgument) => {
         if (arg.value.includes(useCaseResultIdentifier)) {
           return {
             ...arg,

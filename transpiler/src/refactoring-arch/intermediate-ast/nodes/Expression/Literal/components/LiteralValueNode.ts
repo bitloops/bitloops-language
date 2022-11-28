@@ -1,10 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { IntermediateASTNode } from '../../../IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeMetadata } from '../../../IntermediateASTNode.js';
 
 const NAME = 'value';
 
 export class LiteralValueNode extends IntermediateASTNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TLiteralValue, { lines }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super(BitloopsTypesMapping.TLiteralValue, metadata, NAME);
   }
 }

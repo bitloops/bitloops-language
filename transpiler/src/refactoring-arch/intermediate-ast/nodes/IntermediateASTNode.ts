@@ -1,7 +1,13 @@
 import { TBitloopsTypesValues } from '../../../helpers/mappings.js';
 
+export type TNodeLineData = {
+  line: number;
+  column: number;
+};
 export type TNodeMetadata = {
-  lines: string;
+  start: TNodeLineData;
+  end: TNodeLineData;
+  fileId?: string;
 };
 
 export abstract class IntermediateASTNode {
@@ -13,11 +19,7 @@ export abstract class IntermediateASTNode {
   private value: any;
   protected classNodeName: string;
 
-  constructor(
-    nodeType: TBitloopsTypesValues,
-    metadata: TNodeMetadata = { lines: '10' },
-    classNodeName: string,
-  ) {
+  constructor(nodeType: TBitloopsTypesValues, metadata: TNodeMetadata, classNodeName: string) {
     this.nodeType = nodeType;
     this.metaData = metadata;
     this.children = [];

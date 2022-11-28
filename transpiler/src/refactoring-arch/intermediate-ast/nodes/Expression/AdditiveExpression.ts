@@ -5,7 +5,8 @@ import { ExpressionNode } from './ExpressionNode.js';
 // This would extend the ExpressionNode class instead
 export class AdditiveExpressionNode extends ExpressionNode {
   private static NAME = 'additiveExpression';
-  // constructor(lines?: string) {
+  //  constructor(metadata?: TNodeMetadata) {
+
   //   super(BitloopsTypesMapping.TAdditiveExpression, { lines: lines! }, NAME);
   // }
 

@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TArgumentDependency,
+  TArgument,
   TInstanceOf,
   TNotInstanceOf,
   TTargetDependenciesTypeScript,
@@ -43,7 +43,7 @@ const instancesLangMapping = (instance: InstanceType): string => {
 };
 
 const getInstanceResult = (
-  value: TArgumentDependency,
+  value: TArgument,
   instance: InstanceType,
 ): TTargetDependenciesTypeScript => {
   const argumentDependencyResult = modelToTargetLanguage({

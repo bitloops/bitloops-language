@@ -18,20 +18,24 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { EntityEvaluationNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/EntityEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityEvaluation } from '../../../../types.js';
+import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
+import { DomainEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
+import { EntityEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/EntityEvaluationBuilder.js';
 
 export const entityEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityEvaluationContext,
-): TEntityEvaluation => {
+): EntityEvaluationNode => {
   const identifier = ctx.entityIdentifier().getText();
-  const domainInput = thisVisitor.visit(ctx.domainEvaluationInput());
-  return {
-    entity: {
-      props: domainInput,
-      name: identifier,
-    },
-  };
+  const props = thisVisitor.visit(ctx.domainEvaluationInput());
+  const nameNode = new NameNodeBuilder().withName(identifier).build();
+  const domainEvaluation = new DomainEvaluationNodeBuilder()
+    .withName(nameNode)
+    .withProps(props)
+    .build();
+  const node = new EntityEvaluationNodeBuilder().withDomainEvaluation(domainEvaluation).build();
+  return node;
 };

@@ -1,10 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
 const NAME = 'argumentList';
 
 export class ArgumentListNode extends IntermediateASTNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TArgumentDependencies, { lines }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super(BitloopsTypesMapping.TArgumentDependencies, metadata, NAME);
   }
 }

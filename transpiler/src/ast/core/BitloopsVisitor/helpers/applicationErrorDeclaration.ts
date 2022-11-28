@@ -1,5 +1,5 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TApplicationError, TEvaluationFields } from '../../../../types.js';
+import { TApplicationError } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { evaluationFieldListVisitor } from './evaluationFieldList.js';
 import { formalParameterListVisitor } from './formalParameterList.js';
@@ -13,10 +13,8 @@ export const applicationErrorDeclarationVisitor = (
   };
 } => {
   const errorName: string = ctx.applicationErrorIdentifier().getText();
-  const fieldsList: TEvaluationFields = evaluationFieldListVisitor(
-    thisVisitor,
-    ctx.evaluationFieldList(),
-  );
+  // TEvaluationFields
+  const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;
   if (fieldsList.length != 2) {
     throw new TypeError('DomainErrorDeclaration must have two fields: ErrorId and message');
   }
