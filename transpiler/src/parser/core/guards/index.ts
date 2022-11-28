@@ -1,7 +1,7 @@
-import { BitloopsLanguageAST, BitloopsParserError } from '../index.js';
+import { BitloopsLanguageAST, BitloopsLanguageASTContext, BitloopsParserError } from '../types.js';
 
 const isBitloopsParserError = (
-  value: BitloopsLanguageAST | BitloopsParserError,
+  value: BitloopsLanguageAST | BitloopsLanguageASTContext | BitloopsParserError,
 ): value is BitloopsParserError => {
   if (value instanceof BitloopsParserError) {
     return true;

@@ -34,6 +34,7 @@ describe('Valid DTO with fields to Typescript', () => {
 
   VALID_DTO_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
+      // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const dtoNode = new DTONodeBuilder(tree)
         .withIdentifier(testCase.dtoIdentifierNode)
@@ -44,6 +45,7 @@ describe('Valid DTO with fields to Typescript', () => {
         [boundedContext]: { [module]: tree },
       };
 
+      // when
       const targetGenerator = new BitloopsTargetGenerator();
       const result = targetGenerator.generate({
         intermediateAST,
@@ -52,6 +54,7 @@ describe('Valid DTO with fields to Typescript', () => {
         setupData: null,
       });
 
+      //then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
       const expectedOutput = [
         {
@@ -76,6 +79,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
 
   VALID_TWO_DTOS_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
+      // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const dtoNode = new DTONodeBuilder(tree)
         .withIdentifier(testCase.dtoIdentifierNode)
@@ -90,6 +94,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
         [boundedContext]: { [module]: tree },
       };
 
+      // when
       const targetGenerator = new BitloopsTargetGenerator();
       const result = targetGenerator.generate({
         intermediateAST,
@@ -98,6 +103,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
         setupData: null,
       });
 
+      // then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
       const formattedSecondOutput = formatString(testCase.secondOutput as string, formatterConfig);
       const expectedOutput = [

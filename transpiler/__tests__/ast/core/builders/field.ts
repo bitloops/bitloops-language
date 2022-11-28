@@ -1,4 +1,4 @@
-import { IBuilder } from '../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
+import { IBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
 import {
   ArrayBitloopsPrimTypeObject,
   bitloopsPrimaryTypeKey,
@@ -12,7 +12,7 @@ import {
   TIdentifier,
   TOptional,
   TVariable,
-} from '../../../src/types.js';
+} from '../../../../src/types.js';
 
 export class FieldBuilder implements IBuilder<TVariable> {
   private type: TBitloopsPrimaryType;
