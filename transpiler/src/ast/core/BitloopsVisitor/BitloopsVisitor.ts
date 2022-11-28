@@ -762,7 +762,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return applyRulesRuleVisitor(this, ctx);
   }
 
-  visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  // visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  //   return isInstanceOfVisitor(this, ctx);
+  // }
+
+  visitIsInstanceOfExpression(ctx: BitloopsParser.IsInstanceOfExpressionContext): any {
     return isInstanceOfVisitor(this, ctx);
   }
 

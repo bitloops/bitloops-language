@@ -20,17 +20,25 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TArgument, TInstanceOf } from '../../../../types.js';
+import { IsInstanceOfEvaluationNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/IsIntanceOfEvaluationBuilder.js';
+import { ClassNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/ClassBuilder.js';
+import { ExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 // result is Error
 // {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}
 export const isInstanceOfVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.IsInstanceOfContext,
-): TInstanceOf => {
-  const regularVariableEvaluation: TArgument = thisVisitor.visit(ctx.regularIdentifier());
+  ctx: BitloopsParser.IsInstanceOfExpressionContext,
+): ExpressionNode => {
+  const expression = thisVisitor.visit(ctx.expression());
+
   const classToCompare = ctx.classTypes().getText();
-  return {
-    isInstanceOf: [regularVariableEvaluation, { class: classToCompare }],
-  };
+  const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
+  const isInstanceOfNode = new IsInstanceOfEvaluationNodeBuilder()
+    .withClass(classNode)
+    .withExpression(expression)
+    .build();
+
+  return new ExpressionBuilder().withExpression(isInstanceOfNode).build();
 };
