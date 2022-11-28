@@ -20,13 +20,11 @@
 import antlr4 from 'antlr4';
 import BitloopsSetupLexer from './grammar/BitloopsSetupLexer.js';
 import Parser from './grammar/BitloopsSetupParser.js';
-
-export class BitloopsLanguageSetupAST extends Parser.ProgramContext {}
-export class BitloopsSetupParserError extends Error {}
-
-export interface IBitloopsSetupParser {
-  parse: (blCode: string) => BitloopsLanguageSetupAST | BitloopsSetupParserError;
-}
+import {
+  BitloopsLanguageSetupAST,
+  BitloopsSetupParserError,
+  IBitloopsSetupParser,
+} from './types.js';
 
 export class BitloopsSetupParser implements IBitloopsSetupParser {
   parse(blCode: string): BitloopsLanguageSetupAST | BitloopsSetupParserError {
@@ -40,10 +38,5 @@ export class BitloopsSetupParser implements IBitloopsSetupParser {
     } catch (error: any) {
       return new BitloopsSetupParserError(JSON.stringify(error));
     }
-
-    // TODO move below to ast folder
-    // const bitloopsVisitor = new BitloopsSetupVisitor();
-    // const result = bitloopsVisitor.visit(tree);
-    // console.log('result:', JSON.stringify(bitloopsVisitor.result, null, 2));
   }
 }

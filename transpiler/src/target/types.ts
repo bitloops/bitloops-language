@@ -41,7 +41,9 @@ export interface IBitloopsTargetGenerator {
     className: string,
     targetLanguage: string,
   ): { path: string; filename: string };
-  generate: (params: TBitloopsTargetGeneratorParams) => TBitloopsOutputTargetContent;
+  generate: (
+    params: TBitloopsTargetGeneratorParams,
+  ) => TBitloopsOutputTargetContent | BitloopsTargetGeneratorError;
   generateSetup: (
     params: TBitloopsTargetGeneratorParams,
   ) => TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError;

@@ -19,6 +19,8 @@
  */
 import { ClassTypes } from '../../src/helpers/mappings.js';
 import { transpiler } from '../../src/refactoring-arch/index.js';
+import Transpiler from '../../src/refactoring-arch/Transpiler.js';
+import { TBitloopsOutputTargetContent } from '../../src/target/types.js';
 import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
 import { DTO_END_TO_END_TEST_CASES } from './mocks/dto.js';
 
@@ -31,16 +33,7 @@ describe('Valid DTO End To End', () => {
     formatterConfig: null,
     targetLanguage: 'TypeScript',
   };
-
-  //   const parser = new BitloopsParser();
-  //   const originalLanguageASTToIntermediateModelTransformer = new BitloopsIntermediateASTParser();
-  //   const targetLanguageASTToTargetCodeGenerator = new BitloopsTargetGenerator();
-
-  //   const transpiler = new Transpiler(
-  //     parser,
-  //     originalLanguageASTToIntermediateModelTransformer,
-  //     targetLanguageASTToTargetCodeGenerator,
-  //   );
+  let targetCode: TBitloopsOutputTargetContent;
 
   DTO_END_TO_END_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
@@ -56,6 +49,9 @@ describe('Valid DTO End To End', () => {
 
       // when
       const result = transpiler.transpile(input, options);
+      if (!Transpiler.isTranspileError(result)) {
+        targetCode = result.targetCode;
+      }
 
       // then
       const formattedOutput = formatString(testCase.output as string, options.formatterConfig);
@@ -69,7 +65,7 @@ describe('Valid DTO End To End', () => {
         },
       ];
 
-      expect(result).toEqual(expectedOutput);
+      expect(targetCode).toEqual(expectedOutput);
     });
   });
 });
