@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { IntermediateASTNode } from '../../../IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeMetadata } from '../../../IntermediateASTNode.js';
 
 const NAME = 'evaluationField';
 
@@ -7,7 +7,7 @@ const NAME = 'evaluationField';
 // export type TEvaluationField = ({ name: string } & TExpression)[];
 
 export class EvaluationFieldNode extends IntermediateASTNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TEvaluationField, { lines }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super(BitloopsTypesMapping.TEvaluationField, metadata, NAME);
   }
 }

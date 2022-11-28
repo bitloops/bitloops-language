@@ -1,5 +1,6 @@
 import { TIdentifier } from '../../../types.js';
 import { IdentifierNode } from '../nodes/IdentifierNode.js';
+import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
 import { IBuilder } from './IBuilder.js';
 
 export class IdentifierBuilder implements IBuilder<IdentifierNode> {
@@ -8,8 +9,8 @@ export class IdentifierBuilder implements IBuilder<IdentifierNode> {
   private identifierNode: IdentifierNode;
   private name: TIdentifier;
 
-  constructor() {
-    this.identifierNode = new IdentifierNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.identifierNode = new IdentifierNode(nodeMetadata);
   }
 
   public withName(name: TIdentifier): IdentifierBuilder {

@@ -166,9 +166,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
 
   private _intermediateASTTree: IntermediateASTTree;
+  private _currentFile: string;
 
-  constructor() {
+  constructor(currentFile: string) {
     super();
+    this._currentFile = currentFile;
     this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
@@ -176,27 +178,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return this._intermediateASTTree;
   }
 
-  visitProgram(ctx: BitloopsParser.ProgramContext): any {
-    this.visitChildren(ctx);
-    // const result = this.mergeSourceElements(children);
-    // return result;
+  public get currentFile(): string {
+    return this._currentFile;
   }
 
-  // private mergeSourceElements(children: any): TModule {
-  //   const sourceElementsResult = children.map((c) => c[0]);
-  //   return sourceElementsResult.reduce((acc, sourceElement) => {
-  //     const classType = Object.keys(sourceElement)[0];
-  //     if (acc[classType]) {
-  //       acc[classType] = {
-  //         ...acc[classType],
-  //         ...sourceElement[classType],
-  //       };
-  //     } else {
-  //       acc[classType] = sourceElement[classType];
-  //     }
-  //     return acc;
-  //   }, {});
-  // }
+  visitProgram(ctx: BitloopsParser.ProgramContext): any {
+    this.visitChildren(ctx);
+  }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {
     return equalityExpressionVisitor(this, ctx);

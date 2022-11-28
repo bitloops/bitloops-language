@@ -33,7 +33,20 @@ export const dtoDeclarationVisitor = (
 
   const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
 
-  const dtoNode = new DTONodeBuilder(thisVisitor.intermediateASTTree)
+  const ctxToParse = ctx as any;
+  const metadata = {
+    start: {
+      line: ctxToParse.start.line,
+      column: ctxToParse.start.column,
+    },
+    end: {
+      line: ctxToParse.stop.line,
+      column: ctxToParse.stop.column,
+    },
+    file: thisVisitor.currentFile,
+  };
+
+  const dtoNode = new DTONodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(dtoIdentifierNode)
     .withVariables(fieldListNode)
     .build();

@@ -8,11 +8,11 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
     const boundedContexts: TBoundedContexts = {};
     for (const [boundedContextName, boundedContext] of Object.entries(ast)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [_fileId, ASTData] of Object.entries(module)) {
-          const bitloopsVisitor = new BitloopsVisitor();
+        for (const [fileId, ASTData] of Object.entries(module)) {
+          const bitloopsVisitor = new BitloopsVisitor(fileId);
           bitloopsVisitor.visit(ASTData.initialAST);
           const { intermediateASTTree } = bitloopsVisitor;
-          //TODO intermediateASTTree.setMetadata(_fileId, lines)
+          //TODO intermediateASTTree.setFile(fileId)
 
           if (boundedContexts[boundedContextName] === undefined) {
             boundedContexts[boundedContextName] = {

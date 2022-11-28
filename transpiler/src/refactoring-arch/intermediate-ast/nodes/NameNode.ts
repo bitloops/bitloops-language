@@ -1,9 +1,9 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { IntermediateASTNode } from './IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
 
 const NAME = 'name';
 export class NameNode extends IntermediateASTNode {
-  constructor(lines?: string) {
-    super(BitloopsTypesMapping.TName, { lines }, NAME);
+  constructor(metadata?: TNodeMetadata) {
+    super(BitloopsTypesMapping.TName, metadata, NAME);
   }
 }

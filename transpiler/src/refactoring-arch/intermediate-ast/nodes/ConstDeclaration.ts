@@ -5,7 +5,7 @@ import { IntermediateASTNode } from './IntermediateASTNode.js';
 
 const NAME = 'ConstDeclaration';
 export class ConstDeclarationNode extends IntermediateASTNode {
-  constructor(lines?: string) {
+  constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TConstDeclaration, { lines: lines! }, NAME);
   }
 
