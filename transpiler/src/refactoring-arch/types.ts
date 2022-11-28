@@ -1,26 +1,47 @@
-// TODO define the types
-// export type TCodeInOriginalLanguage = any;
-// export type TOriginalLanguageAST = any;
-// export type TIntermediateModel = any;
-export type TTargetLanguageAST = any;
-export type TCodeInTargetLanguage = any;
+import { BitloopsLanguageASTContext, BitloopsParserError } from '../parser/core/types.js';
+import { BitloopsLanguageSetupAST, BitloopsSetupParserError } from '../parser/setup/types.js';
+import {
+  BitloopsTargetGeneratorError,
+  BitloopsTargetSetupGeneratorError,
+  TBitloopsOutputTargetContent,
+  TBitloopsTargetSetupContent,
+} from '../target/types.js';
+import { BitloopsIntermediateASTParserError } from '../ast/core/types.js';
+import { BitloopsIntermediateSetupASTParserError } from '../ast/setup/types.js';
+import { ISetupData, TBoundedContexts } from '../types.js';
 
-// export interface IOriginalLanguageASTToIntermediateModelTransformer {
-//   transform: (initialAST: TOriginalLanguageAST) => TIntermediateModel;
-// }
+export type TTranspileOptions = {
+  targetLanguage: string;
+  formatterConfig?: any;
+  sourceDirPath?: string;
+};
 
-// export interface IIntermediateModelToASTTargetLanguageTransformer {
-//   transform: (intermediateModel: TIntermediateModel) => TTargetLanguageAST;
-// }
+export type TBitloopsCodeToOriginalAST = {
+  originalAST: BitloopsLanguageASTContext;
+  originalSetupAST?: BitloopsLanguageSetupAST;
+};
 
-export interface ITargetLanguageASTToTargetCodeGenerator {
-  generate: (targetLanguageAST: TTargetLanguageAST) => TCodeInTargetLanguage;
-}
+export type TBitloopsCodeToOriginalASTError = BitloopsSetupParserError | BitloopsParserError;
 
-// export interface IBitloopsParser {
-//   parse: (bitloopsCode: TCodeInOriginalLanguage) => TOriginalLanguageAST;
-// }
+export type TOriginalASTToIntermediateModel = {
+  intermediateModel: TBoundedContexts;
+  intermediateSetupModel?: ISetupData;
+};
 
-// export interface IIntermediateModelBuilder {
-//   build(initialAST: TOriginalLanguageAST): TIntermediateModel;
-// }
+export type TOriginalASTToIntermediateModelError =
+  | BitloopsIntermediateASTParserError
+  | BitloopsIntermediateSetupASTParserError;
+
+export type TTargetLanguageASTToTargetCode = {
+  targetCode: TBitloopsOutputTargetContent;
+  targetSetupCode?: TBitloopsTargetSetupContent;
+};
+
+export type TTargetLanguageASTToTargetCodeError =
+  | BitloopsTargetGeneratorError
+  | BitloopsTargetSetupGeneratorError;
+
+export type TTranspileError =
+  | TBitloopsCodeToOriginalASTError
+  | TOriginalASTToIntermediateModelError
+  | TTargetLanguageASTToTargetCodeError;

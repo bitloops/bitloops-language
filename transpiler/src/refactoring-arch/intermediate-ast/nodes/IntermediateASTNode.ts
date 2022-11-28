@@ -10,6 +10,8 @@ export type TNodeMetadata = {
   fileId?: string;
 };
 
+class IntermediateASTNodeValidationError extends Error {}
+
 export abstract class IntermediateASTNode {
   protected nodeType: TBitloopsTypesValues;
   private children: IntermediateASTNode[];
@@ -119,5 +121,9 @@ export abstract class IntermediateASTNode {
     children.forEach((child) => {
       this.value[this.classNodeName] = { ...this.value[this.classNodeName], ...child.value };
     });
+  }
+
+  public validate(): void | IntermediateASTNodeValidationError {
+    return;
   }
 }
