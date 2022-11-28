@@ -1,26 +1,15 @@
 import antlr4 from 'antlr4';
-import { TBoundedContextName, TModuleName, TParserCoreInputData } from '../../types.js';
+import {
+  IBitloopsParser,
+  BitloopsLanguageAST,
+  BitloopsParserError,
+  BitloopsLanguageASTContext,
+  TParserCoreInputData,
+} from './types.js';
 import BitloopsLexer from './grammar/BitloopsLexer.js';
 import Parser from './grammar/BitloopsParser.js';
 import { isBitloopsParserError } from './guards/index.js';
 
-export class BitloopsLanguageAST extends Parser.ProgramContext {}
-
-export type BitloopsLanguageASTContext = {
-  [boundedContext: TBoundedContextName]: {
-    [moduleName: TModuleName]: {
-      [fileId: string]: {
-        initialAST: BitloopsLanguageAST;
-      };
-    };
-  };
-};
-
-export interface IBitloopsParser {
-  parse: (inputData: TParserCoreInputData) => BitloopsLanguageASTContext | BitloopsParserError;
-}
-
-export class BitloopsParserError extends Error {}
 export class BitloopsParser implements IBitloopsParser {
   /**
    * Initial AST.

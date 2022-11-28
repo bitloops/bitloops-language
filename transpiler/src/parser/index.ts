@@ -17,13 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsParser } from './core/index.js';
 import {
-  BitloopsParser,
   IBitloopsParser,
   BitloopsLanguageAST,
   BitloopsLanguageASTContext,
   BitloopsParserError,
-} from './core/index.js';
+} from './core/types.js';
 import {
   BitloopsSetupParser,
   IBitloopsSetupParser,

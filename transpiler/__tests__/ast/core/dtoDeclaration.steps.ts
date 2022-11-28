@@ -19,81 +19,136 @@
  */
 import {
   BitloopsIntermediateASTParser,
-  BitloopsIntermediateASTParserError,
   BitloopsLanguageASTContext,
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import {
-  TDTOIdentifier,
-  TVariables,
-  primitivesTypeKey,
-  arrayPrimaryTypeKey,
-} from '../../../src/types.js';
+import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import { DTODeclarationBuilder } from './dtoDeclaration.builder.js';
-import { FieldBuilder } from './field.builder.js';
-import { IdentifierBuilder } from './identifier.builder.js';
-
-const testExamplesDTO = [
-  {
-    //description:
-    inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
-    variables: [
-      new FieldBuilder()
-        .withArrayPrimaryType({
-          [arrayPrimaryTypeKey]: { [arrayPrimaryTypeKey]: { [primitivesTypeKey]: 'string' } },
-        })
-        .withName('name')
-        .withOptional(true)
-        .build(),
-    ],
-    identifier: new IdentifierBuilder().withDTOName('HelloWorldRequestDTO').build(),
-  },
-];
+import { DTODeclarationBuilder } from './builders/dtoDeclaration.js';
+import { errorCases, validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
+import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-test('DTO declaration is valid', () => {
+describe('DTO declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  testExamplesDTO.forEach((testDTO) => {
-    const initialModelOutput = parser.parse([
-      {
-        boundedContext: BOUNDED_CONTEXT,
-        module: MODULE,
-        fileId: 'testFile.bl',
-        fileContents: testDTO.inputBLString,
-      },
-    ]);
+  validDTOTestCases.forEach((testDTO) => {
+    test(`${testDTO.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testDTO.fileId,
+          fileContents: testDTO.inputBLString,
+        },
+      ]);
 
-    if (!(initialModelOutput instanceof BitloopsParserError)) {
-      const result = intermediateParser.parse(
-        initialModelOutput as unknown as BitloopsLanguageASTContext,
-      );
-      if (!(result instanceof BitloopsIntermediateASTParserError)) {
-        resultTree = result[BOUNDED_CONTEXT][MODULE];
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        const result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+        if (!(result instanceof BitloopsIntermediateASTParserError)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
       }
-    }
-    console.log({ resultTree });
+      const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+      const value = dtoNodes[0].getValue();
 
-    const expectedNodeValues = getExpectedDTOValues(testDTO.variables, testDTO.identifier);
-    const actualNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
-    const value = actualNodes[0].getValue();
-
-    expect(value).toMatchObject(expectedNodeValues);
+      expect(value).toMatchObject(expectedNodeValues);
+    });
   });
 });
-const getExpectedDTOValues = (variables: TVariables, identifier: TDTOIdentifier) => {
+
+describe('DTO declaration with multiple dtos is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validMultipleDTOSTestCases.forEach((testDTO) => {
+    test(`${testDTO.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testDTO.fileId,
+          fileContents: testDTO.inputBLString,
+        },
+      ]);
+
+      if (!(initialModelOutput instanceof BitloopsParserError)) {
+        const result = intermediateParser.parse(
+          initialModelOutput as unknown as BitloopsLanguageASTContext,
+        );
+        if (!(result instanceof BitloopsIntermediateASTParserError)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = getExpectedDTOOutputMultipleDTOS([
+        { variables: testDTO.variables[0], identifier: testDTO.identifier[0] },
+        { variables: testDTO.variables[1], identifier: testDTO.identifier[1] },
+      ]);
+      const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+      const values = dtoNodes.map((node) => node.getValue());
+
+      expect(values).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('DTO declaration is invalid', () => {
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+  errorCases.forEach((testDTO) => {
+    test(`${testDTO.description}`, () => {
+      const res = function (): void {
+        const initialModelOutput = parser.parse([
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testDTO.fileId,
+            fileContents: testDTO.inputBLString,
+          },
+        ]);
+
+        if (!(initialModelOutput instanceof BitloopsParserError)) {
+          intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+        }
+      };
+
+      expect(res).toThrow(TypeError);
+    });
+  });
+});
+
+const getExpectedDTOOutput = (variables: TVariables, identifier: TDTOIdentifier) => {
   const dtoValue = new DTODeclarationBuilder()
     .withIdentifier(identifier)
     .withVariables(variables)
     .build();
 
   return dtoValue;
+};
+
+type multipleDTOS = { variables: TVariable[]; identifier: TDTOIdentifier }[];
+
+const getExpectedDTOOutputMultipleDTOS = (dtos: multipleDTOS) => {
+  const resultDTOS = [];
+  for (const { identifier, variables } of dtos) {
+    const dtoValue = new DTODeclarationBuilder()
+      .withIdentifier(identifier)
+      .withVariables(variables)
+      .build();
+    resultDTOS.push(dtoValue);
+  }
+
+  return resultDTOS;
 };
