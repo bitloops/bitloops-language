@@ -1,37 +1,35 @@
-import { isBitloopsIntermediateASTParserError } from '../ast/core/guards/index.js';
-import {
-  BitloopsIntermediateASTParserError,
-  IBitloopsIntermediateASTParser,
-} from '../ast/core/types.js';
-import { isBitloopsIntermediateSetupASTParserError } from '../ast/setup/guards/index.js';
+import { isBitloopsIntermediateASTError } from './ast/core/guards/index.js';
+import { IntermediateASTParserError, IBitloopsIntermediateASTParser } from './ast/core/types.js';
+import { isBitloopsIntermediateSetupASTParserError } from './ast/setup/guards/index.js';
 import {
   BitloopsIntermediateSetupASTParserError,
   IBitloopsIntermediateSetupASTParser,
-} from '../ast/setup/types.js';
-import { isBitloopsParserError } from '../parser/core/guards/index.js';
-import { BitloopsParserError, TParserCoreInputData } from '../parser/core/types.js';
-import { IBitloopsParser } from '../parser/index.js';
-import { isBitloopsSetupParserError } from '../parser/setup/guards/index.js';
-import { BitloopsSetupParserError, IBitloopsSetupParser } from '../parser/setup/types.js';
+} from './ast/setup/types.js';
+import { isBitloopsParserError } from './parser/core/guards/index.js';
+import { BitloopsParserError, TParserCoreInputData } from './parser/core/types.js';
+import { IBitloopsParser } from './parser/index.js';
+import { isBitloopsSetupParserError } from './parser/setup/guards/index.js';
+import { BitloopsSetupParserError, IBitloopsSetupParser } from './parser/setup/types.js';
+import { IIntermediateModelToASTTargetLanguageTransformer } from './target-ast/types.js';
 import {
   BitloopsTargetGeneratorError,
   BitloopsTargetSetupGeneratorError,
   IBitloopsTargetGenerator,
-} from '../target/types.js';
+} from './target/types.js';
 import {
   isBitloopsTargetGeneratorError,
   isBitloopsTargetSetupGeneratorError,
-} from '../target/typescript/guards/index.js';
+} from './target/typescript/guards/index.js';
 import {
   TBitloopsCodeToOriginalAST,
   TBitloopsCodeToOriginalASTError,
-  TOriginalASTToIntermediateModel,
-  TOriginalASTToIntermediateModelError,
+  TIntermediateModel,
+  TIntermediateModelError,
   TTargetLanguageASTToTargetCode,
   TTargetLanguageASTToTargetCodeError,
   TTranspileError,
   TTranspileOptions,
-} from './types.js';
+} from './transpilerTypes.js';
 
 export default class Transpiler {
   constructor(
@@ -39,19 +37,9 @@ export default class Transpiler {
     private setupParser: IBitloopsSetupParser,
     private originalLanguageASTToIntermediateModelTransformer: IBitloopsIntermediateASTParser,
     private originalLanguageASTToIntermediateModelSetupTransformer: IBitloopsIntermediateSetupASTParser,
-    // private intermediateModelToASTTargetLanguageTransformer: IIntermediateModelToASTTargetLanguageTransformer,
+    private intermediateModelToASTTargetLanguageTransformer: IIntermediateModelToASTTargetLanguageTransformer,
     private targetLanguageASTToTargetCodeGenerator: IBitloopsTargetGenerator,
-  ) {
-    this.parser = parser;
-    this.setupParser = setupParser;
-    this.originalLanguageASTToIntermediateModelTransformer =
-      originalLanguageASTToIntermediateModelTransformer;
-    this.originalLanguageASTToIntermediateModelSetupTransformer =
-      originalLanguageASTToIntermediateModelSetupTransformer;
-    // this.intermediateModelToASTTargetLanguageTransformer =
-    //   intermediateModelToASTTargetLanguageTransformer;
-    this.targetLanguageASTToTargetCodeGenerator = targetLanguageASTToTargetCodeGenerator;
-  }
+  ) {}
 
   public transpile(
     transpileInputData: TParserCoreInputData,
@@ -102,14 +90,14 @@ export default class Transpiler {
 
   private originalASTToIntermediateModel(
     originalLanguageAST: TBitloopsCodeToOriginalAST,
-  ): TOriginalASTToIntermediateModel | TOriginalASTToIntermediateModelError[] {
-    const intermediateModelOutput: TOriginalASTToIntermediateModel = { intermediateModel: null };
+  ): TIntermediateModel | TIntermediateModelError[] {
+    const intermediateModelOutput: TIntermediateModel = { intermediateModel: null };
     const errors = [];
 
     const intermediateModelCore = this.originalLanguageASTToIntermediateModelTransformer.parse(
       originalLanguageAST.originalAST,
     );
-    if (isBitloopsIntermediateASTParserError(intermediateModelCore)) {
+    if (isBitloopsIntermediateASTError(intermediateModelCore)) {
       errors.push(intermediateModelCore);
     } else {
       intermediateModelOutput.intermediateModel = intermediateModelCore;
@@ -130,17 +118,17 @@ export default class Transpiler {
   }
 
   private intermediateModelToTargetLanguageAST(
-    intermediateModel: TOriginalASTToIntermediateModel,
+    intermediateModel: TIntermediateModel,
     _options: TTranspileOptions,
-  ): TOriginalASTToIntermediateModel {
+  ): TIntermediateModel {
     // TODO uncomment this and create class for model to model transformations for specific lnguages
-    // const targetLanguageAST =
-    //   this.intermediateModelToASTTargetLanguageTransformer.transform(intermediateModel);
-    return intermediateModel;
+    const targetLanguageAST =
+      this.intermediateModelToASTTargetLanguageTransformer.transform(intermediateModel);
+    return targetLanguageAST;
   }
 
   private targetLanguageASTToTargetCode(
-    targetAST: TOriginalASTToIntermediateModel,
+    targetAST: TIntermediateModel,
     options: TTranspileOptions,
   ): TTargetLanguageASTToTargetCode | TTargetLanguageASTToTargetCodeError[] {
     const targetCodeOutput: TTargetLanguageASTToTargetCode = { targetCode: null };
@@ -188,7 +176,8 @@ export default class Transpiler {
     value:
       | TBitloopsCodeToOriginalAST
       | TTargetLanguageASTToTargetCode
-      | TBitloopsCodeToOriginalASTError[],
+      | TBitloopsCodeToOriginalASTError[]
+      | TTranspileError[],
   ): value is TBitloopsCodeToOriginalASTError[] {
     if (Array.isArray(value)) {
       for (const err of value) {
@@ -202,15 +191,12 @@ export default class Transpiler {
   }
 
   static isOriginalASTToIntermediateModelError(
-    value:
-      | TOriginalASTToIntermediateModel
-      | TTargetLanguageASTToTargetCode
-      | TOriginalASTToIntermediateModelError[],
-  ): value is TOriginalASTToIntermediateModelError[] {
+    value: TIntermediateModel | TTargetLanguageASTToTargetCode | TIntermediateModelError[],
+  ): value is TIntermediateModelError[] {
     if (Array.isArray(value)) {
       for (const err of value) {
         if (
-          !(err instanceof BitloopsIntermediateASTParserError) &&
+          !(err instanceof IntermediateASTParserError) &&
           !(err instanceof BitloopsIntermediateSetupASTParserError)
         ) {
           return false;

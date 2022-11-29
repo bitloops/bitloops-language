@@ -1,14 +1,18 @@
-import { BitloopsLanguageASTContext, BitloopsParserError } from '../parser/core/types.js';
-import { BitloopsLanguageSetupAST, BitloopsSetupParserError } from '../parser/setup/types.js';
+import { BitloopsIntermediateASTError } from './ast/core/types.js';
 import {
-  BitloopsTargetGeneratorError,
-  BitloopsTargetSetupGeneratorError,
+  BitloopsLanguageASTContext,
+  BitloopsLanguageSetupAST,
+  BitloopsSetupParserError,
+  BitloopsParserError,
+  BitloopsIntermediateSetupASTParserError,
+} from './index.js';
+import {
   TBitloopsOutputTargetContent,
   TBitloopsTargetSetupContent,
-} from '../target/types.js';
-import { BitloopsIntermediateASTParserError } from '../ast/core/types.js';
-import { BitloopsIntermediateSetupASTParserError } from '../ast/setup/types.js';
-import { ISetupData, TBoundedContexts } from '../types.js';
+  BitloopsTargetGeneratorError,
+  BitloopsTargetSetupGeneratorError,
+} from './target/types.js';
+import { TBoundedContexts, ISetupData } from './types.js';
 
 export type TTranspileOptions = {
   targetLanguage: string;
@@ -23,13 +27,13 @@ export type TBitloopsCodeToOriginalAST = {
 
 export type TBitloopsCodeToOriginalASTError = BitloopsSetupParserError | BitloopsParserError;
 
-export type TOriginalASTToIntermediateModel = {
+export type TIntermediateModel = {
   intermediateModel: TBoundedContexts;
   intermediateSetupModel?: ISetupData;
 };
 
-export type TOriginalASTToIntermediateModelError =
-  | BitloopsIntermediateASTParserError
+export type TIntermediateModelError =
+  | BitloopsIntermediateASTError
   | BitloopsIntermediateSetupASTParserError;
 
 export type TTargetLanguageASTToTargetCode = {
@@ -43,5 +47,5 @@ export type TTargetLanguageASTToTargetCodeError =
 
 export type TTranspileError =
   | TBitloopsCodeToOriginalASTError
-  | TOriginalASTToIntermediateModelError
+  | TIntermediateModelError
   | TTargetLanguageASTToTargetCodeError;

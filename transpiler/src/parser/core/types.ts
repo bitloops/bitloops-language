@@ -27,4 +27,6 @@ export interface IBitloopsParser {
   parse: (inputData: TParserCoreInputData) => BitloopsLanguageASTContext | BitloopsParserError;
 }
 
+export class IntermediateASTValidationError extends Error {}
+
 export class BitloopsParserError extends Error {}

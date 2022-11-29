@@ -1,10 +1,39 @@
 import { BitloopsLanguageASTContext } from '../../index.js';
 import { TBoundedContexts } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
-import { BitloopsIntermediateASTParserError, IBitloopsIntermediateASTParser } from './types.js';
+import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
+import { IntermediateASTValidator } from './IntermediateASTValidator.js';
+import {
+  IntermediateASTParserError,
+  IntermediateASTValidationError,
+  IBitloopsIntermediateASTParser,
+  BitloopsIntermediateASTError,
+  IIntermediateASTValidator,
+} from './types.js';
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
-  parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTParserError {
+  private validator: IIntermediateASTValidator;
+
+  constructor() {
+    this.validator = new IntermediateASTValidator();
+  }
+
+  parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTError {
+    const intermediateASTTree = this.originalASTToIntermediateASTTree(ast);
+    if (isIntermediateASTParserError(intermediateASTTree)) {
+      return intermediateASTTree;
+    }
+    const validationResult = this.validateIntermediateASTTree(intermediateASTTree);
+    if (isIntermediateASTValidationErrors(validationResult)) {
+      return validationResult;
+    }
+
+    return intermediateASTTree;
+  }
+
+  private originalASTToIntermediateASTTree(
+    ast: BitloopsLanguageASTContext,
+  ): TBoundedContexts | IntermediateASTParserError {
     const boundedContexts: TBoundedContexts = {};
     for (const [boundedContextName, boundedContext] of Object.entries(ast)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
@@ -12,7 +41,6 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
           const bitloopsVisitor = new BitloopsVisitor(fileId);
           bitloopsVisitor.visit(ASTData.initialAST);
           const { intermediateASTTree } = bitloopsVisitor;
-          //TODO intermediateASTTree.setFile(fileId)
 
           if (boundedContexts[boundedContextName] === undefined) {
             boundedContexts[boundedContextName] = {
@@ -30,5 +58,11 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
       }
     }
     return boundedContexts;
+  }
+
+  private validateIntermediateASTTree(
+    intermediateASTTree: TBoundedContexts,
+  ): void | IntermediateASTValidationError[] {
+    return this.validator.validate(intermediateASTTree);
   }
 }

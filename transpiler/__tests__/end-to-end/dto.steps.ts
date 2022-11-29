@@ -18,11 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { ClassTypes } from '../../src/helpers/mappings.js';
-import { transpiler } from '../../src/refactoring-arch/index.js';
-import Transpiler from '../../src/refactoring-arch/Transpiler.js';
+import Transpiler from '../../src/Transpiler.js';
 import { TBitloopsOutputTargetContent } from '../../src/target/types.js';
 import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
 import { DTO_END_TO_END_TEST_CASES } from './mocks/dto.js';
+import { transpiler } from '../../src/index.js';
 
 describe('Valid DTO End To End', () => {
   const boundedContext = 'Hello world';
