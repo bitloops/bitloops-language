@@ -45,20 +45,17 @@ enum LOGICAL_EXPRESSION_MODEL_IDs {
 export const notExpressionToTargetLanguage = (
   value: TNotExpression,
 ): TTargetDependenciesTypeScript => {
-  const langMapping = (value: TNotExpression): TTargetDependenciesTypeScript => {
-    const { notExpression } = value;
+  const { notExpression } = value;
 
-    const expression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
-      value: notExpression,
-    });
+  const expression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: notExpression,
+  });
 
-    return {
-      output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${expression.output}`,
-      dependencies: [...expression.dependencies],
-    };
+  return {
+    output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${expression.output}`,
+    dependencies: [...expression.dependencies],
   };
-  return langMapping(value);
 };
 
 export const orExpressionToTargetLanguage = (

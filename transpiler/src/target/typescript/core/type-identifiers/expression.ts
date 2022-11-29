@@ -23,6 +23,7 @@ import {
   TExpression,
   TExpressionValues,
   TEvaluation,
+  TIdentifierExpr,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -33,6 +34,15 @@ export class ExpressionTypeIdentifiers {
     }
     return false;
   }
+
+  static isIdentifierExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TIdentifierExpr => {
+    if ('identifier' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
 
   static isGetClassExpression(expressionStatement: TExpression): boolean {
     const { expression } = expressionStatement;

@@ -17,62 +17,103 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+// import { defineFeature, loadFeature } from 'jest-cucumber';
+import { IntermediateASTTree } from '../../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/refactoring-arch/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { VALID_EXPRESSION_TEST_CASES } from './mocks/expression/expression.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/expression.feature');
+// const feature = loadFeature('__tests__/target/typescript/core/expression.feature');
 
-defineFeature(feature, (test) => {
-  let expressionType;
-  let result;
-  let value;
+describe('Valid expression test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Expression with all possible expression types', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      expressionType = type;
-    });
+  VALID_EXPRESSION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const expressionNode = testCase.expression;
+      tree.insertChild(expressionNode);
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
+      };
 
-    given(/^I have an expression (.*)$/, (expression) => {
-      value = expression;
-    });
-
-    when('I generate the code', () => {
-      const expressionValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: expressionType,
-        value: expressionValue,
+      // when
+      const targetGenerator = new BitloopsTargetGenerator();
+      const result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
-    });
-  });
-
-  test('Unsupported expression type', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      expressionType = type;
-    });
-
-    and(/^language is "(.*)"$/, (_lang) => {});
-
-    given(/^I have an invalid (.*) with unsupported (.*)$/, (expression) => {
-      value = expression;
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    when('I generate the code', () => {});
-
-    then(/^I should get an error saying that (.*) is unsupported$/, (expression) => {
-      const expressionValue = JSON.parse(expression);
-      expect(() =>
-        modelToTargetLanguage({
-          type: expressionType,
-          value: expressionValue,
-        }),
-      ).toThrowError(`Unsupported expression: ${expressionValue}`);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });
+
+// defineFeature(feature, (test) => {
+//   let expressionType;
+//   let result;
+//   let value;
+
+//   test('Expression with all possible expression types', ({ given, and, when, then }) => {
+//     given(/^type is "(.*)"$/, (type) => {
+//       expressionType = type;
+//     });
+
+//     and(/^language is "(.*)"$/, (_lang) => {});
+
+//     given(/^I have an expression (.*)$/, (expression) => {
+//       value = expression;
+//     });
+
+//     when('I generate the code', () => {
+//       const expressionValue = JSON.parse(value);
+//       result = modelToTargetLanguage({
+//         type: expressionType,
+//         value: expressionValue,
+//       });
+//     });
+
+//     then(/^I should see the (.*) code$/, (output) => {
+//       expect(result.output).toEqual(output);
+//     });
+//   });
+
+//   test('Unsupported expression type', ({ given, and, when, then }) => {
+//     given(/^type is "(.*)"$/, (type) => {
+//       expressionType = type;
+//     });
+
+//     and(/^language is "(.*)"$/, (_lang) => {});
+
+//     given(/^I have an invalid (.*) with unsupported (.*)$/, (expression) => {
+//       value = expression;
+//     });
+
+//     // eslint-disable-next-line @typescript-eslint/no-empty-function
+//     when('I generate the code', () => {});
+
+//     then(/^I should get an error saying that (.*) is unsupported$/, (expression) => {
+//       const expressionValue = JSON.parse(expression);
+//       expect(() =>
+//         modelToTargetLanguage({
+//           type: expressionType,
+//           value: expressionValue,
+//         }),
+//       ).toThrowError(`Unsupported expression: ${expressionValue}`);
+//     });
+//   });
+// });

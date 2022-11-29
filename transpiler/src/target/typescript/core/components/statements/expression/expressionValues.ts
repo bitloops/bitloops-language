@@ -48,6 +48,13 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isIdentifierExpression(expressionValue)) {
+    return {
+      output: expressionValue.identifier,
+      dependencies: [],
+    };
+  }
+
   if (ExpressionTypeIdentifiers.isArrayLiteralExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TArrayLiteralExpression,
