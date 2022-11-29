@@ -1,4 +1,3 @@
-import { TOriginalASTToIntermediateModel } from '../../refactoring-arch/types.js';
 import { TBoundedContextName, TModuleName } from '../../types.js';
 import Parser from './grammar/BitloopsParser.js';
 
@@ -26,7 +25,6 @@ export type TParserCoreInputData = {
 
 export interface IBitloopsParser {
   parse: (inputData: TParserCoreInputData) => BitloopsLanguageASTContext | BitloopsParserError;
-  validate: (model: TOriginalASTToIntermediateModel) => void | IntermediateASTValidationError;
 }
 
 export class IntermediateASTValidationError extends Error {}

@@ -1,24 +1,24 @@
-import { isBitloopsIntermediateASTError } from '../ast/core/guards/index.js';
-import { IntermediateASTParserError, IBitloopsIntermediateASTParser } from '../ast/core/types.js';
-import { isBitloopsIntermediateSetupASTParserError } from '../ast/setup/guards/index.js';
+import { isBitloopsIntermediateASTError } from './ast/core/guards/index.js';
+import { IntermediateASTParserError, IBitloopsIntermediateASTParser } from './ast/core/types.js';
+import { isBitloopsIntermediateSetupASTParserError } from './ast/setup/guards/index.js';
 import {
   BitloopsIntermediateSetupASTParserError,
   IBitloopsIntermediateSetupASTParser,
-} from '../ast/setup/types.js';
-import { isBitloopsParserError } from '../parser/core/guards/index.js';
-import { BitloopsParserError, TParserCoreInputData } from '../parser/core/types.js';
-import { IBitloopsParser } from '../parser/index.js';
-import { isBitloopsSetupParserError } from '../parser/setup/guards/index.js';
-import { BitloopsSetupParserError, IBitloopsSetupParser } from '../parser/setup/types.js';
+} from './ast/setup/types.js';
+import { isBitloopsParserError } from './parser/core/guards/index.js';
+import { BitloopsParserError, TParserCoreInputData } from './parser/core/types.js';
+import { IBitloopsParser } from './parser/index.js';
+import { isBitloopsSetupParserError } from './parser/setup/guards/index.js';
+import { BitloopsSetupParserError, IBitloopsSetupParser } from './parser/setup/types.js';
 import {
   BitloopsTargetGeneratorError,
   BitloopsTargetSetupGeneratorError,
   IBitloopsTargetGenerator,
-} from '../target/types.js';
+} from './target/types.js';
 import {
   isBitloopsTargetGeneratorError,
   isBitloopsTargetSetupGeneratorError,
-} from '../target/typescript/guards/index.js';
+} from './target/typescript/guards/index.js';
 import {
   TBitloopsCodeToOriginalAST,
   TBitloopsCodeToOriginalASTError,
@@ -28,7 +28,7 @@ import {
   TTargetLanguageASTToTargetCodeError,
   TTranspileError,
   TTranspileOptions,
-} from './types.js';
+} from './transpilerTypes.js';
 
 export default class Transpiler {
   constructor(

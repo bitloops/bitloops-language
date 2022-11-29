@@ -28,7 +28,7 @@ import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { DTODeclarationBuilder } from './builders/dtoDeclaration.js';
 import { errorCases, validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
-import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -54,7 +54,7 @@ describe('DTO declaration is valid', () => {
         const result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
-        if (!(result instanceof BitloopsIntermediateASTParserError)) {
+        if (!isBitloopsIntermediateASTError(result)) {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }

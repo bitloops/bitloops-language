@@ -2,17 +2,20 @@ import { BitloopsLanguageASTContext } from '../../index.js';
 import { TBoundedContexts } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
+import { IntermediateASTValidator } from './IntermediateASTValidator.js';
 import {
   IntermediateASTParserError,
   IntermediateASTValidationError,
   IBitloopsIntermediateASTParser,
-  IIntermediateASTValidator,
   BitloopsIntermediateASTError,
+  IIntermediateASTValidator,
 } from './types.js';
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
-  constructor(private validator: IIntermediateASTValidator) {
-    this.validator = validator;
+  private validator: IIntermediateASTValidator;
+
+  constructor() {
+    this.validator = new IntermediateASTValidator();
   }
 
   parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTError {

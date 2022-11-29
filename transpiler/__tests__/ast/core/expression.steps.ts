@@ -28,7 +28,7 @@ import {
 } from '../../../src/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';
+import { IntermediateASTParserError } from '../../../src/ast/core/types.js';
 
 const feature = loadFeature('__tests__/ast/core/expression.feature');
 
@@ -312,7 +312,7 @@ defineFeature(feature, (test) => {
       const intermediateParser = new BitloopsIntermediateASTParser();
       result = intermediateParser.parse(initialModelOutput as any);
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
@@ -351,7 +351,7 @@ defineFeature(feature, (test) => {
       const intermediateParser = new BitloopsIntermediateASTParser();
       result = intermediateParser.parse(initialModelOutput as any);
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
@@ -389,7 +389,7 @@ defineFeature(feature, (test) => {
       const intermediateParser = new BitloopsIntermediateASTParser();
       result = intermediateParser.parse(initialModelOutput as any);
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
@@ -429,7 +429,7 @@ defineFeature(feature, (test) => {
         initialModelOutput as unknown as BitloopsLanguageASTContext,
       );
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
@@ -469,7 +469,7 @@ defineFeature(feature, (test) => {
         initialModelOutput as unknown as BitloopsLanguageASTContext,
       );
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
@@ -508,7 +508,7 @@ defineFeature(feature, (test) => {
         initialModelOutput as unknown as BitloopsLanguageASTContext,
       );
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
@@ -547,7 +547,7 @@ defineFeature(feature, (test) => {
         initialModelOutput as unknown as BitloopsLanguageASTContext,
       );
 
-      if (result instanceof BitloopsIntermediateASTParserError) {
+      if (result instanceof IntermediateASTParserError) {
         throw result;
       }
       resultTree = result[boundedContext][module];
