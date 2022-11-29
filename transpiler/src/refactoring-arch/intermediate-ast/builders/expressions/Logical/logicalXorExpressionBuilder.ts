@@ -1,9 +1,9 @@
-import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
-import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js';
-import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
-import { RightExpressionNode } from '../../nodes/Expression/rightExpression.js';
-import { IBuilder } from '../../builders/IBuilder.js';
-import { LogicalXorExpressionNode } from '../../nodes/Expression/logicalXorExpressionNode.js';
+import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
+import { LeftExpressionNode } from '../../../nodes/Expression/leftExpressionNode.js';
+import { OperatorNode } from '../../../nodes/Expression/OperatorNode.js';
+import { RightExpressionNode } from '../../../nodes/Expression/rightExpression.js';
+import { IBuilder } from '../../../builders/IBuilder.js';
+import { LogicalXorExpressionNode } from '../../../nodes/Expression/Logical/logicalXorExpressionNode.js';
 
 export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressionNode> {
   public readonly NAME = 'orExpression';

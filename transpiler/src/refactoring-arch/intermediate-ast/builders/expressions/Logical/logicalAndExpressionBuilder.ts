@@ -1,16 +1,16 @@
-import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
-import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js';
-import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
-import { RightExpressionNode } from '../../nodes/Expression/rightExpression.js';
-import { IBuilder } from '../../builders/IBuilder.js';
-import { LogicalAndExpressionNode } from '../../nodes/Expression/LogicalAndExpression.js';
+import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
+import { LeftExpressionNode } from '../../../nodes/Expression/leftExpressionNode.js';
+import { OperatorNode } from '../../../nodes/Expression/OperatorNode.js';
+import { RightExpressionNode } from '../../../nodes/Expression/rightExpression.js';
+import { IBuilder } from '../../IBuilder.js';
+import { LogicalAndExpressionNode } from '../../../nodes/Expression/Logical/LogicalAndExpression.js';
 
 export class LogicalAndExpressionBuilder implements IBuilder<LogicalAndExpressionNode> {
   public readonly NAME = 'andExpression';
 
   private logicalAndExpressionNode: LogicalAndExpressionNode;
-  private LeftexpressionNode: LeftExpressionNode;
-  private RightexpressionNode: RightExpressionNode;
+  private leftExpressionNode: LeftExpressionNode;
+  private rightExpressionNode: RightExpressionNode;
   private operator: OperatorNode;
 
   constructor() {
@@ -18,11 +18,11 @@ export class LogicalAndExpressionBuilder implements IBuilder<LogicalAndExpressio
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): LogicalAndExpressionBuilder {
-    this.LeftexpressionNode = expressionNode;
+    this.leftExpressionNode = expressionNode;
     return this;
   }
   public withRightExpression(expressionNode: ExpressionNode): LogicalAndExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.rightExpressionNode = expressionNode;
     return this;
   }
   public withOperator(operatorNode: OperatorNode): LogicalAndExpressionBuilder {
@@ -31,9 +31,9 @@ export class LogicalAndExpressionBuilder implements IBuilder<LogicalAndExpressio
   }
 
   public build(): LogicalAndExpressionNode {
-    this.logicalAndExpressionNode.addChild(this.LeftexpressionNode);
+    this.logicalAndExpressionNode.addChild(this.leftExpressionNode);
     this.logicalAndExpressionNode.addChild(this.operator);
-    this.logicalAndExpressionNode.addChild(this.RightexpressionNode);
+    this.logicalAndExpressionNode.addChild(this.rightExpressionNode);
     this.logicalAndExpressionNode.buildObjectValue();
 
     return this.logicalAndExpressionNode;

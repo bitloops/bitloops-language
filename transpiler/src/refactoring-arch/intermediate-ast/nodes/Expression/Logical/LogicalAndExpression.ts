@@ -1,11 +1,13 @@
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TNodeMetadata } from '../IntermediateASTNode.js';
-import { ExpressionNode } from './ExpressionNode.js';
-export class LogicalAndExpressionNode extends ExpressionNode {
-  private static NAME = 'andExpression';
+import { LogicalExpressionNode } from './LogicalExpressionNode.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { ExpressionNode } from '../ExpressionNode.js';
+
+const NAME = 'andExpression';
+export class LogicalAndExpressionNode extends LogicalExpressionNode {
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
-    this.classNodeName = LogicalAndExpressionNode.NAME;
+    this.classNodeName = NAME;
     this.nodeType = BitloopsTypesMapping.TAndExpression;
   }
 

@@ -33,9 +33,9 @@ import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/no
 import { ParenthesizedExpressionNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { RelationalExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
 import { EqualityExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
-import { LogicalAndExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalAndExpressionBuilder.js';
-import { LogicalOrExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalOrExpressionBuilder.js';
-import { LogicalXorExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/logicalXorExpressionBuilder.js';
+import { LogicalAndExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
+import { LogicalOrExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
+import { LogicalXorExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,

@@ -1,6 +1,6 @@
-import { NotExpressionNode } from '../../nodes/Expression/NotExpression.js';
-import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
-import { IBuilder } from '../IBuilder.js';
+import { NotExpressionNode } from '../../../nodes/Expression/NotExpression.js';
+import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
+import { IBuilder } from '../../IBuilder.js';
 
 export class NotExpressionNodeBuilder implements IBuilder<NotExpressionNode> {
   // public readonly NAME = 'MethodCallExpression';
