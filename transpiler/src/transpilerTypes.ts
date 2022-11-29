@@ -27,12 +27,12 @@ export type TBitloopsCodeToOriginalAST = {
 
 export type TBitloopsCodeToOriginalASTError = BitloopsSetupParserError | BitloopsParserError;
 
-export type TOriginalASTToIntermediateModel = {
+export type TIntermediateModel = {
   intermediateModel: TBoundedContexts;
   intermediateSetupModel?: ISetupData;
 };
 
-export type TOriginalASTToIntermediateModelError =
+export type TIntermediateModelError =
   | BitloopsIntermediateASTError
   | BitloopsIntermediateSetupASTParserError;
 
@@ -47,5 +47,5 @@ export type TTargetLanguageASTToTargetCodeError =
 
 export type TTranspileError =
   | TBitloopsCodeToOriginalASTError
-  | TOriginalASTToIntermediateModelError
+  | TIntermediateModelError
   | TTargetLanguageASTToTargetCodeError;
