@@ -18,12 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { DTOIdentifierNode } from './../../../../refactoring-arch/intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
-import { DTOEvaluationNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/DTOEvaluation.js';
+import { DTOIdentifierNode } from '../../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
+import { DTOEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/DTOEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
-import { DTOEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
+import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
+import { DTOEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
 
 export const dtoEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,

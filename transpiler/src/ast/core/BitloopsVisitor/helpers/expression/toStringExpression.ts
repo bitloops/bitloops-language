@@ -18,11 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { ToStringBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/ToStringBuilder.js';
+import { ToStringBuilder } from '../../../intermediate-ast/builders/expressions/ToStringBuilder.js';
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { ExpressionBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
-import { ExpressionNode } from '../../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const toStringExpressionVisitor = (
   thisVisitor: BitloopsVisitor,

@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { DomainEvaluationPropsNodeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
+import { DomainEvaluationPropsNodeBuilder } from '../../../../intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
 
 import BitloopsVisitor from '../../../BitloopsVisitor.js';
 import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
-import { DomainEvaluationPropsNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluationProps.js';
+import { DomainEvaluationPropsNode } from '../../../../intermediate-ast/nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluationProps.js';
 
 export const domainEvaluationInputRegularVisitor = (
   thisVisitor: BitloopsVisitor,

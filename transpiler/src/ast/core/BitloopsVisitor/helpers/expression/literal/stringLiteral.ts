@@ -18,8 +18,8 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { StringLiteralBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
-import { StringLiteralNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+import { StringLiteralBuilder } from '../../../../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { StringLiteralNode } from '../../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 
 export const stringEvaluation = (value: string): StringLiteralNode => {
   // return { type: 'string', value: value.substring(1, value.length - 1) };

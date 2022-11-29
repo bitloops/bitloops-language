@@ -20,9 +20,9 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
-import { StructEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/StructEvaluationBuilder.js';
-import { StructEvaluationNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/StructEvaluation.js';
+import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
+import { StructEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/StructEvaluationBuilder.js';
+import { StructEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/StructEvaluation.js';
 
 export const structEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,

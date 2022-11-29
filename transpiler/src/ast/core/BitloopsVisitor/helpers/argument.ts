@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { ArgumentNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
+import { ArgumentNodeBuilder } from '../../intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
 
 export const argumentVisitor = (
   thisVisitor: BitloopsVisitor,

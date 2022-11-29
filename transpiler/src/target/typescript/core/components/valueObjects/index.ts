@@ -30,7 +30,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
-import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const VO_DEPENDENCIES: TDependenciesTypeScript = [
   {

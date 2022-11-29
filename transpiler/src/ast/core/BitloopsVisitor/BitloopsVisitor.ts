@@ -20,17 +20,17 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
-import { BitloopsIdentifierTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
-import { BuildInClassTypeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
-import { DTOIdentifierNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
-import { ExpressionBuilder } from '../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
-import { ThisExpressionNodeBuilder } from '../../../refactoring-arch/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
-import { IdentifierBuilder } from '../../../refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
-import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import { DTONode } from '../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
-import { FieldListNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldListNode.js';
-import { FieldNode } from '../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
-import { IntermediateASTRootNode } from '../../../refactoring-arch/intermediate-ast/nodes/RootNode.js';
+import { BitloopsIdentifierTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
+import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
+import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
+import { IdentifierBuilder } from '../intermediate-ast/builders/IdentifierBuilder.js';
+import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js';
+import { DTONode } from '../intermediate-ast/nodes/DTO/DTONode.js';
+import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
+import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
   TParameterDependency,
   TRESTControllerDependencies,
@@ -57,7 +57,7 @@ import {
   TStructs,
   TReadModels,
 } from '../../../types.js';
-import { NumericLiteralBuilder } from './../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
+import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';

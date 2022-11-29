@@ -1,31 +1,31 @@
-import { RelationalExpressionBuilder } from './../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
-import { ArrayLiteralExpressionNodeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/arrayLiteralExpressionBuilder.js';
-import { ExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
-import { IdentifierExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
-import { LiteralTypeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
-import { LiteralValueBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
-import { LiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
-import { IntegerLiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/IntegerLiteralBuilder.js';
-import { NumericLiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
-import { LogicalExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalExpressionBuilder.js';
-import { LogicalOrExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
-import { LogicalXorExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
-import { NotExpressionNodeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/Logical/notExpression.js';
-import { ExpressionNode } from '../../../../../src/refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { IdentifierExpressionNode } from '../../../../../src/refactoring-arch/intermediate-ast/nodes/Expression/IdentifierExpression.js';
-import { LogicalAndExpressionBuilder } from './../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
-import { OperatorBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
-import { LeftExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
-import { RightExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
+import { RelationalExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/relationalBuilder.js';
+import { ArrayLiteralExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/arrayLiteralExpressionBuilder.js';
+import { ExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { IdentifierExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
+import { LiteralTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
+import { LiteralValueBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
+import { LiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
+import { IntegerLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/NumericLiteral/IntegerLiteralBuilder.js';
+import { NumericLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
+import { LogicalExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/Logical/logicalExpressionBuilder.js';
+import { LogicalOrExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
+import { LogicalXorExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
+import { NotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/Logical/notExpression.js';
+import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { IdentifierExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
+import { LogicalAndExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
+import { OperatorBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/operatorBuilder.js';
+import { LeftExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
+import { RightExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
 import {
   TAdditiveOperator,
   TEqualityOperator,
   TRelationalOperator,
 } from '../../../../../src/types.js';
-import { DecimalLiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/DecimalLiteralBuilder.js';
-import { EqualityExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
-import { BooleanLiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
-import { AdditiveExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/additiveExpresssion.js';
+import { DecimalLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/NumericLiteral/DecimalLiteralBuilder.js';
+import { EqualityExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
+import { BooleanLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
+import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/additiveExpresssion.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {

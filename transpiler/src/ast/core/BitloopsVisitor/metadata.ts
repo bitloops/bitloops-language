@@ -1,4 +1,4 @@
-import { TNodeMetadata } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
+import { TNodeMetadata } from '../intermediate-ast/nodes/IntermediateASTNode.js';
 import BitloopsVisitor from './BitloopsVisitor.js';
 
 export const produceMetadata = (ctx: any, visitor: BitloopsVisitor): TNodeMetadata => {

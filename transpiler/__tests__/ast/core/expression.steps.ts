@@ -26,7 +26,7 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
-import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';
 

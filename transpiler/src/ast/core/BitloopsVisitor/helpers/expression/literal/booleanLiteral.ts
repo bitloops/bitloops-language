@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BooleanLiteralBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
+import { BooleanLiteralBuilder } from '../../../../intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
 
 export const booleanLiteralVisitor = (value: any): any => {
   const booleanValue = value;

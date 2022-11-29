@@ -1,4 +1,4 @@
-import { IBuilder } from '../../../../src/refactoring-arch/intermediate-ast/builders/IBuilder.js';
+import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   ArrayBitloopsPrimTypeObject,
   bitloopsPrimaryTypeKey,

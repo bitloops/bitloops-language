@@ -133,7 +133,7 @@ import { builtInClassEvaluationToTargetLanguage } from './components/builtInClas
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
 import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
-import { IntermediateASTTree } from '../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const modelToTargetLanguage = (props: {
   type: TBitloopsTypesValues;

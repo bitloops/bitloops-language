@@ -20,9 +20,9 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { MethodCallNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
-import { ExpressionNode } from '../../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { ExpressionBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { MethodCallNodeBuilder } from '../../../intermediate-ast/builders/expressions/methodCallExprBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 
 export const methodCallExpressionVisitor = (
   thisVisitor: BitloopsVisitor,

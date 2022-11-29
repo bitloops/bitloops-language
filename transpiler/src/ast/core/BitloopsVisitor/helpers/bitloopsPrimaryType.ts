@@ -20,11 +20,11 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { ArrayPrimaryTypeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
-import { ArrayPrimaryTypeNode } from '../../../../refactoring-arch/intermediate-ast/nodes/BitloopsPrimaryType/ArrayPrimaryTypeNode.js';
-import { PrimitiveTypeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
-import { PrimitiveTypeNode } from '../../../../refactoring-arch/intermediate-ast/nodes/BitloopsPrimaryType/PrimitiveTypeNode.js';
-import { BitloopsPrimaryTypeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
+import { ArrayPrimaryTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
+import { ArrayPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/ArrayPrimaryTypeNode.js';
+import { PrimitiveTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
+import { PrimitiveTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/PrimitiveTypeNode.js';
+import { BitloopsPrimaryTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
 
 export const bitloopsPrimaryTypeVisitor = (
   _thisVisitor: BitloopsVisitor,

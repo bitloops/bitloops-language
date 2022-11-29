@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BuiltinClassEvaluationNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/BuiltinClassEvaluationBuilder.js';
+import { BuiltinClassEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/BuiltinClassEvaluationBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { ClassNameNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/ClassNameBuilder.js';
-import { BuiltInClassEvaluationNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/BuiltInClassNode.js';
+import { ClassNameNodeBuilder } from '../../intermediate-ast/builders/ClassNameBuilder.js';
+import { BuiltInClassEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/BuiltInClassNode.js';
 
 export const builtInClassEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,

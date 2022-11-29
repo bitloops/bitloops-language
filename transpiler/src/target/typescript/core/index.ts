@@ -32,7 +32,7 @@ import { formatString } from './codeFormatting.js';
 // import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
 // import { deepClone } from '../../../utils/deepClone.js';
 // import { IntermediateASTNode } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
-import { ClassTypeNode } from '../../../refactoring-arch/intermediate-ast/nodes/ClassTypeNode.js';
+import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
 import {
   BitloopsTargetGeneratorError,
   TBitloopsOutputTargetContent,

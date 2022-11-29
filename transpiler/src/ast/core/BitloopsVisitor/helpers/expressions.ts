@@ -18,25 +18,25 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { LogicalExpressionBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalExpressionBuilder.js';
+import { LogicalExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalExpressionBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/additiveExpresssion.js';
+import { AdditiveExpressionBuilder } from '../../intermediate-ast/builders/expressions/additiveExpresssion.js';
 // import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
-import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
-import { MultiplicativeExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/multiplicativeExpression.js';
-import { LeftExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
-import { LiteralBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
-import { RightExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
-import { ExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
-import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { ParenthesizedExpressionNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
-import { RelationalExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
-import { EqualityExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
-import { LogicalAndExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
-import { LogicalOrExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
-import { LogicalXorExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
-import { NotExpressionNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/notExpression.js';
+import { OperatorBuilder } from '../../intermediate-ast/builders/expressions/operatorBuilder.js';
+import { MultiplicativeExpressionBuilder } from '../../intermediate-ast/builders/expressions/multiplicativeExpression.js';
+import { LeftExpressionBuilder } from '../../intermediate-ast/builders/expressions/leftExpressionBuilder.js';
+import { LiteralBuilder } from '../../intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
+import { RightExpressionBuilder } from '../../intermediate-ast/builders/expressions/rightExpressionBuilder.js';
+import { ExpressionBuilder } from '../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ParenthesizedExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
+import { RelationalExpressionBuilder } from '../../intermediate-ast/builders/expressions/relationalBuilder.js';
+import { EqualityExpressionBuilder } from '../../intermediate-ast/builders/expressions/equalityBuilderExpression.js';
+import { LogicalAndExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
+import { LogicalOrExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
+import { LogicalXorExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
+import { NotExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/Logical/notExpression.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,

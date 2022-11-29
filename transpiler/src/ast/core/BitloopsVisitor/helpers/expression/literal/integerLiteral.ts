@@ -28,10 +28,10 @@
 //   }
 // };
 
-import { LiteralTypeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
-import { LiteralValueBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
-import { IntegerLiteralBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/IntegerLiteralBuilder.js';
-import { IntegerLiteralNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/NumericLiteral/IntegerLiteralNode.js';
+import { LiteralTypeBuilder } from '../../../../intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
+import { LiteralValueBuilder } from '../../../../intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
+import { IntegerLiteralBuilder } from '../../../../intermediate-ast/builders/expressions/literal/NumericLiteral/IntegerLiteralBuilder.js';
+import { IntegerLiteralNode } from '../../../../intermediate-ast/nodes/Expression/Literal/NumericLiteral/IntegerLiteralNode.js';
 
 export const integerEvaluation = (value: string): IntegerLiteralNode => {
   const numericValue = Number(value);

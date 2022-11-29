@@ -19,8 +19,8 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { OptionalBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/OptionalBuilder.js';
-import { OptionalNode } from '../../../../refactoring-arch/intermediate-ast/nodes/OptionalNode.js';
+import { OptionalBuilder } from '../../intermediate-ast/builders/OptionalBuilder.js';
+import { OptionalNode } from '../../intermediate-ast/nodes/OptionalNode.js';
 
 export const optionalVisitor = (ctx: BitloopsParser.OptionalContext): OptionalNode => {
   const optionalValue = ctx.Optional() ? true : false;

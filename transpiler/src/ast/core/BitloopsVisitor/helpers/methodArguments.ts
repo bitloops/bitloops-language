@@ -19,7 +19,7 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { ArgumentListNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
+import { ArgumentListNodeBuilder } from '../../intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const methodArgumentsVisitor = (

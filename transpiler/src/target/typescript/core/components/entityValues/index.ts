@@ -28,7 +28,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
-import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
   const result = domainMethods(objectValueMethods);

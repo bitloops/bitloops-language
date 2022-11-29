@@ -19,7 +19,7 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { EvaluationBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
+import { EvaluationBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const evaluationVisitor = (

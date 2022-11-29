@@ -30,7 +30,7 @@ import {
   TClassTypesValues,
 } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
-import { IntermediateASTTree } from '../../../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 export const findIdOfRepoDomainObject = (
   repoDependencyName: string,

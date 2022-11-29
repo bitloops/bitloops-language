@@ -19,7 +19,7 @@
  */
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
-import { IntermediateASTTree } from '../../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import {
   TRepoPorts,
   TTargetDependenciesTypeScript,

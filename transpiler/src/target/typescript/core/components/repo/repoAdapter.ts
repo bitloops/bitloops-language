@@ -33,7 +33,7 @@ import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
-import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {

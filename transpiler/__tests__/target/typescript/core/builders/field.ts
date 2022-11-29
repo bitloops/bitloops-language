@@ -1,10 +1,10 @@
-import { ArrayPrimaryTypeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
-import { BitloopsPrimaryTypeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
-import { PrimitiveTypeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
-import { FieldNodeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
-import { IdentifierBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/IdentifierBuilder.js';
-import { OptionalBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/OptionalBuilder.js';
-import { FieldNode } from '../../../../../src/refactoring-arch/intermediate-ast/nodes/FieldList/FieldNode.js';
+import { ArrayPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
+import { BitloopsPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
+import { PrimitiveTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
+import { FieldNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
+import { IdentifierBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IdentifierBuilder.js';
+import { OptionalBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/OptionalBuilder.js';
+import { FieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { TBitloopsPrimitives } from '../../../../../src/types.js';
 
 export class FieldBuilderDirector {

@@ -19,7 +19,7 @@
  */
 import { TClassTypesValues } from './helpers/mappings.js';
 import { BitloopsLanguageAST } from './index.js';
-import { IntermediateASTTree } from './refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from './ast/core/intermediate-ast/IntermediateASTTree.js';
 
 export type TModule = {
   Props?: TProps;
