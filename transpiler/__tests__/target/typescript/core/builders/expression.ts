@@ -26,6 +26,7 @@ import { DecimalLiteralBuilder } from '../../../../../src/ast/core/intermediate-
 import { EqualityExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
 import { BooleanLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
 import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/additiveExpresssion.js';
+import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -181,9 +182,9 @@ export class ExpressionBuilderDirector {
   }
 
   buildStringLiteralExpression(value: string): ExpressionNode {
-    const booleanLit = new BooleanLiteralBuilder().withValue(`${value}`).build();
+    const stringLit = new StringLiteralBuilder().withValue(value).build();
 
-    const literalExpr = new LiteralBuilder().withLiteral(booleanLit).build();
+    const literalExpr = new LiteralBuilder().withLiteral(stringLit).build();
     return new ExpressionBuilder().withExpression(literalExpr).build();
   }
 
