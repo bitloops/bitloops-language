@@ -25,6 +25,7 @@ import {
   TEvaluation,
   TIdentifierExpr,
   TLiteral,
+  TAssignmentExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -36,6 +37,14 @@ export class ExpressionTypeIdentifiers {
     return false;
   }
 
+  static isAssignmentExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TAssignmentExpression {
+    if ('assignmentExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
   static isIdentifierExpression = (
     expressionValue: TExpressionValues,
   ): expressionValue is TIdentifierExpr => {

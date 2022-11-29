@@ -66,6 +66,12 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
+  if (ExpressionTypeIdentifiers.isAssignmentExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TAssignmentExpression,
+      value: expressionValue,
+    });
+  }
   if ('classInstantiation' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TClassInstantiation,

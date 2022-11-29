@@ -27,6 +27,7 @@ import { EqualityExpressionBuilder } from '../../../../../src/ast/core/intermedi
 import { BooleanLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
 import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/additiveExpresssion.js';
 import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -101,6 +102,14 @@ export class ExpressionBuilderDirector {
       .withArrayElements(expressions)
       .build();
     return new ExpressionBuilder().withExpression(arrayNode).build();
+  }
+
+  buildAssignmentExpression(left: ExpressionNode, right: ExpressionNode): ExpressionNode {
+    const assignmentNode = new AssignmentExpressionNodeBuilder()
+      .withLeftExpression(left)
+      .withRightExpression(right)
+      .build();
+    return new ExpressionBuilder().withExpression(assignmentNode).build();
   }
 
   buildEqualityExpression(

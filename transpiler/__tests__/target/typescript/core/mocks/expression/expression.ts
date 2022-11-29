@@ -87,6 +87,15 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: "['joe','doe']",
   },
+  // TODO Add more assignment tests cases, when member dot(& this) is completed
+  {
+    description: 'Assign a variable something new',
+    expression: new ExpressionBuilderDirector().buildAssignmentExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('day'),
+      new ExpressionBuilderDirector().buildStringLiteralExpression('friday'),
+    ),
+    output: "day = 'friday'",
+  },
 ];
 
 // export const VALID_TWO_DTOS_TEST_CASES = [
