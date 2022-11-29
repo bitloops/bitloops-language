@@ -25,6 +25,7 @@ import {
   TEvaluation,
   TIdentifierExpr,
   TLiteral,
+  TThisExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -74,6 +75,15 @@ export class ExpressionTypeIdentifiers {
     expressionValue: TExpressionValues,
   ): expressionValue is TEvaluation => {
     if ('evaluation' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isThisExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TThisExpression => {
+    if ('thisExpression' in expressionValue) {
       return true;
     }
     return false;

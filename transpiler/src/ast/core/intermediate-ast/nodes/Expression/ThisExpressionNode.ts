@@ -3,10 +3,11 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
 export class ThisExpressionNode extends ExpressionNode {
-  private static NAME = 'thisExpression';
+  private static nodeName = 'thisExpression';
+
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
-    this.classNodeName = ThisExpressionNode.NAME;
+    this.classNodeName = ThisExpressionNode.nodeName;
     this.nodeType = BitloopsTypesMapping.TThisExpression;
   }
 }

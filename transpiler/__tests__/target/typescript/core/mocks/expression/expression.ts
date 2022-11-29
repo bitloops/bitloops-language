@@ -88,6 +88,11 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: '[1,2,3]',
   },
+  {
+    description: 'This expression',
+    expression: new ExpressionBuilderDirector().buildThisExpression(),
+    output: 'this',
+  },
 ];
 
 // export const VALID_TWO_DTOS_TEST_CASES = [
