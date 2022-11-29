@@ -1,8 +1,5 @@
-import { isBitloopsIntermediateASTParserError } from '../ast/core/guards/index.js';
-import {
-  BitloopsIntermediateASTParserError,
-  IBitloopsIntermediateASTParser,
-} from '../ast/core/types.js';
+import { isBitloopsIntermediateASTError } from '../ast/core/guards/index.js';
+import { IntermediateASTParserError, IBitloopsIntermediateASTParser } from '../ast/core/types.js';
 import { isBitloopsIntermediateSetupASTParserError } from '../ast/setup/guards/index.js';
 import {
   BitloopsIntermediateSetupASTParserError,
@@ -109,7 +106,7 @@ export default class Transpiler {
     const intermediateModelCore = this.originalLanguageASTToIntermediateModelTransformer.parse(
       originalLanguageAST.originalAST,
     );
-    if (isBitloopsIntermediateASTParserError(intermediateModelCore)) {
+    if (isBitloopsIntermediateASTError(intermediateModelCore)) {
       errors.push(intermediateModelCore);
     } else {
       intermediateModelOutput.intermediateModel = intermediateModelCore;
@@ -210,7 +207,7 @@ export default class Transpiler {
     if (Array.isArray(value)) {
       for (const err of value) {
         if (
-          !(err instanceof BitloopsIntermediateASTParserError) &&
+          !(err instanceof IntermediateASTParserError) &&
           !(err instanceof BitloopsIntermediateSetupASTParserError)
         ) {
           return false;

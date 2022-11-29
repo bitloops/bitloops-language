@@ -5,10 +5,12 @@ import {
   BitloopsParserError,
   BitloopsLanguageASTContext,
   TParserCoreInputData,
+  IntermediateASTValidationError,
 } from './types.js';
 import BitloopsLexer from './grammar/BitloopsLexer.js';
 import Parser from './grammar/BitloopsParser.js';
 import { isBitloopsParserError } from './guards/index.js';
+import { TOriginalASTToIntermediateModel } from '../../refactoring-arch/types.js';
 
 export class BitloopsParser implements IBitloopsParser {
   /**

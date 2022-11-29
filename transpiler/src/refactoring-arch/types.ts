@@ -6,7 +6,7 @@ import {
   TBitloopsOutputTargetContent,
   TBitloopsTargetSetupContent,
 } from '../target/types.js';
-import { BitloopsIntermediateASTParserError } from '../ast/core/types.js';
+import { IntermediateASTParserError, IntermediateASTValidationError } from '../ast/core/types.js';
 import { BitloopsIntermediateSetupASTParserError } from '../ast/setup/types.js';
 import { ISetupData, TBoundedContexts } from '../types.js';
 
@@ -29,7 +29,8 @@ export type TOriginalASTToIntermediateModel = {
 };
 
 export type TOriginalASTToIntermediateModelError =
-  | BitloopsIntermediateASTParserError
+  | IntermediateASTParserError
+  | IntermediateASTValidationError
   | BitloopsIntermediateSetupASTParserError;
 
 export type TTargetLanguageASTToTargetCode = {

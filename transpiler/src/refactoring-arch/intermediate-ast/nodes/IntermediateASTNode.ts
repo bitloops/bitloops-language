@@ -1,3 +1,4 @@
+import { IntermediateASTValidationError } from '../../../ast/core/types.js';
 import { TBitloopsTypesValues } from '../../../helpers/mappings.js';
 
 export type TNodeLineData = {
@@ -10,7 +11,7 @@ export type TNodeMetadata = {
   fileId?: string;
 };
 
-class IntermediateASTNodeValidationError extends Error {}
+export class IntermediateASTNodeValidationError extends IntermediateASTValidationError {}
 
 export abstract class IntermediateASTNode {
   protected nodeType: TBitloopsTypesValues;
@@ -125,5 +126,14 @@ export abstract class IntermediateASTNode {
 
   public validate(): void | IntermediateASTNodeValidationError {
     return;
+  }
+
+  static isIntermediateASTNodeValidationError(
+    value: void | IntermediateASTNodeValidationError,
+  ): value is IntermediateASTNodeValidationError {
+    if (value instanceof IntermediateASTNodeValidationError) {
+      return true;
+    }
+    return false;
   }
 }
