@@ -437,31 +437,34 @@ export type TToStringExpression = {
 };
 
 export type TLiteral = {
-  literal: StringLiteral | BooleanLiteral | NumericLiteral | NullLiteral;
+  literal: TLiteralValues;
 };
-type StringLiteral = {
+export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+
+export type StringLiteral = {
   stringLiteral: string;
 };
-type BooleanLiteral = {
+export type BooleanLiteral = {
   booleanLiteral: string;
 };
-type NullLiteral = {
+export type NullLiteral = {
   nullLiteral: string;
 };
 
-type NumericLiteral = {
-  numericLiteral: IntegerLiteral | DecimalLiteral;
+export type TNumericLiteral = {
+  numericLiteral: TNumericLiteralValues;
 };
+export type TNumericLiteralValues = IntegerLiteral | DecimalLiteral;
 export type IntegerLiteral = {
   integerLiteral: {
     value: string;
-    type: any;
+    type: 'int32' | 'int64'; //| 'uint32' | 'uint64';
   };
 };
 export type DecimalLiteral = {
   decimalLiteral: {
     value: string;
-    type: any;
+    type: 'float' | 'double'; //| 'float32' | 'float64';
   };
 };
 
@@ -1113,9 +1116,9 @@ export type TAdditiveOperator = '+' | '-';
 
 export type TRelationalExpression = {
   relationalExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TRelationalOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
@@ -1123,9 +1126,9 @@ export type TRelationalOperator = '<' | '<=' | '>' | '>=';
 
 export type TEqualityExpression = {
   equalityExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TEqualityOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 

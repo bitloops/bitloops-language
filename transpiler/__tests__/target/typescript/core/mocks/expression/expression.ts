@@ -1,35 +1,68 @@
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 
 export const VALID_EXPRESSION_TEST_CASES = [
-  //   {
-  //     description: 'Or expression',
-  //     expression: new FieldListNodeBuilder()
-  //       .withFields([
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name', 'string'),
-  //         new FieldBuilderDirector().buildOptionalPrimitiveField('numOfTeachers', 'int32'),
-  //       ])
-  //       .build(),
-  //     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('ClassDTO').build(),
-  //     output: 'title > 120 || title < 5',
-  //   },
-  //   {
-  //     description: '',
-  //     expression: new FieldListNodeBuilder()
-  //       .withFields([new FieldBuilderDirector().buildRequiredArrayField('name', 'string')])
-  //       .build(),
-  //     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('ClassDTO').build(),
-  //     output: 'title * 3 != 120 - 5 && title / 3 == 5 + 3',
-  //   },
-  //   {
-  //     description: ' with array field type double dimension',
-  //     expression: new FieldListNodeBuilder()
-  //       .withFields([
-  //         new FieldBuilderDirector().buildRequiredArrayFieldDoubleDimension('name', 'string'),
-  //       ])
-  //       .build(),
-  //     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('ClassDTO').build(),
-  //     output: 'title % 3 >= 120 - 5 && title <= 500.6',
-  //   },
+  {
+    description: 'Relational expression',
+    expression: new ExpressionBuilderDirector().buildRelationalExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(120),
+      '>',
+    ),
+    output: 'title > 120',
+  },
+  {
+    description: 'Or expression',
+    expression: new ExpressionBuilderDirector().buildORExpression(
+      new ExpressionBuilderDirector().buildRelationalExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+        new ExpressionBuilderDirector().buildInt32LiteralExpression(120),
+        '>',
+      ),
+      new ExpressionBuilderDirector().buildRelationalExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+        new ExpressionBuilderDirector().buildInt32LiteralExpression(5),
+        '<',
+      ),
+    ),
+    output: 'title > 120 || title < 5',
+  },
+  {
+    description: 'And expression',
+    expression: new ExpressionBuilderDirector().buildANDExpression(
+      new ExpressionBuilderDirector().buildRelationalExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+        new ExpressionBuilderDirector().buildInt32LiteralExpression(120),
+        '>',
+      ),
+      new ExpressionBuilderDirector().buildRelationalExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+        new ExpressionBuilderDirector().buildFloatLiteralExpression(5.42),
+        '<',
+      ),
+    ),
+    output: 'title > 120 && title < 5.42',
+  },
+  {
+    description: 'Equality expression',
+    expression: new ExpressionBuilderDirector().buildEqualityExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('isValid'),
+      new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+    ),
+    output: 'isValid == true',
+  },
+  {
+    description: 'AdditiveExpression',
+    expression: new ExpressionBuilderDirector().buildAdditiveExpression(
+      new ExpressionBuilderDirector().buildFloatLiteralExpression(5.42),
+
+      new ExpressionBuilderDirector().buildAdditiveExpression(
+        new ExpressionBuilderDirector().buildFloatLiteralExpression(5.42),
+        new ExpressionBuilderDirector().buildFloatLiteralExpression(5.42),
+        '-',
+      ),
+    ),
+    output: '5.42 + 5.42 - 5.42',
+  },
   {
     description: 'Not expression',
     expression: new ExpressionBuilderDirector().buildNotExpression(
@@ -37,51 +70,24 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: '! a ',
   },
-  //   {
-  //     description: 'DTO with different primitive types',
-  //     expression: new FieldListNodeBuilder()
-  //       .withFields([
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name1', 'int32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name2', 'int64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name3', 'double'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name4', 'uint32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name5', 'uint64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name6', 'sint32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name7', 'sint64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name8', 'fixed32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name9', 'fixed64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name0', 'sfixed32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name10', 'sfixed64'),
-  //       ])
-  //       .build(),
-  //     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('FullDTO').build(),
-  //     output: '(a && ! b) || (! a && b)',
-  //   },
-  //   {
-  //     description: 'DTO with different primitive types',
-  //     expression: new FieldListNodeBuilder()
-  //       .withFields([
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name1', 'int32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name2', 'int64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name3', 'double'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name4', 'uint32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name5', 'uint64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name6', 'sint32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name7', 'sint64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name8', 'fixed32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name9', 'fixed64'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name0', 'sfixed32'),
-  //         new FieldBuilderDirector().buildRequiredPrimitiveField('name10', 'sfixed64'),
-  //       ])
-  //       .build(),
-  //     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('FullDTO').build(),
-  //     output: '(a == b) && (c >= d)',
-  //   },
-  //   {
-  //     description: 'DTO with different primitive types',
-  //     fieldListNode: new FieldListNodeBuilder(),
-  //     output: '[1,2,3]',
-  //   },
+  {
+    description: 'Array of integers',
+    expression: new ExpressionBuilderDirector().buildArrayLiteralExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(3),
+    ),
+    output: '[1,2,3]',
+  },
+  {
+    description: 'Array of strings',
+    expression: new ExpressionBuilderDirector().buildArrayLiteralExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(3),
+    ),
+    output: '[1,2,3]',
+  },
 ];
 
 // export const VALID_TWO_DTOS_TEST_CASES = [

@@ -9,8 +9,8 @@ export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressio
   public readonly NAME = 'orExpression';
 
   private logicalXorExpressionNode: LogicalXorExpressionNode;
-  private LeftexpressionNode: LeftExpressionNode;
-  private RightexpressionNode: RightExpressionNode;
+  private leftExpressionNode: LeftExpressionNode;
+  private rightExpressionNode: RightExpressionNode;
   private operator: OperatorNode;
 
   constructor() {
@@ -18,11 +18,11 @@ export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressio
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): LogicalXorExpressionBuilder {
-    this.LeftexpressionNode = expressionNode;
+    this.leftExpressionNode = expressionNode;
     return this;
   }
   public withRightExpression(expressionNode: ExpressionNode): LogicalXorExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.rightExpressionNode = expressionNode;
     return this;
   }
   public withOperator(operatorNode: OperatorNode): LogicalXorExpressionBuilder {
@@ -31,9 +31,11 @@ export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressio
   }
 
   public build(): LogicalXorExpressionNode {
-    this.logicalXorExpressionNode.addChild(this.LeftexpressionNode);
-    this.logicalXorExpressionNode.addChild(this.operator);
-    this.logicalXorExpressionNode.addChild(this.RightexpressionNode);
+    this.logicalXorExpressionNode.addChild(this.leftExpressionNode);
+    if (this.operator) {
+      this.logicalXorExpressionNode.addChild(this.operator);
+    }
+    this.logicalXorExpressionNode.addChild(this.rightExpressionNode);
     this.logicalXorExpressionNode.buildObjectValue();
 
     return this.logicalXorExpressionNode;

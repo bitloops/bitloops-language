@@ -66,12 +66,12 @@ export const orExpressionToTargetLanguage = (
     const { left, right } = orExpression;
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 
@@ -91,12 +91,12 @@ export const andExpressionToTargetLanguage = (
     const { left, right } = andExpression;
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 
@@ -116,12 +116,12 @@ export const xorExpressionToTargetLanguage = (
     const { left, right } = xorExpression;
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 

@@ -35,8 +35,13 @@ const writeGeneratedOutputToFiles = (
   //  Write output to dest files
   for (const targetFileContent of params) {
     const { boundedContext, module, classType, className, fileContent } = targetFileContent;
-    const btg = new BitloopsTargetGenerator();
-    const destination = btg.getTargetFileDestination(boundedContext, module, classType, className);
+    const generator = new BitloopsTargetGenerator();
+    const destination = generator.getTargetFileDestination(
+      boundedContext,
+      module,
+      classType,
+      className,
+    );
     writeTargetFile({
       projectPath: outputDirPath,
       filePathObj: destination,

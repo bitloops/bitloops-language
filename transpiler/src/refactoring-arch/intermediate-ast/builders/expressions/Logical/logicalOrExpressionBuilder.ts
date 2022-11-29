@@ -32,7 +32,9 @@ export class LogicalOrExpressionBuilder implements IBuilder<LogicalOrExpressionN
 
   public build(): LogicalOrExpressionNode {
     this.logicalOrExpressionNode.addChild(this.leftExpressionNode);
-    this.logicalOrExpressionNode.addChild(this.operator);
+    if (this.operator) {
+      this.logicalOrExpressionNode.addChild(this.operator);
+    }
     this.logicalOrExpressionNode.addChild(this.rightExpressionNode);
     this.logicalOrExpressionNode.buildObjectValue();
 

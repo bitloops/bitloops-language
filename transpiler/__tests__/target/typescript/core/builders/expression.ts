@@ -1,3 +1,4 @@
+import { RelationalExpressionBuilder } from './../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/relationalBuilder.js';
 import { ArrayLiteralExpressionNodeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/arrayLiteralExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { IdentifierExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
@@ -13,6 +14,18 @@ import { NotExpressionNodeBuilder } from '../../../../../src/refactoring-arch/in
 import { ExpressionNode } from '../../../../../src/refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IdentifierExpressionNode } from '../../../../../src/refactoring-arch/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { LogicalAndExpressionBuilder } from './../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
+import { OperatorBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
+import { LeftExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/leftExpressionBuilder.js';
+import { RightExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/rightExpressionBuilder.js';
+import {
+  TAdditiveOperator,
+  TEqualityOperator,
+  TRelationalOperator,
+} from '../../../../../src/types.js';
+import { DecimalLiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/DecimalLiteralBuilder.js';
+import { EqualityExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/equalityBuilderExpression.js';
+import { BooleanLiteralBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
+import { AdditiveExpressionBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/expressions/additiveExpresssion.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -29,30 +42,57 @@ export class ExpressionBuilderDirector {
   }
 
   buildANDExpression(expr1: ExpressionNode, expr2: ExpressionNode): ExpressionNode {
+    const left = new LeftExpressionBuilder().withExpression(expr1).build();
+    const right = new RightExpressionBuilder().withExpression(expr2).build();
     const andNode = new LogicalAndExpressionBuilder()
-      .withLeftExpression(expr1)
-      .withRightExpression(expr2)
+      .withLeftExpression(left)
+      .withRightExpression(right)
       .build();
     const logicalNode = new LogicalExpressionBuilder().withANDExpression(andNode).build();
     return new ExpressionBuilder().withExpression(logicalNode).build();
   }
 
   buildORExpression(expr1: ExpressionNode, expr2: ExpressionNode): ExpressionNode {
+    const left = new LeftExpressionBuilder().withExpression(expr1).build();
+    const right = new RightExpressionBuilder().withExpression(expr2).build();
     const orNode = new LogicalOrExpressionBuilder()
-      .withLeftExpression(expr1)
-      .withRightExpression(expr2)
+      .withLeftExpression(left)
+      .withRightExpression(right)
       .build();
     const logicalNode = new LogicalExpressionBuilder().withORExpression(orNode).build();
     return new ExpressionBuilder().withExpression(logicalNode).build();
   }
 
   buildXORExpression(expr1: ExpressionNode, expr2: ExpressionNode): ExpressionNode {
+    const left = new LeftExpressionBuilder().withExpression(expr1).build();
+    const right = new RightExpressionBuilder().withExpression(expr2).build();
     const xorNode = new LogicalXorExpressionBuilder()
-      .withLeftExpression(expr1)
-      .withRightExpression(expr2)
+      .withLeftExpression(left)
+      .withRightExpression(right)
       .build();
     const logicalNode = new LogicalExpressionBuilder().withXORExpression(xorNode).build();
     return new ExpressionBuilder().withExpression(logicalNode).build();
+  }
+
+  buildRelationalExpression(
+    expr1: ExpressionNode,
+    expr2: ExpressionNode,
+    op: TRelationalOperator,
+  ): ExpressionNode {
+    const left = new LeftExpressionBuilder().withExpression(expr1).build();
+    const right = new RightExpressionBuilder().withExpression(expr2).build();
+
+    const operator = new OperatorBuilder().withSymbol(op).build();
+
+    const node = new RelationalExpressionBuilder()
+      .withLeftExpression(left)
+      .withOperator(operator)
+      .withRightExpression(right)
+      .build();
+
+    const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+    return expressionNode;
   }
 
   buildArrayLiteralExpression(...expressions: ExpressionNode[]): ExpressionNode {
@@ -60,6 +100,47 @@ export class ExpressionBuilderDirector {
       .withArrayElements(expressions)
       .build();
     return new ExpressionBuilder().withExpression(arrayNode).build();
+  }
+
+  buildEqualityExpression(
+    expr1: ExpressionNode,
+    expr2: ExpressionNode,
+    op: TEqualityOperator = '==',
+  ): ExpressionNode {
+    const left = new LeftExpressionBuilder().withExpression(expr1).build();
+    const right = new RightExpressionBuilder().withExpression(expr2).build();
+
+    const operator = new OperatorBuilder().withSymbol(op).build();
+
+    const node = new EqualityExpressionBuilder()
+      .withLeftExpression(left)
+      .withOperator(operator)
+      .withRightExpression(right)
+      .build();
+
+    const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+    return expressionNode;
+  }
+
+  buildAdditiveExpression(
+    expr1: ExpressionNode,
+    expr2: ExpressionNode,
+    op: TAdditiveOperator = '+',
+  ): ExpressionNode {
+    const left = new LeftExpressionBuilder().withExpression(expr1).build();
+    const right = new RightExpressionBuilder().withExpression(expr2).build();
+
+    const operator = new OperatorBuilder().withSymbol(op).build();
+
+    const node = new AdditiveExpressionBuilder()
+      .withLeftExpression(left)
+      .withRightExpression(right)
+      .withOperator(operator)
+      .build();
+    const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+    return expressionNode;
   }
 
   buildInt32LiteralExpression(value: number): ExpressionNode {
@@ -74,6 +155,35 @@ export class ExpressionBuilderDirector {
       .build();
 
     const literalExpr = new LiteralBuilder().withLiteral(numericLiteral).build();
+    return new ExpressionBuilder().withExpression(literalExpr).build();
+  }
+
+  buildFloatLiteralExpression(value: number): ExpressionNode {
+    const valueNode = new LiteralValueBuilder().withValue(value.toString()).build();
+    const typeNode = new LiteralTypeBuilder().withType('float').build();
+    const decimalLiteralNode = new DecimalLiteralBuilder()
+      .withValue(valueNode)
+      .withType(typeNode)
+      .build();
+    const numericLiteral = new NumericLiteralBuilder()
+      .withNumericLiteral(decimalLiteralNode)
+      .build();
+
+    const literalExpr = new LiteralBuilder().withLiteral(numericLiteral).build();
+    return new ExpressionBuilder().withExpression(literalExpr).build();
+  }
+
+  buildBooleanLiteralExpression(value: boolean): ExpressionNode {
+    const booleanLit = new BooleanLiteralBuilder().withValue(`${value}`).build();
+
+    const literalExpr = new LiteralBuilder().withLiteral(booleanLit).build();
+    return new ExpressionBuilder().withExpression(literalExpr).build();
+  }
+
+  buildStringLiteralExpression(value: string): ExpressionNode {
+    const booleanLit = new BooleanLiteralBuilder().withValue(`${value}`).build();
+
+    const literalExpr = new LiteralBuilder().withLiteral(booleanLit).build();
     return new ExpressionBuilder().withExpression(literalExpr).build();
   }
 

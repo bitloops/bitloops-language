@@ -92,7 +92,7 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
             boundedContext: boundedContextName,
             module: moduleName,
             classType: classTypeNode.getClassType?.(),
-            className: classTypeNode?.getClassName?.(),
+            className: classTypeNode.getClassName?.(),
             fileContent: generatedString,
           });
         });

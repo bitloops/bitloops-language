@@ -38,12 +38,12 @@ export const multiplicativeExpressionToTargetLanguage = (
     });
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 
@@ -58,33 +58,3 @@ export const multiplicativeExpressionToTargetLanguage = (
   };
   return langMapping(value);
 };
-
-// // a * b
-// const expression: TMultiplicativeExpression = {
-//   multiplicativeExpression: {
-//     left: {
-//       expression: {
-//         evaluation: {
-//           regularEvaluation: {
-//             type: 'variable',
-//             value: 'a',
-//           },
-//         },
-//       },
-//     },
-//     right: {
-//       expression: {
-//         evaluation: {
-//           regularEvaluation: {
-//             type: 'variable',
-//             value: 'b',
-//           },
-//         },
-//       },
-//     },
-//     operator: '*',
-//   },
-// };
-
-// const multi = multiplicativeExpressionToTargetLanguage(expression, SupportedLanguages.TypeScript);
-// console.log('multi', multi);

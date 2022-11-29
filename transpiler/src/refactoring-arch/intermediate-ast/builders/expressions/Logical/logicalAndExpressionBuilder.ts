@@ -32,7 +32,9 @@ export class LogicalAndExpressionBuilder implements IBuilder<LogicalAndExpressio
 
   public build(): LogicalAndExpressionNode {
     this.logicalAndExpressionNode.addChild(this.leftExpressionNode);
-    this.logicalAndExpressionNode.addChild(this.operator);
+    if (this.operator) {
+      this.logicalAndExpressionNode.addChild(this.operator);
+    }
     this.logicalAndExpressionNode.addChild(this.rightExpressionNode);
     this.logicalAndExpressionNode.buildObjectValue();
 
