@@ -18,9 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { LogicalExpressionBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalExpressionBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TExpression } from '../../../../types.js';
 import { AdditiveExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/additiveExpresssion.js';
 // import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
 import { OperatorBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/operatorBuilder.js';
@@ -36,6 +36,7 @@ import { EqualityExpressionBuilder } from '../../../../refactoring-arch/intermed
 import { LogicalAndExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
 import { LogicalOrExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
 import { LogicalXorExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
+import { NotExpressionNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/Logical/notExpression.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -98,7 +99,8 @@ export const logicalAndExpressionVisitor = (
     .withRightExpression(right)
     .build();
 
-  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+  const logicalExpression = new LogicalExpressionBuilder().withANDExpression(node).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
 
   return expressionNode;
 };
@@ -120,7 +122,8 @@ export const logicalOrExpressionVisitor = (
     .withRightExpression(right)
     .build();
 
-  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+  const logicalExpression = new LogicalExpressionBuilder().withORExpression(node).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
 
   return expressionNode;
 };
@@ -142,7 +145,8 @@ export const logicalXorExpressionVisitor = (
     .withRightExpression(right)
     .build();
 
-  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+  const logicalExpression = new LogicalExpressionBuilder().withXORExpression(node).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
 
   return expressionNode;
 };
@@ -150,13 +154,12 @@ export const logicalXorExpressionVisitor = (
 export const logicalNotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.NotExpressionContext,
-): TExpression => {
+): ExpressionNode => {
   const expression = thisVisitor.visit(ctx.expression());
-  return {
-    expression: {
-      logicalExpression: { notExpression: expression.expression },
-    },
-  };
+  const notExpression = new NotExpressionNodeBuilder().withExpression(expression).build();
+  const logicalExpression = new LogicalExpressionBuilder().withNOTExpression(notExpression).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
+  return expressionNode;
 };
 
 export const multiplicativeExpressionVisitor = (

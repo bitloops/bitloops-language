@@ -1069,27 +1069,27 @@ export type TLogicalExpression = {
 };
 
 export type TNotExpression = {
-  notExpression: TExpressionValues;
+  notExpression: TExpression;
 };
 
 export type TAndExpression = {
   andExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TOrExpression = {
   orExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TXorExpression = {
   xorExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 

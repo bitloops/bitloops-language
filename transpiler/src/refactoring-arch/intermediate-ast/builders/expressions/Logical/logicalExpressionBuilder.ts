@@ -3,16 +3,22 @@ import { LogicalOrExpressionNode } from '../../../nodes/Expression/Logical/logic
 import { LogicalAndExpressionNode } from '../../../nodes/Expression/Logical/LogicalAndExpression.js';
 import { LogicalExpressionNode } from '../../../nodes/Expression/Logical/LogicalExpressionNode.js';
 import { IBuilder } from '../../IBuilder.js';
+import { NotExpressionNode } from '../../../nodes/Expression/NotExpression.js';
 
 export class LogicalExpressionBuilder implements IBuilder<LogicalExpressionNode> {
   private logicalExpressionNode: LogicalExpressionNode;
-  // private notExpression: NotExpression;
+  private notExpression: NotExpressionNode;
   private andExpression?: LogicalAndExpressionNode;
   private orExpression?: LogicalOrExpressionNode;
   private xorExpression?: LogicalXorExpressionNode;
 
   constructor() {
     this.logicalExpressionNode = new LogicalExpressionNode();
+  }
+
+  withNOTExpression(notExpression: NotExpressionNode): LogicalExpressionBuilder {
+    this.notExpression = notExpression;
+    return this;
   }
 
   public withANDExpression(andExpression: LogicalAndExpressionNode): LogicalExpressionBuilder {
@@ -29,6 +35,9 @@ export class LogicalExpressionBuilder implements IBuilder<LogicalExpressionNode>
   }
 
   public build(): LogicalExpressionNode {
+    if (this.notExpression) {
+      this.logicalExpressionNode.addChild(this.notExpression);
+    }
     if (this.andExpression) {
       this.logicalExpressionNode.addChild(this.andExpression);
     }

@@ -33,7 +33,7 @@ import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.
 const feature = loadFeature('__tests__/ast/core/expression.feature');
 
 defineFeature(feature, (test) => {
-  test.skip('Expression is valid', ({ given, when, then }) => {
+  test('Expression is valid', ({ given, when, then }) => {
     const boundedContext = 'Hello World';
     const module = 'core';
     let blString;
@@ -59,6 +59,9 @@ defineFeature(feature, (test) => {
         result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
+
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
       }
     });
 
