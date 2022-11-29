@@ -7,7 +7,7 @@ import {
 import { IntermediateASTValidationError, IIntermediateASTValidator } from './types.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
-  validate(ast: TBoundedContexts): IntermediateASTValidationError[] {
+  validate(ast: TBoundedContexts): void | IntermediateASTValidationError[] {
     const errors: IntermediateASTValidationError[] = [];
     for (const boundedContext of Object.values(ast)) {
       for (const ASTTree of Object.values(boundedContext)) {
@@ -17,7 +17,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
       }
     }
 
-    return errors;
+    if (errors.length > 0) return errors;
   }
 
   private validateNodes(ASTTree: IntermediateASTTree): IntermediateASTNodeValidationError[] {

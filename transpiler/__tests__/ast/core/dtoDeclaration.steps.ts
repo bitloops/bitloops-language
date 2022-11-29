@@ -17,18 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { DTODeclarationBuilder } from './builders/dtoDeclaration.js';
 import { errorCases, validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -50,10 +46,8 @@ describe('DTO declaration is valid', () => {
         },
       ]);
 
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        const result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
         if (!isBitloopsIntermediateASTError(result)) {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
@@ -84,11 +78,9 @@ describe('DTO declaration with multiple dtos is valid', () => {
         },
       ]);
 
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        const result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-        if (!(result instanceof BitloopsIntermediateASTParserError)) {
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -119,8 +111,8 @@ describe('DTO declaration is invalid', () => {
           },
         ]);
 
-        if (!(initialModelOutput instanceof BitloopsParserError)) {
-          intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+        if (!isBitloopsParserError(initialModelOutput)) {
+          intermediateParser.parse(initialModelOutput);
         }
       };
 

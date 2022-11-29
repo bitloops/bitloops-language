@@ -185,7 +185,8 @@ export default class Transpiler {
     value:
       | TBitloopsCodeToOriginalAST
       | TTargetLanguageASTToTargetCode
-      | TBitloopsCodeToOriginalASTError[],
+      | TBitloopsCodeToOriginalASTError[]
+      | TTranspileError[],
   ): value is TBitloopsCodeToOriginalASTError[] {
     if (Array.isArray(value)) {
       for (const err of value) {

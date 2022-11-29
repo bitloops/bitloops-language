@@ -62,8 +62,7 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
 
   private validateIntermediateASTTree(
     intermediateASTTree: TBoundedContexts,
-  ): IntermediateASTValidationError[] {
-    const errors = this.validator.validate(intermediateASTTree);
-    return errors;
+  ): void | IntermediateASTValidationError[] {
+    return this.validator.validate(intermediateASTTree);
   }
 }

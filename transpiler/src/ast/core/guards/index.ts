@@ -24,7 +24,7 @@ const isIntermediateASTParserError = (
 };
 
 const isIntermediateASTValidationErrors = (
-  value: TBoundedContexts | IntermediateASTValidationError[],
+  value: TBoundedContexts | void | IntermediateASTValidationError[],
 ): value is IntermediateASTValidationError[] => {
   if (Array.isArray(value)) {
     for (const err of value) {

@@ -13,5 +13,5 @@ export class IntermediateASTParserError extends Error {}
 export class IntermediateASTValidationError extends Error {}
 
 export interface IIntermediateASTValidator {
-  validate: (ast: TBoundedContexts) => IntermediateASTValidationError[];
+  validate: (ast: TBoundedContexts) => void | IntermediateASTValidationError[];
 }
