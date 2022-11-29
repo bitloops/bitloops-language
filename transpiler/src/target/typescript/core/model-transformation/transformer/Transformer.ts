@@ -1,5 +1,5 @@
-import { IntermediateASTNode } from '../../../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
-import { IntermediateASTTree } from './../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 class RestControllerNode extends IntermediateASTNode {}
 

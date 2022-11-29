@@ -19,7 +19,7 @@
  */
 import { TClassTypesValues } from './helpers/mappings.js';
 import { BitloopsLanguageAST } from './index.js';
-import { IntermediateASTTree } from './refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from './ast/core/intermediate-ast/IntermediateASTTree.js';
 
 export type TModule = {
   Props?: TProps;
@@ -292,7 +292,7 @@ export type TNotInstanceOf = {
 };
 
 export type TGetClass = {
-  getClass: TRegularEvaluation;
+  getClass: TExpression;
 };
 
 export type TRegularEvaluation = {
@@ -321,10 +321,7 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
-  | TInstanceOf
   | TErrorEvaluation
-  | TNotInstanceOf
-  | TGetClass
   | TBuiltInClassEvaluation;
 
 export type TMethodCallExpression = {
@@ -415,7 +412,10 @@ export type TExpressionValues =
   | TMethodCallExpression
   | TThisExpression
   | TMemberDotExpression
-  | TAssignmentExpression;
+  | TAssignmentExpression
+  | TInstanceOf
+  | TNotInstanceOf
+  | TGetClass;
 
 export type TAssignmentExpression = {
   assignmentExpression: {
@@ -433,37 +433,38 @@ export type TIdentifierExpr = {
   identifier: string;
 };
 export type TToStringExpression = {
-  toString: {
-    value: string;
-  };
+  toString: TExpression;
 };
 
 export type TLiteral = {
-  literal: StringLiteral | BooleanLiteral | NumericLiteral | NullLiteral;
+  literal: TLiteralValues;
 };
-type StringLiteral = {
+export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+
+export type StringLiteral = {
   stringLiteral: string;
 };
-type BooleanLiteral = {
+export type BooleanLiteral = {
   booleanLiteral: string;
 };
-type NullLiteral = {
+export type NullLiteral = {
   nullLiteral: string;
 };
 
-type NumericLiteral = {
-  numericLiteral: IntegerLiteral | DecimalLiteral;
+export type TNumericLiteral = {
+  numericLiteral: TNumericLiteralValues;
 };
+export type TNumericLiteralValues = IntegerLiteral | DecimalLiteral;
 export type IntegerLiteral = {
   integerLiteral: {
     value: string;
-    type: any;
+    type: 'int32' | 'int64'; //| 'uint32' | 'uint64';
   };
 };
 export type DecimalLiteral = {
   decimalLiteral: {
     value: string;
-    type: any;
+    type: 'float' | 'double'; //| 'float32' | 'float64';
   };
 };
 
@@ -1069,27 +1070,27 @@ export type TLogicalExpression = {
 };
 
 export type TNotExpression = {
-  notExpression: TExpressionValues;
+  notExpression: TExpression;
 };
 
 export type TAndExpression = {
   andExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TOrExpression = {
   orExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TXorExpression = {
   xorExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
@@ -1115,9 +1116,9 @@ export type TAdditiveOperator = '+' | '-';
 
 export type TRelationalExpression = {
   relationalExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TRelationalOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
@@ -1125,9 +1126,9 @@ export type TRelationalOperator = '<' | '<=' | '>' | '>=';
 
 export type TEqualityExpression = {
   equalityExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TEqualityOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 

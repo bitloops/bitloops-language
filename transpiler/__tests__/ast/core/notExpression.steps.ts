@@ -26,7 +26,7 @@ import {
 } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { TDTOIdentifier, TVariables } from '../../../src/types.js';
-import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const testExamplesDTO = [
   {

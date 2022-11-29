@@ -1,5 +1,3 @@
 {
-    "cSpell.words": [
-        "Bitloops"
-    ]
+  "eslint.workingDirectories": ["transpiler", "cli"]
 }

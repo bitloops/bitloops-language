@@ -19,10 +19,10 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { DTONodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/DTO/DTONodeBuilder.js';
-import { DTOIdentifierNode } from '../../../../refactoring-arch/intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
-import { DTONode } from '../../../../refactoring-arch/intermediate-ast/nodes/DTO/DTONode.js';
-import { FieldListNode } from '../../../../refactoring-arch/intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { DTONodeBuilder } from '../../intermediate-ast/builders/DTO/DTONodeBuilder.js';
+import { DTOIdentifierNode } from '../../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
+import { DTONode } from '../../intermediate-ast/nodes/DTO/DTONode.js';
+import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
 

@@ -20,25 +20,16 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TExpression } from '../../../../../types.js';
+import { GetClassNodeBuilder } from '../../../intermediate-ast/builders/expressions/GetClassBuilder.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const getClassExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.GetClassExpressionContext,
-): TExpression => {
-  const expressionResult = thisVisitor.visit(ctx.expression());
+): ExpressionNode => {
+  const expression = thisVisitor.visit(ctx.expression());
 
-  const value = expressionResult.expression.evaluation.regularEvaluation.value;
-  return {
-    expression: {
-      evaluation: {
-        getClass: {
-          regularEvaluation: {
-            type: 'variable',
-            value,
-          },
-        },
-      },
-    },
-  };
+  const node = new GetClassNodeBuilder().withExpression(expression).build();
+  return new ExpressionBuilder().withExpression(node).build();
 };

@@ -34,12 +34,12 @@ export const equalityExpressionToTargetLanguage = (
   });
 
   const leftExpression = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpressionValues,
+    type: BitloopsTypesMapping.TExpression,
     value: left,
   });
 
   const rightExpression = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpressionValues,
+    type: BitloopsTypesMapping.TExpression,
     value: right,
   });
 
@@ -52,33 +52,3 @@ export const equalityExpressionToTargetLanguage = (
     ],
   };
 };
-
-// // a == b
-// const expression: TEqualityExpression = {
-//   equalityExpression: {
-//     left: {
-//       expression: {
-//         evaluation: {
-//           regularEvaluation: {
-//             type: 'variable',
-//             value: 'a',
-//           },
-//         },
-//       },
-//     },
-//     right: {
-//       expression: {
-//         evaluation: {
-//           regularEvaluation: {
-//             type: 'variable',
-//             value: 'b',
-//           },
-//         },
-//       },
-//     },
-//     operator: '==',
-//   },
-// };
-
-// const eq = equalityExpressionToTargetLanguage(expression, SupportedLanguages.TypeScript);
-// console.log('eq', eq);

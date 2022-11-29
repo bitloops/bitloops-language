@@ -20,10 +20,10 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { IsInstanceOfEvaluationNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/IsIntanceOfEvaluationBuilder.js';
-import { ClassNodeBuilder } from './../../../../refactoring-arch/intermediate-ast/builders/ClassBuilder.js';
-import { ExpressionBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
-import { ExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { IsInstanceOfEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/IsIntanceOfEvaluationBuilder.js';
+import { ClassNodeBuilder } from '../../intermediate-ast/builders/ClassBuilder.js';
+import { ExpressionBuilder } from '../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 // result is Error
 // {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}

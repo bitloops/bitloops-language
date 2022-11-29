@@ -20,9 +20,9 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { EvaluationFieldNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
-import { EvaluationFieldNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
-import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
+import { EvaluationFieldNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { EvaluationFieldNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
+import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
 // export type TEvaluationFields = ({ name: string } & TExpression);
 // export const evaluationFieldVisitor = (
 //   thisVisitor: BitloopsVisitor,

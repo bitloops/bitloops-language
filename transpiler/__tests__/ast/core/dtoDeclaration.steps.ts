@@ -25,7 +25,7 @@ import {
 } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { TDTOIdentifier, TVariables, TVariable } from '../../../src/types.js';
-import { IntermediateASTTree } from '../../../src/refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { DTODeclarationBuilder } from './builders/dtoDeclaration.js';
 import { errorCases, validDTOTestCases, validMultipleDTOSTestCases } from './mocks/dto.js';
 import { BitloopsIntermediateASTParserError } from '../../../src/ast/core/types.js';

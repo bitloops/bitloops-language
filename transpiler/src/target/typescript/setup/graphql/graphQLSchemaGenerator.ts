@@ -1,4 +1,4 @@
-import { IntermediateASTTree } from '../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { TBoundedContexts, TGraphQLOperation, TResolver, TResolvers } from '../../../../types.js';
 import { ClassTypeToGraphQLMapping } from './dtoToGraphQLMapping.js';
 import { AllResolvers, ResolverValues } from './types.js';

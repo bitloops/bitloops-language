@@ -28,7 +28,7 @@ import { getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
-import { IntermediateASTTree } from '../../../../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {

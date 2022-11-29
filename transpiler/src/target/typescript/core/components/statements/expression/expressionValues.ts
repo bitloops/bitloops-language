@@ -22,6 +22,7 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { evaluationToTargetLanguage, instanceOfToTargetLanguage } from './evaluation/index.js';
 import { ExpressionTypeIdentifiers } from './../../../type-identifiers/expression.js';
+import { literalExpressionToTargetLanguage } from './literalExpression.js';
 
 export { evaluationToTargetLanguage, instanceOfToTargetLanguage };
 
@@ -46,6 +47,17 @@ const expressionValuesToTargetLanguage = (
       type: BitloopsTypesMapping.TEvaluation,
       value: expressionValue,
     });
+  }
+
+  if (ExpressionTypeIdentifiers.isLiteralExpression(expressionValue)) {
+    return literalExpressionToTargetLanguage(expressionValue);
+  }
+
+  if (ExpressionTypeIdentifiers.isIdentifierExpression(expressionValue)) {
+    return {
+      output: expressionValue.identifier,
+      dependencies: [],
+    };
   }
 
   if (ExpressionTypeIdentifiers.isArrayLiteralExpression(expressionValue)) {

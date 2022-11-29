@@ -1,5 +1,5 @@
-import { DTOIdentifierNodeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
-import { FieldListNodeBuilder } from '../../../../../src/refactoring-arch/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
+import { DTOIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { FieldListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
 import { FieldBuilderDirector } from '../builders/field.js';
 
 export const VALID_DTO_TEST_CASES = [

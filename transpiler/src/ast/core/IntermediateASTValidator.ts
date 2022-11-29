@@ -1,10 +1,9 @@
-// import { BitloopsTypesMapping } from '../../helpers/mappings.js';
-import { IntermediateASTTree } from '../../refactoring-arch/intermediate-ast/IntermediateASTTree.js';
-import {
-  IntermediateASTNode,
-  IntermediateASTNodeValidationError,
-} from '../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 import { TBoundedContexts } from '../../types.js';
+import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
+import {
+  IntermediateASTNodeValidationError,
+  IntermediateASTNode,
+} from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { IntermediateASTValidationError, IIntermediateASTValidator } from './types.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {

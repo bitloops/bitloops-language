@@ -18,10 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { LiteralTypeBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
-import { LiteralValueBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
-import { DecimalLiteralBuilder } from '../../../../../../refactoring-arch/intermediate-ast/builders/expressions/literal/NumericLiteral/DecimalLiteralBuilder.js';
-import { DecimalLiteralNode } from '../../../../../../refactoring-arch/intermediate-ast/nodes/Expression/Literal/NumericLiteral/DecimalLiteralNode.js';
+import { LiteralTypeBuilder } from '../../../../intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
+import { LiteralValueBuilder } from '../../../../intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
+import { DecimalLiteralBuilder } from '../../../../intermediate-ast/builders/expressions/literal/NumericLiteral/DecimalLiteralBuilder.js';
+import { DecimalLiteralNode } from '../../../../intermediate-ast/nodes/Expression/Literal/NumericLiteral/DecimalLiteralNode.js';
 
 // export const decimalEvaluation = (value: any): any => {
 //   const decimalPart = value.split('.')[1].length;

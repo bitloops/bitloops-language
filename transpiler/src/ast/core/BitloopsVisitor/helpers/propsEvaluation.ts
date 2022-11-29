@@ -18,11 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { PropsEvaluationNode } from './../../../../refactoring-arch/intermediate-ast/nodes/Expression/Evaluation/PropsEvaluation.js';
+import { PropsEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/PropsEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/NameBuilder.js';
-import { PropsEvaluationNodeBuilder } from '../../../../refactoring-arch/intermediate-ast/builders/expressions/evaluation/PropsEvaluationBuilder.js';
+import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
+import { PropsEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/PropsEvaluationBuilder.js';
 
 export const propsEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,

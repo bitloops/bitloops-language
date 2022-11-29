@@ -19,9 +19,9 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { AssignmentExpressionNode } from './../../../../../refactoring-arch/intermediate-ast/nodes/Expression/AssignmentExpression.js';
-import { AssignmentExpressionNodeBuilder } from '../../../../../refactoring-arch/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
-import { ExpressionBuilder } from './../../../../../refactoring-arch/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { AssignmentExpressionNode } from '../../../intermediate-ast/nodes/Expression/AssignmentExpression.js';
+import { AssignmentExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/assignmentExprBuilder.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 
 export const assignmentExpressionVisitor = (
