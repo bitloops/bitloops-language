@@ -96,6 +96,11 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: "day = 'friday'",
   },
+  {
+    description: 'This expression',
+    expression: new ExpressionBuilderDirector().buildThisExpression(),
+    output: 'this',
+  },
 ];
 
 // export const VALID_TWO_DTOS_TEST_CASES = [
