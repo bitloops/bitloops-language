@@ -292,7 +292,7 @@ export type TNotInstanceOf = {
 };
 
 export type TGetClass = {
-  getClass: TRegularEvaluation;
+  getClass: TExpression;
 };
 
 export type TRegularEvaluation = {
@@ -321,10 +321,7 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
-  | TInstanceOf
   | TErrorEvaluation
-  | TNotInstanceOf
-  | TGetClass
   | TBuiltInClassEvaluation;
 
 export type TMethodCallExpression = {
@@ -415,7 +412,10 @@ export type TExpressionValues =
   | TMethodCallExpression
   | TThisExpression
   | TMemberDotExpression
-  | TAssignmentExpression;
+  | TAssignmentExpression
+  | TInstanceOf
+  | TNotInstanceOf
+  | TGetClass;
 
 export type TAssignmentExpression = {
   assignmentExpression: {
@@ -433,9 +433,7 @@ export type TIdentifierExpr = {
   identifier: string;
 };
 export type TToStringExpression = {
-  toString: {
-    value: string;
-  };
+  toString: TExpression;
 };
 
 export type TLiteral = {
