@@ -27,17 +27,4 @@ export abstract class ClassTypeNode extends IntermediateASTNode {
   getClassName(): string {
     return this.className;
   }
-
-  // public buildObjectValue(): void {
-  //   const children = this.getChildren();
-  //   const classNodeName = this.getClassNodeName();
-  //   const value = { [classNodeName]: { [this.className]: {} } };
-  //   children.forEach((child) => {
-  //     value[classNodeName][this.className] = {
-  //       ...value[classNodeName][this.className],
-  //       ...child.getValue(),
-  //     };
-  //   });
-  //   this.setValue(value);
-  // }
 }

@@ -1,13 +1,14 @@
 import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../../nodes/FieldList/FieldNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class FieldListNodeBuilder implements IBuilder<FieldListNode> {
   private fieldListNode: FieldListNode;
   private fieldNodes: FieldNode[];
 
-  constructor() {
-    this.fieldListNode = new FieldListNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.fieldListNode = new FieldListNode(metadata);
   }
 
   public withFields(fields: FieldNode[]): FieldListNodeBuilder {

@@ -9,55 +9,29 @@ import {
   IBitloopsIntermediateSetupASTParser,
 } from '../ast/setup/types.js';
 import { isBitloopsParserError } from '../parser/core/guards/index.js';
-import {
-  BitloopsLanguageASTContext,
-  BitloopsParserError,
-  TParserCoreInputData,
-} from '../parser/core/types.js';
+import { BitloopsParserError, TParserCoreInputData } from '../parser/core/types.js';
 import { IBitloopsParser } from '../parser/index.js';
 import { isBitloopsSetupParserError } from '../parser/setup/guards/index.js';
-import {
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParserError,
-  IBitloopsSetupParser,
-} from '../parser/setup/types.js';
+import { BitloopsSetupParserError, IBitloopsSetupParser } from '../parser/setup/types.js';
 import {
   BitloopsTargetGeneratorError,
   BitloopsTargetSetupGeneratorError,
   IBitloopsTargetGenerator,
-  TBitloopsOutputTargetContent,
-  TBitloopsTargetSetupContent,
 } from '../target/types.js';
 import {
   isBitloopsTargetGeneratorError,
   isBitloopsTargetSetupGeneratorError,
 } from '../target/typescript/guards/index.js';
-import { ISetupData, TBoundedContexts } from '../types.js';
-
-type TBitloopsTargetContent = {
-  targetCode: TBitloopsOutputTargetContent;
-  targetSetupCode: TBitloopsTargetSetupContent;
-};
-
-type TTranspileOptions = {
-  targetLanguage: string;
-  formatterConfig?: any;
-  sourceDirPath?: string;
-};
-
-type TTranspileErrors =
-  | BitloopsParserError
-  | BitloopsSetupParserError
-  | BitloopsIntermediateASTParserError
-  | BitloopsIntermediateSetupASTParserError
-  | BitloopsTargetGeneratorError
-  | BitloopsTargetSetupGeneratorError;
-
-type TTargetLanguageASTToTargetCodeOutput = {
-  core: TBitloopsOutputTargetContent;
-  setup?: TBitloopsTargetSetupContent;
-  errors: (BitloopsTargetGeneratorError | BitloopsTargetSetupGeneratorError)[];
-};
+import {
+  TBitloopsCodeToOriginalAST,
+  TBitloopsCodeToOriginalASTError,
+  TOriginalASTToIntermediateModel,
+  TOriginalASTToIntermediateModelError,
+  TTargetLanguageASTToTargetCode,
+  TTargetLanguageASTToTargetCodeError,
+  TTranspileError,
+  TTranspileOptions,
+} from './types.js';
 
 export default class Transpiler {
   constructor(
@@ -79,83 +53,86 @@ export default class Transpiler {
     this.targetLanguageASTToTargetCodeGenerator = targetLanguageASTToTargetCodeGenerator;
   }
 
-  static isTranspileError(
-    value: TBitloopsTargetContent | TTranspileErrors[],
-  ): value is TTranspileErrors[] {
-    if (Array.isArray(value)) return true;
-    return false;
+  public transpile(
+    transpileInputData: TParserCoreInputData,
+    options: TTranspileOptions,
+    setupBitloopsCode?: string,
+  ): TTargetLanguageASTToTargetCode | TTranspileError[] {
+    const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData, setupBitloopsCode);
+    if (Transpiler.isBitloopsCodeToOriginalASTError(originalAST)) return originalAST;
+
+    const intermediateModel = this.originalASTToIntermediateModel(originalAST);
+    if (Transpiler.isOriginalASTToIntermediateModelError(intermediateModel))
+      return intermediateModel;
+
+    const targetLanguageAST = this.intermediateModelToTargetLanguageAST(intermediateModel, options);
+
+    const targetCode = this.targetLanguageASTToTargetCode(targetLanguageAST, options);
+    if (Transpiler.isTargetLanguageASTToTargetCodeError(targetCode)) return targetCode;
+
+    return targetCode;
   }
 
   private bitloopsCodeToOriginalAST(
     parseInputData: TParserCoreInputData,
     setupBitloopsCode?: string,
-  ): {
-    core: BitloopsLanguageASTContext;
-    setup: BitloopsLanguageSetupAST;
-    errors: (BitloopsSetupParserError | BitloopsParserError)[];
-  } {
-    const originalAST = {
-      core: null,
-      setup: null,
-      errors: [],
-    };
+  ): TBitloopsCodeToOriginalAST | TBitloopsCodeToOriginalASTError[] {
+    const originalASTOutput: TBitloopsCodeToOriginalAST = { originalAST: null };
+    const errors = [];
 
     const originalLanguageAST = this.parser.parse(parseInputData);
     if (isBitloopsParserError(originalLanguageAST)) {
-      originalAST.errors.push(originalLanguageAST);
+      errors.push(originalLanguageAST);
     } else {
-      originalAST.core = originalLanguageAST;
+      originalASTOutput.originalAST = originalLanguageAST;
     }
 
     if (setupBitloopsCode) {
       const originalLanguageASTSetup = this.setupParser.parse(setupBitloopsCode);
       if (isBitloopsSetupParserError(originalLanguageASTSetup)) {
-        originalAST.errors.push(originalLanguageAST);
+        errors.push(originalLanguageASTSetup);
       } else {
-        originalAST.setup = originalLanguageASTSetup;
+        originalASTOutput.originalSetupAST = originalLanguageASTSetup;
       }
     }
 
-    return originalAST;
+    if (errors.length > 0) return errors;
+    else return originalASTOutput;
   }
 
   private originalASTToIntermediateModel(
-    originalLanguageAST: BitloopsLanguageASTContext,
-    originalLanguageASTSetup: BitloopsLanguageSetupAST,
-  ): {
-    core: TBoundedContexts;
-    setup: ISetupData;
-    errors: (BitloopsIntermediateASTParserError | BitloopsIntermediateSetupASTParserError)[];
-  } {
-    const intermediateModel = {
-      core: null,
-      setup: null,
-      errors: [],
-    };
-    const intermediateModelCore =
-      this.originalLanguageASTToIntermediateModelTransformer.parse(originalLanguageAST);
+    originalLanguageAST: TBitloopsCodeToOriginalAST,
+  ): TOriginalASTToIntermediateModel | TOriginalASTToIntermediateModelError[] {
+    const intermediateModelOutput: TOriginalASTToIntermediateModel = { intermediateModel: null };
+    const errors = [];
+
+    const intermediateModelCore = this.originalLanguageASTToIntermediateModelTransformer.parse(
+      originalLanguageAST.originalAST,
+    );
     if (isBitloopsIntermediateASTParserError(intermediateModelCore)) {
-      intermediateModel.errors.push(intermediateModelCore);
+      errors.push(intermediateModelCore);
     } else {
-      intermediateModel.core = intermediateModelCore;
+      intermediateModelOutput.intermediateModel = intermediateModelCore;
     }
 
-    if (originalLanguageASTSetup) {
+    if (originalLanguageAST.originalSetupAST) {
       const intermediateModelSetup =
-        this.originalLanguageASTToIntermediateModelSetupTransformer.parse(originalLanguageASTSetup);
+        this.originalLanguageASTToIntermediateModelSetupTransformer.parse(
+          originalLanguageAST.originalSetupAST,
+        );
       if (isBitloopsIntermediateSetupASTParserError(intermediateModelSetup)) {
-        intermediateModel.errors.push(originalLanguageAST);
+        errors.push(originalLanguageAST);
       } else {
-        intermediateModel.setup = intermediateModelSetup;
+        intermediateModelOutput.intermediateSetupModel = intermediateModelSetup;
       }
     }
-    return intermediateModel;
+    return intermediateModelOutput;
   }
 
   private intermediateModelToTargetLanguageAST(
-    intermediateModel: TBoundedContexts,
+    intermediateModel: TOriginalASTToIntermediateModel,
     _options: TTranspileOptions,
-  ): TBoundedContexts {
+  ): TOriginalASTToIntermediateModel {
     // TODO uncomment this and create class for model to model transformations for specific lnguages
     // const targetLanguageAST =
     //   this.intermediateModelToASTTargetLanguageTransformer.transform(intermediateModel);
@@ -163,74 +140,104 @@ export default class Transpiler {
   }
 
   private targetLanguageASTToTargetCode(
-    targetAST: TBoundedContexts,
-    setupData: ISetupData,
+    targetAST: TOriginalASTToIntermediateModel,
     options: TTranspileOptions,
-  ): TTargetLanguageASTToTargetCodeOutput {
-    const targetCode: TTargetLanguageASTToTargetCodeOutput = {
-      core: null,
-      setup: null,
-      errors: [],
-    };
+  ): TTargetLanguageASTToTargetCode | TTargetLanguageASTToTargetCodeError[] {
+    const targetCodeOutput: TTargetLanguageASTToTargetCode = { targetCode: null };
+    const errors = [];
+
     const targetLanguageAST = {
-      intermediateAST: targetAST,
-      setupData,
+      intermediateAST: targetAST.intermediateModel,
+      setupData: targetAST.intermediateSetupModel,
       ...options,
     };
     const targetCoreCode = this.targetLanguageASTToTargetCodeGenerator.generate(targetLanguageAST);
     if (isBitloopsTargetGeneratorError(targetCoreCode)) {
-      targetCode.errors.push(targetCoreCode);
+      errors.push(targetCoreCode);
     } else {
-      targetCode.core = targetCoreCode;
+      targetCodeOutput.targetCode = targetCoreCode;
     }
 
-    if (setupData) {
+    if (targetAST.intermediateSetupModel) {
       const targetSetupCode =
         this.targetLanguageASTToTargetCodeGenerator.generateSetup(targetLanguageAST);
       if (isBitloopsTargetSetupGeneratorError(targetSetupCode)) {
-        targetCode.errors.push(targetSetupCode);
+        errors.push(targetSetupCode);
       } else {
-        targetCode.setup = targetSetupCode;
+        targetCodeOutput.targetSetupCode = targetSetupCode;
       }
     }
 
-    return targetCode;
+    return targetCodeOutput;
   }
 
-  public transpile(
-    transpileInputData: TParserCoreInputData,
-    options: TTranspileOptions,
-    setupBitloopsCode?: string,
-  ): TBitloopsTargetContent | TTranspileErrors[] {
-    const {
-      core: originalASTCore,
-      setup: originalASTSetup,
-      errors: originalASTErrors,
-    } = this.bitloopsCodeToOriginalAST(transpileInputData, setupBitloopsCode);
-    if (originalASTErrors.length > 0) return originalASTErrors;
+  static isTranspileError(
+    value: TTargetLanguageASTToTargetCode | TTranspileError[],
+  ): value is TTranspileError[] {
+    if (
+      !Transpiler.isBitloopsCodeToOriginalASTError(value) &&
+      !Transpiler.isOriginalASTToIntermediateModelError(value) &&
+      !Transpiler.isTargetLanguageASTToTargetCodeError(value)
+    ) {
+      return false;
+    }
+    return true;
+  }
 
-    const {
-      core: intermediateModelCore,
-      setup: intermediateSetupModel,
-      errors: intermediateModelErrors,
-    } = this.originalASTToIntermediateModel(originalASTCore, originalASTSetup);
-    if (intermediateModelErrors.length > 0) return intermediateModelErrors;
+  static isBitloopsCodeToOriginalASTError(
+    value:
+      | TBitloopsCodeToOriginalAST
+      | TTargetLanguageASTToTargetCode
+      | TBitloopsCodeToOriginalASTError[],
+  ): value is TBitloopsCodeToOriginalASTError[] {
+    if (Array.isArray(value)) {
+      for (const err of value) {
+        if (!(err instanceof BitloopsSetupParserError) && !(err instanceof BitloopsParserError)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
 
-    const targetLanguageAST = this.intermediateModelToTargetLanguageAST(
-      intermediateModelCore,
-      options,
-    );
+  static isOriginalASTToIntermediateModelError(
+    value:
+      | TOriginalASTToIntermediateModel
+      | TTargetLanguageASTToTargetCode
+      | TOriginalASTToIntermediateModelError[],
+  ): value is TOriginalASTToIntermediateModelError[] {
+    if (Array.isArray(value)) {
+      for (const err of value) {
+        if (
+          !(err instanceof BitloopsIntermediateASTParserError) &&
+          !(err instanceof BitloopsIntermediateSetupASTParserError)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
 
-    const {
-      core: targetCode,
-      setup: targetSetupCode,
-      errors: targetCodeErrors,
-    } = this.targetLanguageASTToTargetCode(targetLanguageAST, intermediateSetupModel, options);
-    if (targetCodeErrors.length > 0) return targetCodeErrors;
-
-    return {
-      targetCode,
-      targetSetupCode,
-    };
+  static isTargetLanguageASTToTargetCodeError(
+    value:
+      | TTargetLanguageASTToTargetCode
+      | TTargetLanguageASTToTargetCode
+      | TTargetLanguageASTToTargetCodeError[],
+  ): value is TTargetLanguageASTToTargetCodeError[] {
+    if (Array.isArray(value)) {
+      for (const err of value) {
+        if (
+          !(err instanceof BitloopsTargetGeneratorError) &&
+          !(err instanceof BitloopsTargetSetupGeneratorError)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   }
 }

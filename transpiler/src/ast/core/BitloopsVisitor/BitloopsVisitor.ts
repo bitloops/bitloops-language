@@ -161,6 +161,7 @@ import {
   errorEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
+import { produceMetadata } from './metadata.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -192,13 +193,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDtoIdentifier(ctx: BitloopsParser.DtoIdentifierContext) {
     const identifierName = ctx.DTOIdentifier().getText();
-    const dtoIdentifierNode = new DTOIdentifierNodeBuilder().withName(identifierName).build();
+    const metadata = produceMetadata(ctx, this);
+    const dtoIdentifierNode = new DTOIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
     return dtoIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
     const identifierName = ctx.Identifier().getText();
-    const identifierNode = new IdentifierBuilder().withName(identifierName).build();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierBuilder(metadata).withName(identifierName).build();
     return identifierNode;
   }
 
