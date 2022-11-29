@@ -82,10 +82,10 @@ export const VALID_EXPRESSION_TEST_CASES = [
   {
     description: 'Array of strings',
     expression: new ExpressionBuilderDirector().buildArrayLiteralExpression(
-      new ExpressionBuilderDirector().buildStringLiteralExpression('1'),
-      new ExpressionBuilderDirector().buildStringLiteralExpression('42'),
+      new ExpressionBuilderDirector().buildStringLiteralExpression('joe'),
+      new ExpressionBuilderDirector().buildStringLiteralExpression('doe'),
     ),
-    output: "['1','42']",
+    output: "['joe','doe']",
   },
 ];
 
