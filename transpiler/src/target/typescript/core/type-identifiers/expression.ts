@@ -27,6 +27,7 @@ import {
   TLiteral,
   TAssignmentExpression,
   TThisExpression,
+  TMemberDotExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -97,4 +98,13 @@ export class ExpressionTypeIdentifiers {
     }
     return false;
   };
+
+  static isMemberDotExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TMemberDotExpression {
+    if ('memberDotExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
 }

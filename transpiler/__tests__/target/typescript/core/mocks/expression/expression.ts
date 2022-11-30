@@ -87,7 +87,6 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: "['joe','doe']",
   },
-  // TODO Add more assignment tests cases, when member dot(& this) is completed
   {
     description: 'Assign a variable something new',
     expression: new ExpressionBuilderDirector().buildAssignmentExpression(
@@ -97,9 +96,53 @@ export const VALID_EXPRESSION_TEST_CASES = [
     output: "day = 'friday'",
   },
   {
+    description: 'Assign to this props(old thisDeclaration)',
+    expression: new ExpressionBuilderDirector().buildAssignmentExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildThisExpression(),
+        'props',
+      ),
+      new ExpressionBuilderDirector().buildIdentifierExpression('newProps'),
+    ),
+    output: 'this.props = newProps',
+  },
+  {
+    description: 'Assignment to this.props.name',
+    expression: new ExpressionBuilderDirector().buildAssignmentExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildMemberDotExpression(
+          new ExpressionBuilderDirector().buildThisExpression(),
+          'props',
+        ),
+        'name',
+      ),
+      new ExpressionBuilderDirector().buildStringLiteralExpression('joe'),
+    ),
+    output: "this.props.name = 'joe'",
+  },
+  {
     description: 'This expression',
     expression: new ExpressionBuilderDirector().buildThisExpression(),
     output: 'this',
+  },
+  {
+    description: 'Member dot expression with this',
+    expression: new ExpressionBuilderDirector().buildMemberDotExpression(
+      new ExpressionBuilderDirector().buildThisExpression(),
+      'props',
+    ),
+    output: 'this.props',
+  },
+  {
+    description: 'Member dot expression 2 levels deep',
+    expression: new ExpressionBuilderDirector().buildMemberDotExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildThisExpression(),
+        'props',
+      ),
+      'name',
+    ),
+    output: 'this.props.name',
   },
 ];
 

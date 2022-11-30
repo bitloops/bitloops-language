@@ -136,6 +136,7 @@ import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvalu
 import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { assignmentExpressionToTargetLanguage } from './components/statements/expression/assignmentExpression.js';
 import { thisExpressionToTargetLanguage } from './components/statements/expression/thisExpression.js';
+import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 
 const modelToTargetLanguage = (props: {
   type: TBitloopsTypesValues;
@@ -527,6 +528,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TArrayLiteralExpression: {
       res = arrayLiteralExpressionToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TMemberDotExpression: {
+      res = memberDotExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TErrorEvaluation: {

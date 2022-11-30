@@ -80,6 +80,13 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isMemberDotExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TMemberDotExpression,
+      value: expressionValue,
+    });
+  }
+
   if ('classInstantiation' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TClassInstantiation,
