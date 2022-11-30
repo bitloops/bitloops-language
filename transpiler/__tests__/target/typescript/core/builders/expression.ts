@@ -30,6 +30,7 @@ import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-a
 import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
+import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -112,6 +113,18 @@ export class ExpressionBuilderDirector {
       .withRightExpression(right)
       .build();
     return new ExpressionBuilder().withExpression(assignmentNode).build();
+  }
+
+  buildMemberDotExpression(
+    leftExpression: ExpressionNode,
+    identifierValue: string,
+  ): ExpressionNode {
+    const identifierExpr = new IdentifierExpressionBuilder().withValue(identifierValue).build();
+    const memberExpr = new MemberDotExpressionNodeBuilder()
+      .withExpression(leftExpression)
+      .withIdentifier(identifierExpr)
+      .build();
+    return new ExpressionBuilder().withExpression(memberExpr).build();
   }
 
   buildEqualityExpression(

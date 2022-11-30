@@ -31,7 +31,7 @@ export const memberDotExpressionVisitor = (
 ): MemberDotExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
 
-  // When regularIdentifier is updated to use the new IdentifierExpressionBuilder,
+  // If regularIdentifier is updated to use the new IdentifierExpressionBuilder,
   const identifier = thisVisitor.visit(ctx.regularIdentifier());
 
   // this won't need to build a new IdentifierExpressionBuilder
