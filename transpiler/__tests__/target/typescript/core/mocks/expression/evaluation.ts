@@ -1,10 +1,15 @@
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
-import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 
 import { EntityEvaluationBuilderDirector } from '../../builders/evaluation.js';
+
+import { NameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/NameBuilder.js';
+import {
+  EvaluationBuilderDirector,
+  EvaluationFieldListBuilerDirector,
+} from '../../builders/evaluation.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -83,19 +88,17 @@ export const VALID_EVALUATION_TEST_CASES = [
     ),
     output: "TodoEntity.create({name: 'superMarketList'})",
   },
-
-  //   new ArgumentListDirector().buildArgumentListWithArgs([
-  //     new ArgumentNodeBuilder()
-  //       .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('now'))
-  //       .build(),
-  //     new ArgumentNodeBuilder()
-  //       .withExpression(new ExpressionBuilderDirector().buildInt32LiteralExpression(34))
-  //       .build(),
-  //   ]),
-  // ),
-  // output: 'this.GameEntity.start(now,34)',
-
-  // | {"errorEvaluation":{"name":"ApplicationErrors.InvalidTitleError","argumentDependencies":[{"value":"title","type":"variable"}]}}    | new ApplicationErrors.InvalidTitleError(title)      | [{"className": "index", "classType": "ApplicationErrors", "default": false, "type": "relative", "value": "ApplicationErrors"}] |
+  {
+    description: 'DTO evaluation',
+    evaluation: new EvaluationBuilderDirector().buildDTOEvaluation(
+      new NameNodeBuilder().withName('AddCourceDTO').build(),
+      new EvaluationFieldListBuilerDirector().buildEvaluationFieldListWithOneVariableField(
+        'course',
+        'Math',
+      ),
+    ),
+    output: "AddCourceDTO({course: 'Math'})",
+  },
 ];
 
 export const VALID_ENTITY_EVALUATION_TEST_CASES = [
