@@ -31,6 +31,8 @@ import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/int
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { MethodCallNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
+import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -230,6 +232,18 @@ export class ExpressionBuilderDirector {
     const expressionNode = new ExpressionBuilder()
       .withExpression(parenthesizedExpressionNode)
       .build();
+    return expressionNode;
+  }
+
+  buildMethodCallExpression(
+    expression: ExpressionNode,
+    argumentList: ArgumentListNode,
+  ): ExpressionNode {
+    const methodCallExpressionNode = new MethodCallNodeBuilder()
+      .withExpression(expression)
+      .withArgumentsList(argumentList)
+      .build();
+    const expressionNode = new ExpressionBuilder().withExpression(methodCallExpressionNode).build();
     return expressionNode;
   }
 }

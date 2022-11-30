@@ -35,16 +35,4 @@ export const methodCallExpressionVisitor = (
     .withArgumentsList(argumentList)
     .build();
   return new ExpressionBuilder().withExpression(node).build();
-  // const value = {
-  //   type: 'method',
-  //   value: leftExpressionValue,
-  //   argumentDependencies: argumentList,
-  // };
-  // return {
-  //   expression: {
-  //     evaluation: {
-  //       regularEvaluation: value,
-  //     },
-  //   },
-  // };
 };

@@ -30,12 +30,14 @@ import {
   TThisExpression,
   TParenthesizedExpression,
   TMemberDotExpression,
+  TMethodCallExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
-  static isMethodCallExpression(expressionStatement: TExpression): boolean {
-    const { expression } = expressionStatement;
-    if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+  static isMethodCallExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TMethodCallExpression {
+    if ('methodCallExpression' in expressionValue) {
       return true;
     }
     return false;

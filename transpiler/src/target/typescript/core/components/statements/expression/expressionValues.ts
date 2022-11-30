@@ -144,6 +144,13 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
+
+  if (ExpressionTypeIdentifiers.isMethodCallExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TMethodCallExpression,
+      value: expressionValue,
+    });
+  }
   if ('toString' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TToStringExpression,
