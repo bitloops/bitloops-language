@@ -28,7 +28,6 @@ Feature: Expression to Typescript target language
 
 
 
-
     Scenario Template: Unsupported expression type
     Given I have an invalid <expression> with unsupported <expressionType>
     When I generate the code

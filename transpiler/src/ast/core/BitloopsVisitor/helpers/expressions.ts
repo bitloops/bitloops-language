@@ -214,12 +214,8 @@ export const parenthesizedExpressionVisitor = (
     .withExpression(expression)
     .build();
   return new ExpressionBuilder().withExpression(parenthesizedExpr).build();
-  // return {
-  //   expression: {
-  //     parenthesizedExpression: expression.expression,
-  //   },
-  // };
 };
+
 export const LiteralExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctxLiteral: BitloopsParser.LiteralExpressionContext,
