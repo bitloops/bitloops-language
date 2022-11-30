@@ -21,6 +21,7 @@ import { TDomainEvaluation, TTargetDependenciesTypeScript } from '../../../../..
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { getChildDependencies } from '../../../../dependencies.js';
+import { DomainEvaluationPropsTypeIdentifiers } from '../../../../type-identifiers/domainEvaluationProps.js';
 
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
@@ -29,15 +30,15 @@ export const domainEvaluationToTargetLanguage = (
   const domainName = evaluation.domainEvaluation.name;
 
   let resultDomainProps: TTargetDependenciesTypeScript;
-  if ('regularEvaluation' in domainProperties) {
+  if (DomainEvaluationPropsTypeIdentifiers.isExpression(domainProperties)) {
     resultDomainProps = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TRegularEvaluation,
+      type: BitloopsTypesMapping.TExpression,
       value: domainProperties,
     });
   } else {
     resultDomainProps = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEvaluationFields,
-      value: domainProperties,
+      value: domainProperties.fields,
     });
   }
 

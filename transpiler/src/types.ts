@@ -1141,6 +1141,7 @@ type TDependencyTypescript = {
 };
 
 export type TDependencyChildTypescript = TDependencyTypescript & {
+  // when type is relative
   classType?: TClassTypesValues;
   className?: string;
 };

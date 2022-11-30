@@ -33,6 +33,8 @@ defineFeature(feature, (test) => {
   let modelOutput;
   let result;
 
+  const boundedContext = 'Hello World';
+  const module = 'core';
   test('entityEvaluation is valid', ({ given, when, then }) => {
     given(/^A valid entityEvaluation (.*) string$/, (arg0) => {
       blString = d(arg0);
@@ -53,6 +55,9 @@ defineFeature(feature, (test) => {
         result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
+
+        const tree = result[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
       }
     });
 

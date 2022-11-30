@@ -139,8 +139,13 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
       const { output } = fileContent;
       const parentDependecies = fileContent.dependencies as TDependencyParentTypescript[];
 
-      const importsResult = this.generateDepndenciesString(parentDependecies, false);
-      const finalContent = importsResult + output;
+      let finalContent;
+      if (classType) {
+        const importsResult = this.generateDepndenciesString(parentDependecies, false);
+        finalContent = importsResult + output;
+      } else {
+        finalContent = output;
+      }
 
       formattedCode.push({
         boundedContext,

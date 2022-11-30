@@ -4,6 +4,8 @@ import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 
+import { EntityEvaluationBuilderDirector } from '../../builders/evaluation.js';
+
 export const VALID_EVALUATION_TEST_CASES = [
   {
     description: 'Simple struct expression with one field',
@@ -87,18 +89,14 @@ export const VALID_EVALUATION_TEST_CASES = [
   // | {"errorEvaluation":{"name":"ApplicationErrors.InvalidTitleError","argumentDependencies":[{"value":"title","type":"variable"}]}}    | new ApplicationErrors.InvalidTitleError(title)      | [{"className": "index", "classType": "ApplicationErrors", "default": false, "type": "relative", "value": "ApplicationErrors"}] |
 ];
 
-// export const VALID_TWO_DTOS_TEST_CASES = [
-//   {
-//     description: 'DTOs with different fields',
-//     fieldListNode: new FieldListNodeBuilder()
-//       .withFields([new FieldBuilderDirector().buildOptionalPrimitiveField('todo', 'bool')])
-//       .build(),
-//     secondFieldListNode: new FieldListNodeBuilder()
-//       .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('hello', 'uint64')])
-//       .build(),
-//     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('TodoDTO').build(),
-//     secondDTOIdentifierNode: new DTOIdentifierNodeBuilder().withName('HelloDTO').build(),
-//     output: 'export interface TodoDTO { todo?: boolean; }',
-//     secondOutput: '(a == b) && (c >= d) ',
-//   },
-// ];
+export const VALID_ENTITY_EVALUATION_TEST_CASES = [
+  {
+    description: 'Entity evaluation with field list',
+    entityEvaluation: new EntityEvaluationBuilderDirector().buildEntityEvaluationWithFieldList(
+      'TodoEntity',
+      'name',
+      'superMarketList',
+    ),
+    output: "TodoEntity.create({name: 'superMarketList'})",
+  },
+];

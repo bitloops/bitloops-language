@@ -27,8 +27,7 @@ export class DomainEvaluationPropsNodeBuilder implements IBuilder<DomainEvaluati
   public build(): DomainEvaluationPropsNode {
     if (this.evaluationFieldListNode) {
       this.domainEvaluationPropsNode.addChild(this.evaluationFieldListNode);
-    }
-    if (this.expressionNode) {
+    } else if (this.expressionNode) {
       this.domainEvaluationPropsNode.addChild(this.expressionNode);
     }
 
