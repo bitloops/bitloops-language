@@ -74,3 +74,16 @@ export const validMemberDotExpressionTestCases = [
     ),
   },
 ];
+
+export const validArrayLiteralExpressionTestCases = [
+  {
+    description: 'An array of ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { [1, 2, 3] }',
+    expression: new ExpressionBuilderDirector().buildArrayLiteralExpressionOf(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(3),
+    ),
+  },
+];

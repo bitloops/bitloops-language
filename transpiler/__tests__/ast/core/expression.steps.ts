@@ -30,6 +30,7 @@ import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/Inte
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTParserError } from '../../../src/ast/core/types.js';
 import {
+  validArrayLiteralExpressionTestCases,
   validExpressionIdentifierTestCases,
   validExpressionLiteralTestCases,
   validMemberDotExpressionTestCases,
@@ -646,6 +647,38 @@ describe('Member dot expression test cases', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validMemberDotExpressionTestCases.forEach((testDTO) => {
+    test(`${testDTO.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testDTO.fileId,
+          fileContents: testDTO.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testDTO.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Array literal expression test cases', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validArrayLiteralExpressionTestCases.forEach((testDTO) => {
     test(`${testDTO.description}`, () => {
       const initialModelOutput = parser.parse([
         {
