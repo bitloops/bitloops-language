@@ -1,5 +1,7 @@
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 
 export const VALID_EXPRESSION_TEST_CASES = [
@@ -235,5 +237,17 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: 'result.constructor',
     // TODO Add test when method call is completed | this.clientError(response).constructor  |
+  },
+  {
+    description: 'Test an evaluation(struct evaluation)',
+    expression: new ExpressionBuilderDirector().buildEvaluationExpression(
+      new EvaluationBuilderDirector().buildStructEvaluation('PersonStruct', [
+        new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+          'message',
+          'Hello, World!',
+        ),
+      ]),
+    ),
+    output: "{ message:'Hello, World!'} ",
   },
 ];
