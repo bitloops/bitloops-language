@@ -26,7 +26,7 @@ import { literalExpressionToTargetLanguage } from './literalExpression.js';
 
 export { evaluationToTargetLanguage, instanceOfToTargetLanguage };
 
-enum INDICATORS {
+export enum INDICATORS {
   RELATIONAL_EXPRESSION = 'relationalExpression',
   LOGICAL_EXPRESSION = 'logicalExpression',
   ADDITIVE_EXPRESSION = 'additiveExpression',
@@ -145,7 +145,7 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
-  if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
+  if (ExpressionTypeIdentifiers.isParenthesizedExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TParenthesizedExpression,
       value: expressionValue,

@@ -29,6 +29,7 @@ import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermedi
 import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
+import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
 
@@ -225,6 +226,16 @@ export class ExpressionBuilderDirector {
   buildThisExpression(): ExpressionNode {
     const thisExpressionNode = new ThisExpressionNodeBuilder().build();
     const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();
+    return expressionNode;
+  }
+
+  buildParenthesizedExpression(expression: ExpressionNode): ExpressionNode {
+    const parenthesizedExpressionNode = new ParenthesizedExpressionNodeBuilder()
+      .withExpression(expression)
+      .build();
+    const expressionNode = new ExpressionBuilder()
+      .withExpression(parenthesizedExpressionNode)
+      .build();
     return expressionNode;
   }
 }

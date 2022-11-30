@@ -1135,7 +1135,7 @@ export type TEqualityExpression = {
 export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
-  parenthesizedExpression: TExpressionValues;
+  parenthesizedExpression: TExpression;
 };
 
 type TDependencyTypescript = {

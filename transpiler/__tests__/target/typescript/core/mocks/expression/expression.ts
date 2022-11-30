@@ -126,6 +126,24 @@ export const VALID_EXPRESSION_TEST_CASES = [
     output: 'this',
   },
   {
+    description: 'Expression with parenthesis',
+    expression: new ExpressionBuilderDirector().buildParenthesizedExpression(
+      new ExpressionBuilderDirector().buildANDExpression(
+        new ExpressionBuilderDirector().buildRelationalExpression(
+          new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+          new ExpressionBuilderDirector().buildInt32LiteralExpression(120),
+          '>',
+        ),
+        new ExpressionBuilderDirector().buildRelationalExpression(
+          new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+          new ExpressionBuilderDirector().buildFloatLiteralExpression(5.42),
+          '<',
+        ),
+      ),
+    ),
+    output: '(title > 120 && title < 5.42)',
+  },
+  {
     description: 'Member dot expression with this',
     expression: new ExpressionBuilderDirector().buildMemberDotExpression(
       new ExpressionBuilderDirector().buildThisExpression(),

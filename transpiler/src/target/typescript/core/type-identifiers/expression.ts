@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { INDICATORS } from '../components/statements/expression/expressionValues.js';
 import {
   TArrayLiteralExpression,
   TExpression,
@@ -27,6 +28,7 @@ import {
   TLiteral,
   TAssignmentExpression,
   TThisExpression,
+  TParenthesizedExpression,
   TMemberDotExpression,
   TToStringExpression,
 } from './../../../../types.js';
@@ -95,6 +97,15 @@ export class ExpressionTypeIdentifiers {
     expressionValue: TExpressionValues,
   ): expressionValue is TThisExpression => {
     if ('thisExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isParenthesizedExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TParenthesizedExpression => {
+    if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
       return true;
     }
     return false;
