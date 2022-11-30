@@ -12,6 +12,8 @@ import { ErrorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermed
 import { ArgumentListNode } from './../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { EvaluationFieldListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { EntityEvaluationBuilderDirector } from './domainEvaluation/entityEvaluation.js';
+import { ValueObjectEvaluationBuilderDirector } from './domainEvaluation/valueObjectEvaluation.js';
+import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -79,6 +81,21 @@ export class EvaluationBuilderDirector {
       .build();
 
     const evaluationNode = new EvaluationBuilder().withEvaluation(builtinClassNode).build();
+    return evaluationNode;
+  }
+
+  buildValueObjectEvaluation(
+    valueObjectName: string,
+    expressionNode: ExpressionNode,
+  ): EvaluationNode {
+    const valueObjectEvaluationNode =
+      new ValueObjectEvaluationBuilderDirector().buildValueObjectEvaluationWithExpression(
+        valueObjectName,
+        expressionNode,
+      );
+    const evaluationNode = new EvaluationBuilder()
+      .withEvaluation(valueObjectEvaluationNode)
+      .build();
     return evaluationNode;
   }
 }

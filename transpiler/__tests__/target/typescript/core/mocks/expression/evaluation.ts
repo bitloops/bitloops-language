@@ -7,6 +7,7 @@ import { EntityEvaluationBuilderDirector } from '../../builders/domainEvaluation
 
 import { NameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/NameBuilder.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
+import { ValueObjectEvaluationBuilderDirector } from '../../builders/domainEvaluation/valueObjectEvaluation.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -51,6 +52,14 @@ export const VALID_EVALUATION_TEST_CASES = [
         .build(),
     ),
     output: "TodoEntity.create({name: 'superMarketList'})",
+  },
+  {
+    description: 'Value object evaluation with identifier expression',
+    evaluation: new EvaluationBuilderDirector().buildValueObjectEvaluation(
+      'AddressVO',
+      new ExpressionBuilderDirector().buildIdentifierExpression('addressProps'),
+    ),
+    output: 'AddressVO.create(addressProps)',
   },
 ];
 
@@ -185,5 +194,50 @@ export const VALID_DTO_EVALUATION_TEST_CASES = [
         .build(),
     ),
     output: "AddCourceDTO({course: 'Math'})",
+  },
+];
+
+export const VALID_VALUE_OBJECT_EVALUATION_TEST_CASES = [
+  {
+    description: 'Value object evaluation with field list',
+    valueObjectEvaluation:
+      new ValueObjectEvaluationBuilderDirector().buildValueObjectEvaluationWithFieldList(
+        'AddressVO',
+        new EvaluationFieldListNodeBuilder()
+          .withEvaluationFields([
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+              'street',
+              'Thessalias',
+            ),
+          ])
+          .build(),
+      ),
+    output: "AddressVO.create({street: 'Thessalias'})",
+  },
+  {
+    description: 'Value object evaluation with field list multilpe arguments',
+    valueObjectEvaluation:
+      new ValueObjectEvaluationBuilderDirector().buildValueObjectEvaluationWithFieldList(
+        'AddressVO',
+        new EvaluationFieldListNodeBuilder()
+          .withEvaluationFields([
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+              'street',
+              'Thessalias',
+            ),
+            new EvaluationFieldBuilderDirector().buildInt32LiteralEvaluationField('number', 4),
+          ])
+          .build(),
+      ),
+    output: "AddressVO.create({street: 'Thessalias', number: 4})",
+  },
+  {
+    description: 'Value object evaluation with identifier expression',
+    valueObjectEvaluation:
+      new ValueObjectEvaluationBuilderDirector().buildValueObjectEvaluationWithExpression(
+        'AddressVO',
+        new ExpressionBuilderDirector().buildIdentifierExpression('addressProps'),
+      ),
+    output: 'AddressVO.create(addressProps)',
   },
 ];
