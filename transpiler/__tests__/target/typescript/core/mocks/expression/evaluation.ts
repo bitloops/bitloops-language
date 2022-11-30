@@ -65,7 +65,7 @@ export const VALID_EVALUATION_TEST_CASES = [
   {
     description: 'Application Error evaluation with one argument',
     evaluation: new EvaluationBuilderDirector().buildErrorEvaluation(
-      'DomainErrors.InvalidTitleError',
+      'ApplicationErrors.InvalidTitleError',
       new ArgumentListDirector().buildArgumentListWithArgs([
         new ArgumentNodeBuilder()
           .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('title'))
