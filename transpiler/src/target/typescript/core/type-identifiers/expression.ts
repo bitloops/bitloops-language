@@ -1,4 +1,3 @@
-import { TGetClass } from './../../../../types';
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -33,6 +32,7 @@ import {
   TMemberDotExpression,
   TMethodCallExpression,
   TToStringExpression,
+  TGetClass,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {

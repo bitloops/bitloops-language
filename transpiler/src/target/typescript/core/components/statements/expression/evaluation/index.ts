@@ -20,11 +20,12 @@
 import { TEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { EvaluationTypeIdentifiers } from '../../../../type-identifiers/evaluation.js';
 
-const STRUCT_STRING = 'struct';
 const DTO_STRING = 'dto';
 
 const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesTypeScript => {
+  EvaluationTypeIdentifiers;
   const { evaluation } = variable;
   if ('regularEvaluation' in evaluation) {
     return modelToTargetLanguage({
@@ -46,7 +47,8 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       type: BitloopsTypesMapping.TEntityEvaluation,
       value: evaluation,
     });
-  } else if (STRUCT_STRING in evaluation) {
+  }
+  if (EvaluationTypeIdentifiers.isStructEvaluation(evaluation)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TStructEvaluation,
       value: evaluation,

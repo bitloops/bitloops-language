@@ -41,7 +41,7 @@ describe('Valid evaluation test cases', () => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const evaluationNode = testCase.expression;
+      const evaluationNode = testCase.evaluation;
       tree.insertChild(evaluationNode);
 
       const intermediateAST = {
