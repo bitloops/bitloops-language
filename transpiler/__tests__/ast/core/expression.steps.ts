@@ -32,6 +32,7 @@ import { IntermediateASTParserError } from '../../../src/ast/core/types.js';
 import {
   validExpressionIdentifierTestCases,
   validExpressionLiteralTestCases,
+  validMemberDotExpressionTestCases,
 } from './mocks/expression.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
@@ -567,6 +568,10 @@ defineFeature(feature, (test) => {
   });
 });
 
+/**
+ * Migrated Tests using Directors
+ */
+
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
@@ -609,6 +614,38 @@ describe('Identifier is valid', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validExpressionIdentifierTestCases.forEach((testDTO) => {
+    test(`${testDTO.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testDTO.fileId,
+          fileContents: testDTO.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testDTO.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Member dot expression test cases', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validMemberDotExpressionTestCases.forEach((testDTO) => {
     test(`${testDTO.description}`, () => {
       const initialModelOutput = parser.parse([
         {

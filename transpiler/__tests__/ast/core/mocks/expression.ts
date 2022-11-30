@@ -41,3 +41,36 @@ export const validExpressionIdentifierTestCases = [
     expression: new ExpressionBuilderDirector().buildIdentifierExpression('PersonDTO'),
   },
 ];
+
+export const validMemberDotExpressionTestCases = [
+  {
+    description: 'simple identifier expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { this.hello }',
+    expression: new ExpressionBuilderDirector().buildMemberExpression(
+      new ExpressionBuilderDirector().buildThisExpression(),
+      'hello',
+    ),
+  },
+  {
+    description: 'a DTO identifier expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { this.person.name }',
+    expression: new ExpressionBuilderDirector().buildMemberExpression(
+      new ExpressionBuilderDirector().buildMemberExpression(
+        new ExpressionBuilderDirector().buildThisExpression(),
+        'person',
+      ),
+      'name',
+    ),
+  },
+  {
+    description: 'a DTO identifier expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { person.name }',
+    expression: new ExpressionBuilderDirector().buildMemberExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('person'),
+      'name',
+    ),
+  },
+];
