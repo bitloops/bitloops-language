@@ -20,4 +20,9 @@ export class EvaluationFieldBuilderDirector {
     const stringExpression = new ExpressionBuilderDirector().buildStringLiteralExpression(value);
     return this.buildEvaluationField(name, stringExpression);
   }
+
+  buildInt32LiteralEvaluationField(name: string, value: number): EvaluationFieldNode {
+    const int32Expression = new ExpressionBuilderDirector().buildInt32LiteralExpression(value);
+    return this.buildEvaluationField(name, int32Expression);
+  }
 }
