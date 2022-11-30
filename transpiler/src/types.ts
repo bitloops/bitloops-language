@@ -433,7 +433,7 @@ export type TIdentifierExpr = {
   identifier: string;
 };
 export type TToStringExpression = {
-  toString: TExpression;
+  toStringMethod: TExpression;
 };
 
 export type TLiteral = {

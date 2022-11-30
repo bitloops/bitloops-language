@@ -28,6 +28,7 @@ import {
   TAssignmentExpression,
   TThisExpression,
   TMemberDotExpression,
+  TToStringExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -103,6 +104,15 @@ export class ExpressionTypeIdentifiers {
     expressionValue: TExpressionValues,
   ): expressionValue is TMemberDotExpression {
     if ('memberDotExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isToStringExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TToStringExpression {
+    if ('toStringMethod' in expressionValue) {
       return true;
     }
     return false;

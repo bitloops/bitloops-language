@@ -87,6 +87,13 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isToStringExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TToStringExpression,
+      value: expressionValue,
+    });
+  }
+
   if ('classInstantiation' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TClassInstantiation,
@@ -144,14 +151,14 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
-  if ('toString' in expressionValue) {
+  if ('toStringMethod' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
 
-  throw new Error(`Unsupported expression: ${expressionValue}`);
+  throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 
 export { expressionValuesToTargetLanguage };

@@ -30,6 +30,7 @@ import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-a
 import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -124,6 +125,11 @@ export class ExpressionBuilderDirector {
       .withIdentifier(identifierExpr)
       .build();
     return new ExpressionBuilder().withExpression(memberExpr).build();
+  }
+
+  buildToStringExpression(expression: ExpressionNode): ExpressionNode {
+    const node = new ToStringBuilder().withExpression(expression).build();
+    return new ExpressionBuilder().withExpression(node).build();
   }
 
   buildEqualityExpression(

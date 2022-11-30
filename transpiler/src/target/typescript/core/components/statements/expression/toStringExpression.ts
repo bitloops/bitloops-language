@@ -5,6 +5,7 @@ import { TTargetDependenciesTypeScript, TToStringExpression } from '../../../../
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const toStringToTarget = (variable: TToStringExpression): TTargetDependenciesTypeScript => {
+  console.log('toStringToTarget', variable);
   const { toString } = variable;
   const result = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
