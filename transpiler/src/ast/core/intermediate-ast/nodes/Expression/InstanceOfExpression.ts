@@ -2,11 +2,11 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
-const NAME = 'toStringMethod';
-export class ToStringNode extends ExpressionNode {
+const NAME = 'isInstanceOf';
+export class InstanceOfExpressionNode extends ExpressionNode {
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
-    this.nodeType = BitloopsTypesMapping.TToStringExpression;
+    this.nodeType = BitloopsTypesMapping.TInstanceOf;
     this.classNodeName = NAME;
   }
 }

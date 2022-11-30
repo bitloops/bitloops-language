@@ -70,7 +70,7 @@ export const VALID_EXPRESSION_TEST_CASES = [
     expression: new ExpressionBuilderDirector().buildNotExpression(
       new ExpressionBuilderDirector().buildIdentifierExpression('a'),
     ),
-    output: '! a ',
+    output: '!a',
   },
   {
     description: 'Array of integers',
@@ -128,6 +128,32 @@ export const VALID_EXPRESSION_TEST_CASES = [
     output: 'this',
   },
   {
+    description: 'Instanceof expression',
+    expression: new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+      'result',
+      'TestClassName',
+    ),
+    output: 'result instanceof TestClassName',
+  },
+  {
+    description: 'Instanceof Error expression',
+    expression: new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+      'result',
+      'Error',
+    ),
+    output: 'result.isFail()',
+  },
+  {
+    description: 'Not Instanceof expression',
+    expression: new ExpressionBuilderDirector().buildNotExpression(
+      new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+        'result',
+        'TestClassName',
+      ),
+    ),
+    output: '!(result instanceof TestClassName)',
+  },
+  {
     description: 'Expression with parenthesis',
     expression: new ExpressionBuilderDirector().buildParenthesizedExpression(
       new ExpressionBuilderDirector().buildANDExpression(
@@ -181,5 +207,33 @@ export const VALID_EXPRESSION_TEST_CASES = [
       ]),
     ),
     output: 'this.GameEntity.start(now,34)',
+  },
+  {
+    description: 'this.props.name to String()',
+    expression: new ExpressionBuilderDirector().buildToStringExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildMemberDotExpression(
+          new ExpressionBuilderDirector().buildThisExpression(),
+          'props',
+        ),
+        'name',
+      ),
+    ),
+    output: 'this.props.name.toString()',
+  },
+  {
+    description: 'Simple variable toString(',
+    expression: new ExpressionBuilderDirector().buildToStringExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('cat'),
+    ),
+    output: 'cat.toString()',
+  },
+  {
+    description: 'Get class of variable',
+    expression: new ExpressionBuilderDirector().buildGetClassExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('result'),
+    ),
+    output: 'result.constructor',
+    // TODO Add test when method call is completed | this.clientError(response).constructor  |
   },
 ];

@@ -17,23 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TGetClass, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { TGetClass, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const getClassToTargetLanguage = (variable: TGetClass): TTargetDependenciesTypeScript => {
-  const regularEvaluationResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TRegularEvaluation,
-    value: variable.getClass,
+  const { getClass } = variable;
+  const getClassExpressionResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: getClass,
   });
 
-  const getClassLangMapping = (evaluationResult: string): string => {
-    return `${evaluationResult}.constructor`;
-  };
+  const { output: expressionResult, dependencies } = getClassExpressionResult;
+
+  const getClassRes = `${expressionResult}.constructor`;
 
   return {
-    output: getClassLangMapping(regularEvaluationResult.output),
-    dependencies: regularEvaluationResult.dependencies,
+    output: getClassRes,
+    dependencies: dependencies,
   };
 };
 

@@ -20,7 +20,6 @@
 import { TEvaluation, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
-import { instanceOfToTargetLanguage, notInstanceOfToTargetLanguage } from './instance.js';
 
 const STRUCT_STRING = 'struct';
 const DTO_STRING = 'dto';
@@ -30,16 +29,6 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
   if ('regularEvaluation' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularEvaluation,
-      value: evaluation,
-    });
-  } else if ('isInstanceOf' in evaluation) {
-    return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TInstanceOf,
-      value: evaluation,
-    });
-  } else if ('isNotInstanceOf' in evaluation) {
-    return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TNotInstanceOf,
       value: evaluation,
     });
   } else if ('getClass' in evaluation) {
@@ -82,4 +71,4 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
   }
 };
 
-export { evaluationToTargetLanguage, instanceOfToTargetLanguage, notInstanceOfToTargetLanguage };
+export { evaluationToTargetLanguage };

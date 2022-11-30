@@ -20,11 +20,11 @@
 import { TExpressionValues, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
-import { evaluationToTargetLanguage, instanceOfToTargetLanguage } from './evaluation/index.js';
+import { evaluationToTargetLanguage } from './evaluation/index.js';
 import { ExpressionTypeIdentifiers } from './../../../type-identifiers/expression.js';
 import { literalExpressionToTargetLanguage } from './literalExpression.js';
 
-export { evaluationToTargetLanguage, instanceOfToTargetLanguage };
+export { evaluationToTargetLanguage };
 
 export enum INDICATORS {
   RELATIONAL_EXPRESSION = 'relationalExpression',
@@ -80,9 +80,29 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isInstanceOfExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TInstanceOf,
+      value: expressionValue,
+    });
+  }
+
   if (ExpressionTypeIdentifiers.isMemberDotExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TMemberDotExpression,
+      value: expressionValue,
+    });
+  }
+  if (ExpressionTypeIdentifiers.isGetClassExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TGetClass,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isToStringExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
@@ -151,14 +171,14 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
-  if ('toString' in expressionValue) {
+  if ('toStringMethod' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
 
-  throw new Error(`Unsupported expression: ${expressionValue}`);
+  throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 
 export { expressionValuesToTargetLanguage };

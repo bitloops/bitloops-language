@@ -29,10 +29,14 @@ import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermedi
 import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
+import { ClassNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ClassBuilder.js';
+import { IsInstanceOfExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/IsIntanceOfExpressionBuilder.js';
 import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 import { MethodCallNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
 import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
+import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
+import { GetClassNodeBuilder } from './../../../../../src/ast/core/intermediate-ast/builders/expressions/GetClassBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -129,6 +133,16 @@ export class ExpressionBuilderDirector {
     return new ExpressionBuilder().withExpression(memberExpr).build();
   }
 
+  buildToStringExpression(expression: ExpressionNode): ExpressionNode {
+    const node = new ToStringBuilder().withExpression(expression).build();
+    return new ExpressionBuilder().withExpression(node).build();
+  }
+
+  buildGetClassExpression(expression: ExpressionNode): ExpressionNode {
+    const node = new GetClassNodeBuilder().withExpression(expression).build();
+    return new ExpressionBuilder().withExpression(node).build();
+  }
+
   buildEqualityExpression(
     expr1: ExpressionNode,
     expr2: ExpressionNode,
@@ -222,6 +236,20 @@ export class ExpressionBuilderDirector {
   buildThisExpression(): ExpressionNode {
     const thisExpressionNode = new ThisExpressionNodeBuilder().build();
     const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();
+    return expressionNode;
+  }
+
+  buildInstanceOfWithIdentifierExpression(
+    identifier: string,
+    classToCompare: string,
+  ): ExpressionNode {
+    const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
+    const expression = this.buildIdentifierExpression(identifier);
+    const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
+      .withClass(classNode)
+      .withExpression(expression)
+      .build();
+    const expressionNode = new ExpressionBuilder().withExpression(isInstanceOfNode).build();
     return expressionNode;
   }
 
