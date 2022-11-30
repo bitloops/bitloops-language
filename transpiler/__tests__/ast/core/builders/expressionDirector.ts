@@ -1,6 +1,6 @@
 import { TArgumentList, TExpression } from '../../../../src/types.js';
 
-export class FieldBuilderDirector {
+export class ExpressionBuilderDirector {
   buildIdentifierExpression(identifier: string): TExpression {
     return {
       expression: {

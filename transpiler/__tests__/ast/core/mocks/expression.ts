@@ -1,18 +1,43 @@
-import { FieldBuilderDirector } from '../builders/fieldDirector.js';
-import { IdentifierBuilder } from '../builders/identifier.js';
+import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 
-export const validDTOTestCases = [
+export const validExpressionLiteralTestCases = [
   {
-    description: 'DTO with optional field containing array type',
+    description: 'Simple int32 literal',
     fileId: 'testFile.bl',
-    inputBLString: 'DTO HelloWorldRequestDTO{ optional string[][] name; }',
-    variables: [
-      new FieldBuilderDirector().buildDoubleArrayField({
-        name: 'name',
-        type: 'string',
-        isOptional: true,
-      }),
-    ],
-    identifier: new IdentifierBuilder().withDTOName('HelloWorldRequestDTO').build(),
+    inputBLString: 'JestTestExpression { 42 }',
+    expression: new ExpressionBuilderDirector().buildInt32LiteralExpression(42),
+  },
+  {
+    description: 'a numeric string',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { "42" }',
+    expression: new ExpressionBuilderDirector().buildStringLiteralExpression('42'),
+  },
+  {
+    description: 'a random String literal',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { "A random string" }',
+    expression: new ExpressionBuilderDirector().buildStringLiteralExpression('A random string'),
+  },
+  {
+    description: 'a simple boolean literal',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { true }',
+    expression: new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+  },
+];
+
+export const validExpressionIdentifierTestCases = [
+  {
+    description: 'simple identifier expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { helloWorld }',
+    expression: new ExpressionBuilderDirector().buildIdentifierExpression('helloWorld'),
+  },
+  {
+    description: 'a DTO identifier expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { PersonDTO }',
+    expression: new ExpressionBuilderDirector().buildIdentifierExpression('PersonDTO'),
   },
 ];
