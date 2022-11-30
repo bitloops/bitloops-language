@@ -31,7 +31,7 @@ import { constDecompositionToTargetLanguage } from './components/statements/cons
 import { constDeclarationToTargetLanguage } from './components/statements/constDeclaration.js';
 import { classInstantiationToTargetLanguage } from './components/statements/expression/classInstantiation.js';
 import { conditionToTargetLanguage } from './components/statements/expression/condition.js';
-import { getClassToTargetLanguage } from './components/statements/expression/evaluation/getClass.js';
+import { getClassToTargetLanguage } from './components/statements/expression/getClass.js';
 import { evaluationToTargetLanguage } from './components/statements/expression/evaluation/index.js';
 import {
   instanceOfToTargetLanguage,

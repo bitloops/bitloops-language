@@ -32,6 +32,7 @@ import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermedi
 import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
+import { GetClassNodeBuilder } from './../../../../../src/ast/core/intermediate-ast/builders/expressions/GetClassBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -130,6 +131,11 @@ export class ExpressionBuilderDirector {
 
   buildToStringExpression(expression: ExpressionNode): ExpressionNode {
     const node = new ToStringBuilder().withExpression(expression).build();
+    return new ExpressionBuilder().withExpression(node).build();
+  }
+
+  buildGetClassExpression(expression: ExpressionNode): ExpressionNode {
+    const node = new GetClassNodeBuilder().withExpression(expression).build();
     return new ExpressionBuilder().withExpression(node).build();
   }
 

@@ -182,6 +182,14 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: 'cat.toString()',
   },
+  {
+    description: 'Get class of variable',
+    expression: new ExpressionBuilderDirector().buildGetClassExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('result'),
+    ),
+    output: 'result.constructor',
+    // TODO Add test when method call is completed | this.clientError(response).constructor  |
+  },
 ];
 
 // export const VALID_TWO_DTOS_TEST_CASES = [

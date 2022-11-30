@@ -86,6 +86,12 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
+  if (ExpressionTypeIdentifiers.isGetClassExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TGetClass,
+      value: expressionValue,
+    });
+  }
 
   if (ExpressionTypeIdentifiers.isToStringExpression(expressionValue)) {
     return modelToTargetLanguage({
