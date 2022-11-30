@@ -1,9 +1,6 @@
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
-import {
-  EvaluationFieldBuilderDirector,
-  EvaluationFieldListBuilerDirector,
-} from '../../builders/evaluationFIeld.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { EntityEvaluationBuilderDirector } from '../../builders/domainEvaluation/entityEvaluation.js';
@@ -181,10 +178,11 @@ export const VALID_DTO_EVALUATION_TEST_CASES = [
     description: 'DTO evaluation',
     evaluation: new EvaluationBuilderDirector().buildDTOEvaluation(
       new NameNodeBuilder().withName('AddCourceDTO').build(),
-      new EvaluationFieldListBuilerDirector().buildEvaluationFieldListWithOneVariableField(
-        'course',
-        'Math',
-      ),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
+        ])
+        .build(),
     ),
     output: "AddCourceDTO({course: 'Math'})",
   },
