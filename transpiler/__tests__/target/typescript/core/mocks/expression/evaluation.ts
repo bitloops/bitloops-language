@@ -40,6 +40,9 @@ export const VALID_EVALUATION_TEST_CASES = [
     ]),
     output: "{ outer: { message:'Hello, World!'} }",
   },
+];
+
+export const VALID_ERROR_EVALUATION_TEST_CASES = [
   {
     description: 'Error evaluation with no arguments',
     evaluation: new EvaluationBuilderDirector().buildErrorEvaluation(
@@ -79,25 +82,37 @@ export const VALID_EVALUATION_TEST_CASES = [
     ),
     output: 'new ApplicationErrors.InvalidTitleError(title) ',
   },
+];
+
+export const VALID_BUILTIN_CLASS_EVALUATION_TEST_CASES = [
   {
-    description: 'Entity evaluation with one argument',
-    evaluation: new EntityEvaluationBuilderDirector().buildEntityEvaluationWithFieldList(
-      'TodoEntity',
-      'name',
-      'superMarketList',
+    description: 'UUID with an id argument',
+    evaluation: new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
+      'UUIDv4',
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('id'))
+          .build(),
+      ]),
     ),
-    output: "TodoEntity.create({name: 'superMarketList'})",
+    output: 'new Domain.UUIDv4(id)',
   },
   {
-    description: 'DTO evaluation',
-    evaluation: new EvaluationBuilderDirector().buildDTOEvaluation(
-      new NameNodeBuilder().withName('AddCourceDTO').build(),
-      new EvaluationFieldListBuilerDirector().buildEvaluationFieldListWithOneVariableField(
-        'course',
-        'Math',
-      ),
+    description: 'UUID with a member dot expression argument',
+    evaluation: new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
+      'UUIDv4',
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(
+            new ExpressionBuilderDirector().buildMemberDotExpression(
+              new ExpressionBuilderDirector().buildIdentifierExpression('whatever'),
+              'id',
+            ),
+          )
+          .build(),
+      ]),
     ),
-    output: "AddCourceDTO({course: 'Math'})",
+    output: 'new Domain.UUIDv4(whatever.id)',
   },
 ];
 
@@ -110,5 +125,19 @@ export const VALID_ENTITY_EVALUATION_TEST_CASES = [
       'superMarketList',
     ),
     output: "TodoEntity.create({name: 'superMarketList'})",
+  },
+];
+
+export const VALID_DTO_EVALUATION_TEST_CASES = [
+  {
+    description: 'DTO evaluation',
+    evaluation: new EvaluationBuilderDirector().buildDTOEvaluation(
+      new NameNodeBuilder().withName('AddCourceDTO').build(),
+      new EvaluationFieldListBuilerDirector().buildEvaluationFieldListWithOneVariableField(
+        'course',
+        'Math',
+      ),
+    ),
+    output: "AddCourceDTO({course: 'Math'})",
   },
 ];

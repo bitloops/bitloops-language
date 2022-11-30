@@ -18,12 +18,19 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TEvaluationValues, TStructEvaluation } from '../../../../types.js';
+import { TErrorEvaluation, TEvaluationValues, TStructEvaluation } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
 export class EvaluationTypeIdentifiers {
   static isStructEvaluation(evaluation: TEvaluationValues): evaluation is TStructEvaluation {
     if (STRUCT_STRING in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
+    if ('errorEvaluation' in evaluation) {
       return true;
     }
     return false;

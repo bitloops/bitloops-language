@@ -29,12 +29,6 @@ export const builtInClassEvaluationVisitor = (
 ): BuiltInClassEvaluationNode => {
   const className = ctx.bitloopsBuiltInClass().getText();
   const argumentDependencies = thisVisitor.visit(ctx.methodArguments());
-  // const result = {
-  //   builtInClass: {
-  //     className,
-  //     argumentDependencies,
-  //   },
-  // };
   const classNameNode = new ClassNameNodeBuilder().withClassName(className).build();
   return new BuiltinClassEvaluationNodeBuilder()
     .withClassName(classNameNode)

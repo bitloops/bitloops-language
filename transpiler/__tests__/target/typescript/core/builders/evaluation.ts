@@ -17,6 +17,8 @@ import { EvaluationFieldListNode } from '../../../../../src/ast/core/intermediat
 import { ErrorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/ErrorEvaluationBuilder.js';
 import { ArgumentListNode } from './../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { NameNode } from '../../../../../src/ast/core/intermediate-ast/nodes/NameNode.js';
+import { ClassNameNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ClassNameBuilder.js';
+import { BuiltinClassEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/BuiltinClassEvaluationBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -71,6 +73,21 @@ export class EvaluationBuilderDirector {
       .withName(nameNode)
       .withEvaluationFieldList(evaluationFieldListNode)
       .build();
+
+    return evaluationNode;
+  }
+
+  buildBuiltInClassEvaluation(
+    className: string,
+    argumentListNode: ArgumentListNode,
+  ): EvaluationNode {
+    const classNameNode = new ClassNameNodeBuilder().withClassName(className).build();
+    const builtinClassNode = new BuiltinClassEvaluationNodeBuilder()
+      .withClassName(classNameNode)
+      .withArguments(argumentListNode)
+      .build();
+
+    const evaluationNode = new EvaluationBuilder().withEvaluation(builtinClassNode).build();
     return evaluationNode;
   }
 }
