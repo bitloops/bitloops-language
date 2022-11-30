@@ -191,11 +191,11 @@ const modelToTargetLanguage = (props: {
       res = evaluationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TArgumentDependency: {
+    case BitloopsTypesMapping.TArgument: {
       res = argumentDependencyToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TArgumentDependencies: {
+    case BitloopsTypesMapping.TArgumentList: {
       res = argumentDependenciesToTargetLanguage(value);
       break;
     }

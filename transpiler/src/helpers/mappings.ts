@@ -27,6 +27,7 @@ const BitloopsTypesMapping = {
   TPropsValues: 'TPropsValues',
   TEvaluation: 'TEvaluation',
   TInstanceOf: 'TInstanceOf',
+  TArgument: 'TArgument',
   TArgumentDependency: 'TArgumentDependency',
   TArgumentDependencyType: 'TArgumentDependencyType',
   TClassInstantiation: 'TClassInstantiation',
@@ -143,6 +144,7 @@ const BitloopsTypesMapping = {
   TAssignmentExpression: 'TAssignmentExpression',
   TName: 'TName',
   TClass: 'TClass',
+  TArgumentList: 'TArgumentList',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

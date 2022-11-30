@@ -30,7 +30,7 @@ export const bitloopsErrorEvaluationToTargetLanguage = (
   const { name, argumentList } = errorEvaluation;
 
   const argumentDependenciesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TArgumentDependencies,
+    type: BitloopsTypesMapping.TArgumentList,
     value: argumentList,
   });
   const output = `new ${name}${argumentDependenciesResult.output}`;

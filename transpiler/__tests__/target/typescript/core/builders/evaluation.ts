@@ -13,6 +13,8 @@ import { DomainEvaluationPropsNode } from '../../../../../src/ast/core/intermedi
 import { EntityEvaluationNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EntityEvaluation.js';
 import { EvaluationFieldListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { ExpressionBuilderDirector } from './expression.js';
+import { ErrorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/ErrorEvaluationBuilder.js';
+import { ArgumentListNode } from './../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -41,6 +43,21 @@ export class EvaluationBuilderDirector {
         fieldValue,
       );
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
+
+  buildErrorEvaluation(
+    identifier: string,
+    argumentDependencies?: ArgumentListNode,
+  ): EvaluationNode {
+    const nameNode = new NameNodeBuilder().withName(identifier).build();
+
+    const node = new ErrorEvaluationNodeBuilder().withName(nameNode);
+    if (argumentDependencies) {
+      node.withArgumentsList(argumentDependencies);
+    }
+    const errorEvaluationNode = node.build();
+    const evaluationNode = new EvaluationBuilder().withEvaluation(errorEvaluationNode).build();
     return evaluationNode;
   }
 }

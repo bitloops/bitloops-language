@@ -52,7 +52,7 @@ const regularEvaluationToTargetLanguage = (
         return { output: value, dependencies: [] };
       case 'method': {
         const argumentDependenciesResult = modelToTargetLanguage({
-          type: BitloopsTypesMapping.TArgumentDependencies,
+          type: BitloopsTypesMapping.TArgumentList,
           value: argumentDependencies,
         });
         return {

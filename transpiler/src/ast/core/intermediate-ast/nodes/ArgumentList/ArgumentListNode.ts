@@ -5,6 +5,6 @@ const NAME = 'argumentList';
 
 export class ArgumentListNode extends IntermediateASTNode {
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TArgumentDependencies, metadata, NAME);
+    super(BitloopsTypesMapping.TArgumentList, metadata, NAME);
   }
 }
