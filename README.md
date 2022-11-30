@@ -142,6 +142,10 @@ Here is an example using curl
 ```console
 curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
 ```
+and
+```console
+curl -X GET localhost:5001/api/todo/
+```
 
 &nbsp;
 &nbsp;
