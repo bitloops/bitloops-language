@@ -1,4 +1,4 @@
-// import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   // {
