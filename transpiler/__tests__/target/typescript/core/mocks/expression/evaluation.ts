@@ -1,15 +1,15 @@
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
-import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
+import {
+  EvaluationFieldBuilderDirector,
+  EvaluationFieldListBuilerDirector,
+} from '../../builders/evaluationFIeld.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
-
-import { EntityEvaluationBuilderDirector } from '../../builders/evaluation.js';
+import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
+import { EntityEvaluationBuilderDirector } from '../../builders/domainEvaluation/entityEvaluation.js';
 
 import { NameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/NameBuilder.js';
-import {
-  EvaluationBuilderDirector,
-  EvaluationFieldListBuilerDirector,
-} from '../../builders/evaluation.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -39,6 +39,21 @@ export const VALID_EVALUATION_TEST_CASES = [
       ),
     ]),
     output: "{ outer: { message:'Hello, World!'} }",
+  },
+  {
+    description: 'Entity evaluation with one argument',
+    evaluation: new EvaluationBuilderDirector().buildEntityEvaluation(
+      'TodoEntity',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'name',
+            'superMarketList',
+          ),
+        ])
+        .build(),
+    ),
+    output: "TodoEntity.create({name: 'superMarketList'})",
   },
 ];
 
@@ -121,10 +136,43 @@ export const VALID_ENTITY_EVALUATION_TEST_CASES = [
     description: 'Entity evaluation with field list',
     entityEvaluation: new EntityEvaluationBuilderDirector().buildEntityEvaluationWithFieldList(
       'TodoEntity',
-      'name',
-      'superMarketList',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'name',
+            'superMarketList',
+          ),
+        ])
+        .build(),
     ),
     output: "TodoEntity.create({name: 'superMarketList'})",
+  },
+  {
+    description: 'Entity evaluation with field list multilpe arguments',
+    entityEvaluation: new EntityEvaluationBuilderDirector().buildEntityEvaluationWithFieldList(
+      'TodoEntity',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'name',
+            'superMarketList',
+          ),
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'description',
+            'todo super list',
+          ),
+        ])
+        .build(),
+    ),
+    output: "TodoEntity.create({name: 'superMarketList', description: 'todo super list'})",
+  },
+  {
+    description: 'Entity evaluation with identifier expression',
+    entityEvaluation: new EntityEvaluationBuilderDirector().buildEntityEvaluationWithExpression(
+      'TodoEntity',
+      new ExpressionBuilderDirector().buildIdentifierExpression('todoProps'),
+    ),
+    output: 'TodoEntity.create(todoProps)',
   },
 ];
 
