@@ -1,9 +1,10 @@
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
+import { ExpressionBuilderDirector } from '../../builders/expression.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
-    description: 'Relational expression',
+    description: 'Simple struct expression with one field',
     evaluation: new EvaluationBuilderDirector().buildStructEvaluation('PersonStruct', [
       new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
         'message',
@@ -11,6 +12,24 @@ export const VALID_EVALUATION_TEST_CASES = [
       ),
     ]),
     output: "{ message:'Hello, World!'} ",
+  },
+  {
+    description: 'Simple struct expression with one field',
+    evaluation: new EvaluationBuilderDirector().buildStructEvaluation('OuterStruct', [
+      new EvaluationFieldBuilderDirector().buildEvaluationField(
+        'outer',
+
+        new ExpressionBuilderDirector().buildEvaluationExpression(
+          new EvaluationBuilderDirector().buildStructEvaluation('MessageStruct', [
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+              'message',
+              'Hello, World!',
+            ),
+          ]),
+        ),
+      ),
+    ]),
+    output: "{ outer: { message:'Hello, World!'} }",
   },
 ];
 

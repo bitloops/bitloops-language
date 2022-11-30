@@ -27,7 +27,7 @@ export const evaluationFieldsToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   let langFields = {};
 
-  const addToFieldsLangMapping = (fieldsObject, key, value: TTargetDependenciesTypeScript) => ({
+  const addToFields = (fieldsObject, key, value: TTargetDependenciesTypeScript) => ({
     ...fieldsObject,
     [key]: value.output,
   });
@@ -40,7 +40,7 @@ export const evaluationFieldsToTargetLanguage = (
       type: BitloopsTypesMapping.TExpression,
       value: { expression },
     });
-    langFields = addToFieldsLangMapping(langFields, name, expressionModel);
+    langFields = addToFields(langFields, name, expressionModel);
     dependencies = [...dependencies, ...expressionModel.dependencies];
   }
 

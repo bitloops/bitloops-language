@@ -1,3 +1,4 @@
+import { EvaluationNode } from './../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
 import { RelationalExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/relationalBuilder.js';
 import { ArrayLiteralExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/arrayLiteralExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ExpressionBuilder.js';
@@ -272,6 +273,11 @@ export class ExpressionBuilderDirector {
       .withArgumentsList(argumentList)
       .build();
     const expressionNode = new ExpressionBuilder().withExpression(methodCallExpressionNode).build();
+    return expressionNode;
+  }
+
+  buildEvaluationExpression(evaluation: EvaluationNode): ExpressionNode {
+    const expressionNode = new ExpressionBuilder().withExpression(evaluation).build();
     return expressionNode;
   }
 }
