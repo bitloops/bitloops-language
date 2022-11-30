@@ -35,6 +35,9 @@ export const VALID_EVALUATION_TEST_CASES = [
     ]),
     output: "{ outer: { message:'Hello, World!'} }",
   },
+];
+
+export const VALID_ERROR_EVALUATION_TEST_CASES = [
   {
     description: 'Error evaluation with no arguments',
     evaluation: new EvaluationBuilderDirector().buildErrorEvaluation(
@@ -74,19 +77,38 @@ export const VALID_EVALUATION_TEST_CASES = [
     ),
     output: 'new ApplicationErrors.InvalidTitleError(title) ',
   },
+];
 
-  //   new ArgumentListDirector().buildArgumentListWithArgs([
-  //     new ArgumentNodeBuilder()
-  //       .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('now'))
-  //       .build(),
-  //     new ArgumentNodeBuilder()
-  //       .withExpression(new ExpressionBuilderDirector().buildInt32LiteralExpression(34))
-  //       .build(),
-  //   ]),
-  // ),
-  // output: 'this.GameEntity.start(now,34)',
-
-  // | {"errorEvaluation":{"name":"ApplicationErrors.InvalidTitleError","argumentDependencies":[{"value":"title","type":"variable"}]}}    | new ApplicationErrors.InvalidTitleError(title)      | [{"className": "index", "classType": "ApplicationErrors", "default": false, "type": "relative", "value": "ApplicationErrors"}] |
+export const VALID_BUILTIN_CLASS_EVALUATION_TEST_CASES = [
+  {
+    description: 'UUID with an id argument',
+    evaluation: new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
+      'UUIDv4',
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('id'))
+          .build(),
+      ]),
+    ),
+    output: 'new Domain.UUIDv4(id)',
+  },
+  {
+    description: 'UUID with a member dot expression argument',
+    evaluation: new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
+      'UUIDv4',
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(
+            new ExpressionBuilderDirector().buildMemberDotExpression(
+              new ExpressionBuilderDirector().buildIdentifierExpression('whatever'),
+              'id',
+            ),
+          )
+          .build(),
+      ]),
+    ),
+    output: 'new Domain.UUIDv4(whatever.id)',
+  },
 ];
 
 export const VALID_ENTITY_EVALUATION_TEST_CASES = [
