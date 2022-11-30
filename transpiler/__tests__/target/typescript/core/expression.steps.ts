@@ -25,8 +25,6 @@ import { formatString } from '../../../../src/target/typescript/core/codeFormatt
 // import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 import { VALID_EXPRESSION_TEST_CASES } from './mocks/expression/expression.js';
 
-// const feature = loadFeature('__tests__/target/typescript/core/expression.feature');
-
 describe('Valid expression test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
@@ -62,58 +60,3 @@ describe('Valid expression test cases', () => {
     });
   });
 });
-
-// defineFeature(feature, (test) => {
-//   let expressionType;
-//   let result;
-//   let value;
-
-//   test('Expression with all possible expression types', ({ given, and, when, then }) => {
-//     given(/^type is "(.*)"$/, (type) => {
-//       expressionType = type;
-//     });
-
-//     and(/^language is "(.*)"$/, (_lang) => {});
-
-//     given(/^I have an expression (.*)$/, (expression) => {
-//       value = expression;
-//     });
-
-//     when('I generate the code', () => {
-//       const expressionValue = JSON.parse(value);
-//       result = modelToTargetLanguage({
-//         type: expressionType,
-//         value: expressionValue,
-//       });
-//     });
-
-//     then(/^I should see the (.*) code$/, (output) => {
-//       expect(result.output).toEqual(output);
-//     });
-//   });
-
-//   test('Unsupported expression type', ({ given, and, when, then }) => {
-//     given(/^type is "(.*)"$/, (type) => {
-//       expressionType = type;
-//     });
-
-//     and(/^language is "(.*)"$/, (_lang) => {});
-
-//     given(/^I have an invalid (.*) with unsupported (.*)$/, (expression) => {
-//       value = expression;
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-empty-function
-//     when('I generate the code', () => {});
-
-//     then(/^I should get an error saying that (.*) is unsupported$/, (expression) => {
-//       const expressionValue = JSON.parse(expression);
-//       expect(() =>
-//         modelToTargetLanguage({
-//           type: expressionType,
-//           value: expressionValue,
-//         }),
-//       ).toThrowError(`Unsupported expression: ${expressionValue}`);
-//     });
-//   });
-// });
