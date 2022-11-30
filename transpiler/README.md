@@ -17,7 +17,7 @@ Transpiler is composed by the following building blocks:
 
 The transpilation follows the flow mentioned below:
 
-![Architecture of a transpiler]([transpiling_process.png](https://raw.githubusercontent.com/bitloops/bitloops-language/main/transpiler/transpiling_process.png) "Architecture of a transpiler")
+![Architecture of a transpiler](https://raw.githubusercontent.com/bitloops/bitloops-language/main/transpiler/transpiling_process.png "Architecture of a transpiler")
 
 1) The code in the original (bitloops) language is parsed by a language parser which is [ANTLR](https://www.antlr.org/) in our case, in order to create an **AST**. Specifically in ANTLR's implementation in order for ANTLR to be able to parse the original language, two files are needed, to specify the language grammar in order for ANTLR to create the AST (we specifically use ANTLR's visitor functionality):
    - The Lexer file (e.g. BitloopsLexer.g4)
