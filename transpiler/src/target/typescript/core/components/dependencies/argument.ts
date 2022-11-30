@@ -34,7 +34,7 @@ const argumentDependenciesToTargetLanguage = (
   if (variable) {
     for (const [index, argument] of variable.entries()) {
       const model = modelToTargetLanguage({
-        type: 'TArgumentDependency',
+        type: BitloopsTypesMapping.TArgument,
         value: argument,
       });
       result += model.output;
