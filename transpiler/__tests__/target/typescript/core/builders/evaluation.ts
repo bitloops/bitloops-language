@@ -11,10 +11,12 @@ import { EvaluationFieldNodeBuilder } from '../../../../../src/ast/core/intermed
 import { DomainEvaluationNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluation.js';
 import { DomainEvaluationPropsNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluationProps.js';
 import { EntityEvaluationNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EntityEvaluation.js';
-import { EvaluationFieldListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { ExpressionBuilderDirector } from './expression.js';
+import { DTOEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
+import { EvaluationFieldListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { ErrorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/ErrorEvaluationBuilder.js';
 import { ArgumentListNode } from './../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
+import { NameNode } from '../../../../../src/ast/core/intermediate-ast/nodes/NameNode.js';
 import { ClassNameNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ClassNameBuilder.js';
 import { BuiltinClassEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/BuiltinClassEvaluationBuilder.js';
 
@@ -63,6 +65,18 @@ export class EvaluationBuilderDirector {
     return evaluationNode;
   }
 
+  buildDTOEvaluation(
+    nameNode: NameNode,
+    evaluationFieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new DTOEvaluationNodeBuilder()
+      .withName(nameNode)
+      .withEvaluationFieldList(evaluationFieldListNode)
+      .build();
+
+    return evaluationNode;
+  }
+
   buildBuiltInClassEvaluation(
     className: string,
     argumentListNode: ArgumentListNode,
@@ -104,7 +118,6 @@ export class DomainEvaluationBuilderDirector {
     fieldValue: string,
   ): DomainEvaluationNode {
     const nameNode = new NameNodeBuilder().withName(domainName).build();
-    EvaluationFieldListNodeBuilder;
     const domainEvaluationPropsNode =
       new DomainEvaluationPropsBuilderDirector().buildDomainEvaluationPropsWithFieldList(
         fieldName,
@@ -137,6 +150,22 @@ export class DomainEvaluationPropsBuilderDirector {
 
 export class EvaluationFieldListBuilerDirector {
   buildEvaluationFieldListWithOneStringField(
+    fieldName: string,
+    fieldValue: string,
+  ): EvaluationFieldListNode {
+    const nameNode = new NameNodeBuilder().withName(fieldName).build();
+    const expressionNode = new ExpressionBuilderDirector().buildStringLiteralExpression(fieldValue);
+    const evaluationFieldNode = new EvaluationFieldNodeBuilder()
+      .withName(nameNode)
+      .withExpression(expressionNode)
+      .build();
+    const evaluationFieldListNode = new EvaluationFieldListNodeBuilder()
+      .withEvaluationFields([evaluationFieldNode])
+      .build();
+    return evaluationFieldListNode;
+  }
+
+  buildEvaluationFieldListWithOneVariableField(
     fieldName: string,
     fieldValue: string,
   ): EvaluationFieldListNode {
