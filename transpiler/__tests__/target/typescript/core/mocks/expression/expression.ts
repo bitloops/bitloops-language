@@ -162,19 +162,26 @@ export const VALID_EXPRESSION_TEST_CASES = [
     ),
     output: 'this.props.name',
   },
-  // {
-  //   description: 'this.props.name to String()',
-  //   expression: new ExpressionBuilderDirector().buildToStringExpression(
-  //     new ExpressionBuilderDirector().buildMemberDotExpression(
-  //       new ExpressionBuilderDirector().buildMemberDotExpression(
-  //         new ExpressionBuilderDirector().buildThisExpression(),
-  //         'props',
-  //       ),
-  //       'name',
-  //     ),
-  //   ),
-  //   output: 'this.props.name.toString()',
-  // },
+  {
+    description: 'this.props.name to String()',
+    expression: new ExpressionBuilderDirector().buildToStringExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildMemberDotExpression(
+          new ExpressionBuilderDirector().buildThisExpression(),
+          'props',
+        ),
+        'name',
+      ),
+    ),
+    output: 'this.props.name.toString()',
+  },
+  {
+    description: 'Simple variable toString(',
+    expression: new ExpressionBuilderDirector().buildToStringExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('cat'),
+    ),
+    output: 'cat.toString()',
+  },
 ];
 
 // export const VALID_TWO_DTOS_TEST_CASES = [
