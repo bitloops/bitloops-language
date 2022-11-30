@@ -46,6 +46,8 @@ The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
 
 The best and fastest way to understand how Bitloops Language helps you write clean code and great software is to follow the instructions below. With this tutorial, you will run and execute a Bitloops ToDo App, learn how Bitloops works, and see the output files in TypeScript and appreciate how the Bitloops Language works. 
 
+If you face any issues (especially with Windows) check the [Common Issues](#common-issues) Section below.
+
 ### 1 - Install the Transpiler
 Bitloops still hasn't created binaries, so the best way to install and run the transpiler is to install the Bitloops Language CLI as a global npm package. Copy the following and run it in your IDE:
 
@@ -142,10 +144,26 @@ Here is an example using curl
 ```console
 curl -X POST localhost:5001/api/todo/ -H "Content-Type: application/json" -d '{"title": "My first todo"}'
 ```
+and
+```console
+curl -X GET localhost:5001/api/todo/
+```
 
 &nbsp;
 &nbsp;
   
+----
+
+## Common Issues
+
+- In Windows, if you are (still) using PowerShell, you will probably come across the error "running scripts is disabled on this system". To fix this, you can do the following:
+1. Open PowerShell with Run as Administrator (right click on the icon and select the option from the menu).
+2. Run the following command in PowerShell
+```console
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+```
+3. Type Y and press Enter.
+
 ----
 
 ## 👏 What are the benefits of using Bitloops Language?
