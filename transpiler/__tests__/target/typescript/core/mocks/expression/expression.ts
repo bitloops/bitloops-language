@@ -1,3 +1,5 @@
+import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
+import { ArgumentListDirector } from '../../builders/argumentList.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 
 export const VALID_EXPRESSION_TEST_CASES = [
@@ -189,6 +191,24 @@ export const VALID_EXPRESSION_TEST_CASES = [
     output: 'this.props.name',
   },
   {
+    description: 'Method Call expression',
+    expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildThisExpression(),
+        'GameEntity.start',
+      ),
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('now'))
+          .build(),
+        new ArgumentNodeBuilder()
+          .withExpression(new ExpressionBuilderDirector().buildInt32LiteralExpression(34))
+          .build(),
+      ]),
+    ),
+    output: 'this.GameEntity.start(now,34)',
+  },
+  {
     description: 'this.props.name to String()',
     expression: new ExpressionBuilderDirector().buildToStringExpression(
       new ExpressionBuilderDirector().buildMemberDotExpression(
@@ -217,19 +237,3 @@ export const VALID_EXPRESSION_TEST_CASES = [
     // TODO Add test when method call is completed | this.clientError(response).constructor  |
   },
 ];
-
-// export const VALID_TWO_DTOS_TEST_CASES = [
-//   {
-//     description: 'DTOs with different fields',
-//     fieldListNode: new FieldListNodeBuilder()
-//       .withFields([new FieldBuilderDirector().buildOptionalPrimitiveField('todo', 'bool')])
-//       .build(),
-//     secondFieldListNode: new FieldListNodeBuilder()
-//       .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('hello', 'uint64')])
-//       .build(),
-//     dtoIdentifierNode: new DTOIdentifierNodeBuilder().withName('TodoDTO').build(),
-//     secondDTOIdentifierNode: new DTOIdentifierNodeBuilder().withName('HelloDTO').build(),
-//     output: 'export interface TodoDTO { todo?: boolean; }',
-//     secondOutput: '(a == b) && (c >= d) ',
-//   },
-// ];

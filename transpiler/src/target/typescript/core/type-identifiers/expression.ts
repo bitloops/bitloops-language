@@ -22,7 +22,6 @@ import { TGetClass } from './../../../../types';
 import { INDICATORS } from '../components/statements/expression/expressionValues.js';
 import {
   TArrayLiteralExpression,
-  TExpression,
   TExpressionValues,
   TEvaluation,
   TIdentifierExpr,
@@ -32,13 +31,15 @@ import {
   TInstanceOf,
   TParenthesizedExpression,
   TMemberDotExpression,
+  TMethodCallExpression,
   TToStringExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
-  static isMethodCallExpression(expressionStatement: TExpression): boolean {
-    const { expression } = expressionStatement;
-    if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+  static isMethodCallExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TMethodCallExpression {
+    if ('methodCallExpression' in expressionValue) {
       return true;
     }
     return false;
