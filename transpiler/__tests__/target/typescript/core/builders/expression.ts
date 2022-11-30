@@ -28,6 +28,8 @@ import { BooleanLiteralBuilder } from '../../../../../src/ast/core/intermediate-
 import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/additiveExpresssion.js';
 import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
+import { ClassNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ClassBuilder.js';
+import { IsInstanceOfExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/IsIntanceOfExpressionBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -197,6 +199,20 @@ export class ExpressionBuilderDirector {
   buildThisExpression(): ExpressionNode {
     const thisExpressionNode = new ThisExpressionNodeBuilder().build();
     const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();
+    return expressionNode;
+  }
+
+  buildInstanceOfWithIdentifierExpression(
+    identifier: string,
+    classToCompare: string,
+  ): ExpressionNode {
+    const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
+    const expression = this.buildIdentifierExpression(identifier);
+    const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
+      .withClass(classNode)
+      .withExpression(expression)
+      .build();
+    const expressionNode = new ExpressionBuilder().withExpression(isInstanceOfNode).build();
     return expressionNode;
   }
 }

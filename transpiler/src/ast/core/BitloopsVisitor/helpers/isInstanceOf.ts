@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { IsInstanceOfEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/IsIntanceOfEvaluationBuilder.js';
+import { IsInstanceOfExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/IsIntanceOfExpressionBuilder.js';
 import { ClassNodeBuilder } from '../../intermediate-ast/builders/ClassBuilder.js';
 import { ExpressionBuilder } from '../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
@@ -35,7 +35,7 @@ export const isInstanceOfVisitor = (
 
   const classToCompare = ctx.classTypes().getText();
   const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
-  const isInstanceOfNode = new IsInstanceOfEvaluationNodeBuilder()
+  const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
     .withClass(classNode)
     .withExpression(expression)
     .build();

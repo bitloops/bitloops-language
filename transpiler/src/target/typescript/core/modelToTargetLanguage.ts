@@ -33,10 +33,7 @@ import { classInstantiationToTargetLanguage } from './components/statements/expr
 import { conditionToTargetLanguage } from './components/statements/expression/condition.js';
 import { getClassToTargetLanguage } from './components/statements/expression/evaluation/getClass.js';
 import { evaluationToTargetLanguage } from './components/statements/expression/evaluation/index.js';
-import {
-  instanceOfToTargetLanguage,
-  notInstanceOfToTargetLanguage,
-} from './components/statements/expression/evaluation/instance.js';
+import { instanceOfToTargetLanguage } from './components/statements/expression/instance.js';
 import { regularEvaluationToTargetLanguage } from './components/statements/expression/evaluation/regularEvaluation.js';
 import { expressionToTargetLanguage } from './components/statements/expression/index.js';
 import { expressionValuesToTargetLanguage } from './components/statements/expression/expressionValues.js';
@@ -181,10 +178,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TInstanceOf: {
       res = instanceOfToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TNotInstanceOf: {
-      res = notInstanceOfToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRegularEvaluation: {

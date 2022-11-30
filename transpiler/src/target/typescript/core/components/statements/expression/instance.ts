@@ -20,11 +20,11 @@
 import {
   TExpression,
   TInstanceOf,
-  TNotInstanceOf,
   TTargetDependenciesTypeScript,
-} from '../../../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+} from '../../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
+import { getChildDependencies } from '../../../dependencies.js';
 
 type InstanceType = {
   class: string;
@@ -34,11 +34,12 @@ const classMappings = {
   Error: 'isFail()',
 };
 
-const instancesLangMapping = (instance: InstanceType): string => {
+const instancesLangMapping = (instance: InstanceType): TTargetDependenciesTypeScript => {
   if (classMappings[instance.class]) {
-    return `.${classMappings[instance.class]}`;
+    return { output: `.${classMappings[instance.class]}`, dependencies: [] };
   } else {
-    return ` instanceof ${instance.class}`;
+    const dependencies = getChildDependencies(instance.class);
+    return { output: ` instanceof ${instance.class}`, dependencies };
   }
 };
 
@@ -46,32 +47,24 @@ const getInstanceResult = (
   expression: TExpression,
   instance: InstanceType,
 ): TTargetDependenciesTypeScript => {
-  const argumentDependencyResult = modelToTargetLanguage({
+  const expressionResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: expression,
   });
 
   const instanceResult = instancesLangMapping(instance);
 
+  const dependencies = [...expressionResult.dependencies, ...instanceResult.dependencies];
   return {
-    output: `${argumentDependencyResult.output}${instanceResult}`,
-    dependencies: argumentDependencyResult.dependencies,
+    output: `${expressionResult.output}${instanceResult.output}`,
+    dependencies,
   };
 };
 
 const instanceOfToTargetLanguage = (variable: TInstanceOf): TTargetDependenciesTypeScript => {
   const { class: classInstance, expression } = variable.isInstanceOf;
-  // const [value, instance] = variable.isInstanceOf;
 
   return getInstanceResult({ expression }, { class: classInstance });
 };
 
-const notInstanceOfToTargetLanguage = (variable: TNotInstanceOf): TTargetDependenciesTypeScript => {
-  const { expression, class: instanceClass } = variable.isNotInstanceOf;
-
-  const instanceResult = getInstanceResult({ expression }, { class: instanceClass });
-
-  return { output: `!(${instanceResult.output})`, dependencies: instanceResult.dependencies };
-};
-
-export { instanceOfToTargetLanguage, notInstanceOfToTargetLanguage };
+export { instanceOfToTargetLanguage };

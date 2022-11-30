@@ -287,10 +287,6 @@ export type TPropsEvaluation = {
   };
 };
 
-export type TNotInstanceOf = {
-  isNotInstanceOf: TExpression & { class: string }; //[TArgument, { class: string }]; // ArgumentsDependencies, e.g. name
-};
-
 export type TGetClass = {
   getClass: TExpression;
 };
@@ -414,7 +410,6 @@ export type TExpressionValues =
   | TMemberDotExpression
   | TAssignmentExpression
   | TInstanceOf
-  | TNotInstanceOf
   | TGetClass;
 
 export type TAssignmentExpression = {

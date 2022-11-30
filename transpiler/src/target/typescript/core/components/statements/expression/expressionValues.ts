@@ -20,11 +20,11 @@
 import { TExpressionValues, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
-import { evaluationToTargetLanguage, instanceOfToTargetLanguage } from './evaluation/index.js';
+import { evaluationToTargetLanguage } from './evaluation/index.js';
 import { ExpressionTypeIdentifiers } from './../../../type-identifiers/expression.js';
 import { literalExpressionToTargetLanguage } from './literalExpression.js';
 
-export { evaluationToTargetLanguage, instanceOfToTargetLanguage };
+export { evaluationToTargetLanguage };
 
 enum INDICATORS {
   RELATIONAL_EXPRESSION = 'relationalExpression',
@@ -70,6 +70,13 @@ const expressionValuesToTargetLanguage = (
   if (ExpressionTypeIdentifiers.isThisExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TThisExpression,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isInstanceOfExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TInstanceOf,
       value: expressionValue,
     });
   }

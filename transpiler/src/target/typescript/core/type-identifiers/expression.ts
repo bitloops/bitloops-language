@@ -26,6 +26,7 @@ import {
   TIdentifierExpr,
   TLiteral,
   TThisExpression,
+  TInstanceOf,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -84,6 +85,15 @@ export class ExpressionTypeIdentifiers {
     expressionValue: TExpressionValues,
   ): expressionValue is TThisExpression => {
     if ('thisExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isInstanceOfExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TInstanceOf => {
+    if ('isInstanceOf' in expressionValue) {
       return true;
     }
     return false;

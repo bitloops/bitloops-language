@@ -53,7 +53,7 @@ export const notExpressionToTargetLanguage = (
   });
 
   return {
-    output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${expression.output}`,
+    output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT}(${expression.output})`,
     dependencies: [...expression.dependencies],
   };
 };

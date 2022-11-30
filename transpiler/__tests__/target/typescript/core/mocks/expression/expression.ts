@@ -68,7 +68,7 @@ export const VALID_EXPRESSION_TEST_CASES = [
     expression: new ExpressionBuilderDirector().buildNotExpression(
       new ExpressionBuilderDirector().buildIdentifierExpression('a'),
     ),
-    output: '! a ',
+    output: '!a',
   },
   {
     description: 'Array of integers',
@@ -91,6 +91,32 @@ export const VALID_EXPRESSION_TEST_CASES = [
     description: 'This expression',
     expression: new ExpressionBuilderDirector().buildThisExpression(),
     output: 'this',
+  },
+  {
+    description: 'Instanceof expression',
+    expression: new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+      'result',
+      'TestClassName',
+    ),
+    output: 'result instanceof TestClassName',
+  },
+  {
+    description: 'Instanceof Error expression',
+    expression: new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+      'result',
+      'Error',
+    ),
+    output: 'result.isFail()',
+  },
+  {
+    description: 'Not Instanceof expression',
+    expression: new ExpressionBuilderDirector().buildNotExpression(
+      new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+        'result',
+        'TestClassName',
+      ),
+    ),
+    output: '!(result instanceof TestClassName)',
   },
 ];
 
