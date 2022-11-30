@@ -74,6 +74,15 @@ export const VALID_EVALUATION_TEST_CASES = [
     ),
     output: 'new ApplicationErrors.InvalidTitleError(title) ',
   },
+  {
+    description: 'Entity evaluation with one argument',
+    evaluation: new EntityEvaluationBuilderDirector().buildEntityEvaluationWithFieldList(
+      'TodoEntity',
+      'name',
+      'superMarketList',
+    ),
+    output: "TodoEntity.create({name: 'superMarketList'})",
+  },
 
   //   new ArgumentListDirector().buildArgumentListWithArgs([
   //     new ArgumentNodeBuilder()
