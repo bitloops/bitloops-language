@@ -75,6 +75,33 @@ export const validMemberDotExpressionTestCases = [
   },
 ];
 
+export const validAssignmentExpressionTestCases = [
+  {
+    description: 'Assign to this property',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { this.hello = "John Doe" }',
+    expression: new ExpressionBuilderDirector().buildAssignmentExpression(
+      new ExpressionBuilderDirector().buildMemberExpression(
+        new ExpressionBuilderDirector().buildThisExpression(),
+        'hello',
+      ),
+      new ExpressionBuilderDirector().buildStringLiteralExpression('John Doe'),
+    ),
+  },
+  {
+    description: "assign to a variable's property",
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { person.age = 42 }',
+    expression: new ExpressionBuilderDirector().buildAssignmentExpression(
+      new ExpressionBuilderDirector().buildMemberExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('person'),
+        'age',
+      ),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(42),
+    ),
+  },
+];
+
 export const validArrayLiteralExpressionTestCases = [
   {
     description: 'An array of ints',
