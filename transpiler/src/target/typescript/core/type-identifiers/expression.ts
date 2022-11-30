@@ -1,3 +1,4 @@
+import { TGetClass } from './../../../../types';
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -18,6 +19,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { INDICATORS } from '../components/statements/expression/expressionValues.js';
 import {
   TArrayLiteralExpression,
   TExpression,
@@ -25,8 +27,12 @@ import {
   TEvaluation,
   TIdentifierExpr,
   TLiteral,
+  TAssignmentExpression,
   TThisExpression,
   TInstanceOf,
+  TParenthesizedExpression,
+  TMemberDotExpression,
+  TToStringExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -38,6 +44,14 @@ export class ExpressionTypeIdentifiers {
     return false;
   }
 
+  static isAssignmentExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TAssignmentExpression {
+    if ('assignmentExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
   static isIdentifierExpression = (
     expressionValue: TExpressionValues,
   ): expressionValue is TIdentifierExpr => {
@@ -47,14 +61,14 @@ export class ExpressionTypeIdentifiers {
     return false;
   };
 
-  static isGetClassExpression(expressionStatement: TExpression): boolean {
-    const { expression } = expressionStatement;
+  // static isGetClassExpression(expressionStatement: TExpression): boolean {
+  //   const { expression } = expressionStatement;
 
-    if (expression?.['evaluation']?.getClass) {
-      return true;
-    }
-    return false;
-  }
+  //   if (expression?.['evaluation']?.getClass) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   static isLiteralExpression(expressionValue: TExpressionValues): expressionValue is TLiteral {
     if ('literal' in expressionValue) {
@@ -98,4 +112,38 @@ export class ExpressionTypeIdentifiers {
     }
     return false;
   };
+
+  static isParenthesizedExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TParenthesizedExpression => {
+    if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isMemberDotExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TMemberDotExpression {
+    if ('memberDotExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isToStringExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TToStringExpression {
+    if ('toStringMethod' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isGetClassExpression(expressionValue: TExpressionValues): expressionValue is TGetClass {
+    if ('getClass' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
 }

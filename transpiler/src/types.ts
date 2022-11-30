@@ -428,7 +428,7 @@ export type TIdentifierExpr = {
   identifier: string;
 };
 export type TToStringExpression = {
-  toString: TExpression;
+  toStringMethod: TExpression;
 };
 
 export type TLiteral = {
@@ -1130,7 +1130,7 @@ export type TEqualityExpression = {
 export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
-  parenthesizedExpression: TExpressionValues;
+  parenthesizedExpression: TExpression;
 };
 
 type TDependencyTypescript = {

@@ -26,7 +26,7 @@ import { literalExpressionToTargetLanguage } from './literalExpression.js';
 
 export { evaluationToTargetLanguage };
 
-enum INDICATORS {
+export enum INDICATORS {
   RELATIONAL_EXPRESSION = 'relationalExpression',
   LOGICAL_EXPRESSION = 'logicalExpression',
   ADDITIVE_EXPRESSION = 'additiveExpression',
@@ -66,6 +66,12 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
+  if (ExpressionTypeIdentifiers.isAssignmentExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TAssignmentExpression,
+      value: expressionValue,
+    });
+  }
 
   if (ExpressionTypeIdentifiers.isThisExpression(expressionValue)) {
     return modelToTargetLanguage({
@@ -77,6 +83,26 @@ const expressionValuesToTargetLanguage = (
   if (ExpressionTypeIdentifiers.isInstanceOfExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TInstanceOf,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isMemberDotExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TMemberDotExpression,
+      value: expressionValue,
+    });
+  }
+  if (ExpressionTypeIdentifiers.isGetClassExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TGetClass,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isToStringExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
@@ -132,20 +158,20 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
-  if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
+  if (ExpressionTypeIdentifiers.isParenthesizedExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TParenthesizedExpression,
       value: expressionValue,
     });
   }
-  if ('toString' in expressionValue) {
+  if ('toStringMethod' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
 
-  throw new Error(`Unsupported expression: ${expressionValue}`);
+  throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 
 export { expressionValuesToTargetLanguage };

@@ -17,23 +17,21 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TParenthesizedExpression,
-  TTargetDependenciesTypeScript,
-} from '../../../../../../types.js';
+
+import { TTargetDependenciesTypeScript, TMemberDotExpression } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-export const parenthesizedExpressionToTargetLanguage = (
-  value: TParenthesizedExpression,
+export const memberDotExpressionToTargetLanguage = (
+  value: TMemberDotExpression,
 ): TTargetDependenciesTypeScript => {
-  const langMapping = (value: TParenthesizedExpression): TTargetDependenciesTypeScript => {
-    const { parenthesizedExpression } = value;
-    const expression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpression,
-      value: parenthesizedExpression,
-    });
-    return { output: `(${expression.output})`, dependencies: expression.dependencies };
+  const { expression, identifier } = value.memberDotExpression;
+  const expressionResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: expression,
+  });
+  return {
+    output: `${expressionResult.output}.${identifier}`,
+    dependencies: expressionResult.dependencies,
   };
-  return langMapping(value);
 };

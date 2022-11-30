@@ -27,9 +27,14 @@ import { EqualityExpressionBuilder } from '../../../../../src/ast/core/intermedi
 import { BooleanLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/BooleanLiteralBuilder.js';
 import { AdditiveExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/additiveExpresssion.js';
 import { StringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { AssignmentExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { ClassNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ClassBuilder.js';
 import { IsInstanceOfExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/IsIntanceOfExpressionBuilder.js';
+import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
+import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
+import { GetClassNodeBuilder } from './../../../../../src/ast/core/intermediate-ast/builders/expressions/GetClassBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -104,6 +109,36 @@ export class ExpressionBuilderDirector {
       .withArrayElements(expressions)
       .build();
     return new ExpressionBuilder().withExpression(arrayNode).build();
+  }
+
+  buildAssignmentExpression(left: ExpressionNode, right: ExpressionNode): ExpressionNode {
+    const assignmentNode = new AssignmentExpressionNodeBuilder()
+      .withLeftExpression(left)
+      .withRightExpression(right)
+      .build();
+    return new ExpressionBuilder().withExpression(assignmentNode).build();
+  }
+
+  buildMemberDotExpression(
+    leftExpression: ExpressionNode,
+    identifierValue: string,
+  ): ExpressionNode {
+    const identifierExpr = new IdentifierExpressionBuilder().withValue(identifierValue).build();
+    const memberExpr = new MemberDotExpressionNodeBuilder()
+      .withExpression(leftExpression)
+      .withIdentifier(identifierExpr)
+      .build();
+    return new ExpressionBuilder().withExpression(memberExpr).build();
+  }
+
+  buildToStringExpression(expression: ExpressionNode): ExpressionNode {
+    const node = new ToStringBuilder().withExpression(expression).build();
+    return new ExpressionBuilder().withExpression(node).build();
+  }
+
+  buildGetClassExpression(expression: ExpressionNode): ExpressionNode {
+    const node = new GetClassNodeBuilder().withExpression(expression).build();
+    return new ExpressionBuilder().withExpression(node).build();
   }
 
   buildEqualityExpression(
@@ -213,6 +248,16 @@ export class ExpressionBuilderDirector {
       .withExpression(expression)
       .build();
     const expressionNode = new ExpressionBuilder().withExpression(isInstanceOfNode).build();
+    return expressionNode;
+  }
+
+  buildParenthesizedExpression(expression: ExpressionNode): ExpressionNode {
+    const parenthesizedExpressionNode = new ParenthesizedExpressionNodeBuilder()
+      .withExpression(expression)
+      .build();
+    const expressionNode = new ExpressionBuilder()
+      .withExpression(parenthesizedExpressionNode)
+      .build();
     return expressionNode;
   }
 }

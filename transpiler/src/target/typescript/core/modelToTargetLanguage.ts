@@ -31,7 +31,7 @@ import { constDecompositionToTargetLanguage } from './components/statements/cons
 import { constDeclarationToTargetLanguage } from './components/statements/constDeclaration.js';
 import { classInstantiationToTargetLanguage } from './components/statements/expression/classInstantiation.js';
 import { conditionToTargetLanguage } from './components/statements/expression/condition.js';
-import { getClassToTargetLanguage } from './components/statements/expression/evaluation/getClass.js';
+import { getClassToTargetLanguage } from './components/statements/expression/getClass.js';
 import { evaluationToTargetLanguage } from './components/statements/expression/evaluation/index.js';
 import { instanceOfToTargetLanguage } from './components/statements/expression/instance.js';
 import { regularEvaluationToTargetLanguage } from './components/statements/expression/evaluation/regularEvaluation.js';
@@ -131,7 +131,9 @@ import { arrayLiteralExpressionToTargetLanguage } from './components/statements/
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
 import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
 import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { assignmentExpressionToTargetLanguage } from './components/statements/expression/assignmentExpression.js';
 import { thisExpressionToTargetLanguage } from './components/statements/expression/thisExpression.js';
+import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 
 const modelToTargetLanguage = (props: {
   type: TBitloopsTypesValues;
@@ -521,8 +523,16 @@ const modelToTargetLanguage = (props: {
       res = arrayLiteralExpressionToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TMemberDotExpression: {
+      res = memberDotExpressionToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TErrorEvaluation: {
       res = bitloopsErrorEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TAssignmentExpression: {
+      res = assignmentExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TThisExpression: {

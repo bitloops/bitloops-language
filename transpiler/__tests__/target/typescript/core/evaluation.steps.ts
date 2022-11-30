@@ -17,62 +17,107 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+// import { defineFeature, loadFeature } from 'jest-cucumber';
+// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/evaluation.feature');
+// const feature = loadFeature('__tests__/target/typescript/core/evaluation.feature');
 
-defineFeature(feature, (test) => {
-  let evaluationType;
-  let result;
-  let value;
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
+// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-  test('Evaluation with all possible evaluation types', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      evaluationType = type;
-    });
+// const feature = loadFeature('__tests__/target/typescript/core/expression.feature');
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+describe('Valid evaluation test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-    given(/^I have an evaluation (.*)$/, (evaluation) => {
-      value = evaluation;
-    });
+  VALID_EVALUATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const evaluationNode = testCase.expression;
+      tree.insertChild(evaluationNode);
 
-    when('I generate the code', () => {
-      const evaluationValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: evaluationType,
-        value: evaluationValue,
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
+      };
+
+      // when
+      const targetGenerator = new BitloopsTargetGenerator();
+      const result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
-    });
-  });
-
-  test('Unsupported evaluation type', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      evaluationType = type;
-    });
-
-    and(/^language is "(.*)"$/, (_lang) => {});
-
-    given(/^I have an invalid (.*) with unsupported (.*)$/, (evaluation) => {
-      value = evaluation;
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    when('I generate the code', () => {});
-
-    then(/^I should get an error saying that (.*) is unsupported$/, (evaluation) => {
-      const evaluationValue = JSON.parse(evaluation);
-      expect(() =>
-        modelToTargetLanguage({
-          type: evaluationType,
-          value: evaluationValue,
-        }),
-      ).toThrowError(`Unsupported evaluation: ${JSON.stringify(evaluationValue)}`);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });
+
+// defineFeature(feature, (test) => {
+//   let evaluationType;
+//   let result;
+//   let value;
+
+//   test('Evaluation with all possible evaluation types', ({ given, and, when, then }) => {
+//     given(/^type is "(.*)"$/, (type) => {
+//       evaluationType = type;
+//     });
+
+//     and(/^language is "(.*)"$/, (_lang) => {});
+
+//     given(/^I have an evaluation (.*)$/, (evaluation) => {
+//       value = evaluation;
+//     });
+
+//     when('I generate the code', () => {
+//       const evaluationValue = JSON.parse(value);
+//       result = modelToTargetLanguage({
+//         type: evaluationType,
+//         value: evaluationValue,
+//       });
+//     });
+
+//     then(/^I should see the (.*) code$/, (output) => {
+//       expect(result.output).toEqual(output);
+//     });
+//   });
+
+//   test('Unsupported evaluation type', ({ given, and, when, then }) => {
+//     given(/^type is "(.*)"$/, (type) => {
+//       evaluationType = type;
+//     });
+
+//     and(/^language is "(.*)"$/, (_lang) => {});
+
+//     given(/^I have an invalid (.*) with unsupported (.*)$/, (evaluation) => {
+//       value = evaluation;
+//     });
+
+//     // eslint-disable-next-line @typescript-eslint/no-empty-function
+//     when('I generate the code', () => {});
+
+//     then(/^I should get an error saying that (.*) is unsupported$/, (evaluation) => {
+//       const evaluationValue = JSON.parse(evaluation);
+//       expect(() =>
+//         modelToTargetLanguage({
+//           type: evaluationType,
+//           value: evaluationValue,
+//         }),
+//       ).toThrowError(`Unsupported evaluation: ${JSON.stringify(evaluationValue)}`);
+//     });
+//   });
+// });

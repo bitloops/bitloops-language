@@ -17,23 +17,27 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TParenthesizedExpression,
-  TTargetDependenciesTypeScript,
-} from '../../../../../../types.js';
+
+import { TTargetDependenciesTypeScript, TAssignmentExpression } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-export const parenthesizedExpressionToTargetLanguage = (
-  value: TParenthesizedExpression,
+export const assignmentExpressionToTargetLanguage = (
+  value: TAssignmentExpression,
 ): TTargetDependenciesTypeScript => {
-  const langMapping = (value: TParenthesizedExpression): TTargetDependenciesTypeScript => {
-    const { parenthesizedExpression } = value;
-    const expression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpression,
-      value: parenthesizedExpression,
-    });
-    return { output: `(${expression.output})`, dependencies: expression.dependencies };
+  const { left: leftExpression, expression: rightExpression } = value.assignmentExpression;
+
+  const leftExprTarget = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: leftExpression,
+  });
+
+  const rightExprTarget = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: rightExpression,
+  });
+  return {
+    output: `${leftExprTarget.output} = ${rightExprTarget.output}`,
+    dependencies: rightExprTarget.dependencies.concat(leftExprTarget.dependencies),
   };
-  return langMapping(value);
 };
