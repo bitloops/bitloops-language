@@ -1,4 +1,11 @@
-import { TArgumentList, TExpression } from '../../../../src/types.js';
+import {
+  TAdditiveOperator,
+  TArgumentList,
+  TEqualityOperator,
+  TExpression,
+  TMultiplicativeOperator,
+  TRelationalOperator,
+} from '../../../../src/types.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(identifier: string): TExpression {
@@ -104,6 +111,125 @@ export class ExpressionBuilderDirector {
         assignmentExpression: {
           left: leftExpression,
           expression: rightExpression.expression,
+        },
+      },
+    };
+  }
+
+  buildAdditiveExpression(
+    leftExpression: TExpression,
+    rightExpression: TExpression,
+    operator: TAdditiveOperator = '+',
+  ): TExpression {
+    return {
+      expression: {
+        additiveExpression: {
+          left: leftExpression,
+          right: rightExpression,
+          operator,
+        },
+      },
+    };
+  }
+
+  buildMultiplicativeExpression(
+    leftExpression: TExpression,
+    rightExpression: TExpression,
+    operator: TMultiplicativeOperator = '*',
+  ): TExpression {
+    return {
+      expression: {
+        multiplicativeExpression: {
+          left: leftExpression,
+          right: rightExpression,
+          operator,
+        },
+      },
+    };
+  }
+
+  buildRelationalExpression(
+    leftExpression: TExpression,
+    rightExpression: TExpression,
+    operator: TRelationalOperator,
+  ): TExpression {
+    return {
+      expression: {
+        relationalExpression: {
+          left: leftExpression,
+          right: rightExpression,
+          operator,
+        },
+      },
+    };
+  }
+
+  buildLogicalAndExpression(
+    leftExpression: TExpression,
+    rightExpression: TExpression,
+  ): TExpression {
+    return {
+      expression: {
+        logicalExpression: {
+          andExpression: {
+            left: leftExpression,
+            right: rightExpression,
+          },
+        },
+      },
+    };
+  }
+
+  buildLogicalNotExpression(expression: TExpression): TExpression {
+    return {
+      expression: {
+        logicalExpression: {
+          notExpression: expression,
+        },
+      },
+    };
+  }
+
+  buildLogicalOrExpression(leftExpression: TExpression, rightExpression: TExpression): TExpression {
+    return {
+      expression: {
+        logicalExpression: {
+          orExpression: {
+            left: leftExpression,
+            right: rightExpression,
+          },
+        },
+      },
+    };
+  }
+
+  buildLogicalXorExpression(
+    leftExpression: TExpression,
+    rightExpression: TExpression,
+  ): TExpression {
+    return {
+      expression: {
+        logicalExpression: {
+          xorExpression: {
+            left: leftExpression,
+            right: rightExpression,
+          },
+        },
+      },
+    };
+  }
+
+  buildEqualityExpression(
+    leftExpression: TExpression,
+    rightExpression: TExpression,
+    operator: TEqualityOperator = '==',
+  ): TExpression {
+    return {
+      expression: {
+        equalityExpression: {
+          left: leftExpression,
+          right: rightExpression,
+          operator,
         },
       },
     };

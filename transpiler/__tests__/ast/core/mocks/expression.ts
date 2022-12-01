@@ -1,5 +1,16 @@
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 
+export const generalExpressionTestCases = [
+  {
+    description: 'Not true expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { NOT true }',
+    expression: new ExpressionBuilderDirector().buildLogicalNotExpression(
+      new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+    ),
+  },
+];
+
 export const validExpressionLiteralTestCases = [
   {
     description: 'Simple int32 literal',
@@ -111,6 +122,157 @@ export const validArrayLiteralExpressionTestCases = [
       new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
       new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
       new ExpressionBuilderDirector().buildInt32LiteralExpression(3),
+    ),
+  },
+];
+
+export const validAdditiveExpressionTestCases = [
+  {
+    description: 'Add two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 + 2 }',
+    expression: new ExpressionBuilderDirector().buildAdditiveExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+    ),
+  },
+  {
+    description: 'Add two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a + b }',
+    expression: new ExpressionBuilderDirector().buildAdditiveExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+    ),
+  },
+];
+
+export const validMultiplicativeExpressionTestCases = [
+  {
+    description: 'Multiply two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 * 2 }',
+    expression: new ExpressionBuilderDirector().buildMultiplicativeExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+    ),
+  },
+  {
+    description: 'Multiply two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a * b }',
+    expression: new ExpressionBuilderDirector().buildMultiplicativeExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+    ),
+  },
+];
+
+export const validRelationalExpressionTestCases = [
+  {
+    description: 'Relational expression with two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 > 2 }',
+    expression: new ExpressionBuilderDirector().buildRelationalExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+      '>',
+    ),
+  },
+  {
+    description: 'Relational expression with two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a < b }',
+    expression: new ExpressionBuilderDirector().buildRelationalExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+      '<',
+    ),
+  },
+];
+
+export const validEqualityExpressionTestCases = [
+  {
+    description: 'Equality expression with two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 == 2 }',
+    expression: new ExpressionBuilderDirector().buildEqualityExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+      '==',
+    ),
+  },
+  {
+    description: 'Equality expression with two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a != b }',
+    expression: new ExpressionBuilderDirector().buildEqualityExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+      '!=',
+    ),
+  },
+];
+
+export const validLogicalAndExpressionTestCases = [
+  {
+    description: 'Logical and expression with two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 AND 2 }',
+    expression: new ExpressionBuilderDirector().buildLogicalAndExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+    ),
+  },
+  {
+    description: 'Logical and expression with two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a AND b }',
+    expression: new ExpressionBuilderDirector().buildLogicalAndExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+    ),
+  },
+];
+
+export const validLogicalOrExpressionTestCases = [
+  {
+    description: 'Logical or expression with two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 OR 2 }',
+    expression: new ExpressionBuilderDirector().buildLogicalOrExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+    ),
+  },
+  {
+    description: 'Logical or expression with two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a OR b }',
+    expression: new ExpressionBuilderDirector().buildLogicalOrExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+    ),
+  },
+];
+
+export const validXorExpressionTestCases = [
+  {
+    description: 'Xor expression with two ints',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { 1 XOR 2 }',
+    expression: new ExpressionBuilderDirector().buildLogicalXorExpression(
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+      new ExpressionBuilderDirector().buildInt32LiteralExpression(2),
+    ),
+  },
+  {
+    description: 'Xor expression with two variables',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a XOR b }',
+    expression: new ExpressionBuilderDirector().buildLogicalXorExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
     ),
   },
 ];

@@ -1091,9 +1091,9 @@ export type TXorExpression = {
 
 export type TMultiplicativeExpression = {
   multiplicativeExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TMultiplicativeOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
@@ -1101,9 +1101,9 @@ export type TMultiplicativeOperator = '*' | '/' | '%';
 
 export type TAdditiveExpression = {
   additiveExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TAdditiveOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 

@@ -30,11 +30,19 @@ import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/Inte
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTParserError } from '../../../src/ast/core/types.js';
 import {
+  validAdditiveExpressionTestCases,
   validArrayLiteralExpressionTestCases,
   validAssignmentExpressionTestCases,
+  validEqualityExpressionTestCases,
   validExpressionIdentifierTestCases,
   validExpressionLiteralTestCases,
+  validLogicalAndExpressionTestCases,
+  validLogicalOrExpressionTestCases,
   validMemberDotExpressionTestCases,
+  validMultiplicativeExpressionTestCases,
+  validRelationalExpressionTestCases,
+  validXorExpressionTestCases,
+  generalExpressionTestCases,
 } from './mocks/expression.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
@@ -577,20 +585,20 @@ defineFeature(feature, (test) => {
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Literal is valid', () => {
+describe('Expression is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  validExpressionLiteralTestCases.forEach((testDTO) => {
-    test(`${testDTO.description}`, () => {
+  generalExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
           module: MODULE,
-          fileId: testDTO.fileId,
-          fileContents: testDTO.inputBLString,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
 
@@ -600,7 +608,39 @@ describe('Literal is valid', () => {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = testDTO.expression;
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Literal is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validExpressionLiteralTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
       // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 
@@ -615,14 +655,14 @@ describe('Identifier is valid', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  validExpressionIdentifierTestCases.forEach((testDTO) => {
-    test(`${testDTO.description}`, () => {
+  validExpressionIdentifierTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
           module: MODULE,
-          fileId: testDTO.fileId,
-          fileContents: testDTO.inputBLString,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
 
@@ -632,7 +672,7 @@ describe('Identifier is valid', () => {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = testDTO.expression;
+      const expectedNodeValues = testCase.expression;
       // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 
@@ -647,14 +687,14 @@ describe('Member dot expression test cases', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  validMemberDotExpressionTestCases.forEach((testDTO) => {
-    test(`${testDTO.description}`, () => {
+  validMemberDotExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
           module: MODULE,
-          fileId: testDTO.fileId,
-          fileContents: testDTO.inputBLString,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
 
@@ -664,7 +704,7 @@ describe('Member dot expression test cases', () => {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = testDTO.expression;
+      const expectedNodeValues = testCase.expression;
       // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 
@@ -679,14 +719,14 @@ describe('Assignment expression', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  validAssignmentExpressionTestCases.forEach((testDTO) => {
-    test(`${testDTO.description}`, () => {
+  validAssignmentExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
           module: MODULE,
-          fileId: testDTO.fileId,
-          fileContents: testDTO.inputBLString,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
 
@@ -696,7 +736,7 @@ describe('Assignment expression', () => {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = testDTO.expression;
+      const expectedNodeValues = testCase.expression;
       // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 
@@ -711,14 +751,14 @@ describe('Array literal expression test cases', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  validArrayLiteralExpressionTestCases.forEach((testDTO) => {
-    test(`${testDTO.description}`, () => {
+  validArrayLiteralExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
           module: MODULE,
-          fileId: testDTO.fileId,
-          fileContents: testDTO.inputBLString,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
 
@@ -728,7 +768,228 @@ describe('Array literal expression test cases', () => {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = testDTO.expression;
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Additive expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validAdditiveExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Multiplicative Expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validMultiplicativeExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Relational Expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validRelationalExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+describe('Equality expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validEqualityExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+describe('Logical And Expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validLogicalAndExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+describe('Logical Or Expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validLogicalOrExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Logical XOR Expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validXorExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
       // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 

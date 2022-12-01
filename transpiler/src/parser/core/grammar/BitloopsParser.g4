@@ -573,25 +573,25 @@ variableDeclaration
 
 
 statement
-    : block                         
-    | expression    
+    // : block                         
+    : expression    
     | constDeclaration
     | variableDeclaration
     // | thisDeclaration
     | emptyStatement_
     | propsDeclaration
-    | namespaceDeclaration //ADDED
+    // | namespaceDeclaration //ADDED
     | ifStatement
     | breakStatement
     | switchStatement
-    | iterationStatement
+    // | iterationStatement
     | returnStatement
     // | returnErrorStatement TODO
     // | labelledStatement
-    | throwStatement
-    | tryStatement
+    // | throwStatement
+    // | tryStatement
     // | functionDeclaration
-    | arrowFunctionDeclaration
+    // | arrowFunctionDeclaration
     // | variableStatement
     // | typeAliasDeclaration //ADDED
     | builtInFunction // Using semantic analysis, allow it only inside domain
@@ -609,9 +609,9 @@ applyRulesRule
     : domainRuleIdentifier arguments
     ;
 
-block
-    : OpenBrace statementList? CloseBrace
-    ;
+// block
+//     : OpenBrace statementList? CloseBrace
+//     ;
 
 statementList
     : statement+ SemiColon?
@@ -741,17 +741,17 @@ throwStatement
     : Throw expressionSequence eos
     ;
 
-tryStatement
-    : Try block (catchProduction finallyProduction? | finallyProduction)
-    ;
+// tryStatement
+//     : Try block (catchProduction finallyProduction? | finallyProduction)
+//     ;
 
-catchProduction
-    : Catch OpenParen Identifier CloseParen block
-    ;
+// catchProduction
+//     : Catch OpenParen Identifier CloseParen block
+//     ;
 
-finallyProduction
-    : Finally block
-    ;
+// finallyProduction
+//     : Finally block
+//     ;
 
 debuggerStatement
     : Debugger eos
