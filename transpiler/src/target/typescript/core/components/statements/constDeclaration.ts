@@ -27,7 +27,7 @@ const constDeclarationToTargetLanguage = (
   const constDeclarationLangMapping = (
     variable: TConstDeclaration,
   ): TTargetDependenciesTypeScript => {
-    const { name, type } = variable.constDeclaration;
+    const { identifier, type } = variable.constDeclaration;
 
     if (type) {
       const mappedType = modelToTargetLanguage({
@@ -35,11 +35,11 @@ const constDeclarationToTargetLanguage = (
         value: type,
       });
       return {
-        output: `const ${name}: ${mappedType.output} = `,
+        output: `const ${identifier}: ${mappedType.output} = `,
         dependencies: mappedType.dependencies,
       };
     } else {
-      return { output: `const ${name} = `, dependencies: [] };
+      return { output: `const ${identifier} = `, dependencies: [] };
     }
   };
 

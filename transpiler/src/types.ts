@@ -398,8 +398,9 @@ export type TDomainEvaluationExpression =
     }
   | TExpression;
 
+export const expressionKey = 'expression';
 export type TExpression = {
-  expression: TExpressionValues;
+  [expressionKey]: TExpressionValues;
 };
 
 export type TExpressionValues =
@@ -505,12 +506,13 @@ export type TConstDecomposition = {
 };
 
 export type TConstDeclarationValue = {
-  name: string;
+  identifier: string;
   type?: TBitloopsPrimaryType;
 } & TExpression;
 
+export const constDeclarationKey = 'constDeclaration';
 export type TConstDeclaration = {
-  constDeclaration: TConstDeclarationValue;
+  [constDeclarationKey]: TConstDeclarationValue;
 };
 
 export type TVariableDeclaration = {

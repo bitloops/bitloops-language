@@ -32,11 +32,4 @@ export const identifierExpressionVisitor = (
   const { value } = regularEvaluation;
   const identifierExpr = new IdentifierExpressionBuilder().withValue(value).build();
   return new ExpressionBuilder().withExpression(identifierExpr).build();
-  // return {
-  //   expression: {
-  //     evaluation: {
-  //       regularEvaluation,
-  //     },
-  //   },
-  // };
 };

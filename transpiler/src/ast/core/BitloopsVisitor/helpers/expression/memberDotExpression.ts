@@ -41,19 +41,4 @@ export const memberDotExpressionVisitor = (
     .withIdentifier(identifierExpr)
     .build();
   return new ExpressionBuilder().withExpression(memberExpr).build();
-  // const leftExpression = thisVisitor.visit(ctx.expression());
-  // const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
-  // const identifier = thisVisitor.visit(ctx.regularIdentifier());
-  // const identifierValue = identifier.value;
-  // const stringResult = `${leftExpressionValue}.${identifierValue}`;
-  // return {
-  //   expression: {
-  //     evaluation: {
-  //       regularEvaluation: {
-  //         type: 'variable',
-  //         value: stringResult,
-  //       },
-  //     },
-  //   },
-  // };
 };
