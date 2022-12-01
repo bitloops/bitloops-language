@@ -59,6 +59,8 @@ import {
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
+import { PropsIdentifierNode } from './../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
+import { PropsIdentifierNodeBuilder } from './../intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
@@ -197,6 +199,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return dtoIdentifierNode;
+  }
+
+  visitPropsIdentifier(ctx: BitloopsParser.PropsIdentifierContext): PropsIdentifierNode {
+    const identifierName = ctx.PropsIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const propsIdentifierNode = new PropsIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return propsIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
@@ -392,9 +403,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return statementListVisitor(this, ctx);
   }
 
-  visitBlock(ctx: BitloopsParser.BlockContext) {
-    return this.visit(ctx.statementList());
-  }
+  // visitBlock(ctx: BitloopsParser.BlockContext) {
+  //   return this.visit(ctx.statementList());
+  // }
   visitConstDeclaration(ctx: BitloopsParser.ConstDeclarationContext) {
     return constDeclarationVisitor(this, ctx);
   }
@@ -670,9 +681,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): { Entities: TEntities } {
     return entityDeclarationVisitor(this, ctx);
   }
+
   visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext) {
     return aggregateDeclarationVisitor(this, ctx);
   }
+
   visitEntityBody(ctx: BitloopsParser.EntityBodyContext): TEntityValues {
     return entityBodyVisitor(this, ctx);
   }
@@ -839,7 +852,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return arrayBitloopsPrimTypeVisitor(this, ctx);
   }
 
-  visitBitloopsBuildInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
+  visitBitloopsBuiltInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
     const buildInClassType = ctx.bitloopsBuiltInClass().getText();
     const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
     return buildInClassTypeNode;

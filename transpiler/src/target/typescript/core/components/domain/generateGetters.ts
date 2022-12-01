@@ -31,7 +31,7 @@ export const generateGetters = (
   if (!Props) throw new Error(`No Props Found with name ${propsName}`);
   for (const [propName, propValues] of Object.entries(Props)) {
     if (propName === propsName) {
-      for (const propVariable of propValues.variables) {
+      for (const propVariable of propValues.fields) {
         const { type, identifier } = propVariable[fieldKey];
         const res = modelToTargetLanguage({
           value: type,

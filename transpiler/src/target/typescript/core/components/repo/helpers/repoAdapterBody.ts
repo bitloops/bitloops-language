@@ -22,7 +22,6 @@ import {
   TRepoPort,
   TTargetDependenciesTypeScript,
   TSingleExpression,
-  TPropsValues,
   TModule,
   ISetupData,
 } from '../../../../../../types.js';
@@ -34,6 +33,8 @@ import { fetchTypeScriptReadModelCrudBaseRepo } from './mongo/readModelCrudRepo.
 const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 const CRUDReadRepoPort = 'CRUDReadRepoPort';
 
+// TODO TPropsValues where deleted, fix this
+type TPropsValues = any;
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
   collectionExpression: TSingleExpression,

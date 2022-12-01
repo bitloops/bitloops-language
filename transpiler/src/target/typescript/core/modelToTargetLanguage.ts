@@ -26,7 +26,7 @@ import {
   parameterDependenciesToTargetLanguage,
   parameterDependencyToTargetLanguage,
 } from './components/dependencies/index.js';
-import { propsToTargetLanguage, propsValuesToTargetLanguage } from './components/props/index.js';
+import { propsToTargetLanguage } from './components/props/index.js';
 import { constDecompositionToTargetLanguage } from './components/statements/constDecomposition.js';
 import { constDeclarationToTargetLanguage } from './components/statements/constDeclaration.js';
 import { classInstantiationToTargetLanguage } from './components/statements/expression/classInstantiation.js';
@@ -173,10 +173,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TReadModels: {
       res = readModelsToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TPropsValues: {
-      res = propsValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TInstanceOf: {

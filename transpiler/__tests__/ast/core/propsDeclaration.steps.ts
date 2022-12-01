@@ -17,56 +17,131 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { decode } from 'bitloops-gherkin';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { TVariables, TProps, TPropsIdentifier, TVariable } from '../../../src/types.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { errorCases, validMultiplePropsTestCases, validPropsTestCases } from './mocks/props.js';
+import { PropsDeclarationBuilder } from './builders/propsDeclaration.js';
 
-const feature = loadFeature('__tests__/ast/core/propsDeclaration.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  test('Props declaration is valid', ({ given, when, then }) => {
-    let boundedContext: string;
-    let module: string;
-    let blString: string;
-    let modelOutput: string;
-    let result: any;
+describe('Props declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    given(
-      /^Valid bounded context (.*), module (.*), propsDeclaration (.*) strings$/,
-      (arg0, arg1, arg2) => {
-        boundedContext = decode(arg0);
-        module = decode(arg1);
-        blString = decode(arg2);
-      },
-    );
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validPropsTestCases.forEach((testProps) => {
+    test(`${testProps.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testProps.fileId,
+          fileContents: testProps.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = getExpectedPropsOutput(testProps.variables, testProps.identifier);
+      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TProps);
+      const value = propsNodes[0].getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });
+
+describe('Props declaration with multiple props is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validMultiplePropsTestCases.forEach((testProps) => {
+    test(`${testProps.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testProps.fileId,
+          fileContents: testProps.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = getExpectedPropsOutputMultipleProps([
+        { variables: testProps.variables[0], identifier: testProps.identifier[0] },
+        { variables: testProps.variables[1], identifier: testProps.identifier[1] },
+      ]);
+      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TProps);
+      const values = propsNodes.map((node) => node.getValue());
+
+      expect(values).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Props declaration is invalid', () => {
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+  errorCases.forEach((testProps) => {
+    test(`${testProps.description}`, () => {
+      const res = function (): void {
+        const initialModelOutput = parser.parse([
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testProps.fileId,
+            fileContents: testProps.inputBLString,
+          },
+        ]);
+
+        if (!isBitloopsParserError(initialModelOutput)) {
+          intermediateParser.parse(initialModelOutput);
+        }
+      };
+
+      expect(res).toThrow(TypeError);
+    });
+  });
+});
+
+const getExpectedPropsOutput = (variables: TVariables, identifier: TPropsIdentifier): TProps => {
+  const propsValue = new PropsDeclarationBuilder()
+    .withIdentifier(identifier)
+    .withVariables(variables)
+    .build();
+
+  return propsValue;
+};
+
+type multipleProps = { variables: TVariable[]; identifier: TPropsIdentifier }[];
+
+const getExpectedPropsOutputMultipleProps = (props: multipleProps) => {
+  const resultProps = [];
+  for (const { identifier, variables } of props) {
+    const propsValue = new PropsDeclarationBuilder()
+      .withIdentifier(identifier)
+      .withVariables(variables)
+      .build();
+    resultProps.push(propsValue);
+  }
+
+  return resultProps;
+};

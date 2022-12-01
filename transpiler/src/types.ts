@@ -132,11 +132,22 @@ export type TVariable = {
   };
 };
 
-export type TPropsValues = {
-  variables: TVariables;
-};
+// export type TPropsValues = {
+//   variables: TVariables;
+// };
 
-export type TProps = Record<string, TPropsValues>;
+// export type TProps = Record<string, TPropsValues>;
+
+export type TPropsIdentifier = string;
+export const PropsIdentifierKey = 'PropsIdentifier';
+
+export const PropsKey = 'Props';
+export type TProps = {
+  [PropsKey]: {
+    [PropsIdentifierKey]: TPropsIdentifier;
+    [fieldsKey]: TVariables;
+  };
+};
 
 export type TReadModelValues = {
   variables: TVariables;

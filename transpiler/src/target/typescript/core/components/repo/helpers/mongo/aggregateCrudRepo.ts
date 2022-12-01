@@ -1,7 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { isVO } from '../../../../../../../helpers/typeGuards.js';
 import {
-  TPropsValues,
   TModule,
   TTargetDependenciesTypeScript,
   TVariable,
@@ -11,6 +10,8 @@ import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitloopsPrimType.js';
 
+// TODO TPropsValues where deleted, fix this
+type TPropsValues = any;
 const getVOProps = (voName: string, model: TModule): TPropsValues => {
   const voModel = model.ValueObjects[voName];
   const voPropsNameType = voModel.create.parameterDependency.type;

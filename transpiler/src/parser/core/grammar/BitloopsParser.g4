@@ -830,8 +830,9 @@ useCaseDeclaration
     ;
 
 propsDeclaration
-    : Props PropsIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    : Props propsIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
+
 
 readModelDeclaration
     : ReadModel ReadModelIdentifier OpenBrace fieldList CloseBrace SemiColon?

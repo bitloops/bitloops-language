@@ -21,7 +21,6 @@ import {
   ISetupData,
   TDependenciesTypeScript,
   TModule,
-  TPropsValues,
   TRepoAdapters,
   TRepoPort,
   TRepoSupportedTypes,
@@ -68,6 +67,8 @@ const getRepoHeader = (
   };
 };
 
+// TODO, TProps where deleted, fix this
+type TPropsValues = any;
 const getPropsModel = (
   repoPortInfo: TRepoPort,
   module: TModule,

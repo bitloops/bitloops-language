@@ -1,14 +1,12 @@
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
-import {
-  TPropsValues,
-  TVariable,
-  TTargetDependenciesTypeScript,
-  fieldKey,
-} from '../../../../../../../types.js';
+import { TVariable, TTargetDependenciesTypeScript, fieldKey } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 const DOCUMENT_NAME = 'document';
+
+// TODO TPropsValues where deleted, fix this
+type TPropsValues = any;
 
 const getReadModelFields = (readModelValues: TPropsValues): string => {
   return readModelValues.variables
