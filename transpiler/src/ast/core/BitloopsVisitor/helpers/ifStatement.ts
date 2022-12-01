@@ -22,7 +22,7 @@ import { ThenStatementsNodeBuilder } from './../../intermediate-ast/builders/sta
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata, produceMetadataFromTo } from '../metadata.js';
-import { IfStatementBuilder } from '../../intermediate-ast/builders/statements/ifStatement/IfStatementBuilderExpression.js';
+import { IfStatementBuilder } from '../../intermediate-ast/builders/statements/ifStatement/IfStatementBuilder.js';
 import { ElseStatementsNodeBuilder } from '../../intermediate-ast/builders/statements/ifStatement/ElseStatements.js';
 import { IfStatementNode } from '../../intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 
