@@ -1,3 +1,5 @@
+import { EvaluationBuilderDirector } from '../builders/evaluationDirector.js';
+import { EvaluationFieldBuilderDirector } from '../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 
 export const generalExpressionTestCases = [
@@ -7,6 +9,30 @@ export const generalExpressionTestCases = [
     inputBLString: 'JestTestExpression { NOT true }',
     expression: new ExpressionBuilderDirector().buildLogicalNotExpression(
       new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+    ),
+  },
+  {
+    description: 'Struct evaluation expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { HelloWorldStruct({ message: "Hello, World!" }) }',
+    expression: new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildStructEvaluation('HelloWorldStruct', [
+        new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
+      ]),
+    ),
+  },
+  {
+    description: 'Test parenthesis with OR and AND',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { (a OR b) AND c }',
+    expression: new ExpressionBuilderDirector().buildLogicalAndExpression(
+      new ExpressionBuilderDirector().buildParenthesizedExpression(
+        new ExpressionBuilderDirector().buildLogicalOrExpression(
+          new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+          new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+        ),
+      ),
+      new ExpressionBuilderDirector().buildIdentifierExpression('c'),
     ),
   },
 ];

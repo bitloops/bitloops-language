@@ -1,4 +1,21 @@
-import { TArgumentList, TEvaluation, TEvaluationFields } from '../../../../src/types.js';
+import {
+  TArgumentList,
+  TDomainEvaluation,
+  TDomainEvaluationExpression,
+  TEvaluation,
+  TEvaluationFields,
+  TExpression,
+} from '../../../../src/types.js';
+
+type PropsParam =
+  | {
+      fields: TEvaluationFields;
+      expression?: never;
+    }
+  | {
+      fields?: never;
+      expression: TExpression;
+    };
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(structIdentifier: string, fields: TEvaluationFields): TEvaluation {
@@ -30,6 +47,36 @@ export class EvaluationBuilderDirector {
           name: errorIdentifier,
           argumentList: args,
         },
+      },
+    };
+  }
+
+  buildValueObjectEvaluation(valueObjectIdentifier: string, propsParam: PropsParam): TEvaluation {
+    return {
+      evaluation: {
+        valueObject: this.buildDomainEvaluation(valueObjectIdentifier, propsParam),
+      },
+    };
+  }
+
+  buildEntityEvaluation(entityIdentifier: string, propsParam: PropsParam): TEvaluation {
+    return {
+      evaluation: {
+        entity: this.buildDomainEvaluation(entityIdentifier, propsParam),
+      },
+    };
+  }
+
+  private buildDomainEvaluation(
+    domainIdentifier: string,
+    propsParam: PropsParam,
+  ): TDomainEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      domainEvaluation: {
+        name: domainIdentifier,
+        props,
       },
     };
   }

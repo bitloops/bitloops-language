@@ -2,6 +2,7 @@ import {
   TAdditiveOperator,
   TArgumentList,
   TEqualityOperator,
+  TEvaluation,
   TExpression,
   TMultiplicativeOperator,
   TRelationalOperator,
@@ -231,6 +232,22 @@ export class ExpressionBuilderDirector {
           right: rightExpression,
           operator,
         },
+      },
+    };
+  }
+
+  buildEvaluation(evaluation: TEvaluation): TExpression {
+    return {
+      expression: {
+        ...evaluation,
+      },
+    };
+  }
+
+  buildParenthesizedExpression(expression: TExpression): TExpression {
+    return {
+      expression: {
+        parenthesizedExpression: expression,
       },
     };
   }
