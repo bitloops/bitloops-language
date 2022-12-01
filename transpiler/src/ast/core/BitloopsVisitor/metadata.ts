@@ -12,7 +12,16 @@ export const produceMetadata = (ctx: any, visitor: BitloopsVisitor): TNodeMetada
       line: stop.line,
       column: stop.column,
     },
-    file: visitor.currentFile,
+    fileId: visitor.currentFile,
+  };
+  return metadata;
+};
+
+export const produceMetadataFromTo = (from: TNodeMetadata, to: TNodeMetadata): TNodeMetadata => {
+  const metadata = {
+    start: from?.start,
+    end: to?.end,
+    fileId: from?.fileId,
   };
   return metadata;
 };

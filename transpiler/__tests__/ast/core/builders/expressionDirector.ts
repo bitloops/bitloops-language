@@ -92,11 +92,25 @@ export class ExpressionBuilderDirector {
     };
   }
 
-  buildMethodCallExpression(expression, argumentList: TArgumentList): TExpression {
+  buildThisMemberExpressionOutOfVariables(...identifiers: string[]): TExpression {
+    return identifiers.reduce(
+      (leftExpression, identifier) => this.buildMemberExpression(leftExpression, identifier),
+      this.buildThisExpression(),
+    );
+  }
+
+  buildMemberExpressionOutOfVariables(...identifiers: string[]): TExpression {
+    return identifiers.reduce(
+      (leftExpression, identifier) => this.buildMemberExpression(leftExpression, identifier),
+      this.buildIdentifierExpression(identifiers.shift()),
+    );
+  }
+
+  buildMethodCallExpression(expression: TExpression, argumentList: TArgumentList): TExpression {
     return {
       expression: {
         methodCallExpression: {
-          expression,
+          ...expression,
           argumentList,
         },
       },

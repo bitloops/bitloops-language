@@ -163,6 +163,7 @@ import {
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
+import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -385,10 +386,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
-    const condition = this.visit(ctx.expression());
-    return {
-      condition,
-    };
+    const expression = this.visit(ctx.expression());
+    const metadata = produceMetadata(ctx, this);
+    const conditionNode = new ConditionNodeBuilder(metadata).withExpression(expression).build();
+    return conditionNode;
   }
 
   visitIfStatement(ctx: BitloopsParser.IfStatementContext) {

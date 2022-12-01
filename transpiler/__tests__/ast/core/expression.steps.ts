@@ -34,6 +34,7 @@ import {
   validRelationalExpressionTestCases,
   validXorExpressionTestCases,
   generalExpressionTestCases,
+  validMethodCallTestCases,
 } from './mocks/expression.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
@@ -48,6 +49,38 @@ describe('Expression is valid', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   generalExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('Method call invocation', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validMethodCallTestCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {

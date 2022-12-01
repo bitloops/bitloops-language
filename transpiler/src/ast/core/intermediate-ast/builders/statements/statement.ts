@@ -28,36 +28,36 @@ export class StatementDirector {
   }
 }
 
-export class IfStatementBuilder implements IIfStatementBuilder {
-  private condition: TExpression;
-  private thenStatements: TStatements;
-  private elseStatements?: TStatements;
+// export class IfStatementBuilder implements IIfStatementBuilder {
+//   private condition: TExpression;
+//   private thenStatements: TStatements;
+//   private elseStatements?: TStatements;
 
-  withCondition(condition: TExpression): IIfStatementBuilder {
-    this.condition = condition;
-    return this;
-  }
+//   withCondition(condition: TExpression): IIfStatementBuilder {
+//     this.condition = condition;
+//     return this;
+//   }
 
-  withThenStatements(thenStatements: TStatements): IIfStatementBuilder {
-    this.thenStatements = thenStatements;
-    return this;
-  }
+//   withThenStatements(thenStatements: TStatements): IIfStatementBuilder {
+//     this.thenStatements = thenStatements;
+//     return this;
+//   }
 
-  withElseStatements(elseStatements: TStatements): IIfStatementBuilder {
-    this.elseStatements = elseStatements;
-    return this;
-  }
+//   withElseStatements(elseStatements: TStatements): IIfStatementBuilder {
+//     this.elseStatements = elseStatements;
+//     return this;
+//   }
 
-  build(): TIfStatement {
-    const ifStatement: TIfStatement = {
-      ifStatement: {
-        condition: this.condition,
-        thenStatements: this.thenStatements,
-      },
-    };
-    if (this.elseStatements) {
-      ifStatement.ifStatement.elseStatements = this.elseStatements;
-    }
-    return ifStatement;
-  }
-}
+//   build(): TIfStatement {
+//     const ifStatement: TIfStatement = {
+//       ifStatement: {
+//         condition: this.condition,
+//         thenStatements: this.thenStatements,
+//       },
+//     };
+//     if (this.elseStatements) {
+//       ifStatement.ifStatement.elseStatements = this.elseStatements;
+//     }
+//     return ifStatement;
+//   }
+// }

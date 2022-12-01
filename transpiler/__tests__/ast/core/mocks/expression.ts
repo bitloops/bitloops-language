@@ -1,3 +1,4 @@
+import { ArgumentBuilderDirector } from './../builders/argumentDirector.js';
 import { EvaluationBuilderDirector } from '../builders/evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
@@ -33,6 +34,45 @@ export const generalExpressionTestCases = [
         ),
       ),
       new ExpressionBuilderDirector().buildIdentifierExpression('c'),
+    ),
+  },
+];
+
+export const validMethodCallTestCases = [
+  {
+    description: 'Method call with no arguments',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { a() }',
+    expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      [],
+    ),
+  },
+  {
+    description: 'Method call with 1 argument',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { helloWorldUseCase.execute (dto)  }',
+    expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+      new ExpressionBuilderDirector().buildMemberExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldUseCase'),
+        'execute',
+      ),
+      [new ArgumentBuilderDirector().buildIdentifierArgument('dto')],
+    ),
+  },
+  {
+    description: 'Method call with 2 arguments',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { helloWorldUseCase.execute (dto, tismas)  }',
+    expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+      new ExpressionBuilderDirector().buildMemberExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldUseCase'),
+        'execute',
+      ),
+      [
+        new ArgumentBuilderDirector().buildIdentifierArgument('dto'),
+        new ArgumentBuilderDirector().buildIdentifierArgument('tismas'),
+      ],
     ),
   },
 ];
