@@ -8,7 +8,7 @@ import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from './nodes/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
-import { StatementNode } from './nodes/Statement.js';
+import { StatementNode } from './nodes/statements/Statement.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;

@@ -145,6 +145,8 @@ const BitloopsTypesMapping = {
   TName: 'TName',
   TClass: 'TClass',
   TArgumentList: 'TArgumentList',
+  TThenStatements: 'TThenStatements',
+  TElseStatements: 'TElseStatements',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
