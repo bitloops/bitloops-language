@@ -63,7 +63,8 @@ const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTyp
   const type = variableKeys[0];
 
   if (!keysToTypeMapping[type]) {
-    throw new Error('Unsupported statement:' + variable);
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    throw new Error(`Unsupported statement:${variable}`);
   }
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable });
 };
@@ -84,8 +85,8 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
               type: BitloopsTypesMapping.TStatement,
               value: statement,
             });
-            const ifAdded = `if (!${constDeclaration.name}.isFail()) {`;
-            elseAdded.push(`} else { return fail(${constDeclaration.name}.value) }`);
+            const ifAdded = `if (!${constDeclaration.identifier}.isFail()) {`;
+            elseAdded.push(`} else { return fail(${constDeclaration.identifier}.value) }`);
             const dependencies = [...evaluationRes.dependencies, ...FAIL_DEPENDENCY];
             return {
               output: `${evaluationRes.output}${ifAdded}`,
