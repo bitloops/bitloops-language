@@ -59,6 +59,7 @@ import {
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
+import { BreakStatementNode } from './../intermediate-ast/nodes/statements/BreakStatementNode.js';
 import { PropsIdentifierNode } from './../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
 import { PropsIdentifierNodeBuilder } from './../intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
@@ -164,6 +165,7 @@ import {
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
 import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
+import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -440,8 +442,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return defaultClauseVisitor(this, ctx);
   }
 
-  visitBreakStatement(ctx: BitloopsParser.BreakStatementContext) {
-    return ctx.Break().getText();
+  visitBreakStatement(): BreakStatementNode {
+    return new BreakStatementNodeBuilder().build();
   }
 
   visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {

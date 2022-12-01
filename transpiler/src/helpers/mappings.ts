@@ -28,6 +28,8 @@ const BitloopsTypesMapping = {
   TInstanceOf: 'TInstanceOf',
   TArgument: 'TArgument',
   TArgumentDependency: 'TArgumentDependency',
+  TSwitchCases: 'TSwitchCases',
+  TSwitchCase: 'TSwitchCase',
   TArgumentDependencyType: 'TArgumentDependencyType',
   TClassInstantiation: 'TClassInstantiation',
   TParameterDependency: 'TParameterDependency',
