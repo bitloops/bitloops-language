@@ -573,8 +573,8 @@ variableDeclaration
 
 
 statement
-    // : block                         
-    : expression    
+    : block                         
+    | expression    
     | constDeclaration
     | variableDeclaration
     // | thisDeclaration
@@ -609,9 +609,9 @@ applyRulesRule
     : domainRuleIdentifier arguments
     ;
 
-// block
-//     : OpenBrace statementList? CloseBrace
-//     ;
+block
+    : OpenBrace statementList? CloseBrace
+    ;
 
 statementList
     : statement+ SemiColon?
