@@ -125,6 +125,7 @@ const BitloopsTypesMapping = {
   TDTOIdentifier: 'TDTOIdentifier',
   TPropsIdentifier: 'TPropsIdentifier',
   TIdentifier: 'TIdentifier',
+  TStructIdentifier: 'TStructIdentifier',
   Toperator: 'Toperator',
   TIdentifierExpression: 'TIdentifierExpression',
   TOptional: 'TOptional',

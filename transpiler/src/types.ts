@@ -31,7 +31,7 @@ export type TModule = {
   Entities?: TEntities;
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
-  Structs?: TStructs;
+  Structs?: TStructDeclaration;
   Packages?: TPackages;
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
@@ -67,7 +67,7 @@ export type TComponentType =
   | 'TEntities'
   | 'TValueObjects'
   | 'TDTOs'
-  | 'TStructs'
+  | 'TStructs' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
@@ -350,7 +350,6 @@ export type TEvaluationField = {
   evaluationField: { name: string } & TExpression;
 };
 export type TEvaluationFields = TEvaluationField[];
-// export type TEvaluationFields = ({ name: string } & TExpression)[];
 
 export type TStructEvaluation = {
   struct: {
@@ -624,8 +623,15 @@ export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
 
+export const StructKey = 'Struct';
+export type TStructIdentifier = string;
+export const structIdentifierKey = 'StructIdentifier';
+
 export type TStructDeclaration = {
-  fields: TVariables;
+  [StructKey]: {
+    [structIdentifierKey]: TStructIdentifier;
+    fields: TVariables;
+  };
 };
 
 export type TExecute = {
