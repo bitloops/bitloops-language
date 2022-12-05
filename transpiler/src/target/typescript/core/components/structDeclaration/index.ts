@@ -19,7 +19,7 @@
  */
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import {
-  TStructs,
+  TStruct,
   TStructDeclaration,
   TTargetDependenciesTypeScript,
   StructKey,
@@ -27,7 +27,7 @@ import {
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const structDeclarationToTargetLanguage = (struct: TStructs): TTargetDependenciesTypeScript => {
+const structDeclarationToTargetLanguage = (struct: TStruct): TTargetDependenciesTypeScript => {
   const initialStructLangMapping = (structName: string): string => `export type ${structName} = { `;
   const finalStructLangMapping = '};';
 

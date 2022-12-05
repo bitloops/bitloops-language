@@ -67,7 +67,7 @@ export type TComponentType =
   | 'TEntities'
   | 'TValueObjects'
   | 'TDTOs'
-  | 'TStructs' //TODO should we replace with TStructDeclaration/DTODeclaration
+  | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
@@ -105,7 +105,7 @@ export type TBitloopsClasses =
   | TUseCase
   | TDomainErrors
   | TDTO
-  | TStructs;
+  | TStruct;
 
 export type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
@@ -650,7 +650,7 @@ export type TDTO = {
   };
 };
 
-export type TStructs = Record<string, TStructDeclaration>;
+export type TStruct = Record<string, TStructDeclaration>;
 
 export type TUseCaseValues = {
   returnTypes: TOkErrorReturnType;

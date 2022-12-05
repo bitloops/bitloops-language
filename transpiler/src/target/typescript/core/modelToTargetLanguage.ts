@@ -212,7 +212,7 @@ const modelToTargetLanguage = (props: {
       res = structToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TStructs: {
+    case BitloopsTypesMapping.TStruct: {
       res = structDeclarationToTargetLanguage(value);
       break;
     }
