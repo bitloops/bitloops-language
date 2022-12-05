@@ -1,141 +1,128 @@
-import { defineFeature, loadFeature } from 'jest-cucumber';
 // import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/BitloopsParser.js';
 // import expectedModels from '../../../../src/examples/domainError.js';
 // import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/BitloopsParser.js';
-import {
-  BitloopsParser,
-  BitloopsIntermediateASTParser,
-  BitloopsParserError,
-  BitloopsLanguageASTContext,
-} from '../../../src/index.js';
-import { TDomainErrors, TModule } from '../../../src/types.js';
+import { BitloopsParser, BitloopsIntermediateASTParser } from '../../../src/index.js';
 
-const feature = loadFeature('__tests__/ast/core/domainError.feature');
+// const feature = loadFeature('__tests__/ast/core/domainError.feature');
 
-const expectedModels: TDomainErrors[] = [
-  {
-    InvalidNameError: {
-      message: {
-        expression: {
-          evaluation: {
-            regularEvaluation: { type: 'backTickString', value: 'is an invalid ${name}' },
-          },
-        },
-      },
-      errorId: {
-        expression: {
-          evaluation: {
-            regularEvaluation: { type: 'string', value: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
-          },
-        },
-      },
-      parameters: [{ type: 'string', value: 'name' }],
-    },
-  },
-  {
-    InvalidNameError: {
-      message: {
-        expression: {
-          evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
-        },
-      },
-      errorId: {
-        expression: {
-          evaluation: {
-            regularEvaluation: { type: 'string', value: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
-          },
-        },
-      },
-      parameters: [
-        { type: 'string', value: 'name' },
-        { type: 'string', value: 'hello' },
-      ],
-    },
-  },
-  // {
-  //   'Hello World': {
-  //     core: {
-  //       DomainErrors: {
-  //         InvalidNameError: {
-  //           message: { backTickString: 'name is an invalid ${name}' },
-  //           errorId: { backTickString: '${errorId}' },
-  //           parameters: [
-  //             { type: 'string', value: 'name' },
-  //             { type: 'string', value: 'errorId' },
-  //           ],
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
-];
 // TODO make work with backticks and make work to target language
-const expectedOutput: {
-  [bdctx: string]: {
-    core: TModule;
-  };
-}[] = expectedModels.map((expectedModel: TDomainErrors) => ({
-  ['Hello World']: { core: { DomainErrors: expectedModel } },
-}));
-let example_count = 0;
-let blString: string;
-let res: any;
 
-afterEach(() => {
-  example_count++;
-});
-defineFeature(feature, (test) => {
-  test('domainError is valid', ({ given, when, then }) => {
-    given(/^A valid domain error string (.*)$/, (arg0) => {
-      blString = arg0;
-    });
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { validDomainErrors } from './mocks/errors/domainErrors.js';
+import { DomainErrorBuilder } from './builders/domaiErrorBuilder.js';
+import { TDomainErrors, TExpression } from '../../../src/types.js';
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
+const CLASS_TYPE = BitloopsTypesMapping.TDomainError;
+describe('A domain error is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validDomainErrors.forEach((mock) => {
+    test(`${mock.description}`, () => {
+      const { name, message, errorId } = mock;
+      const expectedNodeValues = getExpectedOutput(name, message, errorId);
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Hello World',
-          module: 'core',
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: mock.fileId,
+          fileContents: mock.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        res = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
-      }
-    });
 
-    then('I should get the right model', () => {
-      expect(res).toEqual(expectedOutput[example_count]);
-    });
-  });
-
-  test('domainError is invalid', ({ given, when, then }) => {
-    given(/^An invalid domain error string (.*)$/, (arg0) => {
-      blString = arg0;
-    });
-
-    when('I generate the model', () => {
-      res = () => {
-        const parser = new BitloopsParser();
-        const initialModelOutput = parser.parse([
-          {
-            boundedContext: 'Test',
-            module: 'Test',
-            fileId: 'testFile.bl',
-            fileContents: blString,
-          },
-        ]);
-        const intermediateParser = new BitloopsIntermediateASTParser();
-        if (!(initialModelOutput instanceof BitloopsParserError)) {
-          intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
-      };
-    });
+      }
 
-    then('I should get an error', () => {
-      expect(res).toThrow(TypeError);
+      console.log(resultTree);
+      const nodes = resultTree.getClassTypeNodes(CLASS_TYPE);
+      const value = nodes[0].getValue();
+      console.log(expectedNodeValues);
+
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });
+
+// describe('DTO declaration with multiple dtos is valid', () => {
+//   let resultTree: IntermediateASTTree;
+
+//   const parser = new BitloopsParser();
+//   const intermediateParser = new BitloopsIntermediateASTParser();
+
+//   validMultipleDTOSTestCases.forEach((testDTO) => {
+//     test(`${testDTO.description}`, () => {
+//       const initialModelOutput = parser.parse([
+//         {
+//           boundedContext: BOUNDED_CONTEXT,
+//           module: MODULE,
+//           fileId: testDTO.fileId,
+//           fileContents: testDTO.inputBLString,
+//         },
+//       ]);
+
+//       if (!isBitloopsParserError(initialModelOutput)) {
+//         const result = intermediateParser.parse(initialModelOutput);
+//         if (!isBitloopsIntermediateASTError(result)) {
+//           resultTree = result[BOUNDED_CONTEXT][MODULE];
+//         }
+//       }
+//       const expectedNodeValues = getExpectedDTOOutputMultipleDTOS([
+//         { variables: testDTO.variables[0], identifier: testDTO.identifier[0] },
+//         { variables: testDTO.variables[1], identifier: testDTO.identifier[1] },
+//       ]);
+//       const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+//       const values = dtoNodes.map((node) => node.getValue());
+
+//       expect(values).toMatchObject(expectedNodeValues);
+//     });
+//   });
+// });
+
+// describe('DTO declaration is invalid', () => {
+//   const parser = new BitloopsParser();
+//   const intermediateParser = new BitloopsIntermediateASTParser();
+//   errorCases.forEach((testDTO) => {
+//     test(`${testDTO.description}`, () => {
+//       const res = function (): void {
+//         const initialModelOutput = parser.parse([
+//           {
+//             boundedContext: BOUNDED_CONTEXT,
+//             module: MODULE,
+//             fileId: testDTO.fileId,
+//             fileContents: testDTO.inputBLString,
+//           },
+//         ]);
+
+//         if (!isBitloopsParserError(initialModelOutput)) {
+//           intermediateParser.parse(initialModelOutput);
+//         }
+//       };
+
+//       expect(res).toThrow(TypeError);
+//     });
+//   });
+// });
+
+const getExpectedOutput = (
+  name: string,
+  messageExp: TExpression,
+  errorIdExp: TExpression,
+): TDomainErrors => {
+  const val = new DomainErrorBuilder()
+    .withName(name)
+    .withErrorId(errorIdExp)
+    .withMessage(messageExp)
+    .build();
+  return val;
+};

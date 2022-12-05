@@ -387,7 +387,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
-
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
     return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
@@ -493,7 +492,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return evaluationFieldVisitor(this, ctx);
   }
 
-  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+  visitEvaluationFieldList(
+    ctx: BitloopsParser.EvaluationFieldListContext,
+  ): EvaluationFieldListNode {
     return evaluationFieldListVisitor(this, ctx);
   }
 

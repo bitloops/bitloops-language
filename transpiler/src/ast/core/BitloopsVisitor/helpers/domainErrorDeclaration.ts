@@ -1,35 +1,42 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+// import { TDomainError } from '../../../../types.js';
+import { DomainErrorBuilder } from '../../intermediate-ast/builders/Error/DomainErrorBuilder.js';
+import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { formalParameterListVisitor } from './formalParameterList.js';
 
 export const domainErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainErrorDeclarationContext,
-): any => {
-  const errorName: string = ctx.domainErrorIdentifier().getText();
-  // TEvaluationFields, TODO fix temp as any
-  // const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;
-  const fieldsList = thisVisitor.visit(ctx.evaluationFieldList());
-  if (fieldsList.length != 2) {
-    throw new TypeError('DomainErrorDeclaration must have two fields: ErrorId and message');
-  }
-  const errorId =
-    fieldsList.find((field) => field.name === 'errorId').expression ||
-    ((): never => {
-      throw new TypeError('DomainErrorDeclaration misses ErrorId field');
-    })();
-  const message =
-    fieldsList.find((field) => field.name === 'message').expression ||
-    ((): never => {
-      throw new TypeError('DomainErrorDeclaration misses message field');
-    })();
-  return {
-    DomainErrors: {
-      [errorName]: {
-        parameters: formalParameterListVisitor(thisVisitor, ctx.formalParameterList()),
-        errorId: { expression: errorId },
-        message: { expression: message },
-      },
-    },
+): any =>
+  // {
+  // DomainErrors: {
+  //   [key: string]: TDomainError;
+  // };
+  // }
+  {
+    const errorName: string = ctx.domainErrorIdentifier().getText();
+    // TEvaluationFields, TODO fix temp as any
+    // const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;
+    const fieldsList: EvaluationFieldListNode = thisVisitor.visit(ctx.evaluationFieldList());
+
+    if (fieldsList.getFieldCount() != 2) {
+      throw new TypeError('DomainErrorDeclaration must have two fields: ErrorId and message');
+    }
+    const errorId =
+      fieldsList.findFieldWithName('errorId') ||
+      ((): never => {
+        throw new TypeError('DomainErrorDeclaration misses ErrorId field');
+      })();
+    const message =
+      fieldsList.findFieldWithName('message') ||
+      ((): never => {
+        throw new TypeError('DomainErrorDeclaration misses message field');
+      })();
+    const domainError = new DomainErrorBuilder(thisVisitor.intermediateASTTree)
+      .withName(errorName)
+      .withErrorId(errorId)
+      .withMessage(message)
+      .build();
+    console.log(domainError.getValue());
+    return domainError;
   };
-};
