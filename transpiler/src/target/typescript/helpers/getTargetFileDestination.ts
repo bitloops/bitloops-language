@@ -45,7 +45,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Props]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ReadModels]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.RootEntities]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.Entities]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
   [ClassTypes.Rules]: PROJECT_RELATIVE_PATHS.RULES,
@@ -100,7 +100,7 @@ const getTargetFileDestination = (
   // console.log('Checking classType', classType);
   switch (classType) {
     case ClassTypes.RootEntities:
-    case ClassTypes.Entities:
+    case ClassTypes.Entity:
     case ClassTypes.ReadModels:
     case ClassTypes.ValueObjects:
     case ClassTypes.DomainErrors:
@@ -136,7 +136,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Props:
     case ClassTypes.ReadModels:
     case ClassTypes.RootEntities:
-    case ClassTypes.Entities:
+    case ClassTypes.Entity:
     case ClassTypes.ValueObjects:
     case ClassTypes.Controllers:
     case ClassTypes.UseCases:

@@ -91,7 +91,7 @@ import { valueObjectEvaluationToTargetLanguage } from './components/statements/e
 import { evaluationFieldsToTargetLanguage } from './components/statements/expression/evaluation/evaluationFields.js';
 import { domainEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEvaluation.js';
 import { entityEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityEvaluation.js';
-import { entitiesToTargetLanguage } from './components/entity/index.js';
+import { entityToTargetLanguage } from './components/entity/index.js';
 import { thisDeclarationToTargetLanguage } from './components/statements/thisDeclaration.js';
 import { repoPortToTargetLanguage } from './components/repo/repoPort/repoPort.js';
 import {
@@ -401,9 +401,9 @@ const modelToTargetLanguage = (props: {
       break;
     }
 
-    case BitloopsTypesMapping.TEntities: {
-      res = entitiesToTargetLanguage({
-        entities: value,
+    case BitloopsTypesMapping.TEntity: {
+      res = entityToTargetLanguage({
+        entity: value,
         model,
         contextData,
       });

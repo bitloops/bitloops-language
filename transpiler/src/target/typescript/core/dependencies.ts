@@ -169,7 +169,7 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('Entity')) {
     return {
-      classType: ClassTypes.Entities,
+      classType: ClassTypes.Entity,
     };
   } else if (dependencyName.endsWith('VO')) {
     return {

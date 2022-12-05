@@ -9,7 +9,7 @@ export const internalConstructor = (
   classType: string,
 ): TTargetDependenciesTypeScript => {
   let superString;
-  if (classType === ClassTypes.Entities) {
+  if (classType === ClassTypes.Entity) {
     superString = 'super(props, props.id)';
   } else {
     superString = 'super(props)';

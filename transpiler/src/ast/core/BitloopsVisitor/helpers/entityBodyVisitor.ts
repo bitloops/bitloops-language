@@ -1,33 +1,33 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TEntityValues,
-  TConstDeclarationValue,
-  TDomainPublicMethod,
-  TDomainPrivateMethod,
-} from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
+import { EntityValuesNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityValuesBuilder.js';
+import { EntityValuesNode } from '../../intermediate-ast/nodes/Entity/EntityValuesNode.js';
+import { ConstDeclarationListNode } from '../../intermediate-ast/nodes/ConstDeclarationListNode.js';
+import { ConstDeclarationListNodeBuilder } from '../../intermediate-ast/builders/ConstDeclarationListBuilder.js';
+import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
 
 export const entityBodyVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityBodyContext,
-): TEntityValues => {
-  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
-  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
-    ctx.domainConstDeclarationList(),
+): EntityValuesNode => {
+  const domainConstructorDeclarationNode: DomainCreateNode = thisVisitor.visit(
+    ctx.domainConstructorDeclaration(),
   );
-  const publicMethods: Record<string, TDomainPublicMethod> = thisVisitor.visit(
-    ctx.publicMethodDeclarationList(),
-  );
-  const privateMethods: Record<string, TDomainPrivateMethod> = thisVisitor.visit(
-    ctx.privateMethodDeclarationList(),
-  );
-  const methods = {
-    ...publicMethods,
-    ...privateMethods,
-  };
-  return {
-    constantVars,
-    create: domainConstructorDeclaration,
-    methods,
-  };
+
+  const constantVarNodes: ConstDeclarationListNode = ctx.domainConstDeclarationList()
+    ? thisVisitor.visit(ctx.domainConstDeclarationList())
+    : new ConstDeclarationListNodeBuilder().withConstants([]).build();
+
+  const publicMethodNodes = thisVisitor.visit(ctx.publicMethodDeclarationList());
+  const privateMethodNodes = thisVisitor.visit(ctx.privateMethodDeclarationList());
+
+  const metadata = produceMetadata(ctx, this);
+  const entityValuesNode = new EntityValuesNodeBuilder(metadata)
+    .withConstants(constantVarNodes)
+    .withCreate(domainConstructorDeclarationNode)
+    .withPublicMethods(publicMethodNodes)
+    .withPrivateMethods(privateMethodNodes)
+    .build();
+  return entityValuesNode;
 };
