@@ -1,6 +1,6 @@
-import { IfStatementBuilder } from './../builders/IfStatement.js';
-import { TExpression, TStatements } from '../../../../src/types.js';
-import { ExpressionBuilderDirector } from './../builders/expressionDirector.js';
+import { IfStatementBuilder } from '../../builders/IfStatement.js';
+import { TExpression, TStatements } from '../../../../../src/types.js';
+import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 // import { FieldBuilderDirector } from '../builders/fieldDirector.js';
 // import { IdentifierBuilder } from '../builders/identifier.js';
 
@@ -112,6 +112,41 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
           ),
         )
         .withThenStatements([new ExpressionBuilderDirector().buildIdentifierExpression('a')])
+        .build(),
+    ],
+  },
+  {
+    description: 'If else statement with 2 statements on each block',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'JestTestStatement { if ( a AND b ) { execute(); execute(); } else { if (a ==1) { a; a; } } }',
+    condition: new ExpressionBuilderDirector().buildLogicalAndExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('b'),
+    ),
+    thenStatements: [
+      new ExpressionBuilderDirector().buildMethodCallExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('execute'),
+        [],
+      ),
+      new ExpressionBuilderDirector().buildMethodCallExpression(
+        new ExpressionBuilderDirector().buildIdentifierExpression('execute'),
+        [],
+      ),
+    ],
+    elseStatements: [
+      new IfStatementBuilder()
+
+        .withCondition(
+          new ExpressionBuilderDirector().buildEqualityExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+            new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+          ),
+        )
+        .withThenStatements([
+          new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+          new ExpressionBuilderDirector().buildIdentifierExpression('a'),
+        ])
         .build(),
     ],
   },

@@ -137,7 +137,6 @@ import {
   variableDeclarationVisitor,
   // thisDeclarationVisitor,
   switchStatementVisitor,
-  caseBlockVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
   useCaseExecuteDeclarationVisitor,
@@ -161,6 +160,7 @@ import {
   domainEvaluationInputRegularVisitor,
   domainEvaluationInputFieldListVisitor,
   errorEvaluationVisitor,
+  caseClausesVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -426,12 +426,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return switchStatementVisitor(this, ctx);
   }
 
-  visitCaseBlock(ctx: BitloopsParser.CaseBlockContext) {
-    return caseBlockVisitor(this, ctx);
-  }
-
   visitCaseClauses(ctx: BitloopsParser.CaseClausesContext) {
-    return this.visitChildren(ctx);
+    return caseClausesVisitor(this, ctx);
   }
 
   visitCaseClause(ctx: BitloopsParser.CaseClauseContext) {
@@ -440,6 +436,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDefaultClause(ctx: BitloopsParser.DefaultClauseContext) {
     return defaultClauseVisitor(this, ctx);
+  }
+
+  visitBlock(ctx: BitloopsParser.BlockContext) {
+    return this.visit(ctx.statementList());
   }
 
   visitBreakStatement(): BreakStatementNode {

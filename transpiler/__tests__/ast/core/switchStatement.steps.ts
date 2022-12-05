@@ -17,51 +17,121 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { decode, d } from 'bitloops-gherkin';
+// import { defineFeature, loadFeature } from 'jest-cucumber';
+// import { decode, d } from 'bitloops-gherkin';
+import assert from 'assert';
+import { TExpression } from './../../../src/types.js';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { TStatements, TIfStatement } from '../../../src/types.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { validIfStatementTestCases } from './mocks/statements/ifStatement.js';
+import { IfStatementBuilder } from './builders/IfStatement.js';
 
-const feature = loadFeature('__tests__/ast/core/switchStatement.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  test('SwitchStatement is valid', ({ given, when, then }) => {
-    const boundedContext = 'Hello World';
-    const module = 'core';
-    let blString;
-    let modelOutput;
-    let result;
+describe('If Statement is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    given(/^A valid switchStatement (.*) string$/, (arg0) => {
-      blString = decode(arg0);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validIfStatementTestCases.forEach((testIfStatement) => {
+    test(`${testIfStatement.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testIfStatement.fileId,
+          fileContents: testIfStatement.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = getExpectedIFOutput(
+        testIfStatement.condition,
+        testIfStatement.thenStatements,
+        testIfStatement.elseStatements,
+      );
+      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TIfStatement);
+      assert(propsNodes.length === 1);
+      const value = propsNodes[0].getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });
+
+const getExpectedIFOutput = (
+  condition: TExpression,
+  thenStatements: TStatements,
+  elseStatements?: TStatements,
+): TIfStatement => {
+  const ifValue = new IfStatementBuilder()
+    .withCondition(condition)
+    .withThenStatements(thenStatements);
+
+  if (elseStatements) {
+    ifValue.withElseStatements(elseStatements);
+  }
+
+  return ifValue.build();
+};
+
+// import { defineFeature, loadFeature } from 'jest-cucumber';
+// import { decode, d } from 'bitloops-gherkin';
+
+// import {
+//   BitloopsIntermediateASTParser,
+//   BitloopsLanguageASTContext,
+//   BitloopsParser,
+//   BitloopsParserError,
+// } from '../../../src/index.js';
+
+// const feature = loadFeature('__tests__/ast/core/switchStatement.feature');
+
+// defineFeature(feature, (test) => {
+//   test('SwitchStatement is valid', ({ given, when, then }) => {
+//     const boundedContext = 'Hello World';
+//     const module = 'core';
+//     let blString;
+//     let modelOutput;
+//     let result;
+
+//     given(/^A valid switchStatement (.*) string$/, (arg0) => {
+//       blString = decode(arg0);
+//     });
+
+//     when('I generate the model', () => {
+//       const parser = new BitloopsParser();
+//       const initialModelOutput = parser.parse([
+//         {
+//           boundedContext,
+//           module,
+//           fileId: 'testFile.bl',
+//           fileContents: blString,
+//         },
+//       ]);
+//       const intermediateParser = new BitloopsIntermediateASTParser();
+//       if (!(initialModelOutput instanceof BitloopsParserError)) {
+//         result = intermediateParser.parse(
+//           initialModelOutput as unknown as BitloopsLanguageASTContext,
+//         );
+//       }
+//     });
+
+//     then(/^I should get (.*)$/, (arg0) => {
+//       modelOutput = d(arg0);
+//       expect(result).toEqual(JSON.parse(modelOutput));
+//     });
+//   });
+// });
