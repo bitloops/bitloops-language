@@ -20,16 +20,15 @@
 // import { defineFeature, loadFeature } from 'jest-cucumber';
 // import { decode, d } from 'bitloops-gherkin';
 import assert from 'assert';
-import { TExpression } from './../../../src/types.js';
+import { TDefaultCase, TExpression, TRegularCase, TSwitchStatement } from './../../../src/types.js';
 
 import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { TStatements, TIfStatement } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
-import { validIfStatementTestCases } from './mocks/statements/ifStatement.js';
-import { IfStatementBuilder } from './builders/IfStatement.js';
+import { validSwitchStatementTestCases } from './mocks/statements/switchStatement.js';
+import { SwitchStatementBuilder } from './builders/statement/switchStatement.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -40,14 +39,14 @@ describe('If Statement is valid', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new BitloopsIntermediateASTParser();
 
-  validIfStatementTestCases.forEach((testIfStatement) => {
-    test(`${testIfStatement.description}`, () => {
+  validSwitchStatementTestCases.forEach((testSwitchStatement) => {
+    test(`${testSwitchStatement.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
           module: MODULE,
-          fileId: testIfStatement.fileId,
-          fileContents: testIfStatement.inputBLString,
+          fileId: testSwitchStatement.fileId,
+          fileContents: testSwitchStatement.inputBLString,
         },
       ]);
 
@@ -57,12 +56,12 @@ describe('If Statement is valid', () => {
           resultTree = result[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = getExpectedIFOutput(
-        testIfStatement.condition,
-        testIfStatement.thenStatements,
-        testIfStatement.elseStatements,
+      const expectedNodeValues = getExpectedSwitchOutput(
+        testSwitchStatement.expression,
+        testSwitchStatement.cases,
+        testSwitchStatement.defaultCase,
       );
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TIfStatement);
+      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TSwitchStatement);
       assert(propsNodes.length === 1);
       const value = propsNodes[0].getValue();
 
@@ -71,20 +70,17 @@ describe('If Statement is valid', () => {
   });
 });
 
-const getExpectedIFOutput = (
+const getExpectedSwitchOutput = (
   condition: TExpression,
-  thenStatements: TStatements,
-  elseStatements?: TStatements,
-): TIfStatement => {
-  const ifValue = new IfStatementBuilder()
-    .withCondition(condition)
-    .withThenStatements(thenStatements);
+  regularCases: TRegularCase[],
+  defaultClause: TDefaultCase,
+): TSwitchStatement => {
+  const switchStatement = new SwitchStatementBuilder()
+    .withExpression(condition)
+    .withRegularCases(regularCases)
+    .withDefaultClause(defaultClause);
 
-  if (elseStatements) {
-    ifValue.withElseStatements(elseStatements);
-  }
-
-  return ifValue.build();
+  return switchStatement.build();
 };
 
 // import { defineFeature, loadFeature } from 'jest-cucumber';

@@ -29,10 +29,10 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 const regularSwitchCaseToTargetLanguage = (
   variable: TRegularCase,
 ): TTargetDependenciesTypeScript => {
-  if (!variable.expression) {
+  if (!variable.regularCase.expression) {
     throw new Error(`Invalid regular case: ${JSON.stringify(variable)}`);
   }
-  const { statements, expression } = variable;
+  const { statements, expression } = variable.regularCase;
 
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,

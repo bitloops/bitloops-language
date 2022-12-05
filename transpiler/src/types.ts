@@ -700,9 +700,10 @@ export type TDefaultCase = {
 };
 
 export type TRegularCase = {
-  caseValue: TExpressionValues;
-  statements: TStatements;
-} & TExpression;
+  regularCase: {
+    statements: TStatements;
+  } & TExpression;
+};
 
 export type TSwitchStatement = {
   switchStatement: {
