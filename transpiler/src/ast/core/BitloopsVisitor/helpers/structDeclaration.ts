@@ -23,30 +23,22 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
 import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { produceMetadata } from '../metadata.js';
-import { StructNode } from '../../intermediate-ast/nodes/struct/StructNode.js';
 import { StructNodeBuilder } from '../../intermediate-ast/builders/Struct/StructNodeBuilder.js';
 
 export const structDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StructDeclarationContext,
-): { Structs: StructNode } => {
+): void => {
   try {
     const identifierNode: IdentifierNode = thisVisitor.visit(ctx.structIdentifier());
 
     const fieldList: FieldListNode = thisVisitor.visit(ctx.fieldList());
     const metadata = produceMetadata(ctx, thisVisitor);
 
-    const structDeclarationNode: StructNode = new StructNodeBuilder(
-      thisVisitor.intermediateASTTree,
-      metadata,
-    )
+    new StructNodeBuilder(thisVisitor.intermediateASTTree, metadata)
       .withIdentifier(identifierNode)
       .withVariables(fieldList)
       .build();
-
-    return {
-      Structs: structDeclarationNode,
-    };
   } catch (error) {
     throw `Invalid field data, ${error}`;
   }

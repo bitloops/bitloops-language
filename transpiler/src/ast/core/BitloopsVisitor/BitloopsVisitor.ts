@@ -165,7 +165,6 @@ import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statemen
 import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
 import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
-import { StructNode } from '../intermediate-ast/nodes/struct/StructNode.js';
 import { IdentifierNode } from '../intermediate-ast/nodes/IdentifierNode.js';
 import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 
@@ -824,7 +823,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 
-  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: StructNode } {
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): void {
     return structDeclarationVisitor(this, ctx);
   }
 
