@@ -49,9 +49,7 @@ import {
   TDomainPublicMethod,
   TRules,
   TEntityValues,
-  // TModule,
   TUseCase,
-  TStructs,
   TReadModels,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -171,6 +169,8 @@ import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/Domain
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { IdentifierNode } from '../intermediate-ast/nodes/IdentifierNode.js';
+import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -216,6 +216,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return propsIdentifierNode;
+  }
+
+  visitStructIdentifier(ctx: BitloopsParser.StructIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UpperCaseIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const structIdentifierNode = new StructIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return structIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
@@ -820,7 +829,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 
-  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: TStructs } {
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): void {
     return structDeclarationVisitor(this, ctx);
   }
 

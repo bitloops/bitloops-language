@@ -31,7 +31,7 @@ export type TModule = {
   Entities?: TEntities;
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
-  Structs?: TStructs;
+  Structs?: TStructDeclaration;
   Packages?: TPackages;
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
@@ -67,7 +67,7 @@ export type TComponentType =
   | 'TEntities'
   | 'TValueObjects'
   | 'TDTOs'
-  | 'TStructs'
+  | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
@@ -105,7 +105,7 @@ export type TBitloopsClasses =
   | TUseCase
   | TDomainErrors
   | TDTO
-  | TStructs;
+  | TStruct;
 
 export type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
@@ -352,7 +352,6 @@ export type TEvaluationField = {
   evaluationField: { name: string } & TExpression;
 };
 export type TEvaluationFields = TEvaluationField[];
-// export type TEvaluationFields = ({ name: string } & TExpression)[];
 
 export type TStructEvaluation = {
   struct: {
@@ -626,8 +625,15 @@ export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
 
+export const StructKey = 'Struct';
+export type TStructIdentifier = string;
+export const structIdentifierKey = 'StructIdentifier';
+
 export type TStructDeclaration = {
-  fields: TVariables;
+  [StructKey]: {
+    [structIdentifierKey]: TStructIdentifier;
+    fields: TVariables;
+  };
 };
 
 export type TExecute = {
@@ -646,7 +652,7 @@ export type TDTO = {
   };
 };
 
-export type TStructs = Record<string, TStructDeclaration>;
+export type TStruct = Record<string, TStructDeclaration>;
 
 export type TUseCaseValues = {
   returnTypes: TOkErrorReturnType;

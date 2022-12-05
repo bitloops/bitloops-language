@@ -109,7 +109,7 @@ bitloopsIdentifiers
     | EntityIdentifier
     | RepoPortIdentifier
     | ReadModelIdentifier
-    | UpperCaseIdentifier //TODO update this with the specific identifiers e.g. structidentifier
+    | structIdentifier
     ;
 
 // type_
@@ -171,9 +171,9 @@ upperCaseIdentifier
     : UpperCaseIdentifier
     ;
 
-struct
-    : UpperCaseIdentifier
-    ;
+// struct
+//     : UpperCaseIdentifier
+//     ;
 
 
 regularErrorTypeEvaluation
@@ -883,8 +883,12 @@ dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
+structIdentifier 
+    : UpperCaseIdentifier
+    ;
+
 structDeclaration
-    : Struct UpperCaseIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    : Struct structIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
 dtoEvaluation
