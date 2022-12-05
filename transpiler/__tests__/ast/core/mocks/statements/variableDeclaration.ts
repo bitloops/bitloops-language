@@ -1,4 +1,4 @@
-import { VariableDeclarationBuilderDirector } from '../../builders/statement/statementDirector.js';
+import { VariableDeclarationBuilderDirector } from '../../builders/statement/constDeclarationDirector.js';
 
 export const validVariableDeclarationCases = [
   {

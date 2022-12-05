@@ -1,6 +1,6 @@
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
-import { ConstDeclarationBuilderDirector } from '../../builders/statement/statementDirector.js';
+import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclarationDirector.js';
 
 export const validConstDeclarationCases = [
   {
