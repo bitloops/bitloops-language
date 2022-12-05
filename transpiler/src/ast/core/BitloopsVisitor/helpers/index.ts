@@ -68,7 +68,7 @@ export { domainRuleDeclarationVisitor, domainRuleBodyVisitor } from './domainRul
 export {
   applyRulesStatementVisitor,
   applyRuleStatementRulesListVisitor,
-  applyRulesRuleVisitor,
+  appliedRuleVisitor as applyRulesRuleVisitor,
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 // export { getClassEvaluationVisitor } from './getClassEvaluation.js';

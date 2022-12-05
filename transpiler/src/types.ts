@@ -31,7 +31,7 @@ export type TModule = {
   Entity?: TEntity;
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
-  Structs?: TStructs;
+  Structs?: TStructDeclaration;
   Packages?: TPackages;
   Rules?: TRules;
   RepoPorts?: TRepoPorts;
@@ -67,7 +67,7 @@ export type TComponentType =
   | 'TEntity'
   | 'TValueObjects'
   | 'TDTOs'
-  | 'TStructs'
+  | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
   | 'TRules'
   | 'TRepoPorts'
@@ -105,7 +105,7 @@ export type TBitloopsClasses =
   | TUseCase
   | TDomainErrors
   | TDTO
-  | TStructs;
+  | TStruct;
 
 export type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
@@ -155,20 +155,13 @@ export type TReadModelValues = {
 export type TReadModels = Record<string, TReadModelValues>;
 
 export type TParamDependencyType = TBitloopsPrimaryType;
-// (name: string)
+
+export type TParameterIdentifier = string;
 export type TParameterDependency = {
   type: TParamDependencyType;
-  value: string;
+  value: TParameterIdentifier;
 };
 export type TParameterDependencies = TParameterDependency[];
-
-export type TArgumentDependencyType = TBitloopsPrimitives | 'variable';
-// (name)
-// This is the old
-// export type TArgumentDependency = {
-//   value: string;
-//   type: TArgumentDependencyType;
-// };
 
 // The old TArgumentDependency
 export type TArgument = {
@@ -357,7 +350,6 @@ export type TEvaluationField = {
   evaluationField: { name: string } & TExpression;
 };
 export type TEvaluationFields = TEvaluationField[];
-// export type TEvaluationFields = ({ name: string } & TExpression)[];
 
 export type TStructEvaluation = {
   struct: {
@@ -533,16 +525,21 @@ export type TBreakStatement = {
   breakStatement: 'break';
 };
 
-export type TApplyRules = {
-  applyRules: {
+export type TAppliedRule = {
+  appliedRule: {
     name: string;
-    arguments: TArgumentList;
-  }[];
+    argumentList: TArgumentList;
+  };
 };
 
-export type TBuildInFunction = {
-  buildInFunction: TApplyRules;
+export type TApplyRules = {
+  applyRules: TAppliedRule[];
 };
+
+export type TBuiltInFunction = {
+  builtInFunction: TBuiltInFunctionValues;
+};
+export type TBuiltInFunctionValues = TApplyRules;
 
 export type TStatement =
   | TBreakStatement
@@ -555,7 +552,7 @@ export type TStatement =
   | TConstDeclaration
   | TThisDeclaration
   | TVariableDeclaration
-  | TBuildInFunction
+  | TBuiltInFunction
   | TExpression;
 
 export type TStatements = TStatement[];
@@ -632,8 +629,15 @@ export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
 
+export const StructKey = 'Struct';
+export type TStructIdentifier = string;
+export const structIdentifierKey = 'StructIdentifier';
+
 export type TStructDeclaration = {
-  fields: TVariables;
+  [StructKey]: {
+    [structIdentifierKey]: TStructIdentifier;
+    fields: TVariables;
+  };
 };
 
 export type TExecute = {
@@ -652,7 +656,7 @@ export type TDTO = {
   };
 };
 
-export type TStructs = Record<string, TStructDeclaration>;
+export type TStruct = Record<string, TStructDeclaration>;
 
 export type TUseCaseValues = {
   returnTypes: TOkErrorReturnType;

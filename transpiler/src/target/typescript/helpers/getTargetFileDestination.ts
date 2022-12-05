@@ -56,7 +56,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.RepoPorts]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
-  [ClassTypes.Structs]: PROJECT_RELATIVE_PATHS.STRUCTS,
+  [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
 };
 
 const getTargetFileDestination = (

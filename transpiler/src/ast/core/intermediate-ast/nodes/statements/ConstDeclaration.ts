@@ -1,10 +1,11 @@
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { ExpressionNode } from './Expression/ExpressionNode.js';
-import { IdentifierNode } from './IdentifierNode.js';
-import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { ExpressionNode } from '../Expression/ExpressionNode.js';
+import { IdentifierNode } from '../IdentifierNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { StatementNode } from './Statement.js';
 
 const NAME = 'constDeclaration';
-export class ConstDeclarationNode extends IntermediateASTNode {
+export class ConstDeclarationNode extends StatementNode {
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TConstDeclaration, metadata, NAME);
   }

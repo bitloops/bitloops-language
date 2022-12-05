@@ -3,7 +3,7 @@ import { PropsIdentifierKey } from '../../../../../types.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class PropsIdentifierNode extends IntermediateASTNode {
-  private static classNodeName = PropsIdentifierKey; //'PropsIdentifier';
+  private static classNodeName = PropsIdentifierKey;
 
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TPropsIdentifier, metadata, PropsIdentifierNode.classNodeName);

@@ -25,4 +25,15 @@ export class ArgumentBuilderDirector {
       new ExpressionBuilderDirector().buildIdentifierExpression(identifier),
     );
   }
+  buildMemberDotArgument(parts: string[]): TArgument {
+    return this.buildArgument(
+      new ExpressionBuilderDirector().buildMemberExpressionOutOfVariables(...parts),
+    );
+  }
+
+  buildThisMemberDotArgument(parts: string[]): TArgument {
+    return this.buildArgument(
+      new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(...parts),
+    );
+  }
 }
