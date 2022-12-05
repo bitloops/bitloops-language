@@ -20,8 +20,6 @@
 import { StatementDirector } from './../../builders/statement/statementDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { TDefaultCase, TExpression, TRegularCase } from '../../../../../src/types.js';
-// import { FieldBuilderDirector } from '../builders/fieldDirector.js';
-// import { IdentifierBuilder } from '../builders/identifier.js';
 
 type SwitchStatementTestCase = {
   description: string;
@@ -112,24 +110,44 @@ export const validSwitchStatementTestCases: SwitchStatementTestCase[] = [
       ],
     },
   },
-  //   {
-  //     description: 'Multi-line switch Statement with const declarations and breaks',
-  //     fileId: 'testFile.bl',
-  //     inputBLString: `JestTestStatement { switch (x-y) {
-  //   case 10:{
-  //       const res = x;
-  //       break;
-  //       }
-  //   case 5:{
-  //       const res = y;
-  //       }
-  //   case 0:{
-  //       const res = n;
-  //       break;
-  //       }
-  //   default:{
-  //       const res = z;
-  //       }
-  // }}`,
-  //   },
+  {
+    description: 'Multi-line switch Statement with const declarations and breaks',
+    fileId: 'testFile.bl',
+    inputBLString: `JestTestStatement { switch (x-y) {
+    case 0:{
+        const res = n;
+        break;
+        }
+    default:{
+        const res = z;
+        }
+  }}`,
+    expression: new ExpressionBuilderDirector().buildAdditiveExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression('x'),
+      new ExpressionBuilderDirector().buildIdentifierExpression('y'),
+      '-',
+    ),
+    cases: [
+      {
+        regularCase: {
+          ...new ExpressionBuilderDirector().buildInt32LiteralExpression(0),
+          statements: [
+            new StatementDirector().buildConstDeclarationWithIdentifier({
+              name: 'res',
+              valueIdentifier: 'n',
+            }),
+            new StatementDirector().buildBreakStatement(),
+          ],
+        },
+      },
+    ],
+    defaultCase: {
+      statements: [
+        new StatementDirector().buildConstDeclarationWithIdentifier({
+          name: 'res',
+          valueIdentifier: 'z',
+        }),
+      ],
+    },
+  },
 ];

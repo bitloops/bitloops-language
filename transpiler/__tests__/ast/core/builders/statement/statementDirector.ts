@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TConstDeclaration } from '../../../../../src/types.js';
+import { TBreakStatement, TConstDeclaration } from '../../../../../src/types.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
 
 export class StatementDirector {
@@ -32,5 +32,24 @@ export class StatementDirector {
       name,
       intLiteral,
     });
+  }
+
+  buildConstDeclarationWithIdentifier({
+    name,
+    valueIdentifier,
+  }: {
+    name: string;
+    valueIdentifier: string;
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().withIdentifierValue({
+      name,
+      identifier: valueIdentifier,
+    });
+  }
+
+  buildBreakStatement(): TBreakStatement {
+    return {
+      breakStatement: 'break',
+    };
   }
 }

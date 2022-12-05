@@ -33,7 +33,7 @@ import { SwitchStatementBuilder } from './builders/statement/switchStatement.js'
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('If Statement is valid', () => {
+describe('Switch Statement is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
@@ -82,52 +82,3 @@ const getExpectedSwitchOutput = (
 
   return switchStatement.build();
 };
-
-// import { defineFeature, loadFeature } from 'jest-cucumber';
-// import { decode, d } from 'bitloops-gherkin';
-
-// import {
-//   BitloopsIntermediateASTParser,
-//   BitloopsLanguageASTContext,
-//   BitloopsParser,
-//   BitloopsParserError,
-// } from '../../../src/index.js';
-
-// const feature = loadFeature('__tests__/ast/core/switchStatement.feature');
-
-// defineFeature(feature, (test) => {
-//   test('SwitchStatement is valid', ({ given, when, then }) => {
-//     const boundedContext = 'Hello World';
-//     const module = 'core';
-//     let blString;
-//     let modelOutput;
-//     let result;
-
-//     given(/^A valid switchStatement (.*) string$/, (arg0) => {
-//       blString = decode(arg0);
-//     });
-
-//     when('I generate the model', () => {
-//       const parser = new BitloopsParser();
-//       const initialModelOutput = parser.parse([
-//         {
-//           boundedContext,
-//           module,
-//           fileId: 'testFile.bl',
-//           fileContents: blString,
-//         },
-//       ]);
-//       const intermediateParser = new BitloopsIntermediateASTParser();
-//       if (!(initialModelOutput instanceof BitloopsParserError)) {
-//         result = intermediateParser.parse(
-//           initialModelOutput as unknown as BitloopsLanguageASTContext,
-//         );
-//       }
-//     });
-
-//     then(/^I should get (.*)$/, (arg0) => {
-//       modelOutput = d(arg0);
-//       expect(result).toEqual(JSON.parse(modelOutput));
-//     });
-//   });
-// });

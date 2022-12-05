@@ -529,7 +529,9 @@ export type TThisDeclaration = {
   } & TExpression;
 };
 
-export type TBreakStatement = 'break';
+export type TBreakStatement = {
+  breakStatement: 'break';
+};
 
 export type TApplyRules = {
   applyRules: {
