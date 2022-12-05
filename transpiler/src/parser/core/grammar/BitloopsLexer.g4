@@ -261,6 +261,7 @@ JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
 JestTestBuiltInClass: 'JestTestBuiltInClass';
 JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
+JestTestReturnStatement: 'JestTestReturnStatement';
 
 // Abstract: 'abstract';
 

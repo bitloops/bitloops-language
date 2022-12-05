@@ -46,7 +46,6 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TConstDeclarationValue,
-  TReturnStatement,
   TEntities,
   TDomainPublicMethod,
   TRules,
@@ -166,6 +165,8 @@ import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
 import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
 import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
+import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
+import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -737,11 +738,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 
-  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): TReturnStatement {
-    const expression = this.visit(ctx.expression());
-    return {
-      return: expression,
-    };
+  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): ReturnStatementNode {
+    const expressionNode = this.visit(ctx.expression());
+
+    const metadata = produceMetadata(ctx, this);
+
+    const returnStatementNode = new ReturnStatementNodeBuilder(metadata)
+      .withExpression(expressionNode)
+      .build();
+    return returnStatementNode;
   }
   /**
    * Errors
