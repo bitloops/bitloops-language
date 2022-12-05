@@ -22,7 +22,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
     }
   }
 
-  const propsNameType = create.parameterDependency.type;
+  const propsNameType = create.parameterDependency.parameter.type;
   const returnOkType = returnType.ok;
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {

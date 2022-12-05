@@ -18,17 +18,51 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { produceMetadata } from './../metadata.js';
+import { ParameterListNode } from './../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { ParameterListNodeBuilder } from './../../intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
+import { ParameterNodeBuilder } from './../../intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
+import { ParameterIdentifierNodeBuilder } from './../../intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TParameterDependency } from '../../../../types.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { ParameterNode } from '../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { ParameterIdentifierNode } from '../../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 
 export const formalParameterListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FormalParameterListContext,
-): TParameterDependency[] => {
+): ParameterListNode => {
   const parameterFieldAndCommas = thisVisitor.visitChildren(ctx);
-  const parameterField = parameterFieldAndCommas.filter(
+  const parameterFields = parameterFieldAndCommas.filter(
     (parameterField) => parameterField !== undefined,
   );
-  return parameterField as TParameterDependency[];
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ParameterListNodeBuilder(metadata).withParameters(parameterFields).build();
+};
+
+export const formalParameterVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.FormalParameterContext,
+): ParameterNode => {
+  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+  const parameterIdentifier: ParameterIdentifierNode = thisVisitor.visit(
+    ctx.formalParameterIdentifier(),
+  );
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ParameterNodeBuilder(metadata)
+    .withIdentifier(parameterIdentifier)
+    .withType(type)
+    .build();
+};
+
+export const formalParameterArgIdentifierVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.FormalParameterIdentifierContext,
+): ParameterIdentifierNode => {
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ParameterIdentifierNodeBuilder(metadata)
+    .withIdentifier(ctx.Identifier().getText())
+    .build();
 };

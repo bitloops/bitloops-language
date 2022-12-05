@@ -1,5 +1,4 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TApplicationError } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { evaluationFieldListVisitor } from './evaluationFieldList.js';
 import { formalParameterListVisitor } from './formalParameterList.js';
@@ -7,11 +6,7 @@ import { formalParameterListVisitor } from './formalParameterList.js';
 export const applicationErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ApplicationErrorDeclarationContext,
-): {
-  ApplicationErrors: {
-    [key: string]: TApplicationError;
-  };
-} => {
+): any => {
   const errorName: string = ctx.applicationErrorIdentifier().getText();
   // TEvaluationFields
   const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;

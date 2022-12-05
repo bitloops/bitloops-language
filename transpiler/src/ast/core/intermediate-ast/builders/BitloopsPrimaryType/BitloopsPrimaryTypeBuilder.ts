@@ -1,4 +1,3 @@
-import { BuildInClassTypeNode } from '../../nodes/BitloopsPrimaryType/BuildInClassTypeNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
@@ -15,7 +14,7 @@ export class BitloopsPrimaryTypeBuilder implements IBuilder<BitloopsPrimaryTypeN
     return this;
   }
 
-  public build(): BuildInClassTypeNode {
+  public build(): BitloopsPrimaryTypeNode {
     this.bitloopsPrimaryTypeNode.addChild(this.primaryType);
 
     this.bitloopsPrimaryTypeNode.buildObjectValue();

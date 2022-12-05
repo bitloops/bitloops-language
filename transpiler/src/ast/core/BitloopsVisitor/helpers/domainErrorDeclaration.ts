@@ -1,16 +1,11 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TDomainError } from '../../../../types.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { formalParameterListVisitor } from './formalParameterList.js';
 
 export const domainErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainErrorDeclarationContext,
-): {
-  DomainErrors: {
-    [key: string]: TDomainError;
-  };
-} => {
+): any => {
   const errorName: string = ctx.domainErrorIdentifier().getText();
   // TEvaluationFields, TODO fix temp as any
   // const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;

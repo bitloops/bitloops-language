@@ -78,7 +78,7 @@ const getPropsModel = (
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
     const { aggregateRootName } = repoPortInfo;
     const aggregateModel = module.RootEntities[aggregateRootName];
-    const aggregatePropsNameType = aggregateModel.create.parameterDependency.type;
+    const aggregatePropsNameType = aggregateModel.create.parameterDependency.parameter.type;
 
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsNameType)) {
       throw new Error('Array props are not supported');
