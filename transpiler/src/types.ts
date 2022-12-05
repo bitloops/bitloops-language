@@ -155,20 +155,13 @@ export type TReadModelValues = {
 export type TReadModels = Record<string, TReadModelValues>;
 
 export type TParamDependencyType = TBitloopsPrimaryType;
-// (name: string)
+
+export type TParameterIdentifier = string;
 export type TParameterDependency = {
   type: TParamDependencyType;
-  value: string;
+  value: TParameterIdentifier;
 };
 export type TParameterDependencies = TParameterDependency[];
-
-export type TArgumentDependencyType = TBitloopsPrimitives | 'variable';
-// (name)
-// This is the old
-// export type TArgumentDependency = {
-//   value: string;
-//   type: TArgumentDependencyType;
-// };
 
 // The old TArgumentDependency
 export type TArgument = {

@@ -33,6 +33,7 @@ const BitloopsTypesMapping = {
   TArgumentDependencyType: 'TArgumentDependencyType',
   TClassInstantiation: 'TClassInstantiation',
   TParameterDependency: 'TParameterDependency',
+  TParameterDependencyIdentifier: 'TParameterDependencyIdentifier',
   TParameterDependencies: 'TParameterDependencies',
   TArgumentDependencies: 'TArgumentDependencies',
   TRegularEvaluation: 'TRegularEvaluation',
