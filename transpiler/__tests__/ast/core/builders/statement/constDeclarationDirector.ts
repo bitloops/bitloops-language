@@ -65,6 +65,20 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
 
+  withIdentifierValue({
+    name,
+    identifier,
+  }: {
+    name: string;
+    identifier: string;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression(identifier))
+      .build();
+    return constDeclaration;
+  }
+
   buildBuiltInClassEvaluation({
     name,
     builtInClassIdentifier,

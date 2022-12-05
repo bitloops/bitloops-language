@@ -40,6 +40,7 @@ export const keysToTypeMapping = {
   thisDeclaration: BitloopsTypesMapping.TThisDeclaration,
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
   buildInFunction: BitloopsTypesMapping.TBuildInFunction,
+  breakStatement: BitloopsTypesMapping.TBreakStatement,
 };
 
 const FAIL_DEPENDENCY: TDependenciesTypeScript = [
@@ -52,13 +53,6 @@ const FAIL_DEPENDENCY: TDependenciesTypeScript = [
 ];
 
 const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTypeScript => {
-  if (variable === 'break') {
-    // TODO break statement object-type like other statements?
-    return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBreakStatement,
-      value: variable,
-    });
-  }
   const variableKeys = Object.keys(variable);
   const type = variableKeys[0];
 
