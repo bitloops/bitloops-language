@@ -20,23 +20,26 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TStructs } from '../../../../types.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
+import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { produceMetadata } from '../metadata.js';
+import { StructNodeBuilder } from '../../intermediate-ast/builders/Struct/StructNodeBuilder.js';
 
 export const structDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StructDeclarationContext,
-): { Structs: TStructs } => {
+): void => {
   try {
-    const identifier = ctx.UpperCaseIdentifier().getText();
-    const fields = thisVisitor.visit(ctx.fieldList());
-    return {
-      Structs: {
-        [identifier]: {
-          fields,
-        },
-      },
-    };
+    const identifierNode: IdentifierNode = thisVisitor.visit(ctx.structIdentifier());
+
+    const fieldList: FieldListNode = thisVisitor.visit(ctx.fieldList());
+    const metadata = produceMetadata(ctx, thisVisitor);
+
+    new StructNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+      .withIdentifier(identifierNode)
+      .withVariables(fieldList)
+      .build();
   } catch (error) {
-    throw 'Invalid field data';
+    throw `Invalid field data, ${error}`;
   }
 };
