@@ -1,4 +1,4 @@
-import { StatementsNode } from './../../../nodes/statements/Statements.js';
+import { StatementListNode } from '../../../nodes/statements/StatementList.js';
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { ThenStatementsNode as ExpressionNode } from '../../../nodes/statements/ifStatement/ThenStatements.js';
 import { SwitchRegularCaseNode } from '../../../nodes/statements/SwitchStatement/SwitchCase.js';
@@ -7,7 +7,7 @@ import { IBuilder } from '../../IBuilder.js';
 export class SwitchRegularCaseBuilder implements IBuilder<SwitchRegularCaseNode> {
   private regularCase: SwitchRegularCaseNode;
   private expression: ExpressionNode;
-  private statements: StatementsNode;
+  private statements: StatementListNode;
 
   constructor(metadata: TNodeMetadata) {
     this.regularCase = new SwitchRegularCaseNode(metadata);
@@ -18,7 +18,7 @@ export class SwitchRegularCaseBuilder implements IBuilder<SwitchRegularCaseNode>
     return this;
   }
 
-  public withStatements(statements: StatementsNode): SwitchRegularCaseBuilder {
+  public withStatements(statements: StatementListNode): SwitchRegularCaseBuilder {
     this.statements = statements;
     return this;
   }
