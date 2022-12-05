@@ -711,11 +711,7 @@ withStatement
     ;
 
 switchStatement
-    : Switch OpenParen condition CloseParen caseBlock
-    ;
-
-caseBlock
-    : OpenBrace caseClauses? defaultClause caseClauses? CloseBrace
+    : Switch OpenParen condition CloseParen OpenBrace caseClauses? defaultClause CloseBrace
     ;
 
 caseClauses

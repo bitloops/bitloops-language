@@ -28,7 +28,7 @@ import { TStatements, TIfStatement } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
-import { validIfStatementTestCases } from './mocks/ifStatement.js';
+import { validIfStatementTestCases } from './mocks/statements/ifStatement.js';
 import { IfStatementBuilder } from './builders/IfStatement.js';
 
 const BOUNDED_CONTEXT = 'Hello World';

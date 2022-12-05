@@ -94,7 +94,7 @@ export { variableDeclarationVisitor } from './variableDeclaration.js';
 // export { thisDeclarationVisitor } from './thisDeclaration.js';
 export {
   switchStatementVisitor,
-  caseBlockVisitor,
+  caseClausesVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
 } from './switchStatement.js';

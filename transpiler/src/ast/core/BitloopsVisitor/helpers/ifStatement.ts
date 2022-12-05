@@ -18,10 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { StatementListNode } from './../../intermediate-ast/nodes/statements/StatementList.js';
 import { ThenStatementsNodeBuilder } from './../../intermediate-ast/builders/statements/ifStatement/ThenStatements.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { produceMetadata, produceMetadataFromTo } from '../metadata.js';
+import { produceMetadata } from '../metadata.js';
 import { IfStatementBuilder } from '../../intermediate-ast/builders/statements/ifStatement/IfStatementBuilder.js';
 import { ElseStatementsNodeBuilder } from '../../intermediate-ast/builders/statements/ifStatement/ElseStatements.js';
 import { IfStatementNode } from '../../intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
@@ -31,18 +32,13 @@ export const ifStatementVisitor = (
   ctx: BitloopsParser.IfStatementContext,
 ): IfStatementNode => {
   const conditionNode = thisVisitor.visit(ctx.condition());
-  const thenStatementsRes = thisVisitor.visit(ctx.statement(0));
+  const thenStatementsList: StatementListNode = thisVisitor.visit(ctx.statement(0));
   // TODO When statementListNode is implemented, provide a method to get just the statements nodes array
   // and remove below line (!and else TODO)
-  const { statements: thenStatements } = thenStatementsRes;
+  // const { statements: thenStatements } = thenStatementsRes;
+  const thenStatements = thenStatementsList.statements;
 
-  const firstThenStatement = thenStatements[0];
-  const lastThenStatement = thenStatements[thenStatements.length - 1];
-  const thenMetadata = produceMetadataFromTo(
-    firstThenStatement.metadata,
-    lastThenStatement.metadata,
-  );
-  const thenStatementsNode = new ThenStatementsNodeBuilder(thenMetadata)
+  const thenStatementsNode = new ThenStatementsNodeBuilder(thenStatementsList.getMetadata())
     .withStatements(thenStatements)
     .build();
 
@@ -52,16 +48,10 @@ export const ifStatementVisitor = (
     .withThenStatements(thenStatementsNode);
 
   if (ctx.statement(1)) {
-    const elseStatementsRes = thisVisitor.visit(ctx.statement(1));
-    const { statements: elseStatements } = elseStatementsRes;
-    // TODO also here
-    const elseFirstStatement = elseStatements[0];
-    const elseLastStatement = elseStatements[elseStatements.length - 1];
-    const elseMetadata = produceMetadataFromTo(
-      elseFirstStatement.metadata,
-      elseLastStatement.metadata,
-    );
-    const elseStatementsNode = new ElseStatementsNodeBuilder(elseMetadata)
+    const elseStatementList = thisVisitor.visit(ctx.statement(1));
+
+    const elseStatements = elseStatementList.statements;
+    const elseStatementsNode = new ElseStatementsNodeBuilder(elseStatementList.getMetadata())
       .withStatements(elseStatements)
       .build();
     ifStatementNode.withElseStatements(elseStatementsNode);
