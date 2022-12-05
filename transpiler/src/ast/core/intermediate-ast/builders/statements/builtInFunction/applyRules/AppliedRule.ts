@@ -1,5 +1,5 @@
 import { ArgumentListNode } from '../../../../nodes/ArgumentList/ArgumentListNode.js';
-import { DomainRuleIdentifierNode } from '../../../../nodes/DomainRuleIdentifierNode.js';
+import { DomainRuleIdentifierNode } from '../../../../nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { AppliedRuleNode } from '../../../../nodes/statements/builtinFunction/AppliedRuleNode.js';
 import { TNodeMetadata } from '../../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../../IBuilder.js';
