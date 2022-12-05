@@ -27,7 +27,6 @@ import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/Expr
 import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { IdentifierBuilder } from '../intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js';
-import { DTONode } from '../intermediate-ast/nodes/DTO/DTONode.js';
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
@@ -38,17 +37,13 @@ import {
   TGraphQLOperation,
   TDefinitionMethods,
   TOkErrorReturnType,
-  TEntityCreate,
   TValueObjectValues,
   TValueObjectMethods,
   TReturnType,
   TDomainPrivateMethod,
   TConstDeclaration,
-  TConstDeclarationValue,
-  TEntities,
   TDomainPublicMethod,
   TRules,
-  TEntityValues,
   TUseCase,
   TReadModels,
 } from '../../../types.js';
@@ -165,6 +160,10 @@ import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/if
 import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
 import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
+import { EntityDeclarationNode } from '../intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
+import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
+import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
+import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
 import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
@@ -675,8 +674,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return fieldVisitor(this, ctx);
   }
 
-  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): { DTOs: DTONode } {
-    return dtoDeclarationVisitor(this, ctx);
+  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): void {
+    dtoDeclarationVisitor(this, ctx);
   }
   visitPropsDeclaration(ctx: BitloopsParser.PropsDeclarationContext): any {
     return propsDeclarationVisitor(this, ctx);
@@ -684,7 +683,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDomainConstructorDeclaration(
     ctx: BitloopsParser.DomainConstructorDeclarationContext,
-  ): TEntityCreate {
+  ): DomainCreateNode {
     return domainConstructorDeclarationVisitor(this, ctx);
   }
 
@@ -694,7 +693,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return valueObjectDeclarationVisitor(this, ctx);
   }
 
-  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): { Entities: TEntities } {
+  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): {
+    Entities: EntityDeclarationNode;
+  } {
     return entityDeclarationVisitor(this, ctx);
   }
 
@@ -702,13 +703,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return aggregateDeclarationVisitor(this, ctx);
   }
 
-  visitEntityBody(ctx: BitloopsParser.EntityBodyContext): TEntityValues {
+  visitEntityBody(ctx: BitloopsParser.EntityBodyContext): EntityValuesNode {
     return entityBodyVisitor(this, ctx);
   }
 
   visitDomainConstDeclarationList(
     ctx: BitloopsParser.DomainConstDeclarationListContext,
-  ): TConstDeclarationValue[] {
+  ): ConstDeclarationListNode {
     return domainConstDeclarationListVisitor(this, ctx);
   }
 

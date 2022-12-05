@@ -47,7 +47,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
-    ClassTypes.Entities,
+    ClassTypes.Entity,
   );
 
   let statementsModel = modelToTargetLanguage({

@@ -20,19 +20,33 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityValues } from '../../../../types.js';
+import { EntityIdentifierNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
+import { EntityDeclarationNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityDeclarationBuilder.js';
+import { produceMetadata } from '../metadata.js';
+import { EntityDeclarationNode } from '../../intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 
 export const entityDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityDeclarationContext,
-): { Entities: { [identifier: string]: TEntityValues } } => {
+): { Entities: EntityDeclarationNode } => {
+  const metadata = produceMetadata(ctx, this);
+
   const valueObjectIdentifier = ctx.entityIdentifier().getText();
-  const body = thisVisitor.visit(ctx.entityBody());
-  const result = {
-    Entities: {
-      [valueObjectIdentifier]: body,
-    },
+  const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
+    .withName(valueObjectIdentifier)
+    .build();
+
+  const entityValuesNode = thisVisitor.visit(ctx.entityBody());
+
+  const entityDeclarationNode = new EntityDeclarationNodeBuilder(
+    thisVisitor.intermediateASTTree,
+    metadata,
+  )
+    .withIdentifier(entityIdentifierNode)
+    .withValues(entityValuesNode)
+    .build();
+
+  return {
+    Entities: entityDeclarationNode,
   };
-  // console.log(JSON.stringify(result, null, 2));
-  return result;
 };

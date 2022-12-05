@@ -19,14 +19,19 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { StatementListNodeBuilder } from '../../intermediate-ast/builders/statements/StatementListNodeBuilder.js';
+import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TStatements } from './../../../../types.js';
+import { produceMetadata } from '../metadata.js';
 
 export const functionBodyVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FunctionBodyContext,
-): { statements: TStatements } => {
+): StatementListNode => {
   if (ctx.statementList()) {
     return thisVisitor.visit(ctx.statementList());
-  } else return { statements: [] };
+  } else {
+    const metadata = produceMetadata(ctx, thisVisitor);
+    return new StatementListNodeBuilder(metadata).withStatements([]).build();
+  }
 };

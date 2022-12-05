@@ -28,7 +28,7 @@ export type TModule = {
   ApplicationErrors?: TApplicationErrors;
   DomainErrors?: TDomainErrors;
   RootEntities?: TRootEntities;
-  Entities?: TEntities;
+  Entity?: TEntity;
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
@@ -47,7 +47,7 @@ export type TClassType =
   | 'ApplicationErrors'
   | 'DomainErrors'
   | 'RootEntities'
-  | 'Entities'
+  | 'Entity'
   | 'ValueObjects'
   | 'DTOs'
   | 'Structs'
@@ -64,7 +64,7 @@ export type TComponentType =
   | 'TApplicationErrors'
   | 'TDomainErrors'
   | 'TRootEntities'
-  | 'TEntities'
+  | 'TEntity'
   | 'TValueObjects'
   | 'TDTOs'
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
@@ -611,7 +611,13 @@ export type TValueObjectValues = {
 
 export type TValueObjects = Record<string, TValueObjectValues>;
 
-export type TEntities = Record<string, TEntityValues>;
+export type TEntityIdentifier = string;
+export type TEntity = {
+  Entity: {
+    entityIdentifier: TEntityIdentifier;
+    entityValues: TEntityValues;
+  };
+};
 
 export type TEntityValues = {
   constantVars?: TConstDeclarationValue[]; // TConstantVariable[];

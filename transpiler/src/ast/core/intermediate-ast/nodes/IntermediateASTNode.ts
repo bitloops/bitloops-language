@@ -102,7 +102,7 @@ export abstract class IntermediateASTNode {
     return this.children.length > 0;
   }
 
-  public buildArrayValue() {
+  public buildArrayValue(): void {
     const children = this.getChildren();
     this.value = { [this.classNodeName]: [] };
     children.forEach((child) => {
@@ -110,13 +110,13 @@ export abstract class IntermediateASTNode {
     });
   }
 
-  public buildLeafValue(value: any) {
+  public buildLeafValue(value: any): void {
     this.value = {
       [this.classNodeName]: value,
     };
   }
 
-  public buildObjectValue() {
+  public buildObjectValue(): void {
     const children = this.getChildren();
     this.value = { [this.classNodeName]: {} };
     children.forEach((child) => {

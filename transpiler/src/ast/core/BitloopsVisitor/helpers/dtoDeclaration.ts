@@ -21,7 +21,6 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { DTONodeBuilder } from '../../intermediate-ast/builders/DTO/DTONodeBuilder.js';
 import { DTOIdentifierNode } from '../../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
-import { DTONode } from '../../intermediate-ast/nodes/DTO/DTONode.js';
 import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
@@ -29,19 +28,15 @@ import { produceMetadata } from '../metadata.js';
 export const dtoDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DtoDeclarationContext,
-): { DTOs: DTONode } => {
+): void => {
   const dtoIdentifierNode: DTOIdentifierNode = thisVisitor.visit(ctx.dtoIdentifier());
 
   const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
 
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  const dtoNode = new DTONodeBuilder(thisVisitor.intermediateASTTree, metadata)
+  new DTONodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(dtoIdentifierNode)
     .withVariables(fieldListNode)
     .build();
-
-  return {
-    DTOs: dtoNode,
-  };
 };

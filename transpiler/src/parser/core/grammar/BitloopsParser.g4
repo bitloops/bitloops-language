@@ -796,22 +796,22 @@ entityDeclaration
 ;
 
 entityBody
-    : OpenBrace domainConstDeclarationList  domainConstructorDeclaration publicMethodDeclarationList privateMethodDeclarationList  CloseBrace
+    : OpenBrace domainConstDeclarationList? domainConstructorDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
     ;
 
 valueObjectDeclaration 
     : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList CloseBrace SemiColon?
     ;
 domainConstDeclarationList
-    : domainConstDeclaration*
+    : domainConstDeclaration+
     ;
 
 publicMethodDeclarationList
-    : publicMethodDeclaration*
+    : publicMethodDeclaration+
     ;
 
 privateMethodDeclarationList
-    : privateMethodDeclaration*
+    : privateMethodDeclaration+
     ;
 
 domainConstructorDeclaration
