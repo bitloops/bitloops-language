@@ -14,7 +14,7 @@ import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitl
 type TPropsValues = any;
 const getVOProps = (voName: string, model: TModule): TPropsValues => {
   const voModel = model.ValueObjects[voName];
-  const voPropsNameType = voModel.create.parameterDependency.type;
+  const voPropsNameType = voModel.create.parameterDependency.parameter.type;
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsNameType)) {
     throw new Error('Array props are not supported');
   }

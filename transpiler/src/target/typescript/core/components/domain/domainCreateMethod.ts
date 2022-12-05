@@ -40,7 +40,7 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
     }
   }
 
-  const propsNameType = create.parameterDependency.type;
+  const propsNameType = create.parameterDependency.parameter.type;
   const returnOkType = returnType.ok;
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {

@@ -61,7 +61,7 @@ const getErrorStringMapping: any = (
   errorStringRes += '(';
   if (paramDependencies && paramDependencies.length > 0) {
     paramDependencies.forEach((paramDependency) => {
-      errorStringRes += `this.${paramDependency.value}`;
+      errorStringRes += `this.${paramDependency.parameter.value}`;
     });
   }
   errorStringRes += ')';
@@ -155,17 +155,17 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
   if (rule.parameters && rule.parameters.length !== 0) {
     rule.parameters.forEach((ruleParam) => {
       isBrokenConditionStringWithThis = getStringWithThisBeforeWord(
-        ruleParam.value,
+        ruleParam.parameter.value,
         isBrokenConditionStringWithThis.output,
       );
       if (statements) {
         statementsStringWithThis = getStringWithThisBeforeWord(
-          ruleParam.value,
+          ruleParam.parameter.value,
           statementsStringWithThis.output,
         );
       }
       constructorParamsWithPrivate = getStringWithPrivateBeforeWord(
-        ruleParam.value,
+        ruleParam.parameter.value,
         constructorParamsWithPrivate,
       );
     });

@@ -25,11 +25,12 @@ import { ArrayPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrima
 import { PrimitiveTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
 import { PrimitiveTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/PrimitiveTypeNode.js';
 import { BitloopsPrimaryTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const bitloopsPrimaryTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.BitloopsPrimaryTypeContext,
-): PrimitiveTypeNode => {
+): BitloopsPrimaryTypeNode => {
   const [primaryTypeNode] = _thisVisitor.visitChildren(ctx);
   const bitloopsPrimaryTypeNode = new BitloopsPrimaryTypeBuilder()
     .withPrimaryType(primaryTypeNode)

@@ -1144,18 +1144,17 @@ formalParameterList
     : OpenParen CloseParen 
     | OpenParen
     (
-    formalParameterArg (Comma formalParameterArg)* (Comma lastFormalParameterArg)?
-    | lastFormalParameterArg 
+    formalParameter (Comma formalParameter)* 
     )?
     CloseParen 
     ;
 
-formalParameterArg
-    : decorator? accessibilityModifier? identifierOrKeyWord typeAnnotation? ('=' expression)?      // ECMAScript 6: Initialization
+formalParameter
+    : accessibilityModifier? formalParameterIdentifier typeAnnotation? 
     ;
 
-lastFormalParameterArg                        // ECMAScript 6: Rest Parameter
-    : Ellipsis Identifier
+formalParameterIdentifier
+    : Identifier
     ;
 
 functionBody
@@ -1362,8 +1361,6 @@ numericLiteral
 
 identifierOrKeyWord
     : Identifier
-    | TypeAlias
-    // | Require
     ;
 
 reservedWord
