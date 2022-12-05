@@ -36,7 +36,11 @@ export { dtoEvaluationVisitor } from './dtoEvaluation.js';
 export { evaluationVisitor } from './evaluation.js';
 export { propsEvaluationVisitor } from './propsEvaluation.js';
 export { valueObjectEvaluationVisitor } from './expression/evaluation/valueObjectEvaluation.js';
-export { formalParameterListVisitor } from './formalParameterList.js';
+export {
+  formalParameterListVisitor,
+  formalParameterVisitor,
+  formalParameterArgIdentifierVisitor,
+} from './formalParameterList.js';
 export { entityEvaluationVisitor } from './entityEvaluation.js';
 export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
 export { restControllerExecuteDeclarationVisitor } from './restControllerExecuteDeclaration.js';

@@ -79,7 +79,7 @@ const entitiesToTargetLanguage = (params: {
 
   for (const [entityName, entity] of Object.entries(entities)) {
     const { methods, create, constantVars } = entity;
-    const propsNameType = create.parameterDependency.type;
+    const propsNameType = create.parameterDependency.parameter.type;
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error(`Entity props type of ${entityName} cannot be an array`);
     }

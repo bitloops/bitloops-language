@@ -158,8 +158,10 @@ export type TParamDependencyType = TBitloopsPrimaryType;
 
 export type TParameterIdentifier = string;
 export type TParameterDependency = {
-  type: TParamDependencyType;
-  value: TParameterIdentifier;
+  parameter: {
+    type: TParamDependencyType;
+    value: TParameterIdentifier;
+  };
 };
 export type TParameterDependencies = TParameterDependency[];
 

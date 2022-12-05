@@ -69,7 +69,7 @@ export const rootEntitiesToTargetLanguage = (params: {
 
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
     const { create, methods, constantVars } = rootEntity;
-    const propsNameType = create.parameterDependency.type;
+    const propsNameType = create.parameterDependency.parameter.type;
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error('Root entity cannot take array as props yet.');
     }

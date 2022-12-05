@@ -92,7 +92,7 @@ const useCaseValuesToTargetLanguage = (
   ];
   const { execute, returnTypes, parameterDependencies } = variable;
   const useCaseInputType = execute.parameterDependencies[0]
-    ? execute.parameterDependencies[0].type
+    ? execute.parameterDependencies[0].parameter.type
     : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 

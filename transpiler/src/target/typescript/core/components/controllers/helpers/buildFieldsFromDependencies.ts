@@ -28,8 +28,12 @@ const buildFieldsFromDependencies = (
   const fieldsToLangString = (params: TParameterDependencies): string => {
     return params
       .map((parameterDependency) => {
-        const { type, value } = parameterDependency;
-        return `private ${value}: ${type};`;
+        const { type, value } = parameterDependency.parameter;
+        const mappedType = modelToTargetLanguage({
+          type: BitloopsTypesMapping.TBitloopsPrimaryType,
+          value: type,
+        });
+        return `private ${value}: ${mappedType.output};`;
       })
       .join(' ');
   };
@@ -47,7 +51,7 @@ const buildFieldsFromDependencies = (
   ): string => {
     const constructorBody = params
       .map((parameterDependency) => {
-        const { value } = parameterDependency;
+        const { value } = parameterDependency.parameter;
         return `this.${value} = ${value};`;
       })
       .join(' ');

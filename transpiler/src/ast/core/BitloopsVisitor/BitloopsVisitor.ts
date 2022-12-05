@@ -32,7 +32,6 @@ import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
-  TParameterDependency,
   TRESTControllerDependencies,
   TRESTControllerExecute,
   TGraphQLControllerExecute,
@@ -157,6 +156,8 @@ import {
   domainEvaluationInputFieldListVisitor,
   errorEvaluationVisitor,
   caseClausesVisitor,
+  formalParameterVisitor,
+  formalParameterArgIdentifierVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -165,6 +166,9 @@ import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statemen
 import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
 import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
+import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
+import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { IdentifierNode } from '../intermediate-ast/nodes/IdentifierNode.js';
 import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 
@@ -567,15 +571,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return domainEvaluationInputRegularVisitor(this, ctx);
   }
 
-  visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {
-    return {
-      value: ctx.identifierOrKeyWord().getText(),
-      type: this.visit(ctx.typeAnnotation()),
-    } as TParameterDependency;
+  visitFormalParameter(ctx: BitloopsParser.FormalParameterContext): ParameterNode {
+    return formalParameterVisitor(this, ctx);
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): TParameterDependency[] {
+  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): ParameterListNode {
     return formalParameterListVisitor(this, ctx);
+  }
+  visitFormalParameterIdentifier(
+    ctx: BitloopsParser.FormalParameterIdentifierContext,
+  ): ParameterIdentifierNode {
+    return formalParameterArgIdentifierVisitor(this, ctx);
   }
 
   visitRestControllerExecuteDeclaration(
