@@ -515,9 +515,10 @@ export type TConstDeclaration = {
   [constDeclarationKey]: TConstDeclarationValue;
 };
 
+export const variableDeclarationKey = 'variableDeclaration';
 export type TVariableDeclaration = {
-  variableDeclaration: {
-    name: string;
+  [variableDeclarationKey]: {
+    identifier: string;
     type: TBitloopsPrimaryType;
   } & TExpression;
 };
@@ -699,7 +700,7 @@ export type TDefaultCase = {
 };
 
 export type TRegularCase = {
-  // caseValue: TExpressionValues;
+  caseValue: TExpressionValues;
   statements: TStatements;
 } & TExpression;
 

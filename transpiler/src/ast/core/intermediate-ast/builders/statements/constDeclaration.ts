@@ -10,10 +10,8 @@ export class ConstDeclarationNodeBuilder implements IBuilder<ConstDeclarationNod
   private identifierNode: IdentifierNode;
   private expressionNode: ExpressionNode;
   private typeAnnotationNode: TypeAnnotationNode;
-  // private intermediateASTTree: IntermediateASTTree;
 
   constructor(metadata?: TNodeMetadata) {
-    // this.intermediateASTTree = intermediateASTTree;
     this.constDeclarationNode = new ConstDeclarationNode(metadata);
   }
 
@@ -33,17 +31,12 @@ export class ConstDeclarationNodeBuilder implements IBuilder<ConstDeclarationNod
   }
 
   public build(): ConstDeclarationNode {
-    // this.intermediateASTTree.insertChild(this.constDeclarationNode);
-    // this.intermediateASTTree.insertChild(this.identifierNode);
-    // this.intermediateASTTree.insertSibling(this.expressionNode);
-
     this.constDeclarationNode.addChild(this.identifierNode);
     this.constDeclarationNode.addChild(this.expressionNode);
 
     if (this.typeAnnotationNode) {
       this.constDeclarationNode.addChild(this.typeAnnotationNode);
     }
-    // this.intermediateASTTree.setCurrentNodeToRoot();
 
     this.constDeclarationNode.buildObjectValue();
 

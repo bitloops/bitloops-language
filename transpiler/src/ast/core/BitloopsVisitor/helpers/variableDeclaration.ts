@@ -20,20 +20,36 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariableDeclaration } from '../../../../types.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
+import { TypeAnnotationNode } from '../../intermediate-ast/nodes/TypeAnnotationNode.js';
+import { VariableDeclarationNode } from '../../intermediate-ast/nodes/variableDeclaration.js';
+import { produceMetadata } from '../metadata.js';
+import { VariableDeclarationNodeBuilder } from '../../intermediate-ast/builders/statements/variableDeclaration.js';
 
 export const variableDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.VariableDeclarationContext,
-): TVariableDeclaration => {
-  const left = thisVisitor.visit(ctx.identifier());
-  const right = thisVisitor.visit(ctx.expression());
-  const typeAnnotation = thisVisitor.visit(ctx.typeAnnotation());
-  return {
-    variableDeclaration: {
-      name: left,
-      expression: right.expression,
-      type: typeAnnotation,
-    },
-  };
+): VariableDeclarationNode => {
+  const identifierNode: IdentifierNode = thisVisitor.visit(ctx.identifier());
+
+  const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
+
+  let variableDeclarationNode: VariableDeclarationNode;
+  const metadata = produceMetadata(ctx, thisVisitor);
+  if (ctx.typeAnnotation()) {
+    const typeAnnotationNode: TypeAnnotationNode = thisVisitor.visit(ctx.typeAnnotation());
+    variableDeclarationNode = new VariableDeclarationNodeBuilder(metadata)
+      .withIdentifier(identifierNode)
+      .withExpression(expressionNode)
+      .withTypeAnnotation(typeAnnotationNode)
+      .build();
+  } else {
+    variableDeclarationNode = new VariableDeclarationNodeBuilder(metadata)
+      .withIdentifier(identifierNode)
+      .withExpression(expressionNode)
+      .build();
+  }
+
+  return variableDeclarationNode;
 };

@@ -51,6 +51,17 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildBuiltInClassEvaluation(builtInIdentifier: string, args?: TArgumentList): TEvaluation {
+    return {
+      evaluation: {
+        builtInClass: {
+          className: builtInIdentifier,
+          argumentList: args,
+        },
+      },
+    };
+  }
+
   buildValueObjectEvaluation(valueObjectIdentifier: string, propsParam: PropsParam): TEvaluation {
     return {
       evaluation: {

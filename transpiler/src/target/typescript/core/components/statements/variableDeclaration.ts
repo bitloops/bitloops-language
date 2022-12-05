@@ -25,22 +25,22 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 export const variableDeclarationToTargetLanguage = (
   variable: TVariableDeclaration,
 ): TTargetDependenciesTypeScript => {
-  const constDeclarationLangMapping = (
+  const variableDeclarationLangMapping = (
     variable: TVariableDeclaration,
   ): TTargetDependenciesTypeScript => {
-    const { name, type } = variable.variableDeclaration;
+    const { identifier, type } = variable.variableDeclaration;
 
     const mappedType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: type,
     });
     return {
-      output: `let ${name}: ${mappedType.output} = `,
+      output: `let ${identifier}: ${mappedType.output} = `,
       dependencies: mappedType.dependencies,
     };
   };
 
-  const declareResult = constDeclarationLangMapping(variable);
+  const declareResult = variableDeclarationLangMapping(variable);
 
   const { expression } = variable.variableDeclaration;
   const expressionModel = modelToTargetLanguage({

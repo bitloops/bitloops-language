@@ -575,8 +575,8 @@ variableDeclaration
 statement
     : block                         
     | expression    
-    | constDeclaration
     | variableDeclaration
+    | constDeclaration
     // | thisDeclaration
     | emptyStatement_
     | propsDeclaration
