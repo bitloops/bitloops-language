@@ -533,16 +533,21 @@ export type TBreakStatement = {
   breakStatement: 'break';
 };
 
-export type TApplyRules = {
-  applyRules: {
+export type TAppliedRule = {
+  appliedRule: {
     name: string;
-    arguments: TArgumentList;
-  }[];
+    argumentList: TArgumentList;
+  };
 };
 
-export type TBuildInFunction = {
-  buildInFunction: TApplyRules;
+export type TApplyRules = {
+  applyRules: TAppliedRule[];
 };
+
+export type TBuiltInFunction = {
+  builtInFunction: TBuiltInFunctionValues;
+};
+export type TBuiltInFunctionValues = TApplyRules;
 
 export type TStatement =
   | TBreakStatement
@@ -555,7 +560,7 @@ export type TStatement =
   | TConstDeclaration
   | TThisDeclaration
   | TVariableDeclaration
-  | TBuildInFunction
+  | TBuiltInFunction
   | TExpression;
 
 export type TStatements = TStatement[];

@@ -49,7 +49,6 @@ import {
   TEntities,
   TDomainPublicMethod,
   TRules,
-  TBuildInFunction,
   TEntityValues,
   // TModule,
   TUseCase,
@@ -167,6 +166,7 @@ import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/if
 import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
 import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
+import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -770,8 +770,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return domainRuleBodyVisitor(this, ctx);
   }
 
-  visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext): TBuildInFunction {
+  visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {
     return applyRulesStatementVisitor(this, ctx);
+  }
+
+  visitDomainRuleIdentifier(ctx: BitloopsParser.DomainRuleIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new DomainRuleIdentifierBuilder(metadata)
+      .withName(ctx.RuleIdentifier().getText())
+      .build();
   }
 
   visitApplyRuleStatementRulesList(ctx: BitloopsParser.ApplyRuleStatementRulesListContext): any {

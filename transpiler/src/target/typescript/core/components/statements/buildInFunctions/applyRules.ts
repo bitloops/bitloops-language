@@ -42,12 +42,13 @@ const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesT
   let dependencies = APPLY_RULES_DEPENDENCIES;
   const domainRules = [];
   for (const applyRule of applyRules) {
+    const { appliedRule } = applyRule;
     const argumentDependencies = modelToTargetLanguage({
       type: BitloopsTypesMapping.TArgumentList,
-      value: applyRule.arguments,
+      value: appliedRule.argumentList,
     });
-    result += `new Rules.${applyRule.name}${argumentDependencies.output},`;
-    domainRules.push(applyRule.name);
+    result += `new Rules.${appliedRule.name}${argumentDependencies.output},`;
+    domainRules.push(appliedRule.name);
     dependencies = [...dependencies, ...argumentDependencies.dependencies];
   }
   result += ']);';

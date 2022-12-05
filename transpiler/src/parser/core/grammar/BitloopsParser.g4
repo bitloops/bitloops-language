@@ -607,7 +607,7 @@ applyRuleStatementRulesList
     ;
 
 applyRulesRule
-    : domainRuleIdentifier arguments
+    : domainRuleIdentifier methodArguments
     ;
 
 block
