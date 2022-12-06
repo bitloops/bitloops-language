@@ -20,17 +20,21 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-
-import { TOkErrorReturnType } from '../../../../types.js';
+import { ReturnOkErrorTypeNodeBuilder } from '../../intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
+import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { produceMetadata } from '../metadata.js';
 
 export const returnOkErrorTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ReturnOkErrorTypeContext,
-): TOkErrorReturnType => {
-  const ok = thisVisitor.visit(ctx.returnOkType());
-  const errors = thisVisitor.visit(ctx.returnErrorsType());
-  return {
-    ok,
-    errors,
-  };
+): ReturnOkErrorTypeNode => {
+  const okPrimaryTypeNode = thisVisitor.visit(ctx.returnOkType());
+  const errorsNode = thisVisitor.visit(ctx.returnErrorsType());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const returnOkErrorTypeNode = new ReturnOkErrorTypeNodeBuilder(metadata)
+    .withOk(okPrimaryTypeNode)
+    .withErrors(errorsNode)
+    .build();
+  return returnOkErrorTypeNode;
 };

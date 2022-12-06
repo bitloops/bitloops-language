@@ -44,11 +44,12 @@ export const useCaseDeclarationVisitor = (
   const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
   const { statements } = execute;
 
-  addReturnOkVoidStatement(statements, returnTypes);
+  addReturnOkVoidStatement(statements, returnTypes.returnType);
+
   const result = {
     UseCases: {
       [useCaseIdentifier]: {
-        returnTypes,
+        ...returnTypes,
         execute,
         parameterDependencies,
       },
@@ -65,7 +66,10 @@ export const useCaseExecuteDeclarationVisitor = (
   const parameterList: TParameterDependency[] = thisVisitor.visit(ctx.parameterList());
   const { statements } = thisVisitor.visit(ctx.functionBody());
 
-  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnTypes);
+  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
+    statements,
+    returnTypes.returnType,
+  );
 
   return {
     returnTypes,

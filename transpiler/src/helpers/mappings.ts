@@ -155,6 +155,9 @@ const BitloopsTypesMapping = {
   TDomainRuleIdentifier: 'TDomainRuleIdentifier',
   TAppliedRule: 'TAppliedRule',
   TIsBrokenIfCondition: 'TIsBrokenIfCondition',
+  TErrorIdentifier: 'TErrorIdentifier',
+  TErrorIdentifiers: 'TErrorIdentifiers',
+  TReturnOkType: 'TReturnOkType',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
