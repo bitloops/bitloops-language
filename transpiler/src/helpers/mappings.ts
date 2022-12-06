@@ -158,6 +158,7 @@ const BitloopsTypesMapping = {
   TErrorIdentifier: 'TErrorIdentifier',
   TErrorIdentifiers: 'TErrorIdentifiers',
   TReturnOkType: 'TReturnOkType',
+  TDomainPublicMethods: 'TDomainPublicMethods',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

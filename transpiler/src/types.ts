@@ -578,6 +578,8 @@ export type TDomainPrivateMethod = {
   };
 };
 
+export type TDomainPublicMethods = TDomainPublicMethod[];
+
 export type TDomainPublicMethod = {
   publicMethod: {
     parameterDependencies: TParameterDependencies;

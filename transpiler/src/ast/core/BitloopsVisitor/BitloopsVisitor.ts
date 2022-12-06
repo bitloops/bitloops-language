@@ -176,6 +176,8 @@ import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers
 import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { PublicMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
+import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -738,14 +740,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   // Public method declaration
   visitPublicMethodDeclarationList(
     ctx: BitloopsParser.PublicMethodDeclarationListContext,
-  ): Record<string, TDomainPublicMethod> {
+  ): PublicMethodDeclarationListNode {
     return publicMethodDeclarationListVisitor(this, ctx);
   }
 
-  visitPublicMethodDeclaration(ctx: BitloopsParser.PublicMethodDeclarationContext): {
-    methodName: string;
-    methodInfo: TDomainPublicMethod;
-  } {
+  visitPublicMethodDeclaration(
+    ctx: BitloopsParser.PublicMethodDeclarationContext,
+  ): PublicMethodDeclarationNode {
     return publicMethodDeclarationVisitor(this, ctx);
   }
 
