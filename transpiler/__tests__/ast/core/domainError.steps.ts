@@ -1,11 +1,4 @@
-// import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/BitloopsParser.js';
-// import expectedModels from '../../../../src/examples/domainError.js';
-// import { parseBitloops } from '../../../../src/functions/bitloopsLanguageToModel/BitloopsParser.js';
 import { BitloopsParser, BitloopsIntermediateASTParser } from '../../../src/index.js';
-
-// const feature = loadFeature('__tests__/ast/core/domainError.feature');
-
-// TODO make work with backticks and make work to target language
 
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
@@ -13,7 +6,12 @@ import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/ind
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { invalidDomainErrors, validDomainErrors } from './mocks/errors/domainErrors.js';
 import { DomainErrorBuilder } from './builders/domaiErrorBuilder.js';
-import { TDomainErrors, TExpression, TParameterDependencies } from '../../../src/types.js';
+import {
+  TDomainErrors,
+  TExpression,
+  TIdentifier,
+  TParameterDependencies,
+} from '../../../src/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -26,8 +24,8 @@ describe('A domain error is valid', () => {
 
   validDomainErrors.forEach((mock) => {
     test(`${mock.description}`, () => {
-      const { name, message, errorId, parameters } = mock;
-      const expectedNodeValues = getExpectedOutput(name, message, errorId, parameters);
+      const { identifier, message, errorId, parameters } = mock;
+      const expectedNodeValues = getExpectedOutput(identifier, message, errorId, parameters);
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -45,6 +43,9 @@ describe('A domain error is valid', () => {
       }
 
       const nodes = resultTree.getClassTypeNodes(CLASS_TYPE);
+      if (nodes.length > 1) {
+        throw new Error('more than one Domain Errors detected');
+      }
       const value = nodes[0].getValue();
 
       expect(value).toMatchObject(expectedNodeValues);
@@ -76,13 +77,13 @@ describe('A domain error is invalid', () => {
   });
 });
 const getExpectedOutput = (
-  name: string,
+  identifier: TIdentifier,
   messageExp: TExpression,
   errorIdExp: TExpression,
   parameters: TParameterDependencies,
 ): TDomainErrors => {
   const val = new DomainErrorBuilder()
-    .withName(name)
+    .withIdentifier(identifier)
     .withErrorId(errorIdExp)
     .withMessage(messageExp)
     .withParameters(parameters)

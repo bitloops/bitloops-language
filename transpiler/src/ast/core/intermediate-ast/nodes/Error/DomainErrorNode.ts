@@ -1,16 +1,14 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { DomainErrorKey } from '../../../../../types.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
 // This would extend the ExpressionNode class instead
 export class DomainErrorNode extends IntermediateASTNode {
-  // private static NAME = '';
+  private static NAME = DomainErrorKey;
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TDomainError, metadata, '');
+    super(BitloopsTypesMapping.TDomainError, metadata, DomainErrorNode.NAME);
     this.nodeType = BitloopsTypesMapping.TDomainError;
-  }
-  setName(name: string): void {
-    this.setClassNodeName(name);
   }
 
   /* 🔧 TODO: implement getMessage and getErrorId methods */

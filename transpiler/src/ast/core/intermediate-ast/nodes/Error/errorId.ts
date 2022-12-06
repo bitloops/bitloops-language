@@ -5,6 +5,6 @@ export class ErrorIdNode extends IntermediateASTNode {
   private static NAME = 'errorId';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TExpression, metadata, ErrorIdNode.NAME);
+    super(BitloopsTypesMapping.TErrorId, metadata, ErrorIdNode.NAME);
   }
 }

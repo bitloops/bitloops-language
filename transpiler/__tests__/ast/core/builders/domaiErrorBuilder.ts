@@ -1,14 +1,19 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import { TExpression, TDomainErrors, TParameterDependencies } from '../../../../src/types.js';
+import {
+  TExpression,
+  DomainErrorKey,
+  TDomainErrors,
+  TParameterDependencies,
+  TIdentifier,
+} from '../../../../src/types.js';
 
 export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
   private message: TExpression;
   private errorId: TExpression;
   private parameters: TParameterDependencies;
-  private name: string;
-
-  public withName(name: string): DomainErrorBuilder {
-    this.name = name;
+  private identifierName: TIdentifier;
+  public withIdentifier(identifier: TIdentifier): DomainErrorBuilder {
+    this.identifierName = identifier;
     return this;
   }
   public withMessage(message: TExpression): DomainErrorBuilder {
@@ -26,7 +31,8 @@ export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
 
   public build(): TDomainErrors {
     const error = {
-      [this.name]: {
+      [DomainErrorKey]: {
+        identifier: this.identifierName,
         message: this.message,
         errorId: this.errorId,
         parameters: this.parameters,

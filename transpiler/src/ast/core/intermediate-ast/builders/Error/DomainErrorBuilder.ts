@@ -3,6 +3,7 @@ import { DomainErrorNode } from '../../nodes/Error/DomainErrorNode.js';
 import { ErrorIdNode } from '../../nodes/Error/errorId.js';
 import { ErrorMessageNode } from '../../nodes/Error/message.js';
 import { EvaluationFieldNode } from '../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { IdentifierNode } from '../../nodes/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
 import { IBuilder } from '../IBuilder.js';
@@ -17,6 +18,7 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   private message: ErrorMessageNode;
   private errorId: ErrorIdNode;
   private parameters: ParameterListNode;
+  private identifierName: IdentifierNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -24,10 +26,11 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
     this.domainErrorNode = new DomainErrorNode(metadata);
   }
 
-  public withName(name: string): DomainErrorBuilder {
-    this.domainErrorNode.setName(name);
+  public withIdentifier(identifierName: IdentifierNode): DomainErrorBuilder {
+    this.identifierName = identifierName;
     return this;
   }
+
   public withMessage(messageNode: EvaluationFieldNode): DomainErrorBuilder {
     const expression = messageNode.getExpression();
     this.message = new ErrorMessageNodeBuilder().withExpression(expression).build();
@@ -44,7 +47,8 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   }
   public build(): DomainErrorNode {
     this.intermediateASTTree.insertChild(this.domainErrorNode);
-    this.intermediateASTTree.insertChild(this.parameters);
+    this.intermediateASTTree.insertChild(this.identifierName);
+    this.intermediateASTTree.insertSibling(this.parameters);
     this.intermediateASTTree.insertSibling(this.message);
     this.intermediateASTTree.insertSibling(this.errorId);
     this.intermediateASTTree.setCurrentNodeToRoot();

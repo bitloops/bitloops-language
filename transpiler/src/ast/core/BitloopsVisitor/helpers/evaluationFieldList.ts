@@ -43,7 +43,6 @@ export const evaluationFieldListVisitor = (
   const evaluationFieldsVisitor = evaluationFields.map((field) => {
     return thisVisitor.visit(field);
   });
-  console.log(evaluationFieldsVisitor);
   const evaluationFieldListNode = new EvaluationFieldListNodeBuilder()
     .withEvaluationFields(evaluationFieldsVisitor)
     .build();

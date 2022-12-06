@@ -71,6 +71,8 @@ const BitloopsTypesMapping = {
   TBackTickString: 'TBackTickString',
   TDomainErrors: 'TDomainErrors',
   TDomainError: 'TDomainError',
+  TErrorId: 'TErrorId',
+  TErrorMessage: 'TErrorMessage',
   TApplicationErrors: 'TApplicationErrors',
   TEvaluatePrimitive: 'TEvaluatePrimitive',
   TGraphQLSetupData: 'TGraphQLSetupData',
