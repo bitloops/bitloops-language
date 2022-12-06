@@ -78,7 +78,6 @@ import {
   evaluationVisitor,
   propsEvaluationVisitor,
   valueObjectEvaluationVisitor,
-  formalParameterListVisitor,
   entityEvaluationVisitor,
   restControllerMethodDeclarationVisitor,
   restControllerExecuteDeclarationVisitor,
@@ -151,8 +150,9 @@ import {
   domainEvaluationInputFieldListVisitor,
   errorEvaluationVisitor,
   caseClausesVisitor,
-  formalParameterVisitor,
-  formalParameterArgIdentifierVisitor,
+  parameterListVisitor,
+  parameterVisitor,
+  parameterArgIdentifierVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -576,17 +576,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return domainEvaluationInputRegularVisitor(this, ctx);
   }
 
-  visitFormalParameter(ctx: BitloopsParser.FormalParameterContext): ParameterNode {
-    return formalParameterVisitor(this, ctx);
+  visitParameter(ctx: BitloopsParser.ParameterContext): ParameterNode {
+    return parameterVisitor(this, ctx);
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): ParameterListNode {
-    return formalParameterListVisitor(this, ctx);
+  visitParameterList(ctx: BitloopsParser.ParameterListContext): ParameterListNode {
+    return parameterListVisitor(this, ctx);
   }
-  visitFormalParameterIdentifier(
-    ctx: BitloopsParser.FormalParameterIdentifierContext,
+  visitParameterIdentifier(
+    ctx: BitloopsParser.ParameterIdentifierContext,
   ): ParameterIdentifierNode {
-    return formalParameterArgIdentifierVisitor(this, ctx);
+    return parameterArgIdentifierVisitor(this, ctx);
   }
 
   visitRestControllerExecuteDeclaration(
