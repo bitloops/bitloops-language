@@ -30,8 +30,8 @@ export const methodDefinitionVisitor = (
   const identifier = ctx.identifier().getText();
   const type = thisVisitor.visit(ctx.typeAnnotation());
   let parameterDependencies = [];
-  if (ctx.formalParameterList()) {
-    parameterDependencies = thisVisitor.visit(ctx.formalParameterList());
+  if (ctx.parameterList()) {
+    parameterDependencies = thisVisitor.visit(ctx.parameterList());
   }
   const methodInfo: TDefinitionMethodInfo = {
     parameterDependencies,

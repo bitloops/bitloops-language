@@ -25,7 +25,7 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
-const feature = loadFeature('./__tests__/ast/core/formalParameterList.feature');
+const feature = loadFeature('./__tests__/ast/core/parameterList.feature');
 
 defineFeature(feature, (test) => {
   test('Formal Parameter List is valid', ({ given, when, then }) => {

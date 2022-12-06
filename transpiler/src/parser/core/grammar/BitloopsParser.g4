@@ -312,7 +312,7 @@ methodDefinitionList
     ;
 
 methodDefinition
-    : identifier formalParameterList? typeAnnotation SemiColon
+    : identifier parameterList? typeAnnotation SemiColon
     ;
 
 
@@ -349,19 +349,19 @@ typeAnnotation
 //     : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
 //     ;
 
-parameterList
-    : restParameter
-    | parameter (Comma parameter)* (Comma restParameter)?
-    ;
+// parameterList
+//     : restParameter
+//     | parameter (Comma parameter)* (Comma restParameter)?
+//     ;
 
 requiredParameterList
     : requiredParameter (Comma requiredParameter)*
     ;
 
-parameter
-    : requiredParameter
-    | optionalParameter
-    ;
+// parameter
+//     : requiredParameter
+//     | optionalParameter
+//     ;
 
 optionalParameter
     : decoratorList? ( accessibilityModifier? identifierOrPattern ('?' typeAnnotation? | typeAnnotation? initializer))
@@ -511,7 +511,7 @@ jestTestDeclaration
     | JestTestStructEvaluation OpenBrace structEvaluation SemiColon? CloseBrace  SemiColon?  
     | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
     | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
-    | JestTest OpenBrace formalParameterList CloseBrace SemiColon?   
+    | JestTest OpenBrace parameterList CloseBrace SemiColon?   
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
@@ -780,7 +780,7 @@ domainRuleBody
 ;
 
 domainRuleDeclaration
-: Rule domainRuleIdentifier formalParameterList? Throws ErrorIdentifier OpenBrace domainRuleBody CloseBrace
+: Rule domainRuleIdentifier parameterList? Throws ErrorIdentifier OpenBrace domainRuleBody CloseBrace
 ;
 
 aggregateDeclaration
@@ -815,7 +815,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorDeclaration
-    : Constructor formalParameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
+    : Constructor parameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
@@ -823,7 +823,7 @@ useCaseIdentifier
     ;
 
 useCaseDeclaration
-    : UseCase useCaseIdentifier formalParameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
+    : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
     ;
 
 propsDeclaration
@@ -926,11 +926,11 @@ propsEvaluation
     ;
 
 domainErrorDeclaration
-    : DomainError domainErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
+    : DomainError domainErrorIdentifier parameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 applicationErrorDeclaration
-    : ApplicationError applicationErrorIdentifier formalParameterList? '{' evaluationFieldList? '}' SemiColon?
+    : ApplicationError applicationErrorIdentifier parameterList? '{' evaluationFieldList? '}' SemiColon?
     ;
 
 domainErrorIdentifier
@@ -940,7 +940,7 @@ applicationErrorIdentifier
     : DomainErrorIdentifier;
 
 useCaseExecuteDeclaration
-    : Execute formalParameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
+    : Execute parameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 restControllerParameters
@@ -961,8 +961,8 @@ httpMethod
 
 
 controllerDeclaration
-    : RESTController ControllerIdentifier formalParameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
-    | GraphQLController ControllerIdentifier formalParameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
+    : RESTController ControllerIdentifier parameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
+    | GraphQLController ControllerIdentifier parameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
     ;
 
 graphQLResolverOptions
@@ -1097,11 +1097,11 @@ methodDeclaration
     ;
 
 privateMethodDeclaration
-    : Private? identifier formalParameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
+    : Private? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? identifier formalParameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
+    : Public? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnPublicMethodType
@@ -1121,11 +1121,11 @@ indexMemberDeclaration
     ;
 
 generatorMethod
-    : '*'?  Identifier OpenParen formalParameterList? CloseParen OpenBrace functionBody CloseBrace
+    : '*'?  Identifier OpenParen parameterList? CloseParen OpenBrace functionBody CloseBrace
     ;
 
 generatorFunctionDeclaration
-    : Function_ '*' Identifier? OpenParen formalParameterList? CloseParen OpenBrace functionBody CloseBrace
+    : Function_ '*' Identifier? OpenParen parameterList? CloseParen OpenBrace functionBody CloseBrace
     ;
 
 generatorBlock
@@ -1141,23 +1141,23 @@ iteratorBlock
     ;
 
 iteratorDefinition
-    : '[' expression ']' OpenParen formalParameterList? CloseParen OpenBrace functionBody CloseBrace
+    : '[' expression ']' OpenParen parameterList? CloseParen OpenBrace functionBody CloseBrace
     ;
 
-formalParameterList
+parameterList
     : OpenParen CloseParen 
     | OpenParen
     (
-    formalParameter (Comma formalParameter)* 
+    parameter (Comma parameter)* 
     )?
     CloseParen 
     ;
 
-formalParameter
-    : accessibilityModifier? formalParameterIdentifier typeAnnotation? 
+parameter
+    : accessibilityModifier? parameterIdentifier typeAnnotation? 
     ;
 
-formalParameterIdentifier
+parameterIdentifier
     : Identifier
     ;
 
@@ -1231,7 +1231,7 @@ expressionSequence
     ;
 
 functionExpressionDeclaration
-    : Function_ Identifier? OpenParen formalParameterList? CloseParen typeAnnotation? OpenBrace functionBody CloseBrace
+    : Function_ Identifier? OpenParen parameterList? CloseParen typeAnnotation? OpenBrace functionBody CloseBrace
     ;
 
 expression
@@ -1314,7 +1314,7 @@ arrowFunctionDeclaration
 
 arrowFunctionParameters
     : Identifier
-    | OpenParen formalParameterList? CloseParen
+    | OpenParen parameterList? CloseParen
     ;
 
 arrowFunctionBody

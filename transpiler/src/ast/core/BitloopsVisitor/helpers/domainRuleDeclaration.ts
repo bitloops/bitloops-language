@@ -27,7 +27,7 @@ export const domainRuleDeclarationVisitor = (
   ctx: BitloopsParser.DomainRuleDeclarationContext,
 ): { Rules: TRules } => {
   const ruleIdentifier = ctx.domainRuleIdentifier().getText();
-  const parameters = thisVisitor.visit(ctx.formalParameterList());
+  const parameters = thisVisitor.visit(ctx.parameterList());
   const error = ctx.ErrorIdentifier().getText();
   const { statements, isBrokenIfCondition } = thisVisitor.visit(ctx.domainRuleBody());
 
