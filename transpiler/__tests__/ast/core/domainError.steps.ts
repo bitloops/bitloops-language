@@ -44,10 +44,9 @@ describe('A domain error is valid', () => {
         }
       }
 
-      console.log(resultTree);
       const nodes = resultTree.getClassTypeNodes(CLASS_TYPE);
       const value = nodes[0].getValue();
-      console.log(expectedNodeValues);
+      console.log(value);
 
       expect(value).toMatchObject(expectedNodeValues);
     });
@@ -88,7 +87,6 @@ describe('A domain error is valid', () => {
 //     });
 //   });
 // });
-
 // describe('DTO declaration is invalid', () => {
 //   const parser = new BitloopsParser();
 //   const intermediateParser = new BitloopsIntermediateASTParser();

@@ -1,14 +1,15 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 // import { TDomainError } from '../../../../types.js';
 import { DomainErrorBuilder } from '../../intermediate-ast/builders/Error/DomainErrorBuilder.js';
+import { DomainErrorNode } from '../../intermediate-ast/nodes/Error/DomainErrorNode.js';
 import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { parameterListVisitor } from './parameterList.js';
 
 export const domainErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainErrorDeclarationContext,
-): any =>
+): DomainErrorNode =>
   // {
   // DomainErrors: {
   //   [key: string]: TDomainError;
@@ -17,7 +18,7 @@ export const domainErrorDeclarationVisitor = (
   {
     const errorName: string = ctx.domainErrorIdentifier().getText();
     // TEvaluationFields, TODO fix temp as any
-    // const fieldsList = evaluationFieldListVisitor(thisVisitor, ctx.evaluationFieldList()) as any;
+    const parameters: ParameterListNode = thisVisitor.visit(ctx.parameterList());
     const fieldsList: EvaluationFieldListNode = thisVisitor.visit(ctx.evaluationFieldList());
 
     if (fieldsList.getFieldCount() != 2) {
@@ -36,8 +37,8 @@ export const domainErrorDeclarationVisitor = (
     const domainError = new DomainErrorBuilder(thisVisitor.intermediateASTTree)
       .withName(errorName)
       .withErrorId(errorId)
+      .withParameters(parameters)
       .withMessage(message)
       .build();
-    console.log(domainError.getValue());
     return domainError;
   };

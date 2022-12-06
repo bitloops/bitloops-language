@@ -4,9 +4,11 @@ import { ErrorIdNode } from '../../nodes/Error/errorId.js';
 import { ErrorMessageNode } from '../../nodes/Error/message.js';
 import { EvaluationFieldNode } from '../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { ErrorIdNodeBuilder } from './ErrorIdNodeBuilder.js';
 import { ErrorMessageNodeBuilder } from './ErrorMessageNodeBuilder.js';
+// import { ErrorParametersNodeBuilder } from './ErrorParametersBuilder.js';
 
 export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   public readonly NAME = 'DomainErrors';
@@ -14,6 +16,7 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   private domainErrorNode: DomainErrorNode;
   private message: ErrorMessageNode;
   private errorId: ErrorIdNode;
+  private parameters: ParameterListNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -33,13 +36,17 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   public withErrorId(idNode: EvaluationFieldNode): DomainErrorBuilder {
     const expression = idNode.getExpression();
     this.errorId = new ErrorIdNodeBuilder().withExpression(expression).build();
-
     return this;
   }
-
+  public withParameters(parameters: ParameterListNode): DomainErrorBuilder {
+    this.parameters = parameters;
+    console.log(this.parameters.getValue());
+    return this;
+  }
   public build(): DomainErrorNode {
     this.intermediateASTTree.insertChild(this.domainErrorNode);
-    this.intermediateASTTree.insertChild(this.message);
+    this.intermediateASTTree.insertChild(this.parameters);
+    this.intermediateASTTree.insertSibling(this.message);
     this.intermediateASTTree.insertSibling(this.errorId);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
