@@ -43,7 +43,6 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TDomainPublicMethod,
-  TRules,
   TUseCase,
   TReadModels,
 } from '../../../types.js';
@@ -153,6 +152,7 @@ import {
   parameterListVisitor,
   parameterVisitor,
   parameterArgIdentifierVisitor,
+  isBrokenConditionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -164,7 +164,7 @@ import { EntityDeclarationNode } from '../intermediate-ast/nodes/Entity/EntityDe
 import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
 import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
-import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
+import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRule/DomainRuleIdentifierBuilder.js';
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
@@ -794,12 +794,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): any {
     return domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
     return domainRuleBodyVisitor(this, ctx);
+  }
+
+  visitIsBrokenStatement(ctx: BitloopsParser.IsBrokenStatementContext): any {
+    return isBrokenConditionVisitor(this, ctx);
   }
 
   visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {

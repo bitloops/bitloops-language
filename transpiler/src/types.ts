@@ -33,7 +33,7 @@ export type TModule = {
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
   Packages?: TPackages;
-  Rules?: TRules;
+  DomainRule?: TDomainRule;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
   ReadModels?: TReadModels;
@@ -52,7 +52,7 @@ export type TClassType =
   | 'DTOs'
   | 'Structs'
   | 'Packages'
-  | 'Rules'
+  | 'Rule'
   | 'RepoPorts'
   | 'RepoAdapters'
   | 'ReadModels';
@@ -69,7 +69,7 @@ export type TComponentType =
   | 'TDTOs'
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
-  | 'TRules'
+  | 'TDomainRule'
   | 'TRepoPorts'
   | 'TRepoAdapters'
   | 'TReadModels';
@@ -263,15 +263,24 @@ export type TDomainError = {
   errorId: TExpression;
   parameters?: TParameterDependencies;
 };
-// TODO finalize TRule
-export type TRule = {
-  parameters?: TParameterDependencies;
-  error: string;
-  statements: TStatements;
-  isBrokenIfCondition: TCondition;
+
+export type TDomainRule = {
+  DomainRule: {
+    domainRuleIdentifier: string;
+    parameters?: TParameterDependencies;
+    error: string;
+    statements: TStatements;
+    isBrokenIfCondition: TCondition;
+  };
 };
 
-export type TRules = Record<string, TRule>;
+/**
+ * This type exists because not all expressions work as a condition, only the ones that evaluate to boolean.
+ * (at least in most languages)
+ */
+export type TCondition = {
+  condition: TExpression;
+};
 
 export type TDomainErrors = Record<string, TDomainError>;
 
@@ -334,10 +343,6 @@ export type TMethodCallExpression = {
 
 export type TEvaluation = {
   evaluation: TEvaluationValues;
-};
-
-export type TCondition = {
-  condition: TExpression;
 };
 
 export type TIfStatement = {
@@ -529,7 +534,7 @@ export type TBreakStatement = {
 
 export type TAppliedRule = {
   appliedRule: {
-    name: string;
+    domainRuleIdentifier: string;
     argumentList: TArgumentList;
   };
 };

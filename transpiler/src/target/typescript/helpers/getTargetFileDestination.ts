@@ -36,7 +36,7 @@ enum PROJECT_RELATIVE_PATHS {
   DTOs = 'dtos/',
   PACKAGES = 'packages/',
   REPO_ADAPTERS = 'repos/concretions',
-  RULES = 'domain/rules/',
+  DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
 }
@@ -48,7 +48,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
-  [ClassTypes.Rules]: PROJECT_RELATIVE_PATHS.RULES,
+  [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
   [ClassTypes.Controllers]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
   [ClassTypes.UseCases]: PROJECT_RELATIVE_PATHS.APPLICATION,
   [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
@@ -112,7 +112,7 @@ const getTargetFileDestination = (
     case ClassTypes.Packages:
     case ClassTypes.RepoPorts:
     case ClassTypes.RepoAdapters:
-    case ClassTypes.Rules:
+    case ClassTypes.DomainRule:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -149,7 +149,7 @@ const getFilePathRelativeToModule = (
       break;
     case ClassTypes.DomainErrors:
     case ClassTypes.ApplicationErrors:
-    case ClassTypes.Rules:
+    case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';
       break;
