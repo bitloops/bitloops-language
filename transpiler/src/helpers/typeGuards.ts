@@ -16,8 +16,8 @@ import {
   TRESTControllerValues,
   TRESTServerInstance,
   ControllerTypeOfDefinition,
-  TOkErrorReturnType,
   TIfStatement,
+  TOkErrorReturnTypeValues,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -67,8 +67,8 @@ const controllerDefinitionIsGraphQL = (
 
 // returnType: string | TOkErrorReturnType,
 const isOkErrorReturnType = (
-  returnType: string | TOkErrorReturnType,
-): returnType is TOkErrorReturnType => {
+  returnType: string | TOkErrorReturnTypeValues,
+): returnType is TOkErrorReturnTypeValues => {
   if (typeof returnType !== 'string' && 'ok' in returnType) return true;
   else return false;
 };

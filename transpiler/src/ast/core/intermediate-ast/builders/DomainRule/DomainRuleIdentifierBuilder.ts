@@ -1,6 +1,6 @@
-import { DomainRuleIdentifierNode } from '../nodes/DomainRuleIdentifierNode.js';
-import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
-import { IBuilder } from './IBuilder.js';
+import { DomainRuleIdentifierNode } from '../../nodes/DomainRule/DomainRuleIdentifierNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { IBuilder } from '../IBuilder.js';
 
 export class DomainRuleIdentifierBuilder implements IBuilder<DomainRuleIdentifierNode> {
   private identifierNode: DomainRuleIdentifierNode;

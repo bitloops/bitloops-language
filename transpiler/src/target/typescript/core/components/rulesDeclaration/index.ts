@@ -18,8 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TRule,
-  TRules,
+  TDomainRule,
   TParameterDependencies,
   TTargetDependenciesTypeScript,
   TDependencyChildTypescript,
@@ -81,34 +80,39 @@ const getIsBrokenIfMethod = (
   } return ${isBrokenConditionStringWithThis}; }`;
 };
 
-export const rulesDeclarationToTargetLanguage = (rules: TRules): TTargetDependenciesTypeScript => {
+export const rulesDeclarationToTargetLanguage = (
+  rule: TDomainRule,
+): TTargetDependenciesTypeScript => {
   let result = '';
   const dependencies = [];
-  for (const [ruleName, ruleValues] of Object.entries(rules)) {
-    const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
+  const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
+  const ruleName = rule.DomainRule.domainRuleIdentifier;
 
-    result += initialRuleLangMapping(ruleName);
-    const model = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TRuleValues,
-      value: ruleValues,
-    });
-    result += model.output;
+  result += initialRuleLangMapping(ruleName);
+  // const model = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TRuleValues,
+  //   value: ruleValues,
+  // });
+  const model = ruleDeclarationToTargetLanguage(rule);
+  result += model.output;
 
-    childDependencies.push(...model.dependencies);
-    const parentDependencies = getParentDependencies(childDependencies, {
-      classType: ClassTypes.Rules,
-      className: ruleName,
-    });
-    dependencies.push(...parentDependencies);
+  childDependencies.push(...model.dependencies);
+  const parentDependencies = getParentDependencies(childDependencies, {
+    classType: ClassTypes.DomainRule,
+    className: ruleName,
+  });
+  dependencies.push(...parentDependencies);
 
-    result += finalRuleLangMapping;
-  }
+  result += finalRuleLangMapping;
 
   return { output: result, dependencies };
 };
 
-export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependenciesTypeScript => {
+export const ruleDeclarationToTargetLanguage = (
+  ruleValues: TDomainRule,
+): TTargetDependenciesTypeScript => {
   const dependencies = [];
+  const { DomainRule: rule } = ruleValues;
   let parameters: TTargetDependenciesTypeScript;
   if (rule.parameters && rule.parameters.length !== 0) {
     parameters = modelToTargetLanguage({

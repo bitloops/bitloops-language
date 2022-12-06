@@ -33,7 +33,7 @@ export type TModule = {
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
   Packages?: TPackages;
-  Rules?: TRules;
+  DomainRule?: TDomainRule;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
   ReadModels?: TReadModels;
@@ -52,7 +52,7 @@ export type TClassType =
   | 'DTOs'
   | 'Structs'
   | 'Packages'
-  | 'Rules'
+  | 'Rule'
   | 'RepoPorts'
   | 'RepoAdapters'
   | 'ReadModels';
@@ -69,7 +69,7 @@ export type TComponentType =
   | 'TDTOs'
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
-  | 'TRules'
+  | 'TDomainRule'
   | 'TRepoPorts'
   | 'TRepoAdapters'
   | 'TReadModels';
@@ -263,15 +263,24 @@ export type TDomainError = {
   errorId: TExpression;
   parameters?: TParameterDependencies;
 };
-// TODO finalize TRule
-export type TRule = {
-  parameters?: TParameterDependencies;
-  error: string;
-  statements: TStatements;
-  isBrokenIfCondition: TCondition;
+
+export type TDomainRule = {
+  DomainRule: {
+    domainRuleIdentifier: string;
+    parameters?: TParameterDependencies;
+    error: string;
+    statements: TStatements;
+    isBrokenIfCondition: TCondition;
+  };
 };
 
-export type TRules = Record<string, TRule>;
+/**
+ * This type exists because not all expressions work as a condition, only the ones that evaluate to boolean.
+ * (at least in most languages)
+ */
+export type TCondition = {
+  condition: TExpression;
+};
 
 export type TDomainErrors = Record<string, TDomainError>;
 
@@ -334,10 +343,6 @@ export type TMethodCallExpression = {
 
 export type TEvaluation = {
   evaluation: TEvaluationValues;
-};
-
-export type TCondition = {
-  condition: TExpression;
 };
 
 export type TIfStatement = {
@@ -529,7 +534,7 @@ export type TBreakStatement = {
 
 export type TAppliedRule = {
   appliedRule: {
-    name: string;
+    domainRuleIdentifier: string;
     argumentList: TArgumentList;
   };
 };
@@ -568,7 +573,7 @@ export type TConstantVariable = {
 export type TDomainPrivateMethod = {
   privateMethod: {
     parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TReturnType | TOkErrorReturnType;
+    returnType: TReturnType | TOkErrorReturnTypeValues;
     statements: TStatements;
   };
 };
@@ -576,25 +581,37 @@ export type TDomainPrivateMethod = {
 export type TDomainPublicMethod = {
   publicMethod: {
     parameterDependencies: TParameterDependencies;
-    returnType: TOkErrorReturnType;
     statements: TStatements;
-  };
+  } & TOkErrorReturnType;
 };
 
 export type TValueObjectMethodInfo = TDomainPrivateMethod;
 
 export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
+export type TReturnOkType = {
+  ok: {
+    type: TBitloopsPrimaryType;
+  };
+};
+
+export type TErrorIdentifier = {
+  error: string; // e.g. DomainErrors.InvalidName
+};
+export type TErrorIdentifiers = TErrorIdentifier[];
+
+export type TOkErrorReturnTypeValues = {
+  errors: TErrorIdentifiers;
+} & TReturnOkType;
+
 export type TOkErrorReturnType = {
-  ok: TBitloopsPrimaryType;
-  errors?: string[]; // TODO remove optional if we have empty array for no errors
+  returnType: TOkErrorReturnTypeValues;
 };
 
 export type TDomainCreateMethod = {
   parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
-  returnType: TOkErrorReturnType;
   statements: TStatements;
-};
+} & TOkErrorReturnType;
 
 type TDomainMethodName = string;
 
@@ -661,10 +678,9 @@ export type TDTO = {
 export type TStruct = Record<string, TStructDeclaration>;
 
 export type TUseCaseValues = {
-  returnTypes: TOkErrorReturnType;
   execute: TExecute;
   parameterDependencies: TParameterDependencies; // TODO maybe make this optional
-};
+} & TOkErrorReturnType;
 
 export type TUseCase = Record<string, TUseCaseValues>;
 

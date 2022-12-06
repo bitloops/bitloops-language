@@ -109,8 +109,7 @@ const BitloopsTypesMapping = {
   TVariableDeclaration: 'TVariableDeclaration',
   TExpressionValues: ' TExpressionValues',
   TRootEntities: 'TRootEntities',
-  TRules: 'TRules',
-  TRuleValues: 'TRuleValues',
+  TDomainRule: 'TDomainRule',
   TEntityCreate: 'TEntityCreate',
   TBuildInFunction: 'TBuildInFunction',
   TApplyRules: 'TApplyRules',
@@ -156,6 +155,10 @@ const BitloopsTypesMapping = {
   TConstDeclarationList: 'TConstDeclarationList',
   TDomainRuleIdentifier: 'TDomainRuleIdentifier',
   TAppliedRule: 'TAppliedRule',
+  TIsBrokenIfCondition: 'TIsBrokenIfCondition',
+  TErrorIdentifier: 'TErrorIdentifier',
+  TErrorIdentifiers: 'TErrorIdentifiers',
+  TReturnOkType: 'TReturnOkType',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -176,7 +179,7 @@ const ClassTypes = {
   Packages: 'Packages',
   RepoPorts: 'RepoPorts',
   RepoAdapters: 'RepoAdapters',
-  Rules: 'Rules',
+  DomainRule: 'DomainRule',
   ReadModels: 'ReadModels',
 } as const;
 
@@ -204,10 +207,9 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.RootEntities]: BitloopsTypesMapping.TRootEntities,
   [ClassTypes.RepoPorts]: BitloopsTypesMapping.TRepoPorts,
   [ClassTypes.RepoAdapters]: BitloopsTypesMapping.TRepoAdapters,
-  [ClassTypes.Rules]: BitloopsTypesMapping.TRules,
+  [ClassTypes.DomainRule]: BitloopsTypesMapping.TDomainRule,
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
   [ClassTypes.ApplicationErrors]: BitloopsTypesMapping.TApplicationErrors,
-  [ClassTypes.Rules]: BitloopsTypesMapping.TRules,
   [ClassTypes.ReadModels]: BitloopsTypesMapping.TReadModels,
 };
 

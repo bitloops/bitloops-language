@@ -43,7 +43,6 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TDomainPublicMethod,
-  TRules,
   TUseCase,
   TReadModels,
 } from '../../../types.js';
@@ -153,6 +152,7 @@ import {
   parameterListVisitor,
   parameterVisitor,
   parameterArgIdentifierVisitor,
+  isBrokenConditionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -164,12 +164,18 @@ import { EntityDeclarationNode } from '../intermediate-ast/nodes/Entity/EntityDe
 import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
 import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
-import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
+import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRule/DomainRuleIdentifierBuilder.js';
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { IdentifierNode } from '../intermediate-ast/nodes/IdentifierNode.js';
 import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
+import { ErrorIdentifierNodeBuilder } from '../intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
+import { ErrorIdentifierNode } from '../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifiersNode.js';
+import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
+import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -643,27 +649,37 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return methodDefinitionVisitor(this, ctx);
   }
 
-  visitErrorIdentifier(ctx: BitloopsParser.ErrorIdentifierContext) {
-    return ctx.ErrorIdentifier().getText();
+  visitErrorIdentifier(ctx: BitloopsParser.ErrorIdentifierContext): ErrorIdentifierNode {
+    const errorIdentifierName = ctx.ErrorIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const errorIdentifierNode = new ErrorIdentifierNodeBuilder(metadata)
+      .withName(errorIdentifierName)
+      .build();
+    return errorIdentifierNode;
   }
 
-  visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): string {
-    return this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
+  visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): ReturnOkTypeNode {
+    const primaryTypeNode = this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
+    const metadata = produceMetadata(ctx, this);
+    const returnOkTypeNode = new ReturnOkTypeNodeBuilder(metadata)
+      .withType(primaryTypeNode)
+      .build();
+    return returnOkTypeNode;
   }
 
   visitBuiltInClassEvaluation(ctx: BitloopsParser.BuiltInClassEvaluationContext) {
     return builtInClassEvaluationVisitor(this, ctx);
   }
 
-  visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {
+  visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): ErrorIdentifiersNode {
     return errorIdentifiersVisitor(this, ctx);
   }
 
-  visitReturnErrorsType(ctx: BitloopsParser.ReturnErrorsTypeContext): string[] {
+  visitReturnErrorsType(ctx: BitloopsParser.ReturnErrorsTypeContext): ErrorIdentifiersNode {
     return returnErrorsTypeVisitor(this, ctx);
   }
 
-  visitReturnOkErrorType(ctx: BitloopsParser.ReturnOkErrorTypeContext): TOkErrorReturnType {
+  visitReturnOkErrorType(ctx: BitloopsParser.ReturnOkErrorTypeContext): ReturnOkErrorTypeNode {
     return returnOkErrorTypeVisitor(this, ctx);
   }
 
@@ -779,12 +795,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): any {
     return domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
     return domainRuleBodyVisitor(this, ctx);
+  }
+
+  visitIsBrokenStatement(ctx: BitloopsParser.IsBrokenStatementContext): any {
+    return isBrokenConditionVisitor(this, ctx);
   }
 
   visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {

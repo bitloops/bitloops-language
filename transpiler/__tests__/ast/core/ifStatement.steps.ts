@@ -29,7 +29,7 @@ import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/Inte
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { validIfStatementTestCases } from './mocks/statements/ifStatement.js';
-import { IfStatementBuilder } from './builders/IfStatement.js';
+import { IfStatementBuilder } from './builders/statement/IfStatement.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';

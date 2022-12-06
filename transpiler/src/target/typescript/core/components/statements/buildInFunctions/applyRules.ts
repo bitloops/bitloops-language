@@ -47,8 +47,8 @@ const applyRulesToTargetLanguage = (variable: TApplyRules): TTargetDependenciesT
       type: BitloopsTypesMapping.TArgumentList,
       value: appliedRule.argumentList,
     });
-    result += `new Rules.${appliedRule.name}${argumentDependencies.output},`;
-    domainRules.push(appliedRule.name);
+    result += `new Rules.${appliedRule.domainRuleIdentifier}${argumentDependencies.output},`;
+    domainRules.push(appliedRule.domainRuleIdentifier);
     dependencies = [...dependencies, ...argumentDependencies.dependencies];
   }
   result += ']);';

@@ -2,13 +2,13 @@ import { EvaluationTypeIdentifiers } from '../../../../helpers/type-identifiers/
 import { isIfStatement } from '../../../../helpers/typeGuards.js';
 import {
   TStatement,
-  TOkErrorReturnType,
   TStatements,
   TReturnStatement,
   TEvaluation,
+  TOkErrorReturnTypeValues,
 } from '../../../../types.js';
 
-const isReturnOkErrorType = (returnType: TOkErrorReturnType) => {
+const isReturnOkErrorType = (returnType: TOkErrorReturnTypeValues) => {
   return returnType.ok !== undefined && returnType.errors !== undefined;
 };
 
@@ -29,7 +29,10 @@ const isReturnErrorStatement = (statement: TReturnStatement): boolean => {
   return false;
 };
 
-const modifyReturnOkErrorStatement = (statement: TStatement, returnType: TOkErrorReturnType) => {
+const modifyReturnOkErrorStatement = (
+  statement: TStatement,
+  returnType: TOkErrorReturnTypeValues,
+) => {
   if (isReturnStatement(statement)) {
     const returnStatement = statement as TReturnStatement;
     if (isReturnOkErrorType(returnType)) {
@@ -49,7 +52,7 @@ const modifyReturnOkErrorStatement = (statement: TStatement, returnType: TOkErro
 
 export const modifyReturnOkErrorStatements = (
   statements: TStatements,
-  returnType: TOkErrorReturnType,
+  returnType: TOkErrorReturnTypeValues,
 ) => {
   const newStatements = statements.map((statement) => {
     // TODO this has to be called recursively (if inside an if etc)

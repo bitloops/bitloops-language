@@ -24,7 +24,7 @@ import {
   TDomainPrivateMethod,
   TParameterDependencies,
   TReturnType,
-  TOkErrorReturnType,
+  TOkErrorReturnTypeValues,
 } from '../../../../types.js';
 import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
 import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
@@ -35,11 +35,11 @@ export const privateMethodDeclarationVisitor = (
 ): { methodName: string; methodInfo: TDomainPrivateMethod } => {
   const methodName = ctx.identifier().getText();
   const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
-  const returnType: TReturnType | TOkErrorReturnType = thisVisitor.visit(
+  const returnType: TReturnType | TOkErrorReturnTypeValues = thisVisitor.visit(
     ctx.returnPrivateMethodType(),
   );
   const { statements } = thisVisitor.visit(ctx.functionBody());
-  const returnOkType = returnType as TOkErrorReturnType;
+  const returnOkType = returnType as TOkErrorReturnTypeValues;
 
   const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnOkType);
 

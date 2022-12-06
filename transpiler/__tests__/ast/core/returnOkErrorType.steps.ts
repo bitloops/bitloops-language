@@ -17,47 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { validReturnOkErrorTypeCases } from './mocks/returnOkErrorType.js';
 
-const feature = loadFeature('./__tests__/ast/core/returnOkErrorType.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  test('Return OK Error type success', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
-    given(/^I have a return type (.*)$/, (arg0) => {
-      blString = d(arg0);
-    });
+describe('Return ok error type is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  validReturnOkErrorTypeCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Hello World',
-          module: 'core',
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get the (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const returnOkErrorTypeNodes = resultTree.getClassTypeNodes(
+        BitloopsTypesMapping.TOkErrorReturnType,
+      );
+      const value = returnOkErrorTypeNodes[0].getValue();
+
+      expect(value).toMatchObject(testCase.expected);
+      expect(returnOkErrorTypeNodes.length).toBe(1);
     });
   });
 });

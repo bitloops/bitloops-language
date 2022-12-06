@@ -23,7 +23,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
   }
 
   const propsNameType = create.parameterDependency.parameter.type;
-  const returnOkType = returnType.ok;
+  const returnOkType = returnType.ok.type;
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
     throw new Error('Entity props type of createMethod cannot be an array');
