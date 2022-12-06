@@ -604,9 +604,11 @@ export type TOkErrorReturnType = {
 };
 
 export type TDomainCreateMethod = {
-  parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
-  statements: TStatements;
-} & TOkErrorReturnType;
+  create: {
+    statements: TStatements;
+  } & TOkErrorReturnType &
+    TParameterDependency;
+};
 
 type TDomainMethodName = string;
 
@@ -618,8 +620,7 @@ export type TValueObjectCreate = TDomainCreateMethod;
 export type TValueObjectValues = {
   constantVars: TConstDeclarationValue[]; //TConstantVariable[];
   methods: TValueObjectMethods;
-  create: TValueObjectCreate;
-};
+} & TValueObjectCreate;
 
 export type TValueObjects = Record<string, TValueObjectValues>;
 
@@ -634,8 +635,7 @@ export type TEntity = {
 export type TEntityValues = {
   constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
   methods?: TEntityMethods;
-  create: TEntityCreate;
-};
+} & TEntityCreate;
 
 export type TEntityMethods = TDomainMethods;
 
