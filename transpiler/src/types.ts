@@ -282,7 +282,17 @@ export type TCondition = {
   condition: TExpression;
 };
 
-export type TDomainErrors = Record<string, TDomainError>;
+export const DomainErrorKey = 'DomainError';
+export const DomainErrorIdentifier = 'identifier';
+export type TErrorMessage = { message: TExpression };
+export type TErrorId = { errorId: TExpression };
+export type TDomainErrors = {
+  [DomainErrorKey]: {
+    [DomainErrorIdentifier]: TIdentifier;
+    parameters?: TParameterDependencies;
+  } & TErrorMessage &
+    TErrorId;
+};
 
 export type TApplicationError = {
   message: TExpression; // TBackTickString | TString;
@@ -445,11 +455,21 @@ export type TToStringExpression = {
 export type TLiteral = {
   literal: TLiteralValues;
 };
-export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+/* 🔧 TODO: add 'T' prefix */
+export type TLiteralValues =
+  | StringLiteral
+  | BooleanLiteral
+  | TNumericLiteral
+  | NullLiteral
+  | TemplateStringLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
 };
+export type TemplateStringLiteral = {
+  templateStringLiteral: string;
+};
+
 export type BooleanLiteral = {
   booleanLiteral: string;
 };

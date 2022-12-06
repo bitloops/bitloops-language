@@ -176,6 +176,8 @@ import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers
 import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -352,10 +354,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
-    return {
-      type: 'backTickString',
-      value: value,
-    };
+    return templateStringEvaluation(value);
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
@@ -393,7 +392,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
-
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
     return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
@@ -499,7 +497,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return evaluationFieldVisitor(this, ctx);
   }
 
-  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+  visitEvaluationFieldList(
+    ctx: BitloopsParser.EvaluationFieldListContext,
+  ): EvaluationFieldListNode {
     return evaluationFieldListVisitor(this, ctx);
   }
 

@@ -26,6 +26,15 @@ export class ExpressionBuilderDirector {
       },
     };
   }
+  buildTemplateStringLiteralExpression(templateStringLiteral: string): TExpression {
+    return {
+      expression: {
+        literal: {
+          templateStringLiteral,
+        },
+      },
+    };
+  }
 
   buildInt32LiteralExpression(int32Literal: number): TExpression {
     return {
