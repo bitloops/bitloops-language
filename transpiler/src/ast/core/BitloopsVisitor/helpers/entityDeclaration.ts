@@ -29,7 +29,7 @@ export const entityDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityDeclarationContext,
 ): { Entities: EntityDeclarationNode } => {
-  const metadata = produceMetadata(ctx, this);
+  const metadata = produceMetadata(ctx, thisVisitor);
 
   const valueObjectIdentifier = ctx.entityIdentifier().getText();
   const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)

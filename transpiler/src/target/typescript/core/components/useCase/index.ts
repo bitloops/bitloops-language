@@ -90,7 +90,7 @@ const useCaseValuesToTargetLanguage = (
       from: '@bitloops/bl-boilerplate-core',
     },
   ];
-  const { execute, returnTypes, parameterDependencies } = variable;
+  const { execute, returnType, parameterDependencies } = variable;
   const useCaseInputType = execute.parameterDependencies[0]
     ? execute.parameterDependencies[0].parameter.type
     : null;
@@ -98,7 +98,7 @@ const useCaseValuesToTargetLanguage = (
 
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
-    value: returnTypes,
+    value: returnType,
   });
   dependencies = [...dependencies, ...useCaseReturnTypesResult.dependencies];
 

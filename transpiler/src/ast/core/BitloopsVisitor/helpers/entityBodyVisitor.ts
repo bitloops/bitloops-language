@@ -22,7 +22,7 @@ export const entityBodyVisitor = (
   const publicMethodNodes = thisVisitor.visit(ctx.publicMethodDeclarationList());
   const privateMethodNodes = thisVisitor.visit(ctx.privateMethodDeclarationList());
 
-  const metadata = produceMetadata(ctx, this);
+  const metadata = produceMetadata(ctx, thisVisitor);
   const entityValuesNode = new EntityValuesNodeBuilder(metadata)
     .withConstants(constantVarNodes)
     .withCreate(domainConstructorDeclarationNode)
