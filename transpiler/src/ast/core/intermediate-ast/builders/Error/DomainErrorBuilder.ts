@@ -40,7 +40,6 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   }
   public withParameters(parameters: ParameterListNode): DomainErrorBuilder {
     this.parameters = parameters;
-    console.log(this.parameters.getValue());
     return this;
   }
   public build(): DomainErrorNode {

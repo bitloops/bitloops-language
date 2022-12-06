@@ -1,9 +1,10 @@
 // import { EvaluationFieldListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
+import { domainErrorErrors } from '../../../../../src/ast/core/BitloopsVisitor/helpers/domainErrorDeclaration.js';
 import { TExpression, TParameterDependencies } from '../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
 
-type mockType = {
+type validMockType = {
   description: string;
   inputBLString: string;
   fileId: string;
@@ -12,10 +13,16 @@ type mockType = {
   errorId: TExpression;
   parameters: TParameterDependencies;
 };
+type invalidMockType = {
+  description: string;
+  inputBLString: string;
+  fileId: string;
+  exception: Error;
+};
 
-export const validDomainErrors: mockType[] = [
+export const validDomainErrors: validMockType[] = [
   {
-    description: 'valid Domain Error',
+    description: 'valid Domain Error with one arg',
     fileId: 'testFile.bl',
     inputBLString:
       "DomainError InvalidNameError (name : string) { message: `is an invalid ${ name }`, errorId: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' }",
@@ -28,48 +35,38 @@ export const validDomainErrors: mockType[] = [
     ),
     parameters: new ParameterListBuilderDirector().buildStringParams(...['name']),
   },
-  // variables: [
-  //   new FieldBuilderDirector().buildDoubleArrayField({
-  //     name: 'name',
-  //     type: 'string',
-  //     isOptional: true,
-  //   }),
-  // ],
-  // identifier: new IdentifierBuilder().withDTOName('HelloWorldRequestDTO').build(),
-  // {
-  //   InvalidNameError: {
-  //     message: {
-  //       expression: {
-  //         evaluation: { regularEvaluation: { type: 'string', value: 'is an invalid name' } },
-  //       },
-  //     },
-  //     errorId: {
-  //       expression: {
-  //         evaluation: {
-  //           regularEvaluation: { type: 'string', value: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' },
-  //         },
-  //       },
-  //     },
-  //     parameters: [
-  //       { type: { primitiveType: 'string' }, value: 'name' },
-  //       { type: { primitiveType: 'string' }, value: 'hello' },
-  //     ],
-  //   },
-  // },
-  // {
-  //   'Hello World': {
-  //     core: {
-  //       DomainErrors: {
-  //         InvalidNameError: {
-  //           message: { backTickString: 'name is an invalid ${name}' },
-  //           errorId: { backTickString: '${errorId}' },
-  //           parameters: [
-  //             { type: 'string', value: 'name' },
-  //             { type: 'string', value: 'errorId' },
-  //           ],
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
+  {
+    description: 'valid Domain Error with two args',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'DomainError InvalidNameError (name : string, errorId : string) { message: `is an invalid ${ name }`, errorId: `${errorId}`}',
+    name: 'InvalidNameError',
+    message: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression(
+      'is an invalid ${name}',
+    ),
+    errorId: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression('${errorId}'),
+    parameters: new ParameterListBuilderDirector().buildStringParams(...['name', 'errorId']),
+  },
+];
+export const invalidDomainErrors: invalidMockType[] = [
+  {
+    description: 'invalid Domain Error without fields',
+    fileId: 'testFile.bl',
+    inputBLString: 'DomainError InvalidNameError (name : string, errorId : string) {}',
+    exception: TypeError(domainErrorErrors.INVALID_ARGS),
+  },
+  {
+    description: 'invalid Domain Error without message',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'DomainError InvalidNameError (name : string, errorId : string) { errorId: `${errorId}`}',
+    exception: TypeError(domainErrorErrors.NO_MESSAGE),
+  },
+  {
+    description: 'invalid Domain Error without errorId',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'DomainError InvalidNameError (name : string, errorId : string) { message: `${errorId}`}',
+    exception: TypeError(domainErrorErrors.NO_ERROR_ID),
+  },
 ];
