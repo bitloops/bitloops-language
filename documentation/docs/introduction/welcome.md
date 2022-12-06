@@ -39,6 +39,6 @@ The Bitloops Language is open-source, so if you do encounter any issue or limita
 ## What's next?
 As a next step, we recommend one of 2 choices:
 
-💡 [Read more about Bitloops’ “Big Idea”](https://bitloops.com/docs/bitloops-language/intro/big_idea)
+💡 Get an idea of what Bitloops has to offer through this [Bitloops @ a Glance](https://bitloops.com/docs/bitloops-language/introduction/Bitloops_at_a_glance)
 
-🛠️ [See and run the Quick Start example to get an idea of Bitloops’ potential](https://bitloops.com/docs/bitloops-language/category/getting-started)
+🛠️ Run the [Quick Start example](https://bitloops.com/docs/bitloops-language/category/getting-started) to learn how Bitloops works in practice
