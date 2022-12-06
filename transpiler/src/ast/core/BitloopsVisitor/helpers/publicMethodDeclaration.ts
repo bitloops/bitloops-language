@@ -33,9 +33,7 @@ export const publicMethodDeclarationVisitor = (
   ctx: BitloopsParser.PublicMethodDeclarationContext,
 ): { methodName: string; methodInfo: TDomainPublicMethod } => {
   const methodName = ctx.identifier().getText();
-  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
-    ctx.formalParameterList(),
-  );
+  const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
   const returnType: TOkErrorReturnType = thisVisitor.visit(ctx.returnPublicMethodType())[1];
   const { statements } = thisVisitor.visit(ctx.functionBody());
   //change return to returnOk or returnError

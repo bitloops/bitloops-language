@@ -1,7 +1,7 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { evaluationFieldListVisitor } from './evaluationFieldList.js';
-import { formalParameterListVisitor } from './formalParameterList.js';
+import { parameterListVisitor } from './parameterList.js';
 
 export const applicationErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -26,7 +26,7 @@ export const applicationErrorDeclarationVisitor = (
   return {
     ApplicationErrors: {
       [errorName]: {
-        parameters: formalParameterListVisitor(thisVisitor, ctx.formalParameterList()),
+        parameters: parameterListVisitor(thisVisitor, ctx.parameterList()),
         errorId: { expression: errorId },
         message: { expression: message },
       },

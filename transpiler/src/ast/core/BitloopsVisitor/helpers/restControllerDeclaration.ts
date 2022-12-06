@@ -27,7 +27,7 @@ export const restControllerDeclarationVisitor = (
   ctx: BitloopsParser.RESTControllerDeclarationContext,
 ): { Controllers: { [id: string]: TRESTControllerValues } } => {
   const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
+  const dependencies = thisVisitor.visit(ctx.parameterList());
   const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
   const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
   const response = {

@@ -3,6 +3,7 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { DomainErrorBuilder } from '../../intermediate-ast/builders/Error/DomainErrorBuilder.js';
 import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { parameterListVisitor } from './parameterList.js';
 
 export const domainErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
