@@ -118,10 +118,7 @@ import { singleExpressionToTargetLanguage } from '../setup/single-expression/ind
 import { ISetupData, TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
-import {
-  ruleDeclarationToTargetLanguage,
-  rulesDeclarationToTargetLanguage,
-} from './components/rulesDeclaration/index.js';
+import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/index.js';
 import { readModelsToTargetLanguage } from './components/readModels/index.js';
 import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
@@ -492,12 +489,8 @@ const modelToTargetLanguage = (props: {
       res = applyRulesToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TRules: {
+    case BitloopsTypesMapping.TDomainRule: {
       res = rulesDeclarationToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TRuleValues: {
-      res = ruleDeclarationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TRootEntities: {

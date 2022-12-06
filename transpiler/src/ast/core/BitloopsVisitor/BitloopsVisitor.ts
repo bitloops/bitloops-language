@@ -43,7 +43,6 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TDomainPublicMethod,
-  TRules,
   TUseCase,
   TReadModels,
 } from '../../../types.js';
@@ -153,6 +152,7 @@ import {
   parameterListVisitor,
   parameterVisitor,
   parameterArgIdentifierVisitor,
+  isBrokenConditionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -778,12 +778,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): any {
     return domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
     return domainRuleBodyVisitor(this, ctx);
+  }
+
+  visitIsBrokenStatement(ctx: BitloopsParser.IsBrokenStatementContext): any {
+    return isBrokenConditionVisitor(this, ctx);
   }
 
   visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {

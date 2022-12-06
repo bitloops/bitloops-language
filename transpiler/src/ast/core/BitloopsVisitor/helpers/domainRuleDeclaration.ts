@@ -18,48 +18,62 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { IsBrokenConditionNode } from './../../intermediate-ast/nodes/DomainRule/IsBrokenConditionNode.js';
+import { StatementListNode } from './../../intermediate-ast/nodes/statements/StatementList.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TCondition, TRule, TRules, TStatements } from '../../../../types.js';
+import { DomainRuleNodeBuilder } from '../../intermediate-ast/builders/DomainRule/DomainRuleNodeBuilder.js';
+import { produceMetadata } from '../metadata.js';
+import { DomainRuleIdentifierNode } from '../../intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
+import { IsBrokenConditionNodeBuilder } from '../../intermediate-ast/builders/DomainRule/IsBrokenConditionNodeBuilder.js';
+import { ConditionNodeBuilder } from '../../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const domainRuleDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainRuleDeclarationContext,
-): { Rules: TRules } => {
-  const ruleIdentifier = ctx.domainRuleIdentifier().getText();
+): void => {
+  const ruleIdentifier: DomainRuleIdentifierNode = thisVisitor.visit(ctx.domainRuleIdentifier());
   const parameters = thisVisitor.visit(ctx.parameterList());
-  const error = ctx.ErrorIdentifier().getText();
-  const { statements, isBrokenIfCondition } = thisVisitor.visit(ctx.domainRuleBody());
+  // const error = ctx.ErrorIdentifier().getText();
+  const { statementListNode, isBrokenConditionNode } = thisVisitor.visit(ctx.domainRuleBody());
 
-  const rule: Partial<TRule> = {
-    error,
-    statements,
-    isBrokenIfCondition,
-  };
-  if (parameters) {
-    rule.parameters = parameters;
-  }
-  return {
-    Rules: {
-      [ruleIdentifier]: rule as TRule,
-    },
-  };
+  const metadata = produceMetadata(ctx, thisVisitor);
+
+  new DomainRuleNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withIdentifier(ruleIdentifier)
+    .withIsBrokenCondition(isBrokenConditionNode)
+    .withParameters(parameters)
+    // .withError
+    .withStatements(statementListNode)
+    .build();
 };
 
 export const domainRuleBodyVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainRuleBodyContext,
-): {
-  statements: TStatements;
-  isBrokenIfCondition: TCondition;
-} => {
-  const { statements } = thisVisitor.visit(ctx.functionBody());
-  const isBrokenIfCondition = thisVisitor.visit(ctx.isBrokenStatement())[2];
-  // console.log('domainRuleBodyVisitor', isBrokenIfCondition);
+): any => {
+  const statementListNode: StatementListNode = thisVisitor.visit(ctx.functionBody());
+  const isBrokenConditionNode: IsBrokenConditionNode = thisVisitor.visit(ctx.isBrokenStatement());
   return {
-    statements,
-    isBrokenIfCondition: {
-      condition: isBrokenIfCondition,
-    },
+    statementListNode,
+    isBrokenConditionNode,
   };
+};
+
+export const isBrokenConditionVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.IsBrokenStatementContext,
+): IsBrokenConditionNode => {
+  const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
+
+  const conditionNode = new ConditionNodeBuilder(expressionNode.getMetadata())
+    .withExpression(expressionNode)
+    .build();
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const isBrokenConditionNode: IsBrokenConditionNode = new IsBrokenConditionNodeBuilder(metadata)
+    .withExpression(conditionNode)
+    .build();
+  return isBrokenConditionNode;
 };

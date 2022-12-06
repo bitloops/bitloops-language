@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IfStatementBuilder } from '../../builders/IfStatement.js';
+import { IfStatementBuilder } from '../../builders/statement/IfStatement.js';
 import { TExpression, TStatements } from '../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 // import { FieldBuilderDirector } from '../builders/fieldDirector.js';

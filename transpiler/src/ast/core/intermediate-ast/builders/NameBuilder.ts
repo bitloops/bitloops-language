@@ -1,3 +1,4 @@
+import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
 import { NameNode } from '../nodes/NameNode.js';
 import { IBuilder } from './IBuilder.js';
 
@@ -5,8 +6,8 @@ export class NameNodeBuilder implements IBuilder<NameNode> {
   private nameNode: NameNode;
   private name: string;
 
-  constructor() {
-    this.nameNode = new NameNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.nameNode = new NameNode(metadata);
   }
 
   public withName(name: string): NameNodeBuilder {
