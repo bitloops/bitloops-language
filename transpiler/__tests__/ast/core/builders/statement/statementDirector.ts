@@ -17,7 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TBreakStatement, TConstDeclaration } from '../../../../../src/types.js';
+import {
+  TBreakStatement,
+  TConstDeclaration,
+  TExpression,
+  TReturnStatement,
+} from '../../../../../src/types.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
 
 export class StatementDirector {
@@ -50,6 +55,12 @@ export class StatementDirector {
   buildBreakStatement(): TBreakStatement {
     return {
       breakStatement: 'break',
+    };
+  }
+
+  buildReturnStatement(expression: TExpression): TReturnStatement {
+    return {
+      return: expression,
     };
   }
 }
