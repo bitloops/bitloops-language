@@ -39,14 +39,4 @@ export const restControllerDeclarationVisitor = (
     .withRESTMethod(httpMethod)
     .withExecuteNode(execute)
     .build();
-  // const response = {
-  //   Controllers: {
-  //     [identifier]: {
-  //       execute,
-  //       parameterDependencies: dependencies,
-  //       ...httpMethod,
-  //     },
-  //   },
-  // };
-  // return response;
 };

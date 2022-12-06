@@ -610,9 +610,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return new RESTControllerDependenciesNodeBuilder(metadata)
       .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
       .build();
-    // return {
-    //   dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
-    // };
   }
 
   // GraphQLControllerDeclaration

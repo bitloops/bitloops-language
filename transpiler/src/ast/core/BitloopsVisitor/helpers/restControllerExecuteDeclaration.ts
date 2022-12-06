@@ -22,6 +22,7 @@ import { RESTControllerExecuteNodeBuilder } from './../../intermediate-ast/build
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { RESTControllerExecuteDependenciesNode } from '../../intermediate-ast/nodes/controllers/restController/RESTControllerExecuteDependenciesNode.js';
+import { produceMetadata } from '../metadata.js';
 
 export const restControllerExecuteDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -32,7 +33,8 @@ export const restControllerExecuteDeclarationVisitor = (
     ctx.restControllerParameters(),
   );
   const statementList = thisVisitor.visit(ctx.functionBody());
-  return new RESTControllerExecuteNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new RESTControllerExecuteNodeBuilder(metadata)
     .withDependencies(dependencies)
     .withStatementList(statementList)
     .build();
