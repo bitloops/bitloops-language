@@ -4,28 +4,36 @@ sidebar_position: 2
 
 # 👀 Bitloops @ a Glance
 
-![Bitloops](https://storage.googleapis.com/wwwbitloopscom/bitloops-logo_320x80.png)
+## Build better softare faster, much faster
 
-## Bitloops Language (BL): <br/> Quickly build scalable, maintainable & reliable software
+Bitloops Language (BL) is a high-productivity, fourth generation (4GL), [DDD](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language that guide developers to build high-quality software faster!
 
-Bitloops Language is a high-productivity, fourth generation (4GL), [DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language
+At its core, Bitloops Language has been designed and built by incorporating software development best practices and methodologies such as clean code, clean/[layered/hexagonal](https://alistair.cockburn.us/hexagonal-architecture/) architecture, and [SOLID](https://www.pentalog.com/blog/it-development-technology/solid-principles-object-oriented-programming/) principles that empower developers to build high-quality software that is maintainable, flexible and reliable much faster when compared to traditional programming tools and languages. 
 
-<!--
-Part of the Bitloops Language project, under the GPL-3.0 license
-See /LICENSE for license information.
-SPDX-License-Identifier: GPL-3.0-only
-The GPL-3.0 license does not cover the use of Bitloops trademarks and logos
--->
+'''
+⚠️ Please keep in mind that the Bitloops Language is in its early stages
+and under very active development. Expect bugs and limitations.
+Full backward compatibility is not guaranteed before reaching v1.0.0.
+'''
 
-> ⚠️ Please keep in mind that the Bitloops Language is in its early stages
-> and under very active development. Expect bugs and limitations.
-> Full backward compatibility is not guaranteed before reaching v1.0.0.
+With Bitloops Language, developers are able to:
 
-- High-productivity, [fourth generation (4GL)](https://www.techopedia.com/definition/24308/fourth-generation-programming-language-4gl) transpiled programming language
-- Easy to learn and get started with
-- Focused on [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) and [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) ([DDD](https://en.wikipedia.org/wiki/Domain-driven_design)/[BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)) with testing as a 1st class citizen
+- Write clean code in an intuitive and structured approach
+- Follow best practices to ensure the code and software can be easily understood by other developers
+- Create objects with high cohesion and loose coupling between each other
+- Separate the busienss logic from the technical aspects which leads to more robust and flexible systems
+- Focus on the core domain or problem, and not worry about boilerplate code
+
+What we love the most about Bitloops is that developers can focus on what they do best: solving problems! Software written with Bitloops Language is easier to read, understand and maintain, which means other developers (and even you in 6 months) can quickly start building on top of existing code.
+
+## What are the benefits of using Bitloops Language?
+- Software you'll be proud of! Well designed and written, easy to understand and follow!
+- High productivity by focusing on the core domain/problem, having less boilerplate code to build, manage and debug and more quickly being able to develop new features
+- Easy to learn and intuitive syntax
+- Learn about key software development best practices, patterns and methodologies such as Domain-Driven Design (DDD), Behavior-Driven Development (BDD), Test-Driven Development (TDD) and Layered / Hexagonal Architecture.
+- Testing is treated as a 1st class citizen in the software development process
 - Add different API controllers (REST, GraphQL, gRPC) with just a few lines of code
-- Modular Monolith or Microservices architecture? Both! Switch back and forth within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
-- Significantly reduce the amount of boilerplate code you need to write and maintain
-- Ensure alignment between business and engineering with a natural ubiquitous language
-- Transpiles to widely used programming languages for maximum compatibility with existing code (currently only [TypeScript](https://github.com/microsoft/TypeScript) support, Java, C#, C++ or [Carbon](https://github.com/carbon-language/carbon-lang) to follow in the future)
+- Switch between Modular Monolith or Microservices architecture within minutes as all messages are moved through either in-memory or distributed message buses depending on your deployment choice
+- Significantly reduce the amount of boilerplate code you need to write, maintain and debug
+- Improved alignment between business and engineering with a natural ubiquitous language
+- Ability to transpiles to widely used programming languages for maximum compatibility with existing code (currently TypeScript support, Go, Java, C#, C++ or maybe even Rust or Carbon to follow in the near future)
