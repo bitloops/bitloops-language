@@ -1,6 +1,7 @@
 // import { EvaluationFieldListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
-import { TExpression } from '../../../../../src/types.js';
+import { TExpression, TParameterDependencies } from '../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
+import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
 
 type mockType = {
   description: string;
@@ -9,6 +10,7 @@ type mockType = {
   name: string;
   message: TExpression;
   errorId: TExpression;
+  parameters: TParameterDependencies;
 };
 
 export const validDomainErrors: mockType[] = [
@@ -24,6 +26,7 @@ export const validDomainErrors: mockType[] = [
     errorId: new ExpressionBuilderDirector().buildStringLiteralExpression(
       'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe',
     ),
+    parameters: new ParameterListBuilderDirector().buildStringParams(...['name']),
   },
   // variables: [
   //   new FieldBuilderDirector().buildDoubleArrayField({

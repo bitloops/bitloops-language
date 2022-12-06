@@ -176,6 +176,7 @@ import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers
 import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;

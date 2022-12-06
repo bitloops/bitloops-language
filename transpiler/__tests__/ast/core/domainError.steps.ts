@@ -13,7 +13,7 @@ import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/ind
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { validDomainErrors } from './mocks/errors/domainErrors.js';
 import { DomainErrorBuilder } from './builders/domaiErrorBuilder.js';
-import { TDomainErrors, TExpression } from '../../../src/types.js';
+import { TDomainErrors, TExpression, TParameterDependencies } from '../../../src/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -26,8 +26,8 @@ describe('A domain error is valid', () => {
 
   validDomainErrors.forEach((mock) => {
     test(`${mock.description}`, () => {
-      const { name, message, errorId } = mock;
-      const expectedNodeValues = getExpectedOutput(name, message, errorId);
+      const { name, message, errorId, parameters } = mock;
+      const expectedNodeValues = getExpectedOutput(name, message, errorId, parameters);
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -116,11 +116,13 @@ const getExpectedOutput = (
   name: string,
   messageExp: TExpression,
   errorIdExp: TExpression,
+  parameters: TParameterDependencies,
 ): TDomainErrors => {
   const val = new DomainErrorBuilder()
     .withName(name)
     .withErrorId(errorIdExp)
     .withMessage(messageExp)
+    .withParameters(parameters)
     .build();
   return val;
 };
