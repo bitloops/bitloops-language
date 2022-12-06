@@ -28,6 +28,7 @@ import { DomainRuleIdentifierNode } from '../../intermediate-ast/nodes/DomainRul
 import { IsBrokenConditionNodeBuilder } from '../../intermediate-ast/builders/DomainRule/IsBrokenConditionNodeBuilder.js';
 import { ConditionNodeBuilder } from '../../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ErrorIdentifierNode } from '../../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 
 export const domainRuleDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -35,7 +36,7 @@ export const domainRuleDeclarationVisitor = (
 ): void => {
   const ruleIdentifier: DomainRuleIdentifierNode = thisVisitor.visit(ctx.domainRuleIdentifier());
   const parameters = thisVisitor.visit(ctx.parameterList());
-  // const error = ctx.ErrorIdentifier().getText();
+  const errorIdentifierNode: ErrorIdentifierNode = thisVisitor.visit(ctx.errorIdentifier());
   const { statementListNode, isBrokenConditionNode } = thisVisitor.visit(ctx.domainRuleBody());
 
   const metadata = produceMetadata(ctx, thisVisitor);
@@ -44,7 +45,7 @@ export const domainRuleDeclarationVisitor = (
     .withIdentifier(ruleIdentifier)
     .withIsBrokenCondition(isBrokenConditionNode)
     .withParameters(parameters)
-    // .withError
+    .withErrorThrown(errorIdentifierNode)
     .withStatements(statementListNode)
     .build();
 };

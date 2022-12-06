@@ -6,13 +6,14 @@ import { IsBrokenConditionNode } from '../../nodes/DomainRule/IsBrokenConditionN
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from './../../nodes/ParameterList/ParameterListNode.js';
 import { IBuilder } from '../IBuilder.js';
+import { ErrorIdentifierNode } from '../../nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 
 export class DomainRuleNodeBuilder implements IBuilder<DomainRuleNode> {
   private domainRuleNode: DomainRuleNode;
   private domainRuleIdentifier: DomainRuleIdentifierNode;
 
   private parameters?: ParameterListNode;
-  // error: string;
+  private errorThrown: ErrorIdentifierNode;
   private statementList: StatementListNode;
   private isBrokenConditionNode: IsBrokenConditionNode;
   private intermediateASTTree: IntermediateASTTree;
@@ -34,6 +35,11 @@ export class DomainRuleNodeBuilder implements IBuilder<DomainRuleNode> {
     return this;
   }
 
+  withErrorThrown(errorThrown: ErrorIdentifierNode): DomainRuleNodeBuilder {
+    this.errorThrown = errorThrown;
+    return this;
+  }
+
   withStatements(statementList: StatementListNode): DomainRuleNodeBuilder {
     this.statementList = statementList;
     return this;
@@ -50,6 +56,7 @@ export class DomainRuleNodeBuilder implements IBuilder<DomainRuleNode> {
     if (this.parameters) {
       this.intermediateASTTree.insertSibling(this.parameters);
     }
+    this.intermediateASTTree.insertSibling(this.errorThrown);
     this.intermediateASTTree.insertSibling(this.statementList);
     this.intermediateASTTree.insertSibling(this.isBrokenConditionNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
