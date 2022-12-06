@@ -17,53 +17,47 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { decode } from 'bitloops-gherkin';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import assert from 'assert';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { validDomainRuleStatementTestCases } from './mocks/domainRule.js';
 
-const feature = loadFeature('__tests__/ast/core/domainRuleDeclaration.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  test('Rule declaration is valid', ({ given, when, then }) => {
-    let boundedContext: string;
-    let module: string;
-    let blString: string;
-    let modelOutput: string;
-    let result: any;
+describe('Domain rule declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    given(/^Valid bounded context (.*), module (.*), rule (.*) strings$/, (arg0, arg1, arg2) => {
-      boundedContext = decode(arg0);
-      module = decode(arg1);
-      blString = decode(arg2);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validDomainRuleStatementTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+
+      const domainRuleNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDomainRule);
+      assert(domainRuleNodes.length === 1);
+      const value = domainRuleNodes[0].getValue();
+
+      expect(value).toMatchObject(testCase.domainRuleDeclaration);
     });
   });
 });

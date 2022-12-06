@@ -644,7 +644,7 @@ export { routers };
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
         for (const [classTypeName, classType] of Object.entries(module)) {
-          if (classTypeName === ClassTypes.Rules) {
+          if (classTypeName === ClassTypes.DomainRule) {
             let imports = '';
             let content = `export namespace ${classTypeName} {`;
             const filePathObj = getTargetFileDestination(
