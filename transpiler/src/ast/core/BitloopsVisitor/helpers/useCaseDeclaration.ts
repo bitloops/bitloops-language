@@ -41,9 +41,7 @@ export const useCaseDeclarationVisitor = (
   const { returnTypes, execute }: UseCaseExecuteDeclarationResult = thisVisitor.visit(
     ctx.useCaseExecuteDeclaration(),
   );
-  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
-    ctx.formalParameterList(),
-  );
+  const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
   const { statements } = execute;
 
   addReturnOkVoidStatement(statements, returnTypes);
@@ -64,7 +62,7 @@ export const useCaseExecuteDeclarationVisitor = (
   ctx: BitloopsParser.UseCaseExecuteDeclarationContext,
 ): UseCaseExecuteDeclarationResult => {
   const returnTypes: TOkErrorReturnType = thisVisitor.visit(ctx.returnOkErrorType());
-  const formalParameterList: TParameterDependency[] = thisVisitor.visit(ctx.formalParameterList());
+  const parameterList: TParameterDependency[] = thisVisitor.visit(ctx.parameterList());
   const { statements } = thisVisitor.visit(ctx.functionBody());
 
   const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnTypes);
@@ -72,7 +70,7 @@ export const useCaseExecuteDeclarationVisitor = (
   return {
     returnTypes,
     execute: {
-      parameterDependencies: formalParameterList,
+      parameterDependencies: parameterList,
       statements: statementsWithModifiedReturn,
     },
   };

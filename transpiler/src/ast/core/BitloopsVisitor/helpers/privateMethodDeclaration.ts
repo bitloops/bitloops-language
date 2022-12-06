@@ -34,9 +34,7 @@ export const privateMethodDeclarationVisitor = (
   ctx: BitloopsParser.PrivateMethodDeclarationContext,
 ): { methodName: string; methodInfo: TDomainPrivateMethod } => {
   const methodName = ctx.identifier().getText();
-  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
-    ctx.formalParameterList(),
-  );
+  const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
   const returnType: TReturnType | TOkErrorReturnType = thisVisitor.visit(
     ctx.returnPrivateMethodType(),
   );

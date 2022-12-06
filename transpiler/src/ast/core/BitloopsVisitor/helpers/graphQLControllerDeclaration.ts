@@ -29,7 +29,7 @@ export const graphQLControllerDeclarationVisitor = (
   ctx: BitloopsParser.GraphQLControllerDeclarationContext,
 ): { Controllers: { [id: string]: TGraphQLControllerValues } } => {
   const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.formalParameterList());
+  const dependencies = thisVisitor.visit(ctx.parameterList());
   const resolverOptions = thisVisitor.visit(ctx.graphQLResolverOptions());
   const { operationType, inputType } = resolverOptions;
   const execute: TGraphQLControllerExecute = thisVisitor.visit(
