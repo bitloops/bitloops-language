@@ -66,7 +66,7 @@ const BitloopsTypesMapping = {
   TUseCase: 'TUseCase',
   TRESTController: 'TRESTController',
   TGraphQLController: 'TGraphQLController',
-  TControllers: 'TControllers',
+  TController: 'TController',
   TString: 'TString',
   TBackTickString: 'TBackTickString',
   TDomainErrors: 'TDomainErrors',
@@ -158,6 +158,10 @@ const BitloopsTypesMapping = {
   TErrorIdentifier: 'TErrorIdentifier',
   TErrorIdentifiers: 'TErrorIdentifiers',
   TReturnOkType: 'TReturnOkType',
+  TRESTMethods: 'TRESTMethods',
+  TRESTControllerExecute: 'TRESTControllerExecute',
+  TRESTControllerExecuteDependencies: 'TRESTControllerExecuteDependencies',
+  TRESTControllerIdentifier: 'TRESTControllerIdentifier',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -169,7 +173,7 @@ const ClassTypes = {
   Entity: 'Entity',
   ValueObjects: 'ValueObjects',
   Props: 'Props',
-  Controllers: 'Controllers',
+  Controller: 'Controller',
   UseCases: 'UseCases',
   DomainErrors: 'DomainErrors',
   ApplicationErrors: 'ApplicationErrors',
@@ -195,7 +199,7 @@ export const mappingBitloopsBuiltInClassToLayer = {
 };
 
 const mappingClassTypeToComponentType = {
-  [ClassTypes.Controllers]: BitloopsTypesMapping.TControllers,
+  [ClassTypes.Controller]: BitloopsTypesMapping.TController,
   [ClassTypes.UseCases]: BitloopsTypesMapping.TUseCase,
   [ClassTypes.ValueObjects]: BitloopsTypesMapping.TValueObjects,
   [ClassTypes.Props]: BitloopsTypesMapping.TProps,

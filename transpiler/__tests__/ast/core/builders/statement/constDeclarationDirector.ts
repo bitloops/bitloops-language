@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  TArgumentList,
   TBitloopsPrimitives,
   TConstDeclaration,
   TEvaluationFields,
@@ -172,6 +173,30 @@ export class ConstDeclarationBuilderDirector {
         new ExpressionBuilderDirector().buildStringLiteralExpression(stringLiteralExpression),
       )
       .withPrimitivesType(type)
+      .build();
+    return constDeclaration;
+  }
+
+  /**
+   * const result = useCase.execute();
+   */
+  buildConstDeclarationWithMemberDotMethodCallExpression({
+    name,
+    memberDotMembers,
+    argumentList,
+  }: {
+    name: string;
+    memberDotMembers: string[];
+    argumentList: TArgumentList;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildMemberDotMethodCallExpression(
+          memberDotMembers,
+          argumentList,
+        ),
+      )
       .build();
     return constDeclaration;
   }

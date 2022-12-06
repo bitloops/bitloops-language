@@ -35,7 +35,7 @@ defineFeature(feature, (test) => {
   let value;
   let serverType;
   let intermediateAST;
-  const classType = ClassTypes.Controllers;
+  const classType = ClassTypes.Controller;
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;

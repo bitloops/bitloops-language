@@ -20,7 +20,8 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRestMethods } from '../../../../types.js';
+import { RESTMethodNodeBuilder } from '../../intermediate-ast/builders/controllers/restController/RESTMethodNodeBuilder.js';
+import { produceMetadata } from '../metadata.js';
 
 enum REST_METHODS {
   GET = 'GET',
@@ -43,9 +44,9 @@ const REST_METHODS_BL_TO_MODEL_MAPPER = {
 export const restControllerMethodDeclarationVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestControllerMethodDeclarationContext,
-): { method: TRestMethods } => {
+) => {
   const httpMethod = ctx.httpMethod().getText();
-  return {
-    method: REST_METHODS_BL_TO_MODEL_MAPPER[httpMethod],
-  };
+  const val = REST_METHODS_BL_TO_MODEL_MAPPER[httpMethod];
+  const metadata = produceMetadata(ctx, _thisVisitor);
+  return new RESTMethodNodeBuilder(metadata).withMethod(val).build();
 };

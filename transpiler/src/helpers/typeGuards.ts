@@ -13,11 +13,11 @@ import {
   TGraphQLControllerValues,
   TGraphQLServerInstance,
   TRestControllerDefinitions,
-  TRESTControllerValues,
   TRESTServerInstance,
   ControllerTypeOfDefinition,
   TIfStatement,
   TOkErrorReturnTypeValues,
+  TRESTController,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -45,7 +45,7 @@ const isGraphQLServerInstance = (
 };
 
 const isGraphQLController = (
-  controller: TRESTControllerValues | TGraphQLControllerValues,
+  controller: TRESTController | TGraphQLControllerValues,
 ): controller is TGraphQLControllerValues => {
   if (controller['type'] === 'graphql') return true;
   else return false;

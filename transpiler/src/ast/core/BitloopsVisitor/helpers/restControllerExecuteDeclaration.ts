@@ -18,21 +18,22 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { RESTControllerExecuteNodeBuilder } from './../../intermediate-ast/builders/controllers/restController/RESTControllerExecuteNodeBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerExecute } from '../../../../types.js';
+import { RESTControllerExecuteDependenciesNode } from '../../intermediate-ast/nodes/controllers/restController/RESTControllerExecuteDependenciesNode.js';
 
 export const restControllerExecuteDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-): { execute: TRESTControllerExecute } => {
-  const { dependencies } = thisVisitor.visit(ctx.restControllerParameters());
-  const { statements } = thisVisitor.visit(ctx.functionBody());
-  const res = {
-    execute: {
-      dependencies,
-      statements,
-    },
-  };
-  return res;
+): any => {
+  // const { dependencies }
+  const dependencies: RESTControllerExecuteDependenciesNode = thisVisitor.visit(
+    ctx.restControllerParameters(),
+  );
+  const statementList = thisVisitor.visit(ctx.functionBody());
+  return new RESTControllerExecuteNodeBuilder()
+    .withDependencies(dependencies)
+    .withStatementList(statementList)
+    .build();
 };

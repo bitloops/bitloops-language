@@ -31,8 +31,6 @@ import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
-  TRESTControllerDependencies,
-  TRESTControllerExecute,
   TGraphQLControllerExecute,
   TGraphQLOperation,
   TDefinitionMethods,
@@ -176,6 +174,8 @@ import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers
 import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
+import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -591,20 +591,28 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRestControllerExecuteDeclaration(
     ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-  ): { execute: TRESTControllerExecute } {
+  ): any {
     return restControllerExecuteDeclarationVisitor(this, ctx);
   }
 
   visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
     return restControllerMethodDeclarationVisitor(this, ctx);
   }
+  visitRestControllerIdentifier(ctx: BitloopsParser.RestControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
 
-  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): {
-    dependencies: TRESTControllerDependencies;
-  } {
-    return {
-      dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
-    };
+  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerDependenciesNodeBuilder(metadata)
+      .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
+      .build();
+    // return {
+    //   dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
+    // };
   }
 
   // GraphQLControllerDeclaration
@@ -612,8 +620,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLControllerDeclarationVisitor(this, ctx);
   }
 
-  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): any {
-    return restControllerDeclarationVisitor(this, ctx);
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): void {
+    restControllerDeclarationVisitor(this, ctx);
   }
 
   visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {

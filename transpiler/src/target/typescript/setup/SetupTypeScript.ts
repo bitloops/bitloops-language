@@ -244,10 +244,7 @@ export class SetupTypeScript implements ISetup {
   private generateDIControllersImports(controllers: TControllerOfModule): string {
     let result = '';
     for (const controllerName of Object.keys(controllers)) {
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.Controllers,
-        controllerName,
-      );
+      const { path, filename } = getFilePathRelativeToModule(ClassTypes.Controller, controllerName);
       result += `import { ${controllerName} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;

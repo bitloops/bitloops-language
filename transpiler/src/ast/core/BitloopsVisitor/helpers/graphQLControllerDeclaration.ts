@@ -46,7 +46,7 @@ export const graphQLControllerDeclarationVisitor = (
     outputType,
     operationName,
     type: TYPE_OF_GRAPHQL_CONTROLLER,
-    parameterDependencies: dependencies,
+    parameters: dependencies,
   };
 
   const response = {

@@ -17,7 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TBreakStatement, TConstDeclaration } from '../../../../../src/types.js';
+import {
+  TArgumentList,
+  TBreakStatement,
+  TConstDeclaration,
+  TStatement,
+} from '../../../../../src/types.js';
+import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
 
 export class StatementDirector {
@@ -47,9 +53,32 @@ export class StatementDirector {
     });
   }
 
+  /**
+   * const result = useCase.execute();
+   */
+  buildConstDeclarationWithMemberDotMethodCall(params: {
+    name: string;
+    memberDotMembers: string[];
+    argumentList: TArgumentList;
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithMemberDotMethodCallExpression(
+      params,
+    );
+  }
+
   buildBreakStatement(): TBreakStatement {
     return {
       breakStatement: 'break',
     };
+  }
+
+  /**
+   * this.save(response , 'Hello World!');
+   */
+  buildThisMethodCall(methodName: string, args: TArgumentList): TStatement {
+    const methodExpr = new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
+      methodName,
+    );
+    return new ExpressionBuilderDirector().buildMethodCallExpression(methodExpr, args);
   }
 }

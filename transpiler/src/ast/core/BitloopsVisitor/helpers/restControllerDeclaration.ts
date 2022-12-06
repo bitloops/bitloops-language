@@ -20,24 +20,33 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TRESTControllerValues } from '../../../../types.js';
+import { RESTControllerNodeBuilder } from '../../intermediate-ast/builders/controllers/restController/RESTControllerNodeBuilder.js';
+import { produceMetadata } from '../metadata.js';
 
 export const restControllerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RESTControllerDeclarationContext,
-): { Controllers: { [id: string]: TRESTControllerValues } } => {
-  const identifier = ctx.ControllerIdentifier().getText();
-  const dependencies = thisVisitor.visit(ctx.parameterList());
+): void => {
+  const identifier = thisVisitor.visit(ctx.restControllerIdentifier());
+  const controllerDependencies = thisVisitor.visit(ctx.parameterList());
   const httpMethod = thisVisitor.visit(ctx.restControllerMethodDeclaration());
-  const { execute } = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
-  const response = {
-    Controllers: {
-      [identifier]: {
-        execute,
-        parameterDependencies: dependencies,
-        ...httpMethod,
-      },
-    },
-  };
-  return response;
+  const metadata = produceMetadata(ctx, thisVisitor);
+
+  const execute = thisVisitor.visit(ctx.restControllerExecuteDeclaration());
+  new RESTControllerNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withIdentifier(identifier)
+    .withParameterList(controllerDependencies)
+    .withRESTMethod(httpMethod)
+    .withExecuteNode(execute)
+    .build();
+  // const response = {
+  //   Controllers: {
+  //     [identifier]: {
+  //       execute,
+  //       parameterDependencies: dependencies,
+  //       ...httpMethod,
+  //     },
+  //   },
+  // };
+  // return response;
 };
