@@ -131,4 +131,4 @@ We are only at the beginning of the Bitloops journey, but we have learnt and ach
 
 ## Where to next?
 
-⏭️ [Explore the Quick Start example to get an idea of Bitloops’ potential](https://bitloops.com/docs/bitloops-language/category/getting-started)
+⏭️ [Explore the Quick Start example](https://bitloops.com/docs/bitloops-language/category/getting-started) to get an idea of how Bitloops works and its potential in helping you build better software
