@@ -52,7 +52,7 @@ export type TClassType =
   | 'DTOs'
   | 'Structs'
   | 'Packages'
-  | 'Rule'
+  | 'DomainRule'
   | 'RepoPorts'
   | 'RepoAdapters'
   | 'ReadModels';
