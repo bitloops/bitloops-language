@@ -445,11 +445,20 @@ export type TToStringExpression = {
 export type TLiteral = {
   literal: TLiteralValues;
 };
-export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+export type TLiteralValues =
+  | StringLiteral
+  | BooleanLiteral
+  | TNumericLiteral
+  | NullLiteral
+  | TemplateStringLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
 };
+export type TemplateStringLiteral = {
+  templateStringLiteral: string;
+};
+
 export type BooleanLiteral = {
   booleanLiteral: string;
 };

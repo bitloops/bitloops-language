@@ -136,6 +136,7 @@ const BitloopsTypesMapping = {
   TMethodCallExpression: 'TMethodCallExpression',
   TThisExpression: 'TThisExpression',
   TStringLiteral: 'TStringLiteral',
+  TTemplateStringLiteral: 'TTemplateStringLiteral',
   TNullLiteral: 'TNullLiteral',
   TNumericLiteral: 'TNumericLiteral',
   TBooleanLiteral: 'TBooleanLiteral',

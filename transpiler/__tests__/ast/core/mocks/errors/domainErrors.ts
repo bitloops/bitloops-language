@@ -18,10 +18,10 @@ export const validDomainErrors: mockType[] = [
     description: 'valid Domain Error',
     fileId: 'testFile.bl',
     inputBLString:
-      "DomainError InvalidNameError (name : string) { message: 'is an invalid ${ name }', errorId: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' }",
+      "DomainError InvalidNameError (name : string) { message: `is an invalid ${ name }`, errorId: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' }",
     name: 'InvalidNameError',
-    message: new ExpressionBuilderDirector().buildStringLiteralExpression(
-      'is an invalid ${ name }',
+    message: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression(
+      'is an invalid ${name}',
     ),
     errorId: new ExpressionBuilderDirector().buildStringLiteralExpression(
       'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe',
