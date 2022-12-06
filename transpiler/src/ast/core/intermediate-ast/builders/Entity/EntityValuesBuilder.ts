@@ -2,6 +2,7 @@ import { ConstDeclarationListNode } from '../../nodes/ConstDeclarationListNode.j
 import { DomainCreateNode } from '../../nodes/Domain/DomainCreateNode.js';
 import { EntityValuesNode } from '../../nodes/Entity/EntityValuesNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { PrivateMethodDeclarationListNode } from '../../nodes/methods/PrivateMethodDeclarationListNode.js';
 import { PublicMethodDeclarationListNode } from '../../nodes/methods/PublicMethodDeclarationListNode.js';
 import { IBuilder } from '../IBuilder.js';
 
@@ -10,7 +11,7 @@ export class EntityValuesNodeBuilder implements IBuilder<EntityValuesNode> {
   private constantListNode?: ConstDeclarationListNode;
   private domainCreateNode: DomainCreateNode;
   private publicMethodListNode?: PublicMethodDeclarationListNode;
-  private privateMethodListNode?: any; //TODO PrivateMethodListNode;
+  private privateMethodListNode?: PrivateMethodDeclarationListNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.entityValuesNode = new EntityValuesNode(metadata);
@@ -33,7 +34,9 @@ export class EntityValuesNodeBuilder implements IBuilder<EntityValuesNode> {
     return this;
   }
 
-  public withPrivateMethods(privateMethodListNode: any): EntityValuesNodeBuilder {
+  public withPrivateMethods(
+    privateMethodListNode: PrivateMethodDeclarationListNode,
+  ): EntityValuesNodeBuilder {
     this.privateMethodListNode = privateMethodListNode;
     return this;
   }

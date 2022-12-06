@@ -38,11 +38,8 @@ import {
   TDefinitionMethods,
   TOkErrorReturnType,
   TValueObjectValues,
-  TValueObjectMethods,
   TReturnType,
-  TDomainPrivateMethod,
   TConstDeclaration,
-  TDomainPublicMethod,
   TUseCase,
   TReadModels,
 } from '../../../types.js';
@@ -178,6 +175,8 @@ import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkEr
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
 import { PublicMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
 import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -754,14 +753,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitPrivateMethodDeclarationList(
     ctx: BitloopsParser.PrivateMethodDeclarationListContext,
-  ): TValueObjectMethods {
+  ): PrivateMethodDeclarationListNode {
     return privateMethodDeclarationListVisitor(this, ctx);
   }
 
-  visitPrivateMethodDeclaration(ctx: BitloopsParser.PrivateMethodDeclarationContext): {
-    methodName: string;
-    methodInfo: TDomainPrivateMethod;
-  } {
+  visitPrivateMethodDeclaration(
+    ctx: BitloopsParser.PrivateMethodDeclarationContext,
+  ): PrivateMethodDeclarationNode {
     return privateMethodDeclarationVisitor(this, ctx);
   }
 

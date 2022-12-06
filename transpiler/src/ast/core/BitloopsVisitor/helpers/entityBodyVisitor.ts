@@ -7,6 +7,7 @@ import { ConstDeclarationListNode } from '../../intermediate-ast/nodes/ConstDecl
 import { ConstDeclarationListNodeBuilder } from '../../intermediate-ast/builders/ConstDeclarationListBuilder.js';
 import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
 import { PublicMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
+import { PrivateMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 
 export const entityBodyVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -23,7 +24,9 @@ export const entityBodyVisitor = (
   const publicMethodNodes: PublicMethodDeclarationListNode = thisVisitor.visit(
     ctx.publicMethodDeclarationList(),
   );
-  const privateMethodNodes = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const privateMethodNodes: PrivateMethodDeclarationListNode = thisVisitor.visit(
+    ctx.privateMethodDeclarationList(),
+  );
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const entityValuesNode = new EntityValuesNodeBuilder(metadata)

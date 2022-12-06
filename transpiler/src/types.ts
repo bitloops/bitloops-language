@@ -570,6 +570,8 @@ export type TConstantVariable = {
   name: string;
 };
 
+export type TDomainPrivateMethods = TDomainPrivateMethod[];
+
 export type TDomainPrivateMethod = {
   privateMethod: {
     parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
