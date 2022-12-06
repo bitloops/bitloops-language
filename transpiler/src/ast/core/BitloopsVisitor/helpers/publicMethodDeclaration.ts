@@ -39,14 +39,14 @@ export const publicMethodDeclarationVisitor = (
   const returnType: TOkErrorReturnType = thisVisitor.visit(ctx.returnPublicMethodType())[1];
   const { statements } = thisVisitor.visit(ctx.functionBody());
   //change return to returnOk or returnError
-  const statementsWithReturn = modifyReturnOkErrorStatements(statements, returnType);
+  const statementsWithReturn = modifyReturnOkErrorStatements(statements, returnType.returnType);
 
-  addReturnOkVoidStatement(statementsWithReturn, returnType);
+  addReturnOkVoidStatement(statementsWithReturn, returnType.returnType);
 
   const methodInfo: TDomainPublicMethod = {
     publicMethod: {
       parameterDependencies,
-      returnType,
+      returnType: returnType.returnType,
       statements: statementsWithReturn,
     },
   };

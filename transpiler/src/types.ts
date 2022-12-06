@@ -568,7 +568,7 @@ export type TConstantVariable = {
 export type TDomainPrivateMethod = {
   privateMethod: {
     parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TReturnType | TOkErrorReturnType;
+    returnType: TReturnType | TOkErrorReturnTypeValues;
     statements: TStatements;
   };
 };
@@ -576,25 +576,37 @@ export type TDomainPrivateMethod = {
 export type TDomainPublicMethod = {
   publicMethod: {
     parameterDependencies: TParameterDependencies;
-    returnType: TOkErrorReturnType;
     statements: TStatements;
-  };
+  } & TOkErrorReturnType;
 };
 
 export type TValueObjectMethodInfo = TDomainPrivateMethod;
 
 export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
+export type TReturnOkType = {
+  ok: {
+    type: TBitloopsPrimaryType;
+  };
+};
+
+export type TErrorIdentifier = {
+  error: string; // e.g. DomainErrors.InvalidName
+};
+export type TErrorIdentifiers = TErrorIdentifier[];
+
+export type TOkErrorReturnTypeValues = {
+  errors: TErrorIdentifiers;
+} & TReturnOkType;
+
 export type TOkErrorReturnType = {
-  ok: TBitloopsPrimaryType;
-  errors?: string[]; // TODO remove optional if we have empty array for no errors
+  returnType: TOkErrorReturnTypeValues;
 };
 
 export type TDomainCreateMethod = {
   parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
-  returnType: TOkErrorReturnType;
   statements: TStatements;
-};
+} & TOkErrorReturnType;
 
 type TDomainMethodName = string;
 
@@ -661,10 +673,9 @@ export type TDTO = {
 export type TStruct = Record<string, TStructDeclaration>;
 
 export type TUseCaseValues = {
-  returnTypes: TOkErrorReturnType;
   execute: TExecute;
   parameterDependencies: TParameterDependencies; // TODO maybe make this optional
-};
+} & TOkErrorReturnType;
 
 export type TUseCase = Record<string, TUseCaseValues>;
 
