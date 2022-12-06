@@ -794,8 +794,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): any {
-    return domainRuleDeclarationVisitor(this, ctx);
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): void {
+    domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
