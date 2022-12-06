@@ -1,6 +1,6 @@
 import { DomainCreateNode } from '../../nodes/Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
+import { ParameterNode } from '../../nodes/ParameterList/ParameterNode.js';
 import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../nodes/statements/StatementList.js';
 import { IBuilder } from '../IBuilder.js';
@@ -9,7 +9,7 @@ export class DomainCreateNodeBuilder implements IBuilder<DomainCreateNode> {
   private domainCreateNode: DomainCreateNode;
   private statementListNode?: StatementListNode;
   private returnTypeNode: ReturnOkErrorTypeNode;
-  private parameterListNode?: ParameterListNode;
+  private parameterNode: ParameterNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.domainCreateNode = new DomainCreateNode(metadata);
@@ -25,15 +25,15 @@ export class DomainCreateNodeBuilder implements IBuilder<DomainCreateNode> {
     return this;
   }
 
-  public withParameters(parameterListNode: ParameterListNode): DomainCreateNodeBuilder {
-    this.parameterListNode = parameterListNode;
+  public withParameter(parameterNode: ParameterNode): DomainCreateNodeBuilder {
+    this.parameterNode = parameterNode;
     return this;
   }
 
   public build(): DomainCreateNode {
     this.domainCreateNode.addChild(this.returnTypeNode);
+    this.domainCreateNode.addChild(this.parameterNode);
     if (this.statementListNode) this.domainCreateNode.addChild(this.statementListNode);
-    if (this.parameterListNode) this.domainCreateNode.addChild(this.parameterListNode);
 
     this.domainCreateNode.buildObjectValue();
 

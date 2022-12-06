@@ -17,8 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TBreakStatement, TConstDeclaration } from '../../../../../src/types.js';
+import {
+  TBreakStatement,
+  TConstDeclaration,
+  TExpression,
+  TReturnStatement,
+} from '../../../../../src/types.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
 export class StatementDirector {
   buildConstDeclarationWithIntLiteralExpression({
@@ -51,5 +57,9 @@ export class StatementDirector {
     return {
       breakStatement: 'break',
     };
+  }
+
+  buildReturnStatement(expression: TExpression): TReturnStatement {
+    return new ReturnStatementBuilder().withExpression(expression).build();
   }
 }

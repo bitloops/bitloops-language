@@ -87,7 +87,7 @@ const valueObjectsToTargetLanguage = (params: {
 
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
     const { methods, create, constantVars } = valueObject;
-    const propsNameType = create.parameterDependency.parameter.type;
+    const propsNameType = create.parameter.type;
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error(
         `Value Object ${valueObjectName} has an array as a property. This is not supported yet.`,

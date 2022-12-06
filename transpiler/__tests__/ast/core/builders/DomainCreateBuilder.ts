@@ -9,7 +9,7 @@ import {
 export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
   private statements: TStatements;
   private returnType: TOkErrorReturnType;
-  private parameters: TParameterDependency;
+  private parameter: TParameterDependency;
 
   public withStatements(statements: TStatements): DomainCreateBuilder {
     this.statements = statements;
@@ -21,15 +21,15 @@ export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
     return this;
   }
 
-  public withParameters(parameters: TParameterDependency): DomainCreateBuilder {
-    this.parameters = parameters;
+  public withParameter(parameter: TParameterDependency): DomainCreateBuilder {
+    this.parameter = parameter;
     return this;
   }
 
   public build(): TDomainCreateMethod {
     const domainCreateMethod = {
       create: {
-        ...this.parameters,
+        ...this.parameter,
         statements: this.statements,
         ...this.returnType,
       },
