@@ -156,4 +156,23 @@ export class StatementDirector {
     );
     return new ExpressionBuilderDirector().buildMethodCallExpression(methodExpr, args);
   }
+
+  /**
+   * this.completed = completed;
+   */
+  buildThisMemberAssignmentExpression(
+    thisMemberName: string,
+    evaluationIdentifierName: string,
+  ): TStatement {
+    const thisLeftExpression =
+      new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(thisMemberName);
+    const rightExpressionEvaluation = new ExpressionBuilderDirector().buildIdentifierExpression(
+      evaluationIdentifierName,
+    );
+    const statement = new ExpressionBuilderDirector().buildAssignmentExpression(
+      thisLeftExpression,
+      rightExpressionEvaluation,
+    );
+    return statement;
+  }
 }

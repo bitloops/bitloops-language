@@ -41,6 +41,7 @@ export class EvaluationBuilderDirector {
   }
 
   buildErrorEvaluation(errorIdentifier: string, args?: TArgumentList): TEvaluation {
+    if (!args) args = [];
     return {
       evaluation: {
         errorEvaluation: {

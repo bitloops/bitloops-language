@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TEvaluationFields, TStatements } from '../../../../../src/types.js';
+import { TArgumentList, TEvaluationFields, TStatements } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
@@ -88,5 +88,15 @@ export class StatementListDirector {
       }),
     );
     return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
+  }
+
+  buildOneReturnStatementErrorEvaluation(
+    errorIdentifier: string,
+    args?: TArgumentList,
+  ): TStatements {
+    const expressionErrorEvaluation = new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildErrorEvaluation(errorIdentifier, args),
+    );
+    return [new StatementDirector().buildReturnStatement(expressionErrorEvaluation)];
   }
 }
