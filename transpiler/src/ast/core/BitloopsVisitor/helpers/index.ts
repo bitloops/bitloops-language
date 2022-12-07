@@ -45,9 +45,16 @@ export { entityEvaluationVisitor } from './entityEvaluation.js';
 export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
 export { restControllerExecuteDeclarationVisitor } from './restControllerExecuteDeclaration.js';
 export { restControllerDeclarationVisitor } from './restControllerDeclaration.js';
-export { graphQLControllerDeclarationVisitor } from './graphQLControllerDeclaration.js';
-export { graphQLResolverOptionsVisitor } from './graphQLResolverOptions.js';
-export { graphQLControllerExecuteVisitor } from './graphQLControllerExecute.js';
+export { graphQLControllerDeclarationVisitor } from './controllers/graphql/graphQLControllerDeclaration.js';
+export {
+  graphQLResolverOptionsVisitor,
+  graphQLOperationTypeVisitor,
+  graphQLOperationInputTypeVisitor,
+} from './controllers/graphql/graphQLResolverOptions.js';
+export {
+  graphQLControllerExecuteVisitor,
+  graphQLExecuteDependenciesVisitor,
+} from './controllers/graphql/graphQLControllerExecute.js';
 export { methodDefinitionVisitor } from './methodDefinition.js';
 export { methodDefinitionListVisitor } from './methodDefinitionList.js';
 export { errorIdentifiersVisitor } from './errorIdentifiers.js';

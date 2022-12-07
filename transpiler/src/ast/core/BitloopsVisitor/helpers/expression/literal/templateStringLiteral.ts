@@ -18,18 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TGraphQLControllerExecute } from '../../../../types.js';
+import { TemplateStringLiteralBuilder } from '../../../../intermediate-ast/builders/expressions/literal/TemplateStringLiteralBuilder.js';
+import { TemplateStringLiteralNode } from '../../../../intermediate-ast/nodes/Expression/Literal/templateStringLiteralNode.js';
 
-export const graphQLControllerExecuteVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
-): TGraphQLControllerExecute => {
-  // const { dependencies } = this.visit(ctx.graphQLControllerParameters());
-  const dependencies: [string] = [ctx.graphQLControllerParameters().getText()];
-  // Same as execute outputType
-  const returnType = ctx.graphQLControllerReturnType().getText();
-  const { statements } = thisVisitor.visit(ctx.functionBody());
-  return { dependencies, returnType, statements };
+export const templateStringEvaluation = (value: string): TemplateStringLiteralNode => {
+  const trimmedValue = value.substring(0, value.length);
+  const literalNode = new TemplateStringLiteralBuilder().withValue(trimmedValue).build();
+  return literalNode;
 };

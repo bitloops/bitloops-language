@@ -1,10 +1,10 @@
-import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
+import { IBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TDefaultCase,
   TExpression,
   TRegularCase,
   TSwitchStatement,
-} from '../../../../../src/types.js';
+} from '../../../../../../src/types.js';
 
 export class SwitchStatementBuilder implements IBuilder<TSwitchStatement> {
   private expression: TExpression;
@@ -17,6 +17,14 @@ export class SwitchStatementBuilder implements IBuilder<TSwitchStatement> {
   }
   withRegularCases(regularCases: TRegularCase[]): SwitchStatementBuilder {
     this.cases = regularCases;
+    return this;
+  }
+
+  withRegularCase(regularCase: TRegularCase): SwitchStatementBuilder {
+    if (!this.cases) {
+      this.cases = [];
+    }
+    this.cases.push(regularCase);
     return this;
   }
 

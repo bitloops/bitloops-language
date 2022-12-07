@@ -20,7 +20,7 @@ export abstract class ClassTypeNode extends IntermediateASTNode {
     return this.classType;
   }
 
-  setClassName(className): void {
+  setClassName(className: string): void {
     this.className = className;
   }
 

@@ -23,7 +23,7 @@ import { IntermediateASTTree } from './ast/core/intermediate-ast/IntermediateAST
 
 export type TModule = {
   Props?: TProps;
-  Controllers?: TRESTController | TGraphQLController;
+  Controller?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
   ApplicationErrors?: TApplicationErrors;
   DomainErrors?: TDomainErrors;
@@ -42,7 +42,7 @@ export type TModule = {
 // TODO merge with TClassTypesValues from `transpiler/src/helpers/mappings.ts`
 export type TClassType =
   | 'Props'
-  | 'Controllers'
+  | 'Controller'
   | 'UseCases'
   | 'ApplicationErrors'
   | 'DomainErrors'
@@ -52,14 +52,14 @@ export type TClassType =
   | 'DTOs'
   | 'Structs'
   | 'Packages'
-  | 'Rule'
+  | 'DomainRule'
   | 'RepoPorts'
   | 'RepoAdapters'
   | 'ReadModels';
 
 export type TComponentType =
   | 'TProps'
-  | 'TControllers'
+  | 'TController'
   | 'TUseCase'
   | 'TApplicationErrors'
   | 'TDomainErrors'
@@ -280,7 +280,17 @@ export type TCondition = {
   condition: TExpression;
 };
 
-export type TDomainErrors = Record<string, TDomainError>;
+export const DomainErrorKey = 'DomainError';
+export const DomainErrorIdentifier = 'identifier';
+export type TErrorMessage = { message: TExpression };
+export type TErrorId = { errorId: TExpression };
+export type TDomainErrors = {
+  [DomainErrorKey]: {
+    [DomainErrorIdentifier]: TIdentifier;
+    parameters?: TParameterDependencies;
+  } & TErrorMessage &
+    TErrorId;
+};
 
 export type TApplicationError = {
   message: TExpression; // TBackTickString | TString;
@@ -378,10 +388,6 @@ export type TEntityEvaluation = {
   entity: TDomainEvaluation;
 };
 
-// export type TDomainEvaluation = {
-//   props: TEvaluationFields | TRegularEvaluation;
-//   name: string;
-// };
 export type TDomainEvaluation = {
   domainEvaluation: {
     name: string;
@@ -443,11 +449,21 @@ export type TToStringExpression = {
 export type TLiteral = {
   literal: TLiteralValues;
 };
-export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+/* 🔧 TODO: add 'T' prefix */
+export type TLiteralValues =
+  | StringLiteral
+  | BooleanLiteral
+  | TNumericLiteral
+  | NullLiteral
+  | TemplateStringLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
 };
+export type TemplateStringLiteral = {
+  templateStringLiteral: string;
+};
+
 export type BooleanLiteral = {
   booleanLiteral: string;
 };
@@ -666,9 +682,9 @@ export type TStructDeclaration = {
 };
 
 export type TExecute = {
-  parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
+  parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
   statements: TStatements;
-};
+} & TOkErrorReturnType;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
@@ -683,25 +699,31 @@ export type TDTO = {
 
 export type TStruct = Record<string, TStructDeclaration>;
 
-export type TUseCaseValues = {
-  execute: TExecute;
-  parameterDependencies: TParameterDependencies; // TODO maybe make this optional
-} & TOkErrorReturnType;
+export const UseCaseKey = 'UseCase';
+export type TUseCaseIdentifier = string;
+export const UseCaseIdentifierKey = 'UseCaseIdentifier';
 
-export type TUseCase = Record<string, TUseCaseValues>;
+export type TUseCase = {
+  [UseCaseKey]: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+    execute: TExecute;
+    parameters: TParameterDependencies; // TODO maybe make this optional
+  };
+};
 
 export type TBaseControllerValues = {
-  useCase?: string;
-  // TODO remove dependencies
-  parameterDependencies: TParameterDependencies; // Controller constructor parameters
+  // useCase?: string;
+  parameters: TParameterDependencies; // Controller constructor parameters
 };
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
 
-export type TRESTControllerValues = TBaseControllerValues & {
-  parameterDependencies: TParameterDependencies;
-  method: TRestMethods;
-  execute: TRESTControllerExecute;
+export type TRESTController = {
+  RESTController: TBaseControllerValues & {
+    RESTControllerIdentifier: string;
+    method: TRestMethods;
+    execute: TRESTControllerExecute;
+  };
 };
 
 export type TRESTControllerExecute = {
@@ -711,17 +733,16 @@ export type TRESTControllerExecute = {
 
 export type TRESTControllerDependencies = [string, string]; // e.g. (request, reply)
 
-export type TRESTController = Record<string, TRESTControllerValues>;
-type GraphQLControllerName = string;
-export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControllerValues>;
+export type GraphQLControllerIdentifier = string;
 
-export type TGraphQLControllerValues = TBaseControllerValues & {
-  type: 'graphql';
-  operationType: TGraphQLOperation;
-  inputType: null | string;
-  operationName: string;
-  execute: TGraphQLControllerExecute;
-  outputType: string; // should be same as return type of execute
+export type TGraphQLController = {
+  GraphQLController: TBaseControllerValues & {
+    GraphQLControllerIdentifier: GraphQLControllerIdentifier;
+    inputType: null | string;
+    operationType: TGraphQLOperation;
+    operationName: string;
+    execute: TGraphQLControllerExecute;
+  };
 };
 
 export type TGraphQLControllerExecute = {

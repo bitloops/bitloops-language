@@ -26,6 +26,15 @@ export class ExpressionBuilderDirector {
       },
     };
   }
+  buildTemplateStringLiteralExpression(templateStringLiteral: string): TExpression {
+    return {
+      expression: {
+        literal: {
+          templateStringLiteral,
+        },
+      },
+    };
+  }
 
   buildInt32LiteralExpression(int32Literal: number): TExpression {
     return {
@@ -115,6 +124,16 @@ export class ExpressionBuilderDirector {
         },
       },
     };
+  }
+
+  buildMemberDotMethodCallExpression(
+    memberDotMembers: string[],
+    argumentList: TArgumentList,
+  ): TExpression {
+    return this.buildMethodCallExpression(
+      this.buildMemberExpressionOutOfVariables(...memberDotMembers),
+      argumentList,
+    );
   }
 
   buildAssignmentExpression(

@@ -31,14 +31,11 @@ import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
-  TRESTControllerDependencies,
-  TRESTControllerExecute,
-  TGraphQLControllerExecute,
-  TGraphQLOperation,
   TDefinitionMethods,
   TValueObjectValues,
   TConstDeclaration,
   TUseCase,
+  TDomainPublicMethod,
   TReadModels,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -148,6 +145,9 @@ import {
   parameterVisitor,
   parameterArgIdentifierVisitor,
   isBrokenConditionVisitor,
+  graphQLOperationTypeVisitor,
+  graphQLOperationInputTypeVisitor,
+  graphQLExecuteDependenciesVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -175,6 +175,12 @@ import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/P
 import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 import { BitloopsPrimaryTypeNode } from '../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
+import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
+import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
+import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
+import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -229,6 +235,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return structIdentifierNode;
+  }
+
+  visitUseCaseIdentifier(ctx: BitloopsParser.UseCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UseCaseIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const useCaseIdentifierNode = new UseCaseIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return useCaseIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
@@ -351,10 +366,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
-    return {
-      type: 'backTickString',
-      value: value,
-    };
+    return templateStringEvaluation(value);
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
@@ -392,7 +404,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
-
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
     return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
@@ -498,7 +509,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return evaluationFieldVisitor(this, ctx);
   }
 
-  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+  visitEvaluationFieldList(
+    ctx: BitloopsParser.EvaluationFieldListContext,
+  ): EvaluationFieldListNode {
     return evaluationFieldListVisitor(this, ctx);
   }
 
@@ -590,20 +603,32 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRestControllerExecuteDeclaration(
     ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-  ): { execute: TRESTControllerExecute } {
+  ): any {
     return restControllerExecuteDeclarationVisitor(this, ctx);
   }
 
   visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
     return restControllerMethodDeclarationVisitor(this, ctx);
   }
+  visitRestControllerIdentifier(ctx: BitloopsParser.RestControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
 
-  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): {
-    dependencies: TRESTControllerDependencies;
-  } {
-    return {
-      dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
-    };
+  visitGraphQLControllerIdentifier(ctx: BitloopsParser.GraphQLControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new GraphQLControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
+
+  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerDependenciesNodeBuilder(metadata)
+      .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
+      .build();
   }
 
   // GraphQLControllerDeclaration
@@ -611,8 +636,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLControllerDeclarationVisitor(this, ctx);
   }
 
-  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): any {
-    return restControllerDeclarationVisitor(this, ctx);
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): void {
+    restControllerDeclarationVisitor(this, ctx);
   }
 
   visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {
@@ -621,20 +646,22 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGraphQLControllerExecuteDeclaration(
     ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
-  ): TGraphQLControllerExecute {
+  ) {
     return graphQLControllerExecuteVisitor(this, ctx);
   }
 
-  visitGraphQLOperationTypeAssignment(
-    ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext,
-  ): TGraphQLOperation {
-    return ctx.graphQLOperation().getText();
+  visitGraphQLControllerParameters(ctx: BitloopsParser.GraphQLControllerParametersContext): any {
+    return graphQLExecuteDependenciesVisitor(this, ctx);
+  }
+
+  visitGraphQLOperationTypeAssignment(ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext) {
+    return graphQLOperationTypeVisitor(this, ctx);
   }
 
   visitGraphQLOperationInputTypeAssignment(
     ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
-  ): string {
-    return ctx.graphQLResolverInputType().getText();
+  ) {
+    return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
   visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
@@ -789,8 +816,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): any {
-    return domainRuleDeclarationVisitor(this, ctx);
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): void {
+    domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
@@ -838,15 +865,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * UseCase Declaration
    */
-  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
-    return useCaseDeclarationVisitor(this, ctx);
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
+    useCaseDeclarationVisitor(this, ctx);
   }
   visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
     return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 
   visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): void {
-    return structDeclarationVisitor(this, ctx);
+    structDeclarationVisitor(this, ctx);
   }
 
   visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {

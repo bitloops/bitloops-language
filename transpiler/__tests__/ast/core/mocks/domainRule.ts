@@ -21,6 +21,7 @@ import { TDomainRule } from '../../../../src/types.js';
 import { DomainRuleBuilder } from '../builders/domainRuleBuilder.js';
 import { ParameterListBuilderDirector } from '../builders/parameterListBuilderDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
+import { ConstDeclarationBuilderDirector } from '../builders/statement/constDeclarationDirector.js';
 
 type DomainRuleDeclarationTestCase = {
   description: string;
@@ -55,6 +56,39 @@ export const validDomainRuleStatementTestCases: DomainRuleDeclarationTestCase[] 
         ),
       )
       .withBodyStatements([])
+      .build(),
+  },
+  {
+    description: 'Domain rule declaration with 1 statement',
+    fileId: 'testFile.bl',
+    inputBLString: `Rule IsValidTitleRule(title: string) throws DomainErrors.InvalidTitleError {
+      const titleLength = title.length;
+      isBrokenIf (titleLength > 150 OR titleLength < 4);
+    }`,
+    domainRuleDeclaration: new DomainRuleBuilder()
+      .withIdentifier('IsValidTitleRule')
+      .withParameters(new ParameterListBuilderDirector().buildStringParams('title'))
+      .withThrowsError('DomainErrors.InvalidTitleError')
+      .withIsBrokenIfCondition(
+        new ExpressionBuilderDirector().buildLogicalOrExpression(
+          new ExpressionBuilderDirector().buildRelationalExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('titleLength'),
+            new ExpressionBuilderDirector().buildInt32LiteralExpression(150),
+            '>',
+          ),
+          new ExpressionBuilderDirector().buildRelationalExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('titleLength'),
+            new ExpressionBuilderDirector().buildInt32LiteralExpression(4),
+            '<',
+          ),
+        ),
+      )
+      .withBodyStatements([
+        new ConstDeclarationBuilderDirector().buildConstDeclarationWithMemberDotExpression({
+          name: 'titleLength',
+          rightMembers: ['title', 'length'],
+        }),
+      ])
       .build(),
   },
 ];

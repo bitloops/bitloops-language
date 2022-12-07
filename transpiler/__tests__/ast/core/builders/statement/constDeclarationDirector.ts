@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  TArgumentList,
   TBitloopsPrimitives,
   TConstDeclaration,
   TEvaluationFields,
@@ -121,6 +122,22 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
 
+  buildConstDeclarationWithMemberDotExpression({
+    name,
+    rightMembers,
+  }: {
+    name: string;
+    rightMembers: string[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildMemberExpressionOutOfVariables(...rightMembers),
+      )
+      .build();
+    return constDeclaration;
+  }
+
   buildConstDeclarationWithDTOEvaluation({
     name,
     dtoIdentifier,
@@ -156,6 +173,73 @@ export class ConstDeclarationBuilderDirector {
         new ExpressionBuilderDirector().buildStringLiteralExpression(stringLiteralExpression),
       )
       .withPrimitivesType(type)
+      .build();
+    return constDeclaration;
+  }
+  /**
+   * const result = useCase.execute();
+   */
+  buildConstDeclarationWithMemberDotMethodCallExpression({
+    name,
+    memberDotMembers,
+    argumentList,
+  }: {
+    name: string;
+    memberDotMembers: string[];
+    argumentList: TArgumentList;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildMemberDotMethodCallExpression(
+          memberDotMembers,
+          argumentList,
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
+  buildConstDeclarationWithValueObjectEvaluation({
+    name,
+    valueObjectIdentifier,
+    fields,
+  }: {
+    name: string;
+    valueObjectIdentifier: string;
+    fields: TEvaluationFields;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation(valueObjectIdentifier, {
+            fields,
+          }),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
+  buildConstDeclarationWithEntityEvaluation({
+    name,
+    entityIdentifier,
+    fields,
+  }: {
+    name: string;
+    entityIdentifier: string;
+    fields: TEvaluationFields;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildEntityEvaluation(entityIdentifier, {
+            fields,
+          }),
+        ),
+      )
       .build();
     return constDeclaration;
   }
