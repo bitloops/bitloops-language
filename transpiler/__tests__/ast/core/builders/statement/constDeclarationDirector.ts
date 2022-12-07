@@ -175,6 +175,50 @@ export class ConstDeclarationBuilderDirector {
       .build();
     return constDeclaration;
   }
+
+  buildConstDeclarationWithValueObjectEvaluation({
+    name,
+    valueObjectIdentifier,
+    fields,
+  }: {
+    name: string;
+    valueObjectIdentifier: string;
+    fields: TEvaluationFields;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation(valueObjectIdentifier, {
+            fields,
+          }),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
+  buildConstDeclarationWithEntityEvaluation({
+    name,
+    entityIdentifier,
+    fields,
+  }: {
+    name: string;
+    entityIdentifier: string;
+    fields: TEvaluationFields;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildEntityEvaluation(entityIdentifier, {
+            fields,
+          }),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
 }
 
 export class VariableDeclarationBuilderDirector {

@@ -128,6 +128,7 @@ const BitloopsTypesMapping = {
   TPropsIdentifier: 'TPropsIdentifier',
   TIdentifier: 'TIdentifier',
   TStructIdentifier: 'TStructIdentifier',
+  TUseCaseIdentifier: 'TUseCaseIdentifier',
   Toperator: 'Toperator',
   TIdentifierExpression: 'TIdentifierExpression',
   TOptional: 'TOptional',
