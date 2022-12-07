@@ -25,9 +25,11 @@ import {
   TReturnStatement,
   TStatement,
 } from '../../../../../src/types.js';
-import { ExpressionBuilderDirector } from '../expressionDirector.js';
+import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
+import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
 export class StatementDirector {
   buildConstDeclarationWithIntLiteralExpression({
@@ -121,6 +123,17 @@ export class StatementDirector {
     };
   }
 
+  buildReturnStatement(expression: TExpression): TReturnStatement {
+    return new ReturnStatementBuilder().withExpression(expression).build();
+  }
+
+  buildExpressionEntityEvaluation(entityName: string, identifierValue: string): TExpression {
+    return new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
+      }),
+    );
+  }
   /**
    * this.save(response , 'Hello World!');
    */
@@ -129,11 +142,5 @@ export class StatementDirector {
       methodName,
     );
     return new ExpressionBuilderDirector().buildMethodCallExpression(methodExpr, args);
-  }
-
-  buildReturnStatement(expression: TExpression): TReturnStatement {
-    return {
-      return: expression,
-    };
   }
 }

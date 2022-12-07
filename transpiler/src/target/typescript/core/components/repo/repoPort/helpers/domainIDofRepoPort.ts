@@ -44,7 +44,7 @@ export const findIdOfRepoDomainObject = (
     if (!aggregate) {
       throw new Error(`${type} ${repoDependencyName} not found`);
     }
-    const aggregateProps = aggregate.create.parameterDependency.type as string;
+    const aggregateProps = aggregate.create.parameter.type as string;
     const propsModel = bitloopsModel[boundedContext][module].Props[aggregateProps];
     if (!propsModel) {
       throw new Error(`Props ${aggregateProps} not found`);

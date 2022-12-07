@@ -1,0 +1,13 @@
+Entity TodoEntity {    
+    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
+        return TodoEntity(props);   
+    }  
+    
+    complete(): (OK(TodoEntity), Errors()) {     
+        return TodoEntity({id: 7, title: 'Super important'});   
+    }
+    
+    isValidName(name: string): bool { 
+        return true;
+    }    
+}

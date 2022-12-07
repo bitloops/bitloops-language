@@ -19,20 +19,20 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { PublicMethodDeclarationListNodeBuilder } from '../../intermediate-ast/builders/methods/PublicMethodDeclarationListNodeBuilder.js';
+import { PublicMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TDomainPublicMethod } from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
 
 export const publicMethodDeclarationListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PublicMethodDeclarationListContext,
-): Record<string, TDomainPublicMethod> => {
-  const result: Record<string, TDomainPublicMethod> = {};
+): PublicMethodDeclarationListNode => {
   const visitChildren = thisVisitor.visitChildren(ctx);
-  if (!visitChildren) {
-    return {};
-  }
-  for (const child of visitChildren) {
-    result[child.methodName] = child.methodInfo;
-  }
-  return result;
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const publicMethodListNode = new PublicMethodDeclarationListNodeBuilder(metadata)
+    .withMethods(visitChildren)
+    .build();
+  return publicMethodListNode;
 };

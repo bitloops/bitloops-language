@@ -252,8 +252,6 @@ export type TBitloopsPrimaryType =
   | TBitloopsIdentifierObject
   | ArrayBitloopsPrimTypeObject;
 
-export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
-
 export type TBackTickString = {
   backTickString: string;
   // TODO add support for inside expressions
@@ -591,24 +589,36 @@ export type TConstantVariable = {
   name: string;
 };
 
-export type TDomainPrivateMethod = {
-  privateMethod: {
-    parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TReturnType | TOkErrorReturnTypeValues;
-    statements: TStatements;
-  };
+export type TDomainPrivateMethods = TDomainPrivateMethod[];
+
+type TDomainPrivateMethodValues = {
+  identifier: TIdentifier;
+  parameters: TParameterDependencies;
+  statements: TStatements;
 };
+
+export type TDomainPrivateMethodValuesPrimaryReturnType = {
+  type: TBitloopsPrimaryType;
+} & TDomainPrivateMethodValues;
+
+export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
+  TOkErrorReturnType;
+
+export type TDomainPrivateMethod = {
+  privateMethod:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType;
+};
+
+export type TDomainPublicMethods = TDomainPublicMethod[];
 
 export type TDomainPublicMethod = {
   publicMethod: {
-    parameterDependencies: TParameterDependencies;
+    identifier: TIdentifier;
+    parameters: TParameterDependencies;
     statements: TStatements;
   } & TOkErrorReturnType;
 };
-
-export type TValueObjectMethodInfo = TDomainPrivateMethod;
-
-export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TReturnOkType = {
   ok: {
@@ -621,31 +631,29 @@ export type TErrorIdentifier = {
 };
 export type TErrorIdentifiers = TErrorIdentifier[];
 
-export type TOkErrorReturnTypeValues = {
-  errors: TErrorIdentifiers;
-} & TReturnOkType;
+// export type TOkErrorReturnTypeValues = {
+//   errors: TErrorIdentifiers;
+// } & TReturnOkType;
 
 export type TOkErrorReturnType = {
-  returnType: TOkErrorReturnTypeValues;
+  returnType: {
+    errors: TErrorIdentifiers;
+  } & TReturnOkType;
 };
 
 export type TDomainCreateMethod = {
-  parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
-  statements: TStatements;
-} & TOkErrorReturnType;
-
-type TDomainMethodName = string;
-
-export type TDomainMethod = TDomainPublicMethod | TDomainPrivateMethod;
-export type TDomainMethods = Record<TDomainMethodName, TDomainMethod>;
+  create: {
+    statements: TStatements;
+  } & TOkErrorReturnType &
+    TParameterDependency;
+};
 
 export type TValueObjectCreate = TDomainCreateMethod;
 
 export type TValueObjectValues = {
-  constantVars: TConstDeclarationValue[]; //TConstantVariable[];
-  methods: TValueObjectMethods;
-  create: TValueObjectCreate;
-};
+  constants?: TConstDeclarationValue[]; //TConstantVariable[];
+  privateMethods?: TDomainPrivateMethods;
+} & TValueObjectCreate;
 
 export type TValueObjects = Record<string, TValueObjectValues>;
 
@@ -658,12 +666,10 @@ export type TEntity = {
 };
 
 export type TEntityValues = {
-  constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
-  methods?: TEntityMethods;
-  create: TEntityCreate;
-};
-
-export type TEntityMethods = TDomainMethods;
+  constants?: TConstDeclarationValue[]; // TConstantVariable[];
+  publicMethods?: TDomainPublicMethods;
+  privateMethods?: TDomainPrivateMethods;
+} & TEntityCreate;
 
 export type TEntityCreate = TDomainCreateMethod;
 
@@ -682,9 +688,8 @@ export type TStructDeclaration = {
 
 export type TExecute = {
   parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
-  returnType: TOkErrorReturnTypeValues;
   statements: TStatements;
-};
+} & TOkErrorReturnType;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
@@ -1003,7 +1008,7 @@ export type TPackagePort = {
 
 export type TDefinitionMethodInfo = {
   parameterDependencies: TParameterDependencies;
-  returnType: TReturnType;
+  returnType: TBitloopsPrimaryType;
 };
 
 export type TPackages = Record<string, TPackage>;

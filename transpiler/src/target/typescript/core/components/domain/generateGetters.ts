@@ -1,22 +1,39 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import {
   TModule,
-  TDomainMethods,
   TTargetDependenciesTypeScript,
   fieldKey,
+  TDomainPublicMethods,
+  TDomainPrivateMethods,
 } from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-export const generateGetters = (
-  propsName: string,
-  model: TModule,
-  methods: TDomainMethods,
-  isValueObject = false,
-): TTargetDependenciesTypeScript => {
+export const generateGetters = ({
+  propsName,
+  model,
+  publicMethods,
+  privateMethods,
+  isValueObject,
+}: {
+  propsName: string;
+  model: TModule;
+  publicMethods?: TDomainPublicMethods;
+  privateMethods: TDomainPrivateMethods;
+  isValueObject?: boolean;
+}): TTargetDependenciesTypeScript => {
   const { Props } = model;
 
-  let methodNames = [];
-  if (methods) methodNames = Object.keys(methods);
+  const methodNames = [];
+  if (publicMethods) {
+    for (const method of publicMethods) {
+      methodNames.push(method.publicMethod.identifier);
+    }
+  }
+  if (privateMethods) {
+    for (const method of privateMethods) {
+      methodNames.push(method.privateMethod.identifier);
+    }
+  }
   methodNames.push('id');
 
   let gettersResult = '';

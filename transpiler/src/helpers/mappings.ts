@@ -171,6 +171,8 @@ const BitloopsTypesMapping = {
   TErrorIdentifier: 'TErrorIdentifier',
   TErrorIdentifiers: 'TErrorIdentifiers',
   TReturnOkType: 'TReturnOkType',
+  TDomainPublicMethods: 'TDomainPublicMethods',
+  TDomainPrivateMethods: 'TDomainPrivateMethods',
   TRESTMethods: 'TRESTMethods',
   TRESTControllerExecute: 'TRESTControllerExecute',
   TRESTControllerExecuteDependencies: 'TRESTControllerExecuteDependencies',

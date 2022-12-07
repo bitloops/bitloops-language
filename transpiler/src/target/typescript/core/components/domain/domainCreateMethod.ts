@@ -24,8 +24,8 @@ import { internalConstructor } from './index.js';
 import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
-export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
-  const { parameterDependency, returnType, statements } = create;
+export const domainCreate = (variable: TDomainCreateMethod): TTargetDependenciesTypeScript => {
+  const { parameter, returnType, statements } = variable.create;
 
   const statementsResult = {
     thisStatements: [],
@@ -40,7 +40,7 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
     }
   }
 
-  const propsNameType = create.parameterDependency.parameter.type;
+  const propsNameType = parameter.type;
   const returnOkType = returnType.ok.type;
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
@@ -74,7 +74,7 @@ export const domainCreate = (create: TDomainCreateMethod): TTargetDependenciesTy
 
   const parameterModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
-    value: parameterDependency,
+    value: parameter,
   });
 
   const returnTypeModel = modelToTargetLanguage({

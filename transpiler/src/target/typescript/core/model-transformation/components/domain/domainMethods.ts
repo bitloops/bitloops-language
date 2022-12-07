@@ -17,32 +17,25 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import {
-  isDomainPrivateMethod,
-  isDomainPublicMethod,
-} from '../../../../../../helpers/typeGuards.js';
-import { TDomainMethods } from '../../../../../../types.js';
-import { modelToTypescriptModel } from '../../modelToTsModel.js';
 
-const transformDomainMethodsIntermediateAST = (domainMethods: TDomainMethods): TDomainMethods => {
-  for (let domainMethodsValue of Object.values(domainMethods)) {
-    if (isDomainPublicMethod(domainMethodsValue)) {
-      domainMethodsValue = modelToTypescriptModel({
-        type: BitloopsTypesMapping.TDomainPublicMethod,
-        value: domainMethodsValue,
-      });
-    } else if (isDomainPrivateMethod(domainMethodsValue)) {
-      domainMethodsValue = modelToTypescriptModel({
-        type: BitloopsTypesMapping.TDomainPrivateMethod,
-        value: domainMethodsValue,
-      });
-    } else {
-      throw new Error('Unsupported domain method');
-    }
-  }
-
-  return domainMethods;
+// TODO TDomainMethods des not exist anymore, but this will be moved to model to model anyway
+const transformDomainMethodsIntermediateAST = (domainMethods: any): any => {
+  // for (let _domainMethodsValue of Object.values(domainMethods)) {
+  // if (isDomainPublicMethod(domainMethodsValue)) {
+  //   domainMethodsValue = modelToTypescriptModel({
+  //     type: BitloopsTypesMapping.TDomainPublicMethod,
+  //     value: domainMethodsValue,
+  //   });
+  // } else if (isDomainPrivateMethod(domainMethodsValue)) {
+  //   domainMethodsValue = modelToTypescriptModel({
+  //     type: BitloopsTypesMapping.TDomainPrivateMethod,
+  //     value: domainMethodsValue,
+  //   });
+  // } else {
+  //   throw new Error('Unsupported domain method');
+  // }
+  // }
+  // return domainMethods;
 };
 
 export { transformDomainMethodsIntermediateAST };

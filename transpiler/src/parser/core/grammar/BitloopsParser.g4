@@ -815,7 +815,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorDeclaration
-    : Constructor parameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
+    : Constructor OpenParen parameter CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
