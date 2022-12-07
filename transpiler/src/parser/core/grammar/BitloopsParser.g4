@@ -962,10 +962,14 @@ httpMethod
 
 controllerDeclaration
     : RESTController restControllerIdentifier parameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
-    | GraphQLController ControllerIdentifier parameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
+    | GraphQLController graphQLControllerIdentifier parameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
     ;
 
 restControllerIdentifier
+    : ControllerIdentifier
+    ;
+
+graphQLControllerIdentifier
     : ControllerIdentifier
     ;
 

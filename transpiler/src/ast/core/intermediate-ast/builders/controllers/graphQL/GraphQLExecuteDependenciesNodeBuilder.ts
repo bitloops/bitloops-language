@@ -13,7 +13,7 @@ export class GraphQLExecuteDependenciesNodeBuilder
     this.controllerExecuteDependenciesNode = new GraphQLControllerExecuteDependenciesNode(metadata);
   }
 
-  public withDependencies(request: string): GraphQLExecuteDependenciesNodeBuilder {
+  public withDependency(request: string): GraphQLExecuteDependenciesNodeBuilder {
     this.dependenciesValue = [request];
     return this;
   }

@@ -28,12 +28,12 @@ export class GraphQLControllerNodeBuilder implements IBuilder<GraphQLControllerN
     identifierNode: GraphQLControllerIdentifierNode,
   ): GraphQLControllerNodeBuilder {
     this.graphQLControllerIdentifierNode = identifierNode;
-    const controllerName = identifierNode.getIdentifierName();
+    const controllerName = identifierNode.identifierName;
     this.graphQLControllerNode.setClassName(controllerName);
     return this;
   }
 
-  public withParameterList(parametersList: ParameterListNode): GraphQLControllerNodeBuilder {
+  public withDependencies(parametersList: ParameterListNode): GraphQLControllerNodeBuilder {
     this.parameters = parametersList;
     return this;
   }

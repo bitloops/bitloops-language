@@ -32,7 +32,6 @@ import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
   TGraphQLControllerExecute,
-  TGraphQLOperation,
   TDefinitionMethods,
   TOkErrorReturnType,
   TValueObjectValues,
@@ -151,6 +150,9 @@ import {
   parameterVisitor,
   parameterArgIdentifierVisitor,
   isBrokenConditionVisitor,
+  graphQLOperationTypeVisitor,
+  graphQLOperationInputTypeVisitor,
+  graphQLExecuteDependenciesVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -176,6 +178,7 @@ import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkEr
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
 import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
 import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
+import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -605,6 +608,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .build();
   }
 
+  visitGraphQLControllerIdentifier(ctx: BitloopsParser.GraphQLControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new GraphQLControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
+
   visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
     const metadata = produceMetadata(ctx, this);
     return new RESTControllerDependenciesNodeBuilder(metadata)
@@ -627,20 +637,22 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGraphQLControllerExecuteDeclaration(
     ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
-  ): TGraphQLControllerExecute {
+  ) {
     return graphQLControllerExecuteVisitor(this, ctx);
   }
 
-  visitGraphQLOperationTypeAssignment(
-    ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext,
-  ): TGraphQLOperation {
-    return ctx.graphQLOperation().getText();
+  visitGraphQLControllerParameters(ctx: BitloopsParser.GraphQLControllerParametersContext): any {
+    return graphQLExecuteDependenciesVisitor(this, ctx);
+  }
+
+  visitGraphQLOperationTypeAssignment(ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext) {
+    return graphQLOperationTypeVisitor(this, ctx);
   }
 
   visitGraphQLOperationInputTypeAssignment(
     ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
-  ): string {
-    return ctx.graphQLResolverInputType().getText();
+  ) {
+    return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
   visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {

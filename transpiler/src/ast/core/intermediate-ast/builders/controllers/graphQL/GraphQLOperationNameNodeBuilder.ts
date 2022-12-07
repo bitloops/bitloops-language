@@ -6,11 +6,11 @@ export class GraphQLOperationNameNodeBuilder implements IBuilder<GraphQLOperatio
   private operationNameNode: GraphQLOperationNameNode;
   private operationNameValue: string;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.operationNameNode = new GraphQLOperationNameNode(metadata);
   }
 
-  public withOperationType(name: string): GraphQLOperationNameNodeBuilder {
+  public withOperationName(name: string): GraphQLOperationNameNodeBuilder {
     this.operationNameValue = name;
     return this;
   }

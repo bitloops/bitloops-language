@@ -2,15 +2,15 @@ import { GraphQLInputTypeNode } from '../../../nodes/controllers/graphql/GraphQL
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class GraphQLOperationNameNodeBuilder implements IBuilder<GraphQLInputTypeNode> {
+export class GraphQLInputTypeNodeBuilder implements IBuilder<GraphQLInputTypeNode> {
   private inputTypeNode: GraphQLInputTypeNode;
   private inputTypeValue: string | null;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.inputTypeNode = new GraphQLInputTypeNode(metadata);
   }
 
-  public withOperationType(name: string): GraphQLOperationNameNodeBuilder {
+  public withInputType(name: string): GraphQLInputTypeNodeBuilder {
     this.inputTypeValue = name;
     return this;
   }

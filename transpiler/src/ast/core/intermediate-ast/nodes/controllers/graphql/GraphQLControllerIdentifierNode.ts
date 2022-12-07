@@ -12,7 +12,7 @@ export class GraphQLControllerIdentifierNode extends IntermediateASTNode {
     );
   }
 
-  getIdentifierName(): string {
+  get identifierName(): string {
     const identifierClassNodeName = this.getClassNodeName();
     const identifierValue = this.getValue();
     const dtoIdentifierName: string = identifierValue[identifierClassNodeName];
