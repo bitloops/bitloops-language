@@ -32,7 +32,7 @@ export type TModule = {
   ValueObjects?: TValueObjects;
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
-  Packages?: TPackages;
+  Package?: TPackage;
   DomainRule?: TDomainRule;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
@@ -1001,8 +1001,10 @@ export interface IAddResolversToServer {
 }
 export type TDefinitionMethods = Record<string, TDefinitionMethodInfo>;
 
+export const PackagePortIdentifierKey = 'PackagePortIdentifier';
+export type TPackagePortIdentifier = string;
 export type TPackagePort = {
-  name: string;
+  [PackagePortIdentifierKey]: TPackagePortIdentifier;
   definitionMethods: TDefinitionMethods;
 };
 
@@ -1011,11 +1013,14 @@ export type TDefinitionMethodInfo = {
   returnType: TBitloopsPrimaryType;
 };
 
-export type TPackages = Record<string, TPackage>;
-
+export const PackageIdentifierKey = 'PackageIdentifier';
+export type TPackageIdentifier = string;
 export type TPackage = {
-  port: TPackagePort;
-  adapters: TPackageAdapterNames;
+  Package: {
+    [PackageIdentifierKey]: TPackageIdentifier;
+    port: TPackagePort;
+    adapters: TPackageAdapterNames;
+  };
 };
 
 export type TRepoPorts = Record<string, TRepoPort>;
