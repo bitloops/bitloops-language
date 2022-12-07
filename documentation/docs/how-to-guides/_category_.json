@@ -3,7 +3,7 @@
   "position": 4,
   "link": {
     "type": "generated-index",
-    "description": "This section provides an overview of how to use elements of Bitloops Language, and how to use these
-    elements when writing code and building softwre."
+    "description": "This section provides an overview of how to use elements of Bitloops Language (BL), and how to use these
+    elements when writing code and building software using BL."
   }
 }

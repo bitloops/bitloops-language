@@ -4,9 +4,13 @@ sidebar_position: 6
 
 # FAQ
 
-Below you'll find answers to the questions Bitloops gets asked the most. These are mostly related to the Bitloops Language. If you're unable to find your question/answer here, then please join our [discord community](https://discord.gg/vj8EdZx8gK) and ask one of the Bitloops team members directly - we would be glad to help! Alternatively, you may review our [Reference](https://github.com/bitloops/bitloops-language/discussions), [How-to Guides](https://github.com/bitloops/bitloops-language/discussions), [Tutorials](https://github.com/bitloops/bitloops-language/discussions), or search the [GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions) as the answer may be available in one of them. 
+Below you'll find answers to the questions Bitloops gets asked the most. 
 
-We do aim to add more answers here in the near future!
+The majority of these questions are related to the Bitloops Language. If you're unable to find your question/answer here, then please join our [discord community](https://discord.gg/vj8EdZx8gK) and ask one of the Bitloops team members directly - we would be glad to help! 
+
+Alternatively, you may review our [Reference](https://github.com/bitloops/bitloops-language/discussions), [How-to Guides](https://github.com/bitloops/bitloops-language/discussions), [Tutorials](https://github.com/bitloops/bitloops-language/discussions), or search the [GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions) as the answer may be available in one of them. 
+
+We aim to add more answers here in the near future!
 
 
 ## Frequently Asked Questions
@@ -19,15 +23,13 @@ We do aim to add more answers here in the near future!
 - [What is next for Bitloops Language?](#what-is-next-for-bitloops-language)
 
 
-&nbsp;
-&nbsp;
+&nbsp; 
+&nbsp; 
 ___
 
 ### Is Bitloops Language open source?
 
-Yes!
-
-The Bitloops Language is open source using the GPL v3.
+Yes! The Bitloops Language is open source using the GPL v3.
 
 ___
 

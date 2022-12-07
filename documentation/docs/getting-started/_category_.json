@@ -3,8 +3,8 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "This is an introductory tutorial for developers learn how Bitloops  works and gain some confidence
-    with the Bitloops Language. You will lear how to install BL, how it works through a quick demonstration and see some 
+    "description": "This is an introductory tutorial for developers learn how Bitloops Language (BL) works and gain some confidence
+    using Bitloops Language. You will lear how to install BL, how it works through a quick demonstration and see some 
     example code snippets"
   }
 }
