@@ -3,7 +3,7 @@ import { DomainErrorNode } from '../../nodes/Error/DomainErrorNode.js';
 import { ErrorIdNode } from '../../nodes/Error/errorId.js';
 import { ErrorMessageNode } from '../../nodes/Error/message.js';
 import { EvaluationFieldNode } from '../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
-import { IdentifierNode } from '../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
 import { IBuilder } from '../IBuilder.js';

@@ -1,6 +1,6 @@
 import { ConstDeclarationNode } from '../../nodes/statements/ConstDeclaration.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
-import { IdentifierNode } from '../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { TypeAnnotationNode } from '../../nodes/TypeAnnotationNode.js';
 import { IBuilder } from '../IBuilder.js';

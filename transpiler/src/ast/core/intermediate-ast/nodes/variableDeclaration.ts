@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { ExpressionNode } from './Expression/ExpressionNode.js';
-import { IdentifierNode } from './IdentifierNode.js';
+import { IdentifierNode } from './identifier/IdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
 
 const NAME = 'variableDeclaration';

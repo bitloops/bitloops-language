@@ -1,6 +1,6 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
-import { IdentifierNode } from '../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { StructNode } from '../../nodes/struct/StructNode.js';
 import { IBuilder } from '../IBuilder.js';

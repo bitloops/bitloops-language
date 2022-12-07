@@ -25,7 +25,7 @@ import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPr
 import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
-import { IdentifierBuilder } from '../intermediate-ast/builders/IdentifierBuilder.js';
+import { IdentifierBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js';
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
@@ -167,7 +167,7 @@ import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/Domain
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
-import { IdentifierNode } from '../intermediate-ast/nodes/IdentifierNode.js';
+import { IdentifierNode } from '../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { ErrorIdentifierNodeBuilder } from '../intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifierNode } from '../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
@@ -178,6 +178,11 @@ import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/Re
 import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
+import { RepoPortIdentifierNodeBuilder } from '../intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
+import { ExtendsRepoListNode } from '../intermediate-ast/nodes/repo-port/ExtendsRepoListNode.js';
+import { IdentifierListNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierListNodeBuilder.js';
+import { IdentifierListNode } from '../intermediate-ast/nodes/identifier/IdentifierListNode.js';
+import { MethodDefinitionListNode } from '../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -241,6 +246,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return useCaseIdentifierNode;
+  }
+
+  visitRepoPortIdentifier(ctx: BitloopsParser.RepoPortIdentifierContext) {
+    const repoPortIdentifierName = ctx.RepoPortIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const repoPortIdentifierNode = new RepoPortIdentifierNodeBuilder(metadata)
+      .withName(repoPortIdentifierName)
+      .build();
+    return repoPortIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
@@ -647,9 +661,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.graphQLResolverInputType().getText();
   }
 
-  visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
-    definitionMethods: TDefinitionMethods;
-  } {
+  visitMethodDefinitionList(
+    ctx: BitloopsParser.MethodDefinitionListContext,
+  ): MethodDefinitionListNode {
     return methodDefinitionListVisitor(this, ctx);
   }
 
@@ -867,18 +881,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return packagePortDeclarationVisitor(this, ctx);
   }
 
-  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {
+  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext): void {
     return repoPortDeclarationVisitor(this, ctx);
   }
 
   visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
-    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+    this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
   }
 
   visitRepoPortExtendableIdentifierList(
     ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
-  ) {
-    return this.visitChildren(ctx)[0];
+  ): IdentifierListNode {
+    const identifierList: IdentifierNode[] = this.visitChildren(ctx)[0];
+
+    const identifierListNode = new IdentifierListNodeBuilder()
+      .withIdentifierList(identifierList)
+      .build();
+    return identifierListNode;
   }
 
   visitRepoPortExtendableIdentifier(ctx: BitloopsParser.RepoPortExtendableIdentifierContext) {

@@ -34,7 +34,7 @@ export type TModule = {
   Structs?: TStructDeclaration;
   Packages?: TPackages;
   DomainRule?: TDomainRule;
-  RepoPorts?: TRepoPorts;
+  RepoPorts?: TRepoPort;
   RepoAdapters?: TRepoAdapters;
   ReadModels?: TReadModels;
 };
@@ -70,7 +70,7 @@ export type TComponentType =
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
   | 'TDomainRule'
-  | 'TRepoPorts'
+  | 'TRepoPort'
   | 'TRepoAdapters'
   | 'TReadModels';
 
@@ -119,6 +119,7 @@ export type TVariables = TVariable[];
 
 export const identifierKey = 'identifier';
 export type TIdentifier = string;
+export type TIdentifierList = TIdentifier[];
 
 export const optionalKey = 'optional';
 export type TOptional = boolean;
@@ -989,7 +990,7 @@ export interface IAddResolversToServer {
     module: string;
   };
 }
-export type TDefinitionMethods = Record<string, TDefinitionMethodInfo>;
+export type TDefinitionMethods = TDefinitionMethodInfo[];
 
 export type TPackagePort = {
   name: string;
@@ -997,6 +998,7 @@ export type TPackagePort = {
 };
 
 export type TDefinitionMethodInfo = {
+  identifier: TIdentifier;
   parameterDependencies: TParameterDependencies;
   returnType: TReturnType;
 };
@@ -1008,20 +1010,22 @@ export type TPackage = {
   adapters: TPackageAdapterNames;
 };
 
-export type TRepoPorts = Record<string, TRepoPort>;
+export const repoPortKey = 'RepoPort';
 
 export type TAggregateRepoPort = {
-  readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
-  aggregateRootName: string;
-  extendedRepoPorts: string[];
-  definitionMethods: TDefinitionMethods;
+  [repoPortKey]: {
+    aggregateRootName: string;
+    extendedRepoPorts: string[];
+    definitionMethods: TDefinitionMethods;
+  };
 };
 
 export type TReadModelRepoPort = {
-  readModelName: string;
-  aggregateRootName?: never;
-  extendedRepoPorts: string[];
-  definitionMethods: TDefinitionMethods;
+  [repoPortKey]: {
+    readModelName: string;
+    extendedRepoPorts: TIdentifierList;
+    definitionMethods: TDefinitionMethods;
+  };
 };
 
 export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;

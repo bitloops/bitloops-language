@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { produceMetadata } from '../metadata.js';
 import { StructNodeBuilder } from '../../intermediate-ast/builders/Struct/StructNodeBuilder.js';

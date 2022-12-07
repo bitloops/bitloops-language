@@ -91,7 +91,7 @@ const BitloopsTypesMapping = {
   TEntity: 'TEntity',
   TEntityValues: 'TEntityValues',
   TThisDeclaration: 'TThisDeclaration',
-  TRepoPorts: 'TRepoPorts',
+  TRepoPort: 'TRepoPort',
   TRepoAdapters: 'TRepoAdapters',
   TSingleExpression: 'TSingleExpression',
   TLogicalExpression: 'TLogicalExpression',
@@ -163,6 +163,7 @@ const BitloopsTypesMapping = {
   TErrorIdentifier: 'TErrorIdentifier',
   TErrorIdentifiers: 'TErrorIdentifiers',
   TReturnOkType: 'TReturnOkType',
+  TIdentifierList: 'TIdentifierList',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -181,7 +182,7 @@ const ClassTypes = {
   DTOs: 'DTOs',
   Struct: 'Struct',
   Packages: 'Packages',
-  RepoPorts: 'RepoPorts',
+  RepoPort: 'RepoPort',
   RepoAdapters: 'RepoAdapters',
   DomainRule: 'DomainRule',
   ReadModels: 'ReadModels',
