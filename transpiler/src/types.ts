@@ -570,13 +570,23 @@ export type TConstantVariable = {
 
 export type TDomainPrivateMethods = TDomainPrivateMethod[];
 
+type TDomainPrivateMethodValues = {
+  identifier: TIdentifier;
+  parameters: TParameterDependencies;
+  statements: TStatements;
+};
+
+export type TDomainPrivateMethodValuesPrimaryReturnType = {
+  type: TBitloopsPrimaryType;
+} & TDomainPrivateMethodValues;
+
+export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
+  TOkErrorReturnType;
+
 export type TDomainPrivateMethod = {
-  privateMethod: {
-    identifier: TIdentifier;
-    parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TBitloopsPrimaryType | TOkErrorReturnTypeValues;
-    statements: TStatements;
-  };
+  privateMethod:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType;
 };
 
 export type TDomainPublicMethods = TDomainPublicMethod[];
@@ -600,12 +610,14 @@ export type TErrorIdentifier = {
 };
 export type TErrorIdentifiers = TErrorIdentifier[];
 
-export type TOkErrorReturnTypeValues = {
-  errors: TErrorIdentifiers;
-} & TReturnOkType;
+// export type TOkErrorReturnTypeValues = {
+//   errors: TErrorIdentifiers;
+// } & TReturnOkType;
 
 export type TOkErrorReturnType = {
-  returnType: TOkErrorReturnTypeValues;
+  returnType: {
+    errors: TErrorIdentifiers;
+  } & TReturnOkType;
 };
 
 export type TDomainCreateMethod = {

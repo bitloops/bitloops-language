@@ -1,4 +1,3 @@
-import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import { TDomainPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -15,10 +14,6 @@ const domainPublicMethod = (methodInfo: TDomainPublicMethod): TTargetDependencie
     type: BitloopsTypesMapping.TParameterDependencies,
     value: parameters,
   });
-
-  if (!isOkErrorReturnType(returnType)) {
-    throw new Error('Method return type is wrong!');
-  }
 
   const mappedReturnType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,

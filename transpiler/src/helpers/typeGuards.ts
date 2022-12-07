@@ -14,8 +14,8 @@ import {
   TRESTServerInstance,
   ControllerTypeOfDefinition,
   TIfStatement,
-  TOkErrorReturnTypeValues,
-  TBitloopsPrimaryType,
+  TDomainPrivateMethodValuesOkErrorReturnType,
+  TDomainPrivateMethodValuesPrimaryReturnType,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -63,11 +63,12 @@ const controllerDefinitionIsGraphQL = (
   else return false;
 };
 
-// returnType: string | TOkErrorReturnType,
-const isOkErrorReturnType = (
-  returnType: TBitloopsPrimaryType | TOkErrorReturnTypeValues,
-): returnType is TOkErrorReturnTypeValues => {
-  if (typeof returnType !== 'string' && 'ok' in returnType) return true;
+const hasOkErrorReturnType = (
+  privateMethodValues:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType,
+): privateMethodValues is TDomainPrivateMethodValuesOkErrorReturnType => {
+  if ('returnType' in privateMethodValues) return true;
   else return false;
 };
 
@@ -160,7 +161,7 @@ export {
   isGraphQLController,
   controllerDefinitionIsRest,
   controllerDefinitionIsGraphQL,
-  isOkErrorReturnType,
+  hasOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
   isThisDeclaration,

@@ -24,7 +24,7 @@ export class PrivateMethodBuilderDirector {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))
-      .withReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+      .withPrimaryReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
       .withStatements(new StatementListDirector().buildOneBooleanReturnStatement(booleanValue))
       .build();
   }

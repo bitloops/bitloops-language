@@ -2,8 +2,10 @@ import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/
 import {
   TBitloopsPrimaryType,
   TDomainPrivateMethod,
+  TDomainPrivateMethodValuesOkErrorReturnType,
+  TDomainPrivateMethodValuesPrimaryReturnType,
   TIdentifier,
-  TOkErrorReturnTypeValues,
+  TOkErrorReturnType,
   TParameterDependencies,
   TStatements,
 } from '../../../../../src/types.js';
@@ -11,7 +13,8 @@ import {
 export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
   private identifier: TIdentifier;
   private parameters: TParameterDependencies;
-  private returnType: TOkErrorReturnTypeValues | TBitloopsPrimaryType;
+  private primaryReturnType: TBitloopsPrimaryType;
+  private okErrorReturnType: TOkErrorReturnType;
   private statements: TStatements;
 
   public withIdentifier(identifier: TIdentifier): PrivateMethodBuilder {
@@ -24,10 +27,13 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     return this;
   }
 
-  public withReturnType(
-    returnType: TOkErrorReturnTypeValues | TBitloopsPrimaryType,
-  ): PrivateMethodBuilder {
-    this.returnType = returnType;
+  public withPrimaryReturnType(primaryReturnType: TBitloopsPrimaryType): PrivateMethodBuilder {
+    this.primaryReturnType = primaryReturnType;
+    return this;
+  }
+
+  public withOkErrorReturnType(okErrorReturnType: TOkErrorReturnType): PrivateMethodBuilder {
+    this.okErrorReturnType = okErrorReturnType;
     return this;
   }
 
@@ -37,15 +43,28 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
   }
 
   public build(): TDomainPrivateMethod {
-    const privateMethod = {
-      privateMethod: {
-        identifier: this.identifier,
-        parameters: this.parameters,
-        returnType: this.returnType,
-        statements: this.statements,
-      },
+    const privateMethodValues = {
+      identifier: this.identifier,
+      parameters: this.parameters,
+      statements: this.statements,
     };
 
-    return privateMethod;
+    if (this.primaryReturnType) {
+      const privateMethodPrimary =
+        privateMethodValues as TDomainPrivateMethodValuesPrimaryReturnType;
+      privateMethodPrimary.type = this.primaryReturnType;
+      return {
+        privateMethod: privateMethodPrimary,
+      };
+    } else if (this.okErrorReturnType) {
+      const privateMethodOkError =
+        privateMethodValues as TDomainPrivateMethodValuesOkErrorReturnType;
+      privateMethodOkError.returnType = this.okErrorReturnType.returnType;
+      return {
+        privateMethod: privateMethodOkError,
+      };
+    } else {
+      throw new Error('Choose one returnType');
+    }
   }
 }

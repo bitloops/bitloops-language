@@ -20,7 +20,7 @@
 import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
 import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
+import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import { TDomainPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -38,22 +38,22 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
     type: BitloopsTypesMapping.TParameterDependencies,
     value: methodInfo.privateMethod.parameters,
   });
-  const mappedReturnTypeOutput = methodInfo.privateMethod.returnType;
+  const privateMethodValues = methodInfo.privateMethod;
   let mappedReturnType;
 
-  if (isOkErrorReturnType(mappedReturnTypeOutput)) {
+  if (hasOkErrorReturnType(privateMethodValues)) {
     const resOkErrorReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TOkErrorReturnType,
-      value: mappedReturnTypeOutput,
+      value: privateMethodValues.returnType,
     });
     mappedReturnType = {
       output: resOkErrorReturnType.output,
       dependencies: resOkErrorReturnType.dependencies,
     };
   } else {
-    if (isBitloopsPrimitive(mappedReturnTypeOutput)) {
+    if (isBitloopsPrimitive(privateMethodValues.type)) {
       mappedReturnType = {
-        output: bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](mappedReturnTypeOutput),
+        output: bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](privateMethodValues.type),
         dependencies: [],
       };
     }

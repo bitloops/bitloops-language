@@ -27,8 +27,8 @@ import {
   TParameterDependency,
   TParameterDependencies,
 } from '../../../../types.js';
-import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
-import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
+// import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
+// import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 
 type UseCaseExecuteDeclarationResult = { returnTypes: TOkErrorReturnType; execute: TExecute };
 
@@ -42,9 +42,9 @@ export const useCaseDeclarationVisitor = (
     ctx.useCaseExecuteDeclaration(),
   );
   const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
-  const { statements } = execute;
+  // const { statements } = execute;
 
-  addReturnOkVoidStatement(statements, returnTypes.returnType);
+  // addReturnOkVoidStatement(statements, returnTypes.returnType);
 
   const result = {
     UseCases: {
@@ -66,16 +66,16 @@ export const useCaseExecuteDeclarationVisitor = (
   const parameterList: TParameterDependency[] = thisVisitor.visit(ctx.parameterList());
   const { statements } = thisVisitor.visit(ctx.functionBody());
 
-  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
-    statements,
-    returnTypes.returnType,
-  );
+  // const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
+  //   statements,
+  //   returnTypes.returnType,
+  // );
 
   return {
     returnTypes,
     execute: {
       parameterDependencies: parameterList,
-      statements: statementsWithModifiedReturn,
+      statements,
     },
   };
 };
