@@ -8,7 +8,7 @@ import { IBuilder } from '../IBuilder.js';
 export class ReadModelNodeBuilder implements IBuilder<ReadModelNode> {
   private readModel: ReadModelNode;
   private identifierNode: ReadModelIdentifierNode;
-  private variablesNode: FieldListNode;
+  private fieldListNode: FieldListNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -23,15 +23,15 @@ export class ReadModelNodeBuilder implements IBuilder<ReadModelNode> {
     return this;
   }
 
-  public withVariables(fieldListNode: FieldListNode): ReadModelNodeBuilder {
-    this.variablesNode = fieldListNode;
+  public withFields(fieldListNode: FieldListNode): ReadModelNodeBuilder {
+    this.fieldListNode = fieldListNode;
     return this;
   }
 
   public build(): ReadModelNode {
     this.intermediateASTTree.insertChild(this.readModel);
     this.intermediateASTTree.insertChild(this.identifierNode);
-    this.intermediateASTTree.insertSibling(this.variablesNode);
+    this.intermediateASTTree.insertSibling(this.fieldListNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
     this.readModel.buildObjectValue();

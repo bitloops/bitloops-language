@@ -213,7 +213,7 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('ReadModel')) {
     return {
-      classType: ClassTypes.ReadModels,
+      classType: ClassTypes.ReadModel,
     };
   }
   //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
