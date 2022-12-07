@@ -1,4 +1,8 @@
-import { TBitloopsIdentifier, TOkErrorReturnType } from '../../../../src/types.js';
+import {
+  TBitloopsIdentifier,
+  TBitloopsPrimitives,
+  TOkErrorReturnType,
+} from '../../../../src/types.js';
 import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { ReturnOkErrorTypeBuilder } from './returnOkErrorType.js';
 
@@ -24,6 +28,15 @@ export class ReturnOkErrorTypeBuilderDirector {
   ): TOkErrorReturnType {
     return this.builder
       .withOk(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(identifierPrimaryType))
+      .withErrors([])
+      .build();
+  }
+
+  buildReturnOkErrorWithPrimitiveOkAndNoErrors(
+    primitivePrimaryType: TBitloopsPrimitives,
+  ): TOkErrorReturnType {
+    return this.builder
+      .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(primitivePrimaryType))
       .withErrors([])
       .build();
   }

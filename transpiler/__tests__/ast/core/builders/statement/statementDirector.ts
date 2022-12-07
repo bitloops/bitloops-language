@@ -21,6 +21,7 @@ import {
   TArgumentList,
   TBreakStatement,
   TConstDeclaration,
+  TEvaluationFields,
   TExpression,
   TReturnStatement,
   TStatement,
@@ -134,6 +135,18 @@ export class StatementDirector {
       }),
     );
   }
+
+  buildExpressionEntityEvaluationWithFields(
+    entityName: string,
+    fields: TEvaluationFields,
+  ): TExpression {
+    return new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        fields,
+      }),
+    );
+  }
+
   /**
    * this.save(response , 'Hello World!');
    */
