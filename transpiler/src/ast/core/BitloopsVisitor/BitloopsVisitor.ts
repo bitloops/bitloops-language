@@ -34,8 +34,6 @@ import {
   TDefinitionMethods,
   TValueObjectValues,
   TConstDeclaration,
-  TUseCase,
-  TDomainPublicMethod,
   TReadModels,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
