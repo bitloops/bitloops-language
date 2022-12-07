@@ -4,12 +4,8 @@ Entity TodoEntity {
     }  
     
     complete(): (OK(TodoEntity), Errors()) {     
-        return TodoEntity({id: '7', title: 'Super important'});   
-    }   
-    
-    // uncomplete(): (OK(void), Errors()) {     
-    //     this.completed = false;
-    // }   
+        return TodoEntity({id: 7, title: 'Super important'});   
+    }
     
     isValidName(name: string): bool { 
         return true;

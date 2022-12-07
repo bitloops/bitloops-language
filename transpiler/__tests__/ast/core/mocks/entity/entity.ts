@@ -14,9 +14,9 @@ const __dirname = dirname(__filename);
 
 export const validEntityTestCases = [
   {
-    description: 'Entity with optional field containing array type',
+    description: 'Entity with public and private method',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(`${__dirname}/entity.bl`).toString(),
+    inputBLString: fs.readFileSync(`${__dirname}/entityPrivatePublicMethod.bl`).toString(),
     expected: new EntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -31,7 +31,7 @@ export const validEntityTestCases = [
           )
           .withPrivateMethods([
             new PrivateMethodBuilderDirector().buildMethodWithStringParamsAndBooleanReturnType({
-              methodName: 'invalidName',
+              methodName: 'isValidName',
               booleanValue: true,
               paramName: 'name',
             }),
