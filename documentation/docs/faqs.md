@@ -2,9 +2,9 @@
 sidebar_position: 6
 ---
 
-# FAQs
+# FAQ
 
-Below you'll find answers to the questions Bitloops gets asked the most. These are mostly related to the Bitloops Language. If you're unable to find your question/answer here, then please join our [discord community](https://discord.gg/vj8EdZx8gK) and ask one of the Bitloops team members directly - we would be glad to help! Alternatively, you may review our [Reference](), [How-to Guides](), [Tutorials](), or search the [GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions) as the answer may be available in one of them. 
+Below you'll find answers to the questions Bitloops gets asked the most. These are mostly related to the Bitloops Language. If you're unable to find your question/answer here, then please join our [discord community](https://discord.gg/vj8EdZx8gK) and ask one of the Bitloops team members directly - we would be glad to help! Alternatively, you may review our [Reference](https://github.com/bitloops/bitloops-language/discussions), [How-to Guides](https://github.com/bitloops/bitloops-language/discussions), [Tutorials](https://github.com/bitloops/bitloops-language/discussions), or search the [GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions) as the answer may be available in one of them. 
 
 We do aim to add more answers here in the near future!
 
@@ -69,4 +69,4 @@ We are eager to receive your feedback and incorporate it into the Bitloops Langu
 One of our major decisions is which are going to be the supported transpiled languages and adding more support for them.
 
 ___
-If you believe we should add additional FAQs here, please send us an email to [hello@bitloops.com](hello@bitloops.com)
+If you believe we should add additional FAQs here, please send us an email to [hello@bitloops.com](mailto:hello@bitloops.com)

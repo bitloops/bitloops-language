@@ -7,6 +7,7 @@ sidebar_position: 7
 The Bitloops team is eager to provide as much support as possible to all our users. Therefore, we have created many options from which you can choose to obtain help using Bitloops Language
 
 &nbsp;
+&nbsp;
 
 ### 🗺 Community
 
@@ -20,6 +21,8 @@ ___
 
 GitHub has several great features, one of which is [Discussions](https://github.com/bitloops/bitloops-language/discussions) which is a community forum for deeper conversations about features, connectors, or problems. Feel free to ask and/or answer any questions. This is also an opportunity to share updates and have open-ended conversations about Bitloops and your Bitloops project.  
 
+&nbsp;
+&nbsp;
 ___
 
 &nbsp;
@@ -30,6 +33,8 @@ As an open source programming language, we are keen on obtaining contribution fr
 
 This is also where you can report issue or bugs you may encounter whilst using Bitloops Language. We only ask you follow the provided [templates](https://github.com/bitloops/bitloops-language/issues/new/choose)
 
+&nbsp;
+&nbsp;
 ___
 
 &nbsp;
@@ -40,6 +45,8 @@ The Bitloops team wants to help as much as possible, so we also provide you with
 
 In this session we can help you understand Bitloops Language better, or even help you solve a particular problem you may be facing. You will be speaking directly with a Bitloops Software Engineer! 
 
+&nbsp;
+&nbsp;
 ___
 
 &nbsp;
@@ -50,6 +57,8 @@ Well, if you're reading this, then you found the [Bitloops Documentation](https:
 
 We know there should be more documentation, but bear with us, the team is still small. However, if you're keen on contributing, we would love some help with documentation, examples or tutorials! Let us know if you're interested via discord or directly via email!
 
+&nbsp;
+&nbsp;
 ___
 
 &nbsp;
