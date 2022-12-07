@@ -19,11 +19,11 @@
  */
 import {
   TUseCase,
-  TUseCaseValues,
   TExecute,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
+  UseCaseKey,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -67,7 +67,7 @@ const initialUseCase = (
 };
 
 const useCaseValuesToTargetLanguage = (
-  variable: TUseCaseValues,
+  variable: TUseCase,
   useCaseName: string,
 ): TTargetDependenciesTypeScript => {
   let dependencies: TDependenciesTypeScript = [
@@ -90,10 +90,9 @@ const useCaseValuesToTargetLanguage = (
       from: '@bitloops/bl-boilerplate-core',
     },
   ];
-  const { execute, returnType, parameterDependencies } = variable;
-  const useCaseInputType = execute.parameterDependencies[0]
-    ? execute.parameterDependencies[0].parameter.type
-    : null;
+  const { execute, parameters } = variable[UseCaseKey];
+  const { returnType } = execute;
+  const useCaseInputType = execute.parameters[0] ? execute.parameters[0].parameter.type : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
   const useCaseReturnTypesResult = modelToTargetLanguage({
@@ -104,7 +103,7 @@ const useCaseValuesToTargetLanguage = (
 
   const useCaseDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
-    value: parameterDependencies,
+    value: parameters,
   });
   dependencies = [...dependencies, ...useCaseDependenciesResult.dependencies];
 
@@ -129,7 +128,10 @@ const useCaseValuesToTargetLanguage = (
   );
 
   // TODO fix dependencies (statements, and  execute.parameterDependencies[0], e.g input DTO)
-  const executeResult = useCaseExecuteToTargetLanguage(variable.execute, useCaseResponseTypeName);
+  const executeResult = useCaseExecuteToTargetLanguage(
+    variable[UseCaseKey].execute,
+    useCaseResponseTypeName,
+  );
 
   result += executeResult.output;
   result += '}';
@@ -147,10 +149,10 @@ const useCaseExecuteToTargetLanguage = (
   variable: TExecute,
   responseTypeName: string,
 ): TTargetDependenciesTypeScript => {
-  const { parameterDependencies, statements } = variable;
+  const { parameters, statements } = variable;
   const parameterDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
-    value: parameterDependencies,
+    value: parameters,
   });
 
   const statementsResult = modelToTargetLanguage({

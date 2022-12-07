@@ -282,7 +282,17 @@ export type TCondition = {
   condition: TExpression;
 };
 
-export type TDomainErrors = Record<string, TDomainError>;
+export const DomainErrorKey = 'DomainError';
+export const DomainErrorIdentifier = 'identifier';
+export type TErrorMessage = { message: TExpression };
+export type TErrorId = { errorId: TExpression };
+export type TDomainErrors = {
+  [DomainErrorKey]: {
+    [DomainErrorIdentifier]: TIdentifier;
+    parameters?: TParameterDependencies;
+  } & TErrorMessage &
+    TErrorId;
+};
 
 export type TApplicationError = {
   message: TExpression; // TBackTickString | TString;
@@ -380,10 +390,6 @@ export type TEntityEvaluation = {
   entity: TDomainEvaluation;
 };
 
-// export type TDomainEvaluation = {
-//   props: TEvaluationFields | TRegularEvaluation;
-//   name: string;
-// };
 export type TDomainEvaluation = {
   domainEvaluation: {
     name: string;
@@ -445,11 +451,21 @@ export type TToStringExpression = {
 export type TLiteral = {
   literal: TLiteralValues;
 };
-export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+/* 🔧 TODO: add 'T' prefix */
+export type TLiteralValues =
+  | StringLiteral
+  | BooleanLiteral
+  | TNumericLiteral
+  | NullLiteral
+  | TemplateStringLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
 };
+export type TemplateStringLiteral = {
+  templateStringLiteral: string;
+};
+
 export type BooleanLiteral = {
   booleanLiteral: string;
 };
@@ -660,7 +676,8 @@ export type TStructDeclaration = {
 };
 
 export type TExecute = {
-  parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
+  parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
+  returnType: TOkErrorReturnTypeValues;
   statements: TStatements;
 };
 
@@ -677,12 +694,17 @@ export type TDTO = {
 
 export type TStruct = Record<string, TStructDeclaration>;
 
-export type TUseCaseValues = {
-  execute: TExecute;
-  parameterDependencies: TParameterDependencies; // TODO maybe make this optional
-} & TOkErrorReturnType;
+export const UseCaseKey = 'UseCase';
+export type TUseCaseIdentifier = string;
+export const UseCaseIdentifierKey = 'UseCaseIdentifier';
 
-export type TUseCase = Record<string, TUseCaseValues>;
+export type TUseCase = {
+  [UseCaseKey]: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+    execute: TExecute;
+    parameters: TParameterDependencies; // TODO maybe make this optional
+  };
+};
 
 export type TBaseControllerValues = {
   // useCase?: string;

@@ -40,7 +40,6 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TDomainPublicMethod,
-  TUseCase,
   TReadModels,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -179,6 +178,9 @@ import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/Re
 import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
 import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
 import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
+import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
+import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -233,6 +235,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return structIdentifierNode;
+  }
+
+  visitUseCaseIdentifier(ctx: BitloopsParser.UseCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UseCaseIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const useCaseIdentifierNode = new UseCaseIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return useCaseIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
@@ -355,10 +366,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
-    return {
-      type: 'backTickString',
-      value: value,
-    };
+    return templateStringEvaluation(value);
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
@@ -396,7 +404,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
-
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
     return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
@@ -502,7 +509,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return evaluationFieldVisitor(this, ctx);
   }
 
-  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+  visitEvaluationFieldList(
+    ctx: BitloopsParser.EvaluationFieldListContext,
+  ): EvaluationFieldListNode {
     return evaluationFieldListVisitor(this, ctx);
   }
 
@@ -860,7 +869,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * UseCase Declaration
    */
-  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
     return useCaseDeclarationVisitor(this, ctx);
   }
   visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {

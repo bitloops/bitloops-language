@@ -21,9 +21,12 @@ import {
   TArgumentList,
   TBreakStatement,
   TConstDeclaration,
+  TExpression,
+  TReturnStatement,
   TStatement,
 } from '../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
+import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
 
 export class StatementDirector {
@@ -66,6 +69,52 @@ export class StatementDirector {
     );
   }
 
+  buildConstDeclarationWithValueObject({
+    name,
+    valueObjectIdentifier,
+    valueObjectFields,
+  }: {
+    name: string;
+    valueObjectIdentifier: string;
+    valueObjectFields: { identifier: string; expression: TExpression }[];
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithValueObjectEvaluation({
+      name,
+      valueObjectIdentifier,
+      fields: [
+        new EvaluationFieldBuilderDirector().buildEvaluationField(
+          valueObjectFields[0].identifier,
+          valueObjectFields[0].expression,
+        ),
+      ],
+    });
+  }
+
+  buildConstDeclarationWithEntity({
+    name,
+    entityIdentifier,
+    entityFields,
+  }: {
+    name: string;
+    entityIdentifier: string;
+    entityFields: { identifier: string; expression: TExpression }[];
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithEntityEvaluation({
+      name,
+      entityIdentifier,
+      fields: [
+        new EvaluationFieldBuilderDirector().buildEvaluationField(
+          entityFields[0].identifier,
+          entityFields[0].expression,
+        ),
+        new EvaluationFieldBuilderDirector().buildEvaluationField(
+          entityFields[1].identifier,
+          entityFields[1].expression,
+        ),
+      ],
+    });
+  }
+
   buildBreakStatement(): TBreakStatement {
     return {
       breakStatement: 'break',
@@ -80,5 +129,11 @@ export class StatementDirector {
       methodName,
     );
     return new ExpressionBuilderDirector().buildMethodCallExpression(methodExpr, args);
+  }
+
+  buildReturnStatement(expression: TExpression): TReturnStatement {
+    return {
+      return: expression,
+    };
   }
 }
