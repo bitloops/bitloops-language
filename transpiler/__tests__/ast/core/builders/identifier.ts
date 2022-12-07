@@ -13,6 +13,10 @@ export class IdentifierBuilder implements IBuilder<TIdentifier> {
     this.name = name;
     return this;
   }
+  withName(name: string): IdentifierBuilder {
+    this.name = name;
+    return this;
+  }
 
   public build(): TIdentifier {
     return this.name;

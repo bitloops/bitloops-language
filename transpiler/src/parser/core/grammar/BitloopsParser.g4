@@ -780,7 +780,7 @@ domainRuleBody
 ;
 
 domainRuleDeclaration
-: Rule domainRuleIdentifier parameterList? Throws ErrorIdentifier OpenBrace domainRuleBody CloseBrace
+: Rule domainRuleIdentifier parameterList? Throws errorIdentifier OpenBrace domainRuleBody CloseBrace
 ;
 
 aggregateDeclaration

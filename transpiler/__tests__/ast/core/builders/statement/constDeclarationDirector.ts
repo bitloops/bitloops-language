@@ -121,6 +121,22 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
 
+  buildConstDeclarationWithMemberDotExpression({
+    name,
+    rightMembers,
+  }: {
+    name: string;
+    rightMembers: string[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildMemberExpressionOutOfVariables(...rightMembers),
+      )
+      .build();
+    return constDeclaration;
+  }
+
   buildConstDeclarationWithDTOEvaluation({
     name,
     dtoIdentifier,

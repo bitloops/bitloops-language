@@ -1,5 +1,5 @@
-import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import { TIfStatement, TExpression, TStatements } from '../../../../src/types.js';
+import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
+import { TIfStatement, TExpression, TStatements } from '../../../../../src/types.js';
 
 export class IfStatementBuilder implements IBuilder<TIfStatement> {
   private condition: TExpression;

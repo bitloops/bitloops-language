@@ -39,12 +39,12 @@ export const evaluationFieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EvaluationFieldListContext,
 ): EvaluationFieldListNode => {
-  const evaluationFieldsAndCommas = thisVisitor.visitChildren(ctx);
-  const evaluationFields = evaluationFieldsAndCommas.filter(
-    (evaluationFieldOrComma) => evaluationFieldOrComma !== undefined,
-  );
+  const evaluationFields = ctx.evaluationField(null);
+  const evaluationFieldsVisitor = evaluationFields.map((field) => {
+    return thisVisitor.visit(field);
+  });
   const evaluationFieldListNode = new EvaluationFieldListNodeBuilder()
-    .withEvaluationFields(evaluationFields)
+    .withEvaluationFields(evaluationFieldsVisitor)
     .build();
 
   return evaluationFieldListNode;

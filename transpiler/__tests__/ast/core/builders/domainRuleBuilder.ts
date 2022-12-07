@@ -1,0 +1,55 @@
+import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
+import {
+  TDomainRule,
+  TParameterDependencies,
+  TStatements,
+  TExpression,
+  TCondition,
+} from '../../../../src/types.js';
+
+export class DomainRuleBuilder implements IBuilder<TDomainRule> {
+  private domainRuleIdentifier: string;
+  private parametersList: TParameterDependencies;
+  private error: string;
+  private statements: TStatements;
+  private isBrokenIfCondition: TCondition;
+
+  public withIdentifier(identifierName: string): DomainRuleBuilder {
+    this.domainRuleIdentifier = identifierName;
+    return this;
+  }
+
+  public withParameters(params: TParameterDependencies): DomainRuleBuilder {
+    this.parametersList = params;
+    return this;
+  }
+
+  public withThrowsError(error: string): DomainRuleBuilder {
+    this.error = error;
+    return this;
+  }
+
+  public withBodyStatements(statements: TStatements): DomainRuleBuilder {
+    this.statements = statements;
+    return this;
+  }
+
+  public withIsBrokenIfCondition(condition: TExpression): DomainRuleBuilder {
+    this.isBrokenIfCondition = { condition };
+    return this;
+  }
+
+  public build(): TDomainRule {
+    const domainRule = {
+      DomainRule: {
+        domainRuleIdentifier: this.domainRuleIdentifier,
+        parameters: this.parametersList,
+        error: this.error,
+        statements: this.statements,
+        isBrokenIfCondition: this.isBrokenIfCondition,
+      },
+    };
+
+    return domainRule;
+  }
+}

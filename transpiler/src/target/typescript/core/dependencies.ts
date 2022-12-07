@@ -146,7 +146,7 @@ export const getValueAndFileNameOfImport = (
       fileName: 'index',
     };
   }
-  if (classType === ClassTypes.Rules) {
+  if (classType === ClassTypes.DomainRule) {
     return {
       value: 'Rules',
       fileName: 'index',
@@ -209,7 +209,7 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('Rule')) {
     return {
-      classType: ClassTypes.Rules,
+      classType: ClassTypes.DomainRule,
     };
   } else if (dependencyName.endsWith('ReadModel')) {
     return {

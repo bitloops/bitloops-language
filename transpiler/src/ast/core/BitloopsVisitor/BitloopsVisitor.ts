@@ -43,7 +43,6 @@ import {
   TDomainPrivateMethod,
   TConstDeclaration,
   TDomainPublicMethod,
-  TRules,
   TReadModels,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -152,6 +151,7 @@ import {
   parameterListVisitor,
   parameterVisitor,
   parameterArgIdentifierVisitor,
+  isBrokenConditionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -163,7 +163,7 @@ import { EntityDeclarationNode } from '../intermediate-ast/nodes/Entity/EntityDe
 import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
 import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
-import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRuleIdentifierBuilder.js';
+import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRule/DomainRuleIdentifierBuilder.js';
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
@@ -176,6 +176,8 @@ import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorTy
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
 import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
+import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -361,10 +363,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
-    return {
-      type: 'backTickString',
-      value: value,
-    };
+    return templateStringEvaluation(value);
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
@@ -402,7 +401,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
     return integerEvaluation(ctx.IntegerLiteral().getText())[0];
   }
-
   visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
     return decimalEvaluation(ctx.DecimalLiteral().getText());
   }
@@ -508,7 +506,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return evaluationFieldVisitor(this, ctx);
   }
 
-  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+  visitEvaluationFieldList(
+    ctx: BitloopsParser.EvaluationFieldListContext,
+  ): EvaluationFieldListNode {
     return evaluationFieldListVisitor(this, ctx);
   }
 
@@ -803,12 +803,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
-    return domainRuleDeclarationVisitor(this, ctx);
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): void {
+    domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
     return domainRuleBodyVisitor(this, ctx);
+  }
+
+  visitIsBrokenStatement(ctx: BitloopsParser.IsBrokenStatementContext): any {
+    return isBrokenConditionVisitor(this, ctx);
   }
 
   visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {

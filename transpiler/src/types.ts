@@ -33,7 +33,7 @@ export type TModule = {
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
   Packages?: TPackages;
-  Rules?: TRules;
+  DomainRule?: TDomainRule;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
   ReadModels?: TReadModels;
@@ -52,7 +52,7 @@ export type TClassType =
   | 'DTOs'
   | 'Structs'
   | 'Packages'
-  | 'Rules'
+  | 'DomainRule'
   | 'RepoPorts'
   | 'RepoAdapters'
   | 'ReadModels';
@@ -69,7 +69,7 @@ export type TComponentType =
   | 'TDTOs'
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
-  | 'TRules'
+  | 'TDomainRule'
   | 'TRepoPorts'
   | 'TRepoAdapters'
   | 'TReadModels';
@@ -263,17 +263,36 @@ export type TDomainError = {
   errorId: TExpression;
   parameters?: TParameterDependencies;
 };
-// TODO finalize TRule
-export type TRule = {
-  parameters?: TParameterDependencies;
-  error: string;
-  statements: TStatements;
-  isBrokenIfCondition: TCondition;
+
+export type TDomainRule = {
+  DomainRule: {
+    domainRuleIdentifier: string;
+    parameters?: TParameterDependencies;
+    error: string;
+    statements: TStatements;
+    isBrokenIfCondition: TCondition;
+  };
 };
 
-export type TRules = Record<string, TRule>;
+/**
+ * This type exists because not all expressions work as a condition, only the ones that evaluate to boolean.
+ * (at least in most languages)
+ */
+export type TCondition = {
+  condition: TExpression;
+};
 
-export type TDomainErrors = Record<string, TDomainError>;
+export const DomainErrorKey = 'DomainError';
+export const DomainErrorIdentifier = 'identifier';
+export type TErrorMessage = { message: TExpression };
+export type TErrorId = { errorId: TExpression };
+export type TDomainErrors = {
+  [DomainErrorKey]: {
+    [DomainErrorIdentifier]: TIdentifier;
+    parameters?: TParameterDependencies;
+  } & TErrorMessage &
+    TErrorId;
+};
 
 export type TApplicationError = {
   message: TExpression; // TBackTickString | TString;
@@ -334,10 +353,6 @@ export type TMethodCallExpression = {
 
 export type TEvaluation = {
   evaluation: TEvaluationValues;
-};
-
-export type TCondition = {
-  condition: TExpression;
 };
 
 export type TIfStatement = {
@@ -436,11 +451,21 @@ export type TToStringExpression = {
 export type TLiteral = {
   literal: TLiteralValues;
 };
-export type TLiteralValues = StringLiteral | BooleanLiteral | TNumericLiteral | NullLiteral;
+/* 🔧 TODO: add 'T' prefix */
+export type TLiteralValues =
+  | StringLiteral
+  | BooleanLiteral
+  | TNumericLiteral
+  | NullLiteral
+  | TemplateStringLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
 };
+export type TemplateStringLiteral = {
+  templateStringLiteral: string;
+};
+
 export type BooleanLiteral = {
   booleanLiteral: string;
 };
@@ -525,7 +550,7 @@ export type TBreakStatement = {
 
 export type TAppliedRule = {
   appliedRule: {
-    name: string;
+    domainRuleIdentifier: string;
     argumentList: TArgumentList;
   };
 };
