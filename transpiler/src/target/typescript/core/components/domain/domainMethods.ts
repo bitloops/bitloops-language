@@ -1,9 +1,7 @@
 import {
-  TDomainMethods,
-  TDomainMethod,
-  TDomainPrivateMethod,
-  TDomainPublicMethod,
   TTargetDependenciesTypeScript,
+  TDomainPrivateMethods,
+  TDomainPublicMethods,
 } from '../../../../../types.js';
 import { domainPublicMethod } from './domainPublicMethod.js';
 import { domainPrivateMethod } from './index.js';
@@ -11,22 +9,41 @@ import { domainPrivateMethod } from './index.js';
 /**
  * Public & private methods
  */
-export const domainMethods = (domainMethods: TDomainMethods): TTargetDependenciesTypeScript => {
+export const domainMethods = (
+  publicMethods: TDomainPublicMethods,
+  privateMethods: TDomainPrivateMethods,
+): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
 
-  for (const [methodName, methodInfo] of Object.entries(domainMethods)) {
-    if (isPrivateMethod(methodInfo)) {
-      const model = domainPrivateMethod(methodName, methodInfo);
-      result += model.output;
-      dependencies = [...dependencies, ...model.dependencies];
-    } else if (isPublicMethod(methodInfo)) {
-      const model = domainPublicMethod(methodName, methodInfo);
-      result += model.output;
-      dependencies = [...dependencies, ...model.dependencies];
-    } else {
-      throw new Error(`Unknown method type for method ${methodName}`);
-    }
+  if (privateMethods) {
+    const privateResult = domainPrivateMethods(privateMethods);
+    result += privateResult.output;
+    dependencies = [...dependencies, ...privateResult.dependencies];
+  }
+
+  if (publicMethods) {
+    const publicResult = domainPublicMethods(publicMethods);
+    result += publicResult.output;
+    dependencies = [...dependencies, ...publicResult.dependencies];
+  }
+
+  return {
+    output: result,
+    dependencies,
+  };
+};
+
+export const domainPrivateMethods = (
+  domainPrivateMethods: TDomainPrivateMethods,
+): TTargetDependenciesTypeScript => {
+  let result = '';
+  let dependencies = [];
+
+  for (const method of domainPrivateMethods) {
+    const model = domainPrivateMethod(method);
+    result += model.output;
+    dependencies = [...dependencies, ...model.dependencies];
   }
   return {
     output: result,
@@ -34,10 +51,19 @@ export const domainMethods = (domainMethods: TDomainMethods): TTargetDependencie
   };
 };
 
-const isPrivateMethod = (methodInfo: TDomainMethod): methodInfo is TDomainPrivateMethod => {
-  return 'privateMethod' in methodInfo;
-};
+const domainPublicMethods = (
+  domainPublicMethods: TDomainPublicMethods,
+): TTargetDependenciesTypeScript => {
+  let result = '';
+  let dependencies = [];
 
-const isPublicMethod = (methodInfo: TDomainMethod): methodInfo is TDomainPublicMethod => {
-  return 'publicMethod' in methodInfo;
+  for (const method of domainPublicMethods) {
+    const model = domainPublicMethod(method);
+    result += model.output;
+    dependencies = [...dependencies, ...model.dependencies];
+  }
+  return {
+    output: result,
+    dependencies,
+  };
 };

@@ -19,13 +19,14 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TReturnType, TOkErrorReturnType } from '../../../../types.js';
 
 export const returnPrivateMethodTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
-): TReturnType | TOkErrorReturnType => {
+): BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode => {
   if (ctx.returnOkErrorType()) {
     return thisVisitor.visit(ctx.returnOkErrorType());
   }

@@ -20,11 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TValueObjectValues,
-  TConstDeclarationValue,
-  TValueObjectMethods,
-} from '../../../../types.js';
+import { TValueObjectValues, TConstDeclarationValue } from '../../../../types.js';
 
 export const valueObjectDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -35,7 +31,7 @@ export const valueObjectDeclarationVisitor = (
   const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
     ctx.domainConstDeclarationList(),
   );
-  const methods: TValueObjectMethods = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const methods = thisVisitor.visit(ctx.privateMethodDeclarationList());
   const result = {
     ValueObjects: {
       [valueObjectIdentifier]: {

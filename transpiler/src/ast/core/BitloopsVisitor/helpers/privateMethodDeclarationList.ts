@@ -20,19 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TValueObjectMethods } from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
+import { PrivateMethodDeclarationListNodeBuilder } from '../../intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
+import { PrivateMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 
 export const privateMethodDeclarationListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PrivateMethodDeclarationListContext,
-): TValueObjectMethods => {
-  const result: TValueObjectMethods = {};
+): PrivateMethodDeclarationListNode => {
   const visitChildren = thisVisitor.visitChildren(ctx);
-  if (!visitChildren) {
-    return {};
-  }
-  for (const child of visitChildren) {
-    result[child.methodName] = child.methodInfo;
-  }
-  return result;
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const privateMethodListNode = new PrivateMethodDeclarationListNodeBuilder(metadata)
+    .withMethods(visitChildren)
+    .build();
+  return privateMethodListNode;
 };

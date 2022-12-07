@@ -32,13 +32,8 @@ import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
   TDefinitionMethods,
-  TOkErrorReturnType,
   TValueObjectValues,
-  TValueObjectMethods,
-  TReturnType,
-  TDomainPrivateMethod,
   TConstDeclaration,
-  TDomainPublicMethod,
   TReadModels,
 } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
@@ -158,7 +153,6 @@ import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/if
 import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
 import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
-import { EntityDeclarationNode } from '../intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
 import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
@@ -174,6 +168,11 @@ import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers
 import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { PublicMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
+import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
+import { BitloopsPrimaryTypeNode } from '../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
 import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
 import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
@@ -734,10 +733,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return valueObjectDeclarationVisitor(this, ctx);
   }
 
-  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): {
-    Entities: EntityDeclarationNode;
-  } {
-    return entityDeclarationVisitor(this, ctx);
+  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): void {
+    entityDeclarationVisitor(this, ctx);
   }
 
   visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext) {
@@ -763,14 +760,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   // Public method declaration
   visitPublicMethodDeclarationList(
     ctx: BitloopsParser.PublicMethodDeclarationListContext,
-  ): Record<string, TDomainPublicMethod> {
+  ): PublicMethodDeclarationListNode {
     return publicMethodDeclarationListVisitor(this, ctx);
   }
 
-  visitPublicMethodDeclaration(ctx: BitloopsParser.PublicMethodDeclarationContext): {
-    methodName: string;
-    methodInfo: TDomainPublicMethod;
-  } {
+  visitPublicMethodDeclaration(
+    ctx: BitloopsParser.PublicMethodDeclarationContext,
+  ): PublicMethodDeclarationNode {
     return publicMethodDeclarationVisitor(this, ctx);
   }
 
@@ -778,20 +774,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitPrivateMethodDeclarationList(
     ctx: BitloopsParser.PrivateMethodDeclarationListContext,
-  ): TValueObjectMethods {
+  ): PrivateMethodDeclarationListNode {
     return privateMethodDeclarationListVisitor(this, ctx);
   }
 
-  visitPrivateMethodDeclaration(ctx: BitloopsParser.PrivateMethodDeclarationContext): {
-    methodName: string;
-    methodInfo: TDomainPrivateMethod;
-  } {
+  visitPrivateMethodDeclaration(
+    ctx: BitloopsParser.PrivateMethodDeclarationContext,
+  ): PrivateMethodDeclarationNode {
     return privateMethodDeclarationVisitor(this, ctx);
   }
 
   visitReturnPrivateMethodType(
     ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
-  ): TReturnType | TOkErrorReturnType {
+  ): BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 
@@ -869,14 +864,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
    * UseCase Declaration
    */
   visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
-    return useCaseDeclarationVisitor(this, ctx);
+    useCaseDeclarationVisitor(this, ctx);
   }
   visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
     return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 
   visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): void {
-    return structDeclarationVisitor(this, ctx);
+    structDeclarationVisitor(this, ctx);
   }
 
   visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {

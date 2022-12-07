@@ -22,7 +22,7 @@ export class UseCaseExecuteBuilderDirector {
             new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('HelloWorldResponseDTO'),
           )
           .withErrors([])
-          .build().returnType,
+          .build(),
       )
       .withStatements([
         new StatementDirector().buildReturnStatement(
@@ -55,7 +55,7 @@ export class UseCaseExecuteBuilderDirector {
             ),
           )
           .withErrors([])
-          .build().returnType,
+          .build(),
       )
       .withStatements([
         new StatementDirector().buildConstDeclarationWithValueObject({
@@ -108,7 +108,7 @@ export class UseCaseExecuteBuilderDirector {
         new ReturnOkErrorTypeBuilder()
           .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
           .withErrors([])
-          .build().returnType,
+          .build(),
       )
       .withStatements([
         new StatementDirector().buildConstDeclarationWithValueObject({

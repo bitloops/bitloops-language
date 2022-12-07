@@ -1,13 +1,15 @@
 import { DomainCreateNode } from '../../nodes/Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { ParameterNode } from '../../nodes/ParameterList/ParameterNode.js';
+import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../nodes/statements/StatementList.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class DomainCreateNodeBuilder implements IBuilder<DomainCreateNode> {
   private domainCreateNode: DomainCreateNode;
   private statementListNode?: StatementListNode;
-  private returnTypeNode: any; //TODO ReturnOkErrorTypeNode
-  private parameterListNode?: any; //TODO ParameterListNode
+  private returnTypeNode: ReturnOkErrorTypeNode;
+  private parameterNode: ParameterNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.domainCreateNode = new DomainCreateNode(metadata);
@@ -18,20 +20,20 @@ export class DomainCreateNodeBuilder implements IBuilder<DomainCreateNode> {
     return this;
   }
 
-  public withReturnType(returnTypeNode: any): DomainCreateNodeBuilder {
+  public withReturnType(returnTypeNode: ReturnOkErrorTypeNode): DomainCreateNodeBuilder {
     this.returnTypeNode = returnTypeNode;
     return this;
   }
 
-  public withParameters(parameterListNode: any): DomainCreateNodeBuilder {
-    this.parameterListNode = parameterListNode;
+  public withParameter(parameterNode: ParameterNode): DomainCreateNodeBuilder {
+    this.parameterNode = parameterNode;
     return this;
   }
 
   public build(): DomainCreateNode {
     this.domainCreateNode.addChild(this.returnTypeNode);
+    this.domainCreateNode.addChild(this.parameterNode);
     if (this.statementListNode) this.domainCreateNode.addChild(this.statementListNode);
-    if (this.parameterListNode) this.domainCreateNode.addChild(this.parameterListNode);
 
     this.domainCreateNode.buildObjectValue();
 
