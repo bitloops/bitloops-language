@@ -835,7 +835,8 @@ start();
           `Controller ${controllerClassName} in bounded context ${boundedContext} module ${module} is not a GraphQL controller`,
         );
       }
-      const { operationType, operationName, inputType, outputType } = controller;
+      const { operationType, operationName, inputType } = controller.GraphQLController;
+      const outputType = controller.GraphQLController.execute.returnType;
       const constructedResolver = {
         boundedContext,
         module,

@@ -21,10 +21,11 @@ import {
   TParameterDependencies,
   TRESTControllerExecute,
   TRestMethods,
-} from '../../../../src/types.js';
-import { StatementDirector } from '../builders/statement/statementDirector.js';
-import { ArgumentBuilderDirector } from '../builders/argumentDirector.js';
-import { ParameterBuilderDirector } from '../builders/ParameterBuilderDirector.js';
+} from '../../../../../src/types.js';
+import { StatementDirector } from '../../builders/statement/statementDirector.js';
+import { ArgumentBuilderDirector } from '../../builders/argumentDirector.js';
+import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
+import { RestExecuteBuilder } from '../../builders/controllers/restControllerExecuteBuilder copy.js';
 
 type RestControllerDeclarationTestCase = {
   description: string;
@@ -49,15 +50,15 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
     RESTControllerIdentifier: 'HelloWorldController',
     parameters: [],
     method: 'GET',
-    execute: {
-      dependencies: ['request', 'response'],
-      statements: [
+    execute: new RestExecuteBuilder()
+      .withRequestReply('request', 'response')
+      .withStatements([
         new StatementDirector().buildThisMethodCall('ok', [
           new ArgumentBuilderDirector().buildIdentifierArgument('response'),
           new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
         ]),
-      ],
-    },
+      ])
+      .build(),
   },
   {
     description: 'Controller with 1 useCase dependency',
@@ -77,9 +78,9 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
       ),
     ],
     method: 'POST',
-    execute: {
-      dependencies: ['request', 'response'],
-      statements: [
+    execute: new RestExecuteBuilder()
+      .withRequestReply('request', 'response')
+      .withStatements([
         new StatementDirector().buildConstDeclarationWithMemberDotMethodCall({
           name: 'result',
           memberDotMembers: ['helloWorldUseCase', 'execute'],
@@ -89,7 +90,7 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
           new ArgumentBuilderDirector().buildIdentifierArgument('response'),
           new ArgumentBuilderDirector().buildIdentifierArgument('result'),
         ]),
-      ],
-    },
+      ])
+      .build(),
   },
 ];

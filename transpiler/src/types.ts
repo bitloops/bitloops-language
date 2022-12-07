@@ -728,14 +728,16 @@ export type TRESTControllerExecute = {
 
 export type TRESTControllerDependencies = [string, string]; // e.g. (request, reply)
 
-type GraphQLControllerName = string;
-export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControllerValues>;
+export type GraphQLControllerIdentifier = string;
 
-export type TGraphQLControllerValues = TBaseControllerValues & {
-  inputType: null | string;
-  operationType: TGraphQLOperation;
-  operationName: string;
-  execute: TGraphQLControllerExecute;
+export type TGraphQLController = {
+  GraphQLController: TBaseControllerValues & {
+    GraphQLControllerIdentifier: GraphQLControllerIdentifier;
+    inputType: null | string;
+    operationType: TGraphQLOperation;
+    operationName: string;
+    execute: TGraphQLControllerExecute;
+  };
 };
 
 export type TGraphQLControllerExecute = {

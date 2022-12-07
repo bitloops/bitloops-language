@@ -22,7 +22,6 @@ import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser
 import BitloopsVisitor from '../../../BitloopsVisitor.js';
 import { GraphQLControllerIdentifierNode } from '../../../../intermediate-ast/nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
 import { TGraphQLResolverOptions } from './graphQLResolverOptions.js';
-import { GraphQLOperationNameNodeBuilder } from '../../../../intermediate-ast/builders/controllers/graphQL/GraphQLOperationNameNodeBuilder.js';
 import { GraphQLControllerNodeBuilder } from '../../../../intermediate-ast/builders/controllers/graphQL/GraphQLControllerNodeBuilder.js';
 import { produceMetadata } from '../../../metadata.js';
 import { GraphQLControllerExecuteNode } from '../../../../intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteNode.js';
@@ -41,12 +40,6 @@ export const graphQLControllerDeclarationVisitor = (
     ctx.graphQLControllerExecuteDeclaration(),
   );
 
-  // Operation name is auto-generated from the controller name
-  const operationName = getOperationName(identifierNode.identifierName);
-  const operationNameNode = new GraphQLOperationNameNodeBuilder()
-    .withOperationName(operationName)
-    .build();
-
   new GraphQLControllerNodeBuilder(
     thisVisitor.intermediateASTTree,
     produceMetadata(ctx, thisVisitor),
@@ -54,15 +47,7 @@ export const graphQLControllerDeclarationVisitor = (
     .withIdentifier(identifierNode)
     .withInputType(graphQLInputTypeNode)
     .withOperationType(graphQLOperationTypeNode)
-    .withOperationName(operationNameNode)
     .withDependencies(dependencies)
     .withExecuteNode(executeNode)
     .build();
-};
-
-const getOperationName = (controllerName: string): string => {
-  const suffixLength = 'Controller'.length;
-  const operationNamePascal = controllerName.substring(0, controllerName.length - suffixLength);
-  const operationName = operationNamePascal.charAt(0).toLowerCase() + operationNamePascal.slice(1);
-  return operationName;
 };

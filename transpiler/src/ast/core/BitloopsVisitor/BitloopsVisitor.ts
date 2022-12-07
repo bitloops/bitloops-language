@@ -31,7 +31,6 @@ import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
-  TGraphQLControllerExecute,
   TDefinitionMethods,
   TOkErrorReturnType,
   TValueObjectValues,

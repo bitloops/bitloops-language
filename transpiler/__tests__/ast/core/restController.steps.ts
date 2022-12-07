@@ -24,8 +24,8 @@ import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
-import { validRestControllerStatementTestCases } from './mocks/restController.js';
-import { RestControllerBuilder } from './builders/controllers/RestControllerBuilder.js';
+import { validRestControllerStatementTestCases } from './mocks/controllers/restController.js';
+import { RestControllerBuilder } from './builders/controllers/restControllerBuilder.js';
 import {
   TParameterDependencies,
   TRESTController,
