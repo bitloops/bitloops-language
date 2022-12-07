@@ -244,10 +244,7 @@ export class SetupTypeScript implements ISetup {
   private generateDIControllersImports(controllers: TControllerOfModule): string {
     let result = '';
     for (const controllerName of Object.keys(controllers)) {
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.Controllers,
-        controllerName,
-      );
+      const { path, filename } = getFilePathRelativeToModule(ClassTypes.Controller, controllerName);
       result += `import { ${controllerName} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;
@@ -838,7 +835,8 @@ start();
           `Controller ${controllerClassName} in bounded context ${boundedContext} module ${module} is not a GraphQL controller`,
         );
       }
-      const { operationType, operationName, inputType, outputType } = controller;
+      const { operationType, operationName, inputType } = controller.GraphQLController;
+      const outputType = controller.GraphQLController.execute.returnType;
       const constructedResolver = {
         boundedContext,
         module,

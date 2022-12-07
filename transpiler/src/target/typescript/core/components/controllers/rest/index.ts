@@ -141,7 +141,7 @@ const restControllersToTargetLanguage = (
 
   dependencies = [...dependencies, ...executeDependencies];
   const parentDependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.Controllers,
+    classType: ClassTypes.Controller,
     className: controllerName,
   });
   return { output: result, dependencies: parentDependencies };

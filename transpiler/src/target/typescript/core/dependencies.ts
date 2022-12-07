@@ -181,7 +181,7 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('Controller')) {
     return {
-      classType: ClassTypes.Controllers,
+      classType: ClassTypes.Controller,
     };
   } else if (dependencyName.endsWith('UseCase')) {
     return {

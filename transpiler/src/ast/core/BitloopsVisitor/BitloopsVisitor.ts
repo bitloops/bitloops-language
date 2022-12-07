@@ -31,10 +31,6 @@ import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
 import {
-  TRESTControllerDependencies,
-  TRESTControllerExecute,
-  TGraphQLControllerExecute,
-  TGraphQLOperation,
   TDefinitionMethods,
   TOkErrorReturnType,
   TValueObjectValues,
@@ -152,6 +148,9 @@ import {
   parameterVisitor,
   parameterArgIdentifierVisitor,
   isBrokenConditionVisitor,
+  graphQLOperationTypeVisitor,
+  graphQLOperationInputTypeVisitor,
+  graphQLExecuteDependenciesVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -175,6 +174,9 @@ import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers
 import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
+import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
+import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
 import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
@@ -600,20 +602,32 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRestControllerExecuteDeclaration(
     ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-  ): { execute: TRESTControllerExecute } {
+  ): any {
     return restControllerExecuteDeclarationVisitor(this, ctx);
   }
 
   visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
     return restControllerMethodDeclarationVisitor(this, ctx);
   }
+  visitRestControllerIdentifier(ctx: BitloopsParser.RestControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
 
-  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): {
-    dependencies: TRESTControllerDependencies;
-  } {
-    return {
-      dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
-    };
+  visitGraphQLControllerIdentifier(ctx: BitloopsParser.GraphQLControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new GraphQLControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
+
+  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerDependenciesNodeBuilder(metadata)
+      .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
+      .build();
   }
 
   // GraphQLControllerDeclaration
@@ -621,8 +635,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLControllerDeclarationVisitor(this, ctx);
   }
 
-  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): any {
-    return restControllerDeclarationVisitor(this, ctx);
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): void {
+    restControllerDeclarationVisitor(this, ctx);
   }
 
   visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {
@@ -631,20 +645,22 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGraphQLControllerExecuteDeclaration(
     ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
-  ): TGraphQLControllerExecute {
+  ) {
     return graphQLControllerExecuteVisitor(this, ctx);
   }
 
-  visitGraphQLOperationTypeAssignment(
-    ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext,
-  ): TGraphQLOperation {
-    return ctx.graphQLOperation().getText();
+  visitGraphQLControllerParameters(ctx: BitloopsParser.GraphQLControllerParametersContext): any {
+    return graphQLExecuteDependenciesVisitor(this, ctx);
+  }
+
+  visitGraphQLOperationTypeAssignment(ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext) {
+    return graphQLOperationTypeVisitor(this, ctx);
   }
 
   visitGraphQLOperationInputTypeAssignment(
     ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
-  ): string {
-    return ctx.graphQLResolverInputType().getText();
+  ) {
+    return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
   visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
