@@ -18,4 +18,13 @@ export class ReturnOkErrorTypeBuilderDirector {
       .withErrors([{ error }])
       .build();
   }
+
+  buildReturnOkErrorWithIdentifierOkAndNoErrors(
+    identifierPrimaryType: TBitloopsIdentifier,
+  ): TOkErrorReturnType {
+    return this.builder
+      .withOk(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(identifierPrimaryType))
+      .withErrors([])
+      .build();
+  }
 }

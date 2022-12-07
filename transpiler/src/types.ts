@@ -247,8 +247,6 @@ export type TBitloopsPrimaryType =
   | TBitloopsIdentifierObject
   | ArrayBitloopsPrimTypeObject;
 
-export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
-
 export type TBackTickString = {
   backTickString: string;
   // TODO add support for inside expressions
@@ -574,8 +572,9 @@ export type TDomainPrivateMethods = TDomainPrivateMethod[];
 
 export type TDomainPrivateMethod = {
   privateMethod: {
-    parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TReturnType | TOkErrorReturnTypeValues;
+    identifier: TIdentifier;
+    parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
+    returnType: TBitloopsPrimaryType | TOkErrorReturnTypeValues;
     statements: TStatements;
   };
 };
@@ -584,14 +583,11 @@ export type TDomainPublicMethods = TDomainPublicMethod[];
 
 export type TDomainPublicMethod = {
   publicMethod: {
-    parameterDependencies: TParameterDependencies;
+    identifier: TIdentifier;
+    parameters: TParameterDependencies;
     statements: TStatements;
   } & TOkErrorReturnType;
 };
-
-export type TValueObjectMethodInfo = TDomainPrivateMethod;
-
-export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TReturnOkType = {
   ok: {
@@ -619,16 +615,11 @@ export type TDomainCreateMethod = {
     TParameterDependency;
 };
 
-type TDomainMethodName = string;
-
-export type TDomainMethod = TDomainPublicMethod | TDomainPrivateMethod;
-export type TDomainMethods = Record<TDomainMethodName, TDomainMethod>;
-
 export type TValueObjectCreate = TDomainCreateMethod;
 
 export type TValueObjectValues = {
-  constantVars: TConstDeclarationValue[]; //TConstantVariable[];
-  methods: TValueObjectMethods;
+  constants?: TConstDeclarationValue[]; //TConstantVariable[];
+  privateMethods?: TDomainPrivateMethods;
 } & TValueObjectCreate;
 
 export type TValueObjects = Record<string, TValueObjectValues>;
@@ -642,11 +633,10 @@ export type TEntity = {
 };
 
 export type TEntityValues = {
-  constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
-  methods?: TEntityMethods;
+  constants?: TConstDeclarationValue[]; // TConstantVariable[];
+  publicMethods?: TDomainPublicMethods;
+  privateMethods?: TDomainPrivateMethods;
 } & TEntityCreate;
-
-export type TEntityMethods = TDomainMethods;
 
 export type TEntityCreate = TDomainCreateMethod;
 
@@ -980,7 +970,7 @@ export type TPackagePort = {
 
 export type TDefinitionMethodInfo = {
   parameterDependencies: TParameterDependencies;
-  returnType: TReturnType;
+  returnType: TBitloopsPrimaryType;
 };
 
 export type TPackages = Record<string, TPackage>;

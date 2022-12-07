@@ -17,8 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TStatements } from '../../../../../src/types.js';
+import { TEvaluationFields, TStatements } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
+import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { StatementDirector } from './statementDirector.js';
 
@@ -58,5 +59,34 @@ export class StatementListDirector {
         ),
       ),
     ];
+  }
+
+  buildOneBooleanReturnStatement(boolValue: boolean): TStatements {
+    const expression = new ExpressionBuilderDirector().buildBooleanLiteralExpression(boolValue);
+    return [new StatementDirector().buildReturnStatement(expression)];
+  }
+
+  buildOneReturnStatementEntityEvaluation(
+    entityName: string,
+    identifierValue: string,
+  ): TStatements {
+    const expressionEntityEvaluation = new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
+      }),
+    );
+    return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
+  }
+
+  buildOneReturnStatementEntityEvaluationWithFields(
+    entityName: string,
+    fields: TEvaluationFields,
+  ): TStatements {
+    const expressionEntityEvaluation = new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        fields,
+      }),
+    );
+    return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
   }
 }

@@ -68,7 +68,7 @@ export const rootEntitiesToTargetLanguage = (params: {
   let dependencies = ROOT_ENTITY_DEPENDENCIES;
 
   for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
-    const { create, methods, constantVars } = rootEntity;
+    const { create, privateMethods, publicMethods, constants } = rootEntity;
     const propsNameType = create.parameter.type;
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error('Root entity cannot take array as props yet.');
@@ -80,9 +80,9 @@ export const rootEntitiesToTargetLanguage = (params: {
       });
     dependencies = [...dependencies, ...rootEntityPropsTypeDependencies];
 
-    if (constantVars) {
+    if (constants) {
       // TODO fix with new model/types
-      const constantVariablesModel = constantVariables(constantVars as any);
+      const constantVariablesModel = constantVariables(constants as any);
       res += constantVariablesModel.output;
       dependencies = [...dependencies, ...constantVariablesModel.dependencies];
     }
@@ -96,15 +96,18 @@ export const rootEntitiesToTargetLanguage = (params: {
     res += aggregateCreateModel.output;
     dependencies = [...dependencies, ...aggregateCreateModel.dependencies];
 
-    const gettersModel = generateGetters(propsName, modelForContext, methods);
+    const gettersModel = generateGetters({
+      propsName,
+      model: modelForContext,
+      privateMethods,
+      publicMethods,
+    });
     res += gettersModel.output;
     dependencies = [...dependencies, ...gettersModel.dependencies];
 
-    if (methods) {
-      const entityMethodsModel = domainMethods(methods);
-      res += entityMethodsModel.output;
-      dependencies = [...dependencies, ...entityMethodsModel.dependencies];
-    }
+    const entityMethodsModel = domainMethods(publicMethods, privateMethods);
+    res += entityMethodsModel.output;
+    dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
     res += '}';
 

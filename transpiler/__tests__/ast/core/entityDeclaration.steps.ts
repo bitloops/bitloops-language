@@ -17,55 +17,94 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { validEntityTestCases } from './mocks/entity/entity.js';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-const feature = loadFeature('./__tests__/ast/core/entityDeclaration.feature');
+describe('Entity declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-defineFeature(feature, (test) => {
-  test('Entity declaration is valid', ({ given, when, then }) => {
-    let blString: string;
-    let boundedContext: string;
-    let module: string;
-    let modelOutput: string;
-    let result: any;
-    given(
-      /^A Valid bounded context (.*), module (.*), Entity declaration (.*) string$/,
-      (arg0, arg1, arg2) => {
-        boundedContext = d(arg0);
-        module = d(arg1);
-        blString = d(arg2);
-      },
-    );
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validEntityTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const entityNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TEntity);
+      const value = entityNodes[0].getValue();
+
+      expect(value).toMatchObject(testCase.expected);
+      expect(entityNodes.length).toBe(1);
     });
   });
 });
+
+// describe('Entity declaration with multiple entities is valid', () => {
+//   let resultTree: IntermediateASTTree;
+
+//   const parser = new BitloopsParser();
+//   const intermediateParser = new BitloopsIntermediateASTParser();
+
+//   validMultipleDTOSTestCases.forEach((testDTO) => {
+//     test(`${testDTO.description}`, () => {
+//       const initialModelOutput = parser.parse([
+//         {
+//           boundedContext: BOUNDED_CONTEXT,
+//           module: MODULE,
+//           fileId: testDTO.fileId,
+//           fileContents: testDTO.inputBLString,
+//         },
+//       ]);
+
+//       if (!isBitloopsParserError(initialModelOutput)) {
+//         const result = intermediateParser.parse(initialModelOutput);
+//         if (!isBitloopsIntermediateASTError(result)) {
+//           resultTree = result[BOUNDED_CONTEXT][MODULE];
+//         }
+//       }
+//       const expectedNodeValues = getExpectedDTOOutputMultipleDTOS([
+//         { variables: testDTO.variables[0], identifier: testDTO.identifier[0] },
+//         { variables: testDTO.variables[1], identifier: testDTO.identifier[1] },
+//       ]);
+//       const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+//       const values = dtoNodes.map((node) => node.getValue());
+
+//       expect(values).toMatchObject(expectedNodeValues);
+//     });
+//   });
+// });
+
+// type multipleDTOS = { variables: TVariable[]; identifier: TDTOIdentifier }[];
+
+// const getExpectedDTOOutputMultipleDTOS = (dtos: multipleDTOS) => {
+//   const resultDTOS = [];
+//   for (const { identifier, variables } of dtos) {
+//     const dtoValue = new DTODeclarationBuilder()
+//       .withIdentifier(identifier)
+//       .withVariables(variables)
+//       .build();
+//     resultDTOS.push(dtoValue);
+//   }
+
+//   return resultDTOS;
+// };

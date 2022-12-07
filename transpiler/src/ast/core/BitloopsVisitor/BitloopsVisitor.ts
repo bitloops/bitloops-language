@@ -36,9 +36,7 @@ import {
   TGraphQLControllerExecute,
   TGraphQLOperation,
   TDefinitionMethods,
-  TOkErrorReturnType,
   TValueObjectValues,
-  TReturnType,
   TConstDeclaration,
   TUseCase,
   TReadModels,
@@ -157,7 +155,6 @@ import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/if
 import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
 import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
-import { EntityDeclarationNode } from '../intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
 import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
@@ -177,6 +174,7 @@ import { PublicMethodDeclarationListNode } from '../intermediate-ast/nodes/metho
 import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
+import { BitloopsPrimaryTypeNode } from '../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -710,10 +708,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return valueObjectDeclarationVisitor(this, ctx);
   }
 
-  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): {
-    Entities: EntityDeclarationNode;
-  } {
-    return entityDeclarationVisitor(this, ctx);
+  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): void {
+    entityDeclarationVisitor(this, ctx);
   }
 
   visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext) {
@@ -765,7 +761,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitReturnPrivateMethodType(
     ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
-  ): TReturnType | TOkErrorReturnType {
+  ): BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 

@@ -23,6 +23,8 @@ import {
   TExpression,
   TReturnStatement,
 } from '../../../../../src/types.js';
+import { EvaluationBuilderDirector } from '../evaluationDirector.js';
+import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
 import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
@@ -61,5 +63,13 @@ export class StatementDirector {
 
   buildReturnStatement(expression: TExpression): TReturnStatement {
     return new ReturnStatementBuilder().withExpression(expression).build();
+  }
+
+  buildExpressionEntityEvaluation(entityName: string, identifierValue: string): TExpression {
+    return new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
+      }),
+    );
   }
 }

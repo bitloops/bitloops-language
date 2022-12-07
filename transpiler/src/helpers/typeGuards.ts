@@ -1,8 +1,5 @@
 import {
   TConstDeclaration,
-  TDomainMethod,
-  TDomainPrivateMethod,
-  TDomainPublicMethod,
   TThisDeclaration,
   TExpression,
   TReturnStatement,
@@ -18,6 +15,7 @@ import {
   ControllerTypeOfDefinition,
   TIfStatement,
   TOkErrorReturnTypeValues,
+  TBitloopsPrimaryType,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -67,7 +65,7 @@ const controllerDefinitionIsGraphQL = (
 
 // returnType: string | TOkErrorReturnType,
 const isOkErrorReturnType = (
-  returnType: string | TOkErrorReturnTypeValues,
+  returnType: TBitloopsPrimaryType | TOkErrorReturnTypeValues,
 ): returnType is TOkErrorReturnTypeValues => {
   if (typeof returnType !== 'string' && 'ok' in returnType) return true;
   else return false;
@@ -89,16 +87,6 @@ const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration
   if (typeof value === 'string') return false;
   if ('variableDeclaration' in value) return true;
   return false;
-};
-
-const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
-  if ('publicMethod' in value) return true;
-  else return false;
-};
-
-const isDomainPrivateMethod = (value: TDomainMethod): value is TDomainPrivateMethod => {
-  if ('privateMethod' in value) return true;
-  else return false;
 };
 
 const isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
@@ -175,8 +163,6 @@ export {
   isOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
-  isDomainPublicMethod,
-  isDomainPrivateMethod,
   isThisDeclaration,
   isExpression,
   isSwitchStatement,

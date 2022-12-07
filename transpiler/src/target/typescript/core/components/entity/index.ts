@@ -21,8 +21,9 @@ import {
   TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
+  TDomainPrivateMethods,
+  TDomainPublicMethods,
   TEntity,
-  TEntityMethods,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
@@ -54,8 +55,12 @@ const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   },
 ];
 
-const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
-  const result = domainMethods(objectValueMethods);
+const entityMethods = (
+  privateMethods: TDomainPrivateMethods,
+  publicMethods: TDomainPublicMethods,
+): TTargetDependenciesTypeScript => {
+  const result = domainMethods(publicMethods, privateMethods);
+
   return { output: result.output, dependencies: result.dependencies };
 };
 
@@ -77,7 +82,8 @@ const entityToTargetLanguage = (params: {
   let dependencies = ENTITY_DEPENDENCIES;
 
   const { entityValues, entityIdentifier } = entity.Entity;
-  const { methods, create, constantVars } = entityValues;
+  const { privateMethods, publicMethods, create, constants } = entityValues;
+
   const propsNameType = create.parameter.type;
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
     throw new Error(`Entity props type of ${entityIdentifier} cannot be an array`);
@@ -89,9 +95,9 @@ const entityToTargetLanguage = (params: {
 
   dependencies = [...dependencies, ...propsTypeDependencies];
 
-  if (constantVars) {
+  if (constants) {
     // TODO fix with new model/types
-    const constantVariablesModel = constantVariables(constantVars as any);
+    const constantVariablesModel = constantVariables(constants as any);
     result += constantVariablesModel.output;
     dependencies = [...dependencies, ...constantVariablesModel.dependencies];
   }
@@ -105,15 +111,18 @@ const entityToTargetLanguage = (params: {
   result += entityCreateModel.output;
   dependencies = [...dependencies, ...entityCreateModel.dependencies];
 
-  const gettersModel = generateGetters(propsName, modelForContext, methods);
+  const gettersModel = generateGetters({
+    propsName,
+    model: modelForContext,
+    publicMethods,
+    privateMethods,
+  });
   result += gettersModel.output;
   dependencies = [...dependencies, ...gettersModel.dependencies];
 
-  if (methods) {
-    const entityMethodsModel = entityMethods(methods);
-    result += entityMethodsModel.output;
-    dependencies = [...dependencies, ...entityMethodsModel.dependencies];
-  }
+  const entityMethodsModel = entityMethods(privateMethods, publicMethods);
+  result += entityMethodsModel.output;
+  dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   result += '}';
 

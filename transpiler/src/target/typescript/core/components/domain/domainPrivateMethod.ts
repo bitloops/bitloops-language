@@ -25,10 +25,7 @@ import { TDomainPrivateMethod, TTargetDependenciesTypeScript } from '../../../..
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainPrivateMethod = (
-  methodName: string,
-  methodInfo: TDomainPrivateMethod,
-): TTargetDependenciesTypeScript => {
+const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;
@@ -39,7 +36,7 @@ const domainPrivateMethod = (
 
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
-    value: methodInfo.privateMethod.parameterDependencies,
+    value: methodInfo.privateMethod.parameters,
   });
   const mappedReturnTypeOutput = methodInfo.privateMethod.returnType;
   let mappedReturnType;
@@ -70,7 +67,7 @@ const domainPrivateMethod = (
     return `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
   };
   const result = ToLanguageMapping(
-    methodName,
+    privateMethod.identifier,
     mappedReturnType.output as string,
     parametersString.output,
     statementsString.output,
