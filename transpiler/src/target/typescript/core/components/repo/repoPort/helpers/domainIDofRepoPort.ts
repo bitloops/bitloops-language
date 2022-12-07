@@ -56,7 +56,7 @@ export const findIdOfRepoDomainObject = (
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     return idTypeRes;
-  } else if (type === ClassTypes.ReadModels) {
+  } else if (type === ClassTypes.ReadModel) {
     const readModel = bitloopsModel[boundedContext][module][type][repoDependencyName];
     if (!readModel) {
       throw new Error(`${type} ${repoDependencyName} not found`);

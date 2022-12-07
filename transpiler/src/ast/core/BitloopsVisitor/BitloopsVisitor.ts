@@ -30,12 +30,7 @@ import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js'
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
-import {
-  TDefinitionMethods,
-  TValueObjectValues,
-  TConstDeclaration,
-  TReadModels,
-} from '../../../types.js';
+import { TDefinitionMethods, TValueObjectValues, TConstDeclaration } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
 import { BreakStatementNode } from './../intermediate-ast/nodes/statements/BreakStatementNode.js';
@@ -179,6 +174,7 @@ import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/buil
 import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
+import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -902,10 +898,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Read model
    */
-  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): {
-    ReadModels: TReadModels;
-  } {
-    return readModelDeclarationVisitor(this, ctx);
+  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): void {
+    readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitReadModelIdentifier(ctx: BitloopsParser.ReadModelIdentifierContext) {
+    return new ReadModelIdentifierNodeBuilder(produceMetadata(ctx, this))
+      .withName(ctx.ReadModelIdentifier().getText())
+      .build();
   }
 
   visitBitloopsPrimaryType(ctx: BitloopsParser.BitloopsPrimaryTypeContext) {

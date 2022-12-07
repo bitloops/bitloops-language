@@ -36,7 +36,7 @@ export type TModule = {
   DomainRule?: TDomainRule;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
-  ReadModels?: TReadModels;
+  ReadModel?: TReadModel;
 };
 
 // TODO merge with TClassTypesValues from `transpiler/src/helpers/mappings.ts`
@@ -132,12 +132,9 @@ export type TVariable = {
   };
 };
 
-// export type TPropsValues = {
-//   variables: TVariables;
-// };
-
-// export type TProps = Record<string, TPropsValues>;
-
+/**
+ * Props
+ */
 export type TPropsIdentifier = string;
 export const PropsIdentifierKey = 'PropsIdentifier';
 
@@ -149,10 +146,18 @@ export type TProps = {
   };
 };
 
-export type TReadModelValues = {
-  variables: TVariables;
+/**
+ * Read Model
+ */
+export type TReadModelIdentifier = string;
+export const ReadModelIdentifierKey = 'ReadModelIdentifier';
+export const ReadModelKey = 'ReadModel';
+export type TReadModel = {
+  [ReadModelKey]: {
+    [ReadModelIdentifierKey]: TReadModelIdentifier;
+    [fieldsKey]: TVariables;
+  };
 };
-export type TReadModels = Record<string, TReadModelValues>;
 
 export type TParamDependencyType = TBitloopsPrimaryType;
 

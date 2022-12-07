@@ -93,7 +93,7 @@ const getPropsModel = (
     propsModel = module.Props[aggregatePropsName];
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
     const { readModelName } = repoPortInfo;
-    const readModelValues = module.ReadModels[readModelName];
+    const readModelValues = module.ReadModel[readModelName];
     propsModel = readModelValues;
   } else {
     throw new Error(`Invalid repo port ${JSON.stringify(repoPortInfo)}`);

@@ -832,7 +832,11 @@ propsDeclaration
 
 
 readModelDeclaration
-    : ReadModel ReadModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    ;
+
+readModelIdentifier
+    : ReadModelIdentifier
     ;
 
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;

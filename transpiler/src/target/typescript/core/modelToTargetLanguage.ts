@@ -168,7 +168,7 @@ const modelToTargetLanguage = (props: {
       res = propsToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TReadModels: {
+    case BitloopsTypesMapping.TReadModel: {
       res = readModelsToTargetLanguage(value);
       break;
     }

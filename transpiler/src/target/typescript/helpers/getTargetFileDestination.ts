@@ -43,7 +43,7 @@ enum PROJECT_RELATIVE_PATHS {
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Props]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.ReadModels]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.ReadModel]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.RootEntities]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
@@ -101,7 +101,7 @@ const getTargetFileDestination = (
   switch (classType) {
     case ClassTypes.RootEntities:
     case ClassTypes.Entity:
-    case ClassTypes.ReadModels:
+    case ClassTypes.ReadModel:
     case ClassTypes.ValueObjects:
     case ClassTypes.DomainErrors:
     case ClassTypes.ApplicationErrors:
@@ -134,7 +134,7 @@ const getFilePathRelativeToModule = (
   };
   switch (classType) {
     case ClassTypes.Props:
-    case ClassTypes.ReadModels:
+    case ClassTypes.ReadModel:
     case ClassTypes.RootEntities:
     case ClassTypes.Entity:
     case ClassTypes.ValueObjects:
