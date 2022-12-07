@@ -40,4 +40,107 @@ export class UseCaseExecuteBuilderDirector {
 
     return useCaseExecuteDeclaration;
   }
+
+  buildExecuteWithDomainEvaluations(executeReturnTypes: {
+    identifierOK: string;
+    identifierError?: string;
+  }): TExecute {
+    const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
+      .withParameterList([])
+      .withReturnType(
+        new ReturnOkErrorTypeBuilder()
+          .withOk(
+            new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+              executeReturnTypes.identifierOK,
+            ),
+          )
+          .withErrors([])
+          .build().returnType,
+      )
+      .withStatements([
+        new StatementDirector().buildConstDeclarationWithValueObject({
+          name: 'title',
+          valueObjectIdentifier: 'TitleVO',
+          valueObjectFields: [
+            {
+              identifier: 'title',
+              expression: new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('requestDTO'),
+                'title',
+              ),
+            },
+          ],
+        }),
+        new StatementDirector().buildConstDeclarationWithEntity({
+          name: 'todo',
+          entityIdentifier: 'TodoEntity',
+          entityFields: [
+            {
+              identifier: 'title',
+              expression: new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+            },
+            {
+              identifier: 'completed',
+              expression: new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
+            },
+          ],
+        }),
+        new StatementDirector().buildReturnStatement(
+          new ExpressionBuilderDirector().buildEvaluation(
+            new EvaluationBuilderDirector().buildDTOEvaluation('CreateTodoResponseDTO', [
+              new EvaluationFieldBuilderDirector().buildEvaluationField(
+                'message',
+                new ExpressionBuilderDirector().buildIdentifierExpression('todo'),
+              ),
+            ]),
+          ),
+        ),
+      ])
+      .build();
+
+    return useCaseExecuteDeclaration;
+  }
+
+  buildExecuteWithDomainEvaluationsAndNoReturn(): TExecute {
+    const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
+      .withParameterList([])
+      .withReturnType(
+        new ReturnOkErrorTypeBuilder()
+          .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+          .withErrors([])
+          .build().returnType,
+      )
+      .withStatements([
+        new StatementDirector().buildConstDeclarationWithValueObject({
+          name: 'title',
+          valueObjectIdentifier: 'TitleVO',
+          valueObjectFields: [
+            {
+              identifier: 'title',
+              expression: new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('requestDTO'),
+                'title',
+              ),
+            },
+          ],
+        }),
+        new StatementDirector().buildConstDeclarationWithEntity({
+          name: 'todo',
+          entityIdentifier: 'TodoEntity',
+          entityFields: [
+            {
+              identifier: 'title',
+              expression: new ExpressionBuilderDirector().buildIdentifierExpression('title'),
+            },
+            {
+              identifier: 'completed',
+              expression: new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
+            },
+          ],
+        }),
+      ])
+      .build();
+
+    return useCaseExecuteDeclaration;
+  }
 }

@@ -18,4 +18,34 @@ export class UseCaseBuilderDirector {
 
     return useCase;
   }
+
+  buildUseCaseWithDomainDeclarations({
+    identifier,
+    executeReturnTypes,
+  }: {
+    identifier: string;
+    executeReturnTypes: { identifierOK: string; identifierError?: string };
+  }): TUseCase {
+    const useCase = this.useCaseBuilder
+      .withIdentifier(identifier)
+      .withParameterList([])
+      .withExecute(
+        new UseCaseExecuteBuilderDirector().buildExecuteWithDomainEvaluations(executeReturnTypes),
+      )
+      .build();
+
+    return useCase;
+  }
+
+  buildUseCaseWithoutErrorAndReturnTypeVoid({ identifier }: { identifier: string }): TUseCase {
+    const useCase = this.useCaseBuilder
+      .withIdentifier(identifier)
+      .withParameterList([])
+      .withExecute(
+        new UseCaseExecuteBuilderDirector().buildExecuteWithDomainEvaluationsAndNoReturn(),
+      )
+      .build();
+
+    return useCase;
+  }
 }
