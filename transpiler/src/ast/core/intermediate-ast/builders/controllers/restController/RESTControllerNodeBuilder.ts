@@ -32,7 +32,7 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
     return this;
   }
 
-  withRESTMethod(restMethod: RESTMethodNode): RESTControllerNodeBuilder {
+  public withRESTMethod(restMethod: RESTMethodNode): RESTControllerNodeBuilder {
     this.restMethod = restMethod;
     return this;
   }
