@@ -1,11 +1,15 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
 
-export class GraphQLOperationNode extends IntermediateASTNode {
-  private static classNodeName = 'operation';
+export class GraphQLOperationNameNode extends IntermediateASTNode {
+  private static classNodeName = 'operationName';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TGraphQLController, metadata, GraphQLOperationNode.classNodeName);
+    super(
+      BitloopsTypesMapping.TGraphQLControllerOperationName,
+      metadata,
+      GraphQLOperationNameNode.classNodeName,
+    );
   }
 
   // getRestMethodValue(): string {

@@ -6,7 +6,7 @@ export class GraphQLControllerExecuteDependenciesNode extends IntermediateASTNod
 
   constructor(metadata?: TNodeMetadata) {
     super(
-      BitloopsTypesMapping.TRESTControllerExecuteDependencies,
+      BitloopsTypesMapping.TGraphQLControllerExecuteDependencies,
       metadata,
       GraphQLControllerExecuteDependenciesNode.classNodeName,
     );

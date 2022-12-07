@@ -710,12 +710,10 @@ type GraphQLControllerName = string;
 export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControllerValues>;
 
 export type TGraphQLControllerValues = TBaseControllerValues & {
-  type: 'graphql';
-  operationType: TGraphQLOperation;
   inputType: null | string;
+  operationType: TGraphQLOperation;
   operationName: string;
   execute: TGraphQLControllerExecute;
-  outputType: string; // should be same as return type of execute
 };
 
 export type TGraphQLControllerExecute = {
