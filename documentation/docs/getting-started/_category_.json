@@ -3,6 +3,10 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Everything you need to get you started."
+    "description": "This is an introductory tutorial for developers learn how Bitloops  works and gain some confidence
+    with the Bitloops Language. You will learn:
+    1. How to install Bitloops Language
+    2. Quick demonstration of how it works
+    3. Bitloops Language example code snippets"
   }
 }

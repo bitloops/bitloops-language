@@ -1,8 +1,8 @@
 ---
-sidebar_position: 1
+sidebar_position: 7
 ---
 
-# Software Engineering Resources
+# Other learning resources
 
 Creating software is a craft. It requires creativity, ingenuity, critical thinking and problem solving skills. And, like most crafts, the more experience you have, the better crafst-person you become. 
 
@@ -134,7 +134,7 @@ The internet (in particularly YouTube and TED) has provided the world with acces
 
 - [Domain Driven Design with BDD](https://www.youtube.com/watch?v=Ju50D11EIoE) - Dave Farley, Continous Delivery(https://www.youtube.com/@ContinuousDelivery)
 
-## Blogs, Newsletters & Others
+## Blogs & Newsletters
 
 There are several interesting blogs and newsletters that software engineers can subscribe to for continous learning. There are many available resources online, each presenting a great opportunity to learn.
 
@@ -166,7 +166,7 @@ There are several interesting blogs and newsletters that software engineers can 
 
 
 
-## Articles (special mentions) 
+## Special Mention Articles 
 
 Below is a list of specific articles (many from the list of blogs mentioned above) that are particularly insightful and worth of a read. Add these to your favorites today and aim to read 1 every 2 days!
 
@@ -194,7 +194,7 @@ Below is a list of specific articles (many from the list of blogs mentioned abov
 
 - [Introduction to Test-Driven Development (TDD) with Classic TDD Example](https://khalilstemmler.com/articles/test-driven-development/introduction-to-tdd/) - Khalilstemmler.com
 
-- [CLEAN ARCHITECTURE WITH TYPESCRIPT: DDD, ONION](https://bazaglia.com/clean-architecture-with-typescript-ddd-onion/) - bazaglia.com
+- [Clean Architecture with TypeScript: DDD, ONION](https://bazaglia.com/clean-architecture-with-typescript-ddd-onion/) - bazaglia.com
 
 - [Comparison of Domain-Driven Design and Clean Architecture Concepts](https://khalilstemmler.com/articles/software-design-architecture/domain-driven-design-vs-clean-architecture/) - Khalilstemmler.com
 
@@ -225,8 +225,10 @@ Below is a list of specific articles (many from the list of blogs mentioned abov
 - [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/) - herbertograca.com
 
 
-# Never Stop Learning
+## Never Stop Learning
 
 Software engineering is a craft that requires constant learning and experience. Moreover, there is simply so much being developed and improved on a daily basis, that continuous learning is becoming a key necessity, not simply a nice to have. 
 
-The Bitloops team was fortunate to have spent several months devouring many of these resources, then creating mental and actual frameworks of how they all work together. The output is Bitloops, which we hope will inspire and enable many more developers to write clean, well-structured code and design high-quality software that can stand the test of time and complexity!
+The Bitloops team was fortunate to have spent several months devouring many of these resources, then creating mental and actual frameworks of how they all work together. 
+
+The output is Bitloops, which we hope will inspire and enable many more developers to write clean, well-structured code and design high-quality software that can stand the test of time and complexity!

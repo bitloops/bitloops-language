@@ -1,0 +1,12 @@
+{
+  "label": "Reference (Language Elements)",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Bitloops Language has been designed and built by incorporating several software engineering principles, 
+    best practices and patterns that greatly improve the quality of a software system. 
+
+    Therefore, this section provides a detailed description of each element of the Bitloops Language, which are the building 
+    blocks of the Language itself, and are key to ensuring your project follows specific patterns and structure."
+  }
+}

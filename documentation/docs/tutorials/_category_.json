@@ -1,0 +1,16 @@
+{
+  "label": "Tutorials",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "This chapter focuses on providing in-depth tutorials using the Bitloops Language.
+    
+    These tutorials are comprehensive lessons on how to build specific functions, microservices or applications using the
+    Bitloops Language. We provide you with a detailed, step-by-step instructions of how to complete a particular project. 
+    
+    Throughout these tutorials we provide insights into key software development principles, patterns and methodologies
+    that are industry best practices when write code and creating software, and is therefore best suited for less´
+    experienced software engineers. Senior, more experienced, software engineers can still benefit from these tutorials, 
+    and can use the How-to Guides to find answers to their questions more quickly."
+  }
+}
