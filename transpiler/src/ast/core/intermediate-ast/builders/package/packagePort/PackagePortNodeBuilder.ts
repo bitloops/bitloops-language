@@ -1,5 +1,5 @@
-import { FieldListNode } from '../../../nodes/FieldList/FieldListNode.js';
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
+import { MethodDefinitionListNode } from '../../../nodes/method-definitions/MethodDefinitionListNode.js';
 import { PackagePortIdentifierNode } from '../../../nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { PackagePortNode } from '../../../nodes/package/packagePort/PackagePortNode.js';
 import { IBuilder } from '../../IBuilder.js';
@@ -7,7 +7,7 @@ import { IBuilder } from '../../IBuilder.js';
 export class PackagePortNodeBuilder implements IBuilder<PackagePortNode> {
   private packagePort: PackagePortNode;
   private packagePortIdentifier: PackagePortIdentifierNode;
-  private fieldListNode: FieldListNode;
+  private methodDefinitionListNode: MethodDefinitionListNode;
 
   constructor(metadata: TNodeMetadata) {
     this.packagePort = new PackagePortNode(metadata);
@@ -18,14 +18,14 @@ export class PackagePortNodeBuilder implements IBuilder<PackagePortNode> {
     return this;
   }
 
-  public withDefinitionMethods(fieldListNode: FieldListNode): PackagePortNodeBuilder {
-    this.fieldListNode = fieldListNode;
+  public withMethodDefinitions(fieldListNode: MethodDefinitionListNode): PackagePortNodeBuilder {
+    this.methodDefinitionListNode = fieldListNode;
     return this;
   }
 
   public build(): PackagePortNode {
     this.packagePort.addChild(this.packagePortIdentifier);
-    this.packagePort.addChild(this.fieldListNode);
+    this.packagePort.addChild(this.methodDefinitionListNode);
 
     this.packagePort.buildObjectValue();
 

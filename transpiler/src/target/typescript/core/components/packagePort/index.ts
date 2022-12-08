@@ -32,7 +32,7 @@ export const packagePortToTargetLanguage = (
   res += '{';
   const model = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDefinitionMethods,
-    value: variable.definitionMethods,
+    value: variable.methodDefinitionList,
   });
   res += model.output;
   res += '}';

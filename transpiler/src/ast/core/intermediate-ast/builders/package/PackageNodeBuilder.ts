@@ -4,6 +4,7 @@ import { PackageIdentifierNode } from '../../nodes/package/PackageIdentifierNode
 import { PackageNode } from '../../nodes/package/PackageNode.js';
 import { PackagePortNode } from '../../nodes/package/packagePort/PackagePortNode.js';
 import { IBuilder } from '../IBuilder.js';
+import { PackageIdentifierNodeBuilder } from './PackageIdentifierNodeBuilder.js';
 
 export class PackageNodeBuilder implements IBuilder<PackageNode> {
   private package: PackageNode;
@@ -15,13 +16,6 @@ export class PackageNodeBuilder implements IBuilder<PackageNode> {
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
     this.package = new PackageNode(metadata);
-  }
-
-  public withIdentifier(readModelIdentifier: PackageIdentifierNode): PackageNodeBuilder {
-    this.identifierNode = readModelIdentifier;
-    const readModelName = readModelIdentifier.getIdentifierName();
-    this.package.setClassName(readModelName);
-    return this;
   }
 
   public withPort(packagePort: PackagePortNode): PackageNodeBuilder {
@@ -36,15 +30,27 @@ export class PackageNodeBuilder implements IBuilder<PackageNode> {
 
   public build(): PackageNode {
     this.intermediateASTTree.insertChild(this.package);
-    this.intermediateASTTree.insertChild(this.identifierNode);
-    this.intermediateASTTree.insertSibling(this.packagePort);
+    this.intermediateASTTree.insertChild(this.packagePort);
     if (this.packageAdapters) {
       this.intermediateASTTree.insertSibling(this.packageAdapters);
     }
+    this.generatePackageIdentifier();
+    this.intermediateASTTree.insertSibling(this.identifierNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
     this.package.buildObjectValue();
 
     return this.package;
+  }
+
+  private generatePackageIdentifier(): PackageNodeBuilder {
+    const packageName = this.packagePort.identifier.replace('Port', '');
+    const packageNameNode = new PackageIdentifierNodeBuilder(undefined)
+      .withName(packageName)
+      .build();
+    this.identifierNode = packageNameNode;
+    // const packageName = packageNameNode.getIdentifierName();
+    this.package.setClassName(packageName);
+    return this;
   }
 }

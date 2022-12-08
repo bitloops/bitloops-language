@@ -1,4 +1,5 @@
 import { TPackage } from '../../../../src/types.js';
+import { MethodDefinitionBuilderDirector } from '../builders/methodDefinitionDirector.js';
 import { PackageBuilder } from '../builders/package/packageBuilder.js';
 import { PackagePortBuilder } from '../builders/package/packagePortBuilder.js';
 
@@ -25,7 +26,13 @@ export const validPackagePortDeclarationCases: Array<TestCase> = [
       .withPort(
         new PackagePortBuilder()
           .withIdentifier('GherkinPackagePort')
-          .withDefinitionMethod({})
+          .withDefinitionMethod(
+            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndReturn({
+              methodName: 'encode',
+              params: [{ name: 'value', type: 'string' }],
+              returnType: 'bytes',
+            }),
+          )
           .build(),
       )
       .build(),
@@ -39,7 +46,20 @@ export const validPackagePortDeclarationCases: Array<TestCase> = [
       .withPort(
         new PackagePortBuilder()
           .withIdentifier('GherkinPackagePort')
-          .withDefinitionMethod({})
+          .withDefinitionMethod(
+            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndReturn({
+              methodName: 'encode',
+              params: [{ name: 'value', type: 'string' }],
+              returnType: 'bytes',
+            }),
+          )
+          .withDefinitionMethod(
+            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndReturn({
+              methodName: 'decode',
+              params: [{ name: 'value', type: 'string' }],
+              returnType: 'string',
+            }),
+          )
           .build(),
       )
       .build(),
@@ -61,7 +81,13 @@ export const multiplePackagePortDeclarationCases: Array<MultiplePackagesTestCase
         .withPort(
           new PackagePortBuilder()
             .withIdentifier('GherkinPackagePort')
-            .withDefinitionMethod({})
+            .withDefinitionMethod(
+              new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndReturn({
+                methodName: 'encode',
+                params: [{ name: 'value', type: 'string' }],
+                returnType: 'bytes',
+              }),
+            )
             .build(),
         )
         .build(),
@@ -69,7 +95,13 @@ export const multiplePackagePortDeclarationCases: Array<MultiplePackagesTestCase
         .withPort(
           new PackagePortBuilder()
             .withIdentifier('ExamplePackagePort')
-            .withDefinitionMethod({})
+            .withDefinitionMethod(
+              new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndReturn({
+                methodName: 'example',
+                params: [{ name: 'value', type: 'string' }],
+                returnType: 'string',
+              }),
+            )
             .build(),
         )
         .build(),

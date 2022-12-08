@@ -1,13 +1,13 @@
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
-import { PackagePortNode } from '../../../nodes/package/packagePort/PackagePortNode.js';
+import { PackageAdapterListNode } from '../../../nodes/package/packageAdapters/PackageAdapterListNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class PackageAdapterListNodeBuilder implements IBuilder<PackagePortNode> {
-  private packageAdapterList: PackagePortNode;
+export class PackageAdapterListNodeBuilder implements IBuilder<PackageAdapterListNode> {
+  private packageAdapterList: PackageAdapterListNode;
   private adapters: any[];
 
   constructor(metadata?: TNodeMetadata) {
-    this.packageAdapterList = new PackagePortNode(metadata);
+    this.packageAdapterList = new PackageAdapterListNode(metadata);
   }
 
   public withAdapters(fieldListNode: any[]): PackageAdapterListNodeBuilder {
@@ -15,7 +15,7 @@ export class PackageAdapterListNodeBuilder implements IBuilder<PackagePortNode> 
     return this;
   }
 
-  public build(): PackagePortNode {
+  public build(): PackageAdapterListNode {
     for (const adapter of this.adapters) {
       this.packageAdapterList.addChild(adapter);
     }

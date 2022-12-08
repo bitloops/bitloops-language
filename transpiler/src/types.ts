@@ -1006,13 +1006,15 @@ export const PackagePortIdentifierKey = 'PackagePortIdentifier';
 export type TPackagePortIdentifier = string;
 export type TPackagePort = {
   [PackagePortIdentifierKey]: TPackagePortIdentifier;
-  definitionMethods: TDefinitionMethods;
+  methodDefinitionList: TDefinitionMethods;
 };
 
 export type TDefinitionMethodInfo = {
-  identifier: TIdentifier;
-  parameterDependencies: TParameterDependencies;
-  returnType: TBitloopsPrimaryType;
+  methodDefinition: {
+    identifier: TIdentifier;
+    parameters: TParameterDependencies;
+    type: TBitloopsPrimaryType; // return type
+  };
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';

@@ -20,11 +20,10 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { PackageAdapterListNodeBuilder } from '../../intermediate-ast/builders/package/packageAdapters/PackageAdapterListNodeBuilder.js';
-import { PackageIdentifierNodeBuilder } from '../../intermediate-ast/builders/package/PackageIdentifierNodeBuilder.js';
 import { PackageNodeBuilder } from '../../intermediate-ast/builders/package/PackageNodeBuilder.js';
 import { PackagePortIdentifierNodeBuilder } from '../../intermediate-ast/builders/package/packagePort/PackagePortIdentifierNodeBuilder.js';
 import { PackagePortNodeBuilder } from '../../intermediate-ast/builders/package/packagePort/PackagePortNodeBuilder.js';
-import { PackageNode } from '../../intermediate-ast/nodes/package/PackageNode.js';
+import { MethodDefinitionListNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 import { PackagePortIdentifierNode } from '../../intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
@@ -41,23 +40,20 @@ export const packagePortIdentifierVisitor = (
 export const packagePortDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PackagePortDeclarationContext,
-): PackageNode => {
+): void => {
   const packagePortIdentifierNode: PackagePortIdentifierNode = thisVisitor.visit(
     ctx.packagePortIdentifier(),
   );
-  const definitionMethods = thisVisitor.visit(ctx.methodDefinitionList());
+  const methodDefinitions: MethodDefinitionListNode = thisVisitor.visit(ctx.methodDefinitionList());
 
-  const packageName = packagePortIdentifierNode.name.replace('Port', '');
-  const packageNameNode = new PackageIdentifierNodeBuilder(undefined).withName(packageName).build();
   const portNode = new PackagePortNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withIdentifier(packagePortIdentifierNode)
-    .withDefinitionMethods(definitionMethods)
+    .withMethodDefinitions(methodDefinitions)
     .build();
 
   const emptyAdapterListNode = new PackageAdapterListNodeBuilder().withAdapters([]).build();
 
-  return new PackageNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
-    .withIdentifier(packageNameNode)
+  new PackageNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
     .withPort(portNode)
     .withAdapters(emptyAdapterListNode)
     .build();
