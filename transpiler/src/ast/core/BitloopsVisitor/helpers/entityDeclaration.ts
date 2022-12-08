@@ -20,23 +20,19 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { EntityIdentifierNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { EntityDeclarationNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityDeclarationBuilder.js';
 import { produceMetadata } from '../metadata.js';
+import { EntityIdentifierNode } from '../../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 
 export const entityDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityDeclarationContext,
 ): void => {
-  const metadata = produceMetadata(ctx, thisVisitor);
-
-  const entityIdentifier = ctx.entityIdentifier().getText();
-  const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
-    .withName(entityIdentifier)
-    .build();
+  const entityIdentifierNode: EntityIdentifierNode = thisVisitor.visit(ctx.entityIdentifier());
 
   const entityValuesNode = thisVisitor.visit(ctx.entityBody());
 
+  const metadata = produceMetadata(ctx, thisVisitor);
   new EntityDeclarationNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(entityIdentifierNode)
     .withValues(entityValuesNode)

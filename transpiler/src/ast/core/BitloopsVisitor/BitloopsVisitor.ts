@@ -177,6 +177,8 @@ import { templateStringEvaluation } from './helpers/expression/literal/templateS
 import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
 import { ValueObjectIdentifierNode } from '../intermediate-ast/nodes/valueObject/ValueObjectIdentifierNode.js';
 import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js';
+import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
+import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -733,6 +735,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.ValueObjectIdentifierContext,
   ): ValueObjectIdentifierNode {
     return valueObjectIdentifierVisitor(this, ctx);
+  }
+
+  visitEntityIdentifier(ctx: BitloopsParser.EntityIdentifierContext): EntityIdentifierNode {
+    const metadata = produceMetadata(ctx, this);
+
+    const entityIdentifier = ctx.EntityIdentifier().getText();
+    const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
+      .withName(entityIdentifier)
+      .build();
+
+    return entityIdentifierNode;
   }
 
   visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): void {
