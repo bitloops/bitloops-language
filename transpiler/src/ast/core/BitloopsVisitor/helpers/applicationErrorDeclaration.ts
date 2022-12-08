@@ -1,7 +1,7 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { ApplicationErrorBuilder } from '../../intermediate-ast/builders/Error/ApplicationErrorBuilder.js';
 import { EvaluationFieldListNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
-import { IdentifierBuilder } from '../../intermediate-ast/builders/IdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/IdentifierBuilder.js';
 import { ApplicationErrorNode } from '../../intermediate-ast/nodes/Error/ApplicationError.js';
 import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
@@ -18,7 +18,7 @@ export const applicationErrorDeclarationVisitor = (
   ctx: BitloopsParser.ApplicationErrorDeclarationContext,
 ): ApplicationErrorNode => {
   const errorName: string = ctx.applicationErrorIdentifier().getText();
-  const identifier: IdentifierNode = new IdentifierBuilder().withName(errorName).build();
+  const identifier: IdentifierNode = new IdentifierNodeBuilder().withName(errorName).build();
   const metadata = produceMetadata(ctx, thisVisitor);
   // TEvaluationFields, TODO fix temp as any
   const parameters: ParameterListNode = thisVisitor.visit(ctx.parameterList());

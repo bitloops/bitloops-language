@@ -25,7 +25,7 @@ import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPr
 import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
-import { IdentifierBuilder } from '../intermediate-ast/builders/IdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js';
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
@@ -247,7 +247,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
     const identifierName = ctx.Identifier().getText();
     const metadata = produceMetadata(ctx, this);
-    const identifierNode = new IdentifierBuilder(metadata).withName(identifierName).build();
+    const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
     return identifierNode;
   }
 

@@ -66,7 +66,7 @@ evaluationFieldList
     ;
 
 evaluationField
-    : Identifier Colon expression
+    : identifier Colon expression
     ;
 
 // typeParameter

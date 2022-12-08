@@ -34,13 +34,13 @@ export const evaluationFieldsToTargetLanguage = (
 
   let dependencies = [];
   for (const property of properties) {
-    const { name, expression } = property.evaluationField;
+    const { identifier, expression } = property.evaluationField;
 
     const expressionModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpression,
       value: { expression },
     });
-    langFields = addToFields(langFields, name, expressionModel);
+    langFields = addToFields(langFields, identifier, expressionModel);
     dependencies = [...dependencies, ...expressionModel.dependencies];
   }
 

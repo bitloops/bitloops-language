@@ -3,7 +3,7 @@ import { IdentifierNode } from '../nodes/IdentifierNode.js';
 import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
 import { IBuilder } from './IBuilder.js';
 
-export class IdentifierBuilder implements IBuilder<IdentifierNode> {
+export class IdentifierNodeBuilder implements IBuilder<IdentifierNode> {
   public readonly NAME = 'identifier';
 
   private identifierNode: IdentifierNode;
@@ -13,7 +13,7 @@ export class IdentifierBuilder implements IBuilder<IdentifierNode> {
     this.identifierNode = new IdentifierNode(nodeMetadata);
   }
 
-  public withName(name: TIdentifier): IdentifierBuilder {
+  public withName(name: TIdentifier): IdentifierNodeBuilder {
     this.name = name;
     return this;
   }

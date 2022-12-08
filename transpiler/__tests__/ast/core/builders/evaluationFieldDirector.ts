@@ -5,7 +5,7 @@ export class EvaluationFieldBuilderDirector {
   buildEvaluationField(identifier: string, expression: TExpression): TEvaluationField {
     return {
       evaluationField: {
-        name: identifier,
+        identifier,
         ...expression,
       },
     };

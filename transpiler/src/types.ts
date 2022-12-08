@@ -371,7 +371,7 @@ export type TIfStatement = {
 };
 
 export type TEvaluationField = {
-  evaluationField: { name: string } & TExpression;
+  evaluationField: { identifier: string } & TExpression;
 };
 export type TEvaluationFields = TEvaluationField[];
 

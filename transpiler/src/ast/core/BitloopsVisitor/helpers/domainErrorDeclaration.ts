@@ -2,7 +2,7 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 // import { TDomainError } from '../../../../types.js';
 import { DomainErrorBuilder } from '../../intermediate-ast/builders/Error/DomainErrorBuilder.js';
 import { EvaluationFieldListNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
-import { IdentifierBuilder } from '../../intermediate-ast/builders/IdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/IdentifierBuilder.js';
 import { DomainErrorNode } from '../../intermediate-ast/nodes/Error/DomainErrorNode.js';
 import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
@@ -20,7 +20,7 @@ export const domainErrorDeclarationVisitor = (
   ctx: BitloopsParser.DomainErrorDeclarationContext,
 ): DomainErrorNode => {
   const errorName: string = ctx.domainErrorIdentifier().getText();
-  const identifier: IdentifierNode = new IdentifierBuilder().withName(errorName).build();
+  const identifier: IdentifierNode = new IdentifierNodeBuilder().withName(errorName).build();
   // TEvaluationFields, TODO fix temp as any
   const metadata = produceMetadata(ctx, thisVisitor);
   const parameters: ParameterListNode = thisVisitor.visit(ctx.parameterList());

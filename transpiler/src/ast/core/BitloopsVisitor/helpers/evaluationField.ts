@@ -22,28 +22,16 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { EvaluationFieldNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { EvaluationFieldNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
-import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
-// export type TEvaluationFields = ({ name: string } & TExpression);
-// export const evaluationFieldVisitor = (
-//   thisVisitor: BitloopsVisitor,
-//   ctx: BitloopsParser.EvaluationFieldContext,
-// ): { name: string } & TExpression => {
-//   const identifier = ctx.Identifier().getText();
-//   const expression = thisVisitor.visit(ctx.expression());
-//   return { name: identifier, ...expression };
-// };
 
 export const evaluationFieldVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EvaluationFieldContext,
 ): EvaluationFieldNode => {
-  const identifier = ctx.Identifier().getText();
   const expression = thisVisitor.visit(ctx.expression());
-
-  const nameNode = new NameNodeBuilder().withName(identifier).build();
+  const identifierNode = thisVisitor.visit(ctx.identifier());
 
   const evaluationFieldNode = new EvaluationFieldNodeBuilder()
-    .withName(nameNode)
+    .withIdentifier(identifierNode)
     .withExpression(expression)
     .build();
 
