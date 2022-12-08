@@ -22,7 +22,7 @@ import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/inde
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
-import { validValueObjectEvaluationTestCases } from './mocks/evaluation.js';
+import { validValueObjectEvaluationTestCases } from './mocks/evaluation/valueObjectEvaluation.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
