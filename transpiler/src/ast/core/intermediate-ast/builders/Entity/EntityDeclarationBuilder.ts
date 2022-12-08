@@ -1,5 +1,4 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { DTOIdentifierNode } from '../../nodes/DTO/DTOIdentifierNode.js';
 import { EntityValuesNode } from '../../nodes/Entity/EntityValuesNode.js';
 import { EntityDeclarationNode } from '../../nodes/Entity/EntityDeclarationNode.js';
 import { EntityIdentifierNode } from '../../nodes/Entity/EntityIdentifierNode.js';
@@ -8,7 +7,7 @@ import { IBuilder } from '../IBuilder.js';
 
 export class EntityDeclarationNodeBuilder implements IBuilder<EntityDeclarationNode> {
   private entityDeclarationNode: EntityDeclarationNode;
-  private identifierNode: DTOIdentifierNode;
+  private identifierNode: EntityIdentifierNode;
   private entityValuesNode: EntityValuesNode;
   private intermediateASTTree: IntermediateASTTree;
 

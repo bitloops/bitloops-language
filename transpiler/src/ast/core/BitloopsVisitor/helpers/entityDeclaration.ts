@@ -30,9 +30,9 @@ export const entityDeclarationVisitor = (
 ): void => {
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  const valueObjectIdentifier = ctx.entityIdentifier().getText();
+  const entityIdentifier = ctx.entityIdentifier().getText();
   const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
-    .withName(valueObjectIdentifier)
+    .withName(entityIdentifier)
     .build();
 
   const entityValuesNode = thisVisitor.visit(ctx.entityBody());

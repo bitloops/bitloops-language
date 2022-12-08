@@ -173,7 +173,7 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('VO')) {
     return {
-      classType: ClassTypes.ValueObjects,
+      classType: ClassTypes.ValueObject,
     };
   } else if (dependencyName.endsWith('Props')) {
     return {

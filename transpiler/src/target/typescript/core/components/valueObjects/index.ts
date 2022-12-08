@@ -23,7 +23,7 @@ import {
   TDependencyChildTypescript,
   TDomainPrivateMethods,
   TTargetDependenciesTypeScript,
-  TValueObjects,
+  TValueObject,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -63,11 +63,11 @@ const valueObjectMethods = (
 };
 
 const valueObjectsToTargetLanguage = (params: {
-  valueObjects: TValueObjects;
+  valueObject: TValueObject;
   model: IntermediateASTTree;
   contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
-  const { valueObjects, model, contextData } = params;
+  const { valueObject, model, contextData } = params;
 
   const { boundedContext, module } = contextData;
 
@@ -77,63 +77,60 @@ const valueObjectsToTargetLanguage = (params: {
     `export class ${voName} extends Domain.ValueObject<${propsName}> { `;
 
   let result = '';
-  let parentDependencies;
   let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
 
-  for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
-    const { privateMethods, create, constants } = valueObject;
-    const propsNameType = create.parameter.type;
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-      throw new Error(
-        `Value Object ${valueObjectName} has an array as a property. This is not supported yet.`,
-      );
-    }
-    const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: propsNameType,
-    });
-    dependencies = [...dependencies, ...propsTypeDependencies];
-
-    if (constants) {
-      // TODO FIx with new type
-      result += constantVariables(constants as any).output;
-      dependencies = [...dependencies, ...constantVariables(constants as any).dependencies];
-    }
-
-    result += initialObjectValuesLangMapping(valueObjectName, propsName);
-    // Add this.props to constructor when overriding from bl
-
-    const voCreateModel = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TDomainCreateMethod,
-      value: create,
-    });
-    result += voCreateModel.output;
-    dependencies = [...dependencies, ...voCreateModel.dependencies];
-
-    const IS_VALUE_OBJECT = true;
-    const gettersModel = generateGetters({
-      propsName,
-      model: modelForContext,
-      privateMethods,
-      isValueObject: IS_VALUE_OBJECT,
-    });
-    result += gettersModel.output;
-    dependencies = [...dependencies, ...gettersModel.dependencies];
-
-    if (privateMethods) {
-      const voMethodsModel = valueObjectMethods(privateMethods);
-      result += voMethodsModel.output;
-      dependencies = [...dependencies, ...voMethodsModel.dependencies];
-    }
-
-    const finalObjValLangMapping = '}';
-    result += finalObjValLangMapping;
-
-    parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-      classType: ClassTypes.ValueObjects,
-      className: valueObjectName,
-    });
+  const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
+  const propsNameType = create.parameter.type;
+  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
+    throw new Error(
+      `Value Object ${valueObjectIdentifier} has an array as a property. This is not supported yet.`,
+    );
   }
+  const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: propsNameType,
+  });
+  dependencies = [...dependencies, ...propsTypeDependencies];
+
+  if (constants) {
+    // TODO FIx with new type
+    result += constantVariables(constants as any).output;
+    dependencies = [...dependencies, ...constantVariables(constants as any).dependencies];
+  }
+
+  result += initialObjectValuesLangMapping(valueObjectIdentifier, propsName);
+  // Add this.props to constructor when overriding from bl
+
+  const voCreateModel = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TDomainCreateMethod,
+    value: create,
+  });
+  result += voCreateModel.output;
+  dependencies = [...dependencies, ...voCreateModel.dependencies];
+
+  const IS_VALUE_OBJECT = true;
+  const gettersModel = generateGetters({
+    propsName,
+    model: modelForContext,
+    privateMethods,
+    isValueObject: IS_VALUE_OBJECT,
+  });
+  result += gettersModel.output;
+  dependencies = [...dependencies, ...gettersModel.dependencies];
+
+  if (privateMethods) {
+    const voMethodsModel = valueObjectMethods(privateMethods);
+    result += voMethodsModel.output;
+    dependencies = [...dependencies, ...voMethodsModel.dependencies];
+  }
+
+  const finalObjValLangMapping = '}';
+  result += finalObjValLangMapping;
+
+  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+    classType: ClassTypes.ValueObject,
+    className: valueObjectIdentifier,
+  });
 
   return { output: result, dependencies: parentDependencies };
 };

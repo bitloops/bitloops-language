@@ -20,26 +20,41 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TValueObjectValues, TConstDeclarationValue } from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
+import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { ConstDeclarationListNodeBuilder } from '../../intermediate-ast/builders/ConstDeclarationListBuilder.js';
+import { ConstDeclarationListNode } from '../../intermediate-ast/nodes/ConstDeclarationListNode.js';
+import { PrivateMethodDeclarationListNodeBuilder } from '../../intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
+import { PrivateMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
+import { ValueObjectIdentifierNodeBuilder } from '../../intermediate-ast/builders/valueObject/ValueObjectIdentifierNodeBuilder.js';
+import { ValueObjectDeclarationNodeBuilder } from '../../intermediate-ast/builders/valueObject/ValueObjectDeclarationNodeBuilder.js';
 
 export const valueObjectDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ValueObjectDeclarationContext,
-): { ValueObjects: { [identifier: string]: TValueObjectValues } } => {
+): void => {
+  const metadata = produceMetadata(ctx, thisVisitor);
+
   const valueObjectIdentifier = ctx.valueObjectIdentifier().getText();
-  const domainConstructorDeclaration = thisVisitor.visit(ctx.domainConstructorDeclaration());
-  const constantVars: TConstDeclarationValue[] = thisVisitor.visit(
-    ctx.domainConstDeclarationList(),
+  const valueObjectIdentifierNode = new ValueObjectIdentifierNodeBuilder(metadata)
+    .withName(valueObjectIdentifier)
+    .build();
+
+  const domainConstructorDeclarationNode: DomainCreateNode = thisVisitor.visit(
+    ctx.domainConstructorDeclaration(),
   );
-  const methods = thisVisitor.visit(ctx.privateMethodDeclarationList());
-  const result = {
-    ValueObjects: {
-      [valueObjectIdentifier]: {
-        constantVars,
-        create: domainConstructorDeclaration,
-        methods,
-      },
-    },
-  };
-  return result;
+  const constantVarNodes: ConstDeclarationListNode = ctx.domainConstDeclarationList()
+    ? thisVisitor.visit(ctx.domainConstDeclarationList())
+    : new ConstDeclarationListNodeBuilder().withConstants([]).build();
+
+  const privateMethodNodes: PrivateMethodDeclarationListNode = ctx.privateMethodDeclarationList()
+    ? thisVisitor.visit(ctx.privateMethodDeclarationList())
+    : new PrivateMethodDeclarationListNodeBuilder().withMethods([]).build();
+
+  new ValueObjectDeclarationNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withIdentifier(valueObjectIdentifierNode)
+    .withConstants(constantVarNodes)
+    .withCreate(domainConstructorDeclarationNode)
+    .withPrivateMethods(privateMethodNodes)
+    .build();
 };

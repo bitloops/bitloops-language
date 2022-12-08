@@ -64,7 +64,7 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
-    ClassTypes.ValueObjects,
+    ClassTypes.ValueObject,
   );
 
   let statementsModel = modelToTargetLanguage({
