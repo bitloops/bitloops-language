@@ -1,5 +1,6 @@
 import {
   DTOIdentifierKey,
+  structIdentifierKey,
   TArgumentList,
   TDomainEvaluationExpression,
   TEvaluation,
@@ -22,7 +23,7 @@ export class EvaluationBuilderDirector {
     return {
       evaluation: {
         struct: {
-          name: structIdentifier,
+          [structIdentifierKey]: structIdentifier,
           fields,
         },
       },

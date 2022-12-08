@@ -19,7 +19,7 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { RepoPortBuilder } from '../../intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
 import { ExtendsRepoPortsNode } from '../../intermediate-ast/nodes/extendsRepoPortNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
@@ -78,5 +78,5 @@ export const repoPortExtendableIdentifierVisitor = (
     identifier = `${ctx.UpperCaseIdentifier(0).getText()}<${ctx.UpperCaseIdentifier(1).getText()}>`;
   }
 
-  return new IdentifierBuilder().withName(identifier).build();
+  return new IdentifierNodeBuilder().withName(identifier).build();
 };

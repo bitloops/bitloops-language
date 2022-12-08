@@ -1,6 +1,6 @@
 import { EvaluationFieldNode } from '../../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../nodes/Expression/ExpressionNode.js';
-import { IdentifierNode } from '../../../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../../../nodes/identifier/IdentifierNode.js';
 import { IBuilder } from '../../../IBuilder.js';
 
 export class EvaluationFieldNodeBuilder implements IBuilder<EvaluationFieldNode> {

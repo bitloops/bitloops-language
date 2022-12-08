@@ -378,7 +378,7 @@ export type TEvaluationFields = TEvaluationField[];
 export type TStructEvaluation = {
   struct: {
     fields: TEvaluationFields;
-    name: string;
+    [structIdentifierKey]: string;
   };
 };
 

@@ -900,12 +900,8 @@ entityEvaluation
     : entityIdentifier domainEvaluationInput
     ;
 
-structEvaluationIdentifier
-    : UpperCaseIdentifier
-    ;
-
 structEvaluation
-    : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    : structIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
     
 builtInClassEvaluation
