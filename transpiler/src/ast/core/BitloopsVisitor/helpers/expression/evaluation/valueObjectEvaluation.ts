@@ -22,17 +22,16 @@ import { DomainEvaluationNodeBuilder } from '../../../../intermediate-ast/builde
 import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../../BitloopsVisitor.js';
 import { ValueObjectEvaluationNodeBuilder } from '../../../../intermediate-ast/builders/expressions/evaluation/ValueObjectEvaluationBuilder.js';
-import { NameNodeBuilder } from '../../../../intermediate-ast/builders/NameBuilder.js';
 
 export const valueObjectEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ValueObjectEvaluationContext,
 ) => {
-  const identifier = ctx.valueObjectIdentifier().getText();
   const props = thisVisitor.visit(ctx.domainEvaluationInput());
-  const nameNode = new NameNodeBuilder().withName(identifier).build();
+  const voIdentifier = thisVisitor.visit(ctx.valueObjectIdentifier());
+
   const domainEvaluation = new DomainEvaluationNodeBuilder()
-    .withName(nameNode)
+    .withIdentifier(voIdentifier)
     .withProps(props)
     .build();
   const node = new ValueObjectEvaluationNodeBuilder()

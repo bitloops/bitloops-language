@@ -1,6 +1,5 @@
 import {
   TArgumentList,
-  TDomainEvaluation,
   TDomainEvaluationExpression,
   TEvaluation,
   TEvaluationFields,
@@ -64,32 +63,46 @@ export class EvaluationBuilderDirector {
   }
 
   buildValueObjectEvaluation(valueObjectIdentifier: string, propsParam: PropsParam): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
     return {
       evaluation: {
-        valueObject: this.buildDomainEvaluation(valueObjectIdentifier, propsParam),
+        valueObject: {
+          domainEvaluation: {
+            valueObjectIdentifier,
+            props,
+          },
+        },
       },
     };
   }
 
   buildEntityEvaluation(entityIdentifier: string, propsParam: PropsParam): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
     return {
       evaluation: {
-        entity: this.buildDomainEvaluation(entityIdentifier, propsParam),
+        entity: {
+          domainEvaluation: {
+            entityIdentifier,
+            props,
+          },
+        },
       },
     };
   }
 
-  private buildDomainEvaluation(
-    domainIdentifier: string,
-    propsParam: PropsParam,
-  ): TDomainEvaluation {
-    const { fields, expression } = propsParam;
-    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
-    return {
-      domainEvaluation: {
-        name: domainIdentifier,
-        props,
-      },
-    };
-  }
+  // private buildDomainEvaluation(
+  //   domainIdentifier: string,
+  //   propsParam: PropsParam,
+  // ): TDomainEvaluation {
+  //   const { fields, expression } = propsParam;
+  //   const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+  //   return {
+  //     domainEvaluation: {
+  //       name: domainIdentifier,
+  //       props,
+  //     },
+  //   };
+  // }
 }

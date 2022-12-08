@@ -399,10 +399,15 @@ export type TEntityEvaluation = {
 
 export type TDomainEvaluation = {
   domainEvaluation: {
-    name: string;
     props: TDomainEvaluationExpression;
-  };
+  } & TDomainEvaluationName;
 };
+
+type TDomainEvaluationName =
+  | {
+      entityIdentifier: TEntityIdentifier;
+    }
+  | { valueObjectIdentifier: TValueObjectIdentifier };
 
 export type TDomainEvaluationExpression =
   | {

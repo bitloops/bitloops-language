@@ -21,21 +21,25 @@
 import { EntityEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EntityEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
 import { DomainEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
 import { EntityEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EntityEvaluationBuilder.js';
+import { produceMetadata } from '../metadata.js';
 
 export const entityEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityEvaluationContext,
 ): EntityEvaluationNode => {
-  const identifier = ctx.entityIdentifier().getText();
   const props = thisVisitor.visit(ctx.domainEvaluationInput());
-  const nameNode = new NameNodeBuilder().withName(identifier).build();
-  const domainEvaluation = new DomainEvaluationNodeBuilder()
-    .withName(nameNode)
+  const entityIdentifier = thisVisitor.visit(ctx.entityIdentifier());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const domainEvaluation = new DomainEvaluationNodeBuilder(metadata)
+    .withIdentifier(entityIdentifier)
     .withProps(props)
     .build();
-  const node = new EntityEvaluationNodeBuilder().withDomainEvaluation(domainEvaluation).build();
+
+  const node = new EntityEvaluationNodeBuilder(metadata)
+    .withDomainEvaluation(domainEvaluation)
+    .build();
   return node;
 };
