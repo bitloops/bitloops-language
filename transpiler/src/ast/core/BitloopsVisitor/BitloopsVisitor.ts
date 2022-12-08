@@ -175,6 +175,8 @@ import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCa
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
+import { ValueObjectIdentifierNode } from '../intermediate-ast/nodes/valueObject/ValueObjectIdentifierNode.js';
+import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -725,6 +727,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): void {
     valueObjectDeclarationVisitor(this, ctx);
+  }
+
+  visitValueObjectIdentifier(
+    ctx: BitloopsParser.ValueObjectIdentifierContext,
+  ): ValueObjectIdentifierNode {
+    return valueObjectIdentifierVisitor(this, ctx);
   }
 
   visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): void {
