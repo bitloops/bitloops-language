@@ -21,20 +21,14 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { MethodDefinitionListNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
-import { MethodDefinitionNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionNode.js';
 import { MethodDefinitionListNodeBuilder } from '../../intermediate-ast/builders/methodDefinition/methodDefinitionListNodeBuilder.js';
+import { MethodDefinitionNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionNode.js';
 
 export const methodDefinitionListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodDefinitionListContext,
 ): MethodDefinitionListNode => {
   const methodDefinitions: MethodDefinitionNode[] = thisVisitor.visitChildren(ctx);
-
-  if (methodDefinitions.length > 0) {
-    // for (const methodDefinition of methodDefinitions) {
-    //   methodDefinitions[child.methodName] = child.methodInfo;
-    // }
-  }
 
   return new MethodDefinitionListNodeBuilder().withMethodDefinitions(methodDefinitions).build();
 };

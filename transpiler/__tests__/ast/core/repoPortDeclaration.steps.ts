@@ -27,7 +27,7 @@ import { validRepoPortCases } from './mocks/repoPort.js';
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Read Model declaration is valid', () => {
+describe('Repo Port declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
