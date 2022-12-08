@@ -34,7 +34,7 @@ export const validApplicationErrors: validMockType[] = [
     errorId: new ExpressionBuilderDirector().buildStringLiteralExpression(
       'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe',
     ),
-    parameters: new ParameterListBuilderDirector().buildStringParams(...['name']),
+    parameters: new ParameterListBuilderDirector().buildStringParams('name'),
   },
   {
     description: 'valid Application Error with two args',
@@ -46,7 +46,7 @@ export const validApplicationErrors: validMockType[] = [
       'is an invalid ${name}',
     ),
     errorId: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression('${errorId}'),
-    parameters: new ParameterListBuilderDirector().buildStringParams(...['name', 'errorId']),
+    parameters: new ParameterListBuilderDirector().buildStringParams('name', 'errorId'),
   },
 ];
 export const invalidApplicationErrors: invalidMockType[] = [

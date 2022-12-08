@@ -7,6 +7,7 @@ import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression
 import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
 export enum applicationErrorErrors {
   INVALID_ARGS = 'ApplicationErrorDeclaration must have two fields: ErrorId and message',
   NO_MESSAGE = 'ApplicationErrorDeclaration misses ErrorId field',
@@ -18,6 +19,7 @@ export const applicationErrorDeclarationVisitor = (
 ): ApplicationErrorNode => {
   const errorName: string = ctx.applicationErrorIdentifier().getText();
   const identifier: IdentifierNode = new IdentifierBuilder().withName(errorName).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
   // TEvaluationFields, TODO fix temp as any
   const parameters: ParameterListNode = thisVisitor.visit(ctx.parameterList());
   const fieldsList: EvaluationFieldListNode = ctx.evaluationFieldList()
@@ -36,7 +38,7 @@ export const applicationErrorDeclarationVisitor = (
     ((): never => {
       throw new TypeError(applicationErrorErrors.NO_MESSAGE);
     })();
-  const applicationError = new ApplicationErrorBuilder(thisVisitor.intermediateASTTree)
+  const applicationError = new ApplicationErrorBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(identifier)
     .withErrorId(errorId)
     .withParameters(parameters)

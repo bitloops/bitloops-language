@@ -21,7 +21,7 @@ export class ApplicationErrorBuilder implements IBuilder<ApplicationErrorNode> {
   private identifierName: IdentifierNode;
   private intermediateASTTree: IntermediateASTTree;
 
-  constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
+  constructor(intermediateASTTree: IntermediateASTTree, metadata: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
     this.applicationErrorNode = new ApplicationErrorNode(metadata);
   }
