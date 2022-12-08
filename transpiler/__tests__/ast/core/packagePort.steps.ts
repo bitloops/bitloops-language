@@ -23,7 +23,7 @@ import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import {
-  // multiplePackagePortDeclarationCases,
+  multiplePackagePortDeclarationCases,
   validPackagePortDeclarationCases,
 } from './mocks/packagePort.js';
 
@@ -62,34 +62,34 @@ describe('Package port declaration is valid', () => {
   });
 });
 
-// describe('Parsing 2 package ports', () => {
-//   let resultTree: IntermediateASTTree;
+describe('Parsing 2 package ports', () => {
+  let resultTree: IntermediateASTTree;
 
-//   const parser = new BitloopsParser();
-//   const intermediateParser = new BitloopsIntermediateASTParser();
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-//   multiplePackagePortDeclarationCases.forEach((testCase) => {
-//     test(`${testCase.description}`, () => {
-//       const initialModelOutput = parser.parse([
-//         {
-//           boundedContext: BOUNDED_CONTEXT,
-//           module: MODULE,
-//           fileId: testCase.fileId,
-//           fileContents: testCase.inputBLString,
-//         },
-//       ]);
+  multiplePackagePortDeclarationCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
 
-//       if (!isBitloopsParserError(initialModelOutput)) {
-//         const result = intermediateParser.parse(initialModelOutput);
-//         if (!isBitloopsIntermediateASTError(result)) {
-//           resultTree = result[BOUNDED_CONTEXT][MODULE];
-//         }
-//       }
-//       const packageNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TPackage);
-//       expect(packageNodes.length).toBe(2);
-//       const values = packageNodes.map((x) => x.getValue());
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const packageNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TPackage);
+      expect(packageNodes.length).toBe(2);
+      const values = packageNodes.map((x) => x.getValue());
 
-//       expect(values).toMatchObject(testCase.expected);
-//     });
-//   });
-// });
+      expect(values).toMatchObject(testCase.expected);
+    });
+  });
+});
