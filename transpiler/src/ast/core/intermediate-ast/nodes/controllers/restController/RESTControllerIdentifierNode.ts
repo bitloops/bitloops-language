@@ -1,21 +1,15 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
+import { IntermediateASTIdentifierNode } from '../../IntermediateASTIdentifierNode.js';
+import { TNodeMetadata } from '../../IntermediateASTNode.js';
 
-export class RESTControllerIdentifierNode extends IntermediateASTNode {
+export class RESTControllerIdentifierNode extends IntermediateASTIdentifierNode {
   private static classNodeName = 'RESTControllerIdentifier';
 
   constructor(metadata?: TNodeMetadata) {
     super(
       BitloopsTypesMapping.TRESTControllerIdentifier,
-      metadata,
       RESTControllerIdentifierNode.classNodeName,
+      metadata,
     );
-  }
-
-  getIdentifierName(): string {
-    const identifierClassNodeName = this.getClassNodeName();
-    const identifierValue = this.getValue();
-    const dtoIdentifierName: string = identifierValue[identifierClassNodeName];
-    return dtoIdentifierName;
   }
 }

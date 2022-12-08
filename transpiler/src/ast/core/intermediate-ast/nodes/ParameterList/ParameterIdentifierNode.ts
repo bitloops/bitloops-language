@@ -1,10 +1,11 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 const NAME = 'value';
 
-export class ParameterIdentifierNode extends IntermediateASTNode {
+export class ParameterIdentifierNode extends IntermediateASTIdentifierNode {
   constructor(metadata: TNodeMetadata) {
-    super(BitloopsTypesMapping.TParameterDependencyIdentifier, metadata, NAME);
+    super(BitloopsTypesMapping.TParameterDependencyIdentifier, NAME, metadata);
   }
 }
