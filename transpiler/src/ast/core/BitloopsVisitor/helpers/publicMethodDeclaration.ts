@@ -23,10 +23,10 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
-import { IdentifierBuilder } from '../../intermediate-ast/builders/IdentifierBuilder.js';
 import { produceMetadata } from '../metadata.js';
 import { PublicMethodDeclarationNodeBuilder } from '../../intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
 import { PublicMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,

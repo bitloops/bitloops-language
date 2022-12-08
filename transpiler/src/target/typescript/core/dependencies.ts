@@ -205,7 +205,7 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('RepoPort')) {
     return {
-      classType: ClassTypes.RepoPorts,
+      classType: ClassTypes.RepoPort,
     };
   } else if (dependencyName.endsWith('Rule')) {
     return {

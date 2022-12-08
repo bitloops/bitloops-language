@@ -20,18 +20,14 @@
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
 import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import {
-  TRepoPorts,
-  TTargetDependenciesTypeScript,
-  TContextData,
-} from '../../../../../../types.js';
+import { TRepoPort, TTargetDependenciesTypeScript, TContextData } from '../../../../../../types.js';
 import { findIdOfRepoDomainObject } from './helpers/domainIDofRepoPort.js';
 import { findIfWriteOrReadRepoPort } from './helpers/mappers.js';
 import { noMethodsRepoPort } from './helpers/noMethodsPort.js';
 import { buildRepoPortWithMethods } from './helpers/withMethodsPort.js';
 
 export const repoPortToTargetLanguage = (
-  repoPorts: TRepoPorts,
+  repoPorts: TRepoPort,
   bitloopsModel: IntermediateASTTree,
   context: TContextData,
 ): TTargetDependenciesTypeScript => {

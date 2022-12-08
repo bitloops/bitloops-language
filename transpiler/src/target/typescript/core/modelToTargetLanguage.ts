@@ -406,7 +406,7 @@ const modelToTargetLanguage = (props: {
       });
       break;
     }
-    case BitloopsTypesMapping.TRepoPorts: {
+    case BitloopsTypesMapping.TRepoPort: {
       res = repoPortToTargetLanguage(value, model, contextData);
       break;
     }

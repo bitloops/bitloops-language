@@ -2,6 +2,7 @@ import { TDomainPrivateMethod } from '../../../../../src/types.js';
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { IdentifierBuilder } from '../identifier.js';
 import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
+import { ReturnOkErrorTypeBuilderDirector } from '../returnOkErrorTypeBuilderDirector.js';
 import { StatementListDirector } from '../statement/statementListDirector.js';
 import { PrivateMethodBuilder } from './PrivateMethodBuilder.js';
 
@@ -26,6 +27,17 @@ export class PrivateMethodBuilderDirector {
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))
       .withPrimaryReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
       .withStatements(new StatementListDirector().buildOneBooleanReturnStatement(booleanValue))
+      .build();
+  }
+
+  buildMethodOkErrorReturnTypeWithNoStatements(methodName: string): TDomainPrivateMethod {
+    return this.builder
+      .withIdentifier(new IdentifierBuilder().withName(methodName).build())
+      .withParameters([])
+      .withOkErrorReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors('void'),
+      )
+      .withStatements([])
       .build();
   }
 }

@@ -24,4 +24,14 @@ export class EvaluationFieldBuilderDirector {
       new ExpressionBuilderDirector().buildInt32LiteralExpression(int32Literal),
     );
   }
+
+  buildIdentifierEvaluationField(
+    identifierName: string,
+    identifierValue: string,
+  ): TEvaluationField {
+    return this.buildEvaluationField(
+      identifierName,
+      new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
+    );
+  }
 }

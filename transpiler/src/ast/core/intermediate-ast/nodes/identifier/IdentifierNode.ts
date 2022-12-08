@@ -1,5 +1,5 @@
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
 const NAME = 'identifier';
 export class IdentifierNode extends IntermediateASTNode {

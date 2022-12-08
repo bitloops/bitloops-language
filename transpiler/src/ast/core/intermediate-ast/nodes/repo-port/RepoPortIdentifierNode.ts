@@ -2,10 +2,10 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
-export class EntityIdentifierNode extends IntermediateASTIdentifierNode {
-  private static classNodeName = 'entityIdentifier';
+export class RepoPortIdentifierNode extends IntermediateASTIdentifierNode {
+  private static classNodeName = 'RepoPortIdentifier';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TEntityIdentifier, EntityIdentifierNode.classNodeName, metadata);
+    super(BitloopsTypesMapping.TRepoPort, RepoPortIdentifierNode.classNodeName, metadata);
   }
 }

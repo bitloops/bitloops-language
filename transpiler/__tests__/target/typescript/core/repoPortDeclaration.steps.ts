@@ -22,10 +22,10 @@ import { d } from 'bitloops-gherkin';
 // import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
-import { TBitloopsOutputTargetContent } from '../../../../src/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
 import { TBoundedContexts, TContextData } from './../../../../src/types.js';
+import { TBitloopsOutputTargetContent } from '../../../../src/target/types.js';
 const feature = loadFeature('./__tests__/target/typescript/core/repoPortDeclaration.feature');
 
 defineFeature(feature, (test) => {
@@ -34,7 +34,7 @@ defineFeature(feature, (test) => {
   let bitloopsModel: TBoundedContexts;
   let contextData: TContextData;
   let intermediateAST;
-  const repoPortsClassType = ClassTypes.RepoPorts;
+  const repoPortsClassType = ClassTypes.RepoPort;
   const formatterConfig = null;
   let language;
 

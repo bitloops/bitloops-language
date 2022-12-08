@@ -831,33 +831,27 @@ propsDeclaration
     ;
 
 
-readModelDeclaration
-    : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
-    ;
-
 readModelIdentifier
     : ReadModelIdentifier
     ;
 
+
+readModelDeclaration
+    : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    ;
+
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;
 repoPortDeclaration
-    : RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList SemiColon?
-    | RepoPort repoPortIdentifier '<' ReadModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
-    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList SemiColon?
-    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
+    : RepoPort repoPortIdentifier '<' readModelIdentifier '>' repoExtendsList SemiColon?
+    | RepoPort repoPortIdentifier '<' readModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
+    | RepoPort repoPortIdentifier '<' entityIdentifier '>' repoExtendsList SemiColon?
+    | RepoPort repoPortIdentifier '<' entityIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
     ;
 
 repoPortIdentifier
     : RepoPortIdentifier
     ;
 
-//TODO change the order of identifier
-// aggregateRootIdentifier
-    // : EntityIdentifier
-    // | DTOIdentifier
-    // | Identifier
-    // | UpperCaseIdentifier 
-    // ;
 aggregateRootIdentifier
     : EntityIdentifier
     | ReadModelIdentifier

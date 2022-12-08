@@ -17,15 +17,22 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TAggregateRepoPort, TReadModelRepoPort, TRepoPort } from '../../../../types.js';
+import {
+  repoPortKey,
+  TAggregateRepoPort,
+  TReadModelRepoPort,
+  TRepoPort,
+} from '../../../../types.js';
 
 export class RepoPortTypeIdentifiers {
-  static isAggregateRepoPort = (value: TRepoPort): value is TAggregateRepoPort => {
+  static isAggregateRepoPort = (repoPort: TRepoPort): repoPort is TAggregateRepoPort => {
+    const value = repoPort[repoPortKey];
     if ('aggregateRootName' in value) return true;
     return false;
   };
 
-  static isReadModelRepoPort = (value: TRepoPort): value is TReadModelRepoPort => {
+  static isReadModelRepoPort = (repoPort: TRepoPort): repoPort is TReadModelRepoPort => {
+    const value = repoPort[repoPortKey];
     if ('readModelName' in value) return true;
     return false;
   };

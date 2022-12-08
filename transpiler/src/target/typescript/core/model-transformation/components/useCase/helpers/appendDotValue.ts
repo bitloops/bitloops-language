@@ -32,6 +32,7 @@ import {
   TDomainEvaluation,
   TEvaluationFields,
   TArgument,
+  expressionKey,
 } from '../../../../../../../types.js';
 import { StatementTypeIdentifiers } from '../../../../type-identifiers/statement.js';
 
@@ -62,10 +63,10 @@ const getVariableOrConstDeclarationIdentifier = (
   statement: TConstDeclaration | TVariableDeclaration,
 ): string => {
   if (StatementTypeIdentifiers.isConstDeclaration(statement)) {
-    return statement.constDeclaration.name;
+    return statement.constDeclaration.identifier;
   }
   if (StatementTypeIdentifiers.isVariableDeclaration(statement)) {
-    return statement.variableDeclaration.name;
+    return statement.variableDeclaration.identifier;
   }
   throw new Error('Statement is not constDeclaration or variableDeclaration');
 };
@@ -75,11 +76,11 @@ const appendDotValueInDomainEvaluation = (
   domainEvaluation: TDomainEvaluation,
   identifiers: Set<string>,
 ): TDomainEvaluation => {
-  const { props } = domainEvaluation;
+  const { props } = domainEvaluation.domainEvaluation;
   // if TEvaluationFields
   if (Array.isArray(props)) {
-    domainEvaluation.props = (props as TEvaluationFields).map((prop) => {
-      const { expression } = prop;
+    domainEvaluation.domainEvaluation.props = (props as TEvaluationFields).map((prop) => {
+      const { expression } = prop.evaluationField;
       return {
         ...prop,
         ...(scanStatementForIdentifierToAppendDotValue({ expression }, identifiers) as TExpression),
@@ -115,7 +116,7 @@ const appendDotValueInExpression = (
     const { argumentDependencies } = statement.expression['evaluation'].regularEvaluation;
     if (argumentDependencies && argumentDependencies.length > 0) {
       const newArgs = argumentDependencies.map((arg: TArgument) => {
-        const { value, type } = arg;
+        const { value, type } = arg.argument[expressionKey];
         if (type !== 'variable') {
           return arg;
         }
@@ -174,7 +175,7 @@ const scanStatementForIdentifierToAppendDotValue = (
     const { cases, defaultCase } = statement.switchStatement;
     statement.switchStatement.cases = cases.map((switchCase: TRegularCase) => ({
       ...switchCase,
-      statements: switchCase.statements.map((st) =>
+      statements: switchCase.regularCase.statements.map((st) =>
         scanStatementForIdentifierToAppendDotValue(st, identifiers),
       ),
     }));

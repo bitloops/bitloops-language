@@ -7,7 +7,7 @@ Entity TodoEntity {
         return DomainErrors.InvalidTitleError();   
     } 
 
-    uncomplete(): (OK(void), Errors()) {     
-        this.completed = false;
+    uncomplete(completed: bool): (OK(void), Errors()) {     
+        this.completed = completed;
     } 
 }

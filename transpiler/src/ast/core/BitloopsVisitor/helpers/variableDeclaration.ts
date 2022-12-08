@@ -21,7 +21,7 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { TypeAnnotationNode } from '../../intermediate-ast/nodes/TypeAnnotationNode.js';
 import { VariableDeclarationNode } from '../../intermediate-ast/nodes/variableDeclaration.js';
 import { produceMetadata } from '../metadata.js';
