@@ -32,9 +32,9 @@ export type TModule = {
   ValueObject?: TValueObject;
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
-  Packages?: TPackages;
+  Package?: TPackage;
   DomainRule?: TDomainRule;
-  RepoPorts?: TRepoPorts;
+  RepoPort?: TRepoPort;
   RepoAdapters?: TRepoAdapters;
   ReadModel?: TReadModel;
 };
@@ -70,7 +70,7 @@ export type TComponentType =
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
   | 'TDomainRule'
-  | 'TRepoPorts'
+  | 'TRepoPort'
   | 'TRepoAdapters'
   | 'TReadModels';
 
@@ -150,7 +150,7 @@ export type TProps = {
  * Read Model
  */
 export type TReadModelIdentifier = string;
-export const ReadModelIdentifierKey = 'ReadModelIdentifier';
+export const ReadModelIdentifierKey = 'readModelIdentifier';
 export const ReadModelKey = 'ReadModel';
 export type TReadModel = {
   [ReadModelKey]: {
@@ -1013,39 +1013,54 @@ export interface IAddResolversToServer {
     module: string;
   };
 }
-export type TDefinitionMethods = Record<string, TDefinitionMethodInfo>;
+export type TDefinitionMethods = TDefinitionMethodInfo[];
 
+export const PackagePortIdentifierKey = 'PackagePortIdentifier';
+export type TPackagePortIdentifier = string;
 export type TPackagePort = {
-  name: string;
-  definitionMethods: TDefinitionMethods;
+  [PackagePortIdentifierKey]: TPackagePortIdentifier;
+  methodDefinitionList: TDefinitionMethods;
 };
 
 export type TDefinitionMethodInfo = {
-  parameterDependencies: TParameterDependencies;
-  returnType: TBitloopsPrimaryType;
+  methodDefinition: {
+    identifier: TIdentifier;
+    parameters: TParameterDependencies;
+    type: TBitloopsPrimaryType; // return type
+  };
 };
 
-export type TPackages = Record<string, TPackage>;
-
+export const PackageIdentifierKey = 'PackageIdentifier';
+export type TPackageIdentifier = string;
 export type TPackage = {
-  port: TPackagePort;
-  adapters: TPackageAdapterNames;
+  Package: {
+    [PackageIdentifierKey]: TPackageIdentifier;
+    port: TPackagePort;
+    adapters: TPackageAdapterNames;
+  };
 };
 
-export type TRepoPorts = Record<string, TRepoPort>;
+export const repoPortKey = 'RepoPort';
+export type TExtendsRepoPorts = { [identifierKey]: TIdentifier }[];
 
+export type TRepoPortIdentifier = string;
+export const repoPortIdentifierKey = 'repoPortIdentifier';
 export type TAggregateRepoPort = {
-  readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
-  aggregateRootName: string;
-  extendedRepoPorts: string[];
-  definitionMethods: TDefinitionMethods;
+  [repoPortKey]: {
+    [repoPortIdentifierKey]: TRepoPortIdentifier;
+    entityIdentifier: string;
+    extendsRepoPorts: TExtendsRepoPorts;
+    methodDefinitionList?: TDefinitionMethods;
+  };
 };
 
 export type TReadModelRepoPort = {
-  readModelName: string;
-  aggregateRootName?: never;
-  extendedRepoPorts: string[];
-  definitionMethods: TDefinitionMethods;
+  [repoPortKey]: {
+    [repoPortIdentifierKey]: TRepoPortIdentifier;
+    readModelIdentifier: string;
+    extendsRepoPorts: TExtendsRepoPorts;
+    methodDefinitionList?: TDefinitionMethods;
+  };
 };
 
 export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;

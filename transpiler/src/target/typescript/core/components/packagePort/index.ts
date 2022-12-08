@@ -17,18 +17,22 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TPackagePort, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  PackagePortIdentifierKey,
+  TPackagePort,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const packagePortToTargetLanguage = (
   variable: TPackagePort,
 ): TTargetDependenciesTypeScript => {
-  let res = `export interface ${variable.name} `;
+  let res = `export interface ${variable[PackagePortIdentifierKey]} `;
   res += '{';
   const model = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDefinitionMethods,
-    value: variable.definitionMethods,
+    value: variable.methodDefinitionList,
   });
   res += model.output;
   res += '}';

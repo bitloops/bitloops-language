@@ -32,8 +32,11 @@ import {
   BitloopsTargetGenerator,
 } from '../../../../src/index.js';
 
-import { ISetupData, TBitloopsTargetSetupContent } from '../../../../src/types.js';
-import { BitloopsTargetGeneratorError } from '../../../../src/target/BitloopsTargetGeneratorError.js';
+import { ISetupData } from '../../../../src/types.js';
+import {
+  BitloopsTargetGeneratorError,
+  TBitloopsTargetSetupContent,
+} from '../../../../src/target/types.js';
 
 const feature = loadFeature('__tests__/target/typescript/setup/setup.feature');
 

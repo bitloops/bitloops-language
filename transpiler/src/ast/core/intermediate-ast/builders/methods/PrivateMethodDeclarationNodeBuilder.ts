@@ -1,5 +1,5 @@
 import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
-import { IdentifierNode } from '../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PrivateMethodDeclarationNode } from '../../nodes/methods/PrivateMethodDeclarationNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
