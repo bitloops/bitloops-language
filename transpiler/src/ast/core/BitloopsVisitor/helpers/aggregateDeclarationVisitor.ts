@@ -6,7 +6,7 @@ import { produceMetadata } from '../metadata.js';
 
 export const aggregateDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.EntityDeclarationContext,
+  ctx: BitloopsParser.AggregateDeclarationContext,
 ): void => {
   const metadata = produceMetadata(ctx, thisVisitor);
 

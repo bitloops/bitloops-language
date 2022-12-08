@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 
 import { DomainCreateBuilderDirector } from '../../builders/DomainCreateBuilderDirector.js';
 import { EntityValuesBuilder } from '../../builders/entity/EntityValuesBuilder.js';
@@ -17,16 +17,16 @@ import { RootEntityDeclarationBuilder } from '../../builders/rootEntity/RootEnti
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-enum blFiles {
-  publicPrivateMethod = 'rootEntityPrivatePublicMethod.bl',
-  privateOkError = 'entityPrivateMethodOkErrorReturnType.bl',
-  domainError = 'entityReturnDomainError.bl',
-}
+const blFiles = {
+  publicPrivateMethod: join(__dirname, 'rootEntityPrivatePublicMethod.bl'),
+  privateOkError: join(__dirname, 'rootEntityPrivateMethodOkErrorReturnType.bl'),
+  domainError: join(__dirname, 'rootEntityReturnDomainError.bl'),
+};
 export const validRootEntityTestCases = [
   {
     description: 'Root Entity with public and private method',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(__dirname + blFiles.publicPrivateMethod).toString(),
+    inputBLString: fs.readFileSync(blFiles.publicPrivateMethod).toString(),
     expected: new RootEntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -66,7 +66,7 @@ export const validRootEntityTestCases = [
   {
     description: 'Root Entity with private method with OkErrorReturnType',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(__dirname + blFiles.privateOkError).toString(),
+    inputBLString: fs.readFileSync(blFiles.privateOkError).toString(),
     expected: new RootEntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -113,7 +113,7 @@ export const validRootEntityTestCases = [
   {
     description: 'Root Entity with public method that returns domain error',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(__dirname + blFiles.domainError).toString(),
+    inputBLString: fs.readFileSync(blFiles.domainError).toString(),
     expected: new RootEntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
