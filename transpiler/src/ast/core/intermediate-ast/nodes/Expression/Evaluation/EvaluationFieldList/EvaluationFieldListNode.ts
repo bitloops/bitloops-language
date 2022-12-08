@@ -14,7 +14,7 @@ export class EvaluationFieldListNode extends IntermediateASTNode {
     //   }
     // });
     const res = this.getChildren().find(
-      (child) => (child as EvaluationFieldNode).getName().getValue().name === name,
+      (child) => (child as EvaluationFieldNode).getIdentifier().getValue().identifier === name,
     ) as EvaluationFieldNode;
     // console.log(res);
     return res;
