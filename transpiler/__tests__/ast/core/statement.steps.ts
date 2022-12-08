@@ -17,48 +17,43 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { validStatementTestCases } from './mocks/statements/statement.js';
 
-const feature = loadFeature('./__tests__/ast/core/statement.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  test('Steatement is valid', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
+describe('Statement is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    given(/^A valid statement (.*) string$/, (arg0) => {
-      blString = arg0;
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validStatementTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext: 'Hello World',
-          module: 'core',
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = arg0;
-      expect(result).toEqual(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.statement;
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });
