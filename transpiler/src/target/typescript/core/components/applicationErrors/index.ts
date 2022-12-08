@@ -26,6 +26,7 @@ import {
   TEvaluation,
   TRegularEvaluation,
   TDependenciesTypeScript,
+  ApplicationErrorKey,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -93,7 +94,8 @@ const applicationErrorToTargetLanguage = (
   variable: TApplicationError,
   applicationErrorName: string,
 ): TTargetDependenciesTypeScript => {
-  const { message, errorId, parameters } = variable;
+  /* 🔧 TODO: This won't work for now */
+  const { message, errorId, parameters } = variable[ApplicationErrorKey];
 
   // TODO: throw error if message is not a string or backtick string
   const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
