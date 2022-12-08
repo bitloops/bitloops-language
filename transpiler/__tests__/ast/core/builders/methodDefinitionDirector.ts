@@ -1,4 +1,8 @@
-import { TDefinitionMethodInfo, TBitloopsPrimitives } from '../../../../src/types.js';
+import {
+  TDefinitionMethodInfo,
+  TBitloopsPrimitives,
+  TBitloopsPrimaryType,
+} from '../../../../src/types.js';
 import { ParameterBuilderDirector } from './ParameterBuilderDirector.js';
 
 export class MethodDefinitionBuilderDirector {
@@ -40,6 +44,26 @@ export class MethodDefinitionBuilderDirector {
         type: {
           primitiveType: returnType,
         },
+      },
+    };
+  }
+
+  buildMethodWithPrimitiveParamsAndBitloopsPrimaryTypeReturn({
+    methodName,
+    params,
+    returnType,
+  }: {
+    methodName: string;
+    params: Array<{ name: string; type: TBitloopsPrimitives }>;
+    returnType: TBitloopsPrimaryType;
+  }): TDefinitionMethodInfo {
+    return {
+      methodDefinition: {
+        identifier: methodName,
+        parameters: params.map((param) =>
+          new ParameterBuilderDirector().buildPrimitiveParameter(param.name, param.type),
+        ),
+        type: returnType,
       },
     };
   }

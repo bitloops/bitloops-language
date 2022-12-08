@@ -858,15 +858,15 @@ export type TRepoPorts = Record<string, TRepoPort>;
 
 export type TAggregateRepoPort = {
   readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
-  aggregateRootName: string;
-  extendedRepoPorts: string[];
+  entityIdentifier: string;
+  extendsRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
 };
 
 export type TReadModelRepoPort = {
   readModelName: string;
-  aggregateRootName?: never;
-  extendedRepoPorts: string[];
+  entityIdentifier?: never;
+  extendsRepoPorts: string[];
   definitionMethods: TDefinitionMethods;
 };
 

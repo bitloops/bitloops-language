@@ -852,13 +852,6 @@ repoPortIdentifier
     : RepoPortIdentifier
     ;
 
-aggregateRootIdentifier
-    : EntityIdentifier
-    | ReadModelIdentifier
-    | Identifier
-    | UpperCaseIdentifier 
-    ;
-
 repoExtendsList
     : Extends repoPortExtendableIdentifierList
     ;

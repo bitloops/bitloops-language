@@ -119,7 +119,6 @@ export type TVariables = TVariable[];
 
 export const identifierKey = 'identifier';
 export type TIdentifier = string;
-export type TIdentifierList = TIdentifier[];
 
 export const optionalKey = 'optional';
 export type TOptional = boolean;
@@ -151,7 +150,7 @@ export type TProps = {
  * Read Model
  */
 export type TReadModelIdentifier = string;
-export const ReadModelIdentifierKey = 'ReadModelIdentifier';
+export const ReadModelIdentifierKey = 'readModelIdentifier';
 export const ReadModelKey = 'ReadModel';
 export type TReadModel = {
   [ReadModelKey]: {
@@ -1028,20 +1027,25 @@ export type TPackage = {
 };
 
 export const repoPortKey = 'RepoPort';
+export type TExtendsRepoPorts = { [identifierKey]: TIdentifier }[];
 
+export type TRepoPortIdentifier = string;
+export const repoPortIdentifierKey = 'repoPortIdentifier';
 export type TAggregateRepoPort = {
   [repoPortKey]: {
-    aggregateRootName: string;
-    extendedRepoPorts: string[];
-    definitionMethods: TDefinitionMethods;
+    [repoPortIdentifierKey]: TRepoPortIdentifier;
+    entityIdentifier: string;
+    extendsRepoPorts: TExtendsRepoPorts;
+    methodDefinitionList?: TDefinitionMethods;
   };
 };
 
 export type TReadModelRepoPort = {
   [repoPortKey]: {
-    readModelName: string;
-    extendedRepoPorts: TIdentifierList;
-    definitionMethods: TDefinitionMethods;
+    [repoPortIdentifierKey]: TRepoPortIdentifier;
+    readModelIdentifier: string;
+    extendsRepoPorts: TExtendsRepoPorts;
+    methodDefinitionList?: TDefinitionMethods;
   };
 };
 

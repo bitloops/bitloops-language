@@ -1,6 +1,6 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { EntityIdentifierNode } from '../../nodes/Entity/EntityIdentifierNode.js';
-import { IdentifierListNode } from '../../nodes/identifier/IdentifierListNode.js';
+import { ExtendsRepoPortsNode } from '../../nodes/extendsRepoPortNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { MethodDefinitionListNode } from '../../nodes/method-definitions/MethodDefinitionListNode.js';
 import { ReadModelIdentifierNode } from '../../nodes/readModel/ReadModelIdentifierNode.js';
@@ -13,7 +13,7 @@ export class RepoPortBuilder implements IBuilder<RepoPortNode> {
   private repoPortIdentifierNode: RepoPortIdentifierNode;
   private entityIdentifierNode: EntityIdentifierNode;
   private readModelIdentifierNode: ReadModelIdentifierNode;
-  private extendsRepoPorts: IdentifierListNode;
+  private extendsRepoPorts: ExtendsRepoPortsNode;
   private definitionMethods: MethodDefinitionListNode;
   private intermediateASTTree: IntermediateASTTree;
 
@@ -34,7 +34,6 @@ export class RepoPortBuilder implements IBuilder<RepoPortNode> {
     return this;
   }
 
-  //TODO set name here
   public withRepoPortIdentifierNode(
     repoPortIdentifierNode: RepoPortIdentifierNode,
   ): RepoPortBuilder {
@@ -42,7 +41,7 @@ export class RepoPortBuilder implements IBuilder<RepoPortNode> {
     return this;
   }
 
-  public withExtendsRepoPortNode(extendsRepoPorts: IdentifierListNode): RepoPortBuilder {
+  public withExtendsRepoPortNode(extendsRepoPorts: ExtendsRepoPortsNode): RepoPortBuilder {
     this.extendsRepoPorts = extendsRepoPorts;
     return this;
   }
@@ -56,7 +55,10 @@ export class RepoPortBuilder implements IBuilder<RepoPortNode> {
     this.intermediateASTTree.insertChild(this.repoPort);
     this.intermediateASTTree.insertChild(this.repoPortIdentifierNode);
     this.intermediateASTTree.insertSibling(this.extendsRepoPorts);
-    this.intermediateASTTree.insertSibling(this.definitionMethods);
+
+    if (this.definitionMethods) {
+      this.intermediateASTTree.insertSibling(this.definitionMethods);
+    }
 
     if (this.entityIdentifierNode) {
       this.intermediateASTTree.insertSibling(this.entityIdentifierNode);
@@ -64,7 +66,6 @@ export class RepoPortBuilder implements IBuilder<RepoPortNode> {
       this.intermediateASTTree.insertSibling(this.readModelIdentifierNode);
     }
     this.intermediateASTTree.setCurrentNodeToRoot();
-
     this.repoPort.buildObjectValue();
 
     return this.repoPort;

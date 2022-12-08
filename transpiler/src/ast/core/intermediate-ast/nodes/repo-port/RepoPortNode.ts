@@ -9,7 +9,7 @@ export class RepoPortNode extends ClassTypeNode {
   constructor(metadata?: TNodeMetadata) {
     super({
       classType: RepoPortNode.classType,
-      nodeType: BitloopsTypesMapping.TProps,
+      nodeType: BitloopsTypesMapping.TRepoPort,
       metadata,
       classNodeName: RepoPortNode.classNodeName,
     });

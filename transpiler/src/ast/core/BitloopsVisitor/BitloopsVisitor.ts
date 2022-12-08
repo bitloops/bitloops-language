@@ -176,11 +176,11 @@ import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCa
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 import { RepoPortIdentifierNodeBuilder } from '../intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
-import { IdentifierListNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierListNodeBuilder.js';
-import { IdentifierListNode } from '../intermediate-ast/nodes/identifier/IdentifierListNode.js';
 import { MethodDefinitionListNode } from '../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
 import { ReadModelIdentifierNode } from '../intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
+import { ExtendsRepoPortsNodeBuilder } from '../intermediate-ast/builders/ExtendsRepoPortNodeBuilder.js';
+import { ExtendsRepoPortsNode } from '../intermediate-ast/nodes/extendsRepoPortNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -902,16 +902,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return repoPortDeclarationVisitor(this, ctx);
   }
 
-  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
-    this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext): ExtendsRepoPortsNode {
+    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined)[0];
   }
 
   visitRepoPortExtendableIdentifierList(
     ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
-  ): IdentifierListNode {
-    const identifierList: IdentifierNode[] = this.visitChildren(ctx)[0];
+  ): ExtendsRepoPortsNode {
+    const identifierList: IdentifierNode[] = this.visitChildren(ctx).filter(
+      (child) => child !== undefined,
+    );
 
-    const identifierListNode = new IdentifierListNodeBuilder()
+    const identifierListNode = new ExtendsRepoPortsNodeBuilder()
       .withIdentifierList(identifierList)
       .build();
     return identifierListNode;

@@ -3,7 +3,7 @@ import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class RepoPortIdentifierNode extends IntermediateASTIdentifierNode {
-  private static classNodeName = 'RepoPortIdentifier';
+  private static classNodeName = 'repoPortIdentifier';
 
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TRepoPort, RepoPortIdentifierNode.classNodeName, metadata);

@@ -19,9 +19,10 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { EntityIdentifierNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { RepoPortBuilder } from '../../intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
-import { IdentifierListNode } from '../../intermediate-ast/nodes/identifier/IdentifierListNode.js';
+import { ExtendsRepoPortsNode } from '../../intermediate-ast/nodes/extendsRepoPortNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { MethodDefinitionListNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 import { RepoPortIdentifierNode } from '../../intermediate-ast/nodes/repo-port/RepoPortIdentifierNode.js';
@@ -34,7 +35,7 @@ export const repoPortDeclarationVisitor = (
 ): void => {
   const repoPortName: RepoPortIdentifierNode = thisVisitor.visit(ctx.repoPortIdentifier());
 
-  const extendedRepoPorts: IdentifierListNode = thisVisitor.visit(ctx.repoExtendsList());
+  const extendsRepoPorts: ExtendsRepoPortsNode = thisVisitor.visit(ctx.repoExtendsList());
 
   //TODO whart if definitionMethods are missing
   let definitionMethods: MethodDefinitionListNode;
@@ -47,17 +48,20 @@ export const repoPortDeclarationVisitor = (
     const readModelIdentifier = thisVisitor.visit(ctx.readModelIdentifier());
     new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
       .withDefinitionMethodsNode(definitionMethods)
-      .withExtendsRepoPortNode(extendedRepoPorts)
+      .withExtendsRepoPortNode(extendsRepoPorts)
       .withRepoPortIdentifierNode(repoPortName)
       .withReadModelIdentifier(readModelIdentifier)
       .build();
   } else if (ctx.entityIdentifier()) {
-    const aggregateRootIdentifier = thisVisitor.visit(ctx.entityIdentifier());
+    const aggregateRootIdentifier = ctx.entityIdentifier().getText();
+    const aggregateRootIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
+      .withName(aggregateRootIdentifier)
+      .build();
     new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
       .withDefinitionMethodsNode(definitionMethods)
-      .withExtendsRepoPortNode(extendedRepoPorts)
+      .withExtendsRepoPortNode(extendsRepoPorts)
       .withRepoPortIdentifierNode(repoPortName)
-      .withEntityIdentifier(aggregateRootIdentifier)
+      .withEntityIdentifier(aggregateRootIdentifierNode)
       .build();
   }
   // TODO Handle Identifier with < > if we want to extend a repoPort with a generic type

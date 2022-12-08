@@ -27,13 +27,13 @@ import {
 export class RepoPortTypeIdentifiers {
   static isAggregateRepoPort = (repoPort: TRepoPort): repoPort is TAggregateRepoPort => {
     const value = repoPort[repoPortKey];
-    if ('aggregateRootName' in value) return true;
+    if ('entityIdentifier' in value) return true;
     return false;
   };
 
   static isReadModelRepoPort = (repoPort: TRepoPort): repoPort is TReadModelRepoPort => {
     const value = repoPort[repoPortKey];
-    if ('readModelName' in value) return true;
+    if ('readModelIdentifier' in value) return true;
     return false;
   };
 }
