@@ -1,19 +1,19 @@
+import { DTOIdentifierNode } from '../../../nodes/DTO/DTOIdentifierNode.js';
 import { DTOEvaluationNode } from '../../../nodes/Expression/Evaluation/DTOEvaluation.js';
 import { EvaluationFieldListNode } from '../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
-import { NameNode } from '../../../nodes/NameNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class DTOEvaluationNodeBuilder implements IBuilder<DTOEvaluationNode> {
   private dtoEvaluationNode: DTOEvaluationNode;
-  private name: NameNode;
+  private identifier: DTOIdentifierNode;
   private evaluationFieldListNode?: EvaluationFieldListNode;
 
   constructor() {
     this.dtoEvaluationNode = new DTOEvaluationNode();
   }
 
-  public withName(name: NameNode): DTOEvaluationNodeBuilder {
-    this.name = name;
+  public withIdentifier(identifier: DTOIdentifierNode): DTOEvaluationNodeBuilder {
+    this.identifier = identifier;
     return this;
   }
 
@@ -25,7 +25,7 @@ export class DTOEvaluationNodeBuilder implements IBuilder<DTOEvaluationNode> {
   }
 
   public build(): DTOEvaluationNode {
-    this.dtoEvaluationNode.addChild(this.name);
+    this.dtoEvaluationNode.addChild(this.identifier);
     this.dtoEvaluationNode.addChild(this.evaluationFieldListNode);
 
     this.dtoEvaluationNode.buildObjectValue();

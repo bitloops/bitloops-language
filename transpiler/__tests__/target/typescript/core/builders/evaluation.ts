@@ -5,7 +5,6 @@ import { EvaluationFieldNode } from '../../../../../src/ast/core/intermediate-as
 import { EvaluationBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
 import { EvaluationFieldListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { DTOEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
-import { NameNode } from '../../../../../src/ast/core/intermediate-ast/nodes/NameNode.js';
 import { ClassNameNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ClassNameBuilder.js';
 import { BuiltinClassEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/BuiltinClassEvaluationBuilder.js';
 import { ErrorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/ErrorEvaluationBuilder.js';
@@ -14,6 +13,7 @@ import { EvaluationFieldListNode } from '../../../../../src/ast/core/intermediat
 import { EntityEvaluationBuilderDirector } from './domainEvaluation/entityEvaluation.js';
 import { ValueObjectEvaluationBuilderDirector } from './domainEvaluation/valueObjectEvaluation.js';
 import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { DTOIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -59,11 +59,11 @@ export class EvaluationBuilderDirector {
   }
 
   buildDTOEvaluation(
-    nameNode: NameNode,
+    identifierNode: DTOIdentifierNode,
     evaluationFieldListNode: EvaluationFieldListNode,
   ): EvaluationNode {
     const evaluationNode = new DTOEvaluationNodeBuilder()
-      .withName(nameNode)
+      .withIdentifier(identifierNode)
       .withEvaluationFieldList(evaluationFieldListNode)
       .build();
 

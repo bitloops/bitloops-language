@@ -1,4 +1,5 @@
 import {
+  DTOIdentifierKey,
   TArgumentList,
   TDomainEvaluationExpression,
   TEvaluation,
@@ -32,7 +33,7 @@ export class EvaluationBuilderDirector {
     return {
       evaluation: {
         dto: {
-          name: dtoIdentifier,
+          [DTOIdentifierKey]: dtoIdentifier,
           fields,
         },
       },

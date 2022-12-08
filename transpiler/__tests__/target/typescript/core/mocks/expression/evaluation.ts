@@ -5,9 +5,9 @@ import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { EntityEvaluationBuilderDirector } from '../../builders/domainEvaluation/entityEvaluation.js';
 
-import { NameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/NameBuilder.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { ValueObjectEvaluationBuilderDirector } from '../../builders/domainEvaluation/valueObjectEvaluation.js';
+import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -186,7 +186,7 @@ export const VALID_DTO_EVALUATION_TEST_CASES = [
   {
     description: 'DTO evaluation',
     evaluation: new EvaluationBuilderDirector().buildDTOEvaluation(
-      new NameNodeBuilder().withName('AddCourceDTO').build(),
+      new DTOIdentifierNodeBuilder().withName('AddCourceDTO').build(),
       new EvaluationFieldListNodeBuilder()
         .withEvaluationFields([
           new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),

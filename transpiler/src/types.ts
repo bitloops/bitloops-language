@@ -385,7 +385,7 @@ export type TStructEvaluation = {
 export type TDTOEvaluation = {
   dto: {
     fields: TEvaluationFields;
-    name: string;
+    [DTOIdentifierKey]: TDTOIdentifier;
   };
 };
 
