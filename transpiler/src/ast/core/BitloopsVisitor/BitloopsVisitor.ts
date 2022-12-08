@@ -141,6 +141,7 @@ import {
   graphQLOperationTypeVisitor,
   graphQLOperationInputTypeVisitor,
   graphQLExecuteDependenciesVisitor,
+  packagePortIdentifierVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -872,6 +873,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
     return packagePortDeclarationVisitor(this, ctx);
+  }
+
+  visitPackagePortIdentifier(ctx: BitloopsParser.PackagePortIdentifierContext) {
+    return packagePortIdentifierVisitor(this, ctx);
   }
 
   visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {

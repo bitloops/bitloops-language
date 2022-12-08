@@ -19,25 +19,46 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TPackagePort } from '../../../../types.js';
+import { PackageAdapterListNodeBuilder } from '../../intermediate-ast/builders/package/packageAdapters/PackageAdapterListNodeBuilder.js';
+import { PackageIdentifierNodeBuilder } from '../../intermediate-ast/builders/package/PackageIdentifierNodeBuilder.js';
+import { PackageNodeBuilder } from '../../intermediate-ast/builders/package/PackageNodeBuilder.js';
+import { PackagePortIdentifierNodeBuilder } from '../../intermediate-ast/builders/package/packagePort/PackagePortIdentifierNodeBuilder.js';
+import { PackagePortNodeBuilder } from '../../intermediate-ast/builders/package/packagePort/PackagePortNodeBuilder.js';
+import { PackageNode } from '../../intermediate-ast/nodes/package/PackageNode.js';
+import { PackagePortIdentifierNode } from '../../intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
+
+export const packagePortIdentifierVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.PackagePortIdentifierContext,
+): PackagePortIdentifierNode => {
+  return new PackagePortIdentifierNodeBuilder(produceMetadata(ctx, thisVisitor))
+    .withName(ctx.PackagePortIdentifier().getText())
+    .build();
+};
 
 export const packagePortDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PackagePortDeclarationContext,
-): { Packages: { [x: string]: { port: TPackagePort; adapters: [] } } } => {
-  const packagePortName = ctx.packagePortIdentifier().getText();
+): PackageNode => {
+  const packagePortIdentifierNode: PackagePortIdentifierNode = thisVisitor.visit(
+    ctx.packagePortIdentifier(),
+  );
   const definitionMethods = thisVisitor.visit(ctx.methodDefinitionList());
-  const packageName = packagePortName.replace('Port', '');
-  return {
-    Packages: {
-      [packageName]: {
-        port: {
-          name: packagePortName,
-          ...definitionMethods,
-        },
-        adapters: [],
-      },
-    },
-  };
+
+  const packageName = packagePortIdentifierNode.name.replace('Port', '');
+  const packageNameNode = new PackageIdentifierNodeBuilder(undefined).withName(packageName).build();
+  const portNode = new PackagePortNodeBuilder(produceMetadata(ctx, thisVisitor))
+    .withIdentifier(packagePortIdentifierNode)
+    .withDefinitionMethods(definitionMethods)
+    .build();
+
+  const emptyAdapterListNode = new PackageAdapterListNodeBuilder().withAdapters([]).build();
+
+  return new PackageNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
+    .withIdentifier(packageNameNode)
+    .withPort(portNode)
+    .withAdapters(emptyAdapterListNode)
+    .build();
 };

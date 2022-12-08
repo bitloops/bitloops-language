@@ -13,4 +13,8 @@ export class PackagePortIdentifierNode extends IntermediateASTIdentifierNode {
       metadata,
     );
   }
+
+  get name(): string {
+    return this.getValue()[this.getClassNodeName()];
+  }
 }
