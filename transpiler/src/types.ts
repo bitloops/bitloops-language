@@ -315,7 +315,7 @@ export type TInstanceOf = {
 export type TPropsEvaluation = {
   props: {
     fields: TEvaluationFields;
-    name: string;
+    [PropsIdentifierKey]: string;
   };
 };
 
@@ -371,21 +371,21 @@ export type TIfStatement = {
 };
 
 export type TEvaluationField = {
-  evaluationField: { name: string } & TExpression;
+  evaluationField: { identifier: string } & TExpression;
 };
 export type TEvaluationFields = TEvaluationField[];
 
 export type TStructEvaluation = {
   struct: {
     fields: TEvaluationFields;
-    name: string;
+    [structIdentifierKey]: string;
   };
 };
 
 export type TDTOEvaluation = {
   dto: {
     fields: TEvaluationFields;
-    name: string;
+    [DTOIdentifierKey]: TDTOIdentifier;
   };
 };
 
@@ -399,10 +399,15 @@ export type TEntityEvaluation = {
 
 export type TDomainEvaluation = {
   domainEvaluation: {
-    name: string;
     props: TDomainEvaluationExpression;
-  };
+  } & TDomainEvaluationName;
 };
+
+type TDomainEvaluationName =
+  | {
+      entityIdentifier: TEntityIdentifier;
+    }
+  | { valueObjectIdentifier: TValueObjectIdentifier };
 
 export type TDomainEvaluationExpression =
   | {
@@ -1147,7 +1152,7 @@ export type TAndSingleExpression = {
 
 export type TErrorEvaluation = {
   errorEvaluation: {
-    name: string;
+    error: string;
     argumentList?: TArgumentList;
   };
 };

@@ -22,7 +22,6 @@ import { DTOIdentifierNode } from '../../intermediate-ast/nodes/DTO/DTOIdentifie
 import { DTOEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/DTOEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
 import { DTOEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
 
 export const dtoEvaluationVisitor = (
@@ -32,10 +31,8 @@ export const dtoEvaluationVisitor = (
   const dtoIdentifierNode: DTOIdentifierNode = thisVisitor.visit(ctx.dtoIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
 
-  const nameNode = new NameNodeBuilder().withName(dtoIdentifierNode.getIdentifierName()).build();
-
   const dtoEvaluationNode = new DTOEvaluationNodeBuilder()
-    .withName(nameNode)
+    .withIdentifier(dtoIdentifierNode)
     .withEvaluationFieldList(fieldList)
     .build();
 

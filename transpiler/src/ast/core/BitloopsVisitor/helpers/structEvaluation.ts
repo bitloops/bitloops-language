@@ -20,7 +20,6 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
 import { StructEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/StructEvaluationBuilder.js';
 import { StructEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/StructEvaluation.js';
 
@@ -28,13 +27,11 @@ export const structEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StructEvaluationContext,
 ): StructEvaluationNode => {
-  const identifier = ctx.structEvaluationIdentifier().getText();
+  const identifierNode = thisVisitor.visit(ctx.structIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
 
-  const nameNode = new NameNodeBuilder().withName(identifier).build();
-
   const structEvaluationNode = new StructEvaluationNodeBuilder()
-    .withName(nameNode)
+    .withIdentifier(identifierNode)
     .withEvaluationFieldList(fieldList)
     .build();
 

@@ -27,7 +27,6 @@ export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
 ): TTargetDependenciesTypeScript => {
   const domainProperties = evaluation.domainEvaluation.props;
-  const domainName = evaluation.domainEvaluation.name;
 
   let resultDomainProps: TTargetDependenciesTypeScript;
   if (DomainEvaluationPropsTypeIdentifiers.isExpression(domainProperties)) {
@@ -42,10 +41,20 @@ export const domainEvaluationToTargetLanguage = (
     });
   }
 
+  const domainName = getDomainName(evaluation);
   const dependencies = [...resultDomainProps.dependencies, ...getChildDependencies(domainName)];
 
   return {
     output: `${domainName}.create(${resultDomainProps.output});`,
     dependencies,
   };
+};
+
+const getDomainName = (evaluation: TDomainEvaluation): string => {
+  const domainEvaluation = evaluation.domainEvaluation;
+  let domainName;
+  if ('entityIdentifier' in domainEvaluation) domainName = domainEvaluation.entityIdentifier;
+  if ('valueObjectIdentifier' in domainEvaluation)
+    domainName = domainEvaluation.valueObjectIdentifier;
+  return domainName;
 };

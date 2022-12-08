@@ -66,7 +66,7 @@ evaluationFieldList
     ;
 
 evaluationField
-    : Identifier Colon expression
+    : identifier Colon expression
     ;
 
 // typeParameter
@@ -537,7 +537,7 @@ jestTestDeclaration
     ;
 
 errorEvaluation
-    : ErrorIdentifier methodArguments SemiColon?
+    : errorIdentifier methodArguments SemiColon?
     ;
 
 evaluation
@@ -900,12 +900,8 @@ entityEvaluation
     : entityIdentifier domainEvaluationInput
     ;
 
-structEvaluationIdentifier
-    : UpperCaseIdentifier
-    ;
-
 structEvaluation
-    : structEvaluationIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    : structIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
     
 builtInClassEvaluation

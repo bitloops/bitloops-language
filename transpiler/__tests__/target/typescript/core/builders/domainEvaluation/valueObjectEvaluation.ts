@@ -1,4 +1,5 @@
 import { ValueObjectEvaluationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/ValueObjectEvaluationBuilder.js';
+import { ValueObjectIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/valueObject/ValueObjectIdentifierNodeBuilder.js';
 import { EvaluationFieldListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { ValueObjectEvaluationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/ValueObjectEvaluation.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
@@ -11,7 +12,7 @@ export class ValueObjectEvaluationBuilderDirector {
   ): ValueObjectEvaluationNode {
     const domainEvaluation =
       new DomainEvaluationBuilderDirector().buildDomainEvaluationWithFieldListProps(
-        valueObjectName,
+        new ValueObjectIdentifierNodeBuilder().withName(valueObjectName).build(),
         fieldListNode,
       );
     const valueObjectNameEvaluationNode = new ValueObjectEvaluationNodeBuilder()
@@ -26,7 +27,7 @@ export class ValueObjectEvaluationBuilderDirector {
   ): ValueObjectEvaluationNode {
     const domainEvaluation =
       new DomainEvaluationBuilderDirector().buildDomainEvaluationWithExpressionProps(
-        valueObjectName,
+        new ValueObjectIdentifierNodeBuilder().withName(valueObjectName).build(),
         expressionNode,
       );
     const valueObjectNameEvaluationNode = new ValueObjectEvaluationNodeBuilder()

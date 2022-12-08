@@ -21,20 +21,17 @@
 import { PropsEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/PropsEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../intermediate-ast/builders/NameBuilder.js';
 import { PropsEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/PropsEvaluationBuilder.js';
 
 export const propsEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PropsEvaluationContext,
 ): PropsEvaluationNode => {
-  const identifier = ctx.propsIdentifier().getText();
+  const identifierNode = thisVisitor.visit(ctx.propsIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
 
-  const nameNode = new NameNodeBuilder().withName(identifier).build();
-
   const propsEvaluationNode = new PropsEvaluationNodeBuilder()
-    .withName(nameNode)
+    .withIdentifier(identifierNode)
     .withEvaluationFieldList(fieldList)
     .build();
 

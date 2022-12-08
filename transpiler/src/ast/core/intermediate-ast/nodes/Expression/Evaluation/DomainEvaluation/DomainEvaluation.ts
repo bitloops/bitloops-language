@@ -1,9 +1,13 @@
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from '../../../IntermediateASTNode.js';
+import { TNodeMetadata } from '../../../IntermediateASTNode.js';
+import { EvaluationNode } from '../EvaluationNode.js';
 
-const NAME = 'domainEvaluation';
-export class DomainEvaluationNode extends IntermediateASTNode {
+export class DomainEvaluationNode extends EvaluationNode {
+  private static domainEvaluationNodeName = 'domainEvaluation';
+
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TDomainEvaluation, metadata, NAME);
+    super(metadata);
+    this.nodeType = BitloopsTypesMapping.TDomainEvaluation;
+    this.classNodeName = DomainEvaluationNode.domainEvaluationNodeName;
   }
 }

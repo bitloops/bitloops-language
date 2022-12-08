@@ -1,19 +1,19 @@
 import { EvaluationFieldListNode } from '../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { StructEvaluationNode } from '../../../nodes/Expression/Evaluation/StructEvaluation.js';
-import { NameNode } from '../../../nodes/NameNode.js';
+import { StructIdentifierNode } from '../../../nodes/struct/StructIdentifierNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class StructEvaluationNodeBuilder implements IBuilder<StructEvaluationNode> {
   private structEvaluationNode: StructEvaluationNode;
-  private name: NameNode;
+  private identifier: StructIdentifierNode;
   private evaluationFieldListNode?: EvaluationFieldListNode;
 
   constructor() {
     this.structEvaluationNode = new StructEvaluationNode();
   }
 
-  public withName(name: NameNode): StructEvaluationNodeBuilder {
-    this.name = name;
+  public withIdentifier(identifier: StructIdentifierNode): StructEvaluationNodeBuilder {
+    this.identifier = identifier;
     return this;
   }
 
@@ -25,7 +25,7 @@ export class StructEvaluationNodeBuilder implements IBuilder<StructEvaluationNod
   }
 
   public build(): StructEvaluationNode {
-    this.structEvaluationNode.addChild(this.name);
+    this.structEvaluationNode.addChild(this.identifier);
     this.structEvaluationNode.addChild(this.evaluationFieldListNode);
 
     this.structEvaluationNode.buildObjectValue();

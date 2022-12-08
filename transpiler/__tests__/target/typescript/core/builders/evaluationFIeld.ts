@@ -1,15 +1,15 @@
 import { EvaluationFieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { NameNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/NameBuilder.js';
 import { EvaluationFieldNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
 import { ExpressionBuilderDirector } from './expression.js';
+import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export class EvaluationFieldBuilderDirector {
   buildEvaluationField(name: string, expression: ExpressionNode): EvaluationFieldNode {
-    const nameNode = new NameNodeBuilder().withName(name).build();
+    const identifierNode = new IdentifierNodeBuilder().withName(name).build();
 
     const evaluationFieldNode = new EvaluationFieldNodeBuilder()
-      .withName(nameNode)
+      .withIdentifier(identifierNode)
       .withExpression(expression)
       .build();
 

@@ -1,12 +1,10 @@
 import { EvaluationFieldNode } from '../../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../nodes/Expression/ExpressionNode.js';
-import { NameNode } from '../../../../nodes/NameNode.js';
+import { IdentifierNode } from '../../../../nodes/identifier/IdentifierNode.js';
 import { IBuilder } from '../../../IBuilder.js';
 
 export class EvaluationFieldNodeBuilder implements IBuilder<EvaluationFieldNode> {
-  public readonly NAME = 'field';
-
-  private nameNode: NameNode;
+  private identifierNode: IdentifierNode;
   private expressionNode: ExpressionNode;
   private evaluationFieldNode: EvaluationFieldNode;
 
@@ -14,8 +12,8 @@ export class EvaluationFieldNodeBuilder implements IBuilder<EvaluationFieldNode>
     this.evaluationFieldNode = new EvaluationFieldNode();
   }
 
-  public withName(name: NameNode): EvaluationFieldNodeBuilder {
-    this.nameNode = name;
+  public withIdentifier(identifierNode: IdentifierNode): EvaluationFieldNodeBuilder {
+    this.identifierNode = identifierNode;
     return this;
   }
 
@@ -25,7 +23,7 @@ export class EvaluationFieldNodeBuilder implements IBuilder<EvaluationFieldNode>
   }
 
   public build(): EvaluationFieldNode {
-    this.evaluationFieldNode.addChild(this.nameNode);
+    this.evaluationFieldNode.addChild(this.identifierNode);
     this.evaluationFieldNode.addChild(this.expressionNode);
 
     this.evaluationFieldNode.buildObjectValue();
