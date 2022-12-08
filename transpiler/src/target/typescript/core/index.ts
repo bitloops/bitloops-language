@@ -74,6 +74,7 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
         //     moduleName,
         //   });
         // }
+        console.log(intermediateASTTree);
         const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
         classTypeNodes.forEach((intermediateASTNode) => {
           // copy intermediateASTNode??
