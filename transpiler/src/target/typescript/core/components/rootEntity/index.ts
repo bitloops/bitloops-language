@@ -112,7 +112,7 @@ export const rootEntitiesToTargetLanguage = (params: {
     res += '}';
 
     dependencies = getParentDependencies(dependencies, {
-      classType: ClassTypes.RootEntities,
+      classType: ClassTypes.RootEntity,
       className: rootEntityName,
     });
   }

@@ -28,7 +28,7 @@ const feature = loadFeature('./__tests__/target/typescript/core/aggregateDeclara
 defineFeature(feature, (test) => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const rootEntitiesClassType = ClassTypes.RootEntities;
+  const rootEntitiesClassType = ClassTypes.RootEntity;
   const propsClassType = ClassTypes.Props;
   const formatterConfig = null;
   let valueProps;
