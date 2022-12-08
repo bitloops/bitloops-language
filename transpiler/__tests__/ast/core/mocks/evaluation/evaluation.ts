@@ -1,7 +1,15 @@
-import { EvaluationFieldBuilderDirector } from '../builders/evaluationFieldDirector.js';
-import { EvaluationBuilderDirector } from '../builders/evaluationDirector.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDirector.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluationDirector.js';
+import { TEvaluation } from '../../../../../src/types.js';
 
-export const validEvaluationTestCases = [
+type TestCase = {
+  description: string;
+  fileId: string;
+  inputBLString: string;
+  evaluation: TEvaluation;
+};
+
+export const validEvaluationTestCases: Array<TestCase> = [
   {
     description: 'valid DTO Evaluation',
     fileId: 'testFile.bl',
@@ -19,6 +27,15 @@ export const validEvaluationTestCases = [
     ]),
   },
   {
+    description: 'valid error evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestEvaluation { DomainErrors.InvalidNameError() }',
+    evaluation: new EvaluationBuilderDirector().buildErrorEvaluation(
+      'DomainErrors.InvalidNameError',
+      [],
+    ),
+  },
+  {
     description: 'valid value object evaluation',
     fileId: 'testFile.bl',
     inputBLString: "JestTestEvaluation { NameVO({ message: 'Hello, World!' })}",
@@ -27,15 +44,6 @@ export const validEvaluationTestCases = [
         new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
       ],
     }),
-  },
-  {
-    description: 'valid error evaluation',
-    fileId: 'testFile.bl',
-    inputBLString: 'JestTestEvaluation { DomainErrors.InvalidNameError() }',
-    evaluation: new EvaluationBuilderDirector().buildErrorEvaluation(
-      'DomainErrors.InvalidNameError',
-      [],
-    ),
   },
   {
     description: 'Valid entity evaluation',
