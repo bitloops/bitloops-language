@@ -179,6 +179,7 @@ import { IdentifierListNodeBuilder } from '../intermediate-ast/builders/identifi
 import { IdentifierListNode } from '../intermediate-ast/nodes/identifier/IdentifierListNode.js';
 import { MethodDefinitionListNode } from '../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
+import { ReadModelIdentifierNode } from '../intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -846,6 +847,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .build();
   }
 
+  // visitAggregateRootIdentifier(ctx: BitloopsParser.AggregateRootIdentifierContext): AggregateRootIdentifierNode {
+  //   const metadata = produceMetadata(ctx, this);
+  //   return new AggregateRootIdentifierBuilder(metadata).withName(ctx.)
+  // }
+
   visitApplyRuleStatementRulesList(ctx: BitloopsParser.ApplyRuleStatementRulesListContext): any {
     return applyRuleStatementRulesListVisitor(this, ctx);
   }
@@ -920,7 +926,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     readModelDeclarationVisitor(this, ctx);
   }
 
-  visitReadModelIdentifier(ctx: BitloopsParser.ReadModelIdentifierContext) {
+  visitReadModelIdentifier(
+    ctx: BitloopsParser.ReadModelIdentifierContext,
+  ): ReadModelIdentifierNode {
     return new ReadModelIdentifierNodeBuilder(produceMetadata(ctx, this))
       .withName(ctx.ReadModelIdentifier().getText())
       .build();

@@ -34,7 +34,7 @@ export type TModule = {
   Structs?: TStructDeclaration;
   Packages?: TPackages;
   DomainRule?: TDomainRule;
-  RepoPorts?: TRepoPort;
+  RepoPort?: TRepoPort;
   RepoAdapters?: TRepoAdapters;
   ReadModel?: TReadModel;
 };

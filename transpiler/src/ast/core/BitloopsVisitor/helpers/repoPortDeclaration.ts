@@ -20,61 +20,48 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { RepoPortBuilder } from '../../intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
 import { IdentifierListNode } from '../../intermediate-ast/nodes/identifier/IdentifierListNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { MethodDefinitionListNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 import { RepoPortIdentifierNode } from '../../intermediate-ast/nodes/repo-port/RepoPortIdentifierNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
 
 export const repoPortDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoPortDeclarationContext,
 ): void => {
   const repoPortName: RepoPortIdentifierNode = thisVisitor.visit(ctx.repoPortIdentifier());
-  let aggregateRootName: string;
-  let readModelName: string;
 
   const extendedRepoPorts: IdentifierListNode = thisVisitor.visit(ctx.repoExtendsList());
 
+  //TODO whart if definitionMethods are missing
   let definitionMethods: MethodDefinitionListNode;
   if (ctx.repoPortMethodDefinitions()) {
     definitionMethods = thisVisitor.visit(ctx.repoPortMethodDefinitions());
   }
 
-  const aggregateRootIdentifier = thisVisitor.visit(ctx.aggregateRootIdentifier());
-
-  const readModelIdentifier = thisVisitor.visit(ctx.readModelIdentifier());
-
-  // let result;
-  // if (ctx.ReadModelIdentifier()?.getText()) {
-  //   readModelName = ctx.ReadModelIdentifier().getText();
-  //   result = {
-  //     RepoPorts: {
-  //       [repoPortName]: {
-  //         readModelName,
-  //         extendedRepoPorts,
-  //         ...definitionMethods,
-  //       },
-  //     },
-  //   };
-  // }
-
-  // if (ctx.aggregateRootIdentifier()?.getText()) {
-  //   aggregateRootName = ctx.aggregateRootIdentifier().getText();
-  //   result = {
-  //     RepoPorts: {
-  //       [repoPortName]: {
-  //         aggregateRootName,
-  //         extendedRepoPorts,
-  //         ...definitionMethods,
-  //       },
-  //     },
-  //   };
-  // }
+  const metadata = produceMetadata(ctx, thisVisitor);
+  if (ctx.readModelIdentifier()) {
+    const readModelIdentifier = thisVisitor.visit(ctx.readModelIdentifier());
+    new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
+      .withDefinitionMethodsNode(definitionMethods)
+      .withExtendsRepoPortNode(extendedRepoPorts)
+      .withRepoPortIdentifierNode(repoPortName)
+      .withReadModelIdentifier(readModelIdentifier)
+      .build();
+  } else if (ctx.entityIdentifier()) {
+    const aggregateRootIdentifier = thisVisitor.visit(ctx.entityIdentifier());
+    new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
+      .withDefinitionMethodsNode(definitionMethods)
+      .withExtendsRepoPortNode(extendedRepoPorts)
+      .withRepoPortIdentifierNode(repoPortName)
+      .withEntityIdentifier(aggregateRootIdentifier)
+      .build();
+  }
   // TODO Handle Identifier with < > if we want to extend a repoPort with a generic type
   // TODO Method definitions of user
-
-  // return result;
 };
 
 export const repoPortExtendableIdentifierVisitor = (

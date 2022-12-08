@@ -24,6 +24,9 @@ import {
   TSingleExpression,
   TModule,
   ISetupData,
+  repoPortKey,
+  TAggregateRepoPort,
+  TReadModelRepoPort,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -71,17 +74,19 @@ const repoBodyLangMapping = (
       const collection = ${collection.output};
       this.collection = this.client.db(dbName).collection(collection);
      }`;
-      if (repoPortInfo.extendedRepoPorts.includes(CRUDWriteRepoPort)) {
+      if (repoPortInfo[repoPortKey].extendedRepoPorts.includes(CRUDWriteRepoPort)) {
+        const writeRepoPort = repoPortInfo as TAggregateRepoPort;
         const methodsResult = fetchTypeScriptAggregateCrudBaseRepo(
-          repoPortInfo.aggregateRootName,
+          writeRepoPort[repoPortKey].aggregateRootName,
           propsModel,
           model,
         );
         result += methodsResult.output;
         dependencies = [...dependencies, ...methodsResult.dependencies];
-      } else if (repoPortInfo.extendedRepoPorts.includes(CRUDReadRepoPort)) {
+      } else if (repoPortInfo[repoPortKey].extendedRepoPorts.includes(CRUDReadRepoPort)) {
+        const writeRepoPort = repoPortInfo as TReadModelRepoPort;
         const methodsResult = fetchTypeScriptReadModelCrudBaseRepo(
-          repoPortInfo.readModelName,
+          writeRepoPort[repoPortKey].readModelName,
           propsModel,
         );
         result += methodsResult.output;

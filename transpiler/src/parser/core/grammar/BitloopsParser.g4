@@ -844,21 +844,14 @@ readModelDeclaration
 repoPortDeclaration
     : RepoPort repoPortIdentifier '<' readModelIdentifier '>' repoExtendsList SemiColon?
     | RepoPort repoPortIdentifier '<' readModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
-    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList SemiColon?
-    | RepoPort repoPortIdentifier '<' aggregateRootIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
+    | RepoPort repoPortIdentifier '<' entityIdentifier '>' repoExtendsList SemiColon?
+    | RepoPort repoPortIdentifier '<' entityIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
     ;
 
 repoPortIdentifier
     : RepoPortIdentifier
     ;
 
-//TODO change the order of identifier
-// aggregateRootIdentifier
-    // : EntityIdentifier
-    // | DTOIdentifier
-    // | Identifier
-    // | UpperCaseIdentifier 
-    // ;
 aggregateRootIdentifier
     : EntityIdentifier
     | ReadModelIdentifier
