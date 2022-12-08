@@ -47,7 +47,7 @@ describe('An application error is valid', () => {
 
       const nodes = resultTree.getClassTypeNodes(CLASS_TYPE);
       if (nodes.length > 1) {
-        throw new Error('more than one Domain Errors detected');
+        throw new Error('more than one Application Errors detected');
       }
       const value = nodes[0].getValue();
 

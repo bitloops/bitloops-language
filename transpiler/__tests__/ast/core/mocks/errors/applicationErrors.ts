@@ -26,7 +26,7 @@ export const validApplicationErrors: validMockType[] = [
     description: 'valid Application Error with one arg',
     fileId: 'testFile.bl',
     inputBLString:
-      "Application Error InvalidNameError (name : string) { message: `is an invalid ${ name }`, errorId: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' }",
+      "ApplicationError InvalidNameError (name : string) { message: `is an invalid ${ name }`, errorId: 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe' }",
     identifier: new IdentifierBuilder().withName('InvalidNameError').build(),
     message: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression(
       'is an invalid ${name}',
