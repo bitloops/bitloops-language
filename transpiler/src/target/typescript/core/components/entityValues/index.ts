@@ -20,7 +20,8 @@ import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPr
  */
 import {
   TContextData,
-  TEntityMethods,
+  TDomainPrivateMethods,
+  TDomainPublicMethods,
   TEntityValues,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
@@ -30,8 +31,12 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
-const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
-  const result = domainMethods(objectValueMethods);
+const entityMethods = (
+  privateMethods: TDomainPrivateMethods,
+  publicMethods: TDomainPublicMethods,
+): TTargetDependenciesTypeScript => {
+  const result = domainMethods(publicMethods, privateMethods);
+
   return { output: result.output, dependencies: result.dependencies };
 };
 
@@ -48,8 +53,8 @@ const entityValuesToTargetLanguage = (params: {
 
   let result = '{';
   let dependencies = [];
-  const { methods, create, constantVars } = entityValues;
-  const propsNameType = create.parameterDependency.parameter.type;
+  const { privateMethods, publicMethods, create, constants } = entityValues;
+  const propsNameType = create.parameter.type;
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
     throw new Error('Array is not supported as entity props type');
   }
@@ -59,9 +64,9 @@ const entityValuesToTargetLanguage = (params: {
   });
   dependencies = [...dependencies, ...entityPropsTypeDependencies];
 
-  if (constantVars) {
+  if (constants) {
     // TODO fix with new model/types
-    const constantVariablesModel = constantVariables(constantVars as any);
+    const constantVariablesModel = constantVariables(constants as any);
     result += constantVariablesModel.output;
     dependencies = [...dependencies, ...constantVariablesModel.dependencies];
   }
@@ -73,15 +78,18 @@ const entityValuesToTargetLanguage = (params: {
   result += entityCreateModel.output;
   dependencies = [...dependencies, ...entityCreateModel.dependencies];
 
-  const gettersModel = generateGetters(propsName, modelForContext, methods);
+  const gettersModel = generateGetters({
+    propsName,
+    model: modelForContext,
+    privateMethods,
+    publicMethods,
+  });
   result += gettersModel.output;
   dependencies = [...dependencies, ...gettersModel.dependencies];
 
-  if (methods) {
-    const entityMethodsModel = entityMethods(methods);
-    result += entityMethodsModel.output;
-    dependencies = [...dependencies, ...entityMethodsModel.dependencies];
-  }
+  const entityMethodsModel = entityMethods(privateMethods, publicMethods);
+  result += entityMethodsModel.output;
+  dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   result += '}';
 

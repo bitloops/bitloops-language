@@ -168,7 +168,7 @@ const modelToTargetLanguage = (props: {
       res = propsToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TReadModels: {
+    case BitloopsTypesMapping.TReadModel: {
       res = readModelsToTargetLanguage(value);
       break;
     }
@@ -341,7 +341,7 @@ const modelToTargetLanguage = (props: {
       res = DTOEvaluationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TControllers: {
+    case BitloopsTypesMapping.TController: {
       res = controllersToTargetLanguage(value, contextData, setupData);
       break;
     }

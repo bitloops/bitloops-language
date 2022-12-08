@@ -21,16 +21,17 @@ import {
   TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
+  TDomainPrivateMethods,
   TTargetDependenciesTypeScript,
-  TValueObjectMethods,
   TValueObjects,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { constantVariables, domainPrivateMethod, generateGetters } from '../domain/index.js';
+import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { domainPrivateMethods } from '../domain/domainMethods.js';
 
 const VO_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -54,17 +55,11 @@ const VO_DEPENDENCIES: TDependenciesTypeScript = [
 ];
 
 const valueObjectMethods = (
-  valueObjectMethods: TValueObjectMethods,
+  valueObjectMethods: TDomainPrivateMethods,
 ): TTargetDependenciesTypeScript => {
-  let dependencies = [];
+  const { output, dependencies } = domainPrivateMethods(valueObjectMethods);
 
-  const result = Object.entries(valueObjectMethods).reduce((acc, [methodName, methodInfo]) => {
-    acc += domainPrivateMethod(methodName, methodInfo).output;
-    dependencies = [...dependencies, ...domainPrivateMethod(methodName, methodInfo).dependencies];
-    return acc;
-  }, '');
-
-  return { output: result, dependencies };
+  return { output, dependencies };
 };
 
 const valueObjectsToTargetLanguage = (params: {
@@ -86,8 +81,8 @@ const valueObjectsToTargetLanguage = (params: {
   let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
 
   for (const [valueObjectName, valueObject] of Object.entries(valueObjects)) {
-    const { methods, create, constantVars } = valueObject;
-    const propsNameType = create.parameterDependency.parameter.type;
+    const { privateMethods, create, constants } = valueObject;
+    const propsNameType = create.parameter.type;
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
       throw new Error(
         `Value Object ${valueObjectName} has an array as a property. This is not supported yet.`,
@@ -99,10 +94,10 @@ const valueObjectsToTargetLanguage = (params: {
     });
     dependencies = [...dependencies, ...propsTypeDependencies];
 
-    if (constantVars) {
+    if (constants) {
       // TODO FIx with new type
-      result += constantVariables(constantVars as any).output;
-      dependencies = [...dependencies, ...constantVariables(constantVars as any).dependencies];
+      result += constantVariables(constants as any).output;
+      dependencies = [...dependencies, ...constantVariables(constants as any).dependencies];
     }
 
     result += initialObjectValuesLangMapping(valueObjectName, propsName);
@@ -116,12 +111,17 @@ const valueObjectsToTargetLanguage = (params: {
     dependencies = [...dependencies, ...voCreateModel.dependencies];
 
     const IS_VALUE_OBJECT = true;
-    const gettersModel = generateGetters(propsName, modelForContext, methods, IS_VALUE_OBJECT);
+    const gettersModel = generateGetters({
+      propsName,
+      model: modelForContext,
+      privateMethods,
+      isValueObject: IS_VALUE_OBJECT,
+    });
     result += gettersModel.output;
     dependencies = [...dependencies, ...gettersModel.dependencies];
 
-    if (methods) {
-      const voMethodsModel = valueObjectMethods(methods);
+    if (privateMethods) {
+      const voMethodsModel = valueObjectMethods(privateMethods);
       result += voMethodsModel.output;
       dependencies = [...dependencies, ...voMethodsModel.dependencies];
     }

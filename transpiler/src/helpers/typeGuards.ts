@@ -1,8 +1,5 @@
 import {
   TConstDeclaration,
-  TDomainMethod,
-  TDomainPrivateMethod,
-  TDomainPublicMethod,
   TThisDeclaration,
   TExpression,
   TReturnStatement,
@@ -10,14 +7,15 @@ import {
   TSwitchStatement,
   TVariableDeclaration,
   TGraphQLControllerInstances,
-  TGraphQLControllerValues,
   TGraphQLServerInstance,
   TRestControllerDefinitions,
-  TRESTControllerValues,
   TRESTServerInstance,
   ControllerTypeOfDefinition,
   TIfStatement,
-  TOkErrorReturnTypeValues,
+  TDomainPrivateMethodValuesOkErrorReturnType,
+  TDomainPrivateMethodValuesPrimaryReturnType,
+  TRESTController,
+  TGraphQLController,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -45,8 +43,8 @@ const isGraphQLServerInstance = (
 };
 
 const isGraphQLController = (
-  controller: TRESTControllerValues | TGraphQLControllerValues,
-): controller is TGraphQLControllerValues => {
+  controller: TRESTController | TGraphQLController,
+): controller is TGraphQLController => {
   if (controller['type'] === 'graphql') return true;
   else return false;
 };
@@ -65,11 +63,12 @@ const controllerDefinitionIsGraphQL = (
   else return false;
 };
 
-// returnType: string | TOkErrorReturnType,
-const isOkErrorReturnType = (
-  returnType: string | TOkErrorReturnTypeValues,
-): returnType is TOkErrorReturnTypeValues => {
-  if (typeof returnType !== 'string' && 'ok' in returnType) return true;
+const hasOkErrorReturnType = (
+  privateMethodValues:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType,
+): privateMethodValues is TDomainPrivateMethodValuesOkErrorReturnType => {
+  if ('returnType' in privateMethodValues) return true;
   else return false;
 };
 
@@ -89,16 +88,6 @@ const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration
   if (typeof value === 'string') return false;
   if ('variableDeclaration' in value) return true;
   return false;
-};
-
-const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
-  if ('publicMethod' in value) return true;
-  else return false;
-};
-
-const isDomainPrivateMethod = (value: TDomainMethod): value is TDomainPrivateMethod => {
-  if ('privateMethod' in value) return true;
-  else return false;
 };
 
 const isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
@@ -172,11 +161,9 @@ export {
   isGraphQLController,
   controllerDefinitionIsRest,
   controllerDefinitionIsGraphQL,
-  isOkErrorReturnType,
+  hasOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
-  isDomainPublicMethod,
-  isDomainPrivateMethod,
   isThisDeclaration,
   isExpression,
   isSwitchStatement,

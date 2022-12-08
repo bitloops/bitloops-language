@@ -17,8 +17,20 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TBreakStatement, TConstDeclaration } from '../../../../../src/types.js';
+import {
+  TArgumentList,
+  TBreakStatement,
+  TConstDeclaration,
+  TEvaluationFields,
+  TExpression,
+  TReturnStatement,
+  TStatement,
+} from '../../../../../src/types.js';
+import { EvaluationBuilderDirector } from '../evaluationDirector.js';
+import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
+import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
 export class StatementDirector {
   buildConstDeclarationWithIntLiteralExpression({
@@ -47,9 +59,120 @@ export class StatementDirector {
     });
   }
 
+  /**
+   * const result = useCase.execute();
+   */
+  buildConstDeclarationWithMemberDotMethodCall(params: {
+    name: string;
+    memberDotMembers: string[];
+    argumentList: TArgumentList;
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithMemberDotMethodCallExpression(
+      params,
+    );
+  }
+
+  buildConstDeclarationWithValueObject({
+    name,
+    valueObjectIdentifier,
+    valueObjectFields,
+  }: {
+    name: string;
+    valueObjectIdentifier: string;
+    valueObjectFields: { identifier: string; expression: TExpression }[];
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithValueObjectEvaluation({
+      name,
+      valueObjectIdentifier,
+      fields: [
+        new EvaluationFieldBuilderDirector().buildEvaluationField(
+          valueObjectFields[0].identifier,
+          valueObjectFields[0].expression,
+        ),
+      ],
+    });
+  }
+
+  buildConstDeclarationWithEntity({
+    name,
+    entityIdentifier,
+    entityFields,
+  }: {
+    name: string;
+    entityIdentifier: string;
+    entityFields: { identifier: string; expression: TExpression }[];
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithEntityEvaluation({
+      name,
+      entityIdentifier,
+      fields: [
+        new EvaluationFieldBuilderDirector().buildEvaluationField(
+          entityFields[0].identifier,
+          entityFields[0].expression,
+        ),
+        new EvaluationFieldBuilderDirector().buildEvaluationField(
+          entityFields[1].identifier,
+          entityFields[1].expression,
+        ),
+      ],
+    });
+  }
+
   buildBreakStatement(): TBreakStatement {
     return {
       breakStatement: 'break',
     };
+  }
+
+  buildReturnStatement(expression: TExpression): TReturnStatement {
+    return new ReturnStatementBuilder().withExpression(expression).build();
+  }
+
+  buildExpressionEntityEvaluation(entityName: string, identifierValue: string): TExpression {
+    return new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
+      }),
+    );
+  }
+
+  buildExpressionEntityEvaluationWithFields(
+    entityName: string,
+    fields: TEvaluationFields,
+  ): TExpression {
+    return new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+        fields,
+      }),
+    );
+  }
+
+  /**
+   * this.save(response , 'Hello World!');
+   */
+  buildThisMethodCall(methodName: string, args: TArgumentList): TStatement {
+    const methodExpr = new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
+      methodName,
+    );
+    return new ExpressionBuilderDirector().buildMethodCallExpression(methodExpr, args);
+  }
+
+  /**
+   * this.completed = completed;
+   */
+  buildThisMemberAssignmentExpression(
+    thisMemberName: string,
+    evaluationIdentifierName: string,
+  ): TStatement {
+    const thisLeftExpression =
+      new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(thisMemberName);
+    const rightExpressionEvaluation = new ExpressionBuilderDirector().buildIdentifierExpression(
+      evaluationIdentifierName,
+    );
+    const statement = new ExpressionBuilderDirector().buildAssignmentExpression(
+      thisLeftExpression,
+      rightExpressionEvaluation,
+    );
+    return statement;
   }
 }

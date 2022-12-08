@@ -28,7 +28,7 @@ import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/Inte
 import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { validSwitchStatementTestCases } from './mocks/statements/switchStatement.js';
-import { SwitchStatementBuilder } from './builders/statement/switchStatement.js';
+import { SwitchStatementBuilder } from './builders/statement/switch/switchStatementBuilder.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';

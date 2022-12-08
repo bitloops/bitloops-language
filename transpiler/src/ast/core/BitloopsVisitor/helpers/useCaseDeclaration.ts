@@ -20,62 +20,53 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TUseCaseValues,
-  TOkErrorReturnType,
-  TExecute,
-  TParameterDependency,
-  TParameterDependencies,
-} from '../../../../types.js';
-import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
-import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
+// import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
+// import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 
-type UseCaseExecuteDeclarationResult = { returnTypes: TOkErrorReturnType; execute: TExecute };
+// import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
+import { UseCaseIdentifierNode } from '../../intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
+import { UseCaseExecuteNode } from '../../intermediate-ast/nodes/UseCase/UseCaseExecuteNode.js';
+import { produceMetadata } from '../metadata.js';
+import { UseCaseNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
+import { UseCaseExecuteNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseExecuteNodeBuilder.js';
+import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 
 export const useCaseDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.UseCaseDeclarationContext,
-): { UseCases: { [useCaseIdentifier: string]: TUseCaseValues } } => {
-  const useCaseIdentifier = ctx.useCaseIdentifier().getText();
-  // const returnTypes: TOkErrorReturnType = thisVisitor.visit(ctx.)
-  const { returnTypes, execute }: UseCaseExecuteDeclarationResult = thisVisitor.visit(
-    ctx.useCaseExecuteDeclaration(),
-  );
-  const parameterDependencies: TParameterDependencies = thisVisitor.visit(ctx.parameterList());
-  const { statements } = execute;
+): void => {
+  const useCaseIdentifierNode: UseCaseIdentifierNode = thisVisitor.visit(ctx.useCaseIdentifier());
 
-  addReturnOkVoidStatement(statements, returnTypes.returnType);
+  const useCaseExecuteNode: UseCaseExecuteNode = thisVisitor.visit(ctx.useCaseExecuteDeclaration());
 
-  const result = {
-    UseCases: {
-      [useCaseIdentifier]: {
-        ...returnTypes,
-        execute,
-        parameterDependencies,
-      },
-    },
-  };
-  return result;
+  const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  new UseCaseNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withExecute(useCaseExecuteNode)
+    .withIdentifier(useCaseIdentifierNode)
+    .withParameterList(parameterListNode)
+    .build();
 };
 
 export const useCaseExecuteDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.UseCaseExecuteDeclarationContext,
-): UseCaseExecuteDeclarationResult => {
-  const returnTypes: TOkErrorReturnType = thisVisitor.visit(ctx.returnOkErrorType());
-  const parameterList: TParameterDependency[] = thisVisitor.visit(ctx.parameterList());
-  const { statements } = thisVisitor.visit(ctx.functionBody());
+): UseCaseExecuteNode => {
+  const returnTypeNode: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
+  const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
+  const statementListNode: StatementListNode = thisVisitor.visit(ctx.functionBody());
 
-  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
-    statements,
-    returnTypes.returnType,
-  );
+  //TODO add statementsWithModifiedReturn in model to model
+  // const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnTypes);
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const executeNode = new UseCaseExecuteNodeBuilder(metadata)
+    .withParameterList(parameterListNode)
+    .withStatementList(statementListNode)
+    .withReturnType(returnTypeNode)
+    .build();
 
-  return {
-    returnTypes,
-    execute: {
-      parameterDependencies: parameterList,
-      statements: statementsWithModifiedReturn,
-    },
-  };
+  return executeNode;
 };

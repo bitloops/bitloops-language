@@ -78,7 +78,7 @@ const getPropsModel = (
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
     const { aggregateRootName } = repoPortInfo;
     const aggregateModel = module.RootEntities[aggregateRootName];
-    const aggregatePropsNameType = aggregateModel.create.parameterDependency.parameter.type;
+    const aggregatePropsNameType = aggregateModel.create.parameter.type;
 
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsNameType)) {
       throw new Error('Array props are not supported');
@@ -93,7 +93,7 @@ const getPropsModel = (
     propsModel = module.Props[aggregatePropsName];
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
     const { readModelName } = repoPortInfo;
-    const readModelValues = module.ReadModels[readModelName];
+    const readModelValues = module.ReadModel[readModelName];
     propsModel = readModelValues;
   } else {
     throw new Error(`Invalid repo port ${JSON.stringify(repoPortInfo)}`);

@@ -815,7 +815,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorDeclaration
-    : Constructor parameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
+    : Constructor OpenParen parameter CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
@@ -832,7 +832,11 @@ propsDeclaration
 
 
 readModelDeclaration
-    : ReadModel ReadModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    ;
+
+readModelIdentifier
+    : ReadModelIdentifier
     ;
 
 // RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;
@@ -961,8 +965,16 @@ httpMethod
 
 
 controllerDeclaration
-    : RESTController ControllerIdentifier parameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
-    | GraphQLController ControllerIdentifier parameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
+    : RESTController restControllerIdentifier parameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
+    | GraphQLController graphQLControllerIdentifier parameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
+    ;
+
+restControllerIdentifier
+    : ControllerIdentifier
+    ;
+
+graphQLControllerIdentifier
+    : ControllerIdentifier
     ;
 
 graphQLResolverOptions

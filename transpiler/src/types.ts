@@ -23,7 +23,7 @@ import { IntermediateASTTree } from './ast/core/intermediate-ast/IntermediateAST
 
 export type TModule = {
   Props?: TProps;
-  Controllers?: TRESTController | TGraphQLController;
+  Controller?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
   ApplicationErrors?: TApplicationErrors;
   DomainErrors?: TDomainErrors;
@@ -36,13 +36,13 @@ export type TModule = {
   DomainRule?: TDomainRule;
   RepoPorts?: TRepoPorts;
   RepoAdapters?: TRepoAdapters;
-  ReadModels?: TReadModels;
+  ReadModel?: TReadModel;
 };
 
 // TODO merge with TClassTypesValues from `transpiler/src/helpers/mappings.ts`
 export type TClassType =
   | 'Props'
-  | 'Controllers'
+  | 'Controller'
   | 'UseCases'
   | 'ApplicationErrors'
   | 'DomainErrors'
@@ -59,7 +59,7 @@ export type TClassType =
 
 export type TComponentType =
   | 'TProps'
-  | 'TControllers'
+  | 'TController'
   | 'TUseCase'
   | 'TApplicationErrors'
   | 'TDomainErrors'
@@ -132,12 +132,9 @@ export type TVariable = {
   };
 };
 
-// export type TPropsValues = {
-//   variables: TVariables;
-// };
-
-// export type TProps = Record<string, TPropsValues>;
-
+/**
+ * Props
+ */
 export type TPropsIdentifier = string;
 export const PropsIdentifierKey = 'PropsIdentifier';
 
@@ -149,10 +146,18 @@ export type TProps = {
   };
 };
 
-export type TReadModelValues = {
-  variables: TVariables;
+/**
+ * Read Model
+ */
+export type TReadModelIdentifier = string;
+export const ReadModelIdentifierKey = 'ReadModelIdentifier';
+export const ReadModelKey = 'ReadModel';
+export type TReadModel = {
+  [ReadModelKey]: {
+    [ReadModelIdentifierKey]: TReadModelIdentifier;
+    [fieldsKey]: TVariables;
+  };
 };
-export type TReadModels = Record<string, TReadModelValues>;
 
 export type TParamDependencyType = TBitloopsPrimaryType;
 
@@ -246,8 +251,6 @@ export type TBitloopsPrimaryType =
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
   | ArrayBitloopsPrimTypeObject;
-
-export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
 
 export type TBackTickString = {
   backTickString: string;
@@ -394,10 +397,6 @@ export type TEntityEvaluation = {
   entity: TDomainEvaluation;
 };
 
-// export type TDomainEvaluation = {
-//   props: TEvaluationFields | TRegularEvaluation;
-//   name: string;
-// };
 export type TDomainEvaluation = {
   domainEvaluation: {
     name: string;
@@ -594,24 +593,36 @@ export type TConstantVariable = {
   name: string;
 };
 
-export type TDomainPrivateMethod = {
-  privateMethod: {
-    parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TReturnType | TOkErrorReturnTypeValues;
-    statements: TStatements;
-  };
+export type TDomainPrivateMethods = TDomainPrivateMethod[];
+
+type TDomainPrivateMethodValues = {
+  identifier: TIdentifier;
+  parameters: TParameterDependencies;
+  statements: TStatements;
 };
+
+export type TDomainPrivateMethodValuesPrimaryReturnType = {
+  type: TBitloopsPrimaryType;
+} & TDomainPrivateMethodValues;
+
+export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
+  TOkErrorReturnType;
+
+export type TDomainPrivateMethod = {
+  privateMethod:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType;
+};
+
+export type TDomainPublicMethods = TDomainPublicMethod[];
 
 export type TDomainPublicMethod = {
   publicMethod: {
-    parameterDependencies: TParameterDependencies;
+    identifier: TIdentifier;
+    parameters: TParameterDependencies;
     statements: TStatements;
   } & TOkErrorReturnType;
 };
-
-export type TValueObjectMethodInfo = TDomainPrivateMethod;
-
-export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
 
 export type TReturnOkType = {
   ok: {
@@ -624,31 +635,29 @@ export type TErrorIdentifier = {
 };
 export type TErrorIdentifiers = TErrorIdentifier[];
 
-export type TOkErrorReturnTypeValues = {
-  errors: TErrorIdentifiers;
-} & TReturnOkType;
+// export type TOkErrorReturnTypeValues = {
+//   errors: TErrorIdentifiers;
+// } & TReturnOkType;
 
 export type TOkErrorReturnType = {
-  returnType: TOkErrorReturnTypeValues;
+  returnType: {
+    errors: TErrorIdentifiers;
+  } & TReturnOkType;
 };
 
 export type TDomainCreateMethod = {
-  parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
-  statements: TStatements;
-} & TOkErrorReturnType;
-
-type TDomainMethodName = string;
-
-export type TDomainMethod = TDomainPublicMethod | TDomainPrivateMethod;
-export type TDomainMethods = Record<TDomainMethodName, TDomainMethod>;
+  create: {
+    statements: TStatements;
+  } & TOkErrorReturnType &
+    TParameterDependency;
+};
 
 export type TValueObjectCreate = TDomainCreateMethod;
 
 export type TValueObjectValues = {
-  constantVars: TConstDeclarationValue[]; //TConstantVariable[];
-  methods: TValueObjectMethods;
-  create: TValueObjectCreate;
-};
+  constants?: TConstDeclarationValue[]; //TConstantVariable[];
+  privateMethods?: TDomainPrivateMethods;
+} & TValueObjectCreate;
 
 export type TValueObjects = Record<string, TValueObjectValues>;
 
@@ -661,12 +670,10 @@ export type TEntity = {
 };
 
 export type TEntityValues = {
-  constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
-  methods?: TEntityMethods;
-  create: TEntityCreate;
-};
-
-export type TEntityMethods = TDomainMethods;
+  constants?: TConstDeclarationValue[]; // TConstantVariable[];
+  publicMethods?: TDomainPublicMethods;
+  privateMethods?: TDomainPrivateMethods;
+} & TEntityCreate;
 
 export type TEntityCreate = TDomainCreateMethod;
 
@@ -684,9 +691,9 @@ export type TStructDeclaration = {
 };
 
 export type TExecute = {
-  parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
+  parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
   statements: TStatements;
-};
+} & TOkErrorReturnType;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
@@ -701,25 +708,31 @@ export type TDTO = {
 
 export type TStruct = Record<string, TStructDeclaration>;
 
-export type TUseCaseValues = {
-  execute: TExecute;
-  parameterDependencies: TParameterDependencies; // TODO maybe make this optional
-} & TOkErrorReturnType;
+export const UseCaseKey = 'UseCase';
+export type TUseCaseIdentifier = string;
+export const UseCaseIdentifierKey = 'UseCaseIdentifier';
 
-export type TUseCase = Record<string, TUseCaseValues>;
+export type TUseCase = {
+  [UseCaseKey]: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+    execute: TExecute;
+    parameters: TParameterDependencies; // TODO maybe make this optional
+  };
+};
 
 export type TBaseControllerValues = {
-  useCase?: string;
-  // TODO remove dependencies
-  parameterDependencies: TParameterDependencies; // Controller constructor parameters
+  // useCase?: string;
+  parameters: TParameterDependencies; // Controller constructor parameters
 };
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
 
-export type TRESTControllerValues = TBaseControllerValues & {
-  parameterDependencies: TParameterDependencies;
-  method: TRestMethods;
-  execute: TRESTControllerExecute;
+export type TRESTController = {
+  RESTController: TBaseControllerValues & {
+    RESTControllerIdentifier: string;
+    method: TRestMethods;
+    execute: TRESTControllerExecute;
+  };
 };
 
 export type TRESTControllerExecute = {
@@ -729,17 +742,16 @@ export type TRESTControllerExecute = {
 
 export type TRESTControllerDependencies = [string, string]; // e.g. (request, reply)
 
-export type TRESTController = Record<string, TRESTControllerValues>;
-type GraphQLControllerName = string;
-export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControllerValues>;
+export type GraphQLControllerIdentifier = string;
 
-export type TGraphQLControllerValues = TBaseControllerValues & {
-  type: 'graphql';
-  operationType: TGraphQLOperation;
-  inputType: null | string;
-  operationName: string;
-  execute: TGraphQLControllerExecute;
-  outputType: string; // should be same as return type of execute
+export type TGraphQLController = {
+  GraphQLController: TBaseControllerValues & {
+    GraphQLControllerIdentifier: GraphQLControllerIdentifier;
+    inputType: null | string;
+    operationType: TGraphQLOperation;
+    operationName: string;
+    execute: TGraphQLControllerExecute;
+  };
 };
 
 export type TGraphQLControllerExecute = {
@@ -1000,7 +1012,7 @@ export type TPackagePort = {
 
 export type TDefinitionMethodInfo = {
   parameterDependencies: TParameterDependencies;
-  returnType: TReturnType;
+  returnType: TBitloopsPrimaryType;
 };
 
 export type TPackages = Record<string, TPackage>;
