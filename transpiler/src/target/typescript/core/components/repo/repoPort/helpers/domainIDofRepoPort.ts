@@ -39,7 +39,7 @@ export const findIdOfRepoDomainObject = (
   context: TContextData,
 ): TTargetDependenciesTypeScript => {
   const { boundedContext, module } = context;
-  if (type === ClassTypes.RootEntities) {
+  if (type === ClassTypes.RootEntity) {
     const aggregate = bitloopsModel[boundedContext][module][type][repoDependencyName];
     if (!aggregate) {
       throw new Error(`${type} ${repoDependencyName} not found`);

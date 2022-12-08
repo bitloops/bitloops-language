@@ -17,56 +17,44 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { validRootEntityTestCases } from './mocks/rootEntity/rootEntity.js';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-const feature = loadFeature('./__tests__/ast/core/aggregateDeclaration.feature');
+describe('Root Entity declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-defineFeature(feature, (test) => {
-  test('Aggregate root declaration is valid', ({ given, when, then }) => {
-    let boundedContext: string;
-    let module: string;
-    let blString: string;
-    let modelOutput: string;
-    let result: any;
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    given(
-      /^Valid bounded context (.*), module (.*), Aggregate (.*) strings$/,
-      (arg0, arg1, arg2) => {
-        boundedContext = d(arg0);
-        module = d(arg1);
-        blString = d(arg2);
-      },
-    );
-
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validRootEntityTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const rootEntityNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TRootEntity);
+      const value = rootEntityNodes[0].getValue();
+
+      expect(value).toMatchObject(testCase.expected);
+      expect(rootEntityNodes.length).toBe(1);
     });
   });
 });

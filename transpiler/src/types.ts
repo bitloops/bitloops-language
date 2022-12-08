@@ -681,6 +681,13 @@ export type TEntityValues = {
 export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
+export const RootEntityKey = 'RootEntity';
+export type TRootEntity = {
+  [RootEntityKey]: {
+    entityIdentifier: TEntityIdentifier;
+    entityValues: TEntityValues;
+  };
+};
 
 export const StructKey = 'Struct';
 export type TStructIdentifier = string;
