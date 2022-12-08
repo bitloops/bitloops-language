@@ -1,15 +1,13 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { DTOIdentifierNode } from '../../nodes/DTO/DTOIdentifierNode.js';
 import { EntityValuesNode } from '../../nodes/Entity/EntityValuesNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { RootEntityDeclalationNode } from '../../nodes/RootEntity/RootEntityDeclarationNode.js';
-import { RootEntityIdentifierNode } from '../../nodes/RootEntity/RootEntityIdentifierNode.js';
-import { RootEntityValuesNode } from '../../nodes/RootEntity/RootEntityValuesNode.js';
+import { EntityIdentifierNode } from '../../nodes/Entity/EntityIdentifierNode.js';
 
 export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDeclalationNode> {
   private RootEntityDeclarationNode: RootEntityDeclalationNode;
-  private identifierNode: DTOIdentifierNode;
+  private identifierNode: EntityIdentifierNode;
   private entityValuesNode: EntityValuesNode;
   private intermediateASTTree: IntermediateASTTree;
 
@@ -19,7 +17,7 @@ export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDecl
   }
 
   public withIdentifier(
-    RootEntityIdentifierNode: RootEntityIdentifierNode,
+    RootEntityIdentifierNode: EntityIdentifierNode,
   ): RootEntityDeclarationNodeBuilder {
     this.identifierNode = RootEntityIdentifierNode;
     const entityName = RootEntityIdentifierNode.getIdentifierName();
@@ -27,7 +25,7 @@ export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDecl
     return this;
   }
 
-  public withValues(rootEntityValuesNode: RootEntityValuesNode): RootEntityDeclarationNodeBuilder {
+  public withValues(rootEntityValuesNode: EntityValuesNode): RootEntityDeclarationNodeBuilder {
     this.entityValuesNode = rootEntityValuesNode;
     return this;
   }

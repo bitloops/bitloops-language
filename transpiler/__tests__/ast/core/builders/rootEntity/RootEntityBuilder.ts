@@ -3,8 +3,6 @@ import {
   TRootEntity,
   TRootEntityIdentifier,
   TEntityValues,
-  RootEntityIdentifierKey,
-  RootEntityValuesKey,
   RootEntityKey,
 } from '../../../../../src/types.js';
 
@@ -25,8 +23,8 @@ export class RootEntityDeclarationBuilder implements IBuilder<TRootEntity> {
   public build(): TRootEntity {
     const rootEntity = {
       [RootEntityKey]: {
-        [RootEntityIdentifierKey]: this.identifierName,
-        [RootEntityValuesKey]: this.values,
+        entityIdentifier: this.identifierName,
+        entityValues: this.values,
       },
     };
 

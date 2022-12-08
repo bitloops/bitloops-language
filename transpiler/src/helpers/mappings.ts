@@ -99,7 +99,6 @@ const BitloopsTypesMapping = {
   TEntity: 'TEntity',
   TEntityValues: 'TEntityValues',
   TRootEntity: 'TRootEntity',
-  TRootEntityIdentifier: 'TRootEntityIdentifier',
   TThisDeclaration: 'TThisDeclaration',
   TRepoPorts: 'TRepoPorts',
   TRepoAdapters: 'TRepoAdapters',
