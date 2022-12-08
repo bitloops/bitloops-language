@@ -10,12 +10,4 @@ export class DomainErrorNode extends IntermediateASTNode {
     super(BitloopsTypesMapping.TDomainError, metadata, DomainErrorNode.NAME);
     this.nodeType = BitloopsTypesMapping.TDomainError;
   }
-
-  /* 🔧 TODO: implement getMessage and getErrorId methods */
-  // getMessage(): ExpressionNode {
-  //   return this.message;
-  // }
-  // getErrorID(): ExpressionNode {
-  //   return this.errorId;
-  // }
 }

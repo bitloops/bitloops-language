@@ -30,7 +30,7 @@ import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js'
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
-import { TValueObjectValues, TConstDeclaration } from '../../../types.js';
+import { TConstDeclaration } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
 import { BreakStatementNode } from './../intermediate-ast/nodes/statements/BreakStatementNode.js';
@@ -181,6 +181,10 @@ import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/rea
 import { ReadModelIdentifierNode } from '../intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
 import { ExtendsRepoPortsNodeBuilder } from '../intermediate-ast/builders/ExtendsRepoPortNodeBuilder.js';
 import { ExtendsRepoPortsNode } from '../intermediate-ast/nodes/extendsRepoPortNode.js';
+import { ValueObjectIdentifierNode } from '../intermediate-ast/nodes/valueObject/ValueObjectIdentifierNode.js';
+import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js';
+import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
+import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -738,10 +742,25 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return domainConstructorDeclarationVisitor(this, ctx);
   }
 
-  visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): {
-    ValueObjects: { [id: string]: TValueObjectValues };
-  } {
-    return valueObjectDeclarationVisitor(this, ctx);
+  visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): void {
+    valueObjectDeclarationVisitor(this, ctx);
+  }
+
+  visitValueObjectIdentifier(
+    ctx: BitloopsParser.ValueObjectIdentifierContext,
+  ): ValueObjectIdentifierNode {
+    return valueObjectIdentifierVisitor(this, ctx);
+  }
+
+  visitEntityIdentifier(ctx: BitloopsParser.EntityIdentifierContext): EntityIdentifierNode {
+    const metadata = produceMetadata(ctx, this);
+
+    const entityIdentifier = ctx.EntityIdentifier().getText();
+    const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
+      .withName(entityIdentifier)
+      .build();
+
+    return entityIdentifierNode;
   }
 
   visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): void {

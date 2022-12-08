@@ -29,6 +29,7 @@ import {
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
+import { BuiltInFunctionStatementDirector } from './builtInFunctionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
 import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
@@ -174,5 +175,18 @@ export class StatementDirector {
       rightExpressionEvaluation,
     );
     return statement;
+  }
+
+  /**
+   * e.g. applyRules ( IsValidTitleRule (props.title))
+   * (not this.)
+   */
+  buildBuiltInFunctionApplyRulesStatement(
+    ...appliedRules: {
+      name: string;
+      args: string[][];
+    }[]
+  ): TStatement {
+    return new BuiltInFunctionStatementDirector().buildApplyRulesWithMemberDotArgs(...appliedRules);
   }
 }

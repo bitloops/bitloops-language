@@ -1,6 +1,6 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
-  TConstDeclarationValue,
+  TConstDeclaration,
   TDomainPrivateMethods,
   TDomainPublicMethods,
   TEntityCreate,
@@ -8,12 +8,12 @@ import {
 } from '../../../../../src/types.js';
 
 export class EntityValuesBuilder implements IBuilder<TEntityValues> {
-  private constants?: TConstDeclarationValue[];
+  private constants?: TConstDeclaration[];
   private create: TEntityCreate;
   private publicMethods?: TDomainPublicMethods;
   private privateMethods?: TDomainPrivateMethods;
 
-  public withConstants(constants: TConstDeclarationValue[]): EntityValuesBuilder {
+  public withConstants(constants: TConstDeclaration[]): EntityValuesBuilder {
     this.constants = constants;
     return this;
   }

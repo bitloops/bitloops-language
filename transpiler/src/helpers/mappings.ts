@@ -62,7 +62,7 @@ const BitloopsTypesMapping = {
   TStruct: 'TStruct',
   TStructDeclaration: 'TStructDeclaration',
   TOkErrorReturnType: 'TOkErrorReturnType',
-  TValueObjects: 'TValueObjects',
+  TValueObject: 'TValueObject',
   TUseCase: 'TUseCase',
   TRESTController: 'TRESTController',
   TGraphQLController: 'TGraphQLController',
@@ -78,6 +78,7 @@ const BitloopsTypesMapping = {
   TBackTickString: 'TBackTickString',
   TDomainErrors: 'TDomainErrors',
   TDomainError: 'TDomainError',
+  TApplicationError: 'TApplicationError',
   TErrorId: 'TErrorId',
   TErrorMessage: 'TErrorMessage',
   TApplicationErrors: 'TApplicationErrors',
@@ -100,6 +101,7 @@ const BitloopsTypesMapping = {
   TEntityEvaluation: 'TEntityEvaluation',
   TEntity: 'TEntity',
   TEntityValues: 'TEntityValues',
+  TRootEntity: 'TRootEntity',
   TThisDeclaration: 'TThisDeclaration',
   TRepoPort: 'TRepoPort',
   TRepoAdapters: 'TRepoAdapters',
@@ -181,6 +183,7 @@ const BitloopsTypesMapping = {
   TRESTControllerExecute: 'TRESTControllerExecute',
   TRESTControllerExecuteDependencies: 'TRESTControllerExecuteDependencies',
   TRESTControllerIdentifier: 'TRESTControllerIdentifier',
+  TValueObjectIdentifier: 'TValueObjectIdentifier',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -188,9 +191,9 @@ type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
 export type TBitloopsTypesValues = typeof BitloopsTypesMapping[TBitloopsTypesKeys];
 
 const ClassTypes = {
-  RootEntities: 'RootEntities',
+  RootEntity: 'RootEntity',
   Entity: 'Entity',
-  ValueObjects: 'ValueObjects',
+  ValueObject: 'ValueObject',
   Props: 'Props',
   Controller: 'Controller',
   UseCases: 'UseCases',
@@ -220,14 +223,14 @@ export const mappingBitloopsBuiltInClassToLayer = {
 const mappingClassTypeToComponentType = {
   [ClassTypes.Controller]: BitloopsTypesMapping.TController,
   [ClassTypes.UseCases]: BitloopsTypesMapping.TUseCase,
-  [ClassTypes.ValueObjects]: BitloopsTypesMapping.TValueObjects,
+  [ClassTypes.ValueObject]: BitloopsTypesMapping.TValueObject,
   [ClassTypes.Props]: BitloopsTypesMapping.TProps,
   [ClassTypes.DTOs]: BitloopsTypesMapping.TDTO,
   [ClassTypes.DomainErrors]: BitloopsTypesMapping.TDomainErrors,
   [ClassTypes.Package]: BitloopsTypesMapping.TPackage,
   [ClassTypes.Entity]: BitloopsTypesMapping.TEntity,
-  [ClassTypes.RootEntities]: BitloopsTypesMapping.TRootEntities,
   [ClassTypes.RepoPort]: BitloopsTypesMapping.TRepoPort,
+  [ClassTypes.RootEntity]: BitloopsTypesMapping.TRootEntity,
   [ClassTypes.RepoAdapters]: BitloopsTypesMapping.TRepoAdapters,
   [ClassTypes.DomainRule]: BitloopsTypesMapping.TDomainRule,
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,

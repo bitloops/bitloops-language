@@ -8,6 +8,7 @@ import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
 
 export enum domainErrorErrors {
   INVALID_ARGS = 'DomainErrorDeclaration must have two fields: ErrorId and message',
@@ -21,6 +22,7 @@ export const domainErrorDeclarationVisitor = (
   const errorName: string = ctx.domainErrorIdentifier().getText();
   const identifier: IdentifierNode = new IdentifierBuilder().withName(errorName).build();
   // TEvaluationFields, TODO fix temp as any
+  const metadata = produceMetadata(ctx, thisVisitor);
   const parameters: ParameterListNode = thisVisitor.visit(ctx.parameterList());
   const fieldsList: EvaluationFieldListNode = ctx.evaluationFieldList()
     ? thisVisitor.visit(ctx.evaluationFieldList())
@@ -38,7 +40,7 @@ export const domainErrorDeclarationVisitor = (
     ((): never => {
       throw new TypeError(domainErrorErrors.NO_MESSAGE);
     })();
-  const domainError = new DomainErrorBuilder(thisVisitor.intermediateASTTree)
+  const domainError = new DomainErrorBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(identifier)
     .withErrorId(errorId)
     .withParameters(parameters)

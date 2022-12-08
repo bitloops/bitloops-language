@@ -79,7 +79,7 @@ export const findIfWriteOrReadRepoPort = (
   let type: TClassTypesValues;
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
     repoDependencyName = repoPortInfo[repoPortKey].entityIdentifier;
-    type = ClassTypes.RootEntities;
+    type = ClassTypes.RootEntity;
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
     repoDependencyName = repoPortInfo[repoPortKey].readModelIdentifier;
     type = ClassTypes.ReadModel;

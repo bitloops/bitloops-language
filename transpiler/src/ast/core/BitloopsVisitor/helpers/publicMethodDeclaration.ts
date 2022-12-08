@@ -26,15 +26,12 @@ import { StatementListNode } from '../../intermediate-ast/nodes/statements/State
 import { produceMetadata } from '../metadata.js';
 import { PublicMethodDeclarationNodeBuilder } from '../../intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
 import { PublicMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
-import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PublicMethodDeclarationContext,
 ): PublicMethodDeclarationNode => {
-  const metadata = produceMetadata(ctx, thisVisitor);
-  const methodName = ctx.identifier().getText();
-  const methodNameNode = new IdentifierBuilder(metadata).withName(methodName).build();
+  const methodNameNode = thisVisitor.visit(ctx.identifier());
   const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
   const returnType: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnPublicMethodType())[1];
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
@@ -43,6 +40,7 @@ export const publicMethodDeclarationVisitor = (
 
   // addReturnOkVoidStatement(statementsWithReturn, returnType.returnType);
 
+  const metadata = produceMetadata(ctx, thisVisitor);
   const methodNode = new PublicMethodDeclarationNodeBuilder(metadata)
     .withIdentifier(methodNameNode)
     .withParameters(parameterDependencies)

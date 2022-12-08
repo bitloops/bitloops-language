@@ -21,7 +21,7 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   private identifierName: IdentifierNode;
   private intermediateASTTree: IntermediateASTTree;
 
-  constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
+  constructor(intermediateASTTree: IntermediateASTTree, metadata: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
     this.domainErrorNode = new DomainErrorNode(metadata);
   }

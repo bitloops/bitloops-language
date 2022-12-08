@@ -29,7 +29,7 @@ export type TModule = {
   DomainErrors?: TDomainErrors;
   RootEntities?: TRootEntities;
   Entity?: TEntity;
-  ValueObjects?: TValueObjects;
+  ValueObject?: TValueObject;
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
   Package?: TPackage;
@@ -48,7 +48,7 @@ export type TClassType =
   | 'DomainErrors'
   | 'RootEntities'
   | 'Entity'
-  | 'ValueObjects'
+  | 'ValueObject'
   | 'DTOs'
   | 'Structs'
   | 'Packages'
@@ -65,7 +65,7 @@ export type TComponentType =
   | 'TDomainErrors'
   | 'TRootEntities'
   | 'TEntity'
-  | 'TValueObjects'
+  | 'TValueObject'
   | 'TDTOs'
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
@@ -100,7 +100,7 @@ export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
 
 export type TBitloopsClasses =
   | TProps
-  | TValueObjects
+  | TValueObject
   | TRESTController
   | TUseCase
   | TDomainErrors
@@ -297,10 +297,14 @@ export type TDomainErrors = {
     TErrorId;
 };
 
+export const ApplicationErrorKey = 'ApplicationError';
+export const ApplicationErrorIdentifier = 'identifier';
 export type TApplicationError = {
-  message: TExpression; // TBackTickString | TString;
-  errorId: TExpression;
-  parameters?: TParameterDependencies;
+  [ApplicationErrorKey]: {
+    [ApplicationErrorIdentifier]: TIdentifier;
+    parameters?: TParameterDependencies;
+  } & TErrorMessage &
+    TErrorId;
 };
 
 export type TApplicationErrors = Record<string, TApplicationError>;
@@ -650,12 +654,15 @@ export type TDomainCreateMethod = {
 
 export type TValueObjectCreate = TDomainCreateMethod;
 
-export type TValueObjectValues = {
-  constants?: TConstDeclarationValue[]; //TConstantVariable[];
-  privateMethods?: TDomainPrivateMethods;
-} & TValueObjectCreate;
+export type TValueObjectIdentifier = string;
 
-export type TValueObjects = Record<string, TValueObjectValues>;
+export type TValueObject = {
+  ValueObject: {
+    valueObjectIdentifier: TValueObjectIdentifier;
+    constants?: TConstDeclaration[]; //TConstantVariable[];
+    privateMethods?: TDomainPrivateMethods;
+  } & TValueObjectCreate;
+};
 
 export type TEntityIdentifier = string;
 export type TEntity = {
@@ -666,7 +673,7 @@ export type TEntity = {
 };
 
 export type TEntityValues = {
-  constants?: TConstDeclarationValue[]; // TConstantVariable[];
+  constants?: TConstDeclaration[]; // TConstantVariable[];
   publicMethods?: TDomainPublicMethods;
   privateMethods?: TDomainPrivateMethods;
 } & TEntityCreate;
@@ -674,6 +681,13 @@ export type TEntityValues = {
 export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
+export const RootEntityKey = 'RootEntity';
+export type TRootEntity = {
+  [RootEntityKey]: {
+    entityIdentifier: TEntityIdentifier;
+    entityValues: TEntityValues;
+  };
+};
 
 export const StructKey = 'Struct';
 export type TStructIdentifier = string;
