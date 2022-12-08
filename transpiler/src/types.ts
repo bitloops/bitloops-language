@@ -315,7 +315,7 @@ export type TInstanceOf = {
 export type TPropsEvaluation = {
   props: {
     fields: TEvaluationFields;
-    name: string;
+    [PropsIdentifierKey]: string;
   };
 };
 

@@ -1,19 +1,19 @@
 import { EvaluationFieldListNode } from '../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { PropsEvaluationNode } from '../../../nodes/Expression/Evaluation/PropsEvaluation.js';
-import { NameNode } from '../../../nodes/NameNode.js';
+import { PropsIdentifierNode } from '../../../nodes/Props/PropsIdentifierNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class PropsEvaluationNodeBuilder implements IBuilder<PropsEvaluationNode> {
   private structEvaluationNode: PropsEvaluationNode;
-  private name: NameNode;
+  private identifier: PropsIdentifierNode;
   private evaluationFieldListNode?: EvaluationFieldListNode;
 
   constructor() {
     this.structEvaluationNode = new PropsEvaluationNode();
   }
 
-  public withName(name: NameNode): PropsEvaluationNodeBuilder {
-    this.name = name;
+  public withIdentifier(identifier: PropsIdentifierNode): PropsEvaluationNodeBuilder {
+    this.identifier = identifier;
     return this;
   }
 
@@ -25,7 +25,7 @@ export class PropsEvaluationNodeBuilder implements IBuilder<PropsEvaluationNode>
   }
 
   public build(): PropsEvaluationNode {
-    this.structEvaluationNode.addChild(this.name);
+    this.structEvaluationNode.addChild(this.identifier);
     this.structEvaluationNode.addChild(this.evaluationFieldListNode);
 
     this.structEvaluationNode.buildObjectValue();
