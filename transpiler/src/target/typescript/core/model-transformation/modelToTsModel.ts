@@ -36,7 +36,7 @@ import { transformGraphQLControllerIntermediateAST } from './components/controll
 const modelToTypescriptModel = (type: string, value: any): any => {
   let res: any;
   switch (type) {
-    case BitloopsTypesMapping.TControllers: {
+    case BitloopsTypesMapping.TController: {
       res = controllersToTargetLanguage(value);
       break;
     }

@@ -1,6 +1,6 @@
 import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { FieldNode } from '../../nodes/FieldList/FieldNode.js';
-import { IdentifierNode } from '../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { OptionalNode } from '../../nodes/OptionalNode.js';
 import { IBuilder } from '../IBuilder.js';
 

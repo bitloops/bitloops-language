@@ -1,18 +1,12 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { structIdentifierKey } from '../../../../../types.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 
-export class StructIdentifierNode extends IntermediateASTNode {
+export class StructIdentifierNode extends IntermediateASTIdentifierNode {
   private static classNodeName = structIdentifierKey;
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TStructIdentifier, metadata, StructIdentifierNode.classNodeName);
-  }
-
-  getIdentifierName(): string {
-    const identifierClassNodeName = this.getClassNodeName();
-    const identifierValue = this.getValue();
-    const structIdentifierName: string = identifierValue[identifierClassNodeName];
-    return structIdentifierName;
+    super(BitloopsTypesMapping.TStructIdentifier, StructIdentifierNode.classNodeName, metadata);
   }
 }

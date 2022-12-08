@@ -17,21 +17,21 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TValueObjectMethods } from '../../../../../../types.js';
-import { modelToTypescriptModel } from '../../modelToTsModel.js';
+// import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+// import { TValueObjectMethods } from '../../../../../../types.js';
+// import { modelToTypescriptModel } from '../../modelToTsModel.js';
 
-const transformValueObjectMethodsIntermediateAST = (
-  domainMethods: TValueObjectMethods,
-): TValueObjectMethods => {
-  for (let domainMethodsValue of Object.values(domainMethods)) {
-    domainMethodsValue = modelToTypescriptModel({
-      type: BitloopsTypesMapping.TDomainPrivateMethod,
-      value: domainMethodsValue,
-    });
-  }
+// const transformValueObjectMethodsIntermediateAST = (
+//   domainMethods: TValueObjectMethods,
+// ): TValueObjectMethods => {
+//   for (let domainMethodsValue of Object.values(domainMethods)) {
+//     domainMethodsValue = modelToTypescriptModel(
+//       type: BitloopsTypesMapping.TDomainPrivateMethod,
+//       value: domainMethodsValue,
+//     });
+//   }
 
-  return domainMethods;
-};
+//   return domainMethods;
+// };
 
-export { transformValueObjectMethodsIntermediateAST };
+// export { transformValueObjectMethodsIntermediateAST };

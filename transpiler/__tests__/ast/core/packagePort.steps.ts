@@ -17,56 +17,79 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
-
+import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+  multiplePackagePortDeclarationCases,
+  validPackagePortDeclarationCases,
+} from './mocks/packagePort.js';
 
-const feature = loadFeature('__tests__/ast/core/packagePort.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  test('PackagePort is valid', ({ given, when, then }) => {
-    let boundedContext: string;
-    let module: string;
-    let blString: string;
-    let modelOutput: string;
-    let result: any;
+describe('Package port declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    given(
-      /^Valid bounded context (.*), module (.*), PackagePort (.*) strings$/,
-      (arg0, arg1, arg2) => {
-        boundedContext = d(arg0);
-        module = d(arg1);
-        blString = d(arg2);
-      },
-    );
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
+  validPackagePortDeclarationCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
         },
       ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-      }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const packageNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TPackage);
+      expect(packageNodes.length).toBe(1);
+      const value = packageNodes[0].getValue();
+
+      expect(value).toMatchObject(testCase.expected);
+    });
+  });
+});
+
+describe('Parsing 2 package ports', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new BitloopsIntermediateASTParser();
+
+  multiplePackagePortDeclarationCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse([
+        {
+          boundedContext: BOUNDED_CONTEXT,
+          module: MODULE,
+          fileId: testCase.fileId,
+          fileContents: testCase.inputBLString,
+        },
+      ]);
+
+      if (!isBitloopsParserError(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isBitloopsIntermediateASTError(result)) {
+          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const packageNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TPackage);
+      expect(packageNodes.length).toBe(2);
+      const values = packageNodes.map((x) => x.getValue());
+
+      expect(values).toMatchObject(testCase.expected);
     });
   });
 });

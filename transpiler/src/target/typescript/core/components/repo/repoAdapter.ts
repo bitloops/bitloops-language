@@ -19,6 +19,7 @@
  */
 import {
   ISetupData,
+  repoPortKey,
   TDependenciesTypeScript,
   TModule,
   TRepoAdapters,
@@ -70,14 +71,14 @@ const getRepoHeader = (
 // TODO, TProps where deleted, fix this
 type TPropsValues = any;
 const getPropsModel = (
-  repoPortInfo: TRepoPort,
+  repoPort: TRepoPort,
   module: TModule,
 ): { output: TPropsValues; dependencies: TDependenciesTypeScript } => {
   let propsModel: TPropsValues;
   let dependencies = [];
-  if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
-    const { aggregateRootName } = repoPortInfo;
-    const aggregateModel = module.RootEntities[aggregateRootName];
+  if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPort)) {
+    const { entityIdentifier } = repoPort[repoPortKey];
+    const aggregateModel = module.RootEntities[entityIdentifier];
     const aggregatePropsNameType = aggregateModel.create.parameter.type;
 
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsNameType)) {
@@ -91,12 +92,12 @@ const getPropsModel = (
     dependencies = [...dependencies, ...aggregatePropsTypeDependencies];
 
     propsModel = module.Props[aggregatePropsName];
-  } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
-    const { readModelName } = repoPortInfo;
-    const readModelValues = module.ReadModel[readModelName];
+  } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPort)) {
+    const { readModelIdentifier } = repoPort[repoPortKey];
+    const readModelValues = module.ReadModel[readModelIdentifier];
     propsModel = readModelValues;
   } else {
-    throw new Error(`Invalid repo port ${JSON.stringify(repoPortInfo)}`);
+    throw new Error(`Invalid repo port ${JSON.stringify(repoPort)}`);
   }
   return { output: propsModel, dependencies };
 };

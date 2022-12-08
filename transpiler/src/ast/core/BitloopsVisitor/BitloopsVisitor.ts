@@ -25,12 +25,11 @@ import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPr
 import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
-import { IdentifierNodeBuilder } from '../intermediate-ast/builders/IdentifierBuilder.js';
 import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js';
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
-import { TDefinitionMethods, TConstDeclaration } from '../../../types.js';
+import { TConstDeclaration } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
 import { BreakStatementNode } from './../intermediate-ast/nodes/statements/BreakStatementNode.js';
@@ -141,6 +140,7 @@ import {
   graphQLOperationTypeVisitor,
   graphQLOperationInputTypeVisitor,
   graphQLExecuteDependenciesVisitor,
+  packagePortIdentifierVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -155,7 +155,7 @@ import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/Domain
 import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
-import { IdentifierNode } from '../intermediate-ast/nodes/IdentifierNode.js';
+import { IdentifierNode } from '../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { ErrorIdentifierNodeBuilder } from '../intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifierNode } from '../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
@@ -174,11 +174,17 @@ import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/buil
 import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
+import { RepoPortIdentifierNodeBuilder } from '../intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
+import { MethodDefinitionListNode } from '../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
 import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
+import { ReadModelIdentifierNode } from '../intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
+import { ExtendsRepoPortsNodeBuilder } from '../intermediate-ast/builders/ExtendsRepoPortNodeBuilder.js';
+import { ExtendsRepoPortsNode } from '../intermediate-ast/nodes/extendsRepoPortNode.js';
 import { ValueObjectIdentifierNode } from '../intermediate-ast/nodes/valueObject/ValueObjectIdentifierNode.js';
 import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js';
 import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -242,6 +248,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return useCaseIdentifierNode;
+  }
+
+  visitRepoPortIdentifier(ctx: BitloopsParser.RepoPortIdentifierContext) {
+    const repoPortIdentifierName = ctx.RepoPortIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const repoPortIdentifierNode = new RepoPortIdentifierNodeBuilder(metadata)
+      .withName(repoPortIdentifierName)
+      .build();
+    return repoPortIdentifierNode;
   }
 
   visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
@@ -662,9 +677,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
-  visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
-    definitionMethods: TDefinitionMethods;
-  } {
+  visitMethodDefinitionList(
+    ctx: BitloopsParser.MethodDefinitionListContext,
+  ): MethodDefinitionListNode {
     return methodDefinitionListVisitor(this, ctx);
   }
 
@@ -852,6 +867,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .build();
   }
 
+  // visitAggregateRootIdentifier(ctx: BitloopsParser.AggregateRootIdentifierContext): AggregateRootIdentifierNode {
+  //   const metadata = produceMetadata(ctx, this);
+  //   return new AggregateRootIdentifierBuilder(metadata).withName(ctx.)
+  // }
+
   visitApplyRuleStatementRulesList(ctx: BitloopsParser.ApplyRuleStatementRulesListContext): any {
     return applyRuleStatementRulesListVisitor(this, ctx);
   }
@@ -889,22 +909,33 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     structDeclarationVisitor(this, ctx);
   }
 
-  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
-    return packagePortDeclarationVisitor(this, ctx);
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext): void {
+    packagePortDeclarationVisitor(this, ctx);
   }
 
-  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {
+  visitPackagePortIdentifier(ctx: BitloopsParser.PackagePortIdentifierContext) {
+    return packagePortIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext): void {
     return repoPortDeclarationVisitor(this, ctx);
   }
 
-  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
-    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext): ExtendsRepoPortsNode {
+    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined)[0];
   }
 
   visitRepoPortExtendableIdentifierList(
     ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
-  ) {
-    return this.visitChildren(ctx)[0];
+  ): ExtendsRepoPortsNode {
+    const identifierList: IdentifierNode[] = this.visitChildren(ctx).filter(
+      (child) => child !== undefined,
+    );
+
+    const identifierListNode = new ExtendsRepoPortsNodeBuilder()
+      .withIdentifierList(identifierList)
+      .build();
+    return identifierListNode;
   }
 
   visitRepoPortExtendableIdentifier(ctx: BitloopsParser.RepoPortExtendableIdentifierContext) {
@@ -921,7 +952,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     readModelDeclarationVisitor(this, ctx);
   }
 
-  visitReadModelIdentifier(ctx: BitloopsParser.ReadModelIdentifierContext) {
+  visitReadModelIdentifier(
+    ctx: BitloopsParser.ReadModelIdentifierContext,
+  ): ReadModelIdentifierNode {
     return new ReadModelIdentifierNodeBuilder(produceMetadata(ctx, this))
       .withName(ctx.ReadModelIdentifier().getText())
       .build();

@@ -31,7 +31,7 @@ export const definitionMethodInfoToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   const paramModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
-    value: value.parameterDependencies,
+    value: value.methodDefinition.parameters,
   });
   return paramModel;
 };
@@ -46,7 +46,7 @@ export const definitionMethodsToTargetLanguage = (
     res += `${definitionMethod}${definitionMethodInfo.output}`;
     const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TReturnType,
-      value: value.returnType,
+      value: value.methodDefinition.type,
     });
     res += model.output;
     dependencies = [...dependencies, ...model.dependencies, ...definitionMethodInfo.dependencies];

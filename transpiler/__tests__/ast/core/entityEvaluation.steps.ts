@@ -27,7 +27,7 @@ import { validEntityEvaluationTestCases } from './mocks/evaluation/entityEvaluat
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Value object is valid', () => {
+describe('Entity evaluation is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();

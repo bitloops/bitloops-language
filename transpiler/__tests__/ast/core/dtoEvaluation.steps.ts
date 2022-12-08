@@ -27,7 +27,7 @@ import { validDTOEvaluationTestCases } from './mocks/evaluation/dtoEvaluation.js
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Value object is valid', () => {
+describe('Dto evaluation is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();

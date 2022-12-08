@@ -361,7 +361,7 @@ const modelToTargetLanguage = (props: {
       res = packagePortToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TPackages: {
+    case BitloopsTypesMapping.TPackage: {
       res = packagesToTargetLanguage(value);
       break;
     }
@@ -406,7 +406,7 @@ const modelToTargetLanguage = (props: {
       });
       break;
     }
-    case BitloopsTypesMapping.TRepoPorts: {
+    case BitloopsTypesMapping.TRepoPort: {
       res = repoPortToTargetLanguage(value, model, contextData);
       break;
     }

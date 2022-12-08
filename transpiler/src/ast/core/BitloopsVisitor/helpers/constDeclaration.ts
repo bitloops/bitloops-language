@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../intermediate-ast/nodes/statements/ConstDeclaration.js';
 import { TypeAnnotationNode } from '../../intermediate-ast/nodes/TypeAnnotationNode.js';

@@ -27,7 +27,7 @@ import { validValueObjectEvaluationTestCases } from './mocks/evaluation/valueObj
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Value object is valid', () => {
+describe('Value object evaluation is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();

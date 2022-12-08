@@ -5,7 +5,7 @@ import {
 } from '../../../helpers/mappings.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclaration.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
-import { IdentifierNode } from './nodes/IdentifierNode.js';
+import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
@@ -187,7 +187,7 @@ export class IntermediateASTTree {
   }
 
   getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
-    let resultNode: IdentifierNode;
+    let resultNode;
     this.traverse(rootNode, (node) => {
       if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
         resultNode = node;
