@@ -1,16 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 const NAME = 'domainRuleIdentifier';
-export class DomainRuleIdentifierNode extends IntermediateASTNode {
+export class DomainRuleIdentifierNode extends IntermediateASTIdentifierNode {
   constructor(metadata: TNodeMetadata) {
-    super(BitloopsTypesMapping.TDomainRuleIdentifier, metadata, NAME);
-  }
-
-  getIdentifierName(): string {
-    const identifierClassNodeName = this.getClassNodeName();
-    const identifierValue = this.getValue();
-    const dtoIdentifierName: string = identifierValue[identifierClassNodeName];
-    return dtoIdentifierName;
+    super(BitloopsTypesMapping.TDomainRuleIdentifier, NAME, metadata);
   }
 }

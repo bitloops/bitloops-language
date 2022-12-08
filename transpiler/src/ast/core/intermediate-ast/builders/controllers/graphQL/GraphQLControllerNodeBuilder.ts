@@ -29,7 +29,7 @@ export class GraphQLControllerNodeBuilder implements IBuilder<GraphQLControllerN
     identifierNode: GraphQLControllerIdentifierNode,
   ): GraphQLControllerNodeBuilder {
     this.graphQLControllerIdentifierNode = identifierNode;
-    const controllerName = identifierNode.identifierName;
+    const controllerName = identifierNode.getIdentifierName();
     this.graphQLControllerNode.setClassName(controllerName);
     return this;
   }
@@ -72,7 +72,7 @@ export class GraphQLControllerNodeBuilder implements IBuilder<GraphQLControllerN
 
   private generateOperationName(): void {
     const operationName = this.getOperationName(
-      this.graphQLControllerIdentifierNode.identifierName,
+      this.graphQLControllerIdentifierNode.getIdentifierName(),
     );
     this.operationNameNode = new GraphQLOperationNameNodeBuilder()
       .withOperationName(operationName)

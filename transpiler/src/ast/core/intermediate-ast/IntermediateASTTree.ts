@@ -187,7 +187,7 @@ export class IntermediateASTTree {
   }
 
   getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
-    let resultNode: IdentifierNode;
+    let resultNode;
     this.traverse(rootNode, (node) => {
       if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
         resultNode = node;
