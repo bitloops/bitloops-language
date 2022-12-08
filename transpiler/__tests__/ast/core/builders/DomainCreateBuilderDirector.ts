@@ -2,6 +2,7 @@ import { TDomainCreateMethod } from '../../../../src/types.js';
 import { DomainCreateBuilder } from './DomainCreateBuilder.js';
 import { ParameterBuilderDirector } from './ParameterBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
+import { StatementDirector } from './statement/statementDirector.js';
 import { StatementListDirector } from './statement/statementListDirector.js';
 
 export class DomainCreateBuilderDirector {
@@ -39,6 +40,63 @@ export class DomainCreateBuilderDirector {
           entityPropsIdentifier,
           entityPropsName,
         ),
+      )
+      .build();
+  }
+
+  buildEmptyCreateValueObjectWithError({
+    voName,
+    voPropsIdentifier,
+    errorName,
+    voPropsName,
+  }: {
+    voName: string;
+    voPropsIdentifier: string;
+    errorName: string;
+    voPropsName: string;
+  }): TDomainCreateMethod {
+    return this.builder
+      .withStatements([])
+      .withReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+          voName,
+          errorName,
+        ),
+      )
+      .withParameter(
+        new ParameterBuilderDirector().buildIdentifierParameter(voPropsIdentifier, voPropsName),
+      )
+      .build();
+  }
+
+  buildCreateValueObjectWithApplyRules({
+    voName,
+    voPropsIdentifier,
+    errorName,
+    voPropsName,
+    appliedRules,
+  }: {
+    voName: string;
+    voPropsIdentifier: string;
+    errorName: string;
+    voPropsName: string;
+    appliedRules: {
+      name: string;
+      args: string[][];
+    }[];
+  }): TDomainCreateMethod {
+    return this.builder
+      .withStatements([
+        new StatementDirector().buildBuiltInFunctionApplyRulesStatement(...appliedRules),
+      ])
+      .withReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+          voName,
+          errorName,
+        ),
+      )
+      .withParameter(
+        new ParameterBuilderDirector().buildIdentifierParameter(voPropsIdentifier, voPropsName),
       )
       .build();
   }

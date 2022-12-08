@@ -289,9 +289,9 @@ const modelToTargetLanguage = (props: {
       res = okErrorReturnTypeToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TValueObjects: {
+    case BitloopsTypesMapping.TValueObject: {
       res = valueObjectsToTargetLanguage({
-        valueObjects: value,
+        valueObject: value,
         model,
         contextData,
       });

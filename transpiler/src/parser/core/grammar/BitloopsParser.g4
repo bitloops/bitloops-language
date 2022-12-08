@@ -800,7 +800,7 @@ entityBody
     ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList  domainConstructorDeclaration privateMethodDeclarationList CloseBrace SemiColon?
+    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainConstructorDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
     ;
 domainConstDeclarationList
     : domainConstDeclaration+

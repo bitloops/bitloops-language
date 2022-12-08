@@ -29,7 +29,7 @@ export type TModule = {
   DomainErrors?: TDomainErrors;
   RootEntities?: TRootEntities;
   Entity?: TEntity;
-  ValueObjects?: TValueObjects;
+  ValueObject?: TValueObject;
   DTOs?: TDTO;
   Structs?: TStructDeclaration;
   Packages?: TPackages;
@@ -48,7 +48,7 @@ export type TClassType =
   | 'DomainErrors'
   | 'RootEntities'
   | 'Entity'
-  | 'ValueObjects'
+  | 'ValueObject'
   | 'DTOs'
   | 'Structs'
   | 'Packages'
@@ -65,7 +65,7 @@ export type TComponentType =
   | 'TDomainErrors'
   | 'TRootEntities'
   | 'TEntity'
-  | 'TValueObjects'
+  | 'TValueObject'
   | 'TDTOs'
   | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
   | 'TPackages'
@@ -100,7 +100,7 @@ export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
 
 export type TBitloopsClasses =
   | TProps
-  | TValueObjects
+  | TValueObject
   | TRESTController
   | TUseCase
   | TDomainErrors
@@ -654,12 +654,15 @@ export type TDomainCreateMethod = {
 
 export type TValueObjectCreate = TDomainCreateMethod;
 
-export type TValueObjectValues = {
-  constants?: TConstDeclarationValue[]; //TConstantVariable[];
-  privateMethods?: TDomainPrivateMethods;
-} & TValueObjectCreate;
+export type TValueObjectIdentifier = string;
 
-export type TValueObjects = Record<string, TValueObjectValues>;
+export type TValueObject = {
+  ValueObject: {
+    valueObjectIdentifier: TValueObjectIdentifier;
+    constants?: TConstDeclaration[]; //TConstantVariable[];
+    privateMethods?: TDomainPrivateMethods;
+  } & TValueObjectCreate;
+};
 
 export type TEntityIdentifier = string;
 export type TEntity = {
@@ -670,7 +673,7 @@ export type TEntity = {
 };
 
 export type TEntityValues = {
-  constants?: TConstDeclarationValue[]; // TConstantVariable[];
+  constants?: TConstDeclaration[]; // TConstantVariable[];
   publicMethods?: TDomainPublicMethods;
   privateMethods?: TDomainPrivateMethods;
 } & TEntityCreate;

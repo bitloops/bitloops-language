@@ -46,7 +46,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.ReadModel]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.RootEntities]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.ValueObject]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
   [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
   [ClassTypes.Controller]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
@@ -102,7 +102,7 @@ const getTargetFileDestination = (
     case ClassTypes.RootEntities:
     case ClassTypes.Entity:
     case ClassTypes.ReadModel:
-    case ClassTypes.ValueObjects:
+    case ClassTypes.ValueObject:
     case ClassTypes.DomainErrors:
     case ClassTypes.ApplicationErrors:
     case ClassTypes.Props:
@@ -137,7 +137,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.ReadModel:
     case ClassTypes.RootEntities:
     case ClassTypes.Entity:
-    case ClassTypes.ValueObjects:
+    case ClassTypes.ValueObject:
     case ClassTypes.Controller:
     case ClassTypes.UseCases:
     case ClassTypes.DTOs:
