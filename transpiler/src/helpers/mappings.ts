@@ -97,6 +97,8 @@ const BitloopsTypesMapping = {
   TEntityEvaluation: 'TEntityEvaluation',
   TEntity: 'TEntity',
   TEntityValues: 'TEntityValues',
+  TRootEntity: 'TRootEntity',
+  TRootEntityIdentifier: 'TRootEntityIdentifier',
   TThisDeclaration: 'TThisDeclaration',
   TRepoPorts: 'TRepoPorts',
   TRepoAdapters: 'TRepoAdapters',
@@ -184,7 +186,7 @@ type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
 export type TBitloopsTypesValues = typeof BitloopsTypesMapping[TBitloopsTypesKeys];
 
 const ClassTypes = {
-  RootEntities: 'RootEntities',
+  RootEntity: 'RootEntity',
   Entity: 'Entity',
   ValueObjects: 'ValueObjects',
   Props: 'Props',
@@ -222,7 +224,7 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.DomainErrors]: BitloopsTypesMapping.TDomainErrors,
   [ClassTypes.Packages]: BitloopsTypesMapping.TPackages,
   [ClassTypes.Entity]: BitloopsTypesMapping.TEntity,
-  [ClassTypes.RootEntities]: BitloopsTypesMapping.TRootEntities,
+  [ClassTypes.RootEntity]: BitloopsTypesMapping.TRootEntity,
   [ClassTypes.RepoPorts]: BitloopsTypesMapping.TRepoPorts,
   [ClassTypes.RepoAdapters]: BitloopsTypesMapping.TRepoAdapters,
   [ClassTypes.DomainRule]: BitloopsTypesMapping.TDomainRule,

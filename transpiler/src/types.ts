@@ -674,6 +674,16 @@ export type TEntityValues = {
 export type TEntityCreate = TDomainCreateMethod;
 
 export type TRootEntities = Record<string, TEntityValues>;
+export const RootEntityKey = 'RootEntity';
+export const RootEntityIdentifierKey = 'rootEntityIdentifier';
+export const RootEntityValuesKey = 'rootEntityValues';
+export type TRootEntityIdentifier = string;
+export type TRootEntity = {
+  [RootEntityKey]: {
+    [RootEntityIdentifierKey]: TRootEntityIdentifier;
+    [RootEntityValuesKey]: TEntityValues;
+  };
+};
 
 export const StructKey = 'Struct';
 export type TStructIdentifier = string;
