@@ -126,6 +126,16 @@ export class ExpressionBuilderDirector {
     };
   }
 
+  buildMemberDotMethodCallExpression(
+    memberDotMembers: string[],
+    argumentList: TArgumentList,
+  ): TExpression {
+    return this.buildMethodCallExpression(
+      this.buildMemberExpressionOutOfVariables(...memberDotMembers),
+      argumentList,
+    );
+  }
+
   buildAssignmentExpression(
     leftExpression: TExpression,
     rightExpression: TExpression,

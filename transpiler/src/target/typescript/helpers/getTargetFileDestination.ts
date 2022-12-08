@@ -43,17 +43,17 @@ enum PROJECT_RELATIVE_PATHS {
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Props]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.ReadModels]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.ReadModel]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.RootEntities]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
   [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
-  [ClassTypes.Controllers]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
+  [ClassTypes.Controller]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
   [ClassTypes.UseCases]: PROJECT_RELATIVE_PATHS.APPLICATION,
   [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
   [ClassTypes.Packages]: PROJECT_RELATIVE_PATHS.PACKAGES,
-  [ClassTypes.RepoPorts]: PROJECT_RELATIVE_PATHS.PORTS,
+  [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
@@ -101,16 +101,16 @@ const getTargetFileDestination = (
   switch (classType) {
     case ClassTypes.RootEntities:
     case ClassTypes.Entity:
-    case ClassTypes.ReadModels:
+    case ClassTypes.ReadModel:
     case ClassTypes.ValueObjects:
     case ClassTypes.DomainErrors:
     case ClassTypes.ApplicationErrors:
     case ClassTypes.Props:
-    case ClassTypes.Controllers:
+    case ClassTypes.Controller:
     case ClassTypes.UseCases:
     case ClassTypes.DTOs:
     case ClassTypes.Packages:
-    case ClassTypes.RepoPorts:
+    case ClassTypes.RepoPort:
     case ClassTypes.RepoAdapters:
     case ClassTypes.DomainRule:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
@@ -134,16 +134,16 @@ const getFilePathRelativeToModule = (
   };
   switch (classType) {
     case ClassTypes.Props:
-    case ClassTypes.ReadModels:
+    case ClassTypes.ReadModel:
     case ClassTypes.RootEntities:
     case ClassTypes.Entity:
     case ClassTypes.ValueObjects:
-    case ClassTypes.Controllers:
+    case ClassTypes.Controller:
     case ClassTypes.UseCases:
     case ClassTypes.DTOs:
     case ClassTypes.Packages:
     case ClassTypes.RepoAdapters:
-    case ClassTypes.RepoPorts:
+    case ClassTypes.RepoPort:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;

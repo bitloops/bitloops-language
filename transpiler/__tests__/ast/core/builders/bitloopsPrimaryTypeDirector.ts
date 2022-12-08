@@ -34,6 +34,15 @@ export class BitloopsPrimaryTypeDirector {
     return primaryType;
   }
 
+  buildArrayIdentifierPrimaryType(type: TBitloopsIdentifier): TBitloopsPrimaryType {
+    const primaryType = this.builder
+      .withType({
+        [arrayPrimaryTypeKey]: { [bitloopsIdentifiersTypeKey]: type },
+      })
+      .build();
+    return primaryType;
+  }
+
   buildPrimitivePrimaryType(type: TBitloopsPrimitives): TBitloopsPrimaryType {
     const primaryType = this.builder.withType({ [primitivesTypeKey]: type }).build();
     return primaryType;

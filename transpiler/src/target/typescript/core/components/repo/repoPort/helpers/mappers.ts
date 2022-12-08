@@ -82,7 +82,7 @@ export const findIfWriteOrReadRepoPort = (
     type = ClassTypes.RootEntities;
   } else if (readModelName !== undefined) {
     repoDependencyName = readModelName;
-    type = ClassTypes.ReadModels;
+    type = ClassTypes.ReadModel;
   }
   return {
     repoDependencyName,

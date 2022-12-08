@@ -1,14 +1,10 @@
-import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import { TDomainPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainPublicMethod = (
-  methodName: string,
-  methodInfo: TDomainPublicMethod,
-): TTargetDependenciesTypeScript => {
+const domainPublicMethod = (methodInfo: TDomainPublicMethod): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
-  const { statements, parameterDependencies, returnType } = publicMethod;
+  const { statements, parameters, returnType } = publicMethod;
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: statements,
@@ -16,12 +12,8 @@ const domainPublicMethod = (
 
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependencies,
-    value: parameterDependencies,
+    value: parameters,
   });
-
-  if (!isOkErrorReturnType(returnType)) {
-    throw new Error('Method return type is wrong!');
-  }
 
   const mappedReturnType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
@@ -36,7 +28,7 @@ const domainPublicMethod = (
     return `public ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
   };
   const result = ToLanguageMapping(
-    methodName,
+    publicMethod.identifier,
     mappedReturnType.output,
     parametersString.output,
     statementsString.output,

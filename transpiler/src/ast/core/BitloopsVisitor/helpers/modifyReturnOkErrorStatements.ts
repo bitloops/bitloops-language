@@ -5,11 +5,11 @@ import {
   TStatements,
   TReturnStatement,
   TEvaluation,
-  TOkErrorReturnTypeValues,
+  TOkErrorReturnType,
 } from '../../../../types.js';
 
-const isReturnOkErrorType = (returnType: TOkErrorReturnTypeValues) => {
-  return returnType.ok !== undefined && returnType.errors !== undefined;
+const isReturnOkErrorType = (returnType: TOkErrorReturnType) => {
+  return returnType.returnType.ok !== undefined && returnType.returnType.errors !== undefined;
 };
 
 const isReturnStatement = (statement: TStatement): boolean => {
@@ -29,10 +29,7 @@ const isReturnErrorStatement = (statement: TReturnStatement): boolean => {
   return false;
 };
 
-const modifyReturnOkErrorStatement = (
-  statement: TStatement,
-  returnType: TOkErrorReturnTypeValues,
-) => {
+const modifyReturnOkErrorStatement = (statement: TStatement, returnType: TOkErrorReturnType) => {
   if (isReturnStatement(statement)) {
     const returnStatement = statement as TReturnStatement;
     if (isReturnOkErrorType(returnType)) {
@@ -52,7 +49,7 @@ const modifyReturnOkErrorStatement = (
 
 export const modifyReturnOkErrorStatements = (
   statements: TStatements,
-  returnType: TOkErrorReturnTypeValues,
+  returnType: TOkErrorReturnType,
 ) => {
   const newStatements = statements.map((statement) => {
     // TODO this has to be called recursively (if inside an if etc)

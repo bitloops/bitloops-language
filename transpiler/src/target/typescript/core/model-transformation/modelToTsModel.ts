@@ -36,7 +36,7 @@ import { transformGraphQLControllerIntermediateAST } from './components/controll
 const modelToTypescriptModel = (type: string, value: any): any => {
   let res: any;
   switch (type) {
-    case BitloopsTypesMapping.TControllers: {
+    case BitloopsTypesMapping.TController: {
       res = controllersToTargetLanguage(value);
       break;
     }
@@ -48,7 +48,7 @@ const modelToTypescriptModel = (type: string, value: any): any => {
       res = transformGraphQLControllerIntermediateAST(value);
       break;
     }
-    case BitloopsTypesMapping.TEntities: {
+    case BitloopsTypesMapping.TEntity: {
       res = transformEntityIntermediateAST(value);
       break;
     }
@@ -61,6 +61,7 @@ const modelToTypescriptModel = (type: string, value: any): any => {
       break;
     }
     case BitloopsTypesMapping.TDomainMethods: {
+      // TODO remove this does not exist from types
       res = transformDomainMethodsIntermediateAST(value);
       break;
     }

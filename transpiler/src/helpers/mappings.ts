@@ -66,7 +66,14 @@ const BitloopsTypesMapping = {
   TUseCase: 'TUseCase',
   TRESTController: 'TRESTController',
   TGraphQLController: 'TGraphQLController',
-  TControllers: 'TControllers',
+  TGraphQLControllerIdentifier: 'TGraphQLControllerIdentifier',
+  TGraphQLControllerOperationType: 'TGraphQLControllerOperationType',
+  TGraphQLControllerInputType: 'TGraphQLControllerInputType',
+  TGraphQLControllerOperationName: 'TGraphQLControllerOperationName',
+  TGraphQLControllerExecuteReturnType: 'TGraphQLControllerExecuteReturnType',
+  TGraphQLControllerExecute: 'TGraphQLControllerExecute',
+  TGraphQLControllerExecuteDependencies: 'TGraphQLControllerExecuteDependencies',
+  TController: 'TController',
   TString: 'TString',
   TBackTickString: 'TBackTickString',
   TDomainErrors: 'TDomainErrors',
@@ -115,7 +122,8 @@ const BitloopsTypesMapping = {
   TEntityCreate: 'TEntityCreate',
   TBuildInFunction: 'TBuildInFunction',
   TApplyRules: 'TApplyRules',
-  TReadModels: 'TReadModels',
+  TReadModel: 'TReadModels',
+  TReadModelIdentifier: 'TReadModelIdentifier',
   TDomainMethods: 'TDomainMethods',
   TDomainPublicMethod: 'TDomainPublicMethod',
   TDomainPrivateMethod: 'TDomainPrivateMethod',
@@ -164,6 +172,12 @@ const BitloopsTypesMapping = {
   TErrorIdentifiers: 'TErrorIdentifiers',
   TReturnOkType: 'TReturnOkType',
   TIdentifierList: 'TIdentifierList',
+  TDomainPublicMethods: 'TDomainPublicMethods',
+  TDomainPrivateMethods: 'TDomainPrivateMethods',
+  TRESTMethods: 'TRESTMethods',
+  TRESTControllerExecute: 'TRESTControllerExecute',
+  TRESTControllerExecuteDependencies: 'TRESTControllerExecuteDependencies',
+  TRESTControllerIdentifier: 'TRESTControllerIdentifier',
 };
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -175,7 +189,7 @@ const ClassTypes = {
   Entity: 'Entity',
   ValueObjects: 'ValueObjects',
   Props: 'Props',
-  Controllers: 'Controllers',
+  Controller: 'Controller',
   UseCases: 'UseCases',
   DomainErrors: 'DomainErrors',
   ApplicationErrors: 'ApplicationErrors',
@@ -185,7 +199,7 @@ const ClassTypes = {
   RepoPort: 'RepoPort',
   RepoAdapters: 'RepoAdapters',
   DomainRule: 'DomainRule',
-  ReadModels: 'ReadModels',
+  ReadModel: 'ReadModel',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -201,7 +215,7 @@ export const mappingBitloopsBuiltInClassToLayer = {
 };
 
 const mappingClassTypeToComponentType = {
-  [ClassTypes.Controllers]: BitloopsTypesMapping.TControllers,
+  [ClassTypes.Controller]: BitloopsTypesMapping.TController,
   [ClassTypes.UseCases]: BitloopsTypesMapping.TUseCase,
   [ClassTypes.ValueObjects]: BitloopsTypesMapping.TValueObjects,
   [ClassTypes.Props]: BitloopsTypesMapping.TProps,
@@ -210,12 +224,12 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Packages]: BitloopsTypesMapping.TPackages,
   [ClassTypes.Entity]: BitloopsTypesMapping.TEntity,
   [ClassTypes.RootEntities]: BitloopsTypesMapping.TRootEntities,
-  [ClassTypes.RepoPorts]: BitloopsTypesMapping.TRepoPorts,
+  [ClassTypes.RepoPort]: BitloopsTypesMapping.TRepoPort,
   [ClassTypes.RepoAdapters]: BitloopsTypesMapping.TRepoAdapters,
   [ClassTypes.DomainRule]: BitloopsTypesMapping.TDomainRule,
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
   [ClassTypes.ApplicationErrors]: BitloopsTypesMapping.TApplicationErrors,
-  [ClassTypes.ReadModels]: BitloopsTypesMapping.TReadModels,
+  [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

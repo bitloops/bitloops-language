@@ -55,10 +55,10 @@ const graphQLControllersToTargetLanguage = (
   const inputDependency = inputType ? getChildDependencies(inputType) : [];
   const outputDependency = getChildDependencies(outputType);
   dependencies = dependencies.concat(inputDependency, outputDependency);
-  if (!controller.execute || !controller.parameterDependencies) {
+  if (!controller.execute || !controller.parameters) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
-  const fieldsModel = buildFieldsFromDependencies(controller.parameterDependencies, contextData);
+  const fieldsModel = buildFieldsFromDependencies(controller.parameters, contextData);
   result += fieldsModel.output;
 
   const executeModel = buildExecuteMethod(controller.execute);
@@ -68,7 +68,7 @@ const graphQLControllersToTargetLanguage = (
   result += finalObjValLang;
   dependencies = [...dependencies, ...fieldsModel.dependencies, ...executeModel.dependencies];
   const parentDependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.Controllers,
+    classType: ClassTypes.Controller,
     className: controllerName,
   });
   return { output: result, dependencies: parentDependencies };

@@ -29,7 +29,7 @@ export const domainConstructorDeclarationVisitor = (
 ): DomainCreateNode => {
   const statementListNode = thisVisitor.visit(ctx.functionBody());
   const returnTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
-  const parametersNode = thisVisitor.visit(ctx.parameterList());
+  const parameterNode = thisVisitor.visit(ctx.parameter());
 
   // const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
   //   functionBody.statements,
@@ -39,7 +39,7 @@ export const domainConstructorDeclarationVisitor = (
   const domainCreateNode = new DomainCreateNodeBuilder()
     .withStatements(statementListNode)
     .withReturnType(returnTypeNode)
-    .withParameters(parametersNode) //parameters[0]
+    .withParameter(parameterNode)
     .build();
   return domainCreateNode;
 };

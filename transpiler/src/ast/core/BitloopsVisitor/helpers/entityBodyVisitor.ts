@@ -6,6 +6,10 @@ import { EntityValuesNode } from '../../intermediate-ast/nodes/Entity/EntityValu
 import { ConstDeclarationListNode } from '../../intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { ConstDeclarationListNodeBuilder } from '../../intermediate-ast/builders/ConstDeclarationListBuilder.js';
 import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { PublicMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
+import { PrivateMethodDeclarationListNode } from '../../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
+import { PublicMethodDeclarationListNodeBuilder } from '../../intermediate-ast/builders/methods/PublicMethodDeclarationListNodeBuilder.js';
+import { PrivateMethodDeclarationListNodeBuilder } from '../../intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
 
 export const entityBodyVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -19,8 +23,13 @@ export const entityBodyVisitor = (
     ? thisVisitor.visit(ctx.domainConstDeclarationList())
     : new ConstDeclarationListNodeBuilder().withConstants([]).build();
 
-  const publicMethodNodes = thisVisitor.visit(ctx.publicMethodDeclarationList());
-  const privateMethodNodes = thisVisitor.visit(ctx.privateMethodDeclarationList());
+  const publicMethodNodes: PublicMethodDeclarationListNode = ctx.publicMethodDeclarationList()
+    ? thisVisitor.visit(ctx.publicMethodDeclarationList())
+    : new PublicMethodDeclarationListNodeBuilder().withMethods([]).build();
+
+  const privateMethodNodes: PrivateMethodDeclarationListNode = ctx.privateMethodDeclarationList()
+    ? thisVisitor.visit(ctx.privateMethodDeclarationList())
+    : new PrivateMethodDeclarationListNodeBuilder().withMethods([]).build();
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const entityValuesNode = new EntityValuesNodeBuilder(metadata)

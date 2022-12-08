@@ -3,7 +3,7 @@ import { BitloopsPrimTypeIdentifiers } from '../../../../target/typescript/core/
 import {
   primitivesTypeKey,
   returnOKKey,
-  TOkErrorReturnTypeValues,
+  TOkErrorReturnType,
   TStatements,
 } from '../../../../types.js';
 
@@ -14,9 +14,9 @@ const returnOkVoidStatement = {
 // TODO move to model to model
 export const addReturnOkVoidStatement = (
   statements: TStatements,
-  returnType: TOkErrorReturnTypeValues,
+  returnType: TOkErrorReturnType,
 ) => {
-  const returnOKType = returnType.ok.type;
+  const returnOKType = returnType.returnType.ok.type;
   if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(returnOKType)) {
     if (returnOKType[primitivesTypeKey] === bitloopsPrimitives.void) {
       const lastStatement = statements[statements.length - 1];

@@ -17,27 +17,27 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TValueObjects } from '../../../../../../types.js';
-import { modelToTypescriptModel } from '../../modelToTsModel.js';
+// import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+// import { TValueObjects } from '../../../../../../types.js';
+// import { modelToTypescriptModel } from '../../modelToTsModel.js';
 
-const transformValueObjectIntermediateAST = (valueObjects: TValueObjects): TValueObjects => {
-  for (const valueObjectValues of Object.values(valueObjects)) {
-    if (valueObjectValues.methods) {
-      const updatedMethods = modelToTypescriptModel({
-        type: BitloopsTypesMapping.TValueObjectMethods,
-        value: valueObjectValues.methods,
-      });
-      valueObjectValues.methods = updatedMethods;
-    }
-    const updatedCreate = modelToTypescriptModel({
-      type: BitloopsTypesMapping.TDomainCreateMethod,
-      value: valueObjectValues.create,
-    });
-    valueObjectValues.create = updatedCreate;
-  }
+// const transformValueObjectIntermediateAST = (valueObjects: TValueObjects): TValueObjects => {
+//   for (const valueObjectValues of Object.values(valueObjects)) {
+//     if (valueObjectValues.methods) {
+//       const updatedMethods = modelToTypescriptModel({
+//         type: BitloopsTypesMapping.TValueObjectMethods,
+//         value: valueObjectValues.methods,
+//       });
+//       valueObjectValues.methods = updatedMethods;
+//     }
+//     const updatedCreate = modelToTypescriptModel({
+//       type: BitloopsTypesMapping.TDomainCreateMethod,
+//       value: valueObjectValues.create,
+//     });
+//     valueObjectValues.create = updatedCreate;
+//   }
 
-  return valueObjects;
-};
+//   return valueObjects;
+// };
 
-export { transformValueObjectIntermediateAST };
+// export { transformValueObjectIntermediateAST };

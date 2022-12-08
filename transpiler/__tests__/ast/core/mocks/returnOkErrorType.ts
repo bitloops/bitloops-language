@@ -31,4 +31,33 @@ export const validReturnOkErrorTypeCases = [
       .withErrors([{ error: 'DomainErrors.InvalidName' }, { error: 'DomainErrors.NameTaken' }])
       .build(),
   },
+  {
+    description: 'return ok error type with void ok type and empty errors',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestReturnOkErrorType { (OK(void), Errors()) }',
+    expected: new ReturnOkErrorTypeBuilder()
+      .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+      .withErrors([])
+      .build(),
+  },
+  {
+    description: 'return ok error type with read model ok type and application errors',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'JestTestReturnOkErrorType { (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError)) }',
+    expected: new ReturnOkErrorTypeBuilder()
+      .withOk(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoReadModel'))
+      .withErrors([{ error: 'ApplicationErrors.ToDoNotFoundError' }])
+      .build(),
+  },
+  {
+    description: 'return ok error type with read model array ok type and application errors',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'JestTestReturnOkErrorType { (OK(TodoReadModel[]), Errors(ApplicationErrors.ToDoNotFoundError)) }',
+    expected: new ReturnOkErrorTypeBuilder()
+      .withOk(new BitloopsPrimaryTypeDirector().buildArrayIdentifierPrimaryType('TodoReadModel'))
+      .withErrors([{ error: 'ApplicationErrors.ToDoNotFoundError' }])
+      .build(),
+  },
 ];

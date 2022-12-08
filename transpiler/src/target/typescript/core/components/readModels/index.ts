@@ -17,12 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TReadModels, TTargetDependenciesTypeScript, TVariables } from '../../../../../types.js';
+import { TReadModel, TTargetDependenciesTypeScript, TVariables } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
 
-const readModelsToTargetLanguage = (readModels: TReadModels): TTargetDependenciesTypeScript => {
+const readModelsToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTypeScript => {
   const initialPropsLangMapping = (propName: string): string => `export type ${propName} = { `;
   const finalPropsLangMapping = '} | null';
   const result: TTargetDependenciesTypeScript = {
@@ -30,29 +30,29 @@ const readModelsToTargetLanguage = (readModels: TReadModels): TTargetDependencie
     dependencies: [],
   };
 
-  return Object.entries(readModels).reduce((acc, [readModelName, readModelValues]) => {
-    guardAgainstUndefinedAndArray(readModelValues.variables);
-    acc.output += initialPropsLangMapping(readModelName);
+  // return Object.entries(readModel).reduce((acc, [readModelName, readModelValues]) => {
+  const { fields, ReadModelIdentifier } = readModel.ReadModel;
+  guardAgainstUndefinedAndArray(fields);
+  result.output += initialPropsLangMapping(ReadModelIdentifier);
 
-    const readModelIntermediateModel = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TVariables,
-      value: readModelValues.variables,
-    });
+  const readModelIntermediateModel = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TVariables,
+    value: fields,
+  });
 
-    acc.output += readModelIntermediateModel.output;
-    acc.dependencies = [...acc.dependencies, ...readModelIntermediateModel.dependencies];
-    acc.output += finalPropsLangMapping;
+  result.output += readModelIntermediateModel.output;
+  result.dependencies.push(...readModelIntermediateModel.dependencies);
+  result.output += finalPropsLangMapping;
 
-    return acc;
-  }, result);
+  return result;
 };
 
 const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
   if (isUndefined(variables)) {
-    throw new Error('Variables of Prop are not defined');
+    throw new Error('Variables of Read Model are not defined');
   }
   if (!isArray(variables)) {
-    throw new Error('Variables of Prop are not array');
+    throw new Error('Variables of Read Model are not array');
   }
 };
 

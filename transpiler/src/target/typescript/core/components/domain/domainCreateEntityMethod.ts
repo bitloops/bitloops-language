@@ -6,8 +6,10 @@ import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 // TODO refactor this with domainCreate method which is similar (only the constructor changes)
-export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependenciesTypeScript => {
-  const { parameterDependency, returnType, statements } = create;
+export const domainCreateEntity = (
+  variable: TDomainCreateMethod,
+): TTargetDependenciesTypeScript => {
+  const { parameter, returnType, statements } = variable.create;
 
   const statementsResult = {
     thisStatements: [],
@@ -22,7 +24,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
     }
   }
 
-  const propsNameType = create.parameterDependency.parameter.type;
+  const propsNameType = parameter.type;
   const returnOkType = returnType.ok.type;
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
@@ -57,7 +59,7 @@ export const domainCreateEntity = (create: TDomainCreateMethod): TTargetDependen
 
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterDependency,
-    value: parameterDependency,
+    value: parameter,
   });
 
   const returnTypeModel = modelToTargetLanguage({

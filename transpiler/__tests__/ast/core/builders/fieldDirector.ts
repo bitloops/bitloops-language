@@ -88,6 +88,25 @@ export class FieldBuilderDirector {
     return field;
   }
 
+  buildArrayIdentifierField({
+    name,
+    identifier,
+    isOptional,
+  }: {
+    name: string;
+    identifier: TBitloopsIdentifier;
+    isOptional: boolean;
+  }): TVariable {
+    const field = this.builder
+      .withArrayPrimaryType({
+        [arrayPrimaryTypeKey]: { [bitloopsIdentifiersTypeKey]: identifier },
+      })
+      .withName(name)
+      .withOptional(isOptional)
+      .build();
+    return field;
+  }
+
   withBuiltinClassTypeField({
     name,
     type,
