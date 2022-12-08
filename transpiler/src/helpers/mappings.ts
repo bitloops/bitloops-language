@@ -90,8 +90,6 @@ const BitloopsTypesMapping = {
   TPackagePort: 'TPackagePort',
   TPackagePortIdentifier: 'TPackagePortIdentifier',
   TPackage: 'TPackages',
-  TPackageAdapterList: 'TPackageAdapterList',
-  TPackageIdentifier: 'TPackageIdentifier',
   TDomainCreateMethod: 'TDomainCreateMethod',
   TValueObjectEvaluation: 'TValueObjectEvaluation',
   TEvaluationFields: 'TEvaluationFields',
