@@ -1,5 +1,5 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { DomainErrorNode } from '../../nodes/Error/DomainErrorNode.js';
+import { ApplicationErrorNode } from '../../nodes/Error/ApplicationError.js';
 import { ErrorIdNode } from '../../nodes/Error/errorId.js';
 import { ErrorMessageNode } from '../../nodes/Error/message.js';
 import { EvaluationFieldNode } from '../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
@@ -11,10 +11,10 @@ import { ErrorIdNodeBuilder } from './ErrorIdNodeBuilder.js';
 import { ErrorMessageNodeBuilder } from './ErrorMessageNodeBuilder.js';
 // import { ErrorParametersNodeBuilder } from './ErrorParametersBuilder.js';
 
-export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
-  public readonly NAME = 'DomainErrors';
+export class ApplicationErrorBuilder implements IBuilder<ApplicationErrorNode> {
+  public readonly NAME = 'ApplicationErrors';
 
-  private domainErrorNode: DomainErrorNode;
+  private applicationErrorNode: ApplicationErrorNode;
   private message: ErrorMessageNode;
   private errorId: ErrorIdNode;
   private parameters: ParameterListNode;
@@ -23,38 +23,38 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
-    this.domainErrorNode = new DomainErrorNode(metadata);
+    this.applicationErrorNode = new ApplicationErrorNode(metadata);
   }
 
-  public withIdentifier(identifierName: IdentifierNode): DomainErrorBuilder {
+  public withIdentifier(identifierName: IdentifierNode): ApplicationErrorBuilder {
     this.identifierName = identifierName;
     return this;
   }
 
-  public withMessage(messageNode: EvaluationFieldNode): DomainErrorBuilder {
+  public withMessage(messageNode: EvaluationFieldNode): ApplicationErrorBuilder {
     const expression = messageNode.getExpression();
     this.message = new ErrorMessageNodeBuilder().withExpression(expression).build();
     return this;
   }
-  public withErrorId(idNode: EvaluationFieldNode): DomainErrorBuilder {
+  public withErrorId(idNode: EvaluationFieldNode): ApplicationErrorBuilder {
     const expression = idNode.getExpression();
     this.errorId = new ErrorIdNodeBuilder().withExpression(expression).build();
     return this;
   }
-  public withParameters(parameters: ParameterListNode): DomainErrorBuilder {
+  public withParameters(parameters: ParameterListNode): ApplicationErrorBuilder {
     this.parameters = parameters;
     return this;
   }
-  public build(): DomainErrorNode {
-    this.intermediateASTTree.insertChild(this.domainErrorNode);
+  public build(): ApplicationErrorNode {
+    this.intermediateASTTree.insertChild(this.applicationErrorNode);
     this.intermediateASTTree.insertChild(this.identifierName);
     this.intermediateASTTree.insertSibling(this.parameters);
     this.intermediateASTTree.insertSibling(this.message);
     this.intermediateASTTree.insertSibling(this.errorId);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
-    this.domainErrorNode.buildObjectValue();
+    this.applicationErrorNode.buildObjectValue();
 
-    return this.domainErrorNode;
+    return this.applicationErrorNode;
   }
 }
