@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TPackages, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { TPackage, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const packagesToTypescriptTargetLanguage = (variable: TPackages): TTargetDependenciesTypeScript => {
+export const packagesToTargetLanguage = (variable: TPackage): TTargetDependenciesTypeScript => {
   let res = '';
   let dependencies = [];
   for (const packageData of Object.values(variable)) {
@@ -34,8 +34,4 @@ const packagesToTypescriptTargetLanguage = (variable: TPackages): TTargetDepende
     dependencies = [...dependencies, ...model.dependencies];
   }
   return { output: res, dependencies };
-};
-
-export const packagesToTargetLanguage = (variable: TPackages): TTargetDependenciesTypeScript => {
-  return packagesToTypescriptTargetLanguage(variable);
 };

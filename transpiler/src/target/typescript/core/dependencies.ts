@@ -201,7 +201,7 @@ const getClassTypeFromIdentifier = (
   } // TODO check Repo Adapter?
   else if (dependencyName.endsWith('PackagePort')) {
     return {
-      classType: ClassTypes.Packages,
+      classType: ClassTypes.Package,
     };
   } else if (dependencyName.endsWith('RepoPort')) {
     return {
