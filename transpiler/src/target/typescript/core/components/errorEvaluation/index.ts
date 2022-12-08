@@ -27,21 +27,21 @@ export const bitloopsErrorEvaluationToTargetLanguage = (
   variable: TErrorEvaluation,
 ): TTargetDependenciesTypeScript => {
   const { errorEvaluation } = variable;
-  const { name, argumentList } = errorEvaluation;
+  const { error, argumentList } = errorEvaluation;
 
   const argumentDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TArgumentList,
     value: argumentList,
   });
-  const output = `new ${name}${argumentDependenciesResult.output}`;
+  const output = `new ${error}${argumentDependenciesResult.output}`;
   let dependencies;
   if (
     argumentDependenciesResult.dependencies &&
     argumentDependenciesResult.dependencies.length > 0
   ) {
-    dependencies = [...getChildDependencies(name), ...argumentDependenciesResult.dependencies];
+    dependencies = [...getChildDependencies(error), ...argumentDependenciesResult.dependencies];
   } else {
-    dependencies = [...getChildDependencies(name)];
+    dependencies = [...getChildDependencies(error)];
   }
   return {
     output,

@@ -2,7 +2,7 @@ import { EvaluationFieldNode } from '../../../../../src/ast/core/intermediate-as
 import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { EvaluationFieldNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
 import { ExpressionBuilderDirector } from './expression.js';
-import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export class EvaluationFieldBuilderDirector {
   buildEvaluationField(name: string, expression: ExpressionNode): EvaluationFieldNode {

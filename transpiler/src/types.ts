@@ -1152,7 +1152,7 @@ export type TAndSingleExpression = {
 
 export type TErrorEvaluation = {
   errorEvaluation: {
-    name: string;
+    error: string;
     argumentList?: TArgumentList;
   };
 };

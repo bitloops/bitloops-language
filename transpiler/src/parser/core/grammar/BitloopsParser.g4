@@ -537,7 +537,7 @@ jestTestDeclaration
     ;
 
 errorEvaluation
-    : ErrorIdentifier methodArguments SemiColon?
+    : errorIdentifier methodArguments SemiColon?
     ;
 
 evaluation

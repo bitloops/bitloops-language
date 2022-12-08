@@ -46,7 +46,7 @@ export class EvaluationBuilderDirector {
     return {
       evaluation: {
         errorEvaluation: {
-          name: errorIdentifier,
+          error: errorIdentifier,
           argumentList: args,
         },
       },

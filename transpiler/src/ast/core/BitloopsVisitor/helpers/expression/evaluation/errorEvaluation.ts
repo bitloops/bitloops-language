@@ -21,18 +21,15 @@
 import { ErrorEvaluationNodeBuilder } from '../../../../intermediate-ast/builders/expressions/evaluation/ErrorEvaluationBuilder.js';
 import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../../BitloopsVisitor.js';
-import { NameNodeBuilder } from '../../../../intermediate-ast/builders/NameBuilder.js';
 
 export const errorEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ErrorEvaluationContext,
 ) => {
-  const identifier = ctx.ErrorIdentifier().getText();
+  const identifierNode = thisVisitor.visit(ctx.errorIdentifier());
   const argumentDependencies = thisVisitor.visit(ctx.methodArguments());
 
-  const nameNode = new NameNodeBuilder().withName(identifier).build();
-
-  const node = new ErrorEvaluationNodeBuilder().withName(nameNode);
+  const node = new ErrorEvaluationNodeBuilder().withIdentifier(identifierNode);
   if (argumentDependencies) {
     node.withArgumentsList(argumentDependencies);
   }

@@ -1,19 +1,19 @@
 import { ArgumentListNode } from '../../../nodes/ArgumentList/ArgumentListNode.js';
+import { ErrorIdentifierNode } from '../../../nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 import { ErrorEvaluationNode } from '../../../nodes/Expression/Evaluation/ErrorEvaluation.js';
-import { NameNode } from '../../../nodes/NameNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class ErrorEvaluationNodeBuilder implements IBuilder<ErrorEvaluationNode> {
   private errorEvaluationNode: ErrorEvaluationNode;
-  private name: NameNode;
+  private identifier: ErrorIdentifierNode;
   private argumentListNode?: ArgumentListNode;
 
   constructor() {
     this.errorEvaluationNode = new ErrorEvaluationNode();
   }
 
-  public withName(name: NameNode): ErrorEvaluationNodeBuilder {
-    this.name = name;
+  public withIdentifier(identifier: ErrorIdentifierNode): ErrorEvaluationNodeBuilder {
+    this.identifier = identifier;
     return this;
   }
 
@@ -23,7 +23,7 @@ export class ErrorEvaluationNodeBuilder implements IBuilder<ErrorEvaluationNode>
   }
 
   public build(): ErrorEvaluationNode {
-    this.errorEvaluationNode.addChild(this.name);
+    this.errorEvaluationNode.addChild(this.identifier);
     if (this.argumentListNode) {
       this.errorEvaluationNode.addChild(this.argumentListNode);
     }
