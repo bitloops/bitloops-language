@@ -45,9 +45,7 @@ export class PackageNodeBuilder implements IBuilder<PackageNode> {
 
   private generatePackageIdentifier(): PackageNodeBuilder {
     const packageName = this.packagePort.identifier.replace('Port', '');
-    const packageNameNode = new PackageIdentifierNodeBuilder(undefined)
-      .withName(packageName)
-      .build();
+    const packageNameNode = new PackageIdentifierNodeBuilder().withName(packageName).build();
     this.identifierNode = packageNameNode;
     // const packageName = packageNameNode.getIdentifierName();
     this.package.setClassName(packageName);
