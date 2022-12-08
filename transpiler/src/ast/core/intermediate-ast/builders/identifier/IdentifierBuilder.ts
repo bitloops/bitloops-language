@@ -1,7 +1,7 @@
-import { TIdentifier } from '../../../../types.js';
-import { IdentifierNode } from '../nodes/IdentifierNode.js';
-import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
-import { IBuilder } from './IBuilder.js';
+import { TIdentifier } from '../../../../../types.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { IBuilder } from '../IBuilder.js';
 
 export class IdentifierBuilder implements IBuilder<IdentifierNode> {
   public readonly NAME = 'identifier';

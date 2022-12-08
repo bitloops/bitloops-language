@@ -1,10 +1,10 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { ApplicationErrorBuilder } from '../../intermediate-ast/builders/Error/ApplicationErrorBuilder.js';
 import { EvaluationFieldListNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
-import { IdentifierBuilder } from '../../intermediate-ast/builders/IdentifierBuilder.js';
+import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { ApplicationErrorNode } from '../../intermediate-ast/nodes/Error/ApplicationError.js';
 import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
-import { IdentifierNode } from '../../intermediate-ast/nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';

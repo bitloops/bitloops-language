@@ -19,7 +19,12 @@
  */
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
-import { TTargetDependenciesTypeScript, TRepoPort } from '../../../../../../../types.js';
+import {
+  TTargetDependenciesTypeScript,
+  TRepoPort,
+  repoPortKey,
+  identifierKey,
+} from '../../../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../../../dependencies.js';
@@ -32,9 +37,9 @@ export const buildRepoPortWithMethods = (
   domainIdValue: TTargetDependenciesTypeScript,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
-  const { definitionMethods, extendedRepoPorts } = repoPortInfo;
+  const { methodDefinitionList, extendsRepoPorts } = repoPortInfo[repoPortKey];
   const extendedRepoPortsRes = mapExtendedRepoPorts(
-    extendedRepoPorts,
+    extendsRepoPorts[identifierKey],
     repoDependencyName,
     domainIdValue,
   );
@@ -44,11 +49,11 @@ export const buildRepoPortWithMethods = (
 
   const methodsModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDefinitionMethods,
-    value: definitionMethods,
+    value: methodDefinitionList,
   });
   dependencies = [...dependencies, ...methodsModel.dependencies];
   const parentDependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.RepoPorts,
+    classType: ClassTypes.RepoPort,
     className: repoPortName,
   });
 

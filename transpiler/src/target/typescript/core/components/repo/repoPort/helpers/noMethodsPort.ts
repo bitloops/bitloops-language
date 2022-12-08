@@ -19,7 +19,12 @@
  */
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
-import { TTargetDependenciesTypeScript, TRepoPort } from '../../../../../../../types.js';
+import {
+  TTargetDependenciesTypeScript,
+  TRepoPort,
+  repoPortKey,
+  identifierKey,
+} from '../../../../../../../types.js';
 import { ClassTypes } from '../../../../../../../helpers/mappings.js';
 import { getParentDependencies } from '../../../../dependencies.js';
 import { mapExtendedRepoPorts } from './mappers.js';
@@ -30,10 +35,10 @@ export const noMethodsRepoPort = (
   repoPortInfo: TRepoPort,
   domainIdValue: TTargetDependenciesTypeScript,
 ): TTargetDependenciesTypeScript => {
-  const { extendedRepoPorts } = repoPortInfo;
+  const { extendsRepoPorts } = repoPortInfo[repoPortKey];
   let dependencies = [];
   const extendedRepoPortsRes = mapExtendedRepoPorts(
-    extendedRepoPorts,
+    extendsRepoPorts[identifierKey],
     repoDependencyName,
     domainIdValue,
   );
@@ -41,7 +46,7 @@ export const noMethodsRepoPort = (
   dependencies = [...dependencies, ...extendedRepoPortsRes.flatMap((x) => x.dependencies)];
 
   const parentDependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.RepoPorts,
+    classType: ClassTypes.RepoPort,
     className: repoPortName,
   });
   return {

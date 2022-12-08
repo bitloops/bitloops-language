@@ -26,7 +26,7 @@ export class ReadModelBuilder implements IBuilder<TReadModel> {
   public build(): TReadModel {
     return {
       ReadModel: {
-        ReadModelIdentifier: this.identifierName,
+        readModelIdentifier: this.identifierName,
         fields: this.fields,
       },
     };

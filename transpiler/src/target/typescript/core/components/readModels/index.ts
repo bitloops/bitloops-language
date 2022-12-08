@@ -31,9 +31,9 @@ const readModelsToTargetLanguage = (readModel: TReadModel): TTargetDependenciesT
   };
 
   // return Object.entries(readModel).reduce((acc, [readModelName, readModelValues]) => {
-  const { fields, ReadModelIdentifier } = readModel.ReadModel;
+  const { fields, readModelIdentifier } = readModel.ReadModel;
   guardAgainstUndefinedAndArray(fields);
-  result.output += initialPropsLangMapping(ReadModelIdentifier);
+  result.output += initialPropsLangMapping(readModelIdentifier);
 
   const readModelIntermediateModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,

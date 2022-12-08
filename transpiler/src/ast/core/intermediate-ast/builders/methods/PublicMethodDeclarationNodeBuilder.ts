@@ -1,4 +1,4 @@
-import { IdentifierNode } from '../../nodes/IdentifierNode.js';
+import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PublicMethodDeclarationNode } from '../../nodes/methods/PublicMethodDeclarationNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
