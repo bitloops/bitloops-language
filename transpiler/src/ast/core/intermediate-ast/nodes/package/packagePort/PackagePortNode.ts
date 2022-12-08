@@ -1,13 +1,13 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { IntermediateASTIdentifierNode } from '../../IntermediateASTIdentifierNode.js';
-import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
 import { PackagePortIdentifierNode } from './PackagePortIdentifierNode.js';
 
-export class PackagePortNode extends IntermediateASTIdentifierNode {
+export class PackagePortNode extends IntermediateASTNode {
   private static classNodeName = 'port';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TPackagePort, PackagePortNode.classNodeName, metadata);
+    super(BitloopsTypesMapping.TPackagePort, metadata, PackagePortNode.classNodeName);
   }
 
   get identifier(): string {
