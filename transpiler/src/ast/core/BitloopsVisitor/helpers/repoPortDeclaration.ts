@@ -19,7 +19,6 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { EntityIdentifierNodeBuilder } from '../../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { IdentifierBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { RepoPortBuilder } from '../../intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
 import { ExtendsRepoPortsNode } from '../../intermediate-ast/nodes/extendsRepoPortNode.js';
@@ -53,10 +52,8 @@ export const repoPortDeclarationVisitor = (
       .withReadModelIdentifier(readModelIdentifier)
       .build();
   } else if (ctx.entityIdentifier()) {
-    const aggregateRootIdentifier = ctx.entityIdentifier().getText();
-    const aggregateRootIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
-      .withName(aggregateRootIdentifier)
-      .build();
+    const aggregateRootIdentifierNode = thisVisitor.visit(ctx.entityIdentifier());
+
     new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
       .withDefinitionMethodsNode(definitionMethods)
       .withExtendsRepoPortNode(extendsRepoPorts)
