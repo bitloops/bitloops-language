@@ -294,10 +294,14 @@ export type TDomainErrors = {
     TErrorId;
 };
 
+export const ApplicationErrorKey = 'ApplicationError';
+export const ApplicationErrorIdentifier = 'identifier';
 export type TApplicationError = {
-  message: TExpression; // TBackTickString | TString;
-  errorId: TExpression;
-  parameters?: TParameterDependencies;
+  [ApplicationErrorKey]: {
+    [ApplicationErrorIdentifier]: TIdentifier;
+    parameters?: TParameterDependencies;
+  } & TErrorMessage &
+    TErrorId;
 };
 
 export type TApplicationErrors = Record<string, TApplicationError>;
