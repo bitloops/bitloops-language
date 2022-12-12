@@ -1026,8 +1026,7 @@ export const PackagePortIdentifierKey = 'PackagePortIdentifier';
 export type TPackagePortIdentifier = string;
 export type TPackagePort = {
   [PackagePortIdentifierKey]: TPackagePortIdentifier;
-  [methodDefinitionListKey]: TDefinitionMethods;
-};
+} & TDefinitionMethods;
 
 export type TDefinitionMethodInfo = {
   methodDefinition: {

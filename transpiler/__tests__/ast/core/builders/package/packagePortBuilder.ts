@@ -1,5 +1,6 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
+  methodDefinitionListKey,
   TDefinitionMethodInfo,
   TDefinitionMethods,
   TPackagePort,
@@ -7,7 +8,9 @@ import {
 } from '../../../../../src/types.js';
 
 export class PackagePortBuilder implements IBuilder<TPackagePort> {
-  private definitionMethods: TDefinitionMethods = [];
+  private definitionMethods: TDefinitionMethods = {
+    methodDefinitionList: [],
+  };
   private packagePortIdentifier: TPackagePortIdentifier;
 
   public withIdentifier(identifierName: TPackagePortIdentifier): PackagePortBuilder {
@@ -24,14 +27,14 @@ export class PackagePortBuilder implements IBuilder<TPackagePort> {
    * Can be used to add a single definition method to the definition methods.
    */
   public withDefinitionMethod(definitionMethod: TDefinitionMethodInfo): PackagePortBuilder {
-    this.definitionMethods.push(definitionMethod);
+    this.definitionMethods[methodDefinitionListKey].push(definitionMethod);
     return this;
   }
 
   public build(): TPackagePort {
     return {
       PackagePortIdentifier: this.packagePortIdentifier,
-      methodDefinitionList: this.definitionMethods,
+      ...this.definitionMethods,
     };
   }
 }
