@@ -21,14 +21,14 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { MemberDotExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
-import { MemberDotExpressionNode } from '../../../intermediate-ast/nodes/Expression/MemberDot/MemberDotExpression.js';
 import { IdentifierExpressionBuilder } from '../../../intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const memberDotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MemberDotExpressionContext,
-): MemberDotExpressionNode => {
+): ExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
 
   // If regularIdentifier is updated to use the new IdentifierExpressionBuilder,

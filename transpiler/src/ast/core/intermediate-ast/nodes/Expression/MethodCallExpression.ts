@@ -10,6 +10,17 @@ export class MethodCallExpressionNode extends ExpressionNode {
     this.classNodeName = NAME;
   }
 
+  getExpression(): ExpressionNode {
+    const children = this.getChildren();
+    const expression = children.find(
+      (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
+    );
+    if (!expression) {
+      throw new Error('Expression not found');
+    }
+    return expression as ExpressionNode;
+  }
+
   getExpressionIdentifier(): string {
     const children = this.getChildren();
     const methodNameNode = children.find((child) => child.getNodeType() === 'TIdentifier');
@@ -20,5 +31,16 @@ export class MethodCallExpressionNode extends ExpressionNode {
     // TODO fix
     const newVal = prefix + this.getValue();
     this.setValue(newVal);
+  }
+
+  getMethodName(): string {
+    const expression = this.getExpression();
+    if (expression.isIdentifierExpression()) {
+      return expression.identifierName;
+    }
+    if (expression.isMemberDotExpression()) {
+      return expression.getIdentifierExpression().identifierName;
+    }
+    return this.getValue();
   }
 }

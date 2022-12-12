@@ -1,7 +1,7 @@
 import { RESTControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
-export class RestControllerNodeTransformer extends NodeModelToTargetASTTransformer<RESTControllerNode> {
+export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransformer<RESTControllerNode> {
   run(): void {
     this.transformAwait();
     this.transformDotValue();

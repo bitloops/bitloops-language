@@ -173,13 +173,10 @@ export class IntermediateASTTree {
   }
 
   getUseCaseExecuteStatementOf(rootNode: IntermediateASTNode): ConstDeclarationNode | null {
-    let resultNode: ConstDeclarationNode;
-    this.traverse(rootNode, (node) => {
-      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-        resultNode = node;
-      }
-    });
-    return resultNode ?? null;
+    const policy = (node: IntermediateASTNode): boolean =>
+      node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
+
+    return this.getNodeWithPolicy(rootNode, policy)[0] ?? null;
   }
 
   getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
@@ -215,6 +212,20 @@ export class IntermediateASTTree {
       }
     });
     return resultNodes;
+  }
+
+  private getNodeWithPolicy(
+    rootNode: IntermediateASTNode,
+    predicate: (node: IntermediateASTNode) => boolean,
+  ): IntermediateASTNode {
+    let resultNode: IntermediateASTNode;
+    this.traverse(rootNode, (node) => {
+      if (predicate(node)) {
+        resultNode = node;
+        return;
+      }
+    });
+    return resultNode ?? null;
   }
 
   updateIdentifiersInNodes(

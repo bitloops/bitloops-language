@@ -21,7 +21,7 @@
 import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../helpers/mappings.js';
 import { TIntermediateModel } from '../transpilerTypes.js';
-import { RestControllerNodeTransformer } from './node-transformers/controllers/restTransformer.js';
+import { RestControllerNodeTSTransformer } from './node-transformers/controllers/restTransformer.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 
@@ -56,7 +56,7 @@ export class IntermediateModelToASTTargetTransformer
 
     switch (type) {
       case BitloopsTypesMapping.TRESTController:
-        return new RestControllerNodeTransformer(intermediateASTTree, intermediateASTNode);
+        return new RestControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:
         return null;
     }

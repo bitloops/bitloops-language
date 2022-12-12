@@ -14,7 +14,7 @@ export class ConstDeclarationNode extends StatementNode {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
-    )!;
+    );
     if (!expression) {
       throw new Error('Expression not found');
     }
