@@ -27,19 +27,8 @@ export const domainErrorDeclarationVisitor = (
   const fieldsList: EvaluationFieldListNode = ctx.evaluationFieldList()
     ? thisVisitor.visit(ctx.evaluationFieldList())
     : new EvaluationFieldListNodeBuilder().build();
-  if (fieldsList.getFieldCount() > 2 || fieldsList.getFieldCount() === 0) {
-    throw new TypeError(domainErrorErrors.INVALID_ARGS);
-  }
-  const errorId =
-    fieldsList.findFieldWithName('errorId') ||
-    ((): never => {
-      throw new TypeError(domainErrorErrors.NO_ERROR_ID);
-    })();
-  const message =
-    fieldsList.findFieldWithName('message') ||
-    ((): never => {
-      throw new TypeError(domainErrorErrors.NO_MESSAGE);
-    })();
+  const errorId = fieldsList.findFieldWithName('errorId');
+  const message = fieldsList.findFieldWithName('message');
   const domainError = new DomainErrorBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(identifier)
     .withErrorId(errorId)
