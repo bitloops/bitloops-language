@@ -17,8 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { decode, d } from 'bitloops-gherkin';
 
 import {
   BitloopsIntermediateASTParser,
@@ -26,29 +24,22 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
-
-const feature = loadFeature('__tests__/ast/core/isInstanceOf.feature');
-
-defineFeature(feature, (test) => {
-  test('IsInstanceOf is valid', ({ given, when, then }) => {
-    const boundedContext = 'Hello World';
-    const module = 'core';
-    let blString;
-    let modelOutput;
-    let result;
-
-    given(/^A valid IsInstanceOf (.*) string$/, (arg0) => {
-      blString = decode(arg0);
-    });
-
-    when('I generate the model', () => {
+import { TExpression } from '../../../src/types.js';
+import { ExpressionBuilderDirector } from './builders/expressionDirector.js';
+import { validIsInstanceOfExpressions } from './mocks/isInstanceOf.js';
+const boundedContext = 'Hello World';
+const module = 'core';
+let result;
+describe('Valid isInstanceOf expressions', () => {
+  validIsInstanceOfExpressions.forEach((mock) => {
+    test(`${mock.description}`, () => {
       const parser = new BitloopsParser();
       const initialModelOutput = parser.parse([
         {
           boundedContext,
           module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
+          fileId: mock.fileId,
+          fileContents: mock.inputBLString,
         },
       ]);
       const intermediateParser = new BitloopsIntermediateASTParser();
@@ -56,15 +47,14 @@ defineFeature(feature, (test) => {
         result = intermediateParser.parse(
           initialModelOutput as unknown as BitloopsLanguageASTContext,
         );
-
         const tree = result[boundedContext][module];
         result = tree.getCurrentNode().getValue();
       }
-    });
-
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      const expected = getExpected(mock.expression, mock.class);
+      expect(result).toMatchObject(expected);
     });
   });
 });
+
+const getExpected = (expression: TExpression, className: string): TExpression =>
+  new ExpressionBuilderDirector().buildIsInstanceOfExpression(expression, className);

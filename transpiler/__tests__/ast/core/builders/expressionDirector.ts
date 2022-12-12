@@ -153,7 +153,16 @@ export class ExpressionBuilderDirector {
       argumentList,
     );
   }
-
+  buildIsInstanceOfExpression(expression: TExpression, className: string): TExpression {
+    return {
+      expression: {
+        isInstanceOf: {
+          ...expression,
+          class: className,
+        },
+      },
+    };
+  }
   buildAssignmentExpression(
     leftExpression: TExpression,
     rightExpression: TExpression,
