@@ -32,4 +32,12 @@ export class MemberDotExpressionNode extends ExpressionNode {
     }
     return identifier as IdentifierExpressionNode;
   }
+
+  getLeftMostExpression(): ExpressionNode {
+    const expression = this.getExpression();
+    if (expression.isMemberDotExpression()) {
+      return expression.getLeftMostExpression();
+    }
+    return expression;
+  }
 }

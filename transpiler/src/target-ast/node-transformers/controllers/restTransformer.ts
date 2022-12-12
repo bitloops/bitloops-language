@@ -17,7 +17,7 @@ export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransfo
     if (!expression.isMethodCallExpression()) {
       return;
     }
-    expression.prependMethodName('await ');
+    expression.prependAwaitToThisMethod();
     return;
   }
 

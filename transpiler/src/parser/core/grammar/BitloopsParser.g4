@@ -470,7 +470,7 @@ decorator
 
 decoratorMemberExpression
     : Identifier
-    | decoratorMemberExpression Dot identifier
+    | decoratorMemberExpression Dot identifier 
     | OpenParen expression CloseParen
     ;
 
