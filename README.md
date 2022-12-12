@@ -357,7 +357,7 @@ For general help using Bitloops Language, please use one of these channels:
 - 🙌 Contributions: [GitHub](https://github.com/bitloops/bitloops-language) \(Bug reports, Contributions\)
 - 📯 Demonstrations: [One-to-One Discussion](https://calendly.com/bitloops/30min?month=2022-11) \(Live informal 30-minute video call sessions with the Bitloops team\)
 - 📚 Documentation: [Bitloops Docs](https://bitloops.com/docs/bitloops-language/category/introduction) \(All available documentation regarding Bitloops Language. We're working hard on releasing more!)
-- 🌐 Website: [www.bitloops.org](https://bitloops.org/bitloops-language) \(The official Bitloops website with additional information and documentation)
+- 🌐 Website: [www.bitloops.com](https://bitloops.org/bitloops-language) \(The official Bitloops website with additional information and documentation)
 
 ## 📑 License
 
