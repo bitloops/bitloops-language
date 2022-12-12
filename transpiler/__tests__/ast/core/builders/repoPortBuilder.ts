@@ -1,5 +1,6 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
+  methodDefinitionListKey,
   repoPortIdentifierKey,
   repoPortKey,
   TDefinitionMethods,
@@ -49,9 +50,8 @@ export class RepoPortBuilder implements IBuilder<TRepoPort> {
           entityIdentifier: this.entityIdentifier,
         },
       };
-      /* 🔧 TODO: fix type to not throw error */
-      if (this.definitionMethods && this.definitionMethods.length > 0) {
-        res[repoPortKey].methodDefinitionList = this.definitionMethods;
+      if (this.definitionMethods && this.definitionMethods[methodDefinitionListKey].length > 0) {
+        res[repoPortKey].methodDefinitionList = this.definitionMethods[methodDefinitionListKey];
       }
       return res;
     } else {
@@ -62,8 +62,8 @@ export class RepoPortBuilder implements IBuilder<TRepoPort> {
           readModelIdentifier: this.readModelIdentifier,
         },
       };
-      if (this.definitionMethods && this.definitionMethods.length > 0) {
-        res[repoPortKey].methodDefinitionList = this.definitionMethods;
+      if (this.definitionMethods && this.definitionMethods[methodDefinitionListKey].length > 0) {
+        res[repoPortKey].methodDefinitionList = this.definitionMethods[methodDefinitionListKey];
       }
       return res;
     }
