@@ -134,6 +134,16 @@ export class ExpressionBuilderDirector {
       },
     };
   }
+  buildToStringExpression(expression: TExpression): TExpression {
+    return {
+      expression: {
+        toStringMethod: {
+          ...expression,
+        },
+      },
+    };
+  }
+
   buildMemberDotMethodCallExpression(
     memberDotMembers: string[],
     argumentList: TArgumentList,

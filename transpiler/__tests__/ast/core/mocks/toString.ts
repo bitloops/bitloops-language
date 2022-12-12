@@ -1,16 +1,16 @@
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 
-export const validGetClassExpressions = [
+export const validToStringExpressions = [
   {
-    description: 'get Class with identifier',
+    description: 'ToString with identifier',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestExpression {result.getClass()}',
+    inputBLString: 'JestTestExpression {result.toString()}',
     expression: new ExpressionBuilderDirector().buildIdentifierExpression('result'),
   },
   {
-    description: 'get Class with memberDotExpression',
+    description: 'ToString with memberDotExpression',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestExpression {result.props.getClass()}',
+    inputBLString: 'JestTestExpression {result.props.toString()}',
     expression: new ExpressionBuilderDirector().buildMemberExpression(
       new ExpressionBuilderDirector().buildIdentifierExpression('result'),
       'props',
