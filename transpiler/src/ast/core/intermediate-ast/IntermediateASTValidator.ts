@@ -1,10 +1,10 @@
-import { TBoundedContexts } from '../../types.js';
-import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
+import { TBoundedContexts } from '../../../types.js';
+import { IIntermediateASTValidator, IntermediateASTValidationError } from '../types.js';
+import { IntermediateASTTree } from './IntermediateASTTree.js';
 import {
   IntermediateASTNodeValidationError,
   IntermediateASTNode,
-} from './intermediate-ast/nodes/IntermediateASTNode.js';
-import { IntermediateASTValidationError, IIntermediateASTValidator } from './types.js';
+} from './nodes/IntermediateASTNode.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
   validate(ast: TBoundedContexts): void | IntermediateASTValidationError[] {

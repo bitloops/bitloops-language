@@ -153,6 +153,10 @@ export class IntermediateASTTree {
     }
   }
 
+  public copy(): IntermediateASTTree {
+    return this;
+  }
+
   // public getAllUseCases(): IntermediateASTNode[] {
   //   return this.findNodes(NODE_TYPES.USE_CASE);
   // }
