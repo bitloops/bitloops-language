@@ -125,7 +125,15 @@ export class ExpressionBuilderDirector {
       },
     };
   }
-
+  buildGetClassExpression(expression: TExpression): TExpression {
+    return {
+      expression: {
+        getClass: {
+          ...expression,
+        },
+      },
+    };
+  }
   buildMemberDotMethodCallExpression(
     memberDotMembers: string[],
     argumentList: TArgumentList,

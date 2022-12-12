@@ -29,8 +29,6 @@ import { formatString } from '../../../../src/target/typescript/core/codeFormatt
 import { VALID_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 // import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-// const feature = loadFeature('__tests__/target/typescript/core/expression.feature');
-
 describe('Valid evaluation test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
