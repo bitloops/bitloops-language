@@ -18,34 +18,47 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../helpers/mappings.js';
 import { TIntermediateModel } from '../transpilerTypes.js';
 import { RestControllerNodeTransformer } from './node-transformers/controllers/restTransformer.js';
+import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
-// typeof T extends NodeModelToTargetASTTransformer<IntermediateASTNode>>
-export class BitloopsModelToASTTargetTransformer
+
+export class IntermediateModelToASTTargetTransformer
   implements IIntermediateModelToASTTargetLanguageTransformer
 {
-  private readonly typeToNodeTransformerMapping: Partial<
-    Record<TBitloopsTypesValues, any> // TODO Replace any with abstract class
-  > = {
-    [BitloopsTypesMapping.TRESTController]: RestControllerNodeTransformer,
-  };
-
   transform(intermediateModel: TIntermediateModel): TIntermediateModel {
     for (const boundedContext of Object.values(intermediateModel.intermediateModel)) {
       for (const intermediateASTTree of Object.values(boundedContext)) {
-        const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
-        classTypeNodes.forEach((intermediateASTNode) => {
-          const nodeType = intermediateASTNode.getNodeType();
-          const transformer = this.typeToNodeTransformerMapping[nodeType];
+        intermediateASTTree.traverse(intermediateASTTree.getRootNode(), (intermediateASTNode) => {
+          const transformer = this.nodeTransformerFactory({
+            intermediateASTNode,
+            intermediateASTTree,
+          });
+
           if (transformer) {
-            // Don't mutate the original model, create a new one?
-            new transformer().transform(intermediateModel);
+            transformer.run();
           }
         });
       }
     }
     return intermediateModel;
+  }
+
+  private nodeTransformerFactory(factoryParams: {
+    intermediateASTNode: any;
+    intermediateASTTree: IntermediateASTTree;
+  }): INodeModelToASTTargetASTTransformer | null {
+    const { intermediateASTNode, intermediateASTTree } = factoryParams;
+
+    const type: TBitloopsTypesValues = intermediateASTNode.getNodeType();
+
+    switch (type) {
+      case BitloopsTypesMapping.TRESTController:
+        return new RestControllerNodeTransformer(intermediateASTTree, intermediateASTNode);
+      default:
+        return null;
+    }
   }
 }

@@ -1,12 +1,12 @@
 import { IntermediateASTTree } from '../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTNode } from '../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 
-interface IIntermediateModelToASTTargetLanguageTransformer {
+export interface INodeModelToASTTargetASTTransformer {
   run(): void;
 }
 
 export abstract class NodeModelToTargetASTTransformer<Node extends IntermediateASTNode>
-  implements IIntermediateModelToASTTargetLanguageTransformer
+  implements INodeModelToASTTargetASTTransformer
 {
   constructor(protected tree: IntermediateASTTree, protected node: Node) {}
 
