@@ -3,6 +3,7 @@ import { BitloopsPrimaryTypeDirector } from '../builders/bitloopsPrimaryTypeDire
 import { ExtendsRepoPortBuilder } from '../builders/extendedRepoBuilder.js';
 import { IdentifierBuilder } from '../builders/identifier.js';
 import { MethodDefinitionBuilderDirector } from '../builders/methodDefinitionDirector.js';
+import { MethodDefinitionListBuilder } from '../builders/methodDefinitionListBuilder.js';
 import { RepoPortBuilder } from '../builders/repoPortBuilder.js';
 
 type TestCase = {
@@ -39,18 +40,23 @@ export const validRepoPortCases: TestCase[] = [
           .withIdentifier([new IdentifierBuilder().withName('CRUDRepoPort').build()])
           .build(),
       )
-      .withDefinitionMethods([
-        new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndBitloopsPrimaryTypeReturn(
-          {
-            methodName: 'updateTodoTitle',
-            params: [
-              { name: 'id', type: 'string' },
-              { name: 'title', type: 'string' },
-            ],
-            returnType: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
-          },
-        ),
-      ])
+      .withDefinitionMethods(
+        new MethodDefinitionListBuilder()
+          .withMethodDefinitions([
+            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndBitloopsPrimaryTypeReturn(
+              {
+                methodName: 'updateTodoTitle',
+                params: [
+                  { name: 'id', type: 'string' },
+                  { name: 'title', type: 'string' },
+                ],
+                returnType: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
+              },
+            ),
+          ])
+          .build(),
+      )
+
       .build(),
   },
   {
@@ -66,17 +72,21 @@ export const validRepoPortCases: TestCase[] = [
           .withIdentifier([new IdentifierBuilder().withName('CRUDRepoPort').build()])
           .build(),
       )
-      .withDefinitionMethods([
-        new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndBitloopsPrimaryTypeReturn(
-          {
-            methodName: 'getTodo',
-            params: [],
-            returnType: new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
-              'TodoReadModel',
+      .withDefinitionMethods(
+        new MethodDefinitionListBuilder()
+          .withMethodDefinitions([
+            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndBitloopsPrimaryTypeReturn(
+              {
+                methodName: 'getTodo',
+                params: [],
+                returnType: new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                  'TodoReadModel',
+                ),
+              },
             ),
-          },
-        ),
-      ])
+          ])
+          .build(),
+      )
       .build(),
   },
   {
