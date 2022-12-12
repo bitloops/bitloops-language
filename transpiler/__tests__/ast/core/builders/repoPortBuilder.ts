@@ -49,6 +49,7 @@ export class RepoPortBuilder implements IBuilder<TRepoPort> {
           entityIdentifier: this.entityIdentifier,
         },
       };
+      /* 🔧 TODO: fix type to not throw error */
       if (this.definitionMethods && this.definitionMethods.length > 0) {
         res[repoPortKey].methodDefinitionList = this.definitionMethods;
       }
