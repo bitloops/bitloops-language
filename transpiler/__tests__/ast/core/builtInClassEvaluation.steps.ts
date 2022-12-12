@@ -24,6 +24,8 @@ import {
   BitloopsParser,
   BitloopsParserError,
 } from '../../../src/index.js';
+import { TArgumentList, TEvaluationValues } from '../../../src/types.js';
+import { EvaluationBuilderDirector } from './builders/evaluationDirector.js';
 import { validBuiltinClassEvaluations } from './mocks/builtinClassEvaluation.js';
 
 const boundedContext = 'Hello World';
@@ -50,7 +52,11 @@ describe('Valid builtin class type', () => {
       );
       const tree = result[boundedContext][module];
       result = tree.getCurrentNode().getValue();
-      expect(result).toMatchObject(mock.expected);
+      const expected = getExpected(mock.builtInIdentifier, mock.argumentList);
+      expect(result).toMatchObject(expected);
     });
   });
 });
+const getExpected = (idName: string, args: TArgumentList): TEvaluationValues => {
+  return new EvaluationBuilderDirector().buildBuiltInClassEvaluation(idName, args).evaluation;
+};
