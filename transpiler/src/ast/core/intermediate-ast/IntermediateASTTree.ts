@@ -204,9 +204,9 @@ export class IntermediateASTTree {
     return this.getNodesAfterPolicy(rootNode, policy);
   }
 
-  getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): IntermediateASTNode[] {
+  getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): ReturnStatementNode[] {
     const policy = (node: IntermediateASTNode): boolean => node instanceof ReturnStatementNode;
-    return this.getNodesAfterPolicy(intermediateASTNode, policy);
+    return this.getNodesAfterPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
   }
 
   private getNodesAfterPolicy(
