@@ -125,6 +125,24 @@ export class ExpressionBuilderDirector {
       },
     };
   }
+  buildGetClassExpression(expression: TExpression): TExpression {
+    return {
+      expression: {
+        getClass: {
+          ...expression,
+        },
+      },
+    };
+  }
+  buildToStringExpression(expression: TExpression): TExpression {
+    return {
+      expression: {
+        toStringMethod: {
+          ...expression,
+        },
+      },
+    };
+  }
 
   buildMemberDotMethodCallExpression(
     memberDotMembers: string[],
@@ -135,7 +153,16 @@ export class ExpressionBuilderDirector {
       argumentList,
     );
   }
-
+  buildIsInstanceOfExpression(expression: TExpression, className: string): TExpression {
+    return {
+      expression: {
+        isInstanceOf: {
+          ...expression,
+          class: className,
+        },
+      },
+    };
+  }
   buildAssignmentExpression(
     leftExpression: TExpression,
     rightExpression: TExpression,
