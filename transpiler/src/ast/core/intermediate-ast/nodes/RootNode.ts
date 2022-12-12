@@ -15,6 +15,6 @@ const ROOT_METADATA = {
 
 export class IntermediateASTRootNode extends IntermediateASTNode {
   constructor() {
-    super(NODE_TYPE, ROOT_METADATA, NAME);
+    super(NODE_TYPE as any, ROOT_METADATA, NAME);
   }
 }

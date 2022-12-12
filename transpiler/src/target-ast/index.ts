@@ -18,13 +18,34 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { BitloopsTypesMapping, TBitloopsTypesValues } from '../helpers/mappings.js';
 import { TIntermediateModel } from '../transpilerTypes.js';
+import { RestControllerNodeTransformer } from './node-transformers/controllers/restTransformer.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
-
+// typeof T extends NodeModelToTargetASTTransformer<IntermediateASTNode>>
 export class BitloopsModelToASTTargetTransformer
   implements IIntermediateModelToASTTargetLanguageTransformer
 {
+  private readonly typeToNodeTransformerMapping: Partial<
+    Record<TBitloopsTypesValues, any> // TODO Replace any with abstract class
+  > = {
+    [BitloopsTypesMapping.TRESTController]: RestControllerNodeTransformer,
+  };
+
   transform(intermediateModel: TIntermediateModel): TIntermediateModel {
+    for (const boundedContext of Object.values(intermediateModel.intermediateModel)) {
+      for (const intermediateASTTree of Object.values(boundedContext)) {
+        const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
+        classTypeNodes.forEach((intermediateASTNode) => {
+          const nodeType = intermediateASTNode.getNodeType();
+          const transformer = this.typeToNodeTransformerMapping[nodeType];
+          if (transformer) {
+            // Don't mutate the original model, create a new one?
+            new transformer().transform(intermediateModel);
+          }
+        });
+      }
+    }
     return intermediateModel;
   }
 }

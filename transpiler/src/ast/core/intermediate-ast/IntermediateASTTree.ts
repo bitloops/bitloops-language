@@ -1,8 +1,4 @@
-import {
-  TBitloopsTypesValues,
-  BitloopsTypesMapping,
-  ClassTypes,
-} from '../../../helpers/mappings.js';
+import { TBitloopsTypesValues, BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclaration.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
@@ -163,7 +159,7 @@ export class IntermediateASTTree {
 
   public getAllExpressionsOfUseCase(): ExpressionNode[] {
     // Set root Node as current, or pass it to getClassTypeNodes
-    const useCases = this.getClassTypeNodes(ClassTypes.UseCases);
+    const useCases = this.getClassTypeNodes(BitloopsTypesMapping.TUseCase);
 
     // TODO typeGuard
     const isExpressionNode = (node: IntermediateASTNode): node is ExpressionNode =>

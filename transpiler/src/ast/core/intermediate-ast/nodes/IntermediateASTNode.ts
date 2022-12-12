@@ -41,7 +41,7 @@ export abstract class IntermediateASTNode {
     return this.nodeType;
   }
 
-  public setNodeType(nodeType: string) {
+  public setNodeType(nodeType: TBitloopsTypesValues): void {
     this.nodeType = nodeType;
   }
 

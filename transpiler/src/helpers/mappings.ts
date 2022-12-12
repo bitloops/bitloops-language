@@ -184,7 +184,7 @@ const BitloopsTypesMapping = {
   TRESTControllerExecuteDependencies: 'TRESTControllerExecuteDependencies',
   TRESTControllerIdentifier: 'TRESTControllerIdentifier',
   TValueObjectIdentifier: 'TValueObjectIdentifier',
-};
+} as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
 
