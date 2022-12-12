@@ -1018,13 +1018,15 @@ export interface IAddResolversToServer {
     module: string;
   };
 }
-export type TDefinitionMethods = TDefinitionMethodInfo[];
+
+export const methodDefinitionListKey = 'methodDefinitionList';
+export type TDefinitionMethods = { [methodDefinitionListKey]: TDefinitionMethodInfo[] };
 
 export const PackagePortIdentifierKey = 'PackagePortIdentifier';
 export type TPackagePortIdentifier = string;
 export type TPackagePort = {
   [PackagePortIdentifierKey]: TPackagePortIdentifier;
-  methodDefinitionList: TDefinitionMethods;
+  [methodDefinitionListKey]: TDefinitionMethods;
 };
 
 export type TDefinitionMethodInfo = {

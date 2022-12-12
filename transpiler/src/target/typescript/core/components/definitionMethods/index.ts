@@ -19,6 +19,7 @@
  */
 
 import {
+  methodDefinitionListKey,
   TDefinitionMethodInfo,
   TDefinitionMethods,
   TTargetDependenciesTypeScript,
@@ -42,11 +43,12 @@ export const definitionMethodsToTargetLanguage = (
   let res = '';
   let dependencies = [];
   for (const [definitionMethod, value] of Object.entries(definitionMethods)) {
-    const definitionMethodInfo = definitionMethodInfoToTargetLanguage(value);
+    const definitiionMethodValue = value[methodDefinitionListKey];
+    const definitionMethodInfo = definitionMethodInfoToTargetLanguage(definitiionMethodValue);
     res += `${definitionMethod}${definitionMethodInfo.output}`;
     const model = modelToTargetLanguage({
       type: BitloopsTypesMapping.TReturnType,
-      value: value.methodDefinition.type,
+      value: definitiionMethodValue.methodDefinition.type,
     });
     res += model.output;
     dependencies = [...dependencies, ...model.dependencies, ...definitionMethodInfo.dependencies];
