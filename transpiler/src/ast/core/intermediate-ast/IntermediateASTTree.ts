@@ -5,6 +5,7 @@ import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
+import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -203,18 +204,23 @@ export class IntermediateASTTree {
     return this.getNodesAfterPolicy(rootNode, policy);
   }
 
+  getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): IntermediateASTNode[] {
+    const policy = (node: IntermediateASTNode): boolean => node instanceof ReturnStatementNode;
+    return this.getNodesAfterPolicy(intermediateASTNode, policy);
+  }
+
   private getNodesAfterPolicy(
     rootNode: IntermediateASTNode,
     predicate: (node: IntermediateASTNode) => boolean,
   ): IntermediateASTNode[] {
     const resultNodes: IntermediateASTNode[] = [];
-    let useCaseExecuteFound = false;
+    let nodeFound = false;
     this.traverse(rootNode, (node) => {
       if (predicate(node)) {
-        useCaseExecuteFound = true;
+        nodeFound = true;
         return;
       }
-      if (useCaseExecuteFound) {
+      if (nodeFound) {
         resultNodes.push(node);
       }
     });

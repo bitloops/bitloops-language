@@ -8,6 +8,8 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
   }
 
   private modifyReturnOKErrorStatements(): void {
+    const parentNode = this.node.getParent();
+    const returnStatements = this.tree.getReturnStatementsOfNode(parentNode);
     console.log(this.node);
   }
 
