@@ -28,6 +28,14 @@ const isArray = (list) => {
   else return false;
 };
 
+export const isObject = (value: any): boolean => {
+  return typeof value === 'object' && !Array.isArray(value) && value !== null;
+};
+
+export const isPrimitive = (value: any): boolean => {
+  return value !== Object(value);
+};
+
 const isRestServerInstance = (
   serverInstance: TRESTServerInstance | TGraphQLServerInstance,
 ): serverInstance is TRESTServerInstance => {

@@ -3,9 +3,7 @@ import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { MethodCallExpressionNode } from '../../nodes/Expression/MethodCallExpression.js';
 import { IBuilder } from '../IBuilder.js';
 
-export class MethodCallNodeBuilder implements IBuilder<MethodCallExpressionNode> {
-  public readonly NAME = 'MethodCallExpression';
-
+export class MethodCallExpressionNodeBuilder implements IBuilder<MethodCallExpressionNode> {
   private methodCallExpressionNode: MethodCallExpressionNode;
   private expression: ExpressionNode;
   private argumentListNode?: ArgumentListNode;
@@ -14,12 +12,12 @@ export class MethodCallNodeBuilder implements IBuilder<MethodCallExpressionNode>
     this.methodCallExpressionNode = new MethodCallExpressionNode();
   }
 
-  public withExpression(expr: ExpressionNode): MethodCallNodeBuilder {
+  public withExpression(expr: ExpressionNode): MethodCallExpressionNodeBuilder {
     this.expression = expr;
     return this;
   }
 
-  public withArgumentsList(argumentListNode: ArgumentListNode): MethodCallNodeBuilder {
+  public withArgumentsList(argumentListNode: ArgumentListNode): MethodCallExpressionNodeBuilder {
     this.argumentListNode = argumentListNode;
     return this;
   }

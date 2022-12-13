@@ -3,7 +3,7 @@ import { RESTControllerExecuteDependenciesNode } from '../../../nodes/controller
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class RESTControllerDependenciesNodeBuilder
+export class RESTControllerExecuteDependenciesNodeBuilder
   implements IBuilder<RESTControllerExecuteDependenciesNode>
 {
   private controllerExecuteDependenciesNode: RESTControllerExecuteDependenciesNode;
@@ -13,7 +13,10 @@ export class RESTControllerDependenciesNodeBuilder
     this.controllerExecuteDependenciesNode = new RESTControllerExecuteDependenciesNode(metadata);
   }
 
-  public withDependencies(request: string, reply: string): RESTControllerDependenciesNodeBuilder {
+  public withDependencies(
+    request: string,
+    reply: string,
+  ): RESTControllerExecuteDependenciesNodeBuilder {
     this.dependencies = [request, reply];
     return this;
   }

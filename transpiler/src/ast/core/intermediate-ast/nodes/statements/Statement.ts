@@ -1,7 +1,8 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { ConstDeclarationNode } from './ConstDeclaration.js';
+import { ConstDeclarationNode } from './ConstDeclarationNode.js';
 // import { MethodCallExpressionNode } from './Expression/MethodCallExpression.js';
 import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { ExpressionNode } from '../Expression/ExpressionNode.js';
 
 export abstract class StatementNode extends IntermediateASTNode {
   isConstDeclarationNode(): this is ConstDeclarationNode {
@@ -14,13 +15,17 @@ export abstract class StatementNode extends IntermediateASTNode {
     }
 
     const expressionNode = this.getExpression();
-    if (expressionNode.isMethodCallExpression()) {
-      const methodName = expressionNode.getExpressionIdentifier();
-      // Todo check for this & (.) operator
-      if (methodName === 'execute') {
-        return true;
-      }
+    if (!expressionNode.isMethodCallExpression()) {
+      return false;
     }
+    if (expressionNode.getMethodName() === 'execute') {
+      return true;
+    }
+
     return false;
   };
+
+  isExpressionNode(): this is ExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TExpression;
+  }
 }

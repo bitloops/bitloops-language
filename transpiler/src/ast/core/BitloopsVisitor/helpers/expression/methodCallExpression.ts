@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { MethodCallNodeBuilder } from '../../../intermediate-ast/builders/expressions/methodCallExprBuilder.js';
+import { MethodCallExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/methodCallExprBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 
@@ -30,7 +30,7 @@ export const methodCallExpressionVisitor = (
 ): ExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
   const argumentList = thisVisitor.visit(ctx.methodArguments());
-  const node = new MethodCallNodeBuilder()
+  const node = new MethodCallExpressionNodeBuilder()
     .withExpression(leftExpression)
     .withArgumentsList(argumentList)
     .build();

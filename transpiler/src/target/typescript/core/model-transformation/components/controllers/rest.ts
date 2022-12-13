@@ -56,33 +56,3 @@ const transformRestControllerIntermediateAST = (controllers: TRESTController): T
 };
 
 export { transformRestControllerIntermediateAST };
-
-// type RestControllerNode = any;
-
-/**
- * Tree
- */
-// export const transformRestControllerIR = (
-//   controllerNode: RestControllerNode,
-//   tree: IntermediateASTTree,
-// ): RestControllerNode => {
-//   const executeNode = controllerNode.executeNode();
-//   const statementsList = executeNode.statementsList();
-
-//   let useCaseExecuteFound = false;
-
-//   tree.traverse(statementsList, (node) => {
-//     if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-//       const methodCallNode = node.getExpression() as MethodCallExpressionNode;
-//       methodCallNode.prepend('await ');
-//       useCaseExecuteFound = true;
-//       return;
-//     }
-
-//     if (useCaseExecuteFound) {
-//       // scanStatementForUseCaseResult(statement, useCaseResultIdentifier);
-//     }
-//   });
-
-//   return controllerNode;
-// };

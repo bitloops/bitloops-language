@@ -94,8 +94,8 @@ export abstract class IntermediateASTNode {
     return this.children[0];
   }
 
-  public getNextSibling(): IntermediateASTNode {
-    return this.nextSibling;
+  public getNextSibling(): IntermediateASTNode | null {
+    return this.nextSibling ?? null;
   }
 
   public hasChildren(): boolean {

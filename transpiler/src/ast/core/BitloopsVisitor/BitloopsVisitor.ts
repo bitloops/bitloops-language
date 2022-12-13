@@ -168,7 +168,7 @@ import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/P
 import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 import { BitloopsPrimaryTypeNode } from '../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
-import { RESTControllerDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
+import { RESTControllerExecuteDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
 import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
 import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
 import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
@@ -639,7 +639,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
     const metadata = produceMetadata(ctx, this);
-    return new RESTControllerDependenciesNodeBuilder(metadata)
+    return new RESTControllerExecuteDependenciesNodeBuilder(metadata)
       .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
       .build();
   }
