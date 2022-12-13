@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { StatementNode } from '../statements/Statement.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
@@ -11,7 +12,7 @@ import { ThisExpressionNode } from './ThisExpressionNode.js';
 //   }
 // }
 
-export class ExpressionNode extends IntermediateASTNode {
+export class ExpressionNode extends StatementNode {
   private static classNodeName = 'expression';
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TExpression, metadata, ExpressionNode.classNodeName);

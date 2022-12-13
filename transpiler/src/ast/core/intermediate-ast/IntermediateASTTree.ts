@@ -1,12 +1,11 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
-import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
+import { TControllerUseCaseExecuteNodeType } from '../types.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -202,19 +201,17 @@ export class IntermediateASTTree {
     return expressions;
   }
 
-  getUseCaseExecuteStatementOf(rootNode: IntermediateASTNode): ConstDeclarationNode | null {
+  getUseCaseExecuteStatementOf(
+    rootNode: IntermediateASTNode,
+  ): TControllerUseCaseExecuteNodeType | null {
     const policy = (node: IntermediateASTNode): boolean =>
       node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
 
-    return (this.getNodeWithPolicy(rootNode, policy) as ConstDeclarationNode) ?? null;
-  }
-
-  getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
-    const constDeclarationNode = this.getUseCaseExecuteStatementOf(rootNode);
-    if (constDeclarationNode === null) {
+    const nodeResult = this.getNodeWithPolicy(rootNode, policy);
+    if (!nodeResult) {
       return null;
     }
-    return constDeclarationNode.getIdentifier();
+    return nodeResult as TControllerUseCaseExecuteNodeType;
   }
 
   updateIdentifierNodesAfterStatement(

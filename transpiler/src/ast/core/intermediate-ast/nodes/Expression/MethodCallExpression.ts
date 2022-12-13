@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
+import { ThisExpressionNode } from './ThisExpressionNode.js';
 
 const NAME = 'methodCallExpression';
 export class MethodCallExpressionNode extends ExpressionNode {
@@ -35,7 +36,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return expression;
   }
 
-  prependAwaitToThisMethod(): void {
+  getThisNode(): ThisExpressionNode {
     const expression = this.getExpression();
 
     if (!expression.isMemberDotExpression()) {
@@ -46,6 +47,6 @@ export class MethodCallExpressionNode extends ExpressionNode {
     if (!leftMostExpression.isThisExpression()) {
       throw new Error('Leftmost expression is not a this expression');
     }
-    leftMostExpression.updateValue('await this');
+    return leftMostExpression;
   }
 }
