@@ -1,7 +1,11 @@
+import { ControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/ControllerNode.js';
+import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
 import { RESTControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
-export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransformer<RESTControllerNode> {
+class BaseControllerNodeTSTransformer<
+  T extends ControllerNode,
+> extends NodeModelToTargetASTTransformer<T> {
   run(): void {
     this.transformAwait();
     this.transformDotValue();
@@ -35,3 +39,6 @@ export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransfo
     return this.tree.buildValueRecursiveBottomUp(this.node);
   }
 }
+
+export class RestControllerNodeTSTransformer extends BaseControllerNodeTSTransformer<RESTControllerNode> {}
+export class GraphQLControllerNodeTSTransformer extends BaseControllerNodeTSTransformer<GraphQLControllerNode> {}
