@@ -15,10 +15,10 @@ export class ConstDeclarationNode extends StatementNode {
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
     );
-    if (!expression) {
+    if (!expression || !expression.getChildren().length) {
       throw new Error('Expression not found');
     }
-    return expression as ExpressionNode;
+    return expression.getChildren()[0] as ExpressionNode;
   }
 
   getIdentifier(): IdentifierNode {

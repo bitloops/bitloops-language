@@ -54,8 +54,6 @@ export class MethodCallExpressionNode extends ExpressionNode {
     if (!leftMostExpression.isThisExpression()) {
       throw new Error('Leftmost expression is not a this expression');
     }
-    // if it is a this expression, then prepend await to it
-    // const newVal = prefix + this.getValue();
-    // this.setValue(newVal);
+    leftMostExpression.updateValue('await this');
   }
 }

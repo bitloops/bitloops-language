@@ -18,7 +18,7 @@ export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransfo
       return;
     }
     expression.prependAwaitToThisMethod();
-    return;
+    return this.tree.buildValueRecursiveBottomUp(this.node);
   }
 
   private transformDotValue(): void {

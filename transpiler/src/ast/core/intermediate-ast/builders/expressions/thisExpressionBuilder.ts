@@ -8,8 +8,12 @@ export class ThisExpressionNodeBuilder implements IBuilder<ThisExpressionNode> {
     this.thisExpressionNode = new ThisExpressionNode();
   }
 
-  public build(): ThisExpressionNode {
-    this.thisExpressionNode.buildLeafValue('this');
+  /**
+   *
+   * @param customValue used in the case of 'await this'
+   */
+  public build(customValue?: string): ThisExpressionNode {
+    this.thisExpressionNode.buildLeafValue(customValue ?? 'this');
 
     return this.thisExpressionNode;
   }

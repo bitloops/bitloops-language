@@ -240,6 +240,12 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  buildModifiedThisExpression(value: string): ExpressionNode {
+    const thisExpressionNode = new ThisExpressionNodeBuilder().build(value);
+    const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();
+    return expressionNode;
+  }
+
   buildInstanceOfWithIdentifierExpression(
     identifier: string,
     classToCompare: string,

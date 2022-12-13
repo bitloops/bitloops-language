@@ -5,6 +5,7 @@ import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
+import { isArray, isObject } from '../../../helpers/typeGuards.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -153,6 +154,34 @@ export class IntermediateASTTree {
     }
   }
 
+  public buildValueRecursiveBottomUp(currentNode: IntermediateASTNode): void {
+    if (currentNode.isLeaf()) {
+      return this.buildNodeValue(currentNode);
+    }
+    const nodeChildren = currentNode.getChildren();
+    for (const child of nodeChildren) {
+      this.buildValueRecursiveBottomUp(child);
+    }
+    this.buildNodeValue(currentNode);
+  }
+
+  private buildNodeValue(node: IntermediateASTNode): void {
+    const nodeValue = node.getValue()[node.getClassNodeName()];
+    if (node.isLeaf()) {
+      return node.buildLeafValue(nodeValue);
+    }
+
+    if (isArray(nodeValue)) {
+      return node.buildArrayValue();
+    }
+
+    if (isObject(nodeValue)) {
+      return node.buildObjectValue();
+    }
+
+    return node.buildLeafValue(nodeValue);
+  }
+
   // public getAllUseCases(): IntermediateASTNode[] {
   //   return this.findNodes(NODE_TYPES.USE_CASE);
   // }
@@ -176,7 +205,7 @@ export class IntermediateASTTree {
     const policy = (node: IntermediateASTNode): boolean =>
       node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
 
-    return this.getNodeWithPolicy(rootNode, policy)[0] ?? null;
+    return (this.getNodeWithPolicy(rootNode, policy) as ConstDeclarationNode) ?? null;
   }
 
   getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
