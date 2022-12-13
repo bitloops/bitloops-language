@@ -25,19 +25,8 @@ export const applicationErrorDeclarationVisitor = (
   const fieldsList: EvaluationFieldListNode = ctx.evaluationFieldList()
     ? thisVisitor.visit(ctx.evaluationFieldList())
     : new EvaluationFieldListNodeBuilder().build();
-  if (fieldsList.getFieldCount() > 2 || fieldsList.getFieldCount() === 0) {
-    throw new TypeError(applicationErrorErrors.INVALID_ARGS);
-  }
-  const errorId =
-    fieldsList.findFieldWithName('errorId') ||
-    ((): never => {
-      throw new TypeError(applicationErrorErrors.NO_ERROR_ID);
-    })();
-  const message =
-    fieldsList.findFieldWithName('message') ||
-    ((): never => {
-      throw new TypeError(applicationErrorErrors.NO_MESSAGE);
-    })();
+  const errorId = fieldsList.findFieldWithName('errorId');
+  const message = fieldsList.findFieldWithName('message');
   const applicationError = new ApplicationErrorBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(identifier)
     .withErrorId(errorId)

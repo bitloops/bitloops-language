@@ -1057,7 +1057,7 @@ export type TAggregateRepoPort = {
     [repoPortIdentifierKey]: TRepoPortIdentifier;
     entityIdentifier: string;
     extendsRepoPorts: TExtendsRepoPorts;
-    methodDefinitionList?: TDefinitionMethods;
+    methodDefinitionList?: TDefinitionMethodInfo[];
   };
 };
 
@@ -1066,7 +1066,7 @@ export type TReadModelRepoPort = {
     [repoPortIdentifierKey]: TRepoPortIdentifier;
     readModelIdentifier: string;
     extendsRepoPorts: TExtendsRepoPorts;
-    methodDefinitionList?: TDefinitionMethods;
+    methodDefinitionList?: TDefinitionMethodInfo[];
   };
 };
 

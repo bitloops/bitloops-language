@@ -51,7 +51,7 @@ export class RepoPortBuilder implements IBuilder<TRepoPort> {
         },
       };
       if (this.definitionMethods && this.definitionMethods[methodDefinitionListKey].length > 0) {
-        res[repoPortKey].methodDefinitionList = this.definitionMethods;
+        res[repoPortKey].methodDefinitionList = this.definitionMethods[methodDefinitionListKey];
       }
       return res;
     } else {
@@ -63,7 +63,7 @@ export class RepoPortBuilder implements IBuilder<TRepoPort> {
         },
       };
       if (this.definitionMethods && this.definitionMethods[methodDefinitionListKey].length > 0) {
-        res[repoPortKey].methodDefinitionList = this.definitionMethods;
+        res[repoPortKey].methodDefinitionList = this.definitionMethods[methodDefinitionListKey];
       }
       return res;
     }
