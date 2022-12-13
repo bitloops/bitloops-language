@@ -28,9 +28,6 @@ export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransfo
     }
 
     const identifierNode = executeStatement.getIdentifier();
-    if (!identifierNode) {
-      return;
-    }
     const identifierValue = identifierNode.getIdentifierName();
     const newValue = `${identifierValue}.value`;
 
