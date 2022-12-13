@@ -73,14 +73,14 @@ const returnOkToTargetLanguage = (variable: TReturnOKStatement): TTargetDependen
 const returnErrorToTargetLanguage = (
   variable: TReturnErrorStatement,
 ): TTargetDependenciesTypeScript => {
-  if (!variable.returnError) {
+  if (!variable.returnErrorKey) {
     throw new Error('ReturnError statement must have a returnError value');
   }
   const dependencies: TDependenciesTypeScript = [FAIL_DEPENDENCY];
 
   const expressionValue = modelToTargetLanguage({
     type: 'TExpression',
-    value: variable.returnError,
+    value: variable.returnErrorKey,
   });
   const propsVariableLangMapping = (expressionValue: TTargetDependenciesTypeScript): string =>
     `return fail(${expressionValue.output})`;
