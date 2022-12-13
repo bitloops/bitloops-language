@@ -28,6 +28,7 @@ export class ExpressionNode extends IntermediateASTNode {
     // if (this instanceof MemberDotExpressionNode) {
     //   return [...this.expression.childrenIdentifiers, this.identifierExpression.identifierName];
     // }
+
     return [];
   }
 

@@ -21,7 +21,7 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { ConstDeclarationListNode } from '../../intermediate-ast/nodes/ConstDeclarationListNode.js';
-import { ConstDeclarationNode } from '../../intermediate-ast/nodes/statements/ConstDeclaration.js';
+import { ConstDeclarationNode } from '../../intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { ConstDeclarationListNodeBuilder } from '../../intermediate-ast/builders/ConstDeclarationListBuilder.js';
 
 export const domainConstDeclarationListVisitor = (

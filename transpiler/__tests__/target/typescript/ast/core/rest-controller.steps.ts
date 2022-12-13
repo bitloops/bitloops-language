@@ -18,11 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 // import { defineFeature, loadFeature } from 'jest-cucumber';
-import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
-import { IntermediateModelToASTTargetTransformer } from '../../../../src/target-ast/index.js';
-import { TIntermediateModel } from '../../../../src/transpilerTypes.js';
+import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
+import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target-ast/index.js';
+import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
 import { REST_CONTROLLER_TEST_CASES } from './mocks/controllers/rest.js';
 
 describe('Valid rest Controller', () => {

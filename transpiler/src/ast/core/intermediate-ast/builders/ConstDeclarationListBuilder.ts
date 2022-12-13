@@ -1,6 +1,6 @@
 import { ConstDeclarationListNode } from '../nodes/ConstDeclarationListNode.js';
 import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
-import { ConstDeclarationNode } from '../nodes/statements/ConstDeclaration.js';
+import { ConstDeclarationNode } from '../nodes/statements/ConstDeclarationNode.js';
 import { IBuilder } from './IBuilder.js';
 
 export class ConstDeclarationListNodeBuilder implements IBuilder<ConstDeclarationListNode> {

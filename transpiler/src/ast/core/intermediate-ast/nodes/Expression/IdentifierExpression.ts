@@ -13,4 +13,8 @@ export class IdentifierExpressionNode extends ExpressionNode {
   get identifierName(): string {
     return this.getValue()[NAME];
   }
+
+  set identifierName(value: string) {
+    this.setValue({ [NAME]: value });
+  }
 }

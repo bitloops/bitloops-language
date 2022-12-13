@@ -11,8 +11,8 @@ export class ThenStatementsNodeBuilder implements IBuilder<ThenStatementsNode> {
     this.thenStatementsNode = new ThenStatementsNode(metadata);
   }
 
-  public withStatements(expression: StatementNode[]): ThenStatementsNodeBuilder {
-    this.statements = expression;
+  public withStatements(statements: StatementNode[]): ThenStatementsNodeBuilder {
+    this.statements = statements;
     return this;
   }
 

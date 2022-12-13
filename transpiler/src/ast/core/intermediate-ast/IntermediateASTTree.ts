@@ -1,11 +1,12 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { ConstDeclarationNode } from './nodes/statements/ConstDeclaration.js';
+import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
+import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -209,38 +210,65 @@ export class IntermediateASTTree {
   }
 
   getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
-    let resultNode;
-    this.traverse(rootNode, (node) => {
-      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-        resultNode = node;
-        resultNode = node.getIdentifier();
-      }
-    });
-    return resultNode ?? null;
+    const constDeclarationNode = this.getUseCaseExecuteStatementOf(rootNode);
+    if (constDeclarationNode === null) {
+      return null;
+    }
+    return constDeclarationNode.getIdentifier();
   }
 
-  getNodesAfterUseCaseExecute(rootNode: IntermediateASTNode): IntermediateASTNode[] {
-    const policy = (node: IntermediateASTNode): boolean =>
-      node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
-    return this.getNodesAfterPolicy(rootNode, policy);
+  updateIdentifierNodesAfterStatement(
+    baseStatement: StatementNode,
+    identifierToReplace: string,
+    newIdentifier: string,
+  ): void {
+    const predicate = (node: IntermediateASTNode): boolean =>
+      node instanceof IdentifierExpressionNode && node.identifierName === identifierToReplace;
+
+    const nodes: IdentifierExpressionNode[] = [];
+    let nextStatement = baseStatement.getNextSibling();
+    while (nextStatement !== null) {
+      const identifiersOfStatements = this.getNodesWithPolicy(
+        nextStatement,
+        predicate,
+      ) as IdentifierExpressionNode[];
+      nodes.push(...identifiersOfStatements);
+
+      nextStatement = nextStatement.getNextSibling();
+    }
+    nodes.forEach((node) => (node.identifierName = newIdentifier));
   }
 
-  private getNodesAfterPolicy(
+  // private getNodesAfterPolicy<T = IntermediateASTNode>(
+  //   rootNode: IntermediateASTNode,
+  //   predicate: (node: IntermediateASTNode) => boolean,
+  // ): T[] {
+  //   const resultNodes: T[] = [];
+  //   let useCaseExecuteFound = false;
+  //   this.traverse(rootNode, (node) => {
+  //     if (predicate(node)) {
+  //       useCaseExecuteFound = true;
+  //       return;
+  //     }
+  //     if (useCaseExecuteFound) {
+  //       resultNodes.push(node as T);
+  //     }
+  //   });
+  //   return resultNodes;
+  // }
+
+  private getNodesWithPolicy(
     rootNode: IntermediateASTNode,
     predicate: (node: IntermediateASTNode) => boolean,
   ): IntermediateASTNode[] {
-    const resultNodes: IntermediateASTNode[] = [];
-    let useCaseExecuteFound = false;
+    let resultNodes: IntermediateASTNode[];
     this.traverse(rootNode, (node) => {
       if (predicate(node)) {
-        useCaseExecuteFound = true;
+        resultNodes.push(node);
         return;
       }
-      if (useCaseExecuteFound) {
-        resultNodes.push(node);
-      }
     });
-    return resultNodes;
+    return resultNodes ?? null;
   }
 
   private getNodeWithPolicy(
@@ -255,24 +283,5 @@ export class IntermediateASTTree {
       }
     });
     return resultNode ?? null;
-  }
-
-  updateIdentifiersInNodes(
-    __nodes: IntermediateASTNode[],
-    __identifierNode: IdentifierNode,
-    { suffix },
-  ) {
-    console.log(suffix);
-    // const valueToUpdate = identifierNode.getIdentifier();
-    // nodes.forEach((node) => {
-    //   this.traverse(node, (node) => {
-    //     Update it in every possible node that uses identifier expression
-    //     if (node instanceof IdentifierNode) {
-    //     update identifier
-    //     node.updateIdentifierSuffix(identifierNode, valueToUpdate, suffix);
-    //     }
-    //     }
-    //   });
-    // });
   }
 }
