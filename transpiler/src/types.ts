@@ -520,8 +520,9 @@ export type TReturnOKStatement = {
   [returnOKKey]: TExpression;
 };
 
+export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
-  returnError: TExpression;
+  returnErrorKey: TExpression;
 };
 
 export type TConstDecompositionNested = {
