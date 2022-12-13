@@ -17,7 +17,9 @@ export class ReturnOKStatementNodeBuilder implements IBuilder<ReturnOKStatementN
   }
 
   public build(): ReturnOKStatementNode {
-    this.returnOKStatementNode.addChild(this.expressionNode);
+    if (this.expressionNode) {
+      this.returnOKStatementNode.addChild(this.expressionNode);
+    }
 
     this.returnOKStatementNode.buildObjectValue();
 

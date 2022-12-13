@@ -31,6 +31,7 @@ import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { BuiltInFunctionStatementDirector } from './builtInFunctionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { ReturnOKStatementBuilder } from './returnOKStatementBuilder.js';
 import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
 export class StatementDirector {
@@ -188,5 +189,9 @@ export class StatementDirector {
     }[]
   ): TStatement {
     return new BuiltInFunctionStatementDirector().buildApplyRulesWithMemberDotArgs(...appliedRules);
+  }
+
+  buildEmptyReturnOK(): TStatement {
+    return new ReturnOKStatementBuilder().build();
   }
 }

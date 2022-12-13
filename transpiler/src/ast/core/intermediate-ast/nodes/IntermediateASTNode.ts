@@ -156,4 +156,8 @@ export abstract class IntermediateASTNode {
     }
     return false;
   }
+
+  IsStatementListNode(): boolean {
+    return this.nodeType === 'TStatements';
+  }
 }

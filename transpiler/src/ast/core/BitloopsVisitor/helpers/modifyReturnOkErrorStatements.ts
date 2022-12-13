@@ -6,6 +6,7 @@ import {
   TReturnStatement,
   TEvaluation,
   TOkErrorReturnType,
+  returnErrorKey,
 } from '../../../../types.js';
 
 const isReturnOkErrorType = (returnType: TOkErrorReturnType) => {
@@ -39,7 +40,7 @@ const modifyReturnOkErrorStatement = (statement: TStatement, returnType: TOkErro
         };
       } else if (isReturnErrorStatement(returnStatement)) {
         statement = {
-          returnError: returnStatement.return,
+          [returnErrorKey]: returnStatement.return,
         };
       }
     }

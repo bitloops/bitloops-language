@@ -210,14 +210,19 @@ export class IntermediateASTTree {
     rootNode: IntermediateASTNode,
     predicate: (node: IntermediateASTNode) => boolean,
   ): IntermediateASTNode[] {
-    let resultNodes: IntermediateASTNode[];
+    const resultNodes: IntermediateASTNode[] = [];
+    let nodeFound = false;
     this.traverse(rootNode, (node) => {
       if (predicate(node)) {
-        resultNodes.push(node);
+        nodeFound = true;
         return;
       }
+      if (nodeFound) {
+        resultNodes.push(node);
+        nodeFound = false;
+      }
     });
-    return resultNodes ?? null;
+    return resultNodes;
   }
 
   private getNodesWithPolicy(

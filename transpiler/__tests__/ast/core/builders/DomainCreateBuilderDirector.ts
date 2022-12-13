@@ -88,6 +88,7 @@ export class DomainCreateBuilderDirector {
     return this.builder
       .withStatements([
         new StatementDirector().buildBuiltInFunctionApplyRulesStatement(...appliedRules),
+        new StatementDirector().buildEmptyReturnOK(),
       ])
       .withReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
