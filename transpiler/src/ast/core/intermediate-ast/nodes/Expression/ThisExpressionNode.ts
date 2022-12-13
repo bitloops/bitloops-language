@@ -10,4 +10,9 @@ export class ThisExpressionNode extends ExpressionNode {
     this.classNodeName = ThisExpressionNode.nodeName;
     this.nodeType = BitloopsTypesMapping.TThisExpression;
   }
+
+  updateValue(value: string): void {
+    const newValue = { [this.getClassNodeName()]: value };
+    this.setValue(newValue);
+  }
 }

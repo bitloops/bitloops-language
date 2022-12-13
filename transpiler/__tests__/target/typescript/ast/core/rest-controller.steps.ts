@@ -18,9 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 // import { defineFeature, loadFeature } from 'jest-cucumber';
-import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { IntermediateModelToASTTargetTransformer } from '../../../../src/target-ast/index.js';
+import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
+import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target-ast/index.js';
+import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
 import { REST_CONTROLLER_TEST_CASES } from './mocks/controllers/rest.js';
 
 describe('Valid rest Controller', () => {
@@ -40,13 +42,17 @@ describe('Valid rest Controller', () => {
 
       // when
       const targetModelTransformer = new IntermediateModelToASTTargetTransformer();
-      const result = targetModelTransformer.transform({ intermediateModel });
+      const result: TIntermediateModel = targetModelTransformer.transform({ intermediateModel });
 
       //then
-      // const formattedOutput = formatString(testCase.outputTree as string, formatterConfig);
       expect(result).not.toBeInstanceOf(Error);
-      // TODO Fix this
-      // expect(result[0].fileContent).toEqual(formattedOutput);
+      const restControllerNodes = result.intermediateModel[boundedContext][
+        module
+      ].getClassTypeNodes(BitloopsTypesMapping.TRESTController);
+      expect(restControllerNodes.length).toBe(1);
+      const value = restControllerNodes[0].getValue();
+      const expectedValue = testCase.expectedOutput.getValue();
+      expect(value).toEqual(expectedValue);
     });
   });
 });

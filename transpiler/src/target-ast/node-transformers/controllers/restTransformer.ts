@@ -1,7 +1,7 @@
 import { RESTControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
-export class RestControllerNodeTransformer extends NodeModelToTargetASTTransformer<RESTControllerNode> {
+export class RestControllerNodeTSTransformer extends NodeModelToTargetASTTransformer<RESTControllerNode> {
   run(): void {
     this.transformAwait();
     this.transformDotValue();
@@ -17,17 +17,24 @@ export class RestControllerNodeTransformer extends NodeModelToTargetASTTransform
     if (!expression.isMethodCallExpression()) {
       return;
     }
-    expression.prependMethodName('await ');
-    return;
+    expression.prependAwaitToThisMethod();
+    return this.tree.buildValueRecursiveBottomUp(this.node);
   }
 
   private transformDotValue(): void {
-    const identifierNode = this.tree.getUseCaseExecuteIdentifier(this.node);
+    const executeStatement = this.tree.getUseCaseExecuteStatementOf(this.node);
+    if (!executeStatement) {
+      return;
+    }
+
+    const identifierNode = executeStatement.getIdentifier();
     if (!identifierNode) {
       return;
     }
-    const nodes = this.tree.getNodesAfterUseCaseExecute(this.node);
-    console.log(nodes);
-    this.tree.updateIdentifiersInNodes(nodes, identifierNode, { suffix: '.value' });
+    const identifierValue = identifierNode.getIdentifierName();
+    const newValue = `${identifierValue}.value`;
+
+    this.tree.updateIdentifierNodesAfterStatement(executeStatement, identifierValue, newValue);
+    return this.tree.buildValueRecursiveBottomUp(this.node);
   }
 }

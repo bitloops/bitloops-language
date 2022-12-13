@@ -1,4 +1,4 @@
-import { ConstDeclarationNode } from '../../nodes/statements/ConstDeclaration.js';
+import { ConstDeclarationNode } from '../../nodes/statements/ConstDeclarationNode.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';

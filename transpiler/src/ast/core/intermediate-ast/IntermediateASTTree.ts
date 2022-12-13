@@ -1,11 +1,13 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { ConstDeclarationNode } from './nodes/statements/ConstDeclaration.js';
+import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
 import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from './nodes/identifier/IdentifierNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
+import { isArray, isObject } from '../../../helpers/typeGuards.js';
+import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -158,6 +160,34 @@ export class IntermediateASTTree {
     return this;
   }
 
+  public buildValueRecursiveBottomUp(currentNode: IntermediateASTNode): void {
+    if (currentNode.isLeaf()) {
+      return this.buildNodeValue(currentNode);
+    }
+    const nodeChildren = currentNode.getChildren();
+    for (const child of nodeChildren) {
+      this.buildValueRecursiveBottomUp(child);
+    }
+    this.buildNodeValue(currentNode);
+  }
+
+  private buildNodeValue(node: IntermediateASTNode): void {
+    const nodeValue = node.getValue()[node.getClassNodeName()];
+    if (node.isLeaf()) {
+      return node.buildLeafValue(nodeValue);
+    }
+
+    if (isArray(nodeValue)) {
+      return node.buildArrayValue();
+    }
+
+    if (isObject(nodeValue)) {
+      return node.buildObjectValue();
+    }
+
+    return node.buildLeafValue(nodeValue);
+  }
+
   // public getAllUseCases(): IntermediateASTNode[] {
   //   return this.findNodes(NODE_TYPES.USE_CASE);
   // }
@@ -178,30 +208,40 @@ export class IntermediateASTTree {
   }
 
   getUseCaseExecuteStatementOf(rootNode: IntermediateASTNode): ConstDeclarationNode | null {
-    let resultNode: ConstDeclarationNode;
-    this.traverse(rootNode, (node) => {
-      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-        resultNode = node;
-      }
-    });
-    return resultNode ?? null;
+    const policy = (node: IntermediateASTNode): boolean =>
+      node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
+
+    return (this.getNodeWithPolicy(rootNode, policy) as ConstDeclarationNode) ?? null;
   }
 
   getUseCaseExecuteIdentifier(rootNode: IntermediateASTNode): IdentifierNode | null {
-    let resultNode;
-    this.traverse(rootNode, (node) => {
-      if (node instanceof StatementNode && node.isUseCaseExecuteStatementNode()) {
-        resultNode = node;
-        resultNode = node.getIdentifier();
-      }
-    });
-    return resultNode ?? null;
+    const constDeclarationNode = this.getUseCaseExecuteStatementOf(rootNode);
+    if (constDeclarationNode === null) {
+      return null;
+    }
+    return constDeclarationNode.getIdentifier();
   }
 
-  getNodesAfterUseCaseExecute(rootNode: IntermediateASTNode): IntermediateASTNode[] {
-    const policy = (node: IntermediateASTNode): boolean =>
-      node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
-    return this.getNodesAfterPolicy(rootNode, policy);
+  updateIdentifierNodesAfterStatement(
+    baseStatement: StatementNode,
+    identifierToReplace: string,
+    newIdentifier: string,
+  ): void {
+    const predicate = (node: IntermediateASTNode): boolean =>
+      node instanceof IdentifierExpressionNode && node.identifierName === identifierToReplace;
+
+    const nodes: IdentifierExpressionNode[] = [];
+    let nextStatement = baseStatement.getNextSibling();
+    while (nextStatement !== null) {
+      const identifiersOfStatements = this.getNodesWithPolicy(
+        nextStatement,
+        predicate,
+      ) as IdentifierExpressionNode[];
+      nodes.push(...identifiersOfStatements);
+
+      nextStatement = nextStatement.getNextSibling();
+    }
+    nodes.forEach((node) => (node.identifierName = newIdentifier));
   }
 
   getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): ReturnStatementNode[] {
@@ -209,40 +249,64 @@ export class IntermediateASTTree {
     return this.getNodesAfterPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
   }
 
+  // private getNodesAfterPolicy(
+  //   rootNode: IntermediateASTNode,
+  //   predicate: (node: IntermediateASTNode) => boolean,
+  // ): IntermediateASTNode[] {
+  //   const resultNodes: IntermediateASTNode[] = [];
+  //   let nodeFound = false;
+  //   this.traverse(rootNode, (node) => {
+  //     if (predicate(node)) {
+  //       nodeFound = true;
+  //       return;
+  //     }
+  //     if (nodeFound) {
+  //       resultNodes.push(node);
+  //     }
+  //   }
+  // private getNodesAfterPolicy<T = IntermediateASTNode>(
+  //   rootNode: IntermediateASTNode,
+  //   predicate: (node: IntermediateASTNode) => boolean,
+  // ): T[] {
+  //   const resultNodes: T[] = [];
+  //   let useCaseExecuteFound = false;
+  //   this.traverse(rootNode, (node) => {
+  //     if (predicate(node)) {
+  //       useCaseExecuteFound = true;
+  //       return;
+  //     }
+  //     if (useCaseExecuteFound) {
+  //       resultNodes.push(node as T);
+  //     }
+  //   });
+  //   return resultNodes;
+  // }
+
   private getNodesAfterPolicy(
     rootNode: IntermediateASTNode,
     predicate: (node: IntermediateASTNode) => boolean,
   ): IntermediateASTNode[] {
-    const resultNodes: IntermediateASTNode[] = [];
-    let nodeFound = false;
+    let resultNodes: IntermediateASTNode[];
     this.traverse(rootNode, (node) => {
       if (predicate(node)) {
-        nodeFound = true;
+        resultNodes.push(node);
         return;
       }
-      if (nodeFound) {
-        resultNodes.push(node);
-      }
     });
-    return resultNodes;
+    return resultNodes ?? null;
   }
 
-  updateIdentifiersInNodes(
-    __nodes: IntermediateASTNode[],
-    __identifierNode: IdentifierNode,
-    { suffix },
-  ) {
-    console.log(suffix);
-    // const valueToUpdate = identifierNode.getIdentifier();
-    // nodes.forEach((node) => {
-    //   this.traverse(node, (node) => {
-    //     Update it in every possible node that uses identifier expression
-    //     if (node instanceof IdentifierNode) {
-    //     update identifier
-    //     node.updateIdentifierSuffix(identifierNode, valueToUpdate, suffix);
-    //     }
-    //     }
-    //   });
-    // });
+  private getNodeWithPolicy(
+    rootNode: IntermediateASTNode,
+    predicate: (node: IntermediateASTNode) => boolean,
+  ): IntermediateASTNode {
+    let resultNode: IntermediateASTNode;
+    this.traverse(rootNode, (node) => {
+      if (predicate(node)) {
+        resultNode = node;
+        return;
+      }
+    });
+    return resultNode ?? null;
   }
 }

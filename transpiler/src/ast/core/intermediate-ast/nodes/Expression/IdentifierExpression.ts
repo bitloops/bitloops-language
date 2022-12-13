@@ -9,4 +9,12 @@ export class IdentifierExpressionNode extends ExpressionNode {
     this.nodeType = BitloopsTypesMapping.TIdentifierExpression;
     this.classNodeName = NAME;
   }
+
+  get identifierName(): string {
+    return this.getValue()[NAME];
+  }
+
+  set identifierName(value: string) {
+    this.setValue({ [NAME]: value });
+  }
 }

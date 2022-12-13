@@ -34,7 +34,7 @@ import { ClassNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/b
 import { IsInstanceOfExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/IsIntanceOfExpressionBuilder.js';
 import { ParenthesizedExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
-import { MethodCallNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
+import { MethodCallExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/methodCallExprBuilder.js';
 import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
 import { GetClassNodeBuilder } from './../../../../../src/ast/core/intermediate-ast/builders/expressions/GetClassBuilder.js';
@@ -240,6 +240,12 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  buildModifiedThisExpression(value: string): ExpressionNode {
+    const thisExpressionNode = new ThisExpressionNodeBuilder().build(value);
+    const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();
+    return expressionNode;
+  }
+
   buildInstanceOfWithIdentifierExpression(
     identifier: string,
     classToCompare: string,
@@ -268,7 +274,7 @@ export class ExpressionBuilderDirector {
     expression: ExpressionNode,
     argumentList: ArgumentListNode,
   ): ExpressionNode {
-    const methodCallExpressionNode = new MethodCallNodeBuilder()
+    const methodCallExpressionNode = new MethodCallExpressionNodeBuilder()
       .withExpression(expression)
       .withArgumentsList(argumentList)
       .build();
