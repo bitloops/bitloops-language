@@ -35,15 +35,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return expression;
   }
 
-  // getExpressionIdentifier(): string {
-  //   const children = this.getChildren();
-  //   const methodNameNode = children.find((child) => child.getNodeType() === 'TIdentifier');
-  //   return methodNameNode.getValue();
-  // }
-
   prependAwaitToThisMethod(): void {
-    // TODO fix
-
     const expression = this.getExpression();
 
     if (!expression.isMemberDotExpression()) {
