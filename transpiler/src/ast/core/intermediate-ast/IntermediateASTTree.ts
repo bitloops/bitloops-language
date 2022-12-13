@@ -8,6 +8,7 @@ import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
+import { StatementListNode } from './nodes/statements/StatementList.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -69,58 +70,6 @@ export class IntermediateASTTree {
     });
     return this;
   }
-
-  // private getContextNodesByType(
-  //   nodeType: NODE_TYPES,
-  //   contextNode: IntermediateASTNode,
-  // ): IntermediateASTNode<nodeType>[] {
-  //   const children = contextNode.getChildren();
-  //   for (const child of children) {
-  //     if (nodeType === child.getType()) {
-  //     }
-  //   }
-
-  //   while (children.length != 0) {
-  //     for (const child of children) {
-  //       if (nodeType === child.getType()) {
-  //       }
-  //       children = child.getChildren();
-  //     }
-  //   }
-  // }
-
-  // private getNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
-
-  //   for (const child of children) {
-  //     if (nodeType === child.getType()) {
-  //     }
-  //   }
-
-  //   while (children.length != 0) {
-  //     for (const child of children) {
-  //       if (nodeType === child.getType()) {
-  //       }
-  //       children = child.getChildren();
-  //     }
-  //   }
-  // }
-
-  // private traverse() {
-  //   // ignore root -- root acts as a container
-  //   let node = this.rootNode.getFirstChild();
-  //   while (node != null) {
-  //     if (node.hasChildren()) {
-  //       node = node.getFirstChild();
-  //     } else {
-  //       // leaf, find the parent level
-  //       while (node.getNextSibling() == null && node != this.rootNode) {
-  //         // use child-parent link to get to the parent level
-  //         node = node.getParent();
-  //       }
-  //       node = node.getNextSibling();
-  //     }
-  //   }
-  // }
 
   /**    A
    *  B -   F
@@ -249,38 +198,13 @@ export class IntermediateASTTree {
     return this.getNodesAfterPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
   }
 
-  // private getNodesAfterPolicy(
-  //   rootNode: IntermediateASTNode,
-  //   predicate: (node: IntermediateASTNode) => boolean,
-  // ): IntermediateASTNode[] {
-  //   const resultNodes: IntermediateASTNode[] = [];
-  //   let nodeFound = false;
-  //   this.traverse(rootNode, (node) => {
-  //     if (predicate(node)) {
-  //       nodeFound = true;
-  //       return;
-  //     }
-  //     if (nodeFound) {
-  //       resultNodes.push(node);
-  //     }
-  //   }
-  // private getNodesAfterPolicy<T = IntermediateASTNode>(
-  //   rootNode: IntermediateASTNode,
-  //   predicate: (node: IntermediateASTNode) => boolean,
-  // ): T[] {
-  //   const resultNodes: T[] = [];
-  //   let useCaseExecuteFound = false;
-  //   this.traverse(rootNode, (node) => {
-  //     if (predicate(node)) {
-  //       useCaseExecuteFound = true;
-  //       return;
-  //     }
-  //     if (useCaseExecuteFound) {
-  //       resultNodes.push(node as T);
-  //     }
-  //   });
-  //   return resultNodes;
-  // }
+  getStatementListParentNode(intermediateASTNode: IntermediateASTNode): StatementListNode {
+    let parent = intermediateASTNode.getParent();
+    while (!(parent instanceof StatementListNode)) {
+      parent = intermediateASTNode.getParent();
+    }
+    return parent;
+  }
 
   private getNodesAfterPolicy(
     rootNode: IntermediateASTNode,

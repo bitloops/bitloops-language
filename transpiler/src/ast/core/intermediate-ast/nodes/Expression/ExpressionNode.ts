@@ -5,12 +5,6 @@ import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
 
-// export abstract class ExpressionNode extends IntermediateASTNode {
-//   isMethodCallExpression(): this is MethodCallExpressionNode {
-//     return this.getNodeType() === BitloopsTypesMapping.TMethodCallExpression;
-//   }
-// }
-
 export class ExpressionNode extends IntermediateASTNode {
   private static classNodeName = 'expression';
   constructor(metadata?: TNodeMetadata) {
@@ -46,5 +40,9 @@ export class ExpressionNode extends IntermediateASTNode {
 
   isThisExpression(): this is ThisExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
+  }
+
+  isEvaluation(): boolean {
+    return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
   }
 }

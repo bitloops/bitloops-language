@@ -86,6 +86,19 @@ export abstract class IntermediateASTNode {
     this.children.push(childNode);
   }
 
+  public removeChild(childNode: IntermediateASTNode): void {
+    const numOfChildren = this.children.length;
+    // this.children.indexOf(childNode);
+    for (let i = 0; i < numOfChildren; i += 1) {
+      const child = this.children[i];
+      if (child.equals(childNode)) {
+        const previousSibling = this.children[i - 1];
+        previousSibling.addSibling(null);
+        this.children.splice(i, 1);
+      }
+    }
+  }
+
   private addSibling(siblingNode: IntermediateASTNode): void {
     this.nextSibling = siblingNode;
   }
@@ -126,6 +139,13 @@ export abstract class IntermediateASTNode {
 
   public validate(): void | IntermediateASTNodeValidationError {
     return;
+  }
+
+  private equals(intermediateASTNode: IntermediateASTNode) {
+    if (JSON.stringify(this.value) === JSON.stringify(intermediateASTNode.value)) {
+      return true;
+    }
+    return false;
   }
 
   static isIntermediateASTNodeValidationError(

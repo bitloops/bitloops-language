@@ -32,7 +32,7 @@ export const ifStatementVisitor = (
   ctx: BitloopsParser.IfStatementContext,
 ): IfStatementNode => {
   const conditionNode = thisVisitor.visit(ctx.condition());
-  const thenStatementsList: StatementListNode = thisVisitor.visit(ctx.statement(0));
+  const thenStatementsList: StatementListNode = thisVisitor.visit(ctx.statementList(0));
   // TODO When statementListNode is implemented, provide a method to get just the statements nodes array
   // and remove below line (!and else TODO)
   // const { statements: thenStatements } = thenStatementsRes;
@@ -47,8 +47,8 @@ export const ifStatementVisitor = (
     .withCondition(conditionNode)
     .withThenStatements(thenStatementsNode);
 
-  if (ctx.statement(1)) {
-    const elseStatementList = thisVisitor.visit(ctx.statement(1));
+  if (ctx.statementList(1)) {
+    const elseStatementList = thisVisitor.visit(ctx.statementList(1));
 
     const elseStatements = elseStatementList.statements;
     const elseStatementsNode = new ElseStatementsNodeBuilder(elseStatementList.getMetadata())
