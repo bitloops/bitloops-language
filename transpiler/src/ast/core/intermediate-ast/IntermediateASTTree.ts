@@ -261,7 +261,7 @@ export class IntermediateASTTree {
     rootNode: IntermediateASTNode,
     predicate: (node: IntermediateASTNode) => boolean,
   ): IntermediateASTNode[] {
-    let resultNodes: IntermediateASTNode[];
+    const resultNodes: IntermediateASTNode[] = [];
     this.traverse(rootNode, (node) => {
       if (predicate(node)) {
         resultNodes.push(node);
