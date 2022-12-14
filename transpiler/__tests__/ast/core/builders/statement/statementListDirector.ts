@@ -61,6 +61,28 @@ export class StatementListDirector {
     ];
   }
 
+  buildOneReturnOKStatementWithMethodCallExpression({
+    identifierExpressionName,
+    methodName,
+    argument,
+  }: {
+    identifierExpressionName: string;
+    methodName: string;
+    argument: string;
+  }): TStatements {
+    return [
+      new StatementDirector().buildReturnOKStatement(
+        new ExpressionBuilderDirector().buildMethodCallExpression(
+          new ExpressionBuilderDirector().buildMemberExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression(identifierExpressionName),
+            methodName,
+          ),
+          [new ArgumentBuilderDirector().buildIdentifierArgument(argument)],
+        ),
+      ),
+    ];
+  }
+
   buildOneBooleanReturnStatement(boolValue: boolean): TStatements {
     const expression = new ExpressionBuilderDirector().buildBooleanLiteralExpression(boolValue);
     return [new StatementDirector().buildReturnStatement(expression)];

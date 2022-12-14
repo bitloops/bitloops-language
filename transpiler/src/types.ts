@@ -365,8 +365,12 @@ export type TEvaluation = {
 export type TIfStatement = {
   ifStatement: {
     condition: TExpression;
-    thenStatements: TStatements;
-    elseStatements?: TStatements;
+    thenStatements: {
+      statements: TStatements;
+    };
+    elseStatements?: {
+      statements: TStatements;
+    };
   };
 };
 

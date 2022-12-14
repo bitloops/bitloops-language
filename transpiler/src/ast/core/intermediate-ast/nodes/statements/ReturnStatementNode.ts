@@ -23,7 +23,6 @@ export class ReturnStatementNode extends StatementNode {
   }
 
   isReturnErrorStatement(parentStatementList: StatementListNode): boolean {
-    console.log('here');
     const expression = this.getExpression();
     if (expression.isEvaluation()) {
       const evaluation = expression.getEvaluation();
@@ -36,6 +35,7 @@ export class ReturnStatementNode extends StatementNode {
       const expressionOfDeclaredIdentifier =
         parentStatementList.getExpressionOfDeclaredIdentifier(identifierName);
       if (!expressionOfDeclaredIdentifier) {
+        // here should check parent statement list of outter scope
         throw new Error(`This identifier ${identifierName} has not been declared!`);
       }
 

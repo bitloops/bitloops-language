@@ -98,7 +98,7 @@ export const validRootEntityTestCases = [
                   name: 'id',
                   intLiteral: 67,
                 }),
-                new StatementDirector().buildReturnStatement(
+                new StatementDirector().buildReturnOKStatement(
                   new StatementDirector().buildExpressionEntityEvaluationWithFields('TodoEntity', [
                     new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField('id', 'id'),
                   ]),

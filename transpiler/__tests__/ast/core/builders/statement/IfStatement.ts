@@ -24,11 +24,15 @@ export class IfStatementBuilder implements IBuilder<TIfStatement> {
     const ifStatement: TIfStatement = {
       ifStatement: {
         condition: this.condition,
-        thenStatements: this.thenStatements,
+        thenStatements: {
+          statements: this.thenStatements,
+        },
       },
     };
     if (this.elseStatements) {
-      ifStatement.ifStatement.elseStatements = this.elseStatements;
+      ifStatement.ifStatement.elseStatements = {
+        statements: this.elseStatements,
+      };
     }
     return ifStatement;
   }

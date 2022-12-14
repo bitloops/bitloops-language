@@ -199,10 +199,10 @@ export class IntermediateASTTree {
     return this.getNodesWithPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
   }
 
-  getStatementListParentNode(intermediateASTNode: IntermediateASTNode): StatementListNode {
+  getStatementListParentNode(intermediateASTNode: IntermediateASTNode): StatementListNode | null {
     let parent = intermediateASTNode.getParent();
     while (!(parent instanceof StatementListNode)) {
-      parent = intermediateASTNode.getParent();
+      parent = parent.getParent();
     }
     return parent;
   }

@@ -36,7 +36,7 @@ export const ifStatementVisitor = (
   // TODO When statementListNode is implemented, provide a method to get just the statements nodes array
   // and remove below line (!and else TODO)
   // const { statements: thenStatements } = thenStatementsRes;
-  const thenStatements = thenStatementsList.statements;
+  const thenStatements = thenStatementsList;
 
   const thenStatementsNode = new ThenStatementsNodeBuilder(thenStatementsList.getMetadata())
     .withStatements(thenStatements)
@@ -50,7 +50,7 @@ export const ifStatementVisitor = (
   if (ctx.statementList(1)) {
     const elseStatementList = thisVisitor.visit(ctx.statementList(1));
 
-    const elseStatements = elseStatementList.statements;
+    const elseStatements = elseStatementList;
     const elseStatementsNode = new ElseStatementsNodeBuilder(elseStatementList.getMetadata())
       .withStatements(elseStatements)
       .build();
