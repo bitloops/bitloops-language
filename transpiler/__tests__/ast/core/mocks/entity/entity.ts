@@ -43,7 +43,7 @@ export const validEntityTestCases = [
             }),
           ])
           .withPublicMethods([
-            new PublicMethodBuilderDirector().buildMethodWithReturnEntityEvaluation({
+            new PublicMethodBuilderDirector().buildMethodWithReturnEntityEvaluationAsIdentifier({
               methodName: 'complete',
               entityName: 'TodoEntity',
               entityFields: [
@@ -53,6 +53,7 @@ export const validEntityTestCases = [
                   'Super important',
                 ),
               ],
+              identifierName: 'entityRes',
             }),
           ])
           .build(),
@@ -96,7 +97,7 @@ export const validEntityTestCases = [
                   name: 'id',
                   intLiteral: 67,
                 }),
-                new StatementDirector().buildReturnStatement(
+                new StatementDirector().buildReturnOKStatement(
                   new StatementDirector().buildExpressionEntityEvaluationWithFields('TodoEntity', [
                     new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField('id', 'id'),
                   ]),

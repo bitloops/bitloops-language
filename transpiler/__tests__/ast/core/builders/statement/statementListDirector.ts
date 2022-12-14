@@ -75,7 +75,7 @@ export class StatementListDirector {
         expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
       }),
     );
-    return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
+    return [new StatementDirector().buildReturnOKStatement(expressionEntityEvaluation)];
   }
 
   buildOneReturnStatementEntityEvaluationWithFields(
@@ -87,7 +87,7 @@ export class StatementListDirector {
         fields,
       }),
     );
-    return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
+    return [new StatementDirector().buildReturnOKStatement(expressionEntityEvaluation)];
   }
 
   buildOneReturnStatementErrorEvaluation(
@@ -97,6 +97,6 @@ export class StatementListDirector {
     const expressionErrorEvaluation = new ExpressionBuilderDirector().buildEvaluation(
       new EvaluationBuilderDirector().buildErrorEvaluation(errorIdentifier, args),
     );
-    return [new StatementDirector().buildReturnStatement(expressionErrorEvaluation)];
+    return [new StatementDirector().buildReturnErrorStatement(expressionErrorEvaluation)];
   }
 }

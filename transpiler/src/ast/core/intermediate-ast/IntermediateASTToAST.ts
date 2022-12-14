@@ -1,7 +1,7 @@
-import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { TBoundedContexts } from '../../../types.js';
 import { IntermediateASTTree } from './IntermediateASTTree.js';
-import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
+import { IntermediateASTNode, TNodeType } from './nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkErrorNodeTransformer.js';
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
@@ -12,19 +12,19 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     for (const [boundedContextName, boundedContext] of Object.entries(intermediateASTTree)) {
       for (const [moduleName, ASTTree] of Object.entries(boundedContext)) {
         const treeUpdated = ASTTree.copy();
-        treeUpdated.traverse(
-          treeUpdated.getRootNode(),
-          (intermediateASTNode: IntermediateASTNode) => {
-            const transformer = this.getNodeTransformer({
-              intermediateASTNode,
-              intermediateASTTree: treeUpdated,
-            });
+        const rootNode = treeUpdated.getRootNode();
+        treeUpdated.traverse(rootNode, (node: IntermediateASTNode) => {
+          const transformer = this.getNodeTransformer({
+            intermediateASTNode: node,
+            intermediateASTTree: treeUpdated,
+          });
 
-            if (transformer) {
-              transformer.run();
-            }
-          },
-        );
+          if (transformer) {
+            transformer.run();
+          }
+        });
+        treeUpdated.buildValueRecursiveBottomUp(rootNode);
+
         if (!boundedContexts) {
           boundedContexts = {
             [boundedContextName]: {
@@ -49,7 +49,7 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
   }): IASTToCompletedASTTransformer | null {
     const { intermediateASTNode, intermediateASTTree } = factoryParams;
 
-    const type: TBitloopsTypesValues = intermediateASTNode.getNodeType();
+    const type: TNodeType = intermediateASTNode.getNodeType();
 
     switch (type) {
       case BitloopsTypesMapping.TOkErrorReturnType: {

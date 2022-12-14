@@ -121,6 +121,7 @@ export class IntermediateASTTree {
   }
 
   private buildNodeValue(node: IntermediateASTNode): void {
+    if (node.isRoot()) return;
     const nodeValue = node.getValue()[node.getClassNodeName()];
     if (node.isLeaf()) {
       return node.buildLeafValue(nodeValue);
@@ -195,7 +196,7 @@ export class IntermediateASTTree {
 
   getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): ReturnStatementNode[] {
     const policy = (node: IntermediateASTNode): boolean => node instanceof ReturnStatementNode;
-    return this.getNodesAfterPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
+    return this.getNodesWithPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
   }
 
   getStatementListParentNode(intermediateASTNode: IntermediateASTNode): StatementListNode {
@@ -206,30 +207,11 @@ export class IntermediateASTTree {
     return parent;
   }
 
-  private getNodesAfterPolicy(
-    rootNode: IntermediateASTNode,
-    predicate: (node: IntermediateASTNode) => boolean,
-  ): IntermediateASTNode[] {
-    const resultNodes: IntermediateASTNode[] = [];
-    let nodeFound = false;
-    this.traverse(rootNode, (node) => {
-      if (predicate(node)) {
-        nodeFound = true;
-        return;
-      }
-      if (nodeFound) {
-        resultNodes.push(node);
-        nodeFound = false;
-      }
-    });
-    return resultNodes;
-  }
-
   private getNodesWithPolicy(
     rootNode: IntermediateASTNode,
     predicate: (node: IntermediateASTNode) => boolean,
   ): IntermediateASTNode[] {
-    let resultNodes: IntermediateASTNode[];
+    const resultNodes: IntermediateASTNode[] = [];
     this.traverse(rootNode, (node) => {
       if (predicate(node)) {
         resultNodes.push(node);

@@ -11,10 +11,13 @@ export type TNodeMetadata = {
   fileId?: string;
 };
 
+export const ROOT_TYPE = 'Root';
+export type TNodeType = TBitloopsTypesValues | typeof ROOT_TYPE;
+
 export class IntermediateASTNodeValidationError extends IntermediateASTValidationError {}
 
 export abstract class IntermediateASTNode {
-  protected nodeType: TBitloopsTypesValues;
+  protected nodeType: TNodeType;
   private children: IntermediateASTNode[];
   private nextSibling: IntermediateASTNode;
   private parent: IntermediateASTNode;
@@ -22,7 +25,7 @@ export abstract class IntermediateASTNode {
   private value: any;
   protected classNodeName: string;
 
-  constructor(nodeType: TBitloopsTypesValues, metadata: TNodeMetadata, classNodeName: string) {
+  constructor(nodeType: TNodeType, metadata: TNodeMetadata, classNodeName: string) {
     this.nodeType = nodeType;
     this.metaData = metadata;
     this.children = [];
@@ -37,7 +40,7 @@ export abstract class IntermediateASTNode {
     this.value = value;
   }
 
-  public getNodeType(): TBitloopsTypesValues {
+  public getNodeType(): TNodeType {
     return this.nodeType;
   }
 
@@ -64,6 +67,10 @@ export abstract class IntermediateASTNode {
     return this.children.length == 0;
   }
 
+  public isRoot(): boolean {
+    return this.nodeType === ROOT_TYPE;
+  }
+
   public getMetadata(): TNodeMetadata {
     return this.metaData;
   }
@@ -87,16 +94,25 @@ export abstract class IntermediateASTNode {
   }
 
   public removeChild(childNode: IntermediateASTNode): void {
-    const numOfChildren = this.children.length;
-    // this.children.indexOf(childNode);
-    for (let i = 0; i < numOfChildren; i += 1) {
-      const child = this.children[i];
-      if (child.equals(childNode)) {
-        const previousSibling = this.children[i - 1];
-        previousSibling.addSibling(null);
-        this.children.splice(i, 1);
-      }
+    const index = this.children.indexOf(childNode);
+    if (index > 0) {
+      const previousSibling = this.children[index - 1];
+      previousSibling.addSibling(null);
     }
+    this.children.splice(index, 1);
+  }
+
+  public replaceChild(
+    childNodeTobeReplaced: IntermediateASTNode,
+    newChildNode: IntermediateASTNode,
+  ): void {
+    newChildNode.setParent(this);
+    const index = this.children.indexOf(childNodeTobeReplaced);
+    if (index > 0) {
+      const previousSibling = this.children[index - 1];
+      previousSibling.addSibling(newChildNode);
+    }
+    this.children.splice(index, 1, newChildNode);
   }
 
   private addSibling(siblingNode: IntermediateASTNode): void {
@@ -141,12 +157,12 @@ export abstract class IntermediateASTNode {
     return;
   }
 
-  private equals(intermediateASTNode: IntermediateASTNode) {
-    if (JSON.stringify(this.value) === JSON.stringify(intermediateASTNode.value)) {
-      return true;
-    }
-    return false;
-  }
+  // private equals(intermediateASTNode: IntermediateASTNode) {
+  //   if (JSON.stringify(this.value) === JSON.stringify(intermediateASTNode.value)) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   static isIntermediateASTNodeValidationError(
     value: void | IntermediateASTNodeValidationError,

@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
@@ -42,7 +43,11 @@ export class ExpressionNode extends IntermediateASTNode {
     return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
   }
 
-  isEvaluation(): boolean {
+  isEvaluation(): this is EvaluationNode {
     return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
+  }
+
+  getEvaluation(): EvaluationNode {
+    return this.getChildren()[0] as EvaluationNode;
   }
 }

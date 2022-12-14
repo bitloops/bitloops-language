@@ -1,5 +1,4 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { EvaluationNode } from '../Expression/Evaluation/EvaluationNode.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from './Statement.js';
@@ -16,17 +15,19 @@ export class ReturnStatementNode extends StatementNode {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
-    )!;
-    if (!expression) {
+    );
+    if (!expression || !expression.getChildren().length) {
       throw new Error('Expression not found');
     }
-    return expression as ExpressionNode;
+    return expression.getChildren()[0] as ExpressionNode;
   }
 
   isReturnErrorStatement(parentStatementList: StatementListNode): boolean {
+    console.log('here');
     const expression = this.getExpression();
     if (expression.isEvaluation()) {
-      if ((expression as EvaluationNode).isErrorEvaluation()) {
+      const evaluation = expression.getEvaluation();
+      if (evaluation.isErrorEvaluation()) {
         return true;
       }
     } else if (expression.isIdentifierExpression()) {
@@ -39,7 +40,8 @@ export class ReturnStatementNode extends StatementNode {
       }
 
       if (expressionOfDeclaredIdentifier.isEvaluation()) {
-        if ((expressionOfDeclaredIdentifier as EvaluationNode).isErrorEvaluation()) {
+        const evaluationOfDeclaredIdentifier = expressionOfDeclaredIdentifier.getEvaluation();
+        if (evaluationOfDeclaredIdentifier.isErrorEvaluation()) {
           return true;
         }
       }

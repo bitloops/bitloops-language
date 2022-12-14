@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { ExpressionNode } from '../ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { ErrorEvaluationNode } from './ErrorEvaluation.js';
 
 export class EvaluationNode extends ExpressionNode {
   private static evaluationNodeName = 'evaluation';
@@ -12,7 +13,7 @@ export class EvaluationNode extends ExpressionNode {
     this.nodeType = BitloopsTypesMapping.TEvaluation;
   }
 
-  isErrorEvaluation(): boolean {
+  isErrorEvaluation(): this is ErrorEvaluationNode {
     return this.getNodeType() === BitloopsTypesMapping.TErrorEvaluation;
   }
 }

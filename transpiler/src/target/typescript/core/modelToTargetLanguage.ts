@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   argumentDependenciesToTargetLanguage,
   argumentDependencyToTargetLanguage,
@@ -132,9 +132,10 @@ import { assignmentExpressionToTargetLanguage } from './components/statements/ex
 import { thisExpressionToTargetLanguage } from './components/statements/expression/thisExpression.js';
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
+import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 
 const modelToTargetLanguage = (props: {
-  type: TBitloopsTypesValues;
+  type: TNodeType;
   value: any;
   contextData?: TContextData;
   setupData?: ISetupData;

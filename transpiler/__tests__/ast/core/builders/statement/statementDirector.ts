@@ -23,6 +23,8 @@ import {
   TConstDeclaration,
   TEvaluationFields,
   TExpression,
+  TReturnErrorStatement,
+  TReturnOKStatement,
   TReturnStatement,
   TStatement,
 } from '../../../../../src/types.js';
@@ -31,6 +33,7 @@ import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { BuiltInFunctionStatementDirector } from './builtInFunctionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { ReturnErrorStatementBuilder } from './returnErrorStatementBuilder.js';
 import { ReturnOKStatementBuilder } from './returnOKStatementBuilder.js';
 import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
@@ -120,6 +123,22 @@ export class StatementDirector {
     });
   }
 
+  buildConstDeclarationWithEntityEvaluation({
+    name,
+    entityIdentifier,
+    entityFields,
+  }: {
+    name: string;
+    entityIdentifier: string;
+    entityFields: TEvaluationFields;
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithEntityEvaluation({
+      name,
+      entityIdentifier,
+      fields: entityFields,
+    });
+  }
+
   buildBreakStatement(): TBreakStatement {
     return {
       breakStatement: 'break',
@@ -128,6 +147,14 @@ export class StatementDirector {
 
   buildReturnStatement(expression: TExpression): TReturnStatement {
     return new ReturnStatementBuilder().withExpression(expression).build();
+  }
+
+  buildReturnOKStatement(expression: TExpression): TReturnOKStatement {
+    return new ReturnOKStatementBuilder().withExpression(expression).build();
+  }
+
+  buildReturnErrorStatement(expression: TExpression): TReturnErrorStatement {
+    return new ReturnErrorStatementBuilder().withExpression(expression).build();
   }
 
   buildExpressionEntityEvaluation(entityName: string, identifierValue: string): TExpression {
