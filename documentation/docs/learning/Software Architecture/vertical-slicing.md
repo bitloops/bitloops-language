@@ -2,5 +2,4 @@
 sidebar_position: 4
 ---
 
-# Testing
-TBA
+# Vertical Slicing

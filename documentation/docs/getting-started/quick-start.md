@@ -1,10 +1,12 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-# Implementation of To Do App  
+# Quick Start 
 
-Implementation of To Do App as example
+How to create a ToDo App with BL
+
+Creating a To Do App as example
 
 ## Project structure
 

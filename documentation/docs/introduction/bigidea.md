@@ -65,7 +65,7 @@ Furthermore, following best practices in software architecture such as layered o
 
 All in all, Bitloops Language is simply easier to read and understand, which makes it very powerful for onboarding new team members and making changes to the code base. 
 
-### ✍🏽 Translates into performante languages
+### ✍🏽 Transpiles into other languages
 Every programming language has its pros and cons. In general, the harder the language is to learn and write, the harder it is to change, but the more performante (and therefore cheaper to run) it is. Languages that are easier to read and write are generally easier to change, but performance can sometimes be negatively affected (there are exceptions of course). 
 
 Bitloops is a transpiled language, meaning it transplites (translates) into other programming languages that run on a server. Right now we offer TypeScript as the output language, however, we do aim to offer other options such as C++ or Java in the future. 
@@ -131,4 +131,4 @@ We are only at the beginning of the Bitloops journey, but we have learnt and ach
 
 ## Where to next?
 
-⏭️ [Explore the Quick Start example to get an idea of Bitloops’ potential](https://bitloops.com/docs/bitloops-language/category/getting-started)
+⏭️ [Explore the Quick Start example](https://bitloops.com/docs/bitloops-language/category/getting-started) to get an idea of how Bitloops works and its potential in helping you build better software

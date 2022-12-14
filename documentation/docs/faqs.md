@@ -1,37 +1,57 @@
 ---
-sidebar_position: 1
+sidebar_position: 6
 ---
 
-# FAQs
+# FAQ
 
-# Frequently Asked Questions
+Below you'll find answers to the questions Bitloops gets asked the most. 
 
-- [Is the Bitloops Language open source?](#is-the-bitloops-language-open-source)
-- [Is the Bitloops Language free?](#is-the-bitloops-language-free)
-- [Why is it easier to code with the Bitloops Language?](#why-is-it-easier-to-code-with-the-bitloops-language)
+The majority of these questions are related to the Bitloops Language. If you're unable to find your question/answer here, then please join our [discord community](https://discord.gg/vj8EdZx8gK) and ask one of the Bitloops team members directly - we would be glad to help! 
+
+Alternatively, you may review our [Reference](https://github.com/bitloops/bitloops-language/discussions), [How-to Guides](https://github.com/bitloops/bitloops-language/discussions), [Tutorials](https://github.com/bitloops/bitloops-language/discussions), or search the [GitHub Discussions](https://github.com/bitloops/bitloops-language/discussions) as the answer may be available in one of them. 
+
+We aim to add more answers here in the near future!
+
+
+## Frequently Asked Questions
+
+- [Is Bitloops Language open source?](#is-bitloops-language-open-source)
+- [Is Bitloops Language free?](#is-bitloops-language-free)
+- [Why is it easier to code with Bitloops Language?](#why-is-it-easier-to-code-with-bitloops-language)
 - [Are there limitations to what a software developer can create?](#are-there-limitations-to-what-a-software-developer-can-create)
 - [Are there enough 3rd party packages and libraries that I can use?](#are-there-enough-3rd-party-packages-and-libraries-that-i-can-use)
-- [What is next for the Bitloops Language?](#what-is-next-for-the-bitloops-language)
+- [What is next for Bitloops Language?](#what-is-next-for-bitloops-language)
 
-## Is the Bitloops Language open source?
 
-Yes!
+&nbsp; 
+&nbsp; 
+___
 
-The Bitloops Language is open source using the GPL v3.
+### Is Bitloops Language open source?
 
-## Is the Bitloops Language free?
+Yes! The Bitloops Language is open source using the GPL v3.
+
+___
+
+### Is Bitloops Language free?
 
 The Bitloops Language is a fourth-generation language that is designed to reduce the overall time, effort and cost of software development by helping developers write test driven code that follows the Domain Driven Design principles and patterns without having to go through the steep learning curve and boilerplate code needed to apply TDD and DDD using regular languages.
 
-## Why is it easier to code with the Bitloops Language?
+___
+
+### Why is it easier to code with Bitloops Language?
 
 The Bitloops Language is a fourth-generation language that is designed to reduce the overall time, effort and cost of software development by helping developers write test driven code that follows the Domain Driven Design principles and patterns without having to go through the steep learning curve and boilerplate code needed to apply TDD and DDD using regular languages.
 
-## Are there limitations to what a software developer can create?
+___
+
+### Are there limitations to what a software developer can create?
 
 While the Bitloops language itself is by design less expressive than regular programming languages to make sure that the final result is a system that is well designed and tested, you can always connect services and modules written directly in a lower-level language of your choice thus lifting any limitation on you final output.
 
-## Are there enough 3rd party packages and libraries that I can use?
+___
+
+### Are there enough 3rd party packages and libraries that I can use?
 
 While we are constantly working on
 
@@ -42,8 +62,13 @@ you can always use packages of your target language that the Bitloops Language w
 
 You just need to define an interface for that package and during build time the package is going to be included in your generated project.
 
-## What is next for the Bitloops Language?
+___
+
+### What is next for Bitloops Language?
 
 We are eager to receive your feedback and incorporate it into the Bitloops Language so that it will be able to achieve its goal of dramatically improving your productivity.
 
 One of our major decisions is which are going to be the supported transpiled languages and adding more support for them.
+
+___
+If you believe we should add additional FAQs here, please send us an email to [hello@bitloops.com](mailto:hello@bitloops.com)

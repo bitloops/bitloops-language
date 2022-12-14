@@ -1,8 +1,9 @@
 {
   "label": "Learning",
-  "position": 6,
+  "position": 8,
   "link": {
     "type": "generated-index",
-    "description": "This is a section where you can learn more about the best practices in software development."
+    "description": "This chapter provides a broad and detailed overview of how software should be built. Here you will 
+    find reference material regarding software development principles, design patterns, methodologies and best-practices."
   }
 }
