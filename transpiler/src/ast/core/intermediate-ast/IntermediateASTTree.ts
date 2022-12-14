@@ -6,6 +6,7 @@ import { StatementNode } from './nodes/statements/Statement.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 import { TControllerUseCaseExecuteNodeType } from '../types.js';
+import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -234,6 +235,21 @@ export class IntermediateASTTree {
       nextStatement = nextStatement.getNextSibling();
     }
     nodes.forEach((node) => (node.identifierName = newIdentifier));
+  }
+
+  public getMethodCallsThatUseThisDependencies(
+    dependencies: string[],
+    statements: StatementNode[],
+  ): MethodCallExpressionNode[] {
+    const policy = (node: IntermediateASTNode): boolean =>
+      node instanceof MethodCallExpressionNode &&
+      dependencies.some((dep) => node.isThisDependencyMethodCall(dep));
+
+    const result = statements.reduce((acc, statement) => {
+      const methodCalls = this.getNodesWithPolicy(statement, policy) as MethodCallExpressionNode[];
+      return [...acc, ...methodCalls];
+    }, [] as MethodCallExpressionNode[]);
+    return result;
   }
 
   // private getNodesAfterPolicy<T = IntermediateASTNode>(

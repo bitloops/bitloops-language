@@ -136,4 +136,11 @@ export abstract class IntermediateASTNode {
     }
     return false;
   }
+
+  protected getChildNodeByType<T extends IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T | null {
+    const children = this.getChildren();
+    return (children.find((child) => child.getNodeType() === nodeType) as T) ?? null;
+  }
 }

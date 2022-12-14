@@ -64,6 +64,7 @@ const BitloopsTypesMapping = {
   TOkErrorReturnType: 'TOkErrorReturnType',
   TValueObject: 'TValueObject',
   TUseCase: 'TUseCase',
+  TUseCaseExecute: 'TUseCaseExecute',
   TRESTController: 'TRESTController',
   TGraphQLController: 'TGraphQLController',
   TGraphQLControllerIdentifier: 'TGraphQLControllerIdentifier',
