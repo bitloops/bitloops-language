@@ -11,10 +11,15 @@ import { ParameterNode } from '../../../../../src/ast/core/intermediate-ast/node
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { StatementNode } from '../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { UseCaseNode } from '../../../../../src/ast/core/intermediate-ast/nodes/UseCase/UseCaseNode.js';
+import { ArgumentDirector } from './argument.js';
 import { ArgumentListDirector } from './argumentList.js';
 import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
+import { EvaluationBuilderDirector } from './evaluation.js';
 import { ExpressionBuilderDirector } from './expression.js';
 import { ParameterBuilderDirector } from './parameterDirector.js';
+import { ConstDeclarationBuilderDirector } from './statement/constDeclaration.js';
+import { IfStatementBuilderDirector } from './statement/ifStatementDirector.js';
+import { ReturnStatementBuilderDirector } from './statement/return.js';
 
 export class UseCaseBuilderDirector {
   buildUseCaseWithTwoRepoCalls(identifier: string, options?: { await: boolean }): UseCaseNode {
@@ -33,6 +38,90 @@ export class UseCaseBuilderDirector {
           'save',
           new ArgumentListDirector().buildArgumentListWithArgs([]),
           options,
+        ),
+      ],
+    );
+  }
+
+  buildUseCaseWithOneValueObjectEvaluation(
+    identifier: string,
+    options?: { dotValue: boolean },
+  ): UseCaseNode {
+    return this.useCaseWithParams(
+      identifier,
+      [],
+      [
+        new ConstDeclarationBuilderDirector().buildConstDeclaration(
+          'price',
+          new ExpressionBuilderDirector().buildEvaluationExpression(
+            new EvaluationBuilderDirector().buildValueObjectEvaluation(
+              'PriceVO',
+              new ExpressionBuilderDirector().buildIdentifierExpression('priceProps'),
+            ),
+          ),
+        ),
+        new ReturnStatementBuilderDirector().buildReturn(
+          new ExpressionBuilderDirector().buildIdentifierExpression(
+            options?.dotValue ? 'price.value' : 'price',
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildUseCaseWithTwoDomainEvaluations(
+    identifier: string,
+    options?: { dotValue: boolean },
+  ): UseCaseNode {
+    return this.useCaseWithParams(
+      identifier,
+      [],
+      [
+        new ConstDeclarationBuilderDirector().buildValueObjectConstDeclaration(
+          'price',
+          'PriceVO',
+          'priceProps',
+        ),
+        new ConstDeclarationBuilderDirector().buildEntityEvaluationConstDeclaration('todo', 'Todo'),
+        new IfStatementBuilderDirector().buildIfTrueReturnExpression(
+          new ExpressionBuilderDirector().buildIdentifierExpression(
+            options?.dotValue ? 'todo.value' : 'todo',
+          ),
+        ),
+        new ReturnStatementBuilderDirector().buildReturn(
+          new ExpressionBuilderDirector().buildIdentifierExpression(
+            options?.dotValue ? 'price.value' : 'price',
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildUseCaseEntityEvaluationAndRepoSaveOfTheEntity(
+    identifier: string,
+    options?: { await: boolean; dotValue: boolean },
+  ): UseCaseNode {
+    return this.useCaseWithParams(
+      identifier,
+      [new ParameterBuilderDirector().buildIdentifierParameter('todoRepo', 'ITodoRepo')],
+      [
+        new ConstDeclarationBuilderDirector().buildEntityEvaluationConstDeclaration('todo', 'Todo'),
+        new ExpressionBuilderDirector().buildThisDependencyMethodCall(
+          'todoRepo',
+          'save',
+          new ArgumentListDirector().buildArgumentListWithArgs([
+            new ArgumentDirector().buildArgument(
+              new ExpressionBuilderDirector().buildIdentifierExpression(
+                options?.dotValue ? 'todo.value' : 'todo',
+              ),
+            ),
+          ]),
+          options,
+        ),
+        new ReturnStatementBuilderDirector().buildReturn(
+          new ExpressionBuilderDirector().buildIdentifierExpression(
+            options?.dotValue ? 'todo.value' : 'todo',
+          ),
         ),
       ],
     );

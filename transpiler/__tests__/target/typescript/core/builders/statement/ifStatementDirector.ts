@@ -5,6 +5,8 @@ import { ThenStatementsNodeBuilder } from '../../../../../../src/ast/core/interm
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
+import { ExpressionBuilderDirector } from '../expression.js';
+import { ReturnStatementBuilderDirector } from './return.js';
 
 export class IfStatementBuilderDirector {
   buildIfStatement(
@@ -27,5 +29,12 @@ export class IfStatementBuilderDirector {
       ifNode.withElseStatements(elseStatementsNode);
     }
     return ifNode.build();
+  }
+
+  buildIfTrueReturnExpression(expr: ExpressionNode): IfStatementNode {
+    return this.buildIfStatement(
+      new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+      [new ReturnStatementBuilderDirector().buildReturn(expr)],
+    );
   }
 }

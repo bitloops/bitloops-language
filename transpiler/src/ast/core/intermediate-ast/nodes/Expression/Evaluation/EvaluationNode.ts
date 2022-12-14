@@ -11,6 +11,10 @@ export class EvaluationNode extends ExpressionNode {
     this.nodeType = BitloopsTypesMapping.TEvaluation;
   }
 
+  getEvaluationChild(): EvaluationNode {
+    return this.getChildren()[0] as EvaluationNode;
+  }
+
   // isErrorEvaluation(): this is  {
   //   throw new Error('Not implemeneted');
   // }

@@ -1,5 +1,3 @@
-import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { ConstDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/constDeclaration.js';
 import { ConditionNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
 import { ElseStatementsNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ElseStatements.js';
 import { IfStatementBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/IfStatementBuilder.js';
@@ -8,16 +6,9 @@ import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
-import { ArgumentListDirector } from '../argumentList.js';
-import { ExpressionBuilderDirector } from '../expression.js';
+import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
 
 export class StatementBuilderDirector {
-  buildConstDeclaration(identifier: string, expression: ExpressionNode): ConstDeclarationNode {
-    return new ConstDeclarationNodeBuilder()
-      .withIdentifier(new IdentifierNodeBuilder().withName(identifier).build())
-      .withExpression(expression)
-      .build();
-  }
   /**
    *  const {identifier} = [await]? this.useCase.execute();
    */
@@ -25,21 +16,10 @@ export class StatementBuilderDirector {
     identifier: string,
     options?: { await: boolean },
   ): ConstDeclarationNode {
-    let thisNode;
-    if (options?.await) {
-      thisNode = new ExpressionBuilderDirector().buildModifiedThisExpression('await this');
-    } else {
-      thisNode = new ExpressionBuilderDirector().buildThisExpression();
-    }
-
-    const expression = new ExpressionBuilderDirector().buildMethodCallExpression(
-      new ExpressionBuilderDirector().buildMemberDotExpression(
-        new ExpressionBuilderDirector().buildMemberDotExpression(thisNode, 'useCase'),
-        'execute',
-      ),
-      new ArgumentListDirector().buildArgumentListWithArgs([]),
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationThisUseCaseExecute(
+      identifier,
+      options,
     );
-    return this.buildConstDeclaration(identifier, expression);
   }
 
   buildIfStatement(

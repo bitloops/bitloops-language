@@ -44,7 +44,7 @@ class BaseControllerNodeTSTransformer<
     const identifierValue = identifierNode.getIdentifierName();
     const identifierWithAppendedDotValue = this.appendDotValue(identifierValue);
 
-    this.tree.updateIdentifierNodesAfterStatement(
+    this.tree.updateIdentifierExpressionNodesAfterStatement(
       executeStatement,
       identifierValue,
       identifierWithAppendedDotValue,
