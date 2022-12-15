@@ -21,7 +21,7 @@
 import { DefaultSwitchCaseNodeBuilder } from './../../intermediate-ast/builders/statements/switchStatement/DefaultSwitchCaseBuilder.js';
 import { SwitchRegularCaseNode } from './../../intermediate-ast/nodes/statements/SwitchStatement/SwitchCase.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { SwitchStatementBuilder } from '../../intermediate-ast/builders/statements/switchStatement/SwitchStatementBuilder.js';
+import { SwitchStatementNodeBuilder } from '../../intermediate-ast/builders/statements/switchStatement/SwitchStatementBuilder.js';
 import { SwitchCasesNode } from '../../intermediate-ast/nodes/statements/SwitchStatement/SwitchCases.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
@@ -45,7 +45,7 @@ export const switchStatementVisitor = (
   }
   const defaultCase: DefaultSwitchCaseNode = thisVisitor.visit(ctx.defaultClause());
   const metadata = produceMetadata(ctx, thisVisitor);
-  const switchCaseNode = new SwitchStatementBuilder(metadata)
+  const switchCaseNode = new SwitchStatementNodeBuilder(metadata)
     .withCases(cases)
     .withDefaultCase(defaultCase)
     .withExpression(expression)
