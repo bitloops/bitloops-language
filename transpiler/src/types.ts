@@ -427,8 +427,8 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation
-  | TBackTickString
+  | TClassInstantiation // To  be removed?
+  | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
   | TAdditiveExpression
