@@ -17,16 +17,16 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TParameterDependencies, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import { TParameterList, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildFieldsFromDependencies = (
-  params: TParameterDependencies,
+  params: TParameterList,
   contextData: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
-  const fieldsToLangString = (params: TParameterDependencies): string => {
-    return params
+  const fieldsToLangString = (params: TParameterList): string => {
+    return params.parameters
       .map((parameterDependency) => {
         const { type, value } = parameterDependency.parameter;
         const mappedType = modelToTargetLanguage({
@@ -41,15 +41,12 @@ const buildFieldsFromDependencies = (
   let result = fieldsToLangString(params);
 
   const parametersModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
+    type: BitloopsTypesMapping.TParameterList,
     value: params,
     contextData,
   });
-  const constructorToLangString = (
-    paramsString: string,
-    params: TParameterDependencies,
-  ): string => {
-    const constructorBody = params
+  const constructorToLangString = (paramsString: string, params: TParameterList): string => {
+    const constructorBody = params.parameters
       .map((parameterDependency) => {
         const { value } = parameterDependency.parameter;
         return `this.${value} = ${value};`;

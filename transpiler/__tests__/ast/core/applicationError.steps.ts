@@ -8,12 +8,7 @@ import {
   invalidApplicationErrors,
   validApplicationErrors,
 } from './mocks/errors/applicationErrors.js';
-import {
-  TApplicationError,
-  TExpression,
-  TIdentifier,
-  TParameterDependencies,
-} from '../../../src/types.js';
+import { TApplicationError, TExpression, TIdentifier, TParameterList } from '../../../src/types.js';
 import { ApplicationErrorBuilder } from './builders/applicationErrorBuilder.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -83,7 +78,7 @@ const getExpectedOutput = (
   identifier: TIdentifier,
   messageExp: TExpression,
   errorIdExp: TExpression,
-  parameters: TParameterDependencies,
+  parameters: TParameterList,
 ): TApplicationError => {
   const val = new ApplicationErrorBuilder()
     .withIdentifier(identifier)

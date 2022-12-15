@@ -20,7 +20,7 @@ export class UseCaseNode extends ClassTypeNode {
 
   getAllDependenciesIdentifiers(): string[] {
     const parameterList = this.getChildNodeByType<ParameterListNode>(
-      BitloopsTypesMapping.TParameterDependencies,
+      BitloopsTypesMapping.TParameterList,
     );
     return parameterList.getIdentifiers();
   }

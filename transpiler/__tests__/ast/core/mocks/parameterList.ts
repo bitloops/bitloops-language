@@ -1,11 +1,11 @@
-import { TParameterDependencies } from '../../../../src/types.js';
+import { TParameterList } from '../../../../src/types.js';
 import { ParameterBuilderDirector } from '../builders/ParameterBuilderDirector.js';
 
 type TestCase = {
   description: string;
   fileId: string;
   inputBLString: string;
-  parameterList: { parameters: TParameterDependencies };
+  parameterList: TParameterList;
 };
 
 export const validParameterListTestCases: Array<TestCase> = [

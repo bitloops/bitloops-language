@@ -1,5 +1,6 @@
 import { TDomainPublicMethod, TEvaluationFields } from '../../../../../src/types.js';
 import { IdentifierBuilder } from '../identifier.js';
+import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../returnOkErrorTypeBuilderDirector.js';
 import { StatementListDirector } from '../statement/statementListDirector.js';
 import { PublicMethodBuilder } from './PublicMethodBuilder.js';
@@ -22,7 +23,7 @@ export class PublicMethodBuilderDirector {
   }): TDomainPublicMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
-      .withParameters([])
+      .withParameters(new ParameterListBuilderDirector().buildParams([]))
       .withReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
           entityName,

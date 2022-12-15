@@ -1,15 +1,11 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import {
-  TParamDependencyType,
-  TParameterDependency,
-  TParameterIdentifier,
-} from '../../../../src/types.js';
+import { TParameterType, TParameter, TParameterIdentifier } from '../../../../src/types.js';
 
-export class ParameterBuilder implements IBuilder<TParameterDependency> {
-  private type: TParamDependencyType;
+export class ParameterBuilder implements IBuilder<TParameter> {
+  private type: TParameterType;
   private value: TParameterIdentifier;
 
-  public withType(type: TParamDependencyType): ParameterBuilder {
+  public withType(type: TParameterType): ParameterBuilder {
     this.type = type;
     return this;
   }
@@ -19,7 +15,7 @@ export class ParameterBuilder implements IBuilder<TParameterDependency> {
     return this;
   }
 
-  public build(): TParameterDependency {
+  public build(): TParameter {
     const parameter = {
       parameter: {
         type: this.type,

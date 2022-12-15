@@ -1,7 +1,7 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TExecute,
-  TParameterDependencies,
+  TParameterList,
   TUseCase,
   TUseCaseIdentifier,
   UseCaseIdentifierKey,
@@ -11,7 +11,7 @@ import {
 export class UseCaseDeclarationBuilder implements IBuilder<TUseCase> {
   private identifierName: TUseCaseIdentifier;
   private execute: TExecute;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
 
   public withIdentifier(identifierName: TUseCaseIdentifier): UseCaseDeclarationBuilder {
     this.identifierName = identifierName;
@@ -23,7 +23,7 @@ export class UseCaseDeclarationBuilder implements IBuilder<TUseCase> {
     return this;
   }
 
-  public withParameterList(parameters: TParameterDependencies) {
+  public withParameterList(parameters: TParameterList): UseCaseDeclarationBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -33,7 +33,7 @@ export class UseCaseDeclarationBuilder implements IBuilder<TUseCase> {
       [UseCaseKey]: {
         [UseCaseIdentifierKey]: this.identifierName,
         execute: this.execute,
-        parameters: this.parameters,
+        ...this.parameters,
       },
     };
 

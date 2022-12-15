@@ -6,7 +6,7 @@ const NAME = 'parameter';
 
 export class ParameterNode extends IntermediateASTNode {
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TParameterDependency, metadata, NAME);
+    super(BitloopsTypesMapping.TParameter, metadata, NAME);
   }
 
   getIdentifier(): string {

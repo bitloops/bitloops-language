@@ -1,4 +1,5 @@
 import { TUseCase } from '../../../../../src/types.js';
+import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
 import { UseCaseDeclarationBuilder } from './useCaseBuilder.js';
 import { UseCaseExecuteBuilderDirector } from './useCaseExecuteDirector.js';
 
@@ -12,7 +13,7 @@ export class UseCaseBuilderDirector {
   buildUseCaseWithoutErrorAndReturnDTO({ identifier }: { identifier: string }): TUseCase {
     const useCase = this.useCaseBuilder
       .withIdentifier(identifier)
-      .withParameterList([])
+      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withExecute(new UseCaseExecuteBuilderDirector().buildExecuteWithOneReturnDTO())
       .build();
 
@@ -28,7 +29,7 @@ export class UseCaseBuilderDirector {
   }): TUseCase {
     const useCase = this.useCaseBuilder
       .withIdentifier(identifier)
-      .withParameterList([])
+      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withExecute(
         new UseCaseExecuteBuilderDirector().buildExecuteWithDomainEvaluations(executeReturnTypes),
       )
@@ -40,7 +41,7 @@ export class UseCaseBuilderDirector {
   buildUseCaseWithoutErrorAndReturnTypeVoid({ identifier }: { identifier: string }): TUseCase {
     const useCase = this.useCaseBuilder
       .withIdentifier(identifier)
-      .withParameterList([])
+      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withExecute(
         new UseCaseExecuteBuilderDirector().buildExecuteWithDomainEvaluationsAndNoReturn(),
       )

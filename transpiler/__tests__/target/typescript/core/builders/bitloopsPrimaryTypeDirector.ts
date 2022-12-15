@@ -1,3 +1,4 @@
+import { ArrayPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
 import { BitloopsIdentifierTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BitloopsPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
 import { BuildInClassTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
@@ -10,14 +11,23 @@ import {
 } from '../../../../../src/types.js';
 
 export class BitloopsPrimaryTypeDirector {
-  // buildArrayPrimaryType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
-  //   const value = this.buildPrimitivePrimaryType(type);
-  //   const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
-  //     .withPrimaryType(value)
-  //     .build();
+  buildArrayPrimaryType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
+    const value = this.buildPrimitivePrimaryType(type);
+    const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
+      .withPrimaryType(value)
+      .build();
 
-  //   return new BitloopsPrimaryTypeBuilder().withPrimaryType(arrayBitloopsPrimaryTypeNode).build();
-  // }
+    return new BitloopsPrimaryTypeBuilder().withPrimaryType(arrayBitloopsPrimaryTypeNode).build();
+  }
+
+  buildArrayIdentifierPrimaryType(type: TBitloopsIdentifier): BitloopsPrimaryTypeNode {
+    const value = new BitloopsIdentifierTypeBuilder().withType(type).build();
+    const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
+      .withPrimaryType(value)
+      .build();
+
+    return new BitloopsPrimaryTypeBuilder().withPrimaryType(arrayBitloopsPrimaryTypeNode).build();
+  }
 
   buildPrimitivePrimaryType(primitiveType: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(primitiveType).build();

@@ -1,14 +1,22 @@
-import { TParameterDependencies } from '../../../../src/types.js';
+import { TParameter, TParameterList } from '../../../../src/types.js';
 
 export class ParameterListBuilderDirector {
-  buildStringParams(...paramIdentifiers: string[]): TParameterDependencies {
-    return paramIdentifiers.map((paramIdentifier) => ({
-      parameter: {
-        value: paramIdentifier,
-        type: {
-          primitiveType: 'string',
+  buildParams(params: TParameter[]): TParameterList {
+    return {
+      parameters: params,
+    };
+  }
+
+  buildStringParams(...paramIdentifiers: string[]): TParameterList {
+    return {
+      parameters: paramIdentifiers.map((paramIdentifier) => ({
+        parameter: {
+          value: paramIdentifier,
+          type: {
+            primitiveType: 'string',
+          },
         },
-      },
-    }));
+      })),
+    };
   }
 }
