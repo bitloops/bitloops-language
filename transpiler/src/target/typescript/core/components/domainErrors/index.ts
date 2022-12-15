@@ -73,7 +73,7 @@ const domainErrorToTargetLanguage = (
     value: errorIdText,
   });
   const parametersResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
+    type: BitloopsTypesMapping.TParameterList,
     value: parameters ?? [],
   });
   const dependencies: TDependenciesTypeScript = [

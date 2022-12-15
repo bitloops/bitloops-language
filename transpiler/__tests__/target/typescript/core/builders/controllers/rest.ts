@@ -11,96 +11,69 @@ import { RESTControllerExecuteDependenciesNode } from '../../../../../../src/ast
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
+import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
+import { TRestMethods } from '../../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../expression.js';
 import { ReturnStatementBuilderDirector } from '../statement/return.js';
 import { StatementBuilderDirector } from '../statement/statementDirector.js';
 
 export class RestControllerBuilderDirector {
-  buildRestControllerWithThisUseCaseExecute(identifier: string): RESTControllerNode {
-    const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-    return new RESTControllerNodeBuilder(tree)
-      .withIdentifier(new RESTControllerIdentifierNodeBuilder(null).withName(identifier).build())
-      .withParameterList(new ParameterListNodeBuilder(null).withParameters([]).build())
-      .withRESTMethod(new RESTMethodNodeBuilder(null).withMethod('GET').build())
-      .withExecuteNode(
-        new RESTControllerExecuteNodeBuilder(null)
-          .withDependencies(this.reqResExecuteDependencies())
-          .withStatementList(
-            new StatementListNodeBuilder(null)
-              .withStatements([
-                new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result'),
-              ])
-              .build(),
-          )
-          .build(),
-      )
-      .build();
+  buildRestControllerWithThisUseCaseExecute(
+    identifier: string,
+    options?: { await: boolean },
+  ): RESTControllerNode {
+    return this.controllerWithNoParams(identifier, 'GET', [
+      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
+    ]);
   }
 
-  buildRestControllerWithAwaitThisUseCaseExecute(identifier: string): RESTControllerNode {
-    const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-    return new RESTControllerNodeBuilder(tree)
-      .withIdentifier(new RESTControllerIdentifierNodeBuilder(null).withName(identifier).build())
-      .withParameterList(new ParameterListNodeBuilder(null).withParameters([]).build())
-      .withRESTMethod(new RESTMethodNodeBuilder(null).withMethod('GET').build())
-      .withExecuteNode(
-        new RESTControllerExecuteNodeBuilder(null)
-          .withDependencies(this.reqResExecuteDependencies())
-          .withStatementList(
-            new StatementListNodeBuilder(null)
-              .withStatements([
-                new StatementBuilderDirector().buildConstDeclarationWithAwaitThisUseCaseExecute(
-                  'result',
-                ),
-              ])
-              .build(),
-          )
-          .build(),
-      )
-      .build();
+  buildControllerThatExecutesAndReturnsResult(
+    identifier: string,
+    options?: { await: boolean; dotValue: boolean },
+  ): RESTControllerNode {
+    return this.controllerWithNoParams(identifier, 'POST', [
+      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
+      this.buildBasicIfTrueReturnStatement('ok', options?.dotValue ? 'result.value' : 'result'),
+    ]);
   }
 
-  buildTodoCreateControllerPreModelToTSModel(identifier: string): RESTControllerNode {
-    const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-    return new RESTControllerNodeBuilder(tree)
-      .withIdentifier(new RESTControllerIdentifierNodeBuilder(null).withName(identifier).build())
-      .withParameterList(new ParameterListNodeBuilder(null).withParameters([]).build())
-      .withRESTMethod(new RESTMethodNodeBuilder(null).withMethod('POST').build())
-      .withExecuteNode(
-        new RESTControllerExecuteNodeBuilder(null)
-          .withDependencies(this.reqResExecuteDependencies())
-          .withStatementList(
-            new StatementListNodeBuilder(null)
-              .withStatements([
-                new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result'),
-                this.buildBasicIfReturnStatement('ok', 'result'),
-              ])
-              .build(),
-          )
-          .build(),
-      )
-      .build();
+  buildControllerThatReturnsHelloWorld(identifier: string): RESTControllerNode {
+    return this.controllerWithNoParams(identifier, 'GET', [
+      new ReturnStatementBuilderDirector().buildReturn(
+        new ExpressionBuilderDirector().buildStringLiteralExpression('Hello World'),
+      ),
+    ]);
   }
 
-  buildTodoCreateControllerAfterModelToTSModel(identifier: string): RESTControllerNode {
+  buildControllerThatExecutesAndUsesResultTwice(
+    identifier: string,
+    options?: { await: boolean; dotValue: boolean },
+  ): RESTControllerNode {
+    const identifierVal = options?.dotValue ? 'result.value' : 'result';
+    return this.controllerWithNoParams(identifier, 'POST', [
+      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
+      this.buildBasicIfTrueReturnStatement('ok', identifierVal),
+      this.buildBasicIfTrueReturnStatement('ok', identifierVal),
+    ]);
+  }
+
+  /**
+   * You give it some statements, it builds you a controller.
+   */
+  private controllerWithNoParams(
+    identifier: string,
+    method: TRestMethods,
+    statements: StatementNode[],
+  ): RESTControllerNode {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
     return new RESTControllerNodeBuilder(tree)
       .withIdentifier(new RESTControllerIdentifierNodeBuilder(null).withName(identifier).build())
       .withParameterList(new ParameterListNodeBuilder(null).withParameters([]).build())
-      .withRESTMethod(new RESTMethodNodeBuilder(null).withMethod('POST').build())
+      .withRESTMethod(new RESTMethodNodeBuilder(null).withMethod(method).build())
       .withExecuteNode(
         new RESTControllerExecuteNodeBuilder(null)
           .withDependencies(this.reqResExecuteDependencies())
-          .withStatementList(
-            new StatementListNodeBuilder(null)
-              .withStatements([
-                new StatementBuilderDirector().buildConstDeclarationWithAwaitThisUseCaseExecute(
-                  'result',
-                ),
-                this.buildBasicIfReturnStatement('ok', 'result.value'),
-              ])
-              .build(),
-          )
+          .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
           .build(),
       )
       .build();
@@ -112,7 +85,7 @@ export class RestControllerBuilderDirector {
       .build();
   }
 
-  private buildBasicIfReturnStatement(
+  private buildBasicIfTrueReturnStatement(
     methodName: string,
     identifierValue: string,
   ): IfStatementNode {

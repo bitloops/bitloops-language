@@ -4,7 +4,7 @@ import {
   TGraphQLController,
   TGraphQLControllerExecute,
   TGraphQLOperation,
-  TParameterDependencies,
+  TParameterList,
 } from '../../../../../src/types.js';
 
 export class GraphQLControllerBuilder implements IBuilder<TGraphQLController> {
@@ -14,7 +14,7 @@ export class GraphQLControllerBuilder implements IBuilder<TGraphQLController> {
 
   private operationType: TGraphQLOperation;
   private execute: TGraphQLControllerExecute;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
 
   public withIdentifier(identifierName: GraphQLControllerIdentifier): GraphQLControllerBuilder {
     this.identifierName = identifierName;
@@ -36,7 +36,7 @@ export class GraphQLControllerBuilder implements IBuilder<TGraphQLController> {
     return this;
   }
 
-  public withParameterList(parameters: TParameterDependencies): GraphQLControllerBuilder {
+  public withParameterList(parameters: TParameterList): GraphQLControllerBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -48,7 +48,7 @@ export class GraphQLControllerBuilder implements IBuilder<TGraphQLController> {
         inputType: this.inputType,
         operationType: this.operationType,
         execute: this.execute,
-        parameters: this.parameters,
+        ...this.parameters,
         operationName: this.getOperationName(this.identifierName),
       },
     };

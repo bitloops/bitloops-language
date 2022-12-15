@@ -2,6 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode } from '../IntermediateASTNode.js';
 import { VariableDeclarationNode } from '../variableDeclaration.js';
 import { ConstDeclarationNode } from './ConstDeclarationNode.js';
+import { ExpressionNode } from '../Expression/ExpressionNode.js';
 
 export abstract class StatementNode extends IntermediateASTNode {
   isConstDeclarationNode(): this is ConstDeclarationNode {
@@ -27,4 +28,8 @@ export abstract class StatementNode extends IntermediateASTNode {
 
     return false;
   };
+
+  isExpressionNode(): this is ExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TExpression;
+  }
 }

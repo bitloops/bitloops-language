@@ -176,4 +176,11 @@ export abstract class IntermediateASTNode {
   IsStatementListNode(): boolean {
     return this.nodeType === 'TStatements';
   }
+
+  protected getChildNodeByType<T extends IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T | null {
+    const children = this.getChildren();
+    return (children.find((child) => child.getNodeType() === nodeType) as T) ?? null;
+  }
 }

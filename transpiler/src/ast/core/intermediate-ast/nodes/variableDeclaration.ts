@@ -1,10 +1,11 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { ExpressionNode } from './Expression/ExpressionNode.js';
 import { IdentifierNode } from './identifier/IdentifierNode.js';
-import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
+import { TNodeMetadata } from './IntermediateASTNode.js';
+import { StatementNode } from './statements/Statement.js';
 
 const NAME = 'variableDeclaration';
-export class VariableDeclarationNode extends IntermediateASTNode {
+export class VariableDeclarationNode extends StatementNode {
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TVariableDeclaration, metadata, NAME);
   }
@@ -13,11 +14,11 @@ export class VariableDeclarationNode extends IntermediateASTNode {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
-    )!;
-    if (!expression) {
+    );
+    if (!expression || !expression.getChildren().length) {
       throw new Error('Expression not found');
     }
-    return expression as ExpressionNode;
+    return expression.getChildren()[0] as ExpressionNode;
   }
 
   getIdentifier(): IdentifierNode {

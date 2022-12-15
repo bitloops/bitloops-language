@@ -2,14 +2,14 @@ import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBu
 import {
   TDomainCreateMethod,
   TOkErrorReturnType,
-  TParameterDependency,
+  TParameter,
   TStatements,
 } from '../../../../src/types.js';
 
 export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
   private statements: TStatements;
   private returnType: TOkErrorReturnType;
-  private parameter: TParameterDependency;
+  private parameter: TParameter;
 
   public withStatements(statements: TStatements): DomainCreateBuilder {
     this.statements = statements;
@@ -21,7 +21,7 @@ export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
     return this;
   }
 
-  public withParameter(parameter: TParameterDependency): DomainCreateBuilder {
+  public withParameter(parameter: TParameter): DomainCreateBuilder {
     this.parameter = parameter;
     return this;
   }

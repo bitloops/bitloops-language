@@ -73,7 +73,7 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
   });
 
   const parameterModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependency,
+    type: BitloopsTypesMapping.TParameter,
     value: parameter,
   });
 

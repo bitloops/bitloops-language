@@ -52,7 +52,7 @@ export const VALID_EXPRESSION_TEST_CASES = [
       new ExpressionBuilderDirector().buildIdentifierExpression('isValid'),
       new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
     ),
-    output: 'isValid == true',
+    output: 'isValid === true',
   },
   {
     description: 'AdditiveExpression',

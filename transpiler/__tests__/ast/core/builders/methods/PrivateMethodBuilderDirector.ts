@@ -38,7 +38,7 @@ export class PrivateMethodBuilderDirector {
   buildMethodOkErrorReturnTypeWithNoStatements(methodName: string): TDomainPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
-      .withParameters([])
+      .withParameters({ parameters: [] })
       .withOkErrorReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors('void'),
       )

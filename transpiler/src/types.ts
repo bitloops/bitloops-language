@@ -159,16 +159,19 @@ export type TReadModel = {
   };
 };
 
-export type TParamDependencyType = TBitloopsPrimaryType;
+export type TParameterType = TBitloopsPrimaryType;
 
 export type TParameterIdentifier = string;
-export type TParameterDependency = {
+export type TParameter = {
   parameter: {
-    type: TParamDependencyType;
+    type: TParameterType;
     value: TParameterIdentifier;
   };
 };
-export type TParameterDependencies = TParameterDependency[];
+
+export type TParameterList = {
+  parameters: TParameter[];
+};
 
 // The old TArgumentDependency
 export type TArgument = {
@@ -264,17 +267,15 @@ export type TString = {
 export type TDomainError = {
   message: TExpression;
   errorId: TExpression;
-  parameters?: TParameterDependencies;
-};
+} & Partial<TParameterList>;
 
 export type TDomainRule = {
   DomainRule: {
     domainRuleIdentifier: string;
-    parameters?: TParameterDependencies;
     error: string;
     statements: TStatements;
     isBrokenIfCondition: TCondition;
-  };
+  } & Partial<TParameterList>;
 };
 
 /**
@@ -292,9 +293,9 @@ export type TErrorId = { errorId: TExpression };
 export type TDomainErrors = {
   [DomainErrorKey]: {
     [DomainErrorIdentifier]: TIdentifier;
-    parameters?: TParameterDependencies;
   } & TErrorMessage &
-    TErrorId;
+    TErrorId &
+    Partial<TParameterList>;
 };
 
 export const ApplicationErrorKey = 'ApplicationError';
@@ -302,9 +303,9 @@ export const ApplicationErrorIdentifier = 'identifier';
 export type TApplicationError = {
   [ApplicationErrorKey]: {
     [ApplicationErrorIdentifier]: TIdentifier;
-    parameters?: TParameterDependencies;
   } & TErrorMessage &
-    TErrorId;
+    TErrorId &
+    Partial<TParameterList>;
 };
 
 export type TApplicationErrors = Record<string, TApplicationError>;
@@ -607,9 +608,8 @@ export type TDomainPrivateMethods = TDomainPrivateMethod[];
 
 type TDomainPrivateMethodValues = {
   identifier: TIdentifier;
-  parameters: TParameterDependencies;
   statements: TStatements;
-};
+} & TParameterList;
 
 export type TDomainPrivateMethodValuesPrimaryReturnType = {
   type: TBitloopsPrimaryType;
@@ -629,9 +629,9 @@ export type TDomainPublicMethods = TDomainPublicMethod[];
 export type TDomainPublicMethod = {
   publicMethod: {
     identifier: TIdentifier;
-    parameters: TParameterDependencies;
     statements: TStatements;
-  } & TOkErrorReturnType;
+  } & TOkErrorReturnType &
+    TParameterList;
 };
 
 export type TReturnOkType = {
@@ -659,7 +659,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TParameterDependency;
+    TParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;
@@ -711,9 +711,9 @@ export type TStructDeclaration = {
 };
 
 export type TExecute = {
-  parameters: TParameterDependencies; // ParametersDependencies, e.g. name: string
   statements: TStatements;
-} & TOkErrorReturnType;
+} & TOkErrorReturnType &
+  TParameterList;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';
@@ -736,14 +736,10 @@ export type TUseCase = {
   [UseCaseKey]: {
     [UseCaseIdentifierKey]: TUseCaseIdentifier;
     execute: TExecute;
-    parameters: TParameterDependencies; // TODO maybe make this optional
-  };
+  } & TParameterList;
 };
 
-export type TBaseControllerValues = {
-  // useCase?: string;
-  parameters: TParameterDependencies; // Controller constructor parameters
-};
+export type TBaseControllerValues = TParameterList;
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
 
@@ -1036,9 +1032,8 @@ export type TPackagePort = {
 export type TDefinitionMethodInfo = {
   methodDefinition: {
     identifier: TIdentifier;
-    parameters: TParameterDependencies;
     type: TBitloopsPrimaryType; // return type
-  };
+  } & TParameterList;
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';

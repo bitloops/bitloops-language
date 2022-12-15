@@ -165,6 +165,18 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  buildVariableEqualityExpression(
+    id1: string,
+    id2: string,
+    op: TEqualityOperator = '==',
+  ): ExpressionNode {
+    return this.buildEqualityExpression(
+      this.buildIdentifierExpression(id1),
+      this.buildIdentifierExpression(id2),
+      op,
+    );
+  }
+
   buildAdditiveExpression(
     expr1: ExpressionNode,
     expr2: ExpressionNode,
@@ -285,5 +297,20 @@ export class ExpressionBuilderDirector {
   buildEvaluationExpression(evaluation: EvaluationNode): ExpressionNode {
     const expressionNode = new ExpressionBuilder().withExpression(evaluation).build();
     return expressionNode;
+  }
+
+  buildThisDependencyMethodCall(
+    dependency: string,
+    method: string,
+    args: ArgumentListNode,
+    options?: { await: boolean },
+  ): ExpressionNode {
+    const thisExpression = options?.await
+      ? this.buildModifiedThisExpression('await this')
+      : this.buildThisExpression();
+    const dependencyExpression = this.buildMemberDotExpression(thisExpression, dependency);
+    const methodCallLeftExpr = this.buildMemberDotExpression(dependencyExpression, method);
+    const methodCallExpression = this.buildMethodCallExpression(methodCallLeftExpr, args);
+    return methodCallExpression;
   }
 }

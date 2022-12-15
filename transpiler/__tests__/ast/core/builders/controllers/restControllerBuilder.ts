@@ -1,13 +1,13 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
-  TParameterDependencies,
+  TParameterList,
   TRESTController,
   TRESTControllerExecute,
   TRestMethods,
 } from '../../../../../src/types.js';
 
 export class RestControllerBuilder implements IBuilder<TRESTController> {
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
   private RESTControllerIdentifier: string;
   private method: TRestMethods;
   private execute: TRESTControllerExecute;
@@ -17,7 +17,7 @@ export class RestControllerBuilder implements IBuilder<TRESTController> {
     return this;
   }
 
-  public withParameters(params: TParameterDependencies): RestControllerBuilder {
+  public withParameters(params: TParameterList): RestControllerBuilder {
     this.parameters = params;
     return this;
   }
@@ -36,7 +36,7 @@ export class RestControllerBuilder implements IBuilder<TRESTController> {
     const restController: TRESTController = {
       RESTController: {
         RESTControllerIdentifier: this.RESTControllerIdentifier,
-        parameters: this.parameters,
+        ...this.parameters,
         method: this.method,
         execute: this.execute,
       },

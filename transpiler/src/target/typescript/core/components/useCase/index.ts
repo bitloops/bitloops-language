@@ -102,7 +102,7 @@ const useCaseValuesToTargetLanguage = (
   dependencies = [...dependencies, ...useCaseReturnTypesResult.dependencies];
 
   const useCaseDependenciesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
+    type: BitloopsTypesMapping.TParameterList,
     value: parameters,
   });
   dependencies = [...dependencies, ...useCaseDependenciesResult.dependencies];
@@ -151,7 +151,7 @@ const useCaseExecuteToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   const { parameters, statements } = variable;
   const parameterDependenciesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
+    type: BitloopsTypesMapping.TParameterList,
     value: parameters,
   });
 
