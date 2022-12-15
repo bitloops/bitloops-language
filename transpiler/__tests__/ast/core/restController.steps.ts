@@ -27,7 +27,7 @@ import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js'
 import { validRestControllerStatementTestCases } from './mocks/controllers/restController.js';
 import { RestControllerBuilder } from './builders/controllers/restControllerBuilder.js';
 import {
-  TParameterDependencies,
+  TParameterList,
   TRESTController,
   TRESTControllerExecute,
   TRestMethods,
@@ -79,7 +79,7 @@ const getExpectedRestControllerOutput = ({
   execute,
 }: {
   RESTControllerIdentifier: string;
-  parameters: TParameterDependencies;
+  parameters: TParameterList;
   method: TRestMethods;
   execute: TRESTControllerExecute;
 }): TRESTController => {

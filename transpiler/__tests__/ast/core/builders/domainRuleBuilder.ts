@@ -1,7 +1,7 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TDomainRule,
-  TParameterDependencies,
+  TParameterList,
   TStatements,
   TExpression,
   TCondition,
@@ -9,7 +9,7 @@ import {
 
 export class DomainRuleBuilder implements IBuilder<TDomainRule> {
   private domainRuleIdentifier: string;
-  private parametersList: TParameterDependencies;
+  private parametersList: TParameterList;
   private error: string;
   private statements: TStatements;
   private isBrokenIfCondition: TCondition;
@@ -19,7 +19,7 @@ export class DomainRuleBuilder implements IBuilder<TDomainRule> {
     return this;
   }
 
-  public withParameters(params: TParameterDependencies): DomainRuleBuilder {
+  public withParameters(params: TParameterList): DomainRuleBuilder {
     this.parametersList = params;
     return this;
   }
@@ -43,7 +43,7 @@ export class DomainRuleBuilder implements IBuilder<TDomainRule> {
     const domainRule = {
       DomainRule: {
         domainRuleIdentifier: this.domainRuleIdentifier,
-        parameters: this.parametersList,
+        ...this.parametersList,
         error: this.error,
         statements: this.statements,
         isBrokenIfCondition: this.isBrokenIfCondition,

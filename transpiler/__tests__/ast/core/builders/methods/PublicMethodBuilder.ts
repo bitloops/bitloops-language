@@ -3,13 +3,13 @@ import {
   TDomainPublicMethod,
   TIdentifier,
   TOkErrorReturnType,
-  TParameterDependencies,
+  TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
 
 export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
   private identifier: TIdentifier;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
   private returnType: TOkErrorReturnType;
   private statements: TStatements;
 
@@ -18,7 +18,7 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
     return this;
   }
 
-  public withParameters(parameters: TParameterDependencies): PublicMethodBuilder {
+  public withParameters(parameters: TParameterList): PublicMethodBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -37,7 +37,7 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
     const publicMethod = {
       publicMethod: {
         identifier: this.identifier,
-        parameters: this.parameters,
+        ...this.parameters,
         ...this.returnType,
         statements: this.statements,
       },

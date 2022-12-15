@@ -26,6 +26,7 @@ import {
   RestControllerNodeTSTransformer,
 } from './node-transformers/controllers/index.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
+import { UseCaseNodeTSTransformer } from './node-transformers/use-case.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 
 export class IntermediateModelToASTTargetTransformer
@@ -62,6 +63,8 @@ export class IntermediateModelToASTTargetTransformer
         return new RestControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TGraphQLController:
         return new GraphQLControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TUseCase:
+        return new UseCaseNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:
         return null;
     }

@@ -58,7 +58,7 @@ export const domainCreateEntity = (
   });
 
   const parameterString = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependency,
+    type: BitloopsTypesMapping.TParameter,
     value: parameter,
   });
 

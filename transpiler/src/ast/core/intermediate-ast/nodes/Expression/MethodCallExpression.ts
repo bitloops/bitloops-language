@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
 
 const NAME = 'methodCallExpression';
@@ -48,5 +49,30 @@ export class MethodCallExpressionNode extends ExpressionNode {
       throw new Error('Leftmost expression is not a this expression');
     }
     return leftMostExpression;
+  }
+
+  isThisDependencyMethodCall(dependencyIdentifier: string): boolean {
+    if (!this.isThisMethodCall()) {
+      return false;
+    }
+    const leftMostMemberDotExpression = (
+      this.getExpression() as MemberDotExpressionNode
+    ).getLeftMostMemberDotExpression();
+    return (
+      leftMostMemberDotExpression.getIdentifierExpression().identifierName === dependencyIdentifier
+    );
+  }
+
+  private isThisMethodCall(): boolean {
+    const expression = this.getExpression();
+
+    if (!expression.isMemberDotExpression()) {
+      return false;
+    }
+    const leftMostExpression = expression.getLeftMostExpression();
+    if (!leftMostExpression.isThisExpression()) {
+      return false;
+    }
+    return true;
   }
 }

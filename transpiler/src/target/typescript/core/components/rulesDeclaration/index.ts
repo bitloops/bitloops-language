@@ -19,9 +19,9 @@
  */
 import {
   TDomainRule,
-  TParameterDependencies,
   TTargetDependenciesTypeScript,
   TDependencyChildTypescript,
+  TParameterList,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -51,15 +51,12 @@ const initialRuleLangMapping: any = (ruleName: string) =>
 
 const finalRuleLangMapping: any = '}';
 
-const getErrorStringMapping: any = (
-  errorString: string,
-  paramDependencies: TParameterDependencies,
-) => {
+const getErrorStringMapping: any = (errorString: string, paramDependencies: TParameterList) => {
   // TODO handle the param dependencies of error differently
   let errorStringRes = `public Error = new ${errorString}`;
   errorStringRes += '(';
-  if (paramDependencies && paramDependencies.length > 0) {
-    paramDependencies.forEach((paramDependency) => {
+  if (paramDependencies && paramDependencies.parameters.length > 0) {
+    paramDependencies.parameters.forEach((paramDependency) => {
       errorStringRes += `this.${paramDependency.parameter.value}`;
     });
   }
@@ -116,7 +113,7 @@ export const ruleDeclarationToTargetLanguage = (
   let parameters: TTargetDependenciesTypeScript;
   if (rule.parameters && rule.parameters.length !== 0) {
     parameters = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TParameterDependencies,
+      type: BitloopsTypesMapping.TParameterList,
       value: rule.parameters,
     });
     dependencies.push(...parameters.dependencies);

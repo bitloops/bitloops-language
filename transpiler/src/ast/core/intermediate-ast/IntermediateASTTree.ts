@@ -5,7 +5,12 @@ import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
-import { TControllerUseCaseExecuteNodeType } from '../types.js';
+import { TControllerUseCaseExecuteNodeType, TVariableDeclarationStatement } from '../types.js';
+import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
+import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
+import { VariableDeclarationNode } from './nodes/variableDeclaration.js';
+import { EntityEvaluationNode } from './nodes/Expression/Evaluation/EntityEvaluation.js';
+import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueObjectEvaluation.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -214,7 +219,62 @@ export class IntermediateASTTree {
     return nodeResult as TControllerUseCaseExecuteNodeType;
   }
 
-  updateIdentifierNodesAfterStatement(
+  getIdentifiersOfDomainEvaluations(statements: StatementNode[]): string[] {
+    const identifiers: string[] = [];
+
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpression();
+      if (!expression.isEvaluation()) {
+        return false;
+      }
+      const evaluation = expression.getEvaluationChild();
+
+      const evaluationIsDomainEvaluation =
+        evaluation instanceof EntityEvaluationNode ||
+        evaluation instanceof ValueObjectEvaluationNode;
+      if (!evaluationIsDomainEvaluation) {
+        return false;
+      }
+      return true;
+    };
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
+  getIdentifierExpressionNodesInStatements(
+    statements: StatementNode[],
+    identifiers: string[],
+  ): IdentifierExpressionNode[] {
+    const getIdentifierPredicate = (node: IntermediateASTNode): boolean =>
+      node instanceof IdentifierExpressionNode && identifiers.includes(node.identifierName);
+
+    const nodes: IdentifierExpressionNode[] = [];
+    for (const statement of statements) {
+      const identifiersOfStatements = this.getNodesWithPolicy(
+        statement,
+        getIdentifierPredicate,
+      ) as IdentifierExpressionNode[];
+      nodes.push(...identifiersOfStatements);
+    }
+    return nodes;
+  }
+
+  updateIdentifierExpressionNodesAfterStatement(
     baseStatement: StatementNode,
     identifierToReplace: string,
     newIdentifier: string,
@@ -234,6 +294,21 @@ export class IntermediateASTTree {
       nextStatement = nextStatement.getNextSibling();
     }
     nodes.forEach((node) => (node.identifierName = newIdentifier));
+  }
+
+  public getMethodCallsThatUseThisDependencies(
+    dependencies: string[],
+    statements: StatementNode[],
+  ): MethodCallExpressionNode[] {
+    const policy = (node: IntermediateASTNode): boolean =>
+      node instanceof MethodCallExpressionNode &&
+      dependencies.some((dep) => node.isThisDependencyMethodCall(dep));
+
+    const result = statements.reduce((acc, statement) => {
+      const methodCalls = this.getNodesWithPolicy(statement, policy) as MethodCallExpressionNode[];
+      return [...acc, ...methodCalls];
+    }, [] as MethodCallExpressionNode[]);
+    return result;
   }
 
   // private getNodesAfterPolicy<T = IntermediateASTNode>(
