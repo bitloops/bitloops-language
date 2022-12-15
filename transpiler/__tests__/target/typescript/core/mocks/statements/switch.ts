@@ -1,12 +1,12 @@
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
-import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
+import { SwitchStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/SwitchStatementNode.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { SwitchStatementBuilderDirector } from '../../builders/statement/switchDirector.js';
 
 type TestCase = {
   description: string;
-  switchStatement: IfStatementNode;
+  switchStatement: SwitchStatementNode;
   output: string;
 };
 
