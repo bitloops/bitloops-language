@@ -343,7 +343,7 @@ export type TBuiltInClassEvaluation = {
 //   evaluateFalse?: TEvaluation;
 // };
 export type TEvaluationValues =
-  | TRegularEvaluation
+  | TRegularEvaluation //TODO remove
   | TStructEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
@@ -521,12 +521,12 @@ export type TReturnStatement = {
 
 export const returnOKKey = 'returnOK';
 export type TReturnOKStatement = {
-  [returnOKKey]: TExpression;
+  [returnOKKey]: TExpression | null;
 };
 
 export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
-  [returnErrorKey]: TExpression;
+  [returnErrorKey]: TExpression | null;
 };
 
 export type TConstDecompositionNested = {

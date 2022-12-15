@@ -7,6 +7,7 @@ import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { IdentifierBuilder } from '../identifier.js';
 import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../returnOkErrorTypeBuilderDirector.js';
+import { StatementDirector } from '../statement/statementDirector.js';
 import { StatementListDirector } from '../statement/statementListDirector.js';
 import { PrivateMethodBuilder } from './PrivateMethodBuilder.js';
 
@@ -41,7 +42,7 @@ export class PrivateMethodBuilderDirector {
       .withOkErrorReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors('void'),
       )
-      .withStatements([])
+      .withStatements([new StatementDirector().buildEmptyReturnOK()])
       .build();
   }
 

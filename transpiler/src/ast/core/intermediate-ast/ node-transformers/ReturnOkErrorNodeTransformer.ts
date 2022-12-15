@@ -6,8 +6,8 @@ import { NodeModelToTargetASTTransformer } from './index.js';
 
 export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransformer<ReturnOkErrorTypeNode> {
   run(): void {
+    this.addReturnOkVoidStatement();
     this.modifyReturnOKErrorStatements();
-    // this.addReturnOkVoidStatement();
   }
 
   private modifyReturnOKErrorStatements(): void {
@@ -36,21 +36,18 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
     }
   }
 
-  // private addReturnOkVoidStatement(): void {
-  //   const parentNode = this.node.getParent();
-  //   const returnStatements = this.tree.getReturnStatementsOfNode(parentNode);
-  //   // console.log('returnStatements', returnStatements);
-  //   if (returnStatements.length === 0) {
-  //     const returnOKNode = new ReturnOKStatementNodeBuilder().build();
+  private addReturnOkVoidStatement(): void {
+    const parentNode = this.node.getParent();
+    const returnStatements = this.tree.getReturnStatementsOfNode(parentNode);
+    if (returnStatements.length === 0) {
+      const returnOKNode = new ReturnOKStatementNodeBuilder().build();
 
-  //     //We only have one statementList
-  //     const [statementListNode] = parentNode
-  //       .getChildren()
-  //       .filter((node) => node.IsStatementListNode());
+      //We only have one statementList
+      const [statementListNode] = parentNode
+        .getChildren()
+        .filter((node) => node.IsStatementListNode());
 
-  //     statementListNode.addChild(returnOKNode);
-  //     // this.node.addChild(statementListNode);
-  //     // this.tree.buildValueRecursiveBottomUp(this.node); // this is moved in the run method
-  //   }
-  // }
+      statementListNode.addChild(returnOKNode);
+    }
+  }
 }

@@ -138,6 +138,7 @@ export class UseCaseExecuteBuilderDirector {
             },
           ],
         }),
+        new StatementDirector().buildEmptyReturnOK(),
       ])
       .build();
 

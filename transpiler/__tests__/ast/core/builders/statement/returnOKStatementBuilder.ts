@@ -10,10 +10,10 @@ export class ReturnOKStatementBuilder implements IBuilder<TReturnOKStatement> {
   }
 
   public build(): TReturnOKStatement {
-    const retunStatement = {
-      [returnOKKey]: this.expression,
+    const returnStatement = {
+      [returnOKKey]: this.expression ?? null,
     };
 
-    return retunStatement;
+    return returnStatement;
   }
 }

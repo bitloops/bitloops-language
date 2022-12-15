@@ -158,6 +158,7 @@ export const validEntityTestCases = [
                   'completed',
                   'completed',
                 ),
+                new StatementDirector().buildEmptyReturnOK(),
               ])
               .build(),
           ])
