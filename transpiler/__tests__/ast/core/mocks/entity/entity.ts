@@ -14,6 +14,7 @@ import { PublicMethodBuilder } from '../../builders/methods/PublicMethodBuilder.
 import { StatementDirector } from '../../builders/statement/statementDirector.js';
 import { StatementListDirector } from '../../builders/statement/statementListDirector.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
+import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -157,6 +158,102 @@ export const validEntityTestCases = [
                   'completed',
                   'completed',
                 ),
+              ])
+              .build(),
+          ])
+          .build(),
+      )
+      .build(),
+  },
+  {
+    description: 'Entity with public methods that returns error and ok accordingly',
+    fileId: 'testFile.bl',
+    inputBLString: fs.readFileSync(`${__dirname}/entityCheckReturnOkErrorStatement.bl`).toString(),
+    expected: new EntityDeclarationBuilder()
+      .withIdentifier('TodoEntity')
+      .withValues(
+        new EntityValuesBuilder()
+          .withCreate(
+            new DomainCreateBuilderDirector().buildCreateEntityWithError({
+              entityName: 'TodoEntity',
+              entityPropsName: 'TodoProps',
+              entityPropsIdentifier: 'props',
+              errorName: 'DomainErrors.InvalidTitleError',
+            }),
+          )
+          .withPrivateMethods([])
+          .withPublicMethods([
+            new PublicMethodBuilder()
+              .withIdentifier(new IdentifierBuilder().withName('returnError').build())
+              .withParameters([])
+              .withReturnType(
+                new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+                  'TodoEntity',
+                  'DomainErrors.InvalidTitleError',
+                ),
+              )
+              .withStatements([
+                new StatementDirector().buildConstDeclarationWithErrorEvaluation({
+                  name: 'entityRes',
+                  errorIdentifier: 'DomainErrors.InvalidTitleError',
+                }),
+                new StatementDirector().buildIfStatement({
+                  condition: new ExpressionBuilderDirector().buildEqualityExpression(
+                    new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+                    new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+                  ),
+                  thenStatements:
+                    new StatementListDirector().buildOneReturnStatementErrorEvaluation(
+                      'DomainErrors.InvalidTitleError',
+                    ),
+                  elseStatements: [
+                    new StatementDirector().buildReturnErrorStatement(
+                      new ExpressionBuilderDirector().buildIdentifierExpression('entityRes'),
+                    ),
+                  ],
+                }),
+              ])
+              .build(),
+            new PublicMethodBuilder()
+              .withIdentifier(new IdentifierBuilder().withName('returnOk').build())
+              .withParameters([])
+              .withReturnType(
+                new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+                  'TodoEntity',
+                  'DomainErrors.InvalidTitleError',
+                ),
+              )
+              .withStatements([
+                new StatementDirector().buildConstDeclarationWithErrorEvaluation({
+                  name: 'entityRes',
+                  errorIdentifier: 'DomainErrors.InvalidTitleError',
+                }),
+                new StatementDirector().buildIfStatement({
+                  condition: new ExpressionBuilderDirector().buildEqualityExpression(
+                    new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+                    new ExpressionBuilderDirector().buildInt32LiteralExpression(1),
+                  ),
+                  thenStatements:
+                    new StatementListDirector().buildOneReturnStatementErrorEvaluation(
+                      'DomainErrors.InvalidTitleError',
+                    ),
+                  elseStatements: [
+                    new StatementDirector().buildConstDeclarationWithEntityEvaluation({
+                      name: 'entityRes',
+                      entityIdentifier: 'TodoEntity',
+                      entityFields: [
+                        new EvaluationFieldBuilderDirector().buildIntEvaluationField('id', 7),
+                        new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+                          'title',
+                          'Super important',
+                        ),
+                      ],
+                    }),
+                    new StatementDirector().buildReturnOKStatement(
+                      new ExpressionBuilderDirector().buildIdentifierExpression('entityRes'),
+                    ),
+                  ],
+                }),
               ])
               .build(),
           ])

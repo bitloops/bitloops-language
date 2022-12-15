@@ -10,14 +10,4 @@ Entity TodoEntity {
     uncomplete(completed: bool): (OK(void), Errors()) {     
         this.completed = completed;
     } 
-
-    // public greet(): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {
-    //     const entityRes = TodoEntity({id: 8, title: 'Super important'});
-    //     if (1 == 1) {
-    //         return DomainErrors.InvalidTitleError(); 
-    //     } else {
-    //         const entityRes = TodoEntity({id: 7, title: 'Super important'});
-    //         return entityRes;
-    //     }  
-    // }
 }

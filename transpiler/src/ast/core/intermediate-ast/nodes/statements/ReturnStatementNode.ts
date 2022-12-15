@@ -32,10 +32,12 @@ export class ReturnStatementNode extends StatementNode {
     } else if (expression.isIdentifierExpression()) {
       const identifierName = expression.getIdentifierName();
 
-      const expressionOfDeclaredIdentifier =
-        parentStatementList.getExpressionOfDeclaredIdentifier(identifierName);
+      const expressionOfDeclaredIdentifier = this.getExpressionOfIdentifierInScope(
+        parentStatementList,
+        identifierName,
+      );
       if (!expressionOfDeclaredIdentifier) {
-        // here should check parent statement list of outter scope
+        // This error should be checked in validation (previous step)
         throw new Error(`This identifier ${identifierName} has not been declared!`);
       }
 
@@ -47,5 +49,32 @@ export class ReturnStatementNode extends StatementNode {
       }
     }
     return false;
+  }
+
+  getParentStatementList(): StatementListNode | null {
+    let parent = this.getParent();
+    while (!parent.isRoot()) {
+      if (parent instanceof StatementListNode) {
+        return parent;
+      }
+      parent = parent.getParent();
+    }
+    return null;
+  }
+
+  private getExpressionOfIdentifierInScope(
+    parentStatementList: StatementListNode,
+    identifierName: string,
+  ): ExpressionNode | null {
+    if (parentStatementList) {
+      const expressionOfDeclaredIdentifier =
+        parentStatementList.getExpressionOfDeclaredIdentifier(identifierName);
+      if (!expressionOfDeclaredIdentifier) {
+        parentStatementList = parentStatementList.getParentStatementList();
+        return this.getExpressionOfIdentifierInScope(parentStatementList, identifierName);
+      }
+      return expressionOfDeclaredIdentifier;
+    }
+    return null;
   }
 }

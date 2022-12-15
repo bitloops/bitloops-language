@@ -58,12 +58,6 @@ export class PublicMethodBuilderDirector {
           entityName,
         ),
       )
-      .withStatements(
-        new StatementListDirector().buildOneReturnStatementEntityEvaluationWithFields(
-          entityName,
-          entityFields,
-        ),
-      )
       .withStatements([
         new StatementDirector().buildConstDeclarationWithEntityEvaluation({
           name: identifierName,

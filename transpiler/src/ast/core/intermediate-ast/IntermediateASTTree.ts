@@ -8,7 +8,6 @@ import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
-import { StatementListNode } from './nodes/statements/StatementList.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -197,14 +196,6 @@ export class IntermediateASTTree {
   getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): ReturnStatementNode[] {
     const policy = (node: IntermediateASTNode): boolean => node instanceof ReturnStatementNode;
     return this.getNodesWithPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
-  }
-
-  getStatementListParentNode(intermediateASTNode: IntermediateASTNode): StatementListNode | null {
-    let parent = intermediateASTNode.getParent();
-    while (!(parent instanceof StatementListNode)) {
-      parent = parent.getParent();
-    }
-    return parent;
   }
 
   private getNodesWithPolicy(

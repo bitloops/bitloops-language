@@ -26,4 +26,15 @@ export class StatementListNode extends IntermediateASTNode {
     }
     return expression;
   }
+
+  getParentStatementList(): StatementListNode | null {
+    let parent = this.getParent();
+    while (!parent.isRoot()) {
+      if (parent instanceof StatementListNode) {
+        return parent;
+      }
+      parent = parent.getParent();
+    }
+    return null;
+  }
 }
