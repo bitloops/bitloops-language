@@ -45,6 +45,7 @@ const domainErrorsToTargetLanguage = (
   }
   return { output: result, dependencies };
 };
+
 const convertToString = (value: TRegularEvaluation): TString | TBackTickString => {
   const body = value.regularEvaluation;
   if (body.type === 'string') {
@@ -61,6 +62,8 @@ const domainErrorToTargetLanguage = (
   const { message, errorId, parameters } = variable;
 
   // TODO: throw error if message is not a string or backtick string
+
+  //TODO remove regular Evaluation
   const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
   const messageText: TString | TBackTickString = convertToString(messageRegularEval);
   const messageResult = messageToTargetLanguage(messageText);

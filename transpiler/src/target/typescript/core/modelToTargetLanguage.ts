@@ -321,7 +321,7 @@ const modelToTargetLanguage = (props: {
       res = backTickStringToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TDomainErrors: {
+    case BitloopsTypesMapping.TDomainError: {
       res = domainErrorsToTargetLanguage(value);
       break;
     }
