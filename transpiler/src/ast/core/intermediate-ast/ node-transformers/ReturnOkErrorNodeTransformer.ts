@@ -47,7 +47,9 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
         .getChildren()
         .filter((node) => node.IsStatementListNode());
 
-      statementListNode.addChild(returnOKNode);
+      if (statementListNode) {
+        statementListNode.addChild(returnOKNode);
+      }
     }
   }
 }
