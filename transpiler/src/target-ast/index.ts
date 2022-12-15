@@ -25,6 +25,7 @@ import {
   GraphQLControllerNodeTSTransformer,
   RestControllerNodeTSTransformer,
 } from './node-transformers/controllers/index.js';
+import { DomainCreateNodeTSTransformer } from './node-transformers/domainMethods/index.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 
@@ -62,6 +63,8 @@ export class IntermediateModelToASTTargetTransformer
         return new RestControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TGraphQLController:
         return new GraphQLControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TDomainCreateMethod:
+        return new DomainCreateNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:
         return null;
     }

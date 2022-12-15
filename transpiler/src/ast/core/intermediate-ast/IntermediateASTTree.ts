@@ -6,6 +6,7 @@ import { StatementNode } from './nodes/statements/Statement.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 import { TControllerUseCaseExecuteNodeType } from '../types.js';
+import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpression.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -212,6 +213,12 @@ export class IntermediateASTTree {
       return null;
     }
     return nodeResult as TControllerUseCaseExecuteNodeType;
+  }
+
+  getMemberDotExpressions(intermediateASTNode: IntermediateASTNode): MemberDotExpressionNode[] {
+    const policy = (node: IntermediateASTNode): boolean => node instanceof MemberDotExpressionNode;
+
+    return this.getNodesWithPolicy(intermediateASTNode, policy) as MemberDotExpressionNode[];
   }
 
   updateIdentifierNodesAfterStatement(
