@@ -1,12 +1,16 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { ConstDeclarationNode } from './ConstDeclarationNode.js';
-// import { MethodCallExpressionNode } from './Expression/MethodCallExpression.js';
 import { IntermediateASTNode } from '../IntermediateASTNode.js';
+import { VariableDeclarationNode } from '../variableDeclaration.js';
+import { ConstDeclarationNode } from './ConstDeclarationNode.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 
 export abstract class StatementNode extends IntermediateASTNode {
   isConstDeclarationNode(): this is ConstDeclarationNode {
     return this.getNodeType() === BitloopsTypesMapping.TConstDeclaration;
+  }
+
+  isVariableDeclarationNode(): this is VariableDeclarationNode {
+    return this.getNodeType() === BitloopsTypesMapping.TVariableDeclaration;
   }
 
   isUseCaseExecuteStatementNode = (): this is ConstDeclarationNode => {

@@ -26,7 +26,7 @@ export class UseCaseExecuteBuilderDirector {
           .build(),
       )
       .withStatements([
-        new StatementDirector().buildReturnStatement(
+        new StatementDirector().buildReturnOKStatement(
           new ExpressionBuilderDirector().buildEvaluation(
             new EvaluationBuilderDirector().buildDTOEvaluation('HelloWorldResponseDTO', [
               new EvaluationFieldBuilderDirector().buildStringEvaluationField(
@@ -86,7 +86,7 @@ export class UseCaseExecuteBuilderDirector {
             },
           ],
         }),
-        new StatementDirector().buildReturnStatement(
+        new StatementDirector().buildReturnOKStatement(
           new ExpressionBuilderDirector().buildEvaluation(
             new EvaluationBuilderDirector().buildDTOEvaluation('CreateTodoResponseDTO', [
               new EvaluationFieldBuilderDirector().buildEvaluationField(
@@ -139,6 +139,7 @@ export class UseCaseExecuteBuilderDirector {
             },
           ],
         }),
+        new StatementDirector().buildEmptyReturnOK(),
       ])
       .build();
 

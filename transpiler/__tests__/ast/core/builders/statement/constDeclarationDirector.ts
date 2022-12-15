@@ -243,6 +243,26 @@ export class ConstDeclarationBuilderDirector {
       .build();
     return constDeclaration;
   }
+
+  buildConstDeclarationWithErrorEvaluation({
+    name,
+    errorIdentifier,
+    args,
+  }: {
+    name: string;
+    errorIdentifier: string;
+    args?: TArgumentList;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildErrorEvaluation(errorIdentifier, args),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
 }
 
 export class VariableDeclarationBuilderDirector {

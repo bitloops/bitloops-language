@@ -573,9 +573,8 @@ variableDeclaration
 //     ;
 
 
-statement
-    : block                         
-    | expression    
+statement                       
+    : expression    
     | variableDeclaration
     | constDeclaration
     // | thisDeclaration
@@ -608,10 +607,6 @@ applyRuleStatementRulesList
 
 applyRulesRule
     : domainRuleIdentifier methodArguments
-    ;
-
-block
-    : OpenBrace statementList? CloseBrace
     ;
 
 statementList
@@ -657,7 +652,7 @@ emptyStatement_
     ;
 
 ifStatement
-    : If OpenParen condition CloseParen statement (Else statement)?
+    : If OpenParen condition CloseParen OpenBrace statementList CloseBrace (Else OpenBrace statementList CloseBrace)?
     ;
 
 

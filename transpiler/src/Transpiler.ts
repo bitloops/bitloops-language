@@ -114,6 +114,7 @@ export default class Transpiler {
         intermediateModelOutput.intermediateSetupModel = intermediateModelSetup;
       }
     }
+
     return intermediateModelOutput;
   }
 
@@ -121,7 +122,7 @@ export default class Transpiler {
     intermediateModel: TIntermediateModel,
     _options: TTranspileOptions,
   ): TIntermediateModel {
-    // TODO uncomment this and create class for model to model transformations for specific lnguages
+    // TODO uncomment this and create class for model to model transformations for specific languages
     const targetLanguageAST =
       this.intermediateModelToASTTargetLanguageTransformer.transform(intermediateModel);
     return targetLanguageAST;

@@ -1,7 +1,5 @@
-import { IntermediateASTNode } from './IntermediateASTNode.js';
+import { IntermediateASTNode, ROOT_TYPE } from './IntermediateASTNode.js';
 
-const NAME = 'Root';
-const NODE_TYPE = 'Root';
 const ROOT_METADATA = {
   start: {
     line: -1,
@@ -14,7 +12,9 @@ const ROOT_METADATA = {
 };
 
 export class IntermediateASTRootNode extends IntermediateASTNode {
+  private static rootName = 'Root';
+
   constructor() {
-    super(NODE_TYPE as any, ROOT_METADATA, NAME);
+    super(ROOT_TYPE, ROOT_METADATA, IntermediateASTRootNode.rootName);
   }
 }

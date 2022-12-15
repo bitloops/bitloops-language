@@ -53,4 +53,8 @@ export class ExpressionNode extends StatementNode {
   isEvaluation(): this is EvaluationNode {
     return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
   }
+
+  getEvaluation(): EvaluationNode {
+    return this.getChildren()[0] as EvaluationNode;
+  }
 }

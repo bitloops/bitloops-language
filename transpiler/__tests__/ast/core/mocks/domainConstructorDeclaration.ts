@@ -32,7 +32,7 @@ export const validDomainConstructorDeclarationCases = [
       'JestTestCreateMethodDeclaration { constructor(props: NameProps): (OK(NameVO), Errors(DomainErrors.InvalidName)) { return regName.test( name ); } }',
     expected: new DomainCreateBuilder()
       .withStatements(
-        new StatementListDirector().buildOneReturnStatementWithMethodCallExpression({
+        new StatementListDirector().buildOneReturnOKStatementWithMethodCallExpression({
           identifierExpressionName: 'regName',
           methodName: 'test',
           argument: 'name',
