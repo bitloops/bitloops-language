@@ -27,14 +27,14 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
       return intermediateASTTree;
     }
 
-    const completedASTTree = this.completeIntermediateASTTree(intermediateASTTree);
-
-    const validationResult = this.validateIntermediateASTTree(completedASTTree);
+    const validationResult = this.validateIntermediateASTTree(intermediateASTTree);
     if (isIntermediateASTValidationErrors(validationResult)) {
       return validationResult;
     }
 
-    return intermediateASTTree;
+    const completedASTTree = this.completeIntermediateASTTree(intermediateASTTree);
+
+    return completedASTTree;
   }
 
   private originalASTToIntermediateASTTree(
