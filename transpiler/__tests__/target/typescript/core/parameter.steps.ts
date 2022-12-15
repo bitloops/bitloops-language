@@ -17,24 +17,25 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { VALID_EXPRESSION_TEST_CASES } from './mocks/expression/expression.js';
+import { VALID_PARAMETER_TEST_CASES } from './mocks/parameter.js';
 
-describe('Valid expression test cases', () => {
+describe('Valid parameter test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
   const language = 'TypeScript';
 
-  VALID_EXPRESSION_TEST_CASES.forEach((testCase) => {
+  VALID_PARAMETER_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const expressionNode = testCase.expression;
-      tree.insertChild(expressionNode);
+      const input = testCase.parameter;
+      tree.insertChild(input);
 
       const intermediateAST = {
         [boundedContext]: { [module]: tree },

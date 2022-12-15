@@ -286,4 +286,19 @@ export class ExpressionBuilderDirector {
     const expressionNode = new ExpressionBuilder().withExpression(evaluation).build();
     return expressionNode;
   }
+
+  buildThisDependencyMethodCall(
+    dependency: string,
+    method: string,
+    args: ArgumentListNode,
+    options?: { await: boolean },
+  ): ExpressionNode {
+    const thisExpression = options?.await
+      ? this.buildModifiedThisExpression('await this')
+      : this.buildThisExpression();
+    const dependencyExpression = this.buildMemberDotExpression(thisExpression, dependency);
+    const methodCallLeftExpr = this.buildMemberDotExpression(dependencyExpression, method);
+    const methodCallExpression = this.buildMethodCallExpression(methodCallLeftExpr, args);
+    return methodCallExpression;
+  }
 }

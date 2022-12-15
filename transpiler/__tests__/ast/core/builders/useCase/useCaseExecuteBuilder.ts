@@ -2,14 +2,14 @@ import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/
 import {
   TExecute,
   TOkErrorReturnType,
-  TParameterDependencies,
+  TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
 
 export class UseCaseExecuteBuilder implements IBuilder<TExecute> {
   private statements: TStatements;
   private returnType: TOkErrorReturnType;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
 
   public withReturnType(returnType: TOkErrorReturnType): UseCaseExecuteBuilder {
     this.returnType = returnType;
@@ -21,7 +21,7 @@ export class UseCaseExecuteBuilder implements IBuilder<TExecute> {
     return this;
   }
 
-  public withParameterList(parameters: TParameterDependencies): UseCaseExecuteBuilder {
+  public withParameterList(parameters: TParameterList): UseCaseExecuteBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -30,7 +30,7 @@ export class UseCaseExecuteBuilder implements IBuilder<TExecute> {
     const useCaseExecute = {
       statements: this.statements,
       ...this.returnType,
-      parameters: this.parameters,
+      ...this.parameters,
     };
 
     return useCaseExecute;

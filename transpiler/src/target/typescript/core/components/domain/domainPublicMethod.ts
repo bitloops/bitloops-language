@@ -11,7 +11,7 @@ const domainPublicMethod = (methodInfo: TDomainPublicMethod): TTargetDependencie
   });
 
   const parametersString = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
+    type: BitloopsTypesMapping.TParameterList,
     value: parameters,
   });
 

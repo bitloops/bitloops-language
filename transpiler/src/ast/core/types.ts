@@ -23,3 +23,5 @@ export type TControllerUseCaseExecuteNodeType =
   | ConstDeclarationNode
   | VariableDeclarationNode
   | ExpressionNode;
+
+export type TVariableDeclarationStatement = ConstDeclarationNode | VariableDeclarationNode;

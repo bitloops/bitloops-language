@@ -40,4 +40,12 @@ export class MemberDotExpressionNode extends ExpressionNode {
     }
     return expression;
   }
+
+  getLeftMostMemberDotExpression(): MemberDotExpressionNode {
+    const expression = this.getExpression();
+    if (expression.isMemberDotExpression()) {
+      return expression.getLeftMostMemberDotExpression();
+    }
+    return this;
+  }
 }

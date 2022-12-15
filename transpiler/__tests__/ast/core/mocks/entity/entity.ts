@@ -14,6 +14,7 @@ import { PublicMethodBuilder } from '../../builders/methods/PublicMethodBuilder.
 import { StatementDirector } from '../../builders/statement/statementDirector.js';
 import { StatementListDirector } from '../../builders/statement/statementListDirector.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
+import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,7 +86,7 @@ export const validEntityTestCases = [
           .withPublicMethods([
             new PublicMethodBuilder()
               .withIdentifier(new IdentifierBuilder().withName('greet').build())
-              .withParameters([])
+              .withParameters(new ParameterListBuilderDirector().buildParams([]))
               .withReturnType(
                 new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
                   'TodoEntity',
@@ -128,7 +129,7 @@ export const validEntityTestCases = [
           .withPublicMethods([
             new PublicMethodBuilder()
               .withIdentifier(new IdentifierBuilder().withName('greet').build())
-              .withParameters([])
+              .withParameters(new ParameterListBuilderDirector().buildParams([]))
               .withReturnType(
                 new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
                   'TodoEntity',
@@ -143,9 +144,11 @@ export const validEntityTestCases = [
               .build(),
             new PublicMethodBuilder()
               .withIdentifier(new IdentifierBuilder().withName('uncomplete').build())
-              .withParameters([
-                new ParameterBuilderDirector().buildPrimitiveParameter('completed', 'bool'),
-              ])
+              .withParameters(
+                new ParameterListBuilderDirector().buildParams([
+                  new ParameterBuilderDirector().buildPrimitiveParameter('completed', 'bool'),
+                ]),
+              )
               .withReturnType(
                 new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors(
                   'void',
