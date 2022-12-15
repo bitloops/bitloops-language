@@ -165,6 +165,18 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  buildVariableEqualityExpression(
+    id1: string,
+    id2: string,
+    op: TEqualityOperator = '==',
+  ): ExpressionNode {
+    return this.buildEqualityExpression(
+      this.buildIdentifierExpression(id1),
+      this.buildIdentifierExpression(id2),
+      op,
+    );
+  }
+
   buildAdditiveExpression(
     expr1: ExpressionNode,
     expr2: ExpressionNode,
