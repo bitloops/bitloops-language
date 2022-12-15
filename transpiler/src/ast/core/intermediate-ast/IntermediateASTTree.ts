@@ -260,14 +260,14 @@ export class IntermediateASTTree {
     statements: StatementNode[],
     identifiers: string[],
   ): IdentifierExpressionNode[] {
-    const predicate = (node: IntermediateASTNode): boolean =>
+    const getIdentifierPredicate = (node: IntermediateASTNode): boolean =>
       node instanceof IdentifierExpressionNode && identifiers.includes(node.identifierName);
 
     const nodes: IdentifierExpressionNode[] = [];
     for (const statement of statements) {
       const identifiersOfStatements = this.getNodesWithPolicy(
         statement,
-        predicate,
+        getIdentifierPredicate,
       ) as IdentifierExpressionNode[];
       nodes.push(...identifiersOfStatements);
     }

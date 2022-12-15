@@ -17,22 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TParameterDependencies,
-  TRESTControllerExecute,
-  TRestMethods,
-} from '../../../../../src/types.js';
+import { TParameterList, TRESTControllerExecute, TRestMethods } from '../../../../../src/types.js';
 import { StatementDirector } from '../../builders/statement/statementDirector.js';
 import { ArgumentBuilderDirector } from '../../builders/argumentDirector.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
-import { RestExecuteBuilder } from '../../builders/controllers/restControllerExecuteBuilder copy.js';
+import { RestExecuteBuilder } from '../../builders/controllers/restControllerExecuteBuilder.js';
 
 type RestControllerDeclarationTestCase = {
   description: string;
   fileId: string;
   inputBLString: string;
   RESTControllerIdentifier: string;
-  parameters: TParameterDependencies;
+  parameters: TParameterList;
   method: TRestMethods;
   execute: TRESTControllerExecute;
 };
@@ -48,7 +44,7 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
       } 
     }`,
     RESTControllerIdentifier: 'HelloWorldController',
-    parameters: [],
+    parameters: { parameters: [] },
     method: 'GET',
     execute: new RestExecuteBuilder()
       .withRequestReply('request', 'response')
@@ -71,12 +67,14 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
       }
     }`,
     RESTControllerIdentifier: 'HelloWorldController',
-    parameters: [
-      new ParameterBuilderDirector().buildIdentifierParameter(
-        'helloWorldUseCase',
-        'HelloWorldUseCase',
-      ),
-    ],
+    parameters: {
+      parameters: [
+        new ParameterBuilderDirector().buildIdentifierParameter(
+          'helloWorldUseCase',
+          'HelloWorldUseCase',
+        ),
+      ],
+    },
     method: 'POST',
     execute: new RestExecuteBuilder()
       .withRequestReply('request', 'response')

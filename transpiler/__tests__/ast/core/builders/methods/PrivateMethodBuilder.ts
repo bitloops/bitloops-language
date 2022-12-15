@@ -6,13 +6,13 @@ import {
   TDomainPrivateMethodValuesPrimaryReturnType,
   TIdentifier,
   TOkErrorReturnType,
-  TParameterDependencies,
+  TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
 
 export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
   private identifier: TIdentifier;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
   private primaryReturnType: TBitloopsPrimaryType;
   private okErrorReturnType: TOkErrorReturnType;
   private statements: TStatements;
@@ -22,7 +22,7 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     return this;
   }
 
-  public withParameters(parameters: TParameterDependencies): PrivateMethodBuilder {
+  public withParameters(parameters: TParameterList): PrivateMethodBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -45,7 +45,7 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
   public build(): TDomainPrivateMethod {
     const privateMethodValues = {
       identifier: this.identifier,
-      parameters: this.parameters,
+      ...this.parameters,
       statements: this.statements,
     };
 

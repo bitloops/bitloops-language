@@ -225,11 +225,11 @@ const modelToTargetLanguage = (props: {
       res = expressionValuesToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TParameterDependency: {
+    case BitloopsTypesMapping.TParameter: {
       res = parameterDependencyToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TParameterDependencies: {
+    case BitloopsTypesMapping.TParameterList: {
       res = parameterDependenciesToTargetLanguage(value);
       break;
     }

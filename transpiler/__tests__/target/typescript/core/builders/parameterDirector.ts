@@ -2,7 +2,11 @@ import { ParameterIdentifierNodeBuilder } from '../../../../../src/ast/core/inte
 import { ParameterNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
 import { ParameterIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
-import { TBitloopsIdentifier, TBitloopsPrimitives } from '../../../../../src/types.js';
+import {
+  TBitloopsBuiltInClasses,
+  TBitloopsIdentifier,
+  TBitloopsPrimitives,
+} from '../../../../../src/types.js';
 import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class ParameterBuilderDirector {
@@ -29,6 +33,26 @@ export class ParameterBuilderDirector {
     return this.builder
       .withIdentifier(this.parameterIdentifier(parameterName))
       .withType(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(identifierType))
+      .build();
+  }
+
+  buildIdentifierArrayParameter(
+    parameterName: string,
+    identifierType: TBitloopsIdentifier,
+  ): ParameterNode {
+    return this.builder
+      .withIdentifier(this.parameterIdentifier(parameterName))
+      .withType(new BitloopsPrimaryTypeDirector().buildArrayIdentifierPrimaryType(identifierType))
+      .build();
+  }
+
+  buildBuiltInClassParameter(
+    parameterName: string,
+    builtInType: TBitloopsBuiltInClasses,
+  ): ParameterNode {
+    return this.builder
+      .withIdentifier(this.parameterIdentifier(parameterName))
+      .withType(new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(builtInType))
       .build();
   }
 

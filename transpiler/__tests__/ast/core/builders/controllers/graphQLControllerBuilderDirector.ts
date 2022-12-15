@@ -1,6 +1,7 @@
 import { TGraphQLController, TGraphQLOperation } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
 import { ParameterBuilderDirector } from '../ParameterBuilderDirector.js';
+import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
 import { StatementDirector } from '../statement/statementDirector.js';
 import { GraphQLControllerBuilder } from './graphQLControllerBuilder.js';
 import { GraphQLExecuteBuilder } from './graphQLExecuteBuilder.js';
@@ -23,7 +24,7 @@ export class GraphQLControllerBuilderDirector {
   }): TGraphQLController {
     const controller = this.graphQLControllerBuilder
       .withIdentifier(identifier)
-      .withParameterList([])
+      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withInputType(inputType)
       .withOperationType(operationType)
       .withExecute(
@@ -50,7 +51,7 @@ export class GraphQLControllerBuilderDirector {
   }): TGraphQLController {
     const controller = this.graphQLControllerBuilder
       .withIdentifier(identifier)
-      .withParameterList([])
+      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withInputType(null)
       .withOperationType(operationType)
       .withExecute(
@@ -85,9 +86,11 @@ export class GraphQLControllerBuilderDirector {
   }): TGraphQLController {
     const controller = this.graphQLControllerBuilder
       .withIdentifier(identifier)
-      .withParameterList([
-        new ParameterBuilderDirector().buildIdentifierParameter(param.identifier, param.type),
-      ])
+      .withParameterList(
+        new ParameterListBuilderDirector().buildParams([
+          new ParameterBuilderDirector().buildIdentifierParameter(param.identifier, param.type),
+        ]),
+      )
       .withInputType(inputType)
       .withOperationType(operationType)
       .withExecute(

@@ -3,14 +3,14 @@ import {
   TExpression,
   DomainErrorKey,
   TDomainErrors,
-  TParameterDependencies,
   TIdentifier,
+  TParameterList,
 } from '../../../../src/types.js';
 
 export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
   private message: TExpression;
   private errorId: TExpression;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
   private identifierName: TIdentifier;
   public withIdentifier(identifier: TIdentifier): DomainErrorBuilder {
     this.identifierName = identifier;
@@ -24,7 +24,7 @@ export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
     this.errorId = errorId;
     return this;
   }
-  public withParameters(parameters: TParameterDependencies): DomainErrorBuilder {
+  public withParameters(parameters: TParameterList): DomainErrorBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -35,7 +35,7 @@ export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
         identifier: this.identifierName,
         message: this.message,
         errorId: this.errorId,
-        parameters: this.parameters,
+        ...this.parameters,
       },
     };
 

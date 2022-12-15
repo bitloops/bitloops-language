@@ -35,7 +35,7 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
   });
 
   const parametersString = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
+    type: BitloopsTypesMapping.TParameterList,
     value: methodInfo.privateMethod.parameters,
   });
   const privateMethodValues = methodInfo.privateMethod;

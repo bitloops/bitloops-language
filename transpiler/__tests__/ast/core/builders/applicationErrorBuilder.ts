@@ -1,16 +1,16 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TExpression,
-  TParameterDependencies,
   TIdentifier,
   ApplicationErrorKey,
   TApplicationError,
+  TParameterList,
 } from '../../../../src/types.js';
 
 export class ApplicationErrorBuilder implements IBuilder<TApplicationError> {
   private message: TExpression;
   private errorId: TExpression;
-  private parameters: TParameterDependencies;
+  private parameters: TParameterList;
   private identifierName: TIdentifier;
   public withIdentifier(identifier: TIdentifier): ApplicationErrorBuilder {
     this.identifierName = identifier;
@@ -24,7 +24,7 @@ export class ApplicationErrorBuilder implements IBuilder<TApplicationError> {
     this.errorId = errorId;
     return this;
   }
-  public withParameters(parameters: TParameterDependencies): ApplicationErrorBuilder {
+  public withParameters(parameters: TParameterList): ApplicationErrorBuilder {
     this.parameters = parameters;
     return this;
   }
@@ -35,7 +35,7 @@ export class ApplicationErrorBuilder implements IBuilder<TApplicationError> {
         identifier: this.identifierName,
         message: this.message,
         errorId: this.errorId,
-        parameters: this.parameters,
+        ...this.parameters,
       },
     };
 
