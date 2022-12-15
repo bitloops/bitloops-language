@@ -17,94 +17,45 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/props.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_PROPS_DECLARATION_TEST_CASES } from './mocks/propsDeclaration.js';
 
-defineFeature(feature, (test) => {
-  let propsType;
-  let result;
-  let value;
+describe('Valid props declaration test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Props with one or two variables to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      propsType = type;
-    });
+  VALID_PROPS_DECLARATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.propsDeclaration;
+      tree.insertChild(input);
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
+      };
 
-    given(/^I have a prop (.*)$/, (prop) => {
-      value = prop;
-    });
-
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: propsType,
-        value: propsValue,
+      // when
+      const targetGenerator = new BitloopsTargetGenerator();
+      const result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
-    });
-  });
-
-  test('Props with no variables to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      propsType = type;
-    });
-
-    and(/^language is "(.*)"$/, (_lang) => {});
-
-    given(/^I have a prop (.*)$/, (prop) => {
-      value = prop;
-    });
-
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      result = () => {
-        modelToTargetLanguage({
-          type: propsType,
-          value: propsValue,
-        });
-      };
-    });
-
-    then(/^I should see the (.*) output$/, (error) => {
-      expect(result).toThrow(error);
-    });
-  });
-
-  test('Props with variables not formatted as array to Typescript', ({
-    given,
-    and,
-    when,
-    then,
-  }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      propsType = type;
-    });
-
-    and(/^language is "(.*)"$/, (_lang) => {});
-
-    given(/^I have a prop (.*)$/, (prop) => {
-      value = prop;
-    });
-
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      result = () => {
-        modelToTargetLanguage({
-          type: propsType,
-          value: propsValue,
-        });
-      };
-    });
-
-    then(/^I should see the (.*) output$/, (error) => {
-      expect(result).toThrow(error);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });
