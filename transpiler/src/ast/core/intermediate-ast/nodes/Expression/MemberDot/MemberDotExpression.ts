@@ -48,4 +48,13 @@ export class MemberDotExpressionNode extends ExpressionNode {
     }
     return this;
   }
+
+  hasMethodCallExpressionParent(): boolean {
+    const expressionNode = this.getParent() as ExpressionNode;
+    const expressionNodeParent = expressionNode.getParent();
+    if (expressionNodeParent.getNodeType() === BitloopsTypesMapping.TMethodCallExpression) {
+      return true;
+    }
+    return false;
+  }
 }

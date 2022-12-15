@@ -49,7 +49,7 @@ describe('Expression is valid', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   generalExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -81,7 +81,7 @@ describe('Method call invocation', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validMethodCallTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -113,7 +113,7 @@ describe('Literal is valid', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validExpressionLiteralTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -145,7 +145,7 @@ describe('Identifier is valid', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validExpressionIdentifierTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -209,7 +209,7 @@ describe('Assignment expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validAssignmentExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -241,7 +241,7 @@ describe('Array literal expression test cases', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validArrayLiteralExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -273,7 +273,7 @@ describe('Additive expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validAdditiveExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -305,7 +305,7 @@ describe('Multiplicative Expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validMultiplicativeExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -337,7 +337,7 @@ describe('Relational Expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validRelationalExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -368,7 +368,7 @@ describe('Equality expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validEqualityExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -399,7 +399,7 @@ describe('Logical And Expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validLogicalAndExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -430,7 +430,7 @@ describe('Logical Or Expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validLogicalOrExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,
@@ -462,7 +462,7 @@ describe('Logical XOR Expression', () => {
   const intermediateParser = new BitloopsIntermediateASTParser();
 
   validXorExpressionTestCases.forEach((testCase) => {
-    test.skip(`${testCase.description}`, () => {
+    test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse([
         {
           boundedContext: BOUNDED_CONTEXT,

@@ -1,3 +1,6 @@
+import { IdentifierExpressionBuilder } from '../../../ast/core/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
+import { MemberDotExpressionNodeBuilder } from '../../../ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { ThisExpressionNodeBuilder } from '../../../ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { DomainCreateNode } from '../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
 import { IntermediateASTNode } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
@@ -16,15 +19,18 @@ class BaseDomainMethodNodeTSTransformer<
       return;
     }
 
-    // if (executeStatement.isExpressionNode()) {
-    //   return this.handleAwaitOfPlainMethodCall(executeStatement);
-    // }
-
-    // const expression = executeStatement.getExpression();
-    // if (!expression.isMethodCallExpression()) {
-    //   throw new Error('Method call expression not found');
-    // }
-    // this.prependAwaitToMethodCallNode(expression);
+    for (const memberDotExpr of memberDotExpressions) {
+      const expressionNode = memberDotExpr.getExpression();
+      if (expressionNode.isThisExpression() && !memberDotExpr.hasMethodCallExpressionParent()) {
+        const thisExpression = new ThisExpressionNodeBuilder().build();
+        const propsIdentifier = new IdentifierExpressionBuilder().withValue('props').build();
+        new MemberDotExpressionNodeBuilder()
+          .withExpression(thisExpression)
+          .withIdentifier(propsIdentifier)
+          .build();
+        // memberDotExpr.replaceChild(expressionNode, expressionWithThisDotProps);
+      }
+    }
   }
 }
 
