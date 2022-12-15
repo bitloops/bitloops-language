@@ -530,13 +530,13 @@ export type TReturnErrorStatement = {
   [returnErrorKey]: TExpression | null;
 };
 
-export type TConstDecompositionNested = {
-  names: string[];
-} & TEvaluation;
+// export type TConstDecompositionNested = {
+//   names: string[];
+// } & TEvaluation;
 
-export type TConstDecomposition = {
-  constDecomposition: TConstDecompositionNested;
-};
+// export type TConstDecomposition = {
+//   constDecomposition: TConstDecompositionNested;
+// };
 
 export type TConstDeclarationValue = {
   identifier: string;
@@ -589,7 +589,6 @@ export type TStatement =
   | TReturnStatement
   | TReturnOKStatement
   | TReturnErrorStatement
-  | TConstDecomposition
   | TConstDeclaration
   | TThisDeclaration
   | TVariableDeclaration

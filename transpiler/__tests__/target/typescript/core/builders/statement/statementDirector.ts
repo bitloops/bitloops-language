@@ -1,12 +1,10 @@
-import { ConditionNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
-import { ElseStatementsNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ElseStatements.js';
-import { IfStatementBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/IfStatementBuilder.js';
-import { ThenStatementsNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ThenStatements.js';
+import { BreakStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/BreakStatement.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
+import { IfStatementBuilderDirector } from './ifStatementDirector.js';
 
 export class StatementBuilderDirector {
   /**
@@ -27,20 +25,14 @@ export class StatementBuilderDirector {
     thenStatements: StatementNode[],
     elseStatements?: StatementNode[],
   ): IfStatementNode {
-    const conditionNode = new ConditionNodeBuilder(null).withExpression(condition).build();
-    const thenStatementsNode = new ThenStatementsNodeBuilder(null)
-      .withStatements(thenStatements)
-      .build();
-    const elseStatementsNode = elseStatements
-      ? new ElseStatementsNodeBuilder(null).withStatements(elseStatements).build()
-      : null;
-    const ifNode = new IfStatementBuilder(null)
-      .withCondition(conditionNode)
-      .withThenStatements(thenStatementsNode);
+    return new IfStatementBuilderDirector().buildIfStatement(
+      condition,
+      thenStatements,
+      elseStatements,
+    );
+  }
 
-    if (elseStatementsNode) {
-      ifNode.withElseStatements(elseStatementsNode);
-    }
-    return ifNode.build();
+  buildBreakStatement(): StatementNode {
+    return new BreakStatementNodeBuilder().build();
   }
 }
