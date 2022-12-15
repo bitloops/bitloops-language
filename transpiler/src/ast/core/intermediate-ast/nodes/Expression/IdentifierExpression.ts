@@ -2,19 +2,27 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
-const NAME = 'identifier';
 export class IdentifierExpressionNode extends ExpressionNode {
+  private static identifierExpressionNodeName = 'identifier';
+
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
     this.nodeType = BitloopsTypesMapping.TIdentifierExpression;
-    this.classNodeName = NAME;
+    this.classNodeName = IdentifierExpressionNode.identifierExpressionNodeName;
+  }
+
+  public getIdentifierName(): string {
+    const identifierClassNodeName = this.getClassNodeName();
+    const identifierValue = this.getValue();
+    const identifierName: string = identifierValue[identifierClassNodeName];
+    return identifierName;
   }
 
   get identifierName(): string {
-    return this.getValue()[NAME];
+    return this.getValue()[IdentifierExpressionNode.identifierExpressionNodeName];
   }
 
   set identifierName(value: string) {
-    this.setValue({ [NAME]: value });
+    this.setValue({ [IdentifierExpressionNode.identifierExpressionNodeName]: value });
   }
 }

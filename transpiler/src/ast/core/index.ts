@@ -2,7 +2,8 @@ import { BitloopsLanguageASTContext } from '../../index.js';
 import { TBoundedContexts } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
-import { IntermediateASTValidator } from './IntermediateASTValidator.js';
+import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
+import { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';
 import {
   IntermediateASTParserError,
   IntermediateASTValidationError,
@@ -13,9 +14,11 @@ import {
 
 export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
   private validator: IIntermediateASTValidator;
+  private intermediateASTTransformer: IntermediateASTToCompletedIntermediateASTTransformer;
 
   constructor() {
     this.validator = new IntermediateASTValidator();
+    this.intermediateASTTransformer = new IntermediateASTToCompletedIntermediateASTTransformer();
   }
 
   parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTError {
@@ -23,12 +26,15 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
     if (isIntermediateASTParserError(intermediateASTTree)) {
       return intermediateASTTree;
     }
+
     const validationResult = this.validateIntermediateASTTree(intermediateASTTree);
     if (isIntermediateASTValidationErrors(validationResult)) {
       return validationResult;
     }
 
-    return intermediateASTTree;
+    const completedASTTree = this.completeIntermediateASTTree(intermediateASTTree);
+
+    return completedASTTree;
   }
 
   private originalASTToIntermediateASTTree(
@@ -58,6 +64,10 @@ export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTPa
       }
     }
     return boundedContexts;
+  }
+
+  private completeIntermediateASTTree(intermediateASTTree: TBoundedContexts): TBoundedContexts {
+    return this.intermediateASTTransformer.complete(intermediateASTTree);
   }
 
   private validateIntermediateASTTree(

@@ -22,19 +22,20 @@ import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/I
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { VALID_PROPS_DECLARATION_TEST_CASES } from './mocks/propsDeclaration.js';
+import { VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES } from './mocks/statements/builtinFunction.js';
 
-describe('Valid props declaration test cases', () => {
+describe('Built in function test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
   const language = 'TypeScript';
 
-  VALID_PROPS_DECLARATION_TEST_CASES.forEach((testCase) => {
+  VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const input = testCase.propsDeclaration;
+      const input = testCase.builtinFunction;
+
       tree.insertChild(input);
 
       const intermediateAST = {

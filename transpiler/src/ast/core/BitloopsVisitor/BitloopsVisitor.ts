@@ -480,10 +480,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return defaultClauseVisitor(this, ctx);
   }
 
-  visitBlock(ctx: BitloopsParser.BlockContext) {
-    return this.visit(ctx.statementList());
-  }
-
   visitBreakStatement(): BreakStatementNode {
     return new BreakStatementNodeBuilder().build();
   }

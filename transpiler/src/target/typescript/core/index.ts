@@ -19,19 +19,11 @@
  */
 import {
   TBitloopsTargetContent,
-  // TBoundedContexts,
-  // TClassType,
-  // TComponentType,
   TContextData,
   TDependencyParentTypescript,
-  // ISetupData,
 } from '../../../types.js';
-// import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
-// import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
-// import { deepClone } from '../../../utils/deepClone.js';
-// import { IntermediateASTNode } from '../../../refactoring-arch/intermediate-ast/nodes/IntermediateASTNode.js';
 import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
 import {
   BitloopsTargetGeneratorError,
@@ -51,9 +43,7 @@ interface IBitloopsIntermediateASTToTarget {
 }
 
 export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateASTToTarget {
-  // private getComponentType(classType: TClassType): TComponentType {
-  //   return mappingClassTypeToComponentType[classType] as TComponentType;
-  // }
+  å;
 
   ASTToTarget(
     params: TBitloopsTargetGeneratorParams,
@@ -96,38 +86,6 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
             fileContent: generatedString,
           });
         });
-        // for (const classType of Object.keys(intermediateAST[boundedContextName][moduleName])) {
-        //   const componentType = this.getComponentType(classType as TClassType);
-        //   for (const [componentName, component] of Object.entries(
-        //     intermediateAST[boundedContextName][moduleName][classType],
-        //   )) {
-        //     try {
-        //       const componentCopy = deepClone(component);
-        //       const transformedIntermediateAST = modelToTypescriptModel({
-        //         type: componentType,
-        //         value: { [componentName]: componentCopy },
-        //       });
-        //       const generatedString = modelToTargetLanguage({
-        //         type: componentType,
-        //         value: transformedIntermediateAST,
-        //         setupData,
-        //         contextData,
-        //         model: intermediateAST,
-        //       });
-
-        //       result.push({
-        //         boundedContext: boundedContextName,
-        //         module: moduleName,
-        //         classType: classType,
-        //         className: componentName,
-        //         fileContent: generatedString,
-        //       });
-        //     } catch (error) {
-        //       console.log('BitloopsTargetGeneratorError', error);
-        //       return new BitloopsTargetGeneratorError(error.message);
-        //     }
-        //   }
-        // }
       }
     }
     return result;

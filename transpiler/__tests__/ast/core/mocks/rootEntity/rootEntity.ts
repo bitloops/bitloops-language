@@ -99,7 +99,7 @@ export const validRootEntityTestCases = [
                   name: 'id',
                   intLiteral: 67,
                 }),
-                new StatementDirector().buildReturnStatement(
+                new StatementDirector().buildReturnOKStatement(
                   new StatementDirector().buildExpressionEntityEvaluationWithFields('TodoEntity', [
                     new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField('id', 'id'),
                   ]),
@@ -161,6 +161,7 @@ export const validRootEntityTestCases = [
                   'completed',
                   'completed',
                 ),
+                new StatementDirector().buildEmptyReturnOK(),
               ])
               .build(),
           ])

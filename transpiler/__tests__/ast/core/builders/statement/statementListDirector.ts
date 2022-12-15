@@ -36,6 +36,7 @@ export class StatementListDirector {
         name,
         intLiteral,
       }),
+      new StatementDirector().buildEmptyReturnOK(),
     ];
   }
 
@@ -61,6 +62,28 @@ export class StatementListDirector {
     ];
   }
 
+  buildOneReturnOKStatementWithMethodCallExpression({
+    identifierExpressionName,
+    methodName,
+    argument,
+  }: {
+    identifierExpressionName: string;
+    methodName: string;
+    argument: string;
+  }): TStatements {
+    return [
+      new StatementDirector().buildReturnOKStatement(
+        new ExpressionBuilderDirector().buildMethodCallExpression(
+          new ExpressionBuilderDirector().buildMemberExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression(identifierExpressionName),
+            methodName,
+          ),
+          [new ArgumentBuilderDirector().buildIdentifierArgument(argument)],
+        ),
+      ),
+    ];
+  }
+
   buildOneBooleanReturnStatement(boolValue: boolean): TStatements {
     const expression = new ExpressionBuilderDirector().buildBooleanLiteralExpression(boolValue);
     return [new StatementDirector().buildReturnStatement(expression)];
@@ -75,7 +98,7 @@ export class StatementListDirector {
         expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
       }),
     );
-    return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
+    return [new StatementDirector().buildReturnOKStatement(expressionEntityEvaluation)];
   }
 
   buildOneReturnStatementEntityEvaluationWithFields(
@@ -87,7 +110,7 @@ export class StatementListDirector {
         fields,
       }),
     );
-    return [new StatementDirector().buildReturnStatement(expressionEntityEvaluation)];
+    return [new StatementDirector().buildReturnOKStatement(expressionEntityEvaluation)];
   }
 
   buildOneReturnStatementErrorEvaluation(
@@ -97,6 +120,6 @@ export class StatementListDirector {
     const expressionErrorEvaluation = new ExpressionBuilderDirector().buildEvaluation(
       new EvaluationBuilderDirector().buildErrorEvaluation(errorIdentifier, args),
     );
-    return [new StatementDirector().buildReturnStatement(expressionErrorEvaluation)];
+    return [new StatementDirector().buildReturnErrorStatement(expressionErrorEvaluation)];
   }
 }
