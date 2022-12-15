@@ -17,12 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// import { defineFeature, loadFeature } from 'jest-cucumber';
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 import { VALID_EXPRESSION_TEST_CASES } from './mocks/expression/expression.js';
 
 describe('Valid expression test cases', () => {
