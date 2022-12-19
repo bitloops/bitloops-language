@@ -705,7 +705,7 @@ export type TStructDeclaration = {
 export type TExecute = {
   statements: TStatements;
 } & TOkErrorReturnType &
-  TParameterList;
+  Partial<TParameter>;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';

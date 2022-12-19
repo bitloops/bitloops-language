@@ -30,23 +30,26 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
-const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
-  const useCasesKeys = Object.keys(useCases);
-  let result = '';
-  let dependencies = [];
-  for (let i = 0; i < useCasesKeys.length; i++) {
-    const useCaseName = useCasesKeys[i];
-    const useCaseValues = useCases[useCaseName];
-    const useCaseValuesModel = useCaseValuesToTargetLanguage(useCaseValues, useCaseName);
-    const useCaseValuesToTargetLanguageOutput = useCaseValuesModel.output;
-    const useCaseValuesToTargetLanguageDependencies = useCaseValuesModel.dependencies;
-
-    dependencies = [...dependencies, ...useCaseValuesToTargetLanguageDependencies];
-    result += useCaseValuesToTargetLanguageOutput;
-  }
-
-  return { output: result, dependencies: [...dependencies] };
-};
+const USE_CASE_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Application',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'ok',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 
 const initialUseCase = (
   returnTypesResult: string,
@@ -66,35 +69,13 @@ const initialUseCase = (
   return result;
 };
 
-const useCaseValuesToTargetLanguage = (
-  variable: TUseCase,
-  useCaseName: string,
-): TTargetDependenciesTypeScript => {
-  let dependencies: TDependenciesTypeScript = [
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Application',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'Either',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-    {
-      type: 'absolute',
-      default: false,
-      value: 'ok',
-      from: '@bitloops/bl-boilerplate-core',
-    },
-  ];
-  const { execute, parameters } = variable[UseCaseKey];
+const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesTypeScript => {
+  const { execute, parameters, UseCaseIdentifier: useCaseName } = useCase[UseCaseKey];
   const { returnType } = execute;
-  const useCaseInputType = execute.parameters[0] ? execute.parameters[0].parameter.type : null;
+  const useCaseInputType = execute.parameter ? execute.parameter.type : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
+  let dependencies = USE_CASE_DEPENDENCIES;
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: returnType,
@@ -129,7 +110,7 @@ const useCaseValuesToTargetLanguage = (
 
   // TODO fix dependencies (statements, and  execute.parameterDependencies[0], e.g input DTO)
   const executeResult = useCaseExecuteToTargetLanguage(
-    variable[UseCaseKey].execute,
+    useCase[UseCaseKey].execute,
     useCaseResponseTypeName,
   );
 
@@ -149,10 +130,10 @@ const useCaseExecuteToTargetLanguage = (
   variable: TExecute,
   responseTypeName: string,
 ): TTargetDependenciesTypeScript => {
-  const { parameters, statements } = variable;
+  const { parameter, statements } = variable;
   const parameterDependenciesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterList,
-    value: parameters,
+    type: BitloopsTypesMapping.TParameter,
+    value: parameter,
   });
 
   const statementsResult = modelToTargetLanguage({
