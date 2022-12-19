@@ -1,3 +1,10 @@
+---
+sidebar_label: GraphQLController
+title: Bitloops Language - GraphQLController - Basic Syntax 
+description: GraphQLController syntax on Bitloops Language - GraphQLController is a controller specifically for GraphQL which Bitloops has defined up-front. 
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, GraphQLController]
+---
+
 # GraphQLController
 
 GraphQL Controllers act like a resolver, while also defining their schema. You define the operation input which must be a DTO declared inside the same module with the Controller.

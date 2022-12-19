@@ -1,8 +1,12 @@
 ---
 sidebar_position: 6
+sidebar_label: FAQs
+title: FAQs - Frequently Asked Questions 
+description: List of questions that are frequently asked by Bitloops users. Answers about the Bitloops Platform, Bitloops Language, User Accounts and software develompent in general 
+keywords: [faqs, bitloops platform, bitloops language, software development, clean architecture, bdd, tdd, ddd, clean code, software design patterns]
 ---
 
-# FAQ
+# FAQs
 
 Below you'll find answers to the questions Bitloops gets asked the most. 
 

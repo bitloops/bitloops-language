@@ -1,8 +1,13 @@
 ---
 sidebar_position: 2
+sidebar_label: Domain Driven Design
+title: Domain Driven Design - What is it and how to apply it?
+description: Domain driven design is a software development approach that focuses on the core, value adding activities of an application, empowering software engineers to build robust, maintainable and flexible software.
+keywords: [domain driven design, ddd, bounded context, ubiquitous language, context mapping, Eric Evans]
 ---
 
 # Domain-Driven Design
+
 
 ## Introduction
 Domain-Driven Design (DDD) is a software development approach or methodology that focuses on developing a deep and thorough understanding of a domain (think business problem), and creating a model that maps out the processes and rules of said domain. 

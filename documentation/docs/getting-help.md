@@ -1,5 +1,9 @@
 ---
 sidebar_position: 7
+sidebar_label: Getting Help
+title: Bitloops - How to get Help? 
+description: Need help with Bitloops? We have several channels you can access to get some help with the Bitloops Platform, Bitloops Language or any other topic regarding your software development project 
+keywords: [microservices, microservices architecture, software architecture, software design patterns]
 ---
 
 # Getting Help

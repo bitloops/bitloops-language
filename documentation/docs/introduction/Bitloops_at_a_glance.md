@@ -1,5 +1,9 @@
 ---
 sidebar_position: 2
+sidebar_label: Bitloops @ a Glance!
+title: Bitloops Summary - Concise explanation of what is Bitloops
+description: Want to learn more about Bitloops? This article provides a concise description of what Bitloops is, our vision and how it can help you build better software, faster!
+keywords: [bitloops, bitloops tutorial, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
 
 # 👀 Bitloops @ a Glance

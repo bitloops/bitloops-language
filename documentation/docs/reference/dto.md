@@ -1,3 +1,10 @@
+---
+sidebar_label: DTO
+title: Bitloops Language - DTO - Basic Syntax 
+description: DTO syntax on Bitloops Language - DTOs are data transfer objects, meaning their sole responsibility is to transfer objects from one service to another, and correct configuration of these DTOs reduces communication costs considerably.  
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, dto]
+---
+
 # Data Transfer Object (DTO)
 
 

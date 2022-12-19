@@ -1,3 +1,10 @@
+---
+sidebar_label: RepoPort
+title: Bitloops Language - RepoPort - Basic Syntax 
+description: RepoPort syntax on Bitloops Language - Repository Ports allows developers to declare an interface to connect different databases easily using a Repository Adapter.
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, repoport, repository port]
+---
+
 # RepoPort
 
 The RepoPort component is a tool which will help you declare an interface in order to plug in different databases easily (via RepositoryAdapter).
