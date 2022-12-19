@@ -44,6 +44,19 @@ export class EvaluationBuilderDirector {
     return evaluationNode;
   }
 
+  buildEntityEvaluationWithExpression(
+    entityName: string,
+    expressionNode: ExpressionNode,
+  ): EvaluationNode {
+    const entityEvaluationNode =
+      new EntityEvaluationBuilderDirector().buildEntityEvaluationWithExpression(
+        entityName,
+        expressionNode,
+      );
+    const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
+
   buildErrorEvaluation(
     identifier: string,
     argumentDependencies?: ArgumentListNode,

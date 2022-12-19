@@ -18,7 +18,7 @@ export abstract class StatementNode extends IntermediateASTNode {
       return false;
     }
 
-    const expressionNode = this.getExpression();
+    const expressionNode = this.getExpressionValues();
     if (!expressionNode.isMethodCallExpression()) {
       return false;
     }

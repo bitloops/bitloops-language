@@ -6,6 +6,7 @@ import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
+import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpression.js';
 import { TControllerUseCaseExecuteNodeType, TVariableDeclarationStatement } from '../types.js';
 import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
@@ -173,6 +174,12 @@ export class IntermediateASTTree {
     return nodeResult as TControllerUseCaseExecuteNodeType;
   }
 
+  getMemberDotExpressions(intermediateASTNode: IntermediateASTNode): MemberDotExpressionNode[] {
+    const policy = (node: IntermediateASTNode): boolean => node instanceof MemberDotExpressionNode;
+
+    return this.getNodesWithPolicy(intermediateASTNode, policy) as MemberDotExpressionNode[];
+  }
+
   getIdentifiersOfDomainEvaluations(statements: StatementNode[]): string[] {
     const identifiers: string[] = [];
 
@@ -182,7 +189,7 @@ export class IntermediateASTTree {
       if (!statementIsVariableDeclaration) {
         return false;
       }
-      const expression = node.getExpression();
+      const expression = node.getExpressionValues();
       if (!expression.isEvaluation()) {
         return false;
       }

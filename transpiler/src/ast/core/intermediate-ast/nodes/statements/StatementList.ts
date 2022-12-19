@@ -20,7 +20,7 @@ export class StatementListNode extends IntermediateASTNode {
       if (statement.isConstDeclarationNode() || statement.isVariableDeclarationNode()) {
         const identifierNode = statement.getIdentifier();
         if (identifierName === identifierNode.getIdentifierName()) {
-          expression = statement.getExpression();
+          expression = statement.getExpressionValues();
         }
       }
     }

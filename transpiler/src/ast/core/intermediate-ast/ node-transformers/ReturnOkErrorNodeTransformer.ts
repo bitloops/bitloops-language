@@ -15,7 +15,7 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
     const returnStatementNodes = this.tree.getReturnStatementsOfNode(parentNode);
     for (const returnStatementNode of returnStatementNodes) {
       const parentStatementListNode = returnStatementNode.getParentStatementList();
-      const expressionOfReturnStatement = returnStatementNode.getExpression();
+      const expressionOfReturnStatement = returnStatementNode.getExpressionValues();
       const newExpression = new ExpressionBuilder()
         .withExpression(expressionOfReturnStatement)
         .build();
