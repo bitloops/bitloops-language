@@ -17,23 +17,25 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TTargetDependenciesTypeScript, TThisDeclaration } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { TIdentifierExpr, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import { getChildDependencies } from '../../../dependencies.js';
 
-const thisDeclarationToTargetLanguage = (
-  variable: TThisDeclaration,
+const isErrorTypeEvaluationString = (value: string): boolean =>
+  value.startsWith('DomainErrors.') || value.startsWith('ApplicationErrors.');
+
+const identifierExpressionToTargetLanguage = (
+  expressionValue: TIdentifierExpr,
 ): TTargetDependenciesTypeScript => {
-  const { name: variableName, expression } = variable.thisDeclaration;
+  let dependencies = [];
+  const { identifier } = expressionValue;
+  if (isErrorTypeEvaluationString(identifier)) {
+    dependencies = getChildDependencies(identifier);
+  }
 
-  const expressionResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: { expression },
-  });
-
-  const thisResult = `${variableName} = ${expressionResult.output}`;
-
-  return { output: thisResult, dependencies: expressionResult.dependencies };
+  return {
+    output: expressionValue.identifier,
+    dependencies,
+  };
 };
 
-export { thisDeclarationToTargetLanguage };
+export { identifierExpressionToTargetLanguage };

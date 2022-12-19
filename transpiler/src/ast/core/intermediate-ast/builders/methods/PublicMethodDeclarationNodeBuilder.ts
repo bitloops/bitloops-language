@@ -13,7 +13,7 @@ export class PublicMethodDeclarationNodeBuilder implements IBuilder<PublicMethod
   private returnType: ReturnOkErrorTypeNode;
   private statements: StatementListNode;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.publicMethodDeclarationNode = new PublicMethodDeclarationNode(metadata);
   }
 

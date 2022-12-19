@@ -32,6 +32,7 @@ import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/Pa
 import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
 import { UseCaseExecuteNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseExecuteNodeBuilder.js';
 import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { ParameterNode } from '../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
 
 export const useCaseDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -56,17 +57,14 @@ export const useCaseExecuteDeclarationVisitor = (
   ctx: BitloopsParser.UseCaseExecuteDeclarationContext,
 ): UseCaseExecuteNode => {
   const returnTypeNode: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
-  const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
+  const parameterNode: ParameterNode = ctx.parameter() ? thisVisitor.visit(ctx.parameter()) : null;
   const statementListNode: StatementListNode = thisVisitor.visit(ctx.functionBody());
 
-  //TODO add statementsWithModifiedReturn in model to model
-  // const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnTypes);
   const metadata = produceMetadata(ctx, thisVisitor);
-  const executeNode = new UseCaseExecuteNodeBuilder(metadata)
-    .withParameterList(parameterListNode)
+  const executeNodeBuilder = new UseCaseExecuteNodeBuilder(metadata)
     .withStatementList(statementListNode)
-    .withReturnType(returnTypeNode)
-    .build();
+    .withReturnType(returnTypeNode);
+  if (parameterNode) executeNodeBuilder.withParameter(parameterNode);
 
-  return executeNode;
+  return executeNodeBuilder.build();
 };

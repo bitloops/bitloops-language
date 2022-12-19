@@ -922,7 +922,7 @@ applicationErrorIdentifier
     : DomainErrorIdentifier;
 
 useCaseExecuteDeclaration
-    : Execute parameterList? Colon returnOkErrorType OpenBrace functionBody CloseBrace
+    : Execute OpenParen parameter? CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 restControllerParameters

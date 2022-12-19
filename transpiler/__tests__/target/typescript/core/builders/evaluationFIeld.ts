@@ -25,4 +25,8 @@ export class EvaluationFieldBuilderDirector {
     const int32Expression = new ExpressionBuilderDirector().buildInt32LiteralExpression(value);
     return this.buildEvaluationField(name, int32Expression);
   }
+  buildMemberDotEvaluationField(name: string, ...members: string[]): EvaluationFieldNode {
+    const expression = new ExpressionBuilderDirector().buildMemberDotOutOfVariables(...members);
+    return this.buildEvaluationField(name, expression);
+  }
 }

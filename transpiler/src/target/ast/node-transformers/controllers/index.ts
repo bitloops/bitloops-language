@@ -11,7 +11,6 @@ class BaseControllerNodeTSTransformer<
   run(): void {
     this.transformAwait();
     this.transformDotValue();
-    this.tree.buildValueRecursiveBottomUp(this.node);
   }
 
   private transformAwait(): void {
@@ -24,7 +23,7 @@ class BaseControllerNodeTSTransformer<
       return this.handleAwaitOfPlainMethodCall(executeStatement);
     }
 
-    const expression = executeStatement.getExpression();
+    const expression = executeStatement.getExpressionValues();
     if (!expression.isMethodCallExpression()) {
       throw new Error('Method call expression not found');
     }

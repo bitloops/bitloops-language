@@ -88,7 +88,6 @@ import { evaluationFieldsToTargetLanguage } from './components/statements/expres
 import { domainEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEvaluation.js';
 import { entityEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityEvaluation.js';
 import { entityToTargetLanguage } from './components/entity/index.js';
-import { thisDeclarationToTargetLanguage } from './components/statements/thisDeclaration.js';
 import { repoPortToTargetLanguage } from './components/repo/repoPort/repoPort.js';
 import {
   additiveOperatorToTargetLanguage,
@@ -246,10 +245,10 @@ const modelToTargetLanguage = (props: {
       res = constDeclarationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TThisDeclaration: {
-      res = thisDeclarationToTargetLanguage(value);
-      break;
-    }
+    // case BitloopsTypesMapping.TThisDeclaration: {
+    //   res = thisDeclarationToTargetLanguage(value);
+    //   break;
+    // }
     case BitloopsTypesMapping.TDefaultCase: {
       res = defaultSwitchCaseToTargetLanguage(value);
       break;

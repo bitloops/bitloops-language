@@ -186,14 +186,14 @@ export const VALID_DTO_EVALUATION_TEST_CASES = [
   {
     description: 'DTO evaluation',
     evaluation: new EvaluationBuilderDirector().buildDTOEvaluation(
-      new DTOIdentifierNodeBuilder().withName('AddCourceDTO').build(),
+      new DTOIdentifierNodeBuilder().withName('AddCourseDTO').build(),
       new EvaluationFieldListNodeBuilder()
         .withEvaluationFields([
           new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
         ])
         .build(),
     ),
-    output: "AddCourceDTO({course: 'Math'})",
+    output: "{course: 'Math'}",
   },
 ];
 

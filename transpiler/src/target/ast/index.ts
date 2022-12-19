@@ -25,6 +25,11 @@ import {
   GraphQLControllerNodeTSTransformer,
   RestControllerNodeTSTransformer,
 } from './node-transformers/controllers/index.js';
+import {
+  DomainCreateMethodNodeTSTransformer,
+  DomainPrivateMethodNodeTSTransformer,
+  DomainPublicMethodNodeTSTransformer,
+} from './node-transformers/domainMethods/index.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { UseCaseNodeTSTransformer } from './node-transformers/use-case.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
@@ -35,7 +40,9 @@ export class IntermediateModelToASTTargetTransformer
   transform(intermediateModel: TIntermediateModel): TIntermediateModel {
     for (const boundedContext of Object.values(intermediateModel.intermediateModel)) {
       for (const intermediateASTTree of Object.values(boundedContext)) {
-        intermediateASTTree.traverse(intermediateASTTree.getRootNode(), (intermediateASTNode) => {
+        const treeUpdated = intermediateASTTree.copy();
+        const rootNode = treeUpdated.getRootNode();
+        treeUpdated.traverse(rootNode, (intermediateASTNode) => {
           const transformer = this.nodeTransformerFactory({
             intermediateASTNode,
             intermediateASTTree,
@@ -45,6 +52,7 @@ export class IntermediateModelToASTTargetTransformer
             transformer.run();
           }
         });
+        intermediateASTTree.buildValueRecursiveBottomUp(rootNode);
       }
     }
     return intermediateModel;
@@ -63,6 +71,12 @@ export class IntermediateModelToASTTargetTransformer
         return new RestControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TGraphQLController:
         return new GraphQLControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TDomainCreateMethod:
+        return new DomainCreateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TDomainPublicMethod:
+        return new DomainPublicMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TDomainPrivateMethod:
+        return new DomainPrivateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TUseCase:
         return new UseCaseNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:

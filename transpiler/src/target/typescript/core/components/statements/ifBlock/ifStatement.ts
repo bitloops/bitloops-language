@@ -32,14 +32,14 @@ const ifStatementToTargetLanguage = (variable: TIfStatement): TTargetDependencie
 
   const thenStatementsResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
-    value: thenStatements,
+    value: thenStatements.statements,
   });
   let elseStatementsResult;
 
   if (elseStatements) {
     elseStatementsResult = modelToTargetLanguage({
       type: BitloopsTypesMapping.TStatements,
-      value: elseStatements,
+      value: elseStatements.statements,
     });
   }
 

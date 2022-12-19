@@ -1,6 +1,8 @@
+import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { ConstDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/constDeclaration.js';
+import { ArgumentNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
 import { EvaluationFieldNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
@@ -29,6 +31,7 @@ export class ConstDeclarationBuilderDirector {
   buildConstDeclarationThisUseCaseExecute(
     identifier: string,
     options?: { await: boolean },
+    executeArgs?: ArgumentNode[],
   ): ConstDeclarationNode {
     let thisNode;
     if (options?.await) {
@@ -42,7 +45,7 @@ export class ConstDeclarationBuilderDirector {
         new ExpressionBuilderDirector().buildMemberDotExpression(thisNode, 'useCase'),
         'execute',
       ),
-      new ArgumentListDirector().buildArgumentListWithArgs([]),
+      new ArgumentListDirector().buildArgumentListWithArgs(executeArgs ?? []),
     );
     return this.buildConstDeclaration(identifier, expression);
   }
@@ -81,6 +84,24 @@ export class ConstDeclarationBuilderDirector {
         ),
       ),
     );
+  }
+
+  buildDTOEvaluationConstDeclaration(
+    identifier: string,
+    dtoIdentifier: string,
+    evalFields: EvaluationFieldNode[],
+    typeAnnotation?: TypeAnnotationNode,
+  ): ConstDeclarationNode {
+    const dtoEvaluation = new EvaluationBuilderDirector().buildDTOEvaluation(
+      new DTOIdentifierNodeBuilder().withName(dtoIdentifier).build(),
+      new EvaluationFieldListNodeBuilder().withEvaluationFields(evalFields).build(),
+    );
+    const constDeclaration = this.buildConstDeclaration(
+      identifier,
+      new ExpressionBuilderDirector().buildEvaluationExpression(dtoEvaluation),
+      typeAnnotation,
+    );
+    return constDeclaration;
   }
 
   buildStructEvaluationConstDeclaration(

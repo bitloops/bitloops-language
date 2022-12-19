@@ -14,7 +14,7 @@ export class PrivateMethodDeclarationNodeBuilder implements IBuilder<PrivateMeth
   private returnType: ReturnOkErrorTypeNode;
   private statements: StatementListNode;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.privateMethodDeclarationNode = new PrivateMethodDeclarationNode(metadata);
   }
 
