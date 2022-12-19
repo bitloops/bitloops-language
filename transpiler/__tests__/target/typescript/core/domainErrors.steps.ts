@@ -17,67 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
+
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-// import { decode } from 'bitloops-gherkin';
-// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
-// import { ISetupData, ControllerTypeOfDefinition } from '../../../../src/types.js';
-// import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
-// import { ClassTypes } from '../../../../src/helpers/mappings.js';
-// import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_DOMAIN_ERROR_TEST_CASES } from './mocks/errors/domainError.js';
 
-const feature = loadFeature('./__tests__/target/typescript/core/domainErrors.feature');
-
-defineFeature(feature, (test) => {
-  let language: string;
-  let value; // : any;
-  const module = 'demo';
-  const classType = ClassTypes.DomainErrors;
+describe('Valid Domain Error test cases', () => {
   const boundedContext = 'Hello world';
-  let intermediateAST; // : any;
-  let result; // : any;
+  const module = 'demo';
   const formatterConfig = null;
-  const domainImport = "import { Domain } from '@bitloops/bl-boilerplate-core';";
+  const language = 'TypeScript';
 
-  test('DomainErrors with messages', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (arg0) => {
-      language = arg0;
-    });
+  VALID_DOMAIN_ERROR_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.domainError;
 
-    given(/^I have DomainErrors (.*)$/, (domainErrors) => {
-      value = decode(domainErrors);
-      intermediateAST = {
-        [boundedContext]: { [module]: { [classType]: JSON.parse(value) } },
+      tree.insertChild(input);
+
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
       };
-    });
 
-    when('I generate the code', () => {
+      // when
       const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
+      const result = targetGenerator.generate({
         intermediateAST,
         formatterConfig,
         targetLanguage: language,
         setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      const classNamesContent = JSON.parse(decode(output));
-      const expectedOutput = [];
-      for (const [className, content ] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString((domainImport + content) as string, formatterConfig);
-        expectedOutput.push({
-          boundedContext,
-          className,
-          module,
-          classType,
-          fileContent: formattedOutput,
-        });
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
       }
-      expect(result).toEqual(expectedOutput);
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

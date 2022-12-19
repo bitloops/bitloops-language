@@ -71,36 +71,6 @@ export class RestControllerBuilderDirector {
     ]);
   }
 
-  /**
-   * 
-import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { HelloWorldUseCase } from '../application/HelloWorldUseCase';
-import { HelloWorldRequestDTO } from '../dtos/HelloWorldRequestDTO';
-export class HelloWorldController extends Fastify.BaseController {
-  private helloWorldUseCase: HelloWorldUseCase;
-  constructor(helloWorldUseCase: HelloWorldUseCase) {
-    super();
-    this.helloWorldUseCase = helloWorldUseCase;
-  }
-  async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
-    const dto: HelloWorldRequestDTO = { name: request.body.name };
-    const result = helloWorldUseCase.execute(dto);
-    if (result.isFail()) {
-      switch (result.constructor) {
-        case DomainErrors.InvalidName: {
-          this.clientError(response, result.message);
-          break;
-        }
-        default: {
-          this.error(response, result.message);
-        }
-      }
-    } else {
-      this.ok(response, result);
-    }
-  }
-}
-   */
   buildControllerWithSwitchStatement(identifier: string): RESTControllerNode {
     // const identifierVal = 'result.value';
     return this.controllerWithParams(

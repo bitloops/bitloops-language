@@ -81,7 +81,6 @@ const BitloopsTypesMapping = {
   TApplicationError: 'TApplicationError',
   TErrorId: 'TErrorId',
   TErrorMessage: 'TErrorMessage',
-  TApplicationErrors: 'TApplicationErrors',
   TEvaluatePrimitive: 'TEvaluatePrimitive',
   TGraphQLSetupData: 'TGraphQLSetupData',
   TDefinitionMethodInfo: 'TDefinitionMethodInfo',
@@ -198,7 +197,7 @@ const ClassTypes = {
   Controller: 'Controller',
   UseCases: 'UseCases',
   DomainErrors: 'DomainErrors',
-  ApplicationErrors: 'ApplicationErrors',
+  ApplicationError: 'ApplicationError',
   DTOs: 'DTOs',
   Struct: 'Struct',
   Package: 'Package',
@@ -234,7 +233,7 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.RepoAdapters]: BitloopsTypesMapping.TRepoAdapters,
   [ClassTypes.DomainRule]: BitloopsTypesMapping.TDomainRule,
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
-  [ClassTypes.ApplicationErrors]: BitloopsTypesMapping.TApplicationErrors,
+  [ClassTypes.ApplicationError]: BitloopsTypesMapping.TApplicationError,
   [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
 };
 

@@ -54,7 +54,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
   [ClassTypes.Package]: PROJECT_RELATIVE_PATHS.PACKAGES,
   [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
-  [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
+  [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
 };
@@ -104,7 +104,7 @@ const getTargetFileDestination = (
     case ClassTypes.ReadModel:
     case ClassTypes.ValueObject:
     case ClassTypes.DomainErrors:
-    case ClassTypes.ApplicationErrors:
+    case ClassTypes.ApplicationError:
     case ClassTypes.Props:
     case ClassTypes.Controller:
     case ClassTypes.UseCases:
@@ -148,7 +148,7 @@ const getFilePathRelativeToModule = (
       result.filename = className;
       break;
     case ClassTypes.DomainErrors:
-    case ClassTypes.ApplicationErrors:
+    case ClassTypes.ApplicationError:
     case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';
