@@ -10,7 +10,7 @@ import { BitloopsParserError, TParserCoreInputData } from './parser/core/types.j
 import { IBitloopsParser } from './parser/index.js';
 import { isBitloopsSetupParserError } from './parser/setup/guards/index.js';
 import { BitloopsSetupParserError, IBitloopsSetupParser } from './parser/setup/types.js';
-import { IIntermediateModelToASTTargetLanguageTransformer } from './target-ast/types.js';
+import { IIntermediateModelToASTTargetLanguageTransformer } from './target/ast/types.js';
 import {
   BitloopsTargetGeneratorError,
   BitloopsTargetSetupGeneratorError,
