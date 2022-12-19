@@ -8,6 +8,7 @@ import { UseCaseIdentifierNodeBuilder } from '../../../../../src/ast/core/interm
 import { UseCaseNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { ParameterNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { ReturnOkErrorTypeNode } from '../../../../../src/ast/core/intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { StatementNode } from '../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { UseCaseNode } from '../../../../../src/ast/core/intermediate-ast/nodes/UseCase/UseCaseNode.js';
@@ -22,6 +23,32 @@ import { IfStatementBuilderDirector } from './statement/ifStatementDirector.js';
 import { ReturnStatementBuilderDirector } from './statement/return.js';
 
 export class UseCaseBuilderDirector {
+  buildUseCase({
+    identifier,
+    parameters,
+    returnType,
+    executeParameter,
+    statements,
+  }: {
+    identifier: string;
+    parameters: ParameterNode[];
+    returnType: ReturnOkErrorTypeNode;
+    executeParameter?: ParameterNode;
+    statements: StatementNode[];
+  }): UseCaseNode {
+    const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+    const executeBuilder = new UseCaseExecuteNodeBuilder(null)
+      .withReturnType(returnType)
+      .withParameter(executeParameter)
+      .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build());
+    if (executeParameter) executeBuilder.withParameter(executeParameter);
+    return new UseCaseNodeBuilder(tree)
+      .withIdentifier(new UseCaseIdentifierNodeBuilder(null).withName(identifier).build())
+      .withParameterList(new ParameterListNodeBuilder(null).withParameters(parameters).build())
+      .withExecute(executeBuilder.build())
+      .build();
+  }
+
   buildUseCaseWithTwoRepoCalls(identifier: string, options?: { await: boolean }): UseCaseNode {
     return this.useCaseWithParams(
       identifier,
@@ -82,7 +109,11 @@ export class UseCaseBuilderDirector {
           'PriceVO',
           'priceProps',
         ),
-        new ConstDeclarationBuilderDirector().buildEntityEvaluationConstDeclaration('todo', 'Todo'),
+        new ConstDeclarationBuilderDirector().buildEntityEvaluationConstDeclaration({
+          identifier: 'todo',
+          entityIdentifier: 'Todo',
+          evaluationFields: [],
+        }),
         new IfStatementBuilderDirector().buildIfTrueReturnExpression(
           new ExpressionBuilderDirector().buildIdentifierExpression(
             options?.dotValue ? 'todo.value' : 'todo',
@@ -105,7 +136,11 @@ export class UseCaseBuilderDirector {
       identifier,
       [new ParameterBuilderDirector().buildIdentifierParameter('todoRepo', 'ITodoRepo')],
       [
-        new ConstDeclarationBuilderDirector().buildEntityEvaluationConstDeclaration('todo', 'Todo'),
+        new ConstDeclarationBuilderDirector().buildEntityEvaluationConstDeclaration({
+          identifier: 'todo',
+          entityIdentifier: 'Todo',
+          evaluationFields: [],
+        }),
         new ExpressionBuilderDirector().buildThisDependencyMethodCall(
           'todoRepo',
           'save',
@@ -138,7 +173,6 @@ export class UseCaseBuilderDirector {
       .withParameterList(new ParameterListNodeBuilder(null).withParameters(params).build())
       .withExecute(
         new UseCaseExecuteNodeBuilder(null)
-          .withParameterList(new ParameterListNodeBuilder(null).withParameters([]).build())
           .withReturnType(
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(

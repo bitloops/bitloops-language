@@ -1,5 +1,5 @@
-import { TitleOutOfBoundsError } from './TitleOutOfBoundsError';
+import { TitleOutOfBoundsError as TitleOutOfBounds } from './TitleOutOfBoundsError';
 
 export namespace DomainErrors {
-  export class TitleOutOfBounds extends TitleOutOfBoundsError {}
+  export class TitleOutOfBoundsError extends TitleOutOfBounds {}
 }

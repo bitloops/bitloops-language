@@ -19,7 +19,6 @@
  */
 import {
   TUseCase,
-  TExecute,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
@@ -28,7 +27,8 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
-import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
+import { useCaseExecuteToTargetLanguage } from './execute.js';
+import { deepClone } from '../../../../../utils/deepClone.js';
 
 const USE_CASE_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -69,36 +69,34 @@ const initialUseCase = (
   return result;
 };
 
-const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesTypeScript => {
+export const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesTypeScript => {
   const { execute, parameters, UseCaseIdentifier: useCaseName } = useCase[UseCaseKey];
   const { returnType } = execute;
   const useCaseInputType = execute.parameter ? execute.parameter.type : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
-  let dependencies = USE_CASE_DEPENDENCIES;
+  let dependencies = deepClone(USE_CASE_DEPENDENCIES);
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
-    value: returnType,
+    value: { returnType },
   });
   dependencies = [...dependencies, ...useCaseReturnTypesResult.dependencies];
 
   const useCaseDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
-    value: parameters,
+    value: { parameters },
   });
   dependencies = [...dependencies, ...useCaseDependenciesResult.dependencies];
 
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(useCaseInputType)) {
-    throw new Error(
-      `UseCase ${useCaseName} has an array as input type. This is not supported in Bitloops`,
-    );
-  }
-  const { output: useCaseInputName, dependencies: useCaseTypeDependencies } = modelToTargetLanguage(
-    {
+  let useCaseInputName = null;
+  if (useCaseInputType) {
+    const inputTypeOutput = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: useCaseInputType,
-    },
-  );
+    });
+    useCaseInputName = inputTypeOutput.output;
+    dependencies = [...dependencies, ...inputTypeOutput.dependencies];
+  }
 
   let result = initialUseCase(
     useCaseReturnTypesResult.output,
@@ -108,7 +106,6 @@ const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesTypeScri
     useCaseName,
   );
 
-  // TODO fix dependencies (statements, and  execute.parameterDependencies[0], e.g input DTO)
   const executeResult = useCaseExecuteToTargetLanguage(
     useCase[UseCaseKey].execute,
     useCaseResponseTypeName,
@@ -116,7 +113,7 @@ const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesTypeScri
 
   result += executeResult.output;
   result += '}';
-  dependencies = [...dependencies, ...executeResult.dependencies, ...useCaseTypeDependencies];
+  dependencies = [...dependencies, ...executeResult.dependencies];
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
     classType: ClassTypes.UseCases,
@@ -126,34 +123,6 @@ const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesTypeScri
   return { output: result, dependencies: parentDependencies };
 };
 
-const useCaseExecuteToTargetLanguage = (
-  variable: TExecute,
-  responseTypeName: string,
-): TTargetDependenciesTypeScript => {
-  const { parameter, statements } = variable;
-  const parameterDependenciesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameter,
-    value: parameter,
-  });
-
-  const statementsResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TStatements,
-    value: statements,
-  });
-
-  const useCaseExecuteString = (parameterDependencies: string, statements: string): string => {
-    let result = 'async execute';
-    result += `${parameterDependencies}`;
-    result += `: Promise<${responseTypeName}> {`;
-    result += statements;
-    result += '}';
-    return result;
-  };
-  return {
-    output: useCaseExecuteString(parameterDependenciesResult.output, statementsResult.output),
-    dependencies: [...parameterDependenciesResult.dependencies, ...statementsResult.dependencies],
-  };
-};
 const isDependenciesEmpty = (dependencies: string): boolean => {
   const strippedDependencies = dependencies.replace(/\s/g, '');
   if (strippedDependencies === '()') return true;
@@ -173,5 +142,3 @@ const addPrivateToConstructorDependencies = (dependencies: string): string => {
   });
   return `(${result.join(',')})`;
 };
-
-export { useCaseToTargetLanguage };

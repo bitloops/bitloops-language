@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsPrimitives } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
 import {
   TReturnStatement,
   TReturnOKStatement,
@@ -51,22 +50,27 @@ const returnToTargetLanguage = (variable: TReturnStatement): TTargetDependencies
 
 // returnOK
 const returnOkToTargetLanguage = (variable: TReturnOKStatement): TTargetDependenciesTypeScript => {
-  if (!variable.returnOK) {
+  if (variable.returnOK === undefined) {
     throw new Error('ReturnOK statement must have a returnOK value');
   }
 
-  const expressionValue = modelToTargetLanguage({ type: 'TExpression', value: variable.returnOK });
-  const propsVariableLangMapping = (expressionValue: TTargetDependenciesTypeScript): string => {
-    if (expressionValue.output === bitloopsPrimitives.void) {
-      return 'return ok()';
-    } else {
-      return `return ok(${expressionValue.output})`;
-    }
-  };
+  let output;
+  let dependencies;
+  if (variable.returnOK === null) {
+    output = 'return ok()';
+    dependencies = [];
+  } else {
+    const expressionValue = modelToTargetLanguage({
+      type: 'TExpression',
+      value: variable.returnOK,
+    });
+    output = `return ok(${expressionValue.output})`;
+    dependencies = expressionValue.dependencies;
+  }
 
   return {
-    output: propsVariableLangMapping(expressionValue),
-    dependencies: expressionValue.dependencies,
+    output,
+    dependencies,
   };
 };
 

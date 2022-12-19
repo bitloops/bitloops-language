@@ -72,16 +72,44 @@ export class ConstDeclarationBuilderDirector {
   /**
    * With evaluation field lists
    */
-  buildEntityEvaluationConstDeclaration(
-    identifier: string,
-    entityIdentifier: string,
-  ): ConstDeclarationNode {
+  buildValueObjectConstDeclarationWithEvaluationFields({
+    identifier,
+    valueObjectIdentifier,
+    evaluationFields,
+  }: {
+    identifier: string;
+    valueObjectIdentifier: string;
+    evaluationFields: EvaluationFieldNode[];
+  }): ConstDeclarationNode {
+    return this.buildConstDeclaration(
+      identifier,
+      new ExpressionBuilderDirector().buildEvaluationExpression(
+        new EvaluationBuilderDirector().buildValueObjectEvaluationWithFieldList(
+          valueObjectIdentifier,
+          new EvaluationFieldListNodeBuilder().withEvaluationFields(evaluationFields).build(),
+        ),
+      ),
+    );
+  }
+
+  /**
+   * With evaluation field lists
+   */
+  buildEntityEvaluationConstDeclaration({
+    identifier,
+    entityIdentifier,
+    evaluationFields,
+  }: {
+    identifier: string;
+    entityIdentifier: string;
+    evaluationFields: EvaluationFieldNode[];
+  }): ConstDeclarationNode {
     return this.buildConstDeclaration(
       identifier,
       new ExpressionBuilderDirector().buildEvaluationExpression(
         new EvaluationBuilderDirector().buildEntityEvaluation(
           entityIdentifier,
-          new EvaluationFieldListNodeBuilder().withEvaluationFields([]).build(),
+          new EvaluationFieldListNodeBuilder().withEvaluationFields(evaluationFields).build(),
         ),
       ),
     );

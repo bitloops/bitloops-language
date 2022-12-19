@@ -527,7 +527,7 @@ export type TReturnOKStatement = {
 
 export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
-  [returnErrorKey]: TExpression | null;
+  [returnErrorKey]: TExpression;
 };
 
 // export type TConstDecompositionNested = {
