@@ -31,6 +31,9 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
     thisStatements: [],
     restStatements: [],
   };
+  /**
+   * this.name = props
+   */
 
   for (const statement of statements) {
     if (isThisDeclaration(statement)) {

@@ -17,36 +17,48 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TConstantVariable, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { getChildDependencies } from '../../dependencies.js';
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import {
+  TConstDeclaration,
+  TTargetDependenciesTypeScript,
+  constDeclarationKey,
+} from '../../../../../types.js';
+import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const NEW_LINE = '\n';
 
-const constantVariables = (
-  constantVariables: TConstantVariable[],
-): TTargetDependenciesTypeScript => {
-  const constVariablesLangMapping = (
-    variable: TConstantVariable,
-  ): TTargetDependenciesTypeScript => {
-    const { name, type, value } = variable;
-    if (type) {
-      return {
-        output: `const ${name}: ${type} = ${value};`,
-        dependencies: getChildDependencies(type),
-      };
-    } else {
-      return {
-        output: `const ${name} = ${value};`,
-        dependencies: [],
-      };
-    }
-  };
+const constVariablesToTarget = (variable: TConstDeclaration): TTargetDependenciesTypeScript => {
+  const { identifier, type } = variable[constDeclarationKey];
+  const expression = variable[constDeclarationKey].expression;
+  const value = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: { expression },
+  });
+  if (type) {
+    const typeResult = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: type,
+    });
+    return {
+      output: `const ${identifier}: ${typeResult.output} = ${value.output};`,
+      dependencies: [...typeResult.dependencies, ...value.dependencies],
+    };
+  } else {
+    return {
+      output: `const ${identifier} = ${value.output};`,
+      dependencies: value.dependencies,
+    };
+  }
+};
 
+const constantVariables = (
+  constantVariables: TConstDeclaration[],
+): TTargetDependenciesTypeScript => {
   let constDeclarationResult = '';
   const dependencies = [];
 
   for (const variable of constantVariables) {
-    const constDeclaration = constVariablesLangMapping(variable);
+    const constDeclaration = constVariablesToTarget(variable);
     constDeclarationResult += `${constDeclaration.output}${NEW_LINE}`;
     dependencies.push(...constDeclaration.dependencies);
   }

@@ -37,6 +37,7 @@ export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<Us
 
   private updateIdentifierNodes(identifierExpressionNodes: IdentifierExpressionNode[]): void {
     identifierExpressionNodes.forEach(
+      // Update only if i don't have a grandparent, or my grandparent is not an expression/member dot
       (node) => (node.identifierName = this.appendDotValue(node.identifierName)),
     );
   }

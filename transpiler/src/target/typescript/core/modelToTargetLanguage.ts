@@ -288,7 +288,6 @@ const modelToTargetLanguage = (props: {
       res = valueObjectsToTargetLanguage({
         valueObject: value,
         model,
-        contextData,
       });
       break;
     }
