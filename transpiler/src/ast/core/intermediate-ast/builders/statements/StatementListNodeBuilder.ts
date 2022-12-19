@@ -7,7 +7,7 @@ export class StatementListNodeBuilder implements IBuilder<StatementListNode> {
   private statementsNode: StatementListNode;
   private statements: StatementNode[];
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.statementsNode = new StatementListNode(metadata);
   }
 

@@ -21,7 +21,7 @@
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
-import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target-ast/index.js';
+import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target/ast/index.js';
 import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
 import { USE_CASE_TEST_CASES } from './mocks/use-case.js';
 
@@ -33,8 +33,8 @@ describe('Valid Use Case', () => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const expressionNode = testCase.controller;
-      tree.insertChild(expressionNode);
+      const useCaseNode = testCase.useCase;
+      tree.insertChild(useCaseNode);
 
       const intermediateModel = {
         [boundedContext]: { [module]: tree },

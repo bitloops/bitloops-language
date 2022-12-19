@@ -429,8 +429,8 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation
-  | TBackTickString //TODO check if it should be removed because it is covered
+  | TClassInstantiation // To  be removed?
+  | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
   | TAdditiveExpression
@@ -532,13 +532,13 @@ export type TReturnErrorStatement = {
   [returnErrorKey]: TExpression | null;
 };
 
-export type TConstDecompositionNested = {
-  names: string[];
-} & TEvaluation;
+// export type TConstDecompositionNested = {
+//   names: string[];
+// } & TEvaluation;
 
-export type TConstDecomposition = {
-  constDecomposition: TConstDecompositionNested;
-};
+// export type TConstDecomposition = {
+//   constDecomposition: TConstDecompositionNested;
+// };
 
 export type TConstDeclarationValue = {
   identifier: string;
@@ -555,12 +555,6 @@ export type TVariableDeclaration = {
   [variableDeclarationKey]: {
     identifier: string;
     type: TBitloopsPrimaryType;
-  } & TExpression;
-};
-
-export type TThisDeclaration = {
-  thisDeclaration: {
-    name: string;
   } & TExpression;
 };
 
@@ -591,9 +585,7 @@ export type TStatement =
   | TReturnStatement
   | TReturnOKStatement
   | TReturnErrorStatement
-  | TConstDecomposition
   | TConstDeclaration
-  | TThisDeclaration
   | TVariableDeclaration
   | TBuiltInFunction
   | TExpression;
@@ -715,7 +707,7 @@ export type TStructDeclaration = {
 export type TExecute = {
   statements: TStatements;
 } & TOkErrorReturnType &
-  TParameterList;
+  Partial<TParameter>;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';

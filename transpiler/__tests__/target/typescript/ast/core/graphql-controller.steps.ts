@@ -21,7 +21,7 @@
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
-import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target-ast/index.js';
+import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target/ast/index.js';
 import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
 import { GRAPHQL_CONTROLLER_TEST_CASES } from './mocks/controllers/graphql.js';
 

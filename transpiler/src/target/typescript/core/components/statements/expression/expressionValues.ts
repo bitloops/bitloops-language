@@ -23,6 +23,7 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { evaluationToTargetLanguage } from './evaluation/index.js';
 import { ExpressionTypeIdentifiers } from './../../../type-identifiers/expression.js';
 import { literalExpressionToTargetLanguage } from './literalExpression.js';
+import { identifierExpressionToTargetLanguage } from './identifier.js';
 
 export { evaluationToTargetLanguage };
 
@@ -54,10 +55,7 @@ const expressionValuesToTargetLanguage = (
   }
 
   if (ExpressionTypeIdentifiers.isIdentifierExpression(expressionValue)) {
-    return {
-      output: expressionValue.identifier,
-      dependencies: [],
-    };
+    return identifierExpressionToTargetLanguage(expressionValue);
   }
 
   if (ExpressionTypeIdentifiers.isArrayLiteralExpression(expressionValue)) {

@@ -134,6 +134,13 @@ export class ExpressionBuilderDirector {
     return new ExpressionBuilder().withExpression(memberExpr).build();
   }
 
+  buildMemberDotOutOfVariables(...identifiers: string[]): ExpressionNode {
+    return identifiers.reduce(
+      (leftExpression, identifier) => this.buildMemberDotExpression(leftExpression, identifier),
+      this.buildIdentifierExpression(identifiers.shift()),
+    );
+  }
+
   buildToStringExpression(expression: ExpressionNode): ExpressionNode {
     const node = new ToStringBuilder().withExpression(expression).build();
     return new ExpressionBuilder().withExpression(node).build();
@@ -252,6 +259,15 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  /**
+   * e.g. this.name
+   */
+  buildThisMemberDotExpression(identifierName: string): ExpressionNode {
+    const leftExpression = this.buildThisExpression();
+    const memberDotExpression = this.buildMemberDotExpression(leftExpression, identifierName);
+    return memberDotExpression;
+  }
+
   buildModifiedThisExpression(value: string): ExpressionNode {
     const thisExpressionNode = new ThisExpressionNodeBuilder().build(value);
     const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();
@@ -292,6 +308,13 @@ export class ExpressionBuilderDirector {
       .build();
     const expressionNode = new ExpressionBuilder().withExpression(methodCallExpressionNode).build();
     return expressionNode;
+  }
+
+  buildThisMethodCall(method: string, args: ArgumentListNode): ExpressionNode {
+    const thisExpression = this.buildThisExpression();
+    const methodCallLeftExpr = this.buildMemberDotExpression(thisExpression, method);
+    const methodCallExpression = this.buildMethodCallExpression(methodCallLeftExpr, args);
+    return methodCallExpression;
   }
 
   buildEvaluationExpression(evaluation: EvaluationNode): ExpressionNode {

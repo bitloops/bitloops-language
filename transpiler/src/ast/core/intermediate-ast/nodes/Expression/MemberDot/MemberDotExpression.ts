@@ -11,7 +11,7 @@ export class MemberDotExpressionNode extends ExpressionNode {
     this.nodeType = BitloopsTypesMapping.TMemberDotExpression;
   }
 
-  getExpression(): ExpressionNode {
+  getExpressionValues(): ExpressionNode {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
@@ -20,6 +20,17 @@ export class MemberDotExpressionNode extends ExpressionNode {
       throw new Error('Expression not found');
     }
     return expression.getChildren()[0] as ExpressionNode;
+  }
+
+  getExpression(): ExpressionNode {
+    const children = this.getChildren();
+    const expression = children.find(
+      (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
+    );
+    if (!expression) {
+      throw new Error('Expression not found');
+    }
+    return expression as ExpressionNode;
   }
 
   getIdentifierExpression(): IdentifierExpressionNode {
@@ -34,7 +45,7 @@ export class MemberDotExpressionNode extends ExpressionNode {
   }
 
   getLeftMostExpression(): ExpressionNode {
-    const expression = this.getExpression();
+    const expression = this.getExpressionValues();
     if (expression.isMemberDotExpression()) {
       return expression.getLeftMostExpression();
     }
@@ -42,10 +53,19 @@ export class MemberDotExpressionNode extends ExpressionNode {
   }
 
   getLeftMostMemberDotExpression(): MemberDotExpressionNode {
-    const expression = this.getExpression();
+    const expression = this.getExpressionValues();
     if (expression.isMemberDotExpression()) {
       return expression.getLeftMostMemberDotExpression();
     }
     return this;
+  }
+
+  hasMethodCallExpressionParent(): boolean {
+    const expressionNode = this.getParent() as ExpressionNode;
+    const expressionNodeParent = expressionNode.getParent();
+    if (expressionNodeParent.getNodeType() === BitloopsTypesMapping.TMethodCallExpression) {
+      return true;
+    }
+    return false;
   }
 }

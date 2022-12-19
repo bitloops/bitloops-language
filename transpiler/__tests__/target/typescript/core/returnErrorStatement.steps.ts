@@ -17,37 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/returnErrorStatement.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_RETURN_ERROR_STATEMENT_TEST_CASES } from './mocks/statements/return.js';
 
-defineFeature(feature, (test) => {
-  let propsType;
-  let result;
-  let value;
+describe('Return error test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Return Error statement success to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      propsType = type;
-    });
+  VALID_RETURN_ERROR_STATEMENT_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.return;
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      tree.insertChild(input);
 
-    given(/^I have a return statement (.*)$/, (returnStatement) => {
-      value = returnStatement;
-    });
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
+      };
 
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: propsType,
-        value: propsValue,
+      // when
+      const targetGenerator = new BitloopsTargetGenerator();
+      const result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

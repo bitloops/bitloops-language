@@ -21,41 +21,37 @@ import { TParameterList, TTargetDependenciesTypeScript } from '../../../../../..
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
-const buildFieldsFromDependencies = (
+const constructorToTarget = (paramsString: string, params: TParameterList): string => {
+  const constructorBody = params.parameters
+    .map((parameterDependency) => {
+      const { value } = parameterDependency.parameter;
+      return `this.${value} = ${value};`;
+    })
+    .join(' ');
+  return `constructor${paramsString} { super(); ${constructorBody} }`;
+};
+
+export const buildFieldsFromDependencies = (
   params: TParameterList,
   contextData: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
-  const fieldsToLangString = (params: TParameterList): string => {
-    return params.parameters
-      .map((parameterDependency) => {
-        const { type, value } = parameterDependency.parameter;
-        const mappedType = modelToTargetLanguage({
-          type: BitloopsTypesMapping.TBitloopsPrimaryType,
-          value: type,
-        });
-        return `private ${value}: ${mappedType.output};`;
-      })
-      .join(' ');
-  };
-
-  let result = fieldsToLangString(params);
+  let result = params.parameters
+    .map((parameterDependency) => {
+      const { type, value } = parameterDependency.parameter;
+      const mappedType = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: type,
+      });
+      return `private ${value}: ${mappedType.output};`;
+    })
+    .join(' ');
 
   const parametersModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
     value: params,
     contextData,
   });
-  const constructorToLangString = (paramsString: string, params: TParameterList): string => {
-    const constructorBody = params.parameters
-      .map((parameterDependency) => {
-        const { value } = parameterDependency.parameter;
-        return `this.${value} = ${value};`;
-      })
-      .join(' ');
-    return `constructor${paramsString} { super(); ${constructorBody} }`;
-  };
-  result += constructorToLangString(parametersModel.output, params);
+  result += constructorToTarget(parametersModel.output, params);
 
   return { output: result, dependencies: parametersModel.dependencies };
 };
-export { buildFieldsFromDependencies };

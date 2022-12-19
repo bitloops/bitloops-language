@@ -34,6 +34,7 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
 
   for (const statement of statements) {
     if (isThisDeclaration(statement)) {
+      // TODO change to isThis expression??
       statementsResult.thisStatements.push(statement);
     } else {
       statementsResult.restStatements.push(statement);

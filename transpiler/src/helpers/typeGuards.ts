@@ -1,6 +1,5 @@
 import {
   TConstDeclaration,
-  TThisDeclaration,
   TExpression,
   TReturnStatement,
   TStatement,
@@ -92,16 +91,17 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+// TODO change to isThis expression??
+const isThisDeclaration = (value: TStatement): value is TConstDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('constDeclaration' in value) return true;
+  return false;
+};
+
 const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration => {
   if (typeof value === 'string') return false;
   if ('variableDeclaration' in value) return true;
   return false;
-};
-
-const isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
-  if (typeof value === 'string') return false;
-  if ('thisDeclaration' in value) return true;
-  else return false;
 };
 
 const isExpression = (value: TStatement): value is TExpression => {
@@ -172,7 +172,6 @@ export {
   hasOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,
-  isThisDeclaration,
   isExpression,
   isSwitchStatement,
   isReturnStatement,
@@ -182,4 +181,5 @@ export {
   isExpressionAnEntityEvaluation,
   isExpressionAVariableRegularEvaluation,
   isExpressionAMethodRegularEvaluation,
+  isThisDeclaration,
 };
