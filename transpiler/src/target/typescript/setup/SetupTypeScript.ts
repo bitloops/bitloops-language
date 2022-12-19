@@ -606,7 +606,7 @@ export { routers };
         for (const [classTypeName, errorModel] of Object.entries(module)) {
           if (
             classTypeName === ClassTypes.DomainErrors ||
-            classTypeName === ClassTypes.ApplicationErrors
+            classTypeName === ClassTypes.ApplicationError
           ) {
             let imports = '';
             let content = `export namespace ${classTypeName} {`;

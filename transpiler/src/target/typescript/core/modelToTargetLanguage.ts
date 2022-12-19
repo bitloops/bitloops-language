@@ -68,11 +68,11 @@ import {
   backTickStringToTargetLanguage,
   stringToTargetLanguage,
 } from './components/strings/index.js';
-import { domainErrorsToTargetLanguage } from './components/domainErrors/index.js';
+import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
 import { primitiveEvaluationToTargetLanguage } from './components/primitiveEvaluator/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
 import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js'; // TODO check this
-import { applicationErrorsToTargetLanguage } from './components/applicationErrors/index.js';
+import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
 import {
   structDeclarationToTargetLanguage,
   structDeclarationValuesToTargetLanguage,
@@ -316,11 +316,11 @@ const modelToTargetLanguage = (props: {
       res = backTickStringToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TDomainErrors: {
+    case BitloopsTypesMapping.TDomainError: {
       res = domainErrorsToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TApplicationErrors: {
+    case BitloopsTypesMapping.TApplicationError: {
       res = applicationErrorsToTargetLanguage(value);
       break;
     }

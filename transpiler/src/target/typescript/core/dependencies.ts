@@ -140,9 +140,9 @@ export const getValueAndFileNameOfImport = (
       fileName: 'index',
     };
   }
-  if (classType === ClassTypes.ApplicationErrors) {
+  if (classType === ClassTypes.ApplicationError) {
     return {
-      value: 'ApplicationErrors',
+      value: 'ApplicationError',
       fileName: 'index',
     };
   }
@@ -194,7 +194,7 @@ const getClassTypeFromIdentifier = (
       };
     else if (dependencyName.startsWith('ApplicationErrors')) {
       return {
-        classType: ClassTypes.ApplicationErrors,
+        classType: ClassTypes.ApplicationError,
       };
     }
     throw new Error('Error class must start with DomainErrors or ApplicationErrors');
