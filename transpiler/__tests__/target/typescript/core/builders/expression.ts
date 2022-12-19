@@ -134,6 +134,13 @@ export class ExpressionBuilderDirector {
     return new ExpressionBuilder().withExpression(memberExpr).build();
   }
 
+  buildMemberDotOutOfVariables(...identifiers: string[]): ExpressionNode {
+    return identifiers.reduce(
+      (leftExpression, identifier) => this.buildMemberDotExpression(leftExpression, identifier),
+      this.buildIdentifierExpression(identifiers.shift()),
+    );
+  }
+
   buildToStringExpression(expression: ExpressionNode): ExpressionNode {
     const node = new ToStringBuilder().withExpression(expression).build();
     return new ExpressionBuilder().withExpression(node).build();

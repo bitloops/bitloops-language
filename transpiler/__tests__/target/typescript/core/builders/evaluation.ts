@@ -68,7 +68,7 @@ export class EvaluationBuilderDirector {
       .withEvaluationFieldList(evaluationFieldListNode)
       .build();
 
-    return evaluationNode;
+    return new EvaluationBuilder().withEvaluation(evaluationNode).build();
   }
 
   buildBuiltInClassEvaluation(

@@ -12,6 +12,23 @@ type TestCase = {
 
 export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
   {
+    description: 'hello world controller',
+    controllerName: 'HelloWorldController',
+    controller: new RestControllerBuilderDirector().buildControllerThatReturnsHelloWorld(
+      'HelloWorldController',
+    ),
+    serverType: 'REST.Fastify',
+    output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
+export class HelloWorldController extends Fastify.BaseController {
+  constructor() {
+    super();
+  }
+  async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
+    return 'Hello World';
+  }
+}`,
+  },
+  {
     description: 'REST controller with one use case execute',
     controllerName: 'CreateTodoController',
     controller: new RestControllerBuilderDirector().buildRestControllerWithThisUseCaseExecute(
@@ -37,15 +54,40 @@ export class CreateTodoController extends Fastify.BaseController {
     ),
     serverType: 'REST.Fastify',
     output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
+import { TodoCreateUseCase } from '../application/TodoCreateUseCase';
 export class CreateTodoController extends Fastify.BaseController {
-  constructor() {
+  private useCase: TodoCreateUseCase;
+  constructor(useCase: TodoCreateUseCase) {
     super();
+    this.useCase = useCase;
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const result = await this.useCase.execute();
     if (true) {
       return this.ok(result.value);
     }
+  }
+}`,
+  },
+  {
+    description: 'Realistic REST controller with dto and switch on use case result',
+    controllerName: 'HelloWorldController',
+    controller: new RestControllerBuilderDirector().buildControllerWithSwitchStatement(
+      'HelloWorldController',
+    ),
+    serverType: 'REST.Fastify',
+    output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
+import { HelloWorldUseCase } from '../application/HelloWorldUseCase';
+import { HelloWorldRequestDTO } from '../dtos/HelloWorldRequestDTO';
+export class HelloWorldController extends Fastify.BaseController {
+  private useCase: HelloWorldUseCase;
+  constructor(useCase: HelloWorldUseCase) {
+    super();
+    this.useCase = useCase;
+  }
+  async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
+    const dto: HelloWorldRequestDTO = { name: request.body.name };
+    const result = await this.useCase.execute(dto);
   }
 }`,
   },
