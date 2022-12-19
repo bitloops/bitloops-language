@@ -46,7 +46,6 @@ export class ConstDeclarationBuilderDirector {
     );
     return this.buildConstDeclaration(identifier, expression);
   }
-
   /**
    * With expression(identifier of props)
    */

@@ -60,7 +60,6 @@ const BitloopsTypesMapping = {
   TIfStatement: 'TIfStatement',
   TDTO: 'TDTO',
   TStruct: 'TStruct',
-  TStructDeclaration: 'TStructDeclaration',
   TOkErrorReturnType: 'TOkErrorReturnType',
   TValueObject: 'TValueObject',
   TUseCase: 'TUseCase',
