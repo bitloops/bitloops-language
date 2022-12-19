@@ -29,43 +29,6 @@ import {
 import { getParentDependencies } from '../../../dependencies.js';
 import { ClassTypes } from '../../../../../../helpers/mappings.js';
 
-// const useCaseToTargetLanguage = (useCases: TUseCase): TTargetDependenciesTypeScript => {
-//   const useCasesKeys = Object.keys(useCases);
-//   let result = '';
-//   let dependencies: TDependenciesTypeScript = [
-//     {
-//       type: 'absolute',
-//       default: false,
-//       value: 'Application',
-//       from: '@bitloops/bl-boilerplate-core',
-//     },
-//     {
-//       type: 'absolute',
-//       default: false,
-//       value: 'Either',
-//       from: '@bitloops/bl-boilerplate-core',
-//     },
-//     {
-//       type: 'absolute',
-//       default: false,
-//       value: 'ok',
-//       from: '@bitloops/bl-boilerplate-core',
-//     },
-//   ];
-//   for (let i = 0; i < useCasesKeys.length; i++) {
-//     const useCaseName = useCasesKeys[i];
-//     const useCaseValues = useCases[useCaseName];
-//     const useCaseValuesModel = useCaseValuesToTargetLanguage(useCaseValues, useCaseName);
-//     const useCaseValuesToTargetLanguageOutput = useCaseValuesModel.output;
-//     const useCaseValuesToTargetLanguageDependencies = useCaseValuesModel.dependencies;
-
-//     dependencies = [...dependencies, ...useCaseValuesToTargetLanguageDependencies];
-//     result += useCaseValuesToTargetLanguageOutput;
-//   }
-
-//   return { output: result, dependencies: [...dependencies] };
-// };
-
 const getServerImports = (serverType: string): TDependenciesTypeScript => {
   switch (serverType) {
     case 'REST.Fastify': {
@@ -102,44 +65,41 @@ const getServerExtends = (serverType: string): string => {
 };
 
 const restControllersToTargetLanguage = (
-  controllers: TRESTController,
+  controller: TRESTController,
   contextData: { boundedContext: string; module: string },
   controllersSetupData: TControllers,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
+  const controllerInfo = controller.RESTController;
   const { boundedContext, module } = contextData;
 
-  // TODO for all controllers
-  const controllerName = Object.keys(controllers)[0];
+  const controllerName = controller.RESTController.RESTControllerIdentifier;
   const controllerDefinition = controllersSetupData[boundedContext][module][controllerName];
   if (!controllerDefinitionIsRest(controllerDefinition)) {
     throw new Error('Controller declaration is not REST');
   }
+
   const { serverType } = controllerDefinition;
-  const serverImports = getServerImports(serverType);
-  dependencies = [...dependencies, ...serverImports];
+  dependencies.push(...getServerImports(serverType));
 
   const extendsClass = getServerExtends(serverType);
   let result = `export class ${controllerName} extends ${extendsClass}{ `;
-  const controller = controllers[controllerName];
-  if (!controller.execute || !controller.parameterDependencies) {
+  if (!controllerInfo.execute || !controllerInfo.parameters) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
 
-  const dependenciesRes = buildFieldsFromDependencies(
-    controller.parameterDependencies,
-    contextData,
-  );
+  const { parameters } = controllerInfo;
+  const dependenciesRes = buildFieldsFromDependencies({ parameters }, contextData);
   result += dependenciesRes.output;
   dependencies = [...dependencies, ...dependenciesRes.dependencies];
 
-  const { output, dependencies: executeDependencies } = buildExecuteMethod(controller.execute);
+  const { output, dependencies: executeDependencies } = buildExecuteMethod(controllerInfo.execute);
   result += output;
 
   const finalObjValLang = '}';
   result += finalObjValLang;
 
-  dependencies = [...dependencies, ...executeDependencies];
+  dependencies.push(...executeDependencies);
   const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.Controller,
     className: controllerName,
