@@ -18,59 +18,56 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TApplicationErrors,
   TApplicationError,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
   ApplicationErrorKey,
-} from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+  ApplicationErrorIdentifier,
+  TApplicationErrorValue,
+} from '../../../../../../types.js';
+import { getErrorValues } from '../index.js';
 
 const applicationErrorsToTargetLanguage = (
-  applicationErrors: TApplicationErrors,
+  domainError: TApplicationError,
 ): TTargetDependenciesTypeScript => {
-  const applicationErrorsNames = Object.keys(applicationErrors);
   let result = '';
   let dependencies = [];
-  for (let i = 0; i < applicationErrorsNames.length; i++) {
-    const applicationErrorName = applicationErrorsNames[i];
-    const applicationError = applicationErrors[applicationErrorName];
-    const applicationErrorToTargetLang = applicationErrorToTargetLanguage(
-      applicationError,
-      applicationErrorName,
-    );
-    result += applicationErrorToTargetLang.output;
-    dependencies = [...dependencies, ...applicationErrorToTargetLang.dependencies];
-  }
+  const applicationErrorName = domainError[ApplicationErrorKey][ApplicationErrorIdentifier];
+  const applicationErrorValue = domainError[ApplicationErrorKey];
+  const domainErrorToTargetLang = applicationErrorToTargetLanguage(
+    applicationErrorValue,
+    applicationErrorName,
+  );
+  result += domainErrorToTargetLang.output;
+  dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
   return { output: result, dependencies };
 };
 
 const applicationErrorToTargetLanguage = (
-  variable: TApplicationError,
+  variable: TApplicationErrorValue,
   applicationErrorName: string,
 ): TTargetDependenciesTypeScript => {
-  const { message, errorId, parameters } = variable[ApplicationErrorKey];
+  const { messageResult, errorIdText, parametersResult } = getErrorValues(variable);
 
-  const messageExpression = message.expression;
-  const messageResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpressionValues,
-    value: messageExpression,
-  });
-  const errorIdRegularEval = errorId.expression;
+  // const messageExpression = message.expression;
+  // const messageResult = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TExpressionValues,
+  //   value: messageExpression,
+  // });
+  // const errorIdRegularEval = errorId.expression;
 
-  const errorIdText = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpressionValues,
-    value: errorIdRegularEval,
-  });
-  const errorIdResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TString,
-    value: errorIdText,
-  });
-  const parametersResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterList,
-    value: parameters ?? [],
-  });
+  // const errorIdText = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TExpressionValues,
+  //   value: errorIdRegularEval,
+  // });
+  // const errorIdResult = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TString,
+  //   value: errorIdText,
+  // });
+  // const parametersResult = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TParameterList,
+  //   value: parameters ?? [],
+  // });
   const dependencies: TDependenciesTypeScript = [
     {
       type: 'absolute',
@@ -85,7 +82,7 @@ const applicationErrorToTargetLanguage = (
   result += '{ super(';
   result += messageResult.output;
   result += ', ';
-  result += errorIdResult.output;
+  result += errorIdText.output;
   result += '); }}';
   return {
     output: result,
@@ -93,7 +90,7 @@ const applicationErrorToTargetLanguage = (
       ...dependencies,
       ...parametersResult.dependencies,
       ...messageResult.dependencies,
-      ...errorIdResult.dependencies,
+      ...errorIdText.dependencies,
     ],
   };
 };

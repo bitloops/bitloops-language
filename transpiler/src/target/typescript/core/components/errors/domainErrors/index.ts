@@ -24,9 +24,8 @@ import {
   DomainErrorIdentifier,
   TDomainErrorValue,
   TDomainError,
-} from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+} from '../../../../../../types.js';
+import { getErrorValues } from '../index.js';
 
 const domainErrorsToTargetLanguage = (domainError: TDomainError): TTargetDependenciesTypeScript => {
   let result = '';
@@ -39,76 +38,12 @@ const domainErrorsToTargetLanguage = (domainError: TDomainError): TTargetDepende
   return { output: result, dependencies };
 };
 
-// const getErrorValues = (
-//   error: TDomainErrorValue | TApplicationErrorValue,
-// ): {
-//   messageResult: TTargetDependenciesTypeScript;
-//   errorIdText: TTargetDependenciesTypeScript;
-//   parametersResult: TTargetDependenciesTypeScript;
-// } => {
-//   const domainErrorValue = error as TDomainErrorValue;
-//   const applicationErrorValue = error as TDomainErrorValue;
-
-//   let message: TExpression;
-//   let errorId: TExpression;
-//   let parameters: TParameter[];
-
-//   if (domainErrorValue) {
-//     message = domainErrorValue.message;
-//     errorId = domainErrorValue.errorId;
-//     parameters = domainErrorValue.parameters;
-//   } else if (applicationErrorValue) {
-//     message = applicationErrorValue.message;
-//     errorId = applicationErrorValue.errorId;
-//     parameters = applicationErrorValue.parameters;
-//   }
-
-//   const messageExpression = message.expression;
-//   const messageResult = modelToTargetLanguage({
-//     type: BitloopsTypesMapping.TExpressionValues,
-//     value: messageExpression,
-//   });
-//   const errorIdRegularEval = errorId.expression;
-
-//   const errorIdText = modelToTargetLanguage({
-//     type: BitloopsTypesMapping.TExpressionValues,
-//     value: errorIdRegularEval,
-//   });
-
-//   const parametersResult = modelToTargetLanguage({
-//     type: BitloopsTypesMapping.TParameterList,
-//     value: { parameters } ?? [],
-//   });
-
-//   return {
-//     messageResult,
-//     errorIdText,
-//     parametersResult,
-//   };
-// };
-
 const domainErrorToTargetLanguage = (
   variable: TDomainErrorValue,
   domainErrorName: string,
 ): TTargetDependenciesTypeScript => {
-  const { message, errorId, parameters } = variable;
+  const { messageResult, errorIdText, parametersResult } = getErrorValues(variable);
 
-  const messageExpression = message.expression;
-  const messageResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpressionValues,
-    value: messageExpression,
-  });
-  const errorIdRegularEval = errorId.expression;
-
-  const errorIdText = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpressionValues,
-    value: errorIdRegularEval,
-  });
-
-  const parametersResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterList,
-    value: { parameters } ?? [],
-  });
   const dependencies: TDependenciesTypeScript = [
     {
       type: 'absolute',
