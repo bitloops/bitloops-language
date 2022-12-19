@@ -13,7 +13,7 @@ type TValidTestCases = {
 
 export const VALID_STRUCT_EVALUATION_TEST_CASES: TValidTestCases[] = [
   {
-    description: 'A valid struct declaration with array and string',
+    description: 'A valid struct declaration with array of int and string',
     identifier: new IdentifierNodeBuilder().withName('MyStruct').build(),
     evaluationfields: [
       new EvaluationFieldBuilderDirector().buildEvaluationField(
