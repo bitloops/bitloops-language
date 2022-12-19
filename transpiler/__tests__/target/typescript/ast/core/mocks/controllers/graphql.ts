@@ -1,4 +1,4 @@
-import { GraphQLControllerBuilderDirector } from '../../../../core/builders/controllers/graphql.js';
+import { GraphQLControllerBuilderDirector } from '../../../../core/builders/controllers/graphqlDirector.js';
 
 export const GRAPHQL_CONTROLLER_TEST_CASES = [
   {

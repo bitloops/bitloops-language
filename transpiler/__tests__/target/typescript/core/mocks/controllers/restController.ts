@@ -1,6 +1,6 @@
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { TServerType } from '../../../../../../src/types.js';
-import { RestControllerBuilderDirector } from '../../builders/controllers/rest.js';
+import { RestControllerBuilderDirector } from '../../builders/controllers/restDirector.js';
 
 type TestCase = {
   description: string;
