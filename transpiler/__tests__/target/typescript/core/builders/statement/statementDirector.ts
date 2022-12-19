@@ -1,16 +1,15 @@
-import { ConditionNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
-import { ElseStatementsNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ElseStatements.js';
-import { IfStatementBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/IfStatementBuilder.js';
-import { ThenStatementsNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ThenStatements.js';
 import { ReturnOKStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnOkStatamentNodeBuilder.js';
+import { BreakStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/BreakStatement.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 import { ReturnOKStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnOKStatementNode.js';
-import { StatementListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/StatementList.js';
 import { EvaluationBuilderDirector } from '../evaluation.js';
 import { ExpressionBuilderDirector } from '../expression.js';
 import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
+import { IfStatementBuilderDirector } from './ifStatementDirector.js';
+import { BreakStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/BreakStatementNode.js';
+import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 
 export class StatementBuilderDirector {
   /**
@@ -28,24 +27,18 @@ export class StatementBuilderDirector {
 
   buildIfStatement(
     condition: ExpressionNode,
-    thenStatements: StatementListNode,
-    elseStatements?: StatementListNode,
+    thenStatements: StatementNode[],
+    elseStatements?: StatementNode[],
   ): IfStatementNode {
-    const conditionNode = new ConditionNodeBuilder(null).withExpression(condition).build();
-    const thenStatementsNode = new ThenStatementsNodeBuilder(null)
-      .withStatements(thenStatements)
-      .build();
-    const elseStatementsNode = elseStatements
-      ? new ElseStatementsNodeBuilder(null).withStatements(elseStatements).build()
-      : null;
-    const ifNode = new IfStatementBuilder(null)
-      .withCondition(conditionNode)
-      .withThenStatements(thenStatementsNode);
+    return new IfStatementBuilderDirector().buildIfStatement(
+      condition,
+      thenStatements,
+      elseStatements,
+    );
+  }
 
-    if (elseStatementsNode) {
-      ifNode.withElseStatements(elseStatementsNode);
-    }
-    return ifNode.build();
+  buildBreakStatement(): BreakStatementNode {
+    return new BreakStatementNodeBuilder().build();
   }
 
   buildReturnOKStatement(expression: ExpressionNode): ReturnOKStatementNode {

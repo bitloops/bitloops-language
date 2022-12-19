@@ -10,7 +10,6 @@ type TestCase = {
   output: string;
 };
 
-//  # | {"buildInFunction":{"applyRules":[{"name":"TooLongStringRule","arguments":[{"value":"props.name","type":"variable"}]}]}} | const res = Domain.applyRules([new Rules.TooLongStringRule(props.name),]);if (res) return fail(res); | @bitloops-auto-generated |
 export const VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES: TestCase[] = [
   {
     description: 'test builtin function statement',

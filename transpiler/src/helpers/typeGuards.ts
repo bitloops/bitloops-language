@@ -91,6 +91,13 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
+// TODO change to isThis expression??
+const isThisDeclaration = (value: TStatement): value is TConstDeclaration => {
+  if (typeof value === 'string') return false;
+  if ('constDeclaration' in value) return true;
+  return false;
+};
+
 const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration => {
   if (typeof value === 'string') return false;
   if ('variableDeclaration' in value) return true;
@@ -174,4 +181,5 @@ export {
   isExpressionAnEntityEvaluation,
   isExpressionAVariableRegularEvaluation,
   isExpressionAMethodRegularEvaluation,
+  isThisDeclaration,
 };

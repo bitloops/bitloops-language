@@ -33,8 +33,6 @@ defineFeature(feature, (test) => {
       propsType = type;
     });
 
-    and(/^language is "(.*)"$/, (_lang) => {});
-
     given(/^I have a return type (.*)$/, (returnType) => {
       value = returnType;
     });
@@ -56,8 +54,6 @@ defineFeature(feature, (test) => {
     given(/^type is "(.*)"$/, (type) => {
       propsType = type;
     });
-
-    and(/^language is "(.*)"$/, (_lang) => {});
 
     given(/^I have a return type (.*)$/, (returnType) => {
       value = returnType;

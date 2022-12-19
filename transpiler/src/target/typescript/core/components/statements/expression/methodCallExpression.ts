@@ -29,7 +29,7 @@ export const methodCallExpressionToTargetLanguage = (
   const { argumentList, expression } = methodCallExpression;
 
   const expressionResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TMemberDotExpression,
+    type: BitloopsTypesMapping.TExpressionValues,
     value: expression,
   });
 

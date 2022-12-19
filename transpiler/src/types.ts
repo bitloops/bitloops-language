@@ -427,8 +427,8 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation
-  | TBackTickString
+  | TClassInstantiation // To  be removed?
+  | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
   | TAdditiveExpression
@@ -530,13 +530,13 @@ export type TReturnErrorStatement = {
   [returnErrorKey]: TExpression | null;
 };
 
-export type TConstDecompositionNested = {
-  names: string[];
-} & TEvaluation;
+// export type TConstDecompositionNested = {
+//   names: string[];
+// } & TEvaluation;
 
-export type TConstDecomposition = {
-  constDecomposition: TConstDecompositionNested;
-};
+// export type TConstDecomposition = {
+//   constDecomposition: TConstDecompositionNested;
+// };
 
 export type TConstDeclarationValue = {
   identifier: string;
@@ -583,7 +583,6 @@ export type TStatement =
   | TReturnStatement
   | TReturnOKStatement
   | TReturnErrorStatement
-  | TConstDecomposition
   | TConstDeclaration
   | TVariableDeclaration
   | TBuiltInFunction

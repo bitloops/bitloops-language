@@ -27,7 +27,6 @@ import {
   parameterDependencyToTargetLanguage,
 } from './components/dependencies/index.js';
 import { propsToTargetLanguage } from './components/props/index.js';
-import { constDecompositionToTargetLanguage } from './components/statements/constDecomposition.js';
 import { constDeclarationToTargetLanguage } from './components/statements/constDeclaration.js';
 import { classInstantiationToTargetLanguage } from './components/statements/expression/classInstantiation.js';
 import { conditionToTargetLanguage } from './components/statements/expression/condition.js';
@@ -92,7 +91,6 @@ import { evaluationFieldsToTargetLanguage } from './components/statements/expres
 import { domainEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEvaluation.js';
 import { entityEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityEvaluation.js';
 import { entityToTargetLanguage } from './components/entity/index.js';
-import { thisDeclarationToTargetLanguage } from './components/statements/thisDeclaration.js';
 import { repoPortToTargetLanguage } from './components/repo/repoPort/repoPort.js';
 import {
   additiveOperatorToTargetLanguage,
@@ -250,18 +248,14 @@ const modelToTargetLanguage = (props: {
       res = returnErrorToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TConstDecomposition: {
-      res = constDecompositionToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TConstDeclaration: {
       res = constDeclarationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TThisDeclaration: {
-      res = thisDeclarationToTargetLanguage(value);
-      break;
-    }
+    // case BitloopsTypesMapping.TThisDeclaration: {
+    //   res = thisDeclarationToTargetLanguage(value);
+    //   break;
+    // }
     case BitloopsTypesMapping.TDefaultCase: {
       res = defaultSwitchCaseToTargetLanguage(value);
       break;

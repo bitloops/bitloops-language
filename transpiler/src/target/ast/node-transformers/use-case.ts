@@ -1,6 +1,6 @@
-import { IdentifierExpressionNode } from '../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
-import { MethodCallExpressionNode } from '../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
-import { UseCaseNode } from '../../ast/core/intermediate-ast/nodes/UseCase/UseCaseNode.js';
+import { IdentifierExpressionNode } from '../../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
+import { MethodCallExpressionNode } from '../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
+import { UseCaseNode } from '../../../ast/core/intermediate-ast/nodes/UseCase/UseCaseNode.js';
 import { NodeModelToTargetASTTransformer } from './index.js';
 
 export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<UseCaseNode> {

@@ -30,13 +30,20 @@ import { generateSetupFiles } from './typescript/setup/index.js';
 import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
 import { isBitloopsTargetGeneratorError } from './typescript/guards/index.js';
+import { IntermediateModelToASTTargetTransformer } from './ast/index.js';
 
 export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
   generate(
     params: TBitloopsTargetGeneratorParams,
   ): TBitloopsOutputTargetContent | BitloopsTargetGeneratorError {
+    const intermediateModel = params.intermediateAST;
+
+    const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
+    const targetLanguageAST = modelToTargetASTTransformer.transform({ intermediateModel });
+    const targetParams = { ...params, intermediateAST: targetLanguageAST.intermediateModel };
+
     const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
-    const targetContent = bitloopsTargetGenerator.ASTToTarget(params);
+    const targetContent = bitloopsTargetGenerator.ASTToTarget(targetParams);
 
     if (isBitloopsTargetGeneratorError(targetContent)) return targetContent;
     const targetContentWithImports = bitloopsTargetGenerator.generateImports(targetContent);
