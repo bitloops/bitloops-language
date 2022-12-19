@@ -556,12 +556,6 @@ export type TVariableDeclaration = {
   } & TExpression;
 };
 
-export type TThisDeclaration = {
-  thisDeclaration: {
-    name: string;
-  } & TExpression;
-};
-
 export type TBreakStatement = {
   breakStatement: 'break';
 };
@@ -591,7 +585,6 @@ export type TStatement =
   | TReturnErrorStatement
   | TConstDecomposition
   | TConstDeclaration
-  | TThisDeclaration
   | TVariableDeclaration
   | TBuiltInFunction
   | TExpression;

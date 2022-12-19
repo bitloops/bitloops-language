@@ -10,7 +10,7 @@ export class ConstDeclarationNode extends StatementNode {
     super(BitloopsTypesMapping.TConstDeclaration, metadata, NAME);
   }
 
-  getExpression(): ExpressionNode {
+  getExpressionValues(): ExpressionNode {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,

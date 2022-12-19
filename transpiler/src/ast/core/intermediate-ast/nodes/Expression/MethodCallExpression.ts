@@ -13,7 +13,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
   }
 
   getMethodName(): string {
-    const expression = this.getExpression();
+    const expression = this.getExpressionValues();
     if (expression.isIdentifierExpression()) {
       return expression.identifierName;
     }
@@ -24,7 +24,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return null;
   }
 
-  getExpression(): ExpressionNode {
+  getExpressionValues(): ExpressionNode {
     const children = this.getChildren();
     const expressionWrapper = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
@@ -38,7 +38,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
   }
 
   getThisNode(): ThisExpressionNode {
-    const expression = this.getExpression();
+    const expression = this.getExpressionValues();
 
     if (!expression.isMemberDotExpression()) {
       throw new Error('Expression is not a member dot expression');
@@ -56,7 +56,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
       return false;
     }
     const leftMostMemberDotExpression = (
-      this.getExpression() as MemberDotExpressionNode
+      this.getExpressionValues() as MemberDotExpressionNode
     ).getLeftMostMemberDotExpression();
     return (
       leftMostMemberDotExpression.getIdentifierExpression().identifierName === dependencyIdentifier
@@ -64,7 +64,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
   }
 
   private isThisMethodCall(): boolean {
-    const expression = this.getExpression();
+    const expression = this.getExpressionValues();
 
     if (!expression.isMemberDotExpression()) {
       return false;

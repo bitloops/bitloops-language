@@ -23,18 +23,18 @@ import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediat
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
 import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target-ast/index.js';
 import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
-import { USE_CASE_TEST_CASES } from './mocks/use-case.js';
+import { ENTITY_TEST_CASES } from './mocks/entity.js';
 
 describe('Valid Use Case', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  USE_CASE_TEST_CASES.forEach((testCase) => {
+  ENTITY_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const useCaseNode = testCase.useCase;
-      tree.insertChild(useCaseNode);
+      const entityNode = testCase.entity;
+      tree.insertChild(entityNode);
 
       const intermediateModel = {
         [boundedContext]: { [module]: tree },
@@ -46,11 +46,11 @@ describe('Valid Use Case', () => {
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const useCaseNodes = result.intermediateModel[boundedContext][module].getClassTypeNodes(
-        BitloopsTypesMapping.TUseCase,
+      const entityNodes = result.intermediateModel[boundedContext][module].getClassTypeNodes(
+        BitloopsTypesMapping.TEntity,
       );
-      expect(useCaseNodes.length).toBe(1);
-      const value = useCaseNodes[0].getValue();
+      expect(entityNodes.length).toBe(1);
+      const value = entityNodes[0].getValue();
       const expectedValue = testCase.expectedOutput.getValue();
       expect(value).toEqual(expectedValue);
     });

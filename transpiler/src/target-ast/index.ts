@@ -36,7 +36,9 @@ export class IntermediateModelToASTTargetTransformer
   transform(intermediateModel: TIntermediateModel): TIntermediateModel {
     for (const boundedContext of Object.values(intermediateModel.intermediateModel)) {
       for (const intermediateASTTree of Object.values(boundedContext)) {
-        intermediateASTTree.traverse(intermediateASTTree.getRootNode(), (intermediateASTNode) => {
+        const treeUpdated = intermediateASTTree.copy();
+        const rootNode = treeUpdated.getRootNode();
+        treeUpdated.traverse(rootNode, (intermediateASTNode) => {
           const transformer = this.nodeTransformerFactory({
             intermediateASTNode,
             intermediateASTTree,
@@ -46,6 +48,7 @@ export class IntermediateModelToASTTargetTransformer
             transformer.run();
           }
         });
+        intermediateASTTree.buildValueRecursiveBottomUp(rootNode);
       }
     }
     return intermediateModel;

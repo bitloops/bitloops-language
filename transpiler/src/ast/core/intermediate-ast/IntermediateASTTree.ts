@@ -189,7 +189,7 @@ export class IntermediateASTTree {
       if (!statementIsVariableDeclaration) {
         return false;
       }
-      const expression = node.getExpression();
+      const expression = node.getExpressionValues();
       if (!expression.isEvaluation()) {
         return false;
       }
