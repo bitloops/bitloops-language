@@ -22,6 +22,9 @@ import { ConstDeclarationBuilderDirector } from '../statement/constDeclaration.j
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { ArgumentDirector } from '../argument.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFIeld.js';
+import { IfStatementBuilderDirector } from '../statement/ifStatementDirector.js';
+import { ArgumentListDirector } from '../argumentList.js';
+import { SwitchStatementBuilderDirector } from '../statement/switchDirector.js';
 
 export class RestControllerBuilderDirector {
   buildRestControllerWithThisUseCaseExecute(
@@ -119,17 +122,71 @@ export class HelloWorldController extends Fastify.BaseController {
         ),
         new ConstDeclarationBuilderDirector().buildConstDeclarationThisUseCaseExecute(
           'result',
-          {
-            await: true,
-          },
+          { await: false }, // it should be added by modelToTsModel
           [
             new ArgumentDirector().buildArgument(
               new ExpressionBuilderDirector().buildIdentifierExpression('dto'),
             ),
           ],
         ),
+        new IfStatementBuilderDirector().buildIfStatement(
+          new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+            'result',
+            'Error',
+          ),
+          [
+            new SwitchStatementBuilderDirector().buildSwitchStatement(
+              new ExpressionBuilderDirector().buildGetClassExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('result'),
+              ),
+              [
+                {
+                  expression: new ExpressionBuilderDirector().buildIdentifierExpression(
+                    'DomainErrors.InvalidNameError',
+                  ),
+                  statementList: new StatementListNodeBuilder(null)
+                    .withStatements([
+                      this.buildThisMethodResponseResultMessage('clientError', 'result'),
+                      new StatementBuilderDirector().buildBreakStatement(),
+                    ])
+                    .build(),
+                },
+              ],
+              new StatementListNodeBuilder(null)
+                .withStatements([this.buildThisMethodResponseResultMessage('error', 'result')])
+                .build(),
+            ),
+          ],
+          [
+            new ExpressionBuilderDirector().buildThisMethodCall(
+              'ok',
+              new ArgumentListDirector().buildArgumentListWithArgs([
+                new ArgumentDirector().buildArgument(
+                  new ExpressionBuilderDirector().buildIdentifierExpression('response'),
+                ),
+                new ArgumentDirector().buildArgument(
+                  new ExpressionBuilderDirector().buildIdentifierExpression('result'),
+                ),
+              ]),
+            ),
+          ],
+        ),
       ],
       [new ParameterBuilderDirector().buildIdentifierParameter('useCase', 'HelloWorldUseCase')],
+    );
+  }
+
+  private buildThisMethodResponseResultMessage(method: string, identifier: string): StatementNode {
+    return new ExpressionBuilderDirector().buildThisMethodCall(
+      method,
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentDirector().buildArgument(
+          new ExpressionBuilderDirector().buildIdentifierExpression('response'),
+        ),
+        new ArgumentDirector().buildArgument(
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables(identifier, 'message'),
+        ),
+      ]),
     );
   }
 
