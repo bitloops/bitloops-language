@@ -11,7 +11,7 @@ export class ReturnStatementNode extends StatementNode {
     super(BitloopsTypesMapping.TReturnStatement, metadata, ReturnStatementNode.classNodeName);
   }
 
-  getExpression(): ExpressionNode {
+  getExpressionValues(): ExpressionNode {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
@@ -23,7 +23,7 @@ export class ReturnStatementNode extends StatementNode {
   }
 
   isReturnErrorStatement(parentStatementList: StatementListNode): boolean {
-    const expression = this.getExpression();
+    const expression = this.getExpressionValues();
     if (expression.isEvaluation()) {
       const evaluation = expression.getEvaluation();
       if (evaluation.isErrorEvaluation()) {

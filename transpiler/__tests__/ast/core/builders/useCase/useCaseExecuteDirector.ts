@@ -3,7 +3,6 @@ import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
-import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
 import { ReturnOkErrorTypeBuilder } from '../returnOkErrorType.js';
 import { StatementDirector } from '../statement/statementDirector.js';
 import { UseCaseExecuteBuilder } from './useCaseExecuteBuilder.js';
@@ -16,7 +15,6 @@ export class UseCaseExecuteBuilderDirector {
 
   buildExecuteWithOneReturnDTO(): TExecute {
     const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
-      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(
@@ -47,7 +45,6 @@ export class UseCaseExecuteBuilderDirector {
     identifierError?: string;
   }): TExecute {
     const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
-      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(
@@ -104,7 +101,6 @@ export class UseCaseExecuteBuilderDirector {
 
   buildExecuteWithDomainEvaluationsAndNoReturn(): TExecute {
     const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
-      .withParameterList(new ParameterListBuilderDirector().buildParams([]))
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))

@@ -556,12 +556,6 @@ export type TVariableDeclaration = {
   } & TExpression;
 };
 
-export type TThisDeclaration = {
-  thisDeclaration: {
-    name: string;
-  } & TExpression;
-};
-
 export type TBreakStatement = {
   breakStatement: 'break';
 };
@@ -590,7 +584,6 @@ export type TStatement =
   | TReturnOKStatement
   | TReturnErrorStatement
   | TConstDeclaration
-  | TThisDeclaration
   | TVariableDeclaration
   | TBuiltInFunction
   | TExpression;
@@ -712,7 +705,7 @@ export type TStructDeclaration = {
 export type TExecute = {
   statements: TStatements;
 } & TOkErrorReturnType &
-  TParameterList;
+  Partial<TParameter>;
 
 export type TDTOIdentifier = string;
 export const DTOIdentifierKey = 'DTOIdentifier';

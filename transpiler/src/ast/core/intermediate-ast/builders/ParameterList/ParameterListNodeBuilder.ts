@@ -7,7 +7,7 @@ export class ParameterListNodeBuilder implements IBuilder<ParameterListNode> {
   private parameterListNode: ParameterListNode;
   private parameterNodes: ParameterNode[];
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.parameterListNode = new ParameterListNode(metadata);
   }
 

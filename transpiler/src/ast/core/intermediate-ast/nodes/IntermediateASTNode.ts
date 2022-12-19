@@ -95,6 +95,7 @@ export abstract class IntermediateASTNode {
 
   public removeChild(childNode: IntermediateASTNode): void {
     const index = this.children.indexOf(childNode);
+    if (index === -1) throw new Error('Could not find child');
     if (index > 0) {
       const previousSibling = this.children[index - 1];
       previousSibling.addSibling(null);
@@ -108,6 +109,7 @@ export abstract class IntermediateASTNode {
   ): void {
     newChildNode.setParent(this);
     const index = this.children.indexOf(childNodeTobeReplaced);
+    if (index === -1) throw new Error('Could not find child');
     if (index > 0) {
       const previousSibling = this.children[index - 1];
       previousSibling.addSibling(newChildNode);
