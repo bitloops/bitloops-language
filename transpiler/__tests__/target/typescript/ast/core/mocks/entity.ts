@@ -7,7 +7,8 @@ import { PublicMethodBuilderDirector } from '../../../core/builders/methods/publ
 
 export const ENTITY_TEST_CASES = [
   {
-    description: 'entity that has 2 dependency calls that need await',
+    description:
+      'entity that has this member dot expression and this method call expression in its methods',
     entity: new EntityBuilderDirector().buildEntity({
       entityName: 'TodoEntity',
       createMethod: new DomainCreateBuilderDirector().buildCreateWithThisAssignmentExpression(
