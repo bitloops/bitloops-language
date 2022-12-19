@@ -1,4 +1,4 @@
-import { RestControllerBuilderDirector } from '../../../../core/builders/controllers/rest.js';
+import { RestControllerBuilderDirector } from '../../../../core/builders/controllers/restDirector.js';
 
 export const REST_CONTROLLER_TEST_CASES = [
   {

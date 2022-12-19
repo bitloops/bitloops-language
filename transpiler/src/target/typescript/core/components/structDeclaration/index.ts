@@ -19,38 +19,27 @@
  */
 import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
 import {
-  TStruct,
   TStructDeclaration,
   TTargetDependenciesTypeScript,
   StructKey,
+  structIdentifierKey,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const structDeclarationToTargetLanguage = (struct: TStruct): TTargetDependenciesTypeScript => {
+const structDeclarationToTargetLanguage = (
+  struct: TStructDeclaration,
+): TTargetDependenciesTypeScript => {
   const initialStructLangMapping = (structName: string): string => `export type ${structName} = { `;
   const finalStructLangMapping = '};';
 
   let result = '';
   let dependencies = [];
-  const structKeys = Object.keys(struct);
-  for (let i = 0; i < structKeys.length; i++) {
-    const structName = structKeys[i];
-    const structValues = struct[structName];
-    result += initialStructLangMapping(structName);
-    result += modelToTargetLanguage({
-      type: BitloopsTypesMapping.TStructDeclaration,
-      value: structValues,
-    }).output;
-    dependencies = [
-      ...dependencies,
-      ...modelToTargetLanguage({
-        type: BitloopsTypesMapping.TStructDeclaration,
-        value: structValues,
-      }).dependencies,
-    ];
-    result += finalStructLangMapping;
-  }
+  result += initialStructLangMapping(struct[StructKey][structIdentifierKey]);
+  const structValuesResult = structDeclarationValuesToTargetLanguage(struct);
+  result += structValuesResult.output;
+  dependencies = [...dependencies, ...structValuesResult.dependencies];
+  result += finalStructLangMapping;
 
   return { output: result, dependencies };
 };
@@ -59,6 +48,7 @@ const structDeclarationValuesToTargetLanguage = (
   structDeclaration: TStructDeclaration,
 ): TTargetDependenciesTypeScript => {
   const variable = structDeclaration[StructKey];
+  // console.log('in');
   if (isUndefined(variable.fields)) {
     throw new Error('Fields of Struct are not defined');
   }

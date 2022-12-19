@@ -310,6 +310,13 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  buildThisMethodCall(method: string, args: ArgumentListNode): ExpressionNode {
+    const thisExpression = this.buildThisExpression();
+    const methodCallLeftExpr = this.buildMemberDotExpression(thisExpression, method);
+    const methodCallExpression = this.buildMethodCallExpression(methodCallLeftExpr, args);
+    return methodCallExpression;
+  }
+
   buildEvaluationExpression(evaluation: EvaluationNode): ExpressionNode {
     const expressionNode = new ExpressionBuilder().withExpression(evaluation).build();
     return expressionNode;

@@ -1,6 +1,6 @@
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { TServerType } from '../../../../../../src/types.js';
-import { RestControllerBuilderDirector } from '../../builders/controllers/rest.js';
+import { RestControllerBuilderDirector } from '../../builders/controllers/restDirector.js';
 
 type TestCase = {
   description: string;
@@ -79,6 +79,7 @@ export class CreateTodoController extends Fastify.BaseController {
     output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { HelloWorldUseCase } from '../application/HelloWorldUseCase';
 import { HelloWorldRequestDTO } from '../dtos/HelloWorldRequestDTO';
+import { DomainErrors } from '../domain/errors/index';
 export class HelloWorldController extends Fastify.BaseController {
   private useCase: HelloWorldUseCase;
   constructor(useCase: HelloWorldUseCase) {
@@ -88,6 +89,19 @@ export class HelloWorldController extends Fastify.BaseController {
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const dto: HelloWorldRequestDTO = { name: request.body.name };
     const result = await this.useCase.execute(dto);
+    if (result.value.isFail()) {
+      switch (result.value.constructor) {
+        case DomainErrors.InvalidNameError: {
+          this.clientError(response, result.value.message);
+          break;
+        }
+        default: {
+          this.error(response, result.value.message);
+        }
+      }
+    } else {
+      this.ok(response, result.value);
+    }
   }
 }`,
   },

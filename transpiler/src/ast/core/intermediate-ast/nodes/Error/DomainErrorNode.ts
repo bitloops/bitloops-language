@@ -1,13 +1,19 @@
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { DomainErrorKey } from '../../../../../types.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { ClassTypeNode } from '../ClassTypeNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 // This would extend the ExpressionNode class instead
-export class DomainErrorNode extends IntermediateASTNode {
-  private static NAME = DomainErrorKey;
+export class DomainErrorNode extends ClassTypeNode {
+  private static classType = ClassTypes.DomainErrors;
+  private static classNodeName = 'DomainError';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TDomainError, metadata, DomainErrorNode.NAME);
+    super({
+      classType: DomainErrorNode.classType,
+      nodeType: BitloopsTypesMapping.TDomainError,
+      metadata,
+      classNodeName: DomainErrorNode.classNodeName,
+    });
     this.nodeType = BitloopsTypesMapping.TDomainError;
   }
 }

@@ -6,7 +6,7 @@ import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/ind
 import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import { invalidDomainErrors, validDomainErrors } from './mocks/errors/domainErrors.js';
 import { DomainErrorBuilder } from './builders/domaiErrorBuilder.js';
-import { TDomainErrors, TExpression, TIdentifier, TParameterList } from '../../../src/types.js';
+import { TDomainError, TExpression, TIdentifier, TParameterList } from '../../../src/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -76,7 +76,7 @@ const getExpectedOutput = (
   messageExp: TExpression,
   errorIdExp: TExpression,
   parameters: TParameterList,
-): TDomainErrors => {
+): TDomainError => {
   const val = new DomainErrorBuilder()
     .withIdentifier(identifier)
     .withErrorId(errorIdExp)
