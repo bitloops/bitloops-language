@@ -73,10 +73,7 @@ import { primitiveEvaluationToTargetLanguage } from './components/primitiveEvalu
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
 import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js'; // TODO check this
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
-import {
-  structDeclarationToTargetLanguage,
-  structDeclarationValuesToTargetLanguage,
-} from './components/structDeclaration/index.js';
+import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
 import {
   definitionMethodInfoToTargetLanguage,
