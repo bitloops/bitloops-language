@@ -252,6 +252,15 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  /**
+   * e.g. this.name
+   */
+  buildThisMemberDotExpression(identifierName: string): ExpressionNode {
+    const leftExpression = this.buildThisExpression();
+    const memberDotExpression = this.buildMemberDotExpression(leftExpression, identifierName);
+    return memberDotExpression;
+  }
+
   buildModifiedThisExpression(value: string): ExpressionNode {
     const thisExpressionNode = new ThisExpressionNodeBuilder().build(value);
     const expressionNode = new ExpressionBuilder().withExpression(thisExpressionNode).build();

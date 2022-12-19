@@ -15,10 +15,11 @@ export const ENTITY_TEST_CASES = [
       ),
       publicMethods: new PublicMethodDeclarationListNodeBuilder()
         .withMethods([
-          new PublicMethodBuilderDirector().buildMethodWithThisAssignmentExpression({
+          new PublicMethodBuilderDirector().buildMethodWithThisMethodCallExpression({
             methodName: 'testPublicMethod',
             entityName: 'TodoEntity',
-            thisIdentifierName: 'name',
+            identifierMethodName: 'testMethod',
+            identifierArgumentName: 'name',
           }),
         ])
         .build(),
@@ -39,16 +40,17 @@ export const ENTITY_TEST_CASES = [
       ),
       publicMethods: new PublicMethodDeclarationListNodeBuilder()
         .withMethods([
-          new PublicMethodBuilderDirector().buildMethodWithThisAssignmentExpression({
+          new PublicMethodBuilderDirector().buildMethodWithThisPropsMethodCallExpression({
             methodName: 'testPublicMethod',
             entityName: 'TodoEntity',
-            thisIdentifierName: 'name',
+            identifierMethodName: 'testMethod',
+            identifierArgumentName: 'name',
           }),
         ])
         .build(),
       privateMethods: new PrivateMethodDeclarationListNodeBuilder()
         .withMethods([
-          new PrivateMethodBuilderDirector().buildMethodWithThisAssignmentExpression({
+          new PrivateMethodBuilderDirector().buildMethodWithThisPropsAssignmentExpression({
             methodName: 'testPrivateMethod',
             entityName: 'TodoEntity',
             thisIdentifierName: 'name',

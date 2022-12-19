@@ -12,14 +12,16 @@ export class PublicMethodBuilderDirector {
     this.builder = new PublicMethodDeclarationNodeBuilder();
   }
 
-  buildMethodWithThisAssignmentExpression({
+  buildMethodWithThisMethodCallExpression({
     methodName,
     entityName,
-    thisIdentifierName,
+    identifierMethodName,
+    identifierArgumentName,
   }: {
     methodName: string;
     entityName: string;
-    thisIdentifierName: string;
+    identifierArgumentName: string;
+    identifierMethodName: string;
   }): PublicMethodDeclarationNode {
     return this.builder
       .withIdentifier(new IdentifierNodeBuilder().withName(methodName).build())
@@ -28,7 +30,36 @@ export class PublicMethodBuilderDirector {
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypeBitloopsIdentifier(entityName),
       )
       .withStatements(
-        new StatementListBuilderDirector().buildThisAssignmentExpression(thisIdentifierName),
+        new StatementListBuilderDirector().buildThisMethodCallExpressionWithThisArgument({
+          identifierMethodName,
+          identifierArgumentName,
+        }),
+      )
+      .build();
+  }
+
+  buildMethodWithThisPropsMethodCallExpression({
+    methodName,
+    entityName,
+    identifierMethodName,
+    identifierArgumentName,
+  }: {
+    methodName: string;
+    entityName: string;
+    identifierArgumentName: string;
+    identifierMethodName: string;
+  }): PublicMethodDeclarationNode {
+    return this.builder
+      .withIdentifier(new IdentifierNodeBuilder().withName(methodName).build())
+      .withParameters(new ParameterListNodeBuilder().withParameters([]).build())
+      .withReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypeBitloopsIdentifier(entityName),
+      )
+      .withStatements(
+        new StatementListBuilderDirector().buildThisMethodCallExpressionWithThisPropsArgument({
+          identifierMethodName,
+          identifierArgumentName,
+        }),
       )
       .build();
   }

@@ -32,4 +32,25 @@ export class PrivateMethodBuilderDirector {
       )
       .build();
   }
+
+  buildMethodWithThisPropsAssignmentExpression({
+    methodName,
+    entityName,
+    thisIdentifierName,
+  }: {
+    methodName: string;
+    entityName: string;
+    thisIdentifierName: string;
+  }): PrivateMethodDeclarationNode {
+    return this.builder
+      .withIdentifier(new IdentifierNodeBuilder().withName(methodName).build())
+      .withParameters(new ParameterListNodeBuilder().withParameters([]).build())
+      .withReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypeBitloopsIdentifier(entityName),
+      )
+      .withStatements(
+        new StatementListBuilderDirector().buildThisPropsAssignmentExpression(thisIdentifierName),
+      )
+      .build();
+  }
 }

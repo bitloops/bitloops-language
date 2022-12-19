@@ -4,6 +4,8 @@ import { MemberDotExpressionNodeBuilder } from '../../../../ast/core/intermediat
 import { ThisExpressionNodeBuilder } from '../../../../ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { DomainCreateNode } from '../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
 import { IntermediateASTNode } from '../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { PrivateMethodDeclarationNode } from '../../../../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { PublicMethodDeclarationNode } from '../../../../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
 class BaseDomainMethodNodeTSTransformer<
@@ -44,4 +46,6 @@ class BaseDomainMethodNodeTSTransformer<
   }
 }
 
-export class DomainCreateNodeTSTransformer extends BaseDomainMethodNodeTSTransformer<DomainCreateNode> {}
+export class DomainCreateMethodNodeTSTransformer extends BaseDomainMethodNodeTSTransformer<DomainCreateNode> {}
+export class DomainPublicMethodNodeTSTransformer extends BaseDomainMethodNodeTSTransformer<PublicMethodDeclarationNode> {}
+export class DomainPrivateMethodNodeTSTransformer extends BaseDomainMethodNodeTSTransformer<PrivateMethodDeclarationNode> {}
