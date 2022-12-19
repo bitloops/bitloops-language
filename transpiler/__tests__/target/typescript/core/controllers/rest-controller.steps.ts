@@ -23,7 +23,7 @@ import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediat
 import { BitloopsTargetGenerator } from '../../../../../src/target/index.js';
 import { formatString } from '../../../../../src/target/typescript/core/codeFormatting.js';
 import { ControllerTypeOfDefinition, ISetupData, TServerType } from '../../../../../src/types.js';
-import { VALID_REST_CONTROLLER_TEST_CASES } from '../mocks/controllers/retController.js';
+import { VALID_REST_CONTROLLER_TEST_CASES } from '../mocks/controllers/restController.js';
 
 describe('Statements test cases', () => {
   const boundedContext = 'Hello world';

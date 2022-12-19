@@ -39,7 +39,6 @@ const parameterDependencyToTargetLanguage = (
 const parameterDependenciesToTargetLanguage = (
   variable: TParameterList,
 ): TTargetDependenciesTypeScript => {
-  console.log('variable', variable);
   const { parameters } = variable;
   let res = '(';
   const finalDependencies = [];

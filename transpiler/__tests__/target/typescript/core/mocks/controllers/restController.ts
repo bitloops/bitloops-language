@@ -29,7 +29,8 @@ export class CreateTodoController extends Fastify.BaseController {
 }`,
   },
   {
-    description: 'REST controller that executes result and returns it',
+    description:
+      'REST controller that executes result and returns it, testing both await and dot value',
     controllerName: 'CreateTodoController',
     controller: new RestControllerBuilderDirector().buildControllerThatExecutesAndReturnsResult(
       'CreateTodoController',
@@ -43,7 +44,7 @@ export class CreateTodoController extends Fastify.BaseController {
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const result = await this.useCase.execute();
     if (true) {
-      return result;
+      return this.ok(result.value);
     }
   }
 }`,
