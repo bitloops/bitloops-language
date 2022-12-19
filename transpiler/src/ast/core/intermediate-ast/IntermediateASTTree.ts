@@ -3,6 +3,7 @@ import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
+import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 import { TControllerUseCaseExecuteNodeType, TVariableDeclarationStatement } from '../types.js';
@@ -73,58 +74,6 @@ export class IntermediateASTTree {
     return this;
   }
 
-  // private getContextNodesByType(
-  //   nodeType: NODE_TYPES,
-  //   contextNode: IntermediateASTNode,
-  // ): IntermediateASTNode<nodeType>[] {
-  //   const children = contextNode.getChildren();
-  //   for (const child of children) {
-  //     if (nodeType === child.getType()) {
-  //     }
-  //   }
-
-  //   while (children.length != 0) {
-  //     for (const child of children) {
-  //       if (nodeType === child.getType()) {
-  //       }
-  //       children = child.getChildren();
-  //     }
-  //   }
-  // }
-
-  // private getNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
-
-  //   for (const child of children) {
-  //     if (nodeType === child.getType()) {
-  //     }
-  //   }
-
-  //   while (children.length != 0) {
-  //     for (const child of children) {
-  //       if (nodeType === child.getType()) {
-  //       }
-  //       children = child.getChildren();
-  //     }
-  //   }
-  // }
-
-  // private traverse() {
-  //   // ignore root -- root acts as a container
-  //   let node = this.rootNode.getFirstChild();
-  //   while (node != null) {
-  //     if (node.hasChildren()) {
-  //       node = node.getFirstChild();
-  //     } else {
-  //       // leaf, find the parent level
-  //       while (node.getNextSibling() == null && node != this.rootNode) {
-  //         // use child-parent link to get to the parent level
-  //         node = node.getParent();
-  //       }
-  //       node = node.getNextSibling();
-  //     }
-  //   }
-  // }
-
   /**    A
    *  B -   F
    * C-E   G-H-I
@@ -159,6 +108,10 @@ export class IntermediateASTTree {
     }
   }
 
+  public copy(): IntermediateASTTree {
+    return this;
+  }
+
   public buildValueRecursiveBottomUp(currentNode: IntermediateASTNode): void {
     if (currentNode.isLeaf()) {
       return this.buildNodeValue(currentNode);
@@ -171,6 +124,7 @@ export class IntermediateASTTree {
   }
 
   private buildNodeValue(node: IntermediateASTNode): void {
+    if (node.isRoot()) return;
     const nodeValue = node.getValue()[node.getClassNodeName()];
     if (node.isLeaf()) {
       return node.buildLeafValue(nodeValue);
@@ -294,6 +248,11 @@ export class IntermediateASTTree {
       nextStatement = nextStatement.getNextSibling();
     }
     nodes.forEach((node) => (node.identifierName = newIdentifier));
+  }
+
+  getReturnStatementsOfNode(intermediateASTNode: IntermediateASTNode): ReturnStatementNode[] {
+    const policy = (node: IntermediateASTNode): boolean => node instanceof ReturnStatementNode;
+    return this.getNodesWithPolicy(intermediateASTNode, policy) as ReturnStatementNode[];
   }
 
   public getMethodCallsThatUseThisDependencies(

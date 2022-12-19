@@ -3,8 +3,8 @@ Entity TodoEntity {
         return TodoEntity(props);   
     } 
 
-    public greet(): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {    
-        return DomainErrors.InvalidTitleError();   
+    public greet(): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {
+        return DomainErrors.InvalidTitleError();    
     } 
 
     uncomplete(completed: bool): (OK(void), Errors()) {     

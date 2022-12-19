@@ -23,14 +23,20 @@ import {
   TConstDeclaration,
   TEvaluationFields,
   TExpression,
+  TReturnErrorStatement,
+  TReturnOKStatement,
   TReturnStatement,
   TStatement,
+  TStatements,
 } from '../../../../../src/types.js';
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { BuiltInFunctionStatementDirector } from './builtInFunctionDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { IfStatementBuilder } from './IfStatement.js';
+import { ReturnErrorStatementBuilder } from './returnErrorStatementBuilder.js';
+import { ReturnOKStatementBuilder } from './returnOKStatementBuilder.js';
 import { ReturnStatementBuilder } from './returnStatementBuilder.js';
 
 export class StatementDirector {
@@ -119,6 +125,38 @@ export class StatementDirector {
     });
   }
 
+  buildConstDeclarationWithEntityEvaluation({
+    name,
+    entityIdentifier,
+    entityFields,
+  }: {
+    name: string;
+    entityIdentifier: string;
+    entityFields: TEvaluationFields;
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithEntityEvaluation({
+      name,
+      entityIdentifier,
+      fields: entityFields,
+    });
+  }
+
+  buildConstDeclarationWithErrorEvaluation({
+    name,
+    errorIdentifier,
+    args,
+  }: {
+    name: string;
+    errorIdentifier: string;
+    args?: TArgumentList;
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithErrorEvaluation({
+      name,
+      errorIdentifier,
+      args,
+    });
+  }
+
   buildBreakStatement(): TBreakStatement {
     return {
       breakStatement: 'break',
@@ -127,6 +165,14 @@ export class StatementDirector {
 
   buildReturnStatement(expression: TExpression): TReturnStatement {
     return new ReturnStatementBuilder().withExpression(expression).build();
+  }
+
+  buildReturnOKStatement(expression: TExpression): TReturnOKStatement {
+    return new ReturnOKStatementBuilder().withExpression(expression).build();
+  }
+
+  buildReturnErrorStatement(expression: TExpression): TReturnErrorStatement {
+    return new ReturnErrorStatementBuilder().withExpression(expression).build();
   }
 
   buildExpressionEntityEvaluation(entityName: string, identifierValue: string): TExpression {
@@ -188,5 +234,29 @@ export class StatementDirector {
     }[]
   ): TStatement {
     return new BuiltInFunctionStatementDirector().buildApplyRulesWithMemberDotArgs(...appliedRules);
+  }
+
+  buildEmptyReturnOK(): TStatement {
+    return new ReturnOKStatementBuilder().build();
+  }
+
+  buildIfStatement({
+    condition,
+    thenStatements,
+    elseStatements,
+  }: {
+    condition: TExpression;
+    thenStatements: TStatements;
+    elseStatements?: TStatements;
+  }): TStatement {
+    const ifValue = new IfStatementBuilder()
+      .withCondition(condition)
+      .withThenStatements(thenStatements);
+
+    if (elseStatements) {
+      ifValue.withElseStatements(elseStatements);
+    }
+
+    return ifValue.build();
   }
 }

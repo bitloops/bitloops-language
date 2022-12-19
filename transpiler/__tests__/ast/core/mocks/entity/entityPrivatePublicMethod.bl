@@ -3,8 +3,9 @@ Entity TodoEntity {
         return TodoEntity(props);   
     }  
     
-    complete(): (OK(TodoEntity), Errors()) {     
-        return TodoEntity({id: 7, title: 'Super important'});   
+    complete(): (OK(TodoEntity), Errors()) { 
+        const entityRes = TodoEntity({id: 7, title: 'Super important'});
+        return entityRes;
     }
     
     isValidName(name: string): bool { 
