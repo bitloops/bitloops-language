@@ -24,7 +24,7 @@ import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_DOMAIN_ERROR_TEST_CASES } from './mocks/errors/domainError.js';
 
-describe('Valid If statement test cases', () => {
+describe('Valid Domain Error test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;

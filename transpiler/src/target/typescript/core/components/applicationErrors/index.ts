@@ -20,11 +20,7 @@
 import {
   TApplicationErrors,
   TApplicationError,
-  TString,
-  TBackTickString,
   TTargetDependenciesTypeScript,
-  TEvaluation,
-  TRegularEvaluation,
   TDependenciesTypeScript,
   ApplicationErrorKey,
 } from '../../../../../types.js';
@@ -50,61 +46,23 @@ const applicationErrorsToTargetLanguage = (
   return { output: result, dependencies };
 };
 
-// const applicationErrorToTargetLanguage = (
-//   variable: TApplicationError,
-//   applicationErrorName: string,
-// ): TTargetDependenciesTypeScript => {
-//   const { message, errorId, parameters } = variable;
-//   const messageResult = messageToTargetLanguage(message);
-//   const errorIdResult = modelToTargetLanguage({
-//     type: BitloopsTypesMapping.TString,
-//     value: errorId,
-//   });
-//   const parametersResult = modelToTargetLanguage({
-//     type: BitloopsTypesMapping.TParameterDependencies,
-//     value: parameters ?? [],
-//   });
-
-//   let result = `export class ${applicationErrorName} extends Application.Error { constructor`;
-//   result += parametersResult.output;
-//   result += '{ super(';
-//   result += messageResult.output;
-//   result += ', ';
-//   result += errorIdResult.output;
-//   result += '); }}';
-//   return {
-//     output: result,
-//     dependencies: [
-//       ...parametersResult.dependencies,
-//       ...messageResult.dependencies,
-//       ...errorIdResult.dependencies,
-//     ],
-//   };
-// };
-const convertToString = (value: TRegularEvaluation): TString | TBackTickString => {
-  const body = value.regularEvaluation;
-  if (body.type === 'string') {
-    return { string: body.value };
-  }
-
-  return { backTickString: body.value };
-};
-
 const applicationErrorToTargetLanguage = (
   variable: TApplicationError,
   applicationErrorName: string,
 ): TTargetDependenciesTypeScript => {
-  /* 🔧 TODO: This won't work for now */
   const { message, errorId, parameters } = variable[ApplicationErrorKey];
 
-  // TODO: throw error if message is not a string or backtick string
-  const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
-  const messageText: TString | TBackTickString = convertToString(messageRegularEval);
-  const messageResult = messageToTargetLanguage(messageText);
-  const errorIdRegularEval = (errorId.expression as TEvaluation).evaluation as TRegularEvaluation;
+  const messageExpression = message.expression;
+  const messageResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: messageExpression,
+  });
+  const errorIdRegularEval = errorId.expression;
 
-  const errorIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
-  // const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
+  const errorIdText = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: errorIdRegularEval,
+  });
   const errorIdResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TString,
     value: errorIdText,
@@ -139,21 +97,4 @@ const applicationErrorToTargetLanguage = (
     ],
   };
 };
-
-const messageToTargetLanguage = (
-  message: TString | TBackTickString,
-): TTargetDependenciesTypeScript => {
-  const messageType = Object.keys(message)[0];
-  const messageTypesMapping = {
-    backTickString: BitloopsTypesMapping.TBackTickString,
-    string: BitloopsTypesMapping.TString,
-  };
-
-  const messageResult = modelToTargetLanguage({
-    type: messageTypesMapping[messageType],
-    value: message,
-  });
-  return messageResult;
-};
-
 export { applicationErrorsToTargetLanguage };

@@ -7,9 +7,6 @@ import { DomainErrorNode } from '../../../../../../src/ast/core/intermediate-ast
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-// import { DomainErrorBuilder } from '../../../../../ast/core/builders/domaiErrorBuilder.js';
-// import { ExpressionBuilderDirector } from '../../../../../ast/core/builders/expressionDirector.js';
-// import { ParameterListBuilderDirector } from '../../../../../ast/core/builders/parameterListBuilderDirector.js';
 
 type TestCase = {
   description: string;
@@ -28,7 +25,9 @@ export const VALID_DOMAIN_ERROR_TEST_CASES: TestCase[] = [
         new EvaluationFieldNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('errorId').build())
           .withExpression(
-            new ExpressionBuilderDirector().buildStringLiteralExpression('djlfh679dn$5'),
+            new ExpressionBuilderDirector().buildStringLiteralExpression(
+              'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe',
+            ),
           )
           .build(),
       )
@@ -44,10 +43,48 @@ export const VALID_DOMAIN_ERROR_TEST_CASES: TestCase[] = [
       )
       .withParameters(
         new ParameterListNodeBuilder(null)
-          .withParameters([new ParameterBuilderDirector().buildIdentifierParameter('name', 'type')])
+          .withParameters([
+            new ParameterBuilderDirector().buildIdentifierParameter('name', 'string'),
+            new ParameterBuilderDirector().buildIdentifierParameter('kindOfError', 'string'),
+          ])
           .build(),
       )
       .build(),
-    output: 'DomainErrors()',
+    output:
+      "export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+  },
+  {
+    description: 'Domain error with string template',
+    domainError: new DomainErrorBuilder(tree, null)
+      .withIdentifier(new IdentifierNodeBuilder().withName('InvalidNameError').build())
+      .withErrorId(
+        new EvaluationFieldNodeBuilder()
+          .withIdentifier(new IdentifierNodeBuilder().withName('errorId').build())
+          .withExpression(
+            new ExpressionBuilderDirector().buildStringLiteralExpression(
+              'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe',
+            ),
+          )
+          .build(),
+      )
+      .withMessage(
+        new EvaluationFieldNodeBuilder()
+          .withIdentifier(new IdentifierNodeBuilder().withName('name').build())
+          .withExpression(
+            new ExpressionBuilderDirector().buildStringLiteralExpression('Invalid name'),
+          )
+          .build(),
+      )
+      .withParameters(
+        new ParameterListNodeBuilder(null)
+          .withParameters([
+            new ParameterBuilderDirector().buildIdentifierParameter('name', 'string'),
+            new ParameterBuilderDirector().buildIdentifierParameter('kindOfError', 'string'),
+          ])
+          .build(),
+      )
+      .build(),
+    output:
+      "export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('Invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
   },
 ];

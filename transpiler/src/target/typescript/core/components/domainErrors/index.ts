@@ -9,7 +9,7 @@
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FturnOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
@@ -18,66 +18,96 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TDomainErrors,
-  TDomainError,
-  TString,
-  TBackTickString,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
-  TEvaluation,
-  TRegularEvaluation,
+  DomainErrorKey,
+  DomainErrorIdentifier,
+  TDomainErrorValue,
+  TDomainError,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainErrorsToTargetLanguage = (
-  domainErrors: TDomainErrors,
-): TTargetDependenciesTypeScript => {
-  const domainErrorsNames = Object.keys(domainErrors);
+const domainErrorsToTargetLanguage = (domainError: TDomainError): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
-  for (let i = 0; i < domainErrorsNames.length; i++) {
-    const domainErrorName = domainErrorsNames[i];
-    const domainError = domainErrors[domainErrorName];
-    const domainErrorToTargetLang = domainErrorToTargetLanguage(domainError, domainErrorName);
-    result += domainErrorToTargetLang.output;
-    dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
-  }
+  const domainErrorName = domainError[DomainErrorKey][DomainErrorIdentifier];
+  const domainErrorValue = domainError[DomainErrorKey];
+  const domainErrorToTargetLang = domainErrorToTargetLanguage(domainErrorValue, domainErrorName);
+  result += domainErrorToTargetLang.output;
+  dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
   return { output: result, dependencies };
 };
 
-const convertToString = (value: TRegularEvaluation): TString | TBackTickString => {
-  const body = value.regularEvaluation;
-  if (body.type === 'string') {
-    return { string: body.value };
-  }
+// const getErrorValues = (
+//   error: TDomainErrorValue | TApplicationErrorValue,
+// ): {
+//   messageResult: TTargetDependenciesTypeScript;
+//   errorIdText: TTargetDependenciesTypeScript;
+//   parametersResult: TTargetDependenciesTypeScript;
+// } => {
+//   const domainErrorValue = error as TDomainErrorValue;
+//   const applicationErrorValue = error as TDomainErrorValue;
 
-  return { backTickString: body.value };
-};
+//   let message: TExpression;
+//   let errorId: TExpression;
+//   let parameters: TParameter[];
+
+//   if (domainErrorValue) {
+//     message = domainErrorValue.message;
+//     errorId = domainErrorValue.errorId;
+//     parameters = domainErrorValue.parameters;
+//   } else if (applicationErrorValue) {
+//     message = applicationErrorValue.message;
+//     errorId = applicationErrorValue.errorId;
+//     parameters = applicationErrorValue.parameters;
+//   }
+
+//   const messageExpression = message.expression;
+//   const messageResult = modelToTargetLanguage({
+//     type: BitloopsTypesMapping.TExpressionValues,
+//     value: messageExpression,
+//   });
+//   const errorIdRegularEval = errorId.expression;
+
+//   const errorIdText = modelToTargetLanguage({
+//     type: BitloopsTypesMapping.TExpressionValues,
+//     value: errorIdRegularEval,
+//   });
+
+//   const parametersResult = modelToTargetLanguage({
+//     type: BitloopsTypesMapping.TParameterList,
+//     value: { parameters } ?? [],
+//   });
+
+//   return {
+//     messageResult,
+//     errorIdText,
+//     parametersResult,
+//   };
+// };
 
 const domainErrorToTargetLanguage = (
-  variable: TDomainError,
+  variable: TDomainErrorValue,
   domainErrorName: string,
 ): TTargetDependenciesTypeScript => {
   const { message, errorId, parameters } = variable;
 
-  // TODO: throw error if message is not a string or backtick string
-
-  //TODO remove regular Evaluation
-  const messageRegularEval = (message.expression as TEvaluation).evaluation as TRegularEvaluation;
-  const messageText: TString | TBackTickString = convertToString(messageRegularEval);
-  const messageResult = messageToTargetLanguage(messageText);
-  const errorIdRegularEval = (errorId.expression as TEvaluation).evaluation as TRegularEvaluation;
-
-  const errorIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
-  // const erroIdText: TString = { string: errorIdRegularEval.regularEvaluation.value };
-  const errorIdResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TString,
-    value: errorIdText,
+  const messageExpression = message.expression;
+  const messageResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: messageExpression,
   });
+  const errorIdRegularEval = errorId.expression;
+
+  const errorIdText = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: errorIdRegularEval,
+  });
+
   const parametersResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
-    value: parameters ?? [],
+    value: { parameters } ?? [],
   });
   const dependencies: TDependenciesTypeScript = [
     {
@@ -93,7 +123,7 @@ const domainErrorToTargetLanguage = (
   result += '{ super(';
   result += messageResult.output;
   result += ', ';
-  result += errorIdResult.output;
+  result += errorIdText.output;
   result += '); }}';
   return {
     output: result,
@@ -101,25 +131,9 @@ const domainErrorToTargetLanguage = (
       ...dependencies,
       ...parametersResult.dependencies,
       ...messageResult.dependencies,
-      ...errorIdResult.dependencies,
+      ...errorIdText.dependencies,
     ],
   };
-};
-
-const messageToTargetLanguage = (
-  message: TString | TBackTickString,
-): TTargetDependenciesTypeScript => {
-  const messageType = Object.keys(message)[0];
-  const messageTypesMapping = {
-    backTickString: BitloopsTypesMapping.TBackTickString,
-    string: BitloopsTypesMapping.TString,
-  };
-
-  const messageResult = modelToTargetLanguage({
-    type: messageTypesMapping[messageType],
-    value: message,
-  });
-  return messageResult;
 };
 
 export { domainErrorsToTargetLanguage };
