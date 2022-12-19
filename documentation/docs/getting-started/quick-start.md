@@ -1,5 +1,9 @@
 ---
 sidebar_position: 2
+sidebar_label: Quick Start
+title: Bitloops Quick Start - Learn Bitloops Language quickly
+description: This article explains how to get started with Bitloops very quickly. It provides a demonstration of how to get it up and running, how it works and how to begin exploring its features and capabilities.  
+keywords: [bitloops, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
 
 # Quick Start 

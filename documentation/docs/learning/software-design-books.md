@@ -1,5 +1,9 @@
 ---
 sidebar_position: 6
+sidebar_label: Other learning resources
+title: Best Resources to learn about Software Development 
+description: Comprehensive list of resources every Software Engineer should consume to become a better software engineer. Books, articles, videos and blogs that will transform your understanding of software 
+keywords: [software development, software engineering books, learning software engineering, software architecture, software design patterns]
 ---
 
 # Other learning resources

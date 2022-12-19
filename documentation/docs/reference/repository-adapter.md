@@ -1,3 +1,10 @@
+---
+sidebar_label: RepoAdapter
+title: Bitloops Language - RepoAdapter - Basic Syntax 
+description: RepoAdapter syntax on Bitloops Language - Repository Adapters allow developers to declare the actual concretion of the repository port that allows the system to connect to different databases easily.  
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, repoadapter, repository adapter]
+---
+
 # RepoAdapter
 
 The RepoAdapter component is a tool which helps to declare the actual concretion of the **RepoPort**,

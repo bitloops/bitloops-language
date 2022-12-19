@@ -1,3 +1,10 @@
+---
+sidebar_label: Entity
+title: Bitloops Language - Entity - Basic Syntax 
+description: Entity syntax on Bitloops Language - An entity is a representation of an object that has an identity. It is unique!
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, entity]
+---
+
 # Entity
 
 An *entity* is an object defined primarily by its idenity. [^Evans2004]

@@ -1,5 +1,9 @@
 ---
 sidebar_position: 3
+sidebar_label: Code Snippet Examples
+title: Bitloops Language - Code Snippet Examples
+description: List of examples of code snippets that explain how the Bitloops Language works, and how it can be used across other applications.  
+keywords: [bitloops, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
 
 # Code Snippet Examples

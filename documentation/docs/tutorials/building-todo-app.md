@@ -1,5 +1,9 @@
 ---
 sidebar_position: 1
+sidebar_label: Create a ToDo App
+title: Bitloops Tutorial - Create a ToDo App using Bitloops 
+description: Learn how to build a ToDo app quickly and efficiently using Bitloops. You'll learn how to apply industry best practices and software design principles that lead to high-quality software 
+keywords: [bitloops, bitloops tutorial, todo app, learning programming, learning coding, software development, better programming]
 ---
 
 # Create a ToDo App

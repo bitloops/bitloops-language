@@ -1,3 +1,10 @@
+---
+sidebar_label: PackageAdapter
+title: Bitloops Language - PackageAdapter - Basic Syntax 
+description: PackageAdapter syntax on Bitloops Language - Package Adapter is the concrete implementation of the Package Port to enable the use of external libraries.  
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, package adapter, package port]
+---
+
 # PackageAdapter
 
 The PackageAdapter component is a concrete implementation of the corresponding [PackagePort](https://bitloops.com/docs/bitloops-language/components/package-port). Its name is inspired by the Hexagonal Architecture (or Ports and Adapters architecture).

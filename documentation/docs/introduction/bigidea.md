@@ -1,5 +1,9 @@
 ---
 sidebar_position: 3
+sidebar_label: The Bitloops (Big Idea) Vision!
+title: Bitloops Vision - Software Engineering Superpowers 
+description: Bitloops has a vision to radically improve how backend applications are designed, built and managed. We believe software development can be significantly more efficient with the right software architecture and design patterns! 
+keywords: [bitloops, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
 
 # 💡The Bitloops (Big Idea) Vision

@@ -1,3 +1,10 @@
+---
+sidebar_label: UseCase
+title: Bitloops Language - UseCase - Basic Syntax 
+description: UseCase syntax on Bitloops Language - Use Cases define the main features of an application and coordinate the execution of tasks by entities, domain services and any other code in the system.  
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
+---
+
 # UseCase
 
 ### Definition

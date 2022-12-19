@@ -1,7 +1,14 @@
+---
+sidebar_label: ValueObject
+title: Bitloops Language - ValueObject - Basic Syntax 
+description: ValueObject syntax on Bitloops Language - Value objects are objects that do not have an identidy. There are objects that represent a characteristic and do not identify an variable or object.   
+keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
+---
+
 # ValueObject
 
 ### Definition
-ValueObjects are objects that have no conceptual identity and describe some characteristics of a thing.
+Value Objects are objects that have no conceptual identity and describe some characteristics of a thing.
 They are defined only by their properties and their equality is not based on identity. 
 
 

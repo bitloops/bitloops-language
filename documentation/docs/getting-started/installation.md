@@ -1,5 +1,9 @@
 ---
 sidebar_position: 1
+sidebar_label: Installation
+title: Bitloops Language Installation - How to Install Bitloops
+description: This article explains in depth how to install the open source Bitloops Language and begin using it to build high-quality, robust, flexible and maintainable systems.  
+keywords: [bitloops, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
 
 # Installation
