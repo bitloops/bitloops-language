@@ -51,7 +51,7 @@ export const VALID_DOMAIN_ERROR_TEST_CASES: TestCase[] = [
       )
       .build(),
     output:
-      "export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+      "import { Domain } from '@bitloops/bl-boilerplate-core'; \n export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
   },
   {
     description: 'Domain error with string template',
@@ -85,6 +85,6 @@ export const VALID_DOMAIN_ERROR_TEST_CASES: TestCase[] = [
       )
       .build(),
     output:
-      "export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('Invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+      "import { Domain } from '@bitloops/bl-boilerplate-core'; \n export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('Invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
   },
 ];

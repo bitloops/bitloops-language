@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { ClassTypes } from '../../../../../../helpers/mappings.js';
 import {
   TApplicationError,
   TTargetDependenciesTypeScript,
@@ -25,6 +26,7 @@ import {
   ApplicationErrorIdentifier,
   TApplicationErrorValue,
 } from '../../../../../../types.js';
+import { getParentDependencies } from '../../../dependencies.js';
 import { getErrorValues } from '../index.js';
 
 const applicationErrorsToTargetLanguage = (
@@ -34,12 +36,12 @@ const applicationErrorsToTargetLanguage = (
   let dependencies = [];
   const applicationErrorName = domainError[ApplicationErrorKey][ApplicationErrorIdentifier];
   const applicationErrorValue = domainError[ApplicationErrorKey];
-  const domainErrorToTargetLang = applicationErrorToTargetLanguage(
+  const applicationErrorToTargetLang = applicationErrorToTargetLanguage(
     applicationErrorValue,
     applicationErrorName,
   );
-  result += domainErrorToTargetLang.output;
-  dependencies = [...dependencies, ...domainErrorToTargetLang.dependencies];
+  result += applicationErrorToTargetLang.output;
+  dependencies = [...dependencies, ...applicationErrorToTargetLang.dependencies];
   return { output: result, dependencies };
 };
 
@@ -49,25 +51,6 @@ const applicationErrorToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   const { messageResult, errorIdText, parametersResult } = getErrorValues(variable);
 
-  // const messageExpression = message.expression;
-  // const messageResult = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TExpressionValues,
-  //   value: messageExpression,
-  // });
-  // const errorIdRegularEval = errorId.expression;
-
-  // const errorIdText = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TExpressionValues,
-  //   value: errorIdRegularEval,
-  // });
-  // const errorIdResult = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TString,
-  //   value: errorIdText,
-  // });
-  // const parametersResult = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TParameterList,
-  //   value: parameters ?? [],
-  // });
   const dependencies: TDependenciesTypeScript = [
     {
       type: 'absolute',
@@ -84,14 +67,18 @@ const applicationErrorToTargetLanguage = (
   result += ', ';
   result += errorIdText.output;
   result += '); }}';
+
+  const parentDependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.ApplicationError,
+    className: applicationErrorName,
+  });
+
   return {
     output: result,
-    dependencies: [
-      ...dependencies,
-      ...parametersResult.dependencies,
-      ...messageResult.dependencies,
-      ...errorIdText.dependencies,
-    ],
+    dependencies: parentDependencies,
+    // ...parametersResult.dependencies,
+    // ...messageResult.dependencies,
+    // ...errorIdText.dependencies,
   };
 };
 export { applicationErrorsToTargetLanguage };

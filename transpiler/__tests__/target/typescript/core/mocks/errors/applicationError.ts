@@ -51,6 +51,6 @@ export const VALID_APPLICATION_ERROR_TEST_CASES: TestCase[] = [
       )
       .build(),
     output:
-      "export class InvalidNameError extends Application.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+      "import { Application } from '@bitloops/bl-boilerplate-core'; \n export class InvalidNameError extends Application.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
   },
 ];

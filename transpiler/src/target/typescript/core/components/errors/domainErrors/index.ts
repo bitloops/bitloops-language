@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { ClassTypes } from '../../../../../../helpers/mappings.js';
 import {
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
@@ -24,7 +25,9 @@ import {
   DomainErrorIdentifier,
   TDomainErrorValue,
   TDomainError,
+  TDependencyChildTypescript,
 } from '../../../../../../types.js';
+import { getParentDependencies } from '../../../dependencies.js';
 import { getErrorValues } from '../index.js';
 
 const domainErrorsToTargetLanguage = (domainError: TDomainError): TTargetDependenciesTypeScript => {
@@ -60,10 +63,16 @@ const domainErrorToTargetLanguage = (
   result += ', ';
   result += errorIdText.output;
   result += '); }}';
+
+  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+    classType: ClassTypes.DomainErrors,
+    className: domainErrorName,
+  });
+
   return {
     output: result,
     dependencies: [
-      ...dependencies,
+      ...parentDependencies,
       ...parametersResult.dependencies,
       ...messageResult.dependencies,
       ...errorIdText.dependencies,
