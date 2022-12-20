@@ -5,7 +5,7 @@ import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/return.js';
+import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 
 export const VALID_USE_CASE_TEST_CASES = [
