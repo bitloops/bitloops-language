@@ -25,6 +25,7 @@ import {
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
 import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
+import { deepClone } from '../../../utils/deepClone.js';
 import { getFilePathRelativeToModule } from '../helpers/getTargetFileDestination.js';
 import { findRelativeDiffForImport } from '../utils/findRelativeDiff.js';
 
@@ -34,24 +35,25 @@ export const getParentDependencies = (
 ): TDependencyParentTypescript[] => {
   const parentPathObj = getFilePathRelativeToModule(classType, className);
   const parentPath = parentPathObj.path;
-  const parentDependecies: TDependencyParentTypescript[] = [];
-  for (const dependency of dependencies) {
+  const parentDependencies: TDependencyParentTypescript[] = [];
+  const clonedDependencies = deepClone(dependencies);
+  for (const dependency of clonedDependencies) {
     const { type, value, classType, className } = dependency;
     if (type === 'absolute') {
-      parentDependecies.push(dependency as TDependencyParentTypescript);
+      parentDependencies.push(dependency as TDependencyParentTypescript);
       continue;
     }
     const childPathObj = getFilePathRelativeToModule(classType, className);
     const childPath = childPathObj.path;
     const importString = findRelativeDiffForImport(parentPath, childPath, className);
-    parentDependecies.push({
+    parentDependencies.push({
       type,
       default: dependency.default,
       value,
       from: importString,
     });
   }
-  let finalParentDependencies = removeParentDuplicates(parentDependecies, className);
+  let finalParentDependencies = removeParentDuplicates(parentDependencies, className);
   finalParentDependencies = mergeDependencies(finalParentDependencies);
   return finalParentDependencies;
 };

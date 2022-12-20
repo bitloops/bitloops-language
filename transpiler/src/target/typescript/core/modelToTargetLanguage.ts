@@ -114,7 +114,7 @@ import { ISetupData, TContextData, TTargetDependenciesTypeScript } from '../../.
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/index.js';
-import { readModelsToTargetLanguage } from './components/readModels/index.js';
+import { readModelToTargetLanguage } from './components/readModels/index.js';
 import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
@@ -165,7 +165,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TReadModel: {
-      res = readModelsToTargetLanguage(value);
+      res = readModelToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TInstanceOf: {
