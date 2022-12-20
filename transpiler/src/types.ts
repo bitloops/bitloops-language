@@ -181,13 +181,6 @@ export type TArgument = {
 // The old TArgumentDependencies
 export type TArgumentList = TArgument[];
 
-export type TClassInstantiation = {
-  classInstantiation: {
-    className: string;
-    argumentDependencies?: TArgumentList;
-  };
-};
-
 // Needed to check type on runtime, otherwise simple literal gets thrown away.
 export const bitloopsPrimitives = [
   'double',
@@ -429,7 +422,6 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation // To  be removed?
   | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
