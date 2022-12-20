@@ -23,7 +23,7 @@ import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_INSTANCE_OF_TEST_CASES } from './mocks/expression/instanceOf.js';
 
-describe('Valid expression test cases', () => {
+describe('Valid instance of test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
