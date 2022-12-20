@@ -10,7 +10,6 @@ import { BitloopsParserError, TParserCoreInputData } from './parser/core/types.j
 import { IBitloopsParser } from './parser/index.js';
 import { isBitloopsSetupParserError } from './parser/setup/guards/index.js';
 import { BitloopsSetupParserError, IBitloopsSetupParser } from './parser/setup/types.js';
-import { IIntermediateModelToASTTargetLanguageTransformer } from './target/ast/types.js';
 import {
   BitloopsTargetGeneratorError,
   BitloopsTargetSetupGeneratorError,
@@ -37,8 +36,7 @@ export default class Transpiler {
     private setupParser: IBitloopsSetupParser,
     private originalLanguageASTToIntermediateModelTransformer: IBitloopsIntermediateASTParser,
     private originalLanguageASTToIntermediateModelSetupTransformer: IBitloopsIntermediateSetupASTParser,
-    private intermediateModelToASTTargetLanguageTransformer: IIntermediateModelToASTTargetLanguageTransformer,
-    private targetLanguageASTToTargetCodeGenerator: IBitloopsTargetGenerator,
+    private intermediateASTModelToTargetLanguageGenerator: IBitloopsTargetGenerator,
   ) {}
 
   public transpile(
@@ -53,10 +51,8 @@ export default class Transpiler {
     if (Transpiler.isOriginalASTToIntermediateModelError(intermediateModel))
       return intermediateModel;
 
-    const targetLanguageAST = this.intermediateModelToTargetLanguageAST(intermediateModel, options);
-
-    const targetCode = this.targetLanguageASTToTargetCode(targetLanguageAST, options);
-    if (Transpiler.isTargetLanguageASTToTargetCodeError(targetCode)) return targetCode;
+    const targetCode = this.intermediateASTModelToTargetLanguage(intermediateModel, options);
+    if (Transpiler.isIntermediateASTModelToTargetLanguageError(targetCode)) return targetCode;
 
     return targetCode;
   }
@@ -118,38 +114,29 @@ export default class Transpiler {
     return intermediateModelOutput;
   }
 
-  private intermediateModelToTargetLanguageAST(
-    intermediateModel: TIntermediateModel,
-    _options: TTranspileOptions,
-  ): TIntermediateModel {
-    // TODO uncomment this and create class for model to model transformations for specific languages
-    const targetLanguageAST =
-      this.intermediateModelToASTTargetLanguageTransformer.transform(intermediateModel);
-    return targetLanguageAST;
-  }
-
-  private targetLanguageASTToTargetCode(
-    targetAST: TIntermediateModel,
+  private intermediateASTModelToTargetLanguage(
+    ASTModel: TIntermediateModel,
     options: TTranspileOptions,
   ): TTargetLanguageASTToTargetCode | TTargetLanguageASTToTargetCodeError[] {
     const targetCodeOutput: TTargetLanguageASTToTargetCode = { targetCode: null };
     const errors = [];
 
     const targetLanguageAST = {
-      intermediateAST: targetAST.intermediateModel,
-      setupData: targetAST.intermediateSetupModel,
+      intermediateAST: ASTModel.intermediateModel,
+      setupData: ASTModel.intermediateSetupModel,
       ...options,
     };
-    const targetCoreCode = this.targetLanguageASTToTargetCodeGenerator.generate(targetLanguageAST);
+    const targetCoreCode =
+      this.intermediateASTModelToTargetLanguageGenerator.generate(targetLanguageAST);
     if (isBitloopsTargetGeneratorError(targetCoreCode)) {
       errors.push(targetCoreCode);
     } else {
       targetCodeOutput.targetCode = targetCoreCode;
     }
 
-    if (targetAST.intermediateSetupModel) {
+    if (ASTModel.intermediateSetupModel) {
       const targetSetupCode =
-        this.targetLanguageASTToTargetCodeGenerator.generateSetup(targetLanguageAST);
+        this.intermediateASTModelToTargetLanguageGenerator.generateSetup(targetLanguageAST);
       if (isBitloopsTargetSetupGeneratorError(targetSetupCode)) {
         errors.push(targetSetupCode);
       } else {
@@ -166,7 +153,7 @@ export default class Transpiler {
     if (
       !Transpiler.isBitloopsCodeToOriginalASTError(value) &&
       !Transpiler.isOriginalASTToIntermediateModelError(value) &&
-      !Transpiler.isTargetLanguageASTToTargetCodeError(value)
+      !Transpiler.isIntermediateASTModelToTargetLanguageError(value)
     ) {
       return false;
     }
@@ -208,7 +195,7 @@ export default class Transpiler {
     return false;
   }
 
-  static isTargetLanguageASTToTargetCodeError(
+  static isIntermediateASTModelToTargetLanguageError(
     value:
       | TTargetLanguageASTToTargetCode
       | TTargetLanguageASTToTargetCode
