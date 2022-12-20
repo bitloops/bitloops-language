@@ -9,7 +9,7 @@ import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/return.js';
+import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
