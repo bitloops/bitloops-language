@@ -22,18 +22,19 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
 
-const readModelsToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTypeScript => {
-  const initialPropsLangMapping = (propName: string): string => `export type ${propName} = { `;
-  const finalPropsLangMapping = '} | null';
+const initialReadModel = (readModelIdentifier: string): string =>
+  `export type ${readModelIdentifier} = { `;
+
+const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTypeScript => {
+  const finalReadModel = '} | null';
   const result: TTargetDependenciesTypeScript = {
     output: '',
     dependencies: [],
   };
 
-  // return Object.entries(readModel).reduce((acc, [readModelName, readModelValues]) => {
   const { fields, readModelIdentifier } = readModel.ReadModel;
   guardAgainstUndefinedAndArray(fields);
-  result.output += initialPropsLangMapping(readModelIdentifier);
+  result.output += initialReadModel(readModelIdentifier);
 
   const readModelIntermediateModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
@@ -42,7 +43,7 @@ const readModelsToTargetLanguage = (readModel: TReadModel): TTargetDependenciesT
 
   result.output += readModelIntermediateModel.output;
   result.dependencies.push(...readModelIntermediateModel.dependencies);
-  result.output += finalPropsLangMapping;
+  result.output += finalReadModel;
 
   return result;
 };
@@ -56,4 +57,4 @@ const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
   }
 };
 
-export { readModelsToTargetLanguage };
+export { readModelToTargetLanguage };

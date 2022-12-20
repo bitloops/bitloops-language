@@ -1,7 +1,3 @@
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
 import { UseCaseBuilderDirector } from '../../builders/useCase.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
@@ -10,9 +6,7 @@ import { ArgumentListDirector } from '../../builders/argumentList.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { FileUtil } from '../../../../../../src/utils/file.js';
 
 export const VALID_USE_CASE_TEST_CASES = [
   {
@@ -61,7 +55,9 @@ export const VALID_USE_CASE_TEST_CASES = [
         new ReturnStatementBuilderDirector().buildReturnOKEmpty(),
       ],
     }),
-    output: fs.readFileSync(`${__dirname}/createTodoUseCase.ts`).toString(),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/useCase/createTodoUseCase.ts',
+    ),
   },
   {
     description: 'Get all todos useCase',
@@ -88,6 +84,8 @@ export const VALID_USE_CASE_TEST_CASES = [
         ),
       ],
     }),
-    output: fs.readFileSync(`${__dirname}/getAllTodosUseCase.ts`).toString(),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/useCase/getAllTodosUseCase.ts',
+    ),
   },
 ];

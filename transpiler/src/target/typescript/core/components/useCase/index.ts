@@ -28,7 +28,6 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { useCaseExecuteToTargetLanguage } from './execute.js';
-import { deepClone } from '../../../../../utils/deepClone.js';
 
 const USE_CASE_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -75,7 +74,7 @@ export const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesT
   const useCaseInputType = execute.parameter ? execute.parameter.type : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
-  let dependencies = deepClone(USE_CASE_DEPENDENCIES);
+  let dependencies = USE_CASE_DEPENDENCIES;
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
