@@ -51,8 +51,15 @@ const returnToTargetLanguage = (variable: TReturnStatement): TTargetDependencies
 
 // returnOK
 const returnOkToTargetLanguage = (variable: TReturnOKStatement): TTargetDependenciesTypeScript => {
-  if (!variable.returnOK) {
+  if (variable.returnOK === undefined) {
     throw new Error('ReturnOK statement must have a returnOK value');
+  }
+
+  if (variable.returnOK === null) {
+    return {
+      output: 'return ok()',
+      dependencies: [],
+    };
   }
 
   const expressionValue = modelToTargetLanguage({ type: 'TExpression', value: variable.returnOK });

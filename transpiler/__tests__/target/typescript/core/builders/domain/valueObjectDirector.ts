@@ -3,6 +3,8 @@ import { ConstDeclarationListNodeBuilder } from '../../../../../../src/ast/core/
 import { DomainCreateNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateBuilder.js';
 import { ErrorIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifiersNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
+import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
+import { ParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
 import { PrivateMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
 import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
@@ -26,19 +28,43 @@ type TReturnType = {
   errors: string[];
 };
 
+type TConstructorParam = {
+  propIdentifier: string;
+  propClassName: string;
+};
+
 export class ValueObjectBuilderDirector {
   buildValueObject(
     identifier: string,
     params: {
       constantNodes: ConstDeclarationNode[];
-      parameterNode: ParameterNode;
+      constructorParameterNode: TConstructorParam;
       returnTypeParams: TReturnType;
       statements: StatementNode[];
       privateMethods?: PrivateMethodDeclarationNode[];
     },
   ): ValueObjectDeclarationNode {
-    const { constantNodes, parameterNode, returnTypeParams, statements, privateMethods } = params;
+    const {
+      constantNodes,
+      constructorParameterNode,
+      returnTypeParams,
+      statements,
+      privateMethods,
+    } = params;
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+
+    const parameterNode = new ParameterNodeBuilder(null)
+      .withIdentifier(
+        new ParameterIdentifierNodeBuilder(null)
+          .withIdentifier(constructorParameterNode.propIdentifier)
+          .build(),
+      )
+      .withType(
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+          constructorParameterNode.propClassName,
+        ),
+      )
+      .build();
 
     return new ValueObjectDeclarationNodeBuilder(tree)
       .withIdentifier(new ValueObjectIdentifierNodeBuilder().withName(identifier).build())

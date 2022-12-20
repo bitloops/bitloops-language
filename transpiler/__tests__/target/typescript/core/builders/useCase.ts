@@ -19,7 +19,7 @@ import { ExpressionBuilderDirector } from './expression.js';
 import { ParameterBuilderDirector } from './parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from './statement/constDeclaration.js';
 import { IfStatementBuilderDirector } from './statement/ifStatementDirector.js';
-import { ReturnStatementBuilderDirector } from './statement/return.js';
+import { ReturnStatementBuilderDirector } from './statement/returnDirector.js';
 
 export class UseCaseBuilderDirector {
   buildUseCaseWithTwoRepoCalls(identifier: string, options?: { await: boolean }): UseCaseNode {

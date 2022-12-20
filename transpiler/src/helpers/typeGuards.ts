@@ -15,6 +15,10 @@ import {
   TDomainPrivateMethodValuesPrimaryReturnType,
   TRESTController,
   TGraphQLController,
+  TAssignmentExpression,
+  expressionKey,
+  TMemberDotExpression,
+  TThisExpression,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -91,10 +95,20 @@ const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
   return false;
 };
 
-// TODO change to isThis expression??
-const isThisDeclaration = (value: TStatement): value is TConstDeclaration => {
-  if (typeof value === 'string') return false;
-  if ('constDeclaration' in value) return true;
+const isThisDeclaration = (
+  value: TStatement,
+): value is { [expressionKey]: TAssignmentExpression } => {
+  if (!isExpression(value) || !isAssignmentExpression(value)) {
+    return false;
+  }
+  const leftExpression = value[expressionKey].assignmentExpression.left;
+  if (!isMemberDotExpression(leftExpression)) {
+    return false;
+  }
+  const leftMost = getMemberDotExpressionLeftMostExpression(leftExpression);
+  if (isThisExpression(leftMost)) {
+    return true;
+  }
   return false;
 };
 
@@ -107,6 +121,33 @@ const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration
 const isExpression = (value: TStatement): value is TExpression => {
   if (typeof value === 'string') return false;
   if ('expression' in value) return true;
+  return false;
+};
+const isAssignmentExpression = (
+  value: TExpression,
+): value is { [expressionKey]: TAssignmentExpression } => {
+  if ('assignmentExpression' in value[expressionKey]) return true;
+  return false;
+};
+
+const isMemberDotExpression = (
+  value: TExpression,
+): value is { [expressionKey]: TMemberDotExpression } => {
+  if ('memberDotExpression' in value[expressionKey]) return true;
+  return false;
+};
+const getMemberDotExpressionLeftMostExpression = (value: {
+  [expressionKey]: TMemberDotExpression;
+}): TExpression => {
+  const { expression } = value[expressionKey].memberDotExpression;
+  const leftExpression = { expression };
+  if (isMemberDotExpression(leftExpression)) {
+    return getMemberDotExpressionLeftMostExpression(leftExpression);
+  }
+  return leftExpression;
+};
+const isThisExpression = (value: TExpression): value is { [expressionKey]: TThisExpression } => {
+  if ('thisExpression' in value[expressionKey]) return true;
   return false;
 };
 

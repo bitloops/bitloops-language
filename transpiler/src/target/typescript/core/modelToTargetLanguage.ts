@@ -475,7 +475,7 @@ const modelToTargetLanguage = (props: {
       res = singleExpressionToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TBuildInFunction: {
+    case BitloopsTypesMapping.TBuiltInFunction: {
       res = buildInFunctionToTargetLanguage(value);
       break;
     }

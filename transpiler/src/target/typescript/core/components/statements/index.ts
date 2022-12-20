@@ -39,7 +39,7 @@ export const keysToTypeMapping = {
   expression: BitloopsTypesMapping.TExpression,
   thisDeclaration: BitloopsTypesMapping.TThisDeclaration,
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
-  buildInFunction: BitloopsTypesMapping.TBuildInFunction,
+  builtInFunction: BitloopsTypesMapping.TBuiltInFunction,
   breakStatement: BitloopsTypesMapping.TBreakStatement,
 };
 

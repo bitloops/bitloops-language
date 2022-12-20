@@ -17,6 +17,9 @@ export class ReturnStatementBuilderDirector {
   buildReturnOK(expr: ExpressionNode): ReturnOKStatementNode {
     return new ReturnOKStatementNodeBuilder().withExpression(expr).build();
   }
+  buildEmptyReturnOK(): ReturnOKStatementNode {
+    return new ReturnOKStatementNodeBuilder().build();
+  }
 
   buildReturnError(expr: ExpressionNode): ReturnErrorStatementNode {
     return new ReturnErrorStatementNodeBuilder().withExpression(expr).build();

@@ -5,6 +5,6 @@ import { StatementNode } from '../Statement.js';
 export class BuiltInFunctionNode extends StatementNode {
   private static classNodeName = 'builtInFunction';
   constructor(metadata: TNodeMetadata) {
-    super(BitloopsTypesMapping.TBuildInFunction, metadata, BuiltInFunctionNode.classNodeName);
+    super(BitloopsTypesMapping.TBuiltInFunction, metadata, BuiltInFunctionNode.classNodeName);
   }
 }

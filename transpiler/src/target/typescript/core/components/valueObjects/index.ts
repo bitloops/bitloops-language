@@ -19,7 +19,6 @@
  */
 import {
   TDependenciesTypeScript,
-  TDependencyChildTypescript,
   TDomainPrivateMethods,
   TTargetDependenciesTypeScript,
   TValueObject,
@@ -97,7 +96,7 @@ const valueObjectsToTargetLanguage = (params: {
 
   const voCreateModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDomainCreateMethod,
-    value: create,
+    value: { create },
   });
   result += voCreateModel.output;
   dependencies = [...dependencies, ...voCreateModel.dependencies];

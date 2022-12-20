@@ -55,7 +55,7 @@ describe('Apply rules statement is valid', () => {
         }
       }
 
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TBuildInFunction);
+      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TBuiltInFunction);
       assert(propsNodes.length === 1);
       const value = propsNodes[0].getValue();
 

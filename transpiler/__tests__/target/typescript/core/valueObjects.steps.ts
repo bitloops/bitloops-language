@@ -38,7 +38,7 @@ describe('Statements test cases', () => {
       const props = testCase.props;
 
       tree.insertChild(valueObject);
-      tree.insertChild(props);
+      tree.insertSibling(props);
 
       const intermediateAST = {
         [boundedContext]: { [module]: tree },
