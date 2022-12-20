@@ -9,7 +9,6 @@ import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.j
 import { IBuilder } from '../IBuilder.js';
 import { ErrorIdNodeBuilder } from './ErrorIdNodeBuilder.js';
 import { ErrorMessageNodeBuilder } from './ErrorMessageNodeBuilder.js';
-// import { ErrorParametersNodeBuilder } from './ErrorParametersBuilder.js';
 
 export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
   public readonly NAME = 'DomainErrors';
@@ -41,8 +40,8 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
     this.errorId = new ErrorIdNodeBuilder().withExpression(expression).build();
     return this;
   }
-  public withParameters(parameters: ParameterListNode): DomainErrorBuilder {
-    this.parameters = parameters;
+  public withParameters(parametersList: ParameterListNode): DomainErrorBuilder {
+    this.parameters = parametersList;
     return this;
   }
   public build(): DomainErrorNode {

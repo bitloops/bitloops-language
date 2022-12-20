@@ -25,7 +25,7 @@ export type TModule = {
   Props?: TProps;
   Controller?: TRESTController | TGraphQLController;
   UseCases?: TUseCase;
-  ApplicationErrors?: TApplicationErrors;
+  ApplicationErrors?: TApplicationErrors; //TODO change
   DomainErrors?: TDomainErrors;
   RootEntities?: TRootEntities;
   Entity?: TEntity;
@@ -103,7 +103,7 @@ export type TBitloopsClasses =
   | TValueObject
   | TRESTController
   | TUseCase
-  | TDomainErrors
+  | TDomainError
   | TDTO
   | TStruct;
 
@@ -264,11 +264,6 @@ export type TString = {
   string: string;
 };
 
-export type TDomainError = {
-  message: TExpression;
-  errorId: TExpression;
-} & Partial<TParameterList>;
-
 export type TDomainRule = {
   DomainRule: {
     domainRuleIdentifier: string;
@@ -290,23 +285,30 @@ export const DomainErrorKey = 'DomainError';
 export const DomainErrorIdentifier = 'identifier';
 export type TErrorMessage = { message: TExpression };
 export type TErrorId = { errorId: TExpression };
-export type TDomainErrors = {
-  [DomainErrorKey]: {
-    [DomainErrorIdentifier]: TIdentifier;
-  } & TErrorMessage &
-    TErrorId &
-    Partial<TParameterList>;
+
+export type TDomainErrors = Record<string, TDomainError>;
+
+export type TDomainError = {
+  [DomainErrorKey]: TDomainErrorValue;
 };
+
+export type TDomainErrorValue = {
+  [DomainErrorIdentifier]: TIdentifier;
+} & TErrorMessage &
+  TErrorId &
+  Partial<TParameterList>;
 
 export const ApplicationErrorKey = 'ApplicationError';
 export const ApplicationErrorIdentifier = 'identifier';
 export type TApplicationError = {
-  [ApplicationErrorKey]: {
-    [ApplicationErrorIdentifier]: TIdentifier;
-  } & TErrorMessage &
-    TErrorId &
-    Partial<TParameterList>;
+  [ApplicationErrorKey]: TApplicationErrorValue;
 };
+
+export type TApplicationErrorValue = {
+  [ApplicationErrorIdentifier]: TIdentifier;
+} & TErrorMessage &
+  TErrorId &
+  Partial<TParameterList>;
 
 export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
@@ -527,7 +529,7 @@ export type TReturnOKStatement = {
 
 export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
-  [returnErrorKey]: TExpression | null;
+  [returnErrorKey]: TExpression;
 };
 
 // export type TConstDecompositionNested = {

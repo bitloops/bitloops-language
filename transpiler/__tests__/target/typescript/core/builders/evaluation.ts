@@ -112,4 +112,19 @@ export class EvaluationBuilderDirector {
       .build();
     return evaluationNode;
   }
+
+  buildValueObjectEvaluationWithFieldList(
+    valueObjectName: string,
+    fieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const valueObjectEvaluationNode =
+      new ValueObjectEvaluationBuilderDirector().buildValueObjectEvaluationWithFieldList(
+        valueObjectName,
+        fieldListNode,
+      );
+    const evaluationNode = new EvaluationBuilder()
+      .withEvaluation(valueObjectEvaluationNode)
+      .build();
+    return evaluationNode;
+  }
 }

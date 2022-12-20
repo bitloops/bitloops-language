@@ -17,57 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
+
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_APPLICATION_ERROR_TEST_CASES } from './mocks/errors/applicationError.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/applicationErrors.feature');
-
-defineFeature(feature, (test) => {
+describe('Valid Application Error test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const classType = ClassTypes.ApplicationErrors;
   const formatterConfig = null;
-  let language;
-  let result;
-  let intermediateAST;
+  const language = 'TypeScript';
 
-  test('ApplicationErrors with messages', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (lang) => {
-      language = lang;
-    });
+  VALID_APPLICATION_ERROR_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.applicationError;
 
-    given(/^I have ApplicationErrors (.*)$/, (applicationErrors) => {
-      intermediateAST = {
-        [boundedContext]: { [module]: { [classType]: JSON.parse(applicationErrors) } },
+      tree.insertChild(input);
+
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
       };
-    });
 
-    when('I generate the code', () => {
+      // when
       const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
+      const result = targetGenerator.generate({
         intermediateAST,
         formatterConfig,
         targetLanguage: language,
         setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      const classNamesContent = JSON.parse(output);
-      const expectedOutput = [];
-      for (const [className, content] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString(content as string, formatterConfig);
-        expectedOutput.push({
-          boundedContext,
-          className,
-          module,
-          classType,
-          fileContent: formattedOutput,
-        });
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
       }
-      expect(result).toEqual(expectedOutput);
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

@@ -1,3 +1,4 @@
+import { ErrorIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifiersNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
 import { ReturnOkTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
@@ -23,6 +24,17 @@ export class ReturnOkErrorTypeBuilderDirector {
       .build();
   }
 
+  buildReturnOkTypeBitloopsIdentifierArrayType(entityName: string): ReturnOkErrorTypeNode {
+    return this.builder
+      .withOk(
+        new ReturnOkTypeNodeBuilder()
+          .withType(new BitloopsPrimaryTypeDirector().buildArrayIdentifierPrimaryType(entityName))
+          .build(),
+      )
+      .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+      .build();
+  }
+
   buildReturnOkTypePrimitiveType(primitiveType: TBitloopsPrimitives): ReturnOkErrorTypeNode {
     return this.builder
       .withOk(
@@ -31,6 +43,25 @@ export class ReturnOkErrorTypeBuilderDirector {
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+      .build();
+  }
+
+  buildReturnOkErrorTypePrimitiveType(
+    primitiveType: TBitloopsPrimitives,
+    errors: string[],
+  ): ReturnOkErrorTypeNode {
+    const errorIdentifiersNode = [];
+    for (const errorName of errors) {
+      const errorNode = new ErrorIdentifierNodeBuilder().withName(errorName).build();
+      errorIdentifiersNode.push(errorNode);
+    }
+    return this.builder
+      .withOk(
+        new ReturnOkTypeNodeBuilder()
+          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(primitiveType))
+          .build(),
+      )
+      .withErrors(new ErrorIdentifiersNodeBuilder().withErrors(errorIdentifiersNode).build())
       .build();
   }
 }

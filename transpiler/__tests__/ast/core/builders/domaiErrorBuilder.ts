@@ -2,12 +2,12 @@ import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBu
 import {
   TExpression,
   DomainErrorKey,
-  TDomainErrors,
   TIdentifier,
   TParameterList,
+  TDomainError,
 } from '../../../../src/types.js';
 
-export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
+export class DomainErrorBuilder implements IBuilder<TDomainError> {
   private message: TExpression;
   private errorId: TExpression;
   private parameters: TParameterList;
@@ -29,7 +29,7 @@ export class DomainErrorBuilder implements IBuilder<TDomainErrors> {
     return this;
   }
 
-  public build(): TDomainErrors {
+  public build(): TDomainError {
     const error = {
       [DomainErrorKey]: {
         identifier: this.identifierName,
