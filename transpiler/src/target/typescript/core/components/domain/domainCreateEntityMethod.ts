@@ -59,12 +59,12 @@ export const domainCreateEntity = (
 
   const parameterString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameter,
-    value: parameter,
+    value: { parameter },
   });
 
   const returnTypeModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
-    value: returnType,
+    value: { returnType },
   });
 
   const statementValues = statements.map((statement) => statement.valueOf());
