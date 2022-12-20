@@ -169,7 +169,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
         .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('name', 'string')])
         .build(),
     ),
-    output: `import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
+    output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
     import { NameProps } from './NameProps';
     import { DomainErrors } from './errors/index';
     const vName: string = 'Kostas';
