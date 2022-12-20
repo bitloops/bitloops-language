@@ -21,17 +21,14 @@ import { TPackage, TTargetDependenciesTypeScript } from '../../../../../types.js
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-export const packagesToTargetLanguage = (variable: TPackage): TTargetDependenciesTypeScript => {
-  let res = '';
-  let dependencies = [];
-  for (const packageData of Object.values(variable)) {
-    const { port } = packageData;
-    const model = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TPackagePort,
-      value: port,
-    });
-    res += model.output;
-    dependencies = [...dependencies, ...model.dependencies];
-  }
-  return { output: res, dependencies };
+export const packageToTargetLanguage = (variable: TPackage): TTargetDependenciesTypeScript => {
+  const { Package } = variable;
+  const { port } = Package;
+
+  const model = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TPackagePort,
+    value: port,
+  });
+
+  return { output: model.output, dependencies: model.dependencies };
 };
