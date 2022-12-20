@@ -1,7 +1,3 @@
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
 import { DomainCreateBuilderDirector } from '../../builders/DomainCreateBuilderDirector.js';
 import { EntityDeclarationBuilder } from '../../builders/entity/EntityBuilder.js';
 import { EntityValuesBuilder } from '../../builders/entity/EntityValuesBuilder.js';
@@ -16,15 +12,15 @@ import { StatementListDirector } from '../../builders/statement/statementListDir
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { FileUtil } from '../../../../../src/utils/file.js';
 
 export const validEntityTestCases = [
   {
     description: 'Entity with public and private method',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(`${__dirname}/entityPrivatePublicMethod.bl`).toString(),
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/entity/entityPrivatePublicMethod.bl',
+    ),
     expected: new EntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -65,9 +61,9 @@ export const validEntityTestCases = [
   {
     description: 'Entity with private method with OkErrorReturnType',
     fileId: 'testFile.bl',
-    inputBLString: fs
-      .readFileSync(`${__dirname}/entityPrivateMethodOkErrorReturnType.bl`)
-      .toString(),
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/entity/entityPrivateMethodOkErrorReturnType.bl',
+    ),
     expected: new EntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -114,7 +110,9 @@ export const validEntityTestCases = [
   {
     description: 'Entity with public method that returns domain error',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(`${__dirname}/entityReturnDomainError.bl`).toString(),
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/entity/entityReturnDomainError.bl',
+    ),
     expected: new EntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -172,7 +170,9 @@ export const validEntityTestCases = [
   {
     description: 'Entity with public methods that returns error and ok accordingly',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(`${__dirname}/entityCheckReturnOkErrorStatement.bl`).toString(),
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/entity/entityCheckReturnOkErrorStatement.bl',
+    ),
     expected: new EntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(

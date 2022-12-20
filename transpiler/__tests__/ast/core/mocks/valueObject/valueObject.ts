@@ -1,22 +1,18 @@
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
 import { DomainCreateBuilderDirector } from '../../builders/DomainCreateBuilderDirector.js';
 import { PrivateMethodBuilderDirector } from '../../builders/methods/PrivateMethodBuilderDirector.js';
 import { ValueObjectDeclarationBuilder } from '../../builders/valueObject/ValueObjectBuilder.js';
 import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { StatementListDirector } from '../../builders/statement/statementListDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclarationDirector.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { FileUtil } from '../../../../../src/utils/file.js';
 
 export const validValueObjectTestCases = [
   {
     description: 'Value Object with private method',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(`${__dirname}/valueObjectWithPrivateMethod.bl`).toString(),
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/valueObject/valueObjectWithPrivateMethod.bl',
+    ),
     expected: new ValueObjectDeclarationBuilder()
       .withIdentifier('NameVO')
       .withConstants([
@@ -57,7 +53,9 @@ export const validValueObjectTestCases = [
   {
     description: 'Value Object with apply rules',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(`${__dirname}/valueObjectApplyRules.bl`).toString(),
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/valueObject/valueObjectApplyRules.bl',
+    ),
     expected: new ValueObjectDeclarationBuilder()
       .withIdentifier('TitleVO')
       .withCreate(
