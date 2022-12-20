@@ -124,7 +124,7 @@ const BitloopsTypesMapping = {
   TRootEntities: 'TRootEntities',
   TDomainRule: 'TDomainRule',
   TEntityCreate: 'TEntityCreate',
-  TBuildInFunction: 'TBuildInFunction',
+  TBuiltInFunction: 'TBuiltInFunction',
   TApplyRules: 'TApplyRules',
   TReadModel: 'TReadModels',
   TReadModelIdentifier: 'TReadModelIdentifier',
