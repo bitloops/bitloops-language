@@ -169,6 +169,13 @@ export type TParameter = {
   };
 };
 
+export type TDomainCreateParameter = {
+  domainCreateParameter: {
+    type: TPropsIdentifier;
+    value: TParameterIdentifier;
+  };
+};
+
 export type TParameterList = {
   parameters: TParameter[];
 };
@@ -1067,21 +1074,7 @@ export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 
-/**
- * Setup Expression
- */
-// singleExpression
-//     : singleExpression Or singleExpression                                   # LogicalOrExpression
-//     | EnvPrefix OpenParen Identifier Comma literal CloseParen                # EnvPrefixExpression
-//     | envVariable                                                            # EnvVariableExpression
-//     | literal                                                                # LiteralExpression
-//     | identifier                                                             # IdentifierExpression //Identifier or Variable method
-
-export type TSingleExpressionValue = // | TMultiplicativeExpression
-  // | TAdditiveExpression
-  // | TRelationalExpression
-  // | TEqualityExpression
-  // | TParenthesizedExpression;
+export type TSingleExpressionValue =
   | TLogicalSingleExpression
   | TEnvVarWithDefaultValueExpression
   | TEnvironmentVariableExpression

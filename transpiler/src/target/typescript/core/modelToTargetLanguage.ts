@@ -402,7 +402,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRepoPort: {
-      res = repoPortToTargetLanguage(value, model, contextData);
+      res = repoPortToTargetLanguage(value, model);
       break;
     }
     case BitloopsTypesMapping.TAdditiveOperator: {
@@ -488,7 +488,7 @@ const modelToTargetLanguage = (props: {
       res = rulesDeclarationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TRootEntities: {
+    case BitloopsTypesMapping.TRootEntity: {
       res = rootEntitiesToTargetLanguage({
         rootEntities: value,
         model,

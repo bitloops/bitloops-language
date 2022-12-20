@@ -1,4 +1,4 @@
-import { TBitloopsTypesValues } from '../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../../helpers/mappings.js';
 import { IntermediateASTValidationError } from '../../types.js';
 
 export type TNodeLineData = {
@@ -176,7 +176,11 @@ export abstract class IntermediateASTNode {
   }
 
   IsStatementListNode(): boolean {
-    return this.nodeType === 'TStatements';
+    return this.nodeType === BitloopsTypesMapping.TStatements;
+  }
+
+  IsEntityIdentifierNode(): boolean {
+    return this.nodeType === BitloopsTypesMapping.TEntityIdentifier;
   }
 
   protected getChildNodeByType<T extends IntermediateASTNode>(

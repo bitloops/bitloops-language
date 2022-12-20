@@ -23,6 +23,7 @@ const BitloopsTypesMapping = {
   TClassName: 'TClassName',
   TVariable: 'TVariable',
   TVariables: 'TVariables',
+  TDomainConstructorParameter: 'TDomainConstructorParameter',
   TProps: 'TProps',
   TEvaluation: 'TEvaluation',
   TInstanceOf: 'TInstanceOf',

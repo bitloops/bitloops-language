@@ -2,18 +2,18 @@ import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { EntityValuesNode } from '../../nodes/Entity/EntityValuesNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
-import { RootEntityDeclalationNode } from '../../nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from '../../nodes/Entity/EntityIdentifierNode.js';
+import { RootEntityDeclarationNode } from '../../nodes/RootEntity/RootEntityDeclarationNode.js';
 
-export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDeclalationNode> {
-  private RootEntityDeclarationNode: RootEntityDeclalationNode;
+export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDeclarationNode> {
+  private RootEntityDeclarationNode: RootEntityDeclarationNode;
   private identifierNode: EntityIdentifierNode;
   private entityValuesNode: EntityValuesNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
-    this.RootEntityDeclarationNode = new RootEntityDeclalationNode(metadata);
+    this.RootEntityDeclarationNode = new RootEntityDeclarationNode(metadata);
   }
 
   public withIdentifier(
@@ -30,7 +30,7 @@ export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDecl
     return this;
   }
 
-  public build(): RootEntityDeclalationNode {
+  public build(): RootEntityDeclarationNode {
     this.intermediateASTTree.insertChild(this.RootEntityDeclarationNode);
     this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.entityValuesNode);
