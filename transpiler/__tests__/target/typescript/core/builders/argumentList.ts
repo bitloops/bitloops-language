@@ -10,6 +10,15 @@ export class ArgumentListDirector {
     return argumentListNode;
   }
 
+  buildArgumentListWithIdentifierExpression(identifierName: string): ArgumentListNode {
+    const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(
+      identifierName,
+    );
+    const argument = new ArgumentDirector().buildArgument(identifierExpression);
+    const argumentListNode = new ArgumentListNodeBuilder().withArguments([argument]).build();
+    return argumentListNode;
+  }
+
   buildArgumentListWithThisMemberDotExpression(identifierName: string): ArgumentListNode {
     const memberDotExpression = new ExpressionBuilderDirector().buildThisMemberDotExpression(
       identifierName,

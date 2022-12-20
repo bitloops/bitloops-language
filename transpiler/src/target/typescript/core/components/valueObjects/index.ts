@@ -18,9 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TContextData,
   TDependenciesTypeScript,
-  TDependencyChildTypescript,
   TDomainPrivateMethods,
   TTargetDependenciesTypeScript,
   TValueObject,
@@ -65,13 +63,8 @@ const valueObjectMethods = (
 const valueObjectsToTargetLanguage = (params: {
   valueObject: TValueObject;
   model: IntermediateASTTree;
-  contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
-  const { valueObject, model, contextData } = params;
-
-  const { boundedContext, module } = contextData;
-
-  const modelForContext = model[boundedContext][module];
+  const { valueObject, model } = params;
 
   const initialObjectValuesLangMapping = (voName: string, propsName: string): string =>
     `export class ${voName} extends Domain.ValueObject<${propsName}> { `;
@@ -93,9 +86,9 @@ const valueObjectsToTargetLanguage = (params: {
   dependencies = [...dependencies, ...propsTypeDependencies];
 
   if (constants) {
-    // TODO FIx with new type
-    result += constantVariables(constants as any).output;
-    dependencies = [...dependencies, ...constantVariables(constants as any).dependencies];
+    const constantsRes = constantVariables(constants);
+    result += constantsRes.output;
+    dependencies = [...dependencies, ...constantsRes.dependencies];
   }
 
   result += initialObjectValuesLangMapping(valueObjectIdentifier, propsName);
@@ -103,7 +96,7 @@ const valueObjectsToTargetLanguage = (params: {
 
   const voCreateModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDomainCreateMethod,
-    value: create,
+    value: { create },
   });
   result += voCreateModel.output;
   dependencies = [...dependencies, ...voCreateModel.dependencies];
@@ -111,7 +104,7 @@ const valueObjectsToTargetLanguage = (params: {
   const IS_VALUE_OBJECT = true;
   const gettersModel = generateGetters({
     propsName,
-    model: modelForContext,
+    model,
     privateMethods,
     isValueObject: IS_VALUE_OBJECT,
   });
@@ -124,10 +117,9 @@ const valueObjectsToTargetLanguage = (params: {
     dependencies = [...dependencies, ...voMethodsModel.dependencies];
   }
 
-  const finalObjValLangMapping = '}';
-  result += finalObjValLangMapping;
+  result += '}';
 
-  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+  const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.ValueObject,
     className: valueObjectIdentifier,
   });

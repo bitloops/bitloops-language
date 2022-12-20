@@ -9,7 +9,7 @@ export class StructNode extends ClassTypeNode {
   constructor(metadata?: TNodeMetadata) {
     super({
       classType: StructNode.classType,
-      nodeType: BitloopsTypesMapping.TStructDeclaration,
+      nodeType: BitloopsTypesMapping.TStruct,
       metadata,
       classNodeName: StructNode.classNodeName,
     });

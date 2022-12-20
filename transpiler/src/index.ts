@@ -37,16 +37,14 @@ const setupParser = new BitloopsSetupParser();
 const originalLanguageASTToIntermediateModelTransformer = new BitloopsIntermediateASTParser();
 const originalLanguageASTToIntermediateModelSetupTransformer =
   new BitloopsIntermediateSetupASTParser();
-const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
-const targetLanguageASTToTargetCodeGenerator = new BitloopsTargetGenerator();
+const intermediateASTModelToTargetLanguageGenerator = new BitloopsTargetGenerator();
 
 const transpiler = new Transpiler(
   parser,
   setupParser,
   originalLanguageASTToIntermediateModelTransformer,
   originalLanguageASTToIntermediateModelSetupTransformer,
-  modelToTargetASTTransformer,
-  targetLanguageASTToTargetCodeGenerator,
+  intermediateASTModelToTargetLanguageGenerator,
 );
 
 export { transpiler };

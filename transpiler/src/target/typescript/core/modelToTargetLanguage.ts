@@ -73,10 +73,7 @@ import { primitiveEvaluationToTargetLanguage } from './components/primitiveEvalu
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
 import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js'; // TODO check this
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
-import {
-  structDeclarationToTargetLanguage,
-  structDeclarationValuesToTargetLanguage,
-} from './components/structDeclaration/index.js';
+import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
 import {
   definitionMethodInfoToTargetLanguage,
@@ -117,8 +114,8 @@ import { ISetupData, TContextData, TTargetDependenciesTypeScript } from '../../.
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/index.js';
-import { readModelsToTargetLanguage } from './components/readModels/index.js';
-import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
+import { readModelToTargetLanguage } from './components/readModels/index.js';
+import { rootEntityToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
 import { builtInClassEvaluationToTargetLanguage } from './components/builtInClass/index.js';
@@ -168,7 +165,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TReadModel: {
-      res = readModelsToTargetLanguage(value);
+      res = readModelToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TInstanceOf: {
@@ -210,10 +207,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TStruct: {
       res = structDeclarationToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TStructDeclaration: {
-      res = structDeclarationValuesToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TExpression: {
@@ -288,7 +281,6 @@ const modelToTargetLanguage = (props: {
       res = valueObjectsToTargetLanguage({
         valueObject: value,
         model,
-        contextData,
       });
       break;
     }
@@ -397,7 +389,6 @@ const modelToTargetLanguage = (props: {
       res = entityToTargetLanguage({
         entity: value,
         model,
-        contextData,
       });
       break;
     }
@@ -476,7 +467,7 @@ const modelToTargetLanguage = (props: {
       res = singleExpressionToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TBuildInFunction: {
+    case BitloopsTypesMapping.TBuiltInFunction: {
       res = buildInFunctionToTargetLanguage(value);
       break;
     }
@@ -489,10 +480,9 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRootEntity: {
-      res = rootEntitiesToTargetLanguage({
-        rootEntities: value,
+      res = rootEntityToTargetLanguage({
+        rootEntity: value,
         model,
-        contextData,
       });
       break;
     }

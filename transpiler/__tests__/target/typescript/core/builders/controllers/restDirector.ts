@@ -15,7 +15,7 @@ import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { TRestMethods } from '../../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../expression.js';
-import { ReturnStatementBuilderDirector } from '../statement/return.js';
+import { ReturnStatementBuilderDirector } from '../statement/returnDirector.js';
 import { StatementBuilderDirector } from '../statement/statementDirector.js';
 import { ParameterBuilderDirector } from '../parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from '../statement/constDeclaration.js';

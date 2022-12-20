@@ -17,90 +17,49 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import { d } from 'bitloops-gherkin';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
-import { ISetupData } from '../../../../src/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_VALUE_OBJECT_TEST_CASES } from './mocks/domain/valueObject.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/valueObjects.feature');
-
-defineFeature(feature, (test) => {
-  let language;
-  let result;
-  let value;
-  let intermediateAST;
-  let props;
-  const valueObjectClassType = ClassTypes.ValueObjects;
-  const propsClassType = ClassTypes.Props;
-
+describe('Value object test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Value Object success to Typescript', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (arg0) => {
-      language = arg0;
-    });
+  VALID_VALUE_OBJECT_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const valueObject = testCase.valueObject;
+      const props = testCase.props;
 
-    given(/^I have some value objects (.*) and props (.*)$/, (valueObject, inputProps) => {
-      value = d(valueObject);
-      props = d(inputProps);
-      intermediateAST = {
-        [boundedContext]: {
-          [module]: {
-            [valueObjectClassType]: JSON.parse(value),
-            [propsClassType]: JSON.parse(props),
-          },
-        },
+      tree.insertChild(valueObject);
+      tree.insertSibling(props);
+
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
       };
-    });
 
-    when('I generate the code', () => {
-      const setupData: ISetupData = {
-        controllers: {
-          [boundedContext]: {
-            [module]: {},
-          },
-        },
-      };
       const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
+
+      // when
+      const result = targetGenerator.generate({
         intermediateAST,
         formatterConfig,
         targetLanguage: language,
-        setupData,
+        setupData: null,
       });
-    });
 
-    then(/^I should see the output VOs (.*) and outputProps (.*)$/, (outputVOs, outputProps) => {
-      const classNamesContent = JSON.parse(d(outputVOs));
-
-      const expectedOutput = [];
-      for (const [className, content] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString(content as string, formatterConfig);
-        expectedOutput.push({
-          boundedContext,
-          className,
-          module,
-          classType: valueObjectClassType,
-          fileContent: formattedOutput,
-        });
+      //then
+      const formattedOutput = formatString(testCase.output, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
       }
-      // add props to the expected result too
-      const propsContent = formatString(d(outputProps), formatterConfig);
-      const propsName = Object.keys(JSON.parse(props))[0];
-      expectedOutput.push({
-        boundedContext,
-        className: propsName,
-        module,
-        classType: propsClassType,
-        fileContent: propsContent,
-      });
-
-      expect(result).toEqual(expectedOutput);
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

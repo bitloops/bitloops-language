@@ -18,7 +18,7 @@ import { TGraphQLOperation } from '../../../../../../src/types.js';
 import { ArgumentDirector } from '../argument.js';
 import { ArgumentListDirector } from '../argumentList.js';
 import { ExpressionBuilderDirector } from '../expression.js';
-import { ReturnStatementBuilderDirector } from '../statement/return.js';
+import { ReturnStatementBuilderDirector } from '../statement/returnDirector.js';
 import { StatementBuilderDirector } from '../statement/statementDirector.js';
 import { ConstDeclarationBuilderDirector } from '../statement/constDeclaration.js';
 import { IfStatementBuilderDirector } from '../statement/ifStatementDirector.js';

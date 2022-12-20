@@ -17,10 +17,10 @@ export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDecl
   }
 
   public withIdentifier(
-    RootEntityIdentifierNode: EntityIdentifierNode,
+    rootEntityIdentifierNode: EntityIdentifierNode,
   ): RootEntityDeclarationNodeBuilder {
-    this.identifierNode = RootEntityIdentifierNode;
-    const entityName = RootEntityIdentifierNode.getIdentifierName();
+    this.identifierNode = rootEntityIdentifierNode;
+    const entityName = rootEntityIdentifierNode.getIdentifierName();
     this.RootEntityDeclarationNode.setClassName(entityName);
     return this;
   }

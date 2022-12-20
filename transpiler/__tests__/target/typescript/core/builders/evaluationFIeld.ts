@@ -16,6 +16,18 @@ export class EvaluationFieldBuilderDirector {
     return evaluationFieldNode;
   }
 
+  buildIdentifierEvaluationField(name: string, value: string): EvaluationFieldNode {
+    const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(value);
+    return this.buildEvaluationField(name, identifierExpression);
+  }
+
+  buildBooleanLiteralEvaluationField(name: string, value: boolean): EvaluationFieldNode {
+    const booleanLiteralExpression = new ExpressionBuilderDirector().buildBooleanLiteralExpression(
+      value,
+    );
+    return this.buildEvaluationField(name, booleanLiteralExpression);
+  }
+
   buildStringLiteralEvaluationField(name: string, value: string): EvaluationFieldNode {
     const stringExpression = new ExpressionBuilderDirector().buildStringLiteralExpression(value);
     return this.buildEvaluationField(name, stringExpression);

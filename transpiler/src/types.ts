@@ -27,7 +27,7 @@ export type TModule = {
   UseCases?: TUseCase;
   ApplicationErrors?: TApplicationErrors; //TODO change
   DomainErrors?: TDomainErrors;
-  RootEntities?: TRootEntities;
+  RootEntities?: TRootEntity;
   Entity?: TEntity;
   ValueObject?: TValueObject;
   DTOs?: TDTO;
@@ -63,7 +63,7 @@ export type TComponentType =
   | 'TUseCase'
   | 'TApplicationErrors'
   | 'TDomainErrors'
-  | 'TRootEntities'
+  | 'TRootEntity'
   | 'TEntity'
   | 'TValueObject'
   | 'TDTOs'
@@ -536,7 +536,7 @@ export type TReturnOKStatement = {
 
 export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
-  [returnErrorKey]: TExpression | null;
+  [returnErrorKey]: TExpression;
 };
 
 // export type TConstDecompositionNested = {
@@ -691,7 +691,6 @@ export type TEntityValues = {
 
 export type TEntityCreate = TDomainCreateMethod;
 
-export type TRootEntities = Record<string, TEntityValues>;
 export const RootEntityKey = 'RootEntity';
 export type TRootEntity = {
   [RootEntityKey]: {

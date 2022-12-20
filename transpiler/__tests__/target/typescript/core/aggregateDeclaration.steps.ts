@@ -17,81 +17,48 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d } from 'bitloops-gherkin';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_AGGREGATE_TEST_CASES } from './mocks/domain/aggregate.js';
 
-const feature = loadFeature('./__tests__/target/typescript/core/aggregateDeclaration.feature');
-
-defineFeature(feature, (test) => {
+describe('Aggregate test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const rootEntitiesClassType = ClassTypes.RootEntity;
-  const propsClassType = ClassTypes.Props;
   const formatterConfig = null;
-  let valueProps;
-  let language;
-  let result;
-  let intermediateAST;
+  const language = 'TypeScript';
 
-  test('Aggregates are valid', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (lang) => {
-      language = lang;
-    });
+  VALID_AGGREGATE_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const entity = testCase.entity;
+      const props = testCase.props;
 
-    given(/^I have aggregates (.*) and props (.*)$/, (aggregates, props) => {
-      const rootEntities = JSON.parse(d(aggregates));
-      valueProps = JSON.parse(d(props));
+      tree.insertChild(entity);
+      tree.insertSibling(props);
 
-      intermediateAST = {
-        [boundedContext]: {
-          [module]: {
-            [rootEntitiesClassType]: rootEntities,
-            [propsClassType]: valueProps,
-          },
-        },
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
       };
-    });
 
-    when('I generate the code', () => {
       const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
+
+      // when
+      const result = targetGenerator.generate({
         intermediateAST,
         formatterConfig,
         targetLanguage: language,
         setupData: null,
       });
+
+      //then
+      const formattedOutput = formatString(testCase.output, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
-
-    then(
-      /^I should see the outputAggregates (.*) and outputProps (.*)$/,
-      (outputAggregates, outputProps) => {
-        const classNamesContent = JSON.parse(d(outputAggregates));
-        const expectedOutput = [];
-        for (const [className, content] of Object.entries(classNamesContent)) {
-          const formattedOutput = formatString(content as string, formatterConfig);
-          expectedOutput.push({
-            boundedContext,
-            className,
-            module,
-            classType: rootEntitiesClassType,
-            fileContent: formattedOutput,
-          });
-        }
-        const propsContent = formatString(d(outputProps), formatterConfig);
-        const propsName = Object.keys(valueProps)[0];
-        expectedOutput.push({
-          boundedContext,
-          className: propsName,
-          module,
-          classType: propsClassType,
-          fileContent: propsContent,
-        });
-
-        expect(result).toEqual(expectedOutput);
-      },
-    );
   });
 });

@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
   TDomainPrivateMethods,
@@ -64,19 +63,14 @@ const entityMethods = (
   return { output: result.output, dependencies: result.dependencies };
 };
 
+const initialEntityLangMapping = (entityName: string, propsName: string): string =>
+  `export class ${entityName} extends Domain.Entity<${propsName}> { `;
+
 const entityToTargetLanguage = (params: {
   entity: TEntity;
   model: IntermediateASTTree;
-  contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
-  const { entity, model, contextData } = params;
-
-  const { boundedContext, module } = contextData;
-
-  const modelForContext = model[boundedContext][module];
-
-  const initialEntityLangMapping = (entityName: string, propsName: string) =>
-    `export class ${entityName} extends Domain.Entity<${propsName}> { `;
+  const { entity, model } = params;
 
   let result = '';
   let dependencies = ENTITY_DEPENDENCIES;
@@ -106,14 +100,14 @@ const entityToTargetLanguage = (params: {
 
   const entityCreateModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TEntityCreate,
-    value: create,
+    value: { create },
   });
   result += entityCreateModel.output;
   dependencies = [...dependencies, ...entityCreateModel.dependencies];
 
   const gettersModel = generateGetters({
     propsName,
-    model: modelForContext,
+    model,
     publicMethods,
     privateMethods,
   });

@@ -1,7 +1,3 @@
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
 import { DomainCreateBuilderDirector } from '../../builders/DomainCreateBuilderDirector.js';
 import { EntityValuesBuilder } from '../../builders/entity/EntityValuesBuilder.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDirector.js';
@@ -15,19 +11,20 @@ import { StatementListDirector } from '../../builders/statement/statementListDir
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
 import { RootEntityDeclarationBuilder } from '../../builders/rootEntity/RootEntityBuilder.js';
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
+import { FileUtil } from '../../../../../src/utils/file.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const blFiles = {
-  publicPrivateMethod: join(__dirname, 'rootEntityPrivatePublicMethod.bl'),
-  privateOkError: join(__dirname, 'rootEntityPrivateMethodOkErrorReturnType.bl'),
-  domainError: join(__dirname, 'rootEntityReturnDomainError.bl'),
+  publicPrivateMethod:
+    'transpiler/__tests__/ast/core/mocks/rootEntity/rootEntityPrivatePublicMethod.bl',
+  privateOkError:
+    'transpiler/__tests__/ast/core/mocks/rootEntity/rootEntityPrivateMethodOkErrorReturnType.bl',
+  domainError: 'transpiler/__tests__/ast/core/mocks/rootEntity/rootEntityReturnDomainError.bl',
 };
 export const validRootEntityTestCases = [
   {
     description: 'Root Entity with public and private method',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(blFiles.publicPrivateMethod).toString(),
+    inputBLString: FileUtil.readFileString(blFiles.publicPrivateMethod),
     expected: new RootEntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -67,7 +64,7 @@ export const validRootEntityTestCases = [
   {
     description: 'Root Entity with private method with OkErrorReturnType',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(blFiles.privateOkError).toString(),
+    inputBLString: FileUtil.readFileString(blFiles.privateOkError),
     expected: new RootEntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(
@@ -114,7 +111,7 @@ export const validRootEntityTestCases = [
   {
     description: 'Root Entity with public method that returns domain error',
     fileId: 'testFile.bl',
-    inputBLString: fs.readFileSync(blFiles.domainError).toString(),
+    inputBLString: FileUtil.readFileString(blFiles.domainError),
     expected: new RootEntityDeclarationBuilder()
       .withIdentifier('TodoEntity')
       .withValues(

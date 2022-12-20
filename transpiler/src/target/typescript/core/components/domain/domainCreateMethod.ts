@@ -22,7 +22,6 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
 import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
-import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 export const domainCreate = (variable: TDomainCreateMethod): TTargetDependenciesTypeScript => {
   const { parameter, returnType, statements } = variable.create;
@@ -34,7 +33,6 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
 
   for (const statement of statements) {
     if (isThisDeclaration(statement)) {
-      // TODO change to isThis expression??
       statementsResult.thisStatements.push(statement);
     } else {
       statementsResult.restStatements.push(statement);
@@ -44,13 +42,6 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
   const propsNameType = parameter.type;
   const returnOkType = returnType.ok.type;
 
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-    throw new Error('Entity props type of  createMethod cannot be an array');
-  }
-
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(returnOkType)) {
-    throw new Error('Entity return type of createMethod cannot be an array');
-  }
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: propsNameType,
@@ -75,12 +66,12 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
 
   const parameterModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameter,
-    value: parameter,
+    value: { parameter },
   });
 
   const returnTypeModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
-    value: returnType,
+    value: { returnType },
   });
 
   const statementValues = statements.map((statement) => statement.valueOf());

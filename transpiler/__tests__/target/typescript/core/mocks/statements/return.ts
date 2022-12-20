@@ -4,7 +4,7 @@ import { ReturnStatementNode } from '../../../../../../src/ast/core/intermediate
 import { ArgumentDirector } from '../../builders/argument.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/return.js';
+import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
 
 type TestCase = {
   description: string;

@@ -43,8 +43,6 @@ interface IBitloopsIntermediateASTToTarget {
 }
 
 export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateASTToTarget {
-  å;
-
   ASTToTarget(
     params: TBitloopsTargetGeneratorParams,
   ): TBitloopsTargetContent | BitloopsTargetGeneratorError {

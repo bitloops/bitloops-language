@@ -14,8 +14,15 @@ export class ReturnStatementBuilderDirector {
     return new ReturnStatementNodeBuilder().withExpression(expr).build();
   }
 
+  buildReturnOKEmpty(): ReturnOKStatementNode {
+    return new ReturnOKStatementNodeBuilder().build();
+  }
+
   buildReturnOK(expr: ExpressionNode): ReturnOKStatementNode {
     return new ReturnOKStatementNodeBuilder().withExpression(expr).build();
+  }
+  buildEmptyReturnOK(): ReturnOKStatementNode {
+    return new ReturnOKStatementNodeBuilder().build();
   }
 
   buildReturnError(expr: ExpressionNode): ReturnErrorStatementNode {
