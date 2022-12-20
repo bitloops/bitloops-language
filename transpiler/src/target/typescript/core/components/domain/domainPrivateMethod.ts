@@ -31,7 +31,7 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
     value: statements,
   });
 
-  const parametersString = modelToTargetLanguage({
+  const parametersTarget = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
     value: { parameters: methodInfo.privateMethod.parameters },
   });
@@ -54,24 +54,15 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
     });
   }
 
-  const ToLanguageMapping = (
-    methodName: string,
-    returnType: string,
-    parametersString: string,
-    methodStatements: string,
-  ): string => {
-    return `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
-  };
-  const result = ToLanguageMapping(
-    privateMethod.identifier,
-    mappedReturnType.output as string,
-    parametersString.output,
-    statementsString.output,
-  );
+  const methodName = privateMethod.identifier;
+  const parametersString = parametersTarget.output;
+  const returnType = mappedReturnType.output;
+  const methodStatements = statementsString.output;
+
   return {
-    output: result,
+    output: `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`,
     dependencies: [
-      ...parametersString.dependencies,
+      ...parametersTarget.dependencies,
       ...statementsString.dependencies,
       ...mappedReturnType.dependencies,
     ],

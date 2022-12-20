@@ -12,29 +12,19 @@ const domainPublicMethod = (methodInfo: TDomainPublicMethod): TTargetDependencie
 
   const parametersString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
-    value: parameters,
+    value: { parameters },
   });
 
   const mappedReturnType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
-    value: returnType,
+    value: { returnType },
   });
-  const ToLanguageMapping = (
-    methodName: string,
-    returnType: string,
-    parametersString: string,
-    methodStatements: string,
-  ): string => {
-    return `public ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
-  };
-  const result = ToLanguageMapping(
-    publicMethod.identifier,
-    mappedReturnType.output,
-    parametersString.output,
-    statementsString.output,
-  );
+  const methodName = publicMethod.identifier;
+  const returnTypeOuput = mappedReturnType.output;
+  const parametersOutput = parametersString.output;
+  const methodStatements = statementsString.output;
   return {
-    output: result,
+    output: `public ${methodName}${parametersOutput}: ${returnTypeOuput} { ${methodStatements} }`,
     dependencies: [
       ...statementsString.dependencies,
       ...parametersString.dependencies,

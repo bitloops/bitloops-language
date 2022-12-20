@@ -30,23 +30,23 @@ const NEW_LINE = '\n';
 const constVariablesToTarget = (variable: TConstDeclaration): TTargetDependenciesTypeScript => {
   const { identifier, type } = variable[constDeclarationKey];
   const expression = variable[constDeclarationKey].expression;
-  const value = modelToTargetLanguage({
+  const expressionTarget = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: { expression },
   });
   if (type) {
-    const typeResult = modelToTargetLanguage({
+    const typeTarget = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: type,
     });
     return {
-      output: `const ${identifier}: ${typeResult.output} = ${value.output};`,
-      dependencies: [...typeResult.dependencies, ...value.dependencies],
+      output: `const ${identifier}: ${typeTarget.output} = ${expressionTarget.output};`,
+      dependencies: [...typeTarget.dependencies, ...expressionTarget.dependencies],
     };
   } else {
     return {
-      output: `const ${identifier} = ${value.output};`,
-      dependencies: value.dependencies,
+      output: `const ${identifier} = ${expressionTarget.output};`,
+      dependencies: expressionTarget.dependencies,
     };
   }
 };
@@ -59,7 +59,7 @@ const constantVariables = (
 
   for (const variable of constantVariables) {
     const constDeclaration = constVariablesToTarget(variable);
-    constDeclarationResult += `${constDeclaration.output}${NEW_LINE}`;
+    constDeclarationResult += constDeclaration.output + NEW_LINE;
     dependencies.push(...constDeclaration.dependencies);
   }
 
