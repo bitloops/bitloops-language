@@ -1,7 +1,7 @@
 import { PrivateMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
 import { PublicMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PublicMethodDeclarationListNodeBuilder.js';
+import { EntityBuilderDirector } from '../../../core/builders/domain/entityDirector.js';
 import { DomainCreateBuilderDirector } from '../../../core/builders/domainCreateBuilderDirector.js';
-import { EntityBuilderDirector } from '../../../core/builders/entityBuilderDirector.js';
 import { PrivateMethodBuilderDirector } from '../../../core/builders/methods/privateMethodBuilderDirector.js';
 import { PublicMethodBuilderDirector } from '../../../core/builders/methods/publicMethodBuilderDirector.js';
 

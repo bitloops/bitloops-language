@@ -44,7 +44,7 @@ export const generateGetters = ({
   // TODO what about optional fields??
 
   //TODO in previous Step source to model tha params should be finalized
-  // and here we shouldnt check if props are missing
+  // and here we shouldn't check if props are missing
   if (!isValueObject) {
     gettersResult = 'get id() { return this._id; }';
   }

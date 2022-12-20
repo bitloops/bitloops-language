@@ -52,7 +52,7 @@ const modelToTypescriptModel = (type: string, value: any): any => {
       res = transformEntityIntermediateAST(value);
       break;
     }
-    case BitloopsTypesMapping.TRootEntities: {
+    case BitloopsTypesMapping.TRootEntity: {
       res = transformRootEntityIntermediateAST(value);
       break;
     }

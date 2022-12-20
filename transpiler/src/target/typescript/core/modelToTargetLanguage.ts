@@ -115,7 +115,7 @@ import { buildInFunctionToTargetLanguage } from './components/statements/buildIn
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/index.js';
 import { readModelToTargetLanguage } from './components/readModels/index.js';
-import { rootEntitiesToTargetLanguage } from './components/rootEntity/index.js';
+import { rootEntityToTargetLanguage } from './components/rootEntity/index.js';
 import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
 import { builtInClassEvaluationToTargetLanguage } from './components/builtInClass/index.js';
@@ -389,7 +389,6 @@ const modelToTargetLanguage = (props: {
       res = entityToTargetLanguage({
         entity: value,
         model,
-        contextData,
       });
       break;
     }
@@ -480,11 +479,10 @@ const modelToTargetLanguage = (props: {
       res = rulesDeclarationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TRootEntities: {
-      res = rootEntitiesToTargetLanguage({
-        rootEntities: value,
+    case BitloopsTypesMapping.TRootEntity: {
+      res = rootEntityToTargetLanguage({
+        rootEntity: value,
         model,
-        contextData,
       });
       break;
     }

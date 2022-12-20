@@ -121,7 +121,6 @@ const BitloopsTypesMapping = {
   TParenthesizedExpression: 'TParenthesizedExpression',
   TVariableDeclaration: 'TVariableDeclaration',
   TExpressionValues: ' TExpressionValues',
-  TRootEntities: 'TRootEntities',
   TDomainRule: 'TDomainRule',
   TEntityCreate: 'TEntityCreate',
   TBuiltInFunction: 'TBuiltInFunction',

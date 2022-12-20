@@ -64,6 +64,18 @@ export class FieldBuilderDirector {
     return fieldNode;
   }
 
+  buildRequiredBuiltInClassField(name: string, type: TBitloopsBuiltInClasses): FieldNode {
+    const optionalNode = new OptionalBuilder().withOptional(false).build();
+    const identifierNode = new IdentifierNodeBuilder().withName(name).build();
+    const primaryType = new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(type);
+    const fieldNode = this.builder
+      .withName(identifierNode)
+      .withOptional(optionalNode)
+      .withType(primaryType)
+      .build();
+    return fieldNode;
+  }
+
   buildOptionalBuiltInClassField(name: string, type: TBitloopsBuiltInClasses): FieldNode {
     const optionalNode = new OptionalBuilder().withOptional(true).build();
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();

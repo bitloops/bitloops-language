@@ -1,4 +1,3 @@
-import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -30,6 +29,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 
 const entityMethods = (
   privateMethods: TDomainPrivateMethods,

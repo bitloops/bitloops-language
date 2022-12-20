@@ -17,9 +17,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TContextData,
+  RootEntityKey,
   TDependenciesTypeScript,
-  TRootEntities,
+  TRootEntity,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
@@ -27,7 +27,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
-import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
@@ -51,71 +50,66 @@ const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   },
 ];
 
-export const rootEntitiesToTargetLanguage = (params: {
-  rootEntities: TRootEntities;
+//TODO check extends
+const rootEntityClassHeader = (rootEntityName: string, propsName: string): string =>
+  `export class ${rootEntityName} extends Domain.Aggregate<${propsName}> { `;
+
+export const rootEntityToTargetLanguage = (params: {
+  rootEntity: TRootEntity;
   model: IntermediateASTTree;
-  contextData: TContextData;
 }): TTargetDependenciesTypeScript => {
-  const { rootEntities, model, contextData } = params;
-  const { boundedContext, module } = contextData;
-  const modelForContext = model[boundedContext][module];
+  const { rootEntity, model } = params;
 
-  //TODO check extends
-  const initialRootEntityLangMapping = (rootEntityName: string, propsName: string) =>
-    `export class ${rootEntityName} extends Domain.Aggregate<${propsName}> { `;
+  const rootEntityName = rootEntity[RootEntityKey].entityIdentifier;
 
-  let res = '';
+  let output = '';
   let dependencies = ROOT_ENTITY_DEPENDENCIES;
 
-  for (const [rootEntityName, rootEntity] of Object.entries(rootEntities)) {
-    const { create, privateMethods, publicMethods, constants } = rootEntity;
-    const propsNameType = create.parameter.type;
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-      throw new Error('Root entity cannot take array as props yet.');
-    }
-    const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
-      modelToTargetLanguage({
-        type: BitloopsTypesMapping.TBitloopsPrimaryType,
-        value: propsNameType,
-      });
-    dependencies = [...dependencies, ...rootEntityPropsTypeDependencies];
+  const { create, privateMethods, publicMethods, constants } =
+    rootEntity[RootEntityKey].entityValues;
 
-    if (constants) {
-      // TODO fix with new model/types
-      const constantVariablesModel = constantVariables(constants as any);
-      res += constantVariablesModel.output;
-      dependencies = [...dependencies, ...constantVariablesModel.dependencies];
-    }
-
-    res += initialRootEntityLangMapping(rootEntityName, propsName);
-
-    const aggregateCreateModel = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TEntityCreate,
-      value: create,
+  const propsNameType = create.parameter.type;
+  const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
+    modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: propsNameType,
     });
-    res += aggregateCreateModel.output;
-    dependencies = [...dependencies, ...aggregateCreateModel.dependencies];
+  dependencies.push(...rootEntityPropsTypeDependencies);
 
-    const gettersModel = generateGetters({
-      propsName,
-      model: modelForContext,
-      privateMethods,
-      publicMethods,
-    });
-    res += gettersModel.output;
-    dependencies = [...dependencies, ...gettersModel.dependencies];
-
-    const entityMethodsModel = domainMethods(publicMethods, privateMethods);
-    res += entityMethodsModel.output;
-    dependencies = [...dependencies, ...entityMethodsModel.dependencies];
-
-    res += '}';
-
-    dependencies = getParentDependencies(dependencies, {
-      classType: ClassTypes.RootEntity,
-      className: rootEntityName,
-    });
+  if (constants) {
+    const constantVariablesModel = constantVariables(constants);
+    output += constantVariablesModel.output;
+    dependencies.push(...constantVariablesModel.dependencies);
   }
 
-  return { output: res, dependencies };
+  output += rootEntityClassHeader(rootEntityName, propsName);
+
+  const aggregateCreateModel = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TEntityCreate,
+    value: { create },
+  });
+  output += aggregateCreateModel.output;
+  dependencies.push(...aggregateCreateModel.dependencies);
+
+  const gettersModel = generateGetters({
+    propsName,
+    model,
+    privateMethods,
+    publicMethods,
+  });
+  output += gettersModel.output;
+  dependencies.push(...gettersModel.dependencies);
+
+  const entityMethodsModel = domainMethods(publicMethods, privateMethods);
+  output += entityMethodsModel.output;
+  dependencies.push(...entityMethodsModel.dependencies);
+
+  output += '}';
+
+  dependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.RootEntity,
+    className: rootEntityName,
+  });
+
+  return { output, dependencies };
 };
