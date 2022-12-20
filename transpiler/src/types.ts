@@ -181,13 +181,6 @@ export type TArgument = {
 // The old TArgumentDependencies
 export type TArgumentList = TArgument[];
 
-export type TClassInstantiation = {
-  classInstantiation: {
-    className: string;
-    argumentDependencies?: TArgumentList;
-  };
-};
-
 // Needed to check type on runtime, otherwise simple literal gets thrown away.
 export const bitloopsPrimitives = [
   'double',
@@ -326,14 +319,6 @@ export type TGetClass = {
   getClass: TExpression;
 };
 
-export type TRegularEvaluation = {
-  regularEvaluation: {
-    type: TParam;
-    value: string;
-    argumentDependencies?: TArgumentList; // ArgumentsDependencies, e.g. name
-  };
-};
-
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
@@ -346,7 +331,6 @@ export type TBuiltInClassEvaluation = {
 //   evaluateFalse?: TEvaluation;
 // };
 export type TEvaluationValues =
-  | TRegularEvaluation //TODO remove
   | TStructEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
@@ -429,7 +413,6 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation // To  be removed?
   | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
@@ -531,14 +514,6 @@ export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
   [returnErrorKey]: TExpression;
 };
-
-// export type TConstDecompositionNested = {
-//   names: string[];
-// } & TEvaluation;
-
-// export type TConstDecomposition = {
-//   constDecomposition: TConstDecompositionNested;
-// };
 
 export type TConstDeclarationValue = {
   identifier: string;
