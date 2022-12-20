@@ -21,7 +21,7 @@ import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/I
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { VALID_USE_CASE_TEST_CASES } from './mocks/useCase/index.js';
+import { VALID_READ_MODEL_TEST_CASES } from './mocks/readModel/index.js';
 
 describe('Valid read model test cases', () => {
   const boundedContext = 'Hello world';
@@ -29,12 +29,12 @@ describe('Valid read model test cases', () => {
   const formatterConfig = null;
   const language = 'TypeScript';
 
-  VALID_USE_CASE_TEST_CASES.forEach((testCase) => {
+  VALID_READ_MODEL_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const useCaseNode = testCase.useCase;
-      tree.insertChild(useCaseNode);
+      const readModelNode = testCase.readModel;
+      tree.insertChild(readModelNode);
 
       const intermediateAST = {
         [boundedContext]: { [module]: tree },
