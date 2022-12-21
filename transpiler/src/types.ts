@@ -128,8 +128,7 @@ export type TVariable = {
   [fieldKey]: {
     [optionalKey]?: TOptional;
     [identifierKey]: TIdentifier;
-    [bitloopsPrimaryTypeKey]: TBitloopsPrimaryType;
-  };
+  } & TBitloopsPrimaryType;
 };
 
 /**
@@ -164,9 +163,8 @@ export type TParameterType = TBitloopsPrimaryType;
 export type TParameterIdentifier = string;
 export type TParameter = {
   parameter: {
-    type: TParameterType;
     value: TParameterIdentifier;
-  };
+  } & TParameterType;
 };
 
 export type TParameterList = {
@@ -239,15 +237,19 @@ export type TBitloopsIdentifierObject = {
 
 export const arrayPrimaryTypeKey = 'arrayPrimaryType';
 export type ArrayBitloopsPrimTypeObject = {
-  [arrayPrimaryTypeKey]: TBitloopsPrimaryType;
+  [arrayPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
 };
 
 export const bitloopsPrimaryTypeKey = 'type';
-export type TBitloopsPrimaryType =
+export type TBitloopsPrimaryTypeValues =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
   | ArrayBitloopsPrimTypeObject;
+
+export type TBitloopsPrimaryType = {
+  [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
+};
 
 export type TBackTickString = {
   backTickString: string;
@@ -515,8 +517,8 @@ export type TReturnErrorStatement = {
 
 export type TConstDeclarationValue = {
   identifier: string;
-  type?: TBitloopsPrimaryType;
-} & TExpression;
+} & Partial<TBitloopsPrimaryType> &
+  TExpression;
 
 export const constDeclarationKey = 'constDeclaration';
 export type TConstDeclaration = {
@@ -527,8 +529,8 @@ export const variableDeclarationKey = 'variableDeclaration';
 export type TVariableDeclaration = {
   [variableDeclarationKey]: {
     identifier: string;
-    type: TBitloopsPrimaryType;
-  } & TExpression;
+  } & TBitloopsPrimaryType &
+    TExpression;
 };
 
 export type TBreakStatement = {
@@ -577,9 +579,8 @@ type TDomainPrivateMethodValues = {
   statements: TStatements;
 } & TParameterList;
 
-export type TDomainPrivateMethodValuesPrimaryReturnType = {
-  type: TBitloopsPrimaryType;
-} & TDomainPrivateMethodValues;
+export type TDomainPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType &
+  TDomainPrivateMethodValues;
 
 export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
   TOkErrorReturnType;
@@ -601,9 +602,7 @@ export type TDomainPublicMethod = {
 };
 
 export type TReturnOkType = {
-  ok: {
-    type: TBitloopsPrimaryType;
-  };
+  ok: TBitloopsPrimaryType;
 };
 
 export type TErrorIdentifier = {
@@ -997,8 +996,8 @@ export type TPackagePort = {
 export type TDefinitionMethodInfo = {
   methodDefinition: {
     identifier: TIdentifier;
-    type: TBitloopsPrimaryType; // return type
-  } & TParameterList;
+  } & TBitloopsPrimaryType &
+    TParameterList;
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';

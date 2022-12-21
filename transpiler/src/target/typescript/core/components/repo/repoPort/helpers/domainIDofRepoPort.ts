@@ -52,7 +52,7 @@ export const findIdOfRepoDomainObject = (
     const idProp = propsModel.variables.find((prop) => prop.name === 'id');
     const idType: TBitloopsPrimaryType = idProp.type;
     const idTypeRes = modelToTargetLanguage({
-      value: idType,
+      value: { type: idType },
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     return idTypeRes;
@@ -65,7 +65,7 @@ export const findIdOfRepoDomainObject = (
     const idProp = readModel.variables.find((prop) => prop.name === 'id');
     const idType: TBitloopsPrimaryType = idProp.type;
     const idTypeRes = modelToTargetLanguage({
-      value: idType,
+      value: { type: idType },
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     return idTypeRes;

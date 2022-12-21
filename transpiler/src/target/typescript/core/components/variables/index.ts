@@ -32,7 +32,7 @@ const variableToTargetLanguage = (variable: TVariable): TTargetDependenciesTypeS
 
   const mappedType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: type,
+    value: { type },
   });
 
   const result = `${identifier}${optional ? '?' : ''}: ${mappedType.output}`;

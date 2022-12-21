@@ -81,7 +81,7 @@ const valueObjectsToTargetLanguage = (params: {
   }
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: propsNameType,
+    value: { type: propsNameType },
   });
   dependencies = [...dependencies, ...propsTypeDependencies];
 

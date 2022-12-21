@@ -38,22 +38,22 @@ export class ConstDeclarationBuilder implements IBuilder<TConstDeclaration> {
   private expression: TExpression;
 
   public withPrimitivesType(primitiveType: TBitloopsPrimitives): ConstDeclarationBuilder {
-    this.type = { [primitivesTypeKey]: primitiveType };
+    this.type = { [bitloopsPrimaryTypeKey]: { [primitivesTypeKey]: primitiveType } };
     return this;
   }
 
   public withBuiltInClassType(type: TBitloopsBuiltInClassesObject): ConstDeclarationBuilder {
-    this.type = type;
+    this.type = { [bitloopsPrimaryTypeKey]: type };
     return this;
   }
 
   public withBitloopsIdentifierType(type: TBitloopsIdentifierObject): ConstDeclarationBuilder {
-    this.type = type;
+    this.type = { [bitloopsPrimaryTypeKey]: type };
     return this;
   }
 
   public withArrayPrimaryType(arrayType: ArrayBitloopsPrimTypeObject): ConstDeclarationBuilder {
-    this.type = arrayType;
+    this.type = { [bitloopsPrimaryTypeKey]: arrayType };
     return this;
   }
 
@@ -76,7 +76,8 @@ export class ConstDeclarationBuilder implements IBuilder<TConstDeclaration> {
     };
 
     if (this.type) {
-      constDeclaration[constDeclarationKey][bitloopsPrimaryTypeKey] = this.type;
+      constDeclaration[constDeclarationKey][bitloopsPrimaryTypeKey] =
+        this.type[bitloopsPrimaryTypeKey];
     }
 
     return constDeclaration;

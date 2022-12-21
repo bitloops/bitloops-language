@@ -21,6 +21,7 @@ import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitive
 import { mappingBitloopsBuiltInClassToLayer } from '../../../../helpers/mappings.js';
 import {
   bitloopsIdentifiersTypeKey,
+  bitloopsPrimaryTypeKey,
   TBitloopsPrimaryType,
   TTargetDependenciesTypeScript,
 } from '../../../../types.js';
@@ -33,27 +34,28 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   let mappedType: string;
+  const primaryTypeValue = type[bitloopsPrimaryTypeKey];
 
-  if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
-    const { primitiveType } = type;
+  if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(primaryTypeValue)) {
+    const { primitiveType } = primaryTypeValue;
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](primitiveType);
-  } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
-    const { buildInClassType } = type;
+  } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(primaryTypeValue)) {
+    const { buildInClassType } = primaryTypeValue;
     mappedType = `${mappingBitloopsBuiltInClassToLayer[buildInClassType]}.${buildInClassType}`;
     dependencies = getChildDependencies(buildInClassType);
-  } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
-    const value = type.arrayPrimaryType;
-    const arrayPrimType = bitloopsPrimaryTypeToTargetLanguage(value);
+  } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(primaryTypeValue)) {
+    const value = primaryTypeValue.arrayPrimaryType;
+    const arrayPrimType = bitloopsPrimaryTypeToTargetLanguage({ type: value });
     const { output, dependencies: arrayPrimTypeDependencies } = arrayPrimType;
     mappedType = `${output}[]`;
     dependencies = [...dependencies, ...arrayPrimTypeDependencies];
-  } else if (BitloopsPrimTypeIdentifiers.isBitloopsIdentifierType(type)) {
-    mappedType = type[bitloopsIdentifiersTypeKey];
+  } else if (BitloopsPrimTypeIdentifiers.isBitloopsIdentifierType(primaryTypeValue)) {
+    mappedType = primaryTypeValue[bitloopsIdentifiersTypeKey];
     // If not primitive, then we have a dependency
     // const baseType = extractBaseTypeOfPrimaryType(type);
     dependencies = getChildDependencies(mappedType);
   } else {
-    throw new Error(`Invalid primary type ${type}`);
+    throw new Error(`Invalid primary type ${JSON.stringify(type)}`);
   }
 
   return {

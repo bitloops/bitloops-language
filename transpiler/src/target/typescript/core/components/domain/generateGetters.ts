@@ -60,7 +60,7 @@ export const generateGetters = ({
   for (const propVariable of propsValue.Props.fields) {
     const { type, identifier } = propVariable[fieldKey];
     const res = modelToTargetLanguage({
-      value: type,
+      value: { type },
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     const returnType = res.output;

@@ -23,7 +23,7 @@ import {
   arrayPrimaryTypeKey,
   bitloopsBuiltInClasses,
   bitloopsPrimitives,
-  TBitloopsPrimaryType,
+  TBitloopsPrimaryTypeValues,
   TBitloopsIdentifierObject,
   primitivesTypeKey,
   TBitloopsPrimitivesObject,
@@ -34,7 +34,7 @@ import {
 
 export class BitloopsPrimTypeIdentifiers {
   static isArrayPrimType(
-    primaryType: TBitloopsPrimaryType,
+    primaryType: TBitloopsPrimaryTypeValues,
   ): primaryType is ArrayBitloopsPrimTypeObject {
     if (!primaryType) return false;
     if (typeof primaryType === 'string') return false;
@@ -46,7 +46,7 @@ export class BitloopsPrimTypeIdentifiers {
    * Define a custom type guard to assert whether an unknown object is a Bitloops built in class.
    */
   static isBitloopsBuiltInClass = (
-    type: TBitloopsPrimaryType,
+    type: TBitloopsPrimaryTypeValues,
   ): type is TBitloopsBuiltInClassesObject => {
     if (buildInClassTypeKey in type) {
       return bitloopsBuiltInClasses.includes(type[buildInClassTypeKey]);
@@ -55,7 +55,7 @@ export class BitloopsPrimTypeIdentifiers {
   };
 
   static isBitloopsPrimitive(
-    primaryType: TBitloopsPrimaryType,
+    primaryType: TBitloopsPrimaryTypeValues,
   ): primaryType is TBitloopsPrimitivesObject {
     if (primitivesTypeKey in primaryType) {
       return bitloopsPrimitives.includes(primaryType[primitivesTypeKey]);
@@ -64,7 +64,7 @@ export class BitloopsPrimTypeIdentifiers {
   }
 
   static isBitloopsIdentifierType(
-    primaryType: TBitloopsPrimaryType,
+    primaryType: TBitloopsPrimaryTypeValues,
   ): primaryType is TBitloopsIdentifierObject {
     if (bitloopsIdentifiersTypeKey in primaryType) {
       return typeof primaryType[bitloopsIdentifiersTypeKey] === 'string';

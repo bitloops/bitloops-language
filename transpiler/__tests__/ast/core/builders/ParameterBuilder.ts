@@ -18,7 +18,7 @@ export class ParameterBuilder implements IBuilder<TParameter> {
   public build(): TParameter {
     const parameter = {
       parameter: {
-        type: this.type,
+        ...this.type,
         value: this.value,
       },
     };

@@ -48,7 +48,7 @@ export const definitionMethodsToTargetLanguage = (
     res += `${methodDefinition.identifier}${definitionMethodInfo.output}`;
     const returnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: methodDefinition.type,
+      value: { type: methodDefinition.type },
     });
     res += ':';
     res += returnType.output;

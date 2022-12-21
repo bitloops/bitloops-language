@@ -50,7 +50,7 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
   } else {
     mappedReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: privateMethodValues.type,
+      value: { type: privateMethodValues.type },
     });
   }
 
