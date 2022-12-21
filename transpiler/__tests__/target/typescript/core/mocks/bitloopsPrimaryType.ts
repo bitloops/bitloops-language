@@ -2,8 +2,13 @@ import { BitloopsPrimaryTypeDirector } from '../builders/bitloopsPrimaryTypeDire
 
 export const VALID_PRIMARY_TYPE_TEST_CASES = [
   {
-    description: 'Array primitive type',
+    description: 'Primitive type',
     bitloopsPrimaryType: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('int32'),
+    output: 'number',
+  },
+  {
+    description: 'Array primitive type',
+    bitloopsPrimaryType: new BitloopsPrimaryTypeDirector().buildArrayPrimaryType('int32'),
     output: 'number[]',
   },
 ];

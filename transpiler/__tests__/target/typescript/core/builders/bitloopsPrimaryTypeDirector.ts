@@ -12,9 +12,9 @@ import {
 
 export class BitloopsPrimaryTypeDirector {
   buildArrayPrimaryType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
-    const value = this.buildPrimitivePrimaryType(type);
+    const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
     const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
-      .withPrimaryType(value)
+      .withPrimaryType(primitiveTypeNode)
       .build();
 
     return new BitloopsPrimaryTypeBuilder().withPrimaryType(arrayBitloopsPrimaryTypeNode).build();

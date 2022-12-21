@@ -1,5 +1,6 @@
 import {
   arrayPrimaryTypeKey,
+  bitloopsPrimaryTypeKey,
   bitloopsIdentifiersTypeKey,
   primitivesTypeKey,
   TBitloopsBuiltInClasses,
@@ -19,7 +20,9 @@ export class BitloopsPrimaryTypeDirector {
   buildDoubleArrayPrimaryType(type: TBitloopsPrimitives): TBitloopsPrimaryType {
     const primaryType = this.builder
       .withType({
-        [arrayPrimaryTypeKey]: { [arrayPrimaryTypeKey]: { [primitivesTypeKey]: type } },
+        [bitloopsPrimaryTypeKey]: {
+          [arrayPrimaryTypeKey]: { [arrayPrimaryTypeKey]: { [primitivesTypeKey]: type } },
+        },
       })
       .build();
     return primaryType;
@@ -28,7 +31,7 @@ export class BitloopsPrimaryTypeDirector {
   buildArrayPrimaryType(type: TBitloopsPrimitives): TBitloopsPrimaryType {
     const primaryType = this.builder
       .withType({
-        [arrayPrimaryTypeKey]: { [primitivesTypeKey]: type },
+        [bitloopsPrimaryTypeKey]: { [arrayPrimaryTypeKey]: { [primitivesTypeKey]: type } },
       })
       .build();
     return primaryType;
@@ -37,24 +40,30 @@ export class BitloopsPrimaryTypeDirector {
   buildArrayIdentifierPrimaryType(type: TBitloopsIdentifier): TBitloopsPrimaryType {
     const primaryType = this.builder
       .withType({
-        [arrayPrimaryTypeKey]: { [bitloopsIdentifiersTypeKey]: type },
+        [bitloopsPrimaryTypeKey]: { [arrayPrimaryTypeKey]: { [bitloopsIdentifiersTypeKey]: type } },
       })
       .build();
     return primaryType;
   }
 
   buildPrimitivePrimaryType(type: TBitloopsPrimitives): TBitloopsPrimaryType {
-    const primaryType = this.builder.withType({ [primitivesTypeKey]: type }).build();
+    const primaryType = this.builder
+      .withType({ [bitloopsPrimaryTypeKey]: { [primitivesTypeKey]: type } })
+      .build();
     return primaryType;
   }
 
   buildIdentifierPrimaryType(identifier: TBitloopsIdentifier): TBitloopsPrimaryType {
-    const primaryType = this.builder.withType({ [bitloopsIdentifiersTypeKey]: identifier }).build();
+    const primaryType = this.builder
+      .withType({ [bitloopsPrimaryTypeKey]: { [bitloopsIdentifiersTypeKey]: identifier } })
+      .build();
     return primaryType;
   }
 
   buildBuiltinClassPrimaryType(type: TBitloopsBuiltInClasses): TBitloopsPrimaryType {
-    const primaryType = this.builder.withType({ buildInClassType: type }).build();
+    const primaryType = this.builder
+      .withType({ [bitloopsPrimaryTypeKey]: { buildInClassType: type } })
+      .build();
     return primaryType;
   }
 }

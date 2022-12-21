@@ -17,44 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 import { VALID_PRIMARY_TYPE_TEST_CASES } from './mocks/bitloopsPrimaryType.js';
 
 describe('Valid bitloops primary type test cases', () => {
-  const boundedContext = 'Hello world';
-  const module = 'demo';
-  const formatterConfig = null;
-  const language = 'TypeScript';
-
   VALID_PRIMARY_TYPE_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
-      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const bitloopsPrimaryTypeNode = testCase.bitloopsPrimaryType;
-      tree.insertChild(bitloopsPrimaryTypeNode);
-
-      const intermediateAST = {
-        [boundedContext]: { [module]: tree },
-      };
+      const input = testCase.bitloopsPrimaryType;
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
-        formatterConfig,
-        targetLanguage: language,
-        setupData: null,
+      const result = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: input.getValue(),
       });
 
       //then
-      const formattedOutput = formatString(testCase.output as string, formatterConfig);
-      if (result instanceof Error) {
-        throw result;
-      }
-      expect(result[0].fileContent).toEqual(formattedOutput);
+      expect(result.output).toEqual(testCase.output);
     });
   });
 });

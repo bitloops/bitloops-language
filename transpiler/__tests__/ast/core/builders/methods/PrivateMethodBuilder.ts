@@ -52,7 +52,7 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     if (this.primaryReturnType) {
       const privateMethodPrimary =
         privateMethodValues as TDomainPrivateMethodValuesPrimaryReturnType;
-      privateMethodPrimary.type = this.primaryReturnType;
+      privateMethodPrimary.type = this.primaryReturnType.type;
       return {
         privateMethod: privateMethodPrimary,
       };

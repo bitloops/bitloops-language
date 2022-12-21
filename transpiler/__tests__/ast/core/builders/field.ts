@@ -20,22 +20,22 @@ export class FieldBuilder implements IBuilder<TVariable> {
   private optional: TOptional;
 
   public withPrimitivesType(primitiveType: TBitloopsPrimitivesObject): FieldBuilder {
-    this.type = primitiveType;
+    this.type = { [bitloopsPrimaryTypeKey]: primitiveType };
     return this;
   }
 
   public withBuiltInClassType(type: TBitloopsBuiltInClassesObject): FieldBuilder {
-    this.type = type;
+    this.type = { [bitloopsPrimaryTypeKey]: type };
     return this;
   }
 
   public withBitloopsIdentifierType(type: TBitloopsIdentifierObject): FieldBuilder {
-    this.type = type;
+    this.type = { [bitloopsPrimaryTypeKey]: type };
     return this;
   }
 
   public withArrayPrimaryType(arrayType: ArrayBitloopsPrimTypeObject): FieldBuilder {
-    this.type = arrayType;
+    this.type = { [bitloopsPrimaryTypeKey]: arrayType };
     return this;
   }
 
@@ -53,7 +53,7 @@ export class FieldBuilder implements IBuilder<TVariable> {
     const field = {
       [fieldKey]: {
         [identifierKey]: this.name,
-        [bitloopsPrimaryTypeKey]: this.type,
+        ...this.type,
       },
     };
     if (this.optional !== undefined) {
