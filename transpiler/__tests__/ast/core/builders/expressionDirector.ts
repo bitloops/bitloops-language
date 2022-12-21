@@ -120,7 +120,7 @@ export class ExpressionBuilderDirector {
       expression: {
         methodCallExpression: {
           ...expression,
-          argumentList,
+          ...argumentList,
         },
       },
     };
