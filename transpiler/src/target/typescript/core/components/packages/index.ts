@@ -18,17 +18,22 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TPackage, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 export const packageToTargetLanguage = (variable: TPackage): TTargetDependenciesTypeScript => {
   const { Package } = variable;
-  const { port } = Package;
+  const { port, PackageIdentifier } = Package;
 
   const model = modelToTargetLanguage({
     type: BitloopsTypesMapping.TPackagePort,
     value: port,
   });
 
-  return { output: model.output, dependencies: model.dependencies };
+  const parentDependencies = getParentDependencies(model.dependencies, {
+    classType: ClassTypes.Package,
+    className: PackageIdentifier,
+  });
+  return { output: model.output, dependencies: parentDependencies };
 };

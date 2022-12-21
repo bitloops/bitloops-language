@@ -105,12 +105,6 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
-  if ('classInstantiation' in expressionValue) {
-    return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TClassInstantiation,
-      value: expressionValue,
-    });
-  }
   if ('struct' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TStructEvaluation,

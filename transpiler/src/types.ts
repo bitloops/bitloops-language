@@ -51,7 +51,7 @@ export type TClassType =
   | 'ValueObject'
   | 'DTOs'
   | 'Structs'
-  | 'Packages'
+  | 'Package'
   | 'DomainRule'
   | 'RepoPorts'
   | 'RepoAdapters'
