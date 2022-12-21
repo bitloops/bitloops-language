@@ -32,7 +32,7 @@ const constDeclarationToTargetLanguage = (
     if (type) {
       const mappedType = modelToTargetLanguage({
         type: BitloopsTypesMapping.TBitloopsPrimaryType,
-        value: type,
+        value: { type },
       });
       return {
         output: `const ${identifier}: ${mappedType.output} = `,

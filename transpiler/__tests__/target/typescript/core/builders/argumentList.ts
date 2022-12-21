@@ -10,6 +10,30 @@ export class ArgumentListDirector {
     return argumentListNode;
   }
 
+  buildStringLiteralArgumentList(...stringLiterals: string[]): ArgumentListNode {
+    const argumentNodes = stringLiterals.map((stringLiteral) => {
+      const stringLiteralExpression = new ExpressionBuilderDirector().buildStringLiteralExpression(
+        stringLiteral,
+      );
+      const argument = new ArgumentDirector().buildArgument(stringLiteralExpression);
+      return argument;
+    });
+    const argumentListNode = new ArgumentListNodeBuilder().withArguments(argumentNodes).build();
+    return argumentListNode;
+  }
+
+  buildIntegerLiteralArgumentList(...integerLiterals: number[]): ArgumentListNode {
+    const argumentNodes = integerLiterals.map((integerLiteral) => {
+      const integerLiteralExpression = new ExpressionBuilderDirector().buildInt32LiteralExpression(
+        integerLiteral,
+      );
+      const argument = new ArgumentDirector().buildArgument(integerLiteralExpression);
+      return argument;
+    });
+    const argumentListNode = new ArgumentListNodeBuilder().withArguments(argumentNodes).build();
+    return argumentListNode;
+  }
+
   buildArgumentListWithIdentifierExpression(identifierName: string): ArgumentListNode {
     const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(
       identifierName,

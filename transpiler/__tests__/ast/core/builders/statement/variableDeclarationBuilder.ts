@@ -38,22 +38,22 @@ export class VariableDeclarationBuilder implements IBuilder<TVariableDeclaration
   private expression: TExpression;
 
   public withPrimitivesType(primitiveType: TBitloopsPrimitives): VariableDeclarationBuilder {
-    this.type = { [primitivesTypeKey]: primitiveType };
+    this.type = { [bitloopsPrimaryTypeKey]: { [primitivesTypeKey]: primitiveType } };
     return this;
   }
 
   public withBuiltInClassType(type: TBitloopsBuiltInClassesObject): VariableDeclarationBuilder {
-    this.type = type;
+    this.type = { [bitloopsPrimaryTypeKey]: type };
     return this;
   }
 
   public withBitloopsIdentifierType(type: TBitloopsIdentifierObject): VariableDeclarationBuilder {
-    this.type = type;
+    this.type = { [bitloopsPrimaryTypeKey]: type };
     return this;
   }
 
   public withArrayPrimaryType(arrayType: ArrayBitloopsPrimTypeObject): VariableDeclarationBuilder {
-    this.type = arrayType;
+    this.type = { [bitloopsPrimaryTypeKey]: arrayType };
     return this;
   }
 
@@ -70,14 +70,15 @@ export class VariableDeclarationBuilder implements IBuilder<TVariableDeclaration
   public build(): TVariableDeclaration {
     const variableDeclaration: TVariableDeclaration = {
       [variableDeclarationKey]: {
-        type: this.type,
+        ...this.type,
         identifier: this.identifier,
         ...this.expression,
       },
     };
 
     if (this.type) {
-      variableDeclaration[variableDeclarationKey][bitloopsPrimaryTypeKey] = this.type;
+      variableDeclaration[variableDeclarationKey][bitloopsPrimaryTypeKey] =
+        this.type[bitloopsPrimaryTypeKey];
     }
 
     return variableDeclaration;

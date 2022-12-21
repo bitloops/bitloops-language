@@ -33,7 +33,7 @@ export const builtInClassEvaluationToTargetLanguage = (
   const { className, argumentList } = builtInClass;
   const argumentDependenciesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TArgumentList,
-    value: argumentList,
+    value: { argumentList },
   });
 
   const output = `new ${mappingBitloopsBuiltInClassToLayer[className]}.${className}${argumentDependenciesResult.output}`;

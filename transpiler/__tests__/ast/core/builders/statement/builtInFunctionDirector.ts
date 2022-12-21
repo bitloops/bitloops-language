@@ -31,9 +31,7 @@ export class BuiltInFunctionStatementDirector {
       const appliedRuleValue: TAppliedRule = {
         appliedRule: {
           domainRuleIdentifier: appliedRule.name,
-          argumentList: new ArgumentListBuilderDirector().buildStringLiteralArguments(
-            appliedRule.args,
-          ),
+          ...new ArgumentListBuilderDirector().buildStringLiteralArguments(appliedRule.args),
         },
       };
       applyRules.applyRules.push(appliedRuleValue);
@@ -63,7 +61,7 @@ export class BuiltInFunctionStatementDirector {
       const appliedRuleValue: TAppliedRule = {
         appliedRule: {
           domainRuleIdentifier: appliedRule.name,
-          argumentList: new ArgumentListBuilderDirector().buildMemberDotArguments(appliedRule.args),
+          ...new ArgumentListBuilderDirector().buildMemberDotArguments(appliedRule.args),
         },
       };
       applyRules.applyRules.push(appliedRuleValue);
@@ -87,9 +85,7 @@ export class BuiltInFunctionStatementDirector {
     const applyRules = this.buildApplyRulesWithArgs(
       ...appliedRules.map((appliedRule) => ({
         domainRuleIdentifier: appliedRule.name,
-        argumentList: new ArgumentListBuilderDirector().buildThisMemberDotArguments(
-          appliedRule.args,
-        ),
+        ...new ArgumentListBuilderDirector().buildThisMemberDotArguments(appliedRule.args),
       })),
     );
 
@@ -100,7 +96,7 @@ export class BuiltInFunctionStatementDirector {
   }
 
   private buildApplyRulesWithArgs(
-    ...rulesInfo: { domainRuleIdentifier: string; argumentList: TArgumentList }[]
+    ...rulesInfo: ({ domainRuleIdentifier: string } & TArgumentList)[]
   ): TApplyRules {
     const applyRules: TApplyRules = {
       applyRules: [],

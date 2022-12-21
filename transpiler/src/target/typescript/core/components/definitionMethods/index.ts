@@ -19,7 +19,6 @@
  */
 
 import {
-  methodDefinitionListKey,
   TDefinitionMethodInfo,
   TDefinitionMethods,
   TTargetDependenciesTypeScript,
@@ -32,7 +31,7 @@ export const definitionMethodInfoToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   const paramModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
-    value: value.methodDefinition.parameters,
+    value: { parameters: value.methodDefinition.parameters },
   });
   return paramModel;
 };
@@ -42,16 +41,22 @@ export const definitionMethodsToTargetLanguage = (
 ): TTargetDependenciesTypeScript => {
   let res = '';
   let dependencies = [];
-  for (const [definitionMethod, value] of Object.entries(definitionMethods)) {
-    const definitiionMethodValue = value[methodDefinitionListKey];
-    const definitionMethodInfo = definitionMethodInfoToTargetLanguage(definitiionMethodValue);
-    res += `${definitionMethod}${definitionMethodInfo.output}`;
-    const model = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TReturnType,
-      value: definitiionMethodValue.methodDefinition.type,
+  const { methodDefinitionList } = definitionMethods;
+  for (const method of methodDefinitionList) {
+    const { methodDefinition } = method;
+    const definitionMethodInfo = definitionMethodInfoToTargetLanguage(method);
+    res += `${methodDefinition.identifier}${definitionMethodInfo.output}`;
+    const returnType = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: { type: methodDefinition.type },
     });
-    res += model.output;
-    dependencies = [...dependencies, ...model.dependencies, ...definitionMethodInfo.dependencies];
+    res += ':';
+    res += returnType.output;
+    dependencies = [
+      ...dependencies,
+      ...returnType.dependencies,
+      ...definitionMethodInfo.dependencies,
+    ];
     res += ';';
   }
   return { output: res, dependencies };

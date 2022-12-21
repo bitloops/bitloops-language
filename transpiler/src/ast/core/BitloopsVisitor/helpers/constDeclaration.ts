@@ -23,9 +23,9 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../intermediate-ast/nodes/statements/ConstDeclarationNode.js';
-import { TypeAnnotationNode } from '../../intermediate-ast/nodes/TypeAnnotationNode.js';
 import { ConstDeclarationNodeBuilder } from '../../intermediate-ast/builders/statements/constDeclaration.js';
 import { produceMetadata } from '../metadata.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const constDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -38,7 +38,7 @@ export const constDeclarationVisitor = (
   let constDeclarationNode: ConstDeclarationNode;
   const metadata = produceMetadata(ctx, thisVisitor);
   if (ctx.typeAnnotation()) {
-    const typeAnnotationNode: TypeAnnotationNode = thisVisitor.visit(ctx.typeAnnotation());
+    const typeAnnotationNode: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
     constDeclarationNode = new ConstDeclarationNodeBuilder(metadata)
       .withIdentifier(identifierNode)
       .withExpression(expressionNode)

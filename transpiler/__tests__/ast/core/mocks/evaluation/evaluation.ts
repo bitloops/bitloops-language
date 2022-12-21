@@ -1,6 +1,7 @@
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDirector.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluationDirector.js';
 import { TEvaluation } from '../../../../../src/types.js';
+import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
 
 type TestCase = {
   description: string;
@@ -32,7 +33,7 @@ export const validEvaluationTestCases: Array<TestCase> = [
     inputBLString: 'JestTestEvaluation { DomainErrors.InvalidNameError() }',
     evaluation: new EvaluationBuilderDirector().buildErrorEvaluation(
       'DomainErrors.InvalidNameError',
-      [],
+      new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
     ),
   },
   {

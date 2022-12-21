@@ -20,6 +20,7 @@
 import { IfStatementBuilder } from '../../builders/statement/IfStatement.js';
 import { TExpression, TStatements } from '../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
+import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
 // import { FieldBuilderDirector } from '../builders/fieldDirector.js';
 // import { IdentifierBuilder } from '../builders/identifier.js';
 
@@ -47,7 +48,7 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
           'helloWorldRequest',
           'execute',
         ),
-        [],
+        new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
       ),
     ],
   },
@@ -66,7 +67,7 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
           'helloWorldRequest',
           'execute',
         ),
-        [],
+        new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
       ),
     ],
     elseStatements: [
@@ -75,7 +76,7 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
           'helloWorldRequest',
           'execute',
         ),
-        [],
+        new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
       ),
     ],
   },
@@ -102,7 +103,7 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
               'helloWorldRequest',
               'execute',
             ),
-            [],
+            new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
           ),
         ])
         .build(),
@@ -119,7 +120,7 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
     thenStatements: [
       new ExpressionBuilderDirector().buildMethodCallExpression(
         new ExpressionBuilderDirector().buildIdentifierExpression('execute'),
-        [],
+        new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
       ),
     ],
     elseStatements: [
@@ -146,11 +147,11 @@ export const validIfStatementTestCases: IfStatementTestCase[] = [
     thenStatements: [
       new ExpressionBuilderDirector().buildMethodCallExpression(
         new ExpressionBuilderDirector().buildIdentifierExpression('execute'),
-        [],
+        new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
       ),
       new ExpressionBuilderDirector().buildMethodCallExpression(
         new ExpressionBuilderDirector().buildIdentifierExpression('execute'),
-        [],
+        new ArgumentListBuilderDirector().buildArgumentListWithArgs([]),
       ),
     ],
     elseStatements: [

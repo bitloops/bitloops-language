@@ -1,14 +1,14 @@
+import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { MethodDefinitionNode } from '../../nodes/method-definitions/MethodDefinitionNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
-import { TypeAnnotationNode } from '../../nodes/TypeAnnotationNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class MethodDefinitionNodeBuilder implements IBuilder<MethodDefinitionNode> {
   private methodDefinitionNode: MethodDefinitionNode;
   private identifier: IdentifierNode;
-  private type: TypeAnnotationNode;
+  private type: BitloopsPrimaryTypeNode;
   private parameterList: ParameterListNode;
 
   constructor(metadata?: TNodeMetadata) {
@@ -20,7 +20,7 @@ export class MethodDefinitionNodeBuilder implements IBuilder<MethodDefinitionNod
     return this;
   }
 
-  withType(type: TypeAnnotationNode): MethodDefinitionNodeBuilder {
+  withType(type: BitloopsPrimaryTypeNode): MethodDefinitionNodeBuilder {
     this.type = type;
     return this;
   }

@@ -30,7 +30,7 @@ const okErrorReturnTypeToTargetLanguage = (
 
   const returnOkType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: ok.type,
+    value: { type: ok.type },
   });
 
   const xor = (ok: string, errors: string[]): string => {

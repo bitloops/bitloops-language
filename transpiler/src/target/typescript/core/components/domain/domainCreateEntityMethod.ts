@@ -37,13 +37,13 @@ export const domainCreateEntity = (
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: propsNameType,
+    value: { type: propsNameType },
   });
 
   const { output: returnOkTypeName, dependencies: returnOkTypeDependencies } =
     modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: returnOkType,
+      value: { type: returnOkType },
     });
 
   const producedConstructor = internalConstructor(

@@ -1,5 +1,6 @@
 import { TGraphQLController, TGraphQLOperation } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
+import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
 import { ParameterBuilderDirector } from '../ParameterBuilderDirector.js';
 import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
 import { StatementDirector } from '../statement/statementDirector.js';
@@ -32,9 +33,13 @@ export class GraphQLControllerBuilderDirector {
           .withReturnType('HelloWorldResponseDTO')
           .withRequestIdentifier('request')
           .withStatements([
-            new StatementDirector().buildThisMethodCall('ok', [
-              new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
-            ]),
+            new StatementDirector().buildThisMethodCall(
+              'ok',
+
+              new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+                new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
+              ]),
+            ),
           ])
           .build(),
       )
@@ -59,9 +64,12 @@ export class GraphQLControllerBuilderDirector {
           .withReturnType('HelloWorldResponseDTO')
           .withRequestIdentifier('request')
           .withStatements([
-            new StatementDirector().buildThisMethodCall('ok', [
-              new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
-            ]),
+            new StatementDirector().buildThisMethodCall(
+              'ok',
+              new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+                new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
+              ]),
+            ),
           ])
           .build(),
       )
@@ -98,9 +106,12 @@ export class GraphQLControllerBuilderDirector {
           .withReturnType('HelloWorldResponseDTO')
           .withRequestIdentifier('request')
           .withStatements([
-            new StatementDirector().buildThisMethodCall('ok', [
-              new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
-            ]),
+            new StatementDirector().buildThisMethodCall(
+              'ok',
+              new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+                new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
+              ]),
+            ),
           ])
           .build(),
       )

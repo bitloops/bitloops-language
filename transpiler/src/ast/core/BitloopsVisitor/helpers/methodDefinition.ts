@@ -22,17 +22,17 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
-import { TypeAnnotationNode } from '../../intermediate-ast/nodes/TypeAnnotationNode.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { MethodDefinitionNodeBuilder } from '../../intermediate-ast/builders/methodDefinition/methodDefinitionNodeBuilder.js';
 import { MethodDefinitionNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionNode.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const methodDefinitionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodDefinitionContext,
 ): MethodDefinitionNode => {
   const identifier: IdentifierNode = thisVisitor.visit(ctx.identifier());
-  const type: TypeAnnotationNode = thisVisitor.visit(ctx.typeAnnotation());
+  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
   let parameterDependencies: ParameterListNode;
   if (ctx.parameterList()) {
     parameterDependencies = thisVisitor.visit(ctx.parameterList());

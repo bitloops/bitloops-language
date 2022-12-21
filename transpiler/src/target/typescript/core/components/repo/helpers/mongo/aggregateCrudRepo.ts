@@ -20,7 +20,7 @@ const getVOProps = (voName: string, model: TModule): TPropsValues => {
   }
   const { output: voPropsName } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: voPropsNameType,
+    value: { type: voPropsNameType },
   });
   const voProps = model.Props[voPropsName];
   return voProps;
@@ -92,7 +92,7 @@ export const fetchTypeScriptAggregateCrudBaseRepo = (
   const aggregateIdVariable = getAggregateIdVariable(aggregatePropsModel);
   const mappedAggregateType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: aggregateIdVariable[fieldKey].type,
+    value: { type: aggregateIdVariable[fieldKey].type },
   });
 
   const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);

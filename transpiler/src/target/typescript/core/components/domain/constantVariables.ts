@@ -37,7 +37,7 @@ const constVariablesToTarget = (variable: TConstDeclaration): TTargetDependencie
   if (type) {
     const typeTarget = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: type,
+      value: { type },
     });
     return {
       output: `const ${identifier}: ${typeTarget.output} = ${expressionTarget.output};`,

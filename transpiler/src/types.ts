@@ -51,7 +51,7 @@ export type TClassType =
   | 'ValueObject'
   | 'DTOs'
   | 'Structs'
-  | 'Packages'
+  | 'Package'
   | 'DomainRule'
   | 'RepoPorts'
   | 'RepoAdapters'
@@ -128,8 +128,7 @@ export type TVariable = {
   [fieldKey]: {
     [optionalKey]?: TOptional;
     [identifierKey]: TIdentifier;
-    [bitloopsPrimaryTypeKey]: TBitloopsPrimaryType;
-  };
+  } & TBitloopsPrimaryType;
 };
 
 /**
@@ -164,9 +163,8 @@ export type TParameterType = TBitloopsPrimaryType;
 export type TParameterIdentifier = string;
 export type TParameter = {
   parameter: {
-    type: TParameterType;
     value: TParameterIdentifier;
-  };
+  } & TParameterType;
 };
 
 export type TDomainCreateParameter = {
@@ -185,14 +183,8 @@ export type TArgument = {
   argument: TExpression;
 };
 
-// The old TArgumentDependencies
-export type TArgumentList = TArgument[];
-
-export type TClassInstantiation = {
-  classInstantiation: {
-    className: string;
-    argumentDependencies?: TArgumentList;
-  };
+export type TArgumentList = {
+  argumentList: TArgument[];
 };
 
 // Needed to check type on runtime, otherwise simple literal gets thrown away.
@@ -252,15 +244,19 @@ export type TBitloopsIdentifierObject = {
 
 export const arrayPrimaryTypeKey = 'arrayPrimaryType';
 export type ArrayBitloopsPrimTypeObject = {
-  [arrayPrimaryTypeKey]: TBitloopsPrimaryType;
+  [arrayPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
 };
 
 export const bitloopsPrimaryTypeKey = 'type';
-export type TBitloopsPrimaryType =
+export type TBitloopsPrimaryTypeValues =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
   | ArrayBitloopsPrimTypeObject;
+
+export type TBitloopsPrimaryType = {
+  [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
+};
 
 export type TBackTickString = {
   backTickString: string;
@@ -333,19 +329,10 @@ export type TGetClass = {
   getClass: TExpression;
 };
 
-export type TRegularEvaluation = {
-  regularEvaluation: {
-    type: TParam;
-    value: string;
-    argumentDependencies?: TArgumentList; // ArgumentsDependencies, e.g. name
-  };
-};
-
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
-    argumentList: TArgumentList;
-  };
+  } & TArgumentList;
 };
 
 // export type TCondition = {
@@ -353,7 +340,6 @@ export type TBuiltInClassEvaluation = {
 //   evaluateFalse?: TEvaluation;
 // };
 export type TEvaluationValues =
-  | TRegularEvaluation //TODO remove
   | TStructEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
@@ -363,9 +349,7 @@ export type TEvaluationValues =
   | TBuiltInClassEvaluation;
 
 export type TMethodCallExpression = {
-  methodCallExpression: TExpression & {
-    argumentList: TArgumentList;
-  };
+  methodCallExpression: TExpression & TArgumentList;
 };
 
 export type TEvaluation = {
@@ -436,7 +420,6 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation // To  be removed?
   | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
@@ -539,18 +522,10 @@ export type TReturnErrorStatement = {
   [returnErrorKey]: TExpression;
 };
 
-// export type TConstDecompositionNested = {
-//   names: string[];
-// } & TEvaluation;
-
-// export type TConstDecomposition = {
-//   constDecomposition: TConstDecompositionNested;
-// };
-
 export type TConstDeclarationValue = {
   identifier: string;
-  type?: TBitloopsPrimaryType;
-} & TExpression;
+} & Partial<TBitloopsPrimaryType> &
+  TExpression;
 
 export const constDeclarationKey = 'constDeclaration';
 export type TConstDeclaration = {
@@ -561,8 +536,8 @@ export const variableDeclarationKey = 'variableDeclaration';
 export type TVariableDeclaration = {
   [variableDeclarationKey]: {
     identifier: string;
-    type: TBitloopsPrimaryType;
-  } & TExpression;
+  } & TBitloopsPrimaryType &
+    TExpression;
 };
 
 export type TBreakStatement = {
@@ -572,8 +547,7 @@ export type TBreakStatement = {
 export type TAppliedRule = {
   appliedRule: {
     domainRuleIdentifier: string;
-    argumentList: TArgumentList;
-  };
+  } & TArgumentList;
 };
 
 export type TApplyRules = {
@@ -612,9 +586,8 @@ type TDomainPrivateMethodValues = {
   statements: TStatements;
 } & TParameterList;
 
-export type TDomainPrivateMethodValuesPrimaryReturnType = {
-  type: TBitloopsPrimaryType;
-} & TDomainPrivateMethodValues;
+export type TDomainPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType &
+  TDomainPrivateMethodValues;
 
 export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
   TOkErrorReturnType;
@@ -636,9 +609,7 @@ export type TDomainPublicMethod = {
 };
 
 export type TReturnOkType = {
-  ok: {
-    type: TBitloopsPrimaryType;
-  };
+  ok: TBitloopsPrimaryType;
 };
 
 export type TErrorIdentifier = {
@@ -1032,8 +1003,8 @@ export type TPackagePort = {
 export type TDefinitionMethodInfo = {
   methodDefinition: {
     identifier: TIdentifier;
-    type: TBitloopsPrimaryType; // return type
-  } & TParameterList;
+  } & TBitloopsPrimaryType &
+    TParameterList;
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';
@@ -1140,8 +1111,7 @@ export type TAndSingleExpression = {
 export type TErrorEvaluation = {
   errorEvaluation: {
     error: string;
-    argumentList?: TArgumentList;
-  };
+  } & Partial<TArgumentList>;
 };
 
 export type TOrSingleExpression = {

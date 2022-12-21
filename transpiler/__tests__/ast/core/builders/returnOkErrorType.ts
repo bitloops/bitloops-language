@@ -23,7 +23,7 @@ export class ReturnOkErrorTypeBuilder implements IBuilder<TOkErrorReturnType> {
     const returnOkErrorType = {
       returnType: {
         ok: {
-          type: this.okType,
+          ...this.okType,
         },
         errors: this.errors,
       },

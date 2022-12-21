@@ -22,10 +22,10 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
-import { TypeAnnotationNode } from '../../intermediate-ast/nodes/TypeAnnotationNode.js';
 import { VariableDeclarationNode } from '../../intermediate-ast/nodes/variableDeclaration.js';
 import { produceMetadata } from '../metadata.js';
 import { VariableDeclarationNodeBuilder } from '../../intermediate-ast/builders/statements/variableDeclaration.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const variableDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -38,7 +38,7 @@ export const variableDeclarationVisitor = (
   let variableDeclarationNode: VariableDeclarationNode;
   const metadata = produceMetadata(ctx, thisVisitor);
   if (ctx.typeAnnotation()) {
-    const typeAnnotationNode: TypeAnnotationNode = thisVisitor.visit(ctx.typeAnnotation());
+    const typeAnnotationNode: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
     variableDeclarationNode = new VariableDeclarationNodeBuilder(metadata)
       .withIdentifier(identifierNode)
       .withExpression(expressionNode)

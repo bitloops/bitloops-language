@@ -42,12 +42,15 @@ export class EvaluationBuilderDirector {
   }
 
   buildErrorEvaluation(errorIdentifier: string, args?: TArgumentList): TEvaluation {
-    if (!args) args = [];
+    if (!args)
+      args = {
+        argumentList: [],
+      };
     return {
       evaluation: {
         errorEvaluation: {
           error: errorIdentifier,
-          argumentList: args,
+          ...args,
         },
       },
     };
@@ -58,7 +61,7 @@ export class EvaluationBuilderDirector {
       evaluation: {
         builtInClass: {
           className: builtInIdentifier,
-          argumentList: args,
+          ...args,
         },
       },
     };

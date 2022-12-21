@@ -60,7 +60,7 @@ const entityValuesToTargetLanguage = (params: {
   }
   const { output: propsName, dependencies: entityPropsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: propsNameType,
+    value: { type: propsNameType },
   });
   dependencies = [...dependencies, ...entityPropsTypeDependencies];
 

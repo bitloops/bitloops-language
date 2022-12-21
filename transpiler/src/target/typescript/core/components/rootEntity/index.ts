@@ -72,7 +72,7 @@ export const rootEntityToTargetLanguage = (params: {
   const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
     modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: propsNameType,
+      value: { type: propsNameType },
     });
   dependencies.push(...rootEntityPropsTypeDependencies);
 

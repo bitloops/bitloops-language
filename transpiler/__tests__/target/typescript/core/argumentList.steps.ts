@@ -21,20 +21,20 @@ import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/I
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { VALID_INSTANCE_OF_TEST_CASES } from './mocks/expression/instanceOf.js';
+import { VALID_ARGUMENT_LIST_TEST_CASES } from './mocks/argumentList.js';
 
-describe('Valid instance of test cases', () => {
+describe('Valid argument list test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
   const language = 'TypeScript';
 
-  VALID_INSTANCE_OF_TEST_CASES.forEach((testCase) => {
+  VALID_ARGUMENT_LIST_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const expressionNode = testCase.expression;
-      tree.insertChild(expressionNode);
+      const argumentListNode = testCase.argumentList;
+      tree.insertChild(argumentListNode);
 
       const intermediateAST = {
         [boundedContext]: { [module]: tree },

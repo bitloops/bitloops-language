@@ -35,7 +35,7 @@ export const methodCallExpressionToTargetLanguage = (
 
   const argumentListResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TArgumentList,
-    value: argumentList,
+    value: { argumentList },
   });
 
   return {

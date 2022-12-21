@@ -63,7 +63,7 @@ export class MethodDefinitionBuilderDirector {
         parameters: params.map((param) =>
           new ParameterBuilderDirector().buildPrimitiveParameter(param.name, param.type),
         ),
-        type: returnType,
+        ...returnType,
       },
     };
   }

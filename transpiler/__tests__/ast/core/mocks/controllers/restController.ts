@@ -22,6 +22,7 @@ import { StatementDirector } from '../../builders/statement/statementDirector.js
 import { ArgumentBuilderDirector } from '../../builders/argumentDirector.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
 import { RestExecuteBuilder } from '../../builders/controllers/restControllerExecuteBuilder.js';
+import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
 
 type RestControllerDeclarationTestCase = {
   description: string;
@@ -49,10 +50,13 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
     execute: new RestExecuteBuilder()
       .withRequestReply('request', 'response')
       .withStatements([
-        new StatementDirector().buildThisMethodCall('ok', [
-          new ArgumentBuilderDirector().buildIdentifierArgument('response'),
-          new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
-        ]),
+        new StatementDirector().buildThisMethodCall(
+          'ok',
+          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+            new ArgumentBuilderDirector().buildIdentifierArgument('response'),
+            new ArgumentBuilderDirector().buildStringArgument('Hello World!'),
+          ]),
+        ),
       ])
       .build(),
   },
@@ -82,12 +86,15 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
         new StatementDirector().buildConstDeclarationWithMemberDotMethodCall({
           name: 'result',
           memberDotMembers: ['helloWorldUseCase', 'execute'],
-          argumentList: [],
+          argumentList: { argumentList: [] },
         }),
-        new StatementDirector().buildThisMethodCall('ok', [
-          new ArgumentBuilderDirector().buildIdentifierArgument('response'),
-          new ArgumentBuilderDirector().buildIdentifierArgument('result'),
-        ]),
+        new StatementDirector().buildThisMethodCall(
+          'ok',
+          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+            new ArgumentBuilderDirector().buildIdentifierArgument('response'),
+            new ArgumentBuilderDirector().buildIdentifierArgument('result'),
+          ]),
+        ),
       ])
       .build(),
   },

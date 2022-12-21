@@ -19,6 +19,7 @@
  */
 import { TArgumentList, TEvaluationFields, TStatements } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
+import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { StatementDirector } from './statementDirector.js';
@@ -56,7 +57,9 @@ export class StatementListDirector {
             new ExpressionBuilderDirector().buildIdentifierExpression(identifierExpressionName),
             methodName,
           ),
-          [new ArgumentBuilderDirector().buildIdentifierArgument(argument)],
+          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+            new ArgumentBuilderDirector().buildIdentifierArgument(argument),
+          ]),
         ),
       ),
     ];
@@ -78,7 +81,10 @@ export class StatementListDirector {
             new ExpressionBuilderDirector().buildIdentifierExpression(identifierExpressionName),
             methodName,
           ),
-          [new ArgumentBuilderDirector().buildIdentifierArgument(argument)],
+
+          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+            new ArgumentBuilderDirector().buildIdentifierArgument(argument),
+          ]),
         ),
       ),
     ];

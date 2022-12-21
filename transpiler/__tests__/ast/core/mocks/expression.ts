@@ -45,7 +45,7 @@ export const validMethodCallTestCases = [
     inputBLString: 'JestTestExpression { a() }',
     expression: new ExpressionBuilderDirector().buildMethodCallExpression(
       new ExpressionBuilderDirector().buildIdentifierExpression('a'),
-      [],
+      { argumentList: [] },
     ),
   },
   {
@@ -57,7 +57,7 @@ export const validMethodCallTestCases = [
         new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldUseCase'),
         'execute',
       ),
-      [new ArgumentBuilderDirector().buildIdentifierArgument('dto')],
+      { argumentList: [new ArgumentBuilderDirector().buildIdentifierArgument('dto')] },
     ),
   },
   {
@@ -69,10 +69,12 @@ export const validMethodCallTestCases = [
         new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldUseCase'),
         'execute',
       ),
-      [
-        new ArgumentBuilderDirector().buildIdentifierArgument('dto'),
-        new ArgumentBuilderDirector().buildIdentifierArgument('tismas'),
-      ],
+      {
+        argumentList: [
+          new ArgumentBuilderDirector().buildIdentifierArgument('dto'),
+          new ArgumentBuilderDirector().buildIdentifierArgument('tismas'),
+        ],
+      },
     ),
   },
 ];

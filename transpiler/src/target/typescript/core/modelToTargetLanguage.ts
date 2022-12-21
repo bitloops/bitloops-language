@@ -28,12 +28,10 @@ import {
 } from './components/dependencies/index.js';
 import { propsToTargetLanguage } from './components/props/index.js';
 import { constDeclarationToTargetLanguage } from './components/statements/constDeclaration.js';
-import { classInstantiationToTargetLanguage } from './components/statements/expression/classInstantiation.js';
 import { conditionToTargetLanguage } from './components/statements/expression/condition.js';
 import { getClassToTargetLanguage } from './components/statements/expression/getClass.js';
 import { evaluationToTargetLanguage } from './components/statements/expression/evaluation/index.js';
 import { instanceOfToTargetLanguage } from './components/statements/expression/instance.js';
-import { regularEvaluationToTargetLanguage } from './components/statements/expression/evaluation/regularEvaluation.js';
 import { expressionToTargetLanguage } from './components/statements/expression/index.js';
 import { expressionValuesToTargetLanguage } from './components/statements/expression/expressionValues.js';
 import { structToTargetLanguage } from './components/statements/expression/evaluation/struct.js';
@@ -81,7 +79,7 @@ import {
 } from './components/definitionMethods/index.js';
 import { returnTypeToDefinitionLanguage } from './components/returnType/index.js';
 import { packagePortToTargetLanguage } from './components/packagePort/index.js';
-import { packagesToTargetLanguage } from './components/packages/index.js';
+import { packageToTargetLanguage } from './components/packages/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
 import { valueObjectEvaluationToTargetLanguage } from './components/statements/expression/evaluation/valueObjectEvaluation.js';
 import { evaluationFieldsToTargetLanguage } from './components/statements/expression/evaluation/evaluationFields.js';
@@ -172,10 +170,6 @@ const modelToTargetLanguage = (props: {
       res = instanceOfToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TRegularEvaluation: {
-      res = regularEvaluationToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TEvaluation: {
       res = evaluationToTargetLanguage(value);
       break;
@@ -186,10 +180,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TArgumentList: {
       res = argumentDependenciesToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TClassInstantiation: {
-      res = classInstantiationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TGetClass: {
@@ -349,7 +339,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TPackage: {
-      res = packagesToTargetLanguage(value);
+      res = packageToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainCreateMethod: {

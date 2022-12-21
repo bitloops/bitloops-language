@@ -27,10 +27,11 @@ import {
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 const argumentDependenciesToTargetLanguage = (
-  variable: TArgumentList,
+  argumentList: TArgumentList,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   let result = '(';
+  const { argumentList: variable } = argumentList;
   if (variable) {
     for (const [index, argument] of variable.entries()) {
       const model = modelToTargetLanguage({

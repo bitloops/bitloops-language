@@ -1,10 +1,11 @@
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import {
   bitloopsIdentifiersTypeKey,
+  bitloopsPrimaryTypeKey,
   buildInClassTypeKey,
   fieldKey,
   primitivesTypeKey,
-  TBitloopsPrimaryType,
+  TBitloopsPrimaryTypeValues,
   TVariables,
 } from '../../../../types.js';
 import { BitloopsPrimTypeIdentifiers } from '../../core/type-identifiers/bitloopsPrimType.js';
@@ -60,7 +61,7 @@ export class ClassTypeToGraphQLMapping {
   }
 
   private findFieldFromArray(
-    type: TBitloopsPrimaryType,
+    type: TBitloopsPrimaryTypeValues,
     optional: boolean,
   ): {
     result: string;
@@ -70,7 +71,7 @@ export class ClassTypeToGraphQLMapping {
       const result = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
       return { result, fieldDependency: null };
     } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
-      const res = this.findFieldFromArray(type.arrayPrimaryType, optional);
+      const res = this.findFieldFromArray(type.arrayPrimaryType[bitloopsPrimaryTypeKey], optional);
       return { result: '[' + res.result + ']', fieldDependency: res.fieldDependency };
     } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
       return { result: type[buildInClassTypeKey], fieldDependency: type[buildInClassTypeKey] };
