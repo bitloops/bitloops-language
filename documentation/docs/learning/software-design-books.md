@@ -63,6 +63,8 @@ Please email us if you believe we've missed a book from this list!
 
 - [Systems Analysis and Design](https://www.amazon.com/Systems-Analysis-Design-Alan-Dennis/dp/1118897846) – Alan Dennis, Barbara Haley Wixom, Roberta M. Roth
 
+- [Working Effectively with Legacy Code](https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052) - Michael Feathers 
+
 
 ## Videos, Tutorials & Presentations
 
