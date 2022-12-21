@@ -4,6 +4,11 @@ import Parser from './grammar/BitloopsParser.js';
 export class BitloopsLanguageAST extends Parser.ProgramContext {}
 
 export type BitloopsLanguageASTContext = {
+  core: BitloopsLanguageASTCoreContext;
+  setup?: BitloopsLanguageAST;
+};
+
+export type BitloopsLanguageASTCoreContext = {
   [boundedContext: TBoundedContextName]: {
     [moduleName: TModuleName]: {
       [fileId: string]: {
@@ -16,6 +21,11 @@ export type BitloopsLanguageASTContext = {
 export type TFileId = string;
 type TFileContents = string;
 
+export type TParserInputData = {
+  core: TParserCoreInputData;
+  setup?: string;
+};
+
 export type TParserCoreInputData = {
   boundedContext: TBoundedContextName;
   module: TModuleName;
@@ -24,7 +34,7 @@ export type TParserCoreInputData = {
 }[];
 
 export interface IBitloopsParser {
-  parse: (inputData: TParserCoreInputData) => BitloopsLanguageASTContext | BitloopsParserError;
+  parse: (inputData: TParserInputData) => BitloopsLanguageASTContext | BitloopsParserError[];
 }
 
 export class IntermediateASTValidationError extends Error {}

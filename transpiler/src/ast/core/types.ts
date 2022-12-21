@@ -1,4 +1,4 @@
-import { BitloopsLanguageASTContext } from '../../parser/index.js';
+import { BitloopsLanguageASTCoreContext } from '../../parser/core/types.js';
 import { TBoundedContexts } from '../../types.js';
 import { ExpressionNode } from './intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
@@ -9,7 +9,7 @@ export type BitloopsIntermediateASTError =
   | IntermediateASTValidationError[];
 
 export interface IBitloopsIntermediateASTParser {
-  parse: (ast: BitloopsLanguageASTContext) => TBoundedContexts | BitloopsIntermediateASTError;
+  parse: (ast: BitloopsLanguageASTCoreContext) => TBoundedContexts | BitloopsIntermediateASTError;
 }
 
 export class IntermediateASTParserError extends Error {}
