@@ -1,4 +1,5 @@
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
+import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { StatementListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/StatementList.js';
 import { ArgumentListDirector } from '../argumentList.js';
 import { ExpressionBuilderDirector } from '../expression.js';
@@ -117,6 +118,17 @@ export class StatementListBuilderDirector {
           identifierExpression,
         ),
       ])
+      .build();
+  }
+  /**
+   * e.g. x == y
+   */
+  buildLogicalEqualityExpression(
+    leftExp: ExpressionNode,
+    rightExp: ExpressionNode,
+  ): StatementListNode {
+    return this.builder
+      .withStatements([new ExpressionBuilderDirector().buildEqualityExpression(rightExp, leftExp)])
       .build();
   }
 }
