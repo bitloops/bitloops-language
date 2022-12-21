@@ -91,7 +91,7 @@ export const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesT
   if (useCaseInputType) {
     const inputTypeOutput = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: useCaseInputType,
+      value: { type: useCaseInputType },
     });
     useCaseInputName = inputTypeOutput.output;
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];

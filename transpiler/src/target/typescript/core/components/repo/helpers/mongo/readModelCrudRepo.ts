@@ -37,7 +37,7 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
   const readModelIdVariable = getReadModelIdVariable(readModelValues);
   const mappedReadModelIdType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: readModelIdVariable[fieldKey].type,
+    value: { type: readModelIdVariable[fieldKey].type },
   });
 
   const readModelFields = getReadModelFields(readModelValues);

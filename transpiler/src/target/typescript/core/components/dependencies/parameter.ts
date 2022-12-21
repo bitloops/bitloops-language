@@ -28,7 +28,7 @@ const parameterDependencyToTargetLanguage = (
   const { parameter } = variable;
   const mappedType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: parameter.type,
+    value: { type: parameter.type },
   });
   return {
     output: `${parameter.value}:${mappedType.output}`,

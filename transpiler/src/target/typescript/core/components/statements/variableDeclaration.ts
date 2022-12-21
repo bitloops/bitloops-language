@@ -32,7 +32,7 @@ export const variableDeclarationToTargetLanguage = (
 
     const mappedType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: type,
+      value: { type },
     });
     return {
       output: `let ${identifier}: ${mappedType.output} = `,

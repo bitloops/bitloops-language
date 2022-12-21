@@ -40,7 +40,7 @@ export const buildFieldsFromDependencies = (
       const { type, value } = parameterDependency.parameter;
       const mappedType = modelToTargetLanguage({
         type: BitloopsTypesMapping.TBitloopsPrimaryType,
-        value: type,
+        value: { type },
       });
       return `private ${value}: ${mappedType.output};`;
     })

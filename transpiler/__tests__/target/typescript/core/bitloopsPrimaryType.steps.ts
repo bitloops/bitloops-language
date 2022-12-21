@@ -17,35 +17,44 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_PRIMARY_TYPE_TEST_CASES } from './mocks/bitloopsPrimaryType.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/bitloopsPrimaryType.feature');
+describe('Valid bitloops primary type test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-defineFeature(feature, (test) => {
-  let inputType;
-  let result;
-  let value;
+  VALID_PRIMARY_TYPE_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const bitloopsPrimaryTypeNode = testCase.bitloopsPrimaryType;
+      tree.insertChild(bitloopsPrimaryTypeNode);
 
-  test('BitloopsPrimaryType success to Typescript object', ({ given, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      inputType = type;
-    });
+      const intermediateAST = {
+        [boundedContext]: { [module]: tree },
+      };
 
-    given(/^I have a BitloopsPrimaryType (.*)$/, (intermediateModel) => {
-      value = intermediateModel;
-    });
-
-    when('I generate the code', () => {
-      const inputValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: inputType,
-        value: inputValue,
+      // when
+      const targetGenerator = new BitloopsTargetGenerator();
+      const result = targetGenerator.generate({
+        intermediateAST,
+        formatterConfig,
+        targetLanguage: language,
+        setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

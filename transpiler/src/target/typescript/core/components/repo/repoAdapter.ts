@@ -87,7 +87,7 @@ const getPropsModel = (
     const { output: aggregatePropsName, dependencies: aggregatePropsTypeDependencies } =
       modelToTargetLanguage({
         type: BitloopsTypesMapping.TBitloopsPrimaryType,
-        value: aggregatePropsNameType,
+        value: { type: aggregatePropsNameType },
       });
     dependencies = [...dependencies, ...aggregatePropsTypeDependencies];
 
