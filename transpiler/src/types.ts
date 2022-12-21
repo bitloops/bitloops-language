@@ -178,8 +178,9 @@ export type TArgument = {
   argument: TExpression;
 };
 
-// The old TArgumentDependencies
-export type TArgumentList = TArgument[];
+export type TArgumentList = {
+  argumentList: TArgument[];
+};
 
 // Needed to check type on runtime, otherwise simple literal gets thrown away.
 export const bitloopsPrimitives = [
@@ -322,8 +323,7 @@ export type TGetClass = {
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
-    argumentList: TArgumentList;
-  };
+  } & TArgumentList;
 };
 
 // export type TCondition = {
@@ -340,9 +340,7 @@ export type TEvaluationValues =
   | TBuiltInClassEvaluation;
 
 export type TMethodCallExpression = {
-  methodCallExpression: TExpression & {
-    argumentList: TArgumentList;
-  };
+  methodCallExpression: TExpression & TArgumentList;
 };
 
 export type TEvaluation = {
@@ -540,8 +538,7 @@ export type TBreakStatement = {
 export type TAppliedRule = {
   appliedRule: {
     domainRuleIdentifier: string;
-    argumentList: TArgumentList;
-  };
+  } & TArgumentList;
 };
 
 export type TApplyRules = {
@@ -1122,8 +1119,7 @@ export type TAndSingleExpression = {
 export type TErrorEvaluation = {
   errorEvaluation: {
     error: string;
-    argumentList?: TArgumentList;
-  };
+  } & Partial<TArgumentList>;
 };
 
 export type TOrSingleExpression = {
