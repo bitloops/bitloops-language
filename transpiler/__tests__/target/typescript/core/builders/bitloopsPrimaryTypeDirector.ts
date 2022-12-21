@@ -11,7 +11,21 @@ import {
 } from '../../../../../src/types.js';
 
 export class BitloopsPrimaryTypeDirector {
-  buildArrayPrimaryType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
+  buildDoubleArrayPrimitiveType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
+    const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
+    const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
+      .withPrimaryType(primitiveTypeNode)
+      .build();
+    const doubleArrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
+      .withPrimaryType(arrayBitloopsPrimaryTypeNode)
+      .build();
+
+    return new BitloopsPrimaryTypeBuilder()
+      .withPrimaryType(doubleArrayBitloopsPrimaryTypeNode)
+      .build();
+  }
+
+  buildArrayPrimitiveType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
     const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
       .withPrimaryType(primitiveTypeNode)
