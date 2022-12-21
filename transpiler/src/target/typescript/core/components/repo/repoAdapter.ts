@@ -20,11 +20,14 @@
 import {
   ISetupData,
   repoPortKey,
+  RootEntityKey,
   TDependenciesTypeScript,
-  TModule,
+  TProps,
+  TReadModel,
   TRepoAdapters,
   TRepoPort,
   TRepoSupportedTypes,
+  TRootEntity,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
@@ -35,6 +38,10 @@ import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
 import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
+import { PropsNode } from '../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
+import { ReadModelNode } from '../../../../../ast/core/intermediate-ast/nodes/readModel/ReadModel.js';
+import { RepoPortNode } from '../../../../../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
   switch (dbType) {
@@ -72,14 +79,20 @@ const getRepoHeader = (
 type TPropsValues = any;
 const getPropsModel = (
   repoPort: TRepoPort,
-  module: TModule,
+  model: IntermediateASTTree,
 ): { output: TPropsValues; dependencies: TDependenciesTypeScript } => {
   let propsModel: TPropsValues;
   let dependencies = [];
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPort)) {
     const { entityIdentifier } = repoPort[repoPortKey];
-    const aggregateModel = module.RootEntities[entityIdentifier];
-    const aggregatePropsNameType = aggregateModel.create.parameter.type;
+    const aggregateModels = model.getClassTypeNodes(
+      BitloopsTypesMapping.TRootEntity,
+    ) as RootEntityDeclarationNode[];
+    const aggregateModelNode = aggregateModels.find(
+      (node) => node.getClassName() === entityIdentifier,
+    );
+    const aggregateModel = aggregateModelNode.getValue() as TRootEntity;
+    const aggregatePropsNameType = aggregateModel[RootEntityKey].entityValues.create.parameter.type;
 
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsNameType)) {
       throw new Error('Array props are not supported');
@@ -91,10 +104,14 @@ const getPropsModel = (
       });
     dependencies = [...dependencies, ...aggregatePropsTypeDependencies];
 
-    propsModel = module.Props[aggregatePropsName];
+    const propsModels = model.getClassTypeNodes(BitloopsTypesMapping.TProps) as PropsNode[];
+    const propsModelNode = propsModels.find((node) => node.getClassName() === aggregatePropsName);
+    propsModel = propsModelNode.getValue() as TProps;
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPort)) {
     const { readModelIdentifier } = repoPort[repoPortKey];
-    const readModelValues = module.ReadModel[readModelIdentifier];
+    const readModels = model.getClassTypeNodes(BitloopsTypesMapping.TReadModel) as ReadModelNode[];
+    const readModelNode = readModels.find((node) => node.getClassName() === readModelIdentifier);
+    const readModelValues = readModelNode.getValue() as TReadModel;
     propsModel = readModelValues;
   } else {
     throw new Error(`Invalid repo port ${JSON.stringify(repoPort)}`);
@@ -115,11 +132,12 @@ export const repoAdapterToTargetLanguage = (
 
   const { dbType, repoPort, connection, collection } = repoAdapter;
 
-  const module = model[boundedContext][moduleName];
-  const repoPortInfo = module.RepoPorts[repoPort];
-  if (!repoPortInfo) {
+  const repoPorts = model.getClassTypeNodes(BitloopsTypesMapping.TRepoPort) as RepoPortNode[];
+  const repoPortNode = repoPorts.find((node) => node.getClassName() === repoPort);
+  if (!repoPortNode) {
     throw new Error(`Repo port ${repoPort} not found in model!`);
   }
+  const repoPortInfo = repoPortNode.getValue() as TRepoPort;
 
   let dependencies = getDbTypeImports(dbType);
 
@@ -127,9 +145,11 @@ export const repoAdapterToTargetLanguage = (
 
   const { output: propsModel, dependencies: propsDependencies } = getPropsModel(
     repoPortInfo,
-    module,
+    model,
   );
 
+  // TODO fix, remove this and use tree
+  const module = model[boundedContext][moduleName];
   const repoBody = repoBodyLangMapping(
     dbType,
     collection,
