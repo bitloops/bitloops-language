@@ -189,4 +189,11 @@ export abstract class IntermediateASTNode {
     const children = this.getChildren();
     return (children.find((child) => child.getNodeType() === nodeType) as T) ?? null;
   }
+
+  protected getChildrenNodesByType<T extends IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): Array<T> | [] {
+    const children = this.getChildren();
+    return (children.filter((child) => child.getNodeType() === nodeType) as T[]) ?? null;
+  }
 }

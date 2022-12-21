@@ -35,9 +35,11 @@ describe('Valid repo port declaration test cases', () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const repoPortNode = testCase.repoPort;
-      // const rootEntityNode = testCase.rootEntity;
-      // tree.insertChild(rootEntityNode);
+      const rootEntityNode = testCase.rootEntity;
+      const propsNode = testCase.props;
+      tree.insertChild(rootEntityNode);
       tree.insertChild(repoPortNode);
+      tree.insertChild(propsNode);
 
       const intermediateAST = {
         [boundedContext]: { [module]: tree },

@@ -126,6 +126,7 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -478,6 +479,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainConstructorParameter: {
+      res = domainConstructorParameterToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuiltInClassEvaluation: {

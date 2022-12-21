@@ -1,10 +1,11 @@
 import { DomainCreateParameterNode } from '../../nodes/Domain/DomainCreateParameterNode.js';
-import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { ParameterIdentifierNode } from '../../nodes/ParameterList/ParameterIdentifierNode.js';
 import { PropsIdentifierNode } from '../../nodes/Props/PropsIdentifierNode.js';
 import { IBuilder } from '../IBuilder.js';
+
 export class DomainCreateParameterNodeBuilder implements IBuilder<DomainCreateParameterNode> {
-  private identifierNode: IdentifierNode;
+  private identifierNode: ParameterIdentifierNode;
   private propsTypeNode: PropsIdentifierNode;
 
   private domainConstructorParameterNode: DomainCreateParameterNode;
@@ -13,7 +14,7 @@ export class DomainCreateParameterNodeBuilder implements IBuilder<DomainCreatePa
     this.domainConstructorParameterNode = new DomainCreateParameterNode(metadata);
   }
 
-  withIdentifierNode(identifierNode: IdentifierNode): DomainCreateParameterNodeBuilder {
+  withIdentifierNode(identifierNode: ParameterIdentifierNode): DomainCreateParameterNodeBuilder {
     this.identifierNode = identifierNode;
     return this;
   }

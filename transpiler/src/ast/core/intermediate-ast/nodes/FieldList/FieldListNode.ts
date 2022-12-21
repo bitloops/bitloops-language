@@ -9,6 +9,7 @@ export class FieldListNode extends IntermediateASTNode {
   }
 
   getFieldNodes(): FieldNode[] {
-    return this.getChildren();
+    const fieldNodes = this.getChildrenNodesByType<FieldNode>(BitloopsTypesMapping.TVariable);
+    return fieldNodes;
   }
 }

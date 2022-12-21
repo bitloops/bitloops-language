@@ -19,6 +19,7 @@
  */
 import {
   ISetupData,
+  PropsIdentifierKey,
   repoPortKey,
   RootEntityKey,
   TDependenciesTypeScript,
@@ -35,7 +36,6 @@ import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
-import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
@@ -92,11 +92,9 @@ const getPropsModel = (
       (node) => node.getClassName() === entityIdentifier,
     );
     const aggregateModel = aggregateModelNode.getValue() as TRootEntity;
-    const aggregatePropsNameType = aggregateModel[RootEntityKey].entityValues.create.parameter.type;
+    const aggregatePropsNameType =
+      aggregateModel[RootEntityKey].entityValues.create.domainCreateParameter[PropsIdentifierKey];
 
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(aggregatePropsNameType)) {
-      throw new Error('Array props are not supported');
-    }
     const { output: aggregatePropsName, dependencies: aggregatePropsTypeDependencies } =
       modelToTargetLanguage({
         type: BitloopsTypesMapping.TBitloopsPrimaryType,

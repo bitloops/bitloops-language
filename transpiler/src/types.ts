@@ -135,7 +135,7 @@ export type TVariable = {
  * Props
  */
 export type TPropsIdentifier = string;
-export const PropsIdentifierKey = 'PropsIdentifier';
+export const PropsIdentifierKey = 'propsIdentifier';
 
 export const PropsKey = 'Props';
 export type TProps = {
@@ -169,7 +169,7 @@ export type TParameter = {
 
 export type TDomainCreateParameter = {
   domainCreateParameter: {
-    type: TPropsIdentifier;
+    [PropsIdentifierKey]: TPropsIdentifier;
     value: TParameterIdentifier;
   };
 };
@@ -631,7 +631,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TParameter;
+    TDomainCreateParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;
