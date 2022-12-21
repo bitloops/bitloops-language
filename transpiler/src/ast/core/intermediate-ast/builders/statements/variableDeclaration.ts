@@ -1,7 +1,7 @@
+import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { TypeAnnotationNode } from '../../nodes/TypeAnnotationNode.js';
 import { VariableDeclarationNode } from '../../nodes/variableDeclaration.js';
 import { IBuilder } from '../IBuilder.js';
 
@@ -9,7 +9,7 @@ export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarat
   private variableDeclarationNode: VariableDeclarationNode;
   private identifierNode: IdentifierNode;
   private expressionNode: ExpressionNode;
-  private typeAnnotationNode: TypeAnnotationNode;
+  private typeAnnotationNode: BitloopsPrimaryTypeNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.variableDeclarationNode = new VariableDeclarationNode(metadata);
@@ -26,7 +26,7 @@ export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarat
   }
 
   public withTypeAnnotation(
-    typeAnnotationNode: TypeAnnotationNode,
+    typeAnnotationNode: BitloopsPrimaryTypeNode,
   ): VariableDeclarationNodeBuilder {
     this.typeAnnotationNode = typeAnnotationNode;
     return this;

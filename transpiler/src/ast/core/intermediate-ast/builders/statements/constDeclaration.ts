@@ -2,14 +2,14 @@ import { ConstDeclarationNode } from '../../nodes/statements/ConstDeclarationNod
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { TypeAnnotationNode } from '../../nodes/TypeAnnotationNode.js';
 import { IBuilder } from '../IBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export class ConstDeclarationNodeBuilder implements IBuilder<ConstDeclarationNode> {
   private constDeclarationNode: ConstDeclarationNode;
   private identifierNode: IdentifierNode;
   private expressionNode: ExpressionNode;
-  private typeAnnotationNode: TypeAnnotationNode;
+  private typeAnnotationNode: BitloopsPrimaryTypeNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.constDeclarationNode = new ConstDeclarationNode(metadata);
@@ -25,7 +25,9 @@ export class ConstDeclarationNodeBuilder implements IBuilder<ConstDeclarationNod
     return this;
   }
 
-  public withTypeAnnotation(typeAnnotationNode: TypeAnnotationNode): ConstDeclarationNodeBuilder {
+  public withTypeAnnotation(
+    typeAnnotationNode: BitloopsPrimaryTypeNode,
+  ): ConstDeclarationNodeBuilder {
     this.typeAnnotationNode = typeAnnotationNode;
     return this;
   }

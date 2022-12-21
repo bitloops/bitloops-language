@@ -3,10 +3,10 @@ import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/i
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { ConstDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/constDeclaration.js';
 import { ArgumentNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
+import { BitloopsPrimaryTypeNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { EvaluationFieldNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
-import { TypeAnnotationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/TypeAnnotationNode.js';
 import { ArgumentListDirector } from '../argumentList.js';
 import { EvaluationBuilderDirector } from '../evaluation.js';
 import { ExpressionBuilderDirector } from '../expression.js';
@@ -15,7 +15,7 @@ export class ConstDeclarationBuilderDirector {
   buildConstDeclaration(
     identifier: string,
     expression: ExpressionNode,
-    typeAnnotation?: TypeAnnotationNode,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
   ): ConstDeclarationNode {
     const node = new ConstDeclarationNodeBuilder()
       .withIdentifier(new IdentifierNodeBuilder().withName(identifier).build())
@@ -118,7 +118,7 @@ export class ConstDeclarationBuilderDirector {
     identifier: string,
     dtoIdentifier: string,
     evalFields: EvaluationFieldNode[],
-    typeAnnotation?: TypeAnnotationNode,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
   ): ConstDeclarationNode {
     const dtoEvaluation = new EvaluationBuilderDirector().buildDTOEvaluation(
       new DTOIdentifierNodeBuilder().withName(dtoIdentifier).build(),
@@ -136,7 +136,7 @@ export class ConstDeclarationBuilderDirector {
     identifier: string,
     structIdentifier: string,
     evaluationFieldNodes: EvaluationFieldNode[],
-    typeAnnotation?: TypeAnnotationNode,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
   ): ConstDeclarationNode {
     return this.buildConstDeclaration(
       identifier,
@@ -153,7 +153,7 @@ export class ConstDeclarationBuilderDirector {
   buildIntegerExpressionConstDeclaration(
     identifier: string,
     value: number,
-    typeAnnotation?: TypeAnnotationNode,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
   ): ConstDeclarationNode {
     return this.buildConstDeclaration(
       identifier,
@@ -165,7 +165,7 @@ export class ConstDeclarationBuilderDirector {
   buildStringExpressionConstDeclaration(
     identifier: string,
     value: string,
-    typeAnnotation?: TypeAnnotationNode,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
   ): ConstDeclarationNode {
     return this.buildConstDeclaration(
       identifier,
