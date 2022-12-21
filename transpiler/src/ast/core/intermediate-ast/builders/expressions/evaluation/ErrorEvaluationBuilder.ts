@@ -1,6 +1,7 @@
 import { ArgumentListNode } from '../../../nodes/ArgumentList/ArgumentListNode.js';
 import { ErrorIdentifierNode } from '../../../nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 import { ErrorEvaluationNode } from '../../../nodes/Expression/Evaluation/ErrorEvaluation.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class ErrorEvaluationNodeBuilder implements IBuilder<ErrorEvaluationNode> {
@@ -8,8 +9,8 @@ export class ErrorEvaluationNodeBuilder implements IBuilder<ErrorEvaluationNode>
   private identifier: ErrorIdentifierNode;
   private argumentListNode?: ArgumentListNode;
 
-  constructor() {
-    this.errorEvaluationNode = new ErrorEvaluationNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.errorEvaluationNode = new ErrorEvaluationNode(nodeMetadata);
   }
 
   public withIdentifier(identifier: ErrorIdentifierNode): ErrorEvaluationNodeBuilder {

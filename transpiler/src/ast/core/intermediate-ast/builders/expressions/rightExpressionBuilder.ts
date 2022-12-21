@@ -1,15 +1,16 @@
 import { IBuilder } from '../IBuilder.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { RightExpressionNode } from '../../nodes/Expression/rightExpression.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class RightExpressionBuilder implements IBuilder<RightExpressionNode> {
   public readonly NAME = 'right';
 
-  private RightExpressionNode: RightExpressionNode;
+  private rightExpressionNode: RightExpressionNode;
   private expressionNode: ExpressionNode;
 
-  constructor() {
-    this.RightExpressionNode = new RightExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.rightExpressionNode = new RightExpressionNode(metadata);
   }
 
   public withExpression(expressionNode: ExpressionNode): RightExpressionBuilder {
@@ -18,9 +19,9 @@ export class RightExpressionBuilder implements IBuilder<RightExpressionNode> {
   }
 
   public build(): RightExpressionNode {
-    this.RightExpressionNode.addChild(this.expressionNode);
-    this.RightExpressionNode.buildObjectValue();
+    this.rightExpressionNode.addChild(this.expressionNode);
+    this.rightExpressionNode.buildObjectValue();
 
-    return this.RightExpressionNode;
+    return this.rightExpressionNode;
   }
 }

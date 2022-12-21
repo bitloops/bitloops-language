@@ -3,14 +3,15 @@ import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { AssignmentExpressionNode } from '../../nodes/Expression/AssignmentExpression.js';
 import { LeftExpressionBuilder } from './leftExpressionBuilder.js';
 import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class AssignmentExpressionNodeBuilder implements IBuilder<AssignmentExpressionNode> {
   private assignmentExpressionNode: AssignmentExpressionNode;
   private leftExpression: LeftExpressionNode;
   private rightExpression: ExpressionNode;
 
-  constructor() {
-    this.assignmentExpressionNode = new AssignmentExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.assignmentExpressionNode = new AssignmentExpressionNode(metadata);
   }
 
   public withLeftExpression(expr: ExpressionNode): AssignmentExpressionNodeBuilder {

@@ -1,13 +1,14 @@
 import { DomainEvaluationNode } from '../../../nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluation.js';
 import { ValueObjectEvaluationNode } from '../../../nodes/Expression/Evaluation/ValueObjectEvaluation.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class ValueObjectEvaluationNodeBuilder implements IBuilder<ValueObjectEvaluationNode> {
   private valueObjectEvaluationNode: ValueObjectEvaluationNode;
   private domainEvaluation: DomainEvaluationNode;
 
-  constructor() {
-    this.valueObjectEvaluationNode = new ValueObjectEvaluationNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.valueObjectEvaluationNode = new ValueObjectEvaluationNode(nodeMetadata);
   }
 
   public withDomainEvaluation(

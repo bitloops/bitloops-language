@@ -1,5 +1,6 @@
 import { TAdditiveOperator, TEqualityOperator, TRelationalOperator } from '../../../../../types.js';
 import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class OperatorBuilder implements IBuilder<OperatorNode> {
@@ -8,8 +9,8 @@ export class OperatorBuilder implements IBuilder<OperatorNode> {
   private operatorNode: OperatorNode;
   private symbol: TAdditiveOperator | TRelationalOperator | TEqualityOperator;
 
-  constructor() {
-    this.operatorNode = new OperatorNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.operatorNode = new OperatorNode(metadata);
   }
 
   public withSymbol(

@@ -4,6 +4,7 @@ import { LogicalAndExpressionNode } from '../../../nodes/Expression/Logical/Logi
 import { LogicalExpressionNode } from '../../../nodes/Expression/Logical/LogicalExpressionNode.js';
 import { IBuilder } from '../../IBuilder.js';
 import { NotExpressionNode } from '../../../nodes/Expression/NotExpression.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 
 export class LogicalExpressionBuilder implements IBuilder<LogicalExpressionNode> {
   private logicalExpressionNode: LogicalExpressionNode;
@@ -12,8 +13,8 @@ export class LogicalExpressionBuilder implements IBuilder<LogicalExpressionNode>
   private orExpression?: LogicalOrExpressionNode;
   private xorExpression?: LogicalXorExpressionNode;
 
-  constructor() {
-    this.logicalExpressionNode = new LogicalExpressionNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.logicalExpressionNode = new LogicalExpressionNode(nodeMetadata);
   }
 
   withNOTExpression(notExpression: NotExpressionNode): LogicalExpressionBuilder {

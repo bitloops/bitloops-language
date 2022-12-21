@@ -2,14 +2,15 @@ import { ClassNode } from '../../nodes/ClassNode.js';
 import { InstanceOfExpressionNode } from '../../nodes/Expression/InstanceOfExpression.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IBuilder } from '../IBuilder.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class IsInstanceOfExpressionNodeBuilder implements IBuilder<InstanceOfExpressionNode> {
   private instanceOfEvaluationNode: InstanceOfExpressionNode;
   private expressionNode: ExpressionNode;
   private classNode: ClassNode;
 
-  constructor() {
-    this.instanceOfEvaluationNode = new InstanceOfExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.instanceOfEvaluationNode = new InstanceOfExpressionNode(metadata);
   }
 
   public withExpression(domainEvaluation: ExpressionNode): IsInstanceOfExpressionNodeBuilder {

@@ -2,6 +2,7 @@ import { ClassNameNode } from '../../../nodes/ClassNameNode.js';
 import { ArgumentListNode } from '../../../nodes/ArgumentList/ArgumentListNode.js';
 import { BuiltInClassEvaluationNode } from '../../../nodes/Expression/Evaluation/BuiltInClassNode.js';
 import { IBuilder } from '../../IBuilder.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 
 export class BuiltinClassEvaluationNodeBuilder implements IBuilder<BuiltInClassEvaluationNode> {
   private builtinClassEvaluationNode: BuiltInClassEvaluationNode;
@@ -11,8 +12,8 @@ export class BuiltinClassEvaluationNodeBuilder implements IBuilder<BuiltInClassE
   private className: ClassNameNode;
   private argumentList: ArgumentListNode;
 
-  constructor() {
-    this.builtinClassEvaluationNode = new BuiltInClassEvaluationNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.builtinClassEvaluationNode = new BuiltInClassEvaluationNode(nodeMetadata);
   }
 
   public withArguments(argsList: ArgumentListNode): BuiltinClassEvaluationNodeBuilder {
