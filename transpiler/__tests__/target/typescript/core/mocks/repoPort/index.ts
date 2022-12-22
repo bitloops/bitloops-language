@@ -100,4 +100,88 @@ export const VALID_REPO_PORT_TEST_CASES = [
       'transpiler/__tests__/target/typescript/core/mocks/repoPort/writeRepoPortNoDefinitions.ts',
     ),
   },
+  {
+    description: 'An aggregate repo port with definitions',
+    repoPort: new RepoPortNodeBuilderDirector().buildAggregateRepoPortWithMethodDefinitions(),
+    rootEntity: new RootEntityBuilderDirector().buildRootEntity('TodoRootEntity', {
+      constantNodes: [],
+      constructorParameterNode: {
+        propIdentifier: 'props',
+        propClassName: 'TodoProps',
+      },
+      returnTypeParams: {
+        ok: 'TodoRootEntity',
+        errors: [],
+      },
+      statements: [
+        new ExpressionBuilderDirector().buildAssignmentExpression(
+          new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
+          new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
+        ),
+      ],
+      publicMethods: [
+        new PublicMethodDeclarationNodeBuilder()
+          .withIdentifier(new IdentifierNodeBuilder().withName('uncomplete').build())
+          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
+          .withReturnType(
+            new ReturnOkErrorTypeNodeBuilder()
+              .withOk(
+                new ReturnOkTypeNodeBuilder()
+                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .build(),
+              )
+              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+              .build(),
+          )
+          .withStatements(
+            new StatementListNodeBuilder()
+              .withStatements([
+                new ExpressionBuilderDirector().buildAssignmentExpression(
+                  new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
+                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
+                ),
+                new ReturnStatementBuilderDirector().buildEmptyReturnOK(),
+              ])
+              .build(),
+          )
+          .build(),
+        new PublicMethodDeclarationNodeBuilder()
+          .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
+          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
+          .withReturnType(
+            new ReturnOkErrorTypeNodeBuilder()
+              .withOk(
+                new ReturnOkTypeNodeBuilder()
+                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .build(),
+              )
+              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+              .build(),
+          )
+          .withStatements(
+            new StatementListNodeBuilder()
+              .withStatements([
+                new ReturnStatementBuilderDirector().buildReturn(
+                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+                ),
+              ])
+              .build(),
+          )
+          .build(),
+      ],
+      privateMethods: [],
+    }),
+    props: new PropsDeclarationBuilderDirector().buildProps(
+      'TodoProps',
+      new FieldListNodeBuilder()
+        .withFields([
+          new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+          new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
+        ])
+        .build(),
+    ),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/repoPort/writePortWithDefinitions.ts',
+    ),
+  },
 ];

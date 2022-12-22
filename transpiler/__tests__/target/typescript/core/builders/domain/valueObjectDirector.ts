@@ -62,9 +62,6 @@ export class ValueObjectBuilderDirector {
       )
       .withTypeNode(
         new PropsIdentifierNodeBuilder().withName(constructorParameterNode.propClassName).build(),
-        // new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
-        //   constructorParameterNode.propClassName,
-        // ),
       )
       .build();
 
