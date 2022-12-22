@@ -109,6 +109,7 @@ export class IntermediateASTTree {
     }
   }
 
+  // TODO implement this
   public copy(): IntermediateASTTree {
     return this;
   }

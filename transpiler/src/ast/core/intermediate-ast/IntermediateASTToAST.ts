@@ -12,7 +12,7 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     let boundedContexts: TBoundedContexts;
     for (const [boundedContextName, boundedContext] of Object.entries(intermediateAST.core)) {
       for (const [moduleName, ASTTree] of Object.entries(boundedContext)) {
-        const treeUpdated = ASTTree.copy();
+        const treeUpdated = ASTTree.copy(); // TODO implement copy method
         const rootNode = treeUpdated.getRootNode();
         treeUpdated.traverse(rootNode, (node: IntermediateASTNode) => {
           const transformer = this.getNodeTransformer({
