@@ -25,11 +25,14 @@ import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 
 import { TBoundedContexts, TContextData } from './../../../../src/types.js';
-import { TBitloopsOutputTargetContent } from '../../../../src/target/types.js';
+import {
+  BitloopsTargetGeneratorError,
+  TBitloopsOutputTargetContent,
+} from '../../../../src/target/types.js';
 const feature = loadFeature('./__tests__/target/typescript/core/repoPortDeclaration.feature');
 
 defineFeature(feature, (test) => {
-  let result: TBitloopsOutputTargetContent;
+  let result: TBitloopsOutputTargetContent | BitloopsTargetGeneratorError;
   let value;
   let bitloopsModel: TBoundedContexts;
   let contextData: TContextData;
