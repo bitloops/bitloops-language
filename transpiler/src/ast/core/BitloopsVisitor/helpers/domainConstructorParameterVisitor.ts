@@ -5,7 +5,7 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const domainConstructorParameterVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.PropsDeclarationContext,
+  ctx: BitloopsParser.DomainConstructorParamContext,
 ): DomainCreateParameterNode => {
   const identifierNode = thisVisitor.visit(ctx.propsIdentifier);
   const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
