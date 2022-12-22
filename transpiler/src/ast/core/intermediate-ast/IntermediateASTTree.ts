@@ -147,8 +147,7 @@ export class IntermediateASTTree {
     return node.buildLeafValue(nodeValue);
   }
 
-  //TODO maybe change Intermediate to RootEntityDeclarationNode
-  public getAggregateIdentifier(identifier: string): IntermediateASTNode | null {
+  public getAggregateIdentifier(identifier: string): EntityIdentifierNode | null {
     return this.getNodeWithPolicy(
       this.rootNode,
       (node: IntermediateASTNode): node is EntityIdentifierNode => {
@@ -157,7 +156,7 @@ export class IntermediateASTTree {
           (node as EntityIdentifierNode).getValue()?.entityIdentifier == identifier
         );
       },
-    );
+    ) as EntityIdentifierNode;
   }
 
   public getAggregateNodeWithIdentifier(identifier: string): RootEntityDeclarationNode | null {
