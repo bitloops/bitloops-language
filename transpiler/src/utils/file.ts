@@ -19,10 +19,12 @@
  */
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const Require = createRequire('url');
+const filename = fileURLToPath(Require('url').pathToFileURL(__filename).toString());
+const __dirname = dirname(filename);
 
 export class FileUtil {
   static readFileString(relativePath: string): string {
