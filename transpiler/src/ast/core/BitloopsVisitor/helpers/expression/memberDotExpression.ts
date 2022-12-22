@@ -24,6 +24,7 @@ import { MemberDotExpressionNodeBuilder } from '../../../intermediate-ast/builde
 import { IdentifierExpressionBuilder } from '../../../intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { produceMetadata } from '../../metadata.js';
 
 export const memberDotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -36,7 +37,7 @@ export const memberDotExpressionVisitor = (
 
   // this won't need to build a new IdentifierExpressionBuilder
   const identifierExpr = new IdentifierExpressionBuilder().withValue(identifier.value).build();
-  const memberExpr = new MemberDotExpressionNodeBuilder()
+  const memberExpr = new MemberDotExpressionNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withExpression(leftExpression)
     .withIdentifier(identifierExpr)
     .build();
