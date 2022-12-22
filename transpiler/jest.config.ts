@@ -3,7 +3,7 @@ export default {
   preset: 'ts-jest/presets/default-esm',
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.cjs.json',
+      tsconfig: 'tsconfig.esm.json',
       useESM: true,
       compiler: 'ttypescript',
     },
