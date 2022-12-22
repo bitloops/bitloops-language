@@ -13,6 +13,11 @@ import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js
 import { VariableDeclarationNode } from './nodes/variableDeclaration.js';
 import { EntityEvaluationNode } from './nodes/Expression/Evaluation/EntityEvaluation.js';
 import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueObjectEvaluation.js';
+import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
+import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
+import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
+import { PropsIdentifierKey, TBitloopsPrimaryType, TPropsIdentifier } from '../../../types.js';
+import { PropsNode } from './nodes/Props/PropsNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -142,9 +147,71 @@ export class IntermediateASTTree {
     return node.buildLeafValue(nodeValue);
   }
 
-  // public getAllUseCases(): IntermediateASTNode[] {
-  //   return this.findNodes(NODE_TYPES.USE_CASE);
-  // }
+  public getAggregateIdentifier(identifier: string): EntityIdentifierNode | null {
+    return this.getNodeWithPolicy(
+      this.rootNode,
+      (node: IntermediateASTNode): node is EntityIdentifierNode => {
+        return (
+          node.IsEntityIdentifierNode() &&
+          (node as EntityIdentifierNode).getValue()?.entityIdentifier == identifier
+        );
+      },
+    ) as EntityIdentifierNode;
+  }
+
+  public getAggregateNodeWithIdentifier(identifier: string): RootEntityDeclarationNode | null {
+    const rootEntityNodes = this.getClassTypeNodes(BitloopsTypesMapping.TRootEntity);
+
+    const isEntityIdentifierNode = (node: IntermediateASTNode): node is EntityIdentifierNode =>
+      node.getNodeType() === BitloopsTypesMapping.TEntityIdentifier;
+
+    const isRootEntityNode = (node: IntermediateASTNode): node is RootEntityDeclarationNode =>
+      node.getNodeType() === BitloopsTypesMapping.TRootEntity;
+
+    let rootEntityFound: RootEntityDeclarationNode = null;
+    for (const rootEntityNode of rootEntityNodes) {
+      this.traverse(rootEntityNode, (node) => {
+        if (
+          isEntityIdentifierNode(node) &&
+          identifier === node.getValue().entityIdentifier &&
+          isRootEntityNode(rootEntityNode)
+        ) {
+          rootEntityFound = rootEntityNode;
+        }
+      });
+    }
+    return rootEntityFound;
+  }
+
+  public getValueOfPropsWithIdentifierFromDomainCreate(
+    domainCreateParameterNode: DomainCreateParameterNode,
+    identifier: string,
+  ): TBitloopsPrimaryType {
+    const propsNodes = this.getClassTypeNodes(BitloopsTypesMapping.TProps);
+
+    const propsTypeNodeValue: { [PropsIdentifierKey]: TPropsIdentifier } = domainCreateParameterNode
+      .getTypeNode()
+      .getValue().propsIdentifier;
+
+    const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
+      node.getNodeType() === BitloopsTypesMapping.TProps;
+
+    for (const propsNode of propsNodes) {
+      if (
+        isPropsNode(propsNode) &&
+        propsNode.getPropsIdentifierNode()?.getValue().propsIdentifier === propsTypeNodeValue
+      ) {
+        const fieldsListNode = propsNode.getFieldListNode();
+        const fieldNodes = fieldsListNode.getFieldNodes();
+        for (const fieldNode of fieldNodes) {
+          const fieldIdentifier = fieldNode.getIdentifierNode();
+          if (fieldIdentifier.getValue().identifier === identifier) {
+            return fieldNode.getTypeNode().getValue();
+          }
+        }
+      }
+    }
+  }
 
   public getAllExpressionsOfUseCase(): ExpressionNode[] {
     // Set root Node as current, or pass it to getClassTypeNodes
@@ -277,23 +344,11 @@ export class IntermediateASTTree {
     return result;
   }
 
-  // private getNodesAfterPolicy<T = IntermediateASTNode>(
-  //   rootNode: IntermediateASTNode,
-  //   predicate: (node: IntermediateASTNode) => boolean,
-  // ): T[] {
-  //   const resultNodes: T[] = [];
-  //   let useCaseExecuteFound = false;
-  //   this.traverse(rootNode, (node) => {
-  //     if (predicate(node)) {
-  //       useCaseExecuteFound = true;
-  //       return;
-  //     }
-  //     if (useCaseExecuteFound) {
-  //       resultNodes.push(node as T);
-  //     }
-  //   });
-  //   return resultNodes;
-  // }
+  public getPropsFromEntity(rootEntityNode: RootEntityDeclarationNode): DomainCreateParameterNode {
+    const domainCreate = rootEntityNode.getDomainCreateNode();
+    const propsNode = domainCreate.getParameterNode();
+    return propsNode;
+  }
 
   private getNodesWithPolicy(
     rootNode: IntermediateASTNode,

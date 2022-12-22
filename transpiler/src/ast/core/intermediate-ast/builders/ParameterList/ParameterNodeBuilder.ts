@@ -9,7 +9,7 @@ export class ParameterNodeBuilder implements IBuilder<ParameterNode> {
   private parameterTypeNode: BitloopsPrimaryTypeNode;
   private parameterIdentifierNode: ParameterIdentifierNode;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.parameterNode = new ParameterNode(metadata);
   }
 

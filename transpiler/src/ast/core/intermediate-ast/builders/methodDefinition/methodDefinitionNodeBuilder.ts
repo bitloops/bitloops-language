@@ -33,7 +33,9 @@ export class MethodDefinitionNodeBuilder implements IBuilder<MethodDefinitionNod
   public build(): MethodDefinitionNode {
     this.methodDefinitionNode.addChild(this.identifier);
     this.methodDefinitionNode.addChild(this.type);
-    this.methodDefinitionNode.addChild(this.parameterList);
+    if (this.parameterList) {
+      this.methodDefinitionNode.addChild(this.parameterList);
+    }
 
     this.methodDefinitionNode.buildObjectValue();
 

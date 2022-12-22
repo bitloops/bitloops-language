@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  PropsIdentifierKey,
   TDependenciesTypeScript,
   TDomainPrivateMethods,
   TTargetDependenciesTypeScript,
@@ -27,7 +28,6 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
-import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { domainPrivateMethods } from '../domain/domainMethods.js';
 
@@ -73,15 +73,16 @@ const valueObjectsToTargetLanguage = (params: {
   let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
 
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
-  const propsNameType = create.parameter.type;
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-    throw new Error(
-      `Value Object ${valueObjectIdentifier} has an array as a property. This is not supported yet.`,
-    );
-  }
+  const domainCreateProps = create.domainCreateParameter[PropsIdentifierKey];
+  //TODO uncomment?
+  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
+  //   throw new Error(
+  //     `Value Object ${valueObjectIdentifier} has an array as a property. This is not supported yet.`,
+  //   );
+  // }
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: { type: propsNameType },
+    type: BitloopsTypesMapping.TDomainConstructorParameter,
+    value: domainCreateProps,
   });
   dependencies = [...dependencies, ...propsTypeDependencies];
 

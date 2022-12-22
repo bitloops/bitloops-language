@@ -124,6 +124,7 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -233,10 +234,6 @@ const modelToTargetLanguage = (props: {
       res = constDeclarationToTargetLanguage(value);
       break;
     }
-    // case BitloopsTypesMapping.TThisDeclaration: {
-    //   res = thisDeclarationToTargetLanguage(value);
-    //   break;
-    // }
     case BitloopsTypesMapping.TDefaultCase: {
       res = defaultSwitchCaseToTargetLanguage(value);
       break;
@@ -373,7 +370,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRepoPort: {
-      res = repoPortToTargetLanguage(value, model, contextData);
+      res = repoPortToTargetLanguage(value, model);
       break;
     }
     case BitloopsTypesMapping.TAdditiveOperator: {
@@ -468,6 +465,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainConstructorParameter: {
+      res = domainConstructorParameterToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuiltInClassEvaluation: {

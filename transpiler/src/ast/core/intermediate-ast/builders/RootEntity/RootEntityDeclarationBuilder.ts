@@ -2,8 +2,8 @@ import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { EntityValuesNode } from '../../nodes/Entity/EntityValuesNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
-import { RootEntityDeclarationNode } from '../../nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from '../../nodes/Entity/EntityIdentifierNode.js';
+import { RootEntityDeclarationNode } from '../../nodes/RootEntity/RootEntityDeclarationNode.js';
 
 export class RootEntityDeclarationNodeBuilder implements IBuilder<RootEntityDeclarationNode> {
   private RootEntityDeclarationNode: RootEntityDeclarationNode;

@@ -4,7 +4,6 @@ import { DomainCreateNodeBuilder } from '../../../../../../src/ast/core/intermed
 import { ErrorIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifiersNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
 import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
-import { ParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
 import { PrivateMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
 import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
@@ -13,7 +12,6 @@ import { ValueObjectDeclarationNodeBuilder } from '../../../../../../src/ast/cor
 import { ValueObjectIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/valueObject/ValueObjectIdentifierNodeBuilder.js';
 import { ConstDeclarationListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
-import { ParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { PrivateMethodDeclarationListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 import { PrivateMethodDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
@@ -22,6 +20,9 @@ import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediat
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
+import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
+import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
+import { PropsIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 
 type TReturnType = {
   ok: string;
@@ -53,16 +54,14 @@ export class ValueObjectBuilderDirector {
     } = params;
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
 
-    const parameterNode = new ParameterNodeBuilder(null)
-      .withIdentifier(
+    const parameterNode = new DomainCreateParameterNodeBuilder(null)
+      .withIdentifierNode(
         new ParameterIdentifierNodeBuilder(null)
           .withIdentifier(constructorParameterNode.propIdentifier)
           .build(),
       )
-      .withType(
-        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
-          constructorParameterNode.propClassName,
-        ),
+      .withTypeNode(
+        new PropsIdentifierNodeBuilder().withName(constructorParameterNode.propClassName).build(),
       )
       .build();
 
@@ -79,7 +78,7 @@ export class ValueObjectBuilderDirector {
   }
 
   private buildCreate(
-    parameterNode: ParameterNode,
+    parameterNode: DomainCreateParameterNode,
     returnTypeParams: TReturnType,
     statements: StatementNode[],
   ): DomainCreateNode {

@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  PropsIdentifierKey,
   TContextData,
   TDomainPrivateMethods,
   TDomainPublicMethods,
@@ -29,7 +30,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { BitloopsPrimTypeIdentifiers } from './../../type-identifiers/bitloopsPrimType.js';
 
 const entityMethods = (
   privateMethods: TDomainPrivateMethods,
@@ -54,10 +54,10 @@ const entityValuesToTargetLanguage = (params: {
   let result = '{';
   let dependencies = [];
   const { privateMethods, publicMethods, create, constants } = entityValues;
-  const propsNameType = create.parameter.type;
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-    throw new Error('Array is not supported as entity props type');
-  }
+  const propsNameType = create.domainCreateParameter[PropsIdentifierKey];
+  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
+  //   throw new Error('Array is not supported as entity props type');
+  // }
   const { output: propsName, dependencies: entityPropsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: propsNameType },
