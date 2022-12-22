@@ -20,39 +20,37 @@
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
 import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { TRepoPort, TTargetDependenciesTypeScript, TContextData } from '../../../../../../types.js';
+import {
+  TRepoPort,
+  TTargetDependenciesTypeScript,
+  // TContextData,
+  repoPortKey,
+  repoPortIdentifierKey,
+} from '../../../../../../types.js';
 import { findIdOfRepoDomainObject } from './helpers/domainIDofRepoPort.js';
 import { findIfWriteOrReadRepoPort } from './helpers/mappers.js';
 import { noMethodsRepoPort } from './helpers/noMethodsPort.js';
 import { buildRepoPortWithMethods } from './helpers/withMethodsPort.js';
 
 export const repoPortToTargetLanguage = (
-  repoPorts: TRepoPort,
+  repoPort: TRepoPort,
   bitloopsModel: IntermediateASTTree,
-  context: TContextData,
 ): TTargetDependenciesTypeScript => {
-  const repoPortName = Object.keys(repoPorts)[0];
-  const firstRepoPort = repoPorts[repoPortName];
-  const { definitionMethods } = firstRepoPort;
+  const repoPortValues = repoPort[repoPortKey];
+  const repoPortName = repoPort[repoPortKey][repoPortIdentifierKey];
 
-  const { repoDependencyName, type } = findIfWriteOrReadRepoPort(firstRepoPort);
+  const { methodDefinitionList: definitionMethods } = repoPortValues;
 
-  const domainObjectIdType = findIdOfRepoDomainObject(
-    repoDependencyName,
-    bitloopsModel,
-    type,
-    context,
-  );
+  const { repoDependencyName, type } = findIfWriteOrReadRepoPort(repoPort);
 
-  const methodNames = Object.keys(definitionMethods);
+  //TODO check here what should be done in read models
+  const domainObjectIdType = findIdOfRepoDomainObject(repoDependencyName, bitloopsModel, type) || {
+    output: '',
+    dependencies: [],
+  };
 
-  if (methodNames.length === 0) {
-    return noMethodsRepoPort(repoPortName, repoDependencyName, firstRepoPort, domainObjectIdType);
+  if (!definitionMethods || Object.keys(definitionMethods).length === 0) {
+    return noMethodsRepoPort(repoPortName, repoDependencyName, repoPort, domainObjectIdType);
   }
-  return buildRepoPortWithMethods(
-    repoPortName,
-    repoDependencyName,
-    firstRepoPort,
-    domainObjectIdType,
-  );
+  return buildRepoPortWithMethods(repoPortName, repoDependencyName, repoPort, domainObjectIdType);
 };

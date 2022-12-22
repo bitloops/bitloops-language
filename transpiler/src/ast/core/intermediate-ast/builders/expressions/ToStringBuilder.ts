@@ -1,13 +1,14 @@
 import { IBuilder } from '../IBuilder.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { ToStringNode } from '../../nodes/Expression/ToString.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class ToStringBuilder implements IBuilder<ToStringNode> {
   private toStringNode: ToStringNode;
   private expression: ExpressionNode;
 
-  constructor() {
-    this.toStringNode = new ToStringNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.toStringNode = new ToStringNode(metadata);
   }
 
   public withExpression(expr: ExpressionNode): ToStringBuilder {

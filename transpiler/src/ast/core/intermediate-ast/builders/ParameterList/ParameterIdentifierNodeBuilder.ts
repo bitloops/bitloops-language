@@ -7,7 +7,7 @@ export class ParameterIdentifierNodeBuilder implements IBuilder<ParameterIdentif
   private parameterIdentifierNode: ParameterIdentifierNode;
   private value: TParameterIdentifier;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.parameterIdentifierNode = new ParameterIdentifierNode(metadata);
   }
 

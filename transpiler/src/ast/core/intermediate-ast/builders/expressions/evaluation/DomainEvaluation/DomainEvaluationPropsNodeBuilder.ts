@@ -1,6 +1,7 @@
 import { DomainEvaluationPropsNode } from '../../../../nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluationProps.js';
 import { EvaluationFieldListNode } from '../../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { ExpressionNode } from '../../../../nodes/Expression/ExpressionNode.js';
+import { TNodeMetadata } from '../../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../../IBuilder.js';
 
 export class DomainEvaluationPropsNodeBuilder implements IBuilder<DomainEvaluationPropsNode> {
@@ -8,8 +9,8 @@ export class DomainEvaluationPropsNodeBuilder implements IBuilder<DomainEvaluati
   private evaluationFieldListNode: EvaluationFieldListNode;
   private domainEvaluationPropsNode: DomainEvaluationPropsNode;
 
-  constructor() {
-    this.domainEvaluationPropsNode = new DomainEvaluationPropsNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.domainEvaluationPropsNode = new DomainEvaluationPropsNode(nodeMetadata);
   }
 
   public withEvaluationFieldList(

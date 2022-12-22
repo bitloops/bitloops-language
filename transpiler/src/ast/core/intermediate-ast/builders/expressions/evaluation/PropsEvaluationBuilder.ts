@@ -1,5 +1,6 @@
 import { EvaluationFieldListNode } from '../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { PropsEvaluationNode } from '../../../nodes/Expression/Evaluation/PropsEvaluation.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { PropsIdentifierNode } from '../../../nodes/Props/PropsIdentifierNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
@@ -8,8 +9,8 @@ export class PropsEvaluationNodeBuilder implements IBuilder<PropsEvaluationNode>
   private identifier: PropsIdentifierNode;
   private evaluationFieldListNode?: EvaluationFieldListNode;
 
-  constructor() {
-    this.structEvaluationNode = new PropsEvaluationNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.structEvaluationNode = new PropsEvaluationNode(nodeMetadata);
   }
 
   public withIdentifier(identifier: PropsIdentifierNode): PropsEvaluationNodeBuilder {

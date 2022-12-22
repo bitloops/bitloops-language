@@ -3,26 +3,27 @@ import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js
 import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
 import { RelationalExpressionNode } from '../../nodes/Expression/relationalExpressionNode.js';
 import { RightExpressionNode } from '../../nodes/Expression/rightExpression.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class RelationalExpressionBuilder implements IBuilder<RelationalExpressionNode> {
   public readonly NAME = 'relationalExpression';
 
   private RelationalExpressionNode: RelationalExpressionNode;
-  private LeftexpressionNode: LeftExpressionNode;
-  private RightexpressionNode: RightExpressionNode;
+  private leftExpressionNode: LeftExpressionNode;
+  private rightExpressionNode: RightExpressionNode;
   private operator: OperatorNode;
 
-  constructor() {
-    this.RelationalExpressionNode = new RelationalExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.RelationalExpressionNode = new RelationalExpressionNode(metadata);
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): RelationalExpressionBuilder {
-    this.LeftexpressionNode = expressionNode;
+    this.leftExpressionNode = expressionNode;
     return this;
   }
   public withRightExpression(expressionNode: ExpressionNode): RelationalExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.rightExpressionNode = expressionNode;
     return this;
   }
   public withOperator(operatorNode: OperatorNode): RelationalExpressionBuilder {
@@ -31,9 +32,9 @@ export class RelationalExpressionBuilder implements IBuilder<RelationalExpressio
   }
 
   public build(): RelationalExpressionNode {
-    this.RelationalExpressionNode.addChild(this.LeftexpressionNode);
+    this.RelationalExpressionNode.addChild(this.leftExpressionNode);
     this.RelationalExpressionNode.addChild(this.operator);
-    this.RelationalExpressionNode.addChild(this.RightexpressionNode);
+    this.RelationalExpressionNode.addChild(this.rightExpressionNode);
     this.RelationalExpressionNode.buildObjectValue();
 
     return this.RelationalExpressionNode;

@@ -6,8 +6,6 @@ import { EntityIdentifierNodeBuilder } from '../../../../../../src/ast/core/inte
 import { EntityValuesNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Entity/EntityValuesBuilder.js';
 import { ErrorIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifiersNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
-import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
-import { ParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
 import { PrivateMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
 import { PublicMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PublicMethodDeclarationListNodeBuilder.js';
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
@@ -16,7 +14,6 @@ import { StatementListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { ConstDeclarationListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
 import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
-import { ParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { PrivateMethodDeclarationListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 import { PrivateMethodDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
@@ -26,6 +23,10 @@ import { ReturnOkErrorTypeNode } from '../../../../../../src/ast/core/intermedia
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
+import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
+import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
+import { PropsIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
+import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 
 type TReturnType = {
   ok: string;
@@ -83,16 +84,14 @@ export class EntityBuilderDirector {
     } = params;
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
 
-    const parameterNode = new ParameterNodeBuilder(null)
-      .withIdentifier(
+    const domainCreateParameterNode = new DomainCreateParameterNodeBuilder()
+      .withIdentifierNode(
         new ParameterIdentifierNodeBuilder(null)
           .withIdentifier(constructorParameterNode.propIdentifier)
           .build(),
       )
-      .withType(
-        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
-          constructorParameterNode.propClassName,
-        ),
+      .withTypeNode(
+        new PropsIdentifierNodeBuilder().withName(constructorParameterNode.propClassName).build(),
       )
       .build();
 
@@ -101,7 +100,7 @@ export class EntityBuilderDirector {
       .withValues(
         new EntityValuesNodeBuilder()
           .withConstants(this.buildConstants(constantNodes))
-          .withCreate(this.buildCreate(parameterNode, returnTypeParams, statements))
+          .withCreate(this.buildCreate(domainCreateParameterNode, returnTypeParams, statements))
           .withPublicMethods(
             new PublicMethodDeclarationListNodeBuilder().withMethods(publicMethods).build(),
           )
@@ -116,7 +115,7 @@ export class EntityBuilderDirector {
   }
 
   private buildCreate(
-    parameterNode: ParameterNode,
+    parameterNode: DomainCreateParameterNode,
     returnTypeParams: TReturnType,
     statements: StatementNode[],
   ): DomainCreateNode {

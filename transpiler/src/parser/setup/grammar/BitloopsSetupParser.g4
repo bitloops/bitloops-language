@@ -155,64 +155,7 @@ singleExpression
     | literal                                                                # LiteralExpression
     | identifier                                                             # IdentifierExpression //Identifier or Variable method
     | objectLiteral                                                          # ObjectLiteralExpression
-    // | evaluation                                                 # EvaluationExpression 
-    // | regularVariableEvaluation                                              
     ;
-
-// evaluation
-//     : regularEvaluation
-    // | dtoEvaluation
-    // | structEvaluation
-    // | valueObjectEvaluation
-    // | propsEvaluation
-    // ;
-
-// regularEvaluation
-    // : regularMethodEvaluation   
-    // : regularStringEvaluation
-    // | regularVariableEvaluation
-    // | regularIntegerEvaluation
-    // | regularDecimalEvaluation
-    // | regularBooleanEvaluation
-    // | regularDTOEvaluation
-    // | regularStructEvaluation
-    // ;
-// regularMethodEvaluation
-//     : RegularVariableEvaluation methodArguments
-//     ;
-
-
-// methodArguments
-//     : '(' (argumentList (',' argumentList)*)? ')'
-//     ;
-// argumentList
-//     : argument (',' argument)*
-//     ;
-
-
-// argument                      // ECMAScript 6: Spread Operator
-//     : Ellipsis? (singleExpression | Identifier)
-//     ;
-
-// regularVariableEvaluation
-//     //: RegularVariableEvaluation #RegularVariableEvaluationString
-//     : Identifier    #IdentifierString
-//     ;
-// regularStringEvaluation
-//     : StringLiteral
-//     ;
-
-// regularIntegerEvaluation
-//     : IntegerLiteral
-//     ;
-
-// regularDecimalEvaluation
-//     : DecimalLiteral
-//     ;
-
-// regularBooleanEvaluation
-//     : BooleanLiteral
-//     ;
 
 literal
     : NullLiteral                                                           # NullLiteralExpression
@@ -230,7 +173,6 @@ repoConnectionDefinition
     : constDeclaration '=' repoConnectionExpression
     ;
 
-// constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
 repoConnectionExpression
     : RepoConnections Dot repoConnectionType OpenParen OpenCurlyBracket repoConnectionOptions? CloseCurlyBracket CloseParen SemiColon?
     ;

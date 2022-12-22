@@ -23,7 +23,6 @@ import {
   TTargetDependenciesTypeScript,
   TRepoPort,
   repoPortKey,
-  identifierKey,
 } from '../../../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
@@ -39,7 +38,7 @@ export const buildRepoPortWithMethods = (
   let dependencies = [];
   const { methodDefinitionList, extendsRepoPorts } = repoPortInfo[repoPortKey];
   const extendedRepoPortsRes = mapExtendedRepoPorts(
-    extendsRepoPorts[identifierKey],
+    extendsRepoPorts,
     repoDependencyName,
     domainIdValue,
   );
