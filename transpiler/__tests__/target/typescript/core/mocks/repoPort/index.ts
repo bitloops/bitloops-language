@@ -14,8 +14,23 @@ import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclaration
 import { RepoPortNodeBuilderDirector } from '../../builders/repoPortNodeBuilderDirector.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
+import { ReadModelBuilderDirector } from '../../builders/readModel.js';
+import { FieldNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
+import { ReadModelNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/readModel/ReadModel.js';
+import { RepoPortNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
+import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Props/PropsNode.js';
+import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 
-export const VALID_REPO_PORT_TEST_CASES = [
+type RepoPortTestCase = {
+  description: string;
+  repoPort: RepoPortNode;
+  props: PropsNode;
+  output: string;
+  rootEntity?: EntityDeclarationNode;
+  readModel?: ReadModelNode;
+};
+
+export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
   {
     description: 'an aggregate repo port with no definitions',
     repoPort: new RepoPortNodeBuilderDirector().buildAggregateRepoPortWithoutMethods(),
@@ -182,6 +197,31 @@ export const VALID_REPO_PORT_TEST_CASES = [
     ),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/repoPort/writePortWithDefinitions.ts',
+    ),
+  },
+  {
+    description: 'An ReadModel repo port with definitions',
+    repoPort: new RepoPortNodeBuilderDirector().buildReadModelRepoPortWithMethodDefinitions(),
+    readModel: new ReadModelBuilderDirector().buildReadModel({
+      identifier: 'TodoReadModel',
+      fields: [
+        new FieldNodeBuilder()
+          .withName(new IdentifierNodeBuilder().withName('name').build())
+          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .build(),
+      ],
+    }),
+    props: new PropsDeclarationBuilderDirector().buildProps(
+      'TodoProps',
+      new FieldListNodeBuilder()
+        .withFields([
+          new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+          new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
+        ])
+        .build(),
+    ),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/repoPort/readPortWithDefinitions.ts',
     ),
   },
 ];

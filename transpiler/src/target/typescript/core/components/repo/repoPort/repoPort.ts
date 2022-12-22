@@ -43,7 +43,11 @@ export const repoPortToTargetLanguage = (
 
   const { repoDependencyName, type } = findIfWriteOrReadRepoPort(repoPort);
 
-  const domainObjectIdType = findIdOfRepoDomainObject(repoDependencyName, bitloopsModel, type);
+  //TODO check here what should be done in read models
+  const domainObjectIdType = findIdOfRepoDomainObject(repoDependencyName, bitloopsModel, type) || {
+    output: '',
+    dependencies: [],
+  };
 
   if (!definitionMethods || Object.keys(definitionMethods).length === 0) {
     return noMethodsRepoPort(repoPortName, repoDependencyName, repoPort, domainObjectIdType);

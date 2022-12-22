@@ -184,7 +184,7 @@ export class IntermediateASTTree {
     return rootEntityFound;
   }
 
-  public getValueOfPropsWithIdentifier(
+  public getValueOfPropsWithIdentifierFromDomainCreate(
     domainCreateParameterNode: DomainCreateParameterNode,
     identifier: string,
   ): TBitloopsPrimaryType {

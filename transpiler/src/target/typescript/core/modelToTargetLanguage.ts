@@ -236,10 +236,6 @@ const modelToTargetLanguage = (props: {
       res = constDeclarationToTargetLanguage(value);
       break;
     }
-    // case BitloopsTypesMapping.TThisDeclaration: {
-    //   res = thisDeclarationToTargetLanguage(value);
-    //   break;
-    // }
     case BitloopsTypesMapping.TDefaultCase: {
       res = defaultSwitchCaseToTargetLanguage(value);
       break;

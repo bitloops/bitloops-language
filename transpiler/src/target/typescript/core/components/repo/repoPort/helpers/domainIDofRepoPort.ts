@@ -33,11 +33,8 @@ export const findIdOfRepoDomainObject = (
   repoDependencyName: string,
   ast: IntermediateASTTree,
   type: TClassTypesValues,
-  // context: TContextData,
 ): TTargetDependenciesTypeScript => {
-  // const { boundedContext, module } = context;
   if (type === ClassTypes.RootEntity) {
-    //TODO get aggregate by repo
     const rootEntityNode = ast.getAggregateNodeWithIdentifier(
       repoDependencyName,
     ) as RootEntityDeclarationNode;
@@ -47,14 +44,12 @@ export const findIdOfRepoDomainObject = (
 
     const aggregatePropsNode = ast.getPropsFromEntity(rootEntityNode);
 
-    // const aggregateProps = aggregate.create.parameter.type as string;
-    // const propsModel = ast.getProps[aggregateProps];
     if (!aggregatePropsNode) {
       const aggregateNodeIdentifier = rootEntityNode.getIdentifier().getValue();
       throw new Error(`Props for aggregate ${aggregateNodeIdentifier} not found`);
     }
 
-    const propsValue = ast.getValueOfPropsWithIdentifier(aggregatePropsNode, 'id');
+    const propsValue = ast.getValueOfPropsWithIdentifierFromDomainCreate(aggregatePropsNode, 'id');
 
     const idTypeRes = modelToTargetLanguage({
       value: propsValue,
@@ -62,17 +57,7 @@ export const findIdOfRepoDomainObject = (
     });
     return idTypeRes;
   } else if (type === ClassTypes.ReadModel) {
-    // const readModel = bitloopsModel[boundedContext][module][type][repoDependencyName];
-    // if (!readModel) {
-    //   throw new Error(`${type} ${repoDependencyName} not found`);
-    // }
-    // const idProp = readModel.variables.find((prop) => prop.name === 'id');
-    // const idType: TBitloopsPrimaryType = idProp.type;
-    // const idTypeRes = modelToTargetLanguage({
-    //   value: idType,
-    //   type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    // });
-    // return idTypeRes;
+    return;
   }
   throw new Error(`Unsupported type ${type}`);
 };

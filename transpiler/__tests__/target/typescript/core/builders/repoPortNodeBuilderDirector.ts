@@ -6,6 +6,7 @@ import { MethodDefinitionNodeBuilder } from '../../../../../src/ast/core/interme
 import { ParameterIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
 import { ParameterNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
+import { ReadModelIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
 import { RepoPortIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
 import { RepoPortBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
@@ -74,6 +75,34 @@ export class RepoPortNodeBuilderDirector {
                   .build(),
               )
               .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+              .build(),
+          ])
+          .build(),
+      )
+      .build();
+  }
+
+  buildReadModelRepoPortWithMethodDefinitions(): RepoPortNode {
+    return this.builder
+      .withRepoPortIdentifierNode(
+        new RepoPortIdentifierNodeBuilder().withName('TodoReadRepoPort').build(),
+      )
+      .withReadModelIdentifier(
+        new ReadModelIdentifierNodeBuilder().withName('TodoReadModel').build(),
+      )
+      .withExtendsRepoPortNode(
+        new ExtendsRepoPortsNodeBuilder()
+          .withIdentifierList([new IdentifierNodeBuilder().withName('CRUDReadRepoPort').build()])
+          .build(),
+      )
+      .withDefinitionMethodsNode(
+        new MethodDefinitionListNodeBuilder()
+          .withMethodDefinitions([
+            new MethodDefinitionNodeBuilder()
+              .withIdentifier(new IdentifierNodeBuilder().withName('getTodo').build())
+              .withType(
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoReadModel'),
+              )
               .build(),
           ])
           .build(),

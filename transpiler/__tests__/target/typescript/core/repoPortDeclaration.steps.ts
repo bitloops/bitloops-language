@@ -37,9 +37,16 @@ describe('Valid repo port declaration test cases', () => {
       const repoPortNode = testCase.repoPort;
       const rootEntityNode = testCase.rootEntity;
       const propsNode = testCase.props;
+      const readModelNode = testCase.readModel;
 
       tree.insertChild(repoPortNode);
-      tree.insertSibling(rootEntityNode);
+      if (rootEntityNode) {
+        tree.insertSibling(rootEntityNode);
+      } else if (readModelNode) {
+        tree.insertSibling(readModelNode);
+      } else {
+        throw new Error('ReadModel or RootEntity is missing from repoPOrt test');
+      }
       tree.insertSibling(propsNode);
 
       const intermediateAST = {
