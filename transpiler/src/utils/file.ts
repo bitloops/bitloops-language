@@ -18,17 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'node:module';
-import { dirname, join } from 'path';
+import { join, dirname } from 'path';
 
-const Require = createRequire('url');
-const filename = fileURLToPath(Require('url').pathToFileURL(__filename).toString());
-const __dirname = dirname(filename);
+const __dirname = dirname(process.cwd());
 
 export class FileUtil {
   static readFileString(relativePath: string): string {
-    const readFilePath = join(__dirname, '../../../', relativePath);
+    const readFilePath = join(__dirname, relativePath);
     const dataFile = fs.readFileSync(readFilePath);
     return dataFile.toString();
   }
