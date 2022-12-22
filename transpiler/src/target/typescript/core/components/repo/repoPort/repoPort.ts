@@ -35,10 +35,9 @@ import { buildRepoPortWithMethods } from './helpers/withMethodsPort.js';
 export const repoPortToTargetLanguage = (
   repoPort: TRepoPort,
   bitloopsModel: IntermediateASTTree,
-  // context: TContextData,
 ): TTargetDependenciesTypeScript => {
   const repoPortValues = repoPort[repoPortKey];
-  const repoPortName = repoPort[repoPortIdentifierKey];
+  const repoPortName = repoPort[repoPortKey][repoPortIdentifierKey];
 
   const { methodDefinitionList: definitionMethods } = repoPortValues;
 
@@ -46,9 +45,7 @@ export const repoPortToTargetLanguage = (
 
   const domainObjectIdType = findIdOfRepoDomainObject(repoDependencyName, bitloopsModel, type);
 
-  const methodNames = Object.keys(definitionMethods);
-
-  if (methodNames.length === 0) {
+  if (!definitionMethods || Object.keys(definitionMethods).length === 0) {
     return noMethodsRepoPort(repoPortName, repoDependencyName, repoPort, domainObjectIdType);
   }
   return buildRepoPortWithMethods(repoPortName, repoDependencyName, repoPort, domainObjectIdType);

@@ -1,31 +1,24 @@
-import { ErrorIdentifiersNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
-import { FieldListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
-import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { PublicMethodDeclarationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
-import { ParameterListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
-import { ReturnOkErrorTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
-import { ReturnOkTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
-import { StatementListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
-import { BitloopsPrimaryTypeDirector } from '../builders/bitloopsPrimaryTypeDirector.js';
-import { RootEntityBuilderDirector } from '../builders/domain/rootEntityDirector.js';
-import { ExpressionBuilderDirector } from '../builders/expression.js';
-import { FieldBuilderDirector } from '../builders/field.js';
-import { PropsDeclarationBuilderDirector } from '../builders/propsDeclarationDirector.js';
-import { RepoPortNodeBuilderDirector } from '../builders/repoPortNodeBuilderDirector.js';
-import { ReturnStatementBuilderDirector } from '../builders/statement/returnDirector.js';
+import { ErrorIdentifiersNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
+import { FieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { PublicMethodDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
+import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
+import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
+import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
+import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
+import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { RootEntityBuilderDirector } from '../../builders/domain/rootEntityDirector.js';
+import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { FieldBuilderDirector } from '../../builders/field.js';
+import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
+import { RepoPortNodeBuilderDirector } from '../../builders/repoPortNodeBuilderDirector.js';
+import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { FileUtil } from '../../../../../../src/utils/file.js';
 
 export const VALID_REPO_PORT_TEST_CASES = [
   {
     description: 'an aggregate repo port with no definitions',
     repoPort: new RepoPortNodeBuilderDirector().buildAggregateRepoPortWithoutMethods(),
-    // rootEntity: new RootEntityNodeBuilderDirector().buildRootEntityNoMethods({
-    //   entityName: 'TodoEntity',
-    //   createMethod: new DomainCreateBuilderDirector().buildCreateEntityWithNoError({
-    //     entityName: 'TodoEntity',
-    //     entityPropsIdentifierType: 'Props',
-    //     entityPropsName: 'TodoProps',
-    //   }),
-    // }),
     rootEntity: new RootEntityBuilderDirector().buildRootEntity('TodoRootEntity', {
       constantNodes: [],
       constructorParameterNode: {
@@ -103,7 +96,8 @@ export const VALID_REPO_PORT_TEST_CASES = [
         ])
         .build(),
     ),
-    output:
-      "import { Application, Domain } from '@bitloops/bl-boilerplate-core'; \n import { TodoEntity } from '../domain/TodoEntity';export type TodoRepoPort = Application.Repo.ICRUDWritePort<TodoEntity,Domain.UUIDv4>;",
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/repoPort/writeRepoPortNoDefinitions.ts',
+    ),
   },
 ];

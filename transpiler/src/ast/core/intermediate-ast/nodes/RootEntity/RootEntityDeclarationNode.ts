@@ -4,6 +4,7 @@ import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 
 export class RootEntityDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.RootEntity;
@@ -19,7 +20,10 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
   }
 
   public getDomainCreateNode(): DomainCreateNode {
-    return this.getChildNodeByType<DomainCreateNode>(BitloopsTypesMapping.TDomainCreateMethod);
+    const domainCreateValuesNode = this.getChildNodeByType<EntityValuesNode>(
+      BitloopsTypesMapping.TEntityValues,
+    );
+    return domainCreateValuesNode.getDomainCreateMethod();
   }
 
   public getIdentifier(): EntityIdentifierNode {

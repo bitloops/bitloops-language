@@ -1,8 +1,8 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { FieldListNode } from '../FieldList/FieldListNode.js';
-import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { PropsIdentifierNode } from './PropsIdentifierNode.js';
 
 export class PropsNode extends ClassTypeNode {
   private static classType = ClassTypes.Props;
@@ -17,9 +17,9 @@ export class PropsNode extends ClassTypeNode {
     });
   }
 
-  public getIdentifierNode(): IdentifierNode {
-    const identifierNode: IdentifierNode = this.getChildNodeByType(
-      BitloopsTypesMapping.TIdentifier,
+  public getPropsIdentifierNode(): PropsIdentifierNode {
+    const identifierNode: PropsIdentifierNode = this.getChildNodeByType(
+      BitloopsTypesMapping.TPropsIdentifier,
     );
     return identifierNode;
   }

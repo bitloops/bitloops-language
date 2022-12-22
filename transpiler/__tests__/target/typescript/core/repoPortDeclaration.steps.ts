@@ -22,7 +22,7 @@ import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/I
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { VALID_REPO_PORT_TEST_CASES } from './mocks/repoPortDeclaration.js';
+import { VALID_REPO_PORT_TEST_CASES } from './mocks/repoPort/index.js';
 
 describe('Valid repo port declaration test cases', () => {
   const boundedContext = 'Hello world';
@@ -37,9 +37,10 @@ describe('Valid repo port declaration test cases', () => {
       const repoPortNode = testCase.repoPort;
       const rootEntityNode = testCase.rootEntity;
       const propsNode = testCase.props;
-      tree.insertChild(rootEntityNode);
+
       tree.insertChild(repoPortNode);
-      tree.insertChild(propsNode);
+      tree.insertSibling(rootEntityNode);
+      tree.insertSibling(propsNode);
 
       const intermediateAST = {
         [boundedContext]: { [module]: tree },

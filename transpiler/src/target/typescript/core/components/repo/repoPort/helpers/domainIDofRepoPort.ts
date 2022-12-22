@@ -54,12 +54,10 @@ export const findIdOfRepoDomainObject = (
       throw new Error(`Props for aggregate ${aggregateNodeIdentifier} not found`);
     }
 
-    // const idProp = propsModel.variables.find((prop) => prop.name === 'id');
-    // const idType: TBitloopsPrimaryType = idProp.type;
-    const value = ast.getValueOfPropsWithIdentifier(aggregatePropsNode, 'id');
+    const propsValue = ast.getValueOfPropsWithIdentifier(aggregatePropsNode, 'id');
 
     const idTypeRes = modelToTargetLanguage({
-      value,
+      value: propsValue,
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     return idTypeRes;

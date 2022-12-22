@@ -16,7 +16,7 @@ import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueOb
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
-import { TBitloopsPrimaryType } from '../../../types.js';
+import { PropsIdentifierKey, TBitloopsPrimaryType, TPropsIdentifier } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 
 export class IntermediateASTTree {
@@ -166,7 +166,7 @@ export class IntermediateASTTree {
     const isEntityIdentifierNode = (node: IntermediateASTNode): node is EntityIdentifierNode =>
       node.getNodeType() === BitloopsTypesMapping.TEntityIdentifier;
 
-    const isRootEntitNode = (node: IntermediateASTNode): node is RootEntityDeclarationNode =>
+    const isRootEntityNode = (node: IntermediateASTNode): node is RootEntityDeclarationNode =>
       node.getNodeType() === BitloopsTypesMapping.TRootEntity;
 
     let rootEntityFound: RootEntityDeclarationNode = null;
@@ -174,8 +174,8 @@ export class IntermediateASTTree {
       this.traverse(rootEntityNode, (node) => {
         if (
           isEntityIdentifierNode(node) &&
-          identifier === node.getValue() &&
-          isRootEntitNode(rootEntityNode)
+          identifier === node.getValue().entityIdentifier &&
+          isRootEntityNode(rootEntityNode)
         ) {
           rootEntityFound = rootEntityNode;
         }
@@ -190,18 +190,23 @@ export class IntermediateASTTree {
   ): TBitloopsPrimaryType {
     const propsNodes = this.getClassTypeNodes(BitloopsTypesMapping.TProps);
 
-    const propsTypeNode = domainCreateParameterNode.getTypeNode();
+    const propsTypeNodeValue: { [PropsIdentifierKey]: TPropsIdentifier } = domainCreateParameterNode
+      .getTypeNode()
+      .getValue().propsIdentifier;
 
     const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
-      node.getNodeType() === BitloopsTypesMapping.TDomainConstructorParameter;
+      node.getNodeType() === BitloopsTypesMapping.TProps;
 
     for (const propsNode of propsNodes) {
-      if (isPropsNode(propsNode) && propsNode.getIdentifierNode() === propsTypeNode) {
+      if (
+        isPropsNode(propsNode) &&
+        propsNode.getPropsIdentifierNode()?.getValue().propsIdentifier === propsTypeNodeValue
+      ) {
         const fieldsListNode = propsNode.getFieldListNode();
         const fieldNodes = fieldsListNode.getFieldNodes();
         for (const fieldNode of fieldNodes) {
           const fieldIdentifier = fieldNode.getIdentifierNode();
-          if (fieldIdentifier.getValue() === identifier) {
+          if (fieldIdentifier.getValue().identifier === identifier) {
             return fieldNode.getTypeNode().getValue();
           }
         }

@@ -23,7 +23,6 @@ import {
   TTargetDependenciesTypeScript,
   TRepoPort,
   repoPortKey,
-  identifierKey,
 } from '../../../../../../../types.js';
 import { ClassTypes } from '../../../../../../../helpers/mappings.js';
 import { getParentDependencies } from '../../../../dependencies.js';
@@ -38,7 +37,7 @@ export const noMethodsRepoPort = (
   const { extendsRepoPorts } = repoPortInfo[repoPortKey];
   let dependencies = [];
   const extendedRepoPortsRes = mapExtendedRepoPorts(
-    extendsRepoPorts[identifierKey],
+    extendsRepoPorts,
     repoDependencyName,
     domainIdValue,
   );

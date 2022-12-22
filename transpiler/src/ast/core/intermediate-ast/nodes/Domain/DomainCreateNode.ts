@@ -11,7 +11,7 @@ export class DomainCreateNode extends IntermediateASTNode {
 
   getParameterNode(): DomainCreateParameterNode {
     return this.getChildNodeByType<DomainCreateParameterNode>(
-      BitloopsTypesMapping.TDomainCreateMethod,
+      BitloopsTypesMapping.TDomainConstructorParameter,
     );
   }
 }

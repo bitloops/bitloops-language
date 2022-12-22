@@ -20,10 +20,10 @@ export class RepoPortNodeBuilderDirector {
       .withRepoPortIdentifierNode(
         new RepoPortIdentifierNodeBuilder().withName('TodoRepoPort').build(),
       )
-      .withEntityIdentifier(new EntityIdentifierNodeBuilder().withName('TodoEntity').build())
+      .withEntityIdentifier(new EntityIdentifierNodeBuilder().withName('TodoRootEntity').build())
       .withExtendsRepoPortNode(
         new ExtendsRepoPortsNodeBuilder()
-          .withIdentifierList([new IdentifierNodeBuilder().withName('ICRUDWritePort').build()])
+          .withIdentifierList([new IdentifierNodeBuilder().withName('CRUDWriteRepoPort').build()])
           .build(),
       )
       .build();
