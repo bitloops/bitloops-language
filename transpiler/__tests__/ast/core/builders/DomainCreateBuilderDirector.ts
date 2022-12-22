@@ -1,6 +1,5 @@
-import { TDomainCreateMethod } from '../../../../src/types.js';
+import { PropsIdentifierKey, TDomainCreateMethod } from '../../../../src/types.js';
 import { DomainCreateBuilder } from './DomainCreateBuilder.js';
-import { ParameterBuilderDirector } from './ParameterBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
 import { StatementDirector } from './statement/statementDirector.js';
 import { StatementListDirector } from './statement/statementListDirector.js';
@@ -35,12 +34,12 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(
-        new ParameterBuilderDirector().buildIdentifierParameter(
-          entityPropsIdentifier,
-          entityPropsName,
-        ),
-      )
+      .withParameter({
+        domainCreateParameter: {
+          [PropsIdentifierKey]: entityPropsIdentifier,
+          value: entityPropsName,
+        },
+      })
       .build();
   }
 
@@ -63,9 +62,12 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(
-        new ParameterBuilderDirector().buildIdentifierParameter(voPropsIdentifier, voPropsName),
-      )
+      .withParameter({
+        domainCreateParameter: {
+          [PropsIdentifierKey]: voPropsIdentifier,
+          value: voPropsName,
+        },
+      })
       .build();
   }
 
@@ -96,9 +98,12 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(
-        new ParameterBuilderDirector().buildIdentifierParameter(voPropsIdentifier, voPropsName),
-      )
+      .withParameter({
+        domainCreateParameter: {
+          [PropsIdentifierKey]: voPropsIdentifier,
+          value: voPropsName,
+        },
+      })
       .build();
   }
 }
