@@ -1,6 +1,6 @@
 import { DomainCreateNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateBuilder.js';
 import { DomainCreateParameterNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { ParameterIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 import { PropsIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 import { DomainCreateNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
@@ -33,7 +33,9 @@ export class DomainCreateBuilderDirector {
       )
       .withParameter(
         new DomainCreateParameterNodeBuilder()
-          .withIdentifierNode(new IdentifierNodeBuilder().withName(entityPropsName).build())
+          .withIdentifierNode(
+            new ParameterIdentifierNodeBuilder().withIdentifier(entityPropsName).build(),
+          )
           .withTypeNode(
             new PropsIdentifierNodeBuilder().withName(entityPropsIdentifierType).build(),
           )
@@ -50,7 +52,7 @@ export class DomainCreateBuilderDirector {
       .withReturnType(new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'))
       .withParameter(
         new DomainCreateParameterNodeBuilder()
-          .withIdentifierNode(new IdentifierNodeBuilder().withName('some').build())
+          .withIdentifierNode(new ParameterIdentifierNodeBuilder().withIdentifier('some').build())
           .withTypeNode(new PropsIdentifierNodeBuilder().withName('SomeProps').build())
           .build(),
       )
@@ -65,7 +67,7 @@ export class DomainCreateBuilderDirector {
       .withReturnType(new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'))
       .withParameter(
         new DomainCreateParameterNodeBuilder()
-          .withIdentifierNode(new IdentifierNodeBuilder().withName('some').build())
+          .withIdentifierNode(new ParameterIdentifierNodeBuilder().withIdentifier('some').build())
           .withTypeNode(new PropsIdentifierNodeBuilder().withName('SomeProps').build())
           .build(),
       )

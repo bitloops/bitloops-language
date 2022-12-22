@@ -112,7 +112,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
         .build(),
     ),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/repoPort/writeRepoPortNoDefinitions.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/repoPort/writeRepoPortNoDefinitions.mock.ts',
     ),
   },
   {
@@ -196,7 +196,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
         .build(),
     ),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/repoPort/writePortWithDefinitions.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/repoPort/writePortWithDefinitions.mock.ts',
     ),
   },
   {
@@ -221,7 +221,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
         .build(),
     ),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/repoPort/readPortWithDefinitions.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/repoPort/readPortWithDefinitions.mock.ts',
     ),
   },
 ];

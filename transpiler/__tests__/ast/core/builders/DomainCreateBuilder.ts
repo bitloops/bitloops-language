@@ -1,15 +1,16 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
+  PropsIdentifierKey,
   TDomainCreateMethod,
+  TDomainCreateParameter,
   TOkErrorReturnType,
-  TParameter,
   TStatements,
 } from '../../../../src/types.js';
 
 export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
   private statements: TStatements;
   private returnType: TOkErrorReturnType;
-  private parameter: TParameter;
+  private parameter: TDomainCreateParameter;
 
   public withStatements(statements: TStatements): DomainCreateBuilder {
     this.statements = statements;
@@ -21,8 +22,13 @@ export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
     return this;
   }
 
-  public withParameter(parameter: TParameter): DomainCreateBuilder {
-    this.parameter = parameter;
+  public withParameter(propsIdentifier: string, value: string): DomainCreateBuilder {
+    this.parameter = {
+      domainCreateParameter: {
+        [PropsIdentifierKey]: propsIdentifier,
+        value,
+      },
+    };
     return this;
   }
 

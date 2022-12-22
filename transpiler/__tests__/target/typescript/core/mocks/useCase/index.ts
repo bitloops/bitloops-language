@@ -56,7 +56,7 @@ export const VALID_USE_CASE_TEST_CASES = [
       ],
     }),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/useCase/createTodoUseCase.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/useCase/createTodoUseCase.mock.ts',
     ),
   },
   {
@@ -85,7 +85,7 @@ export const VALID_USE_CASE_TEST_CASES = [
       ],
     }),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/useCase/getAllTodosUseCase.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/useCase/getAllTodosUseCase.mock.ts',
     ),
   },
 ];
