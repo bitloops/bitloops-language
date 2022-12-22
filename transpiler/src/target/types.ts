@@ -1,3 +1,5 @@
+import { IntermediateAST } from '../ast/core/types.js';
+import { TTranspileOptions } from '../transpilerTypes.js';
 import {
   ISetupData,
   TBoundedContextName,
@@ -5,23 +7,37 @@ import {
   TClassName,
   TClassType,
   TModuleName,
+  TTargetDependenciesTypeScript,
 } from '../types.js';
 
-export type TBitloopsOutputTargetContent = {
+export type TOutputTargetContent = {
+  core: TTargetCoreFinalContent[];
+  setup?: TTargetSetupContent[];
+};
+
+export type TTargetCoreContent = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+  classType: TClassType;
+  className: TClassName;
+  fileContent: TTargetDependenciesTypeScript;
+};
+
+export type TTargetCoreFinalContent = {
   boundedContext: TBoundedContextName;
   module: TModuleName;
   classType: TClassType;
   className: TClassName;
   fileContent: string;
-}[];
+};
 
-export type TBitloopsTargetSetupContent = {
+export type TTargetSetupContent = {
   fileId: string;
   fileType: string;
   fileContent: string;
-}[];
+};
 
-export type TBitloopsTargetGeneratorParams = {
+export type TTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
   setupData: ISetupData;
   targetLanguage: string;
@@ -29,11 +45,13 @@ export type TBitloopsTargetGeneratorParams = {
   sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
-export class BitloopsTargetGeneratorError extends Error {}
+export type TargetGeneratorError = TargetCoreGeneratorError | TargetSetupGeneratorError;
 
-export class BitloopsTargetSetupGeneratorError extends Error {}
+export class TargetCoreGeneratorError extends Error {}
 
-export interface IBitloopsTargetGenerator {
+export class TargetSetupGeneratorError extends Error {}
+
+export interface ITargetGenerator {
   getTargetFileDestination(
     boundedContext: string,
     moduleName: string,
@@ -42,9 +60,7 @@ export interface IBitloopsTargetGenerator {
     targetLanguage: string,
   ): { path: string; filename: string };
   generate: (
-    params: TBitloopsTargetGeneratorParams,
-  ) => TBitloopsOutputTargetContent | BitloopsTargetGeneratorError;
-  generateSetup: (
-    params: TBitloopsTargetGeneratorParams,
-  ) => TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError;
+    intermediateAST: IntermediateAST,
+    options: TTranspileOptions,
+  ) => TOutputTargetContent | TargetGeneratorError[];
 }

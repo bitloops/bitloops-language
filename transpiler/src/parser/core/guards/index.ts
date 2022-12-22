@@ -1,20 +1,31 @@
 import {
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsParserError,
-  BitloopsLanguageASTCoreContext,
+  ASTContext,
+  OriginalParserError,
+  OriginalASTCore,
+  OriginalASTSetup,
+  OriginalAST,
 } from '../types.js';
 
-const isBitloopsParserError = (
-  value:
-    | BitloopsLanguageAST
-    | BitloopsLanguageASTContext
-    | BitloopsParserError
-    | BitloopsLanguageASTCoreContext,
-): value is BitloopsParserError => {
-  if (value instanceof BitloopsParserError) {
+const isParserErrors = (
+  value: OriginalAST | OriginalParserError[],
+): value is OriginalParserError[] => {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+  for (const err of value) {
+    if (!isParserError(err)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isParserError = (
+  value: OriginalParserError | ASTContext | OriginalASTSetup | OriginalASTCore,
+): value is OriginalParserError => {
+  if (value instanceof OriginalParserError) {
     return true;
   }
   return false;
 };
-export { isBitloopsParserError };
+export { isParserError, isParserErrors };

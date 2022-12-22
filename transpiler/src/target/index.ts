@@ -18,47 +18,80 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  BitloopsTargetGeneratorError,
-  BitloopsTargetSetupGeneratorError,
-  IBitloopsTargetGenerator,
-  TBitloopsOutputTargetContent,
-  TBitloopsTargetGeneratorParams,
-  TBitloopsTargetSetupContent,
+  TargetGeneratorError,
+  TargetSetupGeneratorError,
+  ITargetGenerator,
+  TOutputTargetContent,
+  TTargetSetupContent,
+  TTargetCoreFinalContent,
+  TargetCoreGeneratorError,
 } from './types.js';
-import { BitloopsIntermediateASTToTarget } from './typescript/core/index.js';
+import { IntermediateASTToTarget } from './typescript/core/index.js';
 import { generateSetupFiles } from './typescript/setup/index.js';
 import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
-import { isBitloopsTargetGeneratorError } from './typescript/guards/index.js';
+import {
+  isTargetCoreGeneratorError,
+  isTargetSetupGeneratorError,
+} from './typescript/guards/index.js';
 import { IntermediateModelToASTTargetTransformer } from './ast/index.js';
+import { IntermediateAST } from '../ast/core/types.js';
+import { TTranspileOptions } from '../transpilerTypes.js';
 
-export class BitloopsTargetGenerator implements IBitloopsTargetGenerator {
+export class TargetGenerator implements ITargetGenerator {
   generate(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsOutputTargetContent | BitloopsTargetGeneratorError {
-    const intermediateModel = params.intermediateAST;
+    intermediateAST: IntermediateAST,
+    options: TTranspileOptions,
+  ): TOutputTargetContent | TargetGeneratorError[] {
+    const errors: TargetGeneratorError[] = [];
+    const generateResult: Partial<TOutputTargetContent> = {};
 
+    const coreTargetOutput = this.generateCore(intermediateAST, options);
+    if (isTargetCoreGeneratorError(coreTargetOutput)) {
+      errors.push(coreTargetOutput);
+    } else {
+      generateResult.core = coreTargetOutput;
+    }
+
+    if (intermediateAST.setup) {
+      const setupTargetOutput = this.generateSetup(intermediateAST, options);
+      if (isTargetSetupGeneratorError(setupTargetOutput)) {
+        errors.push(setupTargetOutput);
+      } else {
+        generateResult.setup = setupTargetOutput;
+      }
+    }
+
+    if (errors.length > 0) {
+      return errors;
+    }
+    return generateResult as TOutputTargetContent;
+  }
+
+  private generateCore(
+    params: IntermediateAST,
+    options: TTranspileOptions,
+  ): TTargetCoreFinalContent[] | TargetCoreGeneratorError {
     const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
-    const targetLanguageAST = modelToTargetASTTransformer.transform({ intermediateModel });
-    const targetParams = { ...params, intermediateAST: targetLanguageAST.intermediateModel };
+    const transformedIntermediateAST = modelToTargetASTTransformer.transform(params);
 
-    const bitloopsTargetGenerator = new BitloopsIntermediateASTToTarget();
-    const targetContent = bitloopsTargetGenerator.ASTToTarget(targetParams);
+    const bitloopsTargetGenerator = new IntermediateASTToTarget();
+    const targetContent = bitloopsTargetGenerator.ASTToTarget(transformedIntermediateAST);
 
-    if (isBitloopsTargetGeneratorError(targetContent)) return targetContent;
+    if (isTargetCoreGeneratorError(targetContent)) return targetContent;
     const targetContentWithImports = bitloopsTargetGenerator.generateImports(targetContent);
     const formattedTargetContent = bitloopsTargetGenerator.formatCode(
       targetContentWithImports,
-      params.formatterConfig,
+      options.formatterConfig,
     );
     return formattedTargetContent;
   }
 
-  generateSetup(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError {
-    const { setupData, intermediateAST, sourceDirPath } = params;
-    return generateSetupFiles(setupData, intermediateAST, sourceDirPath);
+  private generateSetup(
+    params: IntermediateAST,
+    options: TTranspileOptions,
+  ): TTargetSetupContent[] | TargetSetupGeneratorError {
+    return generateSetupFiles(params, options);
   }
 
   getTargetFileDestination(

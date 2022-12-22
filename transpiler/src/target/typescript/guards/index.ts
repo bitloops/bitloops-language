@@ -1,26 +1,43 @@
-import { TBitloopsTargetContent } from '../../../types.js';
 import {
-  BitloopsTargetGeneratorError,
-  BitloopsTargetSetupGeneratorError,
-  TBitloopsOutputTargetContent,
-  TBitloopsTargetSetupContent,
+  TargetCoreGeneratorError,
+  TargetGeneratorError,
+  TTargetCoreContent,
+  TargetSetupGeneratorError,
+  TTargetCoreFinalContent,
+  TTargetSetupContent,
+  TOutputTargetContent,
 } from '../../types.js';
 
-const isBitloopsTargetGeneratorError = (
-  value: TBitloopsOutputTargetContent | TBitloopsTargetContent | BitloopsTargetGeneratorError,
-): value is BitloopsTargetGeneratorError => {
-  if (value instanceof BitloopsTargetGeneratorError) {
+const isTargetGeneratorError = (
+  value: TOutputTargetContent | TargetGeneratorError[],
+): value is TargetGeneratorError[] => {
+  if (Array.isArray(value)) {
+    for (const err of value) {
+      if (!isTargetCoreGeneratorError(err) && !isTargetSetupGeneratorError(err)) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const isTargetCoreGeneratorError = (
+  value: TTargetCoreFinalContent[] | TTargetCoreContent[] | TargetCoreGeneratorError,
+): value is TargetCoreGeneratorError => {
+  if (value instanceof TargetCoreGeneratorError) {
     return true;
   }
   return false;
 };
 
-const isBitloopsTargetSetupGeneratorError = (
-  value: TBitloopsTargetSetupContent | BitloopsTargetSetupGeneratorError,
-): value is BitloopsTargetSetupGeneratorError => {
-  if (value instanceof BitloopsTargetSetupGeneratorError) {
+const isTargetSetupGeneratorError = (
+  value: TTargetSetupContent[] | TargetSetupGeneratorError,
+): value is TargetSetupGeneratorError => {
+  if (value instanceof TargetSetupGeneratorError) {
     return true;
   }
   return false;
 };
-export { isBitloopsTargetGeneratorError, isBitloopsTargetSetupGeneratorError };
+export { isTargetCoreGeneratorError, isTargetSetupGeneratorError, isTargetGeneratorError };

@@ -88,14 +88,6 @@ export type TASTCoreInputData = {
 
 export type TContextData = { boundedContext: string; module: string };
 
-export type TBitloopsTargetContent = {
-  boundedContext: TBoundedContextName;
-  module: TModuleName;
-  classType: TClassType;
-  className: TClassName;
-  fileContent: TTargetDependenciesTypeScript;
-}[];
-
 export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
 
 export type TBitloopsClasses =

@@ -5,11 +5,12 @@ import { IntermediateASTNode, TNodeType } from './nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkErrorNodeTransformer.js';
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
+import { IntermediateAST } from '../types.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
-  complete(intermediateASTTree: TBoundedContexts): TBoundedContexts {
+  complete(intermediateAST: IntermediateAST): IntermediateAST {
     let boundedContexts: TBoundedContexts;
-    for (const [boundedContextName, boundedContext] of Object.entries(intermediateASTTree)) {
+    for (const [boundedContextName, boundedContext] of Object.entries(intermediateAST.core)) {
       for (const [moduleName, ASTTree] of Object.entries(boundedContext)) {
         const treeUpdated = ASTTree.copy();
         const rootNode = treeUpdated.getRootNode();
@@ -40,7 +41,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
         }
       }
     }
-    return boundedContexts;
+    return {
+      core: boundedContexts,
+      setup: intermediateAST.setup,
+    };
   }
 
   private getNodeTransformer(factoryParams: {

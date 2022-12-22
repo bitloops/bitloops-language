@@ -18,27 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsParser } from './core/index.js';
-import {
-  IBitloopsParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsParserError,
-} from './core/types.js';
-import { BitloopsSetupParser } from './setup/index.js';
-import {
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParserError,
-  IBitloopsSetupParser,
-} from './setup/types.js';
 
-export {
-  BitloopsParser,
-  BitloopsSetupParser,
-  IBitloopsParser,
-  IBitloopsSetupParser,
-  BitloopsLanguageAST,
-  BitloopsLanguageASTContext,
-  BitloopsLanguageSetupAST,
-  BitloopsParserError,
-  BitloopsSetupParserError,
-};
+import {
+  IOriginalParser,
+  OriginalAST,
+  OriginalParserError,
+  TParserInputData,
+} from './core/types.js';
+
+export { BitloopsParser, IOriginalParser, OriginalAST, OriginalParserError, TParserInputData };

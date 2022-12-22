@@ -19,8 +19,8 @@
  */
 
 import { IntermediateASTTree } from '../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateAST } from '../../ast/core/types.js';
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../helpers/mappings.js';
-import { TIntermediateModel } from '../../transpilerTypes.js';
 import {
   GraphQLControllerNodeTSTransformer,
   RestControllerNodeTSTransformer,
@@ -37,8 +37,8 @@ import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 export class IntermediateModelToASTTargetTransformer
   implements IIntermediateModelToASTTargetLanguageTransformer
 {
-  transform(intermediateModel: TIntermediateModel): TIntermediateModel {
-    for (const boundedContext of Object.values(intermediateModel.intermediateModel)) {
+  transform(intermediateModel: IntermediateAST): IntermediateAST {
+    for (const boundedContext of Object.values(intermediateModel.core)) {
       for (const intermediateASTTree of Object.values(boundedContext)) {
         const treeUpdated = intermediateASTTree.copy();
         const rootNode = treeUpdated.getRootNode();

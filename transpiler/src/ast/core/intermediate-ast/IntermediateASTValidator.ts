@@ -1,5 +1,8 @@
-import { TBoundedContexts } from '../../../types.js';
-import { IIntermediateASTValidator, IntermediateASTValidationError } from '../types.js';
+import {
+  IIntermediateASTValidator,
+  IntermediateAST,
+  IntermediateASTValidationError,
+} from '../types.js';
 import { IntermediateASTTree } from './IntermediateASTTree.js';
 import {
   IntermediateASTNodeValidationError,
@@ -7,15 +10,16 @@ import {
 } from './nodes/IntermediateASTNode.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
-  validate(ast: TBoundedContexts): void | IntermediateASTValidationError[] {
+  validate(ast: IntermediateAST): void | IntermediateASTValidationError[] {
     const errors: IntermediateASTValidationError[] = [];
-    for (const boundedContext of Object.values(ast)) {
+    for (const boundedContext of Object.values(ast.core)) {
       for (const ASTTree of Object.values(boundedContext)) {
         errors.push(...this.validateNodes(ASTTree));
 
         errors.push(...this.validateClassTypeNodes(ASTTree));
       }
     }
+    // TODO validate setup
 
     if (errors.length > 0) return errors;
   }

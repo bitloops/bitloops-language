@@ -108,7 +108,7 @@ import { parenthesizedExpressionToTargetLanguage } from './components/statements
 import { variableDeclarationToTargetLanguage } from './components/statements/variableDeclaration.js';
 import { repoAdapterToTargetLanguage } from './components/repo/repoAdapter.js';
 import { singleExpressionToTargetLanguage } from '../setup/single-expression/index.js'; // TODO check this
-import { ISetupData, TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
+import { TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/index.js';
@@ -131,7 +131,7 @@ const modelToTargetLanguage = (props: {
   type: TNodeType;
   value: any;
   contextData?: TContextData;
-  setupData?: ISetupData;
+  setupData?: any; // TODO change to IntermediateASTTree
   model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
   const { type, value, contextData, setupData, model } = props;

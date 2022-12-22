@@ -2,12 +2,13 @@ import { TBoundedContexts } from '../../../types.js';
 import {
   IntermediateASTParserError,
   IntermediateASTValidationError,
-  BitloopsIntermediateASTError,
+  IntermediateAST,
+  IntermediateASTError,
 } from '../types.js';
 
-const isBitloopsIntermediateASTError = (
-  value: TBoundedContexts | BitloopsIntermediateASTError,
-): value is BitloopsIntermediateASTError => {
+const isIntermediateASTError = (
+  value: IntermediateAST | IntermediateASTError,
+): value is IntermediateASTError => {
   if (isIntermediateASTParserError(value) || isIntermediateASTValidationErrors(value)) {
     return true;
   }
@@ -15,8 +16,12 @@ const isBitloopsIntermediateASTError = (
 };
 
 const isIntermediateASTParserError = (
-  value: TBoundedContexts | IntermediateASTValidationError[] | IntermediateASTParserError,
-): value is IntermediateASTParserError => {
+  value:
+    | IntermediateAST
+    | TBoundedContexts
+    | IntermediateASTValidationError[]
+    | IntermediateASTParserError[],
+): value is IntermediateASTParserError[] => {
   if (value instanceof IntermediateASTParserError) {
     return true;
   }
@@ -24,7 +29,7 @@ const isIntermediateASTParserError = (
 };
 
 const isIntermediateASTValidationErrors = (
-  value: TBoundedContexts | void | IntermediateASTValidationError[],
+  value: IntermediateAST | void | IntermediateASTValidationError[],
 ): value is IntermediateASTValidationError[] => {
   if (Array.isArray(value)) {
     for (const err of value) {
@@ -37,8 +42,4 @@ const isIntermediateASTValidationErrors = (
   return false;
 };
 
-export {
-  isIntermediateASTParserError,
-  isIntermediateASTValidationErrors,
-  isBitloopsIntermediateASTError,
-};
+export { isIntermediateASTParserError, isIntermediateASTValidationErrors, isIntermediateASTError };

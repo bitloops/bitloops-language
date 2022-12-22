@@ -17,38 +17,25 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TBitloopsTargetContent,
-  TContextData,
-  TDependencyParentTypescript,
-} from '../../../types.js';
+import { TContextData, TDependencyParentTypescript } from '../../../types.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
 import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
-import {
-  BitloopsTargetGeneratorError,
-  TBitloopsOutputTargetContent,
-  TBitloopsTargetGeneratorParams,
-} from '../../types.js';
+import { TargetGeneratorError, TTargetCoreContent, TTargetCoreFinalContent } from '../../types.js';
+import { IntermediateAST } from '../../../ast/core/types.js';
 
-interface IBitloopsIntermediateASTToTarget {
-  ASTToTarget(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsTargetContent | BitloopsTargetGeneratorError;
-  formatCode(
-    targetContent: TBitloopsOutputTargetContent,
-    config?: any,
-  ): TBitloopsOutputTargetContent;
-  generateImports(params: TBitloopsTargetContent): TBitloopsOutputTargetContent;
+interface IIntermediateASTToTarget {
+  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError;
+  formatCode(targetContent: TTargetCoreFinalContent[], config?: any): TTargetCoreFinalContent[];
+  generateImports(params: TTargetCoreContent[]): TTargetCoreFinalContent[];
 }
 
-export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateASTToTarget {
-  ASTToTarget(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsTargetContent | BitloopsTargetGeneratorError {
-    const { intermediateAST, setupData } = params;
+export class IntermediateASTToTarget implements IIntermediateASTToTarget {
+  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
+    const { core, setup } = params;
+    const setupData = setup;
     const result = [];
-    for (const [boundedContextName, boundedContext] of Object.entries(intermediateAST)) {
+    for (const [boundedContextName, boundedContext] of Object.entries(core.intermediateAST)) {
       for (const [moduleName, intermediateASTTree] of Object.entries(boundedContext)) {
         const contextData: TContextData = {
           boundedContext: boundedContextName,
@@ -64,9 +51,6 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
         // }
         const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
         classTypeNodes.forEach((intermediateASTNode) => {
-          // copy intermediateASTNode??
-          //TODO uncomment
-          // modelToTypescriptModel(intermediateASTNode);
           const generatedString = modelToTargetLanguage({
             type: intermediateASTNode.getNodeType(),
             value: intermediateASTNode.getValue(),
@@ -89,8 +73,8 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     return result;
   }
 
-  generateImports(params: TBitloopsTargetContent): TBitloopsOutputTargetContent {
-    const formattedCode: TBitloopsOutputTargetContent = [];
+  generateImports(params: TTargetCoreContent[]): TTargetCoreFinalContent[] {
+    const formattedCode: TTargetCoreFinalContent[] = [];
     for (const { boundedContext, classType, module, className, fileContent } of params) {
       const { output } = fileContent;
       const parentDependecies = fileContent.dependencies as TDependencyParentTypescript[];
@@ -114,11 +98,8 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     return formattedCode;
   }
 
-  formatCode(
-    targetContent: TBitloopsOutputTargetContent,
-    config?: any,
-  ): TBitloopsOutputTargetContent {
-    const formattedCode: TBitloopsOutputTargetContent = [];
+  formatCode(targetContent: TTargetCoreFinalContent[], config?: any): TTargetCoreFinalContent[] {
+    const formattedCode: TTargetCoreFinalContent[] = [];
     for (const { boundedContext, classType, module, className, fileContent } of targetContent) {
       const formattedContent = formatString(fileContent, config);
 
