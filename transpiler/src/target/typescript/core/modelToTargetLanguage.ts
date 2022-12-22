@@ -67,9 +67,8 @@ import {
   stringToTargetLanguage,
 } from './components/strings/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
-import { primitiveEvaluationToTargetLanguage } from './components/primitiveEvaluator/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
-import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js'; // TODO check this
+import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
 import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
@@ -77,7 +76,6 @@ import {
   definitionMethodInfoToTargetLanguage,
   definitionMethodsToTargetLanguage,
 } from './components/definitionMethods/index.js';
-import { returnTypeToDefinitionLanguage } from './components/returnType/index.js';
 import { packagePortToTargetLanguage } from './components/packagePort/index.js';
 import { packageToTargetLanguage } from './components/packages/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
@@ -303,10 +301,6 @@ const modelToTargetLanguage = (props: {
       res = applicationErrorsToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TEvaluatePrimitive: {
-      res = primitiveEvaluationToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TGraphQLSetupData: {
       res = graphQLSetupDataToTargetLanguage(value);
       break;
@@ -325,10 +319,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDefinitionMethods: {
       res = definitionMethodsToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TReturnType: {
-      res = returnTypeToDefinitionLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPackagePort: {

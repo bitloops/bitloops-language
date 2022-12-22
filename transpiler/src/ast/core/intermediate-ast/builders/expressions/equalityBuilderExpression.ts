@@ -4,25 +4,26 @@ import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
 import { EqualityExpressionNode } from '../../nodes/Expression/equalityExpressionNode.js';
 import { RightExpressionNode } from '../../nodes/Expression/rightExpression.js';
 import { IBuilder } from '../IBuilder.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class EqualityExpressionBuilder implements IBuilder<EqualityExpressionNode> {
   public readonly NAME = 'equalityExpression';
 
   private equalityExpressionNode: EqualityExpressionNode;
-  private LeftexpressionNode: LeftExpressionNode;
-  private RightexpressionNode: RightExpressionNode;
+  private leftExpressionNode: LeftExpressionNode;
+  private rightExpressionNode: RightExpressionNode;
   private operator: OperatorNode;
 
-  constructor() {
-    this.equalityExpressionNode = new EqualityExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.equalityExpressionNode = new EqualityExpressionNode(metadata);
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): EqualityExpressionBuilder {
-    this.LeftexpressionNode = expressionNode;
+    this.leftExpressionNode = expressionNode;
     return this;
   }
   public withRightExpression(expressionNode: ExpressionNode): EqualityExpressionBuilder {
-    this.RightexpressionNode = expressionNode;
+    this.rightExpressionNode = expressionNode;
     return this;
   }
   public withOperator(operatorNode: OperatorNode): EqualityExpressionBuilder {
@@ -31,9 +32,9 @@ export class EqualityExpressionBuilder implements IBuilder<EqualityExpressionNod
   }
 
   public build(): EqualityExpressionNode {
-    this.equalityExpressionNode.addChild(this.LeftexpressionNode);
+    this.equalityExpressionNode.addChild(this.leftExpressionNode);
     this.equalityExpressionNode.addChild(this.operator);
-    this.equalityExpressionNode.addChild(this.RightexpressionNode);
+    this.equalityExpressionNode.addChild(this.rightExpressionNode);
     this.equalityExpressionNode.buildObjectValue();
 
     return this.equalityExpressionNode;

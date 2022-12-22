@@ -53,11 +53,10 @@ export class DomainRuleNodeBuilder implements IBuilder<DomainRuleNode> {
   public build(): DomainRuleNode {
     this.intermediateASTTree.insertChild(this.domainRuleNode);
     this.intermediateASTTree.insertChild(this.domainRuleIdentifier);
-    if (this.parameters) {
-      this.intermediateASTTree.insertSibling(this.parameters);
-    }
+    this.parameters && this.intermediateASTTree.insertSibling(this.parameters);
+
     this.intermediateASTTree.insertSibling(this.errorThrown);
-    this.intermediateASTTree.insertSibling(this.statementList);
+    this.statementList && this.intermediateASTTree.insertSibling(this.statementList);
     this.intermediateASTTree.insertSibling(this.isBrokenConditionNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 

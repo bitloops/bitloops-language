@@ -4,6 +4,7 @@ import { OperatorNode } from '../../../nodes/Expression/OperatorNode.js';
 import { RightExpressionNode } from '../../../nodes/Expression/rightExpression.js';
 import { IBuilder } from '../../IBuilder.js';
 import { LogicalXorExpressionNode } from '../../../nodes/Expression/Logical/logicalXorExpressionNode.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 
 export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressionNode> {
   public readonly NAME = 'orExpression';
@@ -13,8 +14,8 @@ export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressio
   private rightExpressionNode: RightExpressionNode;
   private operator: OperatorNode;
 
-  constructor() {
-    this.logicalXorExpressionNode = new LogicalXorExpressionNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.logicalXorExpressionNode = new LogicalXorExpressionNode(nodeMetadata);
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): LogicalXorExpressionBuilder {

@@ -1,6 +1,7 @@
 import { NotExpressionNode } from '../../../nodes/Expression/NotExpression.js';
 import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
 import { IBuilder } from '../../IBuilder.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 
 export class NotExpressionNodeBuilder implements IBuilder<NotExpressionNode> {
   // public readonly NAME = 'MethodCallExpression';
@@ -8,8 +9,8 @@ export class NotExpressionNodeBuilder implements IBuilder<NotExpressionNode> {
   private NotExpressionNode: NotExpressionNode;
   private expressionNode: ExpressionNode;
 
-  constructor() {
-    this.NotExpressionNode = new NotExpressionNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.NotExpressionNode = new NotExpressionNode(nodeMetadata);
   }
 
   public withExpression(expressionNode: ExpressionNode): NotExpressionNodeBuilder {

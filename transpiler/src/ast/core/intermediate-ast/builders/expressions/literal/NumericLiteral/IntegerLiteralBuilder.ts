@@ -1,6 +1,7 @@
 import { LiteralTypeNode } from '../../../../nodes/Expression/Literal/components/LiteralTypeNode.js';
 import { LiteralValueNode } from '../../../../nodes/Expression/Literal/components/LiteralValueNode.js';
 import { IntegerLiteralNode } from '../../../../nodes/Expression/Literal/NumericLiteral/IntegerLiteralNode.js';
+import { TNodeMetadata } from '../../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../../IBuilder.js';
 
 export class IntegerLiteralBuilder implements IBuilder<IntegerLiteralNode> {
@@ -9,8 +10,8 @@ export class IntegerLiteralBuilder implements IBuilder<IntegerLiteralNode> {
   private value: LiteralValueNode;
   private integerLiteralNode: IntegerLiteralNode;
 
-  constructor() {
-    this.integerLiteralNode = new IntegerLiteralNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.integerLiteralNode = new IntegerLiteralNode(nodeMetadata);
   }
 
   public withType(literalType: LiteralTypeNode): IntegerLiteralBuilder {

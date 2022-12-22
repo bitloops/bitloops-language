@@ -1,12 +1,13 @@
 import { BooleanLiteralNode } from '../../../nodes/Expression/Literal/BooleanLiteralNode.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class BooleanLiteralBuilder implements IBuilder<BooleanLiteralNode> {
   private booleanValue: string;
   private booleanLiteralNode: BooleanLiteralNode;
 
-  constructor() {
-    this.booleanLiteralNode = new BooleanLiteralNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.booleanLiteralNode = new BooleanLiteralNode(nodeMetadata);
   }
 
   public withValue(booleanValue: string): BooleanLiteralBuilder {

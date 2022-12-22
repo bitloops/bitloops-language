@@ -1,6 +1,7 @@
 import { ArgumentListNode } from '../../nodes/ArgumentList/ArgumentListNode.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { MethodCallExpressionNode } from '../../nodes/Expression/MethodCallExpression.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class MethodCallExpressionNodeBuilder implements IBuilder<MethodCallExpressionNode> {
@@ -8,8 +9,8 @@ export class MethodCallExpressionNodeBuilder implements IBuilder<MethodCallExpre
   private expression: ExpressionNode;
   private argumentListNode?: ArgumentListNode;
 
-  constructor() {
-    this.methodCallExpressionNode = new MethodCallExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.methodCallExpressionNode = new MethodCallExpressionNode(metadata);
   }
 
   public withExpression(expr: ExpressionNode): MethodCallExpressionNodeBuilder {

@@ -1,4 +1,5 @@
 import { TemplateStringLiteralNode } from '../../../nodes/Expression/Literal/templateStringLiteralNode.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class TemplateStringLiteralBuilder implements IBuilder<TemplateStringLiteralNode> {
@@ -6,8 +7,8 @@ export class TemplateStringLiteralBuilder implements IBuilder<TemplateStringLite
   private value: string;
   private templateStringLiteralNode: TemplateStringLiteralNode;
 
-  constructor() {
-    this.templateStringLiteralNode = new TemplateStringLiteralNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.templateStringLiteralNode = new TemplateStringLiteralNode(nodeMetadata);
   }
 
   public withValue(strValue: string): TemplateStringLiteralBuilder {

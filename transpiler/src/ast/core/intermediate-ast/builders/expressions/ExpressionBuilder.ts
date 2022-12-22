@@ -1,12 +1,13 @@
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class ExpressionBuilder implements IBuilder<ExpressionNode> {
   private expressionWrapper: ExpressionNode;
   private concreteExpressionChild: ExpressionNode;
 
-  constructor() {
-    this.expressionWrapper = new ExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.expressionWrapper = new ExpressionNode(metadata);
   }
 
   public withExpression(expr: ExpressionNode): ExpressionBuilder {

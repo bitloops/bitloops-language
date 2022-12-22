@@ -1,4 +1,5 @@
 import { NullLiteralNode } from '../../../nodes/Expression/Literal/NullLiteralNode.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class NullLiteralBuilder implements IBuilder<NullLiteralNode> {
@@ -6,8 +7,8 @@ export class NullLiteralBuilder implements IBuilder<NullLiteralNode> {
 
   private nullLiteralNode: NullLiteralNode;
 
-  constructor() {
-    this.nullLiteralNode = new NullLiteralNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.nullLiteralNode = new NullLiteralNode(nodeMetadata);
   }
 
   public build(): NullLiteralNode {
