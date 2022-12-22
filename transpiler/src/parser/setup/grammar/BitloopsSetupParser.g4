@@ -159,61 +159,6 @@ singleExpression
     // | regularVariableEvaluation                                              
     ;
 
-// evaluation
-//     : regularEvaluation
-    // | dtoEvaluation
-    // | structEvaluation
-    // | valueObjectEvaluation
-    // | propsEvaluation
-    // ;
-
-// regularEvaluation
-    // : regularMethodEvaluation   
-    // : regularStringEvaluation
-    // | regularVariableEvaluation
-    // | regularIntegerEvaluation
-    // | regularDecimalEvaluation
-    // | regularBooleanEvaluation
-    // | regularDTOEvaluation
-    // | regularStructEvaluation
-    // ;
-// regularMethodEvaluation
-//     : RegularVariableEvaluation methodArguments
-//     ;
-
-
-// methodArguments
-//     : '(' (argumentList (',' argumentList)*)? ')'
-//     ;
-// argumentList
-//     : argument (',' argument)*
-//     ;
-
-
-// argument                      // ECMAScript 6: Spread Operator
-//     : Ellipsis? (singleExpression | Identifier)
-//     ;
-
-// regularVariableEvaluation
-//     //: RegularVariableEvaluation #RegularVariableEvaluationString
-//     : Identifier    #IdentifierString
-//     ;
-// regularStringEvaluation
-//     : StringLiteral
-//     ;
-
-// regularIntegerEvaluation
-//     : IntegerLiteral
-//     ;
-
-// regularDecimalEvaluation
-//     : DecimalLiteral
-//     ;
-
-// regularBooleanEvaluation
-//     : BooleanLiteral
-//     ;
-
 literal
     : NullLiteral                                                           # NullLiteralExpression
     | BooleanLiteral                                                        # BooleanLiteralExpression
@@ -257,8 +202,6 @@ repoAdapterDefinition
 constDeclaration
     : Const identifier
     ;
-
-
 
 //     const todoRepo = RepoAdapters.Mongo({
 //     host: 'localhost',

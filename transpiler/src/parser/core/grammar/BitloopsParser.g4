@@ -36,27 +36,6 @@ options {
    // superClass=BitloopsParserBase;
 }
 
-// SupportSyntax
-
-initializer
-    : '=' expression
-    ;
-
-bindingPattern
-    : (arrayLiteral | objectLiteral)
-    ;
-
-// Bitloops SPart
-// A.1 Types
-
-// typeParameters
-//     : '<' typeParameterList? '>'
-//     ;
-
-// typeParameterList
-//     : typeParameter (Comma typeParameter)*
-//     ;
-
 fieldList
     : field (SemiColon field)* SemiColon
     ;
@@ -69,30 +48,9 @@ evaluationField
     : identifier Colon expression
     ;
 
-// typeParameter
-//     : Identifier constraint?
-//     | typeParameters
-//     ;
-
-// constraint
-//     : 'extends' type_
-//     ;
-
-// typeArguments
-//     : '<' typeArgumentList? '>'
-//     ;
-
 propFields
     : OpenBrace fieldList? CloseBrace
     ;
-
-// typeArgumentList
-//     : typeArgument (Comma typeArgument)*
-//     ;
-
-// typeArgument
-//     : type_
-//     ;
 
 propsIdentifier
 : PropsIdentifier
@@ -111,36 +69,6 @@ bitloopsIdentifiers
     | ReadModelIdentifier
     | structIdentifier
     ;
-
-// type_
-//     : unionOrIntersectionOrPrimaryType
-//     | functionType
-//     | constructorType
-//     | typeGeneric
-//     | StringLiteral
-//     | bitloopsIdentifiers
-//     | type_ '[' ']' 
-//     ;
-
-// unionOrIntersectionOrPrimaryType
-//     : unionOrIntersectionOrPrimaryType '|' unionOrIntersectionOrPrimaryType #Union
-//     | unionOrIntersectionOrPrimaryType '&' unionOrIntersectionOrPrimaryType #Intersection
-//     // | primaryType #Primary
-//     | primitives #Primmitives
-//     ;
-
-// primaryType
-//     : OpenParen type_ CloseParen                                 #ParenthesizedPrimType
-//     | predefinedType                                #PredefinedPrimType
-//     | typeReference                                 #ReferencePrimType
-//     | objectType                                    #ObjectPrimType
-//     // | primaryType {notLineTerminator()}? '[' ']'    #ArrayPrimType
-//     | primaryType '[' ']'    #ArrayPrimType
-//     | '[' tupleElementTypes ']'                     #TuplePrimType
-//     | typeQuery                                     #QueryPrimType
-//     | This                                          #ThisPrimType
-//     | typeReference Is primaryType                  #RedefinitionOfType
-//     ;
 
 primitives
     : Any
@@ -171,10 +99,6 @@ upperCaseIdentifier
     : UpperCaseIdentifier
     ;
 
-// struct
-//     : UpperCaseIdentifier
-//     ;
-
 
 regularErrorTypeEvaluation
     : errorIdentifier
@@ -202,22 +126,6 @@ regularIdentifier
     | Delete                                                    # DeleteKeyword
     ;
 
-regularStringEvaluation
-    : StringLiteral
-    ;
-
-regularIntegerEvaluation
-    : IntegerLiteral
-    ;
-
-regularDecimalEvaluation
-    : DecimalLiteral
-    ;
-
-regularBooleanEvaluation
-    : BooleanLiteral
-    ;
-
 regularStructEvaluation
     : UpperCaseIdentifier
     ;
@@ -229,7 +137,6 @@ regularDTOEvaluation
 optional
     : Optional;
 
-// | RegularStringEvaluation | RegularBackTicksEvaluation
 field
     : optional? bitloopsPrimaryType identifier
     ;
@@ -248,64 +155,6 @@ bitloopsPrimaryTypeValues
 bitloopsBuiltInClass
     : UUIDv4
     ;
-    
-predefinedType
-    : Any
-    | Int32
-    | Boolean
-    | String
-    | Struct
-    | Void
-    ;
-
-// typeReference
-//     : typeName nestedTypeGeneric?
-//     ;
-
-// nestedTypeGeneric
-//     : typeIncludeGeneric
-//     | typeGeneric
-//     ;
-
-// I tried recursive include, but it's not working.
-// typeGeneric
-//    : '<' typeArgumentList typeGeneric?'>'
-//    ;
-//
-// TODO: Fix recursive
-//
-// typeGeneric
-//     : '<' typeArgumentList '>'
-//     ;
-
-// typeIncludeGeneric
-//     :'<' typeArgumentList '<' typeArgumentList ('>' bindingPattern '>' | '>>')
-//     ;
-
-typeName
-    : Identifier
-    | namespaceName
-    ;
-
-// objectType
-//     : OpenBrace typeBody? CloseBrace
-//     ;
-
-// typeBody
-//     : typeMemberList (SemiColon | Comma)?
-//     ;
-
-// typeMemberList
-//     : typeMember ((SemiColon | Comma) typeMember)*
-//     ;
-
-// typeMember
-//     : propertySignatur
-//     | callSignature
-//     | constructSignature
-//     | indexSignature
-//     | methodSignature ('=>' type_)?
-//     ;
 
 methodDefinitionList
     : methodDefinition*
@@ -315,65 +164,10 @@ methodDefinition
     : identifier parameterList? typeAnnotation SemiColon
     ;
 
-
-// tupleElementTypes
-//     : type_ (Comma type_)*
-//     ;
-
-// functionType
-//     : typeParameters? OpenParen parameterList? CloseParen '=>' type_
-    // ;
-
-// constructorType
-//     : 'new' typeParameters? OpenParen parameterList? CloseParen '=>' type_
-//     ;
-
-typeQuery
-    : 'typeof' typeQueryExpression
-    ;
-
-typeQueryExpression
-    : Identifier
-    | (identifier Dot)+ identifier
-    ;
-
-// propertySignatur
-//     : ReadOnly? propertyName '?'? typeAnnotation? ('=>' type_)?
-//     ;
-
 typeAnnotation
     : Colon bitloopsPrimaryType
     ;
 
-// callSignature
-//     : typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
-//     ;
-
-// parameterList
-//     : restParameter
-//     | parameter (Comma parameter)* (Comma restParameter)?
-//     ;
-
-requiredParameterList
-    : requiredParameter (Comma requiredParameter)*
-    ;
-
-// parameter
-//     : requiredParameter
-//     | optionalParameter
-//     ;
-
-optionalParameter
-    : decoratorList? ( accessibilityModifier? identifierOrPattern ('?' typeAnnotation? | typeAnnotation? initializer))
-    ;
-
-restParameter
-    : Ellipsis expression typeAnnotation?
-    ;
-
-requiredParameter
-    : decoratorList? accessibilityModifier? identifierOrPattern typeAnnotation?
-    ;
 
 accessibilityModifier
     : Public
@@ -381,107 +175,21 @@ accessibilityModifier
     // | Protected
     ;
 
-identifierOrPattern
-    : identifier
-    | bindingPattern
-    ;
-
-// constructSignature
-//     : 'new' typeParameters? OpenParen parameterList? CloseParen typeAnnotation?
-//     ;
-
-indexSignature
-    : '[' Identifier Colon (Int32|String) ']' typeAnnotation
-    ;
-
-// methodSignature
-//     : propertyName '?'? callSignature
-//     ;
-
-// typeAliasDeclaration
-//     : 'type' Identifier typeParameters? '=' type_ SemiColon
-//     ;
-
-// constructorDeclaration
-//     : accessibilityModifier? Constructor '(' formalParameterList? ')' ( ('{' functionBody '}') | SemiColon)?
-//     ;
-//useCaseExecuteDeclaration
-//    : accessibilityModifier? Execute '(' formalParameterList? ')' ( ('{' functionBody '}') | SemiColon)
-//;
-
-// A.5 Interface
-
-// interfaceDeclaration
-//     : Export? Declare? Interface Identifier typeParameters? interfaceExtendsClause? objectType SemiColon?
-//     ;
-
-// propsDeclaration
-//     : Props Identifier typeParameters? interfaceExtendsClause? objectType SemiColon?
-//     ;
-
-// interfaceExtendsClause
-//     : Extends classOrInterfaceTypeList
-//     ;
-
-// classOrInterfaceTypeList
-//     : typeReference (Comma typeReference)*
-//     ;
-
-// A.7 Interface
-
-// enumDeclaration
-//     : Const? Enum Identifier '{' enumBody? '}'
-//     ;
-
-enumBody
-    : enumMemberList Comma?
-    ;
-
-enumMemberList
-    : enumMember (Comma enumMember)*
-    ;
-
-enumMember
-    : propertyName ('=' expression)?
-    ;
-
-// A.8 Namespaces
-
-namespaceDeclaration
-    : Namespace namespaceName OpenBrace statementList? CloseBrace
-    ;
-
-namespaceName
-    : Identifier (Dot+ Identifier)*
-    ;
-
-importAliasDeclaration
-    : Identifier '=' namespaceName SemiColon
-    ;
-
-// Ext.2 Additions to 1.8: Decorators
-
-decoratorList
-    : decorator+ ;
-
-decorator
-    : '@' (decoratorMemberExpression | decoratorCallExpression)
-    ;
-
-decoratorMemberExpression
-    : Identifier
-    | decoratorMemberExpression Dot identifier 
-    | OpenParen expression CloseParen
-    ;
-
-decoratorCallExpression
-    : decoratorMemberExpression arguments;
-
-// ECMAPart
-program
+coreProgram
     : sourceElement*
     // : sourceElements?
     // sourceElements? EOF?
+    ;
+
+setupProgram
+    : setupStatement*  // # setupStatements
+    | test*            // # testStatements
+    | EOF?           // # eof
+    ;
+
+program
+    : coreProgram
+    | setupProgram
     ;
 
 sourceElement
@@ -505,7 +213,6 @@ sourceElement
 // TODO fix JestTestReturnOkErrorType
 jestTestDeclaration
     : JestTestFunctionBody OpenBrace functionBody CloseBrace SemiColon?       
-    // JestTestExecute '{' functionBody '}' SemiColon?      
     | JestTestStatementList OpenBrace statementList CloseBrace SemiColon?    
     | JestTestStatement OpenBrace statement SemiColon? CloseBrace SemiColon? 
     | JestTestStructEvaluation OpenBrace structEvaluation SemiColon? CloseBrace  SemiColon?  
@@ -515,7 +222,6 @@ jestTestDeclaration
     | JestTest OpenBrace restControllerParameters CloseBrace     
     | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
     | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
-    // | JestTestGetClass OpenBrace getClassEvaluation CloseBrace 
     | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
@@ -528,7 +234,6 @@ jestTestDeclaration
     | JestTestEntityDeclaration OpenBrace entityDeclaration CloseBrace SemiColon?
     | JestTestCondition OpenBrace condition CloseBrace SemiColon?
     | JestTestVariableDeclaration OpenBrace variableDeclaration CloseBrace SemiColon?
-    // | JestTestThisDeclaration OpenBrace thisDeclaration CloseBrace SemiColon?
     | JestTestValueObjectEvaluation OpenBrace valueObjectEvaluation CloseBrace SemiColon?
     | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
@@ -541,8 +246,6 @@ errorEvaluation
     ;
 
 evaluation
-    // : isInstanceOf 
-    // | getClassEvaluation
     : builtInClassEvaluation
     | errorEvaluation
     | dtoEvaluation
@@ -568,32 +271,16 @@ variableDeclaration
     : identifier typeAnnotation '=' expression  SemiColon?
     ;
 
-// thisDeclaration
-//     : ThisVariableEvaluation '=' expression  SemiColon?
-//     ;
-
-
 statement                       
     : expression    
     | variableDeclaration
     | constDeclaration
-    // | thisDeclaration
     | emptyStatement_
     | propsDeclaration
-    // | namespaceDeclaration //ADDED
     | ifStatement
     | breakStatement
     | switchStatement
-    // | iterationStatement
     | returnStatement
-    // | returnErrorStatement TODO
-    // | labelledStatement
-    // | throwStatement
-    // | tryStatement
-    // | functionDeclaration
-    // | arrowFunctionDeclaration
-    // | variableStatement
-    // | typeAliasDeclaration //ADDED
     | builtInFunction // Using semantic analysis, allow it only inside domain
     ;
 
@@ -613,39 +300,9 @@ statementList
     : statement+ SemiColon?
     ;
 
-// abstractDeclaration
-//     : Abstract (Identifier callSignature | variableStatement) eos
-//     ;
-
-// importStatement
-//     : Import (fromBlock | importAliasDeclaration)
-//     ;
-
-fromBlock
-    : (Multiply | multipleImportStatement) (As identifier)? From StringLiteral eos
-    ;
-
-multipleImportStatement
-    : (identifier Comma)? OpenBrace identifier (Comma identifier)* CloseBrace
-    ;
-
-// exportStatement
-//     : Export Default? (fromBlock | statement)
-//     ;
-
-// variableStatement
-//     : bindingPattern typeAnnotation? initializer SemiColon?
-//     | accessibilityModifier? varModifier? ReadOnly? variableDeclarationList SemiColon?
-//     | Declare varModifier? variableDeclarationList SemiColon?
-//     ;
-
 variableDeclarationList
     : variableDeclaration (Comma variableDeclaration)*
     ;
-
-// variableDeclaration
-//     : ( identifierOrKeyWord | arrayLiteral | objectLiteral) typeAnnotation? expression? ('=' typeParameters? expression)? // ECMAScript 6: Array & Object Matching
-//     ;
 
 emptyStatement_
     : SemiColon
@@ -655,55 +312,8 @@ ifStatement
     : If OpenParen condition CloseParen OpenBrace statementList CloseBrace (Else OpenBrace statementList CloseBrace)?
     ;
 
-
-iterationStatement
-    : Do statement While OpenParen expressionSequence CloseParen eos                                                         # DoStatement
-    | While OpenParen expressionSequence CloseParen statement                                                                # WhileStatement
-    | For OpenParen expressionSequence? SemiColon expressionSequence? SemiColon expressionSequence? CloseParen statement     # ForStatement
-    | For OpenParen varModifier variableDeclarationList SemiColon expressionSequence? SemiColon expressionSequence? CloseParen
-          statement                                                                                             # ForVarStatement
-    // | For '(' expression (In | Identifier{this.p("of")}?) expressionSequence ')' statement                # ForInStatement
-    // | For '(' varModifier variableDeclaration (In | Identifier{this.p("of")}?) expressionSequence ')' statement # ForVarInStatement
-    | For OpenParen expression (In | Identifier?) expressionSequence CloseParen statement                # ForInStatement
-    | For OpenParen varModifier variableDeclaration (In | Identifier?) expressionSequence CloseParen statement # ForVarInStatement
-    ;
-
-varModifier
-    : Var
-    | Let
-    | Const
-    ;
-
-// continueStatement
-//     : Continue ({this.notLineTerminator()}? Identifier)? eos
-//     ;
-
-// breakStatement
-//     : Break ({this.notLineTerminator()}? Identifier)? eos
-//     ;
-
-// returnStatement
-//     : Return ({this.notLineTerminator()}? expressionSequence)? eos
-//     ;
-
-continueStatement
-    : Continue (Identifier)? eos
-    ;
-
 breakStatement
     : Break (Identifier)? eos
-    ;
-
-// returnStatement
-//     : Return (expressionSequence)? eos
-//     ;
-
-// yieldStatement
-//     : Yield ({this.notLineTerminator()}? expressionSequence)? eos
-//     ;
-
-withStatement
-    : With OpenParen expressionSequence CloseParen statement
     ;
 
 switchStatement
@@ -724,44 +334,6 @@ defaultClause
     | Default Colon statementList? SemiColon?
     ;
 
-labelledStatement
-    : Identifier Colon statement
-    ;
-
-throwStatement
-    // : Throw {this.notLineTerminator()}? expressionSequence eos
-    : Throw expressionSequence eos
-    ;
-
-// tryStatement
-//     : Try block (catchProduction finallyProduction? | finallyProduction)
-//     ;
-
-// catchProduction
-//     : Catch OpenParen Identifier CloseParen block
-//     ;
-
-// finallyProduction
-//     : Finally block
-//     ;
-
-debuggerStatement
-    : Debugger eos
-    ;
-
-// functionDeclaration
-//     : Function_ Identifier callSignature ( (OpenBrace functionBody CloseBrace) | SemiColon)
-//     ;
-
-//Ovveride ECMA
-// classDeclaration
-//     : Abstract? Class Identifier typeParameters? classHeritage classTail
-//     ;
-
-// controllerDeclaration
-//     : RESTController ControllerIdentifier formalParameterList '{' restControllerMethodDeclaration restControllerExecuteDeclaration '}' SemiColon?
-//     | GraphQLController ControllerIdentifier formalParameterList '{' graphQLOperationAssignment '}' SemiColon?
-//     ;
 domainFieldDeclaration
 : fieldList 
 ;
@@ -835,7 +407,6 @@ readModelDeclaration
     : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
 
-// RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;
 repoPortDeclaration
     : RepoPort repoPortIdentifier '<' readModelIdentifier '>' repoExtendsList SemiColon?
     | RepoPort repoPortIdentifier '<' readModelIdentifier '>' repoExtendsList repoPortMethodDefinitions SemiColon?
@@ -978,7 +549,6 @@ graphQLOperation
 graphQLControllerExecuteDeclaration
     : Execute OpenParen graphQLControllerParameters CloseParen Colon graphQLControllerReturnType OpenBrace functionBody CloseBrace
     ;
-    // graphQLControllerParameters
 
 graphQLControllerParameters
     : Identifier
@@ -1012,10 +582,6 @@ entityIdentifier
 : EntityIdentifier
 ;
 
-// aggregateIdentifier
-// : AggregateIdentifier
-// ;
-
 domainRuleIdentifier
 : RuleIdentifier
 ;
@@ -1040,47 +606,6 @@ packagePortDeclaration
     : PackagePort packagePortIdentifier OpenBrace methodDefinitionList CloseBrace
     ;
 
-// classHeritage
-//     : classExtendsClause? implementsClause?
-//     ;
-
-// classTail
-//     :  '{' classElement* '}'
-//     ;
-
-// classExtendsClause
-//     : Extends typeReference
-//     ;
-
-// useCaseTail
-//     :  '{' useCaseElement* '}'
-//     ;
-
-// implementsClause
-//     : Implements classOrInterfaceTypeList
-//     ;
-
-// Classes modified
-// classElement
-//     : constructorDeclaration
-//     | decoratorList? propertyMemberDeclaration
-//     | indexMemberDeclaration
-//     | statement
-//     ;
-
-// useCaseElement
-//     : executeDeclaration
-//     | decoratorList? propertyMemberDeclaration
-//     | indexMemberDeclaration
-//     | statement
-//     ;
-
-// propertyMemberDeclaration
-    // : propertyMemberBase propertyName '?'? typeAnnotation? initializer? SemiColon                   # PropertyDeclarationExpression
-    // | propertyMemberBase propertyName callSignature ( ('{' functionBody '}') | SemiColon)           # MethodDeclarationExpression
-    // | propertyMemberBase (getAccessor | setAccessor)                                                # GetterSetterDeclarationExpression
-    // | abstractDeclaration     # AbstractMemberDeclaration
-
 methodDeclaration
     : publicMethodDeclaration            # PublicMethodDeclarationExpression
     | privateMethodDeclaration           # PrivateMethodDeclarationExpression
@@ -1101,38 +626,6 @@ returnPublicMethodType
 returnPrivateMethodType
     : typeAnnotation | (Colon returnOkErrorType)
 ;
-
-propertyMemberBase
-    : accessibilityModifier? Static?
-    ;
-
-indexMemberDeclaration
-    : indexSignature SemiColon
-    ;
-
-generatorMethod
-    : '*'?  Identifier OpenParen parameterList? CloseParen OpenBrace functionBody CloseBrace
-    ;
-
-generatorFunctionDeclaration
-    : Function_ '*' Identifier? OpenParen parameterList? CloseParen OpenBrace functionBody CloseBrace
-    ;
-
-generatorBlock
-    : OpenBrace generatorDefinition (Comma generatorDefinition)* Comma? CloseBrace
-    ;
-
-generatorDefinition
-    : '*' iteratorDefinition
-    ;
-
-iteratorBlock
-    : OpenBrace iteratorDefinition (Comma iteratorDefinition)* Comma? CloseBrace
-    ;
-
-iteratorDefinition
-    : '[' expression ']' OpenParen parameterList? CloseParen OpenBrace functionBody CloseBrace
-    ;
 
 parameterList
     : OpenParen CloseParen 
@@ -1155,53 +648,12 @@ functionBody
     : statementList?
     ;
 
-// sourceElements
-//     : sourceElement+
-//     ;
-
 arrayLiteral
     : OpenBracket elementList? CloseBracket
     ;
 
 elementList
     : expression (Comma expression)*
-    ;
-
-objectLiteral
-    : OpenBrace (propertyAssignment (Comma propertyAssignment)* Comma?)? CloseBrace
-    ;
-
-// functionParameters
-//     : (propertyAssignment (Comma propertyAssignment)* Comma?)
-//     ;
-
-regularVariableEvaluationORliteralORexpression
-    : expression
-    ;
-
-// MODIFIED
-propertyAssignment
-    : propertyName (Colon |'=') regularVariableEvaluationORliteralORexpression                # PropertyExpressionAssignment
-    | '[' regularVariableEvaluationORliteralORexpression ']' Colon regularVariableEvaluationORliteralORexpression           # ComputedPropertyExpressionAssignment
-    | getAccessor                                             # PropertyGetter
-    | setAccessor                                             # PropertySetter
-    | generatorMethod                                         # MethodProperty
-    | identifierOrKeyWord                                     # PropertyShorthand
-    | restParameter                                           # RestParameterInObject
-    ;
-
-getAccessor
-    : getter OpenParen CloseParen typeAnnotation? OpenBrace functionBody CloseBrace
-    ;
-
-setAccessor
-    : setter OpenParen ( Identifier | bindingPattern) typeAnnotation? CloseParen OpenBrace functionBody CloseBrace
-    ;
-
-propertyName
-    : identifier
-    | StringLiteral
-    | numericLiteral
     ;
 
 arguments
@@ -1214,14 +666,6 @@ argumentList
 
 argument 
     : expression
-    ;
-
-expressionSequence
-    : expression (Comma expression)*
-    ;
-
-functionExpressionDeclaration
-    : Function_ Identifier? OpenParen parameterList? CloseParen typeAnnotation? OpenBrace functionBody CloseBrace
     ;
 
 expression
@@ -1247,84 +691,8 @@ expression
     | This                                                       # ThisExpression
     ;   
 
-// more single expressions
-    // | functionExpressionDeclaration                                          # FunctionExpression
-    // | arrowFunctionDeclaration                                               # ArrowFunctionExpression   // ECMAScript 6
-    // | Class Identifier? classTail                                            # ClassExpression
-    // | UseCase Identifier? useCaseTail                                        # UseCaseExpression
-    // | expression '[' expressionSequence ']'                            # MemberIndexExpression
-    // Split to try `new Date()` first, then `new Date`.
-    // | New expression typeArguments? arguments                          # NewExpression
-    // | New expression typeArguments?                                    # NewExpression
-    // | expression arguments                                             # ArgumentsExpression
-    // | expression {this.notLineTerminator()}? '++'                      # PostIncrementExpression
-    // | expression {this.notLineTerminator()}? '--'                      # PostDecreaseExpression
-    // | expression '++'                      # PostIncrementExpression
-    // | expression '--'                      # PostDecreaseExpression
-    // | Delete expression                                                # DeleteExpression
-    // | Void expression                                                  # VoidExpression
-    // | Typeof expression                                                # TypeofExpression
-    // | '++' expression                                                  # PreIncrementExpression
-    // | '--' expression                                                  # PreDecreaseExpression
-    // | '+' expression                                                   # UnaryPlusExpression
-    // | '-' expression                                                   # UnaryMinusExpression
-    // | '~' expression                                                   # BitNotExpression
-    // | '!' expression                                                   # NotExpression
-    // | expression ('<<' | '>>' | '>>>') expression                # BitShiftExpression
-    // | expression Instanceof expression                           # InstanceofExpression
-    // | expression In expression                                   # InExpression
-    // | expression '&' expression                                  # BitAndExpression
-    // | expression '^' expression                                  # BitXOrExpression
-    // | expression '|' expression                                  # BitOrExpression
-    // | expression '&&' expression                                 # LogicalAndExpression
-    // | expression '||' expression                                 # LogicalOrExpression
-    // | expression '?' expression ':' expression             # TernaryExpression
-    // | expression '=' expression                                  # AssignmentExpression
-    // | expression assignmentOperator expression                   # AssignmentOperatorExpression
-    // | expression templateStringLiteral                                 # TemplateStringExpression  // ECMAScript 6
-    // | iteratorBlock                                                          # IteratorsExpression // ECMAScript 6
-    // | generatorBlock                                                         # GeneratorsExpression // ECMAScript 6
-    // | generatorFunctionDeclaration                                           # GeneratorsFunctionExpression // ECMAScript 6
-    // | yieldStatement                                                         # YieldExpression // ECMAScript 6
-    // | Super                                                                  # SuperExpression
-    // | arrayLiteral                                                           # ArrayLiteralExpression
-    // | objectLiteral                                                          # ObjectLiteralExpression
-    // | '(' expressionSequence ')'                                             # ParenthesizedExpression
-    // | typeArguments expressionSequence?                                      # GenericTypes
-    // | expression As asExpression                                       # CastAsExpression
-
-asExpression
-    : predefinedType ('[' ']')?
-    | expression
-    ;
-
-arrowFunctionDeclaration
-    : Async? arrowFunctionParameters typeAnnotation? '=>' arrowFunctionBody
-    ;
-
-arrowFunctionParameters
-    : Identifier
-    | OpenParen parameterList? CloseParen
-    ;
-
-arrowFunctionBody
-    : expression
-    | OpenBrace functionBody CloseBrace
-    ;
-
-assignmentOperator
-    : '*='
-    | '/='
-    | '%='
-    | '+='
-    | '-='
-    | '<<='
-    | '>>='
-    | '>>>='
-    | '&='
-    | '^='
-    | '|='
-    ;
+//TODO rename this
+classTypes: ErrorClass;
 
 literal
     : NullLiteral               # NullLiteral
@@ -1347,90 +715,299 @@ templateStringAtom
 numericLiteral
     : IntegerLiteral        #IntegerLiteral
     | DecimalLiteral        #DecimalLiteral
-    // | HexIntegerLiteral     #HexIntegerLiteral
-    // | OctalIntegerLiteral   #OctalIntegerLiteral
-    // | OctalIntegerLiteral2  #OctalIntegerLiteral2
-    // | BinaryIntegerLiteral  #BinaryIntegerLiteral
-    ;
-
-identifierOrKeyWord
-    : Identifier
-    ;
-
-reservedWord
-    : keyword
-    | NullLiteral
-    | BooleanLiteral
-    ;
-
-keyword
-    : Break
-    | Do
-    | Instanceof
-    | Typeof
-    | Case
-    | Else
-    | New
-    | Var
-    | Catch
-    | Finally
-    | Return
-    | Void
-    | Continue
-    | For
-    | Switch
-    | While
-    | Debugger
-    | Function_
-    | This
-    | With
-    | Default
-    | If
-    | Throw
-    | Delete
-    | In
-    | Try
-    | ReadOnly
-    | Async
-    | From
-    | UseCase
-    // | Class
-    // | Enum
-    | Extends
-    // | Super
-    | Const
-    // | Export
-    // | Import
-    // | Implements
-    | Let
-    | Private
-    | Public
-    // | Interface
-    // | Package
-    | Protected
-    | Static
-    // | Yield
-    | Get
-    | Set
-    // | Require
-    | TypeAlias
-    | String
-    ;
-
-getter
-    : Get propertyName
-    ;
-
-setter
-    : Set propertyName
     ;
 
 eos
     : SemiColon
     | EOF
-    // | {this.lineTerminatorAhead()}?
-    // | {this.closeBrace()}?
     ;
 
+/** !!SETUP!! **/
 
-classTypes: ErrorClass;
+setupExpression
+    : EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
+    | envVariable                                                            # EnvironmentVariableExpression
+    // | objectLiteral                                                          # ObjectLiteralExpression 
+    | expression                                                             # CoreExpression
+    ;
+
+// objectLiteral
+//     : '{' (evaluationFieldList (',' evaluationFieldList)* ','?)? '}'
+//     ;
+
+language
+    : TypeScript
+    | Java
+    | unknownLanguage
+    ;
+
+unknownLanguage
+    : identifier
+    ;
+
+languageSetterMethod
+    : SetLanguage OpenParen language CloseParen SemiColon?
+    ;
+
+configInvocation
+    : Config Dot languageSetterMethod # ConfigSetLanguageInvocation
+    ;
+
+restRouter
+    : RESTRouter
+    ;
+
+pathString
+    : StringLiteral
+    ;
+
+method
+    : validMethod
+    | unknownMethod
+    ;
+
+validMethod
+    : GET
+    | POST
+    | PUT
+    | DELETE
+    | PATCH
+    | OPTIONS
+    ;
+
+unknownMethod
+    : identifier
+    ;
+
+// controllerDeclarations
+//     : controllerInstantiation+
+//     ;
+
+nestedImpliedControllerDeclarations
+    : nestedControllerInstantiation*
+    ;
+
+routerArguments
+    : validRouterArguments
+    | invalidRouterArguments
+    ;
+
+validRouterArguments
+    : OpenParen serverType CloseParen
+    ;
+
+invalidRouterArguments
+    : OpenParen CloseParen
+    ;
+
+useCaseExpression
+    : boundedContextModuleDeclaration useCaseName OpenParen useCaseDependencies CloseParen
+    ;
+
+routerExpression
+    : restRouter routerArguments OpenCurlyBracket nestedImpliedControllerDeclarations CloseCurlyBracket
+    ;
+
+useCaseDeclarationSetup
+    : Const identifier
+    ;
+
+routerDeclaration
+    : Const identifier
+    ;
+
+packageAdapterClassName
+    : PackageAdapterClassName
+    ;
+
+packagePortClassName
+    : PackagePortClassName
+    ;
+
+packageConcretion
+    : boundedContextModuleDeclaration adapter=packageAdapterClassName Concretes port=packagePortClassName SemiColon?
+    ;
+
+useCaseDefinition
+    : useCaseDeclarationSetup Assign useCaseExpression SemiColon?
+    ;
+
+routerDefinition
+    : routerDeclaration Assign routerExpression SemiColon?
+    ;
+
+serverExpression
+    : RESTServer OpenParen serverInstantiationOptions CloseParen  bindServerRoutes SemiColon?                   # RestServerExpression
+    | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerExpression
+    ;
+
+repoConnectionDefinition
+    : Const identifier '=' repoConnectionExpression
+    ;
+
+// constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
+repoConnectionExpression
+    : RepoConnections Dot repoConnectionType OpenParen OpenCurlyBracket repoConnectionOptions? CloseCurlyBracket CloseParen SemiColon?
+    ;
+repoConnectionType
+    : Mongo
+    ;
+
+repoConnectionOptions
+    : objectProperties
+    ;
+
+objectProperties
+    : objectProperty (Comma objectProperty)* Comma? 
+    ;
+
+objectProperty
+    : identifier Colon setupExpression
+    ;
+
+repoAdapterDefinition
+    : Const identifier '=' repoAdapterExpression
+    ;
+
+repoAdapterExpression
+    : repoAdapterClassName OpenParen OpenCurlyBracket repoAdapterOptions CloseCurlyBracket CloseParen Concretes boundedContextModuleDeclaration concretedRepoPort  SemiColon?
+    ;
+
+repoAdapterOptions
+    : objectProperties
+    ;
+
+repoAdapterClassName
+    : RepoAdapters Dot Mongo
+    ;
+
+concretedRepoPort
+    : RepoPortIdentifier
+    ;
+
+serverInstantiationOptions
+    // : OpenCurlyBracket objectProperties CloseCurlyBracket
+    // TODO Remove necessary comma on end of each line
+    : OpenCurlyBracket serverInstantiationOption* CloseCurlyBracket
+    ;
+
+serverInstantiationOption
+    : serverTypeOption    
+    | serverApiPrefixOption
+    | customServerOption
+    ;
+
+serverTypeOption
+    : ServerTypeOption Colon serverType Comma
+    ;
+
+serverApiPrefixOption
+    : ServerApiPrefix Colon pathString Comma
+    ;
+
+customServerOption
+    : Identifier Colon setupExpression Comma
+    ;
+
+// Cover any user defined options
+
+graphQLServerInstantiationOptions
+    : OpenCurlyBracket graphQLServerInstantiationOption CloseCurlyBracket
+    ;
+
+graphQLServerInstantiationOption
+    : customServerOption
+    ;
+
+envVariable
+    : EnvVariable
+    ;
+
+bindServerRoutes
+    : OpenCurlyBracket routeBind (SemiColon routeBind)* SemiColon CloseCurlyBracket
+    ;
+
+routeBind
+    : pathString Colon identifier
+    ;
+
+bindControllerResolvers
+    : OpenCurlyBracket controllerResolverBind (SemiColon controllerResolverBind)* SemiColon CloseCurlyBracket
+    ;
+
+controllerResolverBind
+    : boundedContextModuleDeclaration controllerName OpenParen controllerDependencies CloseParen
+    ;
+
+useCaseName
+    : UseCaseName
+    ;
+
+controllerName
+    : ControllerName
+    ;
+
+dependencies
+    : (Identifier (Comma Identifier)*)?
+    ;
+
+alpha_numeric_ws: Digits | WS | Identifier ;
+
+wordsWithSpaces
+    : alpha_numeric_ws+
+    ;
+
+nestedControllerInstantiation
+    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration controllerName OpenParen controllerDependencies CloseParen SemiColon?
+    ;
+
+useCaseDependencies
+    : (Identifier (Comma Identifier)*)?
+    ;
+
+controllerDependencies
+    : (identifier (Comma identifier)*)?
+    ;
+
+boundedContextModuleDeclaration
+    : OpenBracket wordsWithSpaces CloseBracket OpenBracket wordsWithSpaces CloseBracket
+    ;
+
+serverType
+    : fastifyServer
+    | expressServer
+    | graphQLServerType
+    | unknownServer
+    ;
+
+fastifyServer
+    : FastifyServer
+    ;
+
+expressServer
+    : ExpressServer
+    ;
+
+graphQLServerType
+    : GraphQLServerType
+    ;
+
+unknownServer
+    : identifier (Dot identifier)*
+    ;
+
+test
+    : OpenParen wordsWithSpaces CloseParen SemiColon? # TestExpression
+    | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
+    // | EnvPrefix OpenParen Identifier Comma literal CloseParen # EnvPrefixExpression
+    ;
+
+setupStatement
+    : configInvocation  # configInvocationStatement
+    | packageConcretion # packageConcretionStatement
+    | useCaseDefinition # useCaseDefinitionStatement
+    | routerDefinition  # routerDefinitionStatement
+    | serverExpression  # serverExpressionStatement
+    | repoConnectionDefinition # repoConnectionDefinitionStatement
+    | repoAdapterDefinition # repoAdapterDefinitionStatement
+    ;

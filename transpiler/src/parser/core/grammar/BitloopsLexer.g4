@@ -455,3 +455,42 @@ fragment RegularExpressionClassChar
 fragment RegularExpressionBackslashSequence
     : '\\' ~[\r\n\u2028\u2029]
     ;
+
+
+/** SETUP */
+
+SetLanguage:                    'setLanguage';
+TypeScript:                     'TypeScript';
+Java:                           'Java';
+FastifyServer:                  'REST.Fastify';
+ExpressServer:                  'REST.Express';
+GraphQLServerType:              'GraphQL';
+RESTRouter:                     'RESTRouter';
+RESTServer:                     'RESTServer';
+GraphQLServer:                  'GraphQLServer';
+
+// PackagePortIdentifier
+// PackagePortClassName:           [A-Z] [0-9a-zA-Z]* 'PackagePort';
+PackageAdapterIdentifier:        UpperCaseStart IdentifierPart* 'PackageAdapter';
+// UseCaseIdentifier
+// UseCaseName:                    [A-Z] [0-9a-zA-Z]* 'UseCase';
+// ControllerIdentifier
+// ControllerName:                 [A-Z] [0-9a-zA-Z]* 'Controller';
+ServerTypeOption:               'server';
+ServerApiPrefix:                'apiPrefix';
+
+EnvPrefix:                      'Env';
+EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
+
+Concretes:                      'concretes';
+
+GET:                            'Get';
+POST:                           'Post';
+PUT:                            'Put';
+DELETE:                         'Delete';
+PATCH:                          'Patch';
+OPTIONS:                        'Options';
+
+RepoAdapters:                   'RepoAdapters';
+RepoConnections:                'RepoConnections';
+Mongo:                          'Mongo';
