@@ -1,5 +1,4 @@
 import { DomainCreateBuilder } from '../builders/DomainCreateBuilder.js';
-import { ParameterBuilderDirector } from '../builders/ParameterBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../builders/returnOkErrorTypeBuilderDirector.js';
 import { StatementListDirector } from '../builders/statement/statementListDirector.js';
 
@@ -22,7 +21,7 @@ export const validDomainConstructorDeclarationCases = [
           'DomainErrors.InvalidName',
         ),
       )
-      .withParameter(new ParameterBuilderDirector().buildPrimitiveParameter('props', 'string'))
+      .withParameter('props', 'string')
       .build(),
   },
   {
@@ -44,7 +43,7 @@ export const validDomainConstructorDeclarationCases = [
           'DomainErrors.InvalidName',
         ),
       )
-      .withParameter(new ParameterBuilderDirector().buildIdentifierParameter('props', 'NameProps'))
+      .withParameter('props', 'NameProps')
       .build(),
   },
 ];

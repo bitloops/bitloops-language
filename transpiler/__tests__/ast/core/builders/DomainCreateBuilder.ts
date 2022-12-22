@@ -1,5 +1,6 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
+  PropsIdentifierKey,
   TDomainCreateMethod,
   TDomainCreateParameter,
   TOkErrorReturnType,
@@ -21,8 +22,13 @@ export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
     return this;
   }
 
-  public withParameter(parameter: TDomainCreateParameter): DomainCreateBuilder {
-    this.parameter = parameter;
+  public withParameter(propsIdentifier: string, value: string): DomainCreateBuilder {
+    this.parameter = {
+      domainCreateParameter: {
+        [PropsIdentifierKey]: propsIdentifier,
+        value,
+      },
+    };
     return this;
   }
 

@@ -178,7 +178,6 @@ export type TParameterList = {
   parameters: TParameter[];
 };
 
-// The old TArgumentDependency
 export type TArgument = {
   argument: TExpression;
 };
