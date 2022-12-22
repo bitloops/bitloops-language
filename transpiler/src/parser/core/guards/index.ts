@@ -1,3 +1,4 @@
+import { TTranspileError, TTranspileOutput } from '../../../transpilerTypes.js';
 import {
   ASTContext,
   OriginalParserError,
@@ -7,7 +8,7 @@ import {
 } from '../types.js';
 
 const isParserErrors = (
-  value: OriginalAST | OriginalParserError[],
+  value: TTranspileOutput | TTranspileError[] | OriginalAST | OriginalParserError[],
 ): value is OriginalParserError[] => {
   if (!Array.isArray(value)) {
     return false;
@@ -21,7 +22,7 @@ const isParserErrors = (
 };
 
 const isParserError = (
-  value: OriginalParserError | ASTContext | OriginalASTSetup | OriginalASTCore,
+  value: TTranspileError | OriginalParserError | ASTContext | OriginalASTSetup | OriginalASTCore,
 ): value is OriginalParserError => {
   if (value instanceof OriginalParserError) {
     return true;

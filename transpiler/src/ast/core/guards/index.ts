@@ -1,3 +1,4 @@
+import { TTranspileError, TTranspileOutput } from '../../../transpilerTypes.js';
 import { TBoundedContexts } from '../../../types.js';
 import {
   IntermediateASTParserError,
@@ -7,7 +8,7 @@ import {
 } from '../types.js';
 
 const isIntermediateASTError = (
-  value: IntermediateAST | IntermediateASTError,
+  value: TTranspileOutput | TTranspileError[] | IntermediateAST | IntermediateASTError,
 ): value is IntermediateASTError => {
   if (isIntermediateASTParserError(value) || isIntermediateASTValidationErrors(value)) {
     return true;
@@ -18,6 +19,8 @@ const isIntermediateASTError = (
 const isIntermediateASTParserError = (
   value:
     | IntermediateAST
+    | TTranspileOutput
+    | TTranspileError[]
     | TBoundedContexts
     | IntermediateASTValidationError[]
     | IntermediateASTParserError[],
@@ -29,7 +32,12 @@ const isIntermediateASTParserError = (
 };
 
 const isIntermediateASTValidationErrors = (
-  value: IntermediateAST | void | IntermediateASTValidationError[],
+  value:
+    | IntermediateAST
+    | TTranspileOutput
+    | TTranspileError[]
+    | void
+    | IntermediateASTValidationError[],
 ): value is IntermediateASTValidationError[] => {
   if (Array.isArray(value)) {
     for (const err of value) {

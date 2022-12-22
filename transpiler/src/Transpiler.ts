@@ -9,7 +9,7 @@ import {
 } from './parser/index.js';
 import { ITargetGenerator, TargetGeneratorError, TOutputTargetContent } from './target/types.js';
 import { isTargetGeneratorError } from './target/typescript/guards/index.js';
-import { TTranspileError, TTranspileOptions } from './transpilerTypes.js';
+import { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
 
 export default class Transpiler {
   constructor(
@@ -21,7 +21,7 @@ export default class Transpiler {
   public transpile(
     transpileInputData: TParserInputData,
     options: TTranspileOptions,
-  ): TOutputTargetContent | TTranspileError[] {
+  ): TTranspileOutput | TTranspileError[] {
     const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData);
     if (isParserErrors(originalAST)) return originalAST;
 

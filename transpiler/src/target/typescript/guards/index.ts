@@ -1,3 +1,4 @@
+import { TTranspileError } from '../../../transpilerTypes.js';
 import {
   TargetCoreGeneratorError,
   TargetGeneratorError,
@@ -9,7 +10,7 @@ import {
 } from '../../types.js';
 
 const isTargetGeneratorError = (
-  value: TOutputTargetContent | TargetGeneratorError[],
+  value: TOutputTargetContent | TTranspileError[] | TargetGeneratorError[],
 ): value is TargetGeneratorError[] => {
   if (Array.isArray(value)) {
     for (const err of value) {
@@ -24,7 +25,11 @@ const isTargetGeneratorError = (
 };
 
 const isTargetCoreGeneratorError = (
-  value: TTargetCoreFinalContent[] | TTargetCoreContent[] | TargetCoreGeneratorError,
+  value:
+    | TTargetCoreFinalContent[]
+    | TTargetCoreContent[]
+    | TargetCoreGeneratorError
+    | TTranspileError,
 ): value is TargetCoreGeneratorError => {
   if (value instanceof TargetCoreGeneratorError) {
     return true;
@@ -33,11 +38,12 @@ const isTargetCoreGeneratorError = (
 };
 
 const isTargetSetupGeneratorError = (
-  value: TTargetSetupContent[] | TargetSetupGeneratorError,
+  value: TTargetSetupContent[] | TargetSetupGeneratorError | TTranspileError,
 ): value is TargetSetupGeneratorError => {
   if (value instanceof TargetSetupGeneratorError) {
     return true;
   }
   return false;
 };
+
 export { isTargetCoreGeneratorError, isTargetSetupGeneratorError, isTargetGeneratorError };
