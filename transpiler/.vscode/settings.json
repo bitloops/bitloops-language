@@ -1,4 +1,5 @@
 {
   "cSpell.words": ["antlr"],
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "typescript.preferences.importModuleSpecifierEnding": "auto"
 }
