@@ -6,7 +6,7 @@ export class DomainRuleIdentifierBuilder implements IBuilder<DomainRuleIdentifie
   private identifierNode: DomainRuleIdentifierNode;
   private name: string;
 
-  constructor(nodeMetadata: TNodeMetadata) {
+  constructor(nodeMetadata?: TNodeMetadata) {
     this.identifierNode = new DomainRuleIdentifierNode(nodeMetadata);
   }
 

@@ -17,14 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TDomainCreateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  PropsIdentifierKey,
+  TDomainCreateMethod,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
 import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 
 export const domainCreate = (variable: TDomainCreateMethod): TTargetDependenciesTypeScript => {
-  const { parameter, returnType, statements } = variable.create;
+  const { domainCreateParameter, returnType, statements } = variable.create;
 
   const statementsResult = {
     thisStatements: [],
@@ -39,12 +43,13 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
     }
   }
 
-  const propsNameType = parameter.type;
+  const domainCreateParameterType = domainCreateParameter[PropsIdentifierKey];
+  const domainCreateParameterValue = domainCreateParameter.value;
   const returnOkType = returnType.ok.type;
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: { type: propsNameType },
+    type: BitloopsTypesMapping.TDomainConstructorParameter,
+    value: domainCreateParameterType,
   });
 
   const { output: returnOkTypeName, dependencies: returnOkTypeDependencies } =
@@ -64,11 +69,6 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
     value: statementsResult.restStatements,
   });
 
-  const parameterModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameter,
-    value: { parameter },
-  });
-
   const returnTypeModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
@@ -86,12 +86,11 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
     };
   }
 
-  const result = `${producedConstructor.output} public static create(${parameterModel.output}): ${returnTypeModel.output} { ${statementsModel.output} }`;
+  const result = `${producedConstructor.output} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {
     output: result,
     dependencies: [
-      ...parameterModel.dependencies,
       ...producedConstructor.dependencies,
       ...returnTypeModel.dependencies,
       ...statementsModel.dependencies,

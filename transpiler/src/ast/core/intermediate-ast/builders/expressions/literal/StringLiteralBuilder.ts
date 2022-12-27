@@ -1,4 +1,5 @@
 import { StringLiteralNode } from '../../../nodes/Expression/Literal/StringLiteralNode.js';
+import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class StringLiteralBuilder implements IBuilder<StringLiteralNode> {
@@ -7,8 +8,8 @@ export class StringLiteralBuilder implements IBuilder<StringLiteralNode> {
   private strValue: string;
   private stringLiteralNode: StringLiteralNode;
 
-  constructor() {
-    this.stringLiteralNode = new StringLiteralNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.stringLiteralNode = new StringLiteralNode(nodeMetadata);
   }
 
   public withValue(strValue: string): StringLiteralBuilder {

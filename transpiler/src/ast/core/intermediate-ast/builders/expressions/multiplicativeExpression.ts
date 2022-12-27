@@ -2,6 +2,7 @@ import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
 import { MultiplicativeExpressionNode } from '../../nodes/Expression/MultiplicativeExpression.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class MultiplicativeExpressionBuilder implements IBuilder<MultiplicativeExpressionNode> {
   public readonly NAME = 'multiplicativeExpression';
@@ -11,8 +12,8 @@ export class MultiplicativeExpressionBuilder implements IBuilder<MultiplicativeE
   private RightExpressionNode: ExpressionNode;
   private operatorNode: OperatorNode;
 
-  constructor() {
-    this.MultiplicativeExpressionNode = new MultiplicativeExpressionNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.MultiplicativeExpressionNode = new MultiplicativeExpressionNode(metadata);
   }
 
   public withLeftExpression(expressionNode: ExpressionNode): MultiplicativeExpressionBuilder {

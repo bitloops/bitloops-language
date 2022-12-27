@@ -1,13 +1,14 @@
 import { IBuilder } from '../IBuilder.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { GetClassNode } from '../../nodes/Expression/GetClass.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class GetClassNodeBuilder implements IBuilder<GetClassNode> {
   private getClassNode: GetClassNode;
   private expression: ExpressionNode;
 
-  constructor() {
-    this.getClassNode = new GetClassNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.getClassNode = new GetClassNode(metadata);
   }
 
   public withExpression(expr: ExpressionNode): GetClassNodeBuilder {

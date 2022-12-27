@@ -155,8 +155,6 @@ singleExpression
     | literal                                                                # LiteralExpression
     | identifier                                                             # IdentifierExpression //Identifier or Variable method
     | objectLiteral                                                          # ObjectLiteralExpression
-    // | evaluation                                                 # EvaluationExpression 
-    // | regularVariableEvaluation                                              
     ;
 
 literal
@@ -175,7 +173,6 @@ repoConnectionDefinition
     : constDeclaration '=' repoConnectionExpression
     ;
 
-// constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
 repoConnectionExpression
     : RepoConnections Dot repoConnectionType OpenParen OpenCurlyBracket repoConnectionOptions? CloseCurlyBracket CloseParen SemiColon?
     ;

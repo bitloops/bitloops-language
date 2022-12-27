@@ -7,7 +7,7 @@ export class ConditionNodeBuilder implements IBuilder<ConditionNode> {
   private conditionNode: ConditionNode;
   private expression: ExpressionNode;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.conditionNode = new ConditionNode(metadata);
   }
 

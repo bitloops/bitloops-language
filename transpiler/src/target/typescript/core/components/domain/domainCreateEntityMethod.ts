@@ -1,4 +1,8 @@
-import { TDomainCreateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  PropsIdentifierKey,
+  TDomainCreateMethod,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
@@ -9,7 +13,7 @@ import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrim
 export const domainCreateEntity = (
   variable: TDomainCreateMethod,
 ): TTargetDependenciesTypeScript => {
-  const { parameter, returnType, statements } = variable.create;
+  const { domainCreateParameter, returnType, statements } = variable.create;
 
   const statementsResult = {
     thisStatements: [],
@@ -24,20 +28,17 @@ export const domainCreateEntity = (
     }
   }
 
-  const propsNameType = parameter.type;
+  const propsNameType = domainCreateParameter[PropsIdentifierKey];
+  const domainCreateParameterValue = domainCreateParameter.value;
   const returnOkType = returnType.ok.type;
-
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-    throw new Error('Entity props type of createMethod cannot be an array');
-  }
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(returnOkType)) {
     throw new Error('Entity return type of createMethod cannot be an array');
   }
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: { type: propsNameType },
+    type: BitloopsTypesMapping.TDomainConstructorParameter,
+    value: propsNameType,
   });
 
   const { output: returnOkTypeName, dependencies: returnOkTypeDependencies } =
@@ -57,11 +58,6 @@ export const domainCreateEntity = (
     value: statementsResult.restStatements,
   });
 
-  const parameterString = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameter,
-    value: { parameter },
-  });
-
   const returnTypeModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
@@ -79,13 +75,12 @@ export const domainCreateEntity = (
     };
   }
 
-  const result = `${producedConstructor.output} public static create(${parameterString.output}): ${returnTypeModel.output} { ${statementsModel.output} }`;
+  const result = `${producedConstructor.output} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {
     output: result,
     dependencies: [
       ...producedConstructor.dependencies,
-      ...parameterString.dependencies,
       ...returnTypeModel.dependencies,
       ...statementsModel.dependencies,
       ...propsTypeDependencies,

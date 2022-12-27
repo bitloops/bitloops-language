@@ -381,8 +381,13 @@ privateMethodDeclarationList
     : privateMethodDeclaration+
     ;
 
+domainConstructorParam 
+: propsIdentifier
+;
+
+
 domainConstructorDeclaration
-    : Constructor OpenParen parameter CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
+    : Constructor OpenParen domainConstructorParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier

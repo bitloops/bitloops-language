@@ -18,15 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { join, dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(process.cwd());
 
 export class FileUtil {
   static readFileString(relativePath: string): string {
-    const readFilePath = join(__dirname, '../../../', relativePath);
+    const readFilePath = join(__dirname, relativePath);
     const dataFile = fs.readFileSync(readFilePath);
     return dataFile.toString();
   }

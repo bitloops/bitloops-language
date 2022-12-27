@@ -42,18 +42,21 @@ const parameterDependenciesToTargetLanguage = (
   const { parameters } = variable;
   let res = '(';
   const finalDependencies = [];
-  for (let i = 0; i < parameters.length; i += 1) {
-    const arg = parameters[i];
-    const { output, dependencies } = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TParameter,
-      value: arg,
-    });
-    res += output;
-    finalDependencies.push(...dependencies);
-    if (i !== parameters.length - 1) {
-      res += ',';
+  if (parameters) {
+    for (let i = 0; i < parameters.length; i += 1) {
+      const arg = parameters[i];
+      const { output, dependencies } = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TParameter,
+        value: arg,
+      });
+      res += output;
+      finalDependencies.push(...dependencies);
+      if (i !== parameters.length - 1) {
+        res += ',';
+      }
     }
   }
+
   res += ')';
   return { output: res, dependencies: finalDependencies };
 };

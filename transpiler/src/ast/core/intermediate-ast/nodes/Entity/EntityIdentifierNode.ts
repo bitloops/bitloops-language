@@ -8,4 +8,8 @@ export class EntityIdentifierNode extends IntermediateASTIdentifierNode {
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TEntityIdentifier, EntityIdentifierNode.classNodeName, metadata);
   }
+
+  public static getClassNodeName() {
+    return EntityIdentifierNode.classNodeName;
+  }
 }

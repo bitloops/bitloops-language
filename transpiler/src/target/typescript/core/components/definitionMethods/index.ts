@@ -18,11 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import {
-  TDefinitionMethodInfo,
-  TDefinitionMethods,
-  TTargetDependenciesTypeScript,
-} from '../../../../../types.js';
+import { TDefinitionMethodInfo, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
@@ -37,11 +33,10 @@ export const definitionMethodInfoToTargetLanguage = (
 };
 
 export const definitionMethodsToTargetLanguage = (
-  definitionMethods: TDefinitionMethods,
+  methodDefinitionList: TDefinitionMethodInfo[],
 ): TTargetDependenciesTypeScript => {
   let res = '';
   let dependencies = [];
-  const { methodDefinitionList } = definitionMethods;
   for (const method of methodDefinitionList) {
     const { methodDefinition } = method;
     const definitionMethodInfo = definitionMethodInfoToTargetLanguage(method);

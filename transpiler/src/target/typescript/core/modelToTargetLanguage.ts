@@ -67,9 +67,8 @@ import {
   stringToTargetLanguage,
 } from './components/strings/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
-import { primitiveEvaluationToTargetLanguage } from './components/primitiveEvaluator/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
-import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js'; // TODO check this
+import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
 import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
@@ -77,7 +76,6 @@ import {
   definitionMethodInfoToTargetLanguage,
   definitionMethodsToTargetLanguage,
 } from './components/definitionMethods/index.js';
-import { returnTypeToDefinitionLanguage } from './components/returnType/index.js';
 import { packagePortToTargetLanguage } from './components/packagePort/index.js';
 import { packageToTargetLanguage } from './components/packages/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
@@ -126,6 +124,7 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -235,10 +234,6 @@ const modelToTargetLanguage = (props: {
       res = constDeclarationToTargetLanguage(value);
       break;
     }
-    // case BitloopsTypesMapping.TThisDeclaration: {
-    //   res = thisDeclarationToTargetLanguage(value);
-    //   break;
-    // }
     case BitloopsTypesMapping.TDefaultCase: {
       res = defaultSwitchCaseToTargetLanguage(value);
       break;
@@ -306,10 +301,6 @@ const modelToTargetLanguage = (props: {
       res = applicationErrorsToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TEvaluatePrimitive: {
-      res = primitiveEvaluationToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TGraphQLSetupData: {
       res = graphQLSetupDataToTargetLanguage(value);
       break;
@@ -328,10 +319,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDefinitionMethods: {
       res = definitionMethodsToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TReturnType: {
-      res = returnTypeToDefinitionLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPackagePort: {
@@ -383,7 +370,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRepoPort: {
-      res = repoPortToTargetLanguage(value, model, contextData);
+      res = repoPortToTargetLanguage(value, model);
       break;
     }
     case BitloopsTypesMapping.TAdditiveOperator: {
@@ -478,6 +465,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainConstructorParameter: {
+      res = domainConstructorParameterToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuiltInClassEvaluation: {

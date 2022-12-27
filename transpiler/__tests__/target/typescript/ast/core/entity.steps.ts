@@ -25,7 +25,7 @@ import { IntermediateModelToASTTargetTransformer } from '../../../../../src/targ
 import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
 import { ENTITY_TEST_CASES } from './mocks/entity.js';
 
-describe('Valid Use Case', () => {
+describe('Valid Entity', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 

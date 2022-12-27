@@ -23,6 +23,7 @@ import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { MethodCallExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/methodCallExprBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { produceMetadata } from '../../metadata.js';
 
 export const methodCallExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -30,7 +31,7 @@ export const methodCallExpressionVisitor = (
 ): ExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
   const argumentList = thisVisitor.visit(ctx.methodArguments());
-  const node = new MethodCallExpressionNodeBuilder()
+  const node = new MethodCallExpressionNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withExpression(leftExpression)
     .withArgumentsList(argumentList)
     .build();

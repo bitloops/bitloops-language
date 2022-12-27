@@ -57,11 +57,11 @@ export const modifyReturnOkErrorStatements = (
     if (isIfStatement(statement)) {
       const { thenStatements, elseStatements } = statement.ifStatement;
 
-      for (let i = 0; i < thenStatements.length; i += 1) {
+      for (let i = 0; i < thenStatements.statements.length; i += 1) {
         thenStatements[i] = modifyReturnOkErrorStatement(thenStatements[i], returnType);
       }
-      if (elseStatements && elseStatements.length > 0) {
-        for (let i = 0; i < elseStatements.length; i += 1) {
+      if (elseStatements && elseStatements.statements.length > 0) {
+        for (let i = 0; i < elseStatements.statements.length; i += 1) {
           elseStatements[i] = modifyReturnOkErrorStatement(elseStatements[i], returnType);
         }
       }

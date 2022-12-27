@@ -17,6 +17,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  PropsIdentifierKey,
   RootEntityKey,
   TDependenciesTypeScript,
   TRootEntity,
@@ -68,12 +69,14 @@ export const rootEntityToTargetLanguage = (params: {
   const { create, privateMethods, publicMethods, constants } =
     rootEntity[RootEntityKey].entityValues;
 
-  const propsNameType = create.parameter.type;
+  const propsNameType = create.domainCreateParameter[PropsIdentifierKey];
+
   const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
     modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: { type: propsNameType },
+      type: BitloopsTypesMapping.TDomainConstructorParameter,
+      value: propsNameType,
     });
+
   dependencies.push(...rootEntityPropsTypeDependencies);
 
   if (constants) {

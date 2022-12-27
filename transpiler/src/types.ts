@@ -127,7 +127,7 @@ export type TVariable = {
  * Props
  */
 export type TPropsIdentifier = string;
-export const PropsIdentifierKey = 'PropsIdentifier';
+export const PropsIdentifierKey = 'propsIdentifier';
 
 export const PropsKey = 'Props';
 export type TProps = {
@@ -159,11 +159,17 @@ export type TParameter = {
   } & TParameterType;
 };
 
+export type TDomainCreateParameter = {
+  domainCreateParameter: {
+    [PropsIdentifierKey]: TPropsIdentifier;
+    value: TParameterIdentifier;
+  };
+};
+
 export type TParameterList = {
   parameters: TParameter[];
 };
 
-// The old TArgumentDependency
 export type TArgument = {
   argument: TExpression;
 };
@@ -616,7 +622,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TParameter;
+    TDomainCreateParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;
@@ -1029,21 +1035,7 @@ export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 
-/**
- * Setup Expression
- */
-// singleExpression
-//     : singleExpression Or singleExpression                                   # LogicalOrExpression
-//     | EnvPrefix OpenParen Identifier Comma literal CloseParen                # EnvPrefixExpression
-//     | envVariable                                                            # EnvVariableExpression
-//     | literal                                                                # LiteralExpression
-//     | identifier                                                             # IdentifierExpression //Identifier or Variable method
-
-export type TSingleExpressionValue = // | TMultiplicativeExpression
-  // | TAdditiveExpression
-  // | TRelationalExpression
-  // | TEqualityExpression
-  // | TParenthesizedExpression;
+export type TSingleExpressionValue =
   | TLogicalSingleExpression
   | TEnvVarWithDefaultValueExpression
   | TEnvironmentVariableExpression

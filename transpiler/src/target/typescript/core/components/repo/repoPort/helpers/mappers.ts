@@ -24,6 +24,7 @@ import {
   TRepoPort,
   TDependencyParentTypescript,
   repoPortKey,
+  identifierKey,
 } from '../../../../../../../types.js';
 import { ClassTypes, TClassTypesValues } from '../../../../../../../helpers/mappings.js';
 import { getChildDependencies } from '../../../../dependencies.js';
@@ -63,12 +64,12 @@ export const mapPortIdentifier = (
 };
 
 export const mapExtendedRepoPorts = (
-  repoPorts: string[],
+  repoPorts: { [identifierKey]: string }[],
   repoDependencyName: string,
   domainIdValue: TTargetDependenciesTypeScript,
 ): TTargetDependenciesTypeScript[] => {
   return repoPorts.map((extendedRepoPort) =>
-    mapPortIdentifier(extendedRepoPort, repoDependencyName, domainIdValue),
+    mapPortIdentifier(extendedRepoPort[identifierKey], repoDependencyName, domainIdValue),
   );
 };
 

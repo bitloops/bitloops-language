@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  PropsIdentifierKey,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
   TDomainPrivateMethods,
@@ -30,7 +31,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
-import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
@@ -78,13 +78,11 @@ const entityToTargetLanguage = (params: {
   const { entityValues, entityIdentifier } = entity.Entity;
   const { privateMethods, publicMethods, create, constants } = entityValues;
 
-  const propsNameType = create.parameter.type;
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-    throw new Error(`Entity props type of ${entityIdentifier} cannot be an array`);
-  }
+  const propsNameType = create.domainCreateParameter[PropsIdentifierKey];
+
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: { type: propsNameType },
+    type: BitloopsTypesMapping.TDomainConstructorParameter,
+    value: propsNameType,
   });
 
   dependencies = [...dependencies, ...propsTypeDependencies];

@@ -1,5 +1,6 @@
 import { TBitloopsPrimitives } from '../../../../../../../types.js';
 import { LiteralTypeNode } from '../../../../nodes/Expression/Literal/components/LiteralTypeNode.js';
+import { TNodeMetadata } from '../../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../../IBuilder.js';
 
 export class LiteralTypeBuilder implements IBuilder<LiteralTypeNode> {
@@ -8,8 +9,8 @@ export class LiteralTypeBuilder implements IBuilder<LiteralTypeNode> {
   private literalTypeNode: LiteralTypeNode;
   private type: TBitloopsPrimitives;
 
-  constructor() {
-    this.literalTypeNode = new LiteralTypeNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.literalTypeNode = new LiteralTypeNode(nodeMetadata);
   }
 
   public withType(type: TBitloopsPrimitives): LiteralTypeBuilder {
