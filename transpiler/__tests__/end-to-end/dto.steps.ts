@@ -19,7 +19,7 @@
  */
 import { ClassTypes } from '../../src/helpers/mappings.js';
 import Transpiler from '../../src/Transpiler.js';
-import { TBitloopsOutputTargetContent } from '../../src/target/types.js';
+import { TOutputTargetContent } from '../../src/target/types.js';
 import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
 import { DTO_END_TO_END_TEST_CASES } from './mocks/dto.js';
 import { transpiler } from '../../src/index.js';
@@ -33,7 +33,7 @@ describe('Valid DTO End To End', () => {
     formatterConfig: null,
     targetLanguage: 'TypeScript',
   };
-  let targetCode: TBitloopsOutputTargetContent;
+  let targetCode: TOutputTargetContent;
 
   DTO_END_TO_END_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {

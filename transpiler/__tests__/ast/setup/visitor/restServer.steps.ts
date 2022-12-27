@@ -25,6 +25,7 @@ import {
   BitloopsSetupParserError,
   BitloopsLanguageSetupAST,
 } from '../../../../src/parser/setup/types.js';
+import { BitloopsParser } from '../../../../src/parser/core/index.js';
 
 const feature = loadFeature('__tests__/ast/setup/visitor/restServer.feature');
 
@@ -39,7 +40,7 @@ defineFeature(feature, (test) => {
     });
 
     when('I generate the model', () => {
-      const parser = new BitloopsSetupParser();
+      const parser = new BitloopsParser();
       const initialModelOutput = parser.parse(blString);
       const intermediateParser = new BitloopsIntermediateSetupASTParser();
       if (!(initialModelOutput instanceof BitloopsSetupParserError)) {

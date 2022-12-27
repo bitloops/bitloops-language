@@ -89,7 +89,6 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
-  // getClassEvaluationVisitor,
   useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
@@ -104,7 +103,6 @@ import {
   statementListVisitor,
   constDeclarationVisitor,
   variableDeclarationVisitor,
-  // thisDeclarationVisitor,
   switchStatementVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
@@ -184,6 +182,9 @@ import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity
 import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { domainConstructorParameterVisitor } from './helpers/domainConstructorParameterVisitor.js';
 import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
+import { IntermediateASTSetupTree } from '../intermediate-ast/IntermediateASTSetupTree.js';
+import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
+import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -195,13 +196,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     super();
     this._currentFile = currentFile;
     if (isSetup) {
-      this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
+      this._intermediateASTTree = new IntermediateASTSetupTree(new IntermediateASTRootNode());
     } else {
       this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
     }
   }
 
-  get intermediateASTTree() {
+  get intermediateASTTree(): IntermediateASTTree {
     return this._intermediateASTTree;
   }
 
@@ -213,11 +214,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     this.visitChildren(ctx);
   }
 
-  visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {
+  visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext): ExpressionNode {
     return equalityExpressionVisitor(this, ctx);
   }
 
-  visitDtoIdentifier(ctx: BitloopsParser.DtoIdentifierContext) {
+  visitDtoIdentifier(ctx: BitloopsParser.DtoIdentifierContext): DTOIdentifierNode {
     const identifierName = ctx.DTOIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
     const dtoIdentifierNode = new DTOIdentifierNodeBuilder(metadata)
@@ -303,15 +304,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEvaluationExpression(ctx: BitloopsParser.EvaluationExpressionContext) {
     const evaluation = this.visit(ctx.evaluation());
-    // const expression = this.expressionBuilder.withExpressionValues(evaluation).build();
-    // return expression;
-
     return new ExpressionBuilder().withExpression(evaluation).build();
-    // return {
-    //   expression: {
-    //     ...evaluation,
-    //   },
-    // };
   }
 
   visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext) {
@@ -337,16 +330,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext) {
     const thisExprNode = new ThisExpressionNodeBuilder().build();
     return new ExpressionBuilder().withExpression(thisExprNode).build();
-    // return {
-    //   expression: {
-    //     evaluation: {
-    //       regularEvaluation: {
-    //         type: 'variable',
-    //         value: 'this',
-    //       },
-    //     },
-    //   },
-    // };
   }
 
   visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {
@@ -417,21 +400,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  // visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
-  //   return integerEvaluation(ctx.IntegerLiteral().getText())[0];
-  // }
-  // visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
-  //   return decimalEvaluation(ctx.DecimalLiteral().getText());
-  // }
-
-  // visitRegularBooleanEvaluation(ctx: BitloopsParser.RegularBooleanEvaluationContext) {
-  //   return booleanEvaluation(ctx.BooleanLiteral().getText());
-  // }
-
-  // visitRegularStringEvaluation(ctx: BitloopsParser.RegularStringEvaluationContext) {
-  //   return stringEvaluation(ctx.StringLiteral().getText());
-  // }
-
   visitCondition(ctx: BitloopsParser.ConditionContext) {
     const expression = this.visit(ctx.expression());
     const metadata = produceMetadata(ctx, this);
@@ -462,10 +430,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitTypeAnnotation(ctx: BitloopsParser.TypeAnnotationContext) {
     return this.visit(ctx.bitloopsPrimaryType());
   }
-
-  // visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
-  //   return thisDeclarationVisitor(this, ctx);
-  // }
 
   visitSwitchStatement(ctx: BitloopsParser.SwitchStatementContext) {
     return switchStatementVisitor(this, ctx);
@@ -866,21 +830,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .build();
   }
 
-  // visitAggregateRootIdentifier(ctx: BitloopsParser.AggregateRootIdentifierContext): AggregateRootIdentifierNode {
-  //   const metadata = produceMetadata(ctx, this);
-  //   return new AggregateRootIdentifierBuilder(metadata).withName(ctx.)
-  // }
-
   visitApplyRuleStatementRulesList(ctx: BitloopsParser.ApplyRuleStatementRulesListContext): any {
     return applyRuleStatementRulesListVisitor(this, ctx);
   }
   visitApplyRulesRule(ctx: BitloopsParser.ApplyRulesRuleContext): any {
     return applyRulesRuleVisitor(this, ctx);
   }
-
-  // visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
-  //   return isInstanceOfVisitor(this, ctx);
-  // }
 
   visitIsInstanceOfExpression(ctx: BitloopsParser.IsInstanceOfExpressionContext): any {
     return isInstanceOfVisitor(this, ctx);
@@ -889,10 +844,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitClassTypes(ctx: BitloopsParser.ClassTypesContext): any {
     return ctx.ErrorClass().getText();
   }
-
-  // visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
-  //   return getClassEvaluationVisitor(this, ctx);
-  // }
 
   /**
    * UseCase Declaration
@@ -988,4 +939,34 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitOptional(ctx: BitloopsParser.OptionalContext) {
     return optionalVisitor(ctx);
   }
+
+  // SETUPVisitor methods
+
+  /**
+   * Server Expressions
+   */
+  // visitRestServerExpression(ctx: BitloopsParser.RestServerExpressionContext): void {
+  //   // console.log('visitRestServerExpression');
+  //   const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
+  //   const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
+
+  //   const serverOptions: any = {
+  //     port,
+  //     apiPrefix,
+  //   };
+  //   if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
+  //   if (corsOptions) {
+  //     serverOptions.corsOptions = corsOptions;
+  //   }
+  //   const routers = this.visit(ctx.bindServerRoutes());
+  //   serverOptions.routers = routers;
+
+  //   if (!this._result.servers) {
+  //     this._result.servers = {};
+  //   }
+  //   if (!this._result.servers[serverType]) {
+  //     this._result.servers[serverType] = { serverInstances: [] };
+  //   }
+  //   this._result.servers[serverType].serverInstances.push(serverOptions);
+  // }
 }

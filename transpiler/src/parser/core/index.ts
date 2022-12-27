@@ -17,7 +17,7 @@ import { isParserError } from './guards/index.js';
 export class BitloopsParser implements IOriginalParser {
   parse(inputData: TParserInputData): OriginalAST | OriginalParserError[] {
     const errors = [];
-    let parseResult: OriginalAST;
+    const parseResult: OriginalAST = { core: {} };
 
     const ASTCore = this.parseCore(inputData.core);
     if (isParserError(ASTCore)) {

@@ -87,6 +87,8 @@ BitXorAssign:                   '^=';
 BitOrAssign:                    '|=';
 ARROW:                          '=>';
 
+Digits:                         [0-9]+;
+
 /// Null Literals
 
 NullLiteral:                    'null';
@@ -303,6 +305,7 @@ ErrorIdentifier:                (DomainErrors | ApplicationErrors) Dot UpperCase
 ControllerIdentifier:           UpperCaseStart IdentifierPart* 'Controller';
 UseCaseIdentifier:              UpperCaseStart IdentifierPart* UseCase;
 PackagePortIdentifier:          UpperCaseStart IdentifierPart* PackagePort;
+PackageAdapterIdentifier:        [A-Z] [0-9a-zA-Z]* 'PackageAdapter';
 PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
 ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
 RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
@@ -471,7 +474,6 @@ GraphQLServer:                  'GraphQLServer';
 
 // PackagePortIdentifier
 // PackagePortClassName:           [A-Z] [0-9a-zA-Z]* 'PackagePort';
-PackageAdapterIdentifier:        UpperCaseStart IdentifierPart* 'PackageAdapter';
 // UseCaseIdentifier
 // UseCaseName:                    [A-Z] [0-9a-zA-Z]* 'UseCase';
 // ControllerIdentifier

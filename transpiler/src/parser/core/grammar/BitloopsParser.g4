@@ -806,11 +806,11 @@ invalidRouterArguments
     ;
 
 useCaseExpression
-    : boundedContextModuleDeclaration useCaseName OpenParen useCaseDependencies CloseParen
+    : boundedContextModuleDeclaration useCaseIdentifier OpenParen useCaseDependencies CloseParen
     ;
 
 routerExpression
-    : restRouter routerArguments OpenCurlyBracket nestedImpliedControllerDeclarations CloseCurlyBracket
+    : restRouter routerArguments OpenBrace nestedImpliedControllerDeclarations CloseBrace
     ;
 
 useCaseDeclarationSetup
@@ -822,15 +822,15 @@ routerDeclaration
     ;
 
 packageAdapterClassName
-    : PackageAdapterClassName
+    : packageAdapterIdentifier
     ;
 
-packagePortClassName
-    : PackagePortClassName
+packageAdapterIdentifier
+    : PackageAdapterIdentifier
     ;
 
 packageConcretion
-    : boundedContextModuleDeclaration adapter=packageAdapterClassName Concretes port=packagePortClassName SemiColon?
+    : boundedContextModuleDeclaration adapter=packageAdapterClassName Concretes port=packageAdapterIdentifier SemiColon?
     ;
 
 useCaseDefinition
@@ -852,7 +852,7 @@ repoConnectionDefinition
 
 // constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
 repoConnectionExpression
-    : RepoConnections Dot repoConnectionType OpenParen OpenCurlyBracket repoConnectionOptions? CloseCurlyBracket CloseParen SemiColon?
+    : RepoConnections Dot repoConnectionType OpenParen OpenBrace repoConnectionOptions? CloseBrace CloseParen SemiColon?
     ;
 repoConnectionType
     : Mongo
@@ -875,7 +875,7 @@ repoAdapterDefinition
     ;
 
 repoAdapterExpression
-    : repoAdapterClassName OpenParen OpenCurlyBracket repoAdapterOptions CloseCurlyBracket CloseParen Concretes boundedContextModuleDeclaration concretedRepoPort  SemiColon?
+    : repoAdapterClassName OpenParen OpenBrace repoAdapterOptions CloseBrace CloseParen Concretes boundedContextModuleDeclaration concretedRepoPort  SemiColon?
     ;
 
 repoAdapterOptions
@@ -891,9 +891,9 @@ concretedRepoPort
     ;
 
 serverInstantiationOptions
-    // : OpenCurlyBracket objectProperties CloseCurlyBracket
+    // : OpenBrace objectProperties CloseBrace
     // TODO Remove necessary comma on end of each line
-    : OpenCurlyBracket serverInstantiationOption* CloseCurlyBracket
+    : OpenBrace serverInstantiationOption* CloseBrace
     ;
 
 serverInstantiationOption
@@ -917,7 +917,7 @@ customServerOption
 // Cover any user defined options
 
 graphQLServerInstantiationOptions
-    : OpenCurlyBracket graphQLServerInstantiationOption CloseCurlyBracket
+    : OpenBrace graphQLServerInstantiationOption CloseBrace
     ;
 
 graphQLServerInstantiationOption
@@ -929,7 +929,7 @@ envVariable
     ;
 
 bindServerRoutes
-    : OpenCurlyBracket routeBind (SemiColon routeBind)* SemiColon CloseCurlyBracket
+    : OpenBrace routeBind (SemiColon routeBind)* SemiColon CloseBrace
     ;
 
 routeBind
@@ -937,19 +937,11 @@ routeBind
     ;
 
 bindControllerResolvers
-    : OpenCurlyBracket controllerResolverBind (SemiColon controllerResolverBind)* SemiColon CloseCurlyBracket
+    : OpenBrace controllerResolverBind (SemiColon controllerResolverBind)* SemiColon CloseBrace
     ;
 
 controllerResolverBind
-    : boundedContextModuleDeclaration controllerName OpenParen controllerDependencies CloseParen
-    ;
-
-useCaseName
-    : UseCaseName
-    ;
-
-controllerName
-    : ControllerName
+    : boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen
     ;
 
 dependencies
@@ -963,7 +955,7 @@ wordsWithSpaces
     ;
 
 nestedControllerInstantiation
-    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration controllerName OpenParen controllerDependencies CloseParen SemiColon?
+    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen SemiColon?
     ;
 
 useCaseDependencies

@@ -22,7 +22,7 @@ const isParserErrors = (
 };
 
 const isParserError = (
-  value: TTranspileError | OriginalParserError | ASTContext | OriginalASTSetup | OriginalASTCore,
+  value: TTranspileError | ASTContext | OriginalASTSetup | OriginalASTCore,
 ): value is OriginalParserError => {
   if (value instanceof OriginalParserError) {
     return true;

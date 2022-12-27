@@ -118,28 +118,29 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   /**
    * Server Expressions
    */
-  visitRestServerExpression(ctx: BitloopsSetupParser.RestServerExpressionContext): void {
-    // console.log('visitRestServerExpression');
-    const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-    const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
-    const serverOptions: any = {
-      port,
-      apiPrefix,
-    };
-    if (corsOptions) {
-      serverOptions.corsOptions = corsOptions;
-    }
-    const routers = this.visit(ctx.bindServerRoutes());
-    serverOptions.routers = routers;
+  // visitRestServerExpression(ctx: BitloopsSetupParser.RestServerExpressionContext): void {
+  //   // console.log('visitRestServerExpression');
+  //   const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
+  //   const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
 
-    if (!this._result.servers) {
-      this._result.servers = {};
-    }
-    if (!this._result.servers[serverType]) {
-      this._result.servers[serverType] = { serverInstances: [] };
-    }
-    this._result.servers[serverType].serverInstances.push(serverOptions);
-  }
+  //   const serverOptions: any = {
+  //     port,
+  //   };
+  //   if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
+  //   if (corsOptions) {
+  //     serverOptions.corsOptions = corsOptions;
+  //   }
+  //   const routers = this.visit(ctx.bindServerRoutes());
+  //   serverOptions.routers = routers;
+
+  //   if (!this._result.servers) {
+  //     this._result.servers = {};
+  //   }
+  //   if (!this._result.servers[serverType]) {
+  //     this._result.servers[serverType] = { serverInstances: [] };
+  //   }
+  //   this._result.servers[serverType].serverInstances.push(serverOptions);
+  // }
 
   visitServerInstantiationOptions(ctx: BitloopsSetupParser.ServerInstantiationOptionsContext): any {
     const optionsArray = this.visitChildren(ctx);
