@@ -38,7 +38,6 @@ import {
   TRouterInstanceName,
   TRoutersInfo,
   TServerType,
-  TSetupInfo,
   TBoundedContexts,
   TGraphQLServerInstance,
   TGraphQLSetupData,
@@ -47,6 +46,7 @@ import {
   TUseCasesOfModule,
   TControllerOfModule,
   TReposSetup,
+  TServers,
 } from '../../../types.js';
 import { formatToLang } from '../helpers/codeFormatting.js';
 import { StringUtils } from '../../../utils/index.js';
@@ -72,14 +72,14 @@ type TPackageVersions = {
 
 interface ISetup {
   generateStartupFile(
-    data: TSetupInfo,
+    servers: TServers,
     reposData: TReposSetup,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput;
-  generateAPIs(data: TSetupInfo): TSetupOutput[];
+  generateAPIs(servers: TServers): TSetupOutput[];
   generateServerRouters(data: ISetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
-  generateServers(data: TSetupInfo, bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     data: ISetupData,
     bitloopsModel: TBoundedContexts,
@@ -181,12 +181,7 @@ export class SetupTypeScript implements ISetup {
         let diContent = '';
         // Gather all imports
         if (repos) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIImports(
-            data.repos,
-            boundedContextName,
-            moduleName,
-            setupTypeMapper,
-          );
+          diContent += this.setupTypeScriptRepos.generateRepoDIImports(data.repos, setupTypeMapper);
         }
 
         if (useCases)
@@ -199,11 +194,7 @@ export class SetupTypeScript implements ISetup {
 
         diContent += '\n';
         if (repos) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(
-            data.repos,
-            boundedContextName,
-            moduleName,
-          );
+          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
         }
 
         if (useCases)
@@ -524,7 +515,7 @@ export {${exports}};\n`;
     bitloopsModel: TBoundedContexts,
     license?: string,
   ): TSetupOutput[] {
-    const routers = data.setup.routers;
+    const routers = data.routers;
     const output = [];
     for (const serverType of Object.keys(routers)) {
       // for (const routerInstanceName of Object.keys(routers[serverType])) {
@@ -587,8 +578,7 @@ export { routers };
       content: (license || '') + body,
     };
   }
-  generateAPIs(data: TSetupInfo): TSetupOutput[] {
-    const servers = data.servers;
+  generateAPIs(servers: TServers): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
@@ -740,8 +730,7 @@ start();
       content: (license || '') + body,
     };
   }
-  generateServers(data: TSetupInfo, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
-    const servers = data.servers;
+  generateServers(servers: TServers, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
@@ -758,13 +747,12 @@ start();
     return output;
   }
   generateStartupFile(
-    data: TSetupInfo,
+    servers: TServers,
     reposData: TReposSetup,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput {
     const imports = [];
-    const servers = data.servers;
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
         const filePath = `${setupTypeMapper[`${serverType}.Server`]}app${i}${

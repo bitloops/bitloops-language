@@ -19,12 +19,12 @@
  */
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import { d, decode } from 'bitloops-gherkin';
+import { BitloopsIntermediateSetupASTParser } from '../../../../src/index.js';
+import { BitloopsSetupParser } from '../../../../src/parser/setup/index.js';
 import {
-  BitloopsIntermediateSetupASTParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParser,
   BitloopsSetupParserError,
-} from '../../../../src/index.js';
+  BitloopsLanguageSetupAST,
+} from '../../../../src/parser/setup/types.js';
 
 const feature = loadFeature('__tests__/ast/setup/visitor/restServer.feature');
 

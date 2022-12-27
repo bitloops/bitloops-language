@@ -6,7 +6,6 @@ import {
   TRepoSupportedTypes,
 } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
-// import { LICENSE } from '../license.js';
 import { TSetupOutput } from '../index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 
@@ -44,14 +43,12 @@ export interface ISetupRepos {
   ): string[];
   generateRepoDIImports(
     reposSetupData: Readonly<TReposSetup>,
-    boundedContext: string,
-    module: string,
     setupTypeMapper: Record<string, string>,
   ): string;
   generateRepoDIAdapters(
     reposSetupData: Readonly<TReposSetup>,
-    boundedContext: string,
-    module: string,
+    // boundedContext: string,
+    // module: string,
   ): string;
   getPackageJSONDependencies(reposSetupData: Readonly<TReposSetup>): Record<string, string>;
 }
@@ -83,7 +80,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     if (!repos?.connections) return [];
     const result: string[] = [];
     for (const connectionInfo of Object.values(repos.connections)) {
-      dbTypes.add(connectionInfo.dbType);
+      dbTypes.add(connectionInfo.connectionValues.dbType);
     }
     dbTypes.forEach((dbType) => {
       result.push(`await import('..${setupTypeMapper[dbType]}');`);
@@ -94,11 +91,9 @@ export class SetupTypeScriptRepos implements ISetupRepos {
 
   generateRepoDIImports(
     reposSetupData: Readonly<TReposSetup>,
-    boundedContext: string,
-    module: string,
     setupTypeMapper: Record<string, string>,
   ): string {
-    const moduleRepoAdapters = reposSetupData?.repoAdapters?.[boundedContext]?.[module];
+    const moduleRepoAdapters = reposSetupData?.repoAdapters?.repoAdapterValues;
     if (!moduleRepoAdapters) return '';
     const connections: Record<TRepoSupportedTypes, string[]> = {
       'DB.Mongo': [],
@@ -139,16 +134,11 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     return result.join('\n') + '\n';
   }
 
-  generateRepoDIAdapters(
-    reposSetupData: Readonly<TReposSetup>,
-    boundedContext: string,
-    module: string,
-  ): string {
-    // const todoRepo = new TodoRepoPortMongodbAdapter(mongoConnection);
-    const moduleRepoAdapters = reposSetupData?.repoAdapters?.[boundedContext]?.[module];
-    if (!moduleRepoAdapters) return '';
+  generateRepoDIAdapters(reposSetupData: Readonly<TReposSetup>): string {
+    const repoAdapterValues = reposSetupData?.repoAdapters.repoAdapterValues;
+    if (!repoAdapterValues) return '';
     const result: string[] = [];
-    for (const [adapterClassName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
+    for (const [adapterClassName, repoAdapterInfo] of Object.entries(repoAdapterValues)) {
       const { connection, instanceIdentifier } = repoAdapterInfo;
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TSingleExpression,

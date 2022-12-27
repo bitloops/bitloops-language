@@ -46,8 +46,6 @@ export const generateSetupFiles = (
   params: IntermediateAST,
   options: TTranspileOptions,
 ): TTargetSetupContent[] | TargetSetupGeneratorError => {
-  // setupData: ISetupData,
-  // _bitloopsModel: TBoundedContexts,
   //TODO get .value from setup and core tree
   const { setup, core } = params;
   const setupData = setup as any;
@@ -122,7 +120,7 @@ export const generateSetupFiles = (
   // });
 
   // Step 4. Setup server file
-  const serverSetup = setupGenerator.generateServers(setupData.setup, _bitloopsModel);
+  const serverSetup = setupGenerator.generateServers(setupData.servers, _bitloopsModel);
   // console.log('serverSetup:', serverSetup);
   // console.log('--------------------------------');
   serverSetup.forEach((server) => {
@@ -131,7 +129,7 @@ export const generateSetupFiles = (
 
   // Step 5. Startup File
   const startupFile = setupGenerator.generateStartupFile(
-    setupData.setup,
+    setupData.servers,
     setupData.repos,
     setupTypeMapper,
     license,

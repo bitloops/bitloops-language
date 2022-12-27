@@ -48,6 +48,4 @@ export interface IOriginalParser {
   parse: (inputData: TParserInputData) => OriginalAST | OriginalParserError[];
 }
 
-// export class IntermediateASTValidationError extends Error {}
-
 export class OriginalParserError extends Error {}

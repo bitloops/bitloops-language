@@ -48,8 +48,10 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   private useCases: any;
   private packages: any;
   private _result: ISetupData = {
-    setup: { language: 'TypeScript', servers: {}, routers: {} },
-    repos: { connections: {}, repoAdapters: {} },
+    language: 'TypeScript',
+    servers: {},
+    routers: {},
+    repos: { connections: null, repoAdapters: null },
   };
 
   constructor() {
@@ -107,7 +109,7 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     if (!classModel) {
       throw new Error('Unknown language');
     }
-    this._result.setup.language = classModel;
+    this._result.language = classModel;
   }
   visitLanguageSetterMethod(ctx: BitloopsSetupParser.LanguageSetterMethodContext): string {
     return ctx.language().getText();
@@ -130,13 +132,13 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     const routers = this.visit(ctx.bindServerRoutes());
     serverOptions.routers = routers;
 
-    if (!this._result.setup.servers) {
-      this._result.setup.servers = {};
+    if (!this._result.servers) {
+      this._result.servers = {};
     }
-    if (!this._result.setup.servers[serverType]) {
-      this._result.setup.servers[serverType] = { serverInstances: [] };
+    if (!this._result.servers[serverType]) {
+      this._result.servers[serverType] = { serverInstances: [] };
     }
-    this._result.setup.servers[serverType].serverInstances.push(serverOptions);
+    this._result.servers[serverType].serverInstances.push(serverOptions);
   }
 
   visitServerInstantiationOptions(ctx: BitloopsSetupParser.ServerInstantiationOptionsContext): any {
@@ -205,14 +207,15 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   }
 
   private initializeRoutesAndControllers(serverType: string, routerInstance: string): void {
-    if (!this._result.setup.routers) this._result.setup.routers = {};
-    if (!this._result.setup.routers[serverType]) this._result.setup.routers[serverType] = {};
+    if (!this._result.routers) this._result.routers = {};
+    if (!this._result.routers[serverType]) this._result.routers[serverType] = {};
 
-    this._result.setup.routers[serverType][routerInstance] = {
+    this._result.routers[serverType][routerInstance] = {
       methodURLMap: {},
     };
 
-    if (!this._result.controllers) this._result.controllers = {};
+    //TODO uncomment?
+    // if (!this._result.controllers) this._result.controllers = {};
   }
   visitRouterDeclaration(ctx: BitloopsSetupParser.RouterDeclarationContext): string {
     const identifier = ctx.identifier().getText();
@@ -332,13 +335,13 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
   }
 
   private populateGraphQLServer(serverOptions: TGraphQLServerInstance) {
-    if (!this.result.setup.servers) this._result.setup.servers = {};
+    if (!this.result.servers) this._result.servers = {};
     const serverType = 'GraphQL';
-    if (this._result.setup.servers) {
-      if (!this._result.setup.servers[serverType]) {
-        this._result.setup.servers[serverType] = { serverInstances: [] };
+    if (this._result.servers) {
+      if (!this._result.servers[serverType]) {
+        this._result.servers[serverType] = { serverInstances: [] };
       }
-      this._result.setup.servers[serverType].serverInstances.push(serverOptions);
+      this._result.servers[serverType].serverInstances.push(serverOptions);
     }
   }
 
@@ -352,15 +355,14 @@ export default class BitloopsSetupVisitor extends BitloopsSetupParserVisitor {
     return;
   }
 
-  visitRepoConnectionDefinition(ctx: BitloopsSetupParser.RepoConnectionDefinitionContext): void {
-    // console.log('visitRepoConnectionDefinition');
-    const [, connectionName] = this.visit(ctx.constDeclaration());
-    const repoConnectionTypeAndOptions: TRepoConnectionInfo = this.visit(
-      ctx.repoConnectionExpression(),
-    );
-
-    this._result.repos.connections[connectionName] = repoConnectionTypeAndOptions;
-  }
+  // visitRepoConnectionDefinition(ctx: BitloopsSetupParser.RepoConnectionDefinitionContext): void {
+  // console.log('visitRepoConnectionDefinition');
+  // const [, connectionName] = this.visit(ctx.constDeclaration());
+  // const repoConnectionTypeAndOptions: TRepoConnectionInfo = this.visit(
+  //   ctx.repoConnectionExpression(),
+  // );
+  // this._result.repos.connections[connectionName] = repoConnectionTypeAndOptions;
+  // }
 
   visitRepoAdapterDefinition(ctx: BitloopsSetupParser.RepoAdapterDefinitionContext) {
     const [, repoAdapterInstanceIdentifier] = this.visit(ctx.constDeclaration());

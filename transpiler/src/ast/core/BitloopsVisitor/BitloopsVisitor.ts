@@ -45,11 +45,8 @@ import {
   jestTestDeclarationVisitor,
   argumentListVisitor,
   argumentVisitor,
-  regularVariableEvaluationORliteralORexpressionVisitor,
   structEvaluationVisitor,
   evaluationFieldListVisitor,
-  // thisVariableMethodEvaluationVisitor,
-  // regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
   evaluationFieldVisitor,
   regularStructEvaluationVisitor,
@@ -194,10 +191,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   private _intermediateASTTree: IntermediateASTTree;
   private _currentFile: string;
 
-  constructor(currentFile: string) {
+  constructor(currentFile: string, isSetup?: boolean) {
     super();
     this._currentFile = currentFile;
-    this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
+    if (isSetup) {
+      this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
+    } else {
+      this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
+    }
   }
 
   get intermediateASTTree() {
@@ -416,20 +417,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
-  visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText())[0];
-  }
-  visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
-    return decimalEvaluation(ctx.DecimalLiteral().getText());
-  }
+  // visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
+  //   return integerEvaluation(ctx.IntegerLiteral().getText())[0];
+  // }
+  // visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
+  //   return decimalEvaluation(ctx.DecimalLiteral().getText());
+  // }
 
-  visitRegularBooleanEvaluation(ctx: BitloopsParser.RegularBooleanEvaluationContext) {
-    return booleanEvaluation(ctx.BooleanLiteral().getText());
-  }
+  // visitRegularBooleanEvaluation(ctx: BitloopsParser.RegularBooleanEvaluationContext) {
+  //   return booleanEvaluation(ctx.BooleanLiteral().getText());
+  // }
 
-  visitRegularStringEvaluation(ctx: BitloopsParser.RegularStringEvaluationContext) {
-    return stringEvaluation(ctx.StringLiteral().getText());
-  }
+  // visitRegularStringEvaluation(ctx: BitloopsParser.RegularStringEvaluationContext) {
+  //   return stringEvaluation(ctx.StringLiteral().getText());
+  // }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
     const expression = this.visit(ctx.expression());
@@ -496,12 +497,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitArgumentList(ctx: BitloopsParser.ArgumentListContext) {
     return argumentListVisitor(this, ctx);
-  }
-
-  visitRegularVariableEvaluationORliteralORexpression(
-    ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
-  ) {
-    return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
   }
 
   visitArgument(ctx: BitloopsParser.ArgumentContext): any {

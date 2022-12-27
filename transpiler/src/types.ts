@@ -18,8 +18,8 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TClassTypesValues } from './helpers/mappings.js';
-import { BitloopsLanguageAST } from './index.js';
 import { IntermediateASTTree } from './ast/core/intermediate-ast/IntermediateASTTree.js';
+import { ASTContext } from './parser/core/types.js';
 
 export type TModule = {
   Props?: TProps;
@@ -78,7 +78,7 @@ export type TClassName = string;
 type TClassInformation = {
   moduleName: TModuleName;
   fileId: string;
-  contents: BitloopsLanguageAST;
+  contents: ASTContext;
 };
 
 export type TASTCoreInputData = {
@@ -792,24 +792,26 @@ type PackageAdapterName = string;
 export type TPackagesMapping = Record<PackagePortName, PackageAdapterName>;
 
 export type TPackagesSetup = {
-  [boundedContext: string]: {
-    [module: string]: TPackagesMapping;
-  };
+  boundedContext: string;
+  module: string;
+  packageValues: TPackagesMapping;
 };
 
 export interface ISetupData {
   controllers?: TControllers;
   useCases?: TUseCases;
   useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  setup?: TSetupInfo;
+  language: string;
+  servers?: TServers;
+  routers?: TRouters;
   packages?: TPackagesSetup;
   repos?: TReposSetup;
 }
 
 export type TUseCases = {
-  [boundedContext: string]: {
-    [module: string]: TUseCasesOfModule;
-  };
+  boundedContext: string;
+  module: string;
+  useCaseValues: TUseCasesOfModule;
 };
 
 export type TUseCasesOfModule = {
@@ -819,9 +821,9 @@ export type TUseCasesOfModule = {
 };
 
 export type TControllers = {
-  [boundedContext: string]: {
-    [module: string]: TControllerOfModule;
-  };
+  boundedContext: string;
+  module: string;
+  controllerValues: TControllerOfModule;
 };
 
 export type TControllerOfModule = {
@@ -833,12 +835,13 @@ export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
 
 export type TReposSetup = {
   connections: {
-    [connectionName: string]: TRepoConnectionInfo;
-  };
+    connectionName: string;
+    connectionValues: TRepoConnectionInfo;
+  }[];
   repoAdapters: {
-    [boundedContext: string]: {
-      [module: string]: TSetupRepoAdapters;
-    };
+    boundedContext: string;
+    module: string;
+    repoAdapterValues: TSetupRepoAdapters;
   };
 };
 
@@ -889,12 +892,6 @@ export type TGraphQLControllerInstances = {
     controllerInstance: string;
     dependencies: string[]; // Replace with correct type
   }[];
-};
-
-export type TSetupInfo = {
-  language: string;
-  servers?: TServers;
-  routers?: TRouters;
 };
 
 export type TServers = Partial<{

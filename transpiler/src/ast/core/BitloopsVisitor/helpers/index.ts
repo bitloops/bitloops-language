@@ -22,9 +22,6 @@ export { functionBodyVisitor } from './functionBody.js';
 export { jestTestDeclarationVisitor } from './jestTestDeclaration.js';
 export { argumentListVisitor } from './argumentList.js';
 export { argumentVisitor } from './argument.js';
-export { regularVariableEvaluationORliteralORexpressionVisitor } from './regularVariableEvaluationORliteralORexpression.js';
-// export { thisVariableMethodEvaluationVisitor } from './thisVariableMethodEvaluation.js';
-// export { regularVariableMethodEvaluationVisitor } from './regularVariableMethodEvaluation.js';
 export { methodArgumentsVisitor } from './methodArguments.js';
 export { structEvaluationVisitor } from './structEvaluation.js';
 export { evaluationFieldListVisitor } from './evaluationFieldList.js';
@@ -106,7 +103,6 @@ export { ifStatementVisitor } from './ifStatement.js';
 export { statementListVisitor } from './statementList.js';
 export { constDeclarationVisitor } from './constDeclaration.js';
 export { variableDeclarationVisitor } from './variableDeclaration.js';
-// export { thisDeclarationVisitor } from './thisDeclaration.js';
 export {
   switchStatementVisitor,
   caseClausesVisitor,

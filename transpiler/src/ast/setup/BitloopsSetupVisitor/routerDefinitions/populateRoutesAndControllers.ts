@@ -30,7 +30,7 @@ export const populateRoutes = (
     boundedContext,
     module,
   };
-  result.setup.routers[serverType][routerIdentifier].methodURLMap[key] = newMethodURLMap;
+  result.routers[serverType][routerIdentifier].methodURLMap[key] = newMethodURLMap;
 };
 /**
  *  TODO make this function immutable, and return a new object

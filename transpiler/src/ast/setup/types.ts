@@ -1,8 +1,8 @@
-import { BitloopsLanguageAST } from '../../parser/core/types.js';
+import { BitloopsLanguageSetupAST } from '../../parser/setup/types.js';
 import { ISetupData } from '../../types.js';
 
 export interface IBitloopsIntermediateSetupASTParser {
-  parse: (ast: BitloopsLanguageAST) => ISetupData | BitloopsIntermediateSetupASTParserError;
+  parse: (ast: BitloopsLanguageSetupAST) => ISetupData | BitloopsIntermediateSetupASTParserError;
 }
 
 export class BitloopsIntermediateSetupASTParserError extends Error {}
