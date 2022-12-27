@@ -18,6 +18,22 @@ import { ValueObject as ValueObjectImport, ValueObjectProps } from './domain/Val
 import { ReadModel as ReadModelImport } from './domain/ReadModel';
 import { EventBus as EventBusImport } from './infra/event-bus';
 import { InProcessMessageBus as InProcessMessageBusImport } from './infra/message-bus/InProcessMessageBus';
+import { DomainEvent } from './domain/events/DomainEvent';
+import { IEventBus as IEventBusImport } from './domain/events/IEventBus';
+import { ICommandBus as ICommandBusImport } from './domain/commands/ICommandBus';
+import { IMessageBus as IMessageBusImport } from './domain/messages/IMessageBus';
+import { Container } from './Container';
+import { IDomainIntegrationEvent as IDomainIntegrationEventImport } from './domain/events/IDomainIntegrationEvent';
+import { IIntegrationEvent as IIntegrationEventImport } from './domain/events/IIntegrationEvent';
+import { IntegrationEvent as IntegrationEventImport } from './domain/events/IntegrationEvent';
+import { IDomainEvent as IDomainEventImport } from './domain/events/IDomainEvent';
+import { fail as failWithPublish, ok as okWithpublish } from './ResultWithPublish';
+import { Command as CommandImport } from './domain/commands/Command';
+import {
+  getIntegrationTopic as getIntegrationTopicImport,
+  getProcessManagerTopic as getProcessManagerTopicImport,
+  getTopic as getTopicImport,
+} from './helpers';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -28,6 +44,12 @@ namespace Domain {
   export class UUIDv4 extends UUIDv4Import {}
   export type IRule = IRuleImport;
   export const applyRules = applyRulesImport;
+  export class Event extends DomainEvent {}
+  export type IDomainIntegrationEvent = IDomainIntegrationEventImport;
+  export type IIntegrationEvent = IIntegrationEventImport;
+  export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
+  export type IDomainEvent = IDomainEventImport;
+  export class Command extends CommandImport {}
 }
 
 namespace Application {
@@ -56,4 +78,25 @@ namespace Infra {
   }
 }
 
-export { Application, Domain, Either, Infra, fail, ok };
+namespace MessageBus {
+  export type IEventBus = IEventBusImport;
+  export type ICommandBus = ICommandBusImport;
+  export type IMessageBus = IMessageBusImport;
+  export const getIntegrationTopic = getIntegrationTopicImport;
+  export const getProcessManagerTopic = getProcessManagerTopicImport;
+  export const getTopic = getTopicImport;
+}
+
+
+export {
+  Application,
+  Domain,
+  Either,
+  Infra,
+  fail,
+  ok,
+  MessageBus,
+  Container,
+  failWithPublish,
+  okWithpublish,
+};

@@ -19,28 +19,26 @@
  */
 import { IDomainEvent } from './IDomainEvent';
 import { AggregateRoot } from '../AggregateRoot';
-import { UUIDv4 } from '../UUIDv4';
+import { UniqueEntityID } from '../UniqueEntityID';
 import { IEventBus } from './IEventBus';
-// import { IIntegrationEvent } from "./IIntegrationEvent";
-// import { DomainEvent } from './DomainEvent';
-// import { IntegrationEvent } from "./IntegrationEvent";
+import { IIntegrationEvent } from './IIntegrationEvent';
+import { DomainEvent } from './DomainEvent';
+import { IntegrationEvent } from './IntegrationEvent';
 import { IEvent } from './IEvent';
 import { CommandMetadata } from '../commands/ICommand';
-import { EventBus } from '../../infra/event-bus';
-import { InProcessMessageBus } from '../../infra/message-bus/InProcessMessageBus';
-// import { config } from "../../config";
-// import { getProcessManagerTopic } from "../../helpers";
+import { config } from '../../config';
+import { getProcessManagerTopic } from '../../helpers';
 
 // TODO two aggregates at the same time, only one will be marked as dispatched so the other one's events will be lost
 // TODO if a transaction fails the events will hang around until garbage collector clears them
 export class Events {
   private markedAggregates: AggregateRoot<any>[] = [];
   private domainEventBus: IEventBus;
-  // private integrationEventBus: IEventBus;
+  private integrationEventBus: IEventBus;
 
-  constructor(domainEventBus: IEventBus) {
+  constructor(domainEventBus: IEventBus, integrationEventBus: IEventBus) {
     this.domainEventBus = domainEventBus;
-    // this.integrationEventBus = integrationEventBus;
+    this.integrationEventBus = integrationEventBus;
   }
 
   /**
@@ -61,16 +59,16 @@ export class Events {
 
   private async dispatchAggregateEvents(
     aggregate: AggregateRoot<any>,
-    _metadata?: CommandMetadata,
+    metadata?: CommandMetadata,
   ): Promise<void> {
     const promises: Promise<void>[] = [];
     console.log('dispatchAggregateEvents: aggregate', aggregate);
     aggregate.domainEvents.forEach((event: IDomainEvent) => {
       promises.push(this.dispatch(event));
     });
-    // aggregate.integrationEvents.forEach((event: IIntegrationEvent) => {
-    //   promises.push(this.dispatch(event, metadata));
-    // });
+    aggregate.integrationEvents.forEach((event: IIntegrationEvent) => {
+      promises.push(this.dispatch(event, metadata));
+    });
     await Promise.all(promises);
   }
 
@@ -79,8 +77,8 @@ export class Events {
     this.markedAggregates.splice(index, 1);
   }
 
-  private findMarkedAggregateByID(id: UUIDv4): AggregateRoot<any> | null {
-    let found: AggregateRoot<any> | null = null;
+  private findMarkedAggregateByID(id: UniqueEntityID): AggregateRoot<any> | null {
+    let found = null;
     for (const aggregate of this.markedAggregates) {
       if (aggregate.id.equals(id)) {
         found = aggregate;
@@ -90,7 +88,10 @@ export class Events {
     return found;
   }
 
-  public async dispatchEventsForAggregate(id: UUIDv4, metadata?: CommandMetadata): Promise<void> {
+  public async dispatchEventsForAggregate(
+    id: UniqueEntityID,
+    metadata?: CommandMetadata,
+  ): Promise<void> {
     const aggregate = this.findMarkedAggregateByID(id);
 
     if (aggregate) {
@@ -120,23 +121,19 @@ export class Events {
     if (metadata) {
       event.setMetadata(metadata);
     }
-    // if (event instanceof DomainEvent) {
-    await this.domainEventBus.publish(event.eventTopic, event);
-    // }
-    // else if (event instanceof IntegrationEvent) {
-    // TODO serialize event before sending
-    // if (metadata?.orchestrated) {
-    //   const processManagerTopic = getProcessManagerTopic(
-    //     event.eventTopic,
-    //     config.PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
-    //     config.TOPIC_DELIMITER
-    //   );
-    //   await this.integrationEventBus.publish(processManagerTopic, event);
-    // }
-    // await this.integrationEventBus.publish(event.eventTopic, event);
-    // }
+    if (event instanceof DomainEvent) {
+      await this.domainEventBus.publish(event.eventTopic, event);
+    } else if (event instanceof IntegrationEvent) {
+      // TODO serialize event before sending
+      if (metadata?.orchestrated) {
+        const processManagerTopic = getProcessManagerTopic(
+          event.eventTopic,
+          config.PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
+          config.TOPIC_DELIMITER,
+        );
+        await this.integrationEventBus.publish(processManagerTopic, event);
+      }
+      await this.integrationEventBus.publish(event.eventTopic, event);
+    }
   }
 }
-
-const inProcessEventBus = new EventBus(new InProcessMessageBus());
-export const events = new Events(inProcessEventBus);
