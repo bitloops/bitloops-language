@@ -186,7 +186,7 @@ export class IntermediateASTTree {
   public getValueOfPropsWithIdentifierFromDomainCreate(
     domainCreateParameterNode: DomainCreateParameterNode,
     identifier: string,
-  ): TBitloopsPrimaryType {
+  ): TBitloopsPrimaryType | void {
     const propsNodes = this.getClassTypeNodes(BitloopsTypesMapping.TProps);
 
     const propsTypeNodeValue: { [PropsIdentifierKey]: TPropsIdentifier } = domainCreateParameterNode

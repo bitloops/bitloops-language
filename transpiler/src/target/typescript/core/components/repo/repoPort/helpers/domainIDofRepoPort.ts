@@ -33,7 +33,7 @@ export const findIdOfRepoDomainObject = (
   repoDependencyName: string,
   ast: IntermediateASTTree,
   type: TClassTypesValues,
-): TTargetDependenciesTypeScript => {
+): TTargetDependenciesTypeScript | void => {
   if (type === ClassTypes.RootEntity) {
     const rootEntityNode = ast.getAggregateNodeWithIdentifier(
       repoDependencyName,
