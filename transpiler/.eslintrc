@@ -29,7 +29,7 @@
   },
   "parserOptions": {
     "project": [
-      "tsconfig.base.json",
+      "tsconfig.json",
       "tsconfig.esm.json",
       "tsconfig.cjs.json"
     ]
