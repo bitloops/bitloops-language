@@ -7,9 +7,9 @@ export const domainConstructorParameterVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorParamContext,
 ): DomainCreateParameterNode => {
-  const identifierNode = thisVisitor.visit(ctx.propsIdentifier);
+  const parameterNode = thisVisitor.visit(ctx.parameter());
   const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
-    .withIdentifierNode(identifierNode)
+    .withParameter(parameterNode)
     .build();
 
   return domainConstructorParameterNode;

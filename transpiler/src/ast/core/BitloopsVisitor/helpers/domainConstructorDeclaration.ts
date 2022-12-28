@@ -29,12 +29,12 @@ export const domainConstructorDeclarationVisitor = (
 ): DomainCreateNode => {
   const statementListNode = thisVisitor.visit(ctx.functionBody());
   const returnTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
-  const propsNode = thisVisitor.visit(ctx.domainConstructorParam());
+  const propsParameter = thisVisitor.visit(ctx.domainConstructorParam());
 
   const domainCreateNode = new DomainCreateNodeBuilder()
     .withStatements(statementListNode)
     .withReturnType(returnTypeNode)
-    .withParameter(propsNode)
+    .withParameter(propsParameter)
     .build();
   return domainCreateNode;
 };

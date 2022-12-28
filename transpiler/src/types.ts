@@ -622,7 +622,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TDomainCreateParameter;
+    TParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;

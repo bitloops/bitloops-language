@@ -1,5 +1,6 @@
 import { TDomainCreateMethod } from '../../../../src/types.js';
 import { DomainCreateBuilder } from './DomainCreateBuilder.js';
+import { ParameterBuilderDirector } from './ParameterBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
 import { StatementDirector } from './statement/statementDirector.js';
 import { StatementListDirector } from './statement/statementListDirector.js';
@@ -34,7 +35,12 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(entityPropsIdentifier, entityPropsName)
+      .withParameter(
+        new ParameterBuilderDirector().buildIdentifierParameter(
+          entityPropsIdentifier,
+          entityPropsName,
+        ),
+      )
       .build();
   }
 
@@ -57,7 +63,9 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(voPropsIdentifier, voPropsName)
+      .withParameter(
+        new ParameterBuilderDirector().buildIdentifierParameter(voPropsIdentifier, voPropsName),
+      )
       .build();
   }
 
@@ -88,7 +96,9 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(voPropsIdentifier, voPropsName)
+      .withParameter(
+        new ParameterBuilderDirector().buildIdentifierParameter(voPropsIdentifier, voPropsName),
+      )
       .build();
   }
 }
