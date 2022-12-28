@@ -12,7 +12,7 @@ export type OriginalAST = {
 
 export type OriginalASTSetup = {
   [fileId: string]: {
-    ASTContext: ASTSetupContext;
+    ASTContext: ASTContext;
   };
 };
 

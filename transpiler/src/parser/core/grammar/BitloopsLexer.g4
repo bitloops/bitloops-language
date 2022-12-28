@@ -25,7 +25,6 @@ options {
     superClass=BitloopsLexerBase;
 }
 
-
 MultiLineComment:               '/*' .*? '*/'             -> channel(HIDDEN);
 SingleLineComment:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
 RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpressionChar* {this.IsRegexPossible()}? '/' IdentifierPart*;
@@ -312,16 +311,36 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+SetLanguage:                    'setLanguage';
+TypeScript:                     'TypeScript';
+Java:                           'Java';
+FastifyServer:                  'REST.Fastify';
+ExpressServer:                  'REST.Express';
+GraphQLServerType:              'GraphQL';
+RESTRouter:                     'RESTRouter';
+GraphQLServer:                  'GraphQLServer';
+ServerTypeOption:               'server';
+ServerApiPrefix:                'apiPrefix';
+RESTServer:                     'RESTServer';
+
+EnvPrefix:                      'Env';
+EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
+
+Concretes:                      'concretes';
+
+GET:                            'Get';
+POST:                           'Post';
+PUT:                            'Put';
+DELETE:                         'Delete';
+PATCH:                          'Patch';
+OPTIONS:                        'Options';
+
+RepoAdapters:                   'RepoAdapters';
+RepoConnections:                'RepoConnections';
+Mongo:                          'Mongo';
+
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
-// GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
-
-// RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
-
-// ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
-// RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
-
-
 
 /// String Literals
 StringLiteral:                 ('"' DoubleStringCharacter* '"'
@@ -334,9 +353,6 @@ BackTick:                       '`' {this.IncreaseTemplateDepth();} -> pushMode(
 WhiteSpaces:                    [\t\u000B\u000C\u0020\u00A0]+ -> channel(HIDDEN);
 
 LineTerminator:                 [\r\n\u2028\u2029] -> channel(HIDDEN);
-
-/// Comments
-
 
 HtmlComment:                    '<!--' .*? '-->' -> channel(HIDDEN);
 CDataComment:                   '<![CDATA[' .*? ']]>' -> channel(HIDDEN);
@@ -409,15 +425,7 @@ fragment ExponentPart
     : [eE] [+-]? [0-9]+
     ;
 fragment RegularEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-// fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-// fragment RegularEvaluationPart
-//     : RegularEvaluationStart
-//     | [\p{Mn}]
-//     | [\p{Nd}]
-//     | [\p{Pc}]
-//     | '\u200C'
-//     | '\u200D'
-//     ;
+
 fragment RegularEvaluationStart
     : [\p{L}]
     | [$_]
@@ -459,40 +467,3 @@ fragment RegularExpressionBackslashSequence
     : '\\' ~[\r\n\u2028\u2029]
     ;
 
-
-/** SETUP */
-
-SetLanguage:                    'setLanguage';
-TypeScript:                     'TypeScript';
-Java:                           'Java';
-FastifyServer:                  'REST.Fastify';
-ExpressServer:                  'REST.Express';
-GraphQLServerType:              'GraphQL';
-RESTRouter:                     'RESTRouter';
-RESTServer:                     'RESTServer';
-GraphQLServer:                  'GraphQLServer';
-
-// PackagePortIdentifier
-// PackagePortClassName:           [A-Z] [0-9a-zA-Z]* 'PackagePort';
-// UseCaseIdentifier
-// UseCaseName:                    [A-Z] [0-9a-zA-Z]* 'UseCase';
-// ControllerIdentifier
-// ControllerName:                 [A-Z] [0-9a-zA-Z]* 'Controller';
-ServerTypeOption:               'server';
-ServerApiPrefix:                'apiPrefix';
-
-EnvPrefix:                      'Env';
-EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
-
-Concretes:                      'concretes';
-
-GET:                            'Get';
-POST:                           'Post';
-PUT:                            'Put';
-DELETE:                         'Delete';
-PATCH:                          'Patch';
-OPTIONS:                        'Options';
-
-RepoAdapters:                   'RepoAdapters';
-RepoConnections:                'RepoConnections';
-Mongo:                          'Mongo';

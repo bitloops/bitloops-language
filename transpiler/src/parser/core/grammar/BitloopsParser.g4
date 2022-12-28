@@ -183,12 +183,12 @@ coreProgram
 
 setupProgram
     : setupStatement*  // # setupStatements
-    | EOF?           // # eof
+    // | EOF?           // # eof
     ;
 
 program
-    : coreProgram # Core
-    | setupProgram # Setup
+    : setupProgram
+    | coreProgram
     ;
 
 sourceElement
