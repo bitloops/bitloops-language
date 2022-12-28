@@ -810,9 +810,8 @@ privateMethodDeclarationList
     ;
 
 domainConstructorParam 
-: propsIdentifier
-;
-
+    : parameter
+    ;
 
 domainConstructorDeclaration
     : Constructor OpenParen domainConstructorParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
