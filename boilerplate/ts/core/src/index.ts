@@ -34,6 +34,7 @@ import {
   getProcessManagerTopic as getProcessManagerTopicImport,
   getTopic as getTopicImport,
 } from './helpers';
+import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain/events/dispatchEventsCallback';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -50,6 +51,7 @@ namespace Domain {
   export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
   export type IDomainEvent = IDomainEventImport;
   export class Command extends CommandImport {}
+  export const dispatchEventsCallback = dispatchEventsCallbackImport;
 }
 
 namespace Application {
@@ -86,7 +88,6 @@ namespace MessageBus {
   export const getProcessManagerTopic = getProcessManagerTopicImport;
   export const getTopic = getTopicImport;
 }
-
 
 export {
   Application,
