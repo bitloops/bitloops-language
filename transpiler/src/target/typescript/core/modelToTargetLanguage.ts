@@ -130,7 +130,7 @@ const modelToTargetLanguage = (props: {
   type: TNodeType;
   value: any;
   contextData?: TContextData;
-  setupData?: any; // TODO change to IntermediateASTTree
+  setupData?: any; // TODO change to [fileId]: IntermediateASTTree
   model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
   const { type, value, contextData, setupData, model } = props;

@@ -30,6 +30,7 @@ export const entityEvaluationVisitor = (
   ctx: BitloopsParser.EntityEvaluationContext,
 ): EntityEvaluationNode => {
   const props = thisVisitor.visit(ctx.domainEvaluationInput());
+  console.log(props);
   const entityIdentifier = thisVisitor.visit(ctx.entityIdentifier());
 
   const metadata = produceMetadata(ctx, thisVisitor);

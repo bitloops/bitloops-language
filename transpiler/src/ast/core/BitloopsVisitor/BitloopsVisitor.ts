@@ -182,9 +182,9 @@ import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity
 import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { domainConstructorParameterVisitor } from './helpers/domainConstructorParameterVisitor.js';
 import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
-import { IntermediateASTSetupTree } from '../intermediate-ast/IntermediateASTSetupTree.js';
 import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
+// import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -192,14 +192,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   private _intermediateASTTree: IntermediateASTTree;
   private _currentFile: string;
 
-  constructor(currentFile: string, isSetup?: boolean) {
+  constructor(currentFile: string) {
     super();
     this._currentFile = currentFile;
-    if (isSetup) {
-      this._intermediateASTTree = new IntermediateASTSetupTree(new IntermediateASTRootNode());
-    } else {
-      this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
-    }
+    this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
   get intermediateASTTree(): IntermediateASTTree {
@@ -942,31 +938,34 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   // SETUPVisitor methods
 
+  // visitLanguage(ctx: BitloopsParser.LanguageContext) {
+  //   return languageVisitor(this, ctx);
+  // }
   /**
    * Server Expressions
    */
-  // visitRestServerExpression(ctx: BitloopsParser.RestServerExpressionContext): void {
-  //   // console.log('visitRestServerExpression');
-  //   const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-  //   const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
+  visitRestServerExpression(ctx: BitloopsParser.RestServerExpressionContext): void {
+    // console.log('visitRestServerExpression');
+    const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
+    const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
 
-  //   const serverOptions: any = {
-  //     port,
-  //     apiPrefix,
-  //   };
-  //   if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
-  //   if (corsOptions) {
-  //     serverOptions.corsOptions = corsOptions;
-  //   }
-  //   const routers = this.visit(ctx.bindServerRoutes());
-  //   serverOptions.routers = routers;
+    const serverOptions: any = {
+      port,
+      apiPrefix,
+    };
+    if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
+    if (corsOptions) {
+      serverOptions.corsOptions = corsOptions;
+    }
+    const routers = this.visit(ctx.bindServerRoutes());
+    serverOptions.routers = routers;
 
-  //   if (!this._result.servers) {
-  //     this._result.servers = {};
-  //   }
-  //   if (!this._result.servers[serverType]) {
-  //     this._result.servers[serverType] = { serverInstances: [] };
-  //   }
-  //   this._result.servers[serverType].serverInstances.push(serverOptions);
-  // }
+    if (!this._result.servers) {
+      this._result.servers = {};
+    }
+    if (!this._result.servers[serverType]) {
+      this._result.servers[serverType] = { serverInstances: [] };
+    }
+    this._result.servers[serverType].serverInstances.push(serverOptions);
+  }
 }

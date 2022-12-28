@@ -18,11 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
-import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { validBitloopsPrimaryTypeTestCases } from './mocks/bitloopsPrimaryType.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -31,23 +32,26 @@ describe('Valid bitloops primary type', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validBitloopsPrimaryTypeTestCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testCase.fileId,
-          fileContents: testCase.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
         }
       }
       const expectedNodeValues = testCase.type;

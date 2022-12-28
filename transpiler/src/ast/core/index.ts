@@ -4,7 +4,6 @@ import { TBoundedContexts } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
 import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
-import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';
 import {
   IntermediateASTParserError,
@@ -13,6 +12,7 @@ import {
   IntermediateASTError,
   IIntermediateASTValidator,
   IntermediateAST,
+  IntermediateASTSetup,
 } from './types.js';
 
 export class IntermediateASTParser implements IIntermediateASTParser {
@@ -59,24 +59,21 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     };
   }
 
-  private originalASTSetupToIntermediateASTTree(astSetup: OriginalASTSetup): IntermediateASTTree {
-    let setupTree: IntermediateASTTree;
+  private originalASTSetupToIntermediateASTTree(astSetup: OriginalASTSetup): IntermediateASTSetup {
+    const setupAST: IntermediateASTSetup = {};
     for (const [fileId, ASTData] of Object.entries(astSetup)) {
-      const bitloopsVisitor = new BitloopsVisitor(fileId, true);
+      const bitloopsVisitor = new BitloopsVisitor(fileId);
       bitloopsVisitor.visit(ASTData.ASTContext);
       const { intermediateASTTree } = bitloopsVisitor;
-      if (setupTree) {
-        setupTree.mergeWithTree(intermediateASTTree);
-      } else {
-        setupTree = intermediateASTTree;
-      }
+
+      setupAST[fileId] = intermediateASTTree;
     }
-    return setupTree;
+    return setupAST;
   }
 
   private originalASTCoreToIntermediateASTTree(
     astCore: OriginalASTCore,
-    // TODO IntermediateASTParserError will be genereted in previous step if it exists, visitor is not expected to generate it
+    // TODO IntermediateASTParserError will be generated in previous step if it exists, visitor is not expected to generate it
     // TODO Remove this when error listener for syntax errors is implemented
   ): TBoundedContexts | IntermediateASTParserError[] {
     const boundedContexts: TBoundedContexts = {};

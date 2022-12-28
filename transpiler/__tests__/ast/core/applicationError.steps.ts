@@ -1,15 +1,15 @@
-import { BitloopsParser, BitloopsIntermediateASTParser } from '../../../src/index.js';
-
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
-import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
 import {
   invalidApplicationErrors,
   validApplicationErrors,
 } from './mocks/errors/applicationErrors.js';
 import { TApplicationError, TExpression, TIdentifier, TParameterList } from '../../../src/types.js';
 import { ApplicationErrorBuilder } from './builders/applicationErrorBuilder.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -18,25 +18,28 @@ describe('An application error is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validApplicationErrors.forEach((mock) => {
     test(`${mock.description}`, () => {
       const { identifier, message, errorId, parameters } = mock;
       const expectedNodeValues = getExpectedOutput(identifier, message, errorId, parameters);
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: mock.fileId,
-          fileContents: mock.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
         }
       }
 
@@ -52,18 +55,20 @@ describe('An application error is valid', () => {
 });
 describe.skip('An application error is invalid', () => {
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
   invalidApplicationErrors.forEach((mock) => {
     test(`${mock.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: mock.fileId,
-          fileContents: mock.inputBLString,
-        },
-      ]);
-      if (isBitloopsParserError(initialModelOutput)) {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
+      if (isParserErrors(initialModelOutput)) {
         throw initialModelOutput;
       }
 

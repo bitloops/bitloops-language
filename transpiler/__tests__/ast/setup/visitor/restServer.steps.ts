@@ -17,70 +17,116 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d, decode } from 'bitloops-gherkin';
-import { BitloopsIntermediateSetupASTParser } from '../../../../src/index.js';
-import { BitloopsSetupParser } from '../../../../src/parser/setup/index.js';
-import {
-  BitloopsSetupParserError,
-  BitloopsLanguageSetupAST,
-} from '../../../../src/parser/setup/types.js';
 import { BitloopsParser } from '../../../../src/parser/core/index.js';
+import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
+import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
+import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
+import { VALID_REST_SERVER_CASES } from '../mocks/validRestServerCases.js';
 
-const feature = loadFeature('__tests__/ast/setup/visitor/restServer.feature');
+const BOUNDED_CONTEXT = 'Hello world';
+const MODULE = 'Demo';
 
-defineFeature(feature, (test) => {
-  test('Valid Server Declaration', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
+describe('Rest Server is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    given(/^A valid Server Declaration (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse(blString);
-      const intermediateParser = new BitloopsIntermediateSetupASTParser();
-      if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageSetupAST,
-        );
+  VALID_REST_SERVER_CASES.forEach((testRestServer) => {
+    test(`${testRestServer.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testRestServer.inputBLString,
+            fileId: testRestServer.fileId,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.setup;
+        }
       }
-    });
+      const restServerNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+      const value = restServerNodes[0].getValue();
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
-    });
-  });
-
-  test('Multiple Valid Server Declarations', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
-
-    given(/^Valid Server Declarations (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
-
-    when('I generate the model', () => {
-      const parser = new BitloopsSetupParser();
-      const initialModelOutput = parser.parse(blString);
-      const intermediateParser = new BitloopsIntermediateSetupASTParser();
-      if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageSetupAST,
-        );
-      }
-    });
-
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      // console.log('result', result);
-      // console.log('modelOutput', JSON.parse(modelOutput));
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      expect(value).toMatchObject(testRestServer.output);
     });
   });
 });
+
+// describe('DTO declaration with multiple dtos is valid', () => {
+//   let resultTree: IntermediateASTTree;
+
+//   const parser = new BitloopsParser();
+//   const intermediateParser = new IntermediateASTParser();
+
+//   validMultipleDTOSTestCases.forEach((testDTO) => {
+//     test(`${testDTO.description}`, () => {
+//       const initialModelOutput = parser.parse({
+//         core: [
+//           {
+//             boundedContext: BOUNDED_CONTEXT,
+//             module: MODULE,
+//             fileId: testDTO.fileId,
+//             fileContents: testDTO.inputBLString,
+//           },
+//         ],
+//       });
+
+//       if (!isParserErrors(initialModelOutput)) {
+//         const result = intermediateParser.parse(initialModelOutput);
+//         if (!isIntermediateASTError(result)) {
+//           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
+//         }
+//       }
+//       const expectedNodeValues = getExpectedDTOOutputMultipleDTOS([
+//         { variables: testDTO.variables[0], identifier: testDTO.identifier[0] },
+//         { variables: testDTO.variables[1], identifier: testDTO.identifier[1] },
+//       ]);
+//       const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+//       const values = dtoNodes.map((node) => node.getValue());
+
+//       expect(values).toMatchObject(expectedNodeValues);
+//     });
+//   });
+// });
+
+// describe('DTO declaration is invalid', () => {
+//   const parser = new BitloopsParser();
+//   const intermediateParser = new IntermediateASTParser();
+//   errorCases.forEach((testDTO) => {
+//     test(`${testDTO.description}`, () => {
+//       const res = function (): void {
+//         const initialModelOutput = parser.parse({
+//           core: [
+//             {
+//               boundedContext: BOUNDED_CONTEXT,
+//               module: MODULE,
+//               fileId: testDTO.fileId,
+//               fileContents: testDTO.inputBLString,
+//             },
+//           ],
+//         });
+
+//         if (!isParserErrors(initialModelOutput)) {
+//           intermediateParser.parse(initialModelOutput);
+//         }
+//       };
+
+//       expect(res).toThrow(TypeError);
+//     });
+//   });
+// });

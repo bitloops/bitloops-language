@@ -381,10 +381,9 @@ privateMethodDeclarationList
     : privateMethodDeclaration+
     ;
 
-domainConstructorParam 
-: propsIdentifier
-;
-
+domainConstructorParam
+    : accessibilityModifier? parameterIdentifier Colon propsIdentifier 
+    ;
 
 domainConstructorDeclaration
     : Constructor OpenParen domainConstructorParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
@@ -784,10 +783,6 @@ unknownMethod
     : identifier
     ;
 
-// controllerDeclarations
-//     : controllerInstantiation+
-//     ;
-
 nestedImpliedControllerDeclarations
     : nestedControllerInstantiation*
     ;
@@ -841,9 +836,9 @@ routerDefinition
     : routerDeclaration Assign routerExpression SemiColon?
     ;
 
-serverExpression
-    : RESTServer OpenParen serverInstantiationOptions CloseParen  bindServerRoutes SemiColon?                   # RestServerExpression
-    | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerExpression
+serverDeclaration
+    : RESTServer OpenParen serverInstantiationOptions CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
+    | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerDeclaration
     ;
 
 repoConnectionDefinition

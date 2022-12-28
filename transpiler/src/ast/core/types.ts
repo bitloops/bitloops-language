@@ -7,7 +7,11 @@ import { VariableDeclarationNode } from './intermediate-ast/nodes/variableDeclar
 
 export type IntermediateAST = {
   core: TBoundedContexts;
-  setup?: IntermediateASTTree;
+  setup?: IntermediateASTSetup;
+};
+
+export type IntermediateASTSetup = {
+  [fileId: string]: IntermediateASTTree;
 };
 
 export type IntermediateASTError = IntermediateASTParserError[] | IntermediateASTValidationError[];

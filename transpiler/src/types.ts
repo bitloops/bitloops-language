@@ -797,16 +797,18 @@ export type TPackagesSetup = {
   packageValues: TPackagesMapping;
 };
 
-export interface ISetupData {
-  controllers?: TControllers;
-  useCases?: TUseCases;
-  useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  language: string;
-  servers?: TServers;
-  routers?: TRouters;
-  packages?: TPackagesSetup;
-  repos?: TReposSetup;
-}
+export type TSetupData = {
+  setupData: {
+    controllers?: TControllers;
+    useCases?: TUseCases;
+    useCaseDependencyInjections?: IUseCaseDependencyInjection[];
+    language: string;
+    servers?: TServers;
+    routers?: TRouters;
+    packages?: TPackagesSetup;
+    repos?: TReposSetup;
+  };
+};
 
 export type TUseCases = {
   boundedContext: string;

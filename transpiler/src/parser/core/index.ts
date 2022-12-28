@@ -75,7 +75,7 @@ export class BitloopsParser implements IOriginalParser {
     return boundedContexts;
   }
 
-  private parseSetup(setupData: TParserSetupInputData): OriginalASTSetup | OriginalParserError {
+  public parseSetup(setupData: TParserSetupInputData): OriginalASTSetup | OriginalParserError {
     const setupContext: OriginalASTSetup = {};
     for (const data of setupData) {
       const { fileContents, fileId } = data;
