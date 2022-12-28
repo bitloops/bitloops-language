@@ -20,16 +20,15 @@
 import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
 import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
-import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
-import { VALID_REST_SERVER_CASES } from '../mocks/validRestServerCases.js';
+import { VALID_REST_SERVER_CASES } from '../mocks/restServerDeclaration/validRestServerCases.js';
+import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
 
 const BOUNDED_CONTEXT = 'Hello world';
 const MODULE = 'Demo';
 
 describe('Rest Server is valid', () => {
-  let resultTree: IntermediateASTTree;
+  let setupResult: IntermediateASTSetup;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
@@ -56,13 +55,13 @@ describe('Rest Server is valid', () => {
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
         if (!isIntermediateASTError(result)) {
-          resultTree = result.setup;
+          setupResult = result.setup;
         }
       }
-      const restServerNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
-      const value = restServerNodes[0].getValue();
+      const resultTree = setupResult[testRestServer.fileId];
+      const value = resultTree.getCurrentNode().getValue();
 
-      expect(value).toMatchObject(testRestServer.output);
+      expect(value).toMatchObject(testRestServer.restServer);
     });
   });
 });

@@ -9,6 +9,7 @@ import {
   OriginalASTSetup,
   OriginalASTCore,
   IOriginalParser,
+  ASTSetupContext,
 } from './types.js';
 import BitloopsLexer from './grammar/BitloopsLexer.js';
 import Parser from './grammar/BitloopsParser.js';
@@ -79,7 +80,7 @@ export class BitloopsParser implements IOriginalParser {
     const setupContext: OriginalASTSetup = {};
     for (const data of setupData) {
       const { fileContents, fileId } = data;
-      const ASTContext = BitloopsParser.getInitialAST(fileContents);
+      const ASTContext = BitloopsParser.getInitialASTSetup(fileContents);
       if (isParserError(ASTContext)) {
         return ASTContext;
       }
@@ -100,6 +101,24 @@ export class BitloopsParser implements IOriginalParser {
     try {
       const parser = new Parser(tokens);
       const tree = parser.program() as ASTContext;
+      return tree;
+    } catch (error: any) {
+      return new OriginalParserError(JSON.stringify(error));
+    }
+  }
+
+  /**
+   * Initial AST.
+   * @param blCode string
+   * @returns Parser.ProgramContext
+   */
+  private static getInitialASTSetup(blCode: string): ASTSetupContext | OriginalParserError {
+    const chars = new antlr4.InputStream(blCode);
+    const lexer = new BitloopsLexer(chars);
+    const tokens = new antlr4.CommonTokenStream(lexer as any);
+    try {
+      const parser = new Parser(tokens);
+      const tree = parser.setupProgram() as ASTSetupContext;
       return tree;
     } catch (error: any) {
       return new OriginalParserError(JSON.stringify(error));

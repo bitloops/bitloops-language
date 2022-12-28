@@ -3,6 +3,8 @@ import Parser from './grammar/BitloopsParser.js';
 
 export class ASTContext extends Parser.ProgramContext {}
 
+export class ASTSetupContext extends Parser.SetupProgramContext {}
+
 export type OriginalAST = {
   core: OriginalASTCore;
   setup?: OriginalASTSetup;
@@ -10,7 +12,7 @@ export type OriginalAST = {
 
 export type OriginalASTSetup = {
   [fileId: string]: {
-    ASTContext: ASTContext;
+    ASTContext: ASTSetupContext;
   };
 };
 

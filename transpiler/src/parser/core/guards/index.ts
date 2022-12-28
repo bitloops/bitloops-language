@@ -5,6 +5,7 @@ import {
   OriginalASTCore,
   OriginalASTSetup,
   OriginalAST,
+  ASTSetupContext,
 } from '../types.js';
 
 const isParserErrors = (
@@ -22,7 +23,7 @@ const isParserErrors = (
 };
 
 const isParserError = (
-  value: TTranspileError | ASTContext | OriginalASTSetup | OriginalASTCore,
+  value: TTranspileError | ASTContext | ASTSetupContext | OriginalASTSetup | OriginalASTCore,
 ): value is OriginalParserError => {
   if (value instanceof OriginalParserError) {
     return true;

@@ -184,6 +184,7 @@ import { domainConstructorParameterVisitor } from './helpers/domainConstructorPa
 import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -206,8 +207,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return this._currentFile;
   }
 
-  visitProgram(ctx: BitloopsParser.ProgramContext): any {
+  // visitProgram(ctx: BitloopsParser.ProgramContext): any {
+  //   this.visitChildren(ctx);
+  // }
+
+  visitCore(ctx: BitloopsParser.CoreContext): any {
     this.visitChildren(ctx);
+  }
+
+  visitSetup(ctx: BitloopsParser.SetupContext): any {
+    this.visitChildren(ctx);
+    // if (this.useCases.length > 0) {
+    //   const useCases = getUseCases(this.useCases);
+    //   this._result.useCases = useCases;
+    // }
+    // if (Object.keys(this.packages).length > 0) {
+    //   this._result.packages = this.packages;
+    // }
   }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext): ExpressionNode {
@@ -453,6 +469,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitJestTestDeclaration(ctx: BitloopsParser.JestTestDeclarationContext) {
     return jestTestDeclarationVisitor(this, ctx);
+  }
+
+  visitjestTestSetupDeclarationStatement(
+    ctx: BitloopsParser.JestTestSetupDeclarationStatementContext,
+  ) {
+    return jestTestSetupDeclarationVisitor(this, ctx);
   }
 
   visitArgumentList(ctx: BitloopsParser.ArgumentListContext) {
@@ -944,8 +966,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Server Expressions
    */
-  visitRestServerExpression(ctx: BitloopsParser.RestServerExpressionContext): void {
-    // console.log('visitRestServerExpression');
+  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): void {
+    console.log('visitRestServerExpression');
     const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
     const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
 

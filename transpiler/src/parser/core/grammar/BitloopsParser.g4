@@ -183,13 +183,12 @@ coreProgram
 
 setupProgram
     : setupStatement*  // # setupStatements
-    | test*            // # testStatements
     | EOF?           // # eof
     ;
 
 program
-    : coreProgram
-    | setupProgram
+    : coreProgram # Core
+    | setupProgram # Setup
     ;
 
 sourceElement
@@ -988,7 +987,7 @@ unknownServer
     : identifier (Dot identifier)*
     ;
 
-test
+jestTestSetupDeclaration
     : OpenParen wordsWithSpaces CloseParen SemiColon? # TestExpression
     | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
     // | EnvPrefix OpenParen Identifier Comma literal CloseParen # EnvPrefixExpression
@@ -999,7 +998,8 @@ setupStatement
     | packageConcretion # packageConcretionStatement
     | useCaseDefinition # useCaseDefinitionStatement
     | routerDefinition  # routerDefinitionStatement
-    | serverExpression  # serverExpressionStatement
+    | serverDeclaration  # serverDeclarationStatement
     | repoConnectionDefinition # repoConnectionDefinitionStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
+    | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
     ;
