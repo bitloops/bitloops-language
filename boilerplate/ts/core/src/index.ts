@@ -35,6 +35,7 @@ import {
   getTopic as getTopicImport,
 } from './helpers';
 import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain/events/dispatchEventsCallback';
+import { IHandle as IHanldeImport } from './application/IHandle';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -57,6 +58,7 @@ namespace Domain {
 namespace Application {
   export class Error extends AppError {}
   export type IUseCase<IRequest, IResponse> = UseCase<IRequest, IResponse>;
+  export type IHandle = IHanldeImport;
 
   export namespace Repo {
     export class Error extends RepoError {}
