@@ -22,7 +22,6 @@ export class DomainCreateParameterNodeBuilder implements IBuilder<DomainCreatePa
   }
   withTypeNode(value: string): DomainCreateParameterNodeBuilder {
     this.value = new DomainCreateParameterValueNodeBuilder().withValue(value).build();
-    console.log(this.value);
     return this;
   }
 
