@@ -1000,3 +1000,4 @@ setupStatement
     | repoConnectionDefinition # repoConnectionDefinitionStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
+    ;

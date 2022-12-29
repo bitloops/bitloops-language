@@ -18,12 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { BitloopsParser, OriginalAST } from '../../../src/parser/index.js';
 import { TArgumentList, TEvaluationValues } from '../../../src/types.js';
 import { EvaluationBuilderDirector } from './builders/evaluationDirector.js';
 import { validBuiltinClassEvaluations } from './mocks/builtinClassEvaluation.js';
@@ -35,25 +33,30 @@ describe('Valid builtin class type', () => {
   validBuiltinClassEvaluations.forEach((mock) => {
     test(`${mock.description}`, () => {
       const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: mock.fileId,
-          fileContents: mock.inputBLString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (initialModelOutput instanceof BitloopsParserError) {
-        throw new Error(initialModelOutput.message);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
+      if (isParserErrors(initialModelOutput)) {
+        throw new Error(initialModelOutput[0].message);
       }
-      let result = intermediateParser.parse(
-        initialModelOutput as unknown as BitloopsLanguageASTContext,
-      );
-      const tree = result[boundedContext][module];
-      result = tree.getCurrentNode().getValue();
+
+      const intermediateParser = new IntermediateASTParser();
+      const result = intermediateParser.parse(initialModelOutput as OriginalAST);
+      if (isIntermediateASTError(result)) {
+        throw new Error(result[0].message);
+      }
+      const { core } = result;
+      const resultTree = core[boundedContext].core;
       const expected = getExpected(mock.builtInIdentifier, mock.argumentList);
-      expect(result).toMatchObject(expected);
+      const value = resultTree.getCurrentNode().getValue();
+      expect(value).toMatchObject(expected);
     });
   });
 });

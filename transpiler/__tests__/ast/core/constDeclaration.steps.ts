@@ -17,11 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
-import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
 import { validConstDeclarationCases } from './mocks/statements/constDeclaration.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -31,31 +32,32 @@ describe('Const declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validConstDeclarationCases.forEach((testConstDeclaration) => {
     test(`${testConstDeclaration.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testConstDeclaration.fileId,
-          fileContents: testConstDeclaration.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testConstDeclaration.fileId,
+            fileContents: testConstDeclaration.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
         }
       }
       const constDeclarationNodes = resultTree.getClassTypeNodes(
         BitloopsTypesMapping.TConstDeclaration,
       );
       const value = constDeclarationNodes[0].getValue();
-      console.log('constDeclarationNode', constDeclarationNodes);
-      console.log('testConstDeclaration', testConstDeclaration.expected);
 
       expect(value).toMatchObject(testConstDeclaration.expected);
       expect(constDeclarationNodes.length).toBe(1);
