@@ -7,7 +7,7 @@ export const validDomainConstructorDeclarationCases = [
     description: 'domain constructor declaration with const declaration statement',
     fileId: 'testFile.bl',
     inputBLString:
-      'JestTestCreateMethodDeclaration { constructor(props: string): (OK(NameVO), Errors(DomainErrors.InvalidName)) { const numOfTeachers = 3 } }',
+      'JestTestCreateMethodDeclaration { constructor(props: StringProps): (OK(NameVO), Errors(DomainErrors.InvalidName)) { const numOfTeachers = 3 } }',
     expected: new DomainCreateBuilder()
       .withStatements(
         new StatementListDirector().buildOneConstDeclarationWithIntLiteralExpression({
@@ -21,7 +21,7 @@ export const validDomainConstructorDeclarationCases = [
           'DomainErrors.InvalidName',
         ),
       )
-      .withParameter('props', 'string')
+      .withParameter('props', 'StringProps')
       .build(),
   },
   {

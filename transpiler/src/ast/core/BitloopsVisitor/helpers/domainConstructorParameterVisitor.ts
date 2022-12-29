@@ -4,12 +4,14 @@ import { DomainCreateParameterNode } from '../../intermediate-ast/nodes/Domain/D
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const domainConstructorParameterVisitor = (
-  thisVisitor: BitloopsVisitor,
+  _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorParamContext,
 ): DomainCreateParameterNode => {
-  const identifierNode = thisVisitor.visit(ctx.propsIdentifier);
+  const parameterIdentifier = ctx.id.text;
+  const parameterType = ctx.val.text;
   const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
-    .withIdentifierNode(identifierNode)
+    .withIdentifierNode(parameterIdentifier)
+    .withTypeNode(parameterType)
     .build();
 
   return domainConstructorParameterNode;

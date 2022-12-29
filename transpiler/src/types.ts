@@ -619,7 +619,6 @@ export type TErrorIdentifiers = TErrorIdentifier[];
 // export type TOkErrorReturnTypeValues = {
 //   errors: TErrorIdentifiers;
 // } & TReturnOkType;
-
 export type TOkErrorReturnType = {
   returnType: {
     errors: TErrorIdentifiers;
