@@ -8,7 +8,7 @@ keywords: [microservices, microservices architecture, software architecture, sof
 
 # Test Driven Development
 
-Test-driven development (TDD) is a software development process, similar to BDD the encourages developers to build test cases that represent the exepcted outcomes before the development of the actual code.
+Test-driven development (TDD) is a software development process, similar to BDD that encourages developers to build test cases that represent the expected outcomes before the development of the actual code.
 
 ## What is TDD exactly?
 
@@ -24,7 +24,7 @@ TDD has several benefits:
 
 - Robust code enables faster innovation and continuous delivery
 - Low risk of braking code as the code is flexible and extensible so can be refactored or moved with minimal risk
-- TDD code is easy to test (thats one of the principles), meaning its easy to understand
+- TDD code is easy to test (that's one of the principles), meaning it's easy to understand
 - Productivity: The requirements are implemented as efficiently as possible because only the function that is needed is written
 
 
