@@ -3,7 +3,6 @@ import { ConstDeclarationListNodeBuilder } from '../../../../../../src/ast/core/
 import { DomainCreateNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateBuilder.js';
 import { ErrorIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ErrorIdentifiersNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
-import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 import { PrivateMethodDeclarationListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PrivateMethodDeclarationListNodeBuilder.js';
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
 import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
@@ -22,7 +21,6 @@ import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/inter
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { PropsIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 
 type TReturnType = {
   ok: string;
@@ -55,14 +53,8 @@ export class ValueObjectBuilderDirector {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
 
     const parameterNode = new DomainCreateParameterNodeBuilder(null)
-      .withIdentifierNode(
-        new ParameterIdentifierNodeBuilder(null)
-          .withIdentifier(constructorParameterNode.propIdentifier)
-          .build(),
-      )
-      .withTypeNode(
-        new PropsIdentifierNodeBuilder().withName(constructorParameterNode.propClassName).build(),
-      )
+      .withIdentifierNode(constructorParameterNode.propIdentifier)
+      .withTypeNode(constructorParameterNode.propClassName)
       .build();
 
     return new ValueObjectDeclarationNodeBuilder(tree)

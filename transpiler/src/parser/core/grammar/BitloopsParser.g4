@@ -810,7 +810,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorParam 
-    : parameter
+    : id=Identifier Colon val=PropsIdentifier
     ;
 
 domainConstructorDeclaration

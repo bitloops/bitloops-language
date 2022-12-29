@@ -619,7 +619,6 @@ export type TErrorIdentifiers = TErrorIdentifier[];
 // export type TOkErrorReturnTypeValues = {
 //   errors: TErrorIdentifiers;
 // } & TReturnOkType;
-
 export type TOkErrorReturnType = {
   returnType: {
     errors: TErrorIdentifiers;
@@ -630,7 +629,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TParameter;
+    TDomainCreateParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;
