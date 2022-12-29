@@ -835,7 +835,7 @@ routerDefinition
     ;
 
 serverDeclaration
-    : RESTServer OpenParen OpenBrace serverrType=serverTypeOption serverApiPrefixOption customServerOption* CloseBrace CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
+    : RESTServer OpenParen OpenBrace serverTypeOption serverApiPrefixOption  customServerOption* CloseBrace CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
     | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerDeclaration
     ;
 
@@ -988,6 +988,7 @@ unknownServer
 jestTestSetupDeclaration
     : OpenParen wordsWithSpaces CloseParen SemiColon? # TestExpression
     | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
+    // | EnvPrefix OpenParen Identifier Comma literal CloseParen # EnvPrefixExpression
     ;
 
 setupStatement

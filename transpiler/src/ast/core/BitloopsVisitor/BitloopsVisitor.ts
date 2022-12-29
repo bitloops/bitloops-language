@@ -29,7 +29,7 @@ import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js'
 import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
 import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
-import { TConstDeclaration, TSetupExpression } from '../../../types.js';
+import { TConstDeclaration } from '../../../types.js';
 import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
 import { BreakStatementNode } from './../intermediate-ast/nodes/statements/BreakStatementNode.js';

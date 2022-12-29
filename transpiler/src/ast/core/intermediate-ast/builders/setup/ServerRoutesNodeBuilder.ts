@@ -5,7 +5,7 @@ import { ServerRouteNode } from '../../nodes/setup/ServerRouteNode.js';
 
 export class ServerRoutesNodeBuilder implements IBuilder<ServerRoutesNode> {
   private serverRoutesNode: ServerRoutesNode;
-  private serverRoutes: ServerRoutesNode[];
+  private serverRoutes: ServerRouteNode[];
 
   constructor(nodeMetadata?: TNodeMetadata) {
     this.serverRoutesNode = new ServerRoutesNode(nodeMetadata);

@@ -900,7 +900,12 @@ export type TServers = (TRESTServerInstance | TGraphQLServerInstance)[];
 
 export type TServerType = 'REST.Fastify' | 'REST.Express' | 'GraphQL';
 export type TRouterInstanceName = string;
-export type TRestServerInstanceRouters = Record<TRouterInstanceName, { routerPrefix: string }>;
+
+export type TRestServerInstanceRouters = TRestServerInstanceRouter[];
+export type TRestServerInstanceRouter = {
+  instanceName: TRouterInstanceName;
+  routerPrefix: string;
+};
 
 export type TRESTServerInstance = {
   port: TSetupExpression;
@@ -1033,9 +1038,7 @@ export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 
-export type TSetupExpressionValue =
-  // | TEnvVarWithDefaultValueExpression
-  TEnvironmentVariableExpression | TExpression;
+export type TSetupExpressionValue = TEnvironmentVariableExpression | TExpression;
 
 export type TSetupExpression = {
   expression: TSetupExpressionValue;

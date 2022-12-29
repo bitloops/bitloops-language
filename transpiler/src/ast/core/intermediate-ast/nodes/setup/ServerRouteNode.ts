@@ -5,6 +5,6 @@ export class ServerRouteNode extends IntermediateASTNode {
   private static classNodeName = 'serverRoute';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TRestServerInstanceRouters, metadata, ServerRouteNode.classNodeName);
+    super(BitloopsTypesMapping.TRestServerInstanceRouter, metadata, ServerRouteNode.classNodeName);
   }
 }
