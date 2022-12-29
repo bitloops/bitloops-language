@@ -730,7 +730,6 @@ eos
 setupExpression
     : EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
     | envVariable                                                            # EnvironmentVariableExpression
-    // | objectLiteral                                                          # ObjectLiteralExpression 
     | expression                                                             # CoreExpression
     ;
 
@@ -836,7 +835,7 @@ routerDefinition
     ;
 
 serverDeclaration
-    : RESTServer OpenParen serverInstantiationOptions CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
+    : RESTServer OpenParen OpenBrace serverrType=serverTypeOption serverApiPrefixOption customServerOption* CloseBrace CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
     | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerDeclaration
     ;
 
@@ -884,17 +883,16 @@ concretedRepoPort
     : RepoPortIdentifier
     ;
 
-serverInstantiationOptions
-    // : OpenBrace objectProperties CloseBrace
-    // TODO Remove necessary comma on end of each line
-    : OpenBrace serverInstantiationOption* CloseBrace
-    ;
+// serverInstantiationOptions
+//     // TODO Remove necessary comma on end of each line
+//     : OpenBrace (serverTypeOption | serverApiPrefixOption | customServerOption*) CloseBrace
+//     ;
 
-serverInstantiationOption
-    : serverTypeOption    
-    | serverApiPrefixOption
-    | customServerOption
-    ;
+// serverInstantiationOption
+//     : serverTypeOption  #ServerTypeOptionStatement
+//     | serverApiPrefixOption #ServerApiPrefixOptionStatement
+//     | customServerOption #CustomServerOptionStatement
+//     ;
 
 serverTypeOption
     : ServerTypeOption Colon serverType Comma
@@ -990,7 +988,6 @@ unknownServer
 jestTestSetupDeclaration
     : OpenParen wordsWithSpaces CloseParen SemiColon? # TestExpression
     | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
-    // | EnvPrefix OpenParen Identifier Comma literal CloseParen # EnvPrefixExpression
     ;
 
 setupStatement

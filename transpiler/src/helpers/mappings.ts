@@ -184,6 +184,10 @@ const BitloopsTypesMapping = {
   TValueObjectIdentifier: 'TValueObjectIdentifier',
   TServers: 'TServers',
   TSetupData: 'TSetupData',
+  TServerType: 'TServerType',
+  TSetupExpression: 'TSetupExpression',
+  TRestServerInstanceRouters: 'TRestServerInstanceRouters',
+  TEnvironmentVariableExpression: 'TEnvironmentVariableExpression',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
