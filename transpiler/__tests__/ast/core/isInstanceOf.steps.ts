@@ -18,12 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { OriginalAST, OriginalParserError } from '../../../src/parser/core/types.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { TExpression } from '../../../src/types.js';
 import { ExpressionBuilderDirector } from './builders/expressionDirector.js';
 import { validIsInstanceOfExpressions } from './mocks/isInstanceOf.js';
@@ -34,20 +31,20 @@ describe('Valid isInstanceOf expressions', () => {
   validIsInstanceOfExpressions.forEach((mock) => {
     test(`${mock.description}`, () => {
       const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: mock.fileId,
-          fileContents: mock.inputBLString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
-        const tree = result[boundedContext][module];
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
+      const intermediateParser = new IntermediateASTParser();
+      if (!(initialModelOutput instanceof OriginalParserError)) {
+        result = intermediateParser.parse(initialModelOutput as unknown as OriginalAST);
+        const tree = result.core[boundedContext][module];
         result = tree.getCurrentNode().getValue();
       }
       const expected = getExpected(mock.expression, mock.class);

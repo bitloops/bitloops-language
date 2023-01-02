@@ -19,11 +19,12 @@
  */
 
 import assert from 'assert';
-import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
-import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { validRestControllerStatementTestCases } from './mocks/controllers/restController.js';
 import { RestControllerBuilder } from './builders/controllers/restControllerBuilder.js';
 import {
@@ -40,23 +41,25 @@ describe('Rest controller declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validRestControllerStatementTestCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testCase.fileId,
-          fileContents: testCase.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
 

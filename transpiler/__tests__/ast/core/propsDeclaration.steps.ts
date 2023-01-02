@@ -18,12 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { TVariables, TProps, TPropsIdentifier, TVariable } from '../../../src/types.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
-import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { errorCases, validMultiplePropsTestCases, validPropsTestCases } from './mocks/props.js';
 import { PropsDeclarationBuilder } from './builders/propsDeclaration.js';
 
@@ -34,23 +35,25 @@ describe('Props declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validPropsTestCases.forEach((testProps) => {
     test(`${testProps.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testProps.fileId,
-          fileContents: testProps.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testProps.fileId,
+            fileContents: testProps.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
       const expectedNodeValues = getExpectedPropsOutput(testProps.variables, testProps.identifier);
@@ -66,23 +69,25 @@ describe('Props declaration with multiple props is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validMultiplePropsTestCases.forEach((testProps) => {
     test(`${testProps.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testProps.fileId,
-          fileContents: testProps.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testProps.fileId,
+            fileContents: testProps.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
       const expectedNodeValues = getExpectedPropsOutputMultipleProps([
@@ -99,20 +104,22 @@ describe('Props declaration with multiple props is valid', () => {
 
 describe('Props declaration is invalid', () => {
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
   errorCases.forEach((testProps) => {
     test(`${testProps.description}`, () => {
       const res = function (): void {
-        const initialModelOutput = parser.parse([
-          {
-            boundedContext: BOUNDED_CONTEXT,
-            module: MODULE,
-            fileId: testProps.fileId,
-            fileContents: testProps.inputBLString,
-          },
-        ]);
+        const initialModelOutput = parser.parse({
+          core: [
+            {
+              boundedContext: BOUNDED_CONTEXT,
+              module: MODULE,
+              fileId: testProps.fileId,
+              fileContents: testProps.inputBLString,
+            },
+          ],
+        });
 
-        if (!isBitloopsParserError(initialModelOutput)) {
+        if (!isParserErrors(initialModelOutput)) {
           intermediateParser.parse(initialModelOutput);
         }
       };
