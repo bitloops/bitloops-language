@@ -380,8 +380,8 @@ privateMethodDeclarationList
     : privateMethodDeclaration+
     ;
 
-domainConstructorParam
-    : accessibilityModifier? parameterIdentifier Colon propsIdentifier 
+domainConstructorParam 
+    : id=Identifier Colon val=PropsIdentifier
     ;
 
 domainConstructorDeclaration
