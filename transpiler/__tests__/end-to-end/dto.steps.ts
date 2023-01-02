@@ -38,19 +38,21 @@ describe('Valid DTO End To End', () => {
   DTO_END_TO_END_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       // given
-      const input = [
-        {
-          boundedContext,
-          module,
-          fileId,
-          fileContents: testCase.input,
-        },
-      ];
+      const input = {
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId,
+            fileContents: testCase.input,
+          },
+        ],
+      };
 
       // when
       const result = transpiler.transpile(input, options);
       if (!Transpiler.isTranspileError(result)) {
-        targetCode = result.targetCode;
+        targetCode = result;
       }
 
       // then

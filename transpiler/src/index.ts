@@ -3,8 +3,6 @@ import { BitloopsParser } from './parser/index.js';
 import { TargetGenerator } from './target/index.js';
 import Transpiler from './Transpiler.js';
 
-export { BitloopsIntermediateSetupASTParser } from './ast/setup/index.js';
-
 export {
   IBitloopsIntermediateSetupASTParser,
   BitloopsIntermediateSetupASTParserError,

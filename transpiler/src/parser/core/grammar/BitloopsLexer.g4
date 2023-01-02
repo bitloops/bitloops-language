@@ -85,7 +85,6 @@ BitXorAssign:                   '^=';
 BitOrAssign:                    '|=';
 ARROW:                          '=>';
 
-Digits:                         [0-9]+;
 
 /// Null Literals
 
@@ -94,9 +93,10 @@ NullLiteral:                    'null';
 /// Boolean Literals
 
 BooleanLiteral:                 'true'
-              |                 'false';
+              |                 'false'
+              ;
 
-IntegerLiteral:              '-'? DecimalIntegerLiteral
+IntegerLiteral:                DecimalIntegerLiteral
               ;
 
 
@@ -110,6 +110,8 @@ HexIntegerLiteral:              '0' [xX] HexDigit+;
 OctalIntegerLiteral:            '0' [0-7]+;
 OctalIntegerLiteral2:           '0' [oO] [0-7]+;
 BinaryIntegerLiteral:           '0' [bB] [01]+;
+
+Digits:                         [0-9]+;
 
 /// Keywords
 Optional:                       'optional';
@@ -416,7 +418,7 @@ fragment HexDigit
     ;
 fragment DecimalIntegerLiteral
     : '0'
-    | [1-9] [0-9]*
+    | [-]? [1-9] [0-9]*
     ;
 fragment ExponentPart
     : [eE] [+-]? [0-9]+

@@ -17,11 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isBitloopsIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { BitloopsIntermediateASTParser, BitloopsParser } from '../../../src/index.js';
-import { isBitloopsParserError } from '../../../src/parser/core/guards/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import {
   invalidStructDeclarationCases,
   validStructDeclarationCases,
@@ -35,23 +36,25 @@ describe('Struct declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validStructDeclarationCases.forEach((testStructDeclaration) => {
     test(`${testStructDeclaration.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testStructDeclaration.fileId,
-          fileContents: testStructDeclaration.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testStructDeclaration.fileId,
+            fileContents: testStructDeclaration.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
       const structDeclarationNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TStruct);
@@ -65,20 +68,22 @@ describe('Struct declaration is valid', () => {
 
 describe('Struct declaration is invalid', () => {
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
   invalidStructDeclarationCases.forEach((testStruct) => {
     test(`${testStruct.description}`, () => {
       const res = function (): void {
-        const initialModelOutput = parser.parse([
-          {
-            boundedContext: BOUNDED_CONTEXT,
-            module: MODULE,
-            fileId: testStruct.fileId,
-            fileContents: testStruct.inputBLString,
-          },
-        ]);
+        const initialModelOutput = parser.parse({
+          core: [
+            {
+              boundedContext: BOUNDED_CONTEXT,
+              module: MODULE,
+              fileId: testStruct.fileId,
+              fileContents: testStruct.inputBLString,
+            },
+          ],
+        });
 
-        if (!isBitloopsParserError(initialModelOutput)) {
+        if (!isParserErrors(initialModelOutput)) {
           intermediateParser.parse(initialModelOutput);
         }
       };
@@ -92,23 +97,25 @@ describe('Struct declaration with multiple structs is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
-  const intermediateParser = new BitloopsIntermediateASTParser();
+  const intermediateParser = new IntermediateASTParser();
 
   validMultipleStructsTestCases.forEach((testDTO) => {
     test(`${testDTO.description}`, () => {
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: testDTO.fileId,
-          fileContents: testDTO.inputBLString,
-        },
-      ]);
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testDTO.fileId,
+            fileContents: testDTO.inputBLString,
+          },
+        ],
+      });
 
-      if (!isBitloopsParserError(initialModelOutput)) {
+      if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isBitloopsIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
       const structNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TStruct);

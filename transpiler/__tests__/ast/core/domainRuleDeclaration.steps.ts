@@ -52,7 +52,7 @@ describe('Domain rule declaration is valid', () => {
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
         if (!isIntermediateASTError(result)) {
-          resultTree = result[BOUNDED_CONTEXT][MODULE];
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
 
