@@ -197,7 +197,7 @@ import { StringLiteralBuilder } from '../intermediate-ast/builders/expressions/l
 import { SetupExpressionNode } from '../intermediate-ast/nodes/setup/SetupExpressionNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import {
-  enviromentVariableVisitor,
+  // enviromentVariableVisitor,
   envVarWithDefaultValueExpressionVisitor,
 } from './helpers/setup/enviromentVariable.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
@@ -535,13 +535,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitBooleanLiteral(ctx: BitloopsParser.BooleanLiteralContext) {
     return booleanEvaluation(ctx.BooleanLiteral().getText());
-  }
-
-  visitRegularExpressionLiteral(ctx: BitloopsParser.RegularExpressionLiteralContext) {
-    return {
-      type: 'regex',
-      value: ctx.RegularExpressionLiteral().getText(),
-    };
   }
 
   visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
@@ -1022,15 +1015,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return envVar;
   }
 
-  visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-    const envVar = enviromentVariableVisitor(ctx);
-    return envVar;
-  }
+  // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
+  //   const envVar = enviromentVariableVisitor(ctx);
+  //   return envVar;
+  // }
 
-  visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
-    const expressionNode = this.visit(ctx.expression());
-    return expressionNode;
-  }
+  // visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
+  //   const expressionNode = this.visit(ctx.expression());
+  //   return expressionNode;
+  // }
 
   // visitDtoTestStatement(ctx: BitloopsParser.DtoTestStatementContext) {
   //   console.log('DTOooOooo', ctx);

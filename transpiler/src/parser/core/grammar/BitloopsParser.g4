@@ -692,6 +692,8 @@ expression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
+    | EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
+    | envVariable                                                            # EnvironmentVariableExpression
     ;   
 
 //TODO rename this
@@ -702,7 +704,6 @@ literal
     | BooleanLiteral            # BooleanLiteral
     | StringLiteral             # StringLiteral
     | templateStringLiteral     # TemplateStringLiteralLabel
-    | RegularExpressionLiteral  # RegularExpressionLiteral
     | numericLiteral            # NumericLiteralLabel
     ;
 
@@ -727,11 +728,11 @@ eos
 
 /** !!SETUP!! **/
 
-setupExpression
-    : EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
-    | envVariable                                                            # EnvironmentVariableExpression
-    | expression                                                             # CoreExpression
-    ;
+// setupExpression
+//     : expression                                                             # CoreExpression
+//     | EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
+//     | envVariable                                                            # EnvironmentVariableExpression
+//     ;
 
 // objectLiteral
 //     : '{' (evaluationFieldList (',' evaluationFieldList)* ','?)? '}'
@@ -835,8 +836,19 @@ routerDefinition
     ;
 
 serverDeclaration
-    : RESTServer OpenParen OpenBrace serverTypeOption serverApiPrefixOption  customServerOption* CloseBrace CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
+    : RESTServer OpenParen serverInstantiationOptions CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
     | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerDeclaration
+    ;
+
+serverInstantiationOptions
+    // TODO Remove necessary comma on end of each line
+    : OpenBrace serverInstantiationOption* CloseBrace
+    ;
+
+serverInstantiationOption
+    : serverTypeOption    
+    | serverApiPrefixOption
+    | customServerOption
     ;
 
 repoConnectionDefinition
@@ -860,7 +872,7 @@ objectProperties
     ;
 
 objectProperty
-    : identifier Colon setupExpression
+    : identifier Colon expression
     ;
 
 repoAdapterDefinition
@@ -903,7 +915,7 @@ serverApiPrefixOption
     ;
 
 customServerOption
-    : Identifier Colon setupExpression Comma
+    : Identifier Colon expression Comma
     ;
 
 // Cover any user defined options
@@ -987,7 +999,7 @@ unknownServer
 
 jestTestSetupDeclaration
     : OpenParen wordsWithSpaces CloseParen SemiColon? # TestExpression
-    | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
+    // | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
     // | EnvPrefix OpenParen Identifier Comma literal CloseParen # EnvPrefixExpression
     ;
 

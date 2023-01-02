@@ -1,7 +1,7 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { RestServerNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerNodeBuilder.js';
 import { ServerTypeIdentifierNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
-import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+// import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { ServerRouteNode } from '../../../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRoutesNode.js';
@@ -21,13 +21,13 @@ export const restServerDeclarationVisitor = (
     .build();
 
   //   const serverOptions = thisVisitor.visit(ctx.serverInstantiationOptions());
-  const apiPrefix: StringLiteralNode = thisVisitor.visit(ctx.serverApiPrefixOption);
-  const apiPort = thisVisitor.visit(ctx.serverApiPrefixOption());
+  // const apiPrefix: StringLiteralNode = thisVisitor.visit(ctx.serverApiPrefixOption);
+  // const apiPort = thisVisitor.visit(ctx.serverApiPrefixOption());
   const routes: ServerRoutesNode = thisVisitor.visit(ctx.bindServerRoutes());
 
   const restServerNode = new RestServerNodeBuilder(thisVisitor.intermediateASTTree, metadata)
-    .withAPIPrefix(apiPrefix)
-    .withPort(apiPort)
+    // .withAPIPrefix(apiPrefix)
+    // .withPort(apiPort)
     .withRoutes(routes)
     .withServerType(serverTypeNode)
     .build();
@@ -59,7 +59,7 @@ export const customServerOptionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.CustomServerOptionContext,
 ): SetupExpressionNode => {
-  const expressionNode = thisVisitor.visit(ctx.setupExpression());
+  const expressionNode = thisVisitor.visit(ctx.expression());
 
   return expressionNode;
 };
