@@ -848,8 +848,12 @@ serverInstantiationOptions
 serverInstantiationOption
     : serverTypeOption    
     | serverApiPrefixOption
+    | restServerPort //TODO implement this
     | customServerOption
     ;
+
+restServerPort 
+    : customServerOption;
 
 repoConnectionDefinition
     : Const identifier '=' repoConnectionExpression

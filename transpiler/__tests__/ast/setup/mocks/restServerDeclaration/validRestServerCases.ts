@@ -1,5 +1,12 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
-import { RestServerNodeDirector } from '../../builders/restServerNodeDirector.js';
+import { ExpressionBuilderDirector } from '../../../core/builders/expressionDirector.js';
+import { RestServerDeclarationBuilder } from '../../builders/restServerDirector.js';
+import { RestServerInstanceRouterBuilder } from '../../builders/restServerInstanceRouterBuilder.js';
+
+const portExpression = new ExpressionBuilderDirector().buildLogicalOrExpression(
+  new ExpressionBuilderDirector().buildIdentifierExpression('env.FASTIFY_PORT'),
+  new ExpressionBuilderDirector().buildInt32LiteralExpression(3002),
+);
 
 export const VALID_REST_SERVER_CASES = [
   {
@@ -8,6 +15,16 @@ export const VALID_REST_SERVER_CASES = [
     ),
     description: 'Valid rest server',
     fileId: 'testFile.bl',
-    restServer: new RestServerNodeDirector().buildRestServer(),
+    restServer: new RestServerDeclarationBuilder()
+      .withServerType('REST.Fastify')
+      .withApiPrefix('/')
+      .withPort(portExpression)
+      .withRoutes([
+        new RestServerInstanceRouterBuilder()
+          .withInstanceName('helloWorldRESTRouter')
+          .withRouterPrefix('/hello')
+          .build(),
+      ])
+      .build(),
   },
 ];

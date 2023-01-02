@@ -187,19 +187,20 @@ import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionN
 import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
 import {
   bindServerRoutesVisitor,
+  bindServerRouteVisitor,
   customServerOptionVisitor,
   restServerDeclarationVisitor,
+  serverInstantiationOptionsVisitor,
   serverTypeOptionVisitor,
 } from './helpers/setup/restServerDeclaration.js';
 import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { StringLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
-import { SetupExpressionNode } from '../intermediate-ast/nodes/setup/SetupExpressionNode.js';
-import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import {
-  // enviromentVariableVisitor,
+  enviromentVariableVisitor,
   envVarWithDefaultValueExpressionVisitor,
-} from './helpers/setup/enviromentVariable.js';
+} from './helpers/setup/environmentVariable.js';
+import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -980,6 +981,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerDeclarationVisitor(this, ctx);
   }
 
+  visitServerInstantiationVisitor(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
+    return serverInstantiationOptionsVisitor(this, ctx);
+  }
+
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
     const serverTypeNode = serverTypeOptionVisitor(ctx);
 
@@ -992,20 +997,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return apiPrefixNode;
   }
 
-  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): SetupExpressionNode {
+  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
     const res = customServerOptionVisitor(this, ctx);
     return res;
   }
 
-  visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRouteNode[] {
-    const routes = bindServerRoutesVisitor(this, ctx);
-    return routes;
+  visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
+    const routesNode = bindServerRoutesVisitor(this, ctx);
+    return routesNode;
   }
 
   visitRouteBind(ctx: BitloopsParser.RouteBindContext): any {
-    const routePath = ctx.pathString().getText();
-    const identifier = ctx.identifier().getText();
-    return { routerPrefix: routePath, routerInstanceName: identifier };
+    const routeNode = bindServerRouteVisitor(this, ctx);
+    return routeNode;
+    // return { routerPrefix: routePath, routerInstanceName: identifier };
   }
 
   visitEnvVarWithDefaultValueExpression(
@@ -1015,10 +1020,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return envVar;
   }
 
-  // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-  //   const envVar = enviromentVariableVisitor(ctx);
-  //   return envVar;
-  // }
+  visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
+    const envVar = enviromentVariableVisitor(ctx);
+    return envVar;
+  }
 
   // visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
   //   const expressionNode = this.visit(ctx.expression());

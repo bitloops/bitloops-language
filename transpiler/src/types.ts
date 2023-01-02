@@ -907,11 +907,19 @@ export type TRestServerInstanceRouter = {
   routerPrefix: string;
 };
 
+export type TRestServerOptions = TRestServerOption[];
+export type TRestServerOption =
+  | {
+      port: TExpression;
+    }
+  | { apiPrefix?: string }
+  | { serverType: TServerType };
+
 export type TRESTServerInstance = {
-  port: TExpression;
-  apiPrefix?: string;
-  routers: TRestServerInstanceRouters;
-  serverType: TServerType;
+  restServer: {
+    serverOptions: TRestServerOptions;
+    routers: TRestServerInstanceRouters;
+  };
 };
 
 export type TGraphQLServerInstance = {

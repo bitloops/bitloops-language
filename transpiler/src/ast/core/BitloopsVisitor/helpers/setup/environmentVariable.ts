@@ -1,7 +1,7 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { LiteralBuilder } from '../../../intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
 import { IdentifierNodeBuilder } from '../../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { EnviromentalVariableNodeBuilder } from '../../../intermediate-ast/builders/setup/EnviromentalVariableNodeBuilder.js';
+import { EnvironmentalVariableNodeBuilder } from '../../../intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 
 export const envVarWithDefaultValueExpressionVisitor = (
@@ -13,7 +13,7 @@ export const envVarWithDefaultValueExpressionVisitor = (
   const literalValue = thisVisitor.visit(ctx.literal());
   const literalNode = new LiteralBuilder().withLiteral(literalValue).build();
 
-  const envVar = new EnviromentalVariableNodeBuilder()
+  const envVar = new EnvironmentalVariableNodeBuilder()
     .withIdentifier(identifierNode)
     .withDefaultValue(literalNode)
     .build();
@@ -26,6 +26,6 @@ export const enviromentVariableVisitor = (
 ) => {
   const identifierNode = new IdentifierNodeBuilder().withName(ctx.envVariable()).build();
 
-  const envVar = new EnviromentalVariableNodeBuilder().withIdentifier(identifierNode).build();
+  const envVar = new EnvironmentalVariableNodeBuilder().withIdentifier(identifierNode).build();
   return envVar;
 };
