@@ -17,42 +17,51 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d, decode } from 'bitloops-gherkin';
+import { BitloopsParser } from '../../../../src/parser/core/index.js';
+import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
+import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
+import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
+import { VALID_USE_CASE_DEFINITION_CASES } from '../mocks/useCaseDefinition/index.js';
 
-import {
-  BitloopsIntermediateSetupASTParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParser,
-  BitloopsSetupParserError,
-} from '../../../../src/index.js';
+const BOUNDED_CONTEXT = 'Hello world';
+const MODULE = 'Demo';
 
-const feature = loadFeature('__tests__/ast/setup/visitor/useCaseVisitor.feature');
+describe('Use case definition is valid', () => {
+  let setupResult: IntermediateASTSetup;
 
-defineFeature(feature, (test) => {
-  test('Valid UseCase', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    given(/^A valid UseCase (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+  VALID_USE_CASE_DEFINITION_CASES.forEach((testUseCase) => {
+    test(`${testUseCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testUseCase.inputBLString,
+            fileId: testUseCase.fileId,
+          },
+        ],
+      });
 
-    when('I generate the model', () => {
-      const parser = new BitloopsSetupParser();
-      const initialModelOutput = parser.parse(blString);
-      const intermediateParser = new BitloopsIntermediateSetupASTParser();
-      if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageSetupAST,
-        );
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          setupResult = result.setup;
+        }
       }
-    });
+      const resultTree = setupResult[testUseCase.fileId];
+      const value = resultTree.getCurrentNode().getValue();
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      expect(value).toMatchObject(testUseCase.useCaseDefinition);
     });
   });
 });
