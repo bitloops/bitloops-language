@@ -19,8 +19,8 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { BoundedContextNodeBuilder } from '../../../intermediate-ast/builders/setup/BoundedContextNodeBuilder.js';
-import { BoundedContextNode } from '../../../intermediate-ast/nodes/setup/BoundedContextNode.js';
+import { BoundedContextNameNodeBuilder } from '../../../intermediate-ast/builders/setup/BoundedContextNameNodeBuilder.js';
+import { BoundedContextNameNode } from '../../../intermediate-ast/nodes/setup/BoundedContextNameNode.js';
 import { WordsWithSpacesNode } from '../../../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
@@ -28,10 +28,10 @@ import { produceMetadata } from '../../metadata.js';
 export const boundedContextVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.BoundedContextDeclarationContext,
-): BoundedContextNode => {
+): BoundedContextNameNode => {
   const wordsWithSpacesNode: WordsWithSpacesNode = thisVisitor.visit(ctx.wordsWithSpaces());
 
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  return new BoundedContextNodeBuilder(metadata).withName(wordsWithSpacesNode).build();
+  return new BoundedContextNameNodeBuilder(metadata).withName(wordsWithSpacesNode).build();
 };

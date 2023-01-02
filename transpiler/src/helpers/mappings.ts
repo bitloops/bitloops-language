@@ -193,8 +193,8 @@ const BitloopsTypesMapping = {
   TUseCaseExpression: 'TUseCaseExpression',
   TBoundedContextModule: 'TBoundedContextModule',
   TWordsWithSpaces: 'TWordsWithSpaces',
-  TBoundedContext: 'TBoundedContext',
-  TModule: 'TModule',
+  TBoundedContextName: 'TBoundedContextName',
+  TModuleName: 'TModuleName',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

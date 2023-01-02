@@ -1,5 +1,5 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
-import { UseCaseDefinitionNodeDirector } from '../../builders/useCaseDefinitionNodeDirector.js';
+import { UseCaseDefinitionNodeDirector } from '../../builders/useCaseDefinitionBuilder.js';
 
 export const VALID_USE_CASE_DEFINITION_CASES = [
   {

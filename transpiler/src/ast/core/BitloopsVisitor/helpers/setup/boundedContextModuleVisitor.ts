@@ -21,8 +21,8 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { BoundedContextModuleNodeBuilder } from '../../../intermediate-ast/builders/setup/BoundedContextModuleNodeBuilder.js';
 import { BoundedContextModuleNode } from '../../../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
-import { BoundedContextNode } from '../../../intermediate-ast/nodes/setup/BoundedContextNode.js';
-import { ModuleNode } from '../../../intermediate-ast/nodes/setup/ModuleNode.js';
+import { BoundedContextNameNode } from '../../../intermediate-ast/nodes/setup/BoundedContextNameNode.js';
+import { ModuleNameNode } from '../../../intermediate-ast/nodes/setup/ModuleNameNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
@@ -30,8 +30,10 @@ export const boundedContextModuleVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.BoundedContextModuleDeclarationContext,
 ): BoundedContextModuleNode => {
-  const boundedContextNode: BoundedContextNode = thisVisitor.visit(ctx.boundedContextDeclaration());
-  const moduleNode: ModuleNode = thisVisitor.visit(ctx.moduleDeclaration());
+  const boundedContextNode: BoundedContextNameNode = thisVisitor.visit(
+    ctx.boundedContextDeclaration(),
+  );
+  const moduleNode: ModuleNameNode = thisVisitor.visit(ctx.moduleDeclaration());
 
   const metadata = produceMetadata(ctx, thisVisitor);
 

@@ -19,8 +19,8 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { ModuleNodeBuilder } from '../../../intermediate-ast/builders/setup/ModuleNodeBuilder.js';
-import { ModuleNode } from '../../../intermediate-ast/nodes/setup/ModuleNode.js';
+import { ModuleNameNodeBuilder } from '../../../intermediate-ast/builders/setup/ModuleNameNodeBuilder.js';
+import { ModuleNameNode } from '../../../intermediate-ast/nodes/setup/ModuleNameNode.js';
 import { WordsWithSpacesNode } from '../../../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
@@ -28,10 +28,10 @@ import { produceMetadata } from '../../metadata.js';
 export const moduleVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ModuleDeclarationContext,
-): ModuleNode => {
+): ModuleNameNode => {
   const wordsWithSpacesNode: WordsWithSpacesNode = thisVisitor.visit(ctx.wordsWithSpaces());
 
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  return new ModuleNodeBuilder(metadata).withName(wordsWithSpacesNode).build();
+  return new ModuleNameNodeBuilder(metadata).withName(wordsWithSpacesNode).build();
 };

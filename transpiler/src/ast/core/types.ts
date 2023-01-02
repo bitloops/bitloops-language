@@ -1,5 +1,4 @@
 import { OriginalAST } from '../../parser/index.js';
-import { TBoundedContexts } from '../../types.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { ExpressionNode } from './intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
@@ -9,6 +8,12 @@ export type IntermediateAST = {
   core: TBoundedContexts;
   setup?: IntermediateASTSetup;
 };
+
+export type TModuleName = string;
+export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
+
+export type TBoundedContextName = string;
+export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export type IntermediateASTSetup = {
   [fileId: string]: IntermediateASTTree;

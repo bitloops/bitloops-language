@@ -1,22 +1,22 @@
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { ModuleNode } from '../../nodes/setup/ModuleNode.js';
+import { ModuleNameNode } from '../../nodes/setup/ModuleNameNode.js';
 import { WordsWithSpacesNode } from '../../nodes/setup/WordsWithSpacesNode.js';
 import { IBuilder } from '../IBuilder.js';
 
-export class ModuleNodeBuilder implements IBuilder<ModuleNode> {
+export class ModuleNameNodeBuilder implements IBuilder<ModuleNameNode> {
   private nameNode: WordsWithSpacesNode;
-  private moduleNode: ModuleNode;
+  private moduleNode: ModuleNameNode;
 
   constructor(metadata?: TNodeMetadata) {
-    this.moduleNode = new ModuleNode(metadata);
+    this.moduleNode = new ModuleNameNode(metadata);
   }
 
-  public withName(nameNode: WordsWithSpacesNode): ModuleNodeBuilder {
+  public withName(nameNode: WordsWithSpacesNode): ModuleNameNodeBuilder {
     this.nameNode = nameNode;
     return this;
   }
 
-  public build(): ModuleNode {
+  public build(): ModuleNameNode {
     this.moduleNode.addChild(this.nameNode);
 
     this.moduleNode.buildObjectValue();

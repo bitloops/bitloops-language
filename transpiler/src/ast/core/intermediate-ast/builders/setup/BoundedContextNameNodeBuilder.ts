@@ -1,22 +1,22 @@
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { BoundedContextNode } from '../../nodes/setup/BoundedContextNode.js';
+import { BoundedContextNameNode } from '../../nodes/setup/BoundedContextNameNode.js';
 import { WordsWithSpacesNode } from '../../nodes/setup/WordsWithSpacesNode.js';
 import { IBuilder } from '../IBuilder.js';
 
-export class BoundedContextNodeBuilder implements IBuilder<BoundedContextNode> {
+export class BoundedContextNameNodeBuilder implements IBuilder<BoundedContextNameNode> {
   private nameNode: WordsWithSpacesNode;
-  private bcNode: BoundedContextNode;
+  private bcNode: BoundedContextNameNode;
 
   constructor(metadata?: TNodeMetadata) {
-    this.bcNode = new BoundedContextNode(metadata);
+    this.bcNode = new BoundedContextNameNode(metadata);
   }
 
-  public withName(nameNode: WordsWithSpacesNode): BoundedContextNodeBuilder {
+  public withName(nameNode: WordsWithSpacesNode): BoundedContextNameNodeBuilder {
     this.nameNode = nameNode;
     return this;
   }
 
-  public build(): BoundedContextNode {
+  public build(): BoundedContextNameNode {
     this.bcNode.addChild(this.nameNode);
 
     this.bcNode.buildObjectValue();
