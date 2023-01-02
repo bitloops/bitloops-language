@@ -1,20 +1,18 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TSingleExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
+import { TExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { literalSingleExpressionToTargetLanguage } from './literal-single-expression.js';
 import { logicalSingleExpressionToTargetLanguage } from './logical-single-expression.js';
 import {
   isEnvironmentVariableExpression,
-  isEnvVarWithDefaultValueExpression,
+  // isEnvVarWithDefaultValueExpression,
   isIdentifierSingleExpression,
   isLiteralSingleExpression,
   isLogicalSingleExpression,
   isObjectLiteralExpression,
 } from './type-guards/index.js';
 
-const singleExpressionToTargetLanguage = (
-  value: TSingleExpression,
-): TTargetDependenciesTypeScript => {
+const singleExpressionToTargetLanguage = (value: TExpression): TTargetDependenciesTypeScript => {
   if (isLogicalSingleExpression(value.expression)) {
     const model = logicalSingleExpressionToTargetLanguage(value.expression);
     return {
@@ -32,25 +30,26 @@ const singleExpressionToTargetLanguage = (
   }
 
   if (isIdentifierSingleExpression(value.expression)) {
-    return { output: value.expression.identifier.value, dependencies: [] };
+    return { output: value.expression.identifier, dependencies: [] };
   }
 
-  if (isEnvVarWithDefaultValueExpression(value.expression)) {
-    const { defaultValue, envVariable } = value.expression.envVarDefault;
-    const expression: TSingleExpression = {
-      expression: defaultValue,
-    };
-    const evaluatedLiteral = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TSingleExpression,
-      value: expression,
-    });
-    return {
-      output: `process.env.${envVariable.value} || ${evaluatedLiteral.output}`,
-      dependencies: evaluatedLiteral.dependencies,
-    };
-  }
+  // if (isEnvVarWithDefaultValueExpression(value.expression)) {
+  //   const { defaultValue, envVariable } = value.expression.envVarDefault;
+  //   const expression: TExpression = {
+  //     expression: defaultValue,
+  //   };
+  //   const evaluatedLiteral = modelToTargetLanguage({
+  //     type: BitloopsTypesMapping.TSingleExpression,
+  //     value: expression,
+  //   });
+  //   return {
+  //     output: `process.env.${envVariable.value} || ${evaluatedLiteral.output}`,
+  //     dependencies: evaluatedLiteral.dependencies,
+  //   };
+  // }
+
   if (isEnvironmentVariableExpression(value.expression)) {
-    const rawValue = value.expression.envVariable.value.replace(/env\./g, '');
+    const rawValue = value.expression.defaultValue.literal.value.replace(/env\./g, '');
     // console.log('rawValue:', rawValue);
     return { output: `process.env.${rawValue}`, dependencies: [] };
   }

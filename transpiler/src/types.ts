@@ -427,7 +427,10 @@ export type TExpressionValues =
   | TMemberDotExpression
   | TAssignmentExpression
   | TInstanceOf
-  | TGetClass;
+  | TGetClass
+  | TEnvironmentVariableExpression
+  | TObjectLiteral
+  | TLiteralExpression;
 
 export type TAssignmentExpression = {
   assignmentExpression: {
@@ -853,16 +856,16 @@ export type TRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
 
 export type TRepoConnectionInfo = {
   dbType: TRepoSupportedTypes;
-  host: TSetupExpression;
-  port: TSetupExpression;
-  database: TSetupExpression;
+  host: TExpression;
+  port: TExpression;
+  database: TExpression;
 };
 
 export type TRepoAdapterInfo = {
   dbType: TRepoSupportedTypes;
   repoPort: string;
-  connection: TSetupExpression; // Name of connection instance
-  collection: TSetupExpression;
+  connection: TExpression; // Name of connection instance
+  collection: TExpression;
   instanceIdentifier: string;
 };
 
@@ -907,14 +910,14 @@ export type TRestServerInstanceRouter = {
 };
 
 export type TRESTServerInstance = {
-  port: TSetupExpression;
+  port: TExpression;
   apiPrefix?: string;
   routers: TRestServerInstanceRouters;
   serverType: TServerType;
 };
 
 export type TGraphQLServerInstance = {
-  port: TSetupExpression;
+  port: TExpression;
   resolvers: TControllerResolverBind[];
   serverType: TServerType;
 };
@@ -1037,11 +1040,11 @@ export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 
-export type TSetupExpressionValue = TEnvironmentVariableExpression | TExpression;
+// export type TSetupExpressionValue = TEnvironmentVariableExpression | TExpression;
 
-export type TSetupExpression = {
-  expression: TSetupExpressionValue;
-};
+// export type TSetupExpression = {
+//   expression: TSetupExpressionValue;
+// };
 // env(FASTIFY_PORT, env(FASTIFY_PORT, 3000))
 // process.env.FASTIFY_PORT || 5001
 // export type TEnvVarWithDefaultValueExpression = TEnvironmentVariableExpression & {
@@ -1051,7 +1054,7 @@ export type TSetupExpression = {
 export type TObjectLiteral = {
   objectLiteral: {
     name: string;
-    expression: TSetupExpressionValue;
+    expression: TExpression;
   }[];
 };
 
@@ -1073,24 +1076,24 @@ export type TIdentifierExpression = {
   };
 };
 
-export type TLogicalSingleExpression = {
-  logicalExpression:
-    | TNotSetupExpression
-    | TAndSingleExpression
-    | TOrSingleExpression
-    | TXorSingleExpression;
-};
+// export type TLogicalSingleExpression = {
+//   logicalExpression:
+//     | TNotSetupExpression
+//     | TAndSingleExpression
+//     | TOrSingleExpression
+//     | TXorSingleExpression;
+// };
 
-export type TNotSetupExpression = {
-  notExpression: TSetupExpression;
-};
+// export type TNotSetupExpression = {
+//   notExpression: TSetupExpression;
+// };
 
-export type TAndSingleExpression = {
-  andExpression: {
-    left: TSetupExpression;
-    right: TSetupExpression;
-  };
-};
+// export type TAndSingleExpression = {
+//   andExpression: {
+//     left: TSetupExpression;
+//     right: TSetupExpression;
+//   };
+// };
 
 export type TErrorEvaluation = {
   errorEvaluation: {
@@ -1098,19 +1101,19 @@ export type TErrorEvaluation = {
   } & Partial<TArgumentList>;
 };
 
-export type TOrSingleExpression = {
-  orExpression: {
-    left: TSetupExpression;
-    right: TSetupExpression;
-  };
-};
+// export type TOrSingleExpression = {
+//   orExpression: {
+//     left: TSetupExpression;
+//     right: TSetupExpression;
+//   };
+// };
 
-export type TXorSingleExpression = {
-  xorExpression: {
-    left: TSetupExpression;
-    right: TSetupExpression;
-  };
-};
+// export type TXorSingleExpression = {
+//   xorExpression: {
+//     left: TSetupExpression;
+//     right: TSetupExpression;
+//   };
+// };
 
 export type TLogicalExpression = {
   logicalExpression: TNotExpression | TAndExpression | TOrExpression | TXorExpression;

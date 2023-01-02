@@ -21,7 +21,7 @@ import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { DTONodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/DTO/DTONodeBuilder.js';
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_DTO_TEST_CASES, VALID_TWO_DTOS_TEST_CASES } from './mocks/dto.js';
 
@@ -42,16 +42,15 @@ describe('Valid DTO with fields to Typescript', () => {
         .build();
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
 
       //then
@@ -65,7 +64,7 @@ describe('Valid DTO with fields to Typescript', () => {
           fileContent: formattedOutput,
         },
       ];
-      expect(result).toEqual(expectedOutput);
+      expect(result['core']).toEqual(expectedOutput);
     });
   });
 });
@@ -91,16 +90,15 @@ describe('Valid two DTOs with fields to Typescript', () => {
         .build();
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
 
       // then
@@ -122,7 +120,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
           fileContent: formattedSecondOutput,
         },
       ];
-      expect(result).toEqual(expectedOutput);
+      expect(result['core']).toEqual(expectedOutput);
     });
   });
 });

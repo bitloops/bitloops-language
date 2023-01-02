@@ -1,7 +1,7 @@
 import { IntermediateAST } from '../ast/core/types.js';
 import { TTranspileOptions } from '../transpilerTypes.js';
 import {
-  ISetupData,
+  TSetupData,
   TBoundedContextName,
   TBoundedContexts,
   TClassName,
@@ -39,7 +39,7 @@ export type TTargetSetupContent = {
 
 export type TTargetGeneratorParams = {
   intermediateAST: TBoundedContexts;
-  setupData: ISetupData;
+  setupData: TSetupData;
   targetLanguage: string;
   formatterConfig?: any;
   sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup

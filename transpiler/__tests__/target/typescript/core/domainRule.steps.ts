@@ -22,7 +22,7 @@ import { formatString } from '../../../../src/target/typescript/core/codeFormatt
 import { DomainRuleBuilderDirector } from './builders/domain/rule.js';
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../src/index.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
 
 describe('domain rule tests', () => {
   const boundedContext = 'Hello world';
@@ -44,16 +44,15 @@ describe('domain rule tests', () => {
       tree.insertChild(domainRule);
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
 
       //then
@@ -61,7 +60,7 @@ describe('domain rule tests', () => {
       if (result instanceof Error) {
         throw result;
       }
-      expect(result[0].fileContent).toEqual(formattedOutput);
+      expect(result['core'][0].fileContent).toEqual(formattedOutput);
     });
   });
 });

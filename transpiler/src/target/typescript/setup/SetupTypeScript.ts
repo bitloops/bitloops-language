@@ -32,7 +32,7 @@ import {
   isRestServerInstance,
 } from '../../../helpers/typeGuards.js';
 import {
-  ISetupData,
+  TSetupData,
   TControllers,
   TMethodAndPath,
   TRouterInstanceName,
@@ -78,15 +78,15 @@ interface ISetup {
     license?: string,
   ): TSetupOutput;
   generateAPIs(servers: TServers): TSetupOutput[];
-  generateServerRouters(data: ISetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServerRouters(data: TSetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
-    data: ISetupData,
+    data: TSetupData,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[];
-  generateRepoConnections(setupData: ISetupData): TSetupOutput[];
+  generateRepoConnections(setupData: TSetupData): TSetupOutput[];
   // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
   // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
 }
@@ -146,8 +146,10 @@ export class SetupTypeScript implements ISetup {
     this.nodeDevDependencies = REQUIRED_NODE_DEV_DEPENDENCIES;
     this.setupTypeScriptRepos = new SetupTypeScriptRepos();
   }
-  generateRepoConnections(setupData: ISetupData): TSetupOutput[] {
-    const repoDependencies = this.setupTypeScriptRepos.getPackageJSONDependencies(setupData.repos);
+  generateRepoConnections(setupData: TSetupData): TSetupOutput[] {
+    const repoDependencies = this.setupTypeScriptRepos.getPackageJSONDependencies(
+      setupData.setupData.repos,
+    );
     this.nodeDependencies = { ...this.nodeDependencies, ...repoDependencies };
     return this.setupTypeScriptRepos.generateRepoConnections(setupData);
   }
@@ -161,12 +163,12 @@ export class SetupTypeScript implements ISetup {
   }
 
   generateDIs(
-    data: ISetupData,
+    data: TSetupData,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[] {
-    const { controllers, useCases, repos } = data;
+    const { controllers, useCases, repos } = data.setupData;
     const result: TSetupOutput[] = [];
     // For each module in each bounded context generate 1 DI file that contains all
     // the use cases and controllers of that module that are concreted in the setup.bl
@@ -181,7 +183,10 @@ export class SetupTypeScript implements ISetup {
         let diContent = '';
         // Gather all imports
         if (repos) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIImports(data.repos, setupTypeMapper);
+          diContent += this.setupTypeScriptRepos.generateRepoDIImports(
+            data.setupData.repos,
+            setupTypeMapper,
+          );
         }
 
         if (useCases)
@@ -194,7 +199,7 @@ export class SetupTypeScript implements ISetup {
 
         diContent += '\n';
         if (repos) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
+          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.setupData.repos);
         }
 
         if (useCases)
@@ -511,11 +516,11 @@ export {${exports}};\n`;
     };
   }
   generateServerRouters(
-    data: ISetupData,
+    data: TSetupData,
     bitloopsModel: TBoundedContexts,
     license?: string,
   ): TSetupOutput[] {
-    const routers = data.routers;
+    const routers = data.setupData.routers;
     const output = [];
     for (const serverType of Object.keys(routers)) {
       // for (const routerInstanceName of Object.keys(routers[serverType])) {
@@ -524,7 +529,7 @@ export {${exports}};\n`;
         this.generateRouters(
           routers[serverType],
           serverType as TServerType,
-          data.controllers,
+          data.setupData.controllers,
           bitloopsModel,
           license,
         ),

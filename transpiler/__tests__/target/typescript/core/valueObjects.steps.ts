@@ -20,7 +20,7 @@
 
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_VALUE_OBJECT_TEST_CASES } from './mocks/domain/valueObject.js';
 
@@ -41,17 +41,16 @@ describe('Value object test cases', () => {
       tree.insertSibling(props);
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
-      const targetGenerator = new BitloopsTargetGenerator();
+      const targetGenerator = new TargetGenerator();
 
       // when
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
 
       //then
@@ -59,7 +58,7 @@ describe('Value object test cases', () => {
       if (result instanceof Error) {
         throw result;
       }
-      expect(result[0].fileContent).toEqual(formattedOutput);
+      expect(result['core'][0].fileContent).toEqual(formattedOutput);
     });
   });
 });

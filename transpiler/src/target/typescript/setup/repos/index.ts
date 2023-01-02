@@ -1,5 +1,5 @@
 import {
-  ISetupData,
+  TSetupData,
   repoSupportedTypes,
   TRepoConnectionInfo,
   TReposSetup,
@@ -36,7 +36,7 @@ const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; versio
 };
 
 export interface ISetupRepos {
-  generateRepoConnections(setupData: Readonly<ISetupData>): TSetupOutput[];
+  generateRepoConnections(setupData: Readonly<TSetupData>): TSetupOutput[];
   getStartupImports(
     reposSetupData: Readonly<TReposSetup>,
     setupTypeMapper: Record<string, string>,
@@ -61,9 +61,9 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   //   sqlite: 'sqlite',
   // };
 
-  generateRepoConnections(setupData: Readonly<ISetupData>, license?: string): TSetupOutput[] {
-    if (!setupData?.repos?.connections) return [];
-    const groupedConnectionsPerDb = this.groupRepoConnectionsPerDbType(setupData.repos);
+  generateRepoConnections(setupData: Readonly<TSetupData>, license?: string): TSetupOutput[] {
+    if (!setupData?.setupData.repos?.connections) return [];
+    const groupedConnectionsPerDb = this.groupRepoConnectionsPerDbType(setupData.setupData.repos);
     return Object.entries(groupedConnectionsPerDb).reduce((acc, [dbType, connections]) => {
       const results = this.getDbTypeRepoConnectionsPathsAndContent(
         dbType as TRepoSupportedTypes,

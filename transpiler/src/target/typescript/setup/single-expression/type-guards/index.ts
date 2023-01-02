@@ -1,64 +1,58 @@
 import {
-  TAndSingleExpression,
+  TAndExpression,
   TEnvironmentVariableExpression,
-  TEnvVarWithDefaultValueExpression,
-  TIdentifierExpression,
+  // TEnvVarWithDefaultValueExpression,
+  TIdentifierExpr,
   TLiteralExpression,
-  TLogicalSingleExpression,
-  TNotSingleExpression,
+  TLogicalExpression,
+  TNotExpression,
   TObjectLiteral,
-  TOrSingleExpression,
-  TSingleExpressionValue,
-  TXorSingleExpression,
+  TOrExpression,
+  TExpressionValues,
+  TXorExpression,
 } from '../../../../../types.js';
 const isLogicalSingleExpression = (
-  expression: TSingleExpressionValue,
-): expression is TLogicalSingleExpression => {
+  expression: TExpressionValues,
+): expression is TLogicalExpression => {
   if ('logicalExpression' in expression) return true;
   else return false;
 };
 const isLiteralSingleExpression = (
-  expression: TSingleExpressionValue,
+  expression: TExpressionValues,
 ): expression is TLiteralExpression => {
   if ('literal' in expression) return true;
   else return false;
 };
 
 const isIdentifierSingleExpression = (
-  expression: TSingleExpressionValue,
-): expression is TIdentifierExpression => {
+  expression: TExpressionValues,
+): expression is TIdentifierExpr => {
   if ('identifier' in expression) return true;
   else return false;
 };
 
-const isEnvVarWithDefaultValueExpression = (
-  expression: TSingleExpressionValue,
-): expression is TEnvVarWithDefaultValueExpression => {
-  if ('envVarDefault' in expression) return true;
-  else return false;
-};
+// const isEnvVarWithDefaultValueExpression = (
+//   expression: TExpressionValues,
+// ): expression is TEnvVarWithDefaultValueExpression => {
+//   if ('envVarDefault' in expression) return true;
+//   else return false;
+// };
 
 const isEnvironmentVariableExpression = (
-  expression: TSingleExpressionValue,
+  expression: TExpressionValues,
 ): expression is TEnvironmentVariableExpression => {
   if ('envVariable' in expression) return true;
   else return false;
 };
 
-const isObjectLiteralExpression = (
-  expression: TSingleExpressionValue,
-): expression is TObjectLiteral => {
+const isObjectLiteralExpression = (expression: TExpressionValues): expression is TObjectLiteral => {
   if ('objectLiteral' in expression) return true;
   else return false;
 };
 
 const isLogicalORExpression = (
-  logicalExpression:
-    | TNotSingleExpression
-    | TAndSingleExpression
-    | TOrSingleExpression
-    | TXorSingleExpression,
-): logicalExpression is TOrSingleExpression => {
+  logicalExpression: TNotExpression | TAndExpression | TOrExpression | TXorExpression,
+): logicalExpression is TOrExpression => {
   if ('orExpression' in logicalExpression) return true;
   else return false;
 };
@@ -66,7 +60,7 @@ export {
   isLogicalSingleExpression,
   isLiteralSingleExpression,
   isIdentifierSingleExpression,
-  isEnvVarWithDefaultValueExpression,
+  // isEnvVarWithDefaultValueExpression,
   isEnvironmentVariableExpression,
   isLogicalORExpression,
   isObjectLiteralExpression,
