@@ -212,6 +212,16 @@ import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSp
 import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
 import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
 import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
+import { RestRouterNode } from '../intermediate-ast/nodes/setup/RestRouterNode.js';
+import { restRouterVisitor } from './helpers/setup/restRouterVisitor.js';
+import { RouterArgumentsNode } from '../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
+import { RouterControllersNode } from '../intermediate-ast/nodes/setup/RouterControllersNode.js';
+import { routerArgumentsVisitor } from './helpers/setup/routerArgumentsVisitor.js';
+import { routerControllersVisitor } from './helpers/setup/routerControllersVisitor.js';
+import { routerControllerVisitor } from './helpers/setup/routerControllerVisitor.js';
+import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterControllerNode.js';
+import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
+import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -1083,6 +1093,26 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRouterExpression(ctx: BitloopsParser.RouterExpressionContext): RouterExpressionNode {
     return routerExpressionVisitor(this, ctx);
+  }
+
+  visitRestRouter(ctx: BitloopsParser.RestRouterContext): RestRouterNode {
+    return restRouterVisitor(this, ctx);
+  }
+
+  visitRouterArguments(ctx: BitloopsParser.RouterArgumentsContext): RouterArgumentsNode {
+    return routerArgumentsVisitor(this, ctx);
+  }
+
+  visitRouterControllers(ctx: BitloopsParser.RouterControllersContext): RouterControllersNode {
+    return routerControllersVisitor(this, ctx);
+  }
+
+  visitRouterController(ctx: BitloopsParser.RouterControllerContext): RouterControllerNode {
+    return routerControllerVisitor(this, ctx);
+  }
+
+  visitHttpMethodVerb(ctx: BitloopsParser.HttpMethodVerbContext): HTTPMethodVerbNode {
+    return httpMethodVerbVisitor(this, ctx);
   }
 
   // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {

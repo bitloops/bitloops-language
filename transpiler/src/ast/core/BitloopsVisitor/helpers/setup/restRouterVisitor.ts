@@ -19,27 +19,18 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { RouterExpressionNodeBuilder } from '../../../intermediate-ast/builders/setup/RouterExpressionNodeBuilder.js';
+import { RestRouterNodeBuilder } from '../../../intermediate-ast/builders/setup/RestRouterNodeBuilder.js';
 import { RestRouterNode } from '../../../intermediate-ast/nodes/setup/RestRouterNode.js';
-import { RouterArgumentsNode } from '../../../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
-import { RouterControllersNode } from '../../../intermediate-ast/nodes/setup/RouterControllersNode.js';
-import { RouterExpressionNode } from '../../../intermediate-ast/nodes/setup/RouterExpressionNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
-export const routerExpressionVisitor = (
+export const restRouterVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RouterExpressionContext,
-): RouterExpressionNode => {
-  const restRouterNode: RestRouterNode = thisVisitor.visit(ctx.restRouter());
-  const routerArgumentsNode: RouterArgumentsNode = thisVisitor.visit(ctx.routerArguments());
-  const routerControllersNode: RouterControllersNode = thisVisitor.visit(ctx.routerControllers());
+  ctx: BitloopsParser.RestRouterContext,
+): RestRouterNode => {
+  const resRouter = ctx.RESTRouter().getText();
 
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  return new RouterExpressionNodeBuilder(metadata)
-    .withRestRouter(restRouterNode)
-    .withRouterArguments(routerArgumentsNode)
-    .withRouterControllers(routerControllersNode)
-    .build();
+  return new RestRouterNodeBuilder(metadata).withName(resRouter).build();
 };

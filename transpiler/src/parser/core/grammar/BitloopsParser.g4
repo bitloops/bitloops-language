@@ -764,7 +764,7 @@ pathString
     : StringLiteral
     ;
 
-method
+httpMethodVerb
     : GET
     | POST
     | PUT
@@ -773,8 +773,8 @@ method
     | OPTIONS
     ;
 
-nestedControllerDeclarations
-    : nestedControllerInstantiation*
+routerControllers
+    : routerController*
     ;
 
 routerArguments
@@ -786,7 +786,7 @@ useCaseExpression
     ;
 
 routerExpression
-    : restRouter routerArguments OpenBrace nestedControllerDeclarations CloseBrace
+    : restRouter routerArguments OpenBrace routerControllers CloseBrace
     ;
 
 packageAdapterClassName
@@ -928,8 +928,8 @@ wordsWithSpaces
     : alpha_numeric_ws+
     ;
 
-nestedControllerInstantiation
-    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration ControllerIdentifier methodArguments SemiColon?
+routerController
+    : httpMethodVerb OpenParen pathString CloseParen Colon boundedContextModuleDeclaration restControllerIdentifier methodArguments SemiColon?
     ;
 
 boundedContextDeclaration

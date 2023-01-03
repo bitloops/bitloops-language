@@ -197,6 +197,11 @@ const BitloopsTypesMapping = {
   TModuleName: 'TModuleName',
   TRouterExpression: 'TRouterExpression',
   TRouterDefinition: 'TRouterDefinition',
+  TRestRouter: 'TRestRouter',
+  TRouterArguments: 'TRouterArguments',
+  TRouterControllers: 'TRouterControllers',
+  TRouterController: 'TRouterController',
+  THTTPMethodVerb: 'THTTPMethodVerb',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
