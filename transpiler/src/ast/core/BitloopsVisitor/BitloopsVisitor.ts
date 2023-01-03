@@ -226,7 +226,6 @@ import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterCont
 import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
 import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
 import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
-import { StringLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
@@ -1144,10 +1143,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
-    const stringLiteral = ctx.StringLiteral().getText();
-
-    const metadata = produceMetadata(ctx, this);
-    return new StringLiteralBuilder(metadata).withValue(stringLiteral).build();
+    return stringEvaluation(ctx.StringLiteral().getText());
   }
 
   // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {

@@ -795,9 +795,9 @@ export type TRouterDefinition = {
 
 export type TRestRouter = 'RESTRouter';
 export type TRouterArguments = {
-  routerArguments: TServerType;
+  routerArguments: { serverType: TServerType };
 };
-export type THTTPMethodVerb = TRestMethods;
+export type THTTPMethodVerb = 'Get' | 'Put' | 'Post' | 'Delete' | 'Patch' | 'Options';
 
 export type TRouterController = {
   routerController: {

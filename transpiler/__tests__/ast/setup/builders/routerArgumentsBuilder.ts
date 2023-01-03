@@ -11,7 +11,9 @@ export class RouterArgumentsBuilder implements IBuilder<TRouterArguments> {
 
   public build(): TRouterArguments {
     const routerArguments = {
-      routerArguments: this.serverType,
+      routerArguments: {
+        serverType: this.serverType,
+      },
     };
 
     return routerArguments;

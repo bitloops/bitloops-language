@@ -1,5 +1,5 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
-import { UseCaseDefinitionBuilderDirector } from '../../builders/useCaseDefinitionBuilderDirector.js';
+import { RouterDefinitionBuilderDirector } from '../../builders/routerDefinitionBuilderDirector.js';
 
 export const VALID_ROUTER_DEFINITION_CASES = [
   {
@@ -9,11 +9,13 @@ export const VALID_ROUTER_DEFINITION_CASES = [
     description: 'Router without dependency',
     fileId: 'setup.bl',
     routerDefinition:
-      new UseCaseDefinitionBuilderDirector().buildUseCaseDefinitionWithoutDependencies({
-        constIdentifier: 'myUseCase',
-        useCaseIdentifier: 'HelloWorldUseCase',
-        boundedContextName: 'Hello World',
-        moduleName: 'Core',
+      new RouterDefinitionBuilderDirector().buildFastifyRouterDefinitionWithNoDependencies({
+        constIdentifier: 'helloWorldRESTRouter',
+        controllerIdentifier: 'HelloWorldController',
+        boundedContextName: 'Bounded Context',
+        moduleName: 'Module',
+        method: 'Get',
+        path: '/hello1',
       }),
   },
 ];
