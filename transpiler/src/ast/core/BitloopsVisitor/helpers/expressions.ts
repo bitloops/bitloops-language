@@ -37,6 +37,9 @@ import { LogicalAndExpressionBuilder } from '../../intermediate-ast/builders/exp
 import { LogicalOrExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
 import { LogicalXorExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
 import { NotExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/Logical/notExpression.js';
+import { EnvironmentalVariableNodeBuilder } from '../../intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { EnvironmentalVariableNode } from '../../intermediate-ast/nodes/setup/EnvironmentalVariableNode.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -223,4 +226,31 @@ export const LiteralExpressionVisitor = (
   const actualLiteral = thisVisitor.visit(ctxLiteral.literal());
   const literalExpr = new LiteralBuilder().withLiteral(actualLiteral).build();
   return new ExpressionBuilder().withExpression(literalExpr).build();
+};
+
+export const enviromentVariableVisitor = (
+  ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+): ExpressionNode => {
+  const identifierNode = new IdentifierNodeBuilder().withName(ctx.envVariable().getText()).build();
+
+  const envVar = new EnvironmentalVariableNodeBuilder().withIdentifier(identifierNode).build();
+  return new ExpressionBuilder().withExpression(envVar).build();
+};
+
+//TODO correct this
+export const envVarWithDefaultValueExpressionVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
+): EnvironmentalVariableNode => {
+  const identifierNode = new IdentifierNodeBuilder().withName(ctx.identifier().getText()).build();
+
+  const literalValue = thisVisitor.visit(ctx.literal());
+  const literalNode = new LiteralBuilder().withLiteral(literalValue).build();
+
+  const envVar = new EnvironmentalVariableNodeBuilder()
+    .withIdentifier(identifierNode)
+    .withDefaultValue(literalNode)
+    .build();
+
+  return envVar;
 };

@@ -844,8 +844,17 @@ serverInstantiationOptions
 serverInstantiationOption
     : serverTypeOption    
     | serverApiPrefixOption
+    | restServerPort 
     | customServerOption
     ;
+
+restServerPort 
+    : restServerPortIdentifier Colon expression Comma
+    ;
+
+restServerPortIdentifier: 
+    RestServerPortIdentifier;
+
 
 repoConnectionDefinition
     : Const identifier '=' repoConnectionExpression

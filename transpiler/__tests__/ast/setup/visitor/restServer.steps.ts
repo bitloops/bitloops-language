@@ -23,6 +23,7 @@ import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import { VALID_REST_SERVER_CASES } from '../mocks/restServerDeclaration/validRestServerCases.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 
 const BOUNDED_CONTEXT = 'Hello world';
 const MODULE = 'Demo';
@@ -59,8 +60,7 @@ describe('Rest Server is valid', () => {
         }
       }
       const resultTree = setupResult[testRestServer.fileId];
-      const value = resultTree.getCurrentNode().getValue();
-
+      const value = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers)[0].getValue();
       expect(value).toMatchObject(testRestServer.restServer);
     });
   });
