@@ -431,6 +431,7 @@ export type TExpressionValues =
   | TEnvironmentVariableExpression
   | TObjectLiteral
   | TLiteralExpression;
+// TODO TLiteralExpression and TLiteral maybe need merge
 
 export type TAssignmentExpression = {
   assignmentExpression: {

@@ -1,6 +1,7 @@
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PropsIdentifierNode } from '../../nodes/Props/PropsIdentifierNode.js';
 import { IBuilder } from '../IBuilder.js';
+import { TParameterIdentifier } from '../../../../../types.js';
 
 export class PropsIdentifierNodeBuilder implements IBuilder<PropsIdentifierNode> {
   private propsIdentifierNode: PropsIdentifierNode;
@@ -10,7 +11,7 @@ export class PropsIdentifierNodeBuilder implements IBuilder<PropsIdentifierNode>
     this.propsIdentifierNode = new PropsIdentifierNode(metadata);
   }
 
-  public withName(identifierName: string): PropsIdentifierNodeBuilder {
+  public withName(identifierName: TParameterIdentifier): PropsIdentifierNodeBuilder {
     this.name = identifierName;
     return this;
   }

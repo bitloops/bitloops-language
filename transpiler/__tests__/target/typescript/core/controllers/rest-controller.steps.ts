@@ -20,9 +20,9 @@
 
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../../src/target/index.js';
+import { TargetGenerator } from '../../../../../src/target/index.js';
 import { formatString } from '../../../../../src/target/typescript/core/codeFormatting.js';
-import { ControllerTypeOfDefinition, ISetupData, TServerType } from '../../../../../src/types.js';
+import { ControllerTypeOfDefinition, TSetupData, TServerType } from '../../../../../src/types.js';
 import { VALID_REST_CONTROLLER_TEST_CASES } from '../mocks/controllers/restController.js';
 
 describe('Statements test cases', () => {
@@ -40,7 +40,7 @@ describe('Statements test cases', () => {
       tree.insertChild(input);
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       const setupData = generateSetupData({
@@ -50,14 +50,13 @@ describe('Statements test cases', () => {
         serverType: testCase.serverType,
       });
 
-      const targetGenerator = new BitloopsTargetGenerator();
+      const targetGenerator = new TargetGenerator();
 
       // when
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData,
+        // setupData: setupData,
       });
 
       //then
@@ -65,7 +64,7 @@ describe('Statements test cases', () => {
       if (result instanceof Error) {
         throw result;
       }
-      expect(result[0].fileContent).toEqual(formattedOutput);
+      expect(result['core'][0].fileContent).toEqual(formattedOutput);
     });
   });
 });
@@ -80,11 +79,13 @@ const generateSetupData = ({
   module: string;
   controllerName: string;
   serverType: TServerType;
-}): ISetupData => {
+}): TSetupData => {
   return {
-    controllers: {
-      [boundedContext]: {
-        [module]: {
+    setupData: {
+      controllers: {
+        boundedContext,
+        module,
+        controllerValues: {
           [controllerName]: {
             type: ControllerTypeOfDefinition.REST,
             method: 'get',
@@ -99,6 +100,7 @@ const generateSetupData = ({
           },
         },
       },
+      language: 'TypeScript',
     },
   };
 };
