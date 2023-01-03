@@ -147,6 +147,7 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+RestServerPortIdentifier:       'port';
 
 /// Future Reserved Words
 

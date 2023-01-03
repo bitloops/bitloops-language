@@ -2,12 +2,12 @@ import { IBuilder } from '../IBuilder.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ServerRouteNode } from '../../nodes/setup/ServerRouteNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
-import { StringLiteralNode } from '../../nodes/Expression/Literal/StringLiteralNode.js';
+import { RestServerRouterPrefixNode } from '../../nodes/setup/RestServerRouterPrefixNode.js';
 
 export class ServerRouteNodeBuilder implements IBuilder<ServerRouteNode> {
   private serverRouteNode: ServerRouteNode;
   private instanceName: IdentifierNode;
-  private routerPrefix: StringLiteralNode;
+  private routerPrefix: RestServerRouterPrefixNode;
 
   constructor(nodeMetadata?: TNodeMetadata) {
     this.serverRouteNode = new ServerRouteNode(nodeMetadata);
@@ -18,7 +18,7 @@ export class ServerRouteNodeBuilder implements IBuilder<ServerRouteNode> {
     return this;
   }
 
-  public withRouterPrefix(routerPrefix: StringLiteralNode): ServerRouteNodeBuilder {
+  public withRouterPrefix(routerPrefix: RestServerRouterPrefixNode): ServerRouteNodeBuilder {
     this.routerPrefix = routerPrefix;
     return this;
   }

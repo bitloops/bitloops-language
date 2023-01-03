@@ -21,9 +21,11 @@ import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { DTONodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/DTO/DTONodeBuilder.js';
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_DTO_TEST_CASES, VALID_TWO_DTOS_TEST_CASES } from './mocks/dto.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
 
 describe('Valid DTO with fields to Typescript', () => {
   const boundedContext = 'Hello world';
@@ -34,6 +36,8 @@ describe('Valid DTO with fields to Typescript', () => {
 
   VALID_DTO_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
+
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const dtoNode = new DTONodeBuilder(tree)
@@ -42,17 +46,20 @@ describe('Valid DTO with fields to Typescript', () => {
         .build();
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
+
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
       //then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
@@ -65,12 +72,14 @@ describe('Valid DTO with fields to Typescript', () => {
           fileContent: formattedOutput,
         },
       ];
-      expect(result).toEqual(expectedOutput);
+      expect(resultCore).toEqual(expectedOutput);
     });
   });
 });
 
 describe('Valid two DTOs with fields to Typescript', () => {
+  let resultCore: TTargetCoreFinalContent[];
+
   const boundedContext = 'Hello world';
   const module = 'demo';
   const classType = ClassTypes.DTOs;
@@ -91,17 +100,20 @@ describe('Valid two DTOs with fields to Typescript', () => {
         .build();
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
+
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
       // then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
@@ -122,7 +134,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
           fileContent: formattedSecondOutput,
         },
       ];
-      expect(result).toEqual(expectedOutput);
+      expect(resultCore).toEqual(expectedOutput);
     });
   });
 });

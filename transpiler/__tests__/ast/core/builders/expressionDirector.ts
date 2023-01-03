@@ -17,6 +17,16 @@ export class ExpressionBuilderDirector {
     };
   }
 
+  buildEnvVariableExpression(identifier: string): TExpression {
+    return {
+      expression: {
+        environmentVariable: {
+          identifier,
+        },
+      },
+    };
+  }
+
   buildStringLiteralExpression(stringLiteral: string): TExpression {
     return {
       expression: {

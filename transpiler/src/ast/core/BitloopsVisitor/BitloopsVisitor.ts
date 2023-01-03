@@ -38,7 +38,11 @@ import { PropsIdentifierNodeBuilder } from './../intermediate-ast/builders/Props
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
-import { LiteralExpressionVisitor } from './helpers/expressions.js';
+import {
+  enviromentVariableVisitor,
+  envVarWithDefaultValueExpressionVisitor,
+  LiteralExpressionVisitor,
+} from './helpers/expressions.js';
 
 import {
   functionBodyVisitor,
@@ -187,19 +191,18 @@ import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionN
 import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
 import {
   bindServerRoutesVisitor,
+  bindServerRouteVisitor,
   customServerOptionVisitor,
+  restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
+  restServerPortVisitor,
+  serverInstantiationOptionsVisitor,
   serverTypeOptionVisitor,
 } from './helpers/setup/restServerDeclaration.js';
 import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
-import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
-import { StringLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
-import { SetupExpressionNode } from '../intermediate-ast/nodes/setup/SetupExpressionNode.js';
-import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
-import {
-  // enviromentVariableVisitor,
-  envVarWithDefaultValueExpressionVisitor,
-} from './helpers/setup/enviromentVariable.js';
+import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
+import { RestServerPortNode } from '../intermediate-ast/nodes/setup/RestServerPortNode.js';
+import { RestServerAPIPrefixNode } from '../intermediate-ast/nodes/setup/RestServerAPIPrefixNode.js';
 import { UseCaseExpressionNode } from '../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
 import { useCaseDefinitionVisitor } from './helpers/setup/useCaseDefinition.js';
 import { useCaseExpressionVisitor } from './helpers/setup/useCaseExpressionVisitor.js';
@@ -254,13 +257,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitSetupProgram(ctx: BitloopsParser.SetupProgramContext): any {
     this.visitChildren(ctx);
-    // if (this.useCases.length > 0) {
-    //   const useCases = getUseCases(this.useCases);
-    //   this._result.useCases = useCases;
-    // }
-    // if (Object.keys(this.packages).length > 0) {
-    //   this._result.packages = this.packages;
-    // }
   }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext): ExpressionNode {
@@ -1002,32 +998,40 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerDeclarationVisitor(this, ctx);
   }
 
+  visitServerInstantiationVisitor(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
+    return serverInstantiationOptionsVisitor(this, ctx);
+  }
+
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
     const serverTypeNode = serverTypeOptionVisitor(ctx);
-
     return serverTypeNode;
   }
 
-  visitServerApiPrefixOption(ctx: BitloopsParser.ServerApiPrefixOptionContext): StringLiteralNode {
-    const apiPrefixStr = ctx.pathString().getText();
-    const apiPrefixNode = new StringLiteralBuilder().withValue(apiPrefixStr).build();
+  visitServerApiPrefixOption(
+    ctx: BitloopsParser.ServerApiPrefixOptionContext,
+  ): RestServerAPIPrefixNode {
+    const apiPrefixNode = restServerAPIPrefixVisitor(ctx);
     return apiPrefixNode;
   }
 
-  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): SetupExpressionNode {
+  visitRestServerPort(ctx: BitloopsParser.RestServerPortContext): RestServerPortNode {
+    return restServerPortVisitor(this, ctx);
+  }
+
+  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
     const res = customServerOptionVisitor(this, ctx);
     return res;
   }
 
-  visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRouteNode[] {
-    const routes = bindServerRoutesVisitor(this, ctx);
-    return routes;
+  visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
+    const routesNode = bindServerRoutesVisitor(this, ctx);
+    return routesNode;
   }
 
   visitRouteBind(ctx: BitloopsParser.RouteBindContext): any {
-    const routePath = ctx.pathString().getText();
-    const identifier = ctx.identifier().getText();
-    return { routerPrefix: routePath, routerInstanceName: identifier };
+    const routeNode = bindServerRouteVisitor(this, ctx);
+    return routeNode;
+    // return { routerPrefix: routePath, routerInstanceName: identifier };
   }
 
   visitEnvVarWithDefaultValueExpression(
@@ -1037,6 +1041,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return envVar;
   }
 
+  visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
+    const envVar = enviromentVariableVisitor(ctx);
+    return envVar;
+  }
   visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {
     this.visit(ctx.useCaseDefinition());
   }

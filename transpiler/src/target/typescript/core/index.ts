@@ -35,7 +35,7 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
     const { core, setup } = params;
     const setupData = setup;
     const result = [];
-    for (const [boundedContextName, boundedContext] of Object.entries(core.intermediateAST)) {
+    for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const [moduleName, intermediateASTTree] of Object.entries(boundedContext)) {
         const contextData: TContextData = {
           boundedContext: boundedContextName,

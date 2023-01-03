@@ -22,7 +22,7 @@ import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-as
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
 import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target/ast/index.js';
-import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
+import { IntermediateAST } from '../../../../../src/ast/core/types.js';
 import { USE_CASE_TEST_CASES } from './mocks/use-case.js';
 
 describe('Valid Use Case', () => {
@@ -37,16 +37,16 @@ describe('Valid Use Case', () => {
       tree.insertChild(useCaseNode);
 
       const intermediateModel = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
       const targetModelTransformer = new IntermediateModelToASTTargetTransformer();
-      const result: TIntermediateModel = targetModelTransformer.transform({ intermediateModel });
+      const result: IntermediateAST = targetModelTransformer.transform(intermediateModel);
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const useCaseNodes = result.intermediateModel[boundedContext][module].getClassTypeNodes(
+      const useCaseNodes = result.core[boundedContext][module].getClassTypeNodes(
         BitloopsTypesMapping.TUseCase,
       );
       expect(useCaseNodes.length).toBe(1);

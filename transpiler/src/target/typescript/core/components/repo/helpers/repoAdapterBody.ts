@@ -21,9 +21,9 @@ import {
   TRepoSupportedTypes,
   TRepoPort,
   TTargetDependenciesTypeScript,
-  TSingleExpression,
+  TExpression,
   TModule,
-  ISetupData,
+  TSetupData,
   repoPortKey,
   TAggregateRepoPort,
   TReadModelRepoPort,
@@ -41,12 +41,12 @@ const CRUDReadRepoPort = 'CRUDReadRepoPort';
 type TPropsValues = any;
 const repoBodyLangMapping = (
   dbType: TRepoSupportedTypes,
-  collectionExpression: TSingleExpression,
-  connectionExpression: TSingleExpression,
+  collectionExpression: TExpression,
+  connectionExpression: TExpression,
   repoPortInfo: TRepoPort,
   propsModel: TPropsValues,
   model: TModule,
-  setupData: ISetupData,
+  setupData: TSetupData,
 ): TTargetDependenciesTypeScript => {
   const collection = modelToTargetLanguage({
     type: BitloopsTypesMapping.TSingleExpression,

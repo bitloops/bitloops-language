@@ -24,8 +24,10 @@
 
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
 import { VALID_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 // import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
@@ -37,30 +39,35 @@ describe('Valid evaluation test cases', () => {
 
   VALID_EVALUATION_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
+
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const evaluationNode = testCase.evaluation;
       tree.insertChild(evaluationNode);
 
       const intermediateAST = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
-      const targetGenerator = new BitloopsTargetGenerator();
-      const result = targetGenerator.generate({
-        intermediateAST,
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
+
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
       //then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
       if (result instanceof Error) {
         throw result;
       }
-      expect(result[0].fileContent).toEqual(formattedOutput);
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });
