@@ -17,10 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { TBoundedContexts } from './ast/core/types.js';
 import { TClassTypesValues } from './helpers/mappings.js';
-import { IntermediateASTTree } from './ast/core/intermediate-ast/IntermediateASTTree.js';
-import { ASTContext } from './parser/core/types.js';
 
+// TODO this should be removed
 export type TModule = {
   Props?: TProps;
   Controller?: TRESTController | TGraphQLController;
@@ -75,20 +75,8 @@ export type TComponentType =
   | 'TReadModels';
 
 export type TClassName = string;
-type TClassInformation = {
-  moduleName: TModuleName;
-  fileId: string;
-  contents: ASTContext;
-};
-
-export type TASTCoreInputData = {
-  boundedContext: string;
-  classes: Record<TClassType, Record<TClassName, TClassInformation>>;
-};
 
 export type TContextData = { boundedContext: string; module: string };
-
-export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
 
 export type TBitloopsClasses =
   | TProps
@@ -98,12 +86,6 @@ export type TBitloopsClasses =
   | TDomainError
   | TDTO
   | TStruct;
-
-export type TModuleName = string;
-export type TBoundedContext = Record<TModuleName, IntermediateASTTree>;
-
-export type TBoundedContextName = string;
-export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export const fieldsKey = 'fields';
 export const evaluationFieldsKey = 'fields';
@@ -430,7 +412,8 @@ export type TExpressionValues =
   | TGetClass
   | TEnvironmentVariableExpression
   | TObjectLiteral
-  | TLiteralExpression;
+  | TLiteralExpression
+  | TEnvironmentVariableExpression;
 // TODO TLiteralExpression and TLiteral maybe need merge
 
 export type TAssignmentExpression = {
@@ -800,29 +783,44 @@ export type TPackagesSetup = {
   packageValues: TPackagesMapping;
 };
 
+// TODO this should be removed
 export type TSetupData = {
-  setupData: {
-    controllers?: TControllers;
-    useCases?: TUseCases;
-    useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-    language: string;
-    servers?: TServers;
-    routers?: TRouters;
-    packages?: TPackagesSetup;
-    repos?: TReposSetup;
+  controllers?: TControllers;
+  useCases?: TUseCaseDefinition;
+  useCaseDependencyInjections?: IUseCaseDependencyInjection[];
+  language: string;
+  servers?: TServers;
+  routers?: TRouters;
+  packages?: TPackagesSetup;
+  repos?: TReposSetup;
+};
+
+export type TUseCaseDefinition = {
+  useCaseDefinition: {
+    identifier: TIdentifier;
+  } & TUseCaseExpression;
+};
+
+export type TUseCaseExpression = {
+  useCaseExpression: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+  } & TArgumentList &
+    TBoundedContextModule;
+};
+
+export type TBoundedContextModule = {
+  boundedContextModule: {
+    boundedContextName: TBoundedContextName;
+    moduleName: TModuleName;
   };
 };
 
-export type TUseCases = {
-  boundedContext: string;
-  module: string;
-  useCaseValues: TUseCasesOfModule;
-};
+export type TBoundedContextName = TWordsWithSpaces;
 
-export type TUseCasesOfModule = {
-  [UseCaseClassName: string]: {
-    instances: TUseCaseDefinitions[];
-  };
+export type TModuleName = TWordsWithSpaces;
+
+export type TWordsWithSpaces = {
+  wordsWithSpaces: string;
 };
 
 export type TControllers = {
@@ -874,11 +872,6 @@ export enum ControllerTypeOfDefinition {
   REST = 'rest',
   GRAPHQL = 'graphql',
 }
-
-export type TUseCaseDefinitions = {
-  instanceName: string;
-  dependencies: string[]; // Replace with correct type
-};
 
 export type TRestControllerDefinitions = {
   type: ControllerTypeOfDefinition.REST;
@@ -1077,24 +1070,24 @@ export type TIdentifierExpression = {
   };
 };
 
-// export type TLogicalSingleExpression = {
-//   logicalExpression:
-//     | TNotSetupExpression
-//     | TAndSingleExpression
-//     | TOrSingleExpression
-//     | TXorSingleExpression;
-// };
+// // export type TLogicalSingleExpression = {
+// //   logicalExpression:
+// //     | TNotSetupExpression
+// //     | TAndSingleExpression
+// //     | TOrSingleExpression
+// //     | TXorSingleExpression;
+// // };
 
-// export type TNotSetupExpression = {
-//   notExpression: TSetupExpression;
-// };
+// // export type TNotSetupExpression = {
+// //   notExpression: TSetupExpression;
+// // };
 
-// export type TAndSingleExpression = {
-//   andExpression: {
-//     left: TSetupExpression;
-//     right: TSetupExpression;
-//   };
-// };
+// // export type TAndSingleExpression = {
+// //   andExpression: {
+// //     left: TSetupExpression;
+// //     right: TSetupExpression;
+// //   };
+// // };
 
 export type TErrorEvaluation = {
   errorEvaluation: {
@@ -1102,19 +1095,19 @@ export type TErrorEvaluation = {
   } & Partial<TArgumentList>;
 };
 
-// export type TOrSingleExpression = {
-//   orExpression: {
-//     left: TSetupExpression;
-//     right: TSetupExpression;
-//   };
-// };
+// // export type TOrSingleExpression = {
+// //   orExpression: {
+// //     left: TSetupExpression;
+// //     right: TSetupExpression;
+// //   };
+// // };
 
-// export type TXorSingleExpression = {
-//   xorExpression: {
-//     left: TSetupExpression;
-//     right: TSetupExpression;
-//   };
-// };
+// // export type TXorSingleExpression = {
+// //   xorExpression: {
+// //     left: TSetupExpression;
+// //     right: TSetupExpression;
+// //   };
+// // };
 
 export type TLogicalExpression = {
   logicalExpression: TNotExpression | TAndExpression | TOrExpression | TXorExpression;

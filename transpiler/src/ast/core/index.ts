@@ -1,6 +1,5 @@
 import { OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
-import { TBoundedContexts } from '../../types.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
 import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
@@ -13,6 +12,7 @@ import {
   IIntermediateASTValidator,
   IntermediateAST,
   IntermediateASTSetup,
+  TBoundedContexts,
 } from './types.js';
 
 export class IntermediateASTParser implements IIntermediateASTParser {

@@ -1,10 +1,10 @@
 import { TTranspileError, TTranspileOutput } from '../../../transpilerTypes.js';
-import { TBoundedContexts } from '../../../types.js';
 import {
   IntermediateASTParserError,
   IntermediateASTValidationError,
   IntermediateAST,
   IntermediateASTError,
+  TBoundedContexts,
 } from '../types.js';
 
 const isIntermediateASTError = (
