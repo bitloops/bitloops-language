@@ -848,7 +848,7 @@ serverInstantiationOptions
 serverInstantiationOption
     : serverTypeOption    
     | serverApiPrefixOption
-    | restServerPort //TODO implement this
+    | restServerPort 
     | customServerOption
     ;
 

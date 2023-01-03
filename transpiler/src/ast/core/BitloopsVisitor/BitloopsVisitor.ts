@@ -189,18 +189,20 @@ import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
   customServerOptionVisitor,
+  restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
+  restServerPortVisitor,
   serverInstantiationOptionsVisitor,
   serverTypeOptionVisitor,
 } from './helpers/setup/restServerDeclaration.js';
 import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
-import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
-import { StringLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import {
   enviromentVariableVisitor,
   envVarWithDefaultValueExpressionVisitor,
 } from './helpers/setup/environmentVariable.js';
 import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
+import { RestServerPortNode } from '../intermediate-ast/nodes/setup/RestServerPortNode.js';
+import { RestServerAPIPrefixNode } from '../intermediate-ast/nodes/setup/RestServerAPIPrefixNode.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -233,13 +235,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitSetupProgram(ctx: BitloopsParser.SetupProgramContext): any {
     this.visitChildren(ctx);
-    // if (this.useCases.length > 0) {
-    //   const useCases = getUseCases(this.useCases);
-    //   this._result.useCases = useCases;
-    // }
-    // if (Object.keys(this.packages).length > 0) {
-    //   this._result.packages = this.packages;
-    // }
   }
 
   visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext): ExpressionNode {
@@ -987,14 +982,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
     const serverTypeNode = serverTypeOptionVisitor(ctx);
-
     return serverTypeNode;
   }
 
-  visitServerApiPrefixOption(ctx: BitloopsParser.ServerApiPrefixOptionContext): StringLiteralNode {
-    const apiPrefixStr = ctx.pathString().getText();
-    const apiPrefixNode = new StringLiteralBuilder().withValue(apiPrefixStr).build();
+  visitServerApiPrefixOption(
+    ctx: BitloopsParser.ServerApiPrefixOptionContext,
+  ): RestServerAPIPrefixNode {
+    const apiPrefixNode = restServerAPIPrefixVisitor(ctx);
     return apiPrefixNode;
+  }
+
+  visitRestServerPort(ctx: BitloopsParser.RestServerPortContext): RestServerPortNode {
+    return restServerPortVisitor(this, ctx);
   }
 
   visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {

@@ -2,15 +2,15 @@ import { IBuilder } from '../IBuilder.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ServerOptionsNode } from '../../nodes/setup/ServerOptionsNode.js';
 import { ServerOptionNode } from '../../nodes/setup/ServerOptionNode.js';
-import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
-import { StringLiteralNode } from '../../nodes/Expression/Literal/StringLiteralNode.js';
 import { ServerTypeIdentifierNode } from '../../nodes/setup/ServerTypeIdentifierNode.js';
+import { RestServerPortNode } from '../../nodes/setup/RestServerPortNode.js';
+import { RestServerAPIPrefixNode } from '../../nodes/setup/RestServerAPIPrefixNode.js';
 
 export class ServerOptionsNodeBuilder implements IBuilder<ServerOptionsNode> {
   private serverOptionsNode: ServerOptionsNode;
   private serverOptions: ServerOptionNode[];
-  private port: ExpressionNode;
-  private apiPrefix: StringLiteralNode;
+  private port: RestServerPortNode;
+  private apiPrefix: RestServerAPIPrefixNode;
   private serverType: ServerTypeIdentifierNode;
 
   constructor(nodeMetadata?: TNodeMetadata) {
@@ -22,12 +22,12 @@ export class ServerOptionsNodeBuilder implements IBuilder<ServerOptionsNode> {
     return this;
   }
 
-  public withPort(port: ExpressionNode): ServerOptionsNodeBuilder {
+  public withPort(port: RestServerPortNode): ServerOptionsNodeBuilder {
     this.port = port;
     return this;
   }
 
-  public withAPIPrefix(apiPrefix: StringLiteralNode): ServerOptionsNodeBuilder {
+  public withAPIPrefix(apiPrefix: RestServerAPIPrefixNode): ServerOptionsNodeBuilder {
     this.apiPrefix = apiPrefix;
     return this;
   }

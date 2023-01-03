@@ -901,24 +901,31 @@ export type TServers = (TRESTServerInstance | TGraphQLServerInstance)[];
 export type TServerType = 'REST.Fastify' | 'REST.Express' | 'GraphQL';
 export type TRouterInstanceName = string;
 
+export type TRouterPrefix = StringLiteral;
 export type TRestServerInstanceRouters = TRestServerInstanceRouter[];
 export type TRestServerInstanceRouter = {
-  instanceName: TRouterInstanceName;
-  routerPrefix: string;
+  identifier: TRouterInstanceName;
+  routerPrefix: TRouterPrefix;
 };
+
+export type TRestServerPort = {
+  port: TExpression;
+};
+
+export type TAPIPrefix = string;
 
 export type TRestServerOptions = TRestServerOption[];
 export type TRestServerOption =
   | {
-      port: TExpression;
+      port: TRestServerPort;
     }
-  | { apiPrefix?: string }
+  | { apiPrefix?: TAPIPrefix }
   | { serverType: TServerType };
 
 export type TRESTServerInstance = {
   restServer: {
     serverOptions: TRestServerOptions;
-    routers: TRestServerInstanceRouters;
+    serverRoutes: TRestServerInstanceRouters;
   };
 };
 

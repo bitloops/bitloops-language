@@ -4,6 +4,7 @@ import {
   TExpression,
   TRestServerInstanceRouters,
   TServerType,
+  TAPIPrefix,
 } from '../../../../src/types.js';
 
 export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstance> {
@@ -16,7 +17,7 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
     this.port = port;
     return this;
   }
-  public withApiPrefix(apiPrefix: string): RestServerDeclarationBuilder {
+  public withApiPrefix(apiPrefix: TAPIPrefix): RestServerDeclarationBuilder {
     this.apiPrefix = apiPrefix;
     return this;
   }
@@ -34,16 +35,19 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
       restServer: {
         serverOptions: [
           {
-            port: this.port,
+            restServerPort: this.port,
           },
           {
+            // apiPrefix: {
+            //   stringLiteral: this.apiPrefix || '',
+            // },
             apiPrefix: this.apiPrefix || '',
           },
           {
             serverType: this.serverType,
           },
         ],
-        routers: this.routes,
+        serverRoutes: this.routes,
       },
     };
 

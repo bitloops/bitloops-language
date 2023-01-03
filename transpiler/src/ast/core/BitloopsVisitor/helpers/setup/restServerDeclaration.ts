@@ -1,6 +1,9 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { StringLiteralBuilder } from '../../../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { RestServerAPIPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerAPIPrefixNodeBuilder.js';
 import { RestServerNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerNodeBuilder.js';
+import { RestServerPortNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerPortNodeBuilder.js';
+import { RestServerRouterPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RouterPrefixNodeBuilder.js';
 import { ServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerOptionsNodeBuilder.js';
 import { ServerRouteNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRouteNodeBuilder.js';
 import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRoutesNodeBuilder.js';
@@ -9,6 +12,8 @@ import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/Expre
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 // import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
+import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
+import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
 import { ServerOptionNode } from '../../../intermediate-ast/nodes/setup/ServerOptionNode.js';
 import { ServerOptionsNode } from '../../../intermediate-ast/nodes/setup/ServerOptionsNode.js';
 import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRoutesNode.js';
@@ -74,6 +79,29 @@ export const customServerOptionVisitor = (
   return expressionNode;
 };
 
+export const restServerPortVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.RestServerPortContext,
+): RestServerPortNode => {
+  const expressionNode = thisVisitor.visit(ctx.customServerOption());
+
+  const portNode = new RestServerPortNodeBuilder().withPort(expressionNode).build();
+  return portNode;
+};
+
+//TODO delete
+export const restServerAPIPrefixVisitor = (
+  ctx: BitloopsParser.ServerApiPrefixOptionContext,
+): RestServerPortNode => {
+  const pathString = ctx.pathString().getText();
+  const apiPrefixStringNode = new StringLiteralBuilder().withValue(pathString).build();
+
+  const apiPrefixNode = new RestServerAPIPrefixNodeBuilder()
+    .withAPIPrefix(apiPrefixStringNode)
+    .build();
+  return apiPrefixNode;
+};
+
 export const bindServerRoutesVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.BindServerRoutesContext,
@@ -92,12 +120,16 @@ export const bindServerRouteVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RouteBindContext,
 ): ServerRoutesNode => {
-  const routePath = new StringLiteralBuilder().withValue(ctx.pathString()).build();
+  const routePrefix = new StringLiteralBuilder().withValue(ctx.pathString().getText()).build();
+
+  const routerPrefixNode: RestServerRouterPrefixNode = new RestServerRouterPrefixNodeBuilder()
+    .witRouterPrefix(routePrefix)
+    .build();
   const identifier: IdentifierNode = thisVisitor.visit(ctx.identifier());
 
   const serverRoutesNode: ServerRoutesNode = new ServerRouteNodeBuilder()
     .withInstanceName(identifier)
-    .withRouterPrefix(routePath)
+    .withRouterPrefix(routerPrefixNode)
     .build();
 
   return serverRoutesNode;

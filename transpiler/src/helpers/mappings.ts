@@ -191,6 +191,9 @@ const BitloopsTypesMapping = {
   TRestServerInstanceRouter: 'TRestServerInstanceRouter',
   TServerOption: 'TServerOption',
   TServerOptions: 'TServerOptions',
+  TRestServerPort: 'TRestServerPort',
+  TAPIPrefix: 'TAPIPrefix',
+  TRouterPrefix: 'TRouterPrefix',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

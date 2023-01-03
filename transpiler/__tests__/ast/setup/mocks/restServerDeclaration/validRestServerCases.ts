@@ -1,5 +1,6 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
 import { ExpressionBuilderDirector } from '../../../core/builders/expressionDirector.js';
+import { StringLiteralBuilder } from '../../../core/builders/stringLiteral.js';
 import { RestServerDeclarationBuilder } from '../../builders/restServerDirector.js';
 import { RestServerInstanceRouterBuilder } from '../../builders/restServerInstanceRouterBuilder.js';
 
@@ -22,7 +23,7 @@ export const VALID_REST_SERVER_CASES = [
       .withRoutes([
         new RestServerInstanceRouterBuilder()
           .withInstanceName('helloWorldRESTRouter')
-          .withRouterPrefix('/hello')
+          .withRouterPrefix(new StringLiteralBuilder().withValue('/hello').build())
           .build(),
       ])
       .build(),
