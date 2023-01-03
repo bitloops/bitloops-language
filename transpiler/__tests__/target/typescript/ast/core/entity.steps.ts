@@ -22,8 +22,8 @@ import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-as
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
 import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target/ast/index.js';
-import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
 import { ENTITY_TEST_CASES } from './mocks/entity.js';
+import { IntermediateAST } from '../../../../../src/ast/core/types.js';
 
 describe('Valid Entity', () => {
   const boundedContext = 'Hello world';
@@ -37,16 +37,16 @@ describe('Valid Entity', () => {
       tree.insertChild(entityNode);
 
       const intermediateModel = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
       const targetModelTransformer = new IntermediateModelToASTTargetTransformer();
-      const result: TIntermediateModel = targetModelTransformer.transform({ intermediateModel });
+      const result: IntermediateAST = targetModelTransformer.transform(intermediateModel);
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const entityNodes = result.intermediateModel[boundedContext][module].getClassTypeNodes(
+      const entityNodes = result.core[boundedContext][module].getClassTypeNodes(
         BitloopsTypesMapping.TEntity,
       );
       expect(entityNodes.length).toBe(1);

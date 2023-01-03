@@ -22,7 +22,7 @@ import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-as
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
 import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target/ast/index.js';
-import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
+import { IntermediateAST } from '../../../../../src/ast/core/types.js';
 import { REST_CONTROLLER_TEST_CASES } from './mocks/controllers/rest.js';
 
 describe('Valid rest Controller', () => {
@@ -37,18 +37,18 @@ describe('Valid rest Controller', () => {
       tree.insertChild(expressionNode);
 
       const intermediateModel = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
       const targetModelTransformer = new IntermediateModelToASTTargetTransformer();
-      const result: TIntermediateModel = targetModelTransformer.transform({ intermediateModel });
+      const result: IntermediateAST = targetModelTransformer.transform(intermediateModel);
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const restControllerNodes = result.intermediateModel[boundedContext][
-        module
-      ].getClassTypeNodes(BitloopsTypesMapping.TRESTController);
+      const restControllerNodes = result.core[boundedContext][module].getClassTypeNodes(
+        BitloopsTypesMapping.TRESTController,
+      );
       expect(restControllerNodes.length).toBe(1);
       const value = restControllerNodes[0].getValue();
       const expectedValue = testCase.expectedOutput.getValue();
