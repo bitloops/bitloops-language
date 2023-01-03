@@ -22,7 +22,7 @@ import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-as
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsTypesMapping } from '../../../../../src/helpers/mappings.js';
 import { IntermediateModelToASTTargetTransformer } from '../../../../../src/target/ast/index.js';
-import { TIntermediateModel } from '../../../../../src/transpilerTypes.js';
+import { IntermediateAST } from '../../../../../src/ast/core/types.js';
 import { GRAPHQL_CONTROLLER_TEST_CASES } from './mocks/controllers/graphql.js';
 
 describe('Valid graphql Controller', () => {
@@ -37,18 +37,18 @@ describe('Valid graphql Controller', () => {
       tree.insertChild(expressionNode);
 
       const intermediateModel = {
-        [boundedContext]: { [module]: tree },
+        core: { [boundedContext]: { [module]: tree } },
       };
 
       // when
       const targetModelTransformer = new IntermediateModelToASTTargetTransformer();
-      const result: TIntermediateModel = targetModelTransformer.transform({ intermediateModel });
+      const result: IntermediateAST = targetModelTransformer.transform(intermediateModel);
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const graphQLControllerNodes = result.intermediateModel[boundedContext][
-        module
-      ].getClassTypeNodes(BitloopsTypesMapping.TGraphQLController);
+      const graphQLControllerNodes = result.core[boundedContext][module].getClassTypeNodes(
+        BitloopsTypesMapping.TGraphQLController,
+      );
       expect(graphQLControllerNodes.length).toBe(1);
       const value = graphQLControllerNodes[0].getValue();
       const expectedValue = testCase.expectedOutput.getValue();

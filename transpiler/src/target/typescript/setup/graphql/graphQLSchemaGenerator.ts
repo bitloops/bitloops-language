@@ -1,5 +1,6 @@
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { TBoundedContexts, TGraphQLOperation, TResolver, TResolvers } from '../../../../types.js';
+import { TGraphQLOperation, TResolver, TResolvers } from '../../../../types.js';
+import { TBoundedContexts } from '../../../../ast/core/types.js';
 import { ClassTypeToGraphQLMapping } from './dtoToGraphQLMapping.js';
 import { AllResolvers, ResolverValues } from './types.js';
 

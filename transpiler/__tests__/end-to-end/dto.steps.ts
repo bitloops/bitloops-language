@@ -67,7 +67,7 @@ describe('Valid DTO End To End', () => {
         },
       ];
 
-      expect(targetCode).toEqual(expectedOutput);
+      expect(targetCode.core).toEqual(expectedOutput);
     });
   });
 });

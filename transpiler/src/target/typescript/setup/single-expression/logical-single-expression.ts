@@ -1,10 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TLogicalSingleExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
+import { TLogicalExpression, TTargetDependenciesTypeScript } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { isLogicalORExpression } from './type-guards/index.js';
 
 export const logicalSingleExpressionToTargetLanguage = (
-  expression: TLogicalSingleExpression,
+  expression: TLogicalExpression,
 ): TTargetDependenciesTypeScript => {
   const dependencies = [];
   if (isLogicalORExpression(expression.logicalExpression)) {

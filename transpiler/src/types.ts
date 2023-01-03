@@ -410,7 +410,11 @@ export type TExpressionValues =
   | TAssignmentExpression
   | TInstanceOf
   | TGetClass
+  | TEnvironmentVariableExpression
+  | TObjectLiteral
+  | TLiteralExpression
   | TEnvironmentVariableExpression;
+// TODO TLiteralExpression and TLiteral maybe need merge
 
 export type TAssignmentExpression = {
   assignmentExpression: {
@@ -1066,24 +1070,24 @@ export type TIdentifierExpression = {
   };
 };
 
-// export type TLogicalSingleExpression = {
-//   logicalExpression:
-//     | TNotSetupExpression
-//     | TAndSingleExpression
-//     | TOrSingleExpression
-//     | TXorSingleExpression;
-// };
+// // export type TLogicalSingleExpression = {
+// //   logicalExpression:
+// //     | TNotSetupExpression
+// //     | TAndSingleExpression
+// //     | TOrSingleExpression
+// //     | TXorSingleExpression;
+// // };
 
-// export type TNotSetupExpression = {
-//   notExpression: TSetupExpression;
-// };
+// // export type TNotSetupExpression = {
+// //   notExpression: TSetupExpression;
+// // };
 
-// export type TAndSingleExpression = {
-//   andExpression: {
-//     left: TSetupExpression;
-//     right: TSetupExpression;
-//   };
-// };
+// // export type TAndSingleExpression = {
+// //   andExpression: {
+// //     left: TSetupExpression;
+// //     right: TSetupExpression;
+// //   };
+// // };
 
 export type TErrorEvaluation = {
   errorEvaluation: {
@@ -1091,19 +1095,19 @@ export type TErrorEvaluation = {
   } & Partial<TArgumentList>;
 };
 
-// export type TOrSingleExpression = {
-//   orExpression: {
-//     left: TSetupExpression;
-//     right: TSetupExpression;
-//   };
-// };
+// // export type TOrSingleExpression = {
+// //   orExpression: {
+// //     left: TSetupExpression;
+// //     right: TSetupExpression;
+// //   };
+// // };
 
-// export type TXorSingleExpression = {
-//   xorExpression: {
-//     left: TSetupExpression;
-//     right: TSetupExpression;
-//   };
-// };
+// // export type TXorSingleExpression = {
+// //   xorExpression: {
+// //     left: TSetupExpression;
+// //     right: TSetupExpression;
+// //   };
+// // };
 
 export type TLogicalExpression = {
   logicalExpression: TNotExpression | TAndExpression | TOrExpression | TXorExpression;

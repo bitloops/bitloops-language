@@ -32,22 +32,23 @@ import {
   isRestServerInstance,
 } from '../../../helpers/typeGuards.js';
 import {
-  ISetupData,
+  TSetupData,
   TControllers,
   TMethodAndPath,
   TRouterInstanceName,
   TRoutersInfo,
   TServerType,
-  TBoundedContexts,
   TGraphQLServerInstance,
   TGraphQLSetupData,
   TPackagesMapping,
   TPackagesSetup,
-  TUseCasesOfModule,
+  // TUseCasesOfModule, //TODO this is TUseCaseDefinition
   TControllerOfModule,
   TReposSetup,
   TServers,
 } from '../../../types.js';
+
+import { TBoundedContexts } from '../../../ast/core/types.js';
 import { formatToLang } from '../helpers/codeFormatting.js';
 import { StringUtils } from '../../../utils/index.js';
 import { getRecursivelyFileInDirectory } from '../../../utils/getRecursivelyFileInDirectory.js';
@@ -78,15 +79,15 @@ interface ISetup {
     license?: string,
   ): TSetupOutput;
   generateAPIs(servers: TServers): TSetupOutput[];
-  generateServerRouters(data: ISetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServerRouters(data: TSetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
-    data: ISetupData,
+    data: TSetupData,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[];
-  generateRepoConnections(setupData: ISetupData): TSetupOutput[];
+  generateRepoConnections(setupData: TSetupData): TSetupOutput[];
   // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
   // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
 }
@@ -146,7 +147,7 @@ export class SetupTypeScript implements ISetup {
     this.nodeDevDependencies = REQUIRED_NODE_DEV_DEPENDENCIES;
     this.setupTypeScriptRepos = new SetupTypeScriptRepos();
   }
-  generateRepoConnections(setupData: ISetupData): TSetupOutput[] {
+  generateRepoConnections(setupData: TSetupData): TSetupOutput[] {
     const repoDependencies = this.setupTypeScriptRepos.getPackageJSONDependencies(setupData.repos);
     this.nodeDependencies = { ...this.nodeDependencies, ...repoDependencies };
     return this.setupTypeScriptRepos.generateRepoConnections(setupData);
@@ -161,7 +162,7 @@ export class SetupTypeScript implements ISetup {
   }
 
   generateDIs(
-    data: ISetupData,
+    data: TSetupData,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -197,8 +198,9 @@ export class SetupTypeScript implements ISetup {
           diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
         }
 
-        if (useCases)
-          diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
+        //TODO this was commented because of generateUseCasesDIs
+        // if (useCases)
+        //   diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
 
         if (controllers)
           diContent += this.generateControllerDIsAndExports(
@@ -219,7 +221,8 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  private generateDIUseCaseImports(useCases: TUseCasesOfModule): string {
+  private generateDIUseCaseImports(useCases: any): string {
+    //TODO type of useCases is TUseCaseDefinition
     let result = '';
     for (const useCaseName of Object.keys(useCases)) {
       // console.log('useCase', useCase);
@@ -242,16 +245,18 @@ export class SetupTypeScript implements ISetup {
     }
     return result;
   }
-  private generateUseCasesDIs(useCases: TUseCasesOfModule): string {
-    let result = '';
-    for (const [useCaseName, useCase] of Object.entries(useCases)) {
-      for (const instance of useCase.instances) {
-        const { instanceName, dependencies } = instance;
-        result += `const ${instanceName} = new ${useCaseName}(${dependencies.join(', ')});\n`;
-      }
-    }
-    return result;
-  }
+
+  //TODO this was commented, type of useCases is TUseCaseDefinition
+  // private generateUseCasesDIs(useCases: TUseCasesOfModule): string {
+  //   let result = '';
+  //   for (const [useCaseName, useCase] of Object.entries(useCases)) {
+  //     for (const instance of useCase.instances) {
+  //       const { instanceName, dependencies } = instance;
+  //       result += `const ${instanceName} = new ${useCaseName}(${dependencies.join(', ')});\n`;
+  //     }
+  //   }
+  //   return result;
+  // }
 
   private generateControllerDIsAndExports(controllers: TControllerOfModule): string {
     let controllerDIContent = '';
@@ -511,7 +516,7 @@ export {${exports}};\n`;
     };
   }
   generateServerRouters(
-    data: ISetupData,
+    data: TSetupData,
     bitloopsModel: TBoundedContexts,
     license?: string,
   ): TSetupOutput[] {
