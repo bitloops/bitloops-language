@@ -692,7 +692,7 @@ expression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
-    | EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
+    | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen                # EnvVarWithDefaultValueExpression
     | envVariable                                                            # EnvironmentVariableExpression
     ;   
 
@@ -727,16 +727,6 @@ eos
     ;
 
 /** !!SETUP!! **/
-
-// setupExpression
-//     : expression                                                             # CoreExpression
-//     | EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
-//     | envVariable                                                            # EnvironmentVariableExpression
-//     ;
-
-// objectLiteral
-//     : '{' (evaluationFieldList (',' evaluationFieldList)* ','?)? '}'
-//     ;
 
 language
     : TypeScript

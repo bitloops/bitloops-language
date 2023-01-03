@@ -27,6 +27,20 @@ export class ExpressionBuilderDirector {
     };
   }
 
+  buildEnvVariableExpressionWithDefault(
+    identifier: string,
+    defaultValue: TExpression,
+  ): TExpression {
+    return {
+      expression: {
+        environmentVariable: {
+          identifier,
+          defaultValue,
+        },
+      },
+    };
+  }
+
   buildStringLiteralExpression(stringLiteral: string): TExpression {
     return {
       expression: {

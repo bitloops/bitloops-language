@@ -39,9 +39,6 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
             serverType: this.serverType,
           },
           {
-            // apiPrefix: {
-            //   stringLiteral: this.apiPrefix || '',
-            // },
             apiPrefix: this.apiPrefix,
           },
           {

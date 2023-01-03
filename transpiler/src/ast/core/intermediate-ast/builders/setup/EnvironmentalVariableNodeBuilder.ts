@@ -1,13 +1,13 @@
-import { LiteralNode } from '../../nodes/Expression/Literal/LiteralNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { DefaultEnvVarValueNode } from '../../nodes/setup/DefaultEnvVarValueNode.js';
 import { EnvironmentalVariableNode } from '../../nodes/setup/EnvironmentalVariableNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class EnvironmentalVariableNodeBuilder implements IBuilder<EnvironmentalVariableNode> {
   private environmentalVariableNode: EnvironmentalVariableNode;
   private identifierNode: IdentifierNode;
-  private defaultValueNode: LiteralNode;
+  private defaultValueNode: DefaultEnvVarValueNode;
 
   constructor(nodeMetadata?: TNodeMetadata) {
     this.environmentalVariableNode = new EnvironmentalVariableNode(nodeMetadata);
@@ -18,7 +18,9 @@ export class EnvironmentalVariableNodeBuilder implements IBuilder<EnvironmentalV
     return this;
   }
 
-  public withDefaultValue(defaultValueNode: LiteralNode): EnvironmentalVariableNodeBuilder {
+  public withDefaultValue(
+    defaultValueNode: DefaultEnvVarValueNode,
+  ): EnvironmentalVariableNodeBuilder {
     this.defaultValueNode = defaultValueNode;
     return this;
   }

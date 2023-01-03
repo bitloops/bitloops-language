@@ -295,8 +295,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return repoPortIdentifierNode;
   }
 
-  visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
+  visitIdentifier(ctx: BitloopsParser.IdentifierContext): IdentifierNode {
     const identifierName = ctx.Identifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
+    return identifierNode;
+  }
+
+  visitUpperCaseIdentifier(ctx: BitloopsParser.UpperCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UpperCaseIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
     const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
     return identifierNode;
@@ -1029,7 +1036,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-    const envVar = enviromentVariableVisitor(ctx);
+    const envVar = enviromentVariableVisitor(this, ctx);
     return envVar;
   }
   visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {

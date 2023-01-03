@@ -200,6 +200,7 @@ const BitloopsTypesMapping = {
   TWordsWithSpaces: 'TWordsWithSpaces',
   TBoundedContextName: 'TBoundedContextName',
   TModuleName: 'TModuleName',
+  TDefaultValueEnvironmentVariable: 'TDefaultValueEnvironmentVariable',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

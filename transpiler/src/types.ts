@@ -1052,13 +1052,15 @@ export type TObjectLiteral = {
 export type TEnvironmentVariableExpression = {
   environmentVariable: {
     identifier: string;
-    defaultValue?: TLiteralExpression;
+    defaultValue?: TExpression;
   };
 };
 
+export type TLiteralExpressionType = TBitloopsPrimitives | 'number';
+
 export type TLiteralExpression = {
   literal: {
-    type: TBitloopsPrimitives | 'number';
+    type: TLiteralExpressionType;
     value: string;
   };
 };
