@@ -5,7 +5,7 @@ import { RestServerDeclarationBuilder } from '../../builders/restServerDirector.
 import { RestServerInstanceRouterBuilder } from '../../builders/restServerInstanceRouterBuilder.js';
 
 const portExpression = new ExpressionBuilderDirector().buildLogicalOrExpression(
-  new ExpressionBuilderDirector().buildIdentifierExpression('env.FASTIFY_PORT'),
+  new ExpressionBuilderDirector().buildEnvVariableExpression('env.FASTIFY_PORT'),
   new ExpressionBuilderDirector().buildInt32LiteralExpression(3002),
 );
 
@@ -18,12 +18,12 @@ export const VALID_REST_SERVER_CASES = [
     fileId: 'testFile.bl',
     restServer: new RestServerDeclarationBuilder()
       .withServerType('REST.Fastify')
-      .withApiPrefix('/')
+      .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
       .withPort(portExpression)
       .withRoutes([
         new RestServerInstanceRouterBuilder()
           .withInstanceName('helloWorldRESTRouter')
-          .withRouterPrefix(new StringLiteralBuilder().withValue('/hello').build())
+          .withRouterPrefix(new StringLiteralBuilder().withValue("'/hello'").build())
           .build(),
       ])
       .build(),

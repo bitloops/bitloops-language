@@ -61,7 +61,6 @@ describe('Rest Server is valid', () => {
       }
       const resultTree = setupResult[testRestServer.fileId];
       const value = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers)[0].getValue();
-
       expect(value).toMatchObject(testRestServer.restServer);
     });
   });

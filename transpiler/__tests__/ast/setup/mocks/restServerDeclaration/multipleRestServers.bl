@@ -1,0 +1,12 @@
+RESTServer({   
+    server: REST.Fastify,  
+    port: env.FASTIFY_PORT OR 5001,   
+    apiPrefix: '/', }) 
+    {  '/hello': helloWorldRESTRouter; };
+    
+RESTServer({   
+    server: REST.Fastify,  
+    port: env.FASTIFY_PORT2 OR 5002, }) 
+    {   
+        '/': helloWorldRESTRouter; 
+    };

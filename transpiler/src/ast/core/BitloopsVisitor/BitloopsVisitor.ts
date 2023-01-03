@@ -38,7 +38,11 @@ import { PropsIdentifierNodeBuilder } from './../intermediate-ast/builders/Props
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
-import { LiteralExpressionVisitor } from './helpers/expressions.js';
+import {
+  enviromentVariableVisitor,
+  envVarWithDefaultValueExpressionVisitor,
+  LiteralExpressionVisitor,
+} from './helpers/expressions.js';
 
 import {
   functionBodyVisitor,
@@ -196,10 +200,6 @@ import {
   serverTypeOptionVisitor,
 } from './helpers/setup/restServerDeclaration.js';
 import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
-import {
-  enviromentVariableVisitor,
-  envVarWithDefaultValueExpressionVisitor,
-} from './helpers/setup/environmentVariable.js';
 import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
 import { RestServerPortNode } from '../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerAPIPrefixNode } from '../intermediate-ast/nodes/setup/RestServerAPIPrefixNode.js';

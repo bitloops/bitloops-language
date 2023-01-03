@@ -1,14 +1,12 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { ExpressionNode } from '../Expression/ExpressionNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 
-export class EnvironmentalVariableNode extends IntermediateASTNode {
-  private static classNodeName = 'restServerDeclarationVisitor';
-
+const classNodeName = 'environmentVariable';
+export class EnvironmentalVariableNode extends ExpressionNode {
   constructor(metadata?: TNodeMetadata) {
-    super(
-      BitloopsTypesMapping.TEnvironmentVariableExpression,
-      metadata,
-      EnvironmentalVariableNode.classNodeName,
-    );
+    super(metadata);
+    this.classNodeName = classNodeName;
+    this.nodeType = BitloopsTypesMapping.TEnvironmentVariableExpression;
   }
 }

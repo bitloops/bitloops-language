@@ -10,7 +10,6 @@ import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setu
 import { ServerTypeIdentifierNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
-// import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
@@ -67,14 +66,17 @@ export const serverTypeOptionVisitor = (
   ctx: BitloopsParser.ServerTypeOptionContext,
 ): ServerTypeIdentifierNode => {
   return new ServerTypeIdentifierNodeBuilder()
-    .withServerTypeIdentifier(ctx.ServerTypeOption().getText())
+    .withServerTypeIdentifier(ctx.serverType().getText())
     .build();
 };
 
+//TODO test this
 export const customServerOptionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.CustomServerOptionContext,
 ): ExpressionNode => {
+  const identifier = ctx.Identifier().getText();
+  console.log('identifier', identifier);
   const expressionNode = thisVisitor.visit(ctx.expression());
   return expressionNode;
 };
@@ -83,7 +85,7 @@ export const restServerPortVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestServerPortContext,
 ): RestServerPortNode => {
-  const expressionNode = thisVisitor.visit(ctx.customServerOption());
+  const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
 
   const portNode = new RestServerPortNodeBuilder().withPort(expressionNode).build();
   return portNode;

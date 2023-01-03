@@ -853,7 +853,12 @@ serverInstantiationOption
     ;
 
 restServerPort 
-    : customServerOption;
+    : restServerPortIdentifier Colon expression Comma
+    ;
+
+restServerPortIdentifier: 
+    RestServerPortIdentifier;
+
 
 repoConnectionDefinition
     : Const identifier '=' repoConnectionExpression

@@ -21,8 +21,10 @@ export class RestServerInstanceRouterBuilder implements IBuilder<TRestServerInst
 
   public build(): TRestServerInstanceRouter {
     return {
-      identifier: this.instanceName,
-      routerPrefix: this.routerPrefix,
+      serverRoute: {
+        identifier: this.instanceName,
+        routerPrefix: this.routerPrefix,
+      },
     };
   }
 }
