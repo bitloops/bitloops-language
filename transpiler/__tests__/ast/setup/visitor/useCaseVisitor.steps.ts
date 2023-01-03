@@ -22,7 +22,11 @@ import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
 import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
-import { VALID_USE_CASE_DEFINITION_CASES } from '../mocks/useCaseDefinition/index.js';
+import {
+  VALID_MULTIPLE_USE_CASE_DEFINITIONS,
+  VALID_USE_CASE_DEFINITION_CASES,
+} from '../mocks/useCaseDefinition/index.js';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 
 const BOUNDED_CONTEXT = 'Hello world';
 const MODULE = 'Demo';
@@ -59,9 +63,54 @@ describe('Use case definition is valid', () => {
         }
       }
       const resultTree = setupResult[testUseCase.fileId];
-      const value = resultTree.getCurrentNode().getValue();
+      const useCaseDefintionNodes = resultTree.getClassTypeNodes(
+        BitloopsTypesMapping.TUseCaseDefinition,
+      );
+      const value = useCaseDefintionNodes[0].getValue();
 
       expect(value).toMatchObject(testUseCase.useCaseDefinition);
+    });
+  });
+});
+
+describe('Multiple use case definitions are valid', () => {
+  let setupResult: IntermediateASTSetup;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  VALID_MULTIPLE_USE_CASE_DEFINITIONS.forEach((testUseCase) => {
+    test(`${testUseCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testUseCase.inputBLString,
+            fileId: testUseCase.fileId,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          setupResult = result.setup;
+        }
+      }
+      const resultTree = setupResult[testUseCase.fileId];
+      const useCaseDefintionNodes = resultTree.getClassTypeNodes(
+        BitloopsTypesMapping.TUseCaseDefinition,
+      );
+      const values = useCaseDefintionNodes.map((node) => node.getValue());
+
+      expect(values).toMatchObject(testUseCase.useCaseDefinitions);
     });
   });
 });

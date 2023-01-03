@@ -17,6 +17,12 @@ export class ArgumentListBuilderDirector {
     return list;
   }
 
+  buildEmptyArgumentList(): TArgumentList {
+    return {
+      argumentList: [],
+    };
+  }
+
   buildStringLiteralArguments(args: string[]): TArgumentList {
     const list: TArgumentList = {
       argumentList: [],

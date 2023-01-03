@@ -791,19 +791,23 @@ export type TSetupData = {
 };
 
 export type TUseCaseDefinition = {
-  identifier: string;
-  useCaseExpression: TUseCaseExpression;
+  useCaseDefinition: {
+    identifier: TIdentifier;
+  } & TUseCaseExpression;
 };
 
 export type TUseCaseExpression = {
-  argumentList: TArgumentList;
-  boundedContextModule: TBoundedContextModule;
-  [UseCaseIdentifierKey]: TUseCaseIdentifier;
+  useCaseExpression: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+  } & TArgumentList &
+    TBoundedContextModule;
 };
 
 export type TBoundedContextModule = {
-  boundedContextName: TBoundedContextName;
-  moduleName: TModuleName;
+  boundedContextModule: {
+    boundedContextName: TBoundedContextName;
+    moduleName: TModuleName;
+  };
 };
 
 export type TBoundedContextName = TWordsWithSpaces;
