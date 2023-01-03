@@ -81,26 +81,24 @@ const generateSetupData = ({
   serverType: TServerType;
 }): TSetupData => {
   return {
-    setupData: {
-      controllers: {
-        boundedContext,
-        module,
-        controllerValues: {
-          [controllerName]: {
-            type: ControllerTypeOfDefinition.REST,
-            method: 'get',
-            serverType,
-            instances: [
-              {
-                url: '/',
-                controllerInstance: 'helloController',
-                dependencies: [],
-              },
-            ],
-          },
+    controllers: {
+      boundedContext,
+      module,
+      controllerValues: {
+        [controllerName]: {
+          type: ControllerTypeOfDefinition.REST,
+          method: 'get',
+          serverType,
+          instances: [
+            {
+              url: '/',
+              controllerInstance: 'helloController',
+              dependencies: [],
+            },
+          ],
         },
       },
-      language: 'TypeScript',
     },
+    language: 'TypeScript',
   };
 };

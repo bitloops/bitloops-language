@@ -3,12 +3,13 @@ import { TTranspileOptions } from '../transpilerTypes.js';
 import {
   TSetupData,
   TBoundedContextName,
-  TBoundedContexts,
   TClassName,
   TClassType,
   TModuleName,
   TTargetDependenciesTypeScript,
 } from '../types.js';
+
+import { TBoundedContexts } from '../ast/core/types.js';
 
 export type TOutputTargetContent = {
   core: TTargetCoreFinalContent[];

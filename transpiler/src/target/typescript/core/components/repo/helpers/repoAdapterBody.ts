@@ -56,7 +56,7 @@ const repoBodyLangMapping = (
     type: BitloopsTypesMapping.TSingleExpression,
     value: connectionExpression,
   });
-  const { database } = setupData.setupData.repos.connections[connection.output];
+  const { database } = setupData.repos.connections[connection.output];
   const dbName = modelToTargetLanguage({
     type: BitloopsTypesMapping.TSingleExpression,
     value: database,

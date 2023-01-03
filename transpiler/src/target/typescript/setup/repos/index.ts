@@ -62,8 +62,8 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   // };
 
   generateRepoConnections(setupData: Readonly<TSetupData>, license?: string): TSetupOutput[] {
-    if (!setupData?.setupData.repos?.connections) return [];
-    const groupedConnectionsPerDb = this.groupRepoConnectionsPerDbType(setupData.setupData.repos);
+    if (!setupData?.repos?.connections) return [];
+    const groupedConnectionsPerDb = this.groupRepoConnectionsPerDbType(setupData.repos);
     return Object.entries(groupedConnectionsPerDb).reduce((acc, [dbType, connections]) => {
       const results = this.getDbTypeRepoConnectionsPathsAndContent(
         dbType as TRepoSupportedTypes,
