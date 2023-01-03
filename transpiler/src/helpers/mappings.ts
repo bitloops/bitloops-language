@@ -195,6 +195,8 @@ const BitloopsTypesMapping = {
   TWordsWithSpaces: 'TWordsWithSpaces',
   TBoundedContextName: 'TBoundedContextName',
   TModuleName: 'TModuleName',
+  TRouterExpression: 'TRouterExpression',
+  TRouterDefinition: 'TRouterDefinition',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

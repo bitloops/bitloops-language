@@ -209,6 +209,9 @@ import { boundedContextVisitor } from './helpers/setup/boundedContextDeclaration
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
+import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
+import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -1068,6 +1071,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } else {
       return '';
     }
+  }
+
+  visitRouterDefinitionStatement(ctx: BitloopsParser.RouterDefinitionStatementContext): void {
+    this.visit(ctx.routerDefinition());
+  }
+
+  visitRouterDefinition(ctx: BitloopsParser.RouterDefinitionContext): void {
+    routerDefinitionVisitor(this, ctx);
+  }
+
+  visitRouterExpression(ctx: BitloopsParser.RouterExpressionContext): RouterExpressionNode {
+    return routerExpressionVisitor(this, ctx);
   }
 
   // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {

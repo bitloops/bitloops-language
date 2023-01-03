@@ -765,11 +765,6 @@ pathString
     ;
 
 method
-    : validMethod
-    | unknownMethod
-    ;
-
-validMethod
     : GET
     | POST
     | PUT
@@ -778,25 +773,12 @@ validMethod
     | OPTIONS
     ;
 
-unknownMethod
-    : identifier
-    ;
-
-nestedImpliedControllerDeclarations
+nestedControllerDeclarations
     : nestedControllerInstantiation*
     ;
 
 routerArguments
-    : validRouterArguments
-    | invalidRouterArguments
-    ;
-
-validRouterArguments
     : OpenParen serverType CloseParen
-    ;
-
-invalidRouterArguments
-    : OpenParen CloseParen
     ;
 
 useCaseExpression
@@ -804,11 +786,7 @@ useCaseExpression
     ;
 
 routerExpression
-    : restRouter routerArguments OpenBrace nestedImpliedControllerDeclarations CloseBrace
-    ;
-
-routerDeclaration
-    : Const identifier
+    : restRouter routerArguments OpenBrace nestedControllerDeclarations CloseBrace
     ;
 
 packageAdapterClassName
@@ -828,7 +806,7 @@ useCaseDefinition
     ;
 
 routerDefinition
-    : routerDeclaration Assign routerExpression SemiColon?
+    : Const identifier Assign routerExpression SemiColon?
     ;
 
 serverDeclaration
@@ -941,7 +919,7 @@ bindControllerResolvers
     ;
 
 controllerResolverBind
-    : boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen
+    : boundedContextModuleDeclaration ControllerIdentifier methodArguments
     ;
 
 alpha_numeric_ws: Digits | WS | UpperCaseIdentifier | Identifier;
@@ -951,11 +929,7 @@ wordsWithSpaces
     ;
 
 nestedControllerInstantiation
-    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen SemiColon?
-    ;
-
-controllerDependencies
-    : (identifier (Comma identifier)*)?
+    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration ControllerIdentifier methodArguments SemiColon?
     ;
 
 boundedContextDeclaration
