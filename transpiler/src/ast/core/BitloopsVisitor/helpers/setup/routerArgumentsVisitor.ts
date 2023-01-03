@@ -21,6 +21,7 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { RouterArgumentsNodeBuilder } from '../../../intermediate-ast/builders/setup/RouterArgumentsNodeBuilder.js';
 import { RouterArgumentsNode } from '../../../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
+import { ServerTypeIdentifierNode } from '../../../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
@@ -28,8 +29,7 @@ export const routerArgumentsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RouterArgumentsContext,
 ): RouterArgumentsNode => {
-  // TODO ServerTypeNode
-  const serverTypeNode: any = thisVisitor.visit(ctx.serverType());
+  const serverTypeNode: ServerTypeIdentifierNode = thisVisitor.visit(ctx.serverType());
 
   const metadata = produceMetadata(ctx, thisVisitor);
 

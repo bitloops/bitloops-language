@@ -225,6 +225,9 @@ import { routerControllerVisitor } from './helpers/setup/routerControllerVisitor
 import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterControllerNode.js';
 import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
 import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
+import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
+import { StringLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -1003,14 +1006,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-    const serverTypeNode = serverTypeOptionVisitor(ctx);
+    const serverTypeNode = serverTypeOptionVisitor(this, ctx);
     return serverTypeNode;
   }
 
   visitServerApiPrefixOption(
     ctx: BitloopsParser.ServerApiPrefixOptionContext,
   ): RestServerAPIPrefixNode {
-    const apiPrefixNode = restServerAPIPrefixVisitor(ctx);
+    const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
     return apiPrefixNode;
   }
 
@@ -1121,6 +1124,30 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitHttpMethodVerb(ctx: BitloopsParser.HttpMethodVerbContext): HTTPMethodVerbNode {
     return httpMethodVerbVisitor(this, ctx);
+  }
+
+  visitServerType(ctx: BitloopsParser.ServerTypeContext): ServerTypeIdentifierNode {
+    let serverType = '';
+    if (ctx.expressServer()) {
+      serverType = ctx.expressServer().getText();
+    }
+    if (ctx.fastifyServer()) {
+      serverType = ctx.fastifyServer().getText();
+    }
+    if (ctx.graphQLServerType()) {
+      serverType = ctx.graphQLServerType().getText();
+    }
+    const metadata = produceMetadata(ctx, this);
+    return new ServerTypeIdentifierNodeBuilder(metadata)
+      .withServerTypeIdentifier(serverType)
+      .build();
+  }
+
+  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
+    const stringLiteral = ctx.StringLiteral().getText();
+
+    const metadata = produceMetadata(ctx, this);
+    return new StringLiteralBuilder(metadata).withValue(stringLiteral).build();
   }
 
   // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {

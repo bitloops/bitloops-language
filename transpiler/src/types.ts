@@ -691,9 +691,10 @@ export type TBaseControllerValues = TParameterList;
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
 
+export type TRESTControllerIdentifier = string;
 export type TRESTController = {
   RESTController: TBaseControllerValues & {
-    RESTControllerIdentifier: string;
+    RESTControllerIdentifier: TRESTControllerIdentifier;
     method: TRestMethods;
     execute: TRESTControllerExecute;
   };
@@ -776,14 +777,46 @@ export type TPackagesSetup = {
 
 // TODO this should be removed
 export type TSetupData = {
-  controllers?: TControllers;
-  useCases?: TUseCaseDefinition;
+  // controllers?: TControllers;
+  // useCases?: TUseCaseDefinition;
   useCaseDependencyInjections?: IUseCaseDependencyInjection[];
   language: string;
   servers?: TServers;
-  routers?: TRouters;
+  // routers?: TRouters;
   packages?: TPackagesSetup;
   repos?: TReposSetup;
+};
+
+export type TRouterDefinition = {
+  routerDefinition: {
+    identifier: TIdentifier;
+  } & TRouterExpression;
+};
+
+export type TRestRouter = 'RESTRouter';
+export type TRouterArguments = {
+  routerArguments: TServerType;
+};
+export type THTTPMethodVerb = TRestMethods;
+
+export type TRouterController = {
+  routerController: {
+    httpMethodVerb: THTTPMethodVerb;
+    RESTControllerIdentifier: TRESTControllerIdentifier;
+  } & StringLiteral &
+    TBoundedContextModule &
+    TArgumentList;
+};
+
+export type TRouterControllers = {
+  routerControllers: TRouterController[];
+};
+
+export type TRouterExpression = {
+  routerExpression: {
+    restRouter: TRestRouter;
+  } & TRouterArguments &
+    TRouterControllers;
 };
 
 export type TUseCaseDefinition = {
@@ -814,15 +847,15 @@ export type TWordsWithSpaces = {
   wordsWithSpaces: string;
 };
 
-export type TControllers = {
-  boundedContext: string;
-  module: string;
-  controllerValues: TControllerOfModule;
-};
+// export type TControllers = {
+//   boundedContext: string;
+//   module: string;
+//   controllerValues: TControllerOfModule;
+// };
 
-export type TControllerOfModule = {
-  [ControllerClassName: string]: TRestControllerDefinitions | TGraphQLControllerInstances;
-};
+// export type TControllerOfModule = {
+//   [ControllerClassName: string]: TRestControllerDefinitions | TGraphQLControllerInstances;
+// };
 
 export const repoSupportedTypes = ['DB.Postgres', 'DB.MySQL', 'DB.SQLite', 'DB.Mongo'] as const;
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
@@ -864,24 +897,24 @@ export enum ControllerTypeOfDefinition {
   GRAPHQL = 'graphql',
 }
 
-export type TRestControllerDefinitions = {
-  type: ControllerTypeOfDefinition.REST;
-  method: string; // TODO replace with type
-  serverType: TServerType;
-  instances: {
-    url: string;
-    controllerInstance: string;
-    dependencies: string[]; // Replace with correct type
-  }[];
-};
+// export type TRestControllerDefinitions = {
+//   type: ControllerTypeOfDefinition.REST;
+//   method: string; // TODO replace with type
+//   serverType: TServerType;
+//   instances: {
+//     url: string;
+//     controllerInstance: string;
+//     dependencies: string[]; // Replace with correct type
+//   }[];
+// };
 
-export type TGraphQLControllerInstances = {
-  type: ControllerTypeOfDefinition.GRAPHQL;
-  instances: {
-    controllerInstance: string;
-    dependencies: string[]; // Replace with correct type
-  }[];
-};
+// export type TGraphQLControllerInstances = {
+//   type: ControllerTypeOfDefinition.GRAPHQL;
+//   instances: {
+//     controllerInstance: string;
+//     dependencies: string[]; // Replace with correct type
+//   }[];
+// };
 
 export type TServers = (TRESTServerInstance | TGraphQLServerInstance)[];
 
@@ -932,21 +965,21 @@ export type TControllerResolverBind = {
   dependencies: string[]; // Replace with correct type
 };
 
-export type TRoutes = {
-  methodURLMap: Record<
-    TMethodAndPath,
-    {
-      controllerClass: string;
-      // controllerInstance: string;
-      boundedContext: string;
-      module: string;
-    }
-  >;
-};
-type TRouters = Partial<Record<TServerType, TRoutersInfo>>;
-export type TRoutersInfo = Record<TRouterInstanceName, TRoutes>;
+// export type TRoutes = {
+//   methodURLMap: Record<
+//     TMethodAndPath,
+//     {
+//       controllerClass: string;
+//       // controllerInstance: string;
+//       boundedContext: string;
+//       module: string;
+//     }
+//   >;
+// };
+// type TRouters = Partial<Record<TServerType, TRoutersInfo>>;
+// export type TRoutersInfo = Record<TRouterInstanceName, TRoutes>;
 
-export type TMethodAndPath = string;
+// export type TMethodAndPath = string;
 
 /**
  * GraphQL Setup

@@ -957,7 +957,6 @@ serverType
     : fastifyServer
     | expressServer
     | graphQLServerType
-    | unknownServer
     ;
 
 fastifyServer
@@ -970,10 +969,6 @@ expressServer
 
 graphQLServerType
     : GraphQLServerType
-    ;
-
-unknownServer
-    : identifier (Dot identifier)*
     ;
 
 jestTestSetupDeclaration

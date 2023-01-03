@@ -1,5 +1,6 @@
 import { ArgumentListNode } from '../../nodes/ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../../nodes/controllers/restController/RESTControllerIdentifierNode.js';
+import { StringLiteralNode } from '../../nodes/Expression/Literal/StringLiteralNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { BoundedContextModuleNode } from '../../nodes/setup/BoundedContextModuleNode.js';
 import { HTTPMethodVerbNode } from '../../nodes/setup/HTTPMethodVerbNode.js';
@@ -9,7 +10,7 @@ import { IBuilder } from '../IBuilder.js';
 export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNode> {
   private routerControllerNode: RouterControllerNode;
   private methodNode: HTTPMethodVerbNode;
-  private pathNode: PathStringNode;
+  private pathNode: StringLiteralNode;
   private bcModuleNode: BoundedContextModuleNode;
   private restControllerIdentifierNode: RESTControllerIdentifierNode;
   private argumentListNode: ArgumentListNode;
@@ -23,7 +24,7 @@ export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNod
     return this;
   }
 
-  public withPath(pathNode: PathStringNode): RouterControllerNodeBuilder {
+  public withPath(pathNode: StringLiteralNode): RouterControllerNodeBuilder {
     this.pathNode = pathNode;
     return this;
   }

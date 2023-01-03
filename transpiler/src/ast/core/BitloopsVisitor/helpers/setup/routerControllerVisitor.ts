@@ -22,6 +22,7 @@ import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js
 import { RouterControllerNodeBuilder } from '../../../intermediate-ast/builders/setup/RouterControllerNodeBuilder.js';
 import { ArgumentListNode } from '../../../intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../../../intermediate-ast/nodes/controllers/restController/RESTControllerIdentifierNode.js';
+import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { BoundedContextModuleNode } from '../../../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
 import { HTTPMethodVerbNode } from '../../../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
 import { RouterControllerNode } from '../../../intermediate-ast/nodes/setup/RouterControllerNode.js';
@@ -33,7 +34,7 @@ export const routerControllerVisitor = (
   ctx: BitloopsParser.RouterControllerContext,
 ): RouterControllerNode => {
   const methodNode: HTTPMethodVerbNode = thisVisitor.visit(ctx.httpMethodVerb());
-  const pathStringNode: PathStringNode = thisVisitor.visit(ctx.pathString());
+  const pathStringNode: StringLiteralNode = thisVisitor.visit(ctx.pathString());
   const boundedContextModuleNode: BoundedContextModuleNode = thisVisitor.visit(
     ctx.boundedContextModuleDeclaration(),
   );
