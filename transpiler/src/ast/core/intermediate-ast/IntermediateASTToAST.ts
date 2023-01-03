@@ -1,11 +1,10 @@
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { TBoundedContexts } from '../../../types.js';
 import { IntermediateASTTree } from './IntermediateASTTree.js';
 import { IntermediateASTNode, TNodeType } from './nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkErrorNodeTransformer.js';
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
-import { IntermediateAST } from '../types.js';
+import { IntermediateAST, TBoundedContexts } from '../types.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
