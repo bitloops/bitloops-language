@@ -21,7 +21,9 @@
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
 import { VALID_RETURN_ERROR_STATEMENT_TEST_CASES } from './mocks/statements/return.js';
 
 describe('Return error test cases', () => {
@@ -31,6 +33,8 @@ describe('Return error test cases', () => {
   const language = 'TypeScript';
 
   VALID_RETURN_ERROR_STATEMENT_TEST_CASES.forEach((testCase) => {
+    let resultCore: TTargetCoreFinalContent[];
+
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
@@ -50,12 +54,16 @@ describe('Return error test cases', () => {
         // setupData: null,
       });
 
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
       //then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
       if (result instanceof Error) {
         throw result;
       }
-      expect(result['core'][0].fileContent).toEqual(formattedOutput);
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

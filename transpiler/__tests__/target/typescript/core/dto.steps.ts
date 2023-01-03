@@ -24,6 +24,8 @@ import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-a
 import { TargetGenerator } from '../../../../src/target/index.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_DTO_TEST_CASES, VALID_TWO_DTOS_TEST_CASES } from './mocks/dto.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
 
 describe('Valid DTO with fields to Typescript', () => {
   const boundedContext = 'Hello world';
@@ -34,6 +36,8 @@ describe('Valid DTO with fields to Typescript', () => {
 
   VALID_DTO_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
+
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const dtoNode = new DTONodeBuilder(tree)
@@ -53,6 +57,10 @@ describe('Valid DTO with fields to Typescript', () => {
         // setupData: null,
       });
 
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
       //then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
       const expectedOutput = [
@@ -64,12 +72,14 @@ describe('Valid DTO with fields to Typescript', () => {
           fileContent: formattedOutput,
         },
       ];
-      expect(result['core']).toEqual(expectedOutput);
+      expect(resultCore).toEqual(expectedOutput);
     });
   });
 });
 
 describe('Valid two DTOs with fields to Typescript', () => {
+  let resultCore: TTargetCoreFinalContent[];
+
   const boundedContext = 'Hello world';
   const module = 'demo';
   const classType = ClassTypes.DTOs;
@@ -101,6 +111,10 @@ describe('Valid two DTOs with fields to Typescript', () => {
         // setupData: null,
       });
 
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
       // then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
       const formattedSecondOutput = formatString(testCase.secondOutput as string, formatterConfig);
@@ -120,7 +134,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
           fileContent: formattedSecondOutput,
         },
       ];
-      expect(result['core']).toEqual(expectedOutput);
+      expect(resultCore).toEqual(expectedOutput);
     });
   });
 });
