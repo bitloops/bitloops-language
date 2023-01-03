@@ -1,4 +1,4 @@
-import { TBoundedContextName, TModuleName } from '../../types.js';
+import { TBoundedContextName, TModuleName } from '../../ast/core/types.js';
 import Parser from './grammar/BitloopsParser.js';
 
 export class ASTContext extends Parser.ProgramContext {}

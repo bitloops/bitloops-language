@@ -194,6 +194,12 @@ const BitloopsTypesMapping = {
   TRestServerPort: 'TRestServerPort',
   TAPIPrefix: 'TAPIPrefix',
   TRouterPrefix: 'TRouterPrefix',
+  TUseCaseDefinition: 'TUseCaseDefinition',
+  TUseCaseExpression: 'TUseCaseExpression',
+  TBoundedContextModule: 'TBoundedContextModule',
+  TWordsWithSpaces: 'TWordsWithSpaces',
+  TBoundedContextName: 'TBoundedContextName',
+  TModuleName: 'TModuleName',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

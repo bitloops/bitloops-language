@@ -659,9 +659,9 @@ elementList
     : expression (Comma expression)*
     ;
 
-arguments
-    : OpenParen (argumentList Comma?)? CloseParen
-    ;
+// arguments
+//     : OpenParen (argumentList Comma?)? CloseParen
+//     ;
 
 argumentList
     : argument (Comma argument)*
@@ -800,15 +800,11 @@ invalidRouterArguments
     ;
 
 useCaseExpression
-    : boundedContextModuleDeclaration useCaseIdentifier OpenParen useCaseDependencies CloseParen
+    : boundedContextModuleDeclaration useCaseIdentifier methodArguments
     ;
 
 routerExpression
     : restRouter routerArguments OpenBrace nestedImpliedControllerDeclarations CloseBrace
-    ;
-
-useCaseDeclarationSetup
-    : Const identifier
     ;
 
 routerDeclaration
@@ -828,7 +824,7 @@ packageConcretion
     ;
 
 useCaseDefinition
-    : useCaseDeclarationSetup Assign useCaseExpression SemiColon?
+    : Const identifier Assign useCaseExpression SemiColon?
     ;
 
 routerDefinition
@@ -957,11 +953,7 @@ controllerResolverBind
     : boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen
     ;
 
-dependencies
-    : (Identifier (Comma Identifier)*)?
-    ;
-
-alpha_numeric_ws: Digits | WS | Identifier ;
+alpha_numeric_ws: Digits | WS | UpperCaseIdentifier | Identifier;
 
 wordsWithSpaces
     : alpha_numeric_ws+
@@ -971,16 +963,20 @@ nestedControllerInstantiation
     : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen SemiColon?
     ;
 
-useCaseDependencies
-    : (Identifier (Comma Identifier)*)?
-    ;
-
 controllerDependencies
     : (identifier (Comma identifier)*)?
     ;
 
+boundedContextDeclaration
+    : wordsWithSpaces
+    ;
+
+moduleDeclaration
+    : wordsWithSpaces
+    ;
+
 boundedContextModuleDeclaration
-    : OpenBracket wordsWithSpaces CloseBracket OpenBracket wordsWithSpaces CloseBracket
+    : OpenBracket boundedContextDeclaration CloseBracket OpenBracket moduleDeclaration CloseBracket
     ;
 
 serverType

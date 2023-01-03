@@ -203,6 +203,15 @@ import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/Server
 import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
 import { RestServerPortNode } from '../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerAPIPrefixNode } from '../intermediate-ast/nodes/setup/RestServerAPIPrefixNode.js';
+import { UseCaseExpressionNode } from '../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
+import { useCaseDefinitionVisitor } from './helpers/setup/useCaseDefinition.js';
+import { useCaseExpressionVisitor } from './helpers/setup/useCaseExpressionVisitor.js';
+import { BoundedContextModuleNode } from '../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { boundedContextModuleVisitor } from './helpers/setup/boundedContextModuleVisitor.js';
+import { boundedContextVisitor } from './helpers/setup/boundedContextDeclarationVisitor.js';
+import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
+import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
+import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -1023,6 +1032,56 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const envVar = enviromentVariableVisitor(ctx);
     return envVar;
   }
+  visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {
+    this.visit(ctx.useCaseDefinition());
+  }
+
+  visitUseCaseDefinition(ctx: BitloopsParser.UseCaseDefinitionContext): void {
+    useCaseDefinitionVisitor(this, ctx);
+  }
+
+  visitUseCaseExpression(ctx: BitloopsParser.UseCaseExpressionContext): UseCaseExpressionNode {
+    return useCaseExpressionVisitor(this, ctx);
+  }
+
+  visitBoundedContextModuleDeclaration(
+    ctx: BitloopsParser.BoundedContextModuleDeclarationContext,
+  ): BoundedContextModuleNode {
+    return boundedContextModuleVisitor(this, ctx);
+  }
+
+  visitBoundedContextDeclaration(
+    ctx: BitloopsParser.BoundedContextDeclarationContext,
+  ): BoundedContextModuleNode {
+    return boundedContextVisitor(this, ctx);
+  }
+
+  visitModuleDeclaration(
+    ctx: BitloopsParser.BoundedContextDeclarationContext,
+  ): BoundedContextModuleNode {
+    return moduleVisitor(this, ctx);
+  }
+
+  visitWordsWithSpaces(ctx: BitloopsParser.WordsWithSpacesContext): WordsWithSpacesNode {
+    return wordsWithSpacesVisitor(this, ctx);
+  }
+
+  visitAlpha_numeric_ws(ctx: BitloopsParser.Alpha_numeric_wsContext): string {
+    if (ctx.Identifier()) {
+      return ctx.Identifier().getText();
+    } else if (ctx.UpperCaseIdentifier()) {
+      return ctx.UpperCaseIdentifier().getText();
+    } else if (ctx.Digits()) {
+      return ctx.Digits().getText();
+    } else {
+      return '';
+    }
+  }
+
+  // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
+  //   const envVar = enviromentVariableVisitor(ctx);
+  //   return envVar;
+  // }
 
   // visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
   //   const expressionNode = this.visit(ctx.expression());
