@@ -93,6 +93,8 @@ primitives
 
 identifier
     : Identifier
+    | Host
+    | Database
     ;
 
 upperCaseIdentifier
@@ -692,7 +694,7 @@ expression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
-    | EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
+    | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen                # EnvVarWithDefaultValueExpression
     | envVariable                                                            # EnvironmentVariableExpression
     ;   
 
@@ -727,16 +729,6 @@ eos
     ;
 
 /** !!SETUP!! **/
-
-// setupExpression
-//     : expression                                                             # CoreExpression
-//     | EnvPrefix OpenParen identifier Comma literal CloseParen                # EnvVarWithDefaultValueExpression
-//     | envVariable                                                            # EnvironmentVariableExpression
-//     ;
-
-// objectLiteral
-//     : '{' (evaluationFieldList (',' evaluationFieldList)* ','?)? '}'
-//     ;
 
 language
     : TypeScript
@@ -815,15 +807,7 @@ serverDeclaration
     ;
 
 serverInstantiationOptions
-    // TODO Remove necessary comma on end of each line
-    : OpenBrace serverInstantiationOption* CloseBrace
-    ;
-
-serverInstantiationOption
-    : serverTypeOption    
-    | serverApiPrefixOption
-    | restServerPort 
-    | customServerOption
+    : OpenBrace (serverTypeOption | serverApiPrefixOption| restServerPort)* CloseBrace
     ;
 
 restServerPort 
@@ -835,7 +819,7 @@ restServerPortIdentifier:
 
 
 repoConnectionDefinition
-    : Const identifier '=' repoConnectionExpression
+    : Const identifier Assign repoConnectionExpression
     ;
 
 // constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
@@ -847,15 +831,7 @@ repoConnectionType
     ;
 
 repoConnectionOptions
-    : objectProperties
-    ;
-
-objectProperties
-    : objectProperty (Comma objectProperty)* Comma? 
-    ;
-
-objectProperty
-    : identifier Colon expression
+    : evaluationFieldList
     ;
 
 repoAdapterDefinition
@@ -867,7 +843,7 @@ repoAdapterExpression
     ;
 
 repoAdapterOptions
-    : objectProperties
+    : evaluationFieldList
     ;
 
 repoAdapterClassName

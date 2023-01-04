@@ -192,7 +192,6 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
-  customServerOptionVisitor,
   restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
   restServerPortVisitor,
@@ -212,6 +211,21 @@ import { boundedContextVisitor } from './helpers/setup/boundedContextDeclaration
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { repoConnectionDefinitionVisitor } from './helpers/setup/repoConnectionDefinitionVisitor.js';
+import { objectPropertyVisitor } from './helpers/setup/objectPropertyVisitor.js';
+import { objectPropertyListVisitor } from './helpers/setup/objectPropertyListVisitor.js';
+import { repoConnectionTypeVisitor } from './helpers/setup/repoConnectionTypeVisitor.js';
+import { repoConnectionExpressionVisitor } from './helpers/setup/repoConnectionExpressionVisitor.js';
+import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
+import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
+import { ObjectPropertyListNode } from '../intermediate-ast/nodes/setup/ObjectPropertyListNode.js';
+import { ObjectPropertyNode } from '../intermediate-ast/nodes/setup/ObjectPropertyNode.js';
+import {
+  repoConnectionDatabaseOptionVisitor,
+  repoConnectionHostOptionVisitor,
+  repoConnectionOptionsVisitor,
+  repoConnectionPortOptionVisitor,
+} from './helpers/setup/repoConnectionOptionsVisitor.js';
 import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
 import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
 import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
@@ -234,6 +248,8 @@ import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
 import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
 import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
 import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
+import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
+import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -316,8 +332,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return repoPortIdentifierNode;
   }
 
-  visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
+  visitIdentifier(ctx: BitloopsParser.IdentifierContext): IdentifierNode {
     const identifierName = ctx.Identifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
+    return identifierNode;
+  }
+
+  visitUpperCaseIdentifier(ctx: BitloopsParser.UpperCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UpperCaseIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
     const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
     return identifierNode;
@@ -568,7 +591,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     const actualNumericLiteral = this.visitChildren(ctx)[0];
-    return new NumericLiteralBuilder().withNumericLiteral(actualNumericLiteral).build();
+    const metadata = produceMetadata(ctx, this);
+    return new NumericLiteralBuilder(metadata).withNumericLiteral(actualNumericLiteral).build();
   }
 
   visitTemplateStringLiteralLabel(ctx: BitloopsParser.TemplateStringLiteralLabelContext) {
@@ -992,21 +1016,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return optionalVisitor(ctx);
   }
 
-  // SETUPVisitor methods
-
-  // visitLanguage(ctx: BitloopsParser.LanguageContext) {
-  //   return languageVisitor(this, ctx);
-  // }
-
-  // visitServerDeclarationStatement(ctx: BitloopsParser.ServerDeclarationStatementContext) {
-  //   return serverDeclarationVisitor(this, ctx);
-  // }
-
-  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext) {
+  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): RestServerNode {
     return restServerDeclarationVisitor(this, ctx);
   }
 
-  visitServerInstantiationVisitor(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
+  visitServerInstantiationOptions(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
     return serverInstantiationOptionsVisitor(this, ctx);
   }
 
@@ -1026,31 +1040,33 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerPortVisitor(this, ctx);
   }
 
-  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
-    const res = customServerOptionVisitor(this, ctx);
-    return res;
-  }
+  //TODO support custom option in the future?
+  // visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
+  //   const res = customServerOptionVisitor(this, ctx);
+  //   return res;
+  // }
 
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);
     return routesNode;
   }
 
-  visitRouteBind(ctx: BitloopsParser.RouteBindContext): any {
+  visitRouteBind(ctx: BitloopsParser.RouteBindContext): ServerRouteNode {
     const routeNode = bindServerRouteVisitor(this, ctx);
     return routeNode;
-    // return { routerPrefix: routePath, routerInstanceName: identifier };
   }
 
   visitEnvVarWithDefaultValueExpression(
     ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
-  ) {
+  ): ExpressionNode {
     const envVar = envVarWithDefaultValueExpressionVisitor(this, ctx);
     return envVar;
   }
 
-  visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-    const envVar = enviromentVariableVisitor(ctx);
+  visitEnvironmentVariableExpression(
+    ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+  ): ExpressionNode {
+    const envVar = enviromentVariableVisitor(this, ctx);
     return envVar;
   }
   visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {
@@ -1063,6 +1079,44 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitUseCaseExpression(ctx: BitloopsParser.UseCaseExpressionContext): UseCaseExpressionNode {
     return useCaseExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionDefinition(ctx: BitloopsParser.RepoConnectionDefinitionContext): void {
+    repoConnectionDefinitionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionExpression(
+    ctx: BitloopsParser.RepoConnectionExpressionContext,
+  ): RepoConnectionExpressionNode {
+    return repoConnectionExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionType(ctx: BitloopsParser.RepoConnectionTypeContext): DatabaseTypeNode {
+    return repoConnectionTypeVisitor(this, ctx);
+  }
+
+  visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
+    return repoConnectionOptionsVisitor(this, ctx);
+  }
+
+  visitRepoConnectionPortOption(ctx: BitloopsParser.RepoConnectionPortOptionContext): any {
+    return repoConnectionPortOptionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionHostOption(ctx: BitloopsParser.RepoConnectionHostOptionContext): any {
+    return repoConnectionHostOptionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionDatabaseOption(ctx: BitloopsParser.RepoConnectionDatabaseOptionContext): any {
+    return repoConnectionDatabaseOptionVisitor(this, ctx);
+  }
+
+  visitObjectProperties(ctx: BitloopsParser.ObjectPropertiesContext): ObjectPropertyListNode {
+    return objectPropertyListVisitor(this, ctx);
+  }
+
+  visitObjectProperty(ctx: BitloopsParser.ObjectPropertyContext): ObjectPropertyNode {
+    return objectPropertyVisitor(this, ctx);
   }
 
   visitBoundedContextModuleDeclaration(
@@ -1169,45 +1223,4 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   ): PackageAdapterIdentifierNode {
     return packageAdapterIdentifierVisitor(this, ctx);
   }
-
-  // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-  //   const envVar = enviromentVariableVisitor(ctx);
-  //   return envVar;
-  // }
-
-  // visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
-  //   const expressionNode = this.visit(ctx.expression());
-  //   return expressionNode;
-  // }
-
-  // visitDtoTestStatement(ctx: BitloopsParser.DtoTestStatementContext) {
-  //   console.log('DTOooOooo', ctx);
-  // }
-  /**
-   * Server Expressions
-   */
-  // visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): void {
-  //   console.log('visitRestServerExpression');
-  //   const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-  //   const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
-
-  //   const serverOptions: any = {
-  //     port,
-  //     apiPrefix,
-  //   };
-  //   if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
-  //   if (corsOptions) {
-  //     serverOptions.corsOptions = corsOptions;
-  //   }
-  //   const routers = this.visit(ctx.bindServerRoutes());
-  //   serverOptions.routers = routers;
-
-  //   if (!this._result.servers) {
-  //     this._result.servers = {};
-  //   }
-  //   if (!this._result.servers[serverType]) {
-  //     this._result.servers[serverType] = { serverInstances: [] };
-  //   }
-  //   this._result.servers[serverType].serverInstances.push(serverOptions);
-  // }
 }

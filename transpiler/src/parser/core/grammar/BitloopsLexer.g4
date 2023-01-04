@@ -148,6 +148,9 @@ Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
 RestServerPortIdentifier:       'port';
+Host:                           'host';
+Database:                        'database';
+
 
 /// Future Reserved Words
 

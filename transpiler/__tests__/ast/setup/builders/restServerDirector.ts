@@ -6,6 +6,7 @@ import {
   TServerType,
   TAPIPrefix,
   StringLiteral,
+  TRestServerOptions,
 } from '../../../../src/types.js';
 
 export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstance> {
@@ -32,22 +33,17 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
   }
 
   public build(): TRESTServerInstance {
-    const restServerInstance = {
+    const serverOptions: TRestServerOptions = {
+      serverType: this.serverType,
+      restServerPort: this.port,
+    };
+    if (this.apiPrefix) {
+      serverOptions.apiPrefix = this.apiPrefix;
+    }
+
+    const restServerInstance: TRESTServerInstance = {
       restServer: {
-        serverOptions: [
-          {
-            serverType: this.serverType,
-          },
-          {
-            // apiPrefix: {
-            //   stringLiteral: this.apiPrefix || '',
-            // },
-            apiPrefix: this.apiPrefix,
-          },
-          {
-            restServerPort: this.port,
-          },
-        ],
+        serverOptions,
         serverRoutes: this.routes,
       },
     };

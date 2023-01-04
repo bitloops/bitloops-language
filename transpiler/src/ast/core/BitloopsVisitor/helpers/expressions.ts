@@ -39,7 +39,10 @@ import { LogicalXorExpressionBuilder } from '../../intermediate-ast/builders/exp
 import { NotExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/Logical/notExpression.js';
 import { EnvironmentalVariableNodeBuilder } from '../../intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { EnvironmentalVariableNode } from '../../intermediate-ast/nodes/setup/EnvironmentalVariableNode.js';
+import { produceMetadata } from '../metadata.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { DefaultEnvVarValueNodeBuilder } from '../../intermediate-ast/builders/setup/DefaultEnvVarValueNodeBuilder.js';
+import { LiteralNode } from '../../intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -229,28 +232,35 @@ export const LiteralExpressionVisitor = (
 };
 
 export const enviromentVariableVisitor = (
+  thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EnvironmentVariableExpressionContext,
 ): ExpressionNode => {
   const identifierNode = new IdentifierNodeBuilder().withName(ctx.envVariable().getText()).build();
 
   const envVar = new EnvironmentalVariableNodeBuilder().withIdentifier(identifierNode).build();
-  return new ExpressionBuilder().withExpression(envVar).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ExpressionBuilder(metadata).withExpression(envVar).build();
 };
 
-//TODO correct this
 export const envVarWithDefaultValueExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
-): EnvironmentalVariableNode => {
-  const identifierNode = new IdentifierNodeBuilder().withName(ctx.identifier().getText()).build();
+): ExpressionNode => {
+  const identifierCtx = ctx.identifier() ? ctx.identifier() : ctx.upperCaseIdentifier();
+  const identifierNode: IdentifierNode = thisVisitor.visit(identifierCtx);
 
-  const literalValue = thisVisitor.visit(ctx.literal());
-  const literalNode = new LiteralBuilder().withLiteral(literalValue).build();
+  const literalNode: LiteralNode = thisVisitor.visit(ctx.literal());
 
-  const envVar = new EnvironmentalVariableNodeBuilder()
-    .withIdentifier(identifierNode)
-    .withDefaultValue(literalNode)
+  const metadata = produceMetadata(ctx, thisVisitor);
+
+  const defaultEnvVarValueNode = new DefaultEnvVarValueNodeBuilder()
+    .withLiteral(literalNode)
     .build();
 
-  return envVar;
+  const envVar = new EnvironmentalVariableNodeBuilder(metadata)
+    .withIdentifier(identifierNode)
+    .withDefaultValue(defaultEnvVarValueNode)
+    .build();
+
+  return new ExpressionBuilder(metadata).withExpression(envVar).build();
 };
