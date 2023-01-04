@@ -51,35 +51,31 @@ export const serverInstantiationOptionsVisitor = (
   if (ctx.serverApiPrefixOption(0) && ctx.corsOptions(0)) {
     const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
     const corsOptionsNode = thisVisitor.visit(ctx.corsOptions(0));
-    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+    return new ServerOptionsNodeBuilder(metadata)
       .withAPIPrefix(serverApiPrefixOptionNode)
       .withPort(restServerPortNode)
       .withServerType(serverTypeOptionNode)
       .withCorsOptions(corsOptionsNode)
       .build();
-    return serverOptionsNode;
   } else if (ctx.serverApiPrefixOption(0) && !ctx.corsOptions(0)) {
     const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
-    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+    return new ServerOptionsNodeBuilder(metadata)
       .withAPIPrefix(serverApiPrefixOptionNode)
       .withPort(restServerPortNode)
       .withServerType(serverTypeOptionNode)
       .build();
-    return serverOptionsNode;
   } else if (!ctx.serverApiPrefixOption(0) && ctx.corsOptions(0)) {
-    const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
-    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
-      .withAPIPrefix(serverApiPrefixOptionNode)
+    const corsOptionsNode = thisVisitor.visit(ctx.corsOptions(0));
+    return new ServerOptionsNodeBuilder(metadata)
+      .withCorsOptions(corsOptionsNode)
       .withPort(restServerPortNode)
       .withServerType(serverTypeOptionNode)
       .build();
-    return serverOptionsNode;
   } else {
-    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+    return new ServerOptionsNodeBuilder(metadata)
       .withPort(restServerPortNode)
       .withServerType(serverTypeOptionNode)
       .build();
-    return serverOptionsNode;
   }
 };
 
