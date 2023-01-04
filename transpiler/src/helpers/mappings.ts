@@ -202,6 +202,9 @@ const BitloopsTypesMapping = {
   TModuleName: 'TModuleName',
   TLanguage: 'TLanguage',
   TConfigInvocation: 'TConfigInvocation',
+  TPackageAdapterIdentifier: 'TPackageAdapterIdentifier',
+  TPackageAdapterClassName: 'TPackageAdapterClassName',
+  TPackageConcretion: 'TPackageConcretion',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
