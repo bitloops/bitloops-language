@@ -10,10 +10,8 @@ export const VALID_PACKAGE_CONCRETIONS = [
     fileId: 'setup.bl',
     packageConcretion: new PackageConcretionBuilder()
       .withBoundedContextModule({ boundedContextName: 'Bounded Context', moduleName: 'Module' })
-      .withPackageAdapterClassName({
-        packageAdapterIdentifier: 'LodashUtilitiesPackageAdapter',
-      })
-      .withPackageAdapterIdentifier('UtilitiesPackageAdapter')
+      .withPackageAdapter('LodashUtilitiesPackageAdapter')
+      .withPackagePort('UtilitiesPackagePort')
       .build(),
   },
 ];

@@ -698,20 +698,19 @@ export type TConfigInvocation = {
 };
 
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
-export type TPackageAdapterIdentifier = {
-  [packageAdapterIdentifierKey]: string;
-};
+export type TPackageAdapterIdentifier = string;
 
-export const packageAdapterClassNameKey = 'packageAdapterClassName';
-export type TPackageAdapterClassName = {
-  [packageAdapterClassNameKey]: TPackageAdapterIdentifier;
+export const packageAdapterKey = 'packageAdapter';
+export type TPackageAdapter = {
+  [packageAdapterIdentifierKey]: TPackageAdapterIdentifier;
 };
 
 export const packageConcretionKey = 'packageConcretion';
 export type TPackageConcretion = {
-  [packageConcretionKey]: TBoundedContextModule &
-    TPackageAdapterClassName &
-    TPackageAdapterIdentifier;
+  [packageConcretionKey]: {
+    [PackagePortIdentifierKey]: TPackagePortIdentifier;
+  } & TBoundedContextModule &
+    TPackageAdapter;
 };
 
 export type TBaseControllerValues = TParameterList;

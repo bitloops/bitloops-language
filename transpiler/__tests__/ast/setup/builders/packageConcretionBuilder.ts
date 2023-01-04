@@ -1,18 +1,21 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TBoundedContextModule,
-  TPackageAdapterClassName,
+  TPackageAdapter,
   TPackageConcretion,
   TPackageAdapterIdentifier,
+  TPackagePortIdentifier,
 } from '../../../../src/types.js';
 import { BoundedContextModuleBuilderDirector } from './boundedContextModuleBuilderDirector.js';
-import { PackageAdapterClassNameBuilder } from './packageAdapterClassNameBuilder.js';
 import { PackageAdapterIdentifierBuilder } from './packageAdapterIdentifierBuilder.js';
+import { PackagePortIdentifierBuilder } from './packagePortIdentifierBuilder.js';
 
 export class PackageConcretionBuilder implements IBuilder<TPackageConcretion> {
-  private bcModule: TBoundedContextModule; //?
-  private packageAdapterClassName: TPackageAdapterClassName;
-  private packageAdapterIdentifier: TPackageAdapterIdentifier;
+  private bcModule: TBoundedContextModule;
+  private packageAdapterIdentifier: TPackageAdapter;
+  private packagePortIdentifier: {
+    ['PackagePortIdentifier']: TPackagePortIdentifier;
+  };
 
   public withBoundedContextModule({
     boundedContextName,
@@ -28,26 +31,26 @@ export class PackageConcretionBuilder implements IBuilder<TPackageConcretion> {
     return this;
   }
 
-  public withPackageAdapterClassName(
+  public withPackageAdapter(
     adapterIdentifier: TPackageAdapterIdentifier,
   ): PackageConcretionBuilder {
-    this.packageAdapterClassName = new PackageAdapterClassNameBuilder()
+    this.packageAdapterIdentifier = new PackageAdapterIdentifierBuilder()
       .withIdentifier(adapterIdentifier)
       .build();
     return this;
   }
 
-  public withPackageAdapterIdentifier(packageAdapterIdentifier: string): PackageConcretionBuilder {
-    this.packageAdapterIdentifier = new PackageAdapterIdentifierBuilder()
-      .withName(packageAdapterIdentifier)
+  public withPackagePort(packagePortIdentifier: string): PackageConcretionBuilder {
+    this.packagePortIdentifier = new PackagePortIdentifierBuilder()
+      .withName(packagePortIdentifier)
       .build();
     return this;
   }
 
-  public build(): TPackageConcretion {
-    const packageConcretion: TPackageConcretion = {
+  public build(): any {
+    const packageConcretion = {
       packageConcretion: {
-        ...this.packageAdapterClassName,
+        ...this.packagePortIdentifier,
         ...this.packageAdapterIdentifier,
         ...this.bcModule,
       },

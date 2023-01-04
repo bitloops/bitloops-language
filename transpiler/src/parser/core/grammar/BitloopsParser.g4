@@ -798,7 +798,7 @@ packageAdapterIdentifier
     ;
 
 packageConcretion
-    : boundedContextModuleDeclaration adapter=packageAdapterClassName Concretes port=packageAdapterIdentifier SemiColon?
+    : boundedContextModuleDeclaration adapter=packageAdapterIdentifier Concretes port=packagePortIdentifier SemiColon?
     ;
 
 useCaseDefinition

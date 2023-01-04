@@ -1,19 +1,19 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import { TPackageAdapterIdentifier } from '../../../../src/types.js';
+import { TPackageAdapter, TPackageAdapterIdentifier } from '../../../../src/types.js';
 
-export class PackageAdapterIdentifierBuilder implements IBuilder<TPackageAdapterIdentifier> {
-  private name: string;
+export class PackageAdapterIdentifierBuilder implements IBuilder<TPackageAdapter> {
+  private packageAdapterIdentifier: TPackageAdapterIdentifier;
 
-  public withName(name: string): PackageAdapterIdentifierBuilder {
-    this.name = name;
+  public withIdentifier(identifier: TPackageAdapterIdentifier): PackageAdapterIdentifierBuilder {
+    this.packageAdapterIdentifier = identifier;
     return this;
   }
 
-  public build(): TPackageAdapterIdentifier {
-    const packageAdapterIdentifier = {
-      packageAdapterIdentifier: this.name,
+  public build(): TPackageAdapter {
+    const packageAdapter = {
+      packageAdapterIdentifier: this.packageAdapterIdentifier,
     };
 
-    return packageAdapterIdentifier;
+    return packageAdapter;
   }
 }
