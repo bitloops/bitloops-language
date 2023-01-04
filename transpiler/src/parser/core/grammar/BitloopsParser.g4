@@ -827,14 +827,7 @@ serverDeclaration
     ;
 
 serverInstantiationOptions
-    : OpenBrace serverInstantiationOption* CloseBrace
-    ;
-
-serverInstantiationOption
-    : serverTypeOption    
-    | serverApiPrefixOption
-    | restServerPort 
-    | customServerOption
+    : OpenBrace (serverTypeOption | serverApiPrefixOption| restServerPort)* CloseBrace
     ;
 
 restServerPort 

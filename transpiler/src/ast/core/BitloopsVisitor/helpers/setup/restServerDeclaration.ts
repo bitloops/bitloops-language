@@ -13,7 +13,6 @@ import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/Ident
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
-import { ServerOptionNode } from '../../../intermediate-ast/nodes/setup/ServerOptionNode.js';
 import { ServerOptionsNode } from '../../../intermediate-ast/nodes/setup/ServerOptionsNode.js';
 import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRoutesNode.js';
 import { ServerTypeIdentifierNode } from '../../../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
@@ -41,15 +40,22 @@ export const serverInstantiationOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerInstantiationOptionsContext,
 ): ServerOptionsNode => {
-  const serverOptions = thisVisitor.visitChildren(ctx);
-
-  const serverOptionsNodes: ServerOptionNode[] = serverOptions
-    .filter((child) => child !== undefined)
-    .map((child) => child[0]);
-
   const metadata = produceMetadata(ctx, thisVisitor);
+  const serverTypeOptionNode = thisVisitor.visit(ctx.serverTypeOption(0));
+  const restServerPortNode = thisVisitor.visit(ctx.restServerPort(0));
+  if (ctx.serverApiPrefixOption(0)) {
+    const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
+    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+      .withAPIPrefix(serverApiPrefixOptionNode)
+      .withPort(restServerPortNode)
+      .withServerType(serverTypeOptionNode)
+      .build();
+    return serverOptionsNode;
+  }
+
   const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
-    .withServerOptions(serverOptionsNodes)
+    .withPort(restServerPortNode)
+    .withServerType(serverTypeOptionNode)
     .build();
   return serverOptionsNode;
 };
@@ -64,16 +70,6 @@ export const serverTypeOptionVisitor = (
     .build();
 };
 
-// export const customServerOptionVisitor = (
-//   thisVisitor: BitloopsVisitor,
-//   ctx: BitloopsParser.CustomServerOptionContext,
-// ): ExpressionNode => {
-//   const identifier = ctx.Identifier().getText();
-//   console.log('identifier', identifier);
-//   const expressionNode = thisVisitor.visit(ctx.expression());
-//   return expressionNode;
-// };
-
 export const restServerPortVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestServerPortContext,
@@ -84,7 +80,7 @@ export const restServerPortVisitor = (
   return portNode;
 };
 
-//TODO delete
+//TODO visit pathString
 export const restServerAPIPrefixVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerApiPrefixOptionContext,
