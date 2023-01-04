@@ -66,7 +66,6 @@ describe('Valid Config Invocation', () => {
       const configInvocationsNodes = resultTree.getClassTypeNodes(
         BitloopsTypesMapping.TConfigInvocation,
       );
-      console.log('TEST', configInvocationsNodes[0].getValue());
       const value = configInvocationsNodes[0].getValue();
 
       expect(value).toMatchObject(testUseCase.configInvocation);
