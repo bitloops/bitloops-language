@@ -212,14 +212,10 @@ import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
 import { repoConnectionDefinitionVisitor } from './helpers/setup/repoConnectionDefinitionVisitor.js';
-import { objectPropertyVisitor } from './helpers/setup/objectPropertyVisitor.js';
-import { objectPropertyListVisitor } from './helpers/setup/objectPropertyListVisitor.js';
 import { repoConnectionTypeVisitor } from './helpers/setup/repoConnectionTypeVisitor.js';
 import { repoConnectionExpressionVisitor } from './helpers/setup/repoConnectionExpressionVisitor.js';
 import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
 import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
-import { ObjectPropertyListNode } from '../intermediate-ast/nodes/setup/ObjectPropertyListNode.js';
-import { ObjectPropertyNode } from '../intermediate-ast/nodes/setup/ObjectPropertyNode.js';
 import { repoConnectionOptionsVisitor } from './helpers/setup/repoConnectionOptionsVisitor.js';
 import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
 import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
@@ -1089,14 +1085,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
     return repoConnectionOptionsVisitor(this, ctx);
-  }
-
-  visitObjectProperties(ctx: BitloopsParser.ObjectPropertiesContext): ObjectPropertyListNode {
-    return objectPropertyListVisitor(this, ctx);
-  }
-
-  visitObjectProperty(ctx: BitloopsParser.ObjectPropertyContext): ObjectPropertyNode {
-    return objectPropertyVisitor(this, ctx);
   }
 
   visitBoundedContextModuleDeclaration(

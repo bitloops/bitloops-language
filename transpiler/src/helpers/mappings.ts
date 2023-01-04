@@ -200,8 +200,6 @@ const BitloopsTypesMapping = {
   TRepoConnectionExpression: 'TRepoConnectionExpression',
   TRepoConnectionOptions: 'TRepoConnectionOptions',
   TRepoDatabaseType: 'TRepoDatabaseType',
-  TObjectProperty: 'TObjectProperty',
-  TObjectPropertyList: 'TObjectPropertyList',
   TBoundedContextModule: 'TBoundedContextModule',
   TWordsWithSpaces: 'TWordsWithSpaces',
   TBoundedContextName: 'TBoundedContextName',
