@@ -93,8 +93,6 @@ primitives
 
 identifier
     : Identifier
-    | Host
-    | Database
     ;
 
 upperCaseIdentifier
@@ -831,14 +829,7 @@ repoConnectionType
     ;
 
 repoConnectionOptions
-    : repoConnectionOption (Comma repoConnectionOption)* Comma?  
-    // : objectProperties
-    ;
-
-repoConnectionOption
-    : RestServerPortIdentifier Colon expression # RepoConnectionPortOption
-    | Host Colon expression                     # RepoConnectionHostOption
-    | Database Colon expression                 # RepoConnectionDatabaseOption
+    : evaluationFieldList
     ;
 
 objectProperties

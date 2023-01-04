@@ -220,12 +220,7 @@ import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/re
 import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
 import { ObjectPropertyListNode } from '../intermediate-ast/nodes/setup/ObjectPropertyListNode.js';
 import { ObjectPropertyNode } from '../intermediate-ast/nodes/setup/ObjectPropertyNode.js';
-import {
-  repoConnectionDatabaseOptionVisitor,
-  repoConnectionHostOptionVisitor,
-  repoConnectionOptionsVisitor,
-  repoConnectionPortOptionVisitor,
-} from './helpers/setup/repoConnectionOptionsVisitor.js';
+import { repoConnectionOptionsVisitor } from './helpers/setup/repoConnectionOptionsVisitor.js';
 import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
 import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
 import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
@@ -1094,18 +1089,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
     return repoConnectionOptionsVisitor(this, ctx);
-  }
-
-  visitRepoConnectionPortOption(ctx: BitloopsParser.RepoConnectionPortOptionContext): any {
-    return repoConnectionPortOptionVisitor(this, ctx);
-  }
-
-  visitRepoConnectionHostOption(ctx: BitloopsParser.RepoConnectionHostOptionContext): any {
-    return repoConnectionHostOptionVisitor(this, ctx);
-  }
-
-  visitRepoConnectionDatabaseOption(ctx: BitloopsParser.RepoConnectionDatabaseOptionContext): any {
-    return repoConnectionDatabaseOptionVisitor(this, ctx);
   }
 
   visitObjectProperties(ctx: BitloopsParser.ObjectPropertiesContext): ObjectPropertyListNode {
