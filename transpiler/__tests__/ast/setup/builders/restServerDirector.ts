@@ -52,7 +52,7 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
 
     //   return restServerInstance;
     // } else {
-    const restServerInstance = {
+    const restServerInstance: TRESTServerInstance = {
       restServer: {
         serverOptions: [
           {
@@ -68,6 +68,13 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
         serverRoutes: this.routes,
       },
     };
+
+    // if (this.apiPrefix) {
+    //   restServerInstance.restServer.serverOptions[0] = {
+    //     apiPrefix: this.apiPrefix,
+    //     ...restServerInstance.restServer.serverOptions[0],
+    //   };
+    // }
 
     return restServerInstance;
     // }

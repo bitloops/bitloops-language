@@ -904,11 +904,16 @@ export type TRestServerPort = TExpression;
 export type TAPIPrefix = StringLiteral;
 
 export type TRestServerOptions = TRestServerOption[];
-export type TRestServerOption = {
-  restServerPort: TRestServerPort;
-  apiPrefix?: TAPIPrefix;
-  serverType: TServerType;
-};
+export type TRestServerOption =
+  | {
+      apiPrefix?: TAPIPrefix;
+    }
+  | {
+      restServerPort: TRestServerPort;
+    }
+  | {
+      serverType: TServerType;
+    };
 
 export type TRESTServerInstance = {
   restServer: {
