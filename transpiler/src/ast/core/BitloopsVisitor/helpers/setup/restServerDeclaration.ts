@@ -8,7 +8,6 @@ import { RestServerRouterPrefixNodeBuilder } from '../../../intermediate-ast/bui
 import { ServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerOptionsNodeBuilder.js';
 import { ServerRouteNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRouteNodeBuilder.js';
 import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRoutesNodeBuilder.js';
-import { ServerTypeIdentifierNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { CorsOptionsNode } from '../../../intermediate-ast/nodes/setup/CorsOptionsNode.js';
@@ -83,10 +82,7 @@ export const serverTypeOptionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerTypeOptionContext,
 ): ServerTypeIdentifierNode => {
-  const metadata = produceMetadata(ctx, thisVisitor);
-  return new ServerTypeIdentifierNodeBuilder(metadata)
-    .withServerTypeIdentifier(ctx.serverType().getText())
-    .build();
+  return thisVisitor.visit(ctx.serverType());
 };
 
 export const restServerPortVisitor = (

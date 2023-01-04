@@ -5,11 +5,8 @@ import {
   TStatement,
   TSwitchStatement,
   TVariableDeclaration,
-  TGraphQLControllerInstances,
   TGraphQLServerInstance,
-  TRestControllerDefinitions,
   TRESTServerInstance,
-  ControllerTypeOfDefinition,
   TIfStatement,
   TDomainPrivateMethodValuesOkErrorReturnType,
   TDomainPrivateMethodValuesPrimaryReturnType,
@@ -60,19 +57,19 @@ const isGraphQLController = (
   else return false;
 };
 
-const controllerDefinitionIsRest = (
-  controller: TRestControllerDefinitions | TGraphQLControllerInstances,
-): controller is TRestControllerDefinitions => {
-  if (controller['type'] === ControllerTypeOfDefinition.REST) return true;
-  else return false;
-};
+// const controllerDefinitionIsRest = (
+//   controller: TRestControllerDefinitions | TGraphQLControllerInstances,
+// ): controller is TRestControllerDefinitions => {
+//   if (controller['type'] === ControllerTypeOfDefinition.REST) return true;
+//   else return false;
+// };
 
-const controllerDefinitionIsGraphQL = (
-  controller: TRestControllerDefinitions | TGraphQLControllerInstances,
-): controller is TGraphQLControllerInstances => {
-  if (controller['type'] === ControllerTypeOfDefinition.GRAPHQL) return true;
-  else return false;
-};
+// const controllerDefinitionIsGraphQL = (
+//   controller: TRestControllerDefinitions | TGraphQLControllerInstances,
+// ): controller is TGraphQLControllerInstances => {
+//   if (controller['type'] === ControllerTypeOfDefinition.GRAPHQL) return true;
+//   else return false;
+// };
 
 const hasOkErrorReturnType = (
   privateMethodValues:
@@ -208,8 +205,6 @@ export {
   isRestServerInstance,
   isGraphQLServerInstance,
   isGraphQLController,
-  controllerDefinitionIsRest,
-  controllerDefinitionIsGraphQL,
   hasOkErrorReturnType,
   isIfStatement,
   isConstDeclaration,

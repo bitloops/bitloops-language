@@ -472,11 +472,11 @@ export class SetupTypeScript implements ISetup {
               const [method, path] = methodAndPath.split(' ');
               const { boundedContext, controllerClass, module } = methodURLMap[methodAndPath];
               const controllerInstances = controllers[boundedContext][module][controllerClass];
-              if (!controllerDefinitionIsRest(controllerInstances)) {
-                throw new Error(
-                  `Controller ${controllerClass} is not a REST controller, it cannot be used in a REST server`,
-                );
-              }
+              // if (!controllerDefinitionIsRest(controllerInstances)) {
+              //   throw new Error(
+              //     `Controller ${controllerClass} is not a REST controller, it cannot be used in a REST server`,
+              //   );
+              // }
               let controllerInstanceName = '';
               for (const controllerInstance of controllerInstances.instances) {
                 if (controllerInstance.url === path) {
