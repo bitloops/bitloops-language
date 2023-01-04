@@ -212,6 +212,21 @@ import { boundedContextVisitor } from './helpers/setup/boundedContextDeclaration
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
+import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
+import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
+import { RestRouterNode } from '../intermediate-ast/nodes/setup/RestRouterNode.js';
+import { restRouterVisitor } from './helpers/setup/restRouterVisitor.js';
+import { RouterArgumentsNode } from '../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
+import { RouterControllersNode } from '../intermediate-ast/nodes/setup/RouterControllersNode.js';
+import { routerArgumentsVisitor } from './helpers/setup/routerArgumentsVisitor.js';
+import { routerControllersVisitor } from './helpers/setup/routerControllersVisitor.js';
+import { routerControllerVisitor } from './helpers/setup/routerControllerVisitor.js';
+import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterControllerNode.js';
+import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
+import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
+import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
+import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
@@ -993,14 +1008,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-    const serverTypeNode = serverTypeOptionVisitor(ctx);
+    const serverTypeNode = serverTypeOptionVisitor(this, ctx);
     return serverTypeNode;
   }
 
   visitServerApiPrefixOption(
     ctx: BitloopsParser.ServerApiPrefixOptionContext,
   ): RestServerAPIPrefixNode {
-    const apiPrefixNode = restServerAPIPrefixVisitor(ctx);
+    const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
     return apiPrefixNode;
   }
 
@@ -1079,6 +1094,59 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } else {
       return '';
     }
+  }
+
+  visitRouterDefinitionStatement(ctx: BitloopsParser.RouterDefinitionStatementContext): void {
+    this.visit(ctx.routerDefinition());
+  }
+
+  visitRouterDefinition(ctx: BitloopsParser.RouterDefinitionContext): void {
+    routerDefinitionVisitor(this, ctx);
+  }
+
+  visitRouterExpression(ctx: BitloopsParser.RouterExpressionContext): RouterExpressionNode {
+    return routerExpressionVisitor(this, ctx);
+  }
+
+  visitRestRouter(ctx: BitloopsParser.RestRouterContext): RestRouterNode {
+    return restRouterVisitor(this, ctx);
+  }
+
+  visitRouterArguments(ctx: BitloopsParser.RouterArgumentsContext): RouterArgumentsNode {
+    return routerArgumentsVisitor(this, ctx);
+  }
+
+  visitRouterControllers(ctx: BitloopsParser.RouterControllersContext): RouterControllersNode {
+    return routerControllersVisitor(this, ctx);
+  }
+
+  visitRouterController(ctx: BitloopsParser.RouterControllerContext): RouterControllerNode {
+    return routerControllerVisitor(this, ctx);
+  }
+
+  visitHttpMethodVerb(ctx: BitloopsParser.HttpMethodVerbContext): HTTPMethodVerbNode {
+    return httpMethodVerbVisitor(this, ctx);
+  }
+
+  visitServerType(ctx: BitloopsParser.ServerTypeContext): ServerTypeIdentifierNode {
+    let serverType = '';
+    if (ctx.expressServer()) {
+      serverType = ctx.expressServer().getText();
+    }
+    if (ctx.fastifyServer()) {
+      serverType = ctx.fastifyServer().getText();
+    }
+    if (ctx.graphQLServerType()) {
+      serverType = ctx.graphQLServerType().getText();
+    }
+    const metadata = produceMetadata(ctx, this);
+    return new ServerTypeIdentifierNodeBuilder(metadata)
+      .withServerTypeIdentifier(serverType)
+      .build();
+  }
+
+  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
   }
 
   visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {

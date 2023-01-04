@@ -200,6 +200,13 @@ const BitloopsTypesMapping = {
   TWordsWithSpaces: 'TWordsWithSpaces',
   TBoundedContextName: 'TBoundedContextName',
   TModuleName: 'TModuleName',
+  TRouterExpression: 'TRouterExpression',
+  TRouterDefinition: 'TRouterDefinition',
+  TRestRouter: 'TRestRouter',
+  TRouterArguments: 'TRouterArguments',
+  TRouterControllers: 'TRouterControllers',
+  TRouterController: 'TRouterController',
+  THTTPMethodVerb: 'THTTPMethodVerb',
   TLanguage: 'TLanguage',
   TConfigInvocation: 'TConfigInvocation',
 } as const;
