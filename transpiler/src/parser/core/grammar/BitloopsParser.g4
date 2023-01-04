@@ -93,6 +93,8 @@ primitives
 
 identifier
     : Identifier
+    | Host
+    | Database
     ;
 
 upperCaseIdentifier
@@ -857,7 +859,7 @@ restServerPortIdentifier:
 
 
 repoConnectionDefinition
-    : Const identifier '=' repoConnectionExpression
+    : Const identifier Assign repoConnectionExpression
     ;
 
 // constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
@@ -869,7 +871,14 @@ repoConnectionType
     ;
 
 repoConnectionOptions
-    : objectProperties
+    : repoConnectionOption (Comma repoConnectionOption)* Comma?  
+    // : objectProperties
+    ;
+
+repoConnectionOption
+    : RestServerPortIdentifier Colon expression # RepoConnectionPortOption
+    | Host Colon expression                     # RepoConnectionHostOption
+    | Database Colon expression                 # RepoConnectionDatabaseOption
     ;
 
 objectProperties

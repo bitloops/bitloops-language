@@ -212,6 +212,21 @@ import { boundedContextVisitor } from './helpers/setup/boundedContextDeclaration
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { repoConnectionDefinitionVisitor } from './helpers/setup/repoConnectionDefinitionVisitor.js';
+import { objectPropertyVisitor } from './helpers/setup/objectPropertyVisitor.js';
+import { objectPropertyListVisitor } from './helpers/setup/objectPropertyListVisitor.js';
+import { repoConnectionTypeVisitor } from './helpers/setup/repoConnectionTypeVisitor.js';
+import { repoConnectionExpressionVisitor } from './helpers/setup/repoConnectionExpressionVisitor.js';
+import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
+import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
+import { ObjectPropertyListNode } from '../intermediate-ast/nodes/setup/ObjectPropertyListNode.js';
+import { ObjectPropertyNode } from '../intermediate-ast/nodes/setup/ObjectPropertyNode.js';
+import {
+  repoConnectionDatabaseOptionVisitor,
+  repoConnectionHostOptionVisitor,
+  repoConnectionOptionsVisitor,
+  repoConnectionPortOptionVisitor,
+} from './helpers/setup/repoConnectionOptionsVisitor.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
@@ -1042,6 +1057,44 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitUseCaseExpression(ctx: BitloopsParser.UseCaseExpressionContext): UseCaseExpressionNode {
     return useCaseExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionDefinition(ctx: BitloopsParser.RepoConnectionDefinitionContext): void {
+    repoConnectionDefinitionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionExpression(
+    ctx: BitloopsParser.RepoConnectionExpressionContext,
+  ): RepoConnectionExpressionNode {
+    return repoConnectionExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionType(ctx: BitloopsParser.RepoConnectionTypeContext): DatabaseTypeNode {
+    return repoConnectionTypeVisitor(this, ctx);
+  }
+
+  visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
+    return repoConnectionOptionsVisitor(this, ctx);
+  }
+
+  visitRepoConnectionPortOption(ctx: BitloopsParser.RepoConnectionPortOptionContext): any {
+    return repoConnectionPortOptionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionHostOption(ctx: BitloopsParser.RepoConnectionHostOptionContext): any {
+    return repoConnectionHostOptionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionDatabaseOption(ctx: BitloopsParser.RepoConnectionDatabaseOptionContext): any {
+    return repoConnectionDatabaseOptionVisitor(this, ctx);
+  }
+
+  visitObjectProperties(ctx: BitloopsParser.ObjectPropertiesContext): ObjectPropertyListNode {
+    return objectPropertyListVisitor(this, ctx);
+  }
+
+  visitObjectProperty(ctx: BitloopsParser.ObjectPropertyContext): ObjectPropertyNode {
+    return objectPropertyVisitor(this, ctx);
   }
 
   visitBoundedContextModuleDeclaration(

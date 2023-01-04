@@ -411,10 +411,7 @@ export type TExpressionValues =
   | TInstanceOf
   | TGetClass
   | TEnvironmentVariableExpression
-  | TObjectLiteral
-  | TLiteralExpression
-  | TEnvironmentVariableExpression;
-// TODO TLiteralExpression and TLiteral maybe need merge
+  | TObjectLiteral;
 
 export type TAssignmentExpression = {
   assignmentExpression: {
@@ -799,6 +796,29 @@ export type TUseCaseExpression = {
     TBoundedContextModule;
 };
 
+export const RepoConnectionDefinitionKey = 'RepoConnectionDefinition';
+export type TRepoConnectionDefinition = {
+  [RepoConnectionDefinitionKey]: {
+    identifier: TIdentifier;
+  } & TRepoConnectionExpression;
+};
+
+export const RepoConnectionExpressionKey = 'RepoConnectionExpression';
+export type TRepoConnectionExpression = {
+  [RepoConnectionExpressionKey]: {
+    dbType: TRepoSupportedTypes;
+  } & TRepoConnectionOptions;
+};
+
+export const RepoConnectionOptionsKey = 'options';
+export type TRepoConnectionOptions = {
+  [RepoConnectionOptionsKey]: {
+    host: TExpression;
+    port: TExpression;
+    databaseName: TExpression;
+  };
+};
+
 export type TBoundedContextModule = {
   boundedContextModule: {
     boundedContextName: TBoundedContextName;
@@ -1052,10 +1072,11 @@ export type TObjectLiteral = {
 export type TEnvironmentVariableExpression = {
   environmentVariable: {
     identifier: string;
-    defaultValue?: TLiteralExpression;
+    defaultValue?: TLiteralValues;
   };
 };
 
+// TODO remove this
 export type TLiteralExpression = {
   literal: {
     type: TBitloopsPrimitives | 'number';
