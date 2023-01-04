@@ -28,12 +28,12 @@ export const VALID_REST_SERVER_CASES = [
     fileId: 'testFile.bl',
     restServer: new RestServerDeclarationBuilder()
       .withServerType('REST.Fastify')
-      .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+      .withApiPrefix(new StringLiteralBuilder().withValue('/').build())
       .withPort(portExpressionWithoutDefault)
       .withRoutes([
         new RestServerInstanceRouterBuilder()
           .withInstanceName('helloWorldRESTRouter')
-          .withRouterPrefix(new StringLiteralBuilder().withValue("'/hello'").build())
+          .withRouterPrefix(new StringLiteralBuilder().withValue('/hello').build())
           .build(),
       ])
       .build(),
@@ -46,12 +46,12 @@ export const VALID_REST_SERVER_CASES = [
     fileId: 'testFile.bl',
     restServer: new RestServerDeclarationBuilder()
       .withServerType('REST.Fastify')
-      .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+      .withApiPrefix(new StringLiteralBuilder().withValue('/').build())
       .withPort(portExpressionWithDefault)
       .withRoutes([
         new RestServerInstanceRouterBuilder()
           .withInstanceName('helloWorldRESTRouter')
-          .withRouterPrefix(new StringLiteralBuilder().withValue("'/hello'").build())
+          .withRouterPrefix(new StringLiteralBuilder().withValue('/hello').build())
           .build(),
       ])
       .build(),
@@ -60,7 +60,7 @@ export const VALID_REST_SERVER_CASES = [
     inputBLString: FileUtil.readFileString(
       'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/restServerWithoutAPIPrefix.bl',
     ),
-    description: 'Valid rest server with default env variable',
+    description: 'Valid rest server without api prefix',
     fileId: 'testFile.bl',
     restServer: new RestServerDeclarationBuilder()
       .withServerType('REST.Fastify')
@@ -68,7 +68,7 @@ export const VALID_REST_SERVER_CASES = [
       .withRoutes([
         new RestServerInstanceRouterBuilder()
           .withInstanceName('helloWorldRESTRouter')
-          .withRouterPrefix(new StringLiteralBuilder().withValue("'/'").build())
+          .withRouterPrefix(new StringLiteralBuilder().withValue('/').build())
           .build(),
       ])
       .build(),
@@ -85,23 +85,23 @@ export const VALID_MULTIPLE_REST_SERVER_CASES = [
     restServers: [
       new RestServerDeclarationBuilder()
         .withServerType('REST.Fastify')
-        .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+        .withApiPrefix(new StringLiteralBuilder().withValue('/').build())
         .withPort(portExpressionWithoutDefault)
         .withRoutes([
           new RestServerInstanceRouterBuilder()
             .withInstanceName('helloWorldRESTRouter')
-            .withRouterPrefix(new StringLiteralBuilder().withValue("'/hello'").build())
+            .withRouterPrefix(new StringLiteralBuilder().withValue('/hello').build())
             .build(),
         ])
         .build(),
       new RestServerDeclarationBuilder()
         .withServerType('REST.Express')
-        .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+        .withApiPrefix(new StringLiteralBuilder().withValue('/').build())
         .withPort(portExpressionWithoutDefault)
         .withRoutes([
           new RestServerInstanceRouterBuilder()
             .withInstanceName('anotherRestRouter')
-            .withRouterPrefix(new StringLiteralBuilder().withValue("'/'").build())
+            .withRouterPrefix(new StringLiteralBuilder().withValue('/').build())
             .build(),
         ])
         .build(),

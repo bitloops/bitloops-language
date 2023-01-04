@@ -216,6 +216,7 @@ import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1098,44 +1099,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return languageSetterMethodVisitor(this, ctx);
   }
 
-  // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-  //   const envVar = enviromentVariableVisitor(ctx);
-  //   return envVar;
-  // }
-
-  // visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
-  //   const expressionNode = this.visit(ctx.expression());
-  //   return expressionNode;
-  // }
-
-  // visitDtoTestStatement(ctx: BitloopsParser.DtoTestStatementContext) {
-  //   console.log('DTOooOooo', ctx);
-  // }
-  /**
-   * Server Expressions
-   */
-  // visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): void {
-  //   console.log('visitRestServerExpression');
-  //   const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-  //   const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
-
-  //   const serverOptions: any = {
-  //     port,
-  //     apiPrefix,
-  //   };
-  //   if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
-  //   if (corsOptions) {
-  //     serverOptions.corsOptions = corsOptions;
-  //   }
-  //   const routers = this.visit(ctx.bindServerRoutes());
-  //   serverOptions.routers = routers;
-
-  //   if (!this._result.servers) {
-  //     this._result.servers = {};
-  //   }
-  //   if (!this._result.servers[serverType]) {
-  //     this._result.servers[serverType] = { serverInstances: [] };
-  //   }
-  //   this._result.servers[serverType].serverInstances.push(serverOptions);
-  // }
+  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
 }

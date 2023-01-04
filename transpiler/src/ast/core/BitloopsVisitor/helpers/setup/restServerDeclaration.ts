@@ -1,5 +1,4 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { StringLiteralBuilder } from '../../../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import { RestServerAPIPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerAPIPrefixNodeBuilder.js';
 import { RestServerNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerNodeBuilder.js';
 import { RestServerPortNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerPortNodeBuilder.js';
@@ -80,13 +79,11 @@ export const restServerPortVisitor = (
   return portNode;
 };
 
-//TODO visit pathString
 export const restServerAPIPrefixVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerApiPrefixOptionContext,
 ): RestServerPortNode => {
-  const pathString = ctx.pathString().getText();
-  const apiPrefixStringNode = new StringLiteralBuilder().withValue(pathString).build();
+  const apiPrefixStringNode = thisVisitor.visit(ctx.pathString());
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const apiPrefixNode = new RestServerAPIPrefixNodeBuilder(metadata)
@@ -114,14 +111,15 @@ export const bindServerRouteVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RouteBindContext,
 ): ServerRoutesNode => {
-  const routePrefix = new StringLiteralBuilder().withValue(ctx.pathString().getText()).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const pathStringlNode = thisVisitor.visit(ctx.pathString());
 
   const routerPrefixNode: RestServerRouterPrefixNode = new RestServerRouterPrefixNodeBuilder()
-    .witRouterPrefix(routePrefix)
+    .witRouterPrefix(pathStringlNode)
     .build();
   const identifier: IdentifierNode = thisVisitor.visit(ctx.identifier());
 
-  const serverRoutesNode: ServerRoutesNode = new ServerRouteNodeBuilder()
+  const serverRoutesNode: ServerRoutesNode = new ServerRouteNodeBuilder(metadata)
     .withInstanceName(identifier)
     .withRouterPrefix(routerPrefixNode)
     .build();
