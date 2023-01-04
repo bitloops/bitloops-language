@@ -34,8 +34,8 @@ describe('Repo Connection definition is valid', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  VALID_REPO_CONNECTION_DEFINITION_CASES.forEach((testUseCase) => {
-    test(`${testUseCase.description}`, () => {
+  VALID_REPO_CONNECTION_DEFINITION_CASES.forEach((testRepoConnection) => {
+    test(`${testRepoConnection.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
@@ -47,8 +47,8 @@ describe('Repo Connection definition is valid', () => {
         ],
         setup: [
           {
-            fileContents: testUseCase.inputBLString,
-            fileId: testUseCase.fileId,
+            fileContents: testRepoConnection.inputBLString,
+            fileId: testRepoConnection.fileId,
           },
         ],
       });
@@ -59,55 +59,13 @@ describe('Repo Connection definition is valid', () => {
           setupResult = result.setup;
         }
       }
-      const resultTree = setupResult[testUseCase.fileId];
-      const useCaseDefinitionNodes = resultTree.getClassTypeNodes(
+      const resultTree = setupResult[testRepoConnection.fileId];
+      const repoConnectionDefinitionNodes = resultTree.getClassTypeNodes(
         BitloopsTypesMapping.TRepoConnectionDefinition,
       );
-      const value = useCaseDefinitionNodes[0].getValue();
+      const value = repoConnectionDefinitionNodes[0].getValue();
 
-      expect(value).toMatchObject(testUseCase.useCaseDefinition);
+      expect(value).toMatchObject(testRepoConnection.repoConnectionDefinition);
     });
   });
 });
-
-// describe('Multiple repo Connection definitions are valid', () => {
-//   let setupResult: IntermediateASTSetup;
-
-//   const parser = new BitloopsParser();
-//   const intermediateParser = new IntermediateASTParser();
-
-//   VALID_MULTIPLE_USE_CASE_DEFINITIONS.forEach((testUseCase) => {
-//     test(`${testUseCase.description}`, () => {
-//       const initialModelOutput = parser.parse({
-//         core: [
-//           {
-//             boundedContext: BOUNDED_CONTEXT,
-//             module: MODULE,
-//             fileId: 'fileId',
-//             fileContents: '',
-//           },
-//         ],
-//         setup: [
-//           {
-//             fileContents: testUseCase.inputBLString,
-//             fileId: testUseCase.fileId,
-//           },
-//         ],
-//       });
-
-//       if (!isParserErrors(initialModelOutput)) {
-//         const result = intermediateParser.parse(initialModelOutput);
-//         if (!isIntermediateASTError(result)) {
-//           setupResult = result.setup;
-//         }
-//       }
-//       const resultTree = setupResult[testUseCase.fileId];
-//       const useCaseDefintionNodes = resultTree.getClassTypeNodes(
-//         BitloopsTypesMapping.TUseCaseDefinition,
-//       );
-//       const values = useCaseDefintionNodes.map((node) => node.getValue());
-
-//       expect(values).toMatchObject(testUseCase.useCaseDefinitions);
-//     });
-//   });
-// });

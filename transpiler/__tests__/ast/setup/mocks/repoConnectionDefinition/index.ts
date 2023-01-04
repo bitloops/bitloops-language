@@ -9,7 +9,7 @@ export const VALID_REPO_CONNECTION_DEFINITION_CASES = [
     ),
     description: 'Repo connection definition of mongo',
     fileId: 'setup.bl',
-    useCaseDefinition:
+    repoConnectionDefinition:
       new RepoConnectionDefinitionBuilderDirector().buildMongoRepoConnectionDefinition({
         connectionIdentifier: 'mongoConnection',
         host: 'localhost',
@@ -23,7 +23,7 @@ export const VALID_REPO_CONNECTION_DEFINITION_CASES = [
     ),
     description: 'Repo connection with env var & default value',
     fileId: 'setup.bl',
-    useCaseDefinition:
+    repoConnectionDefinition:
       new RepoConnectionDefinitionBuilderDirector().buildCustomMongoRepoConnectionDefinition({
         connectionIdentifier: 'mongoConnection',
         host: new ExpressionBuilderDirector().buildStringLiteralExpression('localhost'),
