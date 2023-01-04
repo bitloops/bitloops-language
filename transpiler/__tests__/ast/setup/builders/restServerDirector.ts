@@ -32,6 +32,26 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
   }
 
   public build(): TRESTServerInstance {
+    // if (!this.apiPrefix) {
+    //   const restServerInstance = {
+    //     restServer: {
+    //       serverOptions: [
+    //         {
+    //           serverType: this.serverType,
+    //         },
+    //         {
+    //           apiPrefix: null,
+    //         },
+    //         {
+    //           restServerPort: this.port,
+    //         },
+    //       ],
+    //       serverRoutes: this.routes,
+    //     },
+    //   };
+
+    //   return restServerInstance;
+    // } else {
     const restServerInstance = {
       restServer: {
         serverOptions: [
@@ -50,5 +70,6 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
     };
 
     return restServerInstance;
+    // }
   }
 }

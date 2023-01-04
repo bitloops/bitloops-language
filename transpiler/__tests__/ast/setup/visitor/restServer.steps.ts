@@ -21,7 +21,10 @@ import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
 import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
-import { VALID_REST_SERVER_CASES } from '../mocks/restServerDeclaration/validRestServerCases.js';
+import {
+  VALID_MULTIPLE_REST_SERVER_CASES,
+  VALID_REST_SERVER_CASES,
+} from '../mocks/restServerDeclaration/validRestServerCases.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 
@@ -66,66 +69,42 @@ describe('Rest Server is valid', () => {
   });
 });
 
-// describe('DTO declaration with multiple dtos is valid', () => {
-//   let resultTree: IntermediateASTTree;
+describe('Multiple valid Rest Servers', () => {
+  let setupResult: IntermediateASTSetup;
 
-//   const parser = new BitloopsParser();
-//   const intermediateParser = new IntermediateASTParser();
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-//   validMultipleDTOSTestCases.forEach((testDTO) => {
-//     test(`${testDTO.description}`, () => {
-//       const initialModelOutput = parser.parse({
-//         core: [
-//           {
-//             boundedContext: BOUNDED_CONTEXT,
-//             module: MODULE,
-//             fileId: testDTO.fileId,
-//             fileContents: testDTO.inputBLString,
-//           },
-//         ],
-//       });
+  VALID_MULTIPLE_REST_SERVER_CASES.forEach((testRestServer) => {
+    test(`${testRestServer.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testRestServer.inputBLString,
+            fileId: testRestServer.fileId,
+          },
+        ],
+      });
 
-//       if (!isParserErrors(initialModelOutput)) {
-//         const result = intermediateParser.parse(initialModelOutput);
-//         if (!isIntermediateASTError(result)) {
-//           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
-//         }
-//       }
-//       const expectedNodeValues = getExpectedDTOOutputMultipleDTOS([
-//         { variables: testDTO.variables[0], identifier: testDTO.identifier[0] },
-//         { variables: testDTO.variables[1], identifier: testDTO.identifier[1] },
-//       ]);
-//       const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
-//       const values = dtoNodes.map((node) => node.getValue());
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          setupResult = result.setup;
+        }
+      }
+      const resultTree = setupResult[testRestServer.fileId];
+      const restServerDefintionNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers);
+      const values = restServerDefintionNodes.map((node) => node.getValue());
 
-//       expect(values).toMatchObject(expectedNodeValues);
-//     });
-//   });
-// });
-
-// describe('DTO declaration is invalid', () => {
-//   const parser = new BitloopsParser();
-//   const intermediateParser = new IntermediateASTParser();
-//   errorCases.forEach((testDTO) => {
-//     test(`${testDTO.description}`, () => {
-//       const res = function (): void {
-//         const initialModelOutput = parser.parse({
-//           core: [
-//             {
-//               boundedContext: BOUNDED_CONTEXT,
-//               module: MODULE,
-//               fileId: testDTO.fileId,
-//               fileContents: testDTO.inputBLString,
-//             },
-//           ],
-//         });
-
-//         if (!isParserErrors(initialModelOutput)) {
-//           intermediateParser.parse(initialModelOutput);
-//         }
-//       };
-
-//       expect(res).toThrow(TypeError);
-//     });
-//   });
-// });
+      expect(values).toMatchObject(testRestServer.restServers);
+    });
+  });
+});

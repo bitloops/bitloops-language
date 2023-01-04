@@ -12,7 +12,6 @@ const portExpressionWithoutDefault = new ExpressionBuilderDirector().buildLogica
 const portExpressionWithDefault =
   new ExpressionBuilderDirector().buildEnvVariableExpressionWithDefault(
     'FASTIFY_PORT',
-    // new LiteralExpressionBuilder().withType('int32').withValue('5001').build(),
     new ExpressionBuilderDirector().buildInt32LiteralExpression(5001),
   );
 
@@ -37,7 +36,7 @@ export const VALID_REST_SERVER_CASES = [
   },
   {
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/reseServerWithDefaultEnv.bl',
+      'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/restServerWithDefaultEnv.bl',
     ),
     description: 'Valid rest server with default env variable',
     fileId: 'testFile.bl',
@@ -52,5 +51,57 @@ export const VALID_REST_SERVER_CASES = [
           .build(),
       ])
       .build(),
+  },
+  // {
+  //   inputBLString: FileUtil.readFileString(
+  //     'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/restServerWithoutAPIPrefix.bl',
+  //   ),
+  //   description: 'Valid rest server with default env variable',
+  //   fileId: 'testFile.bl',
+  //   restServer: new RestServerDeclarationBuilder()
+  //     .withServerType('REST.Fastify')
+  //     // .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+  //     .withPort(portExpressionWithoutDefault)
+  //     .withRoutes([
+  //       new RestServerInstanceRouterBuilder()
+  //         .withInstanceName('helloWorldRESTRouter')
+  //         .withRouterPrefix(new StringLiteralBuilder().withValue("'/'").build())
+  //         .build(),
+  //     ])
+  //     .build(),
+  // },
+];
+
+export const VALID_MULTIPLE_REST_SERVER_CASES = [
+  {
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/multipleRestServers.bl',
+    ),
+    description: 'Valid multiple rest servers',
+    fileId: 'testFile.bl',
+    restServers: [
+      new RestServerDeclarationBuilder()
+        .withServerType('REST.Fastify')
+        .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+        .withPort(portExpressionWithoutDefault)
+        .withRoutes([
+          new RestServerInstanceRouterBuilder()
+            .withInstanceName('helloWorldRESTRouter')
+            .withRouterPrefix(new StringLiteralBuilder().withValue("'/hello'").build())
+            .build(),
+        ])
+        .build(),
+      new RestServerDeclarationBuilder()
+        .withServerType('REST.Express')
+        .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
+        .withPort(portExpressionWithoutDefault)
+        .withRoutes([
+          new RestServerInstanceRouterBuilder()
+            .withInstanceName('anotherRestRouter')
+            .withRouterPrefix(new StringLiteralBuilder().withValue("'/'").build())
+            .build(),
+        ])
+        .build(),
+    ],
   },
 ];
