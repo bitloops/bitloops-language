@@ -22,8 +22,6 @@ import { StringLiteralBuilder } from '../../../../intermediate-ast/builders/expr
 import { StringLiteralNode } from '../../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 
 export const stringEvaluation = (value: string): StringLiteralNode => {
-  // return { type: 'string', value: value.substring(1, value.length - 1) };
-
   const trimmedValue = value.substring(1, value.length - 1);
   const literalNode = new StringLiteralBuilder().withValue(trimmedValue).build();
   return literalNode;

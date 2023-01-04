@@ -411,10 +411,7 @@ export type TExpressionValues =
   | TInstanceOf
   | TGetClass
   | TEnvironmentVariableExpression
-  | TObjectLiteral
-  | TLiteralExpression
-  | TEnvironmentVariableExpression;
-// TODO TLiteralExpression and TLiteral maybe need merge
+  | TObjectLiteral;
 
 export type TAssignmentExpression = {
   assignmentExpression: {
@@ -464,10 +461,12 @@ export type TNumericLiteral = {
   numericLiteral: TNumericLiteralValues;
 };
 export type TNumericLiteralValues = IntegerLiteral | DecimalLiteral;
+
+export type TIntegerLiteralType = 'int32' | 'int64';
 export type IntegerLiteral = {
   integerLiteral: {
     value: string;
-    type: 'int32' | 'int64'; //| 'uint32' | 'uint64';
+    type: TIntegerLiteralType; //| 'uint32' | 'uint64';
   };
 };
 export type DecimalLiteral = {
@@ -842,6 +841,29 @@ export type TUseCaseExpression = {
     TBoundedContextModule;
 };
 
+export const RepoConnectionDefinitionKey = 'RepoConnectionDefinition';
+export type TRepoConnectionDefinition = {
+  [RepoConnectionDefinitionKey]: {
+    identifier: TIdentifier;
+  } & TRepoConnectionExpression;
+};
+
+export const RepoConnectionExpressionKey = 'RepoConnectionExpression';
+export type TRepoConnectionExpression = {
+  [RepoConnectionExpressionKey]: {
+    dbType: TRepoSupportedTypes;
+  } & TRepoConnectionOptions;
+};
+
+export const RepoConnectionOptionsKey = 'options';
+export type TRepoConnectionOptions = {
+  [RepoConnectionOptionsKey]: {
+    host: TExpression;
+    port: TExpression;
+    databaseName: TExpression;
+  };
+};
+
 export type TBoundedContextModule = {
   boundedContextModule: {
     boundedContextName: TBoundedContextName;
@@ -940,19 +962,15 @@ export type TRestServerInstanceRouter = {
   };
 };
 
-export type TRestServerPort = {
-  port: TExpression;
-};
+export type TRestServerPort = TExpression;
 
 export type TAPIPrefix = StringLiteral;
 
-export type TRestServerOptions = TRestServerOption[];
-export type TRestServerOption =
-  | {
-      port: TRestServerPort;
-    }
-  | { apiPrefix?: TAPIPrefix }
-  | { serverType: TServerType };
+export type TRestServerOptions = {
+  apiPrefix?: TAPIPrefix;
+  restServerPort: TRestServerPort;
+  serverType: TServerType;
+};
 
 export type TRESTServerInstance = {
   restServer: {
@@ -1095,13 +1113,16 @@ export type TObjectLiteral = {
 export type TEnvironmentVariableExpression = {
   environmentVariable: {
     identifier: string;
-    defaultValue?: TLiteralExpression;
+    defaultValue?: TLiteralValues;
   };
 };
 
+// TODO remove this
+export type TLiteralExpressionType = TBitloopsPrimitives | 'number';
+
 export type TLiteralExpression = {
   literal: {
-    type: TBitloopsPrimitives | 'number';
+    type: TLiteralExpressionType;
     value: string;
   };
 };

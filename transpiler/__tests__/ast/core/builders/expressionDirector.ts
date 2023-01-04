@@ -1,10 +1,13 @@
 import {
   TAdditiveOperator,
   TArgumentList,
+  TEnvironmentVariableExpression,
   TEqualityOperator,
   TEvaluation,
   TExpression,
+  TLiteralValues,
   TMultiplicativeOperator,
+  TNumericLiteral,
   TRelationalOperator,
 } from '../../../../src/types.js';
 
@@ -17,11 +20,45 @@ export class ExpressionBuilderDirector {
     };
   }
 
-  buildEnvVariableExpression(identifier: string): TExpression {
+  buildEnvVariableExpression(identifier: string, defaultValue?: TLiteralValues): TExpression {
+    const envValue: TEnvironmentVariableExpression = {
+      environmentVariable: {
+        identifier,
+      },
+    };
+    if (defaultValue) {
+      envValue.environmentVariable.defaultValue = defaultValue;
+    }
+    return {
+      expression: envValue,
+    };
+  }
+
+  buildEnvVariableExpressionWithDefaultNumericLiteral(
+    identifier: string,
+    defaultValue: TNumericLiteral,
+  ): TExpression {
     return {
       expression: {
         environmentVariable: {
           identifier,
+          defaultValue,
+        },
+      },
+    };
+  }
+
+  buildEnvVariableExpressionWithDefaultStringLiteral(
+    identifier: string,
+    stringLiteral: string,
+  ): TExpression {
+    return {
+      expression: {
+        environmentVariable: {
+          identifier,
+          defaultValue: {
+            stringLiteral,
+          },
         },
       },
     };

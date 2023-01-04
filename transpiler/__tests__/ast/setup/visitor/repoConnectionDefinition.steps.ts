@@ -21,24 +21,21 @@ import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
 import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
-import {
-  VALID_MULTIPLE_REST_SERVER_CASES,
-  VALID_REST_SERVER_CASES,
-} from '../mocks/restServerDeclaration/validRestServerCases.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
+import { VALID_REPO_CONNECTION_DEFINITION_CASES } from '../mocks/repoConnectionDefinition/index.js';
 
 const BOUNDED_CONTEXT = 'Hello world';
 const MODULE = 'Demo';
 
-describe('Rest Server is valid', () => {
+describe('Repo Connection definition is valid', () => {
   let setupResult: IntermediateASTSetup;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  VALID_REST_SERVER_CASES.forEach((testRestServer) => {
-    test(`${testRestServer.description}`, () => {
+  VALID_REPO_CONNECTION_DEFINITION_CASES.forEach((testRepoConnection) => {
+    test(`${testRepoConnection.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
@@ -50,8 +47,8 @@ describe('Rest Server is valid', () => {
         ],
         setup: [
           {
-            fileContents: testRestServer.inputBLString,
-            fileId: testRestServer.fileId,
+            fileContents: testRepoConnection.inputBLString,
+            fileId: testRepoConnection.fileId,
           },
         ],
       });
@@ -62,49 +59,13 @@ describe('Rest Server is valid', () => {
           setupResult = result.setup;
         }
       }
-      const resultTree = setupResult[testRestServer.fileId];
-      const value = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers)[0].getValue();
-      expect(value).toMatchObject(testRestServer.restServer);
-    });
-  });
-});
+      const resultTree = setupResult[testRepoConnection.fileId];
+      const repoConnectionDefinitionNodes = resultTree.getClassTypeNodes(
+        BitloopsTypesMapping.TRepoConnectionDefinition,
+      );
+      const value = repoConnectionDefinitionNodes[0].getValue();
 
-describe('Multiple valid Rest Servers', () => {
-  let setupResult: IntermediateASTSetup;
-
-  const parser = new BitloopsParser();
-  const intermediateParser = new IntermediateASTParser();
-
-  VALID_MULTIPLE_REST_SERVER_CASES.forEach((testRestServer) => {
-    test(`${testRestServer.description}`, () => {
-      const initialModelOutput = parser.parse({
-        core: [
-          {
-            boundedContext: BOUNDED_CONTEXT,
-            module: MODULE,
-            fileId: 'fileId',
-            fileContents: '',
-          },
-        ],
-        setup: [
-          {
-            fileContents: testRestServer.inputBLString,
-            fileId: testRestServer.fileId,
-          },
-        ],
-      });
-
-      if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
-          setupResult = result.setup;
-        }
-      }
-      const resultTree = setupResult[testRestServer.fileId];
-      const restServerDefintionNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers);
-      const values = restServerDefintionNodes.map((node) => node.getValue());
-
-      expect(values).toMatchObject(testRestServer.restServers);
+      expect(value).toMatchObject(testRepoConnection.repoConnectionDefinition);
     });
   });
 });
