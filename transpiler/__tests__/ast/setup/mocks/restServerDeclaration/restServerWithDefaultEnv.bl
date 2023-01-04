@@ -1,7 +1,7 @@
 RESTServer({   
     server: REST.Fastify,   
-    port: Env(FASTIFY_PORT, 5001),  
     apiPrefix: '/', 
+    port: Env(FASTIFY_PORT, 5001),  
 }) {   
     '/hello': helloWorldRESTRouter; 
 };
