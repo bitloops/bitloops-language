@@ -832,14 +832,6 @@ repoConnectionOptions
     : evaluationFieldList
     ;
 
-objectProperties
-    : objectProperty (Comma objectProperty)* Comma? 
-    ;
-
-objectProperty
-    : identifier Colon expression
-    ;
-
 repoAdapterDefinition
     : Const identifier '=' repoAdapterExpression
     ;
@@ -849,7 +841,7 @@ repoAdapterExpression
     ;
 
 repoAdapterOptions
-    : objectProperties
+    : evaluationFieldList
     ;
 
 repoAdapterClassName
