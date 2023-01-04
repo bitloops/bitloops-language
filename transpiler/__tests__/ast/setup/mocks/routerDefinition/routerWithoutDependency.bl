@@ -1,0 +1,3 @@
+const helloWorldRESTRouter = RESTRouter(REST.Fastify) { 
+    Get('/hello1'): [Bounded Context][Module]HelloWorldController(); 
+}

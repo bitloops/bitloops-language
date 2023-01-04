@@ -210,6 +210,13 @@ const BitloopsTypesMapping = {
   TBoundedContextName: 'TBoundedContextName',
   TModuleName: 'TModuleName',
   TDefaultValueEnvironmentVariable: 'TDefaultValueEnvironmentVariable',
+  TRouterExpression: 'TRouterExpression',
+  TRouterDefinition: 'TRouterDefinition',
+  TRestRouter: 'TRestRouter',
+  TRouterArguments: 'TRouterArguments',
+  TRouterControllers: 'TRouterControllers',
+  TRouterController: 'TRouterController',
+  THTTPMethodVerb: 'THTTPMethodVerb',
   TLanguage: 'TLanguage',
   TConfigInvocation: 'TConfigInvocation',
 } as const;

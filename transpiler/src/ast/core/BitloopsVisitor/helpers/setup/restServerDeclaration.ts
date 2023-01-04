@@ -6,8 +6,8 @@ import { RestServerRouterPrefixNodeBuilder } from '../../../intermediate-ast/bui
 import { ServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerOptionsNodeBuilder.js';
 import { ServerRouteNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRouteNodeBuilder.js';
 import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRoutesNodeBuilder.js';
-import { ServerTypeIdentifierNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
@@ -64,10 +64,7 @@ export const serverTypeOptionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerTypeOptionContext,
 ): ServerTypeIdentifierNode => {
-  const metadata = produceMetadata(ctx, thisVisitor);
-  return new ServerTypeIdentifierNodeBuilder(metadata)
-    .withServerTypeIdentifier(ctx.serverType().getText())
-    .build();
+  return thisVisitor.visit(ctx.serverType());
 };
 
 export const restServerPortVisitor = (
@@ -84,7 +81,7 @@ export const restServerAPIPrefixVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerApiPrefixOptionContext,
 ): RestServerPortNode => {
-  const apiPrefixStringNode = thisVisitor.visit(ctx.pathString());
+  const apiPrefixStringNode: StringLiteralNode = thisVisitor.visit(ctx.pathString());
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const apiPrefixNode = new RestServerAPIPrefixNodeBuilder(metadata)

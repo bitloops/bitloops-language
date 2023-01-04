@@ -756,12 +756,7 @@ pathString
     : StringLiteral
     ;
 
-method
-    : validMethod
-    | unknownMethod
-    ;
-
-validMethod
+httpMethodVerb
     : GET
     | POST
     | PUT
@@ -770,25 +765,12 @@ validMethod
     | OPTIONS
     ;
 
-unknownMethod
-    : identifier
-    ;
-
-nestedImpliedControllerDeclarations
-    : nestedControllerInstantiation*
+routerControllers
+    : routerController*
     ;
 
 routerArguments
-    : validRouterArguments
-    | invalidRouterArguments
-    ;
-
-validRouterArguments
     : OpenParen serverType CloseParen
-    ;
-
-invalidRouterArguments
-    : OpenParen CloseParen
     ;
 
 useCaseExpression
@@ -796,11 +778,7 @@ useCaseExpression
     ;
 
 routerExpression
-    : restRouter routerArguments OpenBrace nestedImpliedControllerDeclarations CloseBrace
-    ;
-
-routerDeclaration
-    : Const identifier
+    : restRouter routerArguments OpenBrace routerControllers CloseBrace
     ;
 
 packageAdapterClassName
@@ -820,7 +798,7 @@ useCaseDefinition
     ;
 
 routerDefinition
-    : routerDeclaration Assign routerExpression SemiColon?
+    : Const identifier Assign routerExpression SemiColon?
     ;
 
 serverDeclaration
@@ -941,7 +919,7 @@ bindControllerResolvers
     ;
 
 controllerResolverBind
-    : boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen
+    : boundedContextModuleDeclaration ControllerIdentifier methodArguments
     ;
 
 alpha_numeric_ws: Digits | WS | UpperCaseIdentifier | Identifier;
@@ -950,12 +928,8 @@ wordsWithSpaces
     : alpha_numeric_ws+
     ;
 
-nestedControllerInstantiation
-    : method OpenParen pathString CloseParen Colon boundedContextModuleDeclaration ControllerIdentifier OpenParen controllerDependencies CloseParen SemiColon?
-    ;
-
-controllerDependencies
-    : (identifier (Comma identifier)*)?
+routerController
+    : httpMethodVerb OpenParen pathString CloseParen Colon boundedContextModuleDeclaration restControllerIdentifier methodArguments SemiColon?
     ;
 
 boundedContextDeclaration
@@ -974,7 +948,6 @@ serverType
     : fastifyServer
     | expressServer
     | graphQLServerType
-    | unknownServer
     ;
 
 fastifyServer
@@ -987,10 +960,6 @@ expressServer
 
 graphQLServerType
     : GraphQLServerType
-    ;
-
-unknownServer
-    : identifier (Dot identifier)*
     ;
 
 jestTestSetupDeclaration

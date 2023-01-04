@@ -226,11 +226,25 @@ import {
   repoConnectionOptionsVisitor,
   repoConnectionPortOptionVisitor,
 } from './helpers/setup/repoConnectionOptionsVisitor.js';
+import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
+import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
+import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
+import { RestRouterNode } from '../intermediate-ast/nodes/setup/RestRouterNode.js';
+import { restRouterVisitor } from './helpers/setup/restRouterVisitor.js';
+import { RouterArgumentsNode } from '../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
+import { RouterControllersNode } from '../intermediate-ast/nodes/setup/RouterControllersNode.js';
+import { routerArgumentsVisitor } from './helpers/setup/routerArgumentsVisitor.js';
+import { routerControllersVisitor } from './helpers/setup/routerControllersVisitor.js';
+import { routerControllerVisitor } from './helpers/setup/routerControllerVisitor.js';
+import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterControllerNode.js';
+import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
+import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
+import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
+import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
-import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 
@@ -1136,15 +1150,64 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     }
   }
 
+  visitRouterDefinitionStatement(ctx: BitloopsParser.RouterDefinitionStatementContext): void {
+    this.visit(ctx.routerDefinition());
+  }
+
+  visitRouterDefinition(ctx: BitloopsParser.RouterDefinitionContext): void {
+    routerDefinitionVisitor(this, ctx);
+  }
+
+  visitRouterExpression(ctx: BitloopsParser.RouterExpressionContext): RouterExpressionNode {
+    return routerExpressionVisitor(this, ctx);
+  }
+
+  visitRestRouter(ctx: BitloopsParser.RestRouterContext): RestRouterNode {
+    return restRouterVisitor(this, ctx);
+  }
+
+  visitRouterArguments(ctx: BitloopsParser.RouterArgumentsContext): RouterArgumentsNode {
+    return routerArgumentsVisitor(this, ctx);
+  }
+
+  visitRouterControllers(ctx: BitloopsParser.RouterControllersContext): RouterControllersNode {
+    return routerControllersVisitor(this, ctx);
+  }
+
+  visitRouterController(ctx: BitloopsParser.RouterControllerContext): RouterControllerNode {
+    return routerControllerVisitor(this, ctx);
+  }
+
+  visitHttpMethodVerb(ctx: BitloopsParser.HttpMethodVerbContext): HTTPMethodVerbNode {
+    return httpMethodVerbVisitor(this, ctx);
+  }
+
+  visitServerType(ctx: BitloopsParser.ServerTypeContext): ServerTypeIdentifierNode {
+    let serverType = '';
+    if (ctx.expressServer()) {
+      serverType = ctx.expressServer().getText();
+    }
+    if (ctx.fastifyServer()) {
+      serverType = ctx.fastifyServer().getText();
+    }
+    if (ctx.graphQLServerType()) {
+      serverType = ctx.graphQLServerType().getText();
+    }
+    const metadata = produceMetadata(ctx, this);
+    return new ServerTypeIdentifierNodeBuilder(metadata)
+      .withServerTypeIdentifier(serverType)
+      .build();
+  }
+
+  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
+
   visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
     configInvocationVisitor(this, ctx);
   }
 
   visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
     return languageSetterMethodVisitor(this, ctx);
-  }
-
-  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
-    return stringEvaluation(ctx.StringLiteral().getText());
   }
 }
