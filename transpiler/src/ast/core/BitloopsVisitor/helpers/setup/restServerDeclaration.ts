@@ -1,4 +1,6 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
+import { CorsOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/CorsOptionsNodeBuilder.js';
+import { CorsOriginNodeBuilder } from '../../../intermediate-ast/builders/setup/CorsOriginNodeBuilder.js';
 import { RestServerAPIPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerAPIPrefixNodeBuilder.js';
 import { RestServerNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerNodeBuilder.js';
 import { RestServerPortNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerPortNodeBuilder.js';
@@ -9,6 +11,8 @@ import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setu
 import { ServerTypeIdentifierNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { CorsOptionsNode } from '../../../intermediate-ast/nodes/setup/CorsOptionsNode.js';
+import { CorsOriginNode } from '../../../intermediate-ast/nodes/setup/CorsOriginNode.js';
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
@@ -18,6 +22,7 @@ import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRo
 import { ServerTypeIdentifierNode } from '../../../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
+import { stringEvaluation } from '../index.js';
 
 export const restServerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -43,7 +48,17 @@ export const serverInstantiationOptionsVisitor = (
   const metadata = produceMetadata(ctx, thisVisitor);
   const serverTypeOptionNode = thisVisitor.visit(ctx.serverTypeOption(0));
   const restServerPortNode = thisVisitor.visit(ctx.restServerPort(0));
-  if (ctx.serverApiPrefixOption(0)) {
+  if (ctx.serverApiPrefixOption(0) && ctx.corsOptions(0)) {
+    const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
+    const corsOptionsNode = thisVisitor.visit(ctx.corsOptions(0));
+    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+      .withAPIPrefix(serverApiPrefixOptionNode)
+      .withPort(restServerPortNode)
+      .withServerType(serverTypeOptionNode)
+      .withCorsOptions(corsOptionsNode)
+      .build();
+    return serverOptionsNode;
+  } else if (ctx.serverApiPrefixOption(0) && !ctx.corsOptions(0)) {
     const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
     const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
       .withAPIPrefix(serverApiPrefixOptionNode)
@@ -51,13 +66,21 @@ export const serverInstantiationOptionsVisitor = (
       .withServerType(serverTypeOptionNode)
       .build();
     return serverOptionsNode;
+  } else if (!ctx.serverApiPrefixOption(0) && ctx.corsOptions(0)) {
+    const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
+    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+      .withAPIPrefix(serverApiPrefixOptionNode)
+      .withPort(restServerPortNode)
+      .withServerType(serverTypeOptionNode)
+      .build();
+    return serverOptionsNode;
+  } else {
+    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+      .withPort(restServerPortNode)
+      .withServerType(serverTypeOptionNode)
+      .build();
+    return serverOptionsNode;
   }
-
-  const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
-    .withPort(restServerPortNode)
-    .withServerType(serverTypeOptionNode)
-    .build();
-  return serverOptionsNode;
 };
 
 export const serverTypeOptionVisitor = (
@@ -126,4 +149,26 @@ export const bindServerRouteVisitor = (
     .build();
 
   return serverRoutesNode;
+};
+
+export const corsOptionsVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.CorsOptionsContext,
+): CorsOptionsNode => {
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const origin = thisVisitor.visit(ctx.origin());
+
+  const corsOptionsNode = new CorsOptionsNodeBuilder(metadata).withOrigin(origin).build();
+  return corsOptionsNode;
+};
+
+export const corsOriginVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.OriginContext,
+): CorsOriginNode => {
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const origin = stringEvaluation(ctx.StringLiteral().getText());
+
+  const corsOriginNode = new CorsOriginNodeBuilder(metadata).withOrigin(origin).build();
+  return corsOriginNode;
 };

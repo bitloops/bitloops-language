@@ -913,10 +913,15 @@ export type TRestServerPort = TExpression;
 
 export type TAPIPrefix = StringLiteral;
 
+export type TCorsOptions = {
+  origin: StringLiteral;
+};
+
 export type TRestServerOptions = {
   apiPrefix?: TAPIPrefix;
   restServerPort: TRestServerPort;
   serverType: TServerType;
+  corsOptions?: TCorsOptions;
 };
 
 export type TRESTServerInstance = {

@@ -148,6 +148,8 @@ Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
 RestServerPortIdentifier:       'port';
+CorsOptionsIdentifier:          'corsOptions';
+OriginIdentifier:               'origin';
 
 /// Future Reserved Words
 

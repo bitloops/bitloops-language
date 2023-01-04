@@ -3,6 +3,7 @@ import { ExpressionBuilderDirector } from '../../../core/builders/expressionDire
 import { IntegerLiteralBuilder } from '../../../core/builders/IntegerLiteralBuilder.js';
 import { NumericLiteralBuilder } from '../../../core/builders/NumericLiteralBuilder.js';
 import { StringLiteralBuilder } from '../../../core/builders/stringLiteral.js';
+import { CorsOptionsBuilder } from '../../builders/CorsOptionsBuilder.js';
 import { RestServerDeclarationBuilder } from '../../builders/restServerDirector.js';
 import { RestServerInstanceRouterBuilder } from '../../builders/restServerInstanceRouterBuilder.js';
 
@@ -69,6 +70,29 @@ export const VALID_REST_SERVER_CASES = [
         new RestServerInstanceRouterBuilder()
           .withInstanceName('helloWorldRESTRouter')
           .withRouterPrefix(new StringLiteralBuilder().withValue('/').build())
+          .build(),
+      ])
+      .build(),
+  },
+  {
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/restServerWithCors.bl',
+    ),
+    description: 'Valid rest server with cors',
+    fileId: 'testFile.bl',
+    restServer: new RestServerDeclarationBuilder()
+      .withServerType('REST.Fastify')
+      .withApiPrefix(new StringLiteralBuilder().withValue('/').build())
+      .withPort(portExpressionWithoutDefault)
+      .withCorsOptions(
+        new CorsOptionsBuilder()
+          .withOrigin(new StringLiteralBuilder().withValue('*').build())
+          .build(),
+      )
+      .withRoutes([
+        new RestServerInstanceRouterBuilder()
+          .withInstanceName('helloWorldRESTRouter')
+          .withRouterPrefix(new StringLiteralBuilder().withValue('/hello').build())
           .build(),
       ])
       .build(),

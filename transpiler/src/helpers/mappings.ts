@@ -203,6 +203,8 @@ const BitloopsTypesMapping = {
   TDefaultValueEnvironmentVariable: 'TDefaultValueEnvironmentVariable',
   TLanguage: 'TLanguage',
   TConfigInvocation: 'TConfigInvocation',
+  TCorsOptions: 'TCorsOptions',
+  TCorsOrigin: 'TCorsOrigin',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

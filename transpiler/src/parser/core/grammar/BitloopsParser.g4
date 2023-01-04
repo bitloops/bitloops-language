@@ -827,7 +827,7 @@ serverDeclaration
     ;
 
 serverInstantiationOptions
-    : OpenBrace (serverTypeOption | serverApiPrefixOption| restServerPort)* CloseBrace
+    : OpenBrace (serverTypeOption | serverApiPrefixOption| restServerPort | corsOptions)* CloseBrace
     ;
 
 restServerPort 
@@ -837,6 +837,17 @@ restServerPort
 restServerPortIdentifier: 
     RestServerPortIdentifier;
 
+corsOptions
+    : corsOptionsIdentifier Colon OpenBrace origin CloseBrace Comma?
+    ;
+
+corsOptionsIdentifier
+    : CorsOptionsIdentifier
+    ;
+
+origin 
+    : OriginIdentifier Colon StringLiteral
+    ;
 
 repoConnectionDefinition
     : Const identifier '=' repoConnectionExpression

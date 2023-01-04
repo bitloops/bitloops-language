@@ -192,6 +192,8 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
+  corsOptionsVisitor,
+  corsOriginVisitor,
   restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
   restServerPortVisitor,
@@ -218,6 +220,8 @@ import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
+import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
+import { CorsOriginNode } from '../intermediate-ast/nodes/setup/CorsOriginNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1008,12 +1012,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerPortVisitor(this, ctx);
   }
 
-  //TODO support custom option in the future?
-  // visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
-  //   const res = customServerOptionVisitor(this, ctx);
-  //   return res;
-  // }
-
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);
     return routesNode;
@@ -1093,5 +1091,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
     return stringEvaluation(ctx.StringLiteral().getText());
+  }
+
+  visitCorsOptions(ctx: BitloopsParser.CorsOptionsContext): CorsOptionsNode {
+    return corsOptionsVisitor(this, ctx);
+  }
+
+  visitOrigin(ctx: BitloopsParser.OriginContext): CorsOriginNode {
+    return corsOriginVisitor(this, ctx);
   }
 }

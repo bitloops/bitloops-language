@@ -7,12 +7,14 @@ import {
   TAPIPrefix,
   StringLiteral,
   TRestServerOptions,
+  TCorsOptions,
 } from '../../../../src/types.js';
 
 export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstance> {
   private port: TExpression;
   private apiPrefix?: StringLiteral;
   private routes: TRestServerInstanceRouters;
+  private corsOptions: TCorsOptions;
   private serverType: TServerType;
 
   public withPort(port: TExpression): RestServerDeclarationBuilder {
@@ -32,6 +34,11 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
     return this;
   }
 
+  public withCorsOptions(corsOptions: TCorsOptions): RestServerDeclarationBuilder {
+    this.corsOptions = corsOptions;
+    return this;
+  }
+
   public build(): TRESTServerInstance {
     const serverOptions: TRestServerOptions = {
       serverType: this.serverType,
@@ -39,6 +46,10 @@ export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstanc
     };
     if (this.apiPrefix) {
       serverOptions.apiPrefix = this.apiPrefix;
+    }
+
+    if (this.corsOptions) {
+      serverOptions.corsOptions = this.corsOptions;
     }
 
     const restServerInstance: TRESTServerInstance = {
