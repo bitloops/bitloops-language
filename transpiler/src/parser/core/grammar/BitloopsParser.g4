@@ -731,7 +731,7 @@ eos
 language
     : TypeScript
     | Java
-    | unknownLanguage
+    // | unknownLanguage
     ;
 
 unknownLanguage
@@ -743,7 +743,7 @@ languageSetterMethod
     ;
 
 configInvocation
-    : Config Dot languageSetterMethod # ConfigSetLanguageInvocation
+    : Config Dot languageSetterMethod 
     ;
 
 restRouter

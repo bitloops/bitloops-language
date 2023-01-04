@@ -17,59 +17,58 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d, decode } from 'bitloops-gherkin';
+import { BitloopsParser } from '../../../../src/parser/core/index.js';
+import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
+import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
+import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
 import {
-  BitloopsIntermediateSetupASTParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParser,
-  BitloopsSetupParserError,
-} from '../../../../src/index.js';
+  VALID_CONFIG_INVOCATIONS,
+  // INVALID_CONFIG_INVOCATIONS,
+} from '../mocks/configInvocation/index.js';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 
-const feature = loadFeature('__tests__/ast/setup/visitor/configInvocation.feature');
-defineFeature(feature, (test) => {
-  test('Valid Config Invocation', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
+const BOUNDED_CONTEXT = 'Hello world';
+const MODULE = 'Demo';
 
-    given(/^A valid Config Invocation (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+describe('Valid Config Invocation', () => {
+  let setupResult: IntermediateASTSetup;
 
-    when('I generate the model', () => {
-      const parser = new BitloopsSetupParser();
-      const initialModelOutput = parser.parse(blString);
-      const intermediateParser = new BitloopsIntermediateSetupASTParser();
-      if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageSetupAST,
-        );
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  VALID_CONFIG_INVOCATIONS.forEach((testUseCase) => {
+    test(`${testUseCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testUseCase.inputBLString,
+            fileId: testUseCase.fileId,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          setupResult = result.setup;
+        }
       }
-    });
+      const resultTree = setupResult[testUseCase.fileId];
+      const configInvocationsNodes = resultTree.getClassTypeNodes(
+        BitloopsTypesMapping.TConfigInvocation,
+      );
+      const value = configInvocationsNodes[0].getValue();
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
-    });
-  });
-
-  test('Invalid Config Invocation', ({ given, then }) => {
-    let blString;
-    let initialModelOutput;
-    let intermediateParser;
-
-    given(/^An invalid Config Invocation (.*) string$/, (arg0) => {
-      blString = decode(arg0);
-      const parser = new BitloopsSetupParser();
-      initialModelOutput = parser.parse(blString);
-      intermediateParser = new BitloopsIntermediateSetupASTParser();
-    });
-
-    then('I should get an Unknown language error when I generate the model', () => {
-      expect(() =>
-        intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageSetupAST),
-      ).toThrow('Unknown language');
+      expect(value).toMatchObject(testUseCase.configInvocation);
     });
   });
 });

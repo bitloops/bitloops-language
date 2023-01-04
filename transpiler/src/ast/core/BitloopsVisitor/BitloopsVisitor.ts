@@ -212,7 +212,10 @@ import { boundedContextVisitor } from './helpers/setup/boundedContextDeclaration
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
+import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
+import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1085,6 +1088,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     } else {
       return '';
     }
+  }
+
+  visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
+    configInvocationVisitor(this, ctx);
+  }
+
+  visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
+    return languageSetterMethodVisitor(this, ctx);
   }
 
   // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
