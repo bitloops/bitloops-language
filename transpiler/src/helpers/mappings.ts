@@ -207,6 +207,8 @@ const BitloopsTypesMapping = {
   TRouterControllers: 'TRouterControllers',
   TRouterController: 'TRouterController',
   THTTPMethodVerb: 'THTTPMethodVerb',
+  TLanguage: 'TLanguage',
+  TConfigInvocation: 'TConfigInvocation',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

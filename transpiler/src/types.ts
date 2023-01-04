@@ -687,6 +687,16 @@ export type TUseCase = {
   } & TParameterList;
 };
 
+export const languageKey = 'language';
+export type TLanguage = 'TypeScript' | 'Java'; //TODO add for for unknown language
+
+export const configInvocationKey = 'configInvocation';
+export type TConfigInvocation = {
+  configInvocation: {
+    language: TLanguage;
+  };
+};
+
 export type TBaseControllerValues = TParameterList;
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';

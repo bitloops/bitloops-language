@@ -1,26 +1,23 @@
-import { TIdentifier } from '../../../../../types.js';
-import { IBuilder } from '../IBuilder.js';
-import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
+import { TLanguage } from '../../../../../types.js';
+import { LanguageNode } from '../../nodes/setup/LanguageNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { LanguageNode } from '../nodes/LanguageNode.js';
+import { IBuilder } from '../IBuilder.js';
 
 export class LanguageNodeBuilder implements IBuilder<LanguageNode> {
-  public readonly NAME = 'identifier';
-
   private languageNode: LanguageNode;
-  private languageName: TIdentifier;
+  private name: TLanguage;
 
   constructor(nodeMetadata?: TNodeMetadata) {
     this.languageNode = new LanguageNode(nodeMetadata);
   }
 
-  public withLanguage(languageName: TIdentifier): LanguageNodeBuilder {
-    this.languageName = languageName;
+  public withName(name: TLanguage): LanguageNodeBuilder {
+    this.name = name;
     return this;
   }
 
-  public build(): IdentifierNode {
-    this.languageNode.buildLeafValue(this.languageName);
+  public build(): LanguageNode {
+    this.languageNode.buildLeafValue(this.name);
 
     return this.languageNode;
   }
