@@ -1,5 +1,4 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { StringLiteralBuilder } from '../../../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
 import { RestServerAPIPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerAPIPrefixNodeBuilder.js';
 import { RestServerNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerNodeBuilder.js';
 import { RestServerPortNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerPortNodeBuilder.js';
@@ -13,8 +12,8 @@ import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/Ident
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
-import { ServerOptionNode } from '../../../intermediate-ast/nodes/setup/ServerOptionNode.js';
 import { ServerOptionsNode } from '../../../intermediate-ast/nodes/setup/ServerOptionsNode.js';
+import { ServerRouteNode } from '../../../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRoutesNode.js';
 import { ServerTypeIdentifierNode } from '../../../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
@@ -26,14 +25,7 @@ export const restServerDeclarationVisitor = (
 ): RestServerNode => {
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  const serverOptions = thisVisitor.visit(ctx.serverInstantiationOptions());
-  const serverOptionsNodes: ServerOptionNode[] = serverOptions
-    .filter((child) => child !== undefined)
-    .map((child) => child[0]);
-
-  const serverOptionsNode = new ServerOptionsNodeBuilder()
-    .withServerOptions(serverOptionsNodes)
-    .build();
+  const serverOptionsNode = thisVisitor.visit(ctx.serverInstantiationOptions());
 
   const routes: ServerRoutesNode = thisVisitor.visit(ctx.bindServerRoutes());
 
@@ -44,41 +36,38 @@ export const restServerDeclarationVisitor = (
   return restServerNode;
 };
 
-//TODO this is not visited/ delete or replace the
-// restServerDeclarationVisitor part with below section
 export const serverInstantiationOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerInstantiationOptionsContext,
 ): ServerOptionsNode => {
-  const serverOptions = thisVisitor.visitChildren(ctx);
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const serverTypeOptionNode = thisVisitor.visit(ctx.serverTypeOption(0));
+  const restServerPortNode = thisVisitor.visit(ctx.restServerPort(0));
+  if (ctx.serverApiPrefixOption(0)) {
+    const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
+    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+      .withAPIPrefix(serverApiPrefixOptionNode)
+      .withPort(restServerPortNode)
+      .withServerType(serverTypeOptionNode)
+      .build();
+    return serverOptionsNode;
+  }
 
-  const serverOptionsNodes: ServerOptionNode[] = serverOptions.filter(
-    (child) => child !== undefined,
-  );
-
-  const serverOptionsNode = new ServerOptionsNodeBuilder()
-    .withServerOptions(serverOptionsNodes)
+  const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
+    .withPort(restServerPortNode)
+    .withServerType(serverTypeOptionNode)
     .build();
   return serverOptionsNode;
 };
 
 export const serverTypeOptionVisitor = (
+  thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerTypeOptionContext,
 ): ServerTypeIdentifierNode => {
-  return new ServerTypeIdentifierNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ServerTypeIdentifierNodeBuilder(metadata)
     .withServerTypeIdentifier(ctx.serverType().getText())
     .build();
-};
-
-//TODO test this
-export const customServerOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.CustomServerOptionContext,
-): ExpressionNode => {
-  const identifier = ctx.Identifier().getText();
-  console.log('identifier', identifier);
-  const expressionNode = thisVisitor.visit(ctx.expression());
-  return expressionNode;
 };
 
 export const restServerPortVisitor = (
@@ -86,19 +75,19 @@ export const restServerPortVisitor = (
   ctx: BitloopsParser.RestServerPortContext,
 ): RestServerPortNode => {
   const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
-
-  const portNode = new RestServerPortNodeBuilder().withPort(expressionNode).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const portNode = new RestServerPortNodeBuilder(metadata).withPort(expressionNode).build();
   return portNode;
 };
 
-//TODO delete
 export const restServerAPIPrefixVisitor = (
+  thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerApiPrefixOptionContext,
 ): RestServerPortNode => {
-  const pathString = ctx.pathString().getText();
-  const apiPrefixStringNode = new StringLiteralBuilder().withValue(pathString).build();
+  const apiPrefixStringNode = thisVisitor.visit(ctx.pathString());
 
-  const apiPrefixNode = new RestServerAPIPrefixNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const apiPrefixNode = new RestServerAPIPrefixNodeBuilder(metadata)
     .withAPIPrefix(apiPrefixStringNode)
     .build();
   return apiPrefixNode;
@@ -110,8 +99,9 @@ export const bindServerRoutesVisitor = (
 ): ServerRoutesNode => {
   const serverRoutes = thisVisitor.visitChildren(ctx);
   const routeBinds = serverRoutes.filter((child) => child !== undefined);
+  const metadata = produceMetadata(ctx, thisVisitor);
 
-  const serverRoutesNode: ServerRoutesNode = new ServerRoutesNodeBuilder()
+  const serverRoutesNode: ServerRoutesNode = new ServerRoutesNodeBuilder(metadata)
     .withServerRoutes(routeBinds)
     .build();
 
@@ -121,15 +111,16 @@ export const bindServerRoutesVisitor = (
 export const bindServerRouteVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RouteBindContext,
-): ServerRoutesNode => {
-  const routePrefix = new StringLiteralBuilder().withValue(ctx.pathString().getText()).build();
+): ServerRouteNode => {
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const pathStringlNode = thisVisitor.visit(ctx.pathString());
 
   const routerPrefixNode: RestServerRouterPrefixNode = new RestServerRouterPrefixNodeBuilder()
-    .witRouterPrefix(routePrefix)
+    .witRouterPrefix(pathStringlNode)
     .build();
   const identifier: IdentifierNode = thisVisitor.visit(ctx.identifier());
 
-  const serverRoutesNode: ServerRoutesNode = new ServerRouteNodeBuilder()
+  const serverRoutesNode: ServerRoutesNode = new ServerRouteNodeBuilder(metadata)
     .withInstanceName(identifier)
     .withRouterPrefix(routerPrefixNode)
     .build();

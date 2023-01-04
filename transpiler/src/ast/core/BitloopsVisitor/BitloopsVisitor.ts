@@ -192,7 +192,6 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
-  customServerOptionVisitor,
   restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
   restServerPortVisitor,
@@ -227,7 +226,13 @@ import {
   repoConnectionOptionsVisitor,
   repoConnectionPortOptionVisitor,
 } from './helpers/setup/repoConnectionOptionsVisitor.js';
+import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
+import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
+import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
+import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -310,8 +315,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return repoPortIdentifierNode;
   }
 
-  visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
+  visitIdentifier(ctx: BitloopsParser.IdentifierContext): IdentifierNode {
     const identifierName = ctx.Identifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
+    return identifierNode;
+  }
+
+  visitUpperCaseIdentifier(ctx: BitloopsParser.UpperCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UpperCaseIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
     const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
     return identifierNode;
@@ -562,7 +574,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     const actualNumericLiteral = this.visitChildren(ctx)[0];
-    return new NumericLiteralBuilder().withNumericLiteral(actualNumericLiteral).build();
+    const metadata = produceMetadata(ctx, this);
+    return new NumericLiteralBuilder(metadata).withNumericLiteral(actualNumericLiteral).build();
   }
 
   visitTemplateStringLiteralLabel(ctx: BitloopsParser.TemplateStringLiteralLabelContext) {
@@ -986,33 +999,23 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return optionalVisitor(ctx);
   }
 
-  // SETUPVisitor methods
-
-  // visitLanguage(ctx: BitloopsParser.LanguageContext) {
-  //   return languageVisitor(this, ctx);
-  // }
-
-  // visitServerDeclarationStatement(ctx: BitloopsParser.ServerDeclarationStatementContext) {
-  //   return serverDeclarationVisitor(this, ctx);
-  // }
-
-  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext) {
+  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): RestServerNode {
     return restServerDeclarationVisitor(this, ctx);
   }
 
-  visitServerInstantiationVisitor(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
+  visitServerInstantiationOptions(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
     return serverInstantiationOptionsVisitor(this, ctx);
   }
 
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-    const serverTypeNode = serverTypeOptionVisitor(ctx);
+    const serverTypeNode = serverTypeOptionVisitor(this, ctx);
     return serverTypeNode;
   }
 
   visitServerApiPrefixOption(
     ctx: BitloopsParser.ServerApiPrefixOptionContext,
   ): RestServerAPIPrefixNode {
-    const apiPrefixNode = restServerAPIPrefixVisitor(ctx);
+    const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
     return apiPrefixNode;
   }
 
@@ -1020,31 +1023,33 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerPortVisitor(this, ctx);
   }
 
-  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
-    const res = customServerOptionVisitor(this, ctx);
-    return res;
-  }
+  //TODO support custom option in the future?
+  // visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
+  //   const res = customServerOptionVisitor(this, ctx);
+  //   return res;
+  // }
 
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);
     return routesNode;
   }
 
-  visitRouteBind(ctx: BitloopsParser.RouteBindContext): any {
+  visitRouteBind(ctx: BitloopsParser.RouteBindContext): ServerRouteNode {
     const routeNode = bindServerRouteVisitor(this, ctx);
     return routeNode;
-    // return { routerPrefix: routePath, routerInstanceName: identifier };
   }
 
   visitEnvVarWithDefaultValueExpression(
     ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
-  ) {
+  ): ExpressionNode {
     const envVar = envVarWithDefaultValueExpressionVisitor(this, ctx);
     return envVar;
   }
 
-  visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-    const envVar = enviromentVariableVisitor(ctx);
+  visitEnvironmentVariableExpression(
+    ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+  ): ExpressionNode {
+    const envVar = enviromentVariableVisitor(this, ctx);
     return envVar;
   }
   visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {
@@ -1131,44 +1136,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     }
   }
 
-  // visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
-  //   const envVar = enviromentVariableVisitor(ctx);
-  //   return envVar;
-  // }
+  visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
+    configInvocationVisitor(this, ctx);
+  }
 
-  // visitCoreExpression(ctx: BitloopsParser.CoreExpressionContext) {
-  //   const expressionNode = this.visit(ctx.expression());
-  //   return expressionNode;
-  // }
+  visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
+    return languageSetterMethodVisitor(this, ctx);
+  }
 
-  // visitDtoTestStatement(ctx: BitloopsParser.DtoTestStatementContext) {
-  //   console.log('DTOooOooo', ctx);
-  // }
-  /**
-   * Server Expressions
-   */
-  // visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): void {
-  //   console.log('visitRestServerExpression');
-  //   const serverRawOptions = this.visit(ctx.serverInstantiationOptions());
-  //   const { port, serverType, apiPrefix, corsOptions } = serverRawOptions;
-
-  //   const serverOptions: any = {
-  //     port,
-  //     apiPrefix,
-  //   };
-  //   if (apiPrefix) serverOptions.apiPrefix = apiPrefix;
-  //   if (corsOptions) {
-  //     serverOptions.corsOptions = corsOptions;
-  //   }
-  //   const routers = this.visit(ctx.bindServerRoutes());
-  //   serverOptions.routers = routers;
-
-  //   if (!this._result.servers) {
-  //     this._result.servers = {};
-  //   }
-  //   if (!this._result.servers[serverType]) {
-  //     this._result.servers[serverType] = { serverInstances: [] };
-  //   }
-  //   this._result.servers[serverType].serverInstances.push(serverOptions);
-  // }
+  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
 }

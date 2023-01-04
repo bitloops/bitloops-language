@@ -461,10 +461,12 @@ export type TNumericLiteral = {
   numericLiteral: TNumericLiteralValues;
 };
 export type TNumericLiteralValues = IntegerLiteral | DecimalLiteral;
+
+export type TIntegerLiteralType = 'int32' | 'int64';
 export type IntegerLiteral = {
   integerLiteral: {
     value: string;
-    type: 'int32' | 'int64'; //| 'uint32' | 'uint64';
+    type: TIntegerLiteralType; //| 'uint32' | 'uint64';
   };
 };
 export type DecimalLiteral = {
@@ -682,6 +684,16 @@ export type TUseCase = {
     [UseCaseIdentifierKey]: TUseCaseIdentifier;
     execute: TExecute;
   } & TParameterList;
+};
+
+export const languageKey = 'language';
+export type TLanguage = 'TypeScript' | 'Java'; //TODO add for for unknown language
+
+export const configInvocationKey = 'configInvocation';
+export type TConfigInvocation = {
+  configInvocation: {
+    language: TLanguage;
+  };
 };
 
 export type TBaseControllerValues = TParameterList;
@@ -917,19 +929,15 @@ export type TRestServerInstanceRouter = {
   };
 };
 
-export type TRestServerPort = {
-  port: TExpression;
-};
+export type TRestServerPort = TExpression;
 
 export type TAPIPrefix = StringLiteral;
 
-export type TRestServerOptions = TRestServerOption[];
-export type TRestServerOption =
-  | {
-      port: TRestServerPort;
-    }
-  | { apiPrefix?: TAPIPrefix }
-  | { serverType: TServerType };
+export type TRestServerOptions = {
+  apiPrefix?: TAPIPrefix;
+  restServerPort: TRestServerPort;
+  serverType: TServerType;
+};
 
 export type TRESTServerInstance = {
   restServer: {
@@ -1077,9 +1085,11 @@ export type TEnvironmentVariableExpression = {
 };
 
 // TODO remove this
+export type TLiteralExpressionType = TBitloopsPrimitives | 'number';
+
 export type TLiteralExpression = {
   literal: {
-    type: TBitloopsPrimitives | 'number';
+    type: TLiteralExpressionType;
     value: string;
   };
 };

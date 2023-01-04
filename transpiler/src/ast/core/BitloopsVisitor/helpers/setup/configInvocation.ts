@@ -18,11 +18,21 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { StringLiteralBuilder } from '../../../../intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
-import { StringLiteralNode } from '../../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsVisitor from '../../BitloopsVisitor.js';
+import { produceMetadata } from '../../metadata.js';
+import { LanguageNode } from '../../../intermediate-ast/nodes/setup/LanguageNode.js';
+import { ConfigInvocationNodeBuilder } from '../../../intermediate-ast/builders/setup/ConfigInvocationNodeBuilder.js';
 
-export const stringEvaluation = (value: string): StringLiteralNode => {
-  const trimmedValue = value.substring(1, value.length - 1);
-  const literalNode = new StringLiteralBuilder().withValue(trimmedValue).build();
-  return literalNode;
+export const configInvocationVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ConfigInvocationContext,
+): void => {
+  const languageNode: LanguageNode = thisVisitor.visit(ctx.languageSetterMethod());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+
+  new ConfigInvocationNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withLanguage(languageNode)
+    .build();
 };
