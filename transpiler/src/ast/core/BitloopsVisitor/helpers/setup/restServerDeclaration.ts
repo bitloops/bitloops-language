@@ -13,6 +13,7 @@ import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServer
 import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
 import { ServerOptionsNode } from '../../../intermediate-ast/nodes/setup/ServerOptionsNode.js';
+import { ServerRouteNode } from '../../../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRoutesNode.js';
 import { ServerTypeIdentifierNode } from '../../../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
@@ -110,7 +111,7 @@ export const bindServerRoutesVisitor = (
 export const bindServerRouteVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RouteBindContext,
-): ServerRoutesNode => {
+): ServerRouteNode => {
   const metadata = produceMetadata(ctx, thisVisitor);
   const pathStringlNode = thisVisitor.visit(ctx.pathString());
 

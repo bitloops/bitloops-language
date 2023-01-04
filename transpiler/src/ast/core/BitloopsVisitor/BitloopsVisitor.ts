@@ -192,7 +192,6 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
-  // customServerOptionVisitor,
   restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
   restServerPortVisitor,
@@ -217,6 +216,8 @@ import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMetho
 // import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
+import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -983,17 +984,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return optionalVisitor(ctx);
   }
 
-  // SETUPVisitor methods
-
-  // visitLanguage(ctx: BitloopsParser.LanguageContext) {
-  //   return languageVisitor(this, ctx);
-  // }
-
-  // visitServerDeclarationStatement(ctx: BitloopsParser.ServerDeclarationStatementContext) {
-  //   return serverDeclarationVisitor(this, ctx);
-  // }
-
-  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext) {
+  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): RestServerNode {
     return restServerDeclarationVisitor(this, ctx);
   }
 
@@ -1028,20 +1019,21 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return routesNode;
   }
 
-  visitRouteBind(ctx: BitloopsParser.RouteBindContext): any {
+  visitRouteBind(ctx: BitloopsParser.RouteBindContext): ServerRouteNode {
     const routeNode = bindServerRouteVisitor(this, ctx);
     return routeNode;
-    // return { routerPrefix: routePath, routerInstanceName: identifier };
   }
 
   visitEnvVarWithDefaultValueExpression(
     ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
-  ) {
+  ): ExpressionNode {
     const envVar = envVarWithDefaultValueExpressionVisitor(this, ctx);
     return envVar;
   }
 
-  visitEnvironmentVariableExpression(ctx: BitloopsParser.EnvironmentVariableExpressionContext) {
+  visitEnvironmentVariableExpression(
+    ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+  ): ExpressionNode {
     const envVar = enviromentVariableVisitor(this, ctx);
     return envVar;
   }
