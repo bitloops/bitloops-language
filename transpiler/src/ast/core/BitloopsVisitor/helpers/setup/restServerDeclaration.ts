@@ -26,14 +26,7 @@ export const restServerDeclarationVisitor = (
 ): RestServerNode => {
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  const serverOptions = thisVisitor.visit(ctx.serverInstantiationOptions());
-  const serverOptionsNodes: ServerOptionNode[] = serverOptions
-    .filter((child) => child !== undefined)
-    .map((child) => child[0]);
-
-  const serverOptionsNode = new ServerOptionsNodeBuilder()
-    .withServerOptions(serverOptionsNodes)
-    .build();
+  const serverOptionsNode = thisVisitor.visit(ctx.serverInstantiationOptions());
 
   const routes: ServerRoutesNode = thisVisitor.visit(ctx.bindServerRoutes());
 
@@ -44,61 +37,63 @@ export const restServerDeclarationVisitor = (
   return restServerNode;
 };
 
-//TODO this is not visited/ delete or replace the
-// restServerDeclarationVisitor part with below section
 export const serverInstantiationOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerInstantiationOptionsContext,
 ): ServerOptionsNode => {
   const serverOptions = thisVisitor.visitChildren(ctx);
 
-  const serverOptionsNodes: ServerOptionNode[] = serverOptions.filter(
-    (child) => child !== undefined,
-  );
+  const serverOptionsNodes: ServerOptionNode[] = serverOptions
+    .filter((child) => child !== undefined)
+    .map((child) => child[0]);
 
-  const serverOptionsNode = new ServerOptionsNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
     .withServerOptions(serverOptionsNodes)
     .build();
   return serverOptionsNode;
 };
 
 export const serverTypeOptionVisitor = (
+  thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerTypeOptionContext,
 ): ServerTypeIdentifierNode => {
-  return new ServerTypeIdentifierNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ServerTypeIdentifierNodeBuilder(metadata)
     .withServerTypeIdentifier(ctx.serverType().getText())
     .build();
 };
 
-//TODO test this
-export const customServerOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.CustomServerOptionContext,
-): ExpressionNode => {
-  const identifier = ctx.Identifier().getText();
-  console.log('identifier', identifier);
-  const expressionNode = thisVisitor.visit(ctx.expression());
-  return expressionNode;
-};
+// export const customServerOptionVisitor = (
+//   thisVisitor: BitloopsVisitor,
+//   ctx: BitloopsParser.CustomServerOptionContext,
+// ): ExpressionNode => {
+//   const identifier = ctx.Identifier().getText();
+//   console.log('identifier', identifier);
+//   const expressionNode = thisVisitor.visit(ctx.expression());
+//   return expressionNode;
+// };
 
 export const restServerPortVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestServerPortContext,
 ): RestServerPortNode => {
   const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
-
-  const portNode = new RestServerPortNodeBuilder().withPort(expressionNode).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const portNode = new RestServerPortNodeBuilder(metadata).withPort(expressionNode).build();
   return portNode;
 };
 
 //TODO delete
 export const restServerAPIPrefixVisitor = (
+  thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ServerApiPrefixOptionContext,
 ): RestServerPortNode => {
   const pathString = ctx.pathString().getText();
   const apiPrefixStringNode = new StringLiteralBuilder().withValue(pathString).build();
 
-  const apiPrefixNode = new RestServerAPIPrefixNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const apiPrefixNode = new RestServerAPIPrefixNodeBuilder(metadata)
     .withAPIPrefix(apiPrefixStringNode)
     .build();
   return apiPrefixNode;
@@ -110,8 +105,9 @@ export const bindServerRoutesVisitor = (
 ): ServerRoutesNode => {
   const serverRoutes = thisVisitor.visitChildren(ctx);
   const routeBinds = serverRoutes.filter((child) => child !== undefined);
+  const metadata = produceMetadata(ctx, thisVisitor);
 
-  const serverRoutesNode: ServerRoutesNode = new ServerRoutesNodeBuilder()
+  const serverRoutesNode: ServerRoutesNode = new ServerRoutesNodeBuilder(metadata)
     .withServerRoutes(routeBinds)
     .build();
 

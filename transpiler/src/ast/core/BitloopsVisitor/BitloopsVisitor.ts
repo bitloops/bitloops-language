@@ -192,7 +192,7 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
-  customServerOptionVisitor,
+  // customServerOptionVisitor,
   restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
   restServerPortVisitor,
@@ -993,19 +993,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerDeclarationVisitor(this, ctx);
   }
 
-  visitServerInstantiationVisitor(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
+  visitServerInstantiationOptions(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
     return serverInstantiationOptionsVisitor(this, ctx);
   }
 
   visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-    const serverTypeNode = serverTypeOptionVisitor(ctx);
+    const serverTypeNode = serverTypeOptionVisitor(this, ctx);
     return serverTypeNode;
   }
 
   visitServerApiPrefixOption(
     ctx: BitloopsParser.ServerApiPrefixOptionContext,
   ): RestServerAPIPrefixNode {
-    const apiPrefixNode = restServerAPIPrefixVisitor(ctx);
+    const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
     return apiPrefixNode;
   }
 
@@ -1013,10 +1013,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return restServerPortVisitor(this, ctx);
   }
 
-  visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
-    const res = customServerOptionVisitor(this, ctx);
-    return res;
-  }
+  //TODO support custom option in the future?
+  // visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
+  //   const res = customServerOptionVisitor(this, ctx);
+  //   return res;
+  // }
 
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);

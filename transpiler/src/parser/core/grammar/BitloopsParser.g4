@@ -827,7 +827,6 @@ serverDeclaration
     ;
 
 serverInstantiationOptions
-    // TODO Remove necessary comma on end of each line
     : OpenBrace serverInstantiationOption* CloseBrace
     ;
 
