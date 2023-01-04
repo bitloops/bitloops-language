@@ -464,10 +464,12 @@ export type TNumericLiteral = {
   numericLiteral: TNumericLiteralValues;
 };
 export type TNumericLiteralValues = IntegerLiteral | DecimalLiteral;
+
+export type TIntegerLiteralType = 'int32' | 'int64';
 export type IntegerLiteral = {
   integerLiteral: {
     value: string;
-    type: 'int32' | 'int64'; //| 'uint32' | 'uint64';
+    type: TIntegerLiteralType; //| 'uint32' | 'uint64';
   };
 };
 export type DecimalLiteral = {
@@ -897,19 +899,16 @@ export type TRestServerInstanceRouter = {
   };
 };
 
-export type TRestServerPort = {
-  port: TExpression;
-};
+export type TRestServerPort = TExpression;
 
 export type TAPIPrefix = StringLiteral;
 
 export type TRestServerOptions = TRestServerOption[];
-export type TRestServerOption =
-  | {
-      port: TRestServerPort;
-    }
-  | { apiPrefix?: TAPIPrefix }
-  | { serverType: TServerType };
+export type TRestServerOption = {
+  restServerPort: TRestServerPort;
+  apiPrefix?: TAPIPrefix;
+  serverType: TServerType;
+};
 
 export type TRESTServerInstance = {
   restServer: {
@@ -1052,7 +1051,7 @@ export type TObjectLiteral = {
 export type TEnvironmentVariableExpression = {
   environmentVariable: {
     identifier: string;
-    defaultValue?: TExpression;
+    defaultValue?: TLiteralValues;
   };
 };
 

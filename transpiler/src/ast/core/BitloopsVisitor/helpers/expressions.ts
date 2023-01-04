@@ -42,6 +42,7 @@ import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifie
 import { produceMetadata } from '../metadata.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { DefaultEnvVarValueNodeBuilder } from '../../intermediate-ast/builders/setup/DefaultEnvVarValueNodeBuilder.js';
+import { LiteralNode } from '../../intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -248,10 +249,10 @@ export const envVarWithDefaultValueExpressionVisitor = (
   const identifierCtx = ctx.identifier() ? ctx.identifier() : ctx.upperCaseIdentifier();
   const identifierNode: IdentifierNode = thisVisitor.visit(identifierCtx);
 
-  const literalValue = thisVisitor.visit(ctx.literal());
-  const literalNode = new LiteralBuilder().withLiteral(literalValue).build();
+  const literalNode: LiteralNode = thisVisitor.visit(ctx.literal());
 
   const metadata = produceMetadata(ctx, thisVisitor);
+
   const defaultEnvVarValueNode = new DefaultEnvVarValueNodeBuilder()
     .withLiteral(literalNode)
     .build();

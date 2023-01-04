@@ -5,6 +5,7 @@ import {
   TEvaluation,
   TExpression,
   TMultiplicativeOperator,
+  TNumericLiteral,
   TRelationalOperator,
 } from '../../../../src/types.js';
 
@@ -27,9 +28,9 @@ export class ExpressionBuilderDirector {
     };
   }
 
-  buildEnvVariableExpressionWithDefault(
+  buildEnvVariableExpressionWithDefaultNumericLiteral(
     identifier: string,
-    defaultValue: TExpression,
+    defaultValue: TNumericLiteral,
   ): TExpression {
     return {
       expression: {

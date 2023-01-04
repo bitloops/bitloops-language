@@ -1,5 +1,7 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
 import { ExpressionBuilderDirector } from '../../../core/builders/expressionDirector.js';
+import { IntegerLiteralBuilder } from '../../../core/builders/IntegerLiteralBuilder.js';
+import { NumericLiteralBuilder } from '../../../core/builders/NumericLiteralBuilder.js';
 import { StringLiteralBuilder } from '../../../core/builders/stringLiteral.js';
 import { RestServerDeclarationBuilder } from '../../builders/restServerDirector.js';
 import { RestServerInstanceRouterBuilder } from '../../builders/restServerInstanceRouterBuilder.js';
@@ -10,9 +12,11 @@ const portExpressionWithoutDefault = new ExpressionBuilderDirector().buildLogica
 );
 
 const portExpressionWithDefault =
-  new ExpressionBuilderDirector().buildEnvVariableExpressionWithDefault(
+  new ExpressionBuilderDirector().buildEnvVariableExpressionWithDefaultNumericLiteral(
     'FASTIFY_PORT',
-    new ExpressionBuilderDirector().buildInt32LiteralExpression(5001),
+    new NumericLiteralBuilder()
+      .withInteger(new IntegerLiteralBuilder().withType('int32').withValue('5001').build())
+      .build(),
   );
 
 export const VALID_REST_SERVER_CASES = [
@@ -52,24 +56,23 @@ export const VALID_REST_SERVER_CASES = [
       ])
       .build(),
   },
-  // {
-  //   inputBLString: FileUtil.readFileString(
-  //     'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/restServerWithoutAPIPrefix.bl',
-  //   ),
-  //   description: 'Valid rest server with default env variable',
-  //   fileId: 'testFile.bl',
-  //   restServer: new RestServerDeclarationBuilder()
-  //     .withServerType('REST.Fastify')
-  //     // .withApiPrefix(new StringLiteralBuilder().withValue("'/'").build())
-  //     .withPort(portExpressionWithoutDefault)
-  //     .withRoutes([
-  //       new RestServerInstanceRouterBuilder()
-  //         .withInstanceName('helloWorldRESTRouter')
-  //         .withRouterPrefix(new StringLiteralBuilder().withValue("'/'").build())
-  //         .build(),
-  //     ])
-  //     .build(),
-  // },
+  {
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/setup/mocks/restServerDeclaration/restServerWithoutAPIPrefix.bl',
+    ),
+    description: 'Valid rest server with default env variable',
+    fileId: 'testFile.bl',
+    restServer: new RestServerDeclarationBuilder()
+      .withServerType('REST.Fastify')
+      .withPort(portExpressionWithoutDefault)
+      .withRoutes([
+        new RestServerInstanceRouterBuilder()
+          .withInstanceName('helloWorldRESTRouter')
+          .withRouterPrefix(new StringLiteralBuilder().withValue("'/'").build())
+          .build(),
+      ])
+      .build(),
+  },
 ];
 
 export const VALID_MULTIPLE_REST_SERVER_CASES = [

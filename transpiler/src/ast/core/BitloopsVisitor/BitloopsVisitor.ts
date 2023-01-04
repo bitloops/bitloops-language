@@ -554,7 +554,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     const actualNumericLiteral = this.visitChildren(ctx)[0];
-    return new NumericLiteralBuilder().withNumericLiteral(actualNumericLiteral).build();
+    const metadata = produceMetadata(ctx, this);
+    return new NumericLiteralBuilder(metadata).withNumericLiteral(actualNumericLiteral).build();
   }
 
   visitTemplateStringLiteralLabel(ctx: BitloopsParser.TemplateStringLiteralLabelContext) {
