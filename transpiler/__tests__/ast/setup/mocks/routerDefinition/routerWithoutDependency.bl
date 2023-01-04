@@ -1,12 +1,3 @@
 const helloWorldRESTRouter = RESTRouter(REST.Fastify) { 
     Get('/hello1'): [Bounded Context][Module]HelloWorldController(); 
 }
-
-// const helloWorldRESTRouter = RESTRouter(REST.Fastify) { 
-//     Get('/hello1'): [Bounded Context1][Module]HelloWorldController(myUseCase); 
-// }
-
-// const helloWorldRESTRouter = RESTRouter(REST.Express) {
-//     Get('/hello1'): [Bounded Context][Module]HelloWorldController();
-//     Post('/hello2'): [Hello World][My Module2]HelloWorld2Controller();
-// }

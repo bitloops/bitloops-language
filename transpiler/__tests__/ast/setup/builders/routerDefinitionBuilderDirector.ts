@@ -2,6 +2,7 @@ import {
   THTTPMethodVerb,
   TIdentifier,
   TRESTControllerIdentifier,
+  TRouterController,
   TRouterDefinition,
 } from '../../../../src/types.js';
 import { ArgumentListBuilderDirector } from '../../core/builders/argumentListBuilderDirector.js';
@@ -54,6 +55,23 @@ export class RouterDefinitionBuilderDirector {
           .build(),
       ])
       .build();
+    const routerExpression = new RouterExpressionBuilder()
+      .withRestRouter('RESTRouter')
+      .withRouterArguments(routerArguments)
+      .withRouterControllers(routerControllers)
+      .build();
+    return this.builder.withIdentifier(constIdentifier).withExpression(routerExpression).build();
+  }
+
+  buildExpressRouterDefinitionWithMultipleControllers({
+    constIdentifier,
+    controllers,
+  }: {
+    constIdentifier: TIdentifier;
+    controllers: TRouterController[];
+  }): TRouterDefinition {
+    const routerArguments = new RouterArgumentsBuilder().withServerType('REST.Express').build();
+    const routerControllers = new RouterControllersBuilder().withControllers(controllers).build();
     const routerExpression = new RouterExpressionBuilder()
       .withRestRouter('RESTRouter')
       .withRouterArguments(routerArguments)
