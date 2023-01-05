@@ -21,7 +21,7 @@ import {
   TArgumentList,
   TBreakStatement,
   TConstDeclaration,
-  TEvaluationFields,
+  TEvaluationField,
   TExpression,
   TReturnErrorStatement,
   TReturnOKStatement,
@@ -132,7 +132,7 @@ export class StatementDirector {
   }: {
     name: string;
     entityIdentifier: string;
-    entityFields: TEvaluationFields;
+    entityFields: TEvaluationField[];
   }): TConstDeclaration {
     return new ConstDeclarationBuilderDirector().buildConstDeclarationWithEntityEvaluation({
       name,
@@ -185,7 +185,7 @@ export class StatementDirector {
 
   buildExpressionEntityEvaluationWithFields(
     entityName: string,
-    fields: TEvaluationFields,
+    fields: TEvaluationField[],
   ): TExpression {
     return new ExpressionBuilderDirector().buildEvaluation(
       new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {

@@ -1,7 +1,6 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TVariables,
-  fieldsKey,
   TStructIdentifier,
   StructKey,
   TStructDeclaration,
@@ -23,10 +22,10 @@ export class StructDeclarationBuilder implements IBuilder<TStructDeclaration> {
   }
 
   public build(): TStructDeclaration {
-    const struct = {
+    const struct: TStructDeclaration = {
       [StructKey]: {
         [structIdentifierKey]: this.identifierName,
-        [fieldsKey]: this.fields,
+        ...this.fields,
       },
     };
 

@@ -8,18 +8,20 @@ export const validStructDeclarationCases = [
     inputBLString: 'Struct HelloWorld{ string name; int32 age; };',
     expected: new StructBuilderDirector().buildStructWithRequiredFields({
       name: 'HelloWorld',
-      fields: [
-        new FieldBuilderDirector().buildPrimitiveField({
-          name: 'name',
-          type: 'string',
-          isOptional: false,
-        }),
-        new FieldBuilderDirector().buildPrimitiveField({
-          name: 'age',
-          type: 'int32',
-          isOptional: false,
-        }),
-      ],
+      fields: {
+        fields: [
+          new FieldBuilderDirector().buildPrimitiveField({
+            name: 'name',
+            type: 'string',
+            isOptional: false,
+          }),
+          new FieldBuilderDirector().buildPrimitiveField({
+            name: 'age',
+            type: 'int32',
+            isOptional: false,
+          }),
+        ],
+      },
     }),
   },
   {
@@ -36,13 +38,15 @@ export const validStructDeclarationCases = [
     inputBLString: 'Struct HelloWorld { string[] addresses; };',
     expected: new StructBuilderDirector().buildStructWithRequiredFields({
       name: 'HelloWorld',
-      fields: [
-        new FieldBuilderDirector().buildArrayField({
-          name: 'addresses',
-          type: 'string',
-          isOptional: false,
-        }),
-      ],
+      fields: {
+        fields: [
+          new FieldBuilderDirector().buildArrayField({
+            name: 'addresses',
+            type: 'string',
+            isOptional: false,
+          }),
+        ],
+      },
     }),
   },
 ];
@@ -63,23 +67,27 @@ export const validMultipleStructsTestCases = [
     expected: [
       new StructBuilderDirector().buildStructWithRequiredFields({
         name: 'PhoneBook',
-        fields: [
-          new FieldBuilderDirector().buildArrayField({
-            name: 'addresses',
-            type: 'string',
-            isOptional: false,
-          }),
-        ],
+        fields: {
+          fields: [
+            new FieldBuilderDirector().buildArrayField({
+              name: 'addresses',
+              type: 'string',
+              isOptional: false,
+            }),
+          ],
+        },
       }),
       new StructBuilderDirector().buildStructWithRequiredFields({
         name: 'HelloWorld',
-        fields: [
-          new FieldBuilderDirector().buildPrimitiveField({
-            name: 'world',
-            type: 'string',
-            isOptional: false,
-          }),
-        ],
+        fields: {
+          fields: [
+            new FieldBuilderDirector().buildPrimitiveField({
+              name: 'world',
+              type: 'string',
+              isOptional: false,
+            }),
+          ],
+        },
       }),
     ],
   },

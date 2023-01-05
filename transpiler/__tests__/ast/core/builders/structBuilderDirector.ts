@@ -26,18 +26,20 @@ export class StructBuilderDirector {
   buildStructWithRequiredNameAndOptionalInfo({ name }: { name: string }): TStructDeclaration {
     const structDeclaration = this.structDeclarationBuilder
       .withIdentifier(name)
-      .withVariables([
-        new FieldBuilderDirector().buildPrimitiveField({
-          name: 'name',
-          type: 'string',
-          isOptional: false,
-        }),
-        new FieldBuilderDirector().buildIdentifierTypeField({
-          name: 'info',
-          identifier: 'Info',
-          isOptional: true,
-        }),
-      ])
+      .withVariables({
+        fields: [
+          new FieldBuilderDirector().buildPrimitiveField({
+            name: 'name',
+            type: 'string',
+            isOptional: false,
+          }),
+          new FieldBuilderDirector().buildIdentifierTypeField({
+            name: 'info',
+            identifier: 'Info',
+            isOptional: true,
+          }),
+        ],
+      })
       .build();
 
     return structDeclaration;

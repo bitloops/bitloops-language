@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TArgumentList, TEvaluationFields, TStatements } from '../../../../../src/types.js';
+import { TArgumentList, TEvaluationField, TStatements } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
@@ -109,7 +109,7 @@ export class StatementListDirector {
 
   buildOneReturnStatementEntityEvaluationWithFields(
     entityName: string,
-    fields: TEvaluationFields,
+    fields: TEvaluationField[],
   ): TStatements {
     const expressionEntityEvaluation = new ExpressionBuilderDirector().buildEvaluation(
       new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
