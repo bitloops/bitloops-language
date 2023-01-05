@@ -80,15 +80,14 @@ export const generateSetupFiles = (
 
   const result: TTargetSetupContent[] = [];
   for (const [_fileId, setupTree] of Object.entries(setupData)) {
-    const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
-      BitloopsTypesMapping.TRouterDefinition,
-    );
-
     // console.log('Generating system files...');
     const setupGenerator = new SetupTypeScript();
     const pathsAndContents: TSetupOutput[] = [];
 
     // Step 1. Generate routes files
+    const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
+      BitloopsTypesMapping.TRouterDefinition,
+    );
     const routes = setupGenerator.generateServerRouters(routerDefinitions, _bitloopsModel, license);
     // console.log('routes:', routes);
     // console.log('--------------------------------');
