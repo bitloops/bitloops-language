@@ -26,12 +26,6 @@ export const evaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EvaluationContext,
 ): any => {
-  // const evaluationValues = thisVisitor.visitChildren(ctx)[0];
-  // const evaluation = thisVisitor.evaluationBuilder.withEvaluationValues(evaluationValues).build();
-  // return evaluation;
   const evaluation = thisVisitor.visitChildren(ctx)[0];
   return new EvaluationBuilder().withEvaluation(evaluation).build();
-  // return {
-  //   evaluation,
-  // };
 };

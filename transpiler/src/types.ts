@@ -318,7 +318,8 @@ export type TEvaluationValues =
   | TPropsEvaluation
   | TEntityEvaluation
   | TErrorEvaluation
-  | TBuiltInClassEvaluation;
+  | TBuiltInClassEvaluation
+  | TBuiltInFunctionValues;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -529,7 +530,7 @@ export type TApplyRules = {
 export type TBuiltInFunction = {
   builtInFunction: TBuiltInFunctionValues;
 };
-export type TBuiltInFunctionValues = TApplyRules;
+export type TBuiltInFunctionValues = TApplyRules | TCorsOptions;
 
 export type TStatement =
   | TBreakStatement
@@ -975,19 +976,14 @@ export type TRestServerPort = TExpression;
 export type TAPIPrefix = StringLiteral;
 
 export type TCorsOptions = {
-  origin: StringLiteral;
-};
-
-export type TRestServerOptions = {
-  apiPrefix?: TAPIPrefix;
-  restServerPort: TRestServerPort;
-  serverType: TServerType;
-  corsOptions?: TCorsOptions;
+  corsOptions: {
+    origin: StringLiteral;
+  };
 };
 
 export type TRESTServerInstance = {
   restServer: {
-    serverOptions: TRestServerOptions;
+    serverOptions: TEvaluationFields;
     serverRoutes: TRestServerInstanceRouters;
   };
 };

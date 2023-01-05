@@ -192,18 +192,11 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
-  corsOptionsVisitor,
-  corsOriginVisitor,
-  restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
-  restServerPortVisitor,
   serverInstantiationOptionsVisitor,
-  serverTypeOptionVisitor,
 } from './helpers/setup/restServerDeclaration.js';
 import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
-import { RestServerPortNode } from '../intermediate-ast/nodes/setup/RestServerPortNode.js';
-import { RestServerAPIPrefixNode } from '../intermediate-ast/nodes/setup/RestServerAPIPrefixNode.js';
 import { UseCaseExpressionNode } from '../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
 import { useCaseDefinitionVisitor } from './helpers/setup/useCaseDefinition.js';
 import { useCaseExpressionVisitor } from './helpers/setup/useCaseExpressionVisitor.js';
@@ -242,8 +235,14 @@ import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterI
 import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
+import {
+  corsOptionsListStatementVisitor,
+  corsOptionsOriginVisitor,
+} from './helpers/setup/corsOptionsVisitor.js';
 import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
 import { CorsOriginNode } from '../intermediate-ast/nodes/setup/CorsOriginNode.js';
+// import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
+// import { CorsOriginNode } from '../intermediate-ast/nodes/setup/CorsOriginNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1018,21 +1017,21 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return serverInstantiationOptionsVisitor(this, ctx);
   }
 
-  visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-    const serverTypeNode = serverTypeOptionVisitor(this, ctx);
-    return serverTypeNode;
-  }
+  // visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
+  //   const serverTypeNode = serverTypeOptionVisitor(this, ctx);
+  //   return serverTypeNode;
+  // }
 
-  visitServerApiPrefixOption(
-    ctx: BitloopsParser.ServerApiPrefixOptionContext,
-  ): RestServerAPIPrefixNode {
-    const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
-    return apiPrefixNode;
-  }
+  // visitServerApiPrefixOption(
+  //   ctx: BitloopsParser.ServerApiPrefixOptionContext,
+  // ): RestServerAPIPrefixNode {
+  //   const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
+  //   return apiPrefixNode;
+  // }
 
-  visitRestServerPort(ctx: BitloopsParser.RestServerPortContext): RestServerPortNode {
-    return restServerPortVisitor(this, ctx);
-  }
+  // visitRestServerPort(ctx: BitloopsParser.RestServerPortContext): RestServerPortNode {
+  //   return restServerPortVisitor(this, ctx);
+  // }
 
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);
@@ -1190,5 +1189,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.PackageAdapterIdentifierContext,
   ): PackageAdapterIdentifierNode {
     return packageAdapterIdentifierVisitor(this, ctx);
+  }
+
+  visitCorsOptionsListStatement(
+    ctx: BitloopsParser.CorsOptionsListStatementContext,
+  ): CorsOptionsNode {
+    return corsOptionsListStatementVisitor(this, ctx);
+  }
+
+  visitCorsOriginOption(ctx: BitloopsParser.CorsOriginOptionContext): CorsOriginNode {
+    return corsOptionsOriginVisitor(this, ctx);
   }
 }

@@ -217,6 +217,9 @@ const BitloopsTypesMapping = {
   TPackageAdapterIdentifier: 'TPackageAdapterIdentifier',
   TPackageAdapterClassName: 'TPackageAdapterClassName',
   TPackageConcretion: 'TPackageConcretion',
+  TCorsOptions: 'TCorsOptions',
+  TCorsOptionsList: 'TCorsOptionsList',
+  TCorsOrigin: 'TCorsOrigin',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

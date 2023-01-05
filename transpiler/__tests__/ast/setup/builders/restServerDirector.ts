@@ -1,60 +1,28 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
+  TEvaluationFields,
   TRESTServerInstance,
-  TExpression,
   TRestServerInstanceRouters,
-  TServerType,
-  TAPIPrefix,
-  StringLiteral,
-  TRestServerOptions,
-  TCorsOptions,
 } from '../../../../src/types.js';
 
 export class RestServerDeclarationBuilder implements IBuilder<TRESTServerInstance> {
-  private port: TExpression;
-  private apiPrefix?: StringLiteral;
+  private fields: TEvaluationFields;
   private routes: TRestServerInstanceRouters;
-  private corsOptions: TCorsOptions;
-  private serverType: TServerType;
 
-  public withPort(port: TExpression): RestServerDeclarationBuilder {
-    this.port = port;
+  public withFieldList(fields: TEvaluationFields): RestServerDeclarationBuilder {
+    this.fields = fields;
     return this;
   }
-  public withApiPrefix(apiPrefix: TAPIPrefix): RestServerDeclarationBuilder {
-    this.apiPrefix = apiPrefix;
-    return this;
-  }
+
   public withRoutes(routes: TRestServerInstanceRouters): RestServerDeclarationBuilder {
     this.routes = routes;
     return this;
   }
-  public withServerType(serverType: TServerType): RestServerDeclarationBuilder {
-    this.serverType = serverType;
-    return this;
-  }
-
-  public withCorsOptions(corsOptions: TCorsOptions): RestServerDeclarationBuilder {
-    this.corsOptions = corsOptions;
-    return this;
-  }
 
   public build(): TRESTServerInstance {
-    const serverOptions: TRestServerOptions = {
-      serverType: this.serverType,
-      restServerPort: this.port,
-    };
-    if (this.apiPrefix) {
-      serverOptions.apiPrefix = this.apiPrefix;
-    }
-
-    if (this.corsOptions) {
-      serverOptions.corsOptions = this.corsOptions;
-    }
-
     const restServerInstance: TRESTServerInstance = {
       restServer: {
-        serverOptions,
+        serverOptions: this.fields,
         serverRoutes: this.routes,
       },
     };

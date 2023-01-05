@@ -246,6 +246,7 @@ errorEvaluation
 
 evaluation
     : builtInClassEvaluation
+    | builtInFunction
     | errorEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
@@ -285,6 +286,7 @@ statement
 
 builtInFunction
     : ApplyRules OpenParen applyRuleStatementRulesList CloseParen SemiColon? # ApplyRulesStatement
+    | CorsOptions OpenParen OpenBrace corsOptionsList CloseBrace CloseParen SemiColon? # CorsOptionsListStatement
     ;
 
 applyRuleStatementRulesList
@@ -293,6 +295,14 @@ applyRuleStatementRulesList
 
 applyRulesRule
     : domainRuleIdentifier methodArguments
+    ;
+
+corsOptionsList
+    : corsOption (Comma corsOption)* Comma?
+    ;
+
+corsOption
+    : CorsOrigin Colon StringLiteral Comma? #CorsOriginOption
     ;
 
 statementList
@@ -462,7 +472,6 @@ valueObjectEvaluation
 domainEvaluationInput
     : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen     # DomainEvaluationInputFieldList
     | OpenParen expression CloseParen                                   # DomainEvaluationInputRegular
-    // | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -805,26 +814,7 @@ serverDeclaration
     ;
 
 serverInstantiationOptions
-    : OpenBrace (serverTypeOption | serverApiPrefixOption| restServerPort | corsOptions)* CloseBrace
-    ;
-
-restServerPort 
-    : restServerPortIdentifier Colon expression Comma
-    ;
-
-restServerPortIdentifier: 
-    RestServerPortIdentifier;
-
-corsOptions
-    : corsOptionsIdentifier Colon OpenBrace origin CloseBrace Comma?
-    ;
-
-corsOptionsIdentifier
-    : CorsOptionsIdentifier
-    ;
-
-origin 
-    : OriginIdentifier Colon StringLiteral
+    : OpenBrace evaluationFieldList CloseBrace
     ;
 
 repoConnectionDefinition
@@ -863,38 +853,27 @@ concretedRepoPort
     : RepoPortIdentifier
     ;
 
-// serverInstantiationOptions
-//     // TODO Remove necessary comma on end of each line
-//     : OpenBrace (serverTypeOption | serverApiPrefixOption | customServerOption*) CloseBrace
+// serverTypeOption
+//     : ServerTypeOption Colon serverType Comma
 //     ;
 
-// serverInstantiationOption
-//     : serverTypeOption  #ServerTypeOptionStatement
-//     | serverApiPrefixOption #ServerApiPrefixOptionStatement
-//     | customServerOption #CustomServerOptionStatement
+// serverApiPrefixOption
+//     : ServerApiPrefix Colon pathString Comma
 //     ;
 
-serverTypeOption
-    : ServerTypeOption Colon serverType Comma
-    ;
-
-serverApiPrefixOption
-    : ServerApiPrefix Colon pathString Comma
-    ;
-
-customServerOption
-    : Identifier Colon expression Comma
-    ;
+// customServerOption
+//     : Identifier Colon expression Comma
+//     ;
 
 // Cover any user defined options
 
 graphQLServerInstantiationOptions
-    : OpenBrace graphQLServerInstantiationOption CloseBrace
+    : OpenBrace evaluationFieldList CloseBrace
     ;
 
-graphQLServerInstantiationOption
-    : customServerOption
-    ;
+// graphQLServerInstantiationOption
+//     : customServerOption
+//     ;
 
 envVariable
     : EnvVariable

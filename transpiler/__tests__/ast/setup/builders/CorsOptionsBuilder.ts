@@ -10,6 +10,6 @@ export class CorsOptionsBuilder implements IBuilder<TCorsOptions> {
   }
 
   public build(): TCorsOptions {
-    return { origin: this.origin };
+    return { corsOptions: { origin: this.origin } };
   }
 }
