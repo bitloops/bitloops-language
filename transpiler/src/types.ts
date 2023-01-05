@@ -89,7 +89,9 @@ export type TBitloopsClasses =
 
 export const fieldsKey = 'fields';
 export const evaluationFieldsKey = 'fields';
-export type TVariables = TVariable[];
+export type TVariables = {
+  [fieldsKey]: TVariable[];
+};
 
 export const identifierKey = 'identifier';
 export type TIdentifier = string;
@@ -115,8 +117,7 @@ export const PropsKey = 'Props';
 export type TProps = {
   [PropsKey]: {
     [PropsIdentifierKey]: TPropsIdentifier;
-    [fieldsKey]: TVariables;
-  };
+  } & TVariables;
 };
 
 /**
@@ -128,8 +129,7 @@ export const ReadModelKey = 'ReadModel';
 export type TReadModel = {
   [ReadModelKey]: {
     [ReadModelIdentifierKey]: TReadModelIdentifier;
-    [fieldsKey]: TVariables;
-  };
+  } & TVariables;
 };
 
 export type TParameterType = TBitloopsPrimaryType;
@@ -293,9 +293,8 @@ export type TInstanceOf = {
 
 export type TPropsEvaluation = {
   props: {
-    fields: TEvaluationFields;
     [PropsIdentifierKey]: string;
-  };
+  } & TEvaluationFields;
 };
 
 export type TGetClass = {
@@ -344,20 +343,20 @@ export type TIfStatement = {
 export type TEvaluationField = {
   evaluationField: { identifier: string } & TExpression;
 };
-export type TEvaluationFields = TEvaluationField[];
+export type TEvaluationFields = {
+  [evaluationFieldsKey]: TEvaluationField[];
+};
 
 export type TStructEvaluation = {
   struct: {
-    fields: TEvaluationFields;
     [structIdentifierKey]: string;
-  };
+  } & TEvaluationFields;
 };
 
 export type TDTOEvaluation = {
   dto: {
-    fields: TEvaluationFields;
     [DTOIdentifierKey]: TDTOIdentifier;
-  };
+  } & TEvaluationFields;
 };
 
 export type TValueObjectEvaluation = {
@@ -380,11 +379,7 @@ type TDomainEvaluationName =
     }
   | { valueObjectIdentifier: TValueObjectIdentifier };
 
-export type TDomainEvaluationExpression =
-  | {
-      fields: TEvaluationFields;
-    }
-  | TExpression;
+export type TDomainEvaluationExpression = TEvaluationFields | TExpression;
 
 export const expressionKey = 'expression';
 export type TExpression = {
@@ -653,8 +648,7 @@ export const structIdentifierKey = 'StructIdentifier';
 export type TStructDeclaration = {
   [StructKey]: {
     [structIdentifierKey]: TStructIdentifier;
-    fields: TVariables;
-  };
+  } & TVariables;
 };
 
 export type TExecute = {
@@ -669,8 +663,7 @@ export const DTOKey = 'DTO';
 export type TDTO = {
   [DTOKey]: {
     [DTOIdentifierKey]: TDTOIdentifier;
-    [fieldsKey]: TVariables;
-  };
+  } & TVariables;
 };
 
 export type TStruct = Record<string, TStructDeclaration>;
@@ -855,13 +848,12 @@ export type TRepoConnectionExpression = {
   } & TRepoConnectionOptions;
 };
 
+//     host: TExpression;
+//     port: TExpression;
+//     database: TExpression;
 export const RepoConnectionOptionsKey = 'options';
 export type TRepoConnectionOptions = {
-  [RepoConnectionOptionsKey]: {
-    host: TExpression;
-    port: TExpression;
-    databaseName: TExpression;
-  };
+  [RepoConnectionOptionsKey]: TEvaluationFields;
 };
 
 export type TBoundedContextModule = {
