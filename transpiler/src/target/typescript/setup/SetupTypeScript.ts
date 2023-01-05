@@ -40,13 +40,27 @@ import {
   TServerType,
   TGraphQLServerInstance,
   TGraphQLSetupData,
-  TPackagesMapping,
-  TPackagesSetup,
   // TUseCasesOfModule, //TODO this is TUseCaseDefinition
   TControllerOfModule,
   TReposSetup,
   TServers,
   TRepoConnectionDefinition,
+  TPackageConcretion,
+  packageConcretionKey,
+  PackagePortIdentifierKey,
+  packageAdapterIdentifierKey,
+  TRouterDefinition,
+  TDomainError,
+  TApplicationError,
+  DomainErrorKey,
+  DomainErrorIdentifier,
+  ApplicationErrorKey,
+  ApplicationErrorIdentifier,
+  TDomainErrorValue,
+  TApplicationErrorValue,
+  TDomainRule,
+  TUseCaseDefinition,
+  TRepoAdapters,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -63,10 +77,10 @@ import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
+import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
+import { isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 
-type PackageAdapterName = string;
 type PackageAdapterContent = string;
-type TPackageAdaptersContent = Record<PackageAdapterName, PackageAdapterContent>;
 type TPackageVersions = {
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
@@ -74,16 +88,22 @@ type TPackageVersions = {
 
 interface ISetup {
   generateStartupFile(
-    servers: TServers,
-    reposData: TReposSetup,
+    allServers: TRestAndGraphQLServers,
+    reposData: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput;
   generateAPIs(servers: TServers): TSetupOutput[];
-  generateServerRouters(data: TSetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
-  generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServerRouters(
+    routerDefinitions: TRouterDefinition[],
+    _bitloopsModel: TBoundedContexts,
+  ): TSetupOutput[];
+  generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
-    data: TSetupData,
+    routerDefinitions: TRouterDefinition[],
+    useCaseDefinitions: TUseCaseDefinition[],
+    repoConnectionsDef: TRepoConnectionDefinition[],
+    repoAdapterDefinitions: TRepoAdapters,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -92,6 +112,13 @@ interface ISetup {
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[];
   // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
   // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
+
+  generatePackageFiles(
+    packageDefinitions: TPackageConcretion[],
+    sourceDirPath: string,
+    _setupTypeMapper: Record<string, string>,
+    packageVersions?: TPackageVersions,
+  ): TSetupOutput[];
 }
 
 type TNodePackages = Record<string, string>;
@@ -167,16 +194,22 @@ export class SetupTypeScript implements ISetup {
   }
 
   generateDIs(
-    data: TSetupData,
+    routerDefinitions: TRouterDefinition[],
+    useCaseDefinitions: TUseCaseDefinition[],
+    repoConnectionsDef: TRepoConnectionDefinition[],
+    repoAdapterDefinitions: TRepoAdapters, // TODO should change to TRepoAdapterDefinition[]
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[] {
-    const { controllers, useCases, repos } = data;
+    const { controllers, repos } = data;
     const result: TSetupOutput[] = [];
     // For each module in each bounded context generate 1 DI file that contains all
     // the use cases and controllers of that module that are concreted in the setup.bl
     // TODO Add support for other types of DIs such as repositories, etc.
+    const useCases =
+      UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions);
+    const useCasesLength = Object.keys(useCases).length;
 
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const moduleName of Object.keys(boundedContext)) {
@@ -190,7 +223,7 @@ export class SetupTypeScript implements ISetup {
           diContent += this.setupTypeScriptRepos.generateRepoDIImports(data.repos, setupTypeMapper);
         }
 
-        if (useCases)
+        if (useCasesLength > 0)
           diContent += this.generateDIUseCaseImports(useCases[boundedContextName][moduleName]);
 
         if (controllers)
@@ -203,7 +236,7 @@ export class SetupTypeScript implements ISetup {
           diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
         }
 
-        if (useCases)
+        if (useCasesLength > 0)
           diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
 
         if (controllers)
@@ -225,14 +258,17 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  private generateDIUseCaseImports(useCases: any): string {
-    //TODO type of useCases is TUseCaseDefinition
+  private generateDIUseCaseImports(useCases: TUseCase[]): string {
     let result = '';
-    for (const useCaseName of Object.keys(useCases)) {
-      // console.log('useCase', useCase);
+    for (const useCase of useCases) {
+      const { useCaseExpression } = useCase;
+      const { UseCaseIdentifier } = useCaseExpression;
       // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCases, useCaseName);
-      result += `import { ${useCaseName} } from './${path}${filename}${
+      const { path, filename } = getFilePathRelativeToModule(
+        ClassTypes.UseCases,
+        UseCaseIdentifier,
+      );
+      result += `import { ${UseCaseIdentifier} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;
     }
@@ -250,14 +286,16 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  //TODO this was commented, type of useCases is TUseCaseDefinition
-  private generateUseCasesDIs(useCases: unknown): string {
+  private generateUseCasesDIs(useCases: TUseCase[]): string {
     let result = '';
-    for (const [useCaseName, useCase] of Object.entries(useCases)) {
-      for (const instance of useCase.instances) {
-        const { instanceName, dependencies } = instance;
-        result += `const ${instanceName} = new ${useCaseName}(${dependencies.join(', ')});\n`;
-      }
+    for (const useCase of useCases) {
+      const { useCaseExpression, constIdentifier } = useCase;
+      const { UseCaseIdentifier, argumentList } = useCaseExpression;
+      const useCaseDependencies = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TArgumentList,
+        value: { argumentList },
+      });
+      result += `const ${constIdentifier} = new ${UseCaseIdentifier}${useCaseDependencies.output};\n`;
     }
     return result;
   }
@@ -280,36 +318,31 @@ export class SetupTypeScript implements ISetup {
   }
 
   private findPackageAdapterFileContent(
-    packages: TPackagesMapping,
+    packageAdapter: string,
     sourceDirPath: string,
-  ): TPackageAdaptersContent {
-    const res = {};
+  ): PackageAdapterContent {
+    const targetLanguageSuffix = getLanguageFileSuffixExtension(SupportedLanguages.TypeScript);
+    const targetLanguageFileExtension = getLanguageFileExtension(SupportedLanguages.TypeScript);
+    const contextPackagesFilePaths = getRecursivelyFileInDirectory(
+      sourceDirPath,
+      targetLanguageSuffix,
+    );
 
-    for (const [, packageAdapter] of Object.entries(packages)) {
-      const targetLanguageSuffix = getLanguageFileSuffixExtension(SupportedLanguages.TypeScript);
-      const targetLanguageFileExtension = getLanguageFileExtension(SupportedLanguages.TypeScript);
-      const contextPackagesFilePaths = getRecursivelyFileInDirectory(
-        sourceDirPath,
-        targetLanguageSuffix,
-      );
+    if (contextPackagesFilePaths.length === 0)
+      throw new Error(`Could not find ts packages at ${sourceDirPath}`);
 
-      if (contextPackagesFilePaths.length === 0)
-        throw new Error(`Could not find ts packages at ${sourceDirPath}`);
+    const filenameToFind = packageAdapter + targetLanguageFileExtension;
+    const foundFilepath = contextPackagesFilePaths.find(
+      (filePath) =>
+        StringUtils.getLastCharactersOfString(filePath, filenameToFind.length) === filenameToFind,
+    );
 
-      const filenameToFind = packageAdapter + targetLanguageFileExtension;
-      const foundFilepath = contextPackagesFilePaths.find(
-        (filePath) =>
-          StringUtils.getLastCharactersOfString(filePath, filenameToFind.length) === filenameToFind,
-      );
-
-      if (foundFilepath === undefined) {
-        throw new Error(`Could not find ${filenameToFind} in your projects file`);
-      }
-      const contents = readFromFile(foundFilepath);
-
-      res[packageAdapter] = contents;
+    if (foundFilepath === undefined) {
+      throw new Error(`Could not find ${filenameToFind} in your projects file`);
     }
-    return res;
+    const content = readFromFile(foundFilepath);
+
+    return content;
   }
 
   private getDependenciesForPackageJSON(adapterContent: string, versions: TPackageVersions): void {
@@ -337,152 +370,135 @@ export class SetupTypeScript implements ISetup {
   }
 
   generatePackageFiles(
-    packages: TPackagesSetup,
+    packageDefinitions: TPackageConcretion[],
     sourceDirPath: string,
     _setupTypeMapper: Record<string, string>,
     packageVersions?: TPackageVersions,
   ): TSetupOutput[] {
     const results: TSetupOutput[] = [];
-    if (packages) {
-      for (const [boundedContext, modules] of Object.entries(packages)) {
-        for (const [module, modulePackages] of Object.entries(modules)) {
-          const adaptersContent = this.findPackageAdapterFileContent(
-            packages[boundedContext][module],
-            `${sourceDirPath}/${boundedContext}/${module}`,
+    for (const packageDef of packageDefinitions) {
+      const packageDefinition = packageDef[packageConcretionKey];
+      const { boundedContextName, moduleName } = packageDefinition.boundedContextModule;
+      const boundedContext = boundedContextName.wordsWithSpaces;
+      const module = moduleName.wordsWithSpaces;
+
+      const _packagePortIdentifier = packageDefinition[PackagePortIdentifierKey];
+      const packageAdapterIdentifier = packageDefinition[packageAdapterIdentifierKey];
+
+      const adapterContent = this.findPackageAdapterFileContent(
+        packageAdapterIdentifier,
+        `${sourceDirPath}/${boundedContext}/${module}`,
+      );
+
+      const adapterFilePathObj = getTargetFileDestination(
+        boundedContext,
+        module,
+        'Package',
+        packageAdapterIdentifier,
+        'TypeScript',
+      );
+
+      results.push({
+        fileType: 'Package.Adapter',
+        fileId: `${adapterFilePathObj.path}/${adapterFilePathObj.filename}`,
+        content: adapterContent,
+      });
+      if (packageVersions) {
+        this.getDependenciesForPackageJSON(adapterContent, packageVersions);
+      } else {
+        const packageJSONString =
+          readFromFile(`${sourceDirPath}/${boundedContext}/${module}/package.json`) ||
+          readFromFile(`${sourceDirPath}/package.json`);
+        if (packageJSONString) {
+          const packageJSON = JSON.parse(packageJSONString);
+          this.getDependenciesForPackageJSON(adapterContent, {
+            dependencies: packageJSON.dependencies as Record<string, string>,
+            devDependencies: packageJSON.devDependencies as Record<string, string>,
+          });
+        } else {
+          throw new Error(
+            `Could not find package.json in ${sourceDirPath}/${boundedContext}/${module}`,
           );
-          for (const packageAdapter of Object.values(modulePackages)) {
-            const adapterFilePathObj = getTargetFileDestination(
-              boundedContext,
-              module,
-              'Package',
-              packageAdapter,
-              'TypeScript',
-            );
-            const adapterContent = adaptersContent[packageAdapter];
-            results.push({
-              fileType: 'Package.Adapter',
-              fileId: `${adapterFilePathObj.path}/${adapterFilePathObj.filename}`,
-              content: adapterContent,
-            });
-            if (packageVersions) {
-              this.getDependenciesForPackageJSON(adapterContent, packageVersions);
-            } else {
-              const packageJSONString =
-                readFromFile(`${sourceDirPath}/${boundedContext}/${module}/package.json`) ||
-                readFromFile(`${sourceDirPath}/package.json`);
-              if (packageJSONString) {
-                const packageJSON = JSON.parse(packageJSONString);
-                this.getDependenciesForPackageJSON(adapterContent, {
-                  dependencies: packageJSON.dependencies as Record<string, string>,
-                  devDependencies: packageJSON.devDependencies as Record<string, string>,
-                });
-              } else {
-                throw new Error(
-                  `Could not find package.json in ${sourceDirPath}/${boundedContext}/${module}`,
-                );
-              }
-            }
-          }
         }
       }
     }
+
     return results;
   }
 
-  private generateRouters(
-    routesData: TRoutersInfo,
-    serverType: TServerType,
-    controllers: TControllers,
+  generateServerRouters(
+    routerDefinitions: TRouterDefinition[],
     _bitloopsModel: TBoundedContexts,
     license?: string,
-  ): TSetupOutput {
-    let imports = '';
-    // let serverPath = '';
-    let body = '';
-    let routes = '';
-    let exports = '';
-    const controllerImports: string[] = [];
-    switch (serverType) {
-      case 'REST.Express':
-        // serverPath = 'rest/express';
-        throw new Error(`Server ${serverType} not fully implemented`);
-      case 'REST.Fastify':
-        // serverPath = 'rest/fastify';
-        imports = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
-        routes = Object.keys(routesData)
-          .map((routerInstanceName) => {
-            const methodURLMap = routesData[routerInstanceName as TRouterInstanceName].methodURLMap;
-            let routerDefinition = `const ${routerInstanceName} = async (fastify: Fastify.Instance) => {`;
-            Object.keys(methodURLMap).map((methodAndPath: TMethodAndPath) => {
-              const [method, path] = methodAndPath.split(' ');
-              const { boundedContext, controllerClass, module } = methodURLMap[methodAndPath];
-              const controllerInstances = controllers[boundedContext][module][controllerClass];
-              // if (!controllerDefinitionIsRest(controllerInstances)) {
-              //   throw new Error(
-              //     `Controller ${controllerClass} is not a REST controller, it cannot be used in a REST server`,
-              //   );
-              // }
-              let controllerInstanceName = '';
-              for (const controllerInstance of controllerInstances.instances) {
-                if (controllerInstance.url === path) {
-                  controllerInstanceName = controllerInstance.controllerInstance;
-                  controllerImports.push(
-                    `import { ${controllerInstanceName} } from '../../../../../bounded-contexts/${kebabCase(
-                      boundedContext,
-                    )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';`,
-                  );
-                }
-              }
-              routerDefinition += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
-              routerDefinition += `\n    return ${controllerInstanceName}.execute(request, reply);`;
-              routerDefinition += '\n  });';
-            });
-            routerDefinition += '\n};\n';
-            return routerDefinition;
-          })
-          .join('');
-        exports =
-          Object.keys(routesData).length > 2
-            ? `${Object.keys(routesData).map((routerInstanceName) => `  ${routerInstanceName},\n`)}`
-            : `${Object.keys(routesData).map(
-                (routerInstanceName) => ` ${routerInstanceName},`,
-              )}`.slice(0, -1) + ' ';
-        body = `${imports}
-${controllerImports.join('\n')}
-
-${routes}
-export {${exports}};\n`;
-        break;
-    }
-    return {
-      fileId: 'index.ts',
-      fileType: `${serverType}.Router`,
-      content: (license || '') + body,
-    };
-  }
-  generateServerRouters(
-    data: TSetupData,
-    bitloopsModel: TBoundedContexts,
-    license?: string,
   ): TSetupOutput[] {
-    const routers = data.routers;
-    const output = [];
-    for (const serverType of Object.keys(routers)) {
-      // for (const routerInstanceName of Object.keys(routers[serverType])) {
-      //   const serverInstanceRouters = routers[serverType][routerInstanceName];
-      output.push(
-        this.generateRouters(
-          routers[serverType],
-          serverType as TServerType,
-          data.controllers,
-          bitloopsModel,
-          license,
-        ),
-      );
-      // }
+    // This can be refactored to gather all controllers and router identifier, for each server type
+    const fastifyImport = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
+    let fastifyExports = '';
+    let fastifyRouterDefinitionBody = '';
+    const fastifyControllerImports: string[] = [];
+
+    for (const routerDefinition of routerDefinitions) {
+      const { routerDefinition: router } = routerDefinition;
+      const { routerExpression, identifier } = router;
+      const { routerArguments, routerControllers } = routerExpression;
+      const { serverType } = routerArguments;
+
+      switch (serverType) {
+        case 'REST.Express':
+          throw new Error(`Server ${serverType} not fully implemented`);
+        case 'REST.Fastify': {
+          let controllersBody = '';
+          for (const controller of routerControllers) {
+            const { routerController } = controller;
+            const {
+              httpMethodVerb: method,
+              stringLiteral: path,
+              RESTControllerIdentifier,
+              boundedContextModule,
+            } = routerController;
+            const { boundedContextName, moduleName } = boundedContextModule;
+            const { wordsWithSpaces: boundedContext } = boundedContextName;
+            const { wordsWithSpaces: module } = moduleName;
+
+            fastifyControllerImports.push(
+              `import { ${RESTControllerIdentifier} } from '../../../../../bounded-contexts/${kebabCase(
+                boundedContext,
+              )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';`,
+            );
+
+            controllersBody += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
+            controllersBody += `\n    return ${RESTControllerIdentifier}.execute(request, reply);`;
+            controllersBody += '\n  });';
+          }
+
+          fastifyRouterDefinitionBody += `const ${identifier} = async (fastify: Fastify.Instance) => {`;
+          fastifyRouterDefinitionBody += controllersBody;
+          fastifyRouterDefinitionBody += '\n};\n';
+
+          fastifyExports += `${identifier},\n`;
+
+          break;
+        }
+      }
     }
+
+    const output = [];
+    if (fastifyControllerImports.length > 0) {
+      let body = `${fastifyImport}\n`;
+      body += `${fastifyControllerImports.join('\n')}`;
+      body += `${fastifyRouterDefinitionBody}`;
+      body += `export {${fastifyExports}};\n`;
+
+      output.push({
+        fileId: 'index.ts',
+        fileType: 'REST.Fastify.Router',
+        content: (license || '') + body,
+      });
+    }
+
     return output;
   }
+
   private registerRouters(
     routers: Record<TRouterInstanceName, { routerPrefix: string }>,
     serverType: TServerType,
@@ -538,72 +554,121 @@ export { routers };
     }
     return output;
   }
-
   generateAppDomainErrors(model: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classTypeName, errorModel] of Object.entries(module)) {
-          if (
-            classTypeName === ClassTypes.DomainErrors ||
-            classTypeName === ClassTypes.ApplicationError
-          ) {
-            let imports = '';
-            let content = `export namespace ${classTypeName} {`;
-
-            const filePathObj = getTargetFileDestination(
-              boundedContextName,
-              moduleName,
-              classTypeName,
-              classTypeName,
-            );
-            for (const [className] of Object.entries(errorModel)) {
-              const classNameWithoutError = className.split('Error')[0];
-              imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
-              content += `export class ${className} extends ${classNameWithoutError} {}`;
-            }
-            content += '}';
-            const finalContent = imports + content;
-            output.push({
-              fileType: classTypeName,
-              fileId: `${filePathObj.path}/index.ts`,
-              content: finalContent,
-            });
-          }
-        }
+        const domainErrors = module.getRootChildrenNodesValueByType<TDomainError>(
+          BitloopsTypesMapping.TDomainError,
+        );
+        const applicationErrors = module.getRootChildrenNodesValueByType<TApplicationError>(
+          BitloopsTypesMapping.TApplicationError,
+        );
+        const domainRes = this.handleDomainApplicationError(
+          {
+            classType: ClassTypes.DomainErrors,
+            errorModels: domainErrors,
+          },
+          boundedContextName,
+          moduleName,
+        );
+        const appRes = this.handleDomainApplicationError(
+          {
+            classType: ClassTypes.ApplicationError,
+            errorModels: applicationErrors,
+          },
+          boundedContextName,
+          moduleName,
+        );
+        output.push(...domainRes, ...appRes);
       }
     }
     return output;
+  }
+
+  private handleDomainApplicationError(
+    params:
+      | { classType: 'DomainErrors'; errorModels: TDomainError[] } // ClassTypes.DomainErrors || ClassTypes.ApplicationError
+      | { classType: 'ApplicationError'; errorModels: TApplicationError[] },
+    boundedContextName: string,
+    moduleName: string,
+  ): TSetupOutput[] {
+    const result: TSetupOutput[] = [];
+
+    const { classType: classTypeName, errorModels } = params;
+    let imports = '';
+    let content = `export namespace ${classTypeName} {`;
+
+    const filePathObj = getTargetFileDestination(
+      boundedContextName,
+      moduleName,
+      classTypeName,
+      classTypeName,
+    );
+
+    for (const errorModel of errorModels) {
+      const className = this.getErrorName(errorModel, classTypeName);
+      const classNameWithoutError = className.split('Error')[0];
+      imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
+      content += `export class ${className} extends ${classNameWithoutError} {}`;
+    }
+    content += '}';
+    const finalContent = imports + content;
+    result.push({
+      fileType: classTypeName,
+      fileId: `${filePathObj.path}/index.ts`,
+      content: finalContent,
+    });
+
+    return result;
+  }
+
+  // Get Error name Depending on the classType
+  private getErrorName(
+    errorModel: TDomainError | TApplicationError,
+    classTypeName: 'DomainErrors' | 'ApplicationError',
+  ): string {
+    if (classTypeName === 'DomainErrors') {
+      const error = errorModel[DomainErrorKey] as TDomainErrorValue;
+      return error[DomainErrorIdentifier];
+    } else {
+      const error = errorModel[ApplicationErrorKey] as TApplicationErrorValue;
+      return error[ApplicationErrorIdentifier];
+    }
   }
 
   generateRules(model: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classTypeName, classType] of Object.entries(module)) {
-          if (classTypeName === ClassTypes.DomainRule) {
-            let imports = '';
-            let content = `export namespace ${classTypeName} {`;
-            const filePathObj = getTargetFileDestination(
-              boundedContextName,
-              moduleName,
-              classTypeName,
-              classTypeName,
-            );
-            for (const [className] of Object.entries(classType)) {
-              const classNameWithoutRule = className.split('Rule')[0];
-              imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
-              content += `export class ${className} extends ${classNameWithoutRule} {}`;
-            }
-            content += '}';
-            const finalContent = imports + content;
-            output.push({
-              fileType: classTypeName,
-              fileId: `${filePathObj.path}/index.ts`,
-              content: finalContent,
-            });
-          }
+        // Gather all domain rules of the module
+        const domainRules = module.getRootChildrenNodesValueByType<TDomainRule>(
+          BitloopsTypesMapping.TDomainRule,
+        );
+
+        const classTypeName = ClassTypes.DomainRule;
+        let imports = '';
+        let content = `export namespace ${classTypeName} {`;
+        const filePathObj = getTargetFileDestination(
+          boundedContextName,
+          moduleName,
+          classTypeName,
+          classTypeName,
+        );
+
+        for (const domainRule of domainRules) {
+          const className = domainRule.DomainRule.domainRuleIdentifier;
+          const classNameWithoutRule = className.split('Rule')[0];
+          imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
+          content += `export class ${className} extends ${classNameWithoutRule} {}`;
         }
+        content += '}';
+        const finalContent = imports + content;
+        output.push({
+          fileType: classTypeName,
+          fileId: `${filePathObj.path}/index.ts`,
+          content: finalContent,
+        });
       }
     }
     return output;
@@ -680,7 +745,10 @@ start();
       content: (license || '') + body,
     };
   }
-  generateServers(servers: TServers, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
+  generateServers(
+    servers: TRestAndGraphQLServers,
+    _bitloopsModel: TBoundedContexts,
+  ): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
@@ -697,8 +765,8 @@ start();
     return output;
   }
   generateStartupFile(
-    servers: TServers,
-    reposData: TReposSetup,
+    servers: TRestAndGraphQLServers,
+    reposData: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput {
@@ -713,6 +781,7 @@ start();
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
     imports.push(...dbConnections);
+    // TODO check if map here is needed
     const body = `(async () => {
   ${imports.map((i) => i).join('\n  ')}
 })();
