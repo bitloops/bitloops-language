@@ -788,7 +788,7 @@ packageAdapterIdentifier
     ;
 
 packageConcretion
-    : boundedContextModuleDeclaration adapter=packageAdapterClassName Concretes port=packageAdapterIdentifier SemiColon?
+    : boundedContextModuleDeclaration adapter=packageAdapterIdentifier Concretes port=packagePortIdentifier SemiColon?
     ;
 
 useCaseDefinition
@@ -905,7 +905,7 @@ controllerResolverBind
     : boundedContextModuleDeclaration ControllerIdentifier methodArguments
     ;
 
-alpha_numeric_ws: Digits | WS | UpperCaseIdentifier | Identifier;
+alpha_numeric_ws: IntegerLiteral | WS | UpperCaseIdentifier | Identifier;
 
 wordsWithSpaces
     : alpha_numeric_ws+

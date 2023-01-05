@@ -680,13 +680,29 @@ export type TUseCase = {
 };
 
 export const languageKey = 'language';
-export type TLanguage = 'TypeScript' | 'Java'; //TODO add for for unknown language
+export type TLanguage = 'TypeScript' | 'Java'; //TODO add for unknown languages
 
 export const configInvocationKey = 'configInvocation';
 export type TConfigInvocation = {
-  configInvocation: {
-    language: TLanguage;
+  [configInvocationKey]: {
+    [languageKey]: TLanguage;
   };
+};
+
+export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
+export type TPackageAdapterIdentifier = string;
+
+export const packageAdapterKey = 'packageAdapter';
+export type TPackageAdapter = {
+  [packageAdapterIdentifierKey]: TPackageAdapterIdentifier;
+};
+
+export const packageConcretionKey = 'packageConcretion';
+export type TPackageConcretion = {
+  [packageConcretionKey]: {
+    [PackagePortIdentifierKey]: TPackagePortIdentifier;
+  } & TBoundedContextModule &
+    TPackageAdapter;
 };
 
 export type TBaseControllerValues = TParameterList;
