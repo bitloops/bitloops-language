@@ -7,10 +7,6 @@ export class ConcretedRepoPortNode extends IntermediateASTIdentifierNode {
   private static classNodeName = concretedRepoPortKey;
 
   constructor(metadata?: TNodeMetadata) {
-    super(
-      BitloopsTypesMapping.TRepoAdapterClassName,
-      ConcretedRepoPortNode.classNodeName,
-      metadata,
-    );
+    super(BitloopsTypesMapping.TConcretedRepoPort, ConcretedRepoPortNode.classNodeName, metadata);
   }
 }
