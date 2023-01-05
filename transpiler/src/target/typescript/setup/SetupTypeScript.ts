@@ -58,6 +58,8 @@ import {
   ApplicationErrorIdentifier,
   TDomainErrorValue,
   TApplicationErrorValue,
+  TUseCaseDefinition,
+  TRepoAdapters,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -74,6 +76,7 @@ import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -95,7 +98,10 @@ interface ISetup {
   ): TSetupOutput[];
   generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
-    data: TSetupData,
+    routerDefinitions: TRouterDefinition[],
+    useCaseDefinitions: TUseCaseDefinition[],
+    repoConnectionsDef: TRepoConnectionDefinition[],
+    repoAdapterDefinitions: TRepoAdapters,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -186,16 +192,22 @@ export class SetupTypeScript implements ISetup {
   }
 
   generateDIs(
-    data: TSetupData,
+    routerDefinitions: TRouterDefinition[],
+    useCaseDefinitions: TUseCaseDefinition[],
+    repoConnectionsDef: TRepoConnectionDefinition[],
+    repoAdapterDefinitions: TRepoAdapters, // TODO should change to TRepoAdapterDefinition[]
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[] {
-    const { controllers, useCases, repos } = data;
+    const { controllers, repos } = data;
     const result: TSetupOutput[] = [];
     // For each module in each bounded context generate 1 DI file that contains all
     // the use cases and controllers of that module that are concreted in the setup.bl
     // TODO Add support for other types of DIs such as repositories, etc.
+    const useCases =
+      UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions);
+    const useCasesLength = Object.keys(useCases).length;
 
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const moduleName of Object.keys(boundedContext)) {
@@ -209,7 +221,7 @@ export class SetupTypeScript implements ISetup {
           diContent += this.setupTypeScriptRepos.generateRepoDIImports(data.repos, setupTypeMapper);
         }
 
-        if (useCases)
+        if (useCasesLength > 0)
           diContent += this.generateDIUseCaseImports(useCases[boundedContextName][moduleName]);
 
         if (controllers)
@@ -222,7 +234,7 @@ export class SetupTypeScript implements ISetup {
           diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
         }
 
-        if (useCases)
+        if (useCasesLength > 0)
           diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
 
         if (controllers)
@@ -244,14 +256,17 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  private generateDIUseCaseImports(useCases: any): string {
-    //TODO type of useCases is TUseCaseDefinition
+  private generateDIUseCaseImports(useCases: TUseCase[]): string {
     let result = '';
-    for (const useCaseName of Object.keys(useCases)) {
-      // console.log('useCase', useCase);
+    for (const useCase of useCases) {
+      const { useCaseExpression } = useCase;
+      const { UseCaseIdentifier } = useCaseExpression;
       // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCases, useCaseName);
-      result += `import { ${useCaseName} } from './${path}${filename}${
+      const { path, filename } = getFilePathRelativeToModule(
+        ClassTypes.UseCases,
+        UseCaseIdentifier,
+      );
+      result += `import { ${UseCaseIdentifier} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;
     }
@@ -269,14 +284,16 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  //TODO this was commented, type of useCases is TUseCaseDefinition
-  private generateUseCasesDIs(useCases: unknown): string {
+  private generateUseCasesDIs(useCases: TUseCase[]): string {
     let result = '';
-    for (const [useCaseName, useCase] of Object.entries(useCases)) {
-      for (const instance of useCase.instances) {
-        const { instanceName, dependencies } = instance;
-        result += `const ${instanceName} = new ${useCaseName}(${dependencies.join(', ')});\n`;
-      }
+    for (const useCase of useCases) {
+      const { useCaseExpression, constIdentifier } = useCase;
+      const { UseCaseIdentifier, argumentList } = useCaseExpression;
+      const useCaseDependencies = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TArgumentList,
+        value: { argumentList },
+      });
+      result += `const ${constIdentifier} = new ${UseCaseIdentifier}${useCaseDependencies.output};\n`;
     }
     return result;
   }
@@ -412,6 +429,7 @@ export class SetupTypeScript implements ISetup {
     _bitloopsModel: TBoundedContexts,
     license?: string,
   ): TSetupOutput[] {
+    // This can be refactored to gather all controllers and router identifier, for each server type
     const fastifyImport = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
     let fastifyExports = '';
     let fastifyRouterDefinitionBody = '';
