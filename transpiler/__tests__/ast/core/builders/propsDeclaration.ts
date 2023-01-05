@@ -1,7 +1,6 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TVariables,
-  fieldsKey,
   TPropsIdentifier,
   TProps,
   PropsKey,
@@ -23,10 +22,10 @@ export class PropsDeclarationBuilder implements IBuilder<TProps> {
   }
 
   public build(): TProps {
-    const props = {
+    const props: TProps = {
       [PropsKey]: {
         [PropsIdentifierKey]: this.identifierName,
-        [fieldsKey]: this.fields,
+        ...this.fields,
       },
     };
 

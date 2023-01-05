@@ -698,17 +698,12 @@ export type TConfigInvocation = {
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
 export type TPackageAdapterIdentifier = string;
 
-export const packageAdapterKey = 'packageAdapter';
-export type TPackageAdapter = {
-  [packageAdapterIdentifierKey]: TPackageAdapterIdentifier;
-};
-
 export const packageConcretionKey = 'packageConcretion';
 export type TPackageConcretion = {
   [packageConcretionKey]: {
     [PackagePortIdentifierKey]: TPackagePortIdentifier;
-  } & TBoundedContextModule &
-    TPackageAdapter;
+    [packageAdapterIdentifierKey]: TPackageAdapterIdentifier;
+  } & TBoundedContextModule;
 };
 
 export type TBaseControllerValues = TParameterList;
@@ -1281,3 +1276,9 @@ export type TTargetDependenciesTypeScript = {
   output: string;
   dependencies: TDependenciesTypeScript;
 };
+
+export enum RepoConnectionOptions {
+  host = 'host',
+  port = 'port',
+  database = 'database',
+}

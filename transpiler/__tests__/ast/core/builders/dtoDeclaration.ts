@@ -5,7 +5,6 @@ import {
   TVariables,
   DTOKey,
   DTOIdentifierKey,
-  fieldsKey,
 } from '../../../../src/types.js';
 
 export class DTODeclarationBuilder implements IBuilder<TDTO> {
@@ -23,10 +22,10 @@ export class DTODeclarationBuilder implements IBuilder<TDTO> {
   }
 
   public build(): TDTO {
-    const dto = {
+    const dto: TDTO = {
       [DTOKey]: {
         [DTOIdentifierKey]: this.identifierName,
-        [fieldsKey]: this.fields,
+        ...this.fields,
       },
     };
 

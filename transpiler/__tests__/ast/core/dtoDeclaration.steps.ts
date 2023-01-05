@@ -55,7 +55,10 @@ describe('DTO declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const expectedNodeValues = getExpectedDTOOutput(
+        { fields: testDTO.variables },
+        testDTO.identifier,
+      );
       const dtoNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TDTO);
       const value = dtoNodes[0].getValue();
 
@@ -144,7 +147,7 @@ const getExpectedDTOOutputMultipleDTOS = (dtos: multipleDTOS) => {
   for (const { identifier, variables } of dtos) {
     const dtoValue = new DTODeclarationBuilder()
       .withIdentifier(identifier)
-      .withVariables(variables)
+      .withVariables({ fields: variables })
       .build();
     resultDTOS.push(dtoValue);
   }

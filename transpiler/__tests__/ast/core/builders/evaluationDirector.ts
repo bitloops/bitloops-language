@@ -4,13 +4,14 @@ import {
   TArgumentList,
   TDomainEvaluationExpression,
   TEvaluation,
-  TEvaluationFields,
   TExpression,
+  evaluationFieldsKey,
+  TEvaluationField,
 } from '../../../../src/types.js';
 
 type PropsParam =
   | {
-      fields: TEvaluationFields;
+      fields: TEvaluationField[];
       expression?: never;
     }
   | {
@@ -19,23 +20,23 @@ type PropsParam =
     };
 
 export class EvaluationBuilderDirector {
-  buildStructEvaluation(structIdentifier: string, fields: TEvaluationFields): TEvaluation {
+  buildStructEvaluation(structIdentifier: string, fields: TEvaluationField[]): TEvaluation {
     return {
       evaluation: {
         struct: {
           [structIdentifierKey]: structIdentifier,
-          fields,
+          [evaluationFieldsKey]: fields,
         },
       },
     };
   }
 
-  buildDTOEvaluation(dtoIdentifier: string, fields: TEvaluationFields): TEvaluation {
+  buildDTOEvaluation(dtoIdentifier: string, fields: TEvaluationField[]): TEvaluation {
     return {
       evaluation: {
         dto: {
           [DTOIdentifierKey]: dtoIdentifier,
-          fields,
+          [evaluationFieldsKey]: fields,
         },
       },
     };

@@ -1,16 +1,16 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import { TReadModel, TReadModelIdentifier, TVariable, TVariables } from '../../../../src/types.js';
+import { TReadModel, TReadModelIdentifier, TVariable } from '../../../../src/types.js';
 
 export class ReadModelBuilder implements IBuilder<TReadModel> {
   private identifierName: TReadModelIdentifier;
-  private fields: TVariables;
+  private fields: TVariable[];
 
   public withIdentifier(identifierName: TReadModelIdentifier): ReadModelBuilder {
     this.identifierName = identifierName;
     return this;
   }
 
-  public withFields(fields: TVariables): ReadModelBuilder {
+  public withFields(fields: TVariable[]): ReadModelBuilder {
     this.fields = fields;
     return this;
   }

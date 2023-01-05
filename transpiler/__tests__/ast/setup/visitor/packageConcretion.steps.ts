@@ -61,7 +61,7 @@ describe('Valid Package Concretion', () => {
       }
       const resultTree = setupResult[testUseCase.fileId];
 
-      const packageConcretions = resultTree.getClassTypeNodes(
+      const packageConcretions = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TPackageConcretion,
       );
 

@@ -13,7 +13,4 @@ export class PackageAdapterIdentifierNode extends IntermediateASTIdentifierNode 
       metadata,
     );
   }
-  get name(): string {
-    return this.getValue()[this.getClassNodeName()];
-  }
 }

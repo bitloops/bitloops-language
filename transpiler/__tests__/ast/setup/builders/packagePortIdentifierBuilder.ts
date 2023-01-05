@@ -1,9 +1,7 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import { TPackagePortIdentifier } from '../../../../src/types.js';
 
-export class PackagePortIdentifierBuilder
-  implements IBuilder<{ ['PackagePortIdentifier']: TPackagePortIdentifier }>
-{
+export class PackagePortIdentifierBuilder implements IBuilder<TPackagePortIdentifier> {
   private packagePortIdentifier: string;
 
   public withName(identifier: string): PackagePortIdentifierBuilder {
@@ -11,11 +9,7 @@ export class PackagePortIdentifierBuilder
     return this;
   }
 
-  public build(): { ['PackagePortIdentifier']: TPackagePortIdentifier } {
-    const packagePortIdentifier = {
-      PackagePortIdentifier: this.packagePortIdentifier,
-    };
-
-    return packagePortIdentifier;
+  public build(): TPackagePortIdentifier {
+    return this.packagePortIdentifier;
   }
 }

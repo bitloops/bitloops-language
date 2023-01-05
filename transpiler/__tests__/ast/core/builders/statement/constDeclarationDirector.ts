@@ -21,7 +21,7 @@ import {
   TArgumentList,
   TBitloopsPrimitives,
   TConstDeclaration,
-  TEvaluationFields,
+  TEvaluationField,
   TVariableDeclaration,
 } from '../../../../../src/types.js';
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
@@ -145,7 +145,7 @@ export class ConstDeclarationBuilderDirector {
   }: {
     name: string;
     dtoIdentifier: string;
-    dtoFields: TEvaluationFields;
+    dtoFields: TEvaluationField[];
   }): TConstDeclaration {
     const constDeclaration = this.constDeclarationBuilder
       .withIdentifier(name)
@@ -207,7 +207,7 @@ export class ConstDeclarationBuilderDirector {
   }: {
     name: string;
     valueObjectIdentifier: string;
-    fields: TEvaluationFields;
+    fields: TEvaluationField[];
   }): TConstDeclaration {
     const constDeclaration = this.constDeclarationBuilder
       .withIdentifier(name)
@@ -229,7 +229,7 @@ export class ConstDeclarationBuilderDirector {
   }: {
     name: string;
     entityIdentifier: string;
-    fields: TEvaluationFields;
+    fields: TEvaluationField[];
   }): TConstDeclaration {
     const constDeclaration = this.constDeclarationBuilder
       .withIdentifier(name)

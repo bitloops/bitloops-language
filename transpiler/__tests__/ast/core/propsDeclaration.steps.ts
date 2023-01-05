@@ -56,7 +56,10 @@ describe('Props declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = getExpectedPropsOutput(testProps.variables, testProps.identifier);
+      const expectedNodeValues = getExpectedPropsOutput(
+        { fields: testProps.variables },
+        testProps.identifier,
+      );
       const propsNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
       const value = propsNodes[0].getValue();
 
@@ -145,7 +148,7 @@ const getExpectedPropsOutputMultipleProps = (props: multipleProps) => {
   for (const { identifier, variables } of props) {
     const propsValue = new PropsDeclarationBuilder()
       .withIdentifier(identifier)
-      .withVariables(variables)
+      .withVariables({ fields: variables })
       .build();
     resultProps.push(propsValue);
   }
