@@ -50,6 +50,7 @@ export class RouterDefinitionBuilderDirector {
           .withArguments(argumentList)
           .withBoundedContextModule(bcModule)
           .withControllerIdentifier(controllerIdentifier)
+          .withControllerInstanceName(controllerIdentifier)
           .withMethod(method)
           .withPath(pathStringLiteral)
           .build(),

@@ -706,6 +706,37 @@ export type TPackageConcretion = {
   } & TBoundedContextModule;
 };
 
+export const repoAdapterClassNameKey = 'repoAdapterClassName';
+export type TRepoAdapterClassName = {
+  [repoAdapterClassNameKey]: {
+    dbType: TRepoSupportedTypes;
+  };
+};
+
+export const repoAdapterOptionsKey = 'repoAdapterOptions';
+export type TRepoAdapterOptions = {
+  [repoAdapterOptionsKey]: TEvaluationFields;
+};
+
+export const concretedRepoPortKey = 'concretedRepoPort';
+export type TConcretedRepoPort = string;
+
+export const repoAdapterExpressionKey = 'repoAdapterExpression';
+export type TRepoAdapterExpression = {
+  [repoAdapterExpressionKey]: {
+    [concretedRepoPortKey]: TConcretedRepoPort;
+  } & TRepoAdapterClassName &
+    TRepoAdapterOptions &
+    TBoundedContextModule;
+};
+
+export const repoAdapterDefinitionKey = 'repoAdapterDefinition';
+export type TRepoAdapterDefinition = {
+  [repoAdapterDefinitionKey]: {
+    [identifierKey]: TIdentifier;
+  } & TRepoAdapterExpression;
+};
+
 export type TBaseControllerValues = TParameterList;
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
@@ -818,10 +849,13 @@ export type TRouterArguments = {
 };
 export type THTTPMethodVerb = 'Get' | 'Put' | 'Post' | 'Delete' | 'Patch' | 'Options';
 
+export type TControllerInstanceName = string;
+
 export type TRouterController = {
   routerController: {
     httpMethodVerb: THTTPMethodVerb;
     RESTControllerIdentifier: TRESTControllerIdentifier;
+    controllerInstanceName: TControllerInstanceName;
   } & StringLiteral &
     TBoundedContextModule &
     TArgumentList;

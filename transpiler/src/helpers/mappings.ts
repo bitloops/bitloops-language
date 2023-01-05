@@ -216,6 +216,12 @@ const BitloopsTypesMapping = {
   TPackageAdapterIdentifier: 'TPackageAdapterIdentifier',
   TPackageConcretion: 'TPackageConcretion',
   TCorsOptionsEvaluation: 'TCorsOptionsEvaluation',
+  TControllerInstanceName: 'TControllerInstanceName',
+  TRepoAdapterClassName: 'TRepoAdapterClassName',
+  TRepoAdapterOptions: 'TRepoAdapterOptions',
+  TConcretedRepoPort: 'TConcretedRepoPort',
+  TRepoAdapterExpression: 'TRepoAdapterExpression',
+  TRepoAdapterDefinition: 'TRepoAdapterDefinition',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

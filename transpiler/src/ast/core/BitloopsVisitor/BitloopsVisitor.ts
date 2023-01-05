@@ -236,8 +236,15 @@ import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 import { corsOptionsEvaluationVisitor } from './helpers/expression/evaluation/corsOptionEvaluation.js';
-// import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
-// import { CorsOriginNode } from '../intermediate-ast/nodes/setup/CorsOriginNode.js';
+import { RepoAdapterClassNameNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
+import { repoAdapterClassNameVisitor } from './helpers/setup/repoAdapterClassName.js';
+import { RepoAdapterOptionsNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { repoAdapterOptionsVisitor } from './helpers/setup/repoAdapterOptions.js';
+import { ConcretedRepoPortNode } from '../intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
+import { concretedRepoPortVisitor } from './helpers/setup/concretedRepoPort.js';
+import { RepoAdapterExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
+import { repoAdapterExpressionVisitor } from './helpers/setup/repoAdapterExpression.js';
+import { repoAdapterDefinitionVisitor } from './helpers/setup/repoAdapterDefinition.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1179,5 +1186,29 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.PackageAdapterIdentifierContext,
   ): PackageAdapterIdentifierNode {
     return packageAdapterIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoAdapterClassName(
+    ctx: BitloopsParser.RepoAdapterClassNameContext,
+  ): RepoAdapterClassNameNode {
+    return repoAdapterClassNameVisitor(this, ctx);
+  }
+
+  visitRepoAdapterOptions(ctx: BitloopsParser.RepoAdapterOptionsContext): RepoAdapterOptionsNode {
+    return repoAdapterOptionsVisitor(this, ctx);
+  }
+
+  visitConcretedRepoPort(ctx: BitloopsParser.ConcretedRepoPortContext): ConcretedRepoPortNode {
+    return concretedRepoPortVisitor(this, ctx);
+  }
+
+  visitRepoAdapterExpression(
+    ctx: BitloopsParser.RepoAdapterExpressionContext,
+  ): RepoAdapterExpressionNode {
+    return repoAdapterExpressionVisitor(this, ctx);
+  }
+
+  visitRepoAdapterDefinition(ctx: BitloopsParser.RepoAdapterDefinitionContext): void {
+    repoAdapterDefinitionVisitor(this, ctx);
   }
 }

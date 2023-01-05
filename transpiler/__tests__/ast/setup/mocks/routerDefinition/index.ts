@@ -41,6 +41,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
               }),
             )
             .withControllerIdentifier('HelloWorldController')
+            .withControllerInstanceName('HelloWorldController')
             .withMethod('Get')
             .withPath(new StringLiteralBuilder().withValue('/hello1').build())
             .build(),
@@ -53,6 +54,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
               }),
             )
             .withControllerIdentifier('HelloWorld2Controller')
+            .withControllerInstanceName('HelloWorld2Controller')
             .withMethod('Post')
             .withPath(new StringLiteralBuilder().withValue('/hello2').build())
             .build(),
