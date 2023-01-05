@@ -1,0 +1,5 @@
+const todoRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: 'todos',
+  }) concretes [Demo][Hello World]TodoRepoPort;
+  

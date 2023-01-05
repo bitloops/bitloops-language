@@ -15,6 +15,7 @@ import {
   TRouterDefinition,
   TUseCaseDefinition,
 } from '../../../types.js';
+import { groupServers } from './servers/index.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
 
@@ -90,6 +91,12 @@ export const generateSetupFiles = (
     const setupGenerator = new SetupTypeScript();
     const pathsAndContents: TSetupOutput[] = [];
 
+    const allServers = groupServers(setupTree);
+    const repoConnectionDefinitions =
+      setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
+        BitloopsTypesMapping.TRepoConnectionDefinition,
+      );
+
     // Step 1. Generate routes files
     const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
       BitloopsTypesMapping.TRouterDefinition,
@@ -144,8 +151,8 @@ export const generateSetupFiles = (
 
     // Step 5. Startup File
     const startupFile = setupGenerator.generateStartupFile(
-      setupData.servers,
-      setupData.repos,
+      allServers,
+      repoConnectionDefinitions,
       setupTypeMapper,
       license,
     );
@@ -168,10 +175,6 @@ export const generateSetupFiles = (
     });
 
     // Step 7. Generate repo connections
-    const repoConnectionDefinitions =
-      setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
-        BitloopsTypesMapping.TRepoConnectionDefinition,
-      );
     const repoConnections = setupGenerator.generateRepoConnections(repoConnectionDefinitions);
     repoConnections.forEach((repoConnection) => {
       pathsAndContents.push(repoConnection);
@@ -185,7 +188,7 @@ export const generateSetupFiles = (
     });
 
     // Step 9. Generate rules
-    const rules = setupGenerator.generateRules(_bitloopsModel);
+    const rules = setupGenerator.generateRules(core);
     rules.forEach((rule) => {
       // console.log('rule:', rule);
       pathsAndContents.push(rule);

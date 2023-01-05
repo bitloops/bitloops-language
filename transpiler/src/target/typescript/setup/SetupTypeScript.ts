@@ -58,6 +58,7 @@ import {
   ApplicationErrorIdentifier,
   TDomainErrorValue,
   TApplicationErrorValue,
+  TDomainRule,
   TUseCaseDefinition,
   TRepoAdapters,
 } from '../../../types.js';
@@ -75,9 +76,10 @@ import {
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
-import { BitloopsTypesMapping, ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
 import { RouterDefinitionHelpers } from './routerDefinition/index.js';
+import { isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -87,8 +89,8 @@ type TPackageVersions = {
 
 interface ISetup {
   generateStartupFile(
-    servers: TServers,
-    reposData: TReposSetup,
+    allServers: TRestAndGraphQLServers,
+    reposData: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput;
@@ -97,7 +99,7 @@ interface ISetup {
     routerDefinitions: TRouterDefinition[],
     _bitloopsModel: TBoundedContexts,
   ): TSetupOutput[];
-  generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
@@ -599,67 +601,79 @@ export { routers };
     const result: TSetupOutput[] = [];
 
     const { classType: classTypeName, errorModels } = params;
-    for (const errorModel of errorModels) {
-      let imports = '';
-      let content = `export namespace ${classTypeName} {`;
+    let imports = '';
+    let content = `export namespace ${classTypeName} {`;
 
-      const filePathObj = getTargetFileDestination(
-        boundedContextName,
-        moduleName,
-        classTypeName,
-        classTypeName,
-      );
-      let className: string;
-      if (classTypeName === 'DomainErrors') {
-        const error = errorModel[DomainErrorKey] as TDomainErrorValue;
-        className = error[DomainErrorIdentifier];
-      } else {
-        const error = errorModel[ApplicationErrorKey] as TApplicationErrorValue;
-        className = error[ApplicationErrorIdentifier];
-      }
+    const filePathObj = getTargetFileDestination(
+      boundedContextName,
+      moduleName,
+      classTypeName,
+      classTypeName,
+    );
+
+    for (const errorModel of errorModels) {
+      const className = this.getErrorName(errorModel, classTypeName);
       const classNameWithoutError = className.split('Error')[0];
       imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
       content += `export class ${className} extends ${classNameWithoutError} {}`;
-      content += '}';
-      const finalContent = imports + content;
-      result.push({
-        fileType: classTypeName,
-        fileId: `${filePathObj.path}/index.ts`,
-        content: finalContent,
-      });
     }
+    content += '}';
+    const finalContent = imports + content;
+    result.push({
+      fileType: classTypeName,
+      fileId: `${filePathObj.path}/index.ts`,
+      content: finalContent,
+    });
 
     return result;
+  }
+
+  // Get Error name Depending on the classType
+  private getErrorName(
+    errorModel: TDomainError | TApplicationError,
+    classTypeName: 'DomainErrors' | 'ApplicationError',
+  ): string {
+    if (classTypeName === 'DomainErrors') {
+      const error = errorModel[DomainErrorKey] as TDomainErrorValue;
+      return error[DomainErrorIdentifier];
+    } else {
+      const error = errorModel[ApplicationErrorKey] as TApplicationErrorValue;
+      return error[ApplicationErrorIdentifier];
+    }
   }
 
   generateRules(model: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classTypeName, classType] of Object.entries(module)) {
-          if (classTypeName === ClassTypes.DomainRule) {
-            let imports = '';
-            let content = `export namespace ${classTypeName} {`;
-            const filePathObj = getTargetFileDestination(
-              boundedContextName,
-              moduleName,
-              classTypeName,
-              classTypeName,
-            );
-            for (const [className] of Object.entries(classType)) {
-              const classNameWithoutRule = className.split('Rule')[0];
-              imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
-              content += `export class ${className} extends ${classNameWithoutRule} {}`;
-            }
-            content += '}';
-            const finalContent = imports + content;
-            output.push({
-              fileType: classTypeName,
-              fileId: `${filePathObj.path}/index.ts`,
-              content: finalContent,
-            });
-          }
+        // Gather all domain rules of the module
+        const domainRules = module.getRootChildrenNodesValueByType<TDomainRule>(
+          BitloopsTypesMapping.TDomainRule,
+        );
+
+        const classTypeName = ClassTypes.DomainRule;
+        let imports = '';
+        let content = `export namespace ${classTypeName} {`;
+        const filePathObj = getTargetFileDestination(
+          boundedContextName,
+          moduleName,
+          classTypeName,
+          classTypeName,
+        );
+
+        for (const domainRule of domainRules) {
+          const className = domainRule.DomainRule.domainRuleIdentifier;
+          const classNameWithoutRule = className.split('Rule')[0];
+          imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
+          content += `export class ${className} extends ${classNameWithoutRule} {}`;
         }
+        content += '}';
+        const finalContent = imports + content;
+        output.push({
+          fileType: classTypeName,
+          fileId: `${filePathObj.path}/index.ts`,
+          content: finalContent,
+        });
       }
     }
     return output;
@@ -736,7 +750,10 @@ start();
       content: (license || '') + body,
     };
   }
-  generateServers(servers: TServers, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
+  generateServers(
+    servers: TRestAndGraphQLServers,
+    _bitloopsModel: TBoundedContexts,
+  ): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
@@ -753,8 +770,8 @@ start();
     return output;
   }
   generateStartupFile(
-    servers: TServers,
-    reposData: TReposSetup,
+    servers: TRestAndGraphQLServers,
+    reposData: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput {
@@ -769,6 +786,7 @@ start();
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
     imports.push(...dbConnections);
+    // TODO check if map here is needed
     const body = `(async () => {
   ${imports.map((i) => i).join('\n  ')}
 })();

@@ -23,7 +23,13 @@ export class RouterControllerNodesTransformer implements IASTToCompletedASTTrans
         const controllerIdentifierNode = routerControllerNode.getRouterControllerIdentifier();
         const controllerIdentifierName = controllerIdentifierNode.getIdentifierName();
 
-        const controllerInstanceName = controllerIdentifierName;
+        const controllerInstanceName = controllerIdentifierName; // TODO here change the name
+        //     const controllerInstance =
+        //   result.controllers?.[boundedContext]?.[module]?.[controllerClass] === undefined
+        //     ? lowerCaseFirstLetter(controllerClass)
+        //     : lowerCaseFirstLetter(controllerClass) +
+        //       result.controllers[boundedContext][module][controllerClass].instances +
+        //       1;
         const controllerInstanceNameNode = new ControllerInstanceNameNodeBuilder()
           .withInstanceName(controllerInstanceName)
           .build();
