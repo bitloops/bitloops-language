@@ -216,6 +216,7 @@ const BitloopsTypesMapping = {
   TConfigInvocation: 'TConfigInvocation',
   TPackageAdapterIdentifier: 'TPackageAdapterIdentifier',
   TPackageConcretion: 'TPackageConcretion',
+  TControllerInstanceName: 'TControllerInstanceName',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

@@ -1,7 +1,7 @@
 import { TUseCaseDefinition, TUseCaseExpression, TIdentifier } from '../../../../types.js';
 
 export type TUseCase = {
-  constIdentifier: TIdentifier;
+  instanceName: TIdentifier;
 } & TUseCaseExpression;
 type TModuleName = string;
 type TUseCaseModule = Record<TModuleName, TUseCase[]>;
@@ -25,7 +25,7 @@ export class UseCaseDefinitionHelpers {
         useCases[boundedContext] = {
           module: [
             {
-              constIdentifier: identifier,
+              instanceName: identifier,
               useCaseExpression,
             },
           ],
@@ -33,13 +33,13 @@ export class UseCaseDefinitionHelpers {
       } else if (!useCases[boundedContext][module]) {
         useCases[boundedContext][module] = [
           {
-            constIdentifier: identifier,
+            instanceName: identifier,
             useCaseExpression,
           },
         ];
       } else {
         useCases[boundedContext][module].push({
-          constIdentifier: identifier,
+          instanceName: identifier,
           useCaseExpression,
         });
       }

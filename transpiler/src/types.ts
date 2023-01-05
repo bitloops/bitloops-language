@@ -812,10 +812,13 @@ export type TRouterArguments = {
 };
 export type THTTPMethodVerb = 'Get' | 'Put' | 'Post' | 'Delete' | 'Patch' | 'Options';
 
+export type TControllerInstanceName = string;
+
 export type TRouterController = {
   routerController: {
     httpMethodVerb: THTTPMethodVerb;
     RESTControllerIdentifier: TRESTControllerIdentifier;
+    controllerInstanceName: TControllerInstanceName;
   } & StringLiteral &
     TBoundedContextModule &
     TArgumentList;

@@ -4,12 +4,24 @@ import { IntermediateASTNode, TNodeType } from './nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkErrorNodeTransformer.js';
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
-import { IntermediateAST, TBoundedContexts } from '../types.js';
+import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../types.js';
+import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
+    const boundedContexts = this.completeCore(intermediateAST.core);
+    const intermediateASTSetup = intermediateAST.setup
+      ? this.completeSetup(intermediateAST.setup)
+      : intermediateAST.setup;
+    return {
+      core: boundedContexts,
+      setup: intermediateASTSetup,
+    };
+  }
+
+  private completeCore(core: TBoundedContexts): TBoundedContexts {
     let boundedContexts: TBoundedContexts;
-    for (const [boundedContextName, boundedContext] of Object.entries(intermediateAST.core)) {
+    for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const [moduleName, ASTTree] of Object.entries(boundedContext)) {
         const treeUpdated = ASTTree.copy(); // TODO implement copy method
         const rootNode = treeUpdated.getRootNode();
@@ -40,10 +52,30 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
         }
       }
     }
-    return {
-      core: boundedContexts,
-      setup: intermediateAST.setup,
-    };
+    return boundedContexts;
+  }
+
+  private completeSetup(setup: IntermediateASTSetup): IntermediateASTSetup {
+    let intermediateASTSetup: IntermediateASTSetup;
+    for (const [fileId, setupTree] of Object.entries(setup)) {
+      const treeUpdated = setupTree.copy(); // TODO implement copy method
+      const rootNode = treeUpdated.getRootNode();
+
+      const transformer = new RouterControllerNodesTransformer(setupTree);
+
+      transformer.run();
+
+      treeUpdated.buildValueRecursiveBottomUp(rootNode);
+
+      if (!intermediateASTSetup) {
+        intermediateASTSetup = {
+          [fileId]: treeUpdated,
+        };
+      } else if (!intermediateASTSetup[fileId]) {
+        intermediateASTSetup[fileId] = treeUpdated;
+      }
+    }
+    return intermediateASTSetup;
   }
 
   private getNodeTransformer(factoryParams: {

@@ -6,6 +6,7 @@ import {
   TBoundedContextModule,
   TRESTControllerIdentifier,
   TArgumentList,
+  TControllerInstanceName,
 } from '../../../../src/types.js';
 
 export class RouterControllerBuilder implements IBuilder<TRouterController> {
@@ -14,6 +15,7 @@ export class RouterControllerBuilder implements IBuilder<TRouterController> {
   private bcModule: TBoundedContextModule;
   private restControllerIdentifier: TRESTControllerIdentifier;
   private argumentList: TArgumentList;
+  private controllerInstanceName: TControllerInstanceName;
 
   public withMethod(method: THTTPMethodVerb): RouterControllerBuilder {
     this.method = method;
@@ -42,11 +44,19 @@ export class RouterControllerBuilder implements IBuilder<TRouterController> {
     return this;
   }
 
+  public withControllerInstanceName(
+    controllerInstanceName: TControllerInstanceName,
+  ): RouterControllerBuilder {
+    this.controllerInstanceName = controllerInstanceName;
+    return this;
+  }
+
   public build(): TRouterController {
     const routerController = {
       routerController: {
         httpMethodVerb: this.method,
         RESTControllerIdentifier: this.restControllerIdentifier,
+        controllerInstanceName: this.controllerInstanceName,
         ...this.path,
         ...this.bcModule,
         ...this.argumentList,

@@ -77,6 +77,7 @@ import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
 import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
+import { RouterDefinitionHelpers } from './routerDefinition/index.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -200,7 +201,7 @@ export class SetupTypeScript implements ISetup {
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[] {
-    const { controllers, repos } = data;
+    const { repos } = data;
     const result: TSetupOutput[] = [];
     // For each module in each bounded context generate 1 DI file that contains all
     // the use cases and controllers of that module that are concreted in the setup.bl
@@ -208,6 +209,10 @@ export class SetupTypeScript implements ISetup {
     const useCases =
       UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions);
     const useCasesLength = Object.keys(useCases).length;
+
+    const controllers =
+      RouterDefinitionHelpers.getControllersForEachBoundedContextModule(routerDefinitions);
+    const controllersLength = Object.keys(controllers).length;
 
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const moduleName of Object.keys(boundedContext)) {
@@ -224,7 +229,7 @@ export class SetupTypeScript implements ISetup {
         if (useCasesLength > 0)
           diContent += this.generateDIUseCaseImports(useCases[boundedContextName][moduleName]);
 
-        if (controllers)
+        if (controllersLength > 0)
           diContent += this.generateDIControllersImports(
             controllers[boundedContextName][moduleName],
           );
@@ -237,7 +242,7 @@ export class SetupTypeScript implements ISetup {
         if (useCasesLength > 0)
           diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
 
-        if (controllers)
+        if (controllersLength > 0)
           diContent += this.generateControllerDIsAndExports(
             controllers[boundedContextName][moduleName],
           );
@@ -287,13 +292,13 @@ export class SetupTypeScript implements ISetup {
   private generateUseCasesDIs(useCases: TUseCase[]): string {
     let result = '';
     for (const useCase of useCases) {
-      const { useCaseExpression, constIdentifier } = useCase;
+      const { useCaseExpression, instanceName } = useCase;
       const { UseCaseIdentifier, argumentList } = useCaseExpression;
       const useCaseDependencies = modelToTargetLanguage({
         type: BitloopsTypesMapping.TArgumentList,
         value: { argumentList },
       });
-      result += `const ${constIdentifier} = new ${UseCaseIdentifier}${useCaseDependencies.output};\n`;
+      result += `const ${instanceName} = new ${UseCaseIdentifier}${useCaseDependencies.output};\n`;
     }
     return result;
   }
@@ -465,7 +470,7 @@ export class SetupTypeScript implements ISetup {
             );
 
             controllersBody += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
-            controllersBody += `\n    return ${RESTControllerIdentifier}.execute(request, reply);`;
+            controllersBody += `\n    return ${RESTControllerIdentifier}.execute(request, reply);`; // TODO RESTControllerIdentifier change to instance name
             controllersBody += '\n  });';
           }
 
