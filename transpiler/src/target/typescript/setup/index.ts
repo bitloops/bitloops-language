@@ -10,8 +10,10 @@ import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   TPackageConcretion,
+  TRepoAdapters,
   TRepoConnectionDefinition,
   TRouterDefinition,
+  TUseCaseDefinition,
 } from '../../../types.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
@@ -108,8 +110,20 @@ export const generateSetupFiles = (
     });
 
     // Step 3. Generate DIs
+    const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
+      BitloopsTypesMapping.TUseCaseDefinition,
+    );
+    const repoConnectionsDef = setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
+      BitloopsTypesMapping.TRepoConnectionDefinition,
+    );
+    const repoAdapterDefinitions = setupTree.getRootChildrenNodesValueByType<TRepoAdapters>(
+      BitloopsTypesMapping.TRepoAdapters, // TODO should change to TRepoAdapterDefinition
+    );
     const controllerDIs = setupGenerator.generateDIs(
-      setupData,
+      routerDefinitions,
+      useCaseDefinitions,
+      repoConnectionsDef,
+      repoAdapterDefinitions,
       _bitloopsModel,
       setupTypeMapper,
       license,
