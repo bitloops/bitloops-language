@@ -8,7 +8,7 @@ import { TargetSetupGeneratorError, TTargetSetupContent } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { TRouterDefinition } from '../../../types.js';
+import { TRepoConnectionDefinition, TRouterDefinition } from '../../../types.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
 
@@ -147,9 +147,12 @@ export const generateSetupFiles = (
     });
 
     // Step 7. Generate repo connections
-    const repoConnections = setupGenerator.generateRepoConnections(setupData);
+    const repoConnectionDefinitions =
+      setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
+        BitloopsTypesMapping.TRepoConnectionDefinition,
+      );
+    const repoConnections = setupGenerator.generateRepoConnections(repoConnectionDefinitions);
     repoConnections.forEach((repoConnection) => {
-      // console.log('repoConnection:', repoConnection);
       pathsAndContents.push(repoConnection);
     });
 

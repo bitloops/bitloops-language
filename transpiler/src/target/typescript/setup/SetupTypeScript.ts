@@ -46,6 +46,7 @@ import {
   TControllerOfModule,
   TReposSetup,
   TServers,
+  TRepoConnectionDefinition,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -87,7 +88,8 @@ interface ISetup {
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[];
-  generateRepoConnections(setupData: TSetupData): TSetupOutput[];
+  // generateRepoConnections(setupData: TSetupData): TSetupOutput[];
+  generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[];
   // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
   // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
 }
@@ -147,10 +149,13 @@ export class SetupTypeScript implements ISetup {
     this.nodeDevDependencies = REQUIRED_NODE_DEV_DEPENDENCIES;
     this.setupTypeScriptRepos = new SetupTypeScriptRepos();
   }
-  generateRepoConnections(setupData: TSetupData): TSetupOutput[] {
-    const repoDependencies = this.setupTypeScriptRepos.getPackageJSONDependencies(setupData.repos);
+
+  // generateRepoConnections(setupData: TSetupData): TSetupOutput[] {
+  generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[] {
+    const repoDependencies =
+      this.setupTypeScriptRepos.getPackageJSONDependencies(repoConnectionDefinitions);
     this.nodeDependencies = { ...this.nodeDependencies, ...repoDependencies };
-    return this.setupTypeScriptRepos.generateRepoConnections(setupData);
+    return this.setupTypeScriptRepos.generateRepoConnections(repoConnectionDefinitions);
   }
 
   getNodeDependencies(): TNodePackages {
