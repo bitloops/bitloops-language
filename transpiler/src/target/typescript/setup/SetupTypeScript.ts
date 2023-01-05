@@ -47,6 +47,7 @@ import {
   TReposSetup,
   TServers,
   TRepoConnectionDefinition,
+  TRouterDefinition,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -80,7 +81,10 @@ interface ISetup {
     license?: string,
   ): TSetupOutput;
   generateAPIs(servers: TServers): TSetupOutput[];
-  generateServerRouters(data: TSetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServerRouters(
+    routerDefinitions: TRouterDefinition[],
+    _bitloopsModel: TBoundedContexts,
+  ): TSetupOutput[];
   generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     data: TSetupData,
@@ -389,100 +393,78 @@ export class SetupTypeScript implements ISetup {
     return results;
   }
 
-  private generateRouters(
-    routesData: TRoutersInfo,
-    serverType: TServerType,
-    controllers: TControllers,
+  generateServerRouters(
+    routerDefinitions: TRouterDefinition[],
     _bitloopsModel: TBoundedContexts,
     license?: string,
-  ): TSetupOutput {
-    let imports = '';
-    // let serverPath = '';
-    let body = '';
-    let routes = '';
-    let exports = '';
-    const controllerImports: string[] = [];
-    switch (serverType) {
-      case 'REST.Express':
-        // serverPath = 'rest/express';
-        throw new Error(`Server ${serverType} not fully implemented`);
-      case 'REST.Fastify':
-        // serverPath = 'rest/fastify';
-        imports = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
-        routes = Object.keys(routesData)
-          .map((routerInstanceName) => {
-            const methodURLMap = routesData[routerInstanceName as TRouterInstanceName].methodURLMap;
-            let routerDefinition = `const ${routerInstanceName} = async (fastify: Fastify.Instance) => {`;
-            Object.keys(methodURLMap).map((methodAndPath: TMethodAndPath) => {
-              const [method, path] = methodAndPath.split(' ');
-              const { boundedContext, controllerClass, module } = methodURLMap[methodAndPath];
-              const controllerInstances = controllers[boundedContext][module][controllerClass];
-              // if (!controllerDefinitionIsRest(controllerInstances)) {
-              //   throw new Error(
-              //     `Controller ${controllerClass} is not a REST controller, it cannot be used in a REST server`,
-              //   );
-              // }
-              let controllerInstanceName = '';
-              for (const controllerInstance of controllerInstances.instances) {
-                if (controllerInstance.url === path) {
-                  controllerInstanceName = controllerInstance.controllerInstance;
-                  controllerImports.push(
-                    `import { ${controllerInstanceName} } from '../../../../../bounded-contexts/${kebabCase(
-                      boundedContext,
-                    )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';`,
-                  );
-                }
-              }
-              routerDefinition += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
-              routerDefinition += `\n    return ${controllerInstanceName}.execute(request, reply);`;
-              routerDefinition += '\n  });';
-            });
-            routerDefinition += '\n};\n';
-            return routerDefinition;
-          })
-          .join('');
-        exports =
-          Object.keys(routesData).length > 2
-            ? `${Object.keys(routesData).map((routerInstanceName) => `  ${routerInstanceName},\n`)}`
-            : `${Object.keys(routesData).map(
-                (routerInstanceName) => ` ${routerInstanceName},`,
-              )}`.slice(0, -1) + ' ';
-        body = `${imports}
-${controllerImports.join('\n')}
-
-${routes}
-export {${exports}};\n`;
-        break;
-    }
-    return {
-      fileId: 'index.ts',
-      fileType: `${serverType}.Router`,
-      content: (license || '') + body,
-    };
-  }
-  generateServerRouters(
-    data: TSetupData,
-    bitloopsModel: TBoundedContexts,
-    license?: string,
   ): TSetupOutput[] {
-    const routers = data.routers;
-    const output = [];
-    for (const serverType of Object.keys(routers)) {
-      // for (const routerInstanceName of Object.keys(routers[serverType])) {
-      //   const serverInstanceRouters = routers[serverType][routerInstanceName];
-      output.push(
-        this.generateRouters(
-          routers[serverType],
-          serverType as TServerType,
-          data.controllers,
-          bitloopsModel,
-          license,
-        ),
-      );
-      // }
+    const fastifyImport = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
+    let fastifyExports = '';
+    let fastifyRouterDefinitionBody = '';
+    const fastifyControllerImports: string[] = [];
+
+    for (const routerDefinition of routerDefinitions) {
+      const { routerDefinition: router } = routerDefinition;
+      const { routerExpression, identifier } = router;
+      const { routerArguments, routerControllers } = routerExpression;
+      const { serverType } = routerArguments;
+
+      switch (serverType) {
+        case 'REST.Express':
+          throw new Error(`Server ${serverType} not fully implemented`);
+        case 'REST.Fastify': {
+          let controllersBody = '';
+          for (const controller of routerControllers) {
+            const { routerController } = controller;
+            const {
+              httpMethodVerb: method,
+              stringLiteral: path,
+              RESTControllerIdentifier,
+              boundedContextModule,
+            } = routerController;
+            const { boundedContextName, moduleName } = boundedContextModule;
+            const { wordsWithSpaces: boundedContext } = boundedContextName;
+            const { wordsWithSpaces: module } = moduleName;
+
+            fastifyControllerImports.push(
+              `import { ${RESTControllerIdentifier} } from '../../../../../bounded-contexts/${kebabCase(
+                boundedContext,
+              )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';`,
+            );
+
+            controllersBody += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
+            controllersBody += `\n    return ${RESTControllerIdentifier}.execute(request, reply);`;
+            controllersBody += '\n  });';
+          }
+
+          fastifyRouterDefinitionBody += `const ${identifier} = async (fastify: Fastify.Instance) => {`;
+          fastifyRouterDefinitionBody += controllersBody;
+          fastifyRouterDefinitionBody += '\n};\n';
+
+          fastifyExports += `${identifier},\n`;
+
+          break;
+        }
+      }
     }
+
+    const output = [];
+    if (fastifyControllerImports.length > 0) {
+      let body = `${fastifyImport}\n`;
+      body += `${fastifyControllerImports.join('\n')}`;
+      body += `${fastifyRouterDefinitionBody}`;
+      body += `export {${fastifyExports}};\n`;
+
+      output.push({
+        fileId: 'index.ts',
+        fileType: 'REST.Fastify.Router',
+        content: (license || '') + body,
+      });
+    }
+
     return output;
   }
+
   private registerRouters(
     routers: Record<TRouterInstanceName, { routerPrefix: string }>,
     serverType: TServerType,
