@@ -104,7 +104,6 @@ const BitloopsTypesMapping = {
   TThisDeclaration: 'TThisDeclaration',
   TRepoPort: 'TRepoPort',
   TRepoAdapters: 'TRepoAdapters',
-  TSingleExpression: 'TSingleExpression',
   TLogicalExpression: 'TLogicalExpression',
   TNotExpression: 'TNotExpression',
   TAndExpression: 'TAndExpression',

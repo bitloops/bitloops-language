@@ -18,28 +18,22 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TErrorEvaluation, TEvaluationValues, TStructEvaluation } from '../../../../types.js';
-const STRUCT_STRING = 'struct';
-// const DTO_STRING = 'dto';
-export class EvaluationTypeIdentifiers {
-  static isStructEvaluation(evaluation: TEvaluationValues): evaluation is TStructEvaluation {
-    if (STRUCT_STRING in evaluation) {
-      return true;
-    }
-    return false;
-  }
+import {
+  TCorsOptionsEvaluation,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-  static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
-    if ('errorEvaluation' in evaluation) {
-      return true;
-    }
-    return false;
-  }
+const corsOptionsToTargetLanguage = (
+  variable: TCorsOptionsEvaluation,
+): TTargetDependenciesTypeScript => {
+  const structProperties = variable.corsOptions.fields;
 
-  static isCorsOptionsEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
-    if ('corsOptions' in evaluation) {
-      return true;
-    }
-    return false;
-  }
-}
+  return modelToTargetLanguage({
+    type: BitloopsTypesMapping.TEvaluationFields,
+    value: structProperties,
+  });
+};
+
+export { corsOptionsToTargetLanguage };

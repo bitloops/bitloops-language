@@ -23,7 +23,7 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
-import { validStructEvaluationEvaluationTestCases } from './mocks/evaluation/structEvaluation.js';
+import { validCorsOptionsEvaluationEvaluationTestCases } from './mocks/evaluation/corsOptionsEvaluation.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -34,7 +34,7 @@ describe('cors options evaluation is valid', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  validStructEvaluationEvaluationTestCases.forEach((testCase) => {
+  validCorsOptionsEvaluationEvaluationTestCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [

@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language
+ *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,29 +17,21 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { EvaluationFieldNode } from '../../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { EvaluationFieldBuilderDirector } from '../../../builders/evaluationFIeld.js';
 
-import { TErrorEvaluation, TEvaluationValues, TStructEvaluation } from '../../../../types.js';
-const STRUCT_STRING = 'struct';
-// const DTO_STRING = 'dto';
-export class EvaluationTypeIdentifiers {
-  static isStructEvaluation(evaluation: TEvaluationValues): evaluation is TStructEvaluation {
-    if (STRUCT_STRING in evaluation) {
-      return true;
-    }
-    return false;
-  }
+type TValidTestCases = {
+  description: string;
+  evaluationFields: EvaluationFieldNode[];
+  output: string;
+};
 
-  static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
-    if ('errorEvaluation' in evaluation) {
-      return true;
-    }
-    return false;
-  }
-
-  static isCorsOptionsEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
-    if ('corsOptions' in evaluation) {
-      return true;
-    }
-    return false;
-  }
-}
+export const VALID_CORS_EVALUATION_TEST_CASES: TValidTestCases[] = [
+  {
+    description: 'A valid struct declaration with array of int and string',
+    evaluationFields: [
+      new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('origin', '*'),
+    ],
+    output: "{origin: '*'}",
+  },
+];

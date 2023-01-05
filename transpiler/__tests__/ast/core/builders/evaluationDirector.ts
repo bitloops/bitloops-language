@@ -31,6 +31,16 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildCorsEvaluation(fields: TEvaluationField[]): TEvaluation {
+    return {
+      evaluation: {
+        corsOptions: {
+          [evaluationFieldsKey]: fields,
+        },
+      },
+    };
+  }
+
   buildDTOEvaluation(dtoIdentifier: string, fields: TEvaluationField[]): TEvaluation {
     return {
       evaluation: {

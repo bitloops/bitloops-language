@@ -19,10 +19,8 @@
  */
 import { buildExecuteMethod } from './buildRestExecute.js';
 import { buildFieldsFromDependencies } from '../helpers/buildFieldsFromDependencies.js';
-import { controllerDefinitionIsRest } from '../../../../../../helpers/typeGuards.js';
 import {
   TRESTController,
-  TControllers,
   TTargetDependenciesTypeScript,
   TDependenciesTypeScript,
 } from '../../../../../../types.js';
@@ -67,7 +65,7 @@ const getServerExtends = (serverType: string): string => {
 const restControllersToTargetLanguage = (
   controller: TRESTController,
   contextData: { boundedContext: string; module: string },
-  controllersSetupData: TControllers,
+  controllersSetupData: any,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const controllerInfo = controller.RESTController;
