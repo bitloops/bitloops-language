@@ -1270,3 +1270,9 @@ export type TTargetDependenciesTypeScript = {
   output: string;
   dependencies: TDependenciesTypeScript;
 };
+
+export enum RepoConnectionOptions {
+  host = 'host',
+  port = 'port',
+  database = 'database',
+}
