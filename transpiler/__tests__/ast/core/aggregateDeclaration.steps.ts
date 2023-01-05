@@ -54,7 +54,9 @@ describe('Root Entity declaration is valid', () => {
           resultTree = core[BOUNDED_CONTEXT].core;
         }
       }
-      const rootEntityNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TRootEntity);
+      const rootEntityNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TRootEntity,
+      );
       const value = rootEntityNodes[0].getValue();
 
       expect(value).toMatchObject(testCase.expected);

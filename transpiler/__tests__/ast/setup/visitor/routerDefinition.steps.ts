@@ -60,7 +60,7 @@ describe('Use case definition is valid', () => {
         }
       }
       const resultTree = setupResult[testRouter.fileId];
-      const routerDefintionNodes = resultTree.getClassTypeNodes(
+      const routerDefintionNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TRouterDefinition,
       );
       const value = routerDefintionNodes[0].getValue();

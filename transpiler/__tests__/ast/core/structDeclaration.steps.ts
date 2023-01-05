@@ -57,7 +57,9 @@ describe('Struct declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const structDeclarationNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TStruct);
+      const structDeclarationNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TStruct,
+      );
       const value = structDeclarationNodes[0].getValue();
 
       expect(value).toMatchObject(testStructDeclaration.expected);
@@ -118,7 +120,7 @@ describe('Struct declaration with multiple structs is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const structNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TStruct);
+      const structNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TStruct);
       const values = structNodes.map((node) => node.getValue());
 
       expect(values).toMatchObject(testDTO.expected);

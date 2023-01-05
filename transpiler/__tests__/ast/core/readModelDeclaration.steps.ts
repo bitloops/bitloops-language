@@ -53,7 +53,7 @@ describe('Read Model declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const readModelNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TReadModel);
+      const readModelNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TReadModel);
       expect(readModelNodes.length).toBe(1);
       const value = readModelNodes[0].getValue();
 

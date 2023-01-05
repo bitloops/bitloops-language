@@ -46,7 +46,7 @@ describe('Valid graphql Controller', () => {
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const graphQLControllerNodes = result.core[boundedContext][module].getClassTypeNodes(
+      const graphQLControllerNodes = result.core[boundedContext][module].getRootChildrenNodesByType(
         BitloopsTypesMapping.TGraphQLController,
       );
       expect(graphQLControllerNodes.length).toBe(1);

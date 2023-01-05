@@ -85,7 +85,7 @@ const getPropsModel = (
   let dependencies = [];
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPort)) {
     const { entityIdentifier } = repoPort[repoPortKey];
-    const aggregateModels = model.getClassTypeNodes(
+    const aggregateModels = model.getRootChildrenNodesByType(
       BitloopsTypesMapping.TRootEntity,
     ) as RootEntityDeclarationNode[];
     const aggregateModelNode = aggregateModels.find(
@@ -102,12 +102,16 @@ const getPropsModel = (
       });
     dependencies = [...dependencies, ...aggregatePropsTypeDependencies];
 
-    const propsModels = model.getClassTypeNodes(BitloopsTypesMapping.TProps) as PropsNode[];
+    const propsModels = model.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TProps,
+    ) as PropsNode[];
     const propsModelNode = propsModels.find((node) => node.getClassName() === aggregatePropsName);
     propsModel = propsModelNode.getValue() as TProps;
   } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPort)) {
     const { readModelIdentifier } = repoPort[repoPortKey];
-    const readModels = model.getClassTypeNodes(BitloopsTypesMapping.TReadModel) as ReadModelNode[];
+    const readModels = model.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TReadModel,
+    ) as ReadModelNode[];
     const readModelNode = readModels.find((node) => node.getClassName() === readModelIdentifier);
     const readModelValues = readModelNode.getValue() as TReadModel;
     propsModel = readModelValues;
@@ -130,7 +134,9 @@ export const repoAdapterToTargetLanguage = (
 
   const { dbType, repoPort, connection, collection } = repoAdapter;
 
-  const repoPorts = model.getClassTypeNodes(BitloopsTypesMapping.TRepoPort) as RepoPortNode[];
+  const repoPorts = model.getRootChildrenNodesByType(
+    BitloopsTypesMapping.TRepoPort,
+  ) as RepoPortNode[];
   const repoPortNode = repoPorts.find((node) => node.getClassName() === repoPort);
   if (!repoPortNode) {
     throw new Error(`Repo port ${repoPort} not found in model!`);

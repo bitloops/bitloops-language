@@ -64,7 +64,9 @@ describe('Switch Statement is valid', () => {
         testSwitchStatement.cases,
         testSwitchStatement.defaultCase,
       );
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TSwitchStatement);
+      const propsNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TSwitchStatement,
+      );
       assert(propsNodes.length === 1);
       const value = propsNodes[0].getValue();
 

@@ -53,7 +53,7 @@ describe('Method definiton list is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const methodDefinitionListNodes = resultTree.getClassTypeNodes(
+      const methodDefinitionListNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TDefinitionMethods,
       );
       expect(methodDefinitionListNodes.length).toBe(1);

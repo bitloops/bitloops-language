@@ -53,7 +53,7 @@ describe('Variable declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const variableDeclarationNodes = resultTree.getClassTypeNodes(
+      const variableDeclarationNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TVariableDeclaration,
       );
       const value = variableDeclarationNodes[0].getValue();

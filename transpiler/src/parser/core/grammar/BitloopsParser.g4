@@ -788,7 +788,7 @@ packageAdapterIdentifier
     ;
 
 packageConcretion
-    : boundedContextModuleDeclaration adapter=packageAdapterClassName Concretes port=packageAdapterIdentifier SemiColon?
+    : boundedContextModuleDeclaration adapter=packageAdapterIdentifier Concretes port=packagePortIdentifier SemiColon?
     ;
 
 useCaseDefinition
@@ -828,7 +828,7 @@ origin
     ;
 
 repoConnectionDefinition
-    : Const identifier '=' repoConnectionExpression
+    : Const identifier Assign repoConnectionExpression
     ;
 
 // constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
@@ -840,15 +840,7 @@ repoConnectionType
     ;
 
 repoConnectionOptions
-    : objectProperties
-    ;
-
-objectProperties
-    : objectProperty (Comma objectProperty)* Comma? 
-    ;
-
-objectProperty
-    : identifier Colon expression
+    : evaluationFieldList
     ;
 
 repoAdapterDefinition
@@ -860,7 +852,7 @@ repoAdapterExpression
     ;
 
 repoAdapterOptions
-    : objectProperties
+    : evaluationFieldList
     ;
 
 repoAdapterClassName
@@ -924,7 +916,7 @@ controllerResolverBind
     : boundedContextModuleDeclaration ControllerIdentifier methodArguments
     ;
 
-alpha_numeric_ws: Digits | WS | UpperCaseIdentifier | Identifier;
+alpha_numeric_ws: IntegerLiteral | WS | UpperCaseIdentifier | Identifier;
 
 wordsWithSpaces
     : alpha_numeric_ws+

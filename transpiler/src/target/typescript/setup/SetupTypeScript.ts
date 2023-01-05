@@ -198,9 +198,8 @@ export class SetupTypeScript implements ISetup {
           diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
         }
 
-        //TODO this was commented because of generateUseCasesDIs
-        // if (useCases)
-        //   diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
+        if (useCases)
+          diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
 
         if (controllers)
           diContent += this.generateControllerDIsAndExports(
@@ -247,16 +246,16 @@ export class SetupTypeScript implements ISetup {
   }
 
   //TODO this was commented, type of useCases is TUseCaseDefinition
-  // private generateUseCasesDIs(useCases: TUseCasesOfModule): string {
-  //   let result = '';
-  //   for (const [useCaseName, useCase] of Object.entries(useCases)) {
-  //     for (const instance of useCase.instances) {
-  //       const { instanceName, dependencies } = instance;
-  //       result += `const ${instanceName} = new ${useCaseName}(${dependencies.join(', ')});\n`;
-  //     }
-  //   }
-  //   return result;
-  // }
+  private generateUseCasesDIs(useCases: unknown): string {
+    let result = '';
+    for (const [useCaseName, useCase] of Object.entries(useCases)) {
+      for (const instance of useCase.instances) {
+        const { instanceName, dependencies } = instance;
+        result += `const ${instanceName} = new ${useCaseName}(${dependencies.join(', ')});\n`;
+      }
+    }
+    return result;
+  }
 
   private generateControllerDIsAndExports(controllers: TControllerOfModule): string {
     let controllerDIContent = '';
@@ -274,65 +273,6 @@ export class SetupTypeScript implements ISetup {
     }
     return controllerDIContent + '\n' + exportsString;
   }
-
-  // generateUseCaseDIs(data: ISetupData, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
-  //   const { useCases } = data;
-  //   const result: Record<string, { content: string; name: string; useCaseName: string }[]> = {};
-
-  //   for (const [boundedContextName, boundedContext] of Object.entries(useCases)) {
-  //     for (const [moduleName, module] of Object.entries(boundedContext)) {
-  //       for (const [useCaseName, useCase] of Object.entries(module)) {
-  //         // instanceName: string;
-  //         // dependencies: string[]; // Replace with correct type
-  //         const { instanceName, dependencies } = useCase;
-  //         const useCaseInstanceFilePath = `./src/bounded-contexts/${kebabCase(
-  //           boundedContextName,
-  //         )}/${kebabCase(moduleName)}/use-cases/${kebabCase(useCaseName)}/DI.ts`;
-
-  //         let useCaseDIContent = '';
-  //         if (dependencies.length > 0) {
-  //           // TODO fix issue with dependencies
-  //           // const useCaseDependency = dependencies[0];
-  //           // controllerDIContent = `const ${useCaseDependency} = new ${useCase}UseCase();\n`;
-  //         }
-  //         useCaseDIContent += `const ${instanceName} = new ${useCaseName}();\n`;
-
-  //         if (!result[useCaseInstanceFilePath]) {
-  //           result[useCaseInstanceFilePath] = [];
-  //         }
-  //         result[useCaseInstanceFilePath].push({
-  //           content: useCaseDIContent,
-  //           name: instanceName,
-  //           useCaseName,
-  //         });
-  //       }
-  //     }
-  //   }
-  //   const filePathsAndContents: TSetupOutput[] = [];
-  //   // On Every Controller DI file, we need for sure to import The local controller instance
-  //   // and perhaps the local useCase if it is defined as a needed dependency
-  //   for (const [filePath, useCaseDIs] of Object.entries(result)) {
-  //     const useCaseDIExports = useCaseDIs.map(({ name }) => name).join(', ');
-  //     const useCaseDIContent = useCaseDIs.map(({ content }) => content).join('\n');
-  //     // const useCaseName = controllerName.slice(0, -controllerSuffixLength) + 'UseCase';
-  //     // Remove duplicates
-  //     const useCasesInDI = new Set(useCaseDIs.map(({ useCaseName }) => useCaseName));
-  //     const importsString = Array.from(useCasesInDI)
-  //       .map((useCaseName) => `import { ${useCaseName} } from './${useCaseName}';`)
-  //       .join('\n');
-  //     // const importString = `\nimport { ${controllerName} } from './${controllerName}';\n\n`; //+
-  //     // `import { ${useCaseName} } from './${useCaseName}';\n\n`;
-  //     const content =
-  //       LICENSE +
-  //       '\n' +
-  //       importsString +
-  //       '\n\n' +
-  //       useCaseDIContent +
-  //       `\nexport { ${useCaseDIExports} };\n`;
-  //     filePathsAndContents.push({ filePath, content });
-  //   }
-  //   return filePathsAndContents;
-  // }
 
   private findPackageAdapterFileContent(
     packages: TPackagesMapping,

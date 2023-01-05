@@ -56,7 +56,9 @@ describe('Domain rule declaration is valid', () => {
         }
       }
 
-      const domainRuleNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDomainRule);
+      const domainRuleNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TDomainRule,
+      );
       assert(domainRuleNodes.length === 1);
       const value = domainRuleNodes[0].getValue();
 

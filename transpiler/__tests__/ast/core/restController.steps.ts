@@ -63,7 +63,7 @@ describe('Rest controller declaration is valid', () => {
         }
       }
 
-      const restControllerNodes = resultTree.getClassTypeNodes(
+      const restControllerNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TRESTController,
       );
       assert(restControllerNodes.length === 1);

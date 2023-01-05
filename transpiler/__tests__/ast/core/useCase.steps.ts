@@ -53,7 +53,9 @@ describe('UseCase declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const useCaseDeclarationNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TUseCase);
+      const useCaseDeclarationNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TUseCase,
+      );
       const value = useCaseDeclarationNodes[0].getValue();
 
       expect(value).toMatchObject(testUseCaseDeclaration.expected);

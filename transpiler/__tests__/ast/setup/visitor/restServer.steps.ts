@@ -63,7 +63,9 @@ describe('Rest Server is valid', () => {
         }
       }
       const resultTree = setupResult[testRestServer.fileId];
-      const value = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers)[0].getValue();
+      const value = resultTree
+        .getRootChildrenNodesByType(BitloopsTypesMapping.TServers)[0]
+        .getValue();
       expect(value).toMatchObject(testRestServer.restServer);
     });
   });
@@ -101,7 +103,9 @@ describe('Multiple valid Rest Servers', () => {
         }
       }
       const resultTree = setupResult[testRestServer.fileId];
-      const restServerDefintionNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TServers);
+      const restServerDefintionNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TServers,
+      );
       const values = restServerDefintionNodes.map((node) => node.getValue());
 
       expect(values).toMatchObject(testRestServer.restServers);

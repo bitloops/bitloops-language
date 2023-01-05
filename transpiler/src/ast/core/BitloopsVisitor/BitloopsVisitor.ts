@@ -213,6 +213,12 @@ import { boundedContextVisitor } from './helpers/setup/boundedContextDeclaration
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { repoConnectionDefinitionVisitor } from './helpers/setup/repoConnectionDefinitionVisitor.js';
+import { repoConnectionTypeVisitor } from './helpers/setup/repoConnectionTypeVisitor.js';
+import { repoConnectionExpressionVisitor } from './helpers/setup/repoConnectionExpressionVisitor.js';
+import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
+import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
+import { repoConnectionOptionsVisitor } from './helpers/setup/repoConnectionOptionsVisitor.js';
 import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
 import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
 import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
@@ -230,8 +236,10 @@ import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/se
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
-// import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
+import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
+import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
@@ -1061,6 +1069,24 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return useCaseExpressionVisitor(this, ctx);
   }
 
+  visitRepoConnectionDefinition(ctx: BitloopsParser.RepoConnectionDefinitionContext): void {
+    repoConnectionDefinitionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionExpression(
+    ctx: BitloopsParser.RepoConnectionExpressionContext,
+  ): RepoConnectionExpressionNode {
+    return repoConnectionExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionType(ctx: BitloopsParser.RepoConnectionTypeContext): DatabaseTypeNode {
+    return repoConnectionTypeVisitor(this, ctx);
+  }
+
+  visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
+    return repoConnectionOptionsVisitor(this, ctx);
+  }
+
   visitBoundedContextModuleDeclaration(
     ctx: BitloopsParser.BoundedContextModuleDeclarationContext,
   ): BoundedContextModuleNode {
@@ -1088,8 +1114,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       return ctx.Identifier().getText();
     } else if (ctx.UpperCaseIdentifier()) {
       return ctx.UpperCaseIdentifier().getText();
-    } else if (ctx.Digits()) {
-      return ctx.Digits().getText();
+    } else if (ctx.IntegerLiteral()) {
+      return ctx.IntegerLiteral().getText();
     } else {
       return '';
     }
@@ -1156,11 +1182,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return languageSetterMethodVisitor(this, ctx);
   }
 
-  visitCorsOptions(ctx: BitloopsParser.CorsOptionsContext): CorsOptionsNode {
-    return corsOptionsVisitor(this, ctx);
+  visitPackageConcretion(ctx: BitloopsParser.PackageConcretionContext): void {
+    packageConcretionVisitor(this, ctx);
   }
 
-  visitOrigin(ctx: BitloopsParser.OriginContext): CorsOriginNode {
-    return corsOriginVisitor(this, ctx);
+  visitPackageAdapterIdentifier(
+    ctx: BitloopsParser.PackageAdapterIdentifierContext,
+  ): PackageAdapterIdentifierNode {
+    return packageAdapterIdentifierVisitor(this, ctx);
   }
 }

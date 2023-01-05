@@ -53,7 +53,7 @@ describe('Repo Port declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const repoPortNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TRepoPort);
+      const repoPortNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TRepoPort);
       expect(repoPortNodes.length).toBe(1);
       const value = repoPortNodes[0].getValue();
 

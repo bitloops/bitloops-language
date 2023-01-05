@@ -196,6 +196,10 @@ const BitloopsTypesMapping = {
   TRouterPrefix: 'TRouterPrefix',
   TUseCaseDefinition: 'TUseCaseDefinition',
   TUseCaseExpression: 'TUseCaseExpression',
+  TRepoConnectionDefinition: 'TRepoConnectionDefinition',
+  TRepoConnectionExpression: 'TRepoConnectionExpression',
+  TRepoConnectionOptions: 'TRepoConnectionOptions',
+  TRepoDatabaseType: 'TRepoDatabaseType',
   TBoundedContextModule: 'TBoundedContextModule',
   TWordsWithSpaces: 'TWordsWithSpaces',
   TBoundedContextName: 'TBoundedContextName',
@@ -210,8 +214,9 @@ const BitloopsTypesMapping = {
   THTTPMethodVerb: 'THTTPMethodVerb',
   TLanguage: 'TLanguage',
   TConfigInvocation: 'TConfigInvocation',
-  TCorsOptions: 'TCorsOptions',
-  TCorsOrigin: 'TCorsOrigin',
+  TPackageAdapterIdentifier: 'TPackageAdapterIdentifier',
+  TPackageAdapterClassName: 'TPackageAdapterClassName',
+  TPackageConcretion: 'TPackageConcretion',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

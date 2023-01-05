@@ -53,7 +53,7 @@ describe('GraphQL controller declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const graphQLControllerNodes = resultTree.getClassTypeNodes(
+      const graphQLControllerNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TGraphQLController,
       );
       expect(graphQLControllerNodes.length).toBe(1);

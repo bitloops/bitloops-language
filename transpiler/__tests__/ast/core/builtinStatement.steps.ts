@@ -59,7 +59,9 @@ describe('Apply rules statement is valid', () => {
         }
       }
 
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TBuiltInFunction);
+      const propsNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TBuiltInFunction,
+      );
       assert(propsNodes.length === 1);
       const value = propsNodes[0].getValue();
 

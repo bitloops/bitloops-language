@@ -53,7 +53,7 @@ describe('Entity declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const entityNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TEntity);
+      const entityNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TEntity);
       const value = entityNodes[0].getValue();
 
       expect(value).toMatchObject(testCase.expected);

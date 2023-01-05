@@ -1,9 +1,11 @@
 import {
   TAdditiveOperator,
   TArgumentList,
+  TEnvironmentVariableExpression,
   TEqualityOperator,
   TEvaluation,
   TExpression,
+  TLiteralValues,
   TMultiplicativeOperator,
   TNumericLiteral,
   TRelationalOperator,
@@ -18,13 +20,17 @@ export class ExpressionBuilderDirector {
     };
   }
 
-  buildEnvVariableExpression(identifier: string): TExpression {
-    return {
-      expression: {
-        environmentVariable: {
-          identifier,
-        },
+  buildEnvVariableExpression(identifier: string, defaultValue?: TLiteralValues): TExpression {
+    const envValue: TEnvironmentVariableExpression = {
+      environmentVariable: {
+        identifier,
       },
+    };
+    if (defaultValue) {
+      envValue.environmentVariable.defaultValue = defaultValue;
+    }
+    return {
+      expression: envValue,
     };
   }
 
@@ -37,6 +43,22 @@ export class ExpressionBuilderDirector {
         environmentVariable: {
           identifier,
           defaultValue,
+        },
+      },
+    };
+  }
+
+  buildEnvVariableExpressionWithDefaultStringLiteral(
+    identifier: string,
+    stringLiteral: string,
+  ): TExpression {
+    return {
+      expression: {
+        environmentVariable: {
+          identifier,
+          defaultValue: {
+            stringLiteral,
+          },
         },
       },
     };

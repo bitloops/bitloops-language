@@ -46,7 +46,7 @@ describe('Valid rest Controller', () => {
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const restControllerNodes = result.core[boundedContext][module].getClassTypeNodes(
+      const restControllerNodes = result.core[boundedContext][module].getRootChildrenNodesByType(
         BitloopsTypesMapping.TRESTController,
       );
       expect(restControllerNodes.length).toBe(1);
