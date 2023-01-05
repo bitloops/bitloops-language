@@ -1,3 +1,4 @@
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { CorsOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/CorsOptionsNodeBuilder.js';
 import { CorsOriginNodeBuilder } from '../../../intermediate-ast/builders/setup/CorsOriginNodeBuilder.js';
@@ -14,9 +15,11 @@ export const corsOptionsListStatementVisitor = (
 ): CorsOptionsNode => {
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  const corsOptionsListNode: CorsOptionsListNode = thisVisitor.visit(ctx.corsOptionsList());
+  const corsOptionsListNode: CorsOptionsListNode[] = thisVisitor.visit(ctx.corsOptionsList());
 
-  const corsOriginNode: CorsOriginNode = corsOptionsListNode[0];
+  const corsOriginNode: CorsOriginNode = corsOptionsListNode.find(
+    (node) => node.getNodeType() === BitloopsTypesMapping.TCorsOrigin,
+  );
 
   const corsOptionsNode = new CorsOptionsNodeBuilder(metadata)
     .withCorsOrigin(corsOriginNode)
