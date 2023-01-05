@@ -781,6 +781,7 @@ start();
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
     imports.push(...dbConnections);
+    // TODO check if map here is needed
     const body = `(async () => {
   ${imports.map((i) => i).join('\n  ')}
 })();
