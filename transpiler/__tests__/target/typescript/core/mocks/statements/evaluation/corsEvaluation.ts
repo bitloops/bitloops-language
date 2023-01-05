@@ -32,6 +32,6 @@ export const VALID_CORS_EVALUATION_TEST_CASES: TValidTestCases[] = [
     evaluationFields: [
       new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('origin', '*'),
     ],
-    output: "{origin: '*'}",
+    output: "{origin:'*'}",
   },
 ];
