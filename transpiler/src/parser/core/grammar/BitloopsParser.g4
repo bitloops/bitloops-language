@@ -845,7 +845,7 @@ repoAdapterOptions
     ;
 
 repoAdapterClassName
-    : RepoAdapters Dot Mongo
+    : RepoAdapters Dot repoConnectionType
     ;
 
 concretedRepoPort

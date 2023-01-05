@@ -22,20 +22,20 @@ import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
 import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
-import { VALID_PACKAGE_CONCRETIONS } from '../mocks/packageConcretion/index.js';
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
+import { VALID_REPO_ADAPTER_DEFINITIONS } from '../mocks/repoAdapterDefinition/index.js';
 
 const BOUNDED_CONTEXT = 'Hello world';
 const MODULE = 'Demo';
 
-describe('Valid Package Concretion', () => {
+describe('Repo Adapter definition is valid', () => {
   let setupResult: IntermediateASTSetup;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  VALID_PACKAGE_CONCRETIONS.forEach((testPackageConcretion) => {
-    test(`${testPackageConcretion.description}`, () => {
+  VALID_REPO_ADAPTER_DEFINITIONS.forEach((testRepoAdapter) => {
+    test(`${testRepoAdapter.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
@@ -47,8 +47,8 @@ describe('Valid Package Concretion', () => {
         ],
         setup: [
           {
-            fileContents: testPackageConcretion.inputBLString,
-            fileId: testPackageConcretion.fileId,
+            fileContents: testRepoAdapter.inputBLString,
+            fileId: testRepoAdapter.fileId,
           },
         ],
       });
@@ -59,15 +59,13 @@ describe('Valid Package Concretion', () => {
           setupResult = result.setup;
         }
       }
-      const resultTree = setupResult[testPackageConcretion.fileId];
-
-      const packageConcretions = resultTree.getRootChildrenNodesByType(
-        BitloopsTypesMapping.TPackageConcretion,
+      const resultTree = setupResult[testRepoAdapter.fileId];
+      const repoAdapterDefinitionNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TRepoAdapterDefinition,
       );
+      const value = repoAdapterDefinitionNodes[0].getValue();
 
-      const value = packageConcretions[0].getValue();
-
-      expect(value).toMatchObject(testPackageConcretion.packageConcretion);
+      expect(value).toMatchObject(testRepoAdapter.repoAdapterDefinition);
     });
   });
 });
