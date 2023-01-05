@@ -93,8 +93,6 @@ primitives
 
 identifier
     : Identifier
-    | Host
-    | Database
     ;
 
 upperCaseIdentifier

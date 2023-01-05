@@ -18,16 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { DatabaseHostNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/DatabaseHostNodeBuilder.js';
-import { DatabaseNameNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/DatabaseNameNodeBuilder.js';
-import { DatabasePortNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/DatabasePortNodeBuilder.js';
 import { RepoConnectionOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/RepoConnectionOptionsNodeBuilder.js';
-import { IntermediateASTNode } from '../../../intermediate-ast/nodes/IntermediateASTNode.js';
-import { DatabaseHostNode } from '../../../intermediate-ast/nodes/setup/repo/DatabaseHostNode.js';
-import { DatabaseNameNode } from '../../../intermediate-ast/nodes/setup/repo/DatabaseName.js';
-import { DatabasePortNode } from '../../../intermediate-ast/nodes/setup/repo/DatabasePortNode.js';
+import { EvaluationFieldListNode } from '../../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { RepoConnectionOptionsNode } from '../../../intermediate-ast/nodes/setup/repo/RepoConnectionOptionsNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
@@ -36,66 +29,9 @@ export const repoConnectionOptionsVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoConnectionOptionsContext,
 ): RepoConnectionOptionsNode => {
-  const repoConnectionOptionsAndCommas = thisVisitor.visitChildren(ctx);
-
-  const repoConnectionOptions: IntermediateASTNode[] = repoConnectionOptionsAndCommas.filter(
-    (child: any) => child !== undefined,
-  );
-
-  const databaseNameNode = repoConnectionOptions.find(
-    (node) => node.getNodeType() === BitloopsTypesMapping.TRepoDatabase,
-  ) as DatabaseNameNode;
-  const hostNode = repoConnectionOptions.find(
-    (node) => node.getNodeType() === BitloopsTypesMapping.TRepoHost,
-  ) as DatabaseHostNode;
-  const portNode = repoConnectionOptions.find(
-    (node) => node.getNodeType() === BitloopsTypesMapping.TRepoConfigPort,
-  ) as DatabasePortNode;
-
-  if (!databaseNameNode || !hostNode || !portNode) {
-    // Maybe add this in a validation status?
-    throw new Error('Missing database name, host or port');
-  }
+  const evaluationFieldList: EvaluationFieldListNode = thisVisitor.visit(ctx.evaluationFieldList());
 
   return new RepoConnectionOptionsNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withDatabaseName(databaseNameNode)
-    .withHost(hostNode)
-    .withPort(portNode)
+    .withFields(evaluationFieldList)
     .build();
-};
-
-export const repoConnectionPortOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RepoConnectionPortOptionContext,
-): DatabasePortNode => {
-  const expression = thisVisitor.visit(ctx.expression());
-
-  const portNode = new DatabasePortNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withValue(expression)
-    .build();
-  return portNode;
-};
-
-export const repoConnectionHostOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RepoConnectionHostOptionContext,
-): DatabaseHostNode => {
-  const expression = thisVisitor.visit(ctx.expression());
-
-  const portNode = new DatabaseHostNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withValue(expression)
-    .build();
-  return portNode;
-};
-
-export const repoConnectionDatabaseOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RepoConnectionDatabaseOptionContext,
-): DatabaseNameNode => {
-  const expression = thisVisitor.visit(ctx.expression());
-
-  const nameNode = new DatabaseNameNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withValue(expression)
-    .build();
-  return nameNode;
 };

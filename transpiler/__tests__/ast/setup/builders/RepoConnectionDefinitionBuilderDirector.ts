@@ -1,4 +1,5 @@
 import { TExpression, TIdentifier, TRepoConnectionDefinition } from '../../../../src/types.js';
+import { EvaluationFieldBuilderDirector } from '../../core/builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../../core/builders/expressionDirector.js';
 import { RepoConnectionDefinitionBuilder } from './RepoConnectionDefinitionBuilder.js';
 
@@ -25,9 +26,20 @@ export class RepoConnectionDefinitionBuilderDirector {
       .withDbType('DB.Mongo')
       .withOptions({
         options: {
-          host: new ExpressionBuilderDirector().buildStringLiteralExpression(host),
-          port: new ExpressionBuilderDirector().buildInt32LiteralExpression(port),
-          databaseName: new ExpressionBuilderDirector().buildStringLiteralExpression(databaseName),
+          fields: [
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'host',
+              new ExpressionBuilderDirector().buildStringLiteralExpression(host),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'port',
+              new ExpressionBuilderDirector().buildInt32LiteralExpression(port),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'database',
+              new ExpressionBuilderDirector().buildStringLiteralExpression(databaseName),
+            ),
+          ],
         },
       })
       .build();
@@ -49,9 +61,11 @@ export class RepoConnectionDefinitionBuilderDirector {
       .withDbType('DB.Mongo')
       .withOptions({
         options: {
-          host,
-          port,
-          databaseName,
+          fields: [
+            new EvaluationFieldBuilderDirector().buildEvaluationField('host', host),
+            new EvaluationFieldBuilderDirector().buildEvaluationField('port', port),
+            new EvaluationFieldBuilderDirector().buildEvaluationField('database', databaseName),
+          ],
         },
       })
       .build();
