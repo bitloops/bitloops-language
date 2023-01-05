@@ -1,7 +1,6 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TBoundedContextModule,
-  TPackageAdapter,
   TPackageConcretion,
   TPackageAdapterIdentifier,
   TPackagePortIdentifier,
@@ -12,10 +11,8 @@ import { PackagePortIdentifierBuilder } from './packagePortIdentifierBuilder.js'
 
 export class PackageConcretionBuilder implements IBuilder<TPackageConcretion> {
   private bcModule: TBoundedContextModule;
-  private packageAdapterIdentifier: TPackageAdapter;
-  private packagePortIdentifier: {
-    ['PackagePortIdentifier']: TPackagePortIdentifier;
-  };
+  private packageAdapterIdentifier: TPackageAdapterIdentifier;
+  private packagePortIdentifier: TPackagePortIdentifier;
 
   public withBoundedContextModule({
     boundedContextName,
@@ -47,11 +44,11 @@ export class PackageConcretionBuilder implements IBuilder<TPackageConcretion> {
     return this;
   }
 
-  public build(): any {
-    const packageConcretion = {
+  public build(): TPackageConcretion {
+    const packageConcretion: TPackageConcretion = {
       packageConcretion: {
-        ...this.packagePortIdentifier,
-        ...this.packageAdapterIdentifier,
+        PackagePortIdentifier: this.packagePortIdentifier,
+        packageAdapterIdentifier: this.packageAdapterIdentifier,
         ...this.bcModule,
       },
     };

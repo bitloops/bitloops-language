@@ -215,7 +215,6 @@ const BitloopsTypesMapping = {
   TLanguage: 'TLanguage',
   TConfigInvocation: 'TConfigInvocation',
   TPackageAdapterIdentifier: 'TPackageAdapterIdentifier',
-  TPackageAdapterClassName: 'TPackageAdapterClassName',
   TPackageConcretion: 'TPackageConcretion',
 } as const;
 
