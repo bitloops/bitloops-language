@@ -76,8 +76,9 @@ import {
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
-import { BitloopsTypesMapping, ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
+import { isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -87,8 +88,8 @@ type TPackageVersions = {
 
 interface ISetup {
   generateStartupFile(
-    servers: TServers,
-    reposData: TReposSetup,
+    allServers: TRestAndGraphQLServers,
+    reposData: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput;
@@ -97,7 +98,7 @@ interface ISetup {
     routerDefinitions: TRouterDefinition[],
     _bitloopsModel: TBoundedContexts,
   ): TSetupOutput[];
-  generateServers(servers: TServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
+  generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
@@ -744,7 +745,10 @@ start();
       content: (license || '') + body,
     };
   }
-  generateServers(servers: TServers, _bitloopsModel: TBoundedContexts): TSetupOutput[] {
+  generateServers(
+    servers: TRestAndGraphQLServers,
+    _bitloopsModel: TBoundedContexts,
+  ): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
@@ -761,8 +765,8 @@ start();
     return output;
   }
   generateStartupFile(
-    servers: TServers,
-    reposData: TReposSetup,
+    servers: TRestAndGraphQLServers,
+    reposData: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput {

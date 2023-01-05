@@ -4,9 +4,10 @@ import {
   TRESTServerInstance,
   TServerType,
 } from '../../../types.js';
+import { TServerInstance } from './servers/index.js';
 
 export type GenerateServerParams = {
-  serverInstance: TRESTServerInstance | TGraphQLServerInstance;
+  serverInstance: TServerInstance;
   serverType: TServerType;
   serverIndex: number;
   bitloopsModel: TBoundedContexts;

@@ -40,7 +40,7 @@ const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; versio
 
 export interface ISetupRepos {
   getStartupImports(
-    reposSetupData: Readonly<TReposSetup>,
+    repoConnectionDefinitions: TRepoConnectionDefinition[],
     setupTypeMapper: Record<string, string>,
   ): string[];
 
@@ -80,12 +80,15 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     }, [] as TSetupOutput[]);
   }
 
-  getStartupImports(repos: Readonly<TReposSetup>, setupTypeMapper): string[] {
+  getStartupImports(
+    repoConnectionDefinitions: TRepoConnectionDefinition[],
+    setupTypeMapper,
+  ): string[] {
     const dbTypes = new Set<TRepoSupportedTypes>();
-    if (!repos?.connections) return [];
     const result: string[] = [];
-    for (const connectionInfo of Object.values(repos.connections)) {
-      dbTypes.add(connectionInfo.connectionValues.dbType);
+    for (const connection of repoConnectionDefinitions) {
+      const dbType = connection[RepoConnectionDefinitionKey][RepoConnectionExpressionKey].dbType;
+      dbTypes.add(dbType);
     }
     dbTypes.forEach((dbType) => {
       result.push(`await import('..${setupTypeMapper[dbType]}');`);
