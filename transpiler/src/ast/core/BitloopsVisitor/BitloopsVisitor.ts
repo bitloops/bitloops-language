@@ -234,8 +234,10 @@ import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/se
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
-// import { languageVisitor } from '../../setup/BitloopsSetupVisitor/helpers/languageVisitor.js';
 import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
+import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
+import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
 
@@ -1114,8 +1116,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       return ctx.Identifier().getText();
     } else if (ctx.UpperCaseIdentifier()) {
       return ctx.UpperCaseIdentifier().getText();
-    } else if (ctx.Digits()) {
-      return ctx.Digits().getText();
+    } else if (ctx.IntegerLiteral()) {
+      return ctx.IntegerLiteral().getText();
     } else {
       return '';
     }
@@ -1180,5 +1182,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
     return languageSetterMethodVisitor(this, ctx);
+  }
+
+  visitPackageConcretion(ctx: BitloopsParser.PackageConcretionContext): void {
+    packageConcretionVisitor(this, ctx);
+  }
+
+  visitPackageAdapterIdentifier(
+    ctx: BitloopsParser.PackageAdapterIdentifierContext,
+  ): PackageAdapterIdentifierNode {
+    return packageAdapterIdentifierVisitor(this, ctx);
   }
 }
