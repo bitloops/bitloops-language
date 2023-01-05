@@ -8,7 +8,11 @@ import { TargetSetupGeneratorError, TTargetSetupContent } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { TRepoConnectionDefinition, TRouterDefinition } from '../../../types.js';
+import {
+  TPackageConcretion,
+  TRepoConnectionDefinition,
+  TRouterDefinition,
+} from '../../../types.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
 
@@ -137,8 +141,12 @@ export const generateSetupFiles = (
     pathsAndContents.push(startupFile);
 
     // Step 6. Package files
+
+    const packageDefinitions = setupTree.getRootChildrenNodesValueByType<TPackageConcretion>(
+      BitloopsTypesMapping.TPackageConcretion,
+    );
     const packageFiles = setupGenerator.generatePackageFiles(
-      setupData.packages,
+      packageDefinitions,
       sourceDirPath,
       setupTypeMapper,
     );

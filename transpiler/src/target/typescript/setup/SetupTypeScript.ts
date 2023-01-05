@@ -40,13 +40,15 @@ import {
   TServerType,
   TGraphQLServerInstance,
   TGraphQLSetupData,
-  TPackagesMapping,
-  TPackagesSetup,
   // TUseCasesOfModule, //TODO this is TUseCaseDefinition
   TControllerOfModule,
   TReposSetup,
   TServers,
   TRepoConnectionDefinition,
+  TPackageConcretion,
+  packageConcretionKey,
+  PackagePortIdentifierKey,
+  packageAdapterIdentifierKey,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -64,9 +66,7 @@ import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 
-type PackageAdapterName = string;
 type PackageAdapterContent = string;
-type TPackageAdaptersContent = Record<PackageAdapterName, PackageAdapterContent>;
 type TPackageVersions = {
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
@@ -92,6 +92,13 @@ interface ISetup {
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[];
   // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
   // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
+
+  generatePackageFiles(
+    packageDefinitions: TPackageConcretion[],
+    sourceDirPath: string,
+    _setupTypeMapper: Record<string, string>,
+    packageVersions?: TPackageVersions,
+  ): TSetupOutput[];
 }
 
 type TNodePackages = Record<string, string>;
@@ -280,36 +287,31 @@ export class SetupTypeScript implements ISetup {
   }
 
   private findPackageAdapterFileContent(
-    packages: TPackagesMapping,
+    packageAdapter: string,
     sourceDirPath: string,
-  ): TPackageAdaptersContent {
-    const res = {};
+  ): PackageAdapterContent {
+    const targetLanguageSuffix = getLanguageFileSuffixExtension(SupportedLanguages.TypeScript);
+    const targetLanguageFileExtension = getLanguageFileExtension(SupportedLanguages.TypeScript);
+    const contextPackagesFilePaths = getRecursivelyFileInDirectory(
+      sourceDirPath,
+      targetLanguageSuffix,
+    );
 
-    for (const [, packageAdapter] of Object.entries(packages)) {
-      const targetLanguageSuffix = getLanguageFileSuffixExtension(SupportedLanguages.TypeScript);
-      const targetLanguageFileExtension = getLanguageFileExtension(SupportedLanguages.TypeScript);
-      const contextPackagesFilePaths = getRecursivelyFileInDirectory(
-        sourceDirPath,
-        targetLanguageSuffix,
-      );
+    if (contextPackagesFilePaths.length === 0)
+      throw new Error(`Could not find ts packages at ${sourceDirPath}`);
 
-      if (contextPackagesFilePaths.length === 0)
-        throw new Error(`Could not find ts packages at ${sourceDirPath}`);
+    const filenameToFind = packageAdapter + targetLanguageFileExtension;
+    const foundFilepath = contextPackagesFilePaths.find(
+      (filePath) =>
+        StringUtils.getLastCharactersOfString(filePath, filenameToFind.length) === filenameToFind,
+    );
 
-      const filenameToFind = packageAdapter + targetLanguageFileExtension;
-      const foundFilepath = contextPackagesFilePaths.find(
-        (filePath) =>
-          StringUtils.getLastCharactersOfString(filePath, filenameToFind.length) === filenameToFind,
-      );
-
-      if (foundFilepath === undefined) {
-        throw new Error(`Could not find ${filenameToFind} in your projects file`);
-      }
-      const contents = readFromFile(foundFilepath);
-
-      res[packageAdapter] = contents;
+    if (foundFilepath === undefined) {
+      throw new Error(`Could not find ${filenameToFind} in your projects file`);
     }
-    return res;
+    const content = readFromFile(foundFilepath);
+
+    return content;
   }
 
   private getDependenciesForPackageJSON(adapterContent: string, versions: TPackageVersions): void {
@@ -337,55 +339,59 @@ export class SetupTypeScript implements ISetup {
   }
 
   generatePackageFiles(
-    packages: TPackagesSetup,
+    packageDefinitions: TPackageConcretion[],
     sourceDirPath: string,
     _setupTypeMapper: Record<string, string>,
     packageVersions?: TPackageVersions,
   ): TSetupOutput[] {
     const results: TSetupOutput[] = [];
-    if (packages) {
-      for (const [boundedContext, modules] of Object.entries(packages)) {
-        for (const [module, modulePackages] of Object.entries(modules)) {
-          const adaptersContent = this.findPackageAdapterFileContent(
-            packages[boundedContext][module],
-            `${sourceDirPath}/${boundedContext}/${module}`,
+    for (const packageDef of packageDefinitions) {
+      const packageDefinition = packageDef[packageConcretionKey];
+      const { boundedContextName, moduleName } = packageDefinition.boundedContextModule;
+      const boundedContext = boundedContextName.wordsWithSpaces;
+      const module = moduleName.wordsWithSpaces;
+
+      const _packagePortIdentifier = packageDefinition[PackagePortIdentifierKey];
+      const packageAdapterIdentifier = packageDefinition[packageAdapterIdentifierKey];
+
+      const adapterContent = this.findPackageAdapterFileContent(
+        packageAdapterIdentifier,
+        `${sourceDirPath}/${boundedContext}/${module}`,
+      );
+
+      const adapterFilePathObj = getTargetFileDestination(
+        boundedContext,
+        module,
+        'Package',
+        packageAdapterIdentifier,
+        'TypeScript',
+      );
+
+      results.push({
+        fileType: 'Package.Adapter',
+        fileId: `${adapterFilePathObj.path}/${adapterFilePathObj.filename}`,
+        content: adapterContent,
+      });
+      if (packageVersions) {
+        this.getDependenciesForPackageJSON(adapterContent, packageVersions);
+      } else {
+        const packageJSONString =
+          readFromFile(`${sourceDirPath}/${boundedContext}/${module}/package.json`) ||
+          readFromFile(`${sourceDirPath}/package.json`);
+        if (packageJSONString) {
+          const packageJSON = JSON.parse(packageJSONString);
+          this.getDependenciesForPackageJSON(adapterContent, {
+            dependencies: packageJSON.dependencies as Record<string, string>,
+            devDependencies: packageJSON.devDependencies as Record<string, string>,
+          });
+        } else {
+          throw new Error(
+            `Could not find package.json in ${sourceDirPath}/${boundedContext}/${module}`,
           );
-          for (const packageAdapter of Object.values(modulePackages)) {
-            const adapterFilePathObj = getTargetFileDestination(
-              boundedContext,
-              module,
-              'Package',
-              packageAdapter,
-              'TypeScript',
-            );
-            const adapterContent = adaptersContent[packageAdapter];
-            results.push({
-              fileType: 'Package.Adapter',
-              fileId: `${adapterFilePathObj.path}/${adapterFilePathObj.filename}`,
-              content: adapterContent,
-            });
-            if (packageVersions) {
-              this.getDependenciesForPackageJSON(adapterContent, packageVersions);
-            } else {
-              const packageJSONString =
-                readFromFile(`${sourceDirPath}/${boundedContext}/${module}/package.json`) ||
-                readFromFile(`${sourceDirPath}/package.json`);
-              if (packageJSONString) {
-                const packageJSON = JSON.parse(packageJSONString);
-                this.getDependenciesForPackageJSON(adapterContent, {
-                  dependencies: packageJSON.dependencies as Record<string, string>,
-                  devDependencies: packageJSON.devDependencies as Record<string, string>,
-                });
-              } else {
-                throw new Error(
-                  `Could not find package.json in ${sourceDirPath}/${boundedContext}/${module}`,
-                );
-              }
-            }
-          }
         }
       }
     }
+
     return results;
   }
 
