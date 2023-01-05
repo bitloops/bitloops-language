@@ -1023,22 +1023,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return serverInstantiationOptionsVisitor(this, ctx);
   }
 
-  // visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-  //   const serverTypeNode = serverTypeOptionVisitor(this, ctx);
-  //   return serverTypeNode;
-  // }
-
-  // visitServerApiPrefixOption(
-  //   ctx: BitloopsParser.ServerApiPrefixOptionContext,
-  // ): RestServerAPIPrefixNode {
-  //   const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
-  //   return apiPrefixNode;
-  // }
-
-  // visitRestServerPort(ctx: BitloopsParser.RestServerPortContext): RestServerPortNode {
-  //   return restServerPortVisitor(this, ctx);
-  // }
-
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);
     return routesNode;
