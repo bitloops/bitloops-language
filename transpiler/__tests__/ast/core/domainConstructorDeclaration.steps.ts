@@ -53,7 +53,7 @@ describe('Domain constructor declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT].core;
         }
       }
-      const domainConstructorNodes = resultTree.getClassTypeNodes(
+      const domainConstructorNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TDomainCreateMethod,
       );
       const value = domainConstructorNodes[0].getValue();

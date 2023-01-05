@@ -62,7 +62,7 @@ export class IntermediateASTTree {
     return this.rootNode;
   }
 
-  public getClassTypeNodes(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
+  public getRootChildrenNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
     const rootChildren = this.rootNode.getChildren();
     const classTypeNodes = [];
     for (const child of rootChildren) {
@@ -71,6 +71,11 @@ export class IntermediateASTTree {
       }
     }
     return classTypeNodes;
+  }
+
+  public getRootChildrenNodesValueByType<T = any>(nodeType: TBitloopsTypesValues): T[] {
+    const nodes = this.getRootChildrenNodesByType(nodeType);
+    return nodes.map((node) => node.getValue());
   }
 
   public mergeWithTree(tree: IntermediateASTTree): IntermediateASTTree {
@@ -161,7 +166,7 @@ export class IntermediateASTTree {
   }
 
   public getAggregateNodeWithIdentifier(identifier: string): RootEntityDeclarationNode | null {
-    const rootEntityNodes = this.getClassTypeNodes(BitloopsTypesMapping.TRootEntity);
+    const rootEntityNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TRootEntity);
 
     const isEntityIdentifierNode = (node: IntermediateASTNode): node is EntityIdentifierNode =>
       node.getNodeType() === BitloopsTypesMapping.TEntityIdentifier;
@@ -188,7 +193,7 @@ export class IntermediateASTTree {
     domainCreateParameterNode: DomainCreateParameterNode,
     identifier: string,
   ): TBitloopsPrimaryType | void {
-    const propsNodes = this.getClassTypeNodes(BitloopsTypesMapping.TProps);
+    const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
 
     const propsTypeNodeValue: { [PropsIdentifierKey]: TPropsIdentifier } = domainCreateParameterNode
       .getTypeNode()
@@ -216,7 +221,7 @@ export class IntermediateASTTree {
 
   public getAllExpressionsOfUseCase(): ExpressionNode[] {
     // Set root Node as current, or pass it to getClassTypeNodes
-    const useCases = this.getClassTypeNodes(BitloopsTypesMapping.TUseCase);
+    const useCases = this.getRootChildrenNodesByType(BitloopsTypesMapping.TUseCase);
 
     // TODO typeGuard
     const isExpressionNode = (node: IntermediateASTNode): node is ExpressionNode =>

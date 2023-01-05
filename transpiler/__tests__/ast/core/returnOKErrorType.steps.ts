@@ -53,7 +53,7 @@ describe('Return ok error type is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const returnOkErrorTypeNodes = resultTree.getClassTypeNodes(
+      const returnOkErrorTypeNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TOkErrorReturnType,
       );
       const value = returnOkErrorTypeNodes[0].getValue();

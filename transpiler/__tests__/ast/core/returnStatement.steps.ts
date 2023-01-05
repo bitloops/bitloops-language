@@ -53,7 +53,7 @@ describe('Return statement is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const returnStatementNodes = resultTree.getClassTypeNodes(
+      const returnStatementNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TReturnStatement,
       );
       const value = returnStatementNodes[0].getValue();

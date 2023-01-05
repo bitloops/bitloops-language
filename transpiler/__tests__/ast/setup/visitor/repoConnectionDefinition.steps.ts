@@ -60,7 +60,7 @@ describe('Repo Connection definition is valid', () => {
         }
       }
       const resultTree = setupResult[testRepoConnection.fileId];
-      const repoConnectionDefinitionNodes = resultTree.getClassTypeNodes(
+      const repoConnectionDefinitionNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TRepoConnectionDefinition,
       );
       const value = repoConnectionDefinitionNodes[0].getValue();

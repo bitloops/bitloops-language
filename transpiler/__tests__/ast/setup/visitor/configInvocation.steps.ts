@@ -63,7 +63,7 @@ describe('Valid Config Invocation', () => {
         }
       }
       const resultTree = setupResult[testUseCase.fileId];
-      const configInvocationsNodes = resultTree.getClassTypeNodes(
+      const configInvocationsNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TConfigInvocation,
       );
       const value = configInvocationsNodes[0].getValue();

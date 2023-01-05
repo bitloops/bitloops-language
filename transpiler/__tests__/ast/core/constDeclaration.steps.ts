@@ -54,7 +54,7 @@ describe('Const declaration is valid', () => {
           resultTree = core[BOUNDED_CONTEXT].core;
         }
       }
-      const constDeclarationNodes = resultTree.getClassTypeNodes(
+      const constDeclarationNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TConstDeclaration,
       );
       const value = constDeclarationNodes[0].getValue();

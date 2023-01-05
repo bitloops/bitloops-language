@@ -63,7 +63,7 @@ describe('Use case definition is valid', () => {
         }
       }
       const resultTree = setupResult[testUseCase.fileId];
-      const useCaseDefintionNodes = resultTree.getClassTypeNodes(
+      const useCaseDefintionNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TUseCaseDefinition,
       );
       const value = useCaseDefintionNodes[0].getValue();
@@ -105,7 +105,7 @@ describe('Multiple use case definitions are valid', () => {
         }
       }
       const resultTree = setupResult[testUseCase.fileId];
-      const useCaseDefintionNodes = resultTree.getClassTypeNodes(
+      const useCaseDefintionNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TUseCaseDefinition,
       );
       const values = useCaseDefintionNodes.map((node) => node.getValue());

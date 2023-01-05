@@ -43,7 +43,7 @@ describe('An application error is valid', () => {
         }
       }
 
-      const nodes = resultTree.getClassTypeNodes(CLASS_TYPE);
+      const nodes = resultTree.getRootChildrenNodesByType(CLASS_TYPE);
       if (nodes.length > 1) {
         throw new Error('more than one Application Errors detected');
       }

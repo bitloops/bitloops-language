@@ -57,7 +57,7 @@ describe('Props declaration is valid', () => {
         }
       }
       const expectedNodeValues = getExpectedPropsOutput(testProps.variables, testProps.identifier);
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TProps);
+      const propsNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
       const value = propsNodes[0].getValue();
 
       expect(value).toMatchObject(expectedNodeValues);
@@ -94,7 +94,7 @@ describe('Props declaration with multiple props is valid', () => {
         { variables: testProps.variables[0], identifier: testProps.identifier[0] },
         { variables: testProps.variables[1], identifier: testProps.identifier[1] },
       ]);
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TProps);
+      const propsNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
       const values = propsNodes.map((node) => node.getValue());
 
       expect(values).toMatchObject(expectedNodeValues);

@@ -53,7 +53,7 @@ describe('Value Object declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const voNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TValueObject);
+      const voNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TValueObject);
       const value = voNodes[0].getValue();
 
       expect(value).toMatchObject(testCase.expected);

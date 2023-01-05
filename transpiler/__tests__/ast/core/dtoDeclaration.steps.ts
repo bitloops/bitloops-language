@@ -56,7 +56,7 @@ describe('DTO declaration is valid', () => {
         }
       }
       const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
-      const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+      const dtoNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TDTO);
       const value = dtoNodes[0].getValue();
 
       expect(value).toMatchObject(expectedNodeValues);
@@ -93,7 +93,7 @@ describe('DTO declaration with multiple dtos is valid', () => {
         { variables: testDTO.variables[0], identifier: testDTO.identifier[0] },
         { variables: testDTO.variables[1], identifier: testDTO.identifier[1] },
       ]);
-      const dtoNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TDTO);
+      const dtoNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TDTO);
       const values = dtoNodes.map((node) => node.getValue());
 
       expect(values).toMatchObject(expectedNodeValues);

@@ -24,7 +24,9 @@ export const generateGetters = ({
   privateMethods: TDomainPrivateMethods;
   isValueObject?: boolean;
 }): TTargetDependenciesTypeScript => {
-  const allPropsNodes = model.getClassTypeNodes(BitloopsTypesMapping.TProps) as PropsNode[];
+  const allPropsNodes = model.getRootChildrenNodesByType(
+    BitloopsTypesMapping.TProps,
+  ) as PropsNode[];
   const propsValues = allPropsNodes.map((propsNode) => propsNode.getValue()) as TProps[];
 
   const methodNames = [];

@@ -46,7 +46,7 @@ describe('Valid Entity', () => {
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const entityNodes = result.core[boundedContext][module].getClassTypeNodes(
+      const entityNodes = result.core[boundedContext][module].getRootChildrenNodesByType(
         BitloopsTypesMapping.TEntity,
       );
       expect(entityNodes.length).toBe(1);

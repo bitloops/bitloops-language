@@ -65,7 +65,7 @@ describe('If Statement is valid', () => {
         testIfStatement.thenStatements,
         testIfStatement.elseStatements,
       );
-      const propsNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TIfStatement);
+      const propsNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TIfStatement);
       assert(propsNodes.length === 1);
       const value = propsNodes[0].getValue();
 

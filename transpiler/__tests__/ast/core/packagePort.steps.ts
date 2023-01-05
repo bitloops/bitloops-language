@@ -56,7 +56,7 @@ describe('Package port declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const packageNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TPackage);
+      const packageNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TPackage);
       expect(packageNodes.length).toBe(1);
       const value = packageNodes[0].getValue();
 
@@ -90,7 +90,7 @@ describe('Parsing 2 package ports', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const packageNodes = resultTree.getClassTypeNodes(BitloopsTypesMapping.TPackage);
+      const packageNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TPackage);
       expect(packageNodes.length).toBe(2);
       const values = packageNodes.map((x) => x.getValue());
 

@@ -46,7 +46,7 @@ describe('Valid Use Case', () => {
 
       //then
       expect(result).not.toBeInstanceOf(Error);
-      const useCaseNodes = result.core[boundedContext][module].getClassTypeNodes(
+      const useCaseNodes = result.core[boundedContext][module].getRootChildrenNodesByType(
         BitloopsTypesMapping.TUseCase,
       );
       expect(useCaseNodes.length).toBe(1);
