@@ -313,6 +313,7 @@ export type TBuiltInClassEvaluation = {
 // };
 export type TEvaluationValues =
   | TStructEvaluation
+  | TCorsOptionsEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
   | TPropsEvaluation
@@ -346,6 +347,10 @@ export type TEvaluationField = {
 };
 export type TEvaluationFields = {
   [evaluationFieldsKey]: TEvaluationField[];
+};
+
+export type TCorsOptionsEvaluation = {
+  corsOptions: TEvaluationFields;
 };
 
 export type TStructEvaluation = {

@@ -235,12 +235,7 @@ import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterI
 import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
-import {
-  corsOptionsListStatementVisitor,
-  corsOptionsOriginVisitor,
-} from './helpers/setup/corsOptionsVisitor.js';
-import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
-import { CorsOriginNode } from '../intermediate-ast/nodes/setup/CorsOriginNode.js';
+import { corsOptionsEvaluationVisitor } from './helpers/expression/evaluation/corsOptionEvaluation.js';
 // import { CorsOptionsNode } from '../intermediate-ast/nodes/setup/CorsOptionsNode.js';
 // import { CorsOriginNode } from '../intermediate-ast/nodes/setup/CorsOriginNode.js';
 
@@ -544,6 +539,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitStructEvaluation(ctx: BitloopsParser.StructEvaluationContext): any {
     return structEvaluationVisitor(this, ctx);
+  }
+
+  visitCorsOptionsEvaluation(ctx: BitloopsParser.CorsOptionsEvaluationContext): any {
+    return corsOptionsEvaluationVisitor(this, ctx);
   }
 
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
@@ -1189,15 +1188,5 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.PackageAdapterIdentifierContext,
   ): PackageAdapterIdentifierNode {
     return packageAdapterIdentifierVisitor(this, ctx);
-  }
-
-  visitCorsOptionsListStatement(
-    ctx: BitloopsParser.CorsOptionsListStatementContext,
-  ): CorsOptionsNode {
-    return corsOptionsListStatementVisitor(this, ctx);
-  }
-
-  visitCorsOriginOption(ctx: BitloopsParser.CorsOriginOptionContext): CorsOriginNode {
-    return corsOptionsOriginVisitor(this, ctx);
   }
 }

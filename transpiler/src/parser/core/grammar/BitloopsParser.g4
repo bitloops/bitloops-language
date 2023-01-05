@@ -246,13 +246,17 @@ errorEvaluation
 
 evaluation
     : builtInClassEvaluation
-    | builtInFunction
+    | corsOptionsEvaluation
     | errorEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
     | structEvaluation
+    ;
+
+corsOptionsEvaluation
+    : CorsOptions OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen 
     ;
 
 condition
@@ -286,7 +290,6 @@ statement
 
 builtInFunction
     : ApplyRules OpenParen applyRuleStatementRulesList CloseParen SemiColon? # ApplyRulesStatement
-    | CorsOptions OpenParen OpenBrace corsOptionsList CloseBrace CloseParen SemiColon? # CorsOptionsListStatement
     ;
 
 applyRuleStatementRulesList
@@ -295,14 +298,6 @@ applyRuleStatementRulesList
 
 applyRulesRule
     : domainRuleIdentifier methodArguments
-    ;
-
-corsOptionsList
-    : corsOption (Comma corsOption)* Comma?
-    ;
-
-corsOption
-    : CorsOrigin Colon StringLiteral Comma? #CorsOriginOption
     ;
 
 statementList

@@ -148,7 +148,6 @@ Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
 CorsOptions:                    'corsOptions';
-CorsOrigin:                     'corsOrigin';
 
 Extends:                        'extends';
 Const:                          'const';
@@ -308,8 +307,8 @@ ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 SetLanguage:                    'setLanguage';
 TypeScript:                     'TypeScript';
 Java:                           'Java';
-// FastifyServer:                  'REST.Fastify';
-// ExpressServer:                  'REST.Express';
+FastifyServer:                  'REST.Fastify';
+ExpressServer:                  'REST.Express';
 GraphQLServerType:              'GraphQL';
 RESTRouter:                     'RESTRouter';
 GraphQLServer:                  'GraphQLServer';
