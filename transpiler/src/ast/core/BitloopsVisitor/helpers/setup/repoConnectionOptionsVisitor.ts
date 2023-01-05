@@ -20,9 +20,6 @@
 
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { DatabaseHostNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/DatabaseHostNodeBuilder.js';
-import { DatabaseNameNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/DatabaseNameNodeBuilder.js';
-import { DatabasePortNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/DatabasePortNodeBuilder.js';
 import { RepoConnectionOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/RepoConnectionOptionsNodeBuilder.js';
 import { IntermediateASTNode } from '../../../intermediate-ast/nodes/IntermediateASTNode.js';
 import { DatabaseHostNode } from '../../../intermediate-ast/nodes/setup/repo/DatabaseHostNode.js';
@@ -62,40 +59,4 @@ export const repoConnectionOptionsVisitor = (
     .withHost(hostNode)
     .withPort(portNode)
     .build();
-};
-
-export const repoConnectionPortOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RepoConnectionPortOptionContext,
-): DatabasePortNode => {
-  const expression = thisVisitor.visit(ctx.expression());
-
-  const portNode = new DatabasePortNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withValue(expression)
-    .build();
-  return portNode;
-};
-
-export const repoConnectionHostOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RepoConnectionHostOptionContext,
-): DatabaseHostNode => {
-  const expression = thisVisitor.visit(ctx.expression());
-
-  const portNode = new DatabaseHostNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withValue(expression)
-    .build();
-  return portNode;
-};
-
-export const repoConnectionDatabaseOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RepoConnectionDatabaseOptionContext,
-): DatabaseNameNode => {
-  const expression = thisVisitor.visit(ctx.expression());
-
-  const nameNode = new DatabaseNameNodeBuilder(produceMetadata(ctx, thisVisitor))
-    .withValue(expression)
-    .build();
-  return nameNode;
 };
