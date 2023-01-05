@@ -2,7 +2,7 @@ RESTServer({
     server: REST.Fastify,     
     apiPrefix: '/',
     port: env.FASTIFY_PORT OR 3002,
-    cors: corsOptions({ corsOrigin: '*' }),
+    cors: corsOptions({ origin: '*' }),
   }) {   
       '/hello': helloWorldRESTRouter; 
     };

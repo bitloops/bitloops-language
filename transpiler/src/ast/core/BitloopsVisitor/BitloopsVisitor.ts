@@ -463,6 +463,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'delete',
     };
   }
+  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
+    // TODO Find why all these return this weird object and fix it
+    return {
+      type: 'variable',
+      value: (ctx as any).getText(),
+    };
+  }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
     const expression = this.visit(ctx.expression());

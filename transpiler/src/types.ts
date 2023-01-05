@@ -535,7 +535,7 @@ export type TApplyRules = {
 export type TBuiltInFunction = {
   builtInFunction: TBuiltInFunctionValues;
 };
-export type TBuiltInFunctionValues = TApplyRules | TCorsOptions;
+export type TBuiltInFunctionValues = TApplyRules;
 
 export type TStatement =
   | TBreakStatement
@@ -974,12 +974,6 @@ export type TRestServerInstanceRouter = {
 export type TRestServerPort = TExpression;
 
 export type TAPIPrefix = StringLiteral;
-
-export type TCorsOptions = {
-  corsOptions: {
-    origin: StringLiteral;
-  };
-};
 
 export type TRESTServerInstance = {
   restServer: {

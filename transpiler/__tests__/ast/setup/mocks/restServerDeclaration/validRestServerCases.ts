@@ -4,7 +4,6 @@ import { ExpressionBuilderDirector } from '../../../core/builders/expressionDire
 import { IntegerLiteralBuilder } from '../../../core/builders/IntegerLiteralBuilder.js';
 import { NumericLiteralBuilder } from '../../../core/builders/NumericLiteralBuilder.js';
 import { StringLiteralBuilder } from '../../../core/builders/stringLiteral.js';
-import { CorsOptionsBuilder } from '../../builders/CorsOptionsBuilder.js';
 import { RestServerDeclarationBuilder } from '../../builders/restServerDirector.js';
 import { RestServerInstanceRouterBuilder } from '../../builders/restServerInstanceRouterBuilder.js';
 
@@ -20,10 +19,7 @@ export const VALID_REST_SERVER_CASES = [
         fields: [
           new EvaluationFieldBuilderDirector().buildEvaluationField(
             'server',
-            new ExpressionBuilderDirector().buildMemberExpression(
-              new ExpressionBuilderDirector().buildIdentifierExpression('REST'),
-              'Fastify',
-            ),
+            new ExpressionBuilderDirector().buildIdentifierExpression('REST.Fastify'),
           ),
           new EvaluationFieldBuilderDirector().buildStringEvaluationField('apiPrefix', '/'),
           new EvaluationFieldBuilderDirector().buildEvaluationField(
@@ -54,10 +50,7 @@ export const VALID_REST_SERVER_CASES = [
         fields: [
           new EvaluationFieldBuilderDirector().buildEvaluationField(
             'server',
-            new ExpressionBuilderDirector().buildMemberExpression(
-              new ExpressionBuilderDirector().buildIdentifierExpression('REST'),
-              'Fastify',
-            ),
+            new ExpressionBuilderDirector().buildIdentifierExpression('REST.Fastify'),
           ),
           new EvaluationFieldBuilderDirector().buildStringEvaluationField('apiPrefix', '/'),
           new EvaluationFieldBuilderDirector().buildEvaluationField(
@@ -92,10 +85,7 @@ export const VALID_REST_SERVER_CASES = [
         fields: [
           new EvaluationFieldBuilderDirector().buildEvaluationField(
             'server',
-            new ExpressionBuilderDirector().buildMemberExpression(
-              new ExpressionBuilderDirector().buildIdentifierExpression('REST'),
-              'Fastify',
-            ),
+            new ExpressionBuilderDirector().buildIdentifierExpression('REST.Fastify'),
           ),
           new EvaluationFieldBuilderDirector().buildEvaluationField(
             'port',
@@ -125,10 +115,7 @@ export const VALID_REST_SERVER_CASES = [
         fields: [
           new EvaluationFieldBuilderDirector().buildEvaluationField(
             'server',
-            new ExpressionBuilderDirector().buildMemberExpression(
-              new ExpressionBuilderDirector().buildIdentifierExpression('REST'),
-              'Fastify',
-            ),
+            new ExpressionBuilderDirector().buildIdentifierExpression('REST.Fastify'),
           ),
           new EvaluationFieldBuilderDirector().buildStringEvaluationField('apiPrefix', '/'),
           new EvaluationFieldBuilderDirector().buildEvaluationField(
@@ -140,11 +127,13 @@ export const VALID_REST_SERVER_CASES = [
           ),
           new EvaluationFieldBuilderDirector().buildEvaluationField(
             'cors',
-            new ExpressionBuilderDirector().buildCorsEvaluationField(
-              new CorsOptionsBuilder()
-                .withOrigin(new StringLiteralBuilder().withValue('*').build())
-                .build(),
-            ),
+            new ExpressionBuilderDirector().buildCorsEvaluationField({
+              corsOptions: {
+                fields: [
+                  new EvaluationFieldBuilderDirector().buildStringEvaluationField('origin', '*'),
+                ],
+              },
+            }),
           ),
         ],
       })
@@ -171,10 +160,7 @@ export const VALID_MULTIPLE_REST_SERVER_CASES = [
           fields: [
             new EvaluationFieldBuilderDirector().buildEvaluationField(
               'server',
-              new ExpressionBuilderDirector().buildMemberExpression(
-                new ExpressionBuilderDirector().buildIdentifierExpression('REST'),
-                'Fastify',
-              ),
+              new ExpressionBuilderDirector().buildIdentifierExpression('REST.Fastify'),
             ),
             new EvaluationFieldBuilderDirector().buildStringEvaluationField('apiPrefix', '/'),
             new EvaluationFieldBuilderDirector().buildEvaluationField(
@@ -198,10 +184,7 @@ export const VALID_MULTIPLE_REST_SERVER_CASES = [
           fields: [
             new EvaluationFieldBuilderDirector().buildEvaluationField(
               'server',
-              new ExpressionBuilderDirector().buildMemberExpression(
-                new ExpressionBuilderDirector().buildIdentifierExpression('REST'),
-                'Express',
-              ),
+              new ExpressionBuilderDirector().buildIdentifierExpression('REST.Express'),
             ),
             new EvaluationFieldBuilderDirector().buildStringEvaluationField('apiPrefix', '/'),
             new EvaluationFieldBuilderDirector().buildEvaluationField(
