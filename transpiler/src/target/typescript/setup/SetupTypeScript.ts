@@ -50,6 +50,14 @@ import {
   PackagePortIdentifierKey,
   packageAdapterIdentifierKey,
   TRouterDefinition,
+  TDomainError,
+  TApplicationError,
+  DomainErrorKey,
+  DomainErrorIdentifier,
+  ApplicationErrorKey,
+  ApplicationErrorIdentifier,
+  TDomainErrorValue,
+  TApplicationErrorValue,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -65,7 +73,7 @@ import {
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -526,42 +534,79 @@ export { routers };
     }
     return output;
   }
-
   generateAppDomainErrors(model: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
-        for (const [classTypeName, errorModel] of Object.entries(module)) {
-          if (
-            classTypeName === ClassTypes.DomainErrors ||
-            classTypeName === ClassTypes.ApplicationError
-          ) {
-            let imports = '';
-            let content = `export namespace ${classTypeName} {`;
-
-            const filePathObj = getTargetFileDestination(
-              boundedContextName,
-              moduleName,
-              classTypeName,
-              classTypeName,
-            );
-            for (const [className] of Object.entries(errorModel)) {
-              const classNameWithoutError = className.split('Error')[0];
-              imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
-              content += `export class ${className} extends ${classNameWithoutError} {}`;
-            }
-            content += '}';
-            const finalContent = imports + content;
-            output.push({
-              fileType: classTypeName,
-              fileId: `${filePathObj.path}/index.ts`,
-              content: finalContent,
-            });
-          }
-        }
+        const domainErrors = module.getRootChildrenNodesValueByType<TDomainError>(
+          BitloopsTypesMapping.TDomainError,
+        );
+        const applicationErrors = module.getRootChildrenNodesValueByType<TApplicationError>(
+          BitloopsTypesMapping.TApplicationError,
+        );
+        const domainRes = this.handleDomainApplicationError(
+          {
+            classType: ClassTypes.DomainErrors,
+            errorModels: domainErrors,
+          },
+          boundedContextName,
+          moduleName,
+        );
+        const appRes = this.handleDomainApplicationError(
+          {
+            classType: ClassTypes.ApplicationError,
+            errorModels: applicationErrors,
+          },
+          boundedContextName,
+          moduleName,
+        );
+        output.push(...domainRes, ...appRes);
       }
     }
     return output;
+  }
+
+  private handleDomainApplicationError(
+    params:
+      | { classType: 'DomainErrors'; errorModels: TDomainError[] } // ClassTypes.DomainErrors || ClassTypes.ApplicationError
+      | { classType: 'ApplicationError'; errorModels: TApplicationError[] },
+    boundedContextName: string,
+    moduleName: string,
+  ): TSetupOutput[] {
+    const result: TSetupOutput[] = [];
+
+    const { classType: classTypeName, errorModels } = params;
+    for (const errorModel of errorModels) {
+      let imports = '';
+      let content = `export namespace ${classTypeName} {`;
+
+      const filePathObj = getTargetFileDestination(
+        boundedContextName,
+        moduleName,
+        classTypeName,
+        classTypeName,
+      );
+      let className: string;
+      if (classTypeName === 'DomainErrors') {
+        const error = errorModel[DomainErrorKey] as TDomainErrorValue;
+        className = error[DomainErrorIdentifier];
+      } else {
+        const error = errorModel[ApplicationErrorKey] as TApplicationErrorValue;
+        className = error[ApplicationErrorIdentifier];
+      }
+      const classNameWithoutError = className.split('Error')[0];
+      imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
+      content += `export class ${className} extends ${classNameWithoutError} {}`;
+      content += '}';
+      const finalContent = imports + content;
+      result.push({
+        fileType: classTypeName,
+        fileId: `${filePathObj.path}/index.ts`,
+        content: finalContent,
+      });
+    }
+
+    return result;
   }
 
   generateRules(model: TBoundedContexts): TSetupOutput[] {

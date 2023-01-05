@@ -164,10 +164,10 @@ export const generateSetupFiles = (
     });
 
     // Step 8. Generate domain and application errors
-    const appDomainerrors = setupGenerator.generateAppDomainErrors(_bitloopsModel);
-    appDomainerrors.forEach((appDomainerror) => {
-      // console.log('appDomainerror:', appDomainerror);
-      pathsAndContents.push(appDomainerror);
+    const appDomainErrors = setupGenerator.generateAppDomainErrors(core);
+    appDomainErrors.forEach((appDomainError) => {
+      // console.log('appDomainError:', appDomainError);
+      pathsAndContents.push(appDomainError);
     });
 
     // Step 9. Generate rules
