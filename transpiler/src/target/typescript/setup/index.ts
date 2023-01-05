@@ -171,7 +171,7 @@ export const generateSetupFiles = (
     });
 
     // Step 9. Generate rules
-    const rules = setupGenerator.generateRules(_bitloopsModel);
+    const rules = setupGenerator.generateRules(core);
     rules.forEach((rule) => {
       // console.log('rule:', rule);
       pathsAndContents.push(rule);
