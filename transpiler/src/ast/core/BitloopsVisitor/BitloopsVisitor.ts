@@ -1116,8 +1116,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       return ctx.Identifier().getText();
     } else if (ctx.UpperCaseIdentifier()) {
       return ctx.UpperCaseIdentifier().getText();
-    } else if (ctx.Digits()) {
-      return ctx.Digits().getText();
+    } else if (ctx.IntegerLiteral()) {
+      return ctx.IntegerLiteral().getText();
     } else {
       return '';
     }
