@@ -37,8 +37,8 @@ describe('Valid Config Invocation', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  VALID_CONFIG_INVOCATIONS.forEach((testUseCase) => {
-    test(`${testUseCase.description}`, () => {
+  VALID_CONFIG_INVOCATIONS.forEach((testConfigInvocation) => {
+    test(`${testConfigInvocation.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
@@ -50,8 +50,8 @@ describe('Valid Config Invocation', () => {
         ],
         setup: [
           {
-            fileContents: testUseCase.inputBLString,
-            fileId: testUseCase.fileId,
+            fileContents: testConfigInvocation.inputBLString,
+            fileId: testConfigInvocation.fileId,
           },
         ],
       });
@@ -62,13 +62,13 @@ describe('Valid Config Invocation', () => {
           setupResult = result.setup;
         }
       }
-      const resultTree = setupResult[testUseCase.fileId];
+      const resultTree = setupResult[testConfigInvocation.fileId];
       const configInvocationsNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TConfigInvocation,
       );
       const value = configInvocationsNodes[0].getValue();
 
-      expect(value).toMatchObject(testUseCase.configInvocation);
+      expect(value).toMatchObject(testConfigInvocation.configInvocation);
     });
   });
 });
