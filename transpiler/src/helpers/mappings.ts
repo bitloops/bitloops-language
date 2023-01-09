@@ -221,6 +221,9 @@ const BitloopsTypesMapping = {
   TConcretedRepoPort: 'TConcretedRepoPort',
   TRepoAdapterExpression: 'TRepoAdapterExpression',
   TRepoAdapterDefinition: 'TRepoAdapterDefinition',
+  TControllerResolverBind: 'TControllerResolverBind',
+  TControllerResolvers: 'TControllerResolvers',
+  TGraphQLServerInstantiationOptions: 'TGraphQLServerInstantiationOptions',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

@@ -1018,13 +1018,33 @@ export type TGraphQLServerInstance = {
   resolvers: TControllerResolverBind[];
   serverType: TServerType;
 };
+export type TControllerInstanceName = string;
 
+export const ControllerResolverBindKey = 'ControllerResolverBind';
 export type TControllerResolverBind = {
-  boundedContext: string;
-  module: string;
-  controllerClassName: string;
-  controllerInstance: string;
-  dependencies: string[]; // Replace with correct type
+  [ControllerResolverBindKey]: {
+    controllerClassName: GraphQLControllerIdentifier;
+    controllerInstanceName: TControllerInstanceName;
+  } & TBoundedContextModule &
+    TArgumentList;
+}; //ask about type
+
+// export type TControllerResolverBind = {
+//   boundedContext: string;
+//   module: string;
+//   controllerClassName: string;
+//   controllerInstance: string;
+//   dependencies: string[]; // Replace with correct type
+// };
+
+export const ControllerResolversKey = 'ControllerResolvers';
+export type TControllerResolvers = {
+  [ControllerResolversKey]: TControllerResolverBind[];
+};
+
+export const GraphQLServerInstantiationOptionsKey = 'GraphQLServerInstantiationOptions';
+export type TGraphQLServerInstantiationOptions = {
+  [GraphQLServerInstantiationOptionsKey]: TEvaluationFields;
 };
 
 // export type TRoutes = {

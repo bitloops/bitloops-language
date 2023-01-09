@@ -871,19 +871,19 @@ serverApiPrefixOption
     : ServerApiPrefix Colon pathString Comma
     ;
 
-customServerOption
-    : Identifier Colon expression Comma
-    ;
+// customServerOption
+//     : Identifier Colon expression Comma
+//     ;
 
 // Cover any user defined options
 
 graphQLServerInstantiationOptions
-    : OpenBrace graphQLServerInstantiationOption CloseBrace
+    : OpenBrace evaluationFieldList CloseBrace
     ;
 
-graphQLServerInstantiationOption
-    : customServerOption
-    ;
+// graphQLServerInstantiationOption
+//     : customServerOption
+//     ;
 
 envVariable
     : EnvVariable
