@@ -226,6 +226,7 @@ const BitloopsTypesMapping = {
   TControllerResolvers: 'TControllerResolvers',
   TGraphQLServerOptions: 'TGraphQLServerOptions',
   TGraphQLServerInstance: 'TGraphQLServerInstance',
+  TRESTServerInstance: 'TRESTServerInstance',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
