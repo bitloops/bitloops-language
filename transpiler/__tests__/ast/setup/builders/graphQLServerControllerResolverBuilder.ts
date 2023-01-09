@@ -47,7 +47,7 @@ export class GraphQLControllerResolverBuilder implements IBuilder<TControllerRes
   public build(): TControllerResolver {
     const controllerResolver: TControllerResolver = {
       [ControllerResolverKey]: {
-        GraphQLControllerIdentifier: this.className,
+        graphQLControllerIdentifier: this.className,
         controllerInstanceName: this.instanceName,
         ...this.arguments,
         ...this.bcModule,

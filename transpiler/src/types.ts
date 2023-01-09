@@ -761,7 +761,7 @@ export type GraphQLControllerIdentifier = string;
 
 export type TGraphQLController = {
   GraphQLController: TBaseControllerValues & {
-    GraphQLControllerIdentifier: GraphQLControllerIdentifier;
+    graphQLControllerIdentifier: GraphQLControllerIdentifier;
     inputType: null | string;
     operationType: TGraphQLOperation;
     operationName: string;
@@ -1033,7 +1033,7 @@ export type TGraphQLServerInstance = {
 export const ControllerResolverKey = 'controllerResolver';
 export type TControllerResolver = {
   [ControllerResolverKey]: {
-    GraphQLControllerIdentifier: GraphQLControllerIdentifier;
+    graphQLControllerIdentifier: GraphQLControllerIdentifier;
     controllerInstanceName: TControllerInstanceName;
   } & TBoundedContextModule &
     TArgumentList;
