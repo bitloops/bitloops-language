@@ -112,16 +112,21 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       'DB.SQLite': [],
     };
     const adapterImports: string[] = [];
-    for (const [adapterClassName, repoAdapterInfo] of Object.entries(repoAdapters)) {
-      const { connection, dbType } = repoAdapterInfo;
+    for (const repoAdapter of repoAdapters) {
+      const { repoAdapterDefinition } = repoAdapter;
+      const { repoAdapterExpression } = repoAdapterDefinition;
+      const { repoAdapterClassName, repoAdapterOptions, dbType } = repoAdapterExpression;
+      const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
+        repoAdapterOptions,
+        RepoAdapterOptions.connection,
+      );
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TExpression,
         value: connection,
       });
       connections[dbType].push(stringConnection.output);
-      // const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
       adapterImports.push(
-        `import { ${adapterClassName} } from './repos/concretions/${adapterClassName}';`,
+        `import { ${repoAdapterClassName} } from './repos/concretions/${repoAdapterClassName}';`,
       );
     }
 
@@ -160,7 +165,6 @@ export class SetupTypeScriptRepos implements ISetupRepos {
         value: connection,
       });
 
-      // TODO create repoAdapterClassName in builders with the use of function `getRepoAdapterClassName`
       result.push(
         `const ${instanceIdentifier} = new ${repoAdapterClassName}(${stringConnection.output});`,
       );
