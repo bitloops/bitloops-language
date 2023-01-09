@@ -20,7 +20,6 @@
 
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { IntermediateASTSetup } from '../../../../../src/ast/core/types.js';
 import { TargetGenerator } from '../../../../../src/target/index.js';
 import { formatString } from '../../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_REST_CONTROLLER_TEST_CASES } from '../mocks/controllers/restController.js';
@@ -36,17 +35,16 @@ describe('Statements test cases', () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const input = testCase.controller;
-
       tree.insertChild(input);
 
-      //TODO build setup tree
-      // const setupTree = new IntermediateASTTree(
-      //   new IntermediateASTRootNode(),
-      // );
+      const setupTree = new IntermediateASTTree(new IntermediateASTRootNode());
+      setupTree.insertChild(testCase.routerController);
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },
-        setup: 'setupTree',
+        setup: {
+          setup: setupTree,
+        },
       };
 
       const targetGenerator = new TargetGenerator();

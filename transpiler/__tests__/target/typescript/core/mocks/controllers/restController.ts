@@ -1,7 +1,7 @@
+import { RouterControllerNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/RouterControllerNodeBuilder.js';
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
-import { IntermediateASTSetup } from '../../../../../../src/ast/core/types.js';
+import { RouterControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/setup/RouterControllerNode.js';
 import { TServerType } from '../../../../../../src/types.js';
-import { FileUtil } from '../../../../../../src/utils/file.js';
 import { RestControllerBuilderDirector } from '../../builders/controllers/restDirector.js';
 
 type TestCase = {
@@ -10,8 +10,9 @@ type TestCase = {
   controllerName: string;
   serverType: TServerType;
   output: string;
+  routerController?: RouterControllerNode;
   // setupTree?: IntermediateASTSetup;
-  setupContents?: string;
+  // setupContents?: string;
 };
 
 export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
@@ -22,7 +23,7 @@ export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
       'HelloWorldController',
     ),
     serverType: 'REST.Fastify',
-    setupContents: FileUtil.readFileString('transpiler/__tests__/end-to-end/mocks/setup/setup.bl'),
+    routerController: new RouterControllerNodeBuilder().build(),
     output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 export class HelloWorldController extends Fastify.BaseController {
   constructor() {
