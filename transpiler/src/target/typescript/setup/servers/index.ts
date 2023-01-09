@@ -49,7 +49,7 @@ export const groupServers = (setupTree: IntermediateASTTree): TRestAndGraphQLSer
     },
   };
   const restServers = setupTree.getRootChildrenNodesValueByType<TRESTServerInstance>(
-    BitloopsTypesMapping.TServers,
+    BitloopsTypesMapping.TRESTServerInstance,
   );
   for (const server of restServers) {
     const { serverOptions } = server.restServer;
@@ -64,7 +64,13 @@ export const groupServers = (setupTree: IntermediateASTTree): TRestAndGraphQLSer
     const serverTypeOutput = serverType.output as TServerType;
     result[serverTypeOutput].serverInstances.push(server);
   }
-  // TODO - GraphQL servers
+
+  const graphQLServer = setupTree.getRootChildrenNodesValueByType<TGraphQLServerInstance>(
+    BitloopsTypesMapping.TGraphQLServerInstance,
+  );
+  for (const server of graphQLServer) {
+    result.GraphQL.serverInstances.push(server);
+  }
   return result;
   // const graphQLServers
 };

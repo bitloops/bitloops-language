@@ -52,6 +52,10 @@ import {
   TRepoAdapterDefinition,
   TRestServerInstanceRouters,
   TLiteral,
+  TGraphQLController,
+  GraphQLServerInstanceKey,
+  ControllerResolversKey,
+  ControllerResolverKey,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -73,6 +77,7 @@ import { RouterDefinitionHelpers } from './routerDefinition/index.js';
 import { isGraphQLServerInstance, isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 import { NodeValueHelpers } from './helpers.js';
 import { RestFastifyGenerator } from './servers/fastify.js';
+import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -815,10 +820,10 @@ export { routers };
     bitloopsModel: TBoundedContexts,
     portStatement: string,
   ): string {
-    const { resolvers } = data;
+    const resolvers = data[GraphQLServerInstanceKey][ControllerResolversKey];
     const serverName = 'server';
     this.nodeDependencies['@bitloops/bl-boilerplate-infra-graphql'] = '^0.0.4';
-    const setupData: TGraphQLSetupData = {
+    const graphQLSetupData: TGraphQLSetupData = {
       servers: [{ type: 'GraphQL', port: portStatement, name: serverName }],
       resolvers: [],
       addResolversToServer: [],
@@ -827,13 +832,11 @@ export { routers };
 
     let importsString = '';
     for (const resolver of resolvers) {
-      const {
-        boundedContext,
-        module,
-        controllerClassName,
-        dependencies: _dependencies,
-        controllerInstance,
-      } = resolver;
+      const resolverDef = resolver[ControllerResolverKey];
+      const controllerClassName = resolverDef.graphQLControllerIdentifier;
+      const controllerInstance = resolverDef.controllerInstanceName;
+      const boundedContext = resolverDef.boundedContextModule.boundedContextName.wordsWithSpaces;
+      const module = resolverDef.boundedContextModule.moduleName.wordsWithSpaces;
 
       importsString += `import { ${controllerInstance} } from '../../../bounded-contexts/${kebabCase(
         boundedContext,
@@ -843,19 +846,28 @@ export { routers };
       // TODO Check what happens here for same name DTOs from different modules/bounded contexts
       // and fix conflict / change model perhaps
 
-      const controller = bitloopsModel[boundedContext][module]['Controllers'][controllerClassName];
+      const bitloopsModelTree = bitloopsModel[boundedContext][module];
+      const graphQLControllers = bitloopsModelTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TGraphQLController,
+      ) as GraphQLControllerNode[];
+      const controller = graphQLControllers.find(
+        (graphQLController) => graphQLController.getName() === controllerClassName,
+      );
+
+      // const controller = bitloopsModel[boundedContext][module]['Controllers'][controllerClassName];
       if (!controller) {
         throw new Error(
           `Controller ${controllerClassName} not found in bounded context ${boundedContext} module ${module}`,
         );
       }
-      if (!isGraphQLController(controller)) {
-        throw new Error(
-          `Controller ${controllerClassName} in bounded context ${boundedContext} module ${module} is not a GraphQL controller`,
-        );
-      }
-      const { operationType, operationName, inputType } = controller.GraphQLController;
-      const outputType = controller.GraphQLController.execute.returnType;
+      // if (!isGraphQLController(controller)) {
+      //   throw new Error(
+      //     `Controller ${controllerClassName} in bounded context ${boundedContext} module ${module} is not a GraphQL controller`,
+      //   );
+      // }
+      const controllerValue: TGraphQLController = controller.getValue();
+      const { operationType, operationName, inputType } = controllerValue.GraphQLController;
+      const outputType = controllerValue.GraphQLController.execute.returnType;
       const constructedResolver = {
         boundedContext,
         module,
@@ -865,8 +877,8 @@ export { routers };
         output: outputType,
         controller: controllerInstance,
       };
-      setupData.resolvers.push(constructedResolver);
-      setupData.addResolversToServer.push({
+      graphQLSetupData.resolvers.push(constructedResolver);
+      graphQLSetupData.addResolversToServer.push({
         serverName,
         resolver: {
           name: operationName,
@@ -877,7 +889,7 @@ export { routers };
     }
     // setupData.bitloopsModel = bitloopsModel;
     // TODO Prettier this string
-    const serverContent = graphQLSetupDataToTargetLanguage(setupData);
+    const serverContent = graphQLSetupDataToTargetLanguage(graphQLSetupData);
     return formatToLang(importsString + serverContent.output, SupportedLanguages.TypeScript);
   }
 }
