@@ -43,13 +43,6 @@ const isRestServerInstance = (
   else return false;
 };
 
-const isGraphQLServerInstance = (
-  serverInstance: TRESTServerInstance | TGraphQLServerInstance,
-): serverInstance is TGraphQLServerInstance => {
-  if ('resolvers' in serverInstance) return true;
-  else return false;
-};
-
 const isGraphQLController = (
   controller: TRESTController | TGraphQLController,
 ): controller is TGraphQLController => {
@@ -203,7 +196,6 @@ export {
   isUndefined,
   isArray,
   isRestServerInstance,
-  isGraphQLServerInstance,
   isGraphQLController,
   hasOkErrorReturnType,
   isIfStatement,

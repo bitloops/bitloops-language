@@ -26,16 +26,19 @@ export class RepoAdapterDefinitionBuilder implements IBuilder<TRepoAdapterDefini
     boundedContextName,
     moduleName,
     concretedRepoPort,
+    className,
   }: {
     dbType: TRepoSupportedTypes;
     options: TEvaluationFields;
     boundedContextName: string;
     moduleName: string;
     concretedRepoPort: TConcretedRepoPort;
+    className: string;
   }): RepoAdapterDefinitionBuilder {
     this.repoAdapterExpression = new RepoAdapterExpressionBuilder()
       .withBoundedContextModule({ boundedContextName, moduleName })
-      .withClassName(dbType)
+      .withClassName(className)
+      .withDBType(dbType)
       .withOptions(options)
       .withConcretedRepoPort(concretedRepoPort)
       .build();

@@ -1,4 +1,5 @@
 import {
+  TControllerInstanceName,
   THTTPMethodVerb,
   TIdentifier,
   TRESTControllerIdentifier,
@@ -24,6 +25,7 @@ export class RouterDefinitionBuilderDirector {
   buildFastifyRouterDefinitionWithNoDependencies({
     constIdentifier,
     controllerIdentifier,
+    controllerIntanceName,
     boundedContextName,
     moduleName,
     method,
@@ -31,6 +33,7 @@ export class RouterDefinitionBuilderDirector {
   }: {
     constIdentifier: TIdentifier;
     controllerIdentifier: TRESTControllerIdentifier;
+    controllerIntanceName: TControllerInstanceName;
     boundedContextName: string;
     moduleName: string;
     method: THTTPMethodVerb;
@@ -50,7 +53,7 @@ export class RouterDefinitionBuilderDirector {
           .withArguments(argumentList)
           .withBoundedContextModule(bcModule)
           .withControllerIdentifier(controllerIdentifier)
-          .withControllerInstanceName(controllerIdentifier)
+          .withControllerInstanceName(controllerIntanceName)
           .withMethod(method)
           .withPath(pathStringLiteral)
           .build(),

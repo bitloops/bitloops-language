@@ -16,6 +16,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
       new RouterDefinitionBuilderDirector().buildFastifyRouterDefinitionWithNoDependencies({
         constIdentifier: 'helloWorldRESTRouter',
         controllerIdentifier: 'HelloWorldController',
+        controllerIntanceName: 'helloWorldController1',
         boundedContextName: 'Bounded Context',
         moduleName: 'Module',
         method: 'Get',
@@ -41,7 +42,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
               }),
             )
             .withControllerIdentifier('HelloWorldController')
-            .withControllerInstanceName('HelloWorldController')
+            .withControllerInstanceName('helloWorldController1')
             .withMethod('Get')
             .withPath(new StringLiteralBuilder().withValue('/hello1').build())
             .build(),
@@ -53,8 +54,8 @@ export const VALID_ROUTER_DEFINITION_CASES = [
                 moduleName: 'My Module2',
               }),
             )
-            .withControllerIdentifier('HelloWorld2Controller')
-            .withControllerInstanceName('HelloWorld2Controller')
+            .withControllerIdentifier('HelloWorldController')
+            .withControllerInstanceName('helloWorldController2')
             .withMethod('Post')
             .withPath(new StringLiteralBuilder().withValue('/hello2').build())
             .build(),

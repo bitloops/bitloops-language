@@ -170,6 +170,13 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isEnvironmentVariableExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TEnvironmentVariableExpression,
+      value: expressionValue,
+    });
+  }
+
   throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 

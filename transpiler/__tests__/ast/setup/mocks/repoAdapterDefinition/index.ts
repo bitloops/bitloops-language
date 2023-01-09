@@ -17,6 +17,7 @@ export const VALID_REPO_ADAPTER_DEFINITIONS = [
         boundedContextName: 'Demo',
         moduleName: 'Hello World',
         concretedRepoPort: 'TodoRepoPort',
+        className: 'MongoTodoRepo',
         options: {
           fields: [
             new EvaluationFieldBuilderDirector().buildEvaluationField(
