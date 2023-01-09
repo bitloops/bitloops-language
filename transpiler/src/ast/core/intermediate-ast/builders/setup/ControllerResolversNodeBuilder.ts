@@ -1,18 +1,18 @@
 import { IBuilder } from '../IBuilder.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ControllerResolversNode } from '../../nodes/setup/ControllerResolversNode.js';
-import { ControllerResolverBindNode } from '../../nodes/setup/ControllerResolverBindNode.js';
+import { ControllerResolverNode } from '../../nodes/setup/ControllerResolverNode.js';
 
 export class ControllerResolversNodeBuilder implements IBuilder<ControllerResolversNode> {
   private controllerResolversNode: ControllerResolversNode;
-  private controllerResolverBinds: ControllerResolverBindNode[];
+  private controllerResolverBinds: ControllerResolverNode[];
 
   constructor(nodeMetadata?: TNodeMetadata) {
     this.controllerResolversNode = new ControllerResolversNode(nodeMetadata);
   }
 
   public withControllerResolvers(
-    controllerResolverBinds: ControllerResolverBindNode[],
+    controllerResolverBinds: ControllerResolverNode[],
   ): ControllerResolversNodeBuilder {
     this.controllerResolverBinds = controllerResolverBinds;
     return this;

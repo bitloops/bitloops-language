@@ -245,13 +245,16 @@ import { concretedRepoPortVisitor } from './helpers/setup/concretedRepoPort.js';
 import { RepoAdapterExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
 import { repoAdapterExpressionVisitor } from './helpers/setup/repoAdapterExpression.js';
 import { repoAdapterDefinitionVisitor } from './helpers/setup/repoAdapterDefinition.js';
-import { ControllerResolverBindNode } from '../intermediate-ast/nodes/setup/ControllerResolverBindNode.js';
+import { ControllerResolverNode } from '../intermediate-ast/nodes/setup/ControllerResolverNode.js';
 import {
   bindControllerResolversVisitor,
   controllerResolverBindVisitor,
+  graphQLServerDeclarationVisitor,
+  graphQLServerInstantiationOptionsVisitor,
 } from './helpers/setup/graphQLServerDeclaration.js';
 import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
-import { GraphQLServerInstantiationOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerInstantiationOptionsNode.js';
+import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
+import { GraphQLServerNode } from '../intermediate-ast/nodes/setup/GraphQLServerNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1221,7 +1224,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitControllerResolverBind(
     ctx: BitloopsParser.ControllerResolverBindContext,
-  ): ControllerResolverBindNode {
+  ): ControllerResolverNode {
     return controllerResolverBindVisitor(this, ctx);
   }
 
@@ -1233,7 +1236,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGraphQLServerInstantiationOptions(
     ctx: BitloopsParser.GraphQLServerInstantiationOptionsContext,
-  ): GraphQLServerInstantiationOptionsNode {
+  ): GraphQLServerOptionsNode {
     return graphQLServerInstantiationOptionsVisitor(this, ctx);
+  }
+
+  visitGraphQLServerDeclaration(
+    ctx: BitloopsParser.GraphQLServerDeclarationContext,
+  ): GraphQLServerNode {
+    return graphQLServerDeclarationVisitor(this, ctx);
   }
 }
