@@ -119,7 +119,7 @@ export const generateSetupFiles = (
     );
 
     // Step 1. Generate routes files
-    const routes = setupGenerator.generateServerRouters(routerDefinitions, bitloopsModel, license);
+    const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
     // console.log('routes:', routes);
     // console.log('--------------------------------');
     routes.forEach((router) => {

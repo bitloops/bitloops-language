@@ -1,6 +1,5 @@
 import {
   repoSupportedTypes,
-  TReposSetup,
   TRepoSupportedTypes,
   TRepoConnectionDefinition,
   RepoConnectionDefinitionKey,

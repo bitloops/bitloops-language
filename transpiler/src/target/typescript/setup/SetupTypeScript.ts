@@ -35,7 +35,6 @@ import {
   TRepoConnectionDefinition,
   TPackageConcretion,
   packageConcretionKey,
-  PackagePortIdentifierKey,
   packageAdapterIdentifierKey,
   TRouterDefinition,
   TDomainError,
@@ -87,10 +86,7 @@ interface ISetup {
     license?: string,
   ): TSetupOutput;
   generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[];
-  generateServerRouters(
-    routerDefinitions: TRouterDefinition[],
-    _bitloopsModel: TBoundedContexts,
-  ): TSetupOutput[];
+  generateServerRouters(routerDefinitions: TRouterDefinition[]): TSetupOutput[];
   generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     routerDefinitions: TRouterDefinition[],
@@ -387,7 +383,7 @@ export class SetupTypeScript implements ISetup {
       const boundedContext = boundedContextName.wordsWithSpaces;
       const module = moduleName.wordsWithSpaces;
 
-      const _packagePortIdentifier = packageDefinition[PackagePortIdentifierKey];
+      // const _packagePortIdentifier = packageDefinition[PackagePortIdentifierKey];
       const packageAdapterIdentifier = packageDefinition[packageAdapterIdentifierKey];
 
       const adapterContent = this.findPackageAdapterFileContent(
@@ -431,11 +427,7 @@ export class SetupTypeScript implements ISetup {
     return results;
   }
 
-  generateServerRouters(
-    routerDefinitions: TRouterDefinition[],
-    _bitloopsModel: TBoundedContexts,
-    license?: string,
-  ): TSetupOutput[] {
+  generateServerRouters(routerDefinitions: TRouterDefinition[], license?: string): TSetupOutput[] {
     // This can be refactored to gather all controllers and router identifier, for each server type
     const fastifyImport = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
     let fastifyExports = '';
@@ -795,6 +787,7 @@ export { routers };
   }
 
   /**
+   * Needs to find the graphQL Controllers inside bitloopsModel,
    *  Like a middleware, transforms
    * graphql data into the expected schema
    * and calls the graphQLSetupDataToTargetLanguage function

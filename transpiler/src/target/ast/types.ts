@@ -1,5 +1,5 @@
-import { TIntermediateModel } from '../../transpilerTypes.js';
+import { IntermediateAST } from '../../ast/core/types.js';
 
 export interface IIntermediateModelToASTTargetLanguageTransformer {
-  transform(intermediateModel: TIntermediateModel): TIntermediateModel;
+  transform(intermediateModel: IntermediateAST): IntermediateAST;
 }

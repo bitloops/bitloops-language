@@ -1157,16 +1157,6 @@ export type TEnvironmentVariableExpression = {
   };
 };
 
-// TODO remove this
-export type TLiteralExpressionType = TBitloopsPrimitives | 'number';
-
-export type TLiteralExpression = {
-  literal: {
-    type: TLiteralExpressionType;
-    value: string;
-  };
-};
-
 export type TIdentifierExpression = {
   identifier: {
     value: string;

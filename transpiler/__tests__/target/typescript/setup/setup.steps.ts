@@ -87,7 +87,7 @@ defineFeature(feature, (test) => {
   let intermediateResult: ISetupData | BitloopsIntermediateSetupASTParserError;
   let result: TBitloopsTargetSetupContent | BitloopsTargetGeneratorError;
 
-  test.skip('Valid Setup Generation', ({ given, when, then }) => {
+  test('Valid Setup Generation', ({ given, when, then }) => {
     given(/^Valid setup file contents are provider (.*)$/, (blString) => {
       setupBl = d(blString);
     });
