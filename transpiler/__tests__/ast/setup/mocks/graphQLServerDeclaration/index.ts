@@ -1,6 +1,7 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
 import { EvaluationFieldBuilderDirector } from '../../../core/builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../../../core/builders/expressionDirector.js';
+import { BoundedContextModuleBuilderDirector } from '../../builders/boundedContextModuleBuilderDirector.js';
 
 import { GraphQLControllerResolverBuilder } from '../../builders/graphQLServerControllerResolverBuilder.js';
 import { GraphQLServerDeclarationBuilder } from '../../builders/graphQLServerDeclarationBuilder.js';
@@ -28,7 +29,12 @@ export const VALID_GRAPHQL_SERVER_CASES = [
         new GraphQLControllerResolverBuilder()
           .withInstanceName('helloWorldController1')
           .withClassName('HelloWorldController')
-          .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Hello World' })
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'Demo',
+              moduleName: 'Hello World',
+            }),
+          )
           .withArguments({ argumentList: [] })
           .build(),
       ])
@@ -56,13 +62,23 @@ export const VALID_GRAPHQL_SERVER_CASES = [
         new GraphQLControllerResolverBuilder()
           .withInstanceName('helloWorldController1')
           .withClassName('HelloWorldController')
-          .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Hello World' })
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'Demo',
+              moduleName: 'Hello World',
+            }),
+          )
           .withArguments({ argumentList: [] })
           .build(),
         new GraphQLControllerResolverBuilder()
           .withInstanceName('helloWorld2Controller1')
           .withClassName('HelloWorld2Controller')
-          .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Bye World' })
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'Demo',
+              moduleName: 'Bye World',
+            }),
+          )
           .withArguments({ argumentList: [] })
           .build(),
       ])
@@ -90,7 +106,12 @@ export const VALID_GRAPHQL_SERVER_CASES = [
         new GraphQLControllerResolverBuilder()
           .withInstanceName('helloWorldController1')
           .withClassName('HelloWorldController')
-          .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Hello World' })
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'Demo',
+              moduleName: 'Hello World',
+            }),
+          )
           .withArguments({
             argumentList: [
               {
@@ -104,7 +125,12 @@ export const VALID_GRAPHQL_SERVER_CASES = [
         new GraphQLControllerResolverBuilder()
           .withInstanceName('helloWorld2Controller1')
           .withClassName('HelloWorld2Controller')
-          .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Bye World' })
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'Demo',
+              moduleName: 'Bye World',
+            }),
+          )
           .withArguments({
             argumentList: [
               {

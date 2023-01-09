@@ -7,7 +7,6 @@ import {
   GraphQLControllerIdentifier,
   ControllerResolverKey,
 } from '../../../../src/types.js';
-import { BoundedContextModuleBuilderDirector } from './boundedContextModuleBuilderDirector.js';
 
 export class GraphQLControllerResolverBuilder implements IBuilder<TControllerResolver> {
   private instanceName: TControllerInstanceName;
@@ -25,17 +24,10 @@ export class GraphQLControllerResolverBuilder implements IBuilder<TControllerRes
     return this;
   }
 
-  withBoundedContextModule({
-    boundedContextName,
-    moduleName,
-  }: {
-    boundedContextName: string;
-    moduleName: string;
-  }): GraphQLControllerResolverBuilder {
-    this.bcModule = new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
-      boundedContextName,
-      moduleName,
-    });
+  withBoundedContextModule(
+    boundedContextModule: TBoundedContextModule,
+  ): GraphQLControllerResolverBuilder {
+    this.bcModule = boundedContextModule;
     return this;
   }
 
