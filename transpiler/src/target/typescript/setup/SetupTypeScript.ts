@@ -32,7 +32,6 @@ import {
   TGraphQLServerInstance,
   TGraphQLSetupData,
   // TUseCasesOfModule, //TODO this is TUseCaseDefinition
-  TServers,
   TRepoConnectionDefinition,
   TPackageConcretion,
   packageConcretionKey,
@@ -87,7 +86,7 @@ interface ISetup {
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput;
-  generateAPIs(servers: TServers): TSetupOutput[];
+  generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[];
   generateServerRouters(
     routerDefinitions: TRouterDefinition[],
     _bitloopsModel: TBoundedContexts,
@@ -521,9 +520,6 @@ export class SetupTypeScript implements ISetup {
       case 'REST.Fastify':
         importType = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
         routerInstanceType = 'Fastify.Instance';
-        // for (const routerInstanceName in routers) {
-        //   const routerPrefix = routers[routerInstanceName].routerPrefix;
-        // }
         imports =
           Object.keys(routers).length > 2
             ? `import {
@@ -551,16 +547,20 @@ export { routers };
       content: (license || '') + body,
     };
   }
-  generateAPIs(servers: TServers): TSetupOutput[] {
+
+  generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
         const serverInstance = servers[serverType].serverInstances[i];
-        output.push(this.registerRouters(serverInstance.routers, serverType as TServerType));
+        output.push(
+          this.registerRouters(serverInstance.routers, serverType as TServerType, license),
+        );
       }
     }
     return output;
   }
+
   generateAppDomainErrors(model: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {

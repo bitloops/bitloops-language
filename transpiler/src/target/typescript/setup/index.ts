@@ -127,7 +127,7 @@ export const generateSetupFiles = (
     });
 
     // Step 2. Generate routers files
-    const routers = setupGenerator.generateAPIs(setupData.setup);
+    const routers = setupGenerator.generateAPIs(allServers, license);
     // console.log('routers:', routers);
     // console.log('--------------------------------');
     routers.forEach((router) => {
