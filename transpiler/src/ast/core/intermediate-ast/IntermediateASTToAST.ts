@@ -6,6 +6,7 @@ import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkError
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
 import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../types.js';
 import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
+import { InjectRepoAdaptersTransformer } from './ node-transformers/InjectRepoAdaptersTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -13,6 +14,9 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     const intermediateASTSetup = intermediateAST.setup
       ? this.completeSetup(intermediateAST.setup)
       : intermediateAST.setup;
+    if (intermediateAST.setup) {
+      this.completeCoreFromSetup(intermediateAST);
+    }
     return {
       core: boundedContexts,
       setup: intermediateASTSetup,
@@ -61,9 +65,8 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       const treeUpdated = setupTree.copy(); // TODO implement copy method
       const rootNode = treeUpdated.getRootNode();
 
-      const transformer = new RouterControllerNodesTransformer(setupTree);
-
-      transformer.run();
+      const routerControllerNodesTransformer = new RouterControllerNodesTransformer(treeUpdated);
+      routerControllerNodesTransformer.run();
 
       treeUpdated.buildValueRecursiveBottomUp(rootNode);
 
@@ -76,6 +79,17 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       }
     }
     return intermediateASTSetup;
+  }
+
+  // It mutates intermediateAST core
+  private completeCoreFromSetup(intermediateAST: IntermediateAST): void {
+    for (const setupTree of Object.values(intermediateAST.setup)) {
+      const injectRepoAdaptersTransformer = new InjectRepoAdaptersTransformer(
+        setupTree,
+        intermediateAST.core,
+      );
+      injectRepoAdaptersTransformer.run();
+    }
   }
 
   private getNodeTransformer(factoryParams: {
