@@ -43,6 +43,36 @@ export class RouterControllerNodesTransformer implements IASTToCompletedASTTrans
     }
   }
 
+  private addControllerInstanceNameToControllerResolver(): void {
+    const graphQLServers = this.tree.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TGraphQLServerInstance,
+    ) as GraphQLServerNode[];
+    for (const graphQLServer of graphQLServers) {
+      const controllerResolversNode: ControllerResolversNode =
+        graphQLServer.getControllerResolvers();
+      const controllerResolverNodes = controllerResolversNode.getControllerResolverNode();
+      const controllerIdentifiers = {};
+      for (const controllerResolverNode of controllerResolverNodes) {
+        const controllerResolverIdentifierNode =
+          controllerResolverNode.getGraphQLControllerIdentifier();
+        const controllerIdentifierName = controllerResolverIdentifierNode.getIdentifierName();
+
+        this.calculateControllerInstances(controllerIdentifiers, controllerIdentifierName);
+        const controllerInstances = this.getControllerInstances(
+          controllerIdentifiers,
+          controllerIdentifierName,
+        );
+        const controllerInstanceName =
+          lowerCaseFirstLetter(controllerIdentifierName) + controllerInstances;
+
+        const controllerInstanceNameNode = new ControllerInstanceNameNodeBuilder()
+          .withInstanceName(controllerInstanceName)
+          .build();
+        controllerResolverNode.addChild(controllerInstanceNameNode);
+      }
+    }
+  }
+
   private calculateControllerInstances(
     controllerIdentifiers: { [identifier: string]: number },
     controllerIdentifierName: string,
@@ -59,34 +89,5 @@ export class RouterControllerNodesTransformer implements IASTToCompletedASTTrans
     controllerIdentifierName: string,
   ): number {
     return controllerIdentifiers[controllerIdentifierName];
-  }
-
-  private addControllerInstanceNameToControllerResolver(): void {
-    const graphQLServers = this.tree.getRootChildrenNodesByType(
-      BitloopsTypesMapping.TGraphQLServerInstance,
-    ) as GraphQLServerNode[];
-    for (const graphQLServer of graphQLServers) {
-      const controllerResolversNode: ControllerResolversNode =
-        graphQLServer.getControllerResolvers();
-      const controllerResolverNodes = controllerResolversNode.getControllerResolverNode();
-      for (const controllerResolverNode of controllerResolverNodes) {
-        const controllerResolverIdentifierNode =
-          controllerResolverNode.getGraphQLControllerIdentifier();
-        const controllerResolverIdentifierName =
-          controllerResolverIdentifierNode.getIdentifierName();
-
-        const controllerInstanceName = controllerResolverIdentifierName; // TODO here change the name
-        //     const controllerInstance =
-        //   result.controllers?.[boundedContext]?.[module]?.[controllerClass] === undefined
-        //     ? lowerCaseFirstLetter(controllerClass)
-        //     : lowerCaseFirstLetter(controllerClass) +
-        //       result.controllers[boundedContext][module][controllerClass].instances +
-        //       1;
-        const controllerInstanceNameNode = new ControllerInstanceNameNodeBuilder()
-          .withInstanceName(controllerInstanceName)
-          .build();
-        controllerResolverNode.addChild(controllerInstanceNameNode);
-      }
-    }
   }
 }

@@ -26,7 +26,7 @@ export const VALID_GRAPHQL_SERVER_CASES = [
       })
       .withResolvers([
         new GraphQLControllerResolverBuilder()
-          .withInstanceName('HelloWorldController')
+          .withInstanceName('helloWorldController1')
           .withClassName('HelloWorldController')
           .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Hello World' })
           .withArguments({ argumentList: [] })
@@ -54,13 +54,13 @@ export const VALID_GRAPHQL_SERVER_CASES = [
       })
       .withResolvers([
         new GraphQLControllerResolverBuilder()
-          .withInstanceName('HelloWorldController')
+          .withInstanceName('helloWorldController1')
           .withClassName('HelloWorldController')
           .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Hello World' })
           .withArguments({ argumentList: [] })
           .build(),
         new GraphQLControllerResolverBuilder()
-          .withInstanceName('HelloWorld2Controller')
+          .withInstanceName('helloWorld2Controller1')
           .withClassName('HelloWorld2Controller')
           .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Bye World' })
           .withArguments({ argumentList: [] })
@@ -88,7 +88,7 @@ export const VALID_GRAPHQL_SERVER_CASES = [
       })
       .withResolvers([
         new GraphQLControllerResolverBuilder()
-          .withInstanceName('HelloWorldController')
+          .withInstanceName('helloWorldController1')
           .withClassName('HelloWorldController')
           .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Hello World' })
           .withArguments({
@@ -102,7 +102,7 @@ export const VALID_GRAPHQL_SERVER_CASES = [
           })
           .build(),
         new GraphQLControllerResolverBuilder()
-          .withInstanceName('HelloWorld2Controller')
+          .withInstanceName('helloWorld2Controller1')
           .withClassName('HelloWorld2Controller')
           .withBoundedContextModule({ boundedContextName: 'Demo', moduleName: 'Bye World' })
           .withArguments({
