@@ -27,6 +27,7 @@ const DTO_STRING = 'dto';
 const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesTypeScript => {
   EvaluationTypeIdentifiers;
   const { evaluation } = variable;
+  // TODO check if this needs to be removed
   if ('regularEvaluation' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TRegularEvaluation,
@@ -61,6 +62,12 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
   } else if ('builtInClass' in evaluation) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TBuiltInClassEvaluation,
+      value: evaluation,
+    });
+  }
+  if (EvaluationTypeIdentifiers.isCorsOptionsEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TCorsOptionsEvaluation,
       value: evaluation,
     });
   }

@@ -1,21 +1,34 @@
+/**
+ *  Bitloops Language CLI
+ *  Copyright (C) 2022 Bitloops S.A.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  For further information you can contact legal(at)bitloops.com.
+ */
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { RestServerAPIPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerAPIPrefixNodeBuilder.js';
 import { RestServerNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerNodeBuilder.js';
-import { RestServerPortNodeBuilder } from '../../../intermediate-ast/builders/setup/RestServerPortNodeBuilder.js';
 import { RestServerRouterPrefixNodeBuilder } from '../../../intermediate-ast/builders/setup/RouterPrefixNodeBuilder.js';
 import { ServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerOptionsNodeBuilder.js';
 import { ServerRouteNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRouteNodeBuilder.js';
 import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRoutesNodeBuilder.js';
-import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
-import { RestServerPortNode } from '../../../intermediate-ast/nodes/setup/RestServerPortNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
 import { ServerOptionsNode } from '../../../intermediate-ast/nodes/setup/ServerOptionsNode.js';
 import { ServerRouteNode } from '../../../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { ServerRoutesNode } from '../../../intermediate-ast/nodes/setup/ServerRoutesNode.js';
-import { ServerTypeIdentifierNode } from '../../../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
@@ -41,53 +54,9 @@ export const serverInstantiationOptionsVisitor = (
   ctx: BitloopsParser.ServerInstantiationOptionsContext,
 ): ServerOptionsNode => {
   const metadata = produceMetadata(ctx, thisVisitor);
-  const serverTypeOptionNode = thisVisitor.visit(ctx.serverTypeOption(0));
-  const restServerPortNode = thisVisitor.visit(ctx.restServerPort(0));
-  if (ctx.serverApiPrefixOption(0)) {
-    const serverApiPrefixOptionNode = thisVisitor.visit(ctx.serverApiPrefixOption(0));
-    const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
-      .withAPIPrefix(serverApiPrefixOptionNode)
-      .withPort(restServerPortNode)
-      .withServerType(serverTypeOptionNode)
-      .build();
-    return serverOptionsNode;
-  }
+  const evaluationFieldListNode = thisVisitor.visit(ctx.evaluationFieldList());
 
-  const serverOptionsNode = new ServerOptionsNodeBuilder(metadata)
-    .withPort(restServerPortNode)
-    .withServerType(serverTypeOptionNode)
-    .build();
-  return serverOptionsNode;
-};
-
-export const serverTypeOptionVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ServerTypeOptionContext,
-): ServerTypeIdentifierNode => {
-  return thisVisitor.visit(ctx.serverType());
-};
-
-export const restServerPortVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.RestServerPortContext,
-): RestServerPortNode => {
-  const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
-  const metadata = produceMetadata(ctx, thisVisitor);
-  const portNode = new RestServerPortNodeBuilder(metadata).withPort(expressionNode).build();
-  return portNode;
-};
-
-export const restServerAPIPrefixVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ServerApiPrefixOptionContext,
-): RestServerPortNode => {
-  const apiPrefixStringNode: StringLiteralNode = thisVisitor.visit(ctx.pathString());
-
-  const metadata = produceMetadata(ctx, thisVisitor);
-  const apiPrefixNode = new RestServerAPIPrefixNodeBuilder(metadata)
-    .withAPIPrefix(apiPrefixStringNode)
-    .build();
-  return apiPrefixNode;
+  return new ServerOptionsNodeBuilder(metadata).withFields(evaluationFieldListNode).build();
 };
 
 export const bindServerRoutesVisitor = (

@@ -17,15 +17,21 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { EvaluationFieldNode } from '../../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { EvaluationFieldBuilderDirector } from '../../../builders/evaluationFIeld.js';
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { EvaluationBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-
-export const evaluationVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.EvaluationContext,
-): any => {
-  const evaluation = thisVisitor.visitChildren(ctx)[0];
-  return new EvaluationBuilder().withEvaluation(evaluation).build();
+type TValidTestCases = {
+  description: string;
+  evaluationFields: EvaluationFieldNode[];
+  output: string;
 };
+
+export const VALID_CORS_EVALUATION_TEST_CASES: TValidTestCases[] = [
+  {
+    description: 'A valid struct declaration with array of int and string',
+    evaluationFields: [
+      new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('origin', '*'),
+    ],
+    output: "{origin:'*'}",
+  },
+];

@@ -124,6 +124,7 @@ regularIdentifier
     // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
     | Execute                                                   # ExecuteExpression
     | Delete                                                    # DeleteKeyword
+    | serverType                                                # ServerTypeExpression
     ;
 
 regularStructEvaluation
@@ -246,12 +247,17 @@ errorEvaluation
 
 evaluation
     : builtInClassEvaluation
+    | corsOptionsEvaluation
     | errorEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
     | propsEvaluation
     | structEvaluation
+    ;
+
+corsOptionsEvaluation
+    : CorsOptions OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen 
     ;
 
 condition
@@ -462,7 +468,6 @@ valueObjectEvaluation
 domainEvaluationInput
     : OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen     # DomainEvaluationInputFieldList
     | OpenParen expression CloseParen                                   # DomainEvaluationInputRegular
-    // | OpenParen regularEvaluation CloseParen             # DomainEvaluationInputRegular
     ;
 
 entityEvaluation
@@ -805,16 +810,8 @@ serverDeclaration
     ;
 
 serverInstantiationOptions
-    : OpenBrace (serverTypeOption | serverApiPrefixOption| restServerPort)* CloseBrace
+    : OpenBrace evaluationFieldList CloseBrace
     ;
-
-restServerPort 
-    : restServerPortIdentifier Colon expression Comma
-    ;
-
-restServerPortIdentifier: 
-    RestServerPortIdentifier;
-
 
 repoConnectionDefinition
     : Const identifier Assign repoConnectionExpression
@@ -852,38 +849,27 @@ concretedRepoPort
     : RepoPortIdentifier
     ;
 
-// serverInstantiationOptions
-//     // TODO Remove necessary comma on end of each line
-//     : OpenBrace (serverTypeOption | serverApiPrefixOption | customServerOption*) CloseBrace
+// serverTypeOption
+//     : ServerTypeOption Colon serverType Comma
 //     ;
 
-// serverInstantiationOption
-//     : serverTypeOption  #ServerTypeOptionStatement
-//     | serverApiPrefixOption #ServerApiPrefixOptionStatement
-//     | customServerOption #CustomServerOptionStatement
+// serverApiPrefixOption
+//     : ServerApiPrefix Colon pathString Comma
 //     ;
 
-serverTypeOption
-    : ServerTypeOption Colon serverType Comma
-    ;
-
-serverApiPrefixOption
-    : ServerApiPrefix Colon pathString Comma
-    ;
-
-customServerOption
-    : Identifier Colon expression Comma
-    ;
+// customServerOption
+//     : Identifier Colon expression Comma
+//     ;
 
 // Cover any user defined options
 
 graphQLServerInstantiationOptions
-    : OpenBrace graphQLServerInstantiationOption CloseBrace
+    : OpenBrace evaluationFieldList CloseBrace
     ;
 
-graphQLServerInstantiationOption
-    : customServerOption
-    ;
+// graphQLServerInstantiationOption
+//     : customServerOption
+//     ;
 
 envVariable
     : EnvVariable

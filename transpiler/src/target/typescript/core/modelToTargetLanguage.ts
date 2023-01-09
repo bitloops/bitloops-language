@@ -105,7 +105,6 @@ import {
 import { parenthesizedExpressionToTargetLanguage } from './components/statements/expression/parenthesizedExpression.js';
 import { variableDeclarationToTargetLanguage } from './components/statements/variableDeclaration.js';
 import { repoAdapterToTargetLanguage } from './components/repo/repoAdapter.js';
-import { singleExpressionToTargetLanguage } from '../setup/single-expression/index.js'; // TODO check this
 import { TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
@@ -125,6 +124,7 @@ import { memberDotExpressionToTargetLanguage } from './components/statements/exp
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
+import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -192,6 +192,10 @@ const modelToTargetLanguage = (props: {
 
     case BitloopsTypesMapping.TStructEvaluation: {
       res = structToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TCorsOptionsEvaluation: {
+      res = corsOptionsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStruct: {
@@ -438,10 +442,6 @@ const modelToTargetLanguage = (props: {
         throw new Error('Context data cannot be undefined for Repo adapters');
       }
       res = repoAdapterToTargetLanguage(value, contextData, model, setupData);
-      break;
-    }
-    case BitloopsTypesMapping.TSingleExpression: {
-      res = singleExpressionToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuiltInFunction: {

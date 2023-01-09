@@ -80,6 +80,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
 import { RouterDefinitionHelpers } from './routerDefinition/index.js';
 import { isRestServer, TRestAndGraphQLServers } from './servers/index.js';
+import { NodeValueHelpers } from './helpers.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -683,12 +684,34 @@ export { routers };
     const { serverInstance: data, serverType, bitloopsModel, serverIndex, license } = params;
     // TODO handle CORS
     // let serverPath = '';
-    const serverPrefix = isRestServerInstance(data) ? `'${data.apiPrefix || '/'}'` : null;
+    let serverPrefix: string = null;
+    let portStatement: string = null;
+    if (isRestServer(data)) {
+      // TODO fix
+      const evaluationList = data.restServer.serverOptions as any;
+      // TODO Check if enum for server options exist
+      const apiPrefixExpr = NodeValueHelpers.findKeyOfEvaluationFieldList(
+        evaluationList,
+        'apiPrefix',
+      );
+      const apiPrefixOutput = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TExpression,
+        value: apiPrefixExpr,
+      });
+
+      serverPrefix = `'${apiPrefixOutput.output}'`;
+
+      const portExpression = NodeValueHelpers.findKeyOfEvaluationFieldList(
+        evaluationList,
+        'apiPrefix',
+      );
+      portStatement = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TExpression,
+        value: portExpression,
+      }).output;
+    }
+
     // TODO handle special env-variable Expression, and env-variable (like identifier-variable)
-    const portStatement = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TSingleExpression,
-      value: data.port,
-    });
     // const portStatement = data.port.replaceAll('env.', 'process.env.');
     let body = '';
     switch (serverType as TServerType) {
@@ -716,7 +739,7 @@ fastify.register(routers, {
   prefix: ${serverPrefix},
 });
 
-const port = ${portStatement.output};
+const port = ${portStatement};
 
 const start = async () => {
   try {
@@ -738,7 +761,7 @@ start();
           );
         }
         body += "import { GraphQL } from '@bitloops/bl-boilerplate-infra-graphql';\n";
-        body += this.generateGraphQLServer(data, bitloopsModel, portStatement.output);
+        body += this.generateGraphQLServer(data, bitloopsModel, portStatement);
         break;
       }
       default:
@@ -752,7 +775,7 @@ start();
   }
   generateServers(
     servers: TRestAndGraphQLServers,
-    _bitloopsModel: TBoundedContexts,
+    bitloopsModel: TBoundedContexts,
   ): TSetupOutput[] {
     const output = [];
     for (const serverType of Object.keys(servers)) {
@@ -762,7 +785,7 @@ start();
           serverInstance,
           serverType: serverType as TServerType,
           serverIndex: i,
-          bitloopsModel: _bitloopsModel,
+          bitloopsModel,
         };
         output.push(this.generateServer(args));
       }

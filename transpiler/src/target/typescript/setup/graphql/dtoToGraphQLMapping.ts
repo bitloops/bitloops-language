@@ -4,6 +4,7 @@ import {
   bitloopsPrimaryTypeKey,
   buildInClassTypeKey,
   fieldKey,
+  fieldsKey,
   primitivesTypeKey,
   TBitloopsPrimaryTypeValues,
   TVariables,
@@ -21,7 +22,7 @@ export class ClassTypeToGraphQLMapping {
     const fields = this.fetchClassTypeFields(classTypeName, moduleModel);
 
     const fieldStrings = [];
-    for (const field of fields) {
+    for (const field of fields[fieldsKey]) {
       const { identifier, type, optional } = field[fieldKey];
       if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
         const fieldType = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
@@ -49,7 +50,7 @@ export class ClassTypeToGraphQLMapping {
     classTypeName: string,
     moduleModel: IntermediateASTTree,
   ): TVariables {
-    let fields: TVariables = [];
+    let fields: TVariables = { fields: [] };
     if (BitloopsPrimTypeIdentifiers.isDTOIdentifier(classTypeName)) {
       fields = moduleModel['DTOs'][classTypeName].fields;
     } else if (BitloopsPrimTypeIdentifiers.isReadModelIdentifier(classTypeName)) {

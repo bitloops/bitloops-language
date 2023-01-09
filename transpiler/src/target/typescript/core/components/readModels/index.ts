@@ -33,7 +33,7 @@ const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTy
   };
 
   const { fields, readModelIdentifier } = readModel.ReadModel;
-  guardAgainstUndefinedAndArray(fields);
+  guardAgainstUndefinedAndArray({ fields });
   result.output += initialReadModel(readModelIdentifier);
 
   const readModelIntermediateModel = modelToTargetLanguage({

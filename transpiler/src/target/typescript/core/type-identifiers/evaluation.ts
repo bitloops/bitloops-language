@@ -35,4 +35,11 @@ export class EvaluationTypeIdentifiers {
     }
     return false;
   }
+
+  static isCorsOptionsEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
+    if ('corsOptions' in evaluation) {
+      return true;
+    }
+    return false;
+  }
 }

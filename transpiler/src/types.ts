@@ -313,12 +313,14 @@ export type TBuiltInClassEvaluation = {
 // };
 export type TEvaluationValues =
   | TStructEvaluation
+  | TCorsOptionsEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
   | TErrorEvaluation
-  | TBuiltInClassEvaluation;
+  | TBuiltInClassEvaluation
+  | TBuiltInFunctionValues;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -345,6 +347,10 @@ export type TEvaluationField = {
 };
 export type TEvaluationFields = {
   [evaluationFieldsKey]: TEvaluationField[];
+};
+
+export type TCorsOptionsEvaluation = {
+  corsOptions: TEvaluationFields;
 };
 
 export type TStructEvaluation = {
@@ -1003,15 +1009,9 @@ export type TRestServerPort = TExpression;
 
 export type TAPIPrefix = StringLiteral;
 
-export type TRestServerOptions = {
-  apiPrefix?: TAPIPrefix;
-  restServerPort: TRestServerPort;
-  serverType: TServerType;
-};
-
 export type TRESTServerInstance = {
   restServer: {
-    serverOptions: TRestServerOptions;
+    serverOptions: TEvaluationFields;
     serverRoutes: TRestServerInstanceRouters;
   };
 };

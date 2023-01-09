@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language CLI
+ *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -18,14 +18,22 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { EvaluationBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
+import {
+  TCorsOptionsEvaluation,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../../types.js';
+import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
+import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-export const evaluationVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.EvaluationContext,
-): any => {
-  const evaluation = thisVisitor.visitChildren(ctx)[0];
-  return new EvaluationBuilder().withEvaluation(evaluation).build();
+const corsOptionsToTargetLanguage = (
+  variable: TCorsOptionsEvaluation,
+): TTargetDependenciesTypeScript => {
+  const structProperties = variable.corsOptions.fields;
+
+  return modelToTargetLanguage({
+    type: BitloopsTypesMapping.TEvaluationFields,
+    value: structProperties,
+  });
 };
+
+export { corsOptionsToTargetLanguage };
