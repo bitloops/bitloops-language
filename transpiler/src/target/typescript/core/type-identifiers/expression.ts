@@ -33,6 +33,7 @@ import {
   TMethodCallExpression,
   TToStringExpression,
   TGetClass,
+  TEnvironmentVariableExpression,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -143,6 +144,15 @@ export class ExpressionTypeIdentifiers {
 
   static isGetClassExpression(expressionValue: TExpressionValues): expressionValue is TGetClass {
     if ('getClass' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isEnvironmentVariableExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TEnvironmentVariableExpression {
+    if ('environmentVariable' in expressionValue) {
       return true;
     }
     return false;

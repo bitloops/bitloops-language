@@ -1,5 +1,4 @@
 import {
-  repoSupportedTypes,
   TRepoSupportedTypes,
   TRepoConnectionDefinition,
   RepoConnectionDefinitionKey,
@@ -186,11 +185,11 @@ export class SetupTypeScriptRepos implements ISetupRepos {
 
   private groupRepoConnectionsPerDbType(
     repoConnectionDefinitions: TRepoConnectionDefinition[],
-  ): TCategorizedRepoConnections {
-    const initialStruct: TCategorizedRepoConnections = repoSupportedTypes.reduce((acc, dbType) => {
-      acc[dbType] = {};
-      return acc;
-    }, {} as TCategorizedRepoConnections);
+  ): Partial<TCategorizedRepoConnections> {
+    // const initialStruct: TCategorizedRepoConnections = repoSupportedTypes.reduce((acc, dbType) => {
+    //   acc[dbType] = {};
+    //   return acc;
+    // }, {} as TCategorizedRepoConnections);
 
     const connectionsGroupedByDbType = repoConnectionDefinitions.reduce(
       (acc, repoConnectionDefinition) => {
@@ -198,10 +197,11 @@ export class SetupTypeScriptRepos implements ISetupRepos {
         const connectionExpression =
           repoConnectionDefinition[RepoConnectionDefinitionKey][RepoConnectionExpressionKey];
         const { dbType, options } = connectionExpression;
+        if (!acc[dbType]) acc[dbType] = {};
         acc[dbType][connectionName] = { options };
         return acc;
       },
-      initialStruct,
+      {},
     );
 
     return connectionsGroupedByDbType;

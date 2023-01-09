@@ -25,9 +25,9 @@ import {
   SupportedLanguages,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
-import { isGraphQLController } from '../../../helpers/typeGuards.js';
+import { isGraphQLController, isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
-  TRouterInstanceName,
+  // TRouterInstanceName,
   TServerType,
   TGraphQLServerInstance,
   TGraphQLSetupData,
@@ -50,6 +50,8 @@ import {
   RestServerOptions,
   TRouterController,
   TRepoAdapterDefinition,
+  TRestServerInstanceRouters,
+  TLiteral,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -498,7 +500,7 @@ export class SetupTypeScript implements ISetup {
   }
 
   private registerRouters(
-    routers: Record<TRouterInstanceName, { routerPrefix: string }>,
+    routers: TRestServerInstanceRouters, //Record<TRouterInstanceName, { routerPrefix: string }>,
     serverType: TServerType,
     license?: string,
   ): TSetupOutput {
@@ -510,28 +512,37 @@ export class SetupTypeScript implements ISetup {
       case 'REST.Express':
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify':
-        importType = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
-        routerInstanceType = 'Fastify.Instance';
-        imports =
-          Object.keys(routers).length > 2
-            ? `import {
-          ${Object.keys(routers).map(
-            (routerInstanceName) => `${routerInstanceName},\n`,
-          )}  } from '../routers/index';`
-            : `import { ${Object.keys(routers).map((routerInstanceName) =>
-                `${routerInstanceName},`.slice(0, -1),
-              )} } from '../routers/index';`;
-        body = `${importType}
+        {
+          importType = "import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';";
+          routerInstanceType = 'Fastify.Instance';
+
+          imports = `import { ${routers.map((router) =>
+            `${router.serverRoute.identifier},`.slice(0, -1),
+          )} } from '../routers/index';`;
+          body = `${importType}
 ${imports}
 
 const routers = async (serverInstance: ${routerInstanceType}, _opts: any) => {
-  ${Object.keys(routers).map(
-    (routerInstanceName) =>
-      `serverInstance.register(${routerInstanceName}, { prefix: '${routers[routerInstanceName].routerPrefix}' });\n`,
-  )}};
+  ${routers.map((router) => {
+    const literal: TLiteral = {
+      literal: {
+        ...router.serverRoute.routerPrefix,
+      },
+    };
+    const routerPrefix = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TLiteral,
+      value: literal,
+    });
+    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: '${routerPrefix.output}' });\n`;
+  })}};
 
 export { routers };
 `;
+        }
+        break;
+      default: {
+        throw new Error(`Server ${serverType} not fully implemented`);
+      }
     }
     return {
       fileId: 'index.ts',
@@ -542,11 +553,18 @@ export { routers };
 
   generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[] {
     const output = [];
-    for (const serverType of Object.keys(servers)) {
-      for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
-        const serverInstance = servers[serverType].serverInstances[i];
+    for (const [serverType, { serverInstances }] of Object.entries(servers)) {
+      for (let i = 0; i < serverInstances.length; i++) {
+        const serverInstance = serverInstances[i];
+        if (!isRestServerInstance(serverInstance)) {
+          continue;
+        }
         output.push(
-          this.registerRouters(serverInstance.routers, serverType as TServerType, license),
+          this.registerRouters(
+            serverInstance.restServer.serverRoutes,
+            serverType as TServerType,
+            license,
+          ),
         );
       }
     }
@@ -691,7 +709,7 @@ export { routers };
         value: apiPrefixExpr,
       });
 
-      serverPrefix = `'${apiPrefixOutput.output}'`;
+      serverPrefix = apiPrefixOutput.output;
 
       const portExpression = NodeValueHelpers.findKeyOfEvaluationFieldList(
         evaluationList,
