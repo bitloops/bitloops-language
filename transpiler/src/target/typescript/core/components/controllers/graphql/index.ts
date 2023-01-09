@@ -47,7 +47,7 @@ const graphQLControllersToTargetLanguage = (
   contextData: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
   let dependencies = getServerImports();
-  const controllerName = controllers.GraphQLController.GraphQLControllerIdentifier;
+  const controllerName = controllers.GraphQLController.graphQLControllerIdentifier;
 
   const controllerInfo = controllers.GraphQLController;
   const { inputType, parameters, execute } = controllerInfo;
