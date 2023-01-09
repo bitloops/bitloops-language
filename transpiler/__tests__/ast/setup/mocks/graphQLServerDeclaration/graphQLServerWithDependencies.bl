@@ -4,3 +4,9 @@ GraphQLServer({
     [Demo][Hello World]HelloWorldController(useCase1Dependency);
     [Demo][Bye World]HelloWorld2Controller(useCase2Dependency, usersRepo);
   }
+
+//GraphQLServer({
+//   port: Env(APOLLO_SERVER, 5002),
+// }) {
+//   [Todo][Todo]AutoGrapQLController(getAllTodoUseCase);
+// }
