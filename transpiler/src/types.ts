@@ -764,7 +764,7 @@ export type GraphQLControllerIdentifier = string;
 
 export type TGraphQLController = {
   GraphQLController: TBaseControllerValues & {
-    GraphQLControllerIdentifier: GraphQLControllerIdentifier;
+    graphQLControllerIdentifier: GraphQLControllerIdentifier;
     inputType: null | string;
     operationType: TGraphQLOperation;
     operationName: string;
@@ -1019,18 +1019,43 @@ export type TRESTServerInstance = {
   };
 };
 
+export const GraphQLServerInstanceKey = 'graphQLServer';
 export type TGraphQLServerInstance = {
-  port: TExpression;
-  resolvers: TControllerResolverBind[];
-  serverType: TServerType;
+  [GraphQLServerInstanceKey]: {
+    [ControllerResolversKey]: TControllerResolvers;
+  } & TGraphQLServerOptions;
 };
+// export type TGraphQLServerInstance = {
+//   [GraphQLServerInstanceKey]: {
+//     port: TExpression;
+//     resolvers: TControllerResolverBind[];
+//     serverType: TServerType;
+//   };
+// };
 
-export type TControllerResolverBind = {
-  boundedContext: string;
-  module: string;
-  controllerClassName: string;
-  controllerInstance: string;
-  dependencies: string[]; // Replace with correct type
+export const ControllerResolverKey = 'controllerResolver';
+export type TControllerResolver = {
+  [ControllerResolverKey]: {
+    graphQLControllerIdentifier: GraphQLControllerIdentifier;
+    controllerInstanceName: TControllerInstanceName;
+  } & TBoundedContextModule &
+    TArgumentList;
+}; //ask about type
+
+// export type TControllerResolverBind = {
+//   boundedContext: string;
+//   module: string;
+//   controllerClassName: string;
+//   controllerInstance: string;
+//   dependencies: string[]; // Replace with correct type
+// };
+
+export const ControllerResolversKey = 'controllerResolvers';
+export type TControllerResolvers = TControllerResolver[];
+
+export const GraphQLServerOptionsKey = 'graphQLServerOptions';
+export type TGraphQLServerOptions = {
+  [GraphQLServerOptionsKey]: TEvaluationFields;
 };
 
 // export type TRoutes = {

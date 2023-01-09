@@ -44,7 +44,7 @@ export class GraphQLControllerBuilder implements IBuilder<TGraphQLController> {
   public build(): TGraphQLController {
     return {
       GraphQLController: {
-        GraphQLControllerIdentifier: this.identifierName,
+        graphQLControllerIdentifier: this.identifierName,
         inputType: this.inputType,
         operationType: this.operationType,
         execute: this.execute,

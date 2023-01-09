@@ -5,6 +5,6 @@ export class RestServerNode extends IntermediateASTNode {
   private static classNodeName = 'restServer';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TServers, metadata, RestServerNode.classNodeName);
+    super(BitloopsTypesMapping.TRESTServerInstance, metadata, RestServerNode.classNodeName);
   }
 }
