@@ -708,9 +708,11 @@ export type TPackageConcretion = {
 
 export const repoAdapterClassNameKey = 'repoAdapterClassName';
 export type TRepoAdapterClassName = {
-  [repoAdapterClassNameKey]: {
-    dbType: TRepoSupportedTypes;
-  };
+  [repoAdapterClassNameKey]: string;
+};
+
+export type TRepoDatabaseType = {
+  dbType: TRepoSupportedTypes;
 };
 
 export const repoAdapterOptionsKey = 'repoAdapterOptions';
@@ -726,6 +728,7 @@ export type TRepoAdapterExpression = {
   [repoAdapterExpressionKey]: {
     [concretedRepoPortKey]: TConcretedRepoPort;
   } & TRepoAdapterClassName &
+    TRepoDatabaseType &
     TRepoAdapterOptions &
     TBoundedContextModule;
 };
@@ -1309,4 +1312,9 @@ export enum RepoConnectionOptions {
   host = 'host',
   port = 'port',
   database = 'database',
+}
+
+export enum RepoAdapterOptions {
+  connection = 'connection',
+  collection = 'collection',
 }

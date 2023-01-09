@@ -1,15 +1,16 @@
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { BoundedContextModuleNode } from '../../../nodes/setup/BoundedContextModuleNode.js';
-import { RepoAdapterClassNameNode } from '../../../../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
 import { RepoAdapterExpressionNode } from '../../../../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
 import { ConcretedRepoPortNode } from '../../../../intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
 import { IBuilder } from '../../IBuilder.js';
 import { RepoAdapterOptionsNode } from '../../../nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { DatabaseTypeNode } from '../../../nodes/setup/repo/DatabaseTypeNode.js';
+import { RepoAdapterClassNameNodeBuilder } from './RepoAdapterClassNameNodeBuiler.js';
 
 export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExpressionNode> {
   private repoAdapterExpressionNode: RepoAdapterExpressionNode;
   private bcModuleNode: BoundedContextModuleNode;
-  private repoAdapterClassNameNode: RepoAdapterClassNameNode;
+  private databaseTypeNode: DatabaseTypeNode;
   private repoAdapterOptionsNode: RepoAdapterOptionsNode;
   private concretedRepoPortNode: ConcretedRepoPortNode;
 
@@ -31,10 +32,8 @@ export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExp
     return this;
   }
 
-  public withClassName(
-    repoAdapterClassNameNode: RepoAdapterClassNameNode,
-  ): RepoAdapterExpressionNodeBuilder {
-    this.repoAdapterClassNameNode = repoAdapterClassNameNode;
+  public withDatabaseType(databaseTypeNode: DatabaseTypeNode): RepoAdapterExpressionNodeBuilder {
+    this.databaseTypeNode = databaseTypeNode;
     return this;
   }
 
@@ -48,8 +47,14 @@ export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExp
   public build(): RepoAdapterExpressionNode {
     this.repoAdapterExpressionNode.addChild(this.bcModuleNode);
     this.repoAdapterExpressionNode.addChild(this.repoAdapterOptionsNode);
-    this.repoAdapterExpressionNode.addChild(this.repoAdapterClassNameNode);
+    this.repoAdapterExpressionNode.addChild(this.databaseTypeNode);
     this.repoAdapterExpressionNode.addChild(this.concretedRepoPortNode);
+
+    const repoAdapterNameNode = new RepoAdapterClassNameNodeBuilder()
+      .withRepoPort(this.concretedRepoPortNode)
+      .withDBType(this.databaseTypeNode)
+      .build();
+    this.repoAdapterExpressionNode.addChild(repoAdapterNameNode);
 
     this.repoAdapterExpressionNode.buildObjectValue();
 

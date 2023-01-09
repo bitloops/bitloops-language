@@ -19,7 +19,6 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { RepoAdapterClassNameNode } from '../../../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
 import { RepoAdapterExpressionNode } from '../../../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
 import { ConcretedRepoPortNode } from '../../../intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
 import { BoundedContextModuleNode } from '../../../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
@@ -27,14 +26,13 @@ import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 import { RepoAdapterOptionsNode } from '../../../intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
 import { RepoAdapterExpressionNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/RepoAdapterExpressionNodeBuilder.js';
+import { DatabaseTypeNode } from '../../../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
 
 export const repoAdapterExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoAdapterExpressionContext,
 ): RepoAdapterExpressionNode => {
-  const repoAdapterClassName: RepoAdapterClassNameNode = thisVisitor.visit(
-    ctx.repoAdapterClassName(),
-  );
+  const databaseTypeNode: DatabaseTypeNode = thisVisitor.visit(ctx.repoAdapterClassName());
   const repoAdapterOptions: RepoAdapterOptionsNode = thisVisitor.visit(ctx.repoAdapterOptions());
   const boundedContextModule: BoundedContextModuleNode = thisVisitor.visit(
     ctx.boundedContextModuleDeclaration(),
@@ -43,7 +41,7 @@ export const repoAdapterExpressionVisitor = (
   const metadata = produceMetadata(ctx, thisVisitor);
 
   return new RepoAdapterExpressionNodeBuilder(metadata)
-    .withClassName(repoAdapterClassName)
+    .withDatabaseType(databaseTypeNode)
     .withOptions(repoAdapterOptions)
     .withBoundedContextModule(boundedContextModule)
     .withConcretedRepoPort(concretedRepoPort)

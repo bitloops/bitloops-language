@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { lowerCaseFirstLetter } from '../../../../helpers/stringManipulations.js';
 import { ControllerInstanceNameNodeBuilder } from '../builders/setup/ControllerInstanceNameNodeBuilder.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
 import { RouterDefinitionNode } from '../nodes/setup/RouterDefinitionNode.js';
@@ -15,6 +16,7 @@ export class RouterControllerNodesTransformer implements IASTToCompletedASTTrans
     const routerDefinitionNodes = this.tree.getRootChildrenNodesByType(
       BitloopsTypesMapping.TRouterDefinition,
     ) as RouterDefinitionNode[];
+    const controllerIdentifiers = {};
     for (const routerDefinitionNode of routerDefinitionNodes) {
       const routerExpressionNode = routerDefinitionNode.getRouterExpression();
       const routerControllersNode = routerExpressionNode.getRouterControllers();
@@ -23,18 +25,36 @@ export class RouterControllerNodesTransformer implements IASTToCompletedASTTrans
         const controllerIdentifierNode = routerControllerNode.getRouterControllerIdentifier();
         const controllerIdentifierName = controllerIdentifierNode.getIdentifierName();
 
-        const controllerInstanceName = controllerIdentifierName; // TODO here change the name
-        //     const controllerInstance =
-        //   result.controllers?.[boundedContext]?.[module]?.[controllerClass] === undefined
-        //     ? lowerCaseFirstLetter(controllerClass)
-        //     : lowerCaseFirstLetter(controllerClass) +
-        //       result.controllers[boundedContext][module][controllerClass].instances +
-        //       1;
+        this.calculateControllerInstances(controllerIdentifiers, controllerIdentifierName);
+        const controllerInstances = this.getControllerInstances(
+          controllerIdentifiers,
+          controllerIdentifierName,
+        );
+        const controllerInstanceName =
+          lowerCaseFirstLetter(controllerIdentifierName) + controllerInstances;
         const controllerInstanceNameNode = new ControllerInstanceNameNodeBuilder()
           .withInstanceName(controllerInstanceName)
           .build();
         routerControllerNode.addChild(controllerInstanceNameNode);
       }
     }
+  }
+
+  private calculateControllerInstances(
+    controllerIdentifiers: { [identifier: string]: number },
+    controllerIdentifierName: string,
+  ): void {
+    if (controllerIdentifiers[controllerIdentifierName] !== undefined) {
+      controllerIdentifiers[controllerIdentifierName] += 1;
+    } else {
+      controllerIdentifiers[controllerIdentifierName] = 1;
+    }
+  }
+
+  private getControllerInstances(
+    controllerIdentifiers: { [identifier: string]: number },
+    controllerIdentifierName: string,
+  ): number {
+    return controllerIdentifiers[controllerIdentifierName];
   }
 }

@@ -11,6 +11,7 @@ import {
   TRepoSupportedTypes,
   repoAdapterOptionsKey,
   TEvaluationFields,
+  TRepoDatabaseType,
 } from '../../../../src/types.js';
 import { BoundedContextModuleBuilderDirector } from './boundedContextModuleBuilderDirector.js';
 
@@ -19,6 +20,7 @@ export class RepoAdapterExpressionBuilder implements IBuilder<TRepoAdapterExpres
   private repoAdapterOptions: TRepoAdapterOptions;
   private concretedRepoPort: TConcretedRepoPort;
   private bcModule: TBoundedContextModule;
+  private dbType: TRepoDatabaseType;
 
   public withBoundedContextModule({
     boundedContextName,
@@ -39,8 +41,13 @@ export class RepoAdapterExpressionBuilder implements IBuilder<TRepoAdapterExpres
     return this;
   }
 
-  public withClassName(dbType: TRepoSupportedTypes): RepoAdapterExpressionBuilder {
-    this.repoAdapterClassName = { [repoAdapterClassNameKey]: { dbType: dbType } };
+  public withClassName(className: string): RepoAdapterExpressionBuilder {
+    this.repoAdapterClassName = { [repoAdapterClassNameKey]: className };
+    return this;
+  }
+
+  public withDBType(dbType: TRepoSupportedTypes): RepoAdapterExpressionBuilder {
+    this.dbType = { dbType: dbType };
     return this;
   }
 
@@ -58,6 +65,7 @@ export class RepoAdapterExpressionBuilder implements IBuilder<TRepoAdapterExpres
         ...this.repoAdapterClassName,
         ...this.repoAdapterOptions,
         ...this.bcModule,
+        ...this.dbType,
       },
     };
 
