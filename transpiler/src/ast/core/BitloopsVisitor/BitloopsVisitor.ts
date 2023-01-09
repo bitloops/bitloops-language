@@ -245,6 +245,8 @@ import { concretedRepoPortVisitor } from './helpers/setup/concretedRepoPort.js';
 import { RepoAdapterExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
 import { repoAdapterExpressionVisitor } from './helpers/setup/repoAdapterExpression.js';
 import { repoAdapterDefinitionVisitor } from './helpers/setup/repoAdapterDefinition.js';
+import { BoundedContextNameNode } from '../intermediate-ast/nodes/setup/BoundedContextNameNode.js';
+import { ModuleNameNode } from '../intermediate-ast/nodes/setup/ModuleNameNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1091,13 +1093,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitBoundedContextDeclaration(
     ctx: BitloopsParser.BoundedContextDeclarationContext,
-  ): BoundedContextModuleNode {
+  ): BoundedContextNameNode {
     return boundedContextVisitor(this, ctx);
   }
 
-  visitModuleDeclaration(
-    ctx: BitloopsParser.BoundedContextDeclarationContext,
-  ): BoundedContextModuleNode {
+  visitModuleDeclaration(ctx: BitloopsParser.BoundedContextDeclarationContext): ModuleNameNode {
     return moduleVisitor(this, ctx);
   }
 

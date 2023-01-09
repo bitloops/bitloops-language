@@ -35,7 +35,7 @@ export type TModule = {
   Package?: TPackage;
   DomainRule?: TDomainRule;
   RepoPort?: TRepoPort;
-  RepoAdapters?: TRepoAdapters;
+  RepoAdapter?: TRepoAdapter;
   ReadModel?: TReadModel;
 };
 
@@ -54,7 +54,7 @@ export type TClassType =
   | 'Package'
   | 'DomainRule'
   | 'RepoPorts'
-  | 'RepoAdapters'
+  | 'RepoAdapter'
   | 'ReadModels';
 
 export type TComponentType =
@@ -71,7 +71,7 @@ export type TComponentType =
   | 'TPackages'
   | 'TDomainRule'
   | 'TRepoPort'
-  | 'TRepoAdapters'
+  | 'TRepoAdapter'
   | 'TReadModels';
 
 export type TClassName = string;
@@ -732,6 +732,8 @@ export type TRepoAdapterExpression = {
     TRepoAdapterOptions &
     TBoundedContextModule;
 };
+
+export type TRepoAdapter = TRepoAdapterDefinition;
 
 export const repoAdapterDefinitionKey = 'repoAdapterDefinition';
 export type TRepoAdapterDefinition = {

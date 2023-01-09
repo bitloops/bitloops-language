@@ -222,6 +222,7 @@ const BitloopsTypesMapping = {
   TConcretedRepoPort: 'TConcretedRepoPort',
   TRepoAdapterExpression: 'TRepoAdapterExpression',
   TRepoAdapterDefinition: 'TRepoAdapterDefinition',
+  TRepoAdapter: 'TRepoAdapter',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -241,7 +242,7 @@ const ClassTypes = {
   Struct: 'Struct',
   Package: 'Package',
   RepoPort: 'RepoPort',
-  RepoAdapters: 'RepoAdapters',
+  RepoAdapter: 'RepoAdapter',
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
 } as const;
@@ -269,7 +270,7 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Entity]: BitloopsTypesMapping.TEntity,
   [ClassTypes.RepoPort]: BitloopsTypesMapping.TRepoPort,
   [ClassTypes.RootEntity]: BitloopsTypesMapping.TRootEntity,
-  [ClassTypes.RepoAdapters]: BitloopsTypesMapping.TRepoAdapters,
+  [ClassTypes.RepoAdapter]: BitloopsTypesMapping.TRepoAdapter,
   [ClassTypes.DomainRule]: BitloopsTypesMapping.TDomainRule,
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
   [ClassTypes.ApplicationError]: BitloopsTypesMapping.TApplicationError,
