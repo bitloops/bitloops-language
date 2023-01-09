@@ -65,19 +65,19 @@ const getServerExtends = (serverType: string): string => {
 const restControllersToTargetLanguage = (
   controller: TRESTController,
   contextData: { boundedContext: string; module: string },
-  controllersSetupData: any,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const controllerInfo = controller.RESTController;
-  const { boundedContext, module } = contextData;
+  // const { boundedContext, module } = contextData;
 
   const controllerName = controller.RESTController.RESTControllerIdentifier;
-  const controllerDefinition = controllersSetupData[boundedContext][module][controllerName];
+  const serverType = controller.RESTController.serverType;
+  // const controllerDefinition = controllersSetupData[boundedContext][module][controllerName];
   // if (!controllerDefinitionIsRest(controllerDefinition)) {
   //   throw new Error('Controller declaration is not REST');
   // }
 
-  const { serverType } = controllerDefinition;
+  // const { serverType } = controllerDefinition;
   dependencies.push(...getServerImports(serverType));
 
   const extendsClass = getServerExtends(serverType);

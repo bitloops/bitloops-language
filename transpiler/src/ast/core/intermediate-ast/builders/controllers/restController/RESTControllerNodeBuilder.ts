@@ -50,6 +50,7 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
     this.intermediateASTTree.insertSibling(this.parameters);
     this.intermediateASTTree.insertSibling(this.restMethod);
     this.intermediateASTTree.insertSibling(this.controllerExecuteNode);
+
     this.intermediateASTTree.setCurrentNodeToRoot();
 
     this.restControllerNode.buildObjectValue();

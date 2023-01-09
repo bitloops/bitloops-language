@@ -25,7 +25,7 @@ import {
   SupportedLanguages,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
-import { isGraphQLController, isRestServerInstance } from '../../../helpers/typeGuards.js';
+import { isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
   // TRouterInstanceName,
   TServerType,
@@ -103,10 +103,7 @@ interface ISetup {
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[];
-  // generateRepoConnections(setupData: TSetupData): TSetupOutput[];
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[];
-  // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
-  // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
 
   generatePackageFiles(
     packageDefinitions: TPackageConcretion[],

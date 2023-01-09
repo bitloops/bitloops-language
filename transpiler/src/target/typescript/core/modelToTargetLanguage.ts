@@ -60,7 +60,6 @@ import { breakStmtToTargetLanguage } from './components/statements/break.js';
 import { okErrorReturnTypeToTargetLanguage } from './components/okkErrorReturnType.js';
 import { valueObjectsToTargetLanguage } from './components/valueObjects/index.js';
 import { useCaseToTargetLanguage } from './components/useCase/index.js';
-import { controllersToTargetLanguage } from './components/controllers/index.js';
 import { restControllersToTargetLanguage } from './components/controllers/rest/index.js';
 import {
   backTickStringToTargetLanguage,
@@ -284,8 +283,8 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRESTController: {
-      if (contextData && setupData?.controllers) {
-        res = restControllersToTargetLanguage(value, contextData, setupData?.controllers);
+      if (contextData) {
+        res = restControllersToTargetLanguage(value, contextData);
       } else {
         throw new Error('Missing context data and/or controllers');
       }
@@ -317,10 +316,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDTOEvaluation: {
       res = DTOEvaluationToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TController: {
-      res = controllersToTargetLanguage(value, contextData, setupData);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {

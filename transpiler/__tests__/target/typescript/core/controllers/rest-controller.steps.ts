@@ -20,9 +20,9 @@
 
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { IntermediateASTSetup } from '../../../../../src/ast/core/types.js';
 import { TargetGenerator } from '../../../../../src/target/index.js';
 import { formatString } from '../../../../../src/target/typescript/core/codeFormatting.js';
-import { ControllerTypeOfDefinition, TSetupData, TServerType } from '../../../../../src/types.js';
 import { VALID_REST_CONTROLLER_TEST_CASES } from '../mocks/controllers/restController.js';
 
 describe('Statements test cases', () => {
@@ -39,16 +39,15 @@ describe('Statements test cases', () => {
 
       tree.insertChild(input);
 
+      //TODO build setup tree
+      // const setupTree = new IntermediateASTTree(
+      //   new IntermediateASTRootNode(),
+      // );
+
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },
+        setup: 'setupTree',
       };
-
-      const setupData = generateSetupData({
-        boundedContext,
-        module,
-        controllerName: testCase.controllerName,
-        serverType: testCase.serverType,
-      });
 
       const targetGenerator = new TargetGenerator();
 
@@ -56,7 +55,6 @@ describe('Statements test cases', () => {
       const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        // setupData: setupData,
       });
 
       //then
@@ -69,36 +67,36 @@ describe('Statements test cases', () => {
   });
 });
 
-const generateSetupData = ({
-  boundedContext,
-  module,
-  controllerName,
-  serverType,
-}: {
-  boundedContext: string;
-  module: string;
-  controllerName: string;
-  serverType: TServerType;
-}): TSetupData => {
-  return {
-    controllers: {
-      boundedContext,
-      module,
-      controllerValues: {
-        [controllerName]: {
-          type: ControllerTypeOfDefinition.REST,
-          method: 'get',
-          serverType,
-          instances: [
-            {
-              url: '/',
-              controllerInstance: 'helloController',
-              dependencies: [],
-            },
-          ],
-        },
-      },
-    },
-    language: 'TypeScript',
-  };
-};
+// const generateSetupData = ({
+//   boundedContext,
+//   module,
+//   controllerName,
+//   serverType,
+// }: {
+//   boundedContext: string;
+//   module: string;
+//   controllerName: string;
+//   serverType: TServerType;
+// }): TSetupData => {
+//   return {
+//     controllers: {
+//       boundedContext,
+//       module,
+//       controllerValues: {
+//         [controllerName]: {
+//           type: ControllerTypeOfDefinition.REST,
+//           method: 'get',
+//           serverType,
+//           instances: [
+//             {
+//               url: '/',
+//               controllerInstance: 'helloController',
+//               dependencies: [],
+//             },
+//           ],
+//         },
+//       },
+//     },
+//     language: 'TypeScript',
+//   };
+// };

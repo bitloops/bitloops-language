@@ -7,6 +7,7 @@ import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
 import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../types.js';
 import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
 import { InjectRepoAdaptersTransformer } from './ node-transformers/InjectRepoAdaptersTransformer.js';
+import { RestControllerTypeTransformer } from './ node-transformers/RestControllerTypeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -84,11 +85,20 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
   // It mutates intermediateAST core
   private completeCoreFromSetup(intermediateAST: IntermediateAST): void {
     for (const setupTree of Object.values(intermediateAST.setup)) {
+      const rootNode = setupTree.getRootNode();
+
       const injectRepoAdaptersTransformer = new InjectRepoAdaptersTransformer(
         setupTree,
         intermediateAST.core,
       );
       injectRepoAdaptersTransformer.run();
+
+      const restControllerTypeTransformer = new RestControllerTypeTransformer(
+        setupTree,
+        intermediateAST.core,
+      );
+      restControllerTypeTransformer.run();
+      setupTree.buildValueRecursiveBottomUp(rootNode);
     }
   }
 
