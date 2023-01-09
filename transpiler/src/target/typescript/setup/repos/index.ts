@@ -4,7 +4,7 @@ import {
   RepoConnectionDefinitionKey,
   RepoConnectionExpressionKey,
   TRepoConnectionOptions,
-  TRepoAdapterDefinition,
+  TSetupRepoAdapterDefinition,
   RepoAdapterOptions,
 } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
@@ -50,11 +50,11 @@ export interface ISetupRepos {
     license?: string,
   ): TSetupOutput[];
   generateRepoDIImports(
-    reposSetupData: Readonly<TRepoAdapterDefinition[]>,
+    reposSetupData: Readonly<TSetupRepoAdapterDefinition[]>,
     setupTypeMapper: Record<string, string>,
   ): string;
   generateRepoDIAdapters(
-    reposSetupData: Readonly<TRepoAdapterDefinition[]>,
+    reposSetupData: Readonly<TSetupRepoAdapterDefinition[]>,
     // boundedContext: string,
     // module: string,
   ): string;
@@ -99,7 +99,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   }
 
   generateRepoDIImports(
-    repoAdapters: Readonly<TRepoAdapterDefinition[]>,
+    repoAdapters: Readonly<TSetupRepoAdapterDefinition[]>,
     setupTypeMapper: Record<string, string>,
   ): string {
     if (repoAdapters.length === 0) return '';
@@ -111,8 +111,8 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     };
     const adapterImports: string[] = [];
     for (const repoAdapter of repoAdapters) {
-      const { repoAdapterDefinition } = repoAdapter;
-      const { repoAdapterExpression } = repoAdapterDefinition;
+      const { setupRepoAdapterDefinition } = repoAdapter;
+      const { repoAdapterExpression } = setupRepoAdapterDefinition;
       const { repoAdapterClassName, repoAdapterOptions, dbType } = repoAdapterExpression;
       const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
         repoAdapterOptions,
@@ -147,12 +147,12 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     return result.join('\n') + '\n';
   }
 
-  generateRepoDIAdapters(repoAdapters: Readonly<TRepoAdapterDefinition[]>): string {
+  generateRepoDIAdapters(repoAdapters: Readonly<TSetupRepoAdapterDefinition[]>): string {
     if (repoAdapters.length === 0) return '';
     const result: string[] = [];
     for (const repoAdapter of repoAdapters) {
-      const { repoAdapterDefinition } = repoAdapter;
-      const { identifier: instanceIdentifier, repoAdapterExpression } = repoAdapterDefinition;
+      const { setupRepoAdapterDefinition } = repoAdapter;
+      const { identifier: instanceIdentifier, repoAdapterExpression } = setupRepoAdapterDefinition;
       const { repoAdapterClassName, repoAdapterOptions } = repoAdapterExpression;
       const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
         repoAdapterOptions,

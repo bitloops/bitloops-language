@@ -49,7 +49,7 @@ import {
   TUseCaseDefinition,
   RestServerOptions,
   TRouterController,
-  TRepoAdapterDefinition,
+  TSetupRepoAdapterDefinition,
   TRestServerInstanceRouters,
   TLiteral,
   TGraphQLController,
@@ -98,7 +98,7 @@ interface ISetup {
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
-    repoAdapterDefinitions: TRepoAdapterDefinition[],
+    repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -191,7 +191,7 @@ export class SetupTypeScript implements ISetup {
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
-    repoAdapterDefinitions: TRepoAdapterDefinition[],
+    repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,

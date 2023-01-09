@@ -29,7 +29,7 @@ import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   TPackageConcretion,
-  TRepoAdapterDefinition,
+  TSetupRepoAdapterDefinition,
   TRepoConnectionDefinition,
   TRouterDefinition,
   TUseCaseDefinition,
@@ -139,7 +139,7 @@ export const generateSetupFiles = (
       BitloopsTypesMapping.TUseCaseDefinition,
     );
     const repoAdapterDefinitions =
-      setupTree.getRootChildrenNodesValueByType<TRepoAdapterDefinition>(
+      setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
         BitloopsTypesMapping.TRepoAdapterDefinition,
       );
     const controllerDIs = setupGenerator.generateDIs(

@@ -1,17 +1,17 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { repoAdapterDefinitionKey } from '../../../../../../types.js';
+import { setupRepoAdapterDefinitionKey } from '../../../../../../types.js';
 import { IdentifierNode } from '../../identifier/IdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
 import { RepoAdapterExpressionNode } from './RepoAdapterExpressionNode.js';
 
-export class RepoAdapterDefinitionNode extends IntermediateASTNode {
-  private static classNodeName = repoAdapterDefinitionKey;
+export class SetupRepoAdapterDefinitionNode extends IntermediateASTNode {
+  private static classNodeName = setupRepoAdapterDefinitionKey;
 
   constructor(metadata?: TNodeMetadata) {
     super(
       BitloopsTypesMapping.TRepoAdapterDefinition,
       metadata,
-      RepoAdapterDefinitionNode.classNodeName,
+      SetupRepoAdapterDefinitionNode.classNodeName,
     );
   }
 

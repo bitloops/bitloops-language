@@ -2,20 +2,20 @@ import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBu
 import {
   identifierKey,
   TIdentifier,
-  TRepoAdapterDefinition,
   TRepoAdapterExpression,
   TConcretedRepoPort,
   TRepoSupportedTypes,
   TEvaluationFields,
-  repoAdapterDefinitionKey,
+  TRepoAdapter,
+  repoAdapterKey,
 } from '../../../../src/types.js';
 import { RepoAdapterExpressionBuilder } from './repoAdapterExpressionBuilder.js';
 
-export class RepoAdapterDefinitionBuilder implements IBuilder<TRepoAdapterDefinition> {
+export class RepoAdapterBuilder implements IBuilder<TRepoAdapter> {
   private repoIdentifier: TIdentifier;
   private repoAdapterExpression: TRepoAdapterExpression;
 
-  public withIdentifier(repoIdentifier: TIdentifier): RepoAdapterDefinitionBuilder {
+  public withIdentifier(repoIdentifier: TIdentifier): RepoAdapterBuilder {
     this.repoIdentifier = repoIdentifier;
     return this;
   }
@@ -34,7 +34,7 @@ export class RepoAdapterDefinitionBuilder implements IBuilder<TRepoAdapterDefini
     moduleName: string;
     concretedRepoPort: TConcretedRepoPort;
     className: string;
-  }): RepoAdapterDefinitionBuilder {
+  }): RepoAdapterBuilder {
     this.repoAdapterExpression = new RepoAdapterExpressionBuilder()
       .withBoundedContextModule({ boundedContextName, moduleName })
       .withClassName(className)
@@ -45,9 +45,9 @@ export class RepoAdapterDefinitionBuilder implements IBuilder<TRepoAdapterDefini
     return this;
   }
 
-  public build(): TRepoAdapterDefinition {
-    const repoAdapterDefinition: TRepoAdapterDefinition = {
-      [repoAdapterDefinitionKey]: {
+  public build(): TRepoAdapter {
+    const repoAdapterDefinition: TRepoAdapter = {
+      [repoAdapterKey]: {
         [identifierKey]: this.repoIdentifier,
         ...this.repoAdapterExpression,
       },

@@ -2,7 +2,7 @@ import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { TBoundedContexts } from '../../types.js';
 import { RepoAdapterNodeBuilder } from '../builders/RepoAdapterNodeBuilder.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
-import { RepoAdapterDefinitionNode } from '../nodes/setup/repo/RepoAdapterDefinitionNode.js';
+import { SetupRepoAdapterDefinitionNode } from '../nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
 import { IASTToCompletedASTTransformer } from './index.js';
 
 export class InjectRepoAdaptersTransformer implements IASTToCompletedASTTransformer {
@@ -18,7 +18,7 @@ export class InjectRepoAdaptersTransformer implements IASTToCompletedASTTransfor
   private injectRepoAdaptersToASTCore(): void {
     const repoAdapterDefinitionNodes = this.setupTree.getRootChildrenNodesByType(
       BitloopsTypesMapping.TRepoAdapterDefinition,
-    ) as RepoAdapterDefinitionNode[];
+    ) as SetupRepoAdapterDefinitionNode[];
     for (const repoAdapterDefinitionNode of repoAdapterDefinitionNodes) {
       const identifierNode = repoAdapterDefinitionNode.getIdentifier();
       const repoAdapterExpressionNode = repoAdapterDefinitionNode.getRepoAdapterExpression();

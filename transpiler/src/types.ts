@@ -733,11 +733,16 @@ export type TRepoAdapterExpression = {
     TBoundedContextModule;
 };
 
-export type TRepoAdapter = TRepoAdapterDefinition;
+export const repoAdapterKey = 'repoAdapter';
+export type TRepoAdapter = {
+  [repoAdapterKey]: {
+    [identifierKey]: TIdentifier;
+  } & TRepoAdapterExpression;
+};
 
-export const repoAdapterDefinitionKey = 'repoAdapterDefinition';
-export type TRepoAdapterDefinition = {
-  [repoAdapterDefinitionKey]: {
+export const setupRepoAdapterDefinitionKey = 'setupRepoAdapterDefinition';
+export type TSetupRepoAdapterDefinition = {
+  [setupRepoAdapterDefinitionKey]: {
     [identifierKey]: TIdentifier;
   } & TRepoAdapterExpression;
 };
