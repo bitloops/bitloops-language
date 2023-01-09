@@ -1,3 +1,22 @@
+/**
+ *  Bitloops Language
+ *  Copyright (C) 2022 Bitloops S.A.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  For further information you can contact legal(at)bitloops.com.
+ */
 import prettier from 'prettier';
 import path from 'path';
 import { packageJSONTemplate } from './package-template.js';
@@ -100,7 +119,7 @@ export const generateSetupFiles = (
     );
 
     // Step 1. Generate routes files
-    const routes = setupGenerator.generateServerRouters(routerDefinitions, bitloopsModel, license);
+    const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
     // console.log('routes:', routes);
     // console.log('--------------------------------');
     routes.forEach((router) => {
@@ -108,7 +127,7 @@ export const generateSetupFiles = (
     });
 
     // Step 2. Generate routers files
-    const routers = setupGenerator.generateAPIs(setupData.setup);
+    const routers = setupGenerator.generateAPIs(allServers, license);
     // console.log('routers:', routers);
     // console.log('--------------------------------');
     routers.forEach((router) => {

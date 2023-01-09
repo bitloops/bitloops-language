@@ -3,7 +3,7 @@ import { IntermediateASTIdentifierNode } from '../../IntermediateASTIdentifierNo
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 
 export class GraphQLControllerIdentifierNode extends IntermediateASTIdentifierNode {
-  private static classNodeName = 'GraphQLControllerIdentifier';
+  private static classNodeName = 'graphQLControllerIdentifier';
 
   constructor(metadata?: TNodeMetadata) {
     super(

@@ -247,6 +247,16 @@ import { repoAdapterExpressionVisitor } from './helpers/setup/repoAdapterExpress
 import { repoAdapterDefinitionVisitor } from './helpers/setup/repoAdapterDefinition.js';
 import { BoundedContextNameNode } from '../intermediate-ast/nodes/setup/BoundedContextNameNode.js';
 import { ModuleNameNode } from '../intermediate-ast/nodes/setup/ModuleNameNode.js';
+import { ControllerResolverNode } from '../intermediate-ast/nodes/setup/ControllerResolverNode.js';
+import {
+  bindControllerResolversVisitor,
+  controllerResolverBindVisitor,
+  graphQLServerDeclarationVisitor,
+  graphQLServerInstantiationOptionsVisitor,
+} from './helpers/setup/graphQLServerDeclaration.js';
+import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
+import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
+import { GraphQLServerNode } from '../intermediate-ast/nodes/setup/GraphQLServerNode.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1210,5 +1220,29 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitRepoAdapterDefinition(ctx: BitloopsParser.RepoAdapterDefinitionContext): void {
     repoAdapterDefinitionVisitor(this, ctx);
+  }
+
+  visitControllerResolverBind(
+    ctx: BitloopsParser.ControllerResolverBindContext,
+  ): ControllerResolverNode {
+    return controllerResolverBindVisitor(this, ctx);
+  }
+
+  visitBindControllerResolvers(
+    ctx: BitloopsParser.BindControllerResolversContext,
+  ): ControllerResolversNode {
+    return bindControllerResolversVisitor(this, ctx);
+  }
+
+  visitGraphQLServerInstantiationOptions(
+    ctx: BitloopsParser.GraphQLServerInstantiationOptionsContext,
+  ): GraphQLServerOptionsNode {
+    return graphQLServerInstantiationOptionsVisitor(this, ctx);
+  }
+
+  visitGraphQLServerDeclaration(
+    ctx: BitloopsParser.GraphQLServerDeclarationContext,
+  ): GraphQLServerNode {
+    return graphQLServerDeclarationVisitor(this, ctx);
   }
 }
