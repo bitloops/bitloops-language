@@ -25,7 +25,7 @@ import {
   SupportedLanguages,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
-import { isGraphQLController, isRestServerInstance } from '../../../helpers/typeGuards.js';
+import { isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
   // TRouterInstanceName,
   TServerType,

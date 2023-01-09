@@ -3,11 +3,6 @@ import { BitloopsParser } from './parser/index.js';
 import { TargetGenerator } from './target/index.js';
 import Transpiler from './Transpiler.js';
 
-export {
-  IBitloopsIntermediateSetupASTParser,
-  BitloopsIntermediateSetupASTParserError,
-} from './ast/setup/types.js';
-
 const parser = new BitloopsParser();
 const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
 const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();

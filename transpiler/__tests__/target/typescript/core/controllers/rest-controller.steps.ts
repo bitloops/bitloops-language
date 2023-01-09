@@ -22,7 +22,6 @@ import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-as
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../../src/target/index.js';
 import { formatString } from '../../../../../src/target/typescript/core/codeFormatting.js';
-import { ControllerTypeOfDefinition, TSetupData, TServerType } from '../../../../../src/types.js';
 import { VALID_REST_CONTROLLER_TEST_CASES } from '../mocks/controllers/restController.js';
 
 describe('Statements test cases', () => {
@@ -43,12 +42,12 @@ describe('Statements test cases', () => {
         core: { [boundedContext]: { [module]: tree } },
       };
 
-      const setupData = generateSetupData({
-        boundedContext,
-        module,
-        controllerName: testCase.controllerName,
-        serverType: testCase.serverType,
-      });
+      // const setupData = generateSetupData({
+      //   boundedContext,
+      //   module,
+      //   controllerName: testCase.controllerName,
+      //   serverType: testCase.serverType,
+      // });
 
       const targetGenerator = new TargetGenerator();
 
@@ -69,36 +68,36 @@ describe('Statements test cases', () => {
   });
 });
 
-const generateSetupData = ({
-  boundedContext,
-  module,
-  controllerName,
-  serverType,
-}: {
-  boundedContext: string;
-  module: string;
-  controllerName: string;
-  serverType: TServerType;
-}): TSetupData => {
-  return {
-    controllers: {
-      boundedContext,
-      module,
-      controllerValues: {
-        [controllerName]: {
-          type: ControllerTypeOfDefinition.REST,
-          method: 'get',
-          serverType,
-          instances: [
-            {
-              url: '/',
-              controllerInstance: 'helloController',
-              dependencies: [],
-            },
-          ],
-        },
-      },
-    },
-    language: 'TypeScript',
-  };
-};
+// const generateSetupData = ({
+//   boundedContext,
+//   module,
+//   controllerName,
+//   serverType,
+// }: {
+//   boundedContext: string;
+//   module: string;
+//   controllerName: string;
+//   serverType: TServerType;
+// }): TSetupData => {
+//   return {
+//     controllers: {
+//       boundedContext,
+//       module,
+//       controllerValues: {
+//         [controllerName]: {
+//           type: ControllerTypeOfDefinition.REST,
+//           method: 'get',
+//           serverType,
+//           instances: [
+//             {
+//               url: '/',
+//               controllerInstance: 'helloController',
+//               dependencies: [],
+//             },
+//           ],
+//         },
+//       },
+//     },
+//     language: 'TypeScript',
+//   };
+// };

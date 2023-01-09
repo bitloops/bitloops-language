@@ -55,7 +55,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Package]: PROJECT_RELATIVE_PATHS.PACKAGES,
   [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
-  [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
+  [ClassTypes.RepoAdapter]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
 };
 
@@ -111,7 +111,7 @@ const getTargetFileDestination = (
     case ClassTypes.DTOs:
     case ClassTypes.Package:
     case ClassTypes.RepoPort:
-    case ClassTypes.RepoAdapters:
+    case ClassTypes.RepoAdapter:
     case ClassTypes.DomainRule:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
@@ -142,7 +142,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.UseCases:
     case ClassTypes.DTOs:
     case ClassTypes.Package:
-    case ClassTypes.RepoAdapters:
+    case ClassTypes.RepoAdapter:
     case ClassTypes.RepoPort:
       result.path = ClassTypesPaths[classType];
       result.filename = className;

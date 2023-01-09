@@ -172,7 +172,7 @@ export const repoAdapterToTargetLanguage = (
     ...propsDependencies,
   ];
   const parentDependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.RepoAdapters,
+    classType: ClassTypes.RepoAdapter,
     className: repoAdapterInstanceName,
   });
   return {
