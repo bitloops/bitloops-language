@@ -18,14 +18,20 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { EvaluationBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
+import BitloopsVisitor from '../../../BitloopsVisitor.js';
+import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
+import { CorsOptionsEvaluationNodeBuilder } from '../../../../intermediate-ast/builders/expressions/evaluation/CorsOptionsEvaluationBuilder.js';
+import { CorsOptionsEvaluationNode } from '../../../../intermediate-ast/nodes/Expression/Evaluation/CorsOptionsEvaluation.js';
 
-export const evaluationVisitor = (
+export const corsOptionsEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.EvaluationContext,
-): any => {
-  const evaluation = thisVisitor.visitChildren(ctx)[0];
-  return new EvaluationBuilder().withEvaluation(evaluation).build();
+  ctx: BitloopsParser.CorsOptionsEvaluationContext,
+): CorsOptionsEvaluationNode => {
+  const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
+
+  const structEvaluationNode = new CorsOptionsEvaluationNodeBuilder()
+    .withEvaluationFieldList(fieldList)
+    .build();
+
+  return structEvaluationNode;
 };

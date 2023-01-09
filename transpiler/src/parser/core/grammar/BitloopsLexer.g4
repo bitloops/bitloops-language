@@ -147,17 +147,10 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+CorsOptions:                    'corsOptions';
 
-
-/// Future Reserved Words
-
-// Class:                          'class';
-// Enum:                           'enum';
 Extends:                        'extends';
-// Super:                          'super';
 Const:                          'const';
-// Export:                         'export';
-// Import:                         'import';
 RepoPort:                       'RepoPort';
 Props:                          'Props';
 ReadModel:                      'ReadModel';
@@ -319,8 +312,6 @@ ExpressServer:                  'REST.Express';
 GraphQLServerType:              'GraphQL';
 RESTRouter:                     'RESTRouter';
 GraphQLServer:                  'GraphQLServer';
-ServerTypeOption:               'server';
-ServerApiPrefix:                'apiPrefix';
 RESTServer:                     'RESTServer';
 
 EnvPrefix:                      'Env';

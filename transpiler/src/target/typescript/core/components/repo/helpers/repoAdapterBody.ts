@@ -49,16 +49,16 @@ const repoBodyLangMapping = (
   setupData: TSetupData,
 ): TTargetDependenciesTypeScript => {
   const collection = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TSingleExpression,
+    type: BitloopsTypesMapping.TExpression,
     value: collectionExpression,
   });
   const connection = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TSingleExpression,
+    type: BitloopsTypesMapping.TExpression,
     value: connectionExpression,
   });
   const { database } = setupData.repos.connections[connection.output];
   const dbName = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TSingleExpression,
+    type: BitloopsTypesMapping.TExpression,
     value: database,
   });
 

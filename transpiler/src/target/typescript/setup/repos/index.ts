@@ -113,7 +113,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     for (const [adapterClassName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
       const { connection, dbType } = repoAdapterInfo;
       const stringConnection = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TSingleExpression,
+        type: BitloopsTypesMapping.TExpression,
         value: connection,
       });
       connections[dbType].push(stringConnection.output);

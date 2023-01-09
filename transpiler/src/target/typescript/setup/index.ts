@@ -77,7 +77,7 @@ export const generateSetupFiles = (
   const { setup, core } = params;
   const { sourceDirPath } = options;
   const setupData = setup;
-  const _bitloopsModel = core as any;
+  const bitloopsModel = core as any;
 
   const formatterConfig = options.formatterConfig ?? {
     semi: true,
@@ -101,7 +101,7 @@ export const generateSetupFiles = (
     const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
       BitloopsTypesMapping.TRouterDefinition,
     );
-    const routes = setupGenerator.generateServerRouters(routerDefinitions, _bitloopsModel, license);
+    const routes = setupGenerator.generateServerRouters(routerDefinitions, bitloopsModel, license);
     // console.log('routes:', routes);
     // console.log('--------------------------------');
     routes.forEach((router) => {
@@ -131,7 +131,7 @@ export const generateSetupFiles = (
       useCaseDefinitions,
       repoConnectionsDef,
       repoAdapterDefinitions,
-      _bitloopsModel,
+      bitloopsModel,
       setupTypeMapper,
       license,
     );
@@ -142,7 +142,7 @@ export const generateSetupFiles = (
     });
 
     // Step 4. Setup server file
-    const serverSetup = setupGenerator.generateServers(setupData.servers, _bitloopsModel);
+    const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);
     // console.log('serverSetup:', serverSetup);
     // console.log('--------------------------------');
     serverSetup.forEach((server) => {

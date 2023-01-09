@@ -192,16 +192,11 @@ import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclarat
 import {
   bindServerRoutesVisitor,
   bindServerRouteVisitor,
-  restServerAPIPrefixVisitor,
   restServerDeclarationVisitor,
-  restServerPortVisitor,
   serverInstantiationOptionsVisitor,
-  serverTypeOptionVisitor,
 } from './helpers/setup/restServerDeclaration.js';
 import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
 import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
-import { RestServerPortNode } from '../intermediate-ast/nodes/setup/RestServerPortNode.js';
-import { RestServerAPIPrefixNode } from '../intermediate-ast/nodes/setup/RestServerAPIPrefixNode.js';
 import { UseCaseExpressionNode } from '../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
 import { useCaseDefinitionVisitor } from './helpers/setup/useCaseDefinition.js';
 import { useCaseExpressionVisitor } from './helpers/setup/useCaseExpressionVisitor.js';
@@ -240,6 +235,7 @@ import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterI
 import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
 import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { RestServerNode } from '../intermediate-ast/nodes/setup/RestServerNode.js';
+import { corsOptionsEvaluationVisitor } from './helpers/expression/evaluation/corsOptionEvaluation.js';
 import { RepoAdapterClassNameNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
 import { repoAdapterClassNameVisitor } from './helpers/setup/repoAdapterClassName.js';
 import { RepoAdapterOptionsNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
@@ -481,6 +477,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'delete',
     };
   }
+  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
+    // TODO Find why all these return this weird object and fix it
+    return {
+      type: 'variable',
+      value: (ctx as any).getText(),
+    };
+  }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
     const expression = this.visit(ctx.expression());
@@ -557,6 +560,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitStructEvaluation(ctx: BitloopsParser.StructEvaluationContext): any {
     return structEvaluationVisitor(this, ctx);
+  }
+
+  visitCorsOptionsEvaluation(ctx: BitloopsParser.CorsOptionsEvaluationContext): any {
+    return corsOptionsEvaluationVisitor(this, ctx);
   }
 
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
@@ -1029,28 +1036,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitServerInstantiationOptions(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
     return serverInstantiationOptionsVisitor(this, ctx);
   }
-
-  visitServerTypeOption(ctx: BitloopsParser.ServerTypeOptionContext): ServerTypeIdentifierNode {
-    const serverTypeNode = serverTypeOptionVisitor(this, ctx);
-    return serverTypeNode;
-  }
-
-  visitServerApiPrefixOption(
-    ctx: BitloopsParser.ServerApiPrefixOptionContext,
-  ): RestServerAPIPrefixNode {
-    const apiPrefixNode = restServerAPIPrefixVisitor(this, ctx);
-    return apiPrefixNode;
-  }
-
-  visitRestServerPort(ctx: BitloopsParser.RestServerPortContext): RestServerPortNode {
-    return restServerPortVisitor(this, ctx);
-  }
-
-  //TODO support custom option in the future?
-  // visitCustomServerOption(ctx: BitloopsParser.CustomServerOptionContext): ExpressionNode {
-  //   const res = customServerOptionVisitor(this, ctx);
-  //   return res;
-  // }
 
   visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
     const routesNode = bindServerRoutesVisitor(this, ctx);
