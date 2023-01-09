@@ -34,7 +34,7 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
   ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
     const { core, setup } = params;
     const setupData = setup;
-    const result = [];
+    const result: TTargetCoreContent[] = [];
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const [moduleName, intermediateASTTree] of Object.entries(boundedContext)) {
         const contextData: TContextData = {
