@@ -29,7 +29,7 @@ import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   TPackageConcretion,
-  TRepoAdapters,
+  TRepoAdapterDefinition,
   TRepoConnectionDefinition,
   TRouterDefinition,
   TUseCaseDefinition,
@@ -92,11 +92,10 @@ export const generateSetupFiles = (
   params: IntermediateAST,
   options: TTranspileOptions,
 ): TTargetSetupContent[] | TargetSetupGeneratorError => {
-  //TODO get .value from setup and core tree
   const { setup, core } = params;
   const { sourceDirPath } = options;
   const setupData = setup;
-  const bitloopsModel = core as any;
+  const bitloopsModel = core;
 
   const formatterConfig = options.formatterConfig ?? {
     semi: true,
@@ -115,11 +114,11 @@ export const generateSetupFiles = (
       setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
         BitloopsTypesMapping.TRepoConnectionDefinition,
       );
-
-    // Step 1. Generate routes files
     const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
       BitloopsTypesMapping.TRouterDefinition,
     );
+
+    // Step 1. Generate routes files
     const routes = setupGenerator.generateServerRouters(routerDefinitions, bitloopsModel, license);
     // console.log('routes:', routes);
     // console.log('--------------------------------');
@@ -139,16 +138,13 @@ export const generateSetupFiles = (
     const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
       BitloopsTypesMapping.TUseCaseDefinition,
     );
-    const repoConnectionsDef = setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
-      BitloopsTypesMapping.TRepoConnectionDefinition,
-    );
-    const repoAdapterDefinitions = setupTree.getRootChildrenNodesValueByType<TRepoAdapters>(
-      BitloopsTypesMapping.TRepoAdapters, // TODO should change to TRepoAdapterDefinition
-    );
+    const repoAdapterDefinitions =
+      setupTree.getRootChildrenNodesValueByType<TRepoAdapterDefinition>(
+        BitloopsTypesMapping.TRepoAdapterDefinition,
+      );
     const controllerDIs = setupGenerator.generateDIs(
       routerDefinitions,
       useCaseDefinitions,
-      repoConnectionsDef,
       repoAdapterDefinitions,
       bitloopsModel,
       setupTypeMapper,

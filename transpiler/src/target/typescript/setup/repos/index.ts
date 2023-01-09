@@ -6,11 +6,14 @@ import {
   RepoConnectionDefinitionKey,
   RepoConnectionExpressionKey,
   TRepoConnectionOptions,
+  TRepoAdapterDefinition,
+  RepoAdapterOptions,
 } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { TSetupOutput } from '../index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { SetupTypescriptMongoRepo } from './mongo.js';
+import { NodeValueHelpers } from '../helpers.js';
 
 type TCategorizedRepoConnections = Record<
   TRepoSupportedTypes,
@@ -49,11 +52,11 @@ export interface ISetupRepos {
     license?: string,
   ): TSetupOutput[];
   generateRepoDIImports(
-    reposSetupData: Readonly<TReposSetup>,
+    reposSetupData: Readonly<TRepoAdapterDefinition[]>,
     setupTypeMapper: Record<string, string>,
   ): string;
   generateRepoDIAdapters(
-    reposSetupData: Readonly<TReposSetup>,
+    reposSetupData: Readonly<TRepoAdapterDefinition[]>,
     // boundedContext: string,
     // module: string,
   ): string;
@@ -98,11 +101,10 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   }
 
   generateRepoDIImports(
-    reposSetupData: Readonly<TReposSetup>,
+    repoAdapters: Readonly<TRepoAdapterDefinition[]>,
     setupTypeMapper: Record<string, string>,
   ): string {
-    const moduleRepoAdapters = reposSetupData?.repoAdapters?.repoAdapterValues;
-    if (!moduleRepoAdapters) return '';
+    if (repoAdapters.length === 0) return '';
     const connections: Record<TRepoSupportedTypes, string[]> = {
       'DB.Mongo': [],
       'DB.Postgres': [],
@@ -110,16 +112,21 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       'DB.SQLite': [],
     };
     const adapterImports: string[] = [];
-    for (const [adapterClassName, repoAdapterInfo] of Object.entries(moduleRepoAdapters)) {
-      const { connection, dbType } = repoAdapterInfo;
+    for (const repoAdapter of repoAdapters) {
+      const { repoAdapterDefinition } = repoAdapter;
+      const { repoAdapterExpression } = repoAdapterDefinition;
+      const { repoAdapterClassName, repoAdapterOptions, dbType } = repoAdapterExpression;
+      const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
+        repoAdapterOptions,
+        RepoAdapterOptions.connection,
+      );
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TExpression,
         value: connection,
       });
       connections[dbType].push(stringConnection.output);
-      // const adapterClassName = getRepoAdapterClassName(repoPort, dbType);
       adapterImports.push(
-        `import { ${adapterClassName} } from './repos/concretions/${adapterClassName}';`,
+        `import { ${repoAdapterClassName} } from './repos/concretions/${repoAdapterClassName}';`,
       );
     }
 
@@ -142,20 +149,24 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     return result.join('\n') + '\n';
   }
 
-  // TODO pass repo adapters here instead as param
-  generateRepoDIAdapters(reposSetupData: Readonly<TReposSetup>): string {
-    const repoAdapterValues = reposSetupData?.repoAdapters.repoAdapterValues;
-    if (!repoAdapterValues) return '';
+  generateRepoDIAdapters(repoAdapters: Readonly<TRepoAdapterDefinition[]>): string {
+    if (repoAdapters.length === 0) return '';
     const result: string[] = [];
-    for (const [adapterClassName, repoAdapterInfo] of Object.entries(repoAdapterValues)) {
-      const { connection, instanceIdentifier } = repoAdapterInfo;
+    for (const repoAdapter of repoAdapters) {
+      const { repoAdapterDefinition } = repoAdapter;
+      const { identifier: instanceIdentifier, repoAdapterExpression } = repoAdapterDefinition;
+      const { repoAdapterClassName, repoAdapterOptions } = repoAdapterExpression;
+      const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
+        repoAdapterOptions,
+        RepoAdapterOptions.connection,
+      );
       const stringConnection = modelToTargetLanguage({
         type: BitloopsTypesMapping.TExpression,
         value: connection,
       });
 
       result.push(
-        `const ${instanceIdentifier} = new ${adapterClassName}(${stringConnection.output});`,
+        `const ${instanceIdentifier} = new ${repoAdapterClassName}(${stringConnection.output});`,
       );
     }
     return result.join('\n') + '\n';

@@ -32,7 +32,6 @@ import {
   TGraphQLServerInstance,
   TGraphQLSetupData,
   // TUseCasesOfModule, //TODO this is TUseCaseDefinition
-  TControllerOfModule,
   TServers,
   TRepoConnectionDefinition,
   TPackageConcretion,
@@ -50,8 +49,9 @@ import {
   TApplicationErrorValue,
   TDomainRule,
   TUseCaseDefinition,
-  TRepoAdapters,
   RestServerOptions,
+  TRouterController,
+  TRepoAdapterDefinition,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -96,8 +96,7 @@ interface ISetup {
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
-    repoConnectionsDef: TRepoConnectionDefinition[],
-    repoAdapterDefinitions: TRepoAdapters,
+    repoAdapterDefinitions: TRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -190,13 +189,11 @@ export class SetupTypeScript implements ISetup {
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
-    repoConnectionsDef: TRepoConnectionDefinition[],
-    repoAdapterDefinitions: TRepoAdapters, // TODO should change to TRepoAdapterDefinition[]
+    repoAdapterDefinitions: TRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[] {
-    const { repos } = data;
     const result: TSetupOutput[] = [];
     // For each module in each bounded context generate 1 DI file that contains all
     // the use cases and controllers of that module that are concreted in the setup.bl
@@ -209,6 +206,8 @@ export class SetupTypeScript implements ISetup {
       RouterDefinitionHelpers.getControllersForEachBoundedContextModule(routerDefinitions);
     const controllersLength = Object.keys(controllers).length;
 
+    const repoAdaptersLength = repoAdapterDefinitions.length;
+
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const moduleName of Object.keys(boundedContext)) {
         // console.log('module', module);
@@ -217,8 +216,11 @@ export class SetupTypeScript implements ISetup {
         )}/${kebabCase(moduleName)}/DI.ts`;
         let diContent = '';
         // Gather all imports
-        if (repos) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIImports(data.repos, setupTypeMapper);
+        if (repoAdaptersLength > 0) {
+          diContent += this.setupTypeScriptRepos.generateRepoDIImports(
+            repoAdapterDefinitions,
+            setupTypeMapper,
+          );
         }
 
         if (useCasesLength > 0)
@@ -230,8 +232,8 @@ export class SetupTypeScript implements ISetup {
           );
 
         diContent += '\n';
-        if (repos) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(data.repos);
+        if (repoAdaptersLength > 0) {
+          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(repoAdapterDefinitions);
         }
 
         if (useCasesLength > 0)
@@ -273,11 +275,16 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  private generateDIControllersImports(controllers: TControllerOfModule): string {
+  private generateDIControllersImports(controllers: TRouterController[]): string {
     let result = '';
-    for (const controllerName of Object.keys(controllers)) {
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.Controller, controllerName);
-      result += `import { ${controllerName} } from './${path}${filename}${
+    for (const controller of controllers) {
+      const { routerController } = controller;
+      const { RESTControllerIdentifier } = routerController;
+      const { path, filename } = getFilePathRelativeToModule(
+        ClassTypes.Controller,
+        RESTControllerIdentifier,
+      );
+      result += `import { ${RESTControllerIdentifier} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;
     }
@@ -298,19 +305,20 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
-  private generateControllerDIsAndExports(controllers: TControllerOfModule): string {
+  private generateControllerDIsAndExports(controllers: TRouterController[]): string {
     let controllerDIContent = '';
     let exportsString = '';
-    for (const [controllerName, controller] of Object.entries(controllers)) {
-      for (const instance of controller.instances) {
-        const controllerInstanceName = instance.controllerInstance;
+    for (const controller of controllers) {
+      const { routerController } = controller;
+      const { RESTControllerIdentifier, controllerInstanceName, argumentList } = routerController;
 
-        const dependencies = instance.dependencies;
+      const controllerDependencies = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TArgumentList,
+        value: { argumentList },
+      });
 
-        const dependenciesString = dependencies.join(', '); //'';
-        controllerDIContent += `const ${controllerInstanceName} = new ${controllerName}(${dependenciesString});\n`;
-        exportsString += `export { ${controllerInstanceName} };\n`;
-      }
+      controllerDIContent += `const ${controllerInstanceName} = new ${RESTControllerIdentifier}${controllerDependencies.output};\n`;
+      exportsString += `export { ${controllerInstanceName} };\n`;
     }
     return controllerDIContent + '\n' + exportsString;
   }
@@ -452,6 +460,7 @@ export class SetupTypeScript implements ISetup {
               httpMethodVerb: method,
               stringLiteral: path,
               RESTControllerIdentifier,
+              controllerInstanceName,
               boundedContextModule,
             } = routerController;
             const { boundedContextName, moduleName } = boundedContextModule;
@@ -465,7 +474,7 @@ export class SetupTypeScript implements ISetup {
             );
 
             controllersBody += `\n  fastify.${method.toLowerCase()}('${path}', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {`;
-            controllersBody += `\n    return ${RESTControllerIdentifier}.execute(request, reply);`; // TODO RESTControllerIdentifier change to instance name
+            controllersBody += `\n    return ${controllerInstanceName}.execute(request, reply);`;
             controllersBody += '\n  });';
           }
 

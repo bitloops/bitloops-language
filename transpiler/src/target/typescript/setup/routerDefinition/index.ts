@@ -1,10 +1,7 @@
-import { TIdentifier, TRouterDefinition, TRouterController } from '../../../../types.js';
+import { TRouterDefinition, TRouterController } from '../../../../types.js';
 
-export type TController = {
-  instanceName: TIdentifier;
-} & TRouterController;
 type TModuleName = string;
-type TControllerModule = Record<TModuleName, TController[]>;
+type TControllerModule = Record<TModuleName, TRouterController[]>;
 type TBoundedContextName = string;
 export type TControllers = Record<TBoundedContextName, TControllerModule>;
 
@@ -15,7 +12,7 @@ export class RouterDefinitionHelpers {
     const controllers: TControllers = {};
     for (const router of routerDefinitions) {
       const { routerDefinition } = router;
-      const { identifier, routerExpression } = routerDefinition;
+      const { routerExpression } = routerDefinition;
       const { routerControllers } = routerExpression;
       for (const controller of routerControllers) {
         const { routerController } = controller;
@@ -28,7 +25,6 @@ export class RouterDefinitionHelpers {
           controllers[boundedContext] = {
             module: [
               {
-                instanceName: identifier, // TODO get from controller
                 routerController,
               },
             ],
@@ -36,13 +32,11 @@ export class RouterDefinitionHelpers {
         } else if (!controllers[boundedContext][module]) {
           controllers[boundedContext][module] = [
             {
-              instanceName: identifier,
               routerController,
             },
           ];
         } else {
           controllers[boundedContext][module].push({
-            instanceName: identifier,
             routerController,
           });
         }

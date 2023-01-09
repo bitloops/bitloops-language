@@ -19,18 +19,14 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { RepoAdapterClassNameNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/RepoAdapterClassNameNodeBuiler.js';
 import { DatabaseTypeNode } from '../../../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
-import { RepoAdapterClassNameNode } from '../../../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { produceMetadata } from '../../metadata.js';
 
 export const repoAdapterClassNameVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoAdapterClassNameContext,
-): RepoAdapterClassNameNode => {
+): DatabaseTypeNode => {
   const connectionType: DatabaseTypeNode = thisVisitor.visit(ctx.repoConnectionType());
-  const metadata = produceMetadata(ctx, thisVisitor);
 
-  return new RepoAdapterClassNameNodeBuilder(metadata).withConnectionType(connectionType).build();
+  return connectionType;
 };
