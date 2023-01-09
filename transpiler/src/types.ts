@@ -1310,3 +1310,9 @@ export enum RepoConnectionOptions {
   port = 'port',
   database = 'database',
 }
+
+export enum RestServerOptions {
+  server = 'server',
+  apiPrefix = 'apiPrefix',
+  port = 'port',
+}

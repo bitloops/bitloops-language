@@ -25,24 +25,14 @@ import {
   SupportedLanguages,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
+import { isGraphQLController } from '../../../helpers/typeGuards.js';
 import {
-  controllerDefinitionIsRest,
-  isGraphQLController,
-  isGraphQLServerInstance,
-  isRestServerInstance,
-} from '../../../helpers/typeGuards.js';
-import {
-  TSetupData,
-  TControllers,
-  TMethodAndPath,
   TRouterInstanceName,
-  TRoutersInfo,
   TServerType,
   TGraphQLServerInstance,
   TGraphQLSetupData,
   // TUseCasesOfModule, //TODO this is TUseCaseDefinition
   TControllerOfModule,
-  TReposSetup,
   TServers,
   TRepoConnectionDefinition,
   TPackageConcretion,
@@ -61,6 +51,7 @@ import {
   TDomainRule,
   TUseCaseDefinition,
   TRepoAdapters,
+  RestServerOptions,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -79,8 +70,9 @@ import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
 import { RouterDefinitionHelpers } from './routerDefinition/index.js';
-import { isRestServer, TRestAndGraphQLServers } from './servers/index.js';
+import { isGraphQLServerInstance, isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 import { NodeValueHelpers } from './helpers.js';
+import { RestFastifyGenerator } from './servers/fastify.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -687,12 +679,11 @@ export { routers };
     let serverPrefix: string = null;
     let portStatement: string = null;
     if (isRestServer(data)) {
-      // TODO fix
-      const evaluationList = data.restServer.serverOptions as any;
+      const evaluationList = data.restServer.serverOptions;
       // TODO Check if enum for server options exist
       const apiPrefixExpr = NodeValueHelpers.findKeyOfEvaluationFieldList(
         evaluationList,
-        'apiPrefix',
+        RestServerOptions.apiPrefix,
       );
       const apiPrefixOutput = modelToTargetLanguage({
         type: BitloopsTypesMapping.TExpression,
@@ -703,7 +694,7 @@ export { routers };
 
       const portExpression = NodeValueHelpers.findKeyOfEvaluationFieldList(
         evaluationList,
-        'apiPrefix',
+        RestServerOptions.port,
       );
       portStatement = modelToTargetLanguage({
         type: BitloopsTypesMapping.TExpression,
@@ -711,46 +702,17 @@ export { routers };
       }).output;
     }
 
-    // TODO handle special env-variable Expression, and env-variable (like identifier-variable)
-    // const portStatement = data.port.replaceAll('env.', 'process.env.');
     let body = '';
     switch (serverType as TServerType) {
       case 'REST.Express':
-        // serverPath = 'rest/express';
-        // this.nodeDependencies['express'] = '^4.18.1';
-        // this.nodeDevDependencies['@types/express'] = '^4.17.14';
         throw new Error(`Server ${serverType} not fully implemented`);
       case 'REST.Fastify': {
         // serverPath = 'rest/fastify';
-        this.nodeDependencies['@bitloops/bl-boilerplate-infra-rest-fastify'] = '^0.0.3';
-        body = `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { routers } from './api';
-
-const corsOptions = {
-  origin: '*',
-};
-
-const fastify = Fastify.Server({
-  logger: true,
-});
-fastify.register(Fastify.cors, corsOptions);
-fastify.register(Fastify.formBody);
-fastify.register(routers, {
-  prefix: ${serverPrefix},
-});
-
-const port = ${portStatement};
-
-const start = async () => {
-  try {
-    await fastify.listen({ port: +port });
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
-start();
-`;
+        const dependencies = RestFastifyGenerator.getDependencies();
+        for (const [key, value] of Object.entries(dependencies)) {
+          this.nodeDependencies[key] = value;
+        }
+        body = RestFastifyGenerator.getServerFile(serverPrefix, portStatement);
         break;
       }
       case 'GraphQL': {
@@ -778,16 +740,18 @@ start();
     bitloopsModel: TBoundedContexts,
   ): TSetupOutput[] {
     const output = [];
-    for (const serverType of Object.keys(servers)) {
-      for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
-        const serverInstance = servers[serverType].serverInstances[i];
+    for (const [serverType, { serverInstances }] of Object.entries(servers)) {
+      for (let i = 0; i < serverInstances.length; i++) {
+        const serverInstance = serverInstances[i];
         const args = {
           serverInstance,
           serverType: serverType as TServerType,
           serverIndex: i,
           bitloopsModel,
         };
-        output.push(this.generateServer(args));
+        const serverResult = this.generateServer(args);
+
+        output.push(serverResult);
       }
     }
     return output;
