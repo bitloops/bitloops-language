@@ -17,7 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TReadModel, TTargetDependenciesTypeScript, TVariables } from '../../../../../types.js';
+import {
+  TReadModel,
+  TTargetDependenciesTypeScript,
+  TVariables,
+  fieldsKey,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
@@ -52,7 +57,7 @@ const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
   if (isUndefined(variables)) {
     throw new Error('Variables of Read Model are not defined');
   }
-  if (!isArray(variables)) {
+  if (!isArray(variables[fieldsKey])) {
     throw new Error('Variables of Read Model are not array');
   }
 };
