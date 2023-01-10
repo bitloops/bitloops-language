@@ -1,4 +1,13 @@
+import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
+import { RESTControllerIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
+import { StringLiteralBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
+import { BoundedContextModuleNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/BoundedContextModuleNodeBuilder.js';
+import { BoundedContextNameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/BoundedContextNameNodeBuilder.js';
+import { HTTPMethodVerbNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/HTTPMethodVerbNodeBuilder.js';
+import { ModuleNameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/ModuleNameNodeBuilder.js';
+import { RestServerTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/RESTServerTypeNodeBuilder.js';
 import { RouterControllerNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/RouterControllerNodeBuilder.js';
+import { WordsWithSpacesNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/WordsWithSpacesNodeBuilder.js';
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { RouterControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/setup/RouterControllerNode.js';
 import { TServerType } from '../../../../../../src/types.js';
@@ -11,8 +20,6 @@ type TestCase = {
   serverType: TServerType;
   output: string;
   routerController?: RouterControllerNode;
-  // setupTree?: IntermediateASTSetup;
-  // setupContents?: string;
 };
 
 export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
@@ -23,7 +30,34 @@ export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
       'HelloWorldController',
     ),
     serverType: 'REST.Fastify',
-    routerController: new RouterControllerNodeBuilder().build(),
+    routerController: new RouterControllerNodeBuilder()
+      .withServerType(
+        new RestServerTypeNodeBuilder()
+          // .withServerType(new IdentifierNodeBuilder().withName('REST.Fastify').build())
+          .withServerType('REST.Fastify')
+          .build(),
+      )
+      .withMethod(new HTTPMethodVerbNodeBuilder().withVerb('GET').build())
+      .withPath(new StringLiteralBuilder().withValue('/').build())
+      .withArguments(new ArgumentListNodeBuilder().withArguments([]).build())
+      .withBoundedContextModule(
+        new BoundedContextModuleNodeBuilder()
+          .withBoundedContext(
+            new BoundedContextNameNodeBuilder()
+              .withName(new WordsWithSpacesNodeBuilder().withName('Hello World').build())
+              .build(),
+          )
+          .withModule(
+            new ModuleNameNodeBuilder()
+              .withName(new WordsWithSpacesNodeBuilder().withName('Demo').build())
+              .build(),
+          )
+          .build(),
+      )
+      .withControllerIdentifier(
+        new RESTControllerIdentifierNodeBuilder(null).withName('HelloWorldController').build(),
+      )
+      .build(),
     output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 export class HelloWorldController extends Fastify.BaseController {
   constructor() {

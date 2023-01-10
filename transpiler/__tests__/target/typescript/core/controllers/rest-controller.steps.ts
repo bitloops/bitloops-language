@@ -38,7 +38,9 @@ describe('Statements test cases', () => {
       tree.insertChild(input);
 
       const setupTree = new IntermediateASTTree(new IntermediateASTRootNode());
-      setupTree.insertChild(testCase.routerController);
+      if (testCase.routerController) {
+        setupTree.insertChild(testCase.routerController);
+      }
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },
@@ -64,37 +66,3 @@ describe('Statements test cases', () => {
     });
   });
 });
-
-// const generateSetupData = ({
-//   boundedContext,
-//   module,
-//   controllerName,
-//   serverType,
-// }: {
-//   boundedContext: string;
-//   module: string;
-//   controllerName: string;
-//   serverType: TServerType;
-// }): TSetupData => {
-//   return {
-//     controllers: {
-//       boundedContext,
-//       module,
-//       controllerValues: {
-//         [controllerName]: {
-//           type: ControllerTypeOfDefinition.REST,
-//           method: 'get',
-//           serverType,
-//           instances: [
-//             {
-//               url: '/',
-//               controllerInstance: 'helloController',
-//               dependencies: [],
-//             },
-//           ],
-//         },
-//       },
-//     },
-//     language: 'TypeScript',
-//   };
-// };

@@ -1,6 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { TBoundedContexts } from '../../types.js';
-import { RouterControllerNodeBuilder } from '../builders/setup/RouterControllerNodeBuilder.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
 import { RouterControllerNode } from '../nodes/setup/RouterControllerNode.js';
 import { IASTToCompletedASTTransformer } from './index.js';
@@ -23,9 +22,6 @@ export class RestControllerTypeTransformer implements IASTToCompletedASTTransfor
     for (const routerControllerNode of routerControllerNodes) {
       const serverTypeNode = routerControllerNode.getServerType();
 
-      const argumentsNode = routerControllerNode.getArgumentsNode();
-      const pathNode = routerControllerNode.getPathNode();
-      const methodNode = routerControllerNode.getMethodNode();
       const identifierNode = routerControllerNode.getRouterControllerIdentifier();
 
       const boundedContextModuleNode = routerControllerNode.getBoundedContextModule();
@@ -39,15 +35,25 @@ export class RestControllerTypeTransformer implements IASTToCompletedASTTransfor
         this.intermediateASTCore[boundedContextName] &&
         this.intermediateASTCore[boundedContextName][moduleName]
       ) {
-        const metadata = routerControllerNode.getMetadata();
-        new RouterControllerNodeBuilder(metadata)
-          .withServerType(serverTypeNode)
-          .withArguments(argumentsNode)
-          .withControllerIdentifier(identifierNode)
-          .withBoundedContextModule(boundedContextModuleNode)
-          .withPath(pathNode)
-          .withMethod(methodNode)
-          .build();
+        const coreTree = this.intermediateASTCore[boundedContextName][moduleName];
+
+        const restControllerNodeFound = coreTree.getControllerByIdentifier(
+          identifierNode.getValue(),
+        );
+        restControllerNodeFound.addChild(serverTypeNode);
+
+        // const metadata = routerControllerNode.getMetadata();
+        //TODO delete the old one
+        //   new RESTControllerNodeBuilder(
+        //     this.intermediateASTCore[boundedContextName][moduleName],
+        //     metadata,
+        //   )
+        //     .withServerTypeNode(serverTypeNode)
+        //     .withIdentifier(identifierNode)
+        //     // .withParameterList()
+        //     // .withRESTMethod()
+        //     // .withExecuteNode()
+        //     .build();
       }
     }
   }

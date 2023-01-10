@@ -6,6 +6,7 @@ import { RESTControllerIdentifierNode } from '../../../nodes/controllers/restCon
 import { RESTControllerExecuteNode } from './../../../nodes/controllers/restController/RESTControllerExecuteNode.js';
 import { ParameterListNode } from '../../../nodes/ParameterList/ParameterListNode.js';
 import { RESTMethodNode } from './../../../nodes/controllers/restController/RESTMethodNode.js';
+import { RESTServerTypeNode } from '../../../nodes/controllers/restController/RESTServerTypeNode.js';
 
 export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
   private restControllerNode: RESTControllerNode;
@@ -13,6 +14,7 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
   private parameters: ParameterListNode;
   private restMethod: RESTMethodNode;
   private controllerExecuteNode: RESTControllerExecuteNode;
+  private serverTypeNode: RESTServerTypeNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -44,12 +46,20 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
     return this;
   }
 
+  public withServerTypeNode(serverTypeNode: RESTServerTypeNode): RESTControllerNodeBuilder {
+    this.serverTypeNode = serverTypeNode;
+    return this;
+  }
   public build(): RESTControllerNode {
     this.intermediateASTTree.insertChild(this.restControllerNode);
     this.intermediateASTTree.insertChild(this.restControllerIdentifierNode);
     this.intermediateASTTree.insertSibling(this.parameters);
     this.intermediateASTTree.insertSibling(this.restMethod);
     this.intermediateASTTree.insertSibling(this.controllerExecuteNode);
+
+    if (this.serverTypeNode) {
+      this.intermediateASTTree.insertSibling(this.serverTypeNode);
+    }
 
     this.intermediateASTTree.setCurrentNodeToRoot();
 
