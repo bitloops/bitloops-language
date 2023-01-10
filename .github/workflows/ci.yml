@@ -1,0 +1,56 @@
+name: CI Workflow
+
+on:
+  pull_request:
+    branches: [feature-merge-core-setup-model]
+
+jobs:
+  test:
+    name: Build and Test transpiler
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: '☁️ checkout repository'
+        uses: actions/checkout@v2
+
+      - name: '🔧 setup node'
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 17
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Antlr
+        shell: bash
+        run: curl -s -o antlr-4.10.1-complete.jar https://repo1.maven.org/maven2/org/antlr/antlr4/4.10.1/antlr4-4.10.1-complete.jar
+
+      - name: '🔧 install npm@latest'
+        working-directory: ./transpiler
+        run: npm i -g npm@latest
+
+      - name: npm install
+        working-directory: ./transpiler
+        run: npm install
+
+      - name: make antlr jar executable
+        run: chmod +x antlr-4.10.1-complete.jar
+
+      - name: 'Produce Antlr files'
+        working-directory: ./transpiler
+        run: npm run ant:ci
+
+      - name: 'Produce Antlr files for setup'
+        working-directory: ./transpiler
+        run: npm run ant:setup:ci
+
+      - name: 'Build'
+        working-directory: ./transpiler
+        run: npm run build
+
+      - name: '🔍 run tests'
+        working-directory: ./transpiler
+        run: npm run test
