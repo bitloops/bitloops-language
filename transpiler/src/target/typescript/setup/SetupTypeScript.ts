@@ -24,7 +24,6 @@ import {
   getLanguageFileSuffixExtension,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
-import { isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
   TServerType,
   TGraphQLServerInstance,
@@ -529,7 +528,7 @@ const routers = async (serverInstance: ${routerInstanceType}, _opts: any) => {
       type: BitloopsTypesMapping.TLiteral,
       value: literal,
     });
-    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: '${routerPrefix.output}' });\n`;
+    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: ${routerPrefix.output} });\n`;
   })}};
 
 export { routers };
@@ -552,7 +551,7 @@ export { routers };
     for (const [serverType, { serverInstances }] of Object.entries(servers)) {
       for (let i = 0; i < serverInstances.length; i++) {
         const serverInstance = serverInstances[i];
-        if (!isRestServerInstance(serverInstance)) {
+        if (!isRestServer(serverInstance)) {
           continue;
         }
         output.push(

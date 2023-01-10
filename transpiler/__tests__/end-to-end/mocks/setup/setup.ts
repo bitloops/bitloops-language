@@ -39,6 +39,11 @@ const setupFilePaths = {
     fileType: 'REST.Fastify.Server',
     formatterParser: 'typescript',
   },
+  'api.index.mock.ts': {
+    fileId: 'src/shared/infra/rest/fastify/api/index.ts',
+    fileType: 'REST.Fastify.API',
+    formatterParser: 'typescript',
+  },
 };
 
 const getExpectedSetupOutputs = (

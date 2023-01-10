@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language CLI
+ *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,16 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import fs from 'fs';
-// import path, { dirname } from 'path';
-// import { fileURLToPath } from 'url';
+import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
+import { helloWorldRESTRouter } from '../routers/index';
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-
-const createDirectory = (filePath: string): void => {
-  // console.log('createDirectoryPath', path.join(__dirname, filePath));
-  fs.mkdirSync(filePath, { recursive: true });
+const routers = async (serverInstance: Fastify.Instance, _opts: any) => {
+  serverInstance.register(helloWorldRESTRouter, { prefix: '/say' });
 };
 
-export { createDirectory };
+export { routers };
