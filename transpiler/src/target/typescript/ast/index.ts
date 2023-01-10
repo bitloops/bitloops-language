@@ -18,9 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { IntermediateASTTree } from '../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { IntermediateAST } from '../../ast/core/types.js';
-import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../helpers/mappings.js';
+import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateAST } from '../../../ast/core/types.js';
+import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../helpers/mappings.js';
 import {
   GraphQLControllerNodeTSTransformer,
   RestControllerNodeTSTransformer,
