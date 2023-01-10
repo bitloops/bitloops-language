@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language CLI
+ *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,20 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { readFromFile } from '../helpers/fileOperations.js';
-import { TParserInputData } from '@bitloops/bl-transpiler';
-import path from 'path';
-const SETUP_FILE_NAME = 'setup.bl';
-
-const readSetupData = (sourceDirPath: string): TParserInputData['setup'] => {
-  // TODO handle possibly multiple setup files
-  const setupFilePath = path.join(sourceDirPath, SETUP_FILE_NAME);
-  const content = readFromFile(setupFilePath);
-  return [
-    {
-      fileId: SETUP_FILE_NAME,
-      fileContents: content,
-    },
-  ];
-};
-export { readSetupData };
+(async () => {
+  await import('../src/shared/infra/rest/fastify/app0');
+})();

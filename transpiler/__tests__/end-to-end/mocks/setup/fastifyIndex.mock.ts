@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language CLI
+ *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,20 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { readFromFile } from '../helpers/fileOperations.js';
-import { TParserInputData } from '@bitloops/bl-transpiler';
-import path from 'path';
-const SETUP_FILE_NAME = 'setup.bl';
-
-const readSetupData = (sourceDirPath: string): TParserInputData['setup'] => {
-  // TODO handle possibly multiple setup files
-  const setupFilePath = path.join(sourceDirPath, SETUP_FILE_NAME);
-  const content = readFromFile(setupFilePath);
-  return [
-    {
-      fileId: SETUP_FILE_NAME,
-      fileContents: content,
-    },
-  ];
+import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
+import { HelloWorldController } from '../../../../../bounded-contexts/demo/hello-world/DI';
+const helloWorldRESTRouter = async (fastify: Fastify.Instance) => {
+  fastify.get('/hello', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+    return helloWorldController1.execute(request, reply);
+  });
 };
-export { readSetupData };
+export { helloWorldRESTRouter };

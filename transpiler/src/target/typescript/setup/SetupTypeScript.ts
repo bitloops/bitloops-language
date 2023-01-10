@@ -22,7 +22,6 @@ import { kebabCase } from '../../../utils/caseStyles.js';
 import { readFromFile } from '../../../helpers/fileOperations.js';
 import {
   getLanguageFileSuffixExtension,
-  SupportedLanguages,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
 import { isRestServerInstance } from '../../../helpers/typeGuards.js';
@@ -78,6 +77,7 @@ import { isGraphQLServerInstance, isRestServer, TRestAndGraphQLServers } from '.
 import { NodeValueHelpers } from './helpers.js';
 import { RestFastifyGenerator } from './servers/fastify.js';
 import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
+import { SupportedLanguages } from '../../supportedLanguages.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {

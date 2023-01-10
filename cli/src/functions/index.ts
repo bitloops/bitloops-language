@@ -19,6 +19,3 @@
  */
 export { getBoundedContextModules } from './getProjectStructure.js';
 export { getBitloopsFilesAndContents } from './readFilesContents.js';
-export { generateSetupDataModel } from './generateSetupModel.js';
-export { generateBitloopsModel } from './generateBitloopsModel.js';
-export { generateTargetFiles } from './generateTargetFiles.js';

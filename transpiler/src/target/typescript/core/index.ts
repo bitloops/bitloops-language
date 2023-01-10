@@ -21,20 +21,19 @@ import { TContextData, TDependencyParentTypescript } from '../../../types.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
 import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
-import { TargetGeneratorError, TTargetCoreContent, TTargetCoreFinalContent } from '../../types.js';
+import {
+  IIntermediateASTToTarget,
+  TargetGeneratorError,
+  TTargetCoreContent,
+  TTargetCoreFinalContent,
+} from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
-
-interface IIntermediateASTToTarget {
-  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError;
-  formatCode(targetContent: TTargetCoreFinalContent[], config?: any): TTargetCoreFinalContent[];
-  generateImports(params: TTargetCoreContent[]): TTargetCoreFinalContent[];
-}
 
 export class IntermediateASTToTarget implements IIntermediateASTToTarget {
   ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
     const { core, setup } = params;
     const setupData = setup;
-    const result = [];
+    const result: TTargetCoreContent[] = [];
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const [moduleName, intermediateASTTree] of Object.entries(boundedContext)) {
         const contextData: TContextData = {
