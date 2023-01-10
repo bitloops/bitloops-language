@@ -1,8 +1,8 @@
-import { ControllerNode } from '../../../../ast/core/intermediate-ast/nodes/controllers/ControllerNode.js';
-import { GraphQLControllerNode } from '../../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
-import { RESTControllerNode } from '../../../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
-import { ExpressionNode } from '../../../../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { MethodCallExpressionNode } from '../../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
+import { ControllerNode } from '../../../../../ast/core/intermediate-ast/nodes/controllers/ControllerNode.js';
+import { GraphQLControllerNode } from '../../../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
+import { RESTControllerNode } from '../../../../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
+import { ExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { MethodCallExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
 class BaseControllerNodeTSTransformer<

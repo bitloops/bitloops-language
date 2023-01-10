@@ -32,7 +32,7 @@ import {
   isTargetCoreGeneratorError,
   isTargetSetupGeneratorError,
 } from './typescript/guards/index.js';
-import { IntermediateModelToASTTargetTransformer } from './ast/index.js';
+import { IntermediateModelToASTTargetTransformer } from './typescript/ast/index.js';
 import { IntermediateAST } from '../ast/core/types.js';
 import { TTranspileOptions } from '../transpilerTypes.js';
 import { TargetCoreGeneratorCreator } from './targetCoreCreator.js';

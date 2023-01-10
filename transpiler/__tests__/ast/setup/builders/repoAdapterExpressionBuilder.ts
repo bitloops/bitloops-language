@@ -12,6 +12,9 @@ import {
   repoAdapterOptionsKey,
   TEvaluationFields,
   TRepoDatabaseType,
+  TRepoAdapterConnectionInfo,
+  RepoConnectionExpressionKey,
+  RepoConnectionOptionsKey,
 } from '../../../../src/types.js';
 import { BoundedContextModuleBuilderDirector } from './boundedContextModuleBuilderDirector.js';
 
@@ -21,6 +24,7 @@ export class RepoAdapterExpressionBuilder implements IBuilder<TRepoAdapterExpres
   private concretedRepoPort: TConcretedRepoPort;
   private bcModule: TBoundedContextModule;
   private dbType: TRepoDatabaseType;
+  private connectionOptions: TEvaluationFields;
 
   public withBoundedContextModule({
     boundedContextName,
@@ -58,7 +62,18 @@ export class RepoAdapterExpressionBuilder implements IBuilder<TRepoAdapterExpres
     return this;
   }
 
+  public withConnectionOptions(connectionOptions: TEvaluationFields): RepoAdapterExpressionBuilder {
+    this.connectionOptions = connectionOptions;
+    return this;
+  }
+
   public build(): TRepoAdapterExpression {
+    const repoAdapterConnectionInfo: TRepoAdapterConnectionInfo = {
+      [RepoConnectionExpressionKey]: {
+        ...this.dbType,
+        [RepoConnectionOptionsKey]: this.connectionOptions,
+      },
+    };
     const repoAdapterExpression: TRepoAdapterExpression = {
       [repoAdapterExpressionKey]: {
         [concretedRepoPortKey]: this.concretedRepoPort,
@@ -66,6 +81,7 @@ export class RepoAdapterExpressionBuilder implements IBuilder<TRepoAdapterExpres
         ...this.repoAdapterOptions,
         ...this.bcModule,
         ...this.dbType,
+        ...repoAdapterConnectionInfo,
       },
     };
 

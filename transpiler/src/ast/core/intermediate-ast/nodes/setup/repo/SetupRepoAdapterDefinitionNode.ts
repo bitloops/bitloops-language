@@ -9,7 +9,7 @@ export class SetupRepoAdapterDefinitionNode extends IntermediateASTNode {
 
   constructor(metadata?: TNodeMetadata) {
     super(
-      BitloopsTypesMapping.TRepoAdapterDefinition,
+      BitloopsTypesMapping.TSetupRepoAdapterDefinition,
       metadata,
       SetupRepoAdapterDefinitionNode.classNodeName,
     );

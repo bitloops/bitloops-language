@@ -64,7 +64,7 @@ describe('Repo Adapter definition is valid', () => {
       // check setup
       const resultTree = setupResult[testRepoAdapter.fileId];
       const repoAdapterDefinitionNodes = resultTree.getRootChildrenNodesByType(
-        BitloopsTypesMapping.TRepoAdapterDefinition,
+        BitloopsTypesMapping.TSetupRepoAdapterDefinition,
       );
       const setupValue = repoAdapterDefinitionNodes[0].getValue();
 
