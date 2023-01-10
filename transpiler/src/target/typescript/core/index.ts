@@ -42,13 +42,6 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
           module: moduleName,
         };
 
-        // TODO this may be moved to a previous model not specifically for typescript
-        // if (this.moduleHasRepoAdaptersDefined(setupData, { boundedContextName, moduleName })) {
-        //   this.injectRepoAdaptersFromSetupToModel(intermediateAST, setupData, {
-        //     boundedContextName,
-        //     moduleName,
-        //   });
-        // }
         const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
         classTypeNodes.forEach((intermediateASTNode) => {
           const generatedString = modelToTargetLanguage({
@@ -132,21 +125,4 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
     }
     return result;
   }
-
-  // private moduleHasRepoAdaptersDefined(
-  //   setupData: ISetupData,
-  //   { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
-  // ): boolean {
-  //   return !!setupData?.repos?.repoAdapters?.[boundedContextName]?.[moduleName];
-  // }
-
-  // private injectRepoAdaptersFromSetupToModel(
-  //   intermediateAST: TBoundedContexts,
-  //   setupData: Readonly<ISetupData>,
-  //   { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
-  // ): void {
-  //   intermediateAST[boundedContextName][moduleName].RepoAdapters = deepClone(
-  //     setupData.repos.repoAdapters[boundedContextName][moduleName],
-  //   );
-  // }
 }

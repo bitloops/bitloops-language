@@ -19,6 +19,22 @@ export const VALID_REPO_ADAPTER_DEFINITIONS = [
         moduleName: 'Demo',
         concretedRepoPort: 'TodoRepoPort',
         className: 'MongoTodoRepo',
+        connectionOptions: {
+          fields: [
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'host',
+              new ExpressionBuilderDirector().buildStringLiteralExpression('localhost'),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'port',
+              new ExpressionBuilderDirector().buildInt32LiteralExpression(27017),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'database',
+              new ExpressionBuilderDirector().buildStringLiteralExpression('todo'),
+            ),
+          ],
+        },
         options: {
           fields: [
             new EvaluationFieldBuilderDirector().buildEvaluationField(
@@ -41,6 +57,22 @@ export const VALID_REPO_ADAPTER_DEFINITIONS = [
         moduleName: 'Demo',
         concretedRepoPort: 'TodoRepoPort',
         className: 'MongoTodoRepo',
+        connectionOptions: {
+          fields: [
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'host',
+              new ExpressionBuilderDirector().buildStringLiteralExpression('localhost'),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'port',
+              new ExpressionBuilderDirector().buildInt32LiteralExpression(27017),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'database',
+              new ExpressionBuilderDirector().buildStringLiteralExpression('todo'),
+            ),
+          ],
+        },
         options: {
           fields: [
             new EvaluationFieldBuilderDirector().buildEvaluationField(

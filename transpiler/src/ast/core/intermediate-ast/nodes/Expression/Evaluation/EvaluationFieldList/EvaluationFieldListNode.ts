@@ -8,17 +8,12 @@ export class EvaluationFieldListNode extends IntermediateASTNode {
     super(BitloopsTypesMapping.TEvaluationFields, metadata, evaluationFieldsKey);
   }
   public findFieldWithName(name: string): EvaluationFieldNode | undefined {
-    // this.getChildren().forEach((child) => {
-    //   if (child instanceof EvaluationFieldNode) {
-    //     console.log(child.getName().getValue().name);
-    //   }
-    // });
     const res = this.getChildren().find(
       (child) => (child as EvaluationFieldNode).getIdentifier().getValue().identifier === name,
     ) as EvaluationFieldNode;
-    // console.log(res);
     return res;
   }
+
   public getFieldCount(): number {
     return this.getChildren().length;
   }

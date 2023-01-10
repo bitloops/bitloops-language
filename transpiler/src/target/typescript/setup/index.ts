@@ -140,7 +140,7 @@ export const generateSetupFiles = (
     );
     const repoAdapterDefinitions =
       setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
-        BitloopsTypesMapping.TRepoAdapterDefinition,
+        BitloopsTypesMapping.TSetupRepoAdapterDefinition,
       );
     const controllerDIs = setupGenerator.generateDIs(
       routerDefinitions,
