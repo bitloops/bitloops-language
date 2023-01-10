@@ -535,7 +535,7 @@ const routers = async (serverInstance: ${routerInstanceType}, _opts: any) => {
       type: BitloopsTypesMapping.TLiteral,
       value: literal,
     });
-    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: '${routerPrefix.output}' });\n`;
+    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: ${routerPrefix.output} });\n`;
   })}};
 
 export { routers };
