@@ -21,14 +21,13 @@ import { TContextData, TDependencyParentTypescript } from '../../../types.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
 import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
-import { TargetGeneratorError, TTargetCoreContent, TTargetCoreFinalContent } from '../../types.js';
+import {
+  IIntermediateASTToTarget,
+  TargetGeneratorError,
+  TTargetCoreContent,
+  TTargetCoreFinalContent,
+} from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
-
-interface IIntermediateASTToTarget {
-  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError;
-  formatCode(targetContent: TTargetCoreFinalContent[], config?: any): TTargetCoreFinalContent[];
-  generateImports(params: TTargetCoreContent[]): TTargetCoreFinalContent[];
-}
 
 export class IntermediateASTToTarget implements IIntermediateASTToTarget {
   ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
