@@ -27,7 +27,7 @@ jobs:
       - name: Install Antlr
         run: |
           cd /usr/local/lib 
-          curl -O https://www.antlr.org/download/antlr-4.10.1-complete.jar
+          sudo curl -O https://www.antlr.org/download/antlr-4.10.1-complete.jar
 
       - name: npm install
         working-directory: ./transpiler
