@@ -1,3 +1,6 @@
+import { TBoundedContexts } from '../../../../ast/core/types.js';
+import { TGraphQLOperation } from '../../../../types.js';
+
 /**
  *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
@@ -42,3 +45,40 @@ type TypeName = string;
 
 type GeneratedGraphQLInput = string;
 type GeneratedGraphQLType = string;
+
+export interface IAddResolversToServer {
+  serverName: string;
+  resolver: {
+    name: string; // Should match the Operation name
+    boundedContext: string;
+    module: string;
+  };
+}
+
+export type TResolvers = TResolver[];
+
+export type TResolver = {
+  boundedContext: string;
+  module: string;
+  operationType: TGraphQLOperation;
+  operationName: string;
+  input: string | null; // a DTO or nothing for no input
+  output: string; // a DTO
+  controller: string;
+};
+
+export interface IServer {
+  type: string;
+  name: string;
+  port: string;
+}
+
+/**
+ * GraphQL Setup
+ */
+export type TGraphQLSetupData = {
+  servers: IServer[];
+  resolvers: TResolvers;
+  addResolversToServer: IAddResolversToServer[];
+  bitloopsModel: TBoundedContexts;
+};

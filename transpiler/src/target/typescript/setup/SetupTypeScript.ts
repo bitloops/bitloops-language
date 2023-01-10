@@ -26,11 +26,8 @@ import {
 } from '../../../helpers/supportedLanguages.js';
 import { isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
-  // TRouterInstanceName,
   TServerType,
   TGraphQLServerInstance,
-  TGraphQLSetupData,
-  // TUseCasesOfModule, //TODO this is TUseCaseDefinition
   TRepoConnectionDefinition,
   TPackageConcretion,
   packageConcretionKey,
@@ -78,6 +75,7 @@ import { NodeValueHelpers } from './helpers.js';
 import { RestFastifyGenerator } from './servers/fastify.js';
 import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
 import { SupportedLanguages } from '../../supportedLanguages.js';
+import { TGraphQLSetupData } from './graphql/types.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -103,10 +101,7 @@ interface ISetup {
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput[];
-  // generateRepoConnections(setupData: TSetupData): TSetupOutput[];
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[];
-  // generateControllerDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
-  // generateUseCaseDIs(data: ISetupData, bitloopsModel: TBoundedContexts): TSetupOutput[];
 
   generatePackageFiles(
     packageDefinitions: TPackageConcretion[],
@@ -172,7 +167,6 @@ export class SetupTypeScript implements ISetup {
     this.setupTypeScriptRepos = new SetupTypeScriptRepos();
   }
 
-  // generateRepoConnections(setupData: TSetupData): TSetupOutput[] {
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[] {
     const repoDependencies =
       this.setupTypeScriptRepos.getPackageJSONDependencies(repoConnectionDefinitions);

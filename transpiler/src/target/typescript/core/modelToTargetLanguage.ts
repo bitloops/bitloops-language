@@ -68,7 +68,6 @@ import {
 } from './components/strings/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
-import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
 import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
@@ -132,7 +131,7 @@ const modelToTargetLanguage = (props: {
   type: TNodeType;
   value: any;
   contextData?: TContextData;
-  setupData?: any; // TODO change to [fileId]: IntermediateASTTree
+  setupData?: any; // TODO remove this
   model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
   const { type, value, contextData, setupData, model } = props;
@@ -309,10 +308,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TApplicationError: {
       res = applicationErrorsToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TGraphQLSetupData: {
-      res = graphQLSetupDataToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDTOEvaluation: {

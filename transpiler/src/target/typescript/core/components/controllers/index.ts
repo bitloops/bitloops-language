@@ -21,7 +21,6 @@ import { isGraphQLController } from '../../../../../helpers/typeGuards.js';
 import {
   TRESTController,
   TGraphQLController,
-  TSetupData,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
@@ -30,7 +29,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 const controllersToTargetLanguage = (
   controllers: TRESTController | TGraphQLController,
   contextData?: { boundedContext: string; module: string },
-  setupData?: TSetupData,
+  setupData?: any,
 ): TTargetDependenciesTypeScript => {
   // TODO for all controllers ?
   const controllerName = Object.keys(controllers)[0];

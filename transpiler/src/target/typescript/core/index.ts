@@ -31,8 +31,7 @@ import { IntermediateAST } from '../../../ast/core/types.js';
 
 export class IntermediateASTToTarget implements IIntermediateASTToTarget {
   ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
-    const { core, setup } = params;
-    const setupData = setup;
+    const { core } = params;
     const result: TTargetCoreContent[] = [];
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const [moduleName, intermediateASTTree] of Object.entries(boundedContext)) {
@@ -46,7 +45,6 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
           const generatedString = modelToTargetLanguage({
             type: intermediateASTNode.getNodeType(),
             value: intermediateASTNode.getValue(),
-            setupData,
             contextData,
             model: intermediateASTTree,
           });

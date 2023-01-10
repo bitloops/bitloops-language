@@ -182,7 +182,6 @@ const BitloopsTypesMapping = {
   TRESTControllerIdentifier: 'TRESTControllerIdentifier',
   TValueObjectIdentifier: 'TValueObjectIdentifier',
   TServers: 'TServers',
-  TSetupData: 'TSetupData',
   TServerType: 'TServerType',
   TSetupExpression: 'TSetupExpression',
   TRestServerInstanceRouters: 'TRestServerInstanceRouters',
