@@ -24,9 +24,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # - name: Install Antlr
+      #   shell: bash
+      #   run: curl -s -o antlr-4.10.1-complete.jar https://repo1.maven.org/maven2/org/antlr/antlr4/4.10.1/antlr4-4.10.1-complete.jar
+
       - name: Install Antlr
-        shell: bash
-        run: curl -s -o antlr-4.10.1-complete.jar https://repo1.maven.org/maven2/org/antlr/antlr4/4.10.1/antlr4-4.10.1-complete.jar
+        uses: wei/wget@v1
+        with:
+          args: https://repo1.maven.org/maven2/org/antlr/antlr4/4.10.1/antlr4-4.10.1-complete.jar -P /usr/local/lib
 
       # - name: '🔧 install npm@latest'
       #   working-directory: ./transpiler
@@ -36,16 +41,12 @@ jobs:
         working-directory: ./transpiler
         run: npm install
 
-      - name: make antlr jar executable
-        run: chmod +x antlr-4.10.1-complete.jar
+      # - name: make antlr jar executable
+      #   run: chmod +x antlr-4.10.1-complete.jar
 
       - name: 'Produce Antlr files'
         working-directory: ./transpiler
-        run: npm run ant:ci
-
-      - name: 'Produce Antlr files for setup'
-        working-directory: ./transpiler
-        run: npm run ant:setup:ci
+        run: npm run ant
 
       - name: 'Build'
         working-directory: ./transpiler
