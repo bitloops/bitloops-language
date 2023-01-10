@@ -3,6 +3,8 @@ name: CI Workflow
 on:
   pull_request:
     branches: [feature-merge-core-setup-model]
+    paths:
+      - transpiler/**
 
 jobs:
   test:
