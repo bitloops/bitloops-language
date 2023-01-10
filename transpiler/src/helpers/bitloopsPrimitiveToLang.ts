@@ -17,8 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { SupportedLanguages } from '../target/supportedLanguages.js';
 import { TBitloopsPrimitives } from '../types.js';
-import { SupportedLanguages } from './supportedLanguages.js';
 
 export const bitloopsPrimitives = {
   string: 'string',

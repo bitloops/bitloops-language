@@ -23,7 +23,11 @@ import { packageJSONTemplate } from './package-template.js';
 import { SetupTypeScript } from './SetupTypeScript.js';
 import { tsConfigJSONTemplate } from './tsconfig-template.js';
 import { nodemonJSONTemplate } from './nodemon-template.js';
-import { TargetSetupGeneratorError, TTargetSetupContent } from '../../types.js';
+import {
+  IIntermediateSetupASTToTarget,
+  TargetSetupGeneratorError,
+  TTargetSetupContent,
+} from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
@@ -88,165 +92,167 @@ const license = `/**
 */
 `; // TODO get this dynamically from the config file
 
-export const generateSetupFiles = (
-  params: IntermediateAST,
-  options: TTranspileOptions,
-): TTargetSetupContent[] | TargetSetupGeneratorError => {
-  const { setup, core } = params;
-  const { sourceDirPath } = options;
-  const setupData = setup;
-  const bitloopsModel = core;
+export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarget {
+  generateSetupFiles = (
+    params: IntermediateAST,
+    options: TTranspileOptions,
+  ): TTargetSetupContent[] | TargetSetupGeneratorError => {
+    const { setup, core } = params;
+    const { sourceDirPath } = options;
+    const setupData = setup;
+    const bitloopsModel = core;
 
-  const formatterConfig = options.formatterConfig ?? {
-    semi: true,
-    parser: 'typescript',
-    singleQuote: true,
-  };
-
-  const result: TTargetSetupContent[] = [];
-  for (const [_fileId, setupTree] of Object.entries(setupData)) {
-    // console.log('Generating system files...');
-    const setupGenerator = new SetupTypeScript();
-    const pathsAndContents: TSetupOutput[] = [];
-
-    const allServers = groupServers(setupTree);
-    const repoConnectionDefinitions =
-      setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
-        BitloopsTypesMapping.TRepoConnectionDefinition,
-      );
-    const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
-      BitloopsTypesMapping.TRouterDefinition,
-    );
-
-    // Step 1. Generate routes files
-    const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
-    // console.log('routes:', routes);
-    // console.log('--------------------------------');
-    routes.forEach((router) => {
-      pathsAndContents.push(router);
-    });
-
-    // Step 2. Generate routers files
-    const routers = setupGenerator.generateAPIs(allServers, license);
-    // console.log('routers:', routers);
-    // console.log('--------------------------------');
-    routers.forEach((router) => {
-      pathsAndContents.push(router);
-    });
-
-    // Step 3. Generate DIs
-    const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
-      BitloopsTypesMapping.TUseCaseDefinition,
-    );
-    const repoAdapterDefinitions =
-      setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
-        BitloopsTypesMapping.TRepoAdapterDefinition,
-      );
-    const controllerDIs = setupGenerator.generateDIs(
-      routerDefinitions,
-      useCaseDefinitions,
-      repoAdapterDefinitions,
-      bitloopsModel,
-      setupTypeMapper,
-      license,
-    );
-    // console.log('controllerDIs:', controllerDIs);
-    // console.log('--------------------------------');
-    controllerDIs.forEach((controllerDI) => {
-      pathsAndContents.push(controllerDI);
-    });
-
-    // Step 4. Setup server file
-    const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);
-    // console.log('serverSetup:', serverSetup);
-    // console.log('--------------------------------');
-    serverSetup.forEach((server) => {
-      pathsAndContents.push(server);
-    });
-
-    // Step 5. Startup File
-    const startupFile = setupGenerator.generateStartupFile(
-      allServers,
-      repoConnectionDefinitions,
-      setupTypeMapper,
-      license,
-    );
-    // console.log('startupFile:', startupFile);
-    // console.log('--------------------------------');
-    pathsAndContents.push(startupFile);
-
-    // Step 6. Package files
-
-    const packageDefinitions = setupTree.getRootChildrenNodesValueByType<TPackageConcretion>(
-      BitloopsTypesMapping.TPackageConcretion,
-    );
-    const packageFiles = setupGenerator.generatePackageFiles(
-      packageDefinitions,
-      sourceDirPath,
-      setupTypeMapper,
-    );
-    packageFiles.forEach((packageFile) => {
-      pathsAndContents.push(packageFile);
-    });
-
-    // Step 7. Generate repo connections
-    const repoConnections = setupGenerator.generateRepoConnections(repoConnectionDefinitions);
-    repoConnections.forEach((repoConnection) => {
-      pathsAndContents.push(repoConnection);
-    });
-
-    // Step 8. Generate domain and application errors
-    const appDomainErrors = setupGenerator.generateAppDomainErrors(core);
-    appDomainErrors.forEach((appDomainError) => {
-      // console.log('appDomainError:', appDomainError);
-      pathsAndContents.push(appDomainError);
-    });
-
-    // Step 9. Generate rules
-    const rules = setupGenerator.generateRules(core);
-    rules.forEach((rule) => {
-      // console.log('rule:', rule);
-      pathsAndContents.push(rule);
-    });
-
-    // Step 10. Write files
-    pathsAndContents.forEach((pathAndContent) => {
-      const { fileType, content, fileId } = pathAndContent;
-      result.push({
-        fileId: path.normalize(`./${setupTypeMapper[fileType]}${fileId}`),
-        fileType: fileType,
-        fileContent: prettier.format(content, formatterConfig),
-      });
-    });
-
-    // Step 11. Write package.json
-    // TODO add project name and other info through setupData config.set(XXX, YYY)
-    // const packageJSONFilePath = `${outputDirPath}/package.json`;
-    const packageJSON = {
-      ...packageJSONTemplate,
-      dependencies: setupGenerator.getNodeDependencies(),
-      devDependencies: setupGenerator.getNodeDevDependencies(),
+    const formatterConfig = options.formatterConfig ?? {
+      semi: true,
+      parser: 'typescript',
+      singleQuote: true,
     };
-    result.push({
-      fileId: 'package.json',
-      fileType: 'Config',
-      fileContent: prettier.format(JSON.stringify(packageJSON), { parser: 'json' }),
-    });
-    result.push({
-      fileId: 'tsconfig.json',
-      fileType: 'Config',
-      fileContent: prettier.format(JSON.stringify(tsConfigJSONTemplate), {
-        parser: 'json',
-      }),
-    });
-    result.push({
-      fileId: 'nodemon.json',
-      fileType: 'Config',
-      fileContent: prettier.format(JSON.stringify(nodemonJSONTemplate), {
-        parser: 'json',
-      }),
-    });
-  }
 
-  return result;
-};
+    const result: TTargetSetupContent[] = [];
+    for (const [_fileId, setupTree] of Object.entries(setupData)) {
+      // console.log('Generating system files...');
+      const setupGenerator = new SetupTypeScript();
+      const pathsAndContents: TSetupOutput[] = [];
+
+      const allServers = groupServers(setupTree);
+      const repoConnectionDefinitions =
+        setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
+          BitloopsTypesMapping.TRepoConnectionDefinition,
+        );
+      const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
+        BitloopsTypesMapping.TRouterDefinition,
+      );
+
+      // Step 1. Generate routes files
+      const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
+      // console.log('routes:', routes);
+      // console.log('--------------------------------');
+      routes.forEach((router) => {
+        pathsAndContents.push(router);
+      });
+
+      // Step 2. Generate routers files
+      const routers = setupGenerator.generateAPIs(allServers, license);
+      // console.log('routers:', routers);
+      // console.log('--------------------------------');
+      routers.forEach((router) => {
+        pathsAndContents.push(router);
+      });
+
+      // Step 3. Generate DIs
+      const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
+        BitloopsTypesMapping.TUseCaseDefinition,
+      );
+      const repoAdapterDefinitions =
+        setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
+          BitloopsTypesMapping.TRepoAdapterDefinition,
+        );
+      const controllerDIs = setupGenerator.generateDIs(
+        routerDefinitions,
+        useCaseDefinitions,
+        repoAdapterDefinitions,
+        bitloopsModel,
+        setupTypeMapper,
+        license,
+      );
+      // console.log('controllerDIs:', controllerDIs);
+      // console.log('--------------------------------');
+      controllerDIs.forEach((controllerDI) => {
+        pathsAndContents.push(controllerDI);
+      });
+
+      // Step 4. Setup server file
+      const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);
+      // console.log('serverSetup:', serverSetup);
+      // console.log('--------------------------------');
+      serverSetup.forEach((server) => {
+        pathsAndContents.push(server);
+      });
+
+      // Step 5. Startup File
+      const startupFile = setupGenerator.generateStartupFile(
+        allServers,
+        repoConnectionDefinitions,
+        setupTypeMapper,
+        license,
+      );
+      // console.log('startupFile:', startupFile);
+      // console.log('--------------------------------');
+      pathsAndContents.push(startupFile);
+
+      // Step 6. Package files
+
+      const packageDefinitions = setupTree.getRootChildrenNodesValueByType<TPackageConcretion>(
+        BitloopsTypesMapping.TPackageConcretion,
+      );
+      const packageFiles = setupGenerator.generatePackageFiles(
+        packageDefinitions,
+        sourceDirPath,
+        setupTypeMapper,
+      );
+      packageFiles.forEach((packageFile) => {
+        pathsAndContents.push(packageFile);
+      });
+
+      // Step 7. Generate repo connections
+      const repoConnections = setupGenerator.generateRepoConnections(repoConnectionDefinitions);
+      repoConnections.forEach((repoConnection) => {
+        pathsAndContents.push(repoConnection);
+      });
+
+      // Step 8. Generate domain and application errors
+      const appDomainErrors = setupGenerator.generateAppDomainErrors(core);
+      appDomainErrors.forEach((appDomainError) => {
+        // console.log('appDomainError:', appDomainError);
+        pathsAndContents.push(appDomainError);
+      });
+
+      // Step 9. Generate rules
+      const rules = setupGenerator.generateRules(core);
+      rules.forEach((rule) => {
+        // console.log('rule:', rule);
+        pathsAndContents.push(rule);
+      });
+
+      // Step 10. Write files
+      pathsAndContents.forEach((pathAndContent) => {
+        const { fileType, content, fileId } = pathAndContent;
+        result.push({
+          fileId: path.normalize(`./${setupTypeMapper[fileType]}${fileId}`),
+          fileType: fileType,
+          fileContent: prettier.format(content, formatterConfig),
+        });
+      });
+
+      // Step 11. Write package.json
+      // TODO add project name and other info through setupData config.set(XXX, YYY)
+      // const packageJSONFilePath = `${outputDirPath}/package.json`;
+      const packageJSON = {
+        ...packageJSONTemplate,
+        dependencies: setupGenerator.getNodeDependencies(),
+        devDependencies: setupGenerator.getNodeDevDependencies(),
+      };
+      result.push({
+        fileId: 'package.json',
+        fileType: 'Config',
+        fileContent: prettier.format(JSON.stringify(packageJSON), { parser: 'json' }),
+      });
+      result.push({
+        fileId: 'tsconfig.json',
+        fileType: 'Config',
+        fileContent: prettier.format(JSON.stringify(tsConfigJSONTemplate), {
+          parser: 'json',
+        }),
+      });
+      result.push({
+        fileId: 'nodemon.json',
+        fileType: 'Config',
+        fileContent: prettier.format(JSON.stringify(nodemonJSONTemplate), {
+          parser: 'json',
+        }),
+      });
+    }
+
+    return result;
+  };
+}
