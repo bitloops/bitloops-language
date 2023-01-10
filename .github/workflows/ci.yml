@@ -31,7 +31,7 @@ jobs:
       - name: Install Antlr
         uses: wei/wget@v1
         with:
-          args: https://repo1.maven.org/maven2/org/antlr/antlr4/4.10.1/antlr4-4.10.1-complete.jar -P /usr/local/lib
+          args: https://www.antlr.org/download/antlr-4.10.1-complete.jar -P /usr/local/lib
 
       # - name: '🔧 install npm@latest'
       #   working-directory: ./transpiler
