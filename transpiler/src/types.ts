@@ -24,14 +24,14 @@ import { TClassTypesValues } from './helpers/mappings.js';
 export type TModule = {
   Props?: TProps;
   Controller?: TRESTController | TGraphQLController;
-  UseCases?: TUseCase;
-  ApplicationErrors?: TApplicationErrors; //TODO change
-  DomainErrors?: TDomainErrors;
-  RootEntities?: TRootEntity;
+  UseCase?: TUseCase;
+  ApplicationError?: TApplicationError; //TODO change
+  DomainError?: TDomainError;
+  RootEntity?: TRootEntity;
   Entity?: TEntity;
   ValueObject?: TValueObject;
-  DTOs?: TDTO;
-  Structs?: TStructDeclaration;
+  DTO?: TDTO;
+  Struct?: TStructDeclaration;
   Package?: TPackage;
   DomainRule?: TDomainRule;
   RepoPort?: TRepoPort;
@@ -262,8 +262,6 @@ export const DomainErrorIdentifier = 'identifier';
 export type TErrorMessage = { message: TExpression };
 export type TErrorId = { errorId: TExpression };
 
-export type TDomainErrors = Record<string, TDomainError>;
-
 export type TDomainError = {
   [DomainErrorKey]: TDomainErrorValue;
 };
@@ -286,7 +284,6 @@ export type TApplicationErrorValue = {
   TErrorId &
   Partial<TParameterList>;
 
-export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
   isInstanceOf: TExpression & { class: string };
 };

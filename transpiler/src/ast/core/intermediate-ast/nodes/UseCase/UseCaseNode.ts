@@ -6,7 +6,7 @@ import { StatementNode } from '../statements/Statement.js';
 import { UseCaseExecuteNode } from './UseCaseExecuteNode.js';
 
 export class UseCaseNode extends ClassTypeNode {
-  private static classType = ClassTypes.UseCases;
+  private static classType = ClassTypes.UseCase;
   private static classNodeName = 'UseCase';
 
   constructor(metadata?: TNodeMetadata) {

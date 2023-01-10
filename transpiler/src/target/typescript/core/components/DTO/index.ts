@@ -46,7 +46,7 @@ const DTOToTargetLanguage = (dto: TDTO): TTargetDependenciesTypeScript => {
   dependencies.push(...variablesResult.dependencies);
 
   dependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.DTOs,
+    classType: ClassTypes.DTO,
     className: dtoName,
   });
 

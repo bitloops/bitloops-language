@@ -30,7 +30,7 @@ import { isTargetGeneratorError } from '../../../../src/target/typescript/guards
 describe('Valid DTO with fields to Typescript', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const classType = ClassTypes.DTOs;
+  const classType = ClassTypes.DTO;
   const formatterConfig = null;
   const language = 'TypeScript';
 
@@ -82,7 +82,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
 
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const classType = ClassTypes.DTOs;
+  const classType = ClassTypes.DTO;
   const formatterConfig = null;
   const language = 'TypeScript';
 

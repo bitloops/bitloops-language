@@ -266,10 +266,7 @@ export class SetupTypeScript implements ISetup {
       const { useCaseExpression } = useCase;
       const { UseCaseIdentifier } = useCaseExpression;
       // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.UseCases,
-        UseCaseIdentifier,
-      );
+      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCase, UseCaseIdentifier);
       result += `import { ${UseCaseIdentifier} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;
@@ -588,7 +585,7 @@ export { routers };
         );
         const domainRes = this.handleDomainApplicationError(
           {
-            classType: ClassTypes.DomainErrors,
+            classType: ClassTypes.DomainError,
             errorModels: domainErrors,
           },
           boundedContextName,
@@ -610,7 +607,7 @@ export { routers };
 
   private handleDomainApplicationError(
     params:
-      | { classType: 'DomainErrors'; errorModels: TDomainError[] } // ClassTypes.DomainErrors || ClassTypes.ApplicationError
+      | { classType: 'DomainError'; errorModels: TDomainError[] } // ClassTypes.DomainErrors || ClassTypes.ApplicationError
       | { classType: 'ApplicationError'; errorModels: TApplicationError[] },
     boundedContextName: string,
     moduleName: string,
@@ -648,9 +645,9 @@ export { routers };
   // Get Error name Depending on the classType
   private getErrorName(
     errorModel: TDomainError | TApplicationError,
-    classTypeName: 'DomainErrors' | 'ApplicationError',
+    classTypeName: 'DomainError' | 'ApplicationError',
   ): string {
-    if (classTypeName === 'DomainErrors') {
+    if (classTypeName === 'DomainError') {
       const error = errorModel[DomainErrorKey] as TDomainErrorValue;
       return error[DomainErrorIdentifier];
     } else {

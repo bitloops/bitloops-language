@@ -136,7 +136,7 @@ export const getValueAndFileNameOfImport = (
   dependencyString: string,
   classType?: TClassTypesValues,
 ): { value: string; fileName: string } => {
-  if (classType === ClassTypes.DomainErrors) {
+  if (classType === ClassTypes.DomainError) {
     return {
       value: 'DomainErrors',
       fileName: 'index',
@@ -167,7 +167,7 @@ const getClassTypeFromIdentifier = (
 } => {
   if (dependencyName.endsWith('DTO')) {
     return {
-      classType: ClassTypes.DTOs,
+      classType: ClassTypes.DTO,
     };
   } else if (dependencyName.endsWith('Entity')) {
     return {
@@ -187,12 +187,12 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('UseCase')) {
     return {
-      classType: ClassTypes.UseCases,
+      classType: ClassTypes.UseCase,
     };
   } else if (dependencyName.endsWith('Error')) {
     if (dependencyName.startsWith('DomainErrors'))
       return {
-        classType: ClassTypes.DomainErrors,
+        classType: ClassTypes.DomainError,
       };
     else if (dependencyName.startsWith('ApplicationErrors')) {
       return {
