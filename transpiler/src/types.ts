@@ -401,7 +401,7 @@ export type TExpressionValues =
   | TArrayLiteralExpression
   | TToStringExpression
   | TLiteral
-  | TIdentifierExpr
+  | TIdentifierExpression
   | TMethodCallExpression
   | TThisExpression
   | TMemberDotExpression
@@ -423,7 +423,7 @@ export type TMemberDotExpression = {
   };
 };
 
-export type TIdentifierExpr = {
+export type TIdentifierExpression = {
   identifier: string;
 };
 export type TToStringExpression = {
@@ -1185,12 +1185,6 @@ export type TEnvironmentVariableExpression = {
   environmentVariable: {
     identifier: string;
     defaultValue?: TLiteralValues;
-  };
-};
-
-export type TIdentifierExpression = {
-  identifier: {
-    value: string;
   };
 };
 

@@ -17,14 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TIdentifierExpr, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import { TIdentifierExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { getChildDependencies } from '../../../dependencies.js';
 
 const isErrorTypeEvaluationString = (value: string): boolean =>
   value.startsWith('DomainErrors.') || value.startsWith('ApplicationErrors.');
 
 const identifierExpressionToTargetLanguage = (
-  expressionValue: TIdentifierExpr,
+  expressionValue: TIdentifierExpression,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const { identifier } = expressionValue;
