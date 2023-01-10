@@ -1,9 +1,6 @@
 import {
   TExpression,
   TStatement,
-  TVariableDeclaration,
-  TGraphQLServerInstance,
-  TRESTServerInstance,
   TDomainPrivateMethodValuesOkErrorReturnType,
   TDomainPrivateMethodValuesPrimaryReturnType,
   TAssignmentExpression,
@@ -30,13 +27,6 @@ export const isPrimitive = (value: any): boolean => {
   return value !== Object(value);
 };
 
-const isRestServerInstance = (
-  serverInstance: TRESTServerInstance | TGraphQLServerInstance,
-): serverInstance is TRESTServerInstance => {
-  if ('restServer' in serverInstance) return true;
-  else return false;
-};
-
 const hasOkErrorReturnType = (
   privateMethodValues:
     | TDomainPrivateMethodValuesPrimaryReturnType
@@ -60,12 +50,6 @@ const isThisDeclaration = (
   if (isThisExpression(leftMost)) {
     return true;
   }
-  return false;
-};
-
-const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration => {
-  if (typeof value === 'string') return false;
-  if ('variableDeclaration' in value) return true;
   return false;
 };
 
@@ -106,13 +90,4 @@ const isVO = (name): name is string => {
   return name.endsWith('VO');
 };
 
-export {
-  isUndefined,
-  isArray,
-  isRestServerInstance,
-  hasOkErrorReturnType,
-  isExpression,
-  isVO,
-  isVariableDeclaration,
-  isThisDeclaration,
-};
+export { isUndefined, isArray, hasOkErrorReturnType, isExpression, isVO, isThisDeclaration };

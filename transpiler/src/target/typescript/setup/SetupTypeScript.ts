@@ -24,7 +24,6 @@ import {
   getLanguageFileSuffixExtension,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
-import { isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
   // TRouterInstanceName,
   TServerType,
@@ -558,7 +557,7 @@ export { routers };
     for (const [serverType, { serverInstances }] of Object.entries(servers)) {
       for (let i = 0; i < serverInstances.length; i++) {
         const serverInstance = serverInstances[i];
-        if (!isRestServerInstance(serverInstance)) {
+        if (!isRestServer(serverInstance)) {
           continue;
         }
         output.push(
