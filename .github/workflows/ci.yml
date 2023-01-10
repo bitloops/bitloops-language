@@ -16,7 +16,7 @@ jobs:
       - name: '🔧 setup node'
         uses: actions/setup-node@v3
         with:
-          node-version: 17
+          node-version: 16
 
       - name: Install Java
         uses: actions/setup-java@v3
@@ -28,9 +28,9 @@ jobs:
         shell: bash
         run: curl -s -o antlr-4.10.1-complete.jar https://repo1.maven.org/maven2/org/antlr/antlr4/4.10.1/antlr4-4.10.1-complete.jar
 
-      - name: '🔧 install npm@latest'
-        working-directory: ./transpiler
-        run: npm i -g npm@latest
+      # - name: '🔧 install npm@latest'
+      #   working-directory: ./transpiler
+      #   run: npm i -g npm@latest
 
       - name: npm install
         working-directory: ./transpiler
