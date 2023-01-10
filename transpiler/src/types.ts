@@ -723,6 +723,7 @@ export type TRepoAdapterOptions = {
 export const concretedRepoPortKey = 'concretedRepoPort';
 export type TConcretedRepoPort = string;
 
+export type TRepoAdapterConnectionInfo = TRepoConnectionExpression;
 export const repoAdapterExpressionKey = 'repoAdapterExpression';
 export type TRepoAdapterExpression = {
   [repoAdapterExpressionKey]: {
@@ -730,7 +731,8 @@ export type TRepoAdapterExpression = {
   } & TRepoAdapterClassName &
     TRepoDatabaseType &
     TRepoAdapterOptions &
-    TBoundedContextModule;
+    TBoundedContextModule &
+    TRepoAdapterConnectionInfo;
 };
 
 export const repoAdapterKey = 'repoAdapter';

@@ -1,5 +1,5 @@
-import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { IntermediateASTNode } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTNode } from '../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 
 export interface INodeModelToASTTargetASTTransformer {
   run(): void;

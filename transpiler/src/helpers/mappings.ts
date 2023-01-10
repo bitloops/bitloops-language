@@ -221,7 +221,7 @@ const BitloopsTypesMapping = {
   TRepoAdapterOptions: 'TRepoAdapterOptions',
   TConcretedRepoPort: 'TConcretedRepoPort',
   TRepoAdapterExpression: 'TRepoAdapterExpression',
-  TRepoAdapterDefinition: 'TRepoAdapterDefinition',
+  TSetupRepoAdapterDefinition: 'TSetupRepoAdapterDefinition',
   TRepoAdapter: 'TRepoAdapter',
   TControllerResolver: 'TControllerResolver',
   TControllerResolvers: 'TControllerResolvers',

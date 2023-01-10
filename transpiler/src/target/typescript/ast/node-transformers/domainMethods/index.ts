@@ -1,11 +1,11 @@
-import { ExpressionBuilder } from '../../../../ast/core/intermediate-ast/builders/expressions/ExpressionBuilder.js';
-import { IdentifierExpressionBuilder } from '../../../../ast/core/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
-import { MemberDotExpressionNodeBuilder } from '../../../../ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
-import { ThisExpressionNodeBuilder } from '../../../../ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
-import { DomainCreateNode } from '../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
-import { IntermediateASTNode } from '../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { PrivateMethodDeclarationNode } from '../../../../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
-import { PublicMethodDeclarationNode } from '../../../../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { ExpressionBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { IdentifierExpressionBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
+import { MemberDotExpressionNodeBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { ThisExpressionNodeBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
+import { DomainCreateNode } from '../../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { PrivateMethodDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { PublicMethodDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
 class BaseDomainMethodNodeTSTransformer<

@@ -27,6 +27,7 @@ export class SetupRepoAdapterDefinitionBuilder implements IBuilder<TSetupRepoAda
     moduleName,
     concretedRepoPort,
     className,
+    connectionOptions,
   }: {
     dbType: TRepoSupportedTypes;
     options: TEvaluationFields;
@@ -34,6 +35,7 @@ export class SetupRepoAdapterDefinitionBuilder implements IBuilder<TSetupRepoAda
     moduleName: string;
     concretedRepoPort: TConcretedRepoPort;
     className: string;
+    connectionOptions: TEvaluationFields;
   }): SetupRepoAdapterDefinitionBuilder {
     this.repoAdapterExpression = new RepoAdapterExpressionBuilder()
       .withBoundedContextModule({ boundedContextName, moduleName })
@@ -41,6 +43,7 @@ export class SetupRepoAdapterDefinitionBuilder implements IBuilder<TSetupRepoAda
       .withDBType(dbType)
       .withOptions(options)
       .withConcretedRepoPort(concretedRepoPort)
+      .withConnectionOptions(connectionOptions)
       .build();
     return this;
   }
