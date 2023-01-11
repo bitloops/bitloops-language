@@ -47,9 +47,7 @@ export class RestControllerTypeTransformer implements IASTToCompletedASTTransfor
             identifierNode.getValue().RESTControllerIdentifier,
           );
           restControllerNodeFound.addChild(serverTypeNode);
-          this.intermediateASTCore[boundedContextName][moduleName].buildValueRecursiveBottomUp(
-            restControllerNodeFound,
-          );
+          coreTree.buildValueRecursiveBottomUp(restControllerNodeFound);
         }
       }
     }
