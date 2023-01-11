@@ -1,6 +1,8 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementListNode } from '../statements/StatementList.js';
+import { ReturnOkTypeNode } from './ReturnOkTypeNode.js';
 
 export class ReturnOkErrorTypeNode extends IntermediateASTNode {
   private static classNodeName = 'returnType';
@@ -9,7 +11,7 @@ export class ReturnOkErrorTypeNode extends IntermediateASTNode {
     super(BitloopsTypesMapping.TOkErrorReturnType, metadata, ReturnOkErrorTypeNode.classNodeName);
   }
 
-  getStatementList(): StatementListNode | null {
+  getStatementListOfParent(): StatementListNode | null {
     let parent = this.getParent();
     let statementList = parent.getStatementListNode();
     while (!statementList && !parent.isRoot()) {
@@ -19,10 +21,20 @@ export class ReturnOkErrorTypeNode extends IntermediateASTNode {
     return statementList;
   }
 
-  //TODO ok/primary/primitive
+  getReturnOkType(): ReturnOkTypeNode {
+    return this.getChildNodeByType<ReturnOkTypeNode>(BitloopsTypesMapping.TReturnOkType);
+  }
+
   isReturnTypeVoid(): boolean {
-    if (this.getValue() === 'void') {
-      return true;
+    const returnOk = this.getReturnOkType();
+    const returnOkType = returnOk
+      .getBitloopsPrimaryType()
+      .getChildren()[0] as BitloopsPrimaryTypeNode;
+    if (returnOkType.isPrimitiveType()) {
+      const typeValue = returnOkType.getTypeValue();
+      if (typeValue === 'void') {
+        return true;
+      }
     }
     return false;
   }

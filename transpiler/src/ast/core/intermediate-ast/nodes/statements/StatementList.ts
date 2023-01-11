@@ -39,7 +39,7 @@ export class StatementListNode extends IntermediateASTNode {
     return null;
   }
 
-  getReturnOKStatementsOfNode(): ReturnOKStatementNode[] {
+  getReturnOKStatements(): ReturnOKStatementNode[] {
     return this.getChildrenNodesByType(
       BitloopsTypesMapping.TReturnOKStatement,
     ) as ReturnOKStatementNode[];
