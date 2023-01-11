@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { ReturnOKStatementNode } from './ReturnOKStatementNode.js';
 import { StatementNode } from './Statement.js';
 
 export class StatementListNode extends IntermediateASTNode {
@@ -36,5 +37,11 @@ export class StatementListNode extends IntermediateASTNode {
       parent = parent.getParent();
     }
     return null;
+  }
+
+  getReturnOKStatementsOfNode(): ReturnOKStatementNode[] {
+    return this.getChildrenNodesByType(
+      BitloopsTypesMapping.TReturnOKStatement,
+    ) as ReturnOKStatementNode[];
   }
 }

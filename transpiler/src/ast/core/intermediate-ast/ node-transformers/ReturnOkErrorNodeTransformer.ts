@@ -6,8 +6,8 @@ import { NodeModelToTargetASTTransformer } from './index.js';
 
 export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransformer<ReturnOkErrorTypeNode> {
   run(): void {
-    this.addReturnOkVoidStatement();
     this.modifyReturnOKErrorStatements();
+    this.addReturnOkVoidStatement();
   }
 
   private modifyReturnOKErrorStatements(): void {
@@ -37,18 +37,16 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
   }
 
   private addReturnOkVoidStatement(): void {
-    const parentNode = this.node.getParent();
-    const returnStatements = this.tree.getReturnStatementsOfNode(parentNode);
-    if (returnStatements.length === 0) {
+    const parentStatementListNode = this.node.getStatementList();
+
+    const returnOKStatements = parentStatementListNode.getReturnOKStatementsOfNode();
+
+    //If void
+    if (returnOKStatements.length === 0 && this.node.isReturnTypeVoid()) {
       const returnOKNode = new ReturnOKStatementNodeBuilder().build();
 
-      //We only have one statementList
-      const [statementListNode] = parentNode
-        .getChildren()
-        .filter((node) => node.IsStatementListNode());
-
-      if (statementListNode) {
-        statementListNode.addChild(returnOKNode);
+      if (parentStatementListNode) {
+        parentStatementListNode.addChild(returnOKNode);
       }
     }
   }
