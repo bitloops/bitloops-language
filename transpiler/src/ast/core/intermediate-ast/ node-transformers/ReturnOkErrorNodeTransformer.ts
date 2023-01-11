@@ -38,12 +38,11 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
 
   private addReturnOkVoidStatement(): void {
     const parentStatementListNode = this.node.getStatementListOfParent();
-    const returnOKStatements = parentStatementListNode.getReturnOKStatements();
+    if (parentStatementListNode) {
+      const returnOKStatements = parentStatementListNode.getReturnOKStatements();
+      if (returnOKStatements.length === 0 && this.node.isReturnTypeVoid()) {
+        const returnOKNode = new ReturnOKStatementNodeBuilder().build();
 
-    if (returnOKStatements.length === 0 && this.node.isReturnTypeVoid()) {
-      const returnOKNode = new ReturnOKStatementNodeBuilder().build();
-
-      if (parentStatementListNode) {
         parentStatementListNode.addChild(returnOKNode);
       }
     }
