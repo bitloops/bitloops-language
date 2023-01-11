@@ -115,7 +115,7 @@ export type TParameter = {
 // props, TodoProps
 export type TDomainCreateParameter = {
   domainCreateParameter: {
-    [PropsIdentifierKey]: TParameterIdentifier;
+    [identifierKey]: TIdentifier;
     parameterType: TPropsIdentifier;
   };
 };

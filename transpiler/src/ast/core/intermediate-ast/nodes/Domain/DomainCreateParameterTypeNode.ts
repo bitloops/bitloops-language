@@ -6,9 +6,14 @@ export class DomainCreateParameterTypeNode extends IntermediateASTNode {
 
   constructor(metadata?: TNodeMetadata) {
     super(
-      BitloopsTypesMapping.TDomainCreateMethod,
+      BitloopsTypesMapping.TDomainCreateParameterType,
       metadata,
       DomainCreateParameterTypeNode.classNodeName,
     );
+  }
+
+  getType(): string {
+    const value = this.getValue();
+    return value[this.getClassNodeName()];
   }
 }

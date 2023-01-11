@@ -71,7 +71,7 @@ export const literalExpressionToTargetLanguage = (
   // `\`${backTickString}\``
   if (LiteralTypeIdentifiers.isTemplateStringLiteral) {
     const { templateStringLiteral } = literal;
-    return { output: templateStringLiteral, dependencies: [] };
+    return { output: '`' + templateStringLiteral + '`', dependencies: [] };
   }
 
   throw new Error('Literal not supported');

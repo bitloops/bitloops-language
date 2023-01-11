@@ -25,7 +25,7 @@ export class SetupTypescriptMongoRepo implements ISetupTypescriptMongoRepo {
     configFileContent: string;
     indexFileContent: string;
   } {
-    let content: string;
+    let content = '';
 
     content += "import { MongoClient } from 'mongodb';\n";
 

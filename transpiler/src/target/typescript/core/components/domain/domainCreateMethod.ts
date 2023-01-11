@@ -18,16 +18,23 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  PropsIdentifierKey,
+  identifierKey,
   TDomainCreateMethod,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import {
+  BitloopsTypesMapping,
+  ClassTypes,
+  TClassTypesValues,
+} from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
 import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 
-export const domainCreate = (variable: TDomainCreateMethod): TTargetDependenciesTypeScript => {
+export const domainCreate = (
+  variable: TDomainCreateMethod,
+  classType: TClassTypesValues = ClassTypes.ValueObject,
+): TTargetDependenciesTypeScript => {
   const { domainCreateParameter, returnType, statements } = variable.create;
 
   const statementsResult = {
@@ -44,7 +51,6 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
   }
 
   const domainCreateParameterType = domainCreateParameter.parameterType;
-  const domainCreateParameterValue = domainCreateParameter[PropsIdentifierKey];
   const returnOkType = returnType.ok.type;
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
@@ -61,7 +67,8 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
   const producedConstructor = internalConstructor(
     propsName,
     statementsResult.thisStatements,
-    ClassTypes.ValueObject,
+    classType,
+    // ClassTypes.ValueObject,
   );
 
   let statementsModel = modelToTargetLanguage({
@@ -86,6 +93,7 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
     };
   }
 
+  const domainCreateParameterValue = domainCreateParameter[identifierKey];
   const result = `${producedConstructor.output} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {

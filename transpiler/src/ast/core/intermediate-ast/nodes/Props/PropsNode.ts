@@ -24,6 +24,11 @@ export class PropsNode extends ClassTypeNode {
     return identifierNode;
   }
 
+  public getIdentifierValue(): string {
+    const identifierNode: PropsIdentifierNode = this.getPropsIdentifierNode();
+    return identifierNode.getValue().propsIdentifier;
+  }
+
   public getFieldListNode(): FieldListNode {
     const fieldListNode: FieldListNode = this.getChildNodeByType(BitloopsTypesMapping.TVariables);
     return fieldListNode;

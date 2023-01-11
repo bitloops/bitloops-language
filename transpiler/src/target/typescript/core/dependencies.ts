@@ -100,7 +100,6 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
   }
   const result: TDependencyChildTypescript[] = [];
   for (const dependencyString of dependencyStrings) {
-    // for void etc
     if (isBitloopsPrimitive(dependencyString)) {
       continue;
     }
