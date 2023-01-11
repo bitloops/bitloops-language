@@ -38,6 +38,9 @@ import { MethodCallExpressionNodeBuilder } from '../../../../../src/ast/core/int
 import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
 import { GetClassNodeBuilder } from './../../../../../src/ast/core/intermediate-ast/builders/expressions/GetClassBuilder.js';
+import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { DefaultEnvVarValueNode } from '../../../../../src/ast/core/intermediate-ast/nodes/setup/DefaultEnvVarValueNode.js';
+import { EnvironmentalVariableNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -335,5 +338,20 @@ export class ExpressionBuilderDirector {
     const methodCallLeftExpr = this.buildMemberDotExpression(dependencyExpression, method);
     const methodCallExpression = this.buildMethodCallExpression(methodCallLeftExpr, args);
     return methodCallExpression;
+  }
+
+  buildEnvironmentalVariableWithDefault(
+    env: IdentifierNode,
+    defaultEnv: DefaultEnvVarValueNode,
+  ): ExpressionNode {
+    const envExpression = new ExpressionBuilder()
+      .withExpression(
+        new EnvironmentalVariableNodeBuilder()
+          .withIdentifier(env)
+          .withDefaultValue(defaultEnv)
+          .build(),
+      )
+      .build();
+    return envExpression;
   }
 }

@@ -1,32 +1,41 @@
+import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { PropsIdentifierNode } from '../../../../../../../ast/core/intermediate-ast/nodes/Props/PropsIdentifierNode.js';
+import { ValueObjectDeclarationNode } from '../../../../../../../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { isVO } from '../../../../../../../helpers/typeGuards.js';
 import {
-  TModule,
   TTargetDependenciesTypeScript,
   TVariable,
   fieldKey,
+  // TProps,
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
-import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitloopsPrimType.js';
+// import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitloopsPrimType.js';
 
 // TODO TPropsValues where deleted, fix this
 type TPropsValues = any;
-const getVOProps = (voName: string, model: TModule): TPropsValues => {
-  const voModel = model.ValueObject[voName];
-  const voPropsNameType = voModel.create.parameter.type;
-  if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsNameType)) {
-    throw new Error('Array props are not supported');
-  }
-  const { output: voPropsName } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: { type: voPropsNameType },
-  });
-  const voProps = model.Props[voPropsName];
+const getVOProps = (voName: string, model: IntermediateASTTree): PropsIdentifierNode => {
+  const voModel = model.getRootChildrenNodesByType(
+    BitloopsTypesMapping.TValueObject,
+  ) as ValueObjectDeclarationNode[];
+
+  const voModelFiltered = voModel.filter((vo) => vo.getIdentifier() === voName);
+  const voCreate = voModelFiltered[0].getCreateNode();
+  const voParameter = voCreate.getParameterNode();
+  const voPropsNameType = voParameter.getTypeNode();
+  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsNameType)) {
+  //   throw new Error('Array props are not supported');
+  // }
+  // const { output: voPropsName } = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TBitloopsPrimaryType,
+  //   value: { type: voPropsNameType },
+  // });
+  const voProps = voPropsNameType;
   return voProps;
 };
 
-const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
+const getVODeepFields = (voProps: TPropsValues, model: IntermediateASTTree): string[] => {
   const voDeepFields = [];
   voProps.variables.forEach((variable) => {
     const { identifier, type } = variable[fieldKey];
@@ -48,22 +57,26 @@ const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
 const getAggregateDeepFields = (
   aggregatePropsModel: TPropsValues,
   aggregateName: string,
-  model: TModule,
+  model: IntermediateASTTree,
 ): string => {
-  return aggregatePropsModel.variables
+  return aggregatePropsModel['Props'].fields
     .filter((variable) => variable[fieldKey].identifier !== 'id')
     .map((variable) => {
       const { identifier: name, type } = variable[fieldKey];
-      if (isVO(type)) {
-        const voProps = getVOProps(type, model);
-        const deepFieldsVO = getVODeepFields(voProps, model);
-        return deepFieldsVO
-          .map((fieldsString) => {
-            const splitFields = fieldsString.split('.');
-            const voFieldName = splitFields[splitFields.length - 1];
-            return `${voFieldName}: ${aggregateName}.${name}.${fieldsString}`;
-          })
-          .join(', ');
+      if ('bitloopsIdentifierType' in type) {
+        const typeName = type['bitloopsIdentifierType'];
+
+        if (isVO(typeName)) {
+          const voProps = getVOProps(type, model);
+          const deepFieldsVO = getVODeepFields(voProps, model);
+          return deepFieldsVO
+            .map((fieldsString) => {
+              const splitFields = fieldsString.split('.');
+              const voFieldName = splitFields[splitFields.length - 1];
+              return `${voFieldName}: ${aggregateName}.${name}.${fieldsString}`;
+            })
+            .join(', ');
+        }
       }
       // TODO check if is Entity and maybe get the id only
       return `${name}: ${aggregateName}.${name}`;
@@ -72,7 +85,7 @@ const getAggregateDeepFields = (
 };
 
 const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable => {
-  const [aggregateIdVariable] = aggregatePropsModel.variables
+  const [aggregateIdVariable] = aggregatePropsModel['Props'].fields
     .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
@@ -81,7 +94,7 @@ const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable =>
 export const fetchTypeScriptAggregateCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TPropsValues,
-  model: TModule,
+  model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(

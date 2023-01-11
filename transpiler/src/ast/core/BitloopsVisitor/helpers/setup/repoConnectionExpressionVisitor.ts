@@ -21,15 +21,15 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { RepoConnectionExpressionNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/RepoConnectionExpressionNodeBuilder.js';
 import { DatabaseTypeNode } from '../../../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
+import { RepoConnectionExpressionNode } from '../../../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
 import { RepoConnectionOptionsNode } from '../../../intermediate-ast/nodes/setup/repo/RepoConnectionOptionsNode.js';
-import { UseCaseExpressionNode } from '../../../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
 export const repoConnectionExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoConnectionExpressionContext,
-): UseCaseExpressionNode => {
+): RepoConnectionExpressionNode => {
   const databaseTypeNode: DatabaseTypeNode = thisVisitor.visit(ctx.repoConnectionType());
 
   const repoConnectionOptions: RepoConnectionOptionsNode = thisVisitor.visit(

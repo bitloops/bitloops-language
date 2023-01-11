@@ -18,30 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TSetupData,
-  PropsIdentifierKey,
-  repoPortKey,
-  RootEntityKey,
   TDependenciesTypeScript,
-  TProps,
-  TReadModel,
-  TRepoAdapters,
-  TRepoPort,
   TRepoSupportedTypes,
-  TRootEntity,
   TTargetDependenciesTypeScript,
+  TRepoAdapter,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
-import { RepoPortTypeIdentifiers } from '../../type-identifiers/repoPort.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
-import { PropsNode } from '../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
-import { ReadModelNode } from '../../../../../ast/core/intermediate-ast/nodes/readModel/ReadModel.js';
 import { RepoPortNode } from '../../../../../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
+import { RepoAdapterNode } from '../../../../../ast/core/intermediate-ast/nodes/RepoAdapterNode.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
   switch (dbType) {
@@ -75,102 +63,46 @@ const getRepoHeader = (
   };
 };
 
-// TODO, TProps where deleted, fix this
-type TPropsValues = any;
-const getPropsModel = (
-  repoPort: TRepoPort,
-  model: IntermediateASTTree,
-): { output: TPropsValues; dependencies: TDependenciesTypeScript } => {
-  let propsModel: TPropsValues;
-  let dependencies = [];
-  if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPort)) {
-    const { entityIdentifier } = repoPort[repoPortKey];
-    const aggregateModels = model.getRootChildrenNodesByType(
-      BitloopsTypesMapping.TRootEntity,
-    ) as RootEntityDeclarationNode[];
-    const aggregateModelNode = aggregateModels.find(
-      (node) => node.getClassName() === entityIdentifier,
-    );
-    const aggregateModel = aggregateModelNode.getValue() as TRootEntity;
-    const aggregatePropsNameType =
-      aggregateModel[RootEntityKey].entityValues.create.domainCreateParameter[PropsIdentifierKey];
-
-    const { output: aggregatePropsName, dependencies: aggregatePropsTypeDependencies } =
-      modelToTargetLanguage({
-        type: BitloopsTypesMapping.TBitloopsPrimaryType,
-        value: { type: aggregatePropsNameType },
-      });
-    dependencies = [...dependencies, ...aggregatePropsTypeDependencies];
-
-    const propsModels = model.getRootChildrenNodesByType(
-      BitloopsTypesMapping.TProps,
-    ) as PropsNode[];
-    const propsModelNode = propsModels.find((node) => node.getClassName() === aggregatePropsName);
-    propsModel = propsModelNode.getValue() as TProps;
-  } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPort)) {
-    const { readModelIdentifier } = repoPort[repoPortKey];
-    const readModels = model.getRootChildrenNodesByType(
-      BitloopsTypesMapping.TReadModel,
-    ) as ReadModelNode[];
-    const readModelNode = readModels.find((node) => node.getClassName() === readModelIdentifier);
-    const readModelValues = readModelNode.getValue() as TReadModel;
-    propsModel = readModelValues;
-  } else {
-    throw new Error(`Invalid repo port ${JSON.stringify(repoPort)}`);
-  }
-  return { output: propsModel, dependencies };
-};
-
 export const repoAdapterToTargetLanguage = (
-  repoAdapters: TRepoAdapters,
-  contextData: { boundedContext: string; module: string },
+  repoAdapter: TRepoAdapter,
   model: IntermediateASTTree,
-  setupData: TSetupData,
 ): TTargetDependenciesTypeScript => {
-  const { boundedContext, module: moduleName } = contextData;
-
-  const repoAdapterInstanceName = Object.keys(repoAdapters)[0];
-  const repoAdapter = repoAdapters[repoAdapterInstanceName];
-
-  const { dbType, repoPort, connection, collection } = repoAdapter;
+  const repoAdapterInstanceName = repoAdapter.repoAdapter.identifier;
+  const repoAdapterExpression = repoAdapter.repoAdapter.repoAdapterExpression;
+  const { dbType, concretedRepoPort } = repoAdapterExpression;
 
   const repoPorts = model.getRootChildrenNodesByType(
     BitloopsTypesMapping.TRepoPort,
   ) as RepoPortNode[];
-  const repoPortNode = repoPorts.find((node) => node.getClassName() === repoPort);
+
+  const repoPortNode = repoPorts.find(
+    (node) => node.getIdentifier().getIdentifierName() === concretedRepoPort,
+  );
+
   if (!repoPortNode) {
-    throw new Error(`Repo port ${repoPort} not found in model!`);
+    throw new Error(`Repo port ${concretedRepoPort} not found in model!`);
   }
-  const repoPortInfo = repoPortNode.getValue() as TRepoPort;
+
+  const repoAdapterDefinitions = model.getRootChildrenNodesByType(
+    BitloopsTypesMapping.TRepoAdapter,
+  ) as RepoAdapterNode[];
+
+  const repoAdapterDefinition = repoAdapterDefinitions.find(
+    (node) => node.getIdentifier().getIdentifierName() === repoAdapterInstanceName,
+  );
+
+  if (!repoAdapterDefinition) {
+    throw new Error(`Repo adapter ${repoAdapterInstanceName} not found in model!`);
+  }
 
   let dependencies = getDbTypeImports(dbType);
 
-  const repoStart = getRepoHeader(repoPort, dbType);
+  const repoStart = getRepoHeader(concretedRepoPort, dbType);
 
-  const { output: propsModel, dependencies: propsDependencies } = getPropsModel(
-    repoPortInfo,
-    model,
-  );
-
-  // TODO fix, remove this and use tree
-  const module = model[boundedContext][moduleName];
-  const repoBody = repoBodyLangMapping(
-    dbType,
-    collection,
-    connection,
-    repoPortInfo,
-    propsModel,
-    module,
-    setupData,
-  );
+  const repoBody = repoBodyLangMapping(dbType, repoPortNode, repoAdapterDefinition, model);
   const repoEnd = '}';
 
-  dependencies = [
-    ...dependencies,
-    ...repoStart.dependencies,
-    ...repoBody.dependencies,
-    ...propsDependencies,
-  ];
+  dependencies = [...dependencies, ...repoStart.dependencies, ...repoBody.dependencies];
   const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.RepoAdapter,
     className: repoAdapterInstanceName,

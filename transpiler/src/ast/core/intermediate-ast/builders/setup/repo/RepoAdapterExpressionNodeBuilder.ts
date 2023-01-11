@@ -6,6 +6,7 @@ import { IBuilder } from '../../IBuilder.js';
 import { RepoAdapterOptionsNode } from '../../../nodes/setup/repo/RepoAdapterOptionsNode.js';
 import { DatabaseTypeNode } from '../../../nodes/setup/repo/DatabaseTypeNode.js';
 import { RepoAdapterClassNameNodeBuilder } from './RepoAdapterClassNameNodeBuiler.js';
+import { RepoConnectionExpressionNode } from '../../../nodes/setup/repo/RepoConnectionExpressionNode.js';
 
 export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExpressionNode> {
   private repoAdapterExpressionNode: RepoAdapterExpressionNode;
@@ -13,6 +14,7 @@ export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExp
   private databaseTypeNode: DatabaseTypeNode;
   private repoAdapterOptionsNode: RepoAdapterOptionsNode;
   private concretedRepoPortNode: ConcretedRepoPortNode;
+  private connectionNode?: RepoConnectionExpressionNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.repoAdapterExpressionNode = new RepoAdapterExpressionNode(metadata);
@@ -44,6 +46,13 @@ export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExp
     return this;
   }
 
+  public withConnection(
+    connectionNode: RepoConnectionExpressionNode,
+  ): RepoAdapterExpressionNodeBuilder {
+    this.connectionNode = connectionNode;
+    return this;
+  }
+
   public build(): RepoAdapterExpressionNode {
     this.repoAdapterExpressionNode.addChild(this.bcModuleNode);
     this.repoAdapterExpressionNode.addChild(this.repoAdapterOptionsNode);
@@ -55,6 +64,10 @@ export class RepoAdapterExpressionNodeBuilder implements IBuilder<RepoAdapterExp
       .withDBType(this.databaseTypeNode)
       .build();
     this.repoAdapterExpressionNode.addChild(repoAdapterNameNode);
+
+    if (this.connectionNode) {
+      this.repoAdapterExpressionNode.addChild(this.connectionNode);
+    }
 
     this.repoAdapterExpressionNode.buildObjectValue();
 
