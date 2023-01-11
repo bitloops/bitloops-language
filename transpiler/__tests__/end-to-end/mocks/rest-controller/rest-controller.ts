@@ -10,6 +10,7 @@ export const REST_CONTROLLER_END_TO_END_TEST_CASES = [
     setupBLString: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/rest-controller/setup.bl',
     ),
+    BoundedContextModuleNames: ['Todo', 'Todo'],
     output: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/rest-controller/todo-demo-create-controller.mock.ts',
     ),

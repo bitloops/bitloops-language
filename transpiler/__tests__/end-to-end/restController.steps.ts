@@ -25,8 +25,6 @@ import { transpiler } from '../../src/index.js';
 import { REST_CONTROLLER_END_TO_END_TEST_CASES } from './mocks/rest-controller/rest-controller.js';
 
 describe('Valid Rest controller End To End', () => {
-  const boundedContext = 'Hello world';
-  const module = 'demo';
   const fileId = 'fileName';
   const classType = ClassTypes.Controller;
   const options = {
@@ -36,6 +34,8 @@ describe('Valid Rest controller End To End', () => {
   let targetCode: TOutputTargetContent;
 
   REST_CONTROLLER_END_TO_END_TEST_CASES.forEach((testCase) => {
+    const boundedContext = testCase.BoundedContextModuleNames[0];
+    const module = testCase.BoundedContextModuleNames[1];
     it(`${testCase.description}`, () => {
       // given
       const input = {

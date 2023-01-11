@@ -341,15 +341,17 @@ export class IntermediateASTTree {
     identifierToReplace: string,
     newIdentifier: string,
   ): void {
-    const predicate = (node: IntermediateASTNode): boolean =>
-      node instanceof IdentifierExpressionNode && node.identifierName === identifierToReplace;
+    const nodeIsOurIdentifierPredicate = (node: IntermediateASTNode): boolean =>
+      node instanceof IdentifierExpressionNode &&
+      node.identifierName === identifierToReplace &&
+      node.isUsedByIsInstanceOfExpression() === false;
 
     const nodes: IdentifierExpressionNode[] = [];
     let nextStatement = baseStatement.getNextSibling();
     while (nextStatement !== null) {
       const identifiersOfStatements = this.getNodesWithPolicy(
         nextStatement,
-        predicate,
+        nodeIsOurIdentifierPredicate,
       ) as IdentifierExpressionNode[];
       nodes.push(...identifiersOfStatements);
 
