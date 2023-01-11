@@ -9,7 +9,7 @@ import { GraphQLServerDeclarationBuilder } from '../../builders/graphQLServerDec
 export const VALID_GRAPHQL_SERVER_CASES = [
   {
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/setup/mocks/graphqlServerDeclaration/graphQLServerWithSingleController.bl',
+      'transpiler/__tests__/ast/setup/mocks/graphQLServerDeclaration/graphQLServerWithSingleController.bl',
     ),
     description: 'Valid GraphQL server with single controller',
     fileId: 'testFile.bl',

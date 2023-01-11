@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../../helpers/mappings.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ControllerNode } from '../ControllerNode.js';
+import { RESTControllerIdentifierNode } from './RESTControllerIdentifierNode.js';
 
 export class RESTControllerNode extends ControllerNode {
   private static classNodeName = 'RESTController';
@@ -11,5 +12,12 @@ export class RESTControllerNode extends ControllerNode {
       metadata,
       classNodeName: RESTControllerNode.classNodeName,
     });
+  }
+
+  public getIdentifier(): RESTControllerIdentifierNode {
+    const restServerIdentifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TRESTControllerIdentifier,
+    ) as RESTControllerIdentifierNode;
+    return restServerIdentifier;
   }
 }
