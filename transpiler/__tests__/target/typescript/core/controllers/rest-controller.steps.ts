@@ -35,19 +35,19 @@ describe('Statements test cases', () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const input = testCase.controller;
-
       tree.insertChild(input);
+
+      const setupTree = new IntermediateASTTree(new IntermediateASTRootNode());
+      if (testCase.routerController) {
+        setupTree.insertChild(testCase.routerController);
+      }
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },
+        setup: {
+          setup: setupTree,
+        },
       };
-
-      // const setupData = generateSetupData({
-      //   boundedContext,
-      //   module,
-      //   controllerName: testCase.controllerName,
-      //   serverType: testCase.serverType,
-      // });
 
       const targetGenerator = new TargetGenerator();
 
@@ -55,7 +55,6 @@ describe('Statements test cases', () => {
       const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        // setupData: setupData,
       });
 
       //then
@@ -67,37 +66,3 @@ describe('Statements test cases', () => {
     });
   });
 });
-
-// const generateSetupData = ({
-//   boundedContext,
-//   module,
-//   controllerName,
-//   serverType,
-// }: {
-//   boundedContext: string;
-//   module: string;
-//   controllerName: string;
-//   serverType: TServerType;
-// }): TSetupData => {
-//   return {
-//     controllers: {
-//       boundedContext,
-//       module,
-//       controllerValues: {
-//         [controllerName]: {
-//           type: ControllerTypeOfDefinition.REST,
-//           method: 'get',
-//           serverType,
-//           instances: [
-//             {
-//               url: '/',
-//               controllerInstance: 'helloController',
-//               dependencies: [],
-//             },
-//           ],
-//         },
-//       },
-//     },
-//     language: 'TypeScript',
-//   };
-// };

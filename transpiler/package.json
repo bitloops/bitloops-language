@@ -59,6 +59,7 @@
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test-silent": "node --experimental-vm-modules node_modules/jest/bin/jest.js --silent",
     "test:watch": "jest --watch",
     "ts-node-esm": "node --loader ts-node/esm",
     "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",

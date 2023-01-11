@@ -723,6 +723,7 @@ export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTION
 export type TRESTControllerIdentifier = string;
 export type TRESTController = {
   RESTController: TBaseControllerValues & {
+    serverType?: TServerType;
     RESTControllerIdentifier: TRESTControllerIdentifier;
     method: TRestMethods;
     execute: TRESTControllerExecute;

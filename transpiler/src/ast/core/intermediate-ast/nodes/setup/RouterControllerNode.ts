@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { RESTControllerIdentifierNode } from '../controllers/restController/RESTControllerIdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { BoundedContextModuleNode } from './BoundedContextModuleNode.js';
 
 export class RouterControllerNode extends IntermediateASTNode {
   private static classNodeName = 'routerController';
@@ -18,5 +19,15 @@ export class RouterControllerNode extends IntermediateASTNode {
       throw new Error('Router controller identifier not found');
     }
     return controllerIdentifier as RESTControllerIdentifierNode;
+  }
+
+  public getBoundedContextModule(): BoundedContextModuleNode {
+    const boundedContextModule = this.getChildNodeByType<BoundedContextModuleNode>(
+      BitloopsTypesMapping.TBoundedContextModule,
+    );
+    if (!boundedContextModule) {
+      throw new Error('BoundedContext module not found');
+    }
+    return boundedContextModule;
   }
 }

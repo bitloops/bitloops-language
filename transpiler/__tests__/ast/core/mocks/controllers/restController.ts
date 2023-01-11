@@ -17,21 +17,29 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TParameterList, TRESTControllerExecute, TRestMethods } from '../../../../../src/types.js';
+import {
+  TParameterList,
+  TRESTControllerExecute,
+  TRestMethods,
+  TServerType,
+} from '../../../../../src/types.js';
 import { StatementDirector } from '../../builders/statement/statementDirector.js';
 import { ArgumentBuilderDirector } from '../../builders/argumentDirector.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
 import { RestExecuteBuilder } from '../../builders/controllers/restControllerExecuteBuilder.js';
 import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
+import { FileUtil } from '../../../../../src/utils/file.js';
 
 type RestControllerDeclarationTestCase = {
   description: string;
   fileId: string;
   inputBLString: string;
+  setupBLString: string;
   RESTControllerIdentifier: string;
   parameters: TParameterList;
   method: TRestMethods;
   execute: TRESTControllerExecute;
+  serverType: TServerType;
 };
 
 export const validRestControllerStatementTestCases: RestControllerDeclarationTestCase[] = [
@@ -44,8 +52,12 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
         this.ok(response, 'Hello World!'); 
       } 
     }`,
+    setupBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/setup/mocks/restControllerDeclaration/restControllerDeclaration.bl',
+    ),
     RESTControllerIdentifier: 'HelloWorldController',
     parameters: { parameters: [] },
+    serverType: 'REST.Fastify',
     method: 'GET',
     execute: new RestExecuteBuilder()
       .withRequestReply('request', 'response')
@@ -70,6 +82,9 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
         this.ok(response, result);
       }
     }`,
+    setupBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/setup/mocks/restControllerDeclaration/restControllerDeclaration.bl',
+    ),
     RESTControllerIdentifier: 'HelloWorldController',
     parameters: {
       parameters: [
@@ -79,6 +94,7 @@ export const validRestControllerStatementTestCases: RestControllerDeclarationTes
         ),
       ],
     },
+    serverType: 'REST.Fastify',
     method: 'POST',
     execute: new RestExecuteBuilder()
       .withRequestReply('request', 'response')
