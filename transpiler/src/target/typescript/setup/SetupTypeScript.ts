@@ -22,16 +22,11 @@ import { kebabCase } from '../../../utils/caseStyles.js';
 import { readFromFile } from '../../../helpers/fileOperations.js';
 import {
   getLanguageFileSuffixExtension,
-  SupportedLanguages,
   getLanguageFileExtension,
 } from '../../../helpers/supportedLanguages.js';
-import { isRestServerInstance } from '../../../helpers/typeGuards.js';
 import {
-  // TRouterInstanceName,
   TServerType,
   TGraphQLServerInstance,
-  TGraphQLSetupData,
-  // TUseCasesOfModule, //TODO this is TUseCaseDefinition
   TRepoConnectionDefinition,
   TPackageConcretion,
   packageConcretionKey,
@@ -49,7 +44,7 @@ import {
   TUseCaseDefinition,
   RestServerOptions,
   TRouterController,
-  TRepoAdapterDefinition,
+  TSetupRepoAdapterDefinition,
   TRestServerInstanceRouters,
   TLiteral,
   TGraphQLController,
@@ -78,6 +73,8 @@ import { isGraphQLServerInstance, isRestServer, TRestAndGraphQLServers } from '.
 import { NodeValueHelpers } from './helpers.js';
 import { RestFastifyGenerator } from './servers/fastify.js';
 import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
+import { SupportedLanguages } from '../../supportedLanguages.js';
+import { TGraphQLSetupData } from './graphql/types.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -98,7 +95,7 @@ interface ISetup {
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
-    repoAdapterDefinitions: TRepoAdapterDefinition[],
+    repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -169,7 +166,6 @@ export class SetupTypeScript implements ISetup {
     this.setupTypeScriptRepos = new SetupTypeScriptRepos();
   }
 
-  // generateRepoConnections(setupData: TSetupData): TSetupOutput[] {
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[] {
     const repoDependencies =
       this.setupTypeScriptRepos.getPackageJSONDependencies(repoConnectionDefinitions);
@@ -188,7 +184,7 @@ export class SetupTypeScript implements ISetup {
   generateDIs(
     routerDefinitions: TRouterDefinition[],
     useCaseDefinitions: TUseCaseDefinition[],
-    repoAdapterDefinitions: TRepoAdapterDefinition[],
+    repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
     license?: string,
@@ -263,10 +259,7 @@ export class SetupTypeScript implements ISetup {
       const { useCaseExpression } = useCase;
       const { UseCaseIdentifier } = useCaseExpression;
       // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.UseCases,
-        UseCaseIdentifier,
-      );
+      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCase, UseCaseIdentifier);
       result += `import { ${UseCaseIdentifier} } from './${path}${filename}${
         esmEnabled ? '.js' : ''
       }';\n`;
@@ -535,7 +528,7 @@ const routers = async (serverInstance: ${routerInstanceType}, _opts: any) => {
       type: BitloopsTypesMapping.TLiteral,
       value: literal,
     });
-    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: '${routerPrefix.output}' });\n`;
+    return `serverInstance.register(${router.serverRoute.identifier}, { prefix: ${routerPrefix.output} });\n`;
   })}};
 
 export { routers };
@@ -558,7 +551,7 @@ export { routers };
     for (const [serverType, { serverInstances }] of Object.entries(servers)) {
       for (let i = 0; i < serverInstances.length; i++) {
         const serverInstance = serverInstances[i];
-        if (!isRestServerInstance(serverInstance)) {
+        if (!isRestServer(serverInstance)) {
           continue;
         }
         output.push(
@@ -585,7 +578,7 @@ export { routers };
         );
         const domainRes = this.handleDomainApplicationError(
           {
-            classType: ClassTypes.DomainErrors,
+            classType: ClassTypes.DomainError,
             errorModels: domainErrors,
           },
           boundedContextName,
@@ -607,7 +600,7 @@ export { routers };
 
   private handleDomainApplicationError(
     params:
-      | { classType: 'DomainErrors'; errorModels: TDomainError[] } // ClassTypes.DomainErrors || ClassTypes.ApplicationError
+      | { classType: 'DomainError'; errorModels: TDomainError[] } // ClassTypes.DomainErrors || ClassTypes.ApplicationError
       | { classType: 'ApplicationError'; errorModels: TApplicationError[] },
     boundedContextName: string,
     moduleName: string,
@@ -645,9 +638,9 @@ export { routers };
   // Get Error name Depending on the classType
   private getErrorName(
     errorModel: TDomainError | TApplicationError,
-    classTypeName: 'DomainErrors' | 'ApplicationError',
+    classTypeName: 'DomainError' | 'ApplicationError',
   ): string {
-    if (classTypeName === 'DomainErrors') {
+    if (classTypeName === 'DomainError') {
       const error = errorModel[DomainErrorKey] as TDomainErrorValue;
       return error[DomainErrorIdentifier];
     } else {

@@ -22,8 +22,6 @@ import {
   TRepoPort,
   TTargetDependenciesTypeScript,
   TExpression,
-  TModule,
-  TSetupData,
   repoPortKey,
   TAggregateRepoPort,
   TReadModelRepoPort,
@@ -33,6 +31,7 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 import { fetchTypeScriptAggregateCrudBaseRepo } from './mongo/aggregateCrudRepo.js';
 import { fetchTypeScriptReadModelCrudBaseRepo } from './mongo/readModelCrudRepo.js';
+import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 const CRUDReadRepoPort = 'CRUDReadRepoPort';
@@ -45,8 +44,8 @@ const repoBodyLangMapping = (
   connectionExpression: TExpression,
   repoPortInfo: TRepoPort,
   propsModel: TPropsValues,
-  model: TModule,
-  setupData: TSetupData,
+  model: IntermediateASTTree,
+  setupData: any,
 ): TTargetDependenciesTypeScript => {
   const collection = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,

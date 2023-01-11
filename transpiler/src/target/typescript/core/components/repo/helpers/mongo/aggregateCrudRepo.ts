@@ -1,18 +1,14 @@
+import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { isVO } from '../../../../../../../helpers/typeGuards.js';
-import {
-  TModule,
-  TTargetDependenciesTypeScript,
-  TVariable,
-  fieldKey,
-} from '../../../../../../../types.js';
+import { TTargetDependenciesTypeScript, TVariable, fieldKey } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitloopsPrimType.js';
 
 // TODO TPropsValues where deleted, fix this
 type TPropsValues = any;
-const getVOProps = (voName: string, model: TModule): TPropsValues => {
+const getVOProps = (voName: string, model: any): TPropsValues => {
   const voModel = model.ValueObject[voName];
   const voPropsNameType = voModel.create.parameter.type;
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsNameType)) {
@@ -26,7 +22,7 @@ const getVOProps = (voName: string, model: TModule): TPropsValues => {
   return voProps;
 };
 
-const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
+const getVODeepFields = (voProps: TPropsValues, model: any): string[] => {
   const voDeepFields = [];
   voProps.variables.forEach((variable) => {
     const { identifier, type } = variable[fieldKey];
@@ -48,7 +44,7 @@ const getVODeepFields = (voProps: TPropsValues, model: TModule): string[] => {
 const getAggregateDeepFields = (
   aggregatePropsModel: TPropsValues,
   aggregateName: string,
-  model: TModule,
+  model: any,
 ): string => {
   return aggregatePropsModel.variables
     .filter((variable) => variable[fieldKey].identifier !== 'id')
@@ -81,7 +77,7 @@ const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable =>
 export const fetchTypeScriptAggregateCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TPropsValues,
-  model: TModule,
+  model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(

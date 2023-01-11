@@ -23,7 +23,7 @@ import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { RepoAdapterExpressionNode } from '../../../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
-import { RepoAdapterDefinitionNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/RepoAdapterDefinitionNodeBuilder.js';
+import { SetupRepoAdapterDefinitionNodeBuilder } from '../../../intermediate-ast/builders/setup/repo/SetupRepoAdapterDefinitionNodeBuilder.js';
 
 export const repoAdapterDefinitionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -36,7 +36,7 @@ export const repoAdapterDefinitionVisitor = (
 
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  new RepoAdapterDefinitionNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+  new SetupRepoAdapterDefinitionNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(identifier)
     .withExpression(repoAdapterExpression)
     .build();

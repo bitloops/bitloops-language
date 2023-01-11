@@ -26,17 +26,17 @@ import {
   TTargetCoreFinalContent,
   TargetCoreGeneratorError,
 } from './types.js';
-import { IntermediateASTToTarget } from './typescript/core/index.js';
-import { generateSetupFiles } from './typescript/setup/index.js';
 import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
 import {
   isTargetCoreGeneratorError,
   isTargetSetupGeneratorError,
 } from './typescript/guards/index.js';
-import { IntermediateModelToASTTargetTransformer } from './ast/index.js';
+import { IntermediateModelToASTTargetTransformer } from './typescript/ast/index.js';
 import { IntermediateAST } from '../ast/core/types.js';
 import { TTranspileOptions } from '../transpilerTypes.js';
+import { TargetCoreGeneratorCreator } from './targetCoreCreator.js';
+import { TargetSetupGeneratorCreator } from './targetSetupCreator.js';
 
 export class TargetGenerator implements ITargetGenerator {
   generate(
@@ -75,7 +75,7 @@ export class TargetGenerator implements ITargetGenerator {
     const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
     const transformedIntermediateAST = modelToTargetASTTransformer.transform(params);
 
-    const bitloopsTargetGenerator = new IntermediateASTToTarget();
+    const bitloopsTargetGenerator = TargetCoreGeneratorCreator.create(options.targetLanguage);
     const targetContent = bitloopsTargetGenerator.ASTToTarget(transformedIntermediateAST);
 
     if (isTargetCoreGeneratorError(targetContent)) return targetContent;
@@ -91,7 +91,8 @@ export class TargetGenerator implements ITargetGenerator {
     params: IntermediateAST,
     options: TTranspileOptions,
   ): TTargetSetupContent[] | TargetSetupGeneratorError {
-    return generateSetupFiles(params, options);
+    const setupTargetGenerator = TargetSetupGeneratorCreator.create(options.targetLanguage);
+    return setupTargetGenerator.generateSetupFiles(params, options);
   }
 
   getTargetFileDestination(

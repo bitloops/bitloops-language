@@ -28,7 +28,7 @@ describe('Valid DTO End To End', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const fileId = 'fileName';
-  const classType = ClassTypes.DTOs;
+  const classType = ClassTypes.DTO;
   const options = {
     formatterConfig: null,
     targetLanguage: 'TypeScript',

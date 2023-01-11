@@ -18,14 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TSetupData,
   PropsIdentifierKey,
   repoPortKey,
   RootEntityKey,
   TDependenciesTypeScript,
   TProps,
   TReadModel,
-  TRepoAdapters,
+  TRepoAdapter,
   TRepoPort,
   TRepoSupportedTypes,
   TRootEntity,
@@ -122,10 +121,10 @@ const getPropsModel = (
 };
 
 export const repoAdapterToTargetLanguage = (
-  repoAdapters: TRepoAdapters,
+  repoAdapters: TRepoAdapter,
   contextData: { boundedContext: string; module: string },
   model: IntermediateASTTree,
-  setupData: TSetupData,
+  setupData: any,
 ): TTargetDependenciesTypeScript => {
   const { boundedContext, module: moduleName } = contextData;
 

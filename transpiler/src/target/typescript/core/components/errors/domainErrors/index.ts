@@ -65,7 +65,7 @@ const domainErrorToTargetLanguage = (
   result += '); }}';
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-    classType: ClassTypes.DomainErrors,
+    classType: ClassTypes.DomainError,
     className: domainErrorName,
   });
 

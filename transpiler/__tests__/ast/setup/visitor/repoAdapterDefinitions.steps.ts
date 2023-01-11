@@ -21,7 +21,7 @@ import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
 import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
-import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
+import { IntermediateASTSetup, TBoundedContexts } from '../../../../src/ast/core/types.js';
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 import { VALID_REPO_ADAPTER_DEFINITIONS } from '../mocks/repoAdapterDefinition/index.js';
 
@@ -30,6 +30,7 @@ const MODULE = 'Demo';
 
 describe('Repo Adapter definition is valid', () => {
   let setupResult: IntermediateASTSetup;
+  let coreResult: TBoundedContexts;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
@@ -42,7 +43,7 @@ describe('Repo Adapter definition is valid', () => {
             boundedContext: BOUNDED_CONTEXT,
             module: MODULE,
             fileId: 'fileId',
-            fileContents: '',
+            fileContents: 'RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort;',
           },
         ],
         setup: [
@@ -57,15 +58,26 @@ describe('Repo Adapter definition is valid', () => {
         const result = intermediateParser.parse(initialModelOutput);
         if (!isIntermediateASTError(result)) {
           setupResult = result.setup;
+          coreResult = result.core;
         }
       }
+      // check setup
       const resultTree = setupResult[testRepoAdapter.fileId];
       const repoAdapterDefinitionNodes = resultTree.getRootChildrenNodesByType(
-        BitloopsTypesMapping.TRepoAdapterDefinition,
+        BitloopsTypesMapping.TSetupRepoAdapterDefinition,
       );
-      const value = repoAdapterDefinitionNodes[0].getValue();
+      const setupValue = repoAdapterDefinitionNodes[0].getValue();
 
-      expect(value).toMatchObject(testRepoAdapter.repoAdapterDefinition);
+      expect(setupValue).toMatchObject(testRepoAdapter.setupRepoAdapterDefinition);
+
+      // check core
+      const coreTree = coreResult[BOUNDED_CONTEXT][MODULE];
+      const repoAdapterNodes = coreTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TRepoAdapter,
+      );
+      const value = repoAdapterNodes[0].getValue();
+
+      expect(value).toMatchObject(testRepoAdapter.repoAdapter);
     });
   });
 });

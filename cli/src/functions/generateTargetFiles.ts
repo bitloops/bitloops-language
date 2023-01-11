@@ -17,31 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTargetGenerator } from '@bitloops/bl-transpiler';
+import { getTargetFileDestination, TTranspileOutput } from '@bitloops/bl-transpiler';
 
-import {
-  BoundedContextModules,
-  ISetupData,
-  TBitloopsOutputTargetContent,
-  TBitloopsTargetSetupContent,
-  TBoundedContexts,
-} from '../types.js';
 import { writeTargetFile } from './writeTargetFile.js';
 
+export const writeTranspiledCode = (result: TTranspileOutput, outputDirPath: string): void => {
+  const { core, setup } = result;
+  writeGeneratedOutputToFiles(core, outputDirPath);
+  writeGeneratedSetupOutputToFiles(setup, outputDirPath);
+};
+
 const writeGeneratedOutputToFiles = (
-  params: TBitloopsOutputTargetContent,
+  params: TTranspileOutput['core'],
   outputDirPath: string,
 ): void => {
   //  Write output to dest files
   for (const targetFileContent of params) {
     const { boundedContext, module, classType, className, fileContent } = targetFileContent;
-    const generator = new BitloopsTargetGenerator();
-    const destination = generator.getTargetFileDestination(
-      boundedContext,
-      module,
-      classType,
-      className,
-    );
+    const destination = getTargetFileDestination(boundedContext, module, classType, className);
     writeTargetFile({
       projectPath: outputDirPath,
       filePathObj: destination,
@@ -50,41 +43,8 @@ const writeGeneratedOutputToFiles = (
   }
 };
 
-const generateTargetFiles = (params: {
-  boundedContextModules: BoundedContextModules;
-  sourceDirPath: string;
-  outputDirPath: string;
-  bitloopsModel: TBoundedContexts;
-  setupData: ISetupData;
-
-  targetLanguage: string;
-}): void => {
-  const { outputDirPath, bitloopsModel, setupData, targetLanguage } = params;
-  const generator = new BitloopsTargetGenerator();
-  const generatorParams = {
-    intermediateAST: bitloopsModel as any, // TODO fix this
-    setupData,
-    targetLanguage,
-    prettierConfig: {},
-  };
-  const output: TBitloopsOutputTargetContent = generator.generate(generatorParams);
-  // if (isBitloopsTargetGeneratorError(output)) {
-  //   console.log(output);
-  //   throw new Error('Error generating target files');
-  // }
-  // output
-  //Write output to dest files
-  writeGeneratedOutputToFiles(output, outputDirPath);
-  const setupFilesData = generator.generateSetup({
-    setupData,
-    intermediateAST: bitloopsModel as any, // TODO fix this (type clashes even if same type from package and local file)
-    targetLanguage,
-  });
-  writeGeneratedSetupOutputToFiles(setupFilesData as TBitloopsTargetSetupContent, outputDirPath);
-};
-
 const writeGeneratedSetupOutputToFiles = (
-  params: TBitloopsTargetSetupContent,
+  params: TTranspileOutput['setup'],
   outputDirPath: string,
 ): void => {
   //  Write output to dest files
@@ -97,5 +57,3 @@ const writeGeneratedSetupOutputToFiles = (
     });
   }
 };
-
-export { generateTargetFiles };

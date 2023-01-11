@@ -5,7 +5,6 @@ import { BoundedContextModuleNodeBuilder } from '../../../../../../src/ast/core/
 import { BoundedContextNameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/BoundedContextNameNodeBuilder.js';
 import { HTTPMethodVerbNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/HTTPMethodVerbNodeBuilder.js';
 import { ModuleNameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/ModuleNameNodeBuilder.js';
-import { RestServerTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/RESTServerTypeNodeBuilder.js';
 import { RouterControllerNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/RouterControllerNodeBuilder.js';
 import { WordsWithSpacesNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/WordsWithSpacesNodeBuilder.js';
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
@@ -31,7 +30,6 @@ export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
     ),
     serverType: 'REST.Fastify',
     routerController: new RouterControllerNodeBuilder()
-      .withServerType(new RestServerTypeNodeBuilder().withServerType('REST.Fastify').build())
       .withMethod(new HTTPMethodVerbNodeBuilder().withVerb('GET').build())
       .withPath(new StringLiteralBuilder().withValue('/').build())
       .withArguments(new ArgumentListNodeBuilder().withArguments([]).build())

@@ -106,22 +106,4 @@ export class BitloopsParser implements IOriginalParser {
       return new OriginalParserError(JSON.stringify(error));
     }
   }
-
-  // /**
-  //  * Initial AST.
-  //  * @param blCode string
-  //  * @returns Parser.ProgramContext
-  //  */
-  // private static getInitialASTSetup(blCode: string): ASTSetupContext | OriginalParserError {
-  //   const chars = new antlr4.InputStream(blCode);
-  //   const lexer = new BitloopsLexer(chars);
-  //   const tokens = new antlr4.CommonTokenStream(lexer as any);
-  //   try {
-  //     const parser = new Parser(tokens);
-  //     const tree = parser.setupProgram() as ASTSetupContext;
-  //     return tree;
-  //   } catch (error: any) {
-  //     return new OriginalParserError(JSON.stringify(error));
-  //   }
-  // }
 }

@@ -17,27 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TBoundedContexts } from './ast/core/types.js';
 import { TClassTypesValues } from './helpers/mappings.js';
-
-// TODO this should be removed
-export type TModule = {
-  Props?: TProps;
-  Controller?: TRESTController | TGraphQLController;
-  UseCases?: TUseCase;
-  ApplicationErrors?: TApplicationErrors; //TODO change
-  DomainErrors?: TDomainErrors;
-  RootEntities?: TRootEntity;
-  Entity?: TEntity;
-  ValueObject?: TValueObject;
-  DTOs?: TDTO;
-  Structs?: TStructDeclaration;
-  Package?: TPackage;
-  DomainRule?: TDomainRule;
-  RepoPort?: TRepoPort;
-  RepoAdapter?: TRepoAdapter;
-  ReadModel?: TReadModel;
-};
 
 // TODO merge with TClassTypesValues from `transpiler/src/helpers/mappings.ts`
 export type TClassType =
@@ -77,15 +57,6 @@ export type TComponentType =
 export type TClassName = string;
 
 export type TContextData = { boundedContext: string; module: string };
-
-export type TBitloopsClasses =
-  | TProps
-  | TValueObject
-  | TRESTController
-  | TUseCase
-  | TDomainError
-  | TDTO
-  | TStruct;
 
 export const fieldsKey = 'fields';
 export const evaluationFieldsKey = 'fields';
@@ -262,8 +233,6 @@ export const DomainErrorIdentifier = 'identifier';
 export type TErrorMessage = { message: TExpression };
 export type TErrorId = { errorId: TExpression };
 
-export type TDomainErrors = Record<string, TDomainError>;
-
 export type TDomainError = {
   [DomainErrorKey]: TDomainErrorValue;
 };
@@ -286,7 +255,6 @@ export type TApplicationErrorValue = {
   TErrorId &
   Partial<TParameterList>;
 
-export type TApplicationErrors = Record<string, TApplicationError>;
 export type TInstanceOf = {
   isInstanceOf: TExpression & { class: string };
 };
@@ -404,7 +372,7 @@ export type TExpressionValues =
   | TArrayLiteralExpression
   | TToStringExpression
   | TLiteral
-  | TIdentifierExpr
+  | TIdentifierExpression
   | TMethodCallExpression
   | TThisExpression
   | TMemberDotExpression
@@ -426,7 +394,7 @@ export type TMemberDotExpression = {
   };
 };
 
-export type TIdentifierExpr = {
+export type TIdentifierExpression = {
   identifier: string;
 };
 export type TToStringExpression = {
@@ -485,7 +453,6 @@ export type TArrayLiteralExpression = {
   arrayLiteral: TExpression[];
 };
 
-//TODO maybe return should have two keys: ok and error
 export type TReturnStatement = {
   return: TExpression;
 };
@@ -723,6 +690,7 @@ export type TRepoAdapterOptions = {
 export const concretedRepoPortKey = 'concretedRepoPort';
 export type TConcretedRepoPort = string;
 
+export type TRepoAdapterConnectionInfo = TRepoConnectionExpression;
 export const repoAdapterExpressionKey = 'repoAdapterExpression';
 export type TRepoAdapterExpression = {
   [repoAdapterExpressionKey]: {
@@ -730,14 +698,20 @@ export type TRepoAdapterExpression = {
   } & TRepoAdapterClassName &
     TRepoDatabaseType &
     TRepoAdapterOptions &
-    TBoundedContextModule;
+    TBoundedContextModule &
+    TRepoAdapterConnectionInfo;
 };
 
-export type TRepoAdapter = TRepoAdapterDefinition;
+export const repoAdapterKey = 'repoAdapter';
+export type TRepoAdapter = {
+  [repoAdapterKey]: {
+    [identifierKey]: TIdentifier;
+  } & TRepoAdapterExpression;
+};
 
-export const repoAdapterDefinitionKey = 'repoAdapterDefinition';
-export type TRepoAdapterDefinition = {
-  [repoAdapterDefinitionKey]: {
+export const setupRepoAdapterDefinitionKey = 'setupRepoAdapterDefinition';
+export type TSetupRepoAdapterDefinition = {
+  [setupRepoAdapterDefinitionKey]: {
     [identifierKey]: TIdentifier;
   } & TRepoAdapterExpression;
 };
@@ -764,6 +738,8 @@ export type TRESTControllerExecute = {
 export type TRESTControllerDependencies = [string, string]; // e.g. (request, reply)
 
 export type GraphQLControllerIdentifier = string;
+
+export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
 
 export type TGraphQLController = {
   GraphQLController: TBaseControllerValues & {
@@ -804,13 +780,6 @@ export type TEvaluatePrimitive = {
   type: TBitloopsPrimitives;
 };
 
-interface IUseCaseDependencyInjection {
-  boundedContext: string;
-  module: string;
-  useCase: string;
-  content: string;
-}
-
 export type TRouterName = string;
 
 export interface IRouterRoute {
@@ -819,29 +788,6 @@ export interface IRouterRoute {
   controller: string;
   useCaseName: string;
 }
-
-type PackagePortName = string;
-type PackageAdapterName = string;
-
-export type TPackagesMapping = Record<PackagePortName, PackageAdapterName>;
-
-export type TPackagesSetup = {
-  boundedContext: string;
-  module: string;
-  packageValues: TPackagesMapping;
-};
-
-// TODO this should be removed
-export type TSetupData = {
-  // controllers?: TControllers;
-  // useCases?: TUseCaseDefinition;
-  useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  language: string;
-  servers?: TServers;
-  // routers?: TRouters;
-  packages?: TPackagesSetup;
-  repos?: TReposSetup;
-};
 
 export type TRouterDefinition = {
   routerDefinition: {
@@ -925,76 +871,8 @@ export type TWordsWithSpaces = {
   wordsWithSpaces: string;
 };
 
-// export type TControllers = {
-//   boundedContext: string;
-//   module: string;
-//   controllerValues: TControllerOfModule;
-// };
-
-// export type TControllerOfModule = {
-//   [ControllerClassName: string]: TRestControllerDefinitions | TGraphQLControllerInstances;
-// };
-
 export const repoSupportedTypes = ['DB.Postgres', 'DB.MySQL', 'DB.SQLite', 'DB.Mongo'] as const;
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
-
-export type TReposSetup = {
-  connections: {
-    connectionName: string;
-    connectionValues: TRepoConnectionInfo;
-  }[];
-  repoAdapters: {
-    boundedContext: string;
-    module: string;
-    repoAdapterValues: TSetupRepoAdapters;
-  };
-};
-
-type RepoAdapterName = string;
-export type TSetupRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
-
-export type TRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
-
-export type TRepoConnectionInfo = {
-  dbType: TRepoSupportedTypes;
-  host: TExpression;
-  port: TExpression;
-  database: TExpression;
-};
-
-export type TRepoAdapterInfo = {
-  dbType: TRepoSupportedTypes;
-  repoPort: string;
-  connection: TExpression; // Name of connection instance
-  collection: TExpression;
-  instanceIdentifier: string;
-};
-
-export enum ControllerTypeOfDefinition {
-  REST = 'rest',
-  GRAPHQL = 'graphql',
-}
-
-// export type TRestControllerDefinitions = {
-//   type: ControllerTypeOfDefinition.REST;
-//   method: string; // TODO replace with type
-//   serverType: TServerType;
-//   instances: {
-//     url: string;
-//     controllerInstance: string;
-//     dependencies: string[]; // Replace with correct type
-//   }[];
-// };
-
-// export type TGraphQLControllerInstances = {
-//   type: ControllerTypeOfDefinition.GRAPHQL;
-//   instances: {
-//     controllerInstance: string;
-//     dependencies: string[]; // Replace with correct type
-//   }[];
-// };
-
-export type TServers = (TRESTServerInstance | TGraphQLServerInstance)[];
 
 export type TServerType = 'REST.Fastify' | 'REST.Express' | 'GraphQL';
 export type TRouterInstanceName = string;
@@ -1025,13 +903,6 @@ export type TGraphQLServerInstance = {
     [ControllerResolversKey]: TControllerResolvers;
   } & TGraphQLServerOptions;
 };
-// export type TGraphQLServerInstance = {
-//   [GraphQLServerInstanceKey]: {
-//     port: TExpression;
-//     resolvers: TControllerResolverBind[];
-//     serverType: TServerType;
-//   };
-// };
 
 export const ControllerResolverKey = 'controllerResolver';
 export type TControllerResolver = {
@@ -1040,15 +911,7 @@ export type TControllerResolver = {
     controllerInstanceName: TControllerInstanceName;
   } & TBoundedContextModule &
     TArgumentList;
-}; //ask about type
-
-// export type TControllerResolverBind = {
-//   boundedContext: string;
-//   module: string;
-//   controllerClassName: string;
-//   controllerInstance: string;
-//   dependencies: string[]; // Replace with correct type
-// };
+};
 
 export const ControllerResolversKey = 'controllerResolvers';
 export type TControllerResolvers = TControllerResolver[];
@@ -1057,63 +920,6 @@ export const GraphQLServerOptionsKey = 'graphQLServerOptions';
 export type TGraphQLServerOptions = {
   [GraphQLServerOptionsKey]: TEvaluationFields;
 };
-
-// export type TRoutes = {
-//   methodURLMap: Record<
-//     TMethodAndPath,
-//     {
-//       controllerClass: string;
-//       // controllerInstance: string;
-//       boundedContext: string;
-//       module: string;
-//     }
-//   >;
-// };
-// type TRouters = Partial<Record<TServerType, TRoutersInfo>>;
-// export type TRoutersInfo = Record<TRouterInstanceName, TRoutes>;
-
-// export type TMethodAndPath = string;
-
-/**
- * GraphQL Setup
- */
-export type TGraphQLSetupData = {
-  // TODO discuss useCases, controllers di
-  servers: IServer[];
-  resolvers: TResolvers;
-  addResolversToServer: IAddResolversToServer[];
-  // DTOs: { [boundedContent: string]: { [moduleName: string]: { DTOs: TDTO } } }; // Referenced DTOs are also needed
-  bitloopsModel: TBoundedContexts;
-};
-
-export interface IServer {
-  type: string;
-  name: string;
-  port: string;
-}
-
-export type TResolvers = TResolver[];
-
-export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
-
-export type TResolver = {
-  boundedContext: string;
-  module: string;
-  operationType: TGraphQLOperation;
-  operationName: string;
-  input: string | null; // a DTO or nothing for no input
-  output: string; // a DTO
-  controller: string;
-};
-
-export interface IAddResolversToServer {
-  serverName: string;
-  resolver: {
-    name: string; // Should match the Operation name
-    boundedContext: string;
-    module: string;
-  };
-}
 
 export const methodDefinitionListKey = 'methodDefinitionList';
 export type TDefinitionMethods = { [methodDefinitionListKey]: TDefinitionMethodInfo[] };
@@ -1182,50 +988,11 @@ export type TEnvironmentVariableExpression = {
   };
 };
 
-export type TIdentifierExpression = {
-  identifier: {
-    value: string;
-  };
-};
-
-// // export type TLogicalSingleExpression = {
-// //   logicalExpression:
-// //     | TNotSetupExpression
-// //     | TAndSingleExpression
-// //     | TOrSingleExpression
-// //     | TXorSingleExpression;
-// // };
-
-// // export type TNotSetupExpression = {
-// //   notExpression: TSetupExpression;
-// // };
-
-// // export type TAndSingleExpression = {
-// //   andExpression: {
-// //     left: TSetupExpression;
-// //     right: TSetupExpression;
-// //   };
-// // };
-
 export type TErrorEvaluation = {
   errorEvaluation: {
     error: string;
   } & Partial<TArgumentList>;
 };
-
-// // export type TOrSingleExpression = {
-// //   orExpression: {
-// //     left: TSetupExpression;
-// //     right: TSetupExpression;
-// //   };
-// // };
-
-// // export type TXorSingleExpression = {
-// //   xorExpression: {
-// //     left: TSetupExpression;
-// //     right: TSetupExpression;
-// //   };
-// // };
 
 export type TLogicalExpression = {
   logicalExpression: TNotExpression | TAndExpression | TOrExpression | TXorExpression;

@@ -38,11 +38,6 @@ export const privateMethodDeclarationVisitor = (
     ctx.returnPrivateMethodType(),
   );
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
-  // const returnOkType = returnType as TOkErrorReturnTypeValues;
-
-  // const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnOkType);
-
-  // addReturnOkVoidStatement(statementsWithModifiedReturn, returnOkType);
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const methodNode = new PrivateMethodDeclarationNodeBuilder(metadata)
