@@ -23,7 +23,7 @@ export class UseCaseDefinitionHelpers {
 
       if (!useCases[boundedContext]) {
         useCases[boundedContext] = {
-          module: [
+          [module]: [
             {
               instanceName: identifier,
               useCaseExpression,
