@@ -32,7 +32,7 @@ export const VALID_GRAPHQL_CONTROLLER_TEST_CASES: TestCase[] = [
   async executeImpl(request: any): Promise<any> {
     const dto = request.args;
     const result = await this.useCase.execute(dto);
-    if (result.value.isFail()) {
+    if (result.isFail()) {
       switch (result.value.constructor) {
         case DomainErrors.InvalidNameError: {
           return this.clientError(result.value.message);

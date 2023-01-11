@@ -9,7 +9,7 @@ import { GraphQLServerDeclarationBuilder } from '../../builders/graphQLServerDec
 export const VALID_GRAPHQL_SERVER_CASES = [
   {
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/setup/mocks/graphqlServerDeclaration/graphQLServerWithSingleController.bl',
+      'transpiler/__tests__/ast/setup/mocks/graphQLServerDeclaration/graphQLServerWithSingleController.bl',
     ),
     description: 'Valid GraphQL server with single controller',
     fileId: 'testFile.bl',
@@ -42,7 +42,7 @@ export const VALID_GRAPHQL_SERVER_CASES = [
   },
   {
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/setup/mocks/graphqlServerDeclaration/graphQLServerWithMultipleControllers.bl',
+      'transpiler/__tests__/ast/setup/mocks/graphQLServerDeclaration/graphQLServerWithMultipleControllers.bl',
     ),
     description: 'Valid GraphQL server with multiple controllers',
     fileId: 'testFile.bl',
@@ -86,7 +86,7 @@ export const VALID_GRAPHQL_SERVER_CASES = [
   },
   {
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/setup/mocks/graphqlServerDeclaration/graphQLServerWithDependencies.bl',
+      'transpiler/__tests__/ast/setup/mocks/graphQLServerDeclaration/graphQLServerWithDependencies.bl',
     ),
     description: 'Valid GraphQL server with dependencies',
     fileId: 'testFile.bl',

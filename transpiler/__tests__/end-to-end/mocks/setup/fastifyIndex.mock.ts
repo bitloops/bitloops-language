@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { HelloWorldController } from '../../../../../bounded-contexts/demo/hello-world/DI';
+import { helloWorldController1 } from '../../../../../bounded-contexts/demo/hello-world/DI';
 const helloWorldRESTRouter = async (fastify: Fastify.Instance) => {
   fastify.get('/hello', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return helloWorldController1.execute(request, reply);
