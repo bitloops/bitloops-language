@@ -678,7 +678,7 @@ export { routers };
         const finalContent = imports + content;
         output.push({
           fileType: classTypeName,
-          fileId: `${filePathObj.path}/index.ts`,
+          fileId: `${filePathObj.path}index.ts`,
           content: finalContent,
         });
       }

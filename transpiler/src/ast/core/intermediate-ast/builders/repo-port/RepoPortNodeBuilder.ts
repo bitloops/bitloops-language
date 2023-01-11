@@ -38,6 +38,8 @@ export class RepoPortBuilder implements IBuilder<RepoPortNode> {
     repoPortIdentifierNode: RepoPortIdentifierNode,
   ): RepoPortBuilder {
     this.repoPortIdentifierNode = repoPortIdentifierNode;
+    const repoPortName = repoPortIdentifierNode.getIdentifierName();
+    this.repoPort.setClassName(repoPortName);
     return this;
   }
 

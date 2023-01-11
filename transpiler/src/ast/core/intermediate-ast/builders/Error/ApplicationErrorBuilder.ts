@@ -26,8 +26,10 @@ export class ApplicationErrorBuilder implements IBuilder<ApplicationErrorNode> {
     this.applicationErrorNode = new ApplicationErrorNode(metadata);
   }
 
-  public withIdentifier(identifierName: IdentifierNode): ApplicationErrorBuilder {
-    this.identifierName = identifierName;
+  public withIdentifier(identifierNode: IdentifierNode): ApplicationErrorBuilder {
+    this.identifierName = identifierNode;
+    const applicationErrorName = identifierNode.getIdentifierName();
+    this.applicationErrorNode.setClassName(applicationErrorName);
     return this;
   }
 
