@@ -905,9 +905,6 @@ export type TRepoConnectionExpression = {
   } & TRepoConnectionOptions;
 };
 
-//     host: TExpression;
-//     port: TExpression;
-//     database: TExpression;
 export const RepoConnectionOptionsKey = 'options';
 export type TRepoConnectionOptions = {
   [RepoConnectionOptionsKey]: TEvaluationFields;

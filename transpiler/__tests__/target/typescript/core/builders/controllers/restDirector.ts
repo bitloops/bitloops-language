@@ -180,12 +180,7 @@ export class RestControllerBuilderDirector {
   ): RESTControllerNode {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
     return new RESTControllerNodeBuilder(tree)
-      .withServerTypeNode(
-        new RestServerTypeNodeBuilder()
-          // .withServerType(new IdentifierNodeBuilder().withName('REST.Fastify').build())
-          .withServerType('REST.Fastify')
-          .build(),
-      )
+      .withServerTypeNode(new RestServerTypeNodeBuilder().withServerType('REST.Fastify').build())
       .withIdentifier(new RESTControllerIdentifierNodeBuilder(null).withName(identifier).build())
       .withParameterList(new ParameterListNodeBuilder(null).withParameters(parameters).build())
       .withRESTMethod(new RESTMethodNodeBuilder(null).withMethod(method).build())

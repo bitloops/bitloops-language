@@ -209,7 +209,7 @@ export class IntermediateASTTree {
       this.traverse(restController, (node) => {
         if (
           isRESTControllerIdentifierNode(node) &&
-          identifier === node.getValue().restControllerIdentifier &&
+          identifier === node.getValue().RESTControllerIdentifier &&
           isRESTControllerNode(restController)
         ) {
           restControllerFound = restController;

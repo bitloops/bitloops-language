@@ -32,6 +32,7 @@ import {
   TRESTController,
   TRESTControllerExecute,
   TRestMethods,
+  TServerType,
 } from '../../../src/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -52,6 +53,12 @@ describe('Rest controller declaration is valid', () => {
             module: MODULE,
             fileId: testCase.fileId,
             fileContents: testCase.inputBLString,
+          },
+        ],
+        setup: [
+          {
+            fileId: 'empty',
+            fileContents: testCase.setupBLString,
           },
         ],
       });
@@ -80,17 +87,20 @@ const getExpectedRestControllerOutput = ({
   parameters,
   method,
   execute,
+  serverType,
 }: {
   RESTControllerIdentifier: string;
   parameters: TParameterList;
   method: TRestMethods;
   execute: TRESTControllerExecute;
+  serverType: TServerType;
 }): TRESTController => {
   const controller = new RestControllerBuilder()
     .withIdentifier(RESTControllerIdentifier)
     .withParameters(parameters)
     .withMethod(method)
     .withExecute(execute)
+    .withServerType(serverType)
     .build();
 
   return controller;

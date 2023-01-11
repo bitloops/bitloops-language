@@ -1,7 +1,6 @@
 import { IBuilder } from '../IBuilder.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { RESTServerTypeNode } from '../../nodes/controllers/restController/RESTServerTypeNode.js';
-// import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 
 export class RestServerTypeNodeBuilder implements IBuilder<RESTServerTypeNode> {
   private restServerTypeNode: RESTServerTypeNode;
@@ -17,10 +16,6 @@ export class RestServerTypeNodeBuilder implements IBuilder<RESTServerTypeNode> {
   }
 
   public build(): RESTServerTypeNode {
-    // if (this.serverType) {
-    //   this.restServerTypeNode.addChild(this.serverType);
-    // }
-
     this.restServerTypeNode.buildLeafValue(this.serverType);
 
     return this.restServerTypeNode;

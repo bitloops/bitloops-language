@@ -1,7 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { TBoundedContexts } from '../../types.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
-import { RouterControllerNode } from '../nodes/setup/RouterControllerNode.js';
+import { RouterDefinitionNode } from '../nodes/setup/RouterDefinitionNode.js';
 import { IASTToCompletedASTTransformer } from './index.js';
 
 export class RestControllerTypeTransformer implements IASTToCompletedASTTransformer {
@@ -15,45 +15,42 @@ export class RestControllerTypeTransformer implements IASTToCompletedASTTransfor
   }
 
   private restControllerTypeToASTCore(): void {
-    const routerControllerNodes = this.setupTree.getRootChildrenNodesByType(
-      BitloopsTypesMapping.TRouterController,
-    ) as RouterControllerNode[];
+    const routerDefinitionNodes = this.setupTree.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TRouterDefinition,
+    ) as RouterDefinitionNode[];
 
-    for (const routerControllerNode of routerControllerNodes) {
-      const serverTypeNode = routerControllerNode.getServerType();
+    for (const routerDefinition of routerDefinitionNodes) {
+      const routerExpressionNode = routerDefinition.getRouterExpression();
+      const routerArgumentNode = routerExpressionNode.getRouterArgumentsNode();
 
-      const identifierNode = routerControllerNode.getRouterControllerIdentifier();
+      const serverTypeNode = routerArgumentNode.getServerType();
+      const controllersNode = routerExpressionNode.getRouterControllers();
+      const controllerNodes = controllersNode.getRouterControllerNodes();
 
-      const boundedContextModuleNode = routerControllerNode.getBoundedContextModule();
-      const moduleNode = boundedContextModuleNode.getModule();
-      const boundedContextNode = boundedContextModuleNode.getBoundedContext();
-      const moduleName = moduleNode.getName();
-      const boundedContextName = boundedContextNode.getName();
+      for (const controllerNode of controllerNodes) {
+        const identifierNode = controllerNode.getRouterControllerIdentifier();
 
-      if (
-        this.intermediateASTCore &&
-        this.intermediateASTCore[boundedContextName] &&
-        this.intermediateASTCore[boundedContextName][moduleName]
-      ) {
-        const coreTree = this.intermediateASTCore[boundedContextName][moduleName];
+        const boundedContextModuleNode = controllerNode.getBoundedContextModule();
+        const moduleNode = boundedContextModuleNode.getModule();
+        const boundedContextNode = boundedContextModuleNode.getBoundedContext();
+        const moduleName = moduleNode.getName();
+        const boundedContextName = boundedContextNode.getName();
 
-        const restControllerNodeFound = coreTree.getControllerByIdentifier(
-          identifierNode.getValue(),
-        );
-        restControllerNodeFound.addChild(serverTypeNode);
+        if (
+          this.intermediateASTCore &&
+          this.intermediateASTCore[boundedContextName] &&
+          this.intermediateASTCore[boundedContextName][moduleName]
+        ) {
+          const coreTree = this.intermediateASTCore[boundedContextName][moduleName];
 
-        // const metadata = routerControllerNode.getMetadata();
-        //TODO delete the old one
-        //   new RESTControllerNodeBuilder(
-        //     this.intermediateASTCore[boundedContextName][moduleName],
-        //     metadata,
-        //   )
-        //     .withServerTypeNode(serverTypeNode)
-        //     .withIdentifier(identifierNode)
-        //     // .withParameterList()
-        //     // .withRESTMethod()
-        //     // .withExecuteNode()
-        //     .build();
+          const restControllerNodeFound = coreTree.getControllerByIdentifier(
+            identifierNode.getValue().RESTControllerIdentifier,
+          );
+          restControllerNodeFound.addChild(serverTypeNode);
+          this.intermediateASTCore[boundedContextName][moduleName].buildValueRecursiveBottomUp(
+            restControllerNodeFound,
+          );
+        }
       }
     }
   }

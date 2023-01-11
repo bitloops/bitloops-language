@@ -85,8 +85,6 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
   // It mutates intermediateAST core
   private completeCoreFromSetup(intermediateAST: IntermediateAST): void {
     for (const setupTree of Object.values(intermediateAST.setup)) {
-      const rootNode = setupTree.getRootNode();
-
       const injectRepoAdaptersTransformer = new InjectRepoAdaptersTransformer(
         setupTree,
         intermediateAST.core,
@@ -98,7 +96,6 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
         intermediateAST.core,
       );
       restControllerTypeTransformer.run();
-      setupTree.buildValueRecursiveBottomUp(rootNode);
     }
   }
 

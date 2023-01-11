@@ -1,6 +1,5 @@
 import { ArgumentListNode } from '../../nodes/ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../../nodes/controllers/restController/RESTControllerIdentifierNode.js';
-import { RESTServerTypeNode } from '../../nodes/controllers/restController/RESTServerTypeNode.js';
 import { StringLiteralNode } from '../../nodes/Expression/Literal/StringLiteralNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { BoundedContextModuleNode } from '../../nodes/setup/BoundedContextModuleNode.js';
@@ -15,7 +14,6 @@ export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNod
   private bcModuleNode: BoundedContextModuleNode;
   private restControllerIdentifierNode: RESTControllerIdentifierNode;
   private argumentListNode: ArgumentListNode;
-  private serverTypeNode: RESTServerTypeNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.routerControllerNode = new RouterControllerNode(metadata);
@@ -50,21 +48,12 @@ export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNod
     return this;
   }
 
-  public withServerType(serverType: RESTServerTypeNode): RouterControllerNodeBuilder {
-    this.serverTypeNode = serverType;
-    return this;
-  }
-
   public build(): RouterControllerNode {
     this.routerControllerNode.addChild(this.methodNode);
     this.routerControllerNode.addChild(this.pathNode);
     this.routerControllerNode.addChild(this.bcModuleNode);
     this.routerControllerNode.addChild(this.restControllerIdentifierNode);
     this.routerControllerNode.addChild(this.argumentListNode);
-
-    if (this.serverTypeNode) {
-      this.routerControllerNode.addChild(this.serverTypeNode);
-    }
 
     this.routerControllerNode.buildObjectValue();
 

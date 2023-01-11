@@ -31,12 +31,7 @@ export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
     ),
     serverType: 'REST.Fastify',
     routerController: new RouterControllerNodeBuilder()
-      .withServerType(
-        new RestServerTypeNodeBuilder()
-          // .withServerType(new IdentifierNodeBuilder().withName('REST.Fastify').build())
-          .withServerType('REST.Fastify')
-          .build(),
-      )
+      .withServerType(new RestServerTypeNodeBuilder().withServerType('REST.Fastify').build())
       .withMethod(new HTTPMethodVerbNodeBuilder().withVerb('GET').build())
       .withPath(new StringLiteralBuilder().withValue('/').build())
       .withArguments(new ArgumentListNodeBuilder().withArguments([]).build())
