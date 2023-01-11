@@ -1,12 +1,12 @@
 import { DomainCreateParameterNode } from '../../nodes/Domain/DomainCreateParameterNode.js';
-import { DomainCreateValueNode } from '../../nodes/Domain/DomainCreateParamValueNode.js';
+import { DomainCreateParameterTypeNode } from '../../nodes/Domain/DomainCreateParameterTypeNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PropsIdentifierNode } from '../../nodes/Props/PropsIdentifierNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class DomainCreateParameterNodeBuilder implements IBuilder<DomainCreateParameterNode> {
   private identifier: PropsIdentifierNode;
-  private value: DomainCreateValueNode;
+  private parameterType: DomainCreateParameterTypeNode;
 
   private domainConstructorParameterNode: DomainCreateParameterNode;
 
@@ -18,14 +18,15 @@ export class DomainCreateParameterNodeBuilder implements IBuilder<DomainCreatePa
     this.identifier = parameter;
     return this;
   }
-  withTypeNode(value: DomainCreateValueNode): DomainCreateParameterNodeBuilder {
-    this.value = value;
+
+  withTypeNode(parameterType: DomainCreateParameterTypeNode): DomainCreateParameterNodeBuilder {
+    this.parameterType = parameterType;
     return this;
   }
 
   build(): DomainCreateParameterNode {
     this.domainConstructorParameterNode.addChild(this.identifier);
-    this.domainConstructorParameterNode.addChild(this.value);
+    this.domainConstructorParameterNode.addChild(this.parameterType);
     this.domainConstructorParameterNode.buildObjectValue();
     return this.domainConstructorParameterNode;
   }

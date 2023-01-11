@@ -38,6 +38,7 @@ import { MethodCallExpressionNodeBuilder } from '../../../../../src/ast/core/int
 import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { ToStringBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ToStringBuilder.js';
 import { GetClassNodeBuilder } from './../../../../../src/ast/core/intermediate-ast/builders/expressions/GetClassBuilder.js';
+import { TemplateStringLiteralBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/TemplateStringLiteralBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -243,6 +244,13 @@ export class ExpressionBuilderDirector {
 
   buildStringLiteralExpression(value: string): ExpressionNode {
     const stringLit = new StringLiteralBuilder().withValue(value).build();
+
+    const literalExpr = new LiteralBuilder().withLiteral(stringLit).build();
+    return new ExpressionBuilder().withExpression(literalExpr).build();
+  }
+
+  buildTemplateStringLiteralExpression(value: string): ExpressionNode {
+    const stringLit = new TemplateStringLiteralBuilder().withValue(value).build();
 
     const literalExpr = new LiteralBuilder().withLiteral(stringLit).build();
     return new ExpressionBuilder().withExpression(literalExpr).build();

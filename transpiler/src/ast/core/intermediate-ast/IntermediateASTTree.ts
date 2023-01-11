@@ -228,7 +228,7 @@ export class IntermediateASTTree {
 
     const propsTypeNodeValue: { [PropsIdentifierKey]: TPropsIdentifier } = domainCreateParameterNode
       .getTypeNode()
-      .getValue().propsIdentifier;
+      .getValue().parameterType;
 
     const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
       node.getNodeType() === BitloopsTypesMapping.TProps;

@@ -23,7 +23,10 @@ import { TargetGenerator } from '../../../../src/target/index.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
-import { VALID_EXPRESSION_TEST_CASES } from './mocks/expression/expression.js';
+import {
+  VALID_EXPRESSION_TEST_CASES,
+  VALID_LITERAL_TEST_CASES,
+} from './mocks/expression/expression.js';
 
 describe('Valid expression test cases', () => {
   const boundedContext = 'Hello world';
@@ -32,6 +35,47 @@ describe('Valid expression test cases', () => {
   const language = 'TypeScript';
 
   VALID_EXPRESSION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
+
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const expressionNode = testCase.expression;
+      tree.insertChild(expressionNode);
+
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
+
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
+      });
+
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
+    });
+  });
+});
+
+describe('Valid literal expression test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
+
+  VALID_LITERAL_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       let resultCore: TTargetCoreFinalContent[];
 

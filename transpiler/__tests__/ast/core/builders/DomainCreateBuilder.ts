@@ -22,11 +22,11 @@ export class DomainCreateBuilder implements IBuilder<TDomainCreateMethod> {
     return this;
   }
 
-  public withParameter(propsIdentifier: string, value: string): DomainCreateBuilder {
+  public withParameter(propsIdentifier: string, type: string): DomainCreateBuilder {
     this.parameter = {
       domainCreateParameter: {
         [PropsIdentifierKey]: propsIdentifier,
-        value,
+        parameterType: type,
       },
     };
     return this;

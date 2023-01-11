@@ -43,8 +43,8 @@ export const domainCreate = (variable: TDomainCreateMethod): TTargetDependencies
     }
   }
 
-  const domainCreateParameterType = domainCreateParameter[PropsIdentifierKey];
-  const domainCreateParameterValue = domainCreateParameter.value;
+  const domainCreateParameterType = domainCreateParameter.parameterType;
+  const domainCreateParameterValue = domainCreateParameter[PropsIdentifierKey];
   const returnOkType = returnType.ok.type;
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({

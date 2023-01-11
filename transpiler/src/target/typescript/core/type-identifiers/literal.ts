@@ -27,6 +27,7 @@ import {
   StringLiteral,
   BooleanLiteral,
   NullLiteral,
+  TemplateStringLiteral,
 } from '../../../../types.js';
 
 export class LiteralTypeIdentifiers {
@@ -39,6 +40,15 @@ export class LiteralTypeIdentifiers {
 
   static isBooleanLiteral(literalValue: TLiteralValues): literalValue is BooleanLiteral {
     if (this.isObject(literalValue) && 'booleanLiteral' in literalValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isTemplateStringLiteral(
+    literalValue: TLiteralValues,
+  ): literalValue is TemplateStringLiteral {
+    if (this.isObject(literalValue) && 'templateStringLiteral' in literalValue) {
       return true;
     }
     return false;

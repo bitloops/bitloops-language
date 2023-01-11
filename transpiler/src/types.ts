@@ -112,10 +112,11 @@ export type TParameter = {
   } & TParameterType;
 };
 
+// props, TodoProps
 export type TDomainCreateParameter = {
   domainCreateParameter: {
-    [PropsIdentifierKey]: TPropsIdentifier;
-    value: TParameterIdentifier;
+    [PropsIdentifierKey]: TParameterIdentifier;
+    parameterType: TPropsIdentifier;
   };
 };
 
@@ -200,15 +201,6 @@ export type TBitloopsPrimaryTypeValues =
 
 export type TBitloopsPrimaryType = {
   [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
-};
-
-export type TBackTickString = {
-  backTickString: string;
-  // TODO add support for inside expressions
-};
-
-export type TString = {
-  string: string;
 };
 
 export type TDomainRule = {
@@ -362,7 +354,6 @@ export type TExpression = {
 
 export type TExpressionValues =
   | TEvaluation
-  | TBackTickString // To  be removed?
   | TLogicalExpression
   | TMultiplicativeExpression
   | TAdditiveExpression

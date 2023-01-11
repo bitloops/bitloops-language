@@ -29,7 +29,7 @@ export const domainCreateEntity = (
   }
 
   const propsNameType = domainCreateParameter[PropsIdentifierKey];
-  const domainCreateParameterValue = domainCreateParameter.value;
+  const domainCreateParameterValue = domainCreateParameter.parameterType;
   const returnOkType = returnType.ok.type;
 
   if (BitloopsPrimTypeIdentifiers.isArrayPrimType(returnOkType)) {

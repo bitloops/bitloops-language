@@ -4,18 +4,18 @@ import { DomainCreateParameterNode } from '../../intermediate-ast/nodes/Domain/D
 import { PropsIdentifierNodeBuilder } from '../../intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { PropsIdentifierNode } from '../../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
-import { DomainCreateParameterValueNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateParamValueBuilder.js';
-import { DomainCreateValueNode } from '../../intermediate-ast/nodes/Domain/DomainCreateParamValueNode.js';
+import { DomainCreateParameterTypeNode } from '../../intermediate-ast/nodes/Domain/DomainCreateParameterTypeNode.js';
+import { DomainCreateParameterTypeNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
 
-export const domainConstructorParameterVisitor = (
+export const domainCreateParameterVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorParamContext,
 ): DomainCreateParameterNode => {
   const parameterIdentifier: PropsIdentifierNode = new PropsIdentifierNodeBuilder()
     .withName(ctx.id.text)
     .build();
-  const parameterType: DomainCreateValueNode = new DomainCreateParameterValueNodeBuilder()
-    .withValue(ctx.val.text)
+  const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder()
+    .withValue(ctx.type.text)
     .build();
 
   const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
