@@ -29,8 +29,8 @@ UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
     const requestId = UUIDv4(requestDTO.id);
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {
-      // const requestIdString = requestId.toString(); 
-      return ApplicationErrors.ToDoNotFoundError(requestId);
+      const requestIdString = requestId.toString(); 
+      return ApplicationErrors.ToDoNotFoundError(requestIdString);
     }
 
     const title = TitleVO({ title: requestDTO.title });
@@ -40,33 +40,32 @@ UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   }
 }
 
-// UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
-//   execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
-//     const requestId = UUIDv4(requestDTO.id);
+UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
+  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = UUIDv4(requestDTO.id);
 
-//     const todoFound = this.todoRepo.getById(requestId);
-//     if(NOT todoFound) {
-//       // TODO this is not working
-//       // const requestIdString = requestId.toString(); 
-//       return ApplicationErrors.ToDoNotFoundError(requestId);
-//     }
+    const todoFound = this.todoRepo.getById(requestId);
+    if(NOT todoFound) {
+      const requestIdString = requestId.toString(); 
+      return ApplicationErrors.ToDoNotFoundError(requestIdString);
+    }
 
-//     this.todoRepo.delete(requestId);
-//   }
-// }
+    this.todoRepo.delete(requestId);
+  }
+}
 
-// UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
-//   execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError)) {
-//     const requestId = requestDTO.id;
-//     const todo = this.todoRepo.getById(requestId);
+UseCase GetByIdTodoUseCase (todoRepo: TodoReadRepoPort) {
+  execute (requestDTO: GetByIdTodoRequestDTO): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = requestDTO.id;
+    const todo = this.todoRepo.getById(requestId);
 
-//     if(NOT todo) {
-//       return ApplicationErrors.ToDoNotFoundError(requestId);
-//     }
+    if(NOT todo) {
+      return ApplicationErrors.ToDoNotFoundError(requestId);
+    }
 
-//     return todo;
-//   }
-// }
+    return todo;
+  }
+}
 
 UseCase GetAllTodosUseCase (todoRepo: TodoReadRepoPort) {
   execute (): (OK(TodoReadModel[]), Errors()) {
