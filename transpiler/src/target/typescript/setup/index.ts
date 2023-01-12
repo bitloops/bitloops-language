@@ -120,6 +120,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         setupTree.getRootChildrenNodesValueByType<TRepoConnectionDefinition>(
           BitloopsTypesMapping.TRepoConnectionDefinition,
         );
+
       const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
         BitloopsTypesMapping.TRouterDefinition,
       );
