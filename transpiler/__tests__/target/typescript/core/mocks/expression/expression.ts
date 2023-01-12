@@ -256,7 +256,7 @@ export const VALID_LITERAL_TEST_CASES = [
   {
     description: 'Test a template string literal',
     expression: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression(
-      '`Hello ${world}`',
+      'Hello ${world}',
     ),
     output: '`Hello ${world}`',
   },
