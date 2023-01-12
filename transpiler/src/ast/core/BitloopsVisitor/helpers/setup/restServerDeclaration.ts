@@ -24,7 +24,6 @@ import { ServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/set
 import { ServerRouteNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRouteNodeBuilder.js';
 import { ServerRoutesNodeBuilder } from '../../../intermediate-ast/builders/setup/ServerRoutesNodeBuilder.js';
 import { IdentifierNode } from '../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
-import { RestServerNode } from '../../../intermediate-ast/nodes/setup/RestServerNode.js';
 import { RestServerRouterPrefixNode } from '../../../intermediate-ast/nodes/setup/RestServerRouterPrefixNode.js';
 import { ServerOptionsNode } from '../../../intermediate-ast/nodes/setup/ServerOptionsNode.js';
 import { ServerRouteNode } from '../../../intermediate-ast/nodes/setup/ServerRouteNode.js';
@@ -35,18 +34,17 @@ import { produceMetadata } from '../../metadata.js';
 export const restServerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RestServerDeclarationContext,
-): RestServerNode => {
+): void => {
   const metadata = produceMetadata(ctx, thisVisitor);
 
   const serverOptionsNode = thisVisitor.visit(ctx.serverInstantiationOptions());
 
   const routes: ServerRoutesNode = thisVisitor.visit(ctx.bindServerRoutes());
 
-  const restServerNode = new RestServerNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+  new RestServerNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withServerOptions(serverOptionsNode)
     .withRoutes(routes)
     .build();
-  return restServerNode;
 };
 
 export const serverInstantiationOptionsVisitor = (

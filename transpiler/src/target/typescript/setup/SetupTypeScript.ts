@@ -51,6 +51,7 @@ import {
   GraphQLServerInstanceKey,
   ControllerResolversKey,
   ControllerResolverKey,
+  TControllerResolver,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -68,7 +69,7 @@ import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
-import { RouterDefinitionHelpers } from './routerDefinition/index.js';
+import { ControllerHelpers } from './controller/index.js';
 import { isGraphQLServerInstance, isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 import { NodeValueHelpers } from './helpers.js';
 import { RestFastifyGenerator } from './servers/fastify.js';
@@ -94,6 +95,7 @@ interface ISetup {
   generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     routerDefinitions: TRouterDefinition[],
+    graphQLServerInstances: TGraphQLServerInstance[],
     useCaseDefinitions: TUseCaseDefinition[],
     repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
@@ -183,6 +185,7 @@ export class SetupTypeScript implements ISetup {
 
   generateDIs(
     routerDefinitions: TRouterDefinition[],
+    graphQLServerInstances: TGraphQLServerInstance[],
     useCaseDefinitions: TUseCaseDefinition[],
     repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
@@ -198,8 +201,12 @@ export class SetupTypeScript implements ISetup {
     const useCasesLength = Object.keys(useCases).length;
 
     const controllers =
-      RouterDefinitionHelpers.getControllersForEachBoundedContextModule(routerDefinitions);
+      ControllerHelpers.getRESTControllersForEachBoundedContextModule(routerDefinitions);
     const controllersLength = Object.keys(controllers).length;
+
+    const graphQLControllers =
+      ControllerHelpers.getGraphQLControllersForEachBoundedContextModule(graphQLServerInstances);
+    const graphQLControllersLength = Object.keys(graphQLControllers).length;
 
     const repoAdaptersLength = repoAdapterDefinitions.length;
 
@@ -226,6 +233,12 @@ export class SetupTypeScript implements ISetup {
             controllers[boundedContextName][moduleName],
           );
 
+        if (graphQLControllersLength > 0) {
+          diContent += this.generateDIGraphQLControllersImports(
+            graphQLControllers[boundedContextName][moduleName],
+          );
+        }
+
         diContent += '\n';
         if (repoAdaptersLength > 0) {
           diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(repoAdapterDefinitions);
@@ -238,6 +251,12 @@ export class SetupTypeScript implements ISetup {
           diContent += this.generateControllerDIsAndExports(
             controllers[boundedContextName][moduleName],
           );
+
+        if (graphQLControllersLength > 0) {
+          diContent += this.generateGraphQLControllerDIsAndExports(
+            graphQLControllers[boundedContextName][moduleName],
+          );
+        }
 
         result.push({
           fileId: diFileName,
@@ -283,6 +302,22 @@ export class SetupTypeScript implements ISetup {
     return result;
   }
 
+  private generateDIGraphQLControllersImports(controllers: TControllerResolver[]): string {
+    let result = '';
+    for (const controller of controllers) {
+      const resolver = controller[ControllerResolverKey];
+      const { graphQLControllerIdentifier } = resolver;
+      const { path, filename } = getFilePathRelativeToModule(
+        ClassTypes.Controller,
+        graphQLControllerIdentifier,
+      );
+      result += `import { ${graphQLControllerIdentifier} } from './${path}${filename}${
+        esmEnabled ? '.js' : ''
+      }';\n`;
+    }
+    return result;
+  }
+
   private generateUseCasesDIs(useCases: TUseCase[]): string {
     let result = '';
     for (const useCase of useCases) {
@@ -299,7 +334,8 @@ export class SetupTypeScript implements ISetup {
 
   private generateControllerDIsAndExports(controllers: TRouterController[]): string {
     let controllerDIContent = '';
-    let exportsString = '';
+    let exportsString = 'export {';
+    const controllerInstanceNames = [];
     for (const controller of controllers) {
       const { routerController } = controller;
       const { RESTControllerIdentifier, controllerInstanceName, argumentList } = routerController;
@@ -310,8 +346,39 @@ export class SetupTypeScript implements ISetup {
       });
 
       controllerDIContent += `const ${controllerInstanceName} = new ${RESTControllerIdentifier}${controllerDependencies.output};\n`;
-      exportsString += `export { ${controllerInstanceName} };\n`;
+      controllerInstanceNames.push(controllerInstanceName);
     }
+    for (const controllerName of controllerInstanceNames) {
+      exportsString += `${controllerName}, `;
+    }
+    exportsString += '};\n';
+
+    return controllerDIContent + '\n' + exportsString;
+  }
+
+  private generateGraphQLControllerDIsAndExports(
+    controllerResolvers: TControllerResolver[],
+  ): string {
+    let controllerDIContent = '';
+    let exportsString = 'export {';
+    const controllerInstanceNames = [];
+    for (const controllerResolverInstance of controllerResolvers) {
+      const controllerResolver = controllerResolverInstance[ControllerResolverKey];
+      const { graphQLControllerIdentifier, controllerInstanceName, argumentList } =
+        controllerResolver;
+
+      const controllerDependencies = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TArgumentList,
+        value: { argumentList },
+      });
+
+      controllerDIContent += `const ${controllerInstanceName} = new ${graphQLControllerIdentifier}${controllerDependencies.output};\n`;
+      controllerInstanceNames.push(controllerInstanceName);
+    }
+    for (const controllerName of controllerInstanceNames) {
+      exportsString += `${controllerName}, `;
+    }
+    exportsString += '};\n';
     return controllerDIContent + '\n' + exportsString;
   }
 
