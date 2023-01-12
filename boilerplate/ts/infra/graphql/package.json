@@ -47,7 +47,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "apollo-server": "^3.10.3",
+    "apollo-server": "^3.11.1",
     "graphql": "^16.6.0"
   },
   "exports": {
