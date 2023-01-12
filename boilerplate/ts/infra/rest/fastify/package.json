@@ -50,7 +50,7 @@
     "@bitloops/bl-boilerplate-core": "^0.0.3",
     "@fastify/cors": "^8.1.0",
     "@fastify/formbody": "^7.3.0",
-    "fastify": "^4.8.1"
+    "fastify": "^4.11.0"
   },
   "exports": {
     ".": {
