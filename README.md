@@ -1,6 +1,8 @@
 ![Bitloops](https://storage.googleapis.com/bitloops-github-assets/github-readme-image.png)
+
+[![Depfu](https://img.shields.io/depfu/dependencies/github/bitloops/bitloops-language)](https://depfu.com/repos/github/bitloops/bitloops-language)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language?ref=badge_shield)
-![Depfu](https://img.shields.io/depfu/dependencies/github/bitloops/bitloops-language)
+
 <p align="center">
   <a href="https://bitloops.com/docs/bitloops-language/category/quick-start">Quick Start</a> |
   <a href="https://github.com/bitloops/bitloops-language#-what-are-the-benefits-of-using-bitloops-language">Benefits</a> |
