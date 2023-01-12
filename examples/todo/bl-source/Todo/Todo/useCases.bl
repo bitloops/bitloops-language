@@ -16,6 +16,10 @@ DTO GetByIdTodoRequestDTO {
   string id;
 }
 
+DTO GetAllTodosResponseDTO {
+  TodoReadModel[] todos;
+}
+
 UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
     const title = TitleVO({ title: requestDTO.title });

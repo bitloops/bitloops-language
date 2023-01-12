@@ -49,28 +49,28 @@ import {
   statementsWithoutThisToTargetLanguage,
   statementToTargetLanguage,
 } from './components/statements/index.js';
-import { ifStatementToTargetLanguage } from './components/statements/ifBlock/ifStatement.js';
+import { ifStatementToTargetLanguage } from './components/statements/if-block/ifStatement.js';
 import {
   variablesToTargetLanguage,
   variableToTargetLanguage,
 } from './components/variables/index.js';
-import { DTOToTargetLanguage } from './components/DTO/index.js';
+import { DTOToTargetLanguage } from './components/dto/index.js';
 import { switchStatementToTargetLanguage } from './components/statements/switch/index.js';
 import { breakStmtToTargetLanguage } from './components/statements/break.js';
 import { okErrorReturnTypeToTargetLanguage } from './components/okkErrorReturnType.js';
-import { valueObjectsToTargetLanguage } from './components/valueObjects/index.js';
-import { useCaseToTargetLanguage } from './components/useCase/index.js';
+import { valueObjectsToTargetLanguage } from './components/value-object/index.js';
+import { useCaseToTargetLanguage } from './components/use-case/index.js';
 import { restControllersToTargetLanguage } from './components/controllers/rest/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
-import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
+import { structDeclarationToTargetLanguage } from './components/struct-declaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
 import {
   definitionMethodInfoToTargetLanguage,
   definitionMethodsToTargetLanguage,
-} from './components/definitionMethods/index.js';
-import { packagePortToTargetLanguage } from './components/packagePort/index.js';
+} from './components/definition-methods/index.js';
+import { packagePortToTargetLanguage } from './components/package-port/index.js';
 import { packageToTargetLanguage } from './components/packages/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
 import { valueObjectEvaluationToTargetLanguage } from './components/statements/expression/evaluation/valueObjectEvaluation.js';
@@ -103,14 +103,14 @@ import { TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
 import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/index.js';
-import { readModelToTargetLanguage } from './components/readModels/index.js';
-import { rootEntityToTargetLanguage } from './components/rootEntity/index.js';
-import { entityValuesToTargetLanguage } from './components/entityValues/index.js';
+import { readModelToTargetLanguage } from './components/read-model/index.js';
+import { rootEntityToTargetLanguage } from './components/root-entity/index.js';
+import { entityValuesToTargetLanguage } from './components/entity-values/index.js';
 import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
-import { builtInClassEvaluationToTargetLanguage } from './components/builtInClass/index.js';
+import { builtInClassEvaluationToTargetLanguage } from './components/builtin-class/index.js';
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
-import { bitloopsErrorEvaluationToTargetLanguage } from './components/errorEvaluation/index.js';
+import { bitloopsErrorEvaluationToTargetLanguage } from './components/error-evaluation/index.js';
 import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { assignmentExpressionToTargetLanguage } from './components/statements/expression/assignmentExpression.js';
 import { thisExpressionToTargetLanguage } from './components/statements/expression/thisExpression.js';

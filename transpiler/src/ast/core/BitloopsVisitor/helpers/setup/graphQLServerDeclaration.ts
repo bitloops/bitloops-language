@@ -9,14 +9,13 @@ import { ControllerResolversNode } from '../../../intermediate-ast/nodes/setup/C
 import { ControllerResolversNodeBuilder } from '../../../intermediate-ast/builders/setup/ControllerResolversNodeBuilder.js';
 import { GraphQLServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/GraphQLServerOptionsNodeBuilder.js';
 import { GraphQLServerOptionsNode } from '../../../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
-import { GraphQLServerNode } from '../../../intermediate-ast/nodes/setup/GraphQLServerNode.js';
 import { GraphQLServerNodeBuilder } from '../../../intermediate-ast/builders/setup/GraphQLServerNodeBuilder.js';
 import { GraphQLControllerIdentifierNodeBuilder } from '../../../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
 
 export const graphQLServerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.GraphQLServerDeclarationContext,
-): GraphQLServerNode => {
+): void => {
   const metadata = produceMetadata(ctx, thisVisitor);
 
   const graphQLServerInstantiationOptionsNode: GraphQLServerOptionsNode = thisVisitor.visit(
@@ -27,7 +26,7 @@ export const graphQLServerDeclarationVisitor = (
     ctx.bindControllerResolvers(),
   );
 
-  return new GraphQLServerNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+  new GraphQLServerNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withServerOptions(graphQLServerInstantiationOptionsNode)
     .withControllerResolvers(controllerResolvers)
     .build();

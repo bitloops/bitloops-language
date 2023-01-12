@@ -98,3 +98,14 @@ RESTController GetTodosRESTController (getAllTodosUseCase: GetAllTodosUseCase) {
     this.ok(response, result);
   }
 }
+
+GraphQLController GetTodosdGQLController (getAllTodosUseCase: GetAllTodosUseCase) {
+  operation: GraphQL.Operations.Query;
+
+  execute (request): GetAllTodosResponseDTO {
+    const result = this.getAllTodosUseCase.execute();
+    const dto = GetAllTodosResponseDTO({ todos: result });
+
+    return this.ok(dto);
+  }
+}
