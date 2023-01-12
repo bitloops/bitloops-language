@@ -100,7 +100,6 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
   }
   const result: TDependencyChildTypescript[] = [];
   for (const dependencyString of dependencyStrings) {
-    // for void etc
     if (isBitloopsPrimitive(dependencyString)) {
       continue;
     }
@@ -131,6 +130,7 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
 
 /**
  * Gets the file name from [class name/=/dependency String]
+ * Value dictates name of import
  */
 export const getValueAndFileNameOfImport = (
   dependencyString: string,
@@ -144,13 +144,13 @@ export const getValueAndFileNameOfImport = (
   }
   if (classType === ClassTypes.ApplicationError) {
     return {
-      value: 'ApplicationError',
+      value: 'ApplicationErrors',
       fileName: 'index',
     };
   }
   if (classType === ClassTypes.DomainRule) {
     return {
-      value: 'Rules',
+      value: 'DomainRules',
       fileName: 'index',
     };
   }

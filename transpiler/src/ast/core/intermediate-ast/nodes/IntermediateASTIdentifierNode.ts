@@ -9,7 +9,7 @@ export abstract class IntermediateASTIdentifierNode extends IntermediateASTNode 
   public getIdentifierName(): string {
     const identifierClassNodeName = this.getClassNodeName();
     const identifierValue = this.getValue();
-    const useCaseIdentifierName: string = identifierValue[identifierClassNodeName];
-    return useCaseIdentifierName;
+    const identifierName: string = identifierValue[identifierClassNodeName];
+    return identifierName;
   }
 }

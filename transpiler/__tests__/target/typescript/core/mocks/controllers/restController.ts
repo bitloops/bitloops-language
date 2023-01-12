@@ -122,7 +122,7 @@ export class HelloWorldController extends Fastify.BaseController {
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const dto: HelloWorldRequestDTO = { name: request.body.name };
     const result = await this.useCase.execute(dto);
-    if (result.value.isFail()) {
+    if (result.isFail()) {
       switch (result.value.constructor) {
         case DomainErrors.InvalidNameError: {
           this.clientError(response, result.value.message);

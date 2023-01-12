@@ -1,12 +1,18 @@
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import {
   bitloopsIdentifiersTypeKey,
-  bitloopsPrimaryTypeKey,
   buildInClassTypeKey,
+  DTOIdentifierKey,
+  DTOKey,
   fieldKey,
   fieldsKey,
   primitivesTypeKey,
+  ReadModelIdentifierKey,
+  ReadModelKey,
   TBitloopsPrimaryTypeValues,
+  TDTO,
+  TReadModel,
   TVariables,
 } from '../../../../types.js';
 import { BitloopsPrimTypeIdentifiers } from '../../core/type-identifiers/bitloopsPrimType.js';
@@ -50,17 +56,28 @@ export class ClassTypeToGraphQLMapping {
     classTypeName: string,
     moduleModel: IntermediateASTTree,
   ): TVariables {
-    let fields: TVariables = { fields: [] };
+    const fields: TVariables = { fields: [] };
     if (BitloopsPrimTypeIdentifiers.isDTOIdentifier(classTypeName)) {
-      fields = moduleModel['DTOs'][classTypeName].fields;
+      const dtos = moduleModel.getRootChildrenNodesValueByType<TDTO>(BitloopsTypesMapping.TDTO);
+      const dto = dtos.find((dto) => dto[DTOKey][DTOIdentifierKey] === classTypeName);
+      fields[fieldsKey] = dto[DTOKey][fieldsKey];
     } else if (BitloopsPrimTypeIdentifiers.isReadModelIdentifier(classTypeName)) {
-      fields = moduleModel['ReadModels'][classTypeName].variables;
+      const readModels = moduleModel.getRootChildrenNodesValueByType<TReadModel>(
+        BitloopsTypesMapping.TReadModel,
+      );
+      const readModel = readModels.find(
+        (readModel) => readModel[ReadModelKey][ReadModelIdentifierKey] === classTypeName,
+      );
+      fields[fieldsKey] = readModel[ReadModelKey][fieldsKey];
     } else {
       throw new Error(`Dependency ${classTypeName} is not a DTO or ReadModel`);
     }
     return fields;
   }
 
+  /**
+   * Initially called with ArrayBitloopsPrimTypeObject, but it works recursively, so later can be called with any type
+   */
   private findFieldFromArray(
     type: TBitloopsPrimaryTypeValues,
     optional: boolean,
@@ -72,7 +89,7 @@ export class ClassTypeToGraphQLMapping {
       const result = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
       return { result, fieldDependency: null };
     } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
-      const res = this.findFieldFromArray(type.arrayPrimaryType[bitloopsPrimaryTypeKey], optional);
+      const res = this.findFieldFromArray(type.arrayPrimaryType, optional);
       return { result: '[' + res.result + ']', fieldDependency: res.fieldDependency };
     } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
       return { result: type[buildInClassTypeKey], fieldDependency: type[buildInClassTypeKey] };

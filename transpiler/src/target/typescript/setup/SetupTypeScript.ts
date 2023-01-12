@@ -447,7 +447,6 @@ export class SetupTypeScript implements ISetup {
             const {
               httpMethodVerb: method,
               stringLiteral: path,
-              RESTControllerIdentifier,
               controllerInstanceName,
               boundedContextModule,
             } = routerController;
@@ -456,7 +455,7 @@ export class SetupTypeScript implements ISetup {
             const { wordsWithSpaces: module } = moduleName;
 
             fastifyControllerImports.push(
-              `import { ${RESTControllerIdentifier} } from '../../../../../bounded-contexts/${kebabCase(
+              `import { ${controllerInstanceName} } from '../../../../../bounded-contexts/${kebabCase(
                 boundedContext,
               )}/${kebabCase(module)}/DI${esmEnabled ? '.js' : ''}';`,
             );
@@ -607,19 +606,20 @@ export { routers };
   ): TSetupOutput[] {
     const result: TSetupOutput[] = [];
 
-    const { classType: classTypeName, errorModels } = params;
+    const { classType, errorModels } = params;
+    const namespaceName = `${classType}s`;
     let imports = '';
-    let content = `export namespace ${classTypeName} {`;
+    let content = `export namespace ${namespaceName} {`;
 
     const filePathObj = getTargetFileDestination(
       boundedContextName,
       moduleName,
-      classTypeName,
-      classTypeName,
+      classType,
+      namespaceName,
     );
 
     for (const errorModel of errorModels) {
-      const className = this.getErrorName(errorModel, classTypeName);
+      const className = this.getErrorName(errorModel, classType);
       const classNameWithoutError = className.split('Error')[0];
       imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
       content += `export class ${className} extends ${classNameWithoutError} {}`;
@@ -627,7 +627,7 @@ export { routers };
     content += '}';
     const finalContent = imports + content;
     result.push({
-      fileType: classTypeName,
+      fileType: classType,
       fileId: `${filePathObj.path}/index.ts`,
       content: finalContent,
     });
@@ -650,6 +650,8 @@ export { routers };
   }
 
   generateRules(model: TBoundedContexts): TSetupOutput[] {
+    const classTypeName = ClassTypes.DomainRule;
+    const namespaceName = `${classTypeName}s`;
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
@@ -658,14 +660,13 @@ export { routers };
           BitloopsTypesMapping.TDomainRule,
         );
 
-        const classTypeName = ClassTypes.DomainRule;
         let imports = '';
-        let content = `export namespace ${classTypeName} {`;
+        let content = `export namespace ${namespaceName} {`;
         const filePathObj = getTargetFileDestination(
           boundedContextName,
           moduleName,
           classTypeName,
-          classTypeName,
+          namespaceName,
         );
 
         for (const domainRule of domainRules) {
@@ -678,7 +679,7 @@ export { routers };
         const finalContent = imports + content;
         output.push({
           fileType: classTypeName,
-          fileId: `${filePathObj.path}/index.ts`,
+          fileId: `${filePathObj.path}index.ts`,
           content: finalContent,
         });
       }

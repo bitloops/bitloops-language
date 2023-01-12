@@ -18,6 +18,8 @@ export class RepoAdapterNodeBuilder implements IBuilder<RepoAdapterNode> {
 
   public withIdentifier(identifierNode: IdentifierNode): RepoAdapterNodeBuilder {
     this.identifierNode = identifierNode;
+    const repoAdapterName = identifierNode.getIdentifierName();
+    this.repoAdapterNode.setClassName(repoAdapterName);
     return this;
   }
 

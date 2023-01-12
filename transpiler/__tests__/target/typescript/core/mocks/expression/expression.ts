@@ -251,3 +251,13 @@ export const VALID_EXPRESSION_TEST_CASES = [
     output: "{ message:'Hello, World!'} ",
   },
 ];
+
+export const VALID_LITERAL_TEST_CASES = [
+  {
+    description: 'Test a template string literal',
+    expression: new ExpressionBuilderDirector().buildTemplateStringLiteralExpression(
+      'Hello ${world}',
+    ),
+    output: '`Hello ${world}`',
+  },
+];

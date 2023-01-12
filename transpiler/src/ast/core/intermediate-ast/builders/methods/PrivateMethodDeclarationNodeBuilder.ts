@@ -11,7 +11,7 @@ export class PrivateMethodDeclarationNodeBuilder implements IBuilder<PrivateMeth
   private privateMethodDeclarationNode: PrivateMethodDeclarationNode;
   private identifier: IdentifierNode;
   private parameters: ParameterListNode;
-  private returnType: ReturnOkErrorTypeNode;
+  private returnType: ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode;
   private statements: StatementListNode;
 
   constructor(metadata?: TNodeMetadata) {

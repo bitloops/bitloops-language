@@ -25,8 +25,10 @@ export class DomainErrorBuilder implements IBuilder<DomainErrorNode> {
     this.domainErrorNode = new DomainErrorNode(metadata);
   }
 
-  public withIdentifier(identifierName: IdentifierNode): DomainErrorBuilder {
-    this.identifierName = identifierName;
+  public withIdentifier(identifierNode: IdentifierNode): DomainErrorBuilder {
+    this.identifierName = identifierNode;
+    const domainErrorName = identifierNode.getIdentifierName();
+    this.domainErrorNode.setClassName(domainErrorName);
     return this;
   }
 

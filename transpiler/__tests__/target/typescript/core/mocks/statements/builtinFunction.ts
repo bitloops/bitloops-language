@@ -27,6 +27,6 @@ export const VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES: TestCase[] = [
       },
     ]),
     output:
-      'const res = Domain.applyRules([new Rules.TooLongStringRule(props.name),]);if (res) return fail(res);',
+      'const res = Domain.applyRules([new DomainRules.TooLongStringRule(props.name),]);if (res) return fail(res);',
   },
 ];

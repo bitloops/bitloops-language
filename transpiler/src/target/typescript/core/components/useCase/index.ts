@@ -42,12 +42,12 @@ const USE_CASE_DEPENDENCIES: TDependenciesTypeScript = [
     value: 'Either',
     from: '@bitloops/bl-boilerplate-core',
   },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'ok',
-    from: '@bitloops/bl-boilerplate-core',
-  },
+  // {
+  //   type: 'absolute',
+  //   default: false,
+  //   value: 'ok',
+  //   from: '@bitloops/bl-boilerplate-core',
+  // },
 ];
 
 const initialUseCase = (

@@ -30,7 +30,7 @@ import {
 } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import {
   TPackageConcretion,
   TSetupRepoAdapterDefinition,
@@ -66,9 +66,9 @@ const setupTypeMapper = {
   'DB.Mongo': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  DomainErrors: '',
-  ApplicationErrors: '',
-  Rules: '',
+  [ClassTypes.ApplicationError]: '',
+  [ClassTypes.DomainError]: '',
+  [ClassTypes.DomainRule]: '',
 };
 
 const license = `/**
@@ -217,6 +217,8 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       // Step 10. Write files
       pathsAndContents.forEach((pathAndContent) => {
         const { fileType, content, fileId } = pathAndContent;
+        if (setupTypeMapper[fileType] === undefined)
+          throw new Error(`File type ${fileType} not supported!`);
         result.push({
           fileId: path.normalize(`./${setupTypeMapper[fileType]}${fileId}`),
           fileType: fileType,

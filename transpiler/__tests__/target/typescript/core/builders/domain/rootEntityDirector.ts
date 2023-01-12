@@ -24,8 +24,8 @@ import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/n
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
-import { PropsIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
+import { DomainCreateParameterTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 type TReturnType = {
   ok: string;
@@ -61,12 +61,12 @@ export class RootEntityBuilderDirector {
 
     const parameterNode = new DomainCreateParameterNodeBuilder(null)
       .withIdentifierNode(
-        new ParameterIdentifierNodeBuilder(null)
-          .withIdentifier(constructorParameterNode.propIdentifier)
-          .build(),
+        new IdentifierNodeBuilder(null).withName(constructorParameterNode.propIdentifier).build(),
       )
       .withTypeNode(
-        new PropsIdentifierNodeBuilder().withName(constructorParameterNode.propClassName).build(),
+        new DomainCreateParameterTypeNodeBuilder()
+          .withValue(constructorParameterNode.propClassName)
+          .build(),
       )
       .build();
 
