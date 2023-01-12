@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  PropsIdentifierKey,
   TDependenciesTypeScript,
   TDomainPrivateMethods,
   TTargetDependenciesTypeScript,
@@ -73,7 +72,7 @@ const valueObjectsToTargetLanguage = (params: {
   let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
 
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
-  const domainCreateProps = create.domainCreateParameter[PropsIdentifierKey];
+  const domainCreateProps = create.domainCreateParameter.parameterType;
   //TODO uncomment?
   // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
   //   throw new Error(

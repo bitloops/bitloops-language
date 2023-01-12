@@ -24,7 +24,6 @@ import { OptionalNode } from '../../intermediate-ast/nodes/OptionalNode.js';
 
 export const optionalVisitor = (ctx: BitloopsParser.OptionalContext): OptionalNode => {
   const optionalValue = ctx.Optional() ? true : false;
-  console.log('optionalValue');
   const optionalNode = new OptionalBuilder().withOptional(optionalValue).build();
   return optionalNode;
 };

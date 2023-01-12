@@ -265,4 +265,56 @@ export const validEntityTestCases = [
       )
       .build(),
   },
+  {
+    description: 'Entity with public method that returns void or domain error',
+    fileId: 'testFile.bl',
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/entity/entityMethodWithVoidErrorType.bl',
+    ),
+    expected: new EntityDeclarationBuilder()
+      .withIdentifier('TodoEntity')
+      .withValues(
+        new EntityValuesBuilder()
+          .withCreate(
+            new DomainCreateBuilderDirector().buildCreateEntityWithError({
+              entityName: 'TodoEntity',
+              entityPropsName: 'TodoProps',
+              entityPropsIdentifier: 'props',
+              errorName: 'DomainErrors.InvalidDayError',
+            }),
+          )
+          .withPrivateMethods([])
+          .withPublicMethods([
+            new PublicMethodBuilder()
+              .withIdentifier(new IdentifierBuilder().withName('greet').build())
+              .withParameters(
+                new ParameterListBuilderDirector().buildParams([
+                  new ParameterBuilderDirector().buildPrimitiveParameter('day', 'string'),
+                ]),
+              )
+              .withReturnType(
+                new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOK(
+                  'void',
+                  'DomainErrors.InvalidDayError',
+                ),
+              )
+              .withStatements([
+                new StatementDirector().buildIfStatement({
+                  condition: new ExpressionBuilderDirector().buildEqualityExpression(
+                    new ExpressionBuilderDirector().buildIdentifierExpression('day'),
+                    new ExpressionBuilderDirector().buildStringLiteralExpression('Sunday'),
+                  ),
+                  thenStatements:
+                    new StatementListDirector().buildOneReturnStatementErrorEvaluation(
+                      'DomainErrors.InvalidDayError',
+                    ),
+                }),
+                new StatementDirector().buildEmptyReturnOK(),
+              ])
+              .build(),
+          ])
+          .build(),
+      )
+      .build(),
+  },
 ];

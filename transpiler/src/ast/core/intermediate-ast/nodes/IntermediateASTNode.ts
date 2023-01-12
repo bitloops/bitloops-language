@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../../helpers/mappings.js';
 import { IntermediateASTValidationError } from '../../types.js';
+import { StatementListNode } from './statements/StatementList.js';
 
 export type TNodeLineData = {
   line: number;
@@ -159,13 +160,6 @@ export abstract class IntermediateASTNode {
     return;
   }
 
-  // private equals(intermediateASTNode: IntermediateASTNode) {
-  //   if (JSON.stringify(this.value) === JSON.stringify(intermediateASTNode.value)) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   static isIntermediateASTNodeValidationError(
     value: void | IntermediateASTNodeValidationError,
   ): value is IntermediateASTNodeValidationError {
@@ -173,6 +167,10 @@ export abstract class IntermediateASTNode {
       return true;
     }
     return false;
+  }
+
+  getStatementListNode(): StatementListNode | null {
+    return this.getChildNodeByType(BitloopsTypesMapping.TStatements) as StatementListNode;
   }
 
   IsStatementListNode(): boolean {

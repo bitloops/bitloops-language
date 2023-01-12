@@ -61,10 +61,6 @@ import { okErrorReturnTypeToTargetLanguage } from './components/okkErrorReturnTy
 import { valueObjectsToTargetLanguage } from './components/valueObjects/index.js';
 import { useCaseToTargetLanguage } from './components/useCase/index.js';
 import { restControllersToTargetLanguage } from './components/controllers/rest/index.js';
-import {
-  backTickStringToTargetLanguage,
-  stringToTargetLanguage,
-} from './components/strings/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
@@ -291,14 +287,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TGraphQLController: {
       res = graphQLControllersToTargetLanguage(value, contextData);
-      break;
-    }
-    case BitloopsTypesMapping.TString: {
-      res = stringToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TBackTickString: {
-      res = backTickStringToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainError: {

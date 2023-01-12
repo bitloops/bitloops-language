@@ -16,7 +16,7 @@ import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueOb
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
-import { PropsIdentifierKey, TBitloopsPrimaryType, TPropsIdentifier } from '../../../types.js';
+import { TBitloopsPrimaryType } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
 
@@ -210,21 +210,17 @@ export class IntermediateASTTree {
   public getValueOfPropsWithIdentifierFromDomainCreate(
     domainCreateParameterNode: DomainCreateParameterNode,
     identifier: string,
-  ): TBitloopsPrimaryType | void {
+  ): TBitloopsPrimaryType | null {
     const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
 
-    const propsTypeNodeValue: { [PropsIdentifierKey]: TPropsIdentifier } = domainCreateParameterNode
-      .getTypeNode()
-      .getValue().propsIdentifier;
+    const typeNode = domainCreateParameterNode.getTypeNode();
+    const propsTypeNodeValue = typeNode.getType();
 
     const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
       node.getNodeType() === BitloopsTypesMapping.TProps;
 
     for (const propsNode of propsNodes) {
-      if (
-        isPropsNode(propsNode) &&
-        propsNode.getPropsIdentifierNode()?.getValue().propsIdentifier === propsTypeNodeValue
-      ) {
+      if (isPropsNode(propsNode) && propsNode.getIdentifierValue() === propsTypeNodeValue) {
         const fieldsListNode = propsNode.getFieldListNode();
         const fieldNodes = fieldsListNode.getFieldNodes();
         for (const fieldNode of fieldNodes) {
@@ -235,6 +231,7 @@ export class IntermediateASTTree {
         }
       }
     }
+    return null;
   }
 
   public getAllExpressionsOfUseCase(): ExpressionNode[] {
@@ -331,15 +328,17 @@ export class IntermediateASTTree {
     identifierToReplace: string,
     newIdentifier: string,
   ): void {
-    const predicate = (node: IntermediateASTNode): boolean =>
-      node instanceof IdentifierExpressionNode && node.identifierName === identifierToReplace;
+    const nodeIsOurIdentifierPredicate = (node: IntermediateASTNode): boolean =>
+      node instanceof IdentifierExpressionNode &&
+      node.identifierName === identifierToReplace &&
+      node.isUsedByIsInstanceOfExpression() === false;
 
     const nodes: IdentifierExpressionNode[] = [];
     let nextStatement = baseStatement.getNextSibling();
     while (nextStatement !== null) {
       const identifiersOfStatements = this.getNodesWithPolicy(
         nextStatement,
-        predicate,
+        nodeIsOurIdentifierPredicate,
       ) as IdentifierExpressionNode[];
       nodes.push(...identifiersOfStatements);
 

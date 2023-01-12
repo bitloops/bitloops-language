@@ -23,7 +23,7 @@ export class RouterDefinitionHelpers {
 
         if (!controllers[boundedContext]) {
           controllers[boundedContext] = {
-            module: [
+            [module]: [
               {
                 routerController,
               },

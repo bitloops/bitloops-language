@@ -70,14 +70,14 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     output: `import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
     import { TitleProps } from './TitleProps';
     import { DomainErrors } from './errors/index';
-    import { Rules } from './rules/index';
+    import { DomainRules } from './rules/index';
     export class TitleVO extends Domain.ValueObject<TitleProps> {
       private constructor(props: TitleProps) {
         super(props);
         this.props.name = 'newName';
       }
       public static create(props: TitleProps): Either<TitleVO, DomainErrors.InvalidTitleError> {
-        const res = Domain.applyRules([new Rules.InvalidTitleRule(props.title)]);
+        const res = Domain.applyRules([new DomainRules.InvalidTitleRule(props.title)]);
         if (res) return fail(res);
         return ok(new TitleVO(props));
       }

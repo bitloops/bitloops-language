@@ -184,7 +184,6 @@ import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js
 import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { domainConstructorParameterVisitor } from './helpers/domainConstructorParameterVisitor.js';
 import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
@@ -257,6 +256,7 @@ import {
 import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { GraphQLServerNode } from '../intermediate-ast/nodes/setup/GraphQLServerNode.js';
+import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -796,7 +796,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDomainConstructorParam(
     ctx: BitloopsParser.DomainConstructorParamContext,
   ): DomainCreateParameterNode {
-    return domainConstructorParameterVisitor(this, ctx);
+    return domainCreateParameterVisitor(this, ctx);
   }
 
   visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): void {

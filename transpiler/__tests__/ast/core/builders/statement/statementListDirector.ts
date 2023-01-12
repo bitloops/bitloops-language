@@ -37,7 +37,6 @@ export class StatementListDirector {
         name,
         intLiteral,
       }),
-      new StatementDirector().buildEmptyReturnOK(),
     ];
   }
 
