@@ -10,23 +10,23 @@ const mongoConnection = RepoConnections.Mongo({
 
 // REPOSITORIES
 
-// const todoWriteRepo = RepoAdapters.Mongo({
-//   connection: mongoConnection,
-//   collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-// }) concretes [Todo][Todo]TodoWriteRepoPort;
+const todoWriteRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+}) concretes [Todo][Todo]TodoWriteRepoPort;
 
-// const todoReadRepo = RepoAdapters.Mongo({
-//   connection: mongoConnection,
-//   collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-// }) concretes [Todo][Todo]TodoReadRepoPort;
+const todoReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+}) concretes [Todo][Todo]TodoReadRepoPort;
 
 // USE CASES
 
-const createTodoUseCase = [Todo][Todo]CreateTodoUseCase();
-const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase();
-const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase();
-const deleteTodoUseCase = [Todo][Todo]DeleteTodoUseCase();
-const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase();
+const createTodoUseCase = [Todo][Todo]CreateTodoUseCase(todoWriteRepo);
+const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);
+const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
+const deleteTodoUseCase = [Todo][Todo]DeleteTodoUseCase(todoWriteRepo);
+const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
 
 // const getAllTodoUseCase = AutoUseCase(todoReadRepo, CRUDReadRepoPort.Methods.getAll);
 // const updateTodoUseCase = AutoUseCase(todoWriteRepo, CRUDWriteRepoPort.Methods.update);

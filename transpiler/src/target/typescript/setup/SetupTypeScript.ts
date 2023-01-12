@@ -200,7 +200,6 @@ export class SetupTypeScript implements ISetup {
       UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions);
     const useCasesLength = Object.keys(useCases).length;
 
-    //TODO graph
     const controllers =
       ControllerHelpers.getRESTControllersForEachBoundedContextModule(routerDefinitions);
     const controllersLength = Object.keys(controllers).length;
@@ -230,7 +229,6 @@ export class SetupTypeScript implements ISetup {
           diContent += this.generateDIUseCaseImports(useCases[boundedContextName][moduleName]);
 
         if (controllersLength > 0)
-          //TODO graph
           diContent += this.generateDIControllersImports(
             controllers[boundedContextName][moduleName],
           );
