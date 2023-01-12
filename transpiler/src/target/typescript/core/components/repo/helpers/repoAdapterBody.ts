@@ -47,12 +47,11 @@ import { RepoAdapterNode } from '../../../../../../ast/core/intermediate-ast/nod
 const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
 const CRUDReadRepoPort = 'CRUDReadRepoPort';
 
-type TPropsValues = any;
 const getPropsModel = (
   repoPort: TRepoPort,
   model: IntermediateASTTree,
-): { output: TPropsValues; dependencies: TDependenciesTypeScript } => {
-  let propsModel: TPropsValues;
+): { output: TProps | TReadModel; dependencies: TDependenciesTypeScript } => {
+  let propsModel: TProps | TReadModel;
   const dependencies = [];
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPort)) {
     const { entityIdentifier } = repoPort[repoPortKey];
@@ -173,6 +172,7 @@ const repoBodyLangMapping = (
           .includes(CRUDReadRepoPort)
       ) {
         const readRepoPort = repoPortInfo as TReadModelRepoPort;
+        console.log('-----', readRepoPort[repoPortKey].readModelIdentifier);
         const methodsResult = fetchTypeScriptReadModelCrudBaseRepo(
           readRepoPort[repoPortKey].readModelIdentifier,
           propsModel,
