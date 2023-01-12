@@ -50,7 +50,7 @@ export class DomainCreateBuilderDirector {
     voPropsName: string;
   }): TDomainCreateMethod {
     return this.builder
-      .withStatements([new StatementDirector().buildEmptyReturnOK()])
+      .withStatements([])
       .withReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
           voName,
@@ -80,7 +80,6 @@ export class DomainCreateBuilderDirector {
     return this.builder
       .withStatements([
         new StatementDirector().buildBuiltInFunctionApplyRulesStatement(...appliedRules),
-        new StatementDirector().buildEmptyReturnOK(),
       ])
       .withReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(

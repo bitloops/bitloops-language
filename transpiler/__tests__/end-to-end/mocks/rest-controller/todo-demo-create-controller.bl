@@ -1,0 +1,22 @@
+RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
+  method: REST.Methods.POST;
+  execute(request, response) {
+    const dto = CreateTodoRequestDTO({ title: request.body.title });
+
+    const result = this.createTodoUseCase.execute(dto);
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case DomainErrors.TitleOutOfBoundsError: {
+          this.clientError(response, result.message);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.created(response);
+    }
+  }
+}

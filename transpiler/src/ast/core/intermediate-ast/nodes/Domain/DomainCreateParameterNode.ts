@@ -1,7 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
-import { PropsIdentifierNode } from '../Props/PropsIdentifierNode.js';
+import { DomainCreateParameterTypeNode } from './DomainCreateParameterTypeNode.js';
 
 export class DomainCreateParameterNode extends IntermediateASTIdentifierNode {
   private static classNodeName = 'domainCreateParameter';
@@ -18,10 +18,10 @@ export class DomainCreateParameterNode extends IntermediateASTIdentifierNode {
     return DomainCreateParameterNode.classNodeName;
   }
 
-  public getTypeNode(): PropsIdentifierNode {
-    const identifierNode: PropsIdentifierNode = this.getChildNodeByType(
-      BitloopsTypesMapping.TPropsIdentifier,
+  public getTypeNode(): DomainCreateParameterTypeNode {
+    const createParameterNode: DomainCreateParameterTypeNode = this.getChildNodeByType(
+      BitloopsTypesMapping.TDomainCreateParameterType,
     );
-    return identifierNode;
+    return createParameterNode;
   }
 }

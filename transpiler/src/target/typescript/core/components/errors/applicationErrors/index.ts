@@ -30,12 +30,12 @@ import { getParentDependencies } from '../../../dependencies.js';
 import { getErrorValues } from '../index.js';
 
 const applicationErrorsToTargetLanguage = (
-  domainError: TApplicationError,
+  applicationError: TApplicationError,
 ): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
-  const applicationErrorName = domainError[ApplicationErrorKey][ApplicationErrorIdentifier];
-  const applicationErrorValue = domainError[ApplicationErrorKey];
+  const applicationErrorName = applicationError[ApplicationErrorKey][ApplicationErrorIdentifier];
+  const applicationErrorValue = applicationError[ApplicationErrorKey];
   const applicationErrorToTargetLang = applicationErrorToTargetLanguage(
     applicationErrorValue,
     applicationErrorName,

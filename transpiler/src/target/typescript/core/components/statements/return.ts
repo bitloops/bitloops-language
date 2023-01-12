@@ -35,6 +35,13 @@ const FAIL_DEPENDENCY: TDependencyChildTypescript = {
   from: '@bitloops/bl-boilerplate-core',
 };
 
+const OK_DEPENDENCY: TDependencyChildTypescript = {
+  type: 'absolute',
+  default: false,
+  value: 'ok',
+  from: '@bitloops/bl-boilerplate-core',
+};
+
 const returnToTargetLanguage = (variable: TReturnStatement): TTargetDependenciesTypeScript => {
   if (!variable.return) {
     throw new Error('Return statement must have a return value');
@@ -55,17 +62,16 @@ const returnOkToTargetLanguage = (variable: TReturnOKStatement): TTargetDependen
   }
 
   let output;
-  let dependencies;
+  const dependencies: TDependenciesTypeScript = [OK_DEPENDENCY];
   if (variable.returnOK === null) {
     output = 'return ok()';
-    dependencies = [];
   } else {
     const expressionValue = modelToTargetLanguage({
       type: 'TExpression',
       value: variable.returnOK,
     });
     output = `return ok(${expressionValue.output})`;
-    dependencies = expressionValue.dependencies;
+    dependencies.push(...expressionValue.dependencies);
   }
 
   return {
