@@ -22,7 +22,6 @@ const getReadModelFields = (readModelValues: TProps | TReadModel): string => {
 };
 
 const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable => {
-  console.log('AGGREGATE', readModelValues['ReadModel'].fields);
   const [aggregateIdVariable] = readModelValues['ReadModel'].fields
     .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);

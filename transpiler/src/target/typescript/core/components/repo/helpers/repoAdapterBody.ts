@@ -172,7 +172,6 @@ const repoBodyLangMapping = (
           .includes(CRUDReadRepoPort)
       ) {
         const readRepoPort = repoPortInfo as TReadModelRepoPort;
-        console.log('-----', readRepoPort[repoPortKey].readModelIdentifier);
         const methodsResult = fetchTypeScriptReadModelCrudBaseRepo(
           readRepoPort[repoPortKey].readModelIdentifier,
           propsModel,
