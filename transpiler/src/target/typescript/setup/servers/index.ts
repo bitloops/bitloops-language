@@ -82,10 +82,9 @@ export const isRestServer = (server: TServerInstance): server is TRESTServerInst
   return false;
 };
 
-// TODO fix
 export const isGraphQLServerInstance = (
   serverInstance: TRESTServerInstance | TGraphQLServerInstance,
 ): serverInstance is TGraphQLServerInstance => {
-  if ('resolvers' in serverInstance) return true;
+  if ('graphQLServer' in serverInstance) return true;
   else return false;
 };
