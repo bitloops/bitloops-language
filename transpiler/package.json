@@ -37,7 +37,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "~26.2",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "jest": "~28.1",
     "jest-cucumber": "^3.0.1",
     "jest-extended": "^3.0.2",
