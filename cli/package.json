@@ -19,7 +19,7 @@
     "url": "https://github.com/bitloops/bitloops-language"
   },
   "devDependencies": {
-    "@types/eslint": "^8.4.6",
+    "@types/eslint": "^8.4.10",
     "@types/figlet": "^1.5.5",
     "@types/inquirer": "^9.0.1",
     "@types/jest": "~27.5",
