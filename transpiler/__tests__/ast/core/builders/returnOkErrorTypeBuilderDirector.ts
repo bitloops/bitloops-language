@@ -23,6 +23,16 @@ export class ReturnOkErrorTypeBuilderDirector {
       .build();
   }
 
+  buildReturnOkErrorWithPrimitiveOK(
+    primitiveType: TBitloopsPrimitives,
+    error: string,
+  ): TOkErrorReturnType {
+    return this.builder
+      .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(primitiveType))
+      .withErrors([{ error }])
+      .build();
+  }
+
   buildReturnOkErrorWithIdentifierOkAndNoErrors(
     identifierPrimaryType: TBitloopsIdentifier,
   ): TOkErrorReturnType {
