@@ -60,7 +60,6 @@ import { breakStmtToTargetLanguage } from './components/statements/break.js';
 import { okErrorReturnTypeToTargetLanguage } from './components/okkErrorReturnType.js';
 import { valueObjectsToTargetLanguage } from './components/valueObjects/index.js';
 import { useCaseToTargetLanguage } from './components/useCase/index.js';
-import { controllersToTargetLanguage } from './components/controllers/index.js';
 import { restControllersToTargetLanguage } from './components/controllers/rest/index.js';
 import {
   backTickStringToTargetLanguage,
@@ -68,7 +67,6 @@ import {
 } from './components/strings/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
 import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
-import { graphQLSetupDataToTargetLanguage } from '../setup/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
 import { structDeclarationToTargetLanguage } from './components/structDeclaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
@@ -132,7 +130,7 @@ const modelToTargetLanguage = (props: {
   type: TNodeType;
   value: any;
   contextData?: TContextData;
-  setupData?: any; // TODO change to [fileId]: IntermediateASTTree
+  setupData?: any; // TODO remove this
   model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
   const { type, value, contextData, setupData, model } = props;
@@ -284,8 +282,8 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TRESTController: {
-      if (contextData && setupData?.controllers) {
-        res = restControllersToTargetLanguage(value, contextData, setupData?.controllers);
+      if (contextData) {
+        res = restControllersToTargetLanguage(value, contextData);
       } else {
         throw new Error('Missing context data and/or controllers');
       }
@@ -311,16 +309,8 @@ const modelToTargetLanguage = (props: {
       res = applicationErrorsToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TGraphQLSetupData: {
-      res = graphQLSetupDataToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TDTOEvaluation: {
       res = DTOEvaluationToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TController: {
-      res = controllersToTargetLanguage(value, contextData, setupData);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {

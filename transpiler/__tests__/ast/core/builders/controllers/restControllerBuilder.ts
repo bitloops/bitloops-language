@@ -4,6 +4,7 @@ import {
   TRESTController,
   TRESTControllerExecute,
   TRestMethods,
+  TServerType,
 } from '../../../../../src/types.js';
 
 export class RestControllerBuilder implements IBuilder<TRESTController> {
@@ -11,6 +12,7 @@ export class RestControllerBuilder implements IBuilder<TRESTController> {
   private RESTControllerIdentifier: string;
   private method: TRestMethods;
   private execute: TRESTControllerExecute;
+  private serverType: TServerType;
 
   public withIdentifier(identifierName: string): RestControllerBuilder {
     this.RESTControllerIdentifier = identifierName;
@@ -32,6 +34,11 @@ export class RestControllerBuilder implements IBuilder<TRESTController> {
     return this;
   }
 
+  public withServerType(serverType: TServerType): RestControllerBuilder {
+    this.serverType = serverType;
+    return this;
+  }
+
   public build(): TRESTController {
     const restController: TRESTController = {
       RESTController: {
@@ -39,6 +46,7 @@ export class RestControllerBuilder implements IBuilder<TRESTController> {
         ...this.parameters,
         method: this.method,
         execute: this.execute,
+        serverType: this.serverType,
       },
     };
 

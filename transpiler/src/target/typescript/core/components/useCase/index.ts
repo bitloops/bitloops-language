@@ -115,7 +115,7 @@ export const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesT
   dependencies = [...dependencies, ...executeResult.dependencies];
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-    classType: ClassTypes.UseCases,
+    classType: ClassTypes.UseCase,
     className: useCaseName,
   });
 

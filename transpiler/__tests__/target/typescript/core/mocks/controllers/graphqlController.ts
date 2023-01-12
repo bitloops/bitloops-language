@@ -1,9 +1,9 @@
-import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
+import { GraphQLControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
 import { GraphQLControllerBuilderDirector } from '../../builders/controllers/graphqlDirector.js';
 
 type TestCase = {
   description: string;
-  controller: RESTControllerNode;
+  controller: GraphQLControllerNode;
   output: string;
 };
 

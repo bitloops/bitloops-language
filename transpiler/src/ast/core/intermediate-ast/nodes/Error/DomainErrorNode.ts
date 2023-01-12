@@ -4,7 +4,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 // This would extend the ExpressionNode class instead
 export class DomainErrorNode extends ClassTypeNode {
-  private static classType = ClassTypes.DomainErrors;
+  private static classType = ClassTypes.DomainError;
   private static classNodeName = 'DomainError';
 
   constructor(metadata?: TNodeMetadata) {

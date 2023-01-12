@@ -18,6 +18,7 @@ import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
 import { PropsIdentifierKey, TBitloopsPrimaryType, TPropsIdentifier } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
+import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -188,6 +189,23 @@ export class IntermediateASTTree {
     }
     return rootEntityFound;
   }
+
+  public getControllerByIdentifier = (identifier: string): RESTControllerNode => {
+    const restControllerNodes = this.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TRESTController,
+    ) as RESTControllerNode[];
+
+    let restControllerFound: RESTControllerNode = null;
+    for (const restController of restControllerNodes) {
+      const restControllerIdentifier = restController.getIdentifier();
+
+      if (identifier === restControllerIdentifier.getValue().RESTControllerIdentifier) {
+        restControllerFound = restController;
+      }
+    }
+
+    return restControllerFound;
+  };
 
   public getValueOfPropsWithIdentifierFromDomainCreate(
     domainCreateParameterNode: DomainCreateParameterNode,

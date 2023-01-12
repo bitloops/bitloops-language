@@ -47,11 +47,11 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.RootEntity]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ValueObject]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
+  [ClassTypes.DomainError]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
   [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
   [ClassTypes.Controller]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
-  [ClassTypes.UseCases]: PROJECT_RELATIVE_PATHS.APPLICATION,
-  [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
+  [ClassTypes.UseCase]: PROJECT_RELATIVE_PATHS.APPLICATION,
+  [ClassTypes.DTO]: PROJECT_RELATIVE_PATHS.DTOs,
   [ClassTypes.Package]: PROJECT_RELATIVE_PATHS.PACKAGES,
   [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
@@ -103,12 +103,12 @@ const getTargetFileDestination = (
     case ClassTypes.Entity:
     case ClassTypes.ReadModel:
     case ClassTypes.ValueObject:
-    case ClassTypes.DomainErrors:
+    case ClassTypes.DomainError:
     case ClassTypes.ApplicationError:
     case ClassTypes.Props:
     case ClassTypes.Controller:
-    case ClassTypes.UseCases:
-    case ClassTypes.DTOs:
+    case ClassTypes.UseCase:
+    case ClassTypes.DTO:
     case ClassTypes.Package:
     case ClassTypes.RepoPort:
     case ClassTypes.RepoAdapter:
@@ -139,15 +139,15 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Entity:
     case ClassTypes.ValueObject:
     case ClassTypes.Controller:
-    case ClassTypes.UseCases:
-    case ClassTypes.DTOs:
+    case ClassTypes.UseCase:
+    case ClassTypes.DTO:
     case ClassTypes.Package:
     case ClassTypes.RepoAdapter:
     case ClassTypes.RepoPort:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
-    case ClassTypes.DomainErrors:
+    case ClassTypes.DomainError:
     case ClassTypes.ApplicationError:
     case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];

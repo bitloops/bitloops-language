@@ -8,7 +8,6 @@ type GenerateRepoConfigParams = {
 };
 
 export interface ISetupTypescriptMongoRepo {
-  // generateRepoConnections(setupData: Readonly<TSetupData>): TSetupOutput[];
   generateConnectionConfigFile(
     connections: GenerateRepoConfigParams,
     license?: string,

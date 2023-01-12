@@ -1,8 +1,8 @@
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { TGraphQLOperation, TResolver, TResolvers } from '../../../../types.js';
+import { TGraphQLOperation } from '../../../../types.js';
 import { TBoundedContexts } from '../../../../ast/core/types.js';
 import { ClassTypeToGraphQLMapping } from './dtoToGraphQLMapping.js';
-import { AllResolvers, ResolverValues } from './types.js';
+import { AllResolvers, ResolverValues, TResolver, TResolvers } from './types.js';
 
 const operationTypeMapping: Record<TGraphQLOperation, string> = {
   query: 'queries',

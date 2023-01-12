@@ -23,7 +23,7 @@ import {
   TArrayLiteralExpression,
   TExpressionValues,
   TEvaluation,
-  TIdentifierExpr,
+  TIdentifierExpression,
   TLiteral,
   TAssignmentExpression,
   TThisExpression,
@@ -56,7 +56,7 @@ export class ExpressionTypeIdentifiers {
   }
   static isIdentifierExpression = (
     expressionValue: TExpressionValues,
-  ): expressionValue is TIdentifierExpr => {
+  ): expressionValue is TIdentifierExpression => {
     if ('identifier' in expressionValue) {
       return true;
     }

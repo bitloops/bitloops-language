@@ -2,7 +2,6 @@ import { IntermediateAST } from '../ast/core/types.js';
 import { TTranspileOptions } from '../transpilerTypes.js';
 import { TClassName, TTargetDependenciesTypeScript } from '../types.js';
 
-import { TBoundedContexts } from '../ast/core/types.js';
 import { TClassTypesValues } from '../helpers/mappings.js';
 
 export interface IIntermediateASTToTarget {
@@ -42,13 +41,6 @@ export type TTargetSetupContent = {
   fileId: string;
   fileType: string;
   fileContent: string;
-};
-
-export type TTargetGeneratorParams = {
-  intermediateAST: TBoundedContexts;
-  targetLanguage: string;
-  formatterConfig?: any;
-  sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
 export type TargetGeneratorError = TargetCoreGeneratorError | TargetSetupGeneratorError;

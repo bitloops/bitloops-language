@@ -6,6 +6,7 @@ import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkError
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
 import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../types.js';
 import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
+import { RestControllerTypeTransformer } from './ node-transformers/RestControllerTypeTransformer.js';
 import { RepoAdapterNodesTransformer } from './ node-transformers/RepoAdapterNodesTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
@@ -89,6 +90,12 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
         intermediateAST.core,
       );
       injectRepoAdaptersTransformer.run();
+
+      const restControllerTypeTransformer = new RestControllerTypeTransformer(
+        setupTree,
+        intermediateAST.core,
+      );
+      restControllerTypeTransformer.run();
     }
   }
 

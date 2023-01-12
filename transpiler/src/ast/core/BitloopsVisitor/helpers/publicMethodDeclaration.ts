@@ -35,10 +35,6 @@ export const publicMethodDeclarationVisitor = (
   const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
   const returnType: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnPublicMethodType())[1];
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
-  //change return to returnOk or returnError
-  // const statementsWithReturn = modifyReturnOkErrorStatements(statements, returnType.returnType);
-
-  // addReturnOkVoidStatement(statementsWithReturn, returnType.returnType);
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const methodNode = new PublicMethodDeclarationNodeBuilder(metadata)
