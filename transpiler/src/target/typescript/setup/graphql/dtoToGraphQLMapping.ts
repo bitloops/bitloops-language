@@ -2,7 +2,6 @@ import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/Inter
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import {
   bitloopsIdentifiersTypeKey,
-  bitloopsPrimaryTypeKey,
   buildInClassTypeKey,
   DTOIdentifierKey,
   DTOKey,
@@ -76,6 +75,9 @@ export class ClassTypeToGraphQLMapping {
     return fields;
   }
 
+  /**
+   * Initially called with ArrayBitloopsPrimTypeObject, but it works recursively, so later can be called with any type
+   */
   private findFieldFromArray(
     type: TBitloopsPrimaryTypeValues,
     optional: boolean,
@@ -87,7 +89,7 @@ export class ClassTypeToGraphQLMapping {
       const result = mapBitloopsPrimitiveToGraphQL(type[primitivesTypeKey], optional);
       return { result, fieldDependency: null };
     } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
-      const res = this.findFieldFromArray(type.arrayPrimaryType[bitloopsPrimaryTypeKey], optional);
+      const res = this.findFieldFromArray(type.arrayPrimaryType, optional);
       return { result: '[' + res.result + ']', fieldDependency: res.fieldDependency };
     } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
       return { result: type[buildInClassTypeKey], fieldDependency: type[buildInClassTypeKey] };
