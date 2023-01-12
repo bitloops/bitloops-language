@@ -58,10 +58,10 @@
   dependencies:
     fast-json-stringify "^5.0.0"
 
-"@fastify/formbody@^7.3.0":
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/@fastify/formbody/-/formbody-7.3.0.tgz#0da0f3e8895d7360d179020cf999be3b1d68d514"
-  integrity sha512-4uHTS7wH0mkUoltk4wyJ966rs/TQP0BNDSCtyqRMy7p5adGg+5ERbYue/zGh/qI9yLDPN0K98u7Fw+lLEmBZJQ==
+"@fastify/formbody@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@fastify/formbody/-/formbody-7.4.0.tgz#5370b16d1ee58b9023008d1e883de60353a132ad"
+  integrity sha512-H3C6h1GN56/SMrZS8N2vCT2cZr7mIHzBHzOBa5OPpjfB/D6FzP9mMpE02ZzrFX0ANeh0BAJdoXKOF2e7IbV+Og==
   dependencies:
     fast-querystring "^1.0.0"
     fastify-plugin "^4.0.0"
