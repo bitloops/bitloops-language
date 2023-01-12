@@ -37,6 +37,7 @@ import {
   TRepoConnectionDefinition,
   TRouterDefinition,
   TUseCaseDefinition,
+  TGraphQLServerInstance,
 } from '../../../types.js';
 import { groupServers } from './servers/index.js';
 
@@ -122,6 +123,10 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
         BitloopsTypesMapping.TRouterDefinition,
       );
+      const graphQLServerInstances =
+        setupTree.getRootChildrenNodesValueByType<TGraphQLServerInstance>(
+          BitloopsTypesMapping.TGraphQLServerInstance,
+        );
 
       // Step 1. Generate routes files
       const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
@@ -149,6 +154,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         );
       const controllerDIs = setupGenerator.generateDIs(
         routerDefinitions,
+        graphQLServerInstances,
         useCaseDefinitions,
         repoAdapterDefinitions,
         bitloopsModel,

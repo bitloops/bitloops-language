@@ -94,6 +94,7 @@ interface ISetup {
   generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
   generateDIs(
     routerDefinitions: TRouterDefinition[],
+    graphQLServerInstances: TGraphQLServerInstance[],
     useCaseDefinitions: TUseCaseDefinition[],
     repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
@@ -183,6 +184,7 @@ export class SetupTypeScript implements ISetup {
 
   generateDIs(
     routerDefinitions: TRouterDefinition[],
+    graphQLServerInstances: TGraphQLServerInstance[],
     useCaseDefinitions: TUseCaseDefinition[],
     repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
     bitloopsModel: TBoundedContexts,
@@ -200,6 +202,12 @@ export class SetupTypeScript implements ISetup {
     const controllers =
       RouterDefinitionHelpers.getControllersForEachBoundedContextModule(routerDefinitions);
     const controllersLength = Object.keys(controllers).length;
+
+    const graphQLControllers =
+      RouterDefinitionHelpers.getGraphQLControllersForEachBoundedContextModule(
+        graphQLServerInstances,
+      );
+    const graphQLControllersLength = Object.keys(graphQLControllers).length;
 
     const repoAdaptersLength = repoAdapterDefinitions.length;
 

@@ -1240,9 +1240,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLServerInstantiationOptionsVisitor(this, ctx);
   }
 
-  visitGraphQLServerDeclaration(
-    ctx: BitloopsParser.GraphQLServerDeclarationContext,
-  ): GraphQLServerNode {
+  visitGraphQLServerDeclaration(ctx: BitloopsParser.GraphQLServerDeclarationContext): void {
     return graphQLServerDeclarationVisitor(this, ctx);
   }
 }
