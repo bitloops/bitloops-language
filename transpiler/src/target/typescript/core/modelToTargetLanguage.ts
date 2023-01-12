@@ -126,10 +126,9 @@ const modelToTargetLanguage = (props: {
   type: TNodeType;
   value: any;
   contextData?: TContextData;
-  setupData?: any; // TODO remove this
   model?: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
-  const { type, value, contextData, setupData, model } = props;
+  const { type, value, contextData, model } = props;
 
   let res: TTargetDependenciesTypeScript;
   switch (type) {
@@ -421,11 +420,12 @@ const modelToTargetLanguage = (props: {
       res = variableDeclarationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TRepoAdapters: {
+
+    case BitloopsTypesMapping.TRepoAdapter: {
       if (contextData === undefined) {
         throw new Error('Context data cannot be undefined for Repo adapters');
       }
-      res = repoAdapterToTargetLanguage(value, contextData, model, setupData);
+      res = repoAdapterToTargetLanguage(value, model);
       break;
     }
     case BitloopsTypesMapping.TBuiltInFunction: {

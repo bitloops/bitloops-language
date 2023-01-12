@@ -1,4 +1,5 @@
 import { ArrayPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
+import { BitloopsIdentifierTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BitloopsPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
 import { PrimitiveTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
 import { FieldNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
@@ -84,6 +85,18 @@ export class FieldBuilderDirector {
       .withName(identifierNode)
       .withOptional(optionalNode)
       .withType(primaryType)
+      .build();
+    return fieldNode;
+  }
+
+  buildRequiredBitloopsIdentifierTypeField(name: string, type: string): FieldNode {
+    const identifierNode = new IdentifierNodeBuilder().withName(name).build();
+    const bitloopsIdentifierType = new BitloopsPrimaryTypeBuilder()
+      .withPrimaryType(new BitloopsIdentifierTypeBuilder().withType(type).build())
+      .build();
+    const fieldNode = this.builder
+      .withName(identifierNode)
+      .withType(bitloopsIdentifierType)
       .build();
     return fieldNode;
   }

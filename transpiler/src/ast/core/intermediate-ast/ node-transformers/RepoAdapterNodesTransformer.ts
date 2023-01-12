@@ -2,6 +2,7 @@ import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { RepoAdapterOptions } from '../../../../types.js';
 import { TBoundedContexts } from '../../types.js';
 import { RepoAdapterNodeBuilder } from '../builders/RepoAdapterNodeBuilder.js';
+import { RepoAdapterExpressionNodeBuilder } from '../builders/setup/repo/RepoAdapterExpressionNodeBuilder.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
 import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';
 import { RepoConnectionDefinitionNode } from '../nodes/setup/repo/RepoConnectionDefinitionNode.js';
@@ -43,7 +44,18 @@ export class RepoAdapterNodesTransformer implements IASTToCompletedASTTransforme
       const connectionName = connectionExpressionNode.getIdentifierName();
       const repoConnectionExpression = repoConnectionsInfo[connectionName];
 
-      repoAdapterExpressionNode.addChild(repoConnectionExpression);
+      const repoAdapterExpressionWithConnectionOptions = new RepoAdapterExpressionNodeBuilder()
+        .withBoundedContextModule(repoAdapterExpressionNode.getBoundedContextModule())
+        .withOptions(repoAdapterOptions)
+        .withDatabaseType(repoAdapterExpressionNode.getDBType())
+        .withConcretedRepoPort(repoAdapterExpressionNode.getConcretedRepoPort())
+        .withConnection(repoConnectionExpression)
+        .build();
+
+      repoAdapterDefinitionNode.replaceChild(
+        repoAdapterExpressionNode,
+        repoAdapterExpressionWithConnectionOptions,
+      );
     }
     const rootNode = this.setupTree.getRootNode();
     this.setupTree.buildValueRecursiveBottomUp(rootNode);
