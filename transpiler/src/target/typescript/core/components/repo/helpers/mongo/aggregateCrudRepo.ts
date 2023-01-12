@@ -95,7 +95,6 @@ export const fetchTypeScriptAggregateCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TPropsValues,
   model: IntermediateASTTree,
-  model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(
