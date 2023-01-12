@@ -20,7 +20,7 @@ const getReadModelFields = (readModelValues: TPropsValues): string => {
 
 const getReadModelIdVariable = (readModelValues: TPropsValues): TVariable => {
   const [aggregateIdVariable] = readModelValues['ReadModel'].fields
-    .filter((variable) => variable[fieldKey].identifier !== 'id') //HEREE??
+    .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
 };

@@ -27,7 +27,6 @@ import {
   TRootEntity,
   TBitloopsPrimaryType,
   TDependenciesTypeScript,
-  PropsIdentifierKey,
   RootEntityKey,
   TProps,
   TReadModel,
@@ -65,7 +64,7 @@ const getPropsModel = (
     );
     const aggregateModel = aggregateModelNode.getValue() as TRootEntity;
     const aggregatePropsNameType =
-      aggregateModel[RootEntityKey].entityValues.create.domainCreateParameter[PropsIdentifierKey];
+      aggregateModel[RootEntityKey].entityValues.create.domainCreateParameter['parameterType'];
 
     const typeValue: TBitloopsPrimaryType = {
       type: {

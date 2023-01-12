@@ -46,6 +46,7 @@ describe('Valid repo adapter definition test cases', () => {
       const rootEntityNode = testCase['rootEntity'];
       const propsNode = testCase.props;
       const readModelNode = testCase['readModel'];
+      const valueObjectNode = testCase['valueObject'];
 
       tree.insertChild(repoPortNode);
       if (rootEntityNode) {
@@ -53,7 +54,10 @@ describe('Valid repo adapter definition test cases', () => {
       } else if (readModelNode) {
         tree.insertSibling(readModelNode);
       } else {
-        throw new Error('ReadModel or RootEntity is missing from repoPOrt test');
+        throw new Error('ReadModel or RootEntity is missing from repo adapter test');
+      }
+      if (valueObjectNode) {
+        tree.insertSibling(valueObjectNode);
       }
       tree.insertSibling(propsNode);
       tree.insertSibling(repoAdapterNode);
@@ -94,18 +98,26 @@ describe('Valid repo adapter definition test cases', () => {
       const rootEntityNode = testCase['rootEntity'];
       const propsNode = testCase.props;
       const readModelNode = testCase['readModel'];
+      const valueObjectNode = testCase['valueObject'];
 
-      tree.insertChild(propsNode);
-      for (const repoPortNode of repoPortNodes) {
-        tree.insertSibling(repoPortNode);
-      }
       if (rootEntityNode) {
-        tree.insertSibling(rootEntityNode);
+        tree.insertChild(rootEntityNode);
         if (readModelNode) {
           tree.insertSibling(readModelNode);
         } else {
-          throw new Error('ReadModel or RootEntity is missing from repoPOrt test');
+          throw new Error('ReadModel is missing from repo adapter test');
         }
+      } else {
+        throw new Error('RootEntity is missing from repo adapter test');
+      }
+      if (valueObjectNode) {
+        tree.insertSibling(valueObjectNode);
+      }
+      for (const propNode of propsNode) {
+        tree.insertSibling(propNode);
+      }
+      for (const repoPortNode of repoPortNodes) {
+        tree.insertSibling(repoPortNode);
       }
 
       for (const repoAdapterNode of repoAdapterNodes) {
@@ -128,7 +140,7 @@ describe('Valid repo adapter definition test cases', () => {
       }
 
       //then
-      let adapterIndex = 5;
+      let adapterIndex = 7;
       for (const output of testCase.outputs) {
         const formattedOutput = formatString(output as string, formatterConfig);
         if (result instanceof Error) {

@@ -1,6 +1,6 @@
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
 import { TodoWriteRepoPort } from '../../ports/TodoWriteRepoPort';
-import { TodoRootEntity } from '../../domain/TodoRootEntity';
+import { TodoEntity } from '../../domain/TodoEntity';
 import { Domain } from '@bitloops/bl-boilerplate-core';
 export class MongoTodoWriteRepo implements TodoWriteRepoPort {
   private collection: Mongo.Collection;
@@ -9,33 +9,35 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
     const collection = process.env.MONGO_DB_TODO_COLLECTION || 'todos';
     this.collection = this.client.db(dbName).collection(collection);
   }
-  async getAll(): Promise<TodoRootEntity[]> {
+  async getAll(): Promise<TodoEntity[]> {
     throw new Error('Method not implemented.');
   }
-  async getById(todoRootId: Domain.UUIDv4): Promise<TodoRootEntity> {
+  async getById(todoId: Domain.UUIDv4): Promise<TodoEntity> {
     return (await this.collection.findOne({
-      _id: todoRootId.toString(),
-    })) as unknown as TodoRootEntity;
+      _id: todoId.toString(),
+    })) as unknown as TodoEntity;
   }
-  async delete(todoRootId: Domain.UUIDv4): Promise<void> {
+  async delete(todoId: Domain.UUIDv4): Promise<void> {
     await this.collection.deleteOne({
-      _id: todoRootId.toString(),
+      _id: todoId.toString(),
     });
   }
-  async save(todoRoot: TodoRootEntity): Promise<void> {
+  async save(todo: TodoEntity): Promise<void> {
     await this.collection.insertOne({
-      _id: todoRoot.id.toString() as unknown as Mongo.ObjectId,
-      completed: todoRoot.completed,
+      _id: todo.id.toString() as unknown as Mongo.ObjectId,
+      completed: todo.completed,
+      parameterType: todo.title.parameterType,
     });
   }
-  async update(todoRoot: TodoRootEntity): Promise<void> {
+  async update(todo: TodoEntity): Promise<void> {
     await this.collection.updateOne(
       {
-        _id: todoRoot.id.toString(),
+        _id: todo.id.toString(),
       },
       {
         $set: {
-          completed: todoRoot.completed,
+          completed: todo.completed,
+          parameterType: todo.title.parameterType,
         },
       },
     );

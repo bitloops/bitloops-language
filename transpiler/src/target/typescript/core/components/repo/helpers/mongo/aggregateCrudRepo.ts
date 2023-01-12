@@ -1,5 +1,5 @@
 import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { PropsIdentifierNode } from '../../../../../../../ast/core/intermediate-ast/nodes/Props/PropsIdentifierNode.js';
+import { DomainCreateParameterTypeNode } from '../../../../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterTypeNode.js';
 import { ValueObjectDeclarationNode } from '../../../../../../../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { isVO } from '../../../../../../../helpers/typeGuards.js';
@@ -9,7 +9,7 @@ import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 // TODO TPropsValues where deleted, fix this
 type TPropsValues = any;
-const getVOProps = (voName: string, model: IntermediateASTTree): PropsIdentifierNode => {
+const getVOProps = (voName: string, model: IntermediateASTTree): DomainCreateParameterTypeNode => {
   const voModel = model.getRootChildrenNodesByType(
     BitloopsTypesMapping.TValueObject,
   ) as ValueObjectDeclarationNode[];
@@ -23,22 +23,25 @@ const getVOProps = (voName: string, model: IntermediateASTTree): PropsIdentifier
   return voProps;
 };
 
-const getVODeepFields = (voProps: TPropsValues, model: IntermediateASTTree): string[] => {
+const getVODeepFields = (
+  voProps: DomainCreateParameterTypeNode,
+  model: IntermediateASTTree,
+): string[] => {
   const voDeepFields = [];
-  voProps.variables.forEach((variable) => {
-    const { identifier, type } = variable[fieldKey];
-    if (isVO(type)) {
-      const nestedVOProps = getVOProps(type, model);
-      const nestedVOResult = getVODeepFields(nestedVOProps, model);
-      const nestedFields = [];
-      nestedVOResult.forEach((fieldsString) => {
-        nestedFields.push(`${identifier}.${fieldsString}`);
-      });
-      voDeepFields.push(...nestedFields);
-    } else {
-      voDeepFields.push(identifier);
-    }
-  });
+
+  const [identifier, type] = Object.entries(voProps.getValue())[0];
+  if (isVO(type)) {
+    const nestedVOProps = getVOProps(type, model);
+    const nestedVOResult = getVODeepFields(nestedVOProps, model);
+    const nestedFields = [];
+    nestedVOResult.forEach((fieldsString) => {
+      nestedFields.push(`${identifier}.${fieldsString}`);
+    });
+    voDeepFields.push(...nestedFields);
+  } else {
+    voDeepFields.push(identifier);
+  }
+
   return voDeepFields;
 };
 
@@ -55,7 +58,7 @@ const getAggregateDeepFields = (
         const typeName = type['bitloopsIdentifierType'];
 
         if (isVO(typeName)) {
-          const voProps = getVOProps(type, model);
+          const voProps = getVOProps(typeName, model);
           const deepFieldsVO = getVODeepFields(voProps, model);
           return deepFieldsVO
             .map((fieldsString) => {
