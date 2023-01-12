@@ -15,11 +15,6 @@ export class ReturnOKStatementNode extends StatementNode {
     const statementListNode = this.getChildNodeByType(
       BitloopsTypesMapping.TStatements,
     ) as StatementListNode;
-    // let statementListNodeParent = statementListNode.getParent();
-    // while (statementListNodeParent.getTopLevelStatementList() !== null) {
-    //   statementListNode = statementListNodeParent.getTopLevelStatementList();
-    //   statementListNodeParent = statementListNode.getParent();
-    // }
     return statementListNode;
   }
 }
