@@ -169,11 +169,13 @@ const repoBodyLangMapping = (
         result += methodsResult.output;
         dependencies = [...dependencies, ...methodsResult.dependencies];
       } else if (
-        repoPortInfo[repoPortKey].extendsRepoPorts[identifierKey].includes(CRUDReadRepoPort)
+        repoPortInfo[repoPortKey].extendsRepoPorts
+          .map((repoPort) => repoPort[identifierKey])
+          .includes(CRUDReadRepoPort)
       ) {
-        const writeRepoPort = repoPortInfo as TReadModelRepoPort;
+        const readRepoPort = repoPortInfo as TReadModelRepoPort;
         const methodsResult = fetchTypeScriptReadModelCrudBaseRepo(
-          writeRepoPort[repoPortKey].readModelIdentifier,
+          readRepoPort[repoPortKey].readModelIdentifier,
           propsModel,
         );
         result += methodsResult.output;

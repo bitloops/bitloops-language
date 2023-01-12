@@ -3,15 +3,9 @@ import { PropsIdentifierNode } from '../../../../../../../ast/core/intermediate-
 import { ValueObjectDeclarationNode } from '../../../../../../../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { isVO } from '../../../../../../../helpers/typeGuards.js';
-import {
-  TTargetDependenciesTypeScript,
-  TVariable,
-  fieldKey,
-  // TProps,
-} from '../../../../../../../types.js';
+import { TTargetDependenciesTypeScript, TVariable, fieldKey } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
-// import { BitloopsPrimTypeIdentifiers } from './../../../../type-identifiers/bitloopsPrimType.js';
 
 // TODO TPropsValues where deleted, fix this
 type TPropsValues = any;
@@ -24,13 +18,7 @@ const getVOProps = (voName: string, model: IntermediateASTTree): PropsIdentifier
   const voCreate = voModelFiltered[0].getCreateNode();
   const voParameter = voCreate.getParameterNode();
   const voPropsNameType = voParameter.getTypeNode();
-  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(voPropsNameType)) {
-  //   throw new Error('Array props are not supported');
-  // }
-  // const { output: voPropsName } = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TBitloopsPrimaryType,
-  //   value: { type: voPropsNameType },
-  // });
+
   const voProps = voPropsNameType;
   return voProps;
 };

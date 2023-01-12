@@ -7,6 +7,7 @@ import { FieldNodeBuilder } from '../../../../../../src/ast/core/intermediate-as
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { PublicMethodDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
+import { ReadModelIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
 import { RepoPortIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
 import { RepoPortBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
@@ -116,15 +117,6 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
         ])
         .build(),
     ),
-    readModel: new ReadModelBuilderDirector().buildReadModel({
-      identifier: 'TodoReadModel',
-      fields: [
-        new FieldNodeBuilder()
-          .withName(new IdentifierNodeBuilder().withName('name').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
-          .build(),
-      ],
-    }),
     repoAdapter: new RepoAdapterDefinitionDirector().buildRepoAdapterDefinition({
       identifier: 'TodoRepo',
       bcModule: {
@@ -241,15 +233,6 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
         ])
         .build(),
     ),
-    readModel: new ReadModelBuilderDirector().buildReadModel({
-      identifier: 'TodoReadModel',
-      fields: [
-        new FieldNodeBuilder()
-          .withName(new IdentifierNodeBuilder().withName('name').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
-          .build(),
-      ],
-    }),
     repoAdapter: new RepoAdapterDefinitionDirector().buildRepoAdapterDefinition({
       identifier: 'TodoWriteRepo',
       bcModule: {
@@ -287,6 +270,78 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
       'transpiler/__tests__/target/typescript/core/mocks/repoAdapter/todoWriteRepo.mock.ts',
     ),
   },
+  {
+    description: 'Single repo port adapter: TodoReadRepoPort',
+    repoPort: new RepoPortBuilder(new IntermediateASTTree(new IntermediateASTRootNode()))
+      .withRepoPortIdentifierNode(
+        new RepoPortIdentifierNodeBuilder().withName('TodoReadRepoPort').build(),
+      )
+      .withReadModelIdentifier(
+        new ReadModelIdentifierNodeBuilder().withName('TodoReadModel').build(),
+      )
+      .withExtendsRepoPortNode(
+        new ExtendsRepoPortsNodeBuilder()
+          .withIdentifierList([new IdentifierNodeBuilder().withName('CRUDReadRepoPort').build()])
+          .build(),
+      )
+      .build(),
+
+    props: new PropsDeclarationBuilderDirector().buildProps(
+      'TodoProps',
+      new FieldListNodeBuilder()
+        .withFields([
+          new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+          new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
+        ])
+        .build(),
+    ),
+    readModel: new ReadModelBuilderDirector().buildReadModel({
+      identifier: 'TodoReadModel',
+      fields: [
+        new FieldNodeBuilder()
+          .withName(new IdentifierNodeBuilder().withName('name').build())
+          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .build(),
+      ],
+    }),
+    repoAdapter: new RepoAdapterDefinitionDirector().buildRepoAdapterDefinition({
+      identifier: 'TodoReadRepo',
+      bcModule: {
+        boundedContextName: 'Hello world',
+        moduleName: 'Demo',
+      },
+      connection: {
+        name: 'connection',
+        expression: new ExpressionBuilderDirector().buildIdentifierExpression('mongoConnection'),
+      },
+      collection: {
+        name: 'collection',
+        expression: new ExpressionBuilderDirector().buildEnvironmentalVariableWithDefault(
+          new IdentifierNodeBuilder().withName('MONGO_DB_TODO_COLLECTION').build(),
+          new DefaultEnvVarValueNodeBuilder()
+            .withLiteral(new StringLiteralBuilder().withValue('todos').build())
+            .build(),
+        ),
+      },
+      connectionInfo: {
+        database: new ExpressionBuilderDirector().buildEnvironmentalVariableWithDefault(
+          new IdentifierNodeBuilder().withName('MONGO_DB_TODO_COLLECTION').build(),
+          new DefaultEnvVarValueNodeBuilder()
+            .withLiteral(new StringLiteralBuilder().withValue('todos').build())
+            .build(),
+        ),
+        host: new ExpressionBuilderDirector().buildStringLiteralExpression('localhost'),
+        port: new ExpressionBuilderDirector().buildInt32LiteralExpression(27017),
+      },
+
+      dbType: 'DB.Mongo',
+      concretedRepoPort: 'TodoReadRepoPort',
+    }),
+
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/repoAdapter/todoReadRepo.mock.ts',
+    ),
+  },
 ];
 export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
   {
@@ -307,10 +362,12 @@ export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
         .withRepoPortIdentifierNode(
           new RepoPortIdentifierNodeBuilder().withName('TodoReadRepoPort').build(),
         )
-        .withEntityIdentifier(new EntityIdentifierNodeBuilder().withName('TodoRootEntity').build())
+        .withReadModelIdentifier(
+          new ReadModelIdentifierNodeBuilder().withName('TodoReadModel').build(),
+        )
         .withExtendsRepoPortNode(
           new ExtendsRepoPortsNodeBuilder()
-            .withIdentifierList([new IdentifierNodeBuilder().withName('CRUDWriteRepoPort').build()])
+            .withIdentifierList([new IdentifierNodeBuilder().withName('CRUDReadRepoPort').build()])
             .build(),
         )
         .build(),
@@ -383,6 +440,7 @@ export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
       ],
       privateMethods: [],
     }),
+
     props: new PropsDeclarationBuilderDirector().buildProps(
       'TodoProps',
       new FieldListNodeBuilder()

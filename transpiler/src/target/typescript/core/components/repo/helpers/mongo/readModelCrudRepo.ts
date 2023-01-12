@@ -9,7 +9,7 @@ const DOCUMENT_NAME = 'document';
 type TPropsValues = any;
 
 const getReadModelFields = (readModelValues: TPropsValues): string => {
-  return readModelValues.variables
+  return readModelValues['ReadModel'].fields
     .filter((variable) => variable[fieldKey].identifier !== 'id')
     .map((variable) => {
       const { identifier } = variable[fieldKey];
@@ -19,8 +19,8 @@ const getReadModelFields = (readModelValues: TPropsValues): string => {
 };
 
 const getReadModelIdVariable = (readModelValues: TPropsValues): TVariable => {
-  const [aggregateIdVariable] = readModelValues.variables
-    .filter((variable) => variable[fieldKey].identifier === 'id')
+  const [aggregateIdVariable] = readModelValues['ReadModel'].fields
+    .filter((variable) => variable[fieldKey].identifier !== 'id') //HEREE??
     .map((variable) => variable);
   return aggregateIdVariable;
 };

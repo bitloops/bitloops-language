@@ -43,9 +43,9 @@ describe('Valid repo adapter definition test cases', () => {
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const repoAdapterNode = testCase.repoAdapter;
       const repoPortNode = testCase.repoPort;
-      const rootEntityNode = testCase.rootEntity;
+      const rootEntityNode = testCase['rootEntity'];
       const propsNode = testCase.props;
-      const readModelNode = testCase.readModel;
+      const readModelNode = testCase['readModel'];
 
       tree.insertChild(repoPortNode);
       if (rootEntityNode) {
@@ -91,9 +91,9 @@ describe('Valid repo adapter definition test cases', () => {
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const repoAdapterNodes = testCase.repoAdapters;
       const repoPortNodes = testCase.repoPorts;
-      const rootEntityNode = testCase.rootEntity;
+      const rootEntityNode = testCase['rootEntity'];
       const propsNode = testCase.props;
-      const readModelNode = testCase.readModel;
+      const readModelNode = testCase['readModel'];
 
       tree.insertChild(propsNode);
       for (const repoPortNode of repoPortNodes) {
@@ -101,10 +101,11 @@ describe('Valid repo adapter definition test cases', () => {
       }
       if (rootEntityNode) {
         tree.insertSibling(rootEntityNode);
-      } else if (readModelNode) {
-        tree.insertSibling(readModelNode);
-      } else {
-        throw new Error('ReadModel or RootEntity is missing from repoPOrt test');
+        if (readModelNode) {
+          tree.insertSibling(readModelNode);
+        } else {
+          throw new Error('ReadModel or RootEntity is missing from repoPOrt test');
+        }
       }
 
       for (const repoAdapterNode of repoAdapterNodes) {
@@ -127,7 +128,7 @@ describe('Valid repo adapter definition test cases', () => {
       }
 
       //then
-      let adapterIndex = 4;
+      let adapterIndex = 5;
       for (const output of testCase.outputs) {
         const formattedOutput = formatString(output as string, formatterConfig);
         if (result instanceof Error) {
