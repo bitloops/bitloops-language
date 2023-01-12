@@ -21,74 +21,74 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
   }
 }
 
-// RESTController UpdateTodoRESTController (updateTodoUseCase: UpdateTodoUseCase) {
-//   method: REST.Methods.PUT;
-//   execute(request, response) {
-//     const dto = UpdateTodoRequestDTO({ id: request.params.id, completed: request.body.completed, title: request.body.title  });
+RESTController UpdateTodoRESTController (updateTodoUseCase: UpdateTodoUseCase) {
+  method: REST.Methods.PUT;
+  execute(request, response) {
+    const dto = UpdateTodoRequestDTO({ id: request.params.id, completed: request.body.completed, title: request.body.title  });
 
-//     const result = this.updateTodoUseCase.execute(dto);
+    const result = this.updateTodoUseCase.execute(dto);
 
-//     if (result is Error) {
-//       switch (result.getClass()) {
-//         case ApplicationErrors.ToDoNotFoundError: {
-//           this.notFound(response, result);
-//           break;
-//         }
-//         default: {
-//           this.fail(response, result.message);
-//         }
-//       }
-//     } else {
-//       this.ok(response);
-//     }
-//   }
-// }
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.ToDoNotFoundError: {
+          this.notFound(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.ok(response);
+    }
+  }
+}
 
-// RESTController DeleteTodoRESTController (deleteTodoUseCase: DeleteTodoUseCase) {
-//   method: REST.Methods.DELETE;
-//   execute(request, response) {
-//     const dto = DeleteTodoRequestDTO({ id: request.params.id });
+RESTController DeleteTodoRESTController (deleteTodoUseCase: DeleteTodoUseCase) {
+  method: REST.Methods.DELETE;
+  execute(request, response) {
+    const dto = DeleteTodoRequestDTO({ id: request.params.id });
 
-//     const result = this.deleteTodoUseCase.execute(dto);
+    const result = this.deleteTodoUseCase.execute(dto);
 
-//     if (result is Error) {
-//       switch (result.getClass()) {
-//         case ApplicationErrors.ToDoNotFoundError: {
-//           this.notFound(response, result);
-//           break;
-//         }
-//         default: {
-//           this.fail(response, result.message);
-//         }
-//       }
-//     } else {
-//       this.ok(response);
-//     }
-//   }
-// }
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.ToDoNotFoundError: {
+          this.notFound(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.ok(response);
+    }
+  }
+}
 
-// RESTController GetTodoRESTController (getByIdTodoUseCase: GetByIdTodoUseCase) {
-//   method: REST.Methods.GET;
-//   execute(request, response) {
-//     const dto = GetByIdTodoRequestDTO({ id: request.params.id });
+RESTController GetTodoRESTController (getByIdTodoUseCase: GetByIdTodoUseCase) {
+  method: REST.Methods.GET;
+  execute(request, response) {
+    const dto = GetByIdTodoRequestDTO({ id: request.params.id });
 
-//     const result = this.getByIdTodoUseCase.execute(dto);
+    const result = this.getByIdTodoUseCase.execute(dto);
 
-//     if (result is Error) {
-//       switch (result.getClass()) {
-//         case ApplicationErrors.ToDoNotFoundError: {
-//           this.notFound(response, result);
-//           break;
-//         }
-//         default: {
-//           this.fail(response, result.message);
-//         }
-//       }
-//     } else {
-//       this.ok(response, result);
-//     }
-//   }
-// }
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.ToDoNotFoundError: {
+          this.notFound(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.ok(response, result);
+    }
+  }
+}
 
 RESTController GetTodosRESTController (getAllTodosUseCase: GetAllTodosUseCase) {
   method: REST.Methods.GET;
