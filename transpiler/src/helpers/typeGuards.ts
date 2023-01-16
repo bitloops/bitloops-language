@@ -86,8 +86,20 @@ const isThisExpression = (value: TExpression): value is { [expressionKey]: TThis
   return false;
 };
 
-const isVO = (name): name is string => {
+const isVO = (name: string): boolean => {
   return name.endsWith('VO');
 };
 
-export { isUndefined, isArray, hasOkErrorReturnType, isExpression, isVO, isThisDeclaration };
+const isProps = (name: string): boolean => {
+  return name.endsWith('Props');
+};
+
+export {
+  isUndefined,
+  isArray,
+  hasOkErrorReturnType,
+  isExpression,
+  isVO,
+  isThisDeclaration,
+  isProps,
+};

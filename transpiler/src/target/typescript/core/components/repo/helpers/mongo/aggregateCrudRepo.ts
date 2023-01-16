@@ -1,15 +1,21 @@
 import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { DomainCreateParameterTypeNode } from '../../../../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterTypeNode.js';
+import { DomainCreateParameterNode } from '../../../../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
+import { PropsNode } from '../../../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { ValueObjectDeclarationNode } from '../../../../../../../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
-import { isVO } from '../../../../../../../helpers/typeGuards.js';
-import { TTargetDependenciesTypeScript, TVariable, fieldKey } from '../../../../../../../types.js';
+import { isProps, isVO } from '../../../../../../../helpers/typeGuards.js';
+import {
+  TTargetDependenciesTypeScript,
+  TVariable,
+  fieldKey,
+  fieldsKey,
+} from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-// TODO TPropsValues where deleted, fix this
+// TODO TPropsValues were deleted, fix this
 type TPropsValues = any;
-const getVOProps = (voName: string, model: IntermediateASTTree): DomainCreateParameterTypeNode => {
+const getVOProps = (voName: string, model: IntermediateASTTree): DomainCreateParameterNode => {
   const voModel = model.getRootChildrenNodesByType(
     BitloopsTypesMapping.TValueObject,
   ) as ValueObjectDeclarationNode[];
@@ -17,25 +23,44 @@ const getVOProps = (voName: string, model: IntermediateASTTree): DomainCreatePar
   const voModelFiltered = voModel.filter((vo) => vo.getIdentifier() === voName);
   const voCreate = voModelFiltered[0].getCreateNode();
   const voParameter = voCreate.getParameterNode();
-  const voPropsNameType = voParameter.getTypeNode();
 
-  const voProps = voPropsNameType;
-  return voProps;
+  return voParameter;
+};
+
+const getPropsFields = (propsName: string, model: IntermediateASTTree): TVariable[] => {
+  const propsNodes = model.getRootChildrenNodesByType(BitloopsTypesMapping.TProps) as PropsNode[];
+
+  const propsWithIdentifier = propsNodes.find((props) => props.getIdentifierValue() === propsName);
+  const propsFields = propsWithIdentifier.getFieldListNode();
+
+  const { [fieldsKey]: propsFieldsValue } = propsFields.getValue();
+
+  return propsFieldsValue;
 };
 
 const getVODeepFields = (
-  voProps: DomainCreateParameterTypeNode,
+  voProps: DomainCreateParameterNode,
   model: IntermediateASTTree,
 ): string[] => {
   const voDeepFields = [];
 
-  const [identifier, type] = Object.entries(voProps.getValue())[0];
-  if (isVO(type)) {
-    const nestedVOProps = getVOProps(type, model);
+  const params = Object.values(voProps.getValue())[0];
+  const { identifier, parameterType } = params as any;
+
+  if (isVO(parameterType)) {
+    const nestedVOProps = getVOProps(parameterType, model);
     const nestedVOResult = getVODeepFields(nestedVOProps, model);
     const nestedFields = [];
     nestedVOResult.forEach((fieldsString) => {
       nestedFields.push(`${identifier}.${fieldsString}`);
+    });
+    voDeepFields.push(...nestedFields);
+  } else if (isProps(parameterType)) {
+    const propsFields = getPropsFields(parameterType, model);
+    const nestedFields = [];
+    propsFields.forEach((field) => {
+      const { identifier: fieldsString } = field[fieldKey];
+      nestedFields.push(`${fieldsString}`);
     });
     voDeepFields.push(...nestedFields);
   } else {

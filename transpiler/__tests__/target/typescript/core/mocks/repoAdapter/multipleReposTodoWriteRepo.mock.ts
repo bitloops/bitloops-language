@@ -26,7 +26,7 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
     await this.collection.insertOne({
       _id: todo.id.toString() as unknown as Mongo.ObjectId,
       completed: todo.completed,
-      parameterType: todo.title.parameterType,
+      title: todo.title.title,
     });
   }
   async update(todo: TodoEntity): Promise<void> {
@@ -37,7 +37,7 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
       {
         $set: {
           completed: todo.completed,
-          parameterType: todo.title.parameterType,
+          title: todo.title.title,
         },
       },
     );

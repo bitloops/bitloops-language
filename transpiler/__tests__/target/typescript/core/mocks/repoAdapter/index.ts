@@ -351,6 +351,7 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
     ),
   },
 ];
+
 export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
   {
     description: 'Multiple repo port adapters with value object',
