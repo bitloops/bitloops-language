@@ -112,7 +112,8 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     const adapterImports: string[] = [];
     for (const repoAdapter of repoAdapters) {
       const { setupRepoAdapterDefinition } = repoAdapter;
-      const { repoAdapterExpression } = setupRepoAdapterDefinition;
+      const { repoAdapterExpression, identifier: repoAdapterIdentifier } =
+        setupRepoAdapterDefinition;
       const { repoAdapterClassName, repoAdapterOptions, dbType } = repoAdapterExpression;
       const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
         repoAdapterOptions,
@@ -124,7 +125,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       });
       connections[dbType].push(stringConnection.output);
       adapterImports.push(
-        `import { ${repoAdapterClassName} } from './repos/concretions/${repoAdapterClassName}';`,
+        `import { ${repoAdapterClassName} } from './repos/concretions/${repoAdapterIdentifier}';`,
       );
     }
 
