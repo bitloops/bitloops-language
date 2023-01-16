@@ -25,13 +25,13 @@
     "core"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
-    "eslint": "^8.25.0",
-    "eslint-config-prettier": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
+    "prettier": "^2.8.3",
+    "typescript": "^4.9.4"
   },
   "scripts": {
     "clean": "rm -rf ./lib",
@@ -48,8 +48,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@bitloops/bl-boilerplate-core": "^0.0.3",
-    "@fastify/cors": "^8.1.0",
-    "@fastify/formbody": "^7.3.0",
+    "@fastify/cors": "^8.2.0",
+    "@fastify/formbody": "^7.4.0",
     "fastify": "^4.11.0"
   },
   "exports": {
