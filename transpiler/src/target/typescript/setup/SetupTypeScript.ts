@@ -52,7 +52,6 @@ import {
   ControllerResolversKey,
   ControllerResolverKey,
   TControllerResolver,
-  TEvaluationFields,
   GraphQLServerOptionsKey,
   evaluationFieldsKey,
 } from '../../../types.js';

@@ -161,7 +161,7 @@ const repoBodyLangMapping = (
 
         const methodsResult = fetchTypeScriptAggregateCrudBaseRepo(
           writeRepoPort[repoPortKey].entityIdentifier,
-          propsModel,
+          propsModel as TProps,
           model,
         );
         result += methodsResult.output;

@@ -9,12 +9,11 @@ import {
   TVariable,
   fieldKey,
   fieldsKey,
+  TProps,
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
-// TODO TPropsValues were deleted, fix this
-type TPropsValues = any;
 const getVOProps = (voName: string, model: IntermediateASTTree): DomainCreateParameterNode => {
   const voModel = model.getRootChildrenNodesByType(
     BitloopsTypesMapping.TValueObject,
@@ -72,7 +71,7 @@ const getVODeepFields = (
 };
 
 const getAggregateDeepFields = (
-  aggregatePropsModel: TPropsValues,
+  aggregatePropsModel: TProps,
   aggregateName: string,
   model: IntermediateASTTree,
 ): string => {
@@ -101,7 +100,7 @@ const getAggregateDeepFields = (
     .join(', ');
 };
 
-const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable => {
+const getAggregateIdVariable = (aggregatePropsModel: TProps): TVariable => {
   const [aggregateIdVariable] = aggregatePropsModel['Props'].fields
     .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);
@@ -110,7 +109,7 @@ const getAggregateIdVariable = (aggregatePropsModel: TPropsValues): TVariable =>
 
 export const fetchTypeScriptAggregateCrudBaseRepo = (
   entityName: string,
-  aggregatePropsModel: TPropsValues,
+  aggregatePropsModel: TProps,
   model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
