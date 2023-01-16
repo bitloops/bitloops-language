@@ -26,29 +26,29 @@
     "core"
   ],
   "devDependencies": {
-    "@types/antlr4": "^4.7.3",
-    "@types/eslint": "^8.4.6",
-    "@types/jest": "^29.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
+    "@types/antlr4": "^4.11.2",
+    "@types/eslint": "^8.4.10",
+    "@types/jest": "^29.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
     "bitloops-gherkin": "^1.0.2",
     "env-cmd": "^10.1.0",
-    "eslint": "^8.25.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-jest": "~26.2",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "jest": "~28.1",
     "jest-cucumber": "^3.0.1",
-    "jest-extended": "^3.0.2",
+    "jest-extended": "^3.2.3",
     "jest-ts-auto-mock": "^2.1.0",
-    "lint-staged": "^13.0.3",
-    "ts-auto-mock": "^3.6.2",
+    "lint-staged": "^13.1.0",
+    "ts-auto-mock": "^3.6.4",
     "ts-jest": "~28.0",
     "ts-node": "^10.9.1",
     "tsutils": "~3.21",
-    "ttypescript": "^1.5.13",
-    "typescript": "^4.8.4"
+    "ttypescript": "^1.5.15",
+    "typescript": "^4.9.4"
   },
   "scripts": {
     "clean": "rm -rf ./lib",
@@ -80,7 +80,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "antlr4": "^4.11.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.8.3"
   },
   "exports": {
     ".": {
