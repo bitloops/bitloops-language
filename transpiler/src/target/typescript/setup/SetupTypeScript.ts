@@ -52,6 +52,9 @@ import {
   ControllerResolversKey,
   ControllerResolverKey,
   TControllerResolver,
+  TEvaluationFields,
+  GraphQLServerOptionsKey,
+  evaluationFieldsKey,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -757,9 +760,9 @@ export { routers };
   private generateServer(params: GenerateServerParams): TSetupOutput {
     const { serverInstance: data, serverType, bitloopsModel, serverIndex, license } = params;
     // TODO handle CORS
-    // let serverPath = '';
     let serverPrefix: string = null;
     let portStatement: string = null;
+
     if (isRestServer(data)) {
       const evaluationList = data.restServer.serverOptions;
       // TODO Check if enum for server options exist
@@ -782,6 +785,20 @@ export { routers };
         type: BitloopsTypesMapping.TExpression,
         value: portExpression,
       }).output;
+    } else if (isGraphQLServerInstance(data)) {
+      const evaluationList =
+        data[GraphQLServerInstanceKey][GraphQLServerOptionsKey][evaluationFieldsKey];
+      // TODO Check if enum for server options exist
+      const portExpression = NodeValueHelpers.findKeyOfEvaluationFields(
+        evaluationList,
+        RestServerOptions.port,
+      );
+      portStatement = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TExpression,
+        value: portExpression,
+      }).output;
+    } else {
+      throw new Error('Server type not supported');
     }
 
     let body = '';
