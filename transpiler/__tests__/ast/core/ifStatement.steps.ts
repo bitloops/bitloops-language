@@ -17,8 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// import { defineFeature, loadFeature } from 'jest-cucumber';
-// import { decode, d } from 'bitloops-gherkin';
 import assert from 'assert';
 import { TExpression } from './../../../src/types.js';
 

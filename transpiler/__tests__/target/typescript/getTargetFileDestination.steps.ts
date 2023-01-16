@@ -17,179 +17,115 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
 import { getTargetFileDestination } from '../../../src/target/typescript/helpers/getTargetFileDestination.js';
-
-const feature = loadFeature('./__tests__/target/typescript/getTargetFileDestination.feature');
+import {
+  MissingBoundedContext,
+  MissingModule,
+  SupportedTargetLanguageAndClassType,
+  UnsupportedTargetLanguage,
+} from './getTargetFileDestination.mock.js';
 
 interface IResult {
   path: string;
   filename: string;
 }
 
-defineFeature(feature, (test) => {
-  test('Missing bounded context', ({ given, when, then }) => {
-    let unacceptableValue: '' | ' ' | undefined | null;
+const unacceptableValueFromStrings = (value: string): '' | ' ' | undefined | null => {
+  switch (value) {
+    case 'undefined':
+      return undefined;
+    case 'null':
+      return null;
+    case 'empty':
+      return '';
+    case 'space':
+      return ' ';
+    default:
+      throw new Error('Unsupported value');
+  }
+};
+
+MissingBoundedContext.boundedContexts.forEach((boundedContext) => {
+  test('Missing bounded context', () => {
+    const unacceptableValue = unacceptableValueFromStrings(boundedContext);
     let result: IResult | Error;
 
-    given(/^I am sending an invalid bounded context value (.*)$/, async (boundedContext) => {
-      switch (boundedContext) {
-        case 'undefined':
-          unacceptableValue = undefined;
-          break;
-        case 'null':
-          unacceptableValue = null;
-          break;
-        case 'empty':
-          unacceptableValue = '';
-          break;
-        case 'space':
-          unacceptableValue = ' ';
-          break;
-        default:
-          throw new Error('Unsupported value');
-      }
-    });
+    try {
+      result = getTargetFileDestination(
+        unacceptableValue,
+        MissingBoundedContext.restInfo.module,
+        MissingBoundedContext.restInfo.classType,
+        MissingBoundedContext.restInfo.className,
+        MissingBoundedContext.restInfo.targetLanguage,
+      );
+    } catch (error) {
+      result = error;
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    when(
-      /^I call the function with bounded context (.*), module (.*), class type (.*), class name (.*), and language (.*)$/,
-      (_, classType, moduleName, className, targetLanguage) => {
-        try {
-          result = getTargetFileDestination(
-            unacceptableValue,
-            moduleName,
-            classType,
-            className,
-            targetLanguage,
-          );
-        } catch (error) {
-          result = error;
-        }
-      },
-    );
-
-    then(/^I should get an error saying that "Bounded context is required"$/, () => {
-      expect(result).toEqual(new Error('Bounded context is required'));
-    });
+    expect(result).toEqual(new Error('Bounded context is required'));
   });
+});
 
-  test('Missing module', ({ given, when, then }) => {
-    let unacceptableValue: '' | ' ' | undefined | null;
+MissingModule.modules.forEach((module) => {
+  test('Missing module', () => {
+    const unacceptableValue = unacceptableValueFromStrings(module);
     let result: IResult | Error;
 
-    given(/^I am sending an invalid module value (.*)$/, async (moduleName) => {
-      switch (moduleName) {
-        case 'undefined':
-          unacceptableValue = undefined;
-          break;
-        case 'null':
-          unacceptableValue = null;
-          break;
-        case 'empty':
-          unacceptableValue = '';
-          break;
-        case 'space':
-          unacceptableValue = ' ';
-          break;
-        default:
-          throw new Error('Unsupported value');
-      }
-    });
+    try {
+      result = getTargetFileDestination(
+        MissingModule.restInfo.boundedContext,
+        unacceptableValue,
+        MissingModule.restInfo.classType,
+        MissingModule.restInfo.className,
+        MissingModule.restInfo.targetLanguage,
+      );
+    } catch (error) {
+      result = error;
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    when(
-      /^I call the function with bounded context (.*), module (.*), class type (.*), class name (.*), and language (.*)$/,
-      (boundedContext, _, classType, className, targetLanguage) => {
-        try {
-          result = getTargetFileDestination(
-            boundedContext,
-            unacceptableValue,
-            classType,
-            className,
-            targetLanguage,
-          );
-        } catch (error) {
-          result = error;
-        }
-      },
-    );
-
-    then(/^I should get an error saying that "Module is required"$/, () => {
-      expect(result).toEqual(new Error('Module is required'));
-    });
+    expect(result).toEqual(new Error('Module is required'));
   });
+});
 
-  test('Unsupported target language', ({ given, when, then }) => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    given(/^I have a language called (.*)$/, () => {});
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    when('I call the function', () => {});
-
-    then(/^I should get an error saying that (.*) is unsupported$/, (targetLanguage) => {
-      expect(() =>
-        getTargetFileDestination(
-          'Hello World',
-          'Random module',
-          'Props',
-          'NameProps',
-          targetLanguage,
-        ),
-      ).toThrowError(`Language ${targetLanguage} is not supported`);
-      //.toEqual({ message: `Hello, ${name}!` });
-    });
+UnsupportedTargetLanguage.targetLanguages.forEach((targetLanguage) => {
+  test('Unsupported target language', () => {
+    expect(() =>
+      getTargetFileDestination(
+        'Hello World',
+        'Random module',
+        'Props',
+        'NameProps',
+        targetLanguage,
+      ),
+    ).toThrowError(`Language ${targetLanguage} is not supported`);
   });
+});
 
-  test('Invalid class type', ({ given, when, then }) => {
-    const unacceptableType = 'InvalidClassType';
-    let result: IResult | Error;
+test('Invalid class type', () => {
+  const unacceptableType = 'InvalidClassType';
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    given(`I am sending an invalid class type "${unacceptableType}"`, () => {});
+  let result: IResult | Error;
+  try {
+    result = getTargetFileDestination('Hello World', 'iam', unacceptableType, 'NameProps');
+  } catch (error) {
+    result = error;
+  }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    when('I call the function with the invalid class type', () => {
-      try {
-        result = getTargetFileDestination('Hello World', 'iam', unacceptableType, 'NameProps');
-      } catch (error) {
-        result = error;
-      }
-    });
+  expect(result).toEqual(new Error(`Class type ${unacceptableType} is not supported`));
+});
 
-    then(
-      `I should get an error saying that "Class type ${unacceptableType} is not supported"`,
-      () => {
-        expect(result).toEqual(new Error(`Class type ${unacceptableType} is not supported`));
-      },
-    );
-  });
+SupportedTargetLanguageAndClassType.forEach((testCase) => {
+  const { boundedContext, module, classType, className, targetLanguage, path, filename } = testCase;
 
-  test('Supported target language and class type', ({ given, when, then }) => {
-    let result: IResult | Error;
+  const result = getTargetFileDestination(
+    boundedContext,
+    module,
+    classType,
+    className,
+    targetLanguage,
+  );
 
-    given(
-      /^I have a bounded context called (.*), a module (.*), a class type (.*), a class name (.*), and a language (.*)$/,
-      async (boundedContext, moduleName, classType, className, targetLanguage) => {
-        result = getTargetFileDestination(
-          boundedContext,
-          moduleName,
-          classType,
-          className,
-          targetLanguage,
-        );
-      },
-    );
+  expect((result as IResult).path).toEqual(path);
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    when('I call the function', () => {});
-
-    then(/^I should get a target path called (.*)$/, (path) => {
-      expect((result as IResult).path).toEqual(path);
-    });
-
-    then(/^I should get a filename called (.*)$/, (filename) => {
-      expect((result as IResult).filename).toEqual(filename);
-    });
-  });
+  expect((result as IResult).filename).toEqual(filename);
 });

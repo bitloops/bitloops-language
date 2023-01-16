@@ -17,10 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// import { defineFeature, loadFeature } from 'jest-cucumber';
-// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
-
-// const feature = loadFeature('__tests__/target/typescript/core/evaluation.feature');
 
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
