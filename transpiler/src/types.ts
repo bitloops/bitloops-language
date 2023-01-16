@@ -19,41 +19,6 @@
  */
 import { TClassTypesValues } from './helpers/mappings.js';
 
-// TODO merge with TClassTypesValues from `transpiler/src/helpers/mappings.ts`
-export type TClassType =
-  | 'Props'
-  | 'Controller'
-  | 'UseCases'
-  | 'ApplicationErrors'
-  | 'DomainErrors'
-  | 'RootEntities'
-  | 'Entity'
-  | 'ValueObject'
-  | 'DTOs'
-  | 'Structs'
-  | 'Package'
-  | 'DomainRule'
-  | 'RepoPorts'
-  | 'RepoAdapter'
-  | 'ReadModels';
-
-export type TComponentType =
-  | 'TProps'
-  | 'TController'
-  | 'TUseCase'
-  | 'TApplicationErrors'
-  | 'TDomainErrors'
-  | 'TRootEntity'
-  | 'TEntity'
-  | 'TValueObject'
-  | 'TDTOs'
-  | 'TStruct' //TODO should we replace with TStructDeclaration/DTODeclaration
-  | 'TPackages'
-  | 'TDomainRule'
-  | 'TRepoPort'
-  | 'TRepoAdapter'
-  | 'TReadModels';
-
 export type TClassName = string;
 
 export type TContextData = { boundedContext: string; module: string };
