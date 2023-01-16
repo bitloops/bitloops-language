@@ -2,7 +2,7 @@ name: CI Workflow
 
 on:
   pull_request:
-    branches: [feature-merge-core-setup-model]
+    branches: [main]
     paths:
       - transpiler/**
 
