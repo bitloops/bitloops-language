@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-// import { SupportedLanguages } from '../../../../../../helpers/supportedLanguages.js';
 import { TAdditiveExpression, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
@@ -26,63 +25,30 @@ import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 export const additiveExpressionToTargetLanguage = (
   value: TAdditiveExpression,
 ): TTargetDependenciesTypeScript => {
-  const langMapping = (value: TAdditiveExpression): TTargetDependenciesTypeScript => {
-    const { additiveExpression } = value;
-    const { left, operator, right } = additiveExpression;
+  const { additiveExpression } = value;
+  const { left, operator, right } = additiveExpression;
 
-    const targetLangOperator = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TAdditiveOperator,
-      value: operator,
-    });
+  const targetLangOperator = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TAdditiveOperator,
+    value: operator,
+  });
 
-    const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
-      value: left,
-    });
+  const leftExpression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: left,
+  });
 
-    const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
-      value: right,
-    });
+  const rightExpression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: right,
+  });
 
-    return {
-      output: `${leftExpression.output} ${targetLangOperator.output} ${rightExpression.output}`,
-      dependencies: [
-        ...leftExpression.dependencies,
-        ...rightExpression.dependencies,
-        ...targetLangOperator.dependencies,
-      ],
-    };
+  return {
+    output: `${leftExpression.output} ${targetLangOperator.output} ${rightExpression.output}`,
+    dependencies: [
+      ...leftExpression.dependencies,
+      ...rightExpression.dependencies,
+      ...targetLangOperator.dependencies,
+    ],
   };
-  return langMapping(value);
 };
-
-// // a * b
-// const expression: TAdditiveExpression = {
-//   additiveExpression: {
-//     left: {
-//       expression: {
-//         evaluation: {
-//           regularEvaluation: {
-//             type: 'variable',
-//             value: 'a',
-//           },
-//         },
-//       },
-//     },
-//     right: {
-//       expression: {
-//         evaluation: {
-//           regularEvaluation: {
-//             type: 'variable',
-//             value: 'b',
-//           },
-//         },
-//       },
-//     },
-//     operator: '-',
-//   },
-// };
-
-// const add = additiveExpressionToTargetLanguage(expression, SupportedLanguages.TypeScript);
-// console.log('add', add);

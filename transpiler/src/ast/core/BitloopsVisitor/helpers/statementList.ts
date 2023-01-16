@@ -20,25 +20,25 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TStatements } from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
+import { StatementListNodeBuilder } from './../../intermediate-ast/builders/statements/StatementListNodeBuilder.js';
+import { StatementListNode } from './../../intermediate-ast/nodes/statements/StatementList.js';
 
 export const statementListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StatementListContext,
-): { statements: TStatements } => {
+): StatementListNode => {
   const statementList = thisVisitor.visitChildren(ctx);
-  const returnStatementList = [];
-  for (let i = 0; i < statementList.length; i++) {
-    if (Array.isArray(statementList[i])) {
-      if (statementList[i][0] !== undefined) {
-        returnStatementList.push(statementList[i]);
+  const statementNodes = [];
+  for (const statement of statementList) {
+    if (Array.isArray(statement)) {
+      if (statement[0] !== undefined) {
+        statementNodes.push(statement);
       }
-    } else if (statementList[i] !== undefined) {
-      returnStatementList.push(statementList[i]);
+    } else if (statement !== undefined) {
+      statementNodes.push(statement);
     }
   }
-  const returnObject = {
-    statements: returnStatementList,
-  };
-  return returnObject;
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new StatementListNodeBuilder(metadata).withStatements(statementNodes).build();
 };

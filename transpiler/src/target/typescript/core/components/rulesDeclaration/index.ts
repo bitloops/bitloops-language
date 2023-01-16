@@ -18,11 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TRule,
-  TRules,
-  TParameterDependencies,
+  TDomainRule,
   TTargetDependenciesTypeScript,
   TDependencyChildTypescript,
+  TParameter,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -52,16 +51,13 @@ const initialRuleLangMapping: any = (ruleName: string) =>
 
 const finalRuleLangMapping: any = '}';
 
-const getErrorStringMapping: any = (
-  errorString: string,
-  paramDependencies: TParameterDependencies,
-) => {
+const getErrorStringMapping: any = (errorString: string, paramDependencies: TParameter[]) => {
   // TODO handle the param dependencies of error differently
   let errorStringRes = `public Error = new ${errorString}`;
   errorStringRes += '(';
   if (paramDependencies && paramDependencies.length > 0) {
     paramDependencies.forEach((paramDependency) => {
-      errorStringRes += `this.${paramDependency.value}`;
+      errorStringRes += `this.${paramDependency.parameter.value},`;
     });
   }
   errorStringRes += ')';
@@ -81,39 +77,44 @@ const getIsBrokenIfMethod = (
   } return ${isBrokenConditionStringWithThis}; }`;
 };
 
-export const rulesDeclarationToTargetLanguage = (rules: TRules): TTargetDependenciesTypeScript => {
+export const rulesDeclarationToTargetLanguage = (
+  rule: TDomainRule,
+): TTargetDependenciesTypeScript => {
   let result = '';
   const dependencies = [];
-  for (const [ruleName, ruleValues] of Object.entries(rules)) {
-    const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
+  const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
+  const ruleName = rule.DomainRule.domainRuleIdentifier;
 
-    result += initialRuleLangMapping(ruleName);
-    const model = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TRuleValues,
-      value: ruleValues,
-    });
-    result += model.output;
+  result += initialRuleLangMapping(ruleName);
+  // const model = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TRuleValues,
+  //   value: ruleValues,
+  // });
+  const model = ruleDeclarationToTargetLanguage(rule);
+  result += model.output;
 
-    childDependencies.push(...model.dependencies);
-    const parentDependencies = getParentDependencies(childDependencies, {
-      classType: ClassTypes.Rules,
-      className: ruleName,
-    });
-    dependencies.push(...parentDependencies);
+  childDependencies.push(...model.dependencies);
+  const parentDependencies = getParentDependencies(childDependencies, {
+    classType: ClassTypes.DomainRule,
+    className: ruleName,
+  });
+  dependencies.push(...parentDependencies);
 
-    result += finalRuleLangMapping;
-  }
+  result += finalRuleLangMapping;
 
   return { output: result, dependencies };
 };
 
-export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependenciesTypeScript => {
+export const ruleDeclarationToTargetLanguage = (
+  ruleValues: TDomainRule,
+): TTargetDependenciesTypeScript => {
   const dependencies = [];
+  const { DomainRule: rule } = ruleValues;
   let parameters: TTargetDependenciesTypeScript;
   if (rule.parameters && rule.parameters.length !== 0) {
     parameters = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TParameterDependencies,
-      value: rule.parameters,
+      type: BitloopsTypesMapping.TParameterList,
+      value: { parameters: rule.parameters },
     });
     dependencies.push(...parameters.dependencies);
   } else {
@@ -128,7 +129,7 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
 
   dependencies.push(...getChildDependencies(error));
   // TODO which params will be inside it?
-  const errorString = getErrorStringMapping(error, rule.parameters);
+  const errorString = getErrorStringMapping(error, rule.parameters, dependencies);
 
   let statements: TTargetDependenciesTypeScript | null = null;
   if (rule.statements && rule.statements.length !== 0) {
@@ -155,17 +156,17 @@ export const ruleDeclarationToTargetLanguage = (rule: TRule): TTargetDependencie
   if (rule.parameters && rule.parameters.length !== 0) {
     rule.parameters.forEach((ruleParam) => {
       isBrokenConditionStringWithThis = getStringWithThisBeforeWord(
-        ruleParam.value,
+        ruleParam.parameter.value,
         isBrokenConditionStringWithThis.output,
       );
       if (statements) {
         statementsStringWithThis = getStringWithThisBeforeWord(
-          ruleParam.value,
+          ruleParam.parameter.value,
           statementsStringWithThis.output,
         );
       }
       constructorParamsWithPrivate = getStringWithPrivateBeforeWord(
-        ruleParam.value,
+        ruleParam.parameter.value,
         constructorParamsWithPrivate,
       );
     });

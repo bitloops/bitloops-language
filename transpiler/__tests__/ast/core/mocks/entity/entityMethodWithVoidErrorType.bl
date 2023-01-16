@@ -1,0 +1,12 @@
+Entity TodoEntity {    
+    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidDayError)) {           
+        return TodoEntity(props);   
+    } 
+
+    public greet(day: string): (OK(void), Errors(DomainErrors.InvalidDayError)) {
+        if(day == 'Sunday'){
+            return DomainErrors.InvalidDayError();    
+        }
+    } 
+    
+}

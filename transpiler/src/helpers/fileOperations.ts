@@ -18,25 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import fs from 'fs';
-import path from 'path';
-
-const FILE_SUFFIX_DELIMITER = '.';
-const FOLDER_DELIMITER = '/';
-
-const ensureDirectoryExistence = (filePath: string): boolean | void => {
-  const dirname = path.dirname(filePath);
-  if (fs.existsSync(dirname)) {
-    return true;
-  }
-  ensureDirectoryExistence(dirname);
-  fs.mkdirSync(dirname);
-};
-
-const writeToFile = (data: string, filePath: string): void => {
-  ensureDirectoryExistence(filePath);
-  // console.log('trying to write to file', filePath);
-  fs.writeFileSync(filePath, data);
-};
 
 const readFromFile = (filePath: string): string => {
   if (!fs.existsSync(filePath)) {
@@ -45,34 +26,4 @@ const readFromFile = (filePath: string): string => {
   return fs.readFileSync(filePath, 'utf8');
 };
 
-const prependToFile = (data: string, filePath: string): void => {
-  const fileData = fs.readFileSync(filePath);
-  const prependByteData = Buffer.from(data);
-  const fd = fs.openSync(filePath, 'w+');
-
-  fs.writeSync(fd, prependByteData, 0, prependByteData.length, 0);
-  fs.writeSync(fd, fileData, 0, fileData.length, prependByteData.length);
-
-  fs.closeSync(fd);
-};
-
-const getFilename = (filePath: string): string => {
-  const filenameParts = filePath.split(FILE_SUFFIX_DELIMITER);
-  const fileNameWithoutSuffix = filenameParts[filenameParts.length - 2];
-  const filePathNames = fileNameWithoutSuffix.split(FOLDER_DELIMITER);
-  const fileName = filePathNames[filePathNames.length - 1];
-  return fileName;
-};
-
-const copyFile = (source: string, dest: string): void => {
-  fs.copyFileSync(source, dest);
-};
-
-export {
-  writeToFile,
-  prependToFile,
-  readFromFile,
-  ensureDirectoryExistence,
-  getFilename,
-  copyFile,
-};
+export { readFromFile };

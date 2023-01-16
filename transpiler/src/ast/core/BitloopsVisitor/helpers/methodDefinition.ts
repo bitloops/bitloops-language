@@ -21,21 +21,26 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-import { TDefinitionMethodInfo } from '../../../../types.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { MethodDefinitionNodeBuilder } from '../../intermediate-ast/builders/methodDefinition/methodDefinitionNodeBuilder.js';
+import { MethodDefinitionNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionNode.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const methodDefinitionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodDefinitionContext,
-): { methodName: string; methodInfo: TDefinitionMethodInfo } => {
-  const identifier = ctx.identifier().getText();
-  const type = thisVisitor.visit(ctx.typeAnnotation());
-  let parameterDependencies = [];
-  if (ctx.formalParameterList()) {
-    parameterDependencies = thisVisitor.visit(ctx.formalParameterList());
+): MethodDefinitionNode => {
+  const identifier: IdentifierNode = thisVisitor.visit(ctx.identifier());
+  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+  let parameterDependencies: ParameterListNode;
+  if (ctx.parameterList()) {
+    parameterDependencies = thisVisitor.visit(ctx.parameterList());
   }
-  const methodInfo: TDefinitionMethodInfo = {
-    parameterDependencies,
-    returnType: type,
-  };
-  return { methodName: identifier, methodInfo };
+
+  return new MethodDefinitionNodeBuilder()
+    .withIdentifier(identifier)
+    .withParameterList(parameterDependencies)
+    .withType(type)
+    .build();
 };

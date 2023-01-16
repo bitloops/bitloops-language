@@ -17,39 +17,51 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_ENTITY_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 
-import { d } from 'bitloops-gherkin';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+describe('Valid entity evaluation test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-const feature = loadFeature('__tests__/target/typescript/core/entityEvaluation.feature');
+  VALID_ENTITY_EVALUATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-defineFeature(feature, (test) => {
-  let entityEvaluationType;
-  let result;
-  let value;
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const entityEvaluationNode = testCase.entityEvaluation;
+      tree.insertChild(entityEvaluationNode);
 
-  test('entityEvaluation is valid', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      entityEvaluationType = type;
-    });
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
 
-    and(/^language is "(.*)"$/, (_lang) => {});
-
-    given(/^I have a entityEvaluation (.*)$/, (entityEvaluation) => {
-      value = d(entityEvaluation);
-    });
-
-    when('I generate the code', () => {
-      const entityEvaluationValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: entityEvaluationType,
-        value: entityEvaluationValue,
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(d(output));
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

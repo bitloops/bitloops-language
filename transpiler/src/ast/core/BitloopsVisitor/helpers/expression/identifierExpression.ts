@@ -20,20 +20,16 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TExpression } from '../../../../../types.js';
+import { IdentifierExpressionBuilder } from '../../../intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const identifierExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IdentifierExpressionContext,
-): TExpression => {
-  // TODO Create new model for this type of expression
-  //  and not have to use evaluation.regularEvaluation
+): ExpressionNode => {
   const regularEvaluation = thisVisitor.visitChildren(ctx)[0];
-  return {
-    expression: {
-      evaluation: {
-        regularEvaluation,
-      },
-    },
-  };
+  const { value } = regularEvaluation;
+  const identifierExpr = new IdentifierExpressionBuilder().withValue(value).build();
+  return new ExpressionBuilder().withExpression(identifierExpr).build();
 };

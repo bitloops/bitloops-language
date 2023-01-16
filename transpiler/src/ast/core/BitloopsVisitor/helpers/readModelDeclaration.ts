@@ -20,19 +20,17 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TReadModels } from '../../../../types.js';
+import { ReadModelNodeBuilder } from '../../intermediate-ast/builders/readModel/ReadModelNodeBuilder.js';
+import { produceMetadata } from '../metadata.js';
 
 export const readModelDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ReadModelDeclarationContext,
-): { ReadModels: TReadModels } => {
-  const identifier = ctx.ReadModelIdentifier().getText();
-  const variables = thisVisitor.visit(ctx.fieldList());
-  return {
-    ReadModels: {
-      [identifier]: {
-        variables,
-      },
-    },
-  };
+): void => {
+  const identifierNode = thisVisitor.visit(ctx.readModelIdentifier());
+  const fieldListNode = thisVisitor.visit(ctx.fieldList());
+  new ReadModelNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
+    .withIdentifier(identifierNode)
+    .withFields(fieldListNode)
+    .build();
 };

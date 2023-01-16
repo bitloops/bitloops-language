@@ -20,25 +20,26 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TExpression } from '../../../../../types.js';
+import { MemberDotExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
+import { IdentifierExpressionBuilder } from '../../../intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { produceMetadata } from '../../metadata.js';
 
 export const memberDotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MemberDotExpressionContext,
-): TExpression => {
+): ExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression());
-  const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
+
+  // If regularIdentifier is updated to use the new IdentifierExpressionBuilder,
   const identifier = thisVisitor.visit(ctx.regularIdentifier());
-  const identifierValue = identifier.value;
-  const stringResult = `${leftExpressionValue}.${identifierValue}`;
-  return {
-    expression: {
-      evaluation: {
-        regularEvaluation: {
-          type: 'variable',
-          value: stringResult,
-        },
-      },
-    },
-  };
+
+  // this won't need to build a new IdentifierExpressionBuilder
+  const identifierExpr = new IdentifierExpressionBuilder().withValue(identifier.value).build();
+  const memberExpr = new MemberDotExpressionNodeBuilder(produceMetadata(ctx, thisVisitor))
+    .withExpression(leftExpression)
+    .withIdentifier(identifierExpr)
+    .build();
+  return new ExpressionBuilder().withExpression(memberExpr).build();
 };

@@ -1,0 +1,12 @@
+Entity TodoEntity {    
+    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
+        return TodoEntity(props);   
+    } 
+
+    public greet(): (OK(TodoEntity), Errors()) {
+        const id = 67;     
+        return TodoEntity({id: id});
+    }
+
+    private greetPrivate(): (OK(void), Errors()) { }   
+}

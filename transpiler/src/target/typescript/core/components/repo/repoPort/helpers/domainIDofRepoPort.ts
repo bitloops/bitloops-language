@@ -19,56 +19,45 @@
  */
 // More specifically the code generation algorithm will identify all the Entities
 // belonging to the Aggregate, and create all the CRUD methods with the respective data types.
-import {
-  TTargetDependenciesTypeScript,
-  TBoundedContexts,
-  TContextData,
-  TBitloopsPrimaryType,
-} from '../../../../../../../types.js';
+import { TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import {
   BitloopsTypesMapping,
   ClassTypes,
   TClassTypesValues,
 } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { RootEntityDeclarationNode } from '../../../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 
 export const findIdOfRepoDomainObject = (
   repoDependencyName: string,
-  bitloopsModel: TBoundedContexts,
+  ast: IntermediateASTTree,
   type: TClassTypesValues,
-  context: TContextData,
-): TTargetDependenciesTypeScript => {
-  const { boundedContext, module } = context;
-  if (type === ClassTypes.RootEntities) {
-    const aggregate = bitloopsModel[boundedContext][module][type][repoDependencyName];
-    if (!aggregate) {
-      throw new Error(`${type} ${repoDependencyName} not found`);
-    }
-    const aggregateProps = aggregate.create.parameterDependency.type as string;
-    const propsModel = bitloopsModel[boundedContext][module].Props[aggregateProps];
-    if (!propsModel) {
-      throw new Error(`Props ${aggregateProps} not found`);
-    }
-    const idProp = propsModel.variables.find((prop) => prop.name === 'id');
-    const idType: TBitloopsPrimaryType = idProp.type;
-    const idTypeRes = modelToTargetLanguage({
-      value: idType,
-      type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    });
-    return idTypeRes;
-  } else if (type === ClassTypes.ReadModels) {
-    const readModel = bitloopsModel[boundedContext][module][type][repoDependencyName];
-    if (!readModel) {
+): TTargetDependenciesTypeScript | void => {
+  if (type === ClassTypes.RootEntity) {
+    const rootEntityNode = ast.getAggregateNodeWithIdentifier(
+      repoDependencyName,
+    ) as RootEntityDeclarationNode;
+    if (!rootEntityNode) {
       throw new Error(`${type} ${repoDependencyName} not found`);
     }
 
-    const idProp = readModel.variables.find((prop) => prop.name === 'id');
-    const idType: TBitloopsPrimaryType = idProp.type;
+    const aggregatePropsNode = ast.getPropsFromEntity(rootEntityNode);
+
+    if (!aggregatePropsNode) {
+      const aggregateNodeIdentifier = rootEntityNode.getIdentifier().getValue();
+      throw new Error(`Props for aggregate ${aggregateNodeIdentifier} not found`);
+    }
+
+    const propsValue = ast.getValueOfPropsWithIdentifierFromDomainCreate(aggregatePropsNode, 'id');
+
     const idTypeRes = modelToTargetLanguage({
-      value: idType,
+      value: propsValue,
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     return idTypeRes;
+  } else if (type === ClassTypes.ReadModel) {
+    return;
   }
   throw new Error(`Unsupported type ${type}`);
 };

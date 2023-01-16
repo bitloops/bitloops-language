@@ -17,40 +17,52 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/errorEvaluation.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_ERROR_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 
-defineFeature(feature, (test) => {
-  test('Error Evaluation for all possible types', ({ given, and, when, then }) => {
-    let errorEvaluationType;
-    let result;
-    let value;
-    given(/^type is "(.*)"$/, (arg0) => {
-      errorEvaluationType = arg0;
-    });
+describe('Valid error evaluation test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-    and(/^language is "(.*)"$/, (_arg0) => {});
+  VALID_ERROR_EVALUATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-    given(/^I have a errorEvaluation (.*)$/, (arg0) => {
-      value = arg0;
-    });
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const evaluationNode = testCase.evaluation;
+      tree.insertChild(evaluationNode);
 
-    when('I generate the code', () => {
-      const regularEvaluationValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: errorEvaluationType,
-        value: regularEvaluationValue,
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
+
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(
-      /^I should see the (.*) code with the corresponding dependencies (.*)$/,
-      (output, dependencies) => {
-        expect(result.output).toEqual(output);
-        expect(result.dependencies).toEqual(JSON.parse(dependencies));
-      },
-    );
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
+    });
   });
 });

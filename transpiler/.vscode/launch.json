@@ -14,6 +14,22 @@
       "outFiles": ["${workspaceFolder}/lib/esm/**/*.js"]
     },
     {
+      "name": "Jest: current file",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--experimental-vm-modules",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "${fileBasenameNoExtension}",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build",
+      "internalConsoleOptions": "neverOpen"
+      // "disableOptimisticBPs": true
+    },
+    {
       "name": "Jest file",
       "type": "pwa-node",
       "request": "launch",

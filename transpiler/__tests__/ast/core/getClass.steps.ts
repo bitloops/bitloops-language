@@ -17,51 +17,43 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 
-const feature = loadFeature('__tests__/ast/core/getClass.feature');
+import { OriginalAST, OriginalParserError } from '../../../src/parser/core/types.js';
+import { TExpression } from '../../../src/types.js';
+import { ExpressionBuilderDirector } from './builders/expressionDirector.js';
+import { validGetClassExpressions } from './mocks/getClass.js';
+const boundedContext = 'Hello World';
+const module = 'core';
+let result;
 
-defineFeature(feature, (test) => {
-  test('Get Class is valid', ({ given, when, then }) => {
-    const boundedContext = 'Hello World';
-    //  const module = 'core';
-    let blString;
-    let modelOutput;
-    let result;
-
-    given(/^A valid getClass (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
-
-    when('I generate the model', () => {
+describe('Valid getClass expressions', () => {
+  validGetClassExpressions.forEach((mock) => {
+    test(`${mock.description}`, () => {
       const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module: 'core',
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
+      const intermediateParser = new IntermediateASTParser();
+      if (!(initialModelOutput instanceof OriginalParserError)) {
+        result = intermediateParser.parse(initialModelOutput as unknown as OriginalAST);
+        const tree = result.core[boundedContext][module];
+        result = tree.getCurrentNode().getValue();
       }
-    });
-
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      const expected = getExpected(mock.expression);
+      expect(result).toMatchObject(expected);
     });
   });
 });
+
+const getExpected = (expression: TExpression): TExpression =>
+  new ExpressionBuilderDirector().buildGetClassExpression(expression);

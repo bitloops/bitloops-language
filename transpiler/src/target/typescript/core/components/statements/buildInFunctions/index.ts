@@ -18,13 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { TBuildInFunction, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import { TBuiltInFunction, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 const buildInFunctionToTargetLanguage = (
-  variable: TBuildInFunction,
+  variable: TBuiltInFunction,
 ): TTargetDependenciesTypeScript => {
-  const { buildInFunction } = variable;
+  const { builtInFunction: buildInFunction } = variable;
   if ('applyRules' in buildInFunction) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TApplyRules,

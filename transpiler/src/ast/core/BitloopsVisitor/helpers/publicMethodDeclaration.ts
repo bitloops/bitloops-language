@@ -20,35 +20,28 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TDomainPublicMethod,
-  TParameterDependencies,
-  TOkErrorReturnType,
-} from '../../../../types.js';
-import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
-import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
+import { produceMetadata } from '../metadata.js';
+import { PublicMethodDeclarationNodeBuilder } from '../../intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
+import { PublicMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 
 export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PublicMethodDeclarationContext,
-): { methodName: string; methodInfo: TDomainPublicMethod } => {
-  const methodName = ctx.identifier().getText();
-  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
-    ctx.formalParameterList(),
-  );
-  const returnType: TOkErrorReturnType = thisVisitor.visit(ctx.returnPublicMethodType())[1];
-  const { statements } = thisVisitor.visit(ctx.functionBody());
-  //change return to returnOk or returnError
-  const statementsWithReturn = modifyReturnOkErrorStatements(statements, returnType);
+): PublicMethodDeclarationNode => {
+  const methodNameNode = thisVisitor.visit(ctx.identifier());
+  const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
+  const returnType: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnPublicMethodType())[1];
+  const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
 
-  addReturnOkVoidStatement(statementsWithReturn, returnType);
-
-  const methodInfo: TDomainPublicMethod = {
-    publicMethod: {
-      parameterDependencies,
-      returnType,
-      statements: statementsWithReturn,
-    },
-  };
-  return { methodName, methodInfo };
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const methodNode = new PublicMethodDeclarationNodeBuilder(metadata)
+    .withIdentifier(methodNameNode)
+    .withParameters(parameterDependencies)
+    .withReturnType(returnType)
+    .withStatements(statements)
+    .build();
+  return methodNode;
 };

@@ -18,45 +18,44 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { AppliedRuleNode } from './../../intermediate-ast/nodes/statements/builtinFunction/AppliedRuleNode.js';
+import { AppliedRuleNodeBuilder } from './../../intermediate-ast/builders/statements/builtInFunction/applyRules/AppliedRule.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TArgumentDependencies, TBuildInFunction } from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
+import { ApplyRulesNodeBuilder } from '../../intermediate-ast/builders/statements/builtInFunction/applyRules/ApplyRules.js';
+import { BuiltInFunctionNodeBuilder } from '../../intermediate-ast/builders/statements/builtInFunction/BuiltInFunction.js';
+import { BuiltInFunctionNode } from '../../intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
+import { ApplyRulesNode } from './../../intermediate-ast/nodes/statements/builtinFunction/ApplyRulesStatementNode.js';
 
 export const applyRulesStatementVisitor = (
-  _thisVisitor: BitloopsVisitor,
-  _ctx: BitloopsParser.ApplyRulesStatementContext,
-): TBuildInFunction => {
-  const result = _thisVisitor.visit(_ctx.applyRuleStatementRulesList());
-  return {
-    buildInFunction: {
-      applyRules: result,
-    },
-  };
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.ApplyRulesStatementContext,
+): BuiltInFunctionNode => {
+  const applyRulesNode: ApplyRulesNode = thisVisitor.visit(ctx.applyRuleStatementRulesList());
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new BuiltInFunctionNodeBuilder(metadata).withBuiltInFunction(applyRulesNode).build();
 };
 
 export const applyRuleStatementRulesListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ApplyRuleStatementRulesListContext,
-): {
-  name: string;
-  arguments: TArgumentDependencies;
-}[] => {
+): ApplyRulesNode => {
   const children = thisVisitor.visitChildren(ctx);
-  const result = children.filter((child) => child !== undefined);
-  return result;
+  const appliedRules = children.filter((child) => child !== undefined);
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ApplyRulesNodeBuilder(metadata).withAppliedRules(appliedRules).build();
 };
 
-export const applyRulesRuleVisitor = (
+export const appliedRuleVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ApplyRulesRuleContext,
-): {
-  name: string;
-  arguments: TArgumentDependencies;
-} => {
-  const ruleIdentifier = ctx.domainRuleIdentifier().getText();
-  const argumentsRes = thisVisitor.visit(ctx.arguments())[1];
-  return {
-    name: ruleIdentifier,
-    arguments: argumentsRes,
-  };
+): AppliedRuleNode => {
+  const ruleIdentifierNode = thisVisitor.visit(ctx.domainRuleIdentifier());
+  const argumentListNode = thisVisitor.visit(ctx.methodArguments());
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new AppliedRuleNodeBuilder(metadata)
+    .withDomainRuleIdentifier(ruleIdentifierNode)
+    .withArgumentListNode(argumentListNode)
+    .build();
 };

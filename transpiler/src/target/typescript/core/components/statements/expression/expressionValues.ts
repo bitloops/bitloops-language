@@ -20,12 +20,14 @@
 import { TExpressionValues, TTargetDependenciesTypeScript } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
-import { evaluationToTargetLanguage, instanceOfToTargetLanguage } from './evaluation/index.js';
+import { evaluationToTargetLanguage } from './evaluation/index.js';
 import { ExpressionTypeIdentifiers } from './../../../type-identifiers/expression.js';
+import { literalExpressionToTargetLanguage } from './literalExpression.js';
+import { identifierExpressionToTargetLanguage } from './identifier.js';
 
-export { evaluationToTargetLanguage, instanceOfToTargetLanguage };
+export { evaluationToTargetLanguage };
 
-enum INDICATORS {
+export enum INDICATORS {
   RELATIONAL_EXPRESSION = 'relationalExpression',
   LOGICAL_EXPRESSION = 'logicalExpression',
   ADDITIVE_EXPRESSION = 'additiveExpression',
@@ -48,18 +50,61 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isLiteralExpression(expressionValue)) {
+    return literalExpressionToTargetLanguage(expressionValue);
+  }
+
+  if (ExpressionTypeIdentifiers.isIdentifierExpression(expressionValue)) {
+    return identifierExpressionToTargetLanguage(expressionValue);
+  }
+
   if (ExpressionTypeIdentifiers.isArrayLiteralExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TArrayLiteralExpression,
       value: expressionValue,
     });
   }
-  if ('classInstantiation' in expressionValue) {
+  if (ExpressionTypeIdentifiers.isAssignmentExpression(expressionValue)) {
     return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TClassInstantiation,
+      type: BitloopsTypesMapping.TAssignmentExpression,
       value: expressionValue,
     });
   }
+
+  if (ExpressionTypeIdentifiers.isThisExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TThisExpression,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isInstanceOfExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TInstanceOf,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isMemberDotExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TMemberDotExpression,
+      value: expressionValue,
+    });
+  }
+  if (ExpressionTypeIdentifiers.isGetClassExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TGetClass,
+      value: expressionValue,
+    });
+  }
+
+  if (ExpressionTypeIdentifiers.isToStringExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TToStringExpression,
+      value: expressionValue,
+    });
+  }
+
   if ('struct' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TStructEvaluation,
@@ -105,20 +150,34 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
-  if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
+  if (ExpressionTypeIdentifiers.isParenthesizedExpression(expressionValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TParenthesizedExpression,
       value: expressionValue,
     });
   }
-  if ('toString' in expressionValue) {
+
+  if (ExpressionTypeIdentifiers.isMethodCallExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TMethodCallExpression,
+      value: expressionValue,
+    });
+  }
+  if ('toStringMethod' in expressionValue) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TToStringExpression,
       value: expressionValue,
     });
   }
 
-  throw new Error(`Unsupported expression: ${expressionValue}`);
+  if (ExpressionTypeIdentifiers.isEnvironmentVariableExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TEnvironmentVariableExpression,
+      value: expressionValue,
+    });
+  }
+
+  throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 
 export { expressionValuesToTargetLanguage };

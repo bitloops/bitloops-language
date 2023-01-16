@@ -1,0 +1,6 @@
+{
+  "eslint.workingDirectories": ["transpiler", "cli"],
+  "cSpell.words": ["Bitloops"],
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.preferences.importModuleSpecifierEnding": "js"
+}

@@ -17,29 +17,29 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TConstDecomposition, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+// import { TConstDecomposition, TTargetDependenciesTypeScript } from '../../../../../types.js';
+// import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+// import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const constDecompositionToTargetLanguage = (
-  variable: TConstDecomposition,
-): TTargetDependenciesTypeScript => {
-  if (!variable.constDecomposition) {
-    throw new Error('ConstDecomposition statement must have a constDecomposition value');
-  }
+// const constDecompositionToTargetLanguage = (
+//   variable: TConstDecomposition,
+// ): TTargetDependenciesTypeScript => {
+//   if (!variable.constDecomposition) {
+//     throw new Error('ConstDecomposition statement must have a constDecomposition value');
+//   }
 
-  const { evaluation } = variable.constDecomposition;
-  const expressionValue = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TEvaluation,
-    value: {
-      evaluation,
-    },
-  });
-  const { names } = variable.constDecomposition;
-  return {
-    output: `const { ${names.join(', ')} } = ${expressionValue.output}`,
-    dependencies: expressionValue.dependencies,
-  };
-};
+//   const { evaluation } = variable.constDecomposition;
+//   const expressionValue = modelToTargetLanguage({
+//     type: BitloopsTypesMapping.TEvaluation,
+//     value: {
+//       evaluation,
+//     },
+//   });
+//   const { names } = variable.constDecomposition;
+//   return {
+//     output: `const { ${names.join(', ')} } = ${expressionValue.output}`,
+//     dependencies: expressionValue.dependencies,
+//   };
+// };
 
-export { constDecompositionToTargetLanguage };
+// export { constDecompositionToTargetLanguage };

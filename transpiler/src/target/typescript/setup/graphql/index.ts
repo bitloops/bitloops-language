@@ -17,8 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TGraphQLSetupData, TTargetDependenciesTypeScript } from '../../../../types.js';
-import { AllResolvers } from './types.js';
+import { TTargetDependenciesTypeScript } from '../../../../types.js';
+import { AllResolvers, TGraphQLSetupData } from './types.js';
 import { GraphQLSchemaGenerator } from './graphQLSchemaGenerator.js';
 import { GraphQLServerGenerator } from './graphQLServerGenerator.js';
 

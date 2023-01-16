@@ -1,0 +1,14 @@
+Config.setLanguage(TypeScript);
+
+
+const todoRESTRouter = RESTRouter(REST.Fastify) {
+  Post('/'): [Todo][Todo]CreateTodoRESTController();
+}
+
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+}) {
+  '/todo': todoRESTRouter;
+}

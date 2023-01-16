@@ -22,7 +22,7 @@ defineFeature(feature, (test) => {
       };
       const useCase = new CreateTodoUseCase(mockRepo);
       const result = await useCase.execute(dto);
-      expect(result.value instanceof DomainErrors.TitleOutOfBounds).toBeFalse();
+      expect(result.value instanceof DomainErrors.TitleOutOfBoundsError).toBeFalse();
     });
   });
 
@@ -37,7 +37,7 @@ defineFeature(feature, (test) => {
       };
       const useCase = new CreateTodoUseCase(mockRepo);
       const result = await useCase.execute(dto);
-      expect(result.value instanceof DomainErrors.TitleOutOfBounds).toBeTrue();
+      expect(result.value instanceof DomainErrors.TitleOutOfBoundsError).toBeTrue();
     });
   });
 });

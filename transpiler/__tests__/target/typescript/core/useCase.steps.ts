@@ -17,61 +17,51 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-
-import { d } from 'bitloops-gherkin';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_USE_CASE_TEST_CASES } from './mocks/useCase/index.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/useCase.feature');
-
-defineFeature(feature, (test) => {
+describe('Valid useCase test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const classType = ClassTypes.UseCases;
   const formatterConfig = null;
-  let language;
-  let intermediateAST;
-  let result;
+  const language = 'TypeScript';
 
-  test('UseCase with execute', ({ given, when, then }) => {
-    given(/^language is "(.*)"$/, (lang) => {
-      language = lang;
-    });
+  VALID_USE_CASE_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-    given(/^I have a useCase (.*)$/, (useCase) => {
-      const value = d(useCase);
-      intermediateAST = {
-        [boundedContext]: { [module]: { [classType]: JSON.parse(value) } },
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const useCaseNode = testCase.useCase;
+      tree.insertChild(useCaseNode);
+
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
       };
-    });
 
-    when('I generate the code', () => {
-      const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
-        intermediateAST,
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      const classNamesContent = JSON.parse(d(output));
-      const expectedOutput = [];
-      for (const [className, content] of Object.entries(classNamesContent)) {
-        const formattedOutput = formatString(content as string, formatterConfig);
-        expectedOutput.push({
-          boundedContext,
-          className,
-          module,
-          classType,
-          fileContent: formattedOutput,
-        });
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
       }
 
-      expect(result).toEqual(expectedOutput);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

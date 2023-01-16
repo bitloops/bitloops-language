@@ -18,22 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { ToStringBuilder } from '../../../intermediate-ast/builders/expressions/ToStringBuilder.js';
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { TExpression } from '../../../../../types.js';
+import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const toStringExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ToStringExpressionContext,
-): TExpression => {
-  const expressionResult = thisVisitor.visit(ctx.expression());
+): ExpressionNode => {
+  const expression = thisVisitor.visit(ctx.expression());
 
-  const value = expressionResult.expression.evaluation.regularEvaluation.value;
-  return {
-    expression: {
-      toString: {
-        value,
-      },
-    },
-  };
+  const node = new ToStringBuilder().withExpression(expression).build();
+  return new ExpressionBuilder().withExpression(node).build();
 };

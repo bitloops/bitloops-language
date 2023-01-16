@@ -17,62 +17,53 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('./__tests__/target/typescript/core/statement.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_STATEMENT_TEST_CASES } from './mocks/statements/statements.js';
 
-defineFeature(feature, (test) => {
-  let statementType;
-  let result;
-  let value;
+describe('Statements test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Statement with all possible type statements', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      statementType = type;
-    });
+  VALID_STATEMENT_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.statement;
 
-    given(/^I have a statement (.*)$/, (statement) => {
-      value = statement;
-    });
+      tree.insertChild(input);
 
-    when('I generate the code', () => {
-      const statementValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: statementType,
-        value: statementValue,
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
+
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
-    });
-  });
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
-  test('Unsupported statement', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      statementType = type;
-    });
-
-    and(/^language is "(.*)"$/, (_lang) => {});
-
-    given(/^I have an invalid (.*) with unsupported (.*)$/, (statement) => {
-      value = statement;
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    when('I generate the code', () => {});
-
-    then(/^I should get an error saying that (.*) is unsupported$/, (statement) => {
-      const statementValue = JSON.parse(statement);
-      expect(() =>
-        modelToTargetLanguage({
-          type: statementType,
-          value: statementValue,
-        }),
-      ).toThrowError(`Unsupported statement:${statementValue}`);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

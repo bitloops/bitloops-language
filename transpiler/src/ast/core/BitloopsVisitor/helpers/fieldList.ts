@@ -19,14 +19,19 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { FieldListNodeBuilder } from '../../intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
+import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { FieldNode } from '../../intermediate-ast/nodes/FieldList/FieldNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariables } from '../../../../types.js';
 
 export const fieldListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldListContext,
-): TVariables => {
+): FieldListNode => {
   const fieldsAndSemicolons = thisVisitor.visitChildren(ctx);
-  const fields = fieldsAndSemicolons.filter((field) => field !== undefined);
-  return fields;
+  const fields: FieldNode[] = fieldsAndSemicolons.filter((field) => field !== undefined);
+
+  const fieldListNode = new FieldListNodeBuilder().withFields(fields).build();
+
+  return fieldListNode;
 };
