@@ -85,10 +85,13 @@ export type TPropsIdentifier = string;
 export const PropsIdentifierKey = 'propsIdentifier';
 
 export const PropsKey = 'Props';
+
+export type TPropsValues = {
+  [PropsIdentifierKey]: TPropsIdentifier;
+} & TVariables;
+
 export type TProps = {
-  [PropsKey]: {
-    [PropsIdentifierKey]: TPropsIdentifier;
-  } & TVariables;
+  [PropsKey]: TPropsValues;
 };
 
 /**
