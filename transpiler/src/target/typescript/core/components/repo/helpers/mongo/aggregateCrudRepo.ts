@@ -56,6 +56,7 @@ const getVODeepFields = (
     });
     voDeepFields.push(...nestedFields);
   } else if (isProps(parameterType)) {
+    //TODO handle deep level
     const propsFields = getPropsFields(parameterType, model);
     const nestedFields = [];
     propsFields.forEach((field) => {
