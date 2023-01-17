@@ -22,10 +22,7 @@ export default class Transpiler {
     transpileInputData: TParserInputData,
     options: TTranspileOptions,
   ): TTranspileOutput | TTranspileError[] {
-    const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData);
-    if (isParserErrors(originalAST)) return originalAST;
-
-    const intermediateModel = this.originalASTToIntermediateModel(originalAST);
+    const intermediateModel = this.bitloopsCodeToIntermediateModel(transpileInputData);
     if (isIntermediateASTError(intermediateModel)) {
       return intermediateModel;
     }
@@ -36,6 +33,16 @@ export default class Transpiler {
     }
 
     return targetCode;
+  }
+
+  public bitloopsCodeToIntermediateModel(
+    transpileInputData: TParserInputData,
+  ): IntermediateASTError | IntermediateAST {
+    const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData);
+    if (isParserErrors(originalAST)) return originalAST;
+
+    const intermediateModel = this.originalASTToIntermediateModel(originalAST);
+    return intermediateModel;
   }
 
   private bitloopsCodeToOriginalAST(
