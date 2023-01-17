@@ -33,7 +33,7 @@ jobs:
 
       - name: npm install
         working-directory: ./transpiler
-        run: npm install
+        run: npm ci
 
       # - name: make antlr jar executable
       #   run: chmod +x antlr-4.10.1-complete.jar
