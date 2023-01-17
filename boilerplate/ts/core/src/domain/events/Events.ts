@@ -26,7 +26,6 @@ import { DomainEvent } from './DomainEvent';
 import { IntegrationEvent } from './IntegrationEvent';
 import { IEvent } from './IEvent';
 import { CommandMetadata } from '../commands/ICommand';
-import { config } from '../../config';
 import { getProcessManagerTopic } from '../../helpers';
 
 // TODO two aggregates at the same time, only one will be marked as dispatched so the other one's events will be lost
@@ -126,11 +125,7 @@ export class Events {
     } else if (event instanceof IntegrationEvent) {
       // TODO serialize event before sending
       if (metadata?.orchestrated) {
-        const processManagerTopic = getProcessManagerTopic(
-          event.eventTopic,
-          config.PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
-          config.TOPIC_DELIMITER,
-        );
+        const processManagerTopic = getProcessManagerTopic(event.eventTopic);
         await this.integrationEventBus.publish(processManagerTopic, event);
       }
       await this.integrationEventBus.publish(event.eventTopic, event);

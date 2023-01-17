@@ -17,8 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// import { config } from '../../config';
-import { Container } from '../../Container';
+
 import { getIntegrationTopic } from '../../helpers';
 import { Event } from './Event';
 import { IIntegrationEvent } from './IIntegrationEvent';
@@ -35,8 +34,6 @@ export abstract class IntegrationEvent<T> extends Event implements IIntegrationE
   }
 
   static getIntegrationEventTopic(domainEventTopic: string): string {
-    const { INTEGRATION_EVENT_TOPIC_PREFIX, TOPIC_DELIMITER } = Container.getConfig();
-
-    return getIntegrationTopic(domainEventTopic, INTEGRATION_EVENT_TOPIC_PREFIX, TOPIC_DELIMITER);
+    return getIntegrationTopic(domainEventTopic);
   }
 }

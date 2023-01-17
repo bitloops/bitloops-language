@@ -36,6 +36,7 @@ import {
 } from './helpers';
 import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain/events/dispatchEventsCallback';
 import { IHandle as IHanldeImport } from './application/IHandle';
+import { ApplicationConfig as ApplicationConfigImport } from './config';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -91,6 +92,26 @@ namespace MessageBus {
   export const getTopic = getTopicImport;
 }
 
+namespace Constants {
+  //TODO this is a duplicate - find a way to export original enum
+  export enum TOPIC_PREFIXES {
+    Event = 'event',
+    Command = 'command',
+    Query = 'query',
+  }
+  export enum CONTEXT_TYPES {
+    InProcess = 'InProcess',
+    External = 'External',
+    Hybrid = 'Hybrid',
+  }
+  export enum MESSAGE_BUS {
+    EVENT_BUS = 'EVENT_BUS',
+    COMMAND_BUS = 'COMMAND_BUS',
+    MESSAGE_BUS = 'MESSAGE_BUS',
+  }
+  export type ApplicationConfig = ApplicationConfigImport;
+}
+
 export {
   Application,
   Domain,
@@ -102,4 +123,5 @@ export {
   Container,
   failWithPublish,
   okWithpublish,
+  Constants,
 };

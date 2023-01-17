@@ -19,13 +19,13 @@
  */
 import { v4 as uuid } from 'uuid';
 import { QueryMetadata, IQuery } from './IQuery';
-import { config } from '../../config';
+import { config, TOPIC_PREFIXES } from '../../config';
 import { getTopic } from '../../helpers';
 
-const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
+const { TOPIC_DELIMITER } = config;
 
 export abstract class Query implements IQuery {
-  private static prefix: string = TOPIC_PREFIXES.Query;
+  private static prefix: TOPIC_PREFIXES.Query = TOPIC_PREFIXES.Query;
 
   public readonly uuid: string;
   private createdTimestamp: number;
@@ -46,11 +46,6 @@ export abstract class Query implements IQuery {
   }
 
   static getQueryTopic(queryName: string, toContextId: string): string {
-    return getTopic({
-      topicPrefix: Query.prefix,
-      name: queryName,
-      contextId: toContextId,
-      topicDelimiter: TOPIC_DELIMITER,
-    });
+    return getTopic(Query.prefix, queryName, toContextId);
   }
 }

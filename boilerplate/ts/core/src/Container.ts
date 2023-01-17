@@ -1,4 +1,4 @@
-import { Config } from './config';
+import { ApplicationConfig, CONTEXT_TYPES } from './config';
 import { ICommandBus } from './domain/commands/ICommandBus';
 import { Events } from './domain/events/Events';
 import { IEventBus } from './domain/events/IEventBus';
@@ -39,10 +39,10 @@ export class Container {
 
   private static externalInProcessEventBus: IEventBus;
   private static events: Events;
-  private static config: Config;
+  private static appConfig: ApplicationConfig;
 
-  static async initializeServices(config: Config): Promise<IServices> {
-    Container.config = config;
+  static async initializeServices(appConfig: ApplicationConfig): Promise<IServices> {
+    Container.appConfig = appConfig;
     Container.inProcessMessageBus = new InProcessMessageBus();
     Container.externalMessageBus = await ExternalMessageBusFactory(
       ExternalMessageBusProviders.NATS,
@@ -82,17 +82,15 @@ export class Container {
 
   static getCommandBusFromContext(contextId: string): ICommandBus {
     let commandBus: ICommandBus;
-    if (!Container.config.CONTEXT_IDs_MAPPINGS[contextId]) {
+    if (!Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId]) {
       throw new Error(`Context id: ${contextId} is missing from mappings`);
     }
     if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].COMMAND_BUS ===
-      Container.config.CONTEXT_TYPES.InProcess
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].COMMAND_BUS === CONTEXT_TYPES.InProcess
     ) {
       commandBus = Container.inProcessCommandBus;
     } else if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].COMMAND_BUS ===
-      Container.config.CONTEXT_TYPES.External
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].COMMAND_BUS === CONTEXT_TYPES.External
     ) {
       commandBus = Container.externalCommandBus;
     } else {
@@ -104,17 +102,15 @@ export class Container {
 
   static getMessageBusFromContext(contextId: string): IMessageBus {
     let messageBus: IMessageBus;
-    if (!Container.config.CONTEXT_IDs_MAPPINGS[contextId]) {
+    if (!Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId]) {
       throw new Error(`Context id: ${contextId} is missing from mappings`);
     }
     if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].MESSAGE_BUS ===
-      Container.config.CONTEXT_TYPES.InProcess
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].MESSAGE_BUS === CONTEXT_TYPES.InProcess
     ) {
       messageBus = Container.inProcessMessageBus;
     } else if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].MESSAGE_BUS ===
-      Container.config.CONTEXT_TYPES.External
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].MESSAGE_BUS === CONTEXT_TYPES.External
     ) {
       messageBus = Container.externalMessageBus;
     } else {
@@ -126,22 +122,17 @@ export class Container {
 
   static getEventBusFromContext(contextId: string): IEventBus {
     let eventBus: IEventBus;
-    if (!Container.config.CONTEXT_IDs_MAPPINGS[contextId]) {
+    if (!Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId]) {
       throw new Error(`Context id: ${contextId} is missing from mappings`);
     }
-    if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].EVENT_BUS ===
-      Container.config.CONTEXT_TYPES.InProcess
-    ) {
+    if (Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].EVENT_BUS === CONTEXT_TYPES.InProcess) {
       eventBus = Container.inProcessEventBus;
     } else if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].EVENT_BUS ===
-      Container.config.CONTEXT_TYPES.External
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].EVENT_BUS === CONTEXT_TYPES.External
     ) {
       eventBus = Container.externalEventBus;
     } else if (
-      Container.config.CONTEXT_IDs_MAPPINGS[contextId].EVENT_BUS ===
-      Container.config.CONTEXT_TYPES.Hybrid
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].EVENT_BUS === CONTEXT_TYPES.Hybrid
     ) {
       eventBus = Container.decoratedEventBus;
     } else {
@@ -155,7 +146,7 @@ export class Container {
     return Container.services;
   }
 
-  static getConfig(): Config {
-    return Container.config;
-  }
+  // static getConfig(): Config {
+  //   return Container.config;
+  // }
 }

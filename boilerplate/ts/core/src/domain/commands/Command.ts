@@ -19,13 +19,13 @@
  */
 import { v4 as uuid } from 'uuid';
 import { CommandMetadata, ICommand } from './ICommand';
-import { config } from '../../config';
+import { config, TOPIC_PREFIXES } from '../../config';
 import { getTopic } from '../../helpers';
 
-const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
+const { TOPIC_DELIMITER } = config;
 
 export abstract class Command implements ICommand {
-  private static prefix: string = TOPIC_PREFIXES.Command;
+  private static prefix: TOPIC_PREFIXES.Command = TOPIC_PREFIXES.Command;
 
   public readonly uuid: string;
   private createdTimestamp: number;
@@ -47,11 +47,6 @@ export abstract class Command implements ICommand {
 
   // TODO somehow avoid implementing this method in every child command
   static getCommandTopic(commandName: string, toContextId: string): string {
-    return getTopic({
-      topicPrefix: Command.prefix,
-      name: commandName,
-      contextId: toContextId,
-      topicDelimiter: TOPIC_DELIMITER,
-    });
+    return getTopic(Command.prefix, commandName, toContextId);
   }
 }

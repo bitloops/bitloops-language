@@ -22,13 +22,13 @@
 
 // TODO Remove comments
 
-enum CONTEXT_TYPES {
+export enum CONTEXT_TYPES {
   InProcess = 'InProcess',
   External = 'External',
   Hybrid = 'Hybrid',
 }
 
-enum TOPIC_PREFIXES {
+export enum TOPIC_PREFIXES {
   Event = 'event',
   Command = 'command',
   Query = 'query',
@@ -44,31 +44,30 @@ enum MESSAGE_BUS {
 }
 
 type Config = {
-  CONTEXT_TYPES: typeof CONTEXT_TYPES;
-  TOPIC_PREFIXES: typeof TOPIC_PREFIXES;
   TOPIC_DELIMITER: string;
   INTEGRATION_EVENT_TOPIC_PREFIX: string;
   PROCESS_MANAGER_EVENT_TOPIC_PREFIX: string;
-  EVENTS: any;
-  CONTEXT_IDs_MAPPINGS: Record<string, Record<MESSAGE_BUS, CONTEXT_TYPES>>;
-  CONTEXT_IDs: Record<string, string>;
 };
 // TODO maybe getting it from the project find away to get it all from the project
 const config: Config = {
-  CONTEXT_TYPES,
-  TOPIC_PREFIXES,
   TOPIC_DELIMITER,
   INTEGRATION_EVENT_TOPIC_PREFIX,
   PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
-  EVENTS: {},
-  CONTEXT_IDs_MAPPINGS: {
-    /* @TEMPLATE [${camelCase(BOUNDED_CONTEXT)}ContextId]: {
+  // EVENTS: {},
+  // CONTEXT_IDs_MAPPINGS: {
+  /* @TEMPLATE [${camelCase(BOUNDED_CONTEXT)}ContextId]: {
       COMMAND_BUS: CONTEXT_TYPES.InProcess,
       EVENT_BUS: CONTEXT_TYPES.InProcess,
       MESSAGE_BUS: CONTEXT_TYPES.InProcess,
     }, */
-  },
-  CONTEXT_IDs: {},
+  // },
+  // CONTEXT_IDs: {},
 };
 
-export { Config, config };
+type ApplicationConfig = {
+  EVENTS: any;
+  CONTEXT_IDs_MAPPINGS: Record<string, Record<MESSAGE_BUS, CONTEXT_TYPES>>;
+  CONTEXT_IDs: Record<string, string>;
+};
+
+export { Config, config, ApplicationConfig };

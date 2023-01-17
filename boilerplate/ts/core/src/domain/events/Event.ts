@@ -19,14 +19,12 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import { IEvent } from './IEvent';
-import { config } from '../../config';
+import { TOPIC_PREFIXES } from '../../config';
 import { getTopic } from '../../helpers';
 import { CommandMetadata } from '../commands/ICommand';
 
-const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
-
 export abstract class Event implements IEvent {
-  public static readonly prefix: string = TOPIC_PREFIXES.Event;
+  public static readonly prefix: TOPIC_PREFIXES.Event = TOPIC_PREFIXES.Event;
 
   public readonly uuid: string;
   protected createdTimestamp: number;
@@ -46,11 +44,6 @@ export abstract class Event implements IEvent {
   }
 
   static getEventTopic(eventName: string, fromContextId: string) {
-    return getTopic({
-      topicPrefix: Event.prefix,
-      name: eventName,
-      contextId: fromContextId,
-      topicDelimiter: TOPIC_DELIMITER,
-    });
+    return getTopic(Event.prefix, eventName, fromContextId);
   }
 }
