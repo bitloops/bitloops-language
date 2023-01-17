@@ -1,4 +1,7 @@
-import { isIntermediateASTError } from './ast/core/guards/index.js';
+import {
+  isIntermediateASTError,
+  isOriginalParserOrIntermediateASTError,
+} from './ast/core/guards/index.js';
 import { IIntermediateASTParser, IntermediateAST, IntermediateASTError } from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import {
@@ -23,7 +26,7 @@ export default class Transpiler {
     options: TTranspileOptions,
   ): TTranspileOutput | TTranspileError[] {
     const intermediateModel = this.bitloopsCodeToIntermediateModel(transpileInputData);
-    if (isIntermediateASTError(intermediateModel)) {
+    if (isOriginalParserOrIntermediateASTError(intermediateModel)) {
       return intermediateModel;
     }
 
