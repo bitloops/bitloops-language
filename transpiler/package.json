@@ -26,7 +26,7 @@
     "core"
   ],
   "devDependencies": {
-    "@types/antlr4": "^4.7.3",
+    "@types/antlr4": "4.11.0",
     "@types/eslint": "^8.4.6",
     "@types/jest": "^29.1.2",
     "@typescript-eslint/eslint-plugin": "^5.40.0",

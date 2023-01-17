@@ -4,7 +4,7 @@ import {
   TParserCoreInputData,
   TParserSetupInputData,
   ASTContext,
-  OriginalParserError,
+  ParserSyntacticError,
   OriginalAST,
   OriginalASTSetup,
   OriginalASTCore,
@@ -12,24 +12,25 @@ import {
 } from './types.js';
 import BitloopsLexer from './grammar/BitloopsLexer.js';
 import Parser from './grammar/BitloopsParser.js';
-import { isParserError } from './guards/index.js';
+import { isParserErrors } from './guards/index.js';
+import { VerboseErrorListener } from './VerboseErrorListener.js';
 
 export class BitloopsParser implements IOriginalParser {
-  parse(inputData: TParserInputData): OriginalAST | OriginalParserError[] {
-    const errors = [];
+  parse(inputData: TParserInputData): OriginalAST | ParserSyntacticError[] {
+    const errors: ParserSyntacticError[] = [];
     const parseResult: OriginalAST = { core: {} };
 
     const ASTCore = this.parseCore(inputData.core);
-    if (isParserError(ASTCore)) {
-      errors.push(ASTCore);
+    if (isParserErrors(ASTCore)) {
+      errors.push(...ASTCore);
     } else {
       parseResult.core = ASTCore;
     }
 
     if (inputData.setup) {
       const ASTSetup = this.parseSetup(inputData.setup);
-      if (isParserError(ASTSetup)) {
-        errors.push(ASTCore);
+      if (isParserErrors(ASTSetup)) {
+        errors.push(...ASTSetup);
       } else {
         parseResult.setup = ASTSetup;
       }
@@ -41,17 +42,18 @@ export class BitloopsParser implements IOriginalParser {
     return parseResult;
   }
 
-  private parseCore(inputData: TParserCoreInputData): OriginalASTCore | OriginalParserError {
+  private parseCore(inputData: TParserCoreInputData): OriginalASTCore | ParserSyntacticError[] {
     /**
      * For each file, we need to create its tree.
      */
     const boundedContexts: OriginalASTCore = {};
     for (const data of inputData) {
       const { boundedContext, module, fileId, fileContents } = data;
-      const ASTContext = BitloopsParser.getInitialAST(fileContents);
-      if (isParserError(ASTContext)) {
-        return ASTContext;
+      const ASTContextOrError = BitloopsParser.getInitialAST(fileContents);
+      if (isParserErrors(ASTContextOrError)) {
+        return ASTContextOrError;
       }
+      const ASTContext = ASTContextOrError;
 
       if (
         boundedContexts[boundedContext] === null ||
@@ -75,13 +77,13 @@ export class BitloopsParser implements IOriginalParser {
     return boundedContexts;
   }
 
-  public parseSetup(setupData: TParserSetupInputData): OriginalASTSetup | OriginalParserError {
+  public parseSetup(setupData: TParserSetupInputData): OriginalASTSetup | ParserSyntacticError[] {
     const setupContext: OriginalASTSetup = {};
     for (const data of setupData) {
       const { fileContents, fileId } = data;
       const ASTContext = BitloopsParser.getInitialAST(fileContents);
 
-      if (isParserError(ASTContext)) {
+      if (isParserErrors(ASTContext)) {
         return ASTContext;
       }
       setupContext[fileId] = { ASTContext };
@@ -94,16 +96,19 @@ export class BitloopsParser implements IOriginalParser {
    * @param blCode string
    * @returns Parser.ProgramContext
    */
-  private static getInitialAST(blCode: string): ASTContext | OriginalParserError {
-    const chars = new antlr4.InputStream(blCode);
+  private static getInitialAST(blCode: string): ASTContext | ParserSyntacticError[] {
+    const chars = new (antlr4 as any).InputStream(blCode);
     const lexer = new BitloopsLexer(chars);
-    const tokens = new antlr4.CommonTokenStream(lexer as any);
-    try {
-      const parser = new Parser(tokens);
-      const tree = parser.program() as ASTContext;
-      return tree;
-    } catch (error: any) {
-      return new OriginalParserError(JSON.stringify(error));
+    const tokens = new (antlr4 as any).CommonTokenStream(lexer as any);
+    const parser = new Parser(tokens) as any;
+    parser.removeErrorListeners();
+    const errorListener = new VerboseErrorListener();
+    parser.addErrorListener(errorListener);
+
+    const tree = parser.program() as ASTContext;
+    if (errorListener.hasErrors()) {
+      return errorListener.getErrors();
     }
+    return tree;
   }
 }

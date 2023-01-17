@@ -47,7 +47,51 @@ export type TParserCoreInputData = {
 }[];
 
 export interface IOriginalParser {
-  parse: (inputData: TParserInputData) => OriginalAST | OriginalParserError[];
+  parse: (inputData: TParserInputData) => OriginalAST | ParserSyntacticError[];
 }
 
-export class OriginalParserError extends Error {}
+export type OriginalParserError = ParserSyntacticError[];
+
+export class ParserSyntacticError extends Error {
+  private _offendingToken: any;
+  private _line: number;
+  private _column: number;
+  private _start: number;
+  private _stop: number;
+  constructor(
+    message: string,
+    offendingToken: any,
+    line: number,
+    column: number,
+    start: number,
+    stop: number,
+  ) {
+    super(message);
+
+    this._offendingToken = offendingToken;
+    this._line = line;
+    this._column = column;
+    this._start = start;
+    this._stop = stop;
+  }
+
+  get offendingToken(): any {
+    return this._offendingToken;
+  }
+
+  get line(): number {
+    return this._line;
+  }
+
+  get column(): number {
+    return this._column;
+  }
+
+  get start(): number {
+    return this._start;
+  }
+
+  get stop(): number {
+    return this._stop;
+  }
+}

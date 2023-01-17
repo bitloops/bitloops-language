@@ -31,7 +31,7 @@ export const validRepoPortCases: TestCase[] = [
     description: 'Write Repo port declaration with method definitions',
     fileId: 'testFile.bl',
     inputBLString:
-      'RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort  { updateTodoTitle(id:string, title: string): void;',
+      'RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort  { updateTodoTitle(id:string, title: string): void; }',
     expected: new RepoPortBuilder()
       .withIdentifier('TodoRepoPort')
       .withAggregateRootName('TodoEntity')
