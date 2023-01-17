@@ -21,7 +21,7 @@
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 
-import { OriginalAST, OriginalParserError } from '../../../src/parser/core/types.js';
+import { OriginalAST, ParserSyntacticError } from '../../../src/parser/core/types.js';
 import { TExpression } from '../../../src/types.js';
 import { ExpressionBuilderDirector } from './builders/expressionDirector.js';
 import { validGetClassExpressions } from './mocks/getClass.js';
@@ -44,7 +44,7 @@ describe('Valid getClass expressions', () => {
         ],
       });
       const intermediateParser = new IntermediateASTParser();
-      if (!(initialModelOutput instanceof OriginalParserError)) {
+      if (!(initialModelOutput instanceof ParserSyntacticError)) {
         result = intermediateParser.parse(initialModelOutput as unknown as OriginalAST);
         const tree = result.core[boundedContext][module];
         result = tree.getCurrentNode().getValue();

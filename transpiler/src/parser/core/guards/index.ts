@@ -1,7 +1,8 @@
+import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileError, TTranspileOutput } from '../../../transpilerTypes.js';
 import {
   ASTContext,
-  OriginalParserError,
+  ParserSyntacticError,
   OriginalASTCore,
   OriginalASTSetup,
   OriginalAST,
@@ -9,8 +10,16 @@ import {
 } from '../types.js';
 
 const isParserErrors = (
-  value: TTranspileOutput | TTranspileError[] | OriginalAST | OriginalParserError[],
-): value is OriginalParserError[] => {
+  value:
+    | TTranspileOutput
+    | TTranspileError[]
+    | OriginalAST
+    | OriginalASTCore
+    | ASTContext
+    | OriginalASTSetup
+    | ParserSyntacticError[]
+    | IntermediateAST,
+): value is ParserSyntacticError[] => {
   if (!Array.isArray(value)) {
     return false;
   }
@@ -23,9 +32,15 @@ const isParserErrors = (
 };
 
 const isParserError = (
-  value: TTranspileError | ASTContext | ASTSetupContext | OriginalASTSetup | OriginalASTCore,
-): value is OriginalParserError => {
-  if (value instanceof OriginalParserError) {
+  value:
+    | TTranspileError
+    | ASTContext
+    | ASTSetupContext
+    | OriginalASTSetup
+    | OriginalASTCore
+    | ParserSyntacticError,
+): value is ParserSyntacticError => {
+  if (value instanceof ParserSyntacticError) {
     return true;
   }
   return false;

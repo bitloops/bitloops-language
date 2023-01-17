@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.0.15",
+  "version": "0.1.0",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -26,7 +26,7 @@
     "core"
   ],
   "devDependencies": {
-    "@types/antlr4": "^4.7.3",
+    "@types/antlr4": "4.7.3",
     "@types/eslint": "^8.4.6",
     "@types/jest": "^29.1.2",
     "@typescript-eslint/eslint-plugin": "^5.40.0",

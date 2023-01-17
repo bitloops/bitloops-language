@@ -1,5 +1,6 @@
 import { IntermediateASTParser } from './ast/core/index.js';
-import { BitloopsParser, TParserInputData } from './parser/index.js';
+import { isParserErrors } from './parser/core/guards/index.js';
+import { BitloopsParser, OriginalParserError, TParserInputData } from './parser/index.js';
 import { TargetGenerator } from './target/index.js';
 import { getTargetFileDestination } from './target/typescript/helpers/getTargetFileDestination.js';
 import Transpiler from './Transpiler.js';
@@ -22,4 +23,6 @@ export {
   Transpiler,
   TTranspileOutput,
   getTargetFileDestination,
+  isParserErrors,
+  OriginalParserError,
 };

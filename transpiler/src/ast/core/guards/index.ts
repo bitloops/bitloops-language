@@ -1,3 +1,5 @@
+import { isParserErrors } from '../../../parser/core/guards/index.js';
+import { OriginalParserError } from '../../../parser/index.js';
 import { TTranspileError, TTranspileOutput } from '../../../transpilerTypes.js';
 import {
   IntermediateASTParserError,
@@ -6,6 +8,15 @@ import {
   IntermediateASTError,
   TBoundedContexts,
 } from '../types.js';
+
+const isOriginalParserOrIntermediateASTError = (
+  value: OriginalParserError | IntermediateASTError | IntermediateAST,
+): value is OriginalParserError | IntermediateASTError => {
+  if (isParserErrors(value) || isIntermediateASTError(value)) {
+    return true;
+  }
+  return false;
+};
 
 const isIntermediateASTError = (
   value: TTranspileOutput | TTranspileError[] | IntermediateAST | IntermediateASTError,
@@ -50,4 +61,9 @@ const isIntermediateASTValidationErrors = (
   return false;
 };
 
-export { isIntermediateASTParserError, isIntermediateASTValidationErrors, isIntermediateASTError };
+export {
+  isOriginalParserOrIntermediateASTError,
+  isIntermediateASTParserError,
+  isIntermediateASTValidationErrors,
+  isIntermediateASTError,
+};

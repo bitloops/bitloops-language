@@ -28,6 +28,7 @@ import {
   validStructDeclarationCases,
   validMultipleStructsTestCases,
 } from './mocks/struct.js';
+import { ParserSyntacticError } from '../../../src/parser/core/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -70,27 +71,27 @@ describe('Struct declaration is valid', () => {
 
 describe('Struct declaration is invalid', () => {
   const parser = new BitloopsParser();
-  const intermediateParser = new IntermediateASTParser();
   invalidStructDeclarationCases.forEach((testStruct) => {
     test(`${testStruct.description}`, () => {
-      const res = function (): void {
-        const initialModelOutput = parser.parse({
-          core: [
-            {
-              boundedContext: BOUNDED_CONTEXT,
-              module: MODULE,
-              fileId: testStruct.fileId,
-              fileContents: testStruct.inputBLString,
-            },
-          ],
-        });
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testStruct.fileId,
+            fileContents: testStruct.inputBLString,
+          },
+        ],
+      });
 
-        if (!isParserErrors(initialModelOutput)) {
-          intermediateParser.parse(initialModelOutput);
-        }
-      };
+      expect(Array.isArray(initialModelOutput)).toBeTruthy();
 
-      expect(res).toThrow();
+      if (!isParserErrors(initialModelOutput)) {
+        throw new Error('Parser should return errors');
+      }
+      initialModelOutput.forEach((error) => {
+        expect(error).toBeInstanceOf(ParserSyntacticError);
+      });
     });
   });
 });

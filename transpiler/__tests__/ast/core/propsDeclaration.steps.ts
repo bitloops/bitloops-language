@@ -27,6 +27,7 @@ import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { errorCases, validMultiplePropsTestCases, validPropsTestCases } from './mocks/props.js';
 import { PropsDeclarationBuilder } from './builders/propsDeclaration.js';
+import { ParserSyntacticError } from '../../../src/parser/core/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -107,27 +108,27 @@ describe('Props declaration with multiple props is valid', () => {
 
 describe('Props declaration is invalid', () => {
   const parser = new BitloopsParser();
-  const intermediateParser = new IntermediateASTParser();
   errorCases.forEach((testProps) => {
     test(`${testProps.description}`, () => {
-      const res = function (): void {
-        const initialModelOutput = parser.parse({
-          core: [
-            {
-              boundedContext: BOUNDED_CONTEXT,
-              module: MODULE,
-              fileId: testProps.fileId,
-              fileContents: testProps.inputBLString,
-            },
-          ],
-        });
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testProps.fileId,
+            fileContents: testProps.inputBLString,
+          },
+        ],
+      });
 
-        if (!isParserErrors(initialModelOutput)) {
-          intermediateParser.parse(initialModelOutput);
-        }
-      };
+      expect(Array.isArray(initialModelOutput)).toBeTruthy();
 
-      expect(res).toThrow(TypeError);
+      if (!isParserErrors(initialModelOutput)) {
+        throw new Error('Parser should return errors');
+      }
+      initialModelOutput.forEach((error) => {
+        expect(error).toBeInstanceOf(ParserSyntacticError);
+      });
     });
   });
 });

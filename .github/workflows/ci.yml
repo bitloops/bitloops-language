@@ -31,9 +31,9 @@ jobs:
           cd /usr/local/lib 
           sudo curl -O https://www.antlr.org/download/antlr-4.10.1-complete.jar
 
-      - name: npm install
+      - name: yarn install
         working-directory: ./transpiler
-        run: npm install
+        run: yarn install --frozen-lockfile
 
       # - name: make antlr jar executable
       #   run: chmod +x antlr-4.10.1-complete.jar

@@ -26,6 +26,7 @@ import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { ParserSyntacticError } from '../../../src/parser/core/types.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -106,27 +107,27 @@ describe('DTO declaration with multiple dtos is valid', () => {
 
 describe('DTO declaration is invalid', () => {
   const parser = new BitloopsParser();
-  const intermediateParser = new IntermediateASTParser();
   errorCases.forEach((testDTO) => {
     test(`${testDTO.description}`, () => {
-      const res = function (): void {
-        const initialModelOutput = parser.parse({
-          core: [
-            {
-              boundedContext: BOUNDED_CONTEXT,
-              module: MODULE,
-              fileId: testDTO.fileId,
-              fileContents: testDTO.inputBLString,
-            },
-          ],
-        });
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testDTO.fileId,
+            fileContents: testDTO.inputBLString,
+          },
+        ],
+      });
 
-        if (!isParserErrors(initialModelOutput)) {
-          intermediateParser.parse(initialModelOutput);
-        }
-      };
+      expect(Array.isArray(initialModelOutput)).toBeTruthy();
 
-      expect(res).toThrow(TypeError);
+      if (!isParserErrors(initialModelOutput)) {
+        throw new Error('Parser should return errors');
+      }
+      initialModelOutput.forEach((error) => {
+        expect(error).toBeInstanceOf(ParserSyntacticError);
+      });
     });
   });
 });

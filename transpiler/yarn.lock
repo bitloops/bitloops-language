@@ -688,7 +688,7 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@types/antlr4@^4.7.3":
+"@types/antlr4@4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@types/antlr4/-/antlr4-4.7.3.tgz#69a12de92a1cce00b34dcd37882561b346a167d2"
   integrity sha512-arOcP8pp898tMo6OhYrzVF34X7hZzAdXGU8C063nJLa+M4GKk9QGFPKNIXyYHpW+kZ5THKsKEqmkamDCej/gKg==
