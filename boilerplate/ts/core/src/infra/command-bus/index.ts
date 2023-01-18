@@ -25,7 +25,7 @@ import { ICommandBus, RegisterHandler } from '../../domain/commands/ICommandBus'
 // TODO remove logs and fix ts-ignores
 export class CommandBus implements ICommandBus {
   // private prefix: string = "command";
-  private messageBus: IMessageBus;
+  protected messageBus: IMessageBus;
 
   constructor(messageBus: IMessageBus) {
     this.messageBus = messageBus;

@@ -23,6 +23,7 @@ import { IMessageBus } from '../../domain/messages/IMessageBus';
 import { ICommandBus, RegisterHandler } from '../../domain/commands/ICommandBus';
 import { Application, Domain, fail, ok, Either } from '../..';
 import { plainToInstance } from 'class-transformer';
+import { CommandBus } from '.';
 
 export type TErrors = Array<typeof Domain.Error | typeof Application.Error>;
 const isMessageError = (msg: any): boolean => {
@@ -49,32 +50,8 @@ const isVoidOk = (message: any): boolean => {
 };
 
 // TODO remove logs and fix ts-ignores
-export class ExternalCommandBus implements ICommandBus {
-  // private prefix: string = "command";
-  private messageBus: IMessageBus;
-
-  constructor(messageBus: IMessageBus) {
-    this.messageBus = messageBus;
-  }
-
-  async register(commandTopic: string, registerHandler: RegisterHandler): Promise<void> {
-    const subscriberHandlers = this.messageBus.getSubscriberHandlers(commandTopic);
-    if (
-      subscriberHandlers === undefined ||
-      subscriberHandlers === null ||
-      subscriberHandlers.length === 0
-    ) {
-      console.log('going to subscribe', commandTopic);
-      // @ts-ignore: TS2345
-      await this.messageBus.subscribe(commandTopic, registerHandler);
-    }
-  }
-
-  async send(command: ICommand): Promise<void> {
-    return this.messageBus.publish(command.commandTopic, command);
-  }
-
-  async sendAndGetResponse<T>(command: ICommand, errorTypes: TErrors): Promise<T> {
+export class ExternalCommandBus extends CommandBus {
+  override async sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       console.log(
@@ -88,6 +65,7 @@ export class ExternalCommandBus implements ICommandBus {
         console.log('sendAndGetResponse: message', message);
 
         if (isMessageError(message)) {
+          if (!errorTypes) return resolve(fail((message as any).value) as T);
           const errorClass = getErrorClass(message, errorTypes);
           const concreteError = plainToInstance(errorClass, (message as any).value);
 
@@ -102,14 +80,5 @@ export class ExternalCommandBus implements ICommandBus {
       console.log('sendAndGetResponse: before publishing command', command.commandTopic);
       await this.messageBus.publish(command.commandTopic, command);
     });
-  }
-
-  async unregister(commandTopic: string): Promise<void> {
-    const subscriberHandlers = this.messageBus.getSubscriberHandlers(commandTopic);
-    console.log({ subscriberHandlers });
-    if (subscriberHandlers) {
-      const [subscriberHandler] = subscriberHandlers;
-      await this.messageBus.unsubscribe(commandTopic, subscriberHandler);
-    }
   }
 }

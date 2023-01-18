@@ -30,6 +30,6 @@ export interface ICommandBus {
   send(command: ICommand): Promise<void>;
   sendAndGetResponse<T extends Either<unknown, unknown>>(
     command: ICommand,
-    errorType: TErrors,
+    errorTypes?: TErrors,
   ): Promise<T>;
 }
