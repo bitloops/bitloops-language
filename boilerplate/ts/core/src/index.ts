@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { AppError } from './application/AppError';
 import { UseCase } from './application/UseCase';
 import { RepoError } from './application/RepoError';

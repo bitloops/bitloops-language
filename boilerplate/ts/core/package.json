@@ -26,7 +26,6 @@
   ],
   "devDependencies": {
     "@types/node": "^18.11.18",
-    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",
@@ -50,7 +49,9 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "nats": "^2.10.2"
+    "class-transformer": "^0.5.1",
+    "nats": "^2.10.2",
+    "reflect-metadata": "^0.1.13"
   },
   "exports": {
     ".": {

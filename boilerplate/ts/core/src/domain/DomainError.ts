@@ -19,16 +19,13 @@
  */
 import { ICoreError } from '../ICoreError';
 
+// export type IDomainError = ICoreError;
 export interface IDomainError extends ICoreError {
-  errorId?: string;
+  errorId: string;
 }
 
 export abstract class DomainError implements IDomainError {
-  public readonly message: string;
-  public readonly errorId?: string;
+  public static readonly errorId: string;
 
-  constructor(message: string, errorId?: string) {
-    this.message = message;
-    this.errorId = errorId;
-  }
+  constructor(public readonly message: string, public readonly errorId: string) {}
 }

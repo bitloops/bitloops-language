@@ -4,6 +4,7 @@ import { Events } from './domain/events/Events';
 import { IEventBus } from './domain/events/IEventBus';
 import { IMessageBus } from './domain/messages/IMessageBus';
 import { CommandBus } from './infra/command-bus';
+import { ExternalCommandBus } from './infra/command-bus/externalCommandBus';
 import { EventBus } from './infra/event-bus';
 import { ExternalEventBusDecorator } from './infra/event-bus/EventBusDecorator';
 import {
@@ -13,7 +14,8 @@ import {
 import { InProcessMessageBus } from './infra/message-bus/InProcessMessageBus';
 
 interface IServices {
-  commandBus: ICommandBus;
+  inProcessCommandBus: ICommandBus;
+  externalCommandBus: ICommandBus;
   inProcessEventBus: IEventBus;
   externalEventBus: IEventBus;
   decoratedEventBus: IEventBus;
@@ -29,7 +31,6 @@ export class Container {
   private static inProcessMessageBus: IMessageBus;
   private static externalMessageBus: IMessageBus;
 
-  private static commandBus: ICommandBus;
   private static inProcessCommandBus: ICommandBus;
   private static externalCommandBus: ICommandBus;
 
@@ -49,8 +50,7 @@ export class Container {
     );
 
     Container.inProcessCommandBus = new CommandBus(Container.inProcessMessageBus);
-    Container.externalCommandBus = new CommandBus(Container.externalMessageBus);
-    Container.commandBus = Container.inProcessCommandBus;
+    Container.externalCommandBus = new ExternalCommandBus(Container.externalMessageBus);
 
     Container.inProcessEventBus = new EventBus(Container.inProcessMessageBus);
     Container.externalEventBus = new EventBus(Container.externalMessageBus);
@@ -67,7 +67,8 @@ export class Container {
     Container.events = new Events(Container.inProcessEventBus, Container.inProcessEventBus);
 
     const services = {
-      commandBus: Container.commandBus,
+      externalCommandBus: Container.externalCommandBus,
+      inProcessCommandBus: Container.inProcessCommandBus,
       inProcessEventBus: Container.inProcessEventBus,
       externalEventBus: Container.externalEventBus,
       decoratedEventBus: Container.decoratedEventBus,

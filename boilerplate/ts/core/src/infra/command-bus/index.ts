@@ -25,7 +25,7 @@ import { ICommandBus, RegisterHandler } from '../../domain/commands/ICommandBus'
 // TODO remove logs and fix ts-ignores
 export class CommandBus implements ICommandBus {
   // private prefix: string = "command";
-  private messageBus: IMessageBus;
+  protected messageBus: IMessageBus;
 
   constructor(messageBus: IMessageBus) {
     this.messageBus = messageBus;
@@ -48,7 +48,7 @@ export class CommandBus implements ICommandBus {
     return this.messageBus.publish(command.commandTopic, command);
   }
 
-  async sendAndGetResponse(command: ICommand): Promise<IMessage> {
+  async sendAndGetResponse<T>(command: ICommand): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       console.log(
@@ -61,10 +61,9 @@ export class CommandBus implements ICommandBus {
       await this.messageBus.subscribe(command.metadata.responseTopic, (message: IMessage) => {
         console.log('sendAndGetResponse: message', message);
         //TODO tunsubscribe
-        return resolve(message);
+        return resolve(message as T);
       });
       console.log('sendAndGetResponse: before publishing command', command.commandTopic);
-      console.log('this.messageBus', this.messageBus);
       await this.messageBus.publish(command.commandTopic, command);
     });
   }
