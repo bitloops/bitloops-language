@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-//import path from 'path';
+import path from 'path';
 import { kebabCase } from '../../../utils/caseStyles.js';
 import { readFromFile } from '../../../helpers/fileOperations.js';
 import {
@@ -452,9 +452,10 @@ export class SetupTypeScript implements ISetup {
       // const _packagePortIdentifier = packageDefinition[PackagePortIdentifierKey];
       const packageAdapterIdentifier = packageDefinition[packageAdapterIdentifierKey];
 
+      const modulePath = path.join(sourceDirPath, boundedContext, module);
       const adapterContent = this.findPackageAdapterFileContent(
         packageAdapterIdentifier,
-        `${sourceDirPath}/${boundedContext}/${module}`,
+        modulePath,
       );
 
       const adapterFilePathObj = getTargetFileDestination(

@@ -45,6 +45,8 @@ const transpileCode = (
     core,
     setup,
   };
+  options.sourceDirPath = sourceDirPath;
+
   const result = transpiler.transpile(input, options);
   if (Transpiler.isTranspileError(result)) {
     throw result;
