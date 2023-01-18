@@ -21,9 +21,35 @@ import { ICommand } from '../../domain/commands/ICommand';
 import { IMessage } from '../../domain/messages/IMessage';
 import { IMessageBus } from '../../domain/messages/IMessageBus';
 import { ICommandBus, RegisterHandler } from '../../domain/commands/ICommandBus';
+import { Application, Domain, fail, ok, Either } from '../..';
+import { plainToInstance } from 'class-transformer';
+
+export type TErrors = Array<typeof Domain.Error | typeof Application.Error>;
+const isMessageError = (msg: any): boolean => {
+  if (msg?.value?.errorId !== undefined) return true;
+  return false;
+};
+
+const getErrorClass = (message: any, errorTypes: TErrors) => {
+  const { value: messageValue } = message;
+  const { errorId } = messageValue;
+
+  const errorClass = errorTypes.find((errorType) => errorType.errorId === errorId);
+
+  if (!errorClass) {
+    throw new Error('No match of error id and error classes');
+  }
+
+  return errorClass;
+};
+
+const isVoidOk = (message: any): boolean => {
+  if (JSON.stringify(message) === JSON.stringify({})) return true;
+  return false;
+};
 
 // TODO remove logs and fix ts-ignores
-export class CommandBus implements ICommandBus {
+export class ExternalCommandBus implements ICommandBus {
   // private prefix: string = "command";
   private messageBus: IMessageBus;
 
@@ -48,7 +74,7 @@ export class CommandBus implements ICommandBus {
     return this.messageBus.publish(command.commandTopic, command);
   }
 
-  async sendAndGetResponse<T>(command: ICommand): Promise<T> {
+  async sendAndGetResponse<T>(command: ICommand, errorTypes: TErrors): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       console.log(
@@ -60,8 +86,18 @@ export class CommandBus implements ICommandBus {
       }
       await this.messageBus.subscribe(command.metadata.responseTopic, (message: IMessage) => {
         console.log('sendAndGetResponse: message', message);
-        //TODO tunsubscribe
-        return resolve(message as T);
+
+        if (isMessageError(message)) {
+          const errorClass = getErrorClass(message, errorTypes);
+          const concreteError = plainToInstance(errorClass, (message as any).value);
+
+          return resolve(fail(concreteError) as T);
+        } else {
+          if (isVoidOk(message)) {
+            return resolve(ok() as T);
+          }
+          return resolve(ok((message as any).value) as T);
+        }
       });
       console.log('sendAndGetResponse: before publishing command', command.commandTopic);
       await this.messageBus.publish(command.commandTopic, command);

@@ -18,8 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { ICommand } from './ICommand';
-import { IMessage } from '../messages/IMessage';
 import { GenericMessageHandler } from '../messages/IMessageBus';
+import { TErrors } from '../../infra/command-bus/externalCommandBus';
+import { Either } from '../../Either';
 
 export type RegisterHandler = GenericMessageHandler<ICommand>;
 
@@ -27,5 +28,8 @@ export interface ICommandBus {
   register(commandName: string, registerHandler: RegisterHandler): Promise<void>;
   unregister(commandName: string): Promise<void>;
   send(command: ICommand): Promise<void>;
-  sendAndGetResponse(command: ICommand): Promise<IMessage>;
+  sendAndGetResponse<T extends Either<unknown, unknown>>(
+    command: ICommand,
+    errorType: TErrors,
+  ): Promise<T>;
 }

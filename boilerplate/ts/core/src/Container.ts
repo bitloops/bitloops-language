@@ -4,6 +4,7 @@ import { Events } from './domain/events/Events';
 import { IEventBus } from './domain/events/IEventBus';
 import { IMessageBus } from './domain/messages/IMessageBus';
 import { CommandBus } from './infra/command-bus';
+import { ExternalCommandBus } from './infra/command-bus/externalCommandBus';
 import { EventBus } from './infra/event-bus';
 import { ExternalEventBusDecorator } from './infra/event-bus/EventBusDecorator';
 import {
@@ -49,7 +50,7 @@ export class Container {
     );
 
     Container.inProcessCommandBus = new CommandBus(Container.inProcessMessageBus);
-    Container.externalCommandBus = new CommandBus(Container.externalMessageBus);
+    Container.externalCommandBus = new ExternalCommandBus(Container.externalMessageBus);
     Container.commandBus = Container.inProcessCommandBus;
 
     Container.inProcessEventBus = new EventBus(Container.inProcessMessageBus);
@@ -67,7 +68,7 @@ export class Container {
     Container.events = new Events(Container.inProcessEventBus, Container.inProcessEventBus);
 
     const services = {
-      commandBus: Container.commandBus,
+      commandBus: Container.externalCommandBus,
       inProcessEventBus: Container.inProcessEventBus,
       externalEventBus: Container.externalEventBus,
       decoratedEventBus: Container.decoratedEventBus,

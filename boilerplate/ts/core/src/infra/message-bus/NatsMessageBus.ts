@@ -66,12 +66,10 @@ export class NatsMessageBus implements IExternalMessageBus {
       //TODO fix ts-ignore issue
       // @ts-ignore
       for await (const m of this.topicSubscriptionHandlers[topic].subscription) {
-        console.log('message received', m.data);
+        console.log('Nats message received', this.sc.decode(m.data));
         this.topicSubscriptionHandlers[topic].subscriberHandlers.forEach((subscriberHandler) =>
           subscriberHandler(this.sc.decode(m.data)),
         );
-        // subscriberHandler(this.sc.decode(m.data));
-        // console.log(`[${sub.getProcessed()}]: ${this.sc.decode(m.data)}`);
       }
       console.log('subscription closed');
     })();
@@ -81,6 +79,7 @@ export class NatsMessageBus implements IExternalMessageBus {
     if (!this.nc) {
       throw new Error('Nats not connected');
     }
+    console.log('Nats message published');
     this.nc.publish(topic, this.sc.encode(message));
   }
 
