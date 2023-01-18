@@ -17,10 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { v4 as uuidv4 } from 'uuid';
 import { IEvent } from './IEvent';
 import { TOPIC_PREFIXES } from '../../config';
-import { getTopic } from '../../helpers';
+import { createUUIDV4, getTopic } from '../../helpers';
 import { CommandMetadata } from '../commands/ICommand';
 
 export abstract class Event implements IEvent {
@@ -33,7 +32,7 @@ export abstract class Event implements IEvent {
   public readonly fromContextId: string;
 
   constructor(eventName: string, fromContextId: string, uuid?: string) {
-    this.uuid = uuid || uuidv4();
+    this.uuid = uuid || createUUIDV4();
     this.createdTimestamp = Date.now();
     this.eventTopic = Event.getEventTopic(eventName, fromContextId);
     this.fromContextId = fromContextId;

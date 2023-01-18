@@ -14,11 +14,11 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { v4 as uuid } from 'uuid';
+import { createUUIDV4 } from '../helpers';
 import { Identifier } from './Identifier';
 
 export class UUIDv4 extends Identifier<string | number> {
   constructor(id?: string | number) {
-    super(id ? id : uuid());
+    super(id ? id : createUUIDV4());
   }
 }

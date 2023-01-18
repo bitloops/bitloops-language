@@ -14,12 +14,11 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-//TODO Maybe just use UUIDv4?
-import { v4 as uuid } from 'uuid';
+import { createUUIDV4 } from '../helpers';
 import { Identifier } from './Identifier';
 
 export class UniqueEntityID extends Identifier<string | number> {
   constructor(id?: string | number) {
-    super(id ? id : uuid());
+    super(id ? id : createUUIDV4());
   }
 }

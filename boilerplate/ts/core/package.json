@@ -50,8 +50,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "nats": "^2.10.2",
-    "uuid": "^9.0.0"
+    "nats": "^2.10.2"
   },
   "exports": {
     ".": {

@@ -70,3 +70,7 @@ export const getProcessManagerTopic = (integrationEventTopic: string) => {
     config.TOPIC_DELIMITER,
   );
 };
+
+export const createUUIDV4 = () => {
+  return crypto.randomUUID();
+};
