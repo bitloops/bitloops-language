@@ -19,7 +19,7 @@
  */
 import { IEvent } from './IEvent';
 import { TOPIC_PREFIXES } from '../../config';
-import { createUUIDV4, getTopic } from '../../helpers';
+import { createUUIDv4, getTopic } from '../../helpers';
 import { CommandMetadata } from '../commands/ICommand';
 
 export abstract class Event implements IEvent {
@@ -32,7 +32,7 @@ export abstract class Event implements IEvent {
   public readonly fromContextId: string;
 
   constructor(eventName: string, fromContextId: string, uuid?: string) {
-    this.uuid = uuid || createUUIDV4();
+    this.uuid = uuid || createUUIDv4();
     this.createdTimestamp = Date.now();
     this.eventTopic = Event.getEventTopic(eventName, fromContextId);
     this.fromContextId = fromContextId;

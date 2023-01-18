@@ -19,7 +19,7 @@
  */
 import { CommandMetadata, ICommand } from './ICommand';
 import { config, TOPIC_PREFIXES } from '../../config';
-import { createUUIDV4, getTopic } from '../../helpers';
+import { createUUIDv4, getTopic } from '../../helpers';
 
 const { TOPIC_DELIMITER } = config;
 
@@ -33,7 +33,7 @@ export abstract class Command implements ICommand {
   public readonly toContextId: string;
 
   constructor(commandName: string, toContextId: string, orchestrated?: boolean) {
-    this.uuid = createUUIDV4();
+    this.uuid = createUUIDv4();
     this.createdTimestamp = Date.now();
     this.commandTopic = Command.getCommandTopic(commandName, toContextId); //`${toContextId}${TOPIC_DELIMITER}${commandName}`;
     this.toContextId = toContextId;

@@ -71,6 +71,6 @@ export const getProcessManagerTopic = (integrationEventTopic: string) => {
   );
 };
 
-export const createUUIDV4 = () => {
+export const createUUIDv4 = () => {
   return crypto.randomUUID();
 };

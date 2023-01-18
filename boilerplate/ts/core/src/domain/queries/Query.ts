@@ -19,7 +19,7 @@
  */
 import { QueryMetadata, IQuery } from './IQuery';
 import { config, TOPIC_PREFIXES } from '../../config';
-import { createUUIDV4, getTopic } from '../../helpers';
+import { createUUIDv4, getTopic } from '../../helpers';
 
 const { TOPIC_DELIMITER } = config;
 
@@ -33,7 +33,7 @@ export abstract class Query implements IQuery {
   public readonly toContextId: string;
 
   constructor(queryName: string, toContextId: string, orchestrated?: boolean) {
-    this.uuid = createUUIDV4();
+    this.uuid = createUUIDv4();
     this.createdTimestamp = Date.now();
     this.queryTopic = Query.getQueryTopic(queryName, toContextId);
     this.toContextId = toContextId;
