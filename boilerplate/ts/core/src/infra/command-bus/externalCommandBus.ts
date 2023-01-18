@@ -19,36 +19,15 @@
  */
 import { ICommand } from '../../domain/commands/ICommand';
 import { IMessage } from '../../domain/messages/IMessage';
-import { IMessageBus } from '../../domain/messages/IMessageBus';
-import { ICommandBus, RegisterHandler } from '../../domain/commands/ICommandBus';
-import { Application, Domain, fail, ok, Either } from '../..';
+
 import { plainToInstance } from 'class-transformer';
 import { CommandBus } from '.';
+import { fail, ok } from '../../Either';
+import { DomainError } from '../../domain/DomainError';
+import { AppError } from '../../application/AppError';
 
-export type TErrors = Array<typeof Domain.Error | typeof Application.Error>;
-const isMessageError = (msg: any): boolean => {
-  if (msg?.value?.errorId !== undefined) return true;
-  return false;
-};
-
-const getErrorClass = (message: any, errorTypes: TErrors) => {
-  const { value: messageValue } = message;
-  const { errorId } = messageValue;
-
-  const errorClass = errorTypes.find((errorType) => errorType.errorId === errorId);
-
-  if (!errorClass) {
-    throw new Error('No match of error id and error classes');
-  }
-
-  return errorClass;
-};
-
-const isVoidOk = (message: any): boolean => {
-  if (JSON.stringify(message) === JSON.stringify({})) return true;
-  return false;
-};
-
+type TError = typeof DomainError | typeof AppError;
+export type TErrors = Array<TError>;
 // TODO remove logs and fix ts-ignores
 export class ExternalCommandBus extends CommandBus {
   override async sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T> {
@@ -64,14 +43,15 @@ export class ExternalCommandBus extends CommandBus {
       await this.messageBus.subscribe(command.metadata.responseTopic, (message: IMessage) => {
         console.log('sendAndGetResponse: message', message);
 
-        if (isMessageError(message)) {
+        if (this.isErrorMessage(message)) {
+          //TODO make 2 interfaces?
           if (!errorTypes) return resolve(fail((message as any).value) as T);
-          const errorClass = getErrorClass(message, errorTypes);
-          const concreteError = plainToInstance(errorClass, (message as any).value);
+          const errorClass = this.getErrorClass(message, errorTypes);
+          const concreteError = plainToInstance(errorClass as any, (message as any).value);
 
           return resolve(fail(concreteError) as T);
         } else {
-          if (isVoidOk(message)) {
+          if (this.isVoidOk(message)) {
             return resolve(ok() as T);
           }
           return resolve(ok((message as any).value) as T);
@@ -80,5 +60,28 @@ export class ExternalCommandBus extends CommandBus {
       console.log('sendAndGetResponse: before publishing command', command.commandTopic);
       await this.messageBus.publish(command.commandTopic, command);
     });
+  }
+
+  private isErrorMessage(msg: any): boolean {
+    if (msg?.value?.errorId !== undefined) return true;
+    return false;
+  }
+
+  private isVoidOk(message: any): boolean {
+    if (JSON.stringify(message) === JSON.stringify({})) return true;
+    return false;
+  }
+
+  private getErrorClass(message: any, errorTypes: TErrors) {
+    const { value: messageValue } = message;
+    const { errorId } = messageValue;
+
+    const errorClass = errorTypes.find((errorType) => errorType.errorId === errorId);
+
+    if (!errorClass) {
+      throw new Error('No match of error id and error classes');
+    }
+
+    return errorClass;
   }
 }
