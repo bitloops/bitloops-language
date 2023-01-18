@@ -50,7 +50,7 @@ export class Container {
     );
 
     Container.inProcessCommandBus = new CommandBus(Container.inProcessMessageBus);
-    Container.externalCommandBus = new ExternalCommandBus();
+    Container.externalCommandBus = new ExternalCommandBus(Container.externalMessageBus);
 
     Container.inProcessEventBus = new EventBus(Container.inProcessMessageBus);
     Container.externalEventBus = new EventBus(Container.externalMessageBus);
