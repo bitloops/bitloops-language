@@ -20,7 +20,6 @@
 import { ICommand } from './ICommand';
 import { GenericMessageHandler } from '../messages/IMessageBus';
 import { TErrors } from '../../infra/command-bus/externalCommandBus';
-import { Either } from '../../Either';
 
 export type RegisterHandler = GenericMessageHandler<ICommand>;
 
@@ -28,8 +27,5 @@ export interface ICommandBus {
   register(commandName: string, registerHandler: RegisterHandler): Promise<void>;
   unregister(commandName: string): Promise<void>;
   send(command: ICommand): Promise<void>;
-  sendAndGetResponse<T extends Either<unknown, unknown>>(
-    command: ICommand,
-    errorTypes?: TErrors,
-  ): Promise<T>;
+  sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T>;
 }

@@ -25,11 +25,17 @@ import { CommandBus } from '.';
 import { fail, ok } from '../../Either';
 import { DomainError } from '../../domain/DomainError';
 import { AppError } from '../../application/AppError';
+import { Container } from '../../Container';
 
 type TError = typeof DomainError | typeof AppError;
 export type TErrors = Array<TError>;
 // TODO remove logs and fix ts-ignores
 export class ExternalCommandBus extends CommandBus {
+  constructor() {
+    const { externalMessageBus } = Container.getServices();
+    super(externalMessageBus);
+  }
+
   override async sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
