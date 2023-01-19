@@ -22,22 +22,17 @@ import { AggregateRoot } from '../AggregateRoot';
 import { UniqueEntityID } from '../UniqueEntityID';
 import { IEventBus } from './IEventBus';
 import { IIntegrationEvent } from './IIntegrationEvent';
-import { DomainEvent } from './DomainEvent';
-import { IntegrationEvent } from './IntegrationEvent';
 import { IEvent } from './IEvent';
 import { CommandMetadata } from '../commands/ICommand';
-import { getProcessManagerTopic } from '../../helpers';
 
 // TODO two aggregates at the same time, only one will be marked as dispatched so the other one's events will be lost
 // TODO if a transaction fails the events will hang around until garbage collector clears them
 export class Events {
   private markedAggregates: AggregateRoot<any>[] = [];
   private domainEventBus: IEventBus;
-  private integrationEventBus: IEventBus;
 
-  constructor(domainEventBus: IEventBus, integrationEventBus: IEventBus) {
+  constructor(domainEventBus: IEventBus) {
     this.domainEventBus = domainEventBus;
-    this.integrationEventBus = integrationEventBus;
   }
 
   /**
@@ -47,7 +42,6 @@ export class Events {
    * events to eventually be dispatched when the infrastructure commits
    * the unit of work.
    */
-
   public markAggregateForDispatch(aggregate: AggregateRoot<any>): void {
     const aggregateFound = !!this.findMarkedAggregateByID(aggregate.id);
 
@@ -78,7 +72,7 @@ export class Events {
   }
 
   private findMarkedAggregateByID(id: UniqueEntityID): AggregateRoot<any> | null {
-    let found = null;
+    let found: AggregateRoot<any> | null = null;
     for (const aggregate of this.markedAggregates) {
       if (aggregate.id.equals(id)) {
         found = aggregate;
@@ -121,15 +115,7 @@ export class Events {
     if (metadata) {
       event.setMetadata(metadata);
     }
-    if (event instanceof DomainEvent) {
-      await this.domainEventBus.publish(event.eventTopic, event);
-    } else if (event instanceof IntegrationEvent) {
-      // TODO serialize event before sending
-      if (metadata?.orchestrated) {
-        const processManagerTopic = getProcessManagerTopic(event.eventTopic);
-        await this.integrationEventBus.publish(processManagerTopic, event);
-      }
-      await this.integrationEventBus.publish(event.eventTopic, event);
-    }
+
+    await this.domainEventBus.publish(event.eventTopic, event);
   }
 }

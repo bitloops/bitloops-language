@@ -25,7 +25,6 @@
 export enum CONTEXT_TYPES {
   InProcess = 'InProcess',
   External = 'External',
-  Hybrid = 'Hybrid',
 }
 
 export enum TOPIC_PREFIXES {
@@ -41,6 +40,7 @@ enum MESSAGE_BUS {
   EVENT_BUS = 'EVENT_BUS',
   COMMAND_BUS = 'COMMAND_BUS',
   MESSAGE_BUS = 'MESSAGE_BUS',
+  INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
 }
 
 type Config = {

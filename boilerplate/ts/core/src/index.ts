@@ -36,7 +36,7 @@ import {
   getTopic as getTopicImport,
 } from './helpers';
 import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain/events/dispatchEventsCallback';
-import { IHandle as IHanldeImport } from './application/IHandle';
+import { IHandle as IHandleImport } from './application/IHandle';
 import { ApplicationConfig as ApplicationConfigImport } from './config';
 
 namespace Domain {
@@ -60,7 +60,7 @@ namespace Domain {
 namespace Application {
   export class Error extends AppError {}
   export type IUseCase<IRequest, IResponse> = UseCase<IRequest, IResponse>;
-  export type IHandle = IHanldeImport;
+  export type IHandle = IHandleImport;
 
   export namespace Repo {
     export class Error extends RepoError {}
@@ -103,12 +103,12 @@ namespace Constants {
   export enum CONTEXT_TYPES {
     InProcess = 'InProcess',
     External = 'External',
-    Hybrid = 'Hybrid',
   }
   export enum MESSAGE_BUS {
     EVENT_BUS = 'EVENT_BUS',
     COMMAND_BUS = 'COMMAND_BUS',
     MESSAGE_BUS = 'MESSAGE_BUS',
+    INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
   }
   export type ApplicationConfig = ApplicationConfigImport;
 }

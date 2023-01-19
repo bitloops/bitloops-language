@@ -30,7 +30,7 @@ export class EventBus implements IEventBus {
     this.messageBus = messageBus;
   }
 
-  async subscribe(topic: string, eventHandler: EventHandler): Promise<void> {
+  async subscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void> {
     console.log('EventBus subscribe: topic', topic);
     // @ts-ignore: TS2345
     await this.messageBus.subscribe(topic, eventHandler);
@@ -41,7 +41,7 @@ export class EventBus implements IEventBus {
     return this.messageBus.publish(topic, message);
   }
 
-  async unsubscribe(topic: string, eventHandler: EventHandler): Promise<void> {
+  async unsubscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void> {
     // @ts-ignore: TS2345
     await this.messageBus.unsubscribe(topic, eventHandler);
   }

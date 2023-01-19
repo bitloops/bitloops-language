@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { IDomainEvent } from '../../domain/events/IDomainEvent';
+import { IEvent } from '../../domain/events/IEvent';
 import { EventHandler, IEventBus } from '../../domain/events/IEventBus';
 
 abstract class EventBusDecorator implements IEventBus {
@@ -26,7 +27,7 @@ abstract class EventBusDecorator implements IEventBus {
     this.decoratedEventBus = decoratedEventBus;
   }
 
-  public subscribe(topic: string, eventHandler: EventHandler): Promise<void> {
+  public subscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void> {
     return this.decoratedEventBus.subscribe(topic, eventHandler);
   }
 
@@ -34,7 +35,10 @@ abstract class EventBusDecorator implements IEventBus {
     return this.decoratedEventBus.publish(topic, message);
   }
 
-  public unsubscribe(topic: string, eventHandler: EventHandler): Promise<void> {
+  public unsubscribe<T extends IEvent>(
+    topic: string,
+    eventHandler: EventHandler<T>,
+  ): Promise<void> {
     return this.decoratedEventBus.unsubscribe(topic, eventHandler);
   }
 }
