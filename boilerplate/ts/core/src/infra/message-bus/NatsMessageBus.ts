@@ -24,7 +24,7 @@ import { IMessage } from '../../domain/messages/IMessage';
 
 type TopicSubscriptionHandlers = {
   subscription: Subscription;
-  subscriberHandlers: SubscriberHandler[];
+  subscriberHandlers: SubscriberHandler<IMessage>[];
 };
 
 export class NatsMessageBus implements IExternalMessageBus {
@@ -37,7 +37,7 @@ export class NatsMessageBus implements IExternalMessageBus {
     this.nc = null;
   }
 
-  getSubscriberHandlers(topic: string): SubscriberHandler[] {
+  getSubscriberHandlers<T extends IMessage>(topic: string): SubscriberHandler<T>[] {
     return this.topicSubscriptionHandlers[topic]?.subscriberHandlers;
   }
 
@@ -47,7 +47,10 @@ export class NatsMessageBus implements IExternalMessageBus {
     console.log('nats connected');
   }
 
-  public async subscribe(topic: string, subscriberHandler: SubscriberHandler) {
+  public async subscribe<T extends IMessage>(
+    topic: string,
+    subscriberHandler: SubscriberHandler<T>,
+  ) {
     if (!this.nc) {
       throw new Error('Nats not connected');
     }
@@ -55,12 +58,13 @@ export class NatsMessageBus implements IExternalMessageBus {
     if (!this.topicSubscriptionHandlers[topic]) {
       this.topicSubscriptionHandlers[topic] = {
         subscription: this.nc.subscribe(topic),
+        // @ts-ignore: TS2345
         subscriberHandlers: [subscriberHandler],
       };
     } else {
+      // @ts-ignore: TS2345
       this.topicSubscriptionHandlers[topic].subscriberHandlers.push(subscriberHandler);
     }
-    // console.log();
 
     (async () => {
       //TODO fix ts-ignore issue
@@ -83,7 +87,10 @@ export class NatsMessageBus implements IExternalMessageBus {
     this.nc.publish(topic, this.sc.encode(message));
   }
 
-  public async unsubscribe(topic: string, subscriberHandler: SubscriberHandler) {
+  public async unsubscribe<T extends IMessage>(
+    topic: string,
+    subscriberHandler: SubscriberHandler<T>,
+  ) {
     if (!this.topicSubscriptionHandlers[topic]) {
       return;
     }

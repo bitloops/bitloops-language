@@ -17,29 +17,30 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IEvent } from './IEvent';
+import { IEvent, TEventMetadata } from './IEvent';
 import { TOPIC_PREFIXES } from '../../config';
 import { createUUIDv4, getTopic } from '../../helpers';
-import { CommandMetadata } from '../commands/ICommand';
+
+export type TEventInputMetadata = {
+  id?: string;
+  version?: string;
+  fromContextId: string;
+};
 
 export abstract class Event implements IEvent {
   public static readonly prefix: TOPIC_PREFIXES.Event = TOPIC_PREFIXES.Event;
-
-  public readonly uuid: string;
-  protected createdTimestamp: number;
-  private metadata?: CommandMetadata;
   public eventTopic: string;
-  public readonly fromContextId: string;
+  public metadata: Readonly<TEventMetadata>;
 
-  constructor(eventName: string, fromContextId: string, uuid?: string) {
-    this.uuid = uuid || createUUIDv4();
-    this.createdTimestamp = Date.now();
-    this.eventTopic = Event.getEventTopic(eventName, fromContextId);
-    this.fromContextId = fromContextId;
-  }
+  constructor(eventName: string, public data: any, metadata: TEventInputMetadata) {
+    this.metadata = {
+      id: metadata.id || createUUIDv4(),
+      createdAtTimestamp: Date.now(),
+      version: metadata.version,
+      fromContextId: metadata.fromContextId,
+    };
 
-  setMetadata(metadata: CommandMetadata) {
-    this.metadata = metadata;
+    this.eventTopic = Event.getEventTopic(eventName, metadata.fromContextId);
   }
 
   static getEventTopic(eventName: string, fromContextId: string) {

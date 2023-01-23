@@ -20,13 +20,11 @@ import { ReadModel as ReadModelImport } from './domain/ReadModel';
 import { EventBus as EventBusImport } from './infra/event-bus';
 import { InProcessMessageBus as InProcessMessageBusImport } from './infra/message-bus/InProcessMessageBus';
 import { DomainEvent } from './domain/events/DomainEvent';
+import { IntegrationEvent as IntegrationEventImport } from './domain/events/IntegrationEvent';
 import { IEventBus as IEventBusImport } from './domain/events/IEventBus';
 import { ICommandBus as ICommandBusImport } from './domain/commands/ICommandBus';
 import { IMessageBus as IMessageBusImport } from './domain/messages/IMessageBus';
 import { Container } from './Container';
-import { IDomainIntegrationEvent as IDomainIntegrationEventImport } from './domain/events/IDomainIntegrationEvent';
-import { IIntegrationEvent as IIntegrationEventImport } from './domain/events/IIntegrationEvent';
-import { IntegrationEvent as IntegrationEventImport } from './domain/events/IntegrationEvent';
 import { IDomainEvent as IDomainEventImport } from './domain/events/IDomainEvent';
 import { fail as failWithPublish, ok as okWithpublish } from './ResultWithPublish';
 import { Command as CommandImport } from './domain/commands/Command';
@@ -49,9 +47,6 @@ namespace Domain {
   export type IRule = IRuleImport;
   export const applyRules = applyRulesImport;
   export class Event extends DomainEvent {}
-  export type IDomainIntegrationEvent = IDomainIntegrationEventImport;
-  export type IIntegrationEvent = IIntegrationEventImport;
-  export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
   export type IDomainEvent = IDomainEventImport;
   export class Command extends CommandImport {}
   export const dispatchEventsCallback = dispatchEventsCallbackImport;
@@ -81,20 +76,31 @@ namespace Infra {
   export namespace Messaging {
     export class EventBus extends EventBusImport {}
     export class InProcessMessageBus extends InProcessMessageBusImport {}
+    export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
   }
+  // c# repo => namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure.EventBus.IntegrationEvent
+  // export namespace EventBus {
+  //   export class EventBus extends EventBusImport {}
+  //   export type IEventBus = IEventBusImport;
+  // }
+  // export namespace CommandBus {
+  //   export class inProcessCommandBus extends InProcessCommandBusImport {}
+  //   export type ICommandBus = ICommandBusImport;
+  // }
 }
 
 namespace MessageBus {
   export type IEventBus = IEventBusImport;
   export type ICommandBus = ICommandBusImport;
   export type IMessageBus = IMessageBusImport;
+  //TODO maybe delete
   export const getIntegrationTopic = getIntegrationTopicImport;
   export const getProcessManagerTopic = getProcessManagerTopicImport;
   export const getTopic = getTopicImport;
 }
 
+//TODO  SOS!!!! this is a duplicate - find a way to export original enum
 namespace Constants {
-  //TODO this is a duplicate - find a way to export original enum
   export enum TOPIC_PREFIXES {
     Event = 'event',
     Command = 'command',
@@ -107,7 +113,6 @@ namespace Constants {
   export enum MESSAGE_BUS {
     EVENT_BUS = 'EVENT_BUS',
     COMMAND_BUS = 'COMMAND_BUS',
-    MESSAGE_BUS = 'MESSAGE_BUS',
     INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
   }
   export type ApplicationConfig = ApplicationConfigImport;

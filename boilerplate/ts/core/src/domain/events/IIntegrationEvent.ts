@@ -24,6 +24,7 @@ export type IntegrationData<T> = {
   data: T;
 };
 
-export interface IIntegrationEvent extends IEvent {
-  data: any; // TODO integrationdata
+//TODO fix this
+export interface IIntegrationEvent<T> extends IEvent {
+  mapper?: () => T;
 }

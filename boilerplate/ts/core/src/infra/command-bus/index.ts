@@ -31,7 +31,10 @@ export class CommandBus implements ICommandBus {
     this.messageBus = messageBus;
   }
 
-  async register(commandTopic: string, registerHandler: RegisterHandler): Promise<void> {
+  async register<T extends ICommand>(
+    commandTopic: string,
+    registerHandler: RegisterHandler<T>,
+  ): Promise<void> {
     const subscriberHandlers = this.messageBus.getSubscriberHandlers(commandTopic);
     if (
       subscriberHandlers === undefined ||
@@ -39,7 +42,6 @@ export class CommandBus implements ICommandBus {
       subscriberHandlers.length === 0
     ) {
       console.log('going to subscribe', commandTopic);
-      // @ts-ignore: TS2345
       await this.messageBus.subscribe(commandTopic, registerHandler);
     }
   }

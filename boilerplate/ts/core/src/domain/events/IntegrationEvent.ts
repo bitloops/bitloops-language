@@ -19,17 +19,12 @@
  */
 
 import { getIntegrationTopic } from '../../helpers';
-import { Event } from './Event';
+import { Event, TEventInputMetadata } from './Event';
 import { IIntegrationEvent } from './IIntegrationEvent';
 
-export abstract class IntegrationEvent<T> extends Event implements IIntegrationEvent {
-  public readonly data: T;
-  private version: string;
-
-  constructor(eventName: string, fromContextId: string, data: T, version: string, uuid?: string) {
-    super(eventName, fromContextId, uuid);
-    this.data = data;
-    this.version = version;
+export abstract class IntegrationEvent<T> extends Event implements IIntegrationEvent<T> {
+  constructor(eventName: string, data: T, metadata: TEventInputMetadata) {
+    super(eventName, data, metadata);
     this.eventTopic = IntegrationEvent.getIntegrationEventTopic(this.eventTopic);
   }
 

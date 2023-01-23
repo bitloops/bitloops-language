@@ -21,7 +21,6 @@
 // @TEMPLATE import { CONTEXT_ID as ${camelCase(BOUNDED_CONTEXT)}ContextId } from '../BoundedContexts/${kebab(BOUNDED_CONTEXT)}/config';
 
 // TODO Remove comments
-
 export enum CONTEXT_TYPES {
   InProcess = 'InProcess',
   External = 'External',
@@ -39,7 +38,6 @@ const PROCESS_MANAGER_EVENT_TOPIC_PREFIX = 'orchestrated';
 enum MESSAGE_BUS {
   EVENT_BUS = 'EVENT_BUS',
   COMMAND_BUS = 'COMMAND_BUS',
-  MESSAGE_BUS = 'MESSAGE_BUS',
   INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
 }
 

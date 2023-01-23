@@ -1,12 +1,11 @@
 import { ApplicationConfig, CONTEXT_TYPES } from './config';
 import { ICommandBus } from './domain/commands/ICommandBus';
-import { Events } from './domain/events/Events';
+import { DomainEvents } from './domain/events/DomainEvents';
 import { IEventBus } from './domain/events/IEventBus';
 import { IMessageBus } from './domain/messages/IMessageBus';
 import { CommandBus } from './infra/command-bus';
 import { ExternalCommandBus } from './infra/command-bus/externalCommandBus';
 import { EventBus } from './infra/event-bus';
-import { ExternalEventBusDecorator } from './infra/event-bus/EventBusDecorator';
 import {
   ExternalMessageBusFactory,
   ExternalMessageBusProviders,
@@ -18,11 +17,9 @@ interface IServices {
   externalCommandBus: ICommandBus;
   inProcessEventBus: IEventBus;
   externalEventBus: IEventBus;
-  decoratedEventBus: IEventBus;
-  externalInProcessEventBus: IEventBus;
   inProcessMessageBus: IMessageBus;
   externalMessageBus: IMessageBus;
-  events: Events;
+  events: DomainEvents;
 }
 
 export class Container {
@@ -37,10 +34,8 @@ export class Container {
 
   private static inProcessEventBus: IEventBus;
   private static externalEventBus: IEventBus;
-  private static decoratedEventBus: IEventBus;
 
-  private static externalInProcessEventBus: IEventBus;
-  private static events: Events;
+  private static events: DomainEvents;
   private static appConfig: ApplicationConfig;
 
   static async initializeServices(appConfig: ApplicationConfig): Promise<IServices> {
@@ -55,29 +50,19 @@ export class Container {
 
     Container.inProcessEventBus = new EventBus(Container.inProcessMessageBus);
     Container.externalEventBus = new EventBus(Container.externalMessageBus);
-    Container.decoratedEventBus = new ExternalEventBusDecorator(
-      Container.inProcessEventBus,
-      Container.externalEventBus,
-    );
 
-    Container.externalInProcessEventBus = new ExternalEventBusDecorator(
-      Container.inProcessEventBus,
-      Container.externalEventBus,
-    );
-
-    Container.events = new Events(Container.inProcessEventBus);
+    Container.events = new DomainEvents(Container.inProcessEventBus);
 
     const services = {
       externalCommandBus: Container.externalCommandBus,
       inProcessCommandBus: Container.inProcessCommandBus,
       inProcessEventBus: Container.inProcessEventBus,
       externalEventBus: Container.externalEventBus,
-      decoratedEventBus: Container.decoratedEventBus,
-      externalInProcessEventBus: Container.externalInProcessEventBus,
       externalMessageBus: Container.externalMessageBus,
       inProcessMessageBus: Container.inProcessMessageBus,
       events: Container.events,
     };
+
     Container.services = services;
     return services;
   }
@@ -102,20 +87,23 @@ export class Container {
     return commandBus;
   }
 
-  //TODO this should change and get the message bus of command bus
   static getMessageBusFromContext(contextId: string): IMessageBus {
     let messageBus: IMessageBus;
     if (!Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId]) {
       throw new Error(`Context id: ${contextId} is missing from mappings`);
     }
     if (
-      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].MESSAGE_BUS === CONTEXT_TYPES.InProcess
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].COMMAND_BUS === CONTEXT_TYPES.InProcess
     ) {
       messageBus = Container.inProcessMessageBus;
+    } else if (
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].COMMAND_BUS === CONTEXT_TYPES.External
+    ) {
+      messageBus = Container.externalMessageBus;
     } else {
+      // default
       messageBus = Container.inProcessMessageBus;
     }
-
     return messageBus;
   }
 

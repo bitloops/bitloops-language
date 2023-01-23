@@ -21,13 +21,10 @@ import { IDomainEvent } from './IDomainEvent';
 import { AggregateRoot } from '../AggregateRoot';
 import { UniqueEntityID } from '../UniqueEntityID';
 import { IEventBus } from './IEventBus';
-import { IIntegrationEvent } from './IIntegrationEvent';
-import { IEvent } from './IEvent';
-import { CommandMetadata } from '../commands/ICommand';
 
 // TODO two aggregates at the same time, only one will be marked as dispatched so the other one's events will be lost
 // TODO if a transaction fails the events will hang around until garbage collector clears them
-export class Events {
+export class DomainEvents {
   private markedAggregates: AggregateRoot<any>[] = [];
   private domainEventBus: IEventBus;
 
@@ -50,18 +47,12 @@ export class Events {
     }
   }
 
-  private async dispatchAggregateEvents(
-    aggregate: AggregateRoot<any>,
-    metadata?: CommandMetadata,
-  ): Promise<void> {
+  private async dispatchAggregateEvents(aggregate: AggregateRoot<any>): Promise<void> {
     const promises: Promise<void>[] = [];
     console.log('dispatchAggregateEvents: aggregate', aggregate);
     //TODO dispatch domain Events and have integration events handlers listen to them
     aggregate.domainEvents.forEach((event: IDomainEvent) => {
       promises.push(this.dispatch(event));
-    });
-    aggregate.integrationEvents.forEach((event: IIntegrationEvent) => {
-      promises.push(this.dispatch(event, metadata));
     });
     await Promise.all(promises);
   }
@@ -82,14 +73,11 @@ export class Events {
     return found;
   }
 
-  public async dispatchEventsForAggregate(
-    id: UniqueEntityID,
-    metadata?: CommandMetadata,
-  ): Promise<void> {
+  public async dispatchEventsForAggregate(id: UniqueEntityID): Promise<void> {
     const aggregate = this.findMarkedAggregateByID(id);
 
     if (aggregate) {
-      await this.dispatchAggregateEvents(aggregate, metadata);
+      await this.dispatchAggregateEvents(aggregate);
       aggregate.clearEvents();
       this.removeAggregateFromMarkedDispatchList(aggregate);
     }
@@ -107,15 +95,7 @@ export class Events {
     this.markedAggregates = [];
   }
 
-  private async dispatch<T extends IEvent>(event: T, metadata?: CommandMetadata): Promise<void> {
-    // console.log('dispatch: event', event);
-    // console.log('dispatch: event instanceof DomainEvent', event instanceof DomainEvent);
-    // console.log('dispatch: event instanceof IntegrationEvent', event instanceof IntegrationEvent);
-    // console.log('dispatch: event.eventName', event.eventTopic);
-    if (metadata) {
-      event.setMetadata(metadata);
-    }
-
+  private async dispatch(event: IDomainEvent): Promise<void> {
     await this.domainEventBus.publish(event.eventTopic, event);
   }
 }

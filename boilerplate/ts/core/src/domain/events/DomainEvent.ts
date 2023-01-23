@@ -18,14 +18,14 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { UUIDv4 } from '../UUIDv4';
-import { Event } from './Event';
+import { Event, TEventInputMetadata } from './Event';
 import { IDomainEvent } from './IDomainEvent';
 
 export class DomainEvent extends Event implements IDomainEvent {
   private aggregateId: UUIDv4;
 
-  constructor(eventName: string, fromContextId: string, aggregateId: UUIDv4, uuid?: string) {
-    super(eventName, fromContextId, uuid);
+  constructor(eventName: string, data: any, metadata: TEventInputMetadata, aggregateId: UUIDv4) {
+    super(eventName, data, metadata);
     this.aggregateId = aggregateId;
   }
 
