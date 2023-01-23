@@ -19,7 +19,7 @@
  */
 import { IEvent, TEventMetadata } from './IEvent';
 import { TOPIC_PREFIXES } from '../../config';
-import { createUUIDv4, getTopic } from '../../helpers';
+import { createUUIDv4 } from '../../helpers';
 
 export type TEventInputMetadata = {
   id?: string;
@@ -29,21 +29,18 @@ export type TEventInputMetadata = {
 
 export abstract class Event implements IEvent {
   public static readonly prefix: TOPIC_PREFIXES.Event = TOPIC_PREFIXES.Event;
-  public eventTopic: string;
   public metadata: Readonly<TEventMetadata>;
 
-  constructor(eventName: string, public data: any, metadata: TEventInputMetadata) {
+  constructor(
+    public readonly eventTopic: string,
+    public readonly data: any,
+    metadata: TEventInputMetadata,
+  ) {
     this.metadata = {
       id: metadata.id || createUUIDv4(),
       createdAtTimestamp: Date.now(),
       version: metadata.version,
       fromContextId: metadata.fromContextId,
     };
-
-    this.eventTopic = Event.getEventTopic(eventName, metadata.fromContextId);
-  }
-
-  static getEventTopic(eventName: string, fromContextId: string) {
-    return getTopic(Event.prefix, eventName, fromContextId);
   }
 }

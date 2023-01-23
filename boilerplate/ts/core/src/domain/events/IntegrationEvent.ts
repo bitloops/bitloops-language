@@ -18,17 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { getIntegrationTopic } from '../../helpers';
 import { Event, TEventInputMetadata } from './Event';
 import { IIntegrationEvent } from './IIntegrationEvent';
 
 export abstract class IntegrationEvent<T> extends Event implements IIntegrationEvent<T> {
-  constructor(eventName: string, data: T, metadata: TEventInputMetadata) {
-    super(eventName, data, metadata);
-    this.eventTopic = IntegrationEvent.getIntegrationEventTopic(this.eventTopic);
-  }
-
-  static getIntegrationEventTopic(domainEventTopic: string): string {
-    return getIntegrationTopic(domainEventTopic);
+  constructor(eventTopic: string, data: T, metadata: TEventInputMetadata) {
+    super(eventTopic, data, metadata);
   }
 }

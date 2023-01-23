@@ -48,6 +48,7 @@ const getIntegrationTopicString = (
 };
 
 export const getIntegrationTopic = (domainEventTopic: string) => {
+  // return `${config.INTEGRATION_EVENT_TOPIC_PREFIX}${config.TOPIC_DELIMITER}${domainEventTopic}`;
   return getIntegrationTopicString(
     domainEventTopic,
     config.INTEGRATION_EVENT_TOPIC_PREFIX,
