@@ -87,7 +87,6 @@ export class DomainEvents {
     callback: (event: IDomainEvent) => Promise<void>,
     eventClassName: string,
   ): Promise<void> {
-    // @ts-ignore: TS2345
     await this.domainEventBus.subscribe(eventClassName, callback);
   }
 

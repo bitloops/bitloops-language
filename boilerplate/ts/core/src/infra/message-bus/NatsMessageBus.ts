@@ -67,8 +67,6 @@ export class NatsMessageBus implements IExternalMessageBus {
     }
 
     (async () => {
-      //TODO fix ts-ignore issue
-      // @ts-ignore
       for await (const m of this.topicSubscriptionHandlers[topic].subscription) {
         console.log('Nats message received', this.sc.decode(m.data));
         this.topicSubscriptionHandlers[topic].subscriberHandlers.forEach((subscriberHandler) =>

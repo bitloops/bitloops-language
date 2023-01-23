@@ -21,15 +21,15 @@ import { ICoreError } from '../ICoreError';
 
 // TODO maybe make errorId mandatory
 interface IRepoError extends ICoreError {
-  errorId?: string;
+  errorId: string;
 }
 
 export abstract class RepoError implements IRepoError {
   public readonly message: string;
-  public readonly errorId?: string;
+  public readonly errorId: string;
 
-  constructor(message: string, errorId?: string) {
+  constructor(message: string, errorId: string) {
     this.message = message;
-    if (errorId) this.errorId = errorId;
+    this.errorId = errorId;
   }
 }

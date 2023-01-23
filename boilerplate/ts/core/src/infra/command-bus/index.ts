@@ -22,7 +22,6 @@ import { IMessage } from '../../domain/messages/IMessage';
 import { IMessageBus } from '../../domain/messages/IMessageBus';
 import { ICommandBus, RegisterHandler } from '../../domain/commands/ICommandBus';
 
-// TODO remove logs and fix ts-ignores
 export class CommandBus implements ICommandBus {
   // private prefix: string = "command";
   protected messageBus: IMessageBus;

@@ -17,14 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IEvent } from './IEvent';
-
 export type IntegrationData<T> = {
   version: string;
   data: T;
 };
-
-//TODO fix this
-export interface IIntegrationEvent<T> extends IEvent {
-  mapper?: () => T;
-}

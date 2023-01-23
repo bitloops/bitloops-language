@@ -28,7 +28,6 @@ import { AppError } from '../../application/AppError';
 
 type TError = typeof DomainError | typeof AppError;
 export type TErrors = Array<TError>;
-// TODO remove logs and fix ts-ignores
 export class ExternalCommandBus extends CommandBus {
   override async sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
