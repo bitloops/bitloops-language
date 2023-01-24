@@ -2,7 +2,7 @@ import { Domain } from '@bitloops/bl-boilerplate-core';
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { DeleteTodoUseCase } from '../application/DeleteToDoUseCase';
 import { ApplicationErrors } from '../application/errors';
-import { DeleteTodoRequestDTO } from '../dtos/DeleteTodoRequestDTO';
+import { DeleteTodoRequestDTO } from '../dtos/DeleteToDoRequestDTO';
 
 export class DeleteTodoRESTController extends Fastify.BaseController {
   private deleteTodoUseCase: DeleteTodoUseCase;

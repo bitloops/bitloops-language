@@ -1,9 +1,9 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { GetAllTodoUseCase } from '../application/GetAllTodoUseCase';
+import { GetAllTodosUseCase } from '../application/GetAllTodoUseCase';
 
 export class GetAllTodoRESTController extends Fastify.BaseController {
-  private useCase: GetAllTodoUseCase;
-  constructor(useCase: GetAllTodoUseCase) {
+  private useCase: GetAllTodosUseCase;
+  constructor(useCase: GetAllTodosUseCase) {
     super();
     this.useCase = useCase;
   }
