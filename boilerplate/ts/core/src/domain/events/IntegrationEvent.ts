@@ -20,8 +20,8 @@
 
 import { Event, TEventInputMetadata } from './Event';
 
-export abstract class IntegrationEvent<T> extends Event {
-  constructor(eventTopic: string, data: T, metadata: TEventInputMetadata) {
+export abstract class IntegrationEvent extends Event {
+  constructor(eventTopic: string, data: unknown, metadata: TEventInputMetadata) {
     super(eventTopic, data, metadata);
   }
 }

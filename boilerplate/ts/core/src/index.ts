@@ -75,7 +75,7 @@ namespace Application {
 
 namespace Infra {
   export namespace EventBus {
-    export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
+    export class IntegrationEvent extends IntegrationEventImport {}
     export class EventBus extends EventBusImport {}
     export type IEventBus = IEventBusImport;
   }
@@ -94,16 +94,6 @@ namespace Infra {
     export const getTopic = getTopicImport;
   }
 }
-
-// namespace MessageBus {
-//   export type IEventBus = IEventBusImport;
-//   export type ICommandBus = ICommandBusImport;
-//   export type IMessageBus = IMessageBusImport;
-//   //TODO maybe delete
-//   export const getIntegrationTopic = getIntegrationTopicImport;
-//   export const getProcessManagerTopic = getProcessManagerTopicImport;
-//   export const getTopic = getTopicImport;
-// }
 
 //TODO  SOS!!!! this is a duplicate - find a way to export original enum
 namespace Constants {
