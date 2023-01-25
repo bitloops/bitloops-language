@@ -23,7 +23,6 @@ export const ok = (metadata?: Metadata) => {
 };
 
 const replyToResponseTopic = async <L, A>(metadata: Metadata, res: Either<L, A>) => {
-  // TODO check instanceof messageBus and in case of external, change response
   console.log('replyToResponseTopic metadata:::', metadata);
   const messageBus = Container.getMessageBusFromContext(metadata.toContextId);
   if (metadata.responseTopic) await messageBus.publish(metadata.responseTopic, res);
