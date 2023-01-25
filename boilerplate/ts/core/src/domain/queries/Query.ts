@@ -32,15 +32,13 @@ export abstract class Query implements IQuery {
   public readonly queryTopic: string;
   public readonly toContextId: string;
 
-  constructor(queryName: string, toContextId: string, orchestrated?: boolean) {
+  constructor(queryName: string, toContextId: string) {
     this.uuid = createUUIDv4();
-    this.createdTimestamp = Date.now();
     this.queryTopic = Query.getQueryTopic(queryName, toContextId);
     this.toContextId = toContextId;
     this.metadata = {
       responseTopic: `${queryName}${TOPIC_DELIMITER}${this.uuid}`,
       toContextId,
-      orchestrated: orchestrated ?? false,
     };
   }
 
