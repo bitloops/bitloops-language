@@ -36,6 +36,7 @@ import {
 import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain/events/dispatchEventsCallback';
 import { IHandle as IHandleImport } from './application/IHandle';
 import { ApplicationConfig as ApplicationConfigImport } from './config';
+import { CommandBus as CommandBusImport } from './infra/command-bus/';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -73,31 +74,36 @@ namespace Application {
 }
 
 namespace Infra {
-  export namespace Messaging {
-    export class EventBus extends EventBusImport {}
-    export class InProcessMessageBus extends InProcessMessageBusImport {}
+  export namespace EventBus {
     export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
+    export class EventBus extends EventBusImport {}
+    export type IEventBus = IEventBusImport;
   }
-  // c# repo => namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure.EventBus.IntegrationEvent
-  // export namespace EventBus {
-  //   export class EventBus extends EventBusImport {}
-  //   export type IEventBus = IEventBusImport;
-  // }
-  // export namespace CommandBus {
-  //   export class inProcessCommandBus extends InProcessCommandBusImport {}
-  //   export type ICommandBus = ICommandBusImport;
-  // }
+  export namespace CommandBus {
+    export class CommandBus extends CommandBusImport {}
+    export type ICommandBus = ICommandBusImport;
+  }
+
+  export namespace MessageBus {
+    export type IMessageBus = IMessageBusImport;
+    export class InProcessMessageBus extends InProcessMessageBusImport {}
+
+    //TODO maybe delete
+    export const getIntegrationTopic = getIntegrationTopicImport;
+    export const getProcessManagerTopic = getProcessManagerTopicImport;
+    export const getTopic = getTopicImport;
+  }
 }
 
-namespace MessageBus {
-  export type IEventBus = IEventBusImport;
-  export type ICommandBus = ICommandBusImport;
-  export type IMessageBus = IMessageBusImport;
-  //TODO maybe delete
-  export const getIntegrationTopic = getIntegrationTopicImport;
-  export const getProcessManagerTopic = getProcessManagerTopicImport;
-  export const getTopic = getTopicImport;
-}
+// namespace MessageBus {
+//   export type IEventBus = IEventBusImport;
+//   export type ICommandBus = ICommandBusImport;
+//   export type IMessageBus = IMessageBusImport;
+//   //TODO maybe delete
+//   export const getIntegrationTopic = getIntegrationTopicImport;
+//   export const getProcessManagerTopic = getProcessManagerTopicImport;
+//   export const getTopic = getTopicImport;
+// }
 
 //TODO  SOS!!!! this is a duplicate - find a way to export original enum
 namespace Constants {
@@ -125,7 +131,6 @@ export {
   Infra,
   fail,
   ok,
-  MessageBus,
   Container,
   failWithPublish,
   okWithpublish,
