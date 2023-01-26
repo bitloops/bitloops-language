@@ -31,19 +31,17 @@ export interface IBaseController<Req, Res> {
 
   created(res: Res): any;
 
-  clientError(res: Res, message?: string): any;
+  badRequest(res: Res, message?: ErrorMessage): any;
 
-  paymentRequired(res: Res, message?: string): any;
+  paymentRequired(res: Res, message?: ErrorMessage): any;
 
-  forbidden(res: Res, message?: ErrorMessage | string): any;
+  forbidden(res: Res, message?: ErrorMessage): any;
 
-  notFound(res: Res, message?: string): any;
+  notFound(res: Res, message?: ErrorMessage): any;
 
-  conflict(res: Res, message?: string): any;
+  conflict(res: Res, message?: ErrorMessage): any;
 
-  tooMany(res: Res, message?: string): any;
-
-  todo(res: Res): any;
+  tooMany(res: Res, message?: ErrorMessage): any;
 
   fail(res: Res, error: Error | string): any;
 }

@@ -58,39 +58,32 @@ export abstract class BaseFastifyController
     return res.status(201).send();
   }
 
-  public clientError(res: FastifyReply, message?: string) {
-    return BaseFastifyController.jsonResponse(res, 400, message ? message : 'Unauthorized');
+  public badRequest(res: FastifyReply, message?: Application.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 400, message ? message : 'Bad Request');
   }
 
-  public unauthorized(res: FastifyReply, message?: string) {
+  public unauthorized(res: FastifyReply, message?: Application.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 401, message ? message : 'Unauthorized');
   }
 
-  public paymentRequired(res: FastifyReply, message?: string) {
+  public paymentRequired(res: FastifyReply, message?: Application.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 402, message ? message : 'Payment required');
   }
 
-  // public forbidden(res: FastifyReply, message?: ErrorMessage) {
-  //   return BaseFastifyController.jsonResponse(res, 403, message ? message : 'Forbidden');
-  // }
-  public forbidden(res: FastifyReply, message?: Application.REST.ErrorMessage | string) {
+  public forbidden(res: FastifyReply, message?: Application.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 403, message ? message : 'Forbidden');
   }
 
-  public notFound(res: FastifyReply, message?: Application.REST.ErrorMessage | string) {
+  public notFound(res: FastifyReply, message?: Application.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 404, message ? message : 'Not found');
   }
 
-  public conflict(res: FastifyReply, message?: string) {
+  public conflict(res: FastifyReply, message?: Application.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 409, message ? message : 'Conflict');
   }
 
-  public tooMany(res: FastifyReply, message?: string) {
+  public tooMany(res: FastifyReply, message?: Application.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 429, message ? message : 'Too many requests');
-  }
-
-  public todo(res: FastifyReply) {
-    return BaseFastifyController.jsonResponse(res, 400, 'TODO');
   }
 
   //TODO match with error in

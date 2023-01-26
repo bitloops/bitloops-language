@@ -38,7 +38,5 @@ export interface IBaseController<TRequest, TResponseData> {
 
   tooMany(message?: string): any;
 
-  // todo(): any;
-
   fail(error: Error | string): any;
 }
