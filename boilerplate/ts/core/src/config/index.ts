@@ -35,7 +35,7 @@ const TOPIC_DELIMITER = '.';
 const INTEGRATION_EVENT_TOPIC_PREFIX = 'integration';
 const PROCESS_MANAGER_EVENT_TOPIC_PREFIX = 'orchestrated';
 
-enum MESSAGE_BUS {
+export enum MESSAGE_BUS {
   EVENT_BUS = 'EVENT_BUS',
   COMMAND_BUS = 'COMMAND_BUS',
   INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
@@ -52,15 +52,6 @@ const config: Config = {
   TOPIC_DELIMITER,
   INTEGRATION_EVENT_TOPIC_PREFIX,
   PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
-  // EVENTS: {},
-  // CONTEXT_IDs_MAPPINGS: {
-  /* @TEMPLATE [${camelCase(BOUNDED_CONTEXT)}ContextId]: {
-      COMMAND_BUS: CONTEXT_TYPES.InProcess,
-      EVENT_BUS: CONTEXT_TYPES.InProcess,
-      MESSAGE_BUS: CONTEXT_TYPES.InProcess,
-    }, */
-  // },
-  // CONTEXT_IDs: {},
 };
 
 type ApplicationConfig = {

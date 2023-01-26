@@ -31,14 +31,14 @@ import { fail as failWithPublish, ok as okWithpublish } from './ResultWithPublis
 import { Command as CommandImport } from './domain/commands/Command';
 import { Query as QueryImport } from './domain/queries/Query';
 
-import {
-  getIntegrationTopic as getIntegrationTopicImport,
-  getProcessManagerTopic as getProcessManagerTopicImport,
-  getTopic as getTopicImport,
-} from './helpers';
 import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain/events/dispatchEventsCallback';
 import { IHandle as IHandleImport } from './application/IHandle';
-import { ApplicationConfig as ApplicationConfigImport } from './config';
+import {
+  ApplicationConfig as ApplicationConfigImport,
+  TOPIC_PREFIXES as TOPIC_PREFIXES_IMPORT,
+  CONTEXT_TYPES as CONTEXT_TYPES_IMPORT,
+  MESSAGE_BUS as MESSAGE_BUS_IMPORT,
+} from './config';
 import { CommandBus as CommandBusImport } from './infra/command-bus/';
 import { IQueryBus as IQueryBusImport } from './domain/queries/IQueryBus';
 import { QueryBus as QueryBusImport } from './infra/query-bus/QueryBus';
@@ -98,30 +98,14 @@ namespace Infra {
   export namespace MessageBus {
     export type IMessageBus = IMessageBusImport;
     export class InProcessMessageBus extends InProcessMessageBusImport {}
-
-    //TODO maybe delete
-    export const getIntegrationTopic = getIntegrationTopicImport;
-    export const getProcessManagerTopic = getProcessManagerTopicImport;
-    export const getTopic = getTopicImport;
   }
 }
 
 //TODO  SOS!!!! this is a duplicate - find a way to export original enum
 namespace Constants {
-  export enum TOPIC_PREFIXES {
-    Event = 'event',
-    Command = 'command',
-    Query = 'query',
-  }
-  export enum CONTEXT_TYPES {
-    InProcess = 'InProcess',
-    External = 'External',
-  }
-  export enum MESSAGE_BUS {
-    EVENT_BUS = 'EVENT_BUS',
-    COMMAND_BUS = 'COMMAND_BUS',
-    INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
-  }
+  export const TOPIC_PREFIXES = TOPIC_PREFIXES_IMPORT;
+  export const CONTEXT_TYPES = CONTEXT_TYPES_IMPORT;
+  export const MESSAGE_BUS = MESSAGE_BUS_IMPORT;
   export type ApplicationConfig = ApplicationConfigImport;
 }
 
