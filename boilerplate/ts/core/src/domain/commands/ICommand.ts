@@ -23,6 +23,7 @@ export type CommandMetadata = {
   responseTopic: string;
   toContextId: string;
   orchestrated: boolean;
+  createdTimestamp?: number;
 };
 
 export interface ICommand extends IMessage {

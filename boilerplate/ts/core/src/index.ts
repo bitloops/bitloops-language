@@ -24,10 +24,13 @@ import { IntegrationEvent as IntegrationEventImport } from './domain/events/Inte
 import { IEventBus as IEventBusImport } from './domain/events/IEventBus';
 import { ICommandBus as ICommandBusImport } from './domain/commands/ICommandBus';
 import { IMessageBus as IMessageBusImport } from './domain/messages/IMessageBus';
+
 import { Container } from './Container';
 import { IDomainEvent as IDomainEventImport } from './domain/events/IDomainEvent';
 import { fail as failWithPublish, ok as okWithpublish } from './ResultWithPublish';
 import { Command as CommandImport } from './domain/commands/Command';
+import { Query as QueryImport } from './domain/queries/Query';
+
 import {
   getIntegrationTopic as getIntegrationTopicImport,
   getProcessManagerTopic as getProcessManagerTopicImport,
@@ -37,6 +40,8 @@ import { dispatchEventsCallback as dispatchEventsCallbackImport } from './domain
 import { IHandle as IHandleImport } from './application/IHandle';
 import { ApplicationConfig as ApplicationConfigImport } from './config';
 import { CommandBus as CommandBusImport } from './infra/command-bus/';
+import { IQueryBus as IQueryBusImport } from './domain/queries/IQueryBus';
+import { QueryBus as QueryBusImport } from './infra/query-bus/QueryBus';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -49,7 +54,6 @@ namespace Domain {
   export const applyRules = applyRulesImport;
   export class Event extends DomainEvent {}
   export type IDomainEvent = IDomainEventImport;
-  export class Command extends CommandImport {}
   export const dispatchEventsCallback = dispatchEventsCallbackImport;
 }
 
@@ -57,6 +61,8 @@ namespace Application {
   export class Error extends AppError {}
   export type IUseCase<IRequest, IResponse> = UseCase<IRequest, IResponse>;
   export type IHandle = IHandleImport;
+  export class Command extends CommandImport {}
+  export class Query extends QueryImport {}
 
   export namespace Repo {
     export class Error extends RepoError {}
@@ -82,6 +88,11 @@ namespace Infra {
   export namespace CommandBus {
     export class CommandBus extends CommandBusImport {}
     export type ICommandBus = ICommandBusImport;
+  }
+
+  export namespace QueryBus {
+    export class QueryBus extends QueryBusImport {}
+    export type IQueryBus = IQueryBusImport;
   }
 
   export namespace MessageBus {

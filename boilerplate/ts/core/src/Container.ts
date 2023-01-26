@@ -5,16 +5,21 @@ import { IEventBus } from './domain/events/IEventBus';
 import { IMessageBus } from './domain/messages/IMessageBus';
 import { CommandBus } from './infra/command-bus';
 import { ExternalCommandBus } from './infra/command-bus/externalCommandBus';
+import { ExternalQueryBus } from './infra/query-bus/externalQueryBus';
 import { EventBus } from './infra/event-bus';
 import {
   ExternalMessageBusFactory,
   ExternalMessageBusProviders,
 } from './infra/message-bus/ExternalMessageBusFactory';
 import { InProcessMessageBus } from './infra/message-bus/InProcessMessageBus';
+import { IQueryBus } from './domain/queries/IQueryBus';
+import { QueryBus } from './infra/query-bus/QueryBus';
 
 interface IServices {
   inProcessCommandBus: ICommandBus;
   externalCommandBus: ICommandBus;
+  inProcessQueryBus: IQueryBus;
+  externalQueryBus: IQueryBus;
   inProcessEventBus: IEventBus;
   externalEventBus: IEventBus;
   inProcessMessageBus: IMessageBus;
@@ -32,6 +37,9 @@ export class Container {
   // External means not in process command bus
   private static externalCommandBus: ICommandBus;
 
+  private static inProcessQueryBus: IQueryBus;
+  private static externalQueryBus: IQueryBus;
+
   private static inProcessEventBus: IEventBus;
   private static externalEventBus: IEventBus;
 
@@ -48,6 +56,9 @@ export class Container {
     Container.inProcessCommandBus = new CommandBus(Container.inProcessMessageBus);
     Container.externalCommandBus = new ExternalCommandBus(Container.externalMessageBus);
 
+    Container.inProcessQueryBus = new QueryBus(Container.inProcessMessageBus);
+    Container.externalQueryBus = new ExternalQueryBus(Container.externalMessageBus);
+
     Container.inProcessEventBus = new EventBus(Container.inProcessMessageBus);
     Container.externalEventBus = new EventBus(Container.externalMessageBus);
 
@@ -56,6 +67,8 @@ export class Container {
     const services = {
       externalCommandBus: Container.externalCommandBus,
       inProcessCommandBus: Container.inProcessCommandBus,
+      inProcessQueryBus: Container.inProcessQueryBus,
+      externalQueryBus: Container.externalQueryBus,
       inProcessEventBus: Container.inProcessEventBus,
       externalEventBus: Container.externalEventBus,
       externalMessageBus: Container.externalMessageBus,
@@ -85,6 +98,24 @@ export class Container {
       commandBus = Container.inProcessCommandBus;
     }
     return commandBus;
+  }
+
+  static getQueryBusFromContext(contextId: string): IQueryBus {
+    let queryBus: IQueryBus;
+    if (!Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId]) {
+      throw new Error(`Context id: ${contextId} is missing from mappings`);
+    }
+    if (Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].QUERY_BUS === CONTEXT_TYPES.InProcess) {
+      queryBus = Container.inProcessQueryBus;
+    } else if (
+      Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].QUERY_BUS === CONTEXT_TYPES.External
+    ) {
+      queryBus = Container.externalQueryBus;
+    } else {
+      // default
+      queryBus = Container.inProcessQueryBus;
+    }
+    return queryBus;
   }
 
   static getMessageBusFromContext(contextId: string): IMessageBus {

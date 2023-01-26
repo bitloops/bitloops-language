@@ -41,6 +41,7 @@ export abstract class Command implements ICommand {
       responseTopic: `${commandName}${TOPIC_DELIMITER}${this.uuid}`,
       toContextId,
       orchestrated: orchestrated ?? false,
+      createdTimestamp: this.createdTimestamp || Date.now(),
     };
   }
 

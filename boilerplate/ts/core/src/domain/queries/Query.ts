@@ -27,18 +27,16 @@ export abstract class Query implements IQuery {
   private static prefix: TOPIC_PREFIXES.Query = TOPIC_PREFIXES.Query;
 
   public readonly uuid: string;
-  private createdTimestamp: number;
   public readonly metadata: QueryMetadata;
   public readonly queryTopic: string;
-  public readonly toContextId: string;
 
   constructor(queryName: string, toContextId: string) {
     this.uuid = createUUIDv4();
     this.queryTopic = Query.getQueryTopic(queryName, toContextId);
-    this.toContextId = toContextId;
     this.metadata = {
       responseTopic: `${queryName}${TOPIC_DELIMITER}${this.uuid}`,
       toContextId,
+      createdTimestamp: Date.now(),
     };
   }
 

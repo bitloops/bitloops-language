@@ -22,20 +22,27 @@ import { IMessageBus } from '../../domain/messages/IMessageBus';
 import { IQuery } from '../../domain/queries/IQuery';
 import { IQueryBus, RegisterHandler } from '../../domain/queries/IQueryBus';
 
-export class InProcessQueryBus implements IQueryBus {
-  private messageBus: IMessageBus;
+export class QueryBus implements IQueryBus {
+  protected messageBus: IMessageBus;
 
   constructor(messageBus: IMessageBus) {
     this.messageBus = messageBus;
   }
 
-  async register(queryName: string, registerHandler: RegisterHandler): Promise<void> {
+  async register<T extends IQuery>(
+    queryName: string,
+    registerHandler: RegisterHandler<T>,
+  ): Promise<void> {
     await this.messageBus.subscribe(queryName, registerHandler);
   }
-  async unregister(queryName: string, eventHandler: RegisterHandler): Promise<void> {
-    await this.messageBus.unsubscribe(queryName, eventHandler);
+  async unregister(queryName: string): Promise<void> {
+    const subscriberHandlers = this.messageBus.getSubscriberHandlers(queryName);
+    if (subscriberHandlers) {
+      const [subscriberHandler] = subscriberHandlers;
+      await this.messageBus.unsubscribe(queryName, subscriberHandler);
+    }
   }
-  async query(query: IQuery): Promise<IMessage> {
+  async query<T>(query: IQuery): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       console.log('query: query.metadata.responseTopic', query.metadata?.responseTopic);
@@ -44,7 +51,7 @@ export class InProcessQueryBus implements IQueryBus {
       }
       await this.messageBus.subscribe(query.metadata.responseTopic, (message: IMessage) => {
         console.log('query: message', message);
-        return resolve(message);
+        return resolve(message as T);
       });
       console.log('query: before publishing query', query.queryTopic);
       await this.messageBus.publish(query.queryTopic, query);
