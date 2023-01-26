@@ -64,7 +64,6 @@ const config: Config = {
 };
 
 type ApplicationConfig = {
-  EVENTS: any;
   CONTEXT_IDs_MAPPINGS: Record<string, Record<MESSAGE_BUS, CONTEXT_TYPES>>;
   CONTEXT_IDs: Record<string, string>;
 };
