@@ -17,31 +17,19 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICoreError } from '../../ICoreError';
+export interface IBaseGraphQLController<TRequest, TResponseData> {
+  execute(req: TRequest): Promise<TResponseData>;
 
-export type ErrorMessage = ICoreError;
+  ok(dto?: TResponseData): TResponseData | string;
 
-// TODO replace all with ErrorMessage
-export interface IBaseController<Req, Res> {
-  execute(req: Req, res: Res): Promise<void>;
+  // Should act as a custom error
+  fail(error: Error | string, errorId: string): any;
 
-  //   jsonResponse(res: Res, code: number, message: string);
-
-  ok<T>(res: Res, dto?: T): any;
-
-  created(res: Res): any;
-
-  badRequest(res: Res, message?: ErrorMessage): any;
-
-  paymentRequired(res: Res, message?: ErrorMessage): any;
-
-  forbidden(res: Res, message?: ErrorMessage): any;
-
-  notFound(res: Res, message?: ErrorMessage): any;
-
-  conflict(res: Res, message?: ErrorMessage): any;
-
-  tooMany(res: Res, message?: ErrorMessage): any;
-
-  fail(res: Res, error: Error | string): any;
+  // GraphQL-specific error messages
+  badUserInput(message: string, errorId: string): any;
+  badRequest(message: string, errorId: string): any;
+  forbidden(message: string, errorId: string): any;
+  notFound(message: string, errorId: string): any;
+  unauthorized(message: string, errorId: string): any;
+  internalError(message: string, errorId: string): any;
 }

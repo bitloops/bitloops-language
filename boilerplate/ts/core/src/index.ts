@@ -8,9 +8,10 @@ import { Either, fail, ok } from './Either';
 import { AggregateRoot } from './domain/AggregateRoot';
 import { Entity as EntityImport } from './domain/Entity';
 import {
-  IBaseController as IBaseControllerImport,
+  IBaseRESTController as IBaseControllerImport,
   ErrorMessage as ErrorMessageImport,
-} from './application/rest/IBaseController';
+} from './infra/rest/IBaseRESTController';
+import { IBaseGraphQLController as IBaseGraphQLControllerImport } from './infra/graphql/IBaseGraphQLController';
 import { IMQ as IMQImport } from './application/mq/IMQ';
 import { IRule as IRuleImport } from './domain/IRule';
 import { applyRules as applyRulesImport } from './domain/applyRule';
@@ -70,16 +71,24 @@ namespace Application {
     export type ICRUDReadPort<ReadModel> = CRUDReadRepoPort<ReadModel>;
     export type ICRUDWritePort<Aggregate, AggregateId> = CRUDWriteRepoPort<Aggregate, AggregateId>;
   }
-  export namespace REST {
-    export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
-    export type ErrorMessage = ErrorMessageImport;
-  }
   export namespace MQ {
     export type IMQ<Connection> = IMQImport<Connection>;
   }
 }
 
 namespace Infra {
+  export namespace REST {
+    export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
+    export type ErrorMessage = ErrorMessageImport;
+  }
+
+  export namespace GraphQL {
+    export type IBaseController<TRequest, TResponseData> = IBaseGraphQLControllerImport<
+      TRequest,
+      TResponseData
+    >;
+  }
+
   export namespace EventBus {
     export class IntegrationEvent extends IntegrationEventImport {}
     export class EventBus extends EventBusImport {}
