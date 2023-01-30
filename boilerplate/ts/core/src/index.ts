@@ -74,9 +74,6 @@ namespace Application {
     export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
     export type ErrorMessage = ErrorMessageImport;
   }
-  export namespace MQ {
-    export type IMQ<Connection> = IMQImport<Connection>;
-  }
 }
 
 namespace Infra {
@@ -99,9 +96,12 @@ namespace Infra {
     export type IMessageBus = IMessageBusImport;
     export class InProcessMessageBus extends InProcessMessageBusImport {}
   }
+
+  export namespace MQ {
+    export type IMQ<Connection> = IMQImport<Connection>;
+  }
 }
 
-//TODO  SOS!!!! this is a duplicate - find a way to export original enum
 namespace Constants {
   export const TOPIC_PREFIXES = TOPIC_PREFIXES_IMPORT;
   export const CONTEXT_TYPES = CONTEXT_TYPES_IMPORT;
