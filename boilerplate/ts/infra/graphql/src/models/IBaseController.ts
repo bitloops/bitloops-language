@@ -20,23 +20,20 @@
 export interface IBaseController<TRequest, TResponseData> {
   execute(req: TRequest): Promise<TResponseData>;
 
-  //   jsonResponse(res: Res, code: number, message: string);
-
   ok(dto: TResponseData): TResponseData;
-
   created(): any;
 
-  clientError(message: string): any;
+  clientError(message: string, errorId: string): any;
+  paymentRequired(message: string, errorId: string): any;
+  conflict(message: string, errorId: string): any;
+  tooMany(message: string, errorId: string): any;
+  fail(error: Error | string, errorId: string): any;
 
-  paymentRequired(message: string): any;
-
-  forbidden(message: string): any;
-
-  notFound(message?: string): any;
-
-  conflict(message?: string): any;
-
-  tooMany(message?: string): any;
-
-  fail(error: Error | string): any;
+  // GraphQL-specific error messages
+  badRequest(message: string, errorId: string): any;
+  forbidden(message: string, errorId: string): any;
+  notFound(message: string, errorId: string): any;
+  unauthorized(message: string, errorId: string): any;
+  internalError(message: string, errorId: string): any;
+  subscriptionError(message: string, errorId: string): any;
 }
