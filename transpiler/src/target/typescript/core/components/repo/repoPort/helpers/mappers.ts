@@ -23,10 +23,13 @@ import {
   TTargetDependenciesTypeScript,
   TRepoPort,
   TDependencyParentTypescript,
+  repoPortKey,
+  identifierKey,
 } from '../../../../../../../types.js';
 import { ClassTypes, TClassTypesValues } from '../../../../../../../helpers/mappings.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { deepClone } from '../../../../../../../utils/deepClone.js';
+import { RepoPortTypeIdentifiers } from '../../../../type-identifiers/repoPort.js';
 
 const REPO_PORT_APPLICATION_DEP: TDependencyParentTypescript = {
   type: 'absolute',
@@ -61,28 +64,26 @@ export const mapPortIdentifier = (
 };
 
 export const mapExtendedRepoPorts = (
-  repoPorts: string[],
+  repoPorts: { [identifierKey]: string }[],
   repoDependencyName: string,
   domainIdValue: TTargetDependenciesTypeScript,
 ): TTargetDependenciesTypeScript[] => {
   return repoPorts.map((extendedRepoPort) =>
-    mapPortIdentifier(extendedRepoPort, repoDependencyName, domainIdValue),
+    mapPortIdentifier(extendedRepoPort[identifierKey], repoDependencyName, domainIdValue),
   );
 };
 
 export const findIfWriteOrReadRepoPort = (
   repoPortInfo: TRepoPort,
 ): { repoDependencyName: string; type: TClassTypesValues } => {
-  const { aggregateRootName, readModelName } = repoPortInfo;
-
   let repoDependencyName;
   let type: TClassTypesValues;
-  if (aggregateRootName !== undefined) {
-    repoDependencyName = aggregateRootName;
-    type = ClassTypes.RootEntities;
-  } else if (readModelName !== undefined) {
-    repoDependencyName = readModelName;
-    type = ClassTypes.ReadModels;
+  if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPortInfo)) {
+    repoDependencyName = repoPortInfo[repoPortKey].entityIdentifier;
+    type = ClassTypes.RootEntity;
+  } else if (RepoPortTypeIdentifiers.isReadModelRepoPort(repoPortInfo)) {
+    repoDependencyName = repoPortInfo[repoPortKey].readModelIdentifier;
+    type = ClassTypes.ReadModel;
   }
   return {
     repoDependencyName,

@@ -23,13 +23,7 @@ import ora, { Ora } from 'ora';
 
 import { copyrightSnippet } from './copyright.js';
 import { TBoundedContextName, TModuleName } from '../types.js';
-import {
-  generateBitloopsModel,
-  generateSetupDataModel,
-  generateTargetFiles,
-  getBoundedContextModules,
-} from '../functions/index.js';
-import { SupportedLanguages } from '../helpers/supportedLanguages.js';
+import { getBoundedContextModules } from '../functions/index.js';
 import { clearFolder } from '../helpers/fileOperations.js';
 import { purpleColor, stopSpinner, greenColor, TAB, redColor } from '../utils/oraUtils.js';
 import {
@@ -38,6 +32,8 @@ import {
   printError,
 } from '../utils/inquirer.js';
 import { Question } from 'inquirer';
+import { transpileCode } from '../functions/transpile.js';
+import { writeTranspiledCode } from '../functions/generateTargetFiles.js';
 
 interface ICollection {
   targetLanguage: string;
@@ -111,21 +107,14 @@ const transpile = async (source: ICollection): Promise<void> => {
     clearFolder(targetDirPath);
 
     throbber = ora(purpleColor('🔨 Transpiling... ')).start();
-    const setupData = generateSetupDataModel(sourceDirPath);
 
-    const bitloopsModel = generateBitloopsModel(boundedContextModules, sourceDirPath, setupData);
+    const transpiledCode = transpileCode(boundedContextModules, sourceDirPath);
 
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 
     throbber = ora(purpleColor('🕒 Writing system files to disk...')).start();
-    generateTargetFiles({
-      boundedContextModules,
-      sourceDirPath: sourceDirPath,
-      outputDirPath: targetDirPath,
-      bitloopsModel,
-      setupData,
-      targetLanguage: SupportedLanguages.TypeScript,
-    });
+
+    writeTranspiledCode(transpiledCode, targetDirPath);
 
     stopSpinner(throbber, greenColor('System files written'), '⏰');
 
@@ -133,6 +122,7 @@ const transpile = async (source: ICollection): Promise<void> => {
 
     console.log(greenColor(TAB + '🦎 Project generated successfully!\n'));
   } catch (err) {
+    console.log(err);
     console.error(redColor(TAB + '❌ ' + err));
     throbber.stop();
   }

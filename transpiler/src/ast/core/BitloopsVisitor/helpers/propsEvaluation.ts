@@ -18,20 +18,22 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { PropsEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/PropsEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TPropsEvaluation } from '../../../../types.js';
+import { PropsEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/PropsEvaluationBuilder.js';
 
 export const propsEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PropsEvaluationContext,
-): TPropsEvaluation => {
-  const identifier = ctx.propsIdentifier().getText();
+): PropsEvaluationNode => {
+  const identifierNode = thisVisitor.visit(ctx.propsIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
-  return {
-    props: {
-      fields: fieldList,
-      name: identifier,
-    },
-  };
+
+  const propsEvaluationNode = new PropsEvaluationNodeBuilder()
+    .withIdentifier(identifierNode)
+    .withEvaluationFieldList(fieldList)
+    .build();
+
+  return propsEvaluationNode;
 };

@@ -36,27 +36,27 @@ enum PROJECT_RELATIVE_PATHS {
   DTOs = 'dtos/',
   PACKAGES = 'packages/',
   REPO_ADAPTERS = 'repos/concretions',
-  RULES = 'domain/rules/',
+  DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Props]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.ReadModels]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.RootEntities]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.Entities]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.ValueObjects]: PROJECT_RELATIVE_PATHS.DOMAIN,
-  [ClassTypes.DomainErrors]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
-  [ClassTypes.Rules]: PROJECT_RELATIVE_PATHS.RULES,
-  [ClassTypes.Controllers]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
-  [ClassTypes.UseCases]: PROJECT_RELATIVE_PATHS.APPLICATION,
-  [ClassTypes.DTOs]: PROJECT_RELATIVE_PATHS.DTOs,
-  [ClassTypes.Packages]: PROJECT_RELATIVE_PATHS.PACKAGES,
-  [ClassTypes.RepoPorts]: PROJECT_RELATIVE_PATHS.PORTS,
-  [ClassTypes.ApplicationErrors]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
-  [ClassTypes.RepoAdapters]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
-  [ClassTypes.Structs]: PROJECT_RELATIVE_PATHS.STRUCTS,
+  [ClassTypes.ReadModel]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.RootEntity]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.Entity]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.ValueObject]: PROJECT_RELATIVE_PATHS.DOMAIN,
+  [ClassTypes.DomainError]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
+  [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
+  [ClassTypes.Controller]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
+  [ClassTypes.UseCase]: PROJECT_RELATIVE_PATHS.APPLICATION,
+  [ClassTypes.DTO]: PROJECT_RELATIVE_PATHS.DTOs,
+  [ClassTypes.Package]: PROJECT_RELATIVE_PATHS.PACKAGES,
+  [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
+  [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
+  [ClassTypes.RepoAdapter]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
+  [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
 };
 
 const getTargetFileDestination = (
@@ -99,20 +99,20 @@ const getTargetFileDestination = (
   };
   // console.log('Checking classType', classType);
   switch (classType) {
-    case ClassTypes.RootEntities:
-    case ClassTypes.Entities:
-    case ClassTypes.ReadModels:
-    case ClassTypes.ValueObjects:
-    case ClassTypes.DomainErrors:
-    case ClassTypes.ApplicationErrors:
+    case ClassTypes.RootEntity:
+    case ClassTypes.Entity:
+    case ClassTypes.ReadModel:
+    case ClassTypes.ValueObject:
+    case ClassTypes.DomainError:
+    case ClassTypes.ApplicationError:
     case ClassTypes.Props:
-    case ClassTypes.Controllers:
-    case ClassTypes.UseCases:
-    case ClassTypes.DTOs:
-    case ClassTypes.Packages:
-    case ClassTypes.RepoPorts:
-    case ClassTypes.RepoAdapters:
-    case ClassTypes.Rules:
+    case ClassTypes.Controller:
+    case ClassTypes.UseCase:
+    case ClassTypes.DTO:
+    case ClassTypes.Package:
+    case ClassTypes.RepoPort:
+    case ClassTypes.RepoAdapter:
+    case ClassTypes.DomainRule:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -134,22 +134,22 @@ const getFilePathRelativeToModule = (
   };
   switch (classType) {
     case ClassTypes.Props:
-    case ClassTypes.ReadModels:
-    case ClassTypes.RootEntities:
-    case ClassTypes.Entities:
-    case ClassTypes.ValueObjects:
-    case ClassTypes.Controllers:
-    case ClassTypes.UseCases:
-    case ClassTypes.DTOs:
-    case ClassTypes.Packages:
-    case ClassTypes.RepoAdapters:
-    case ClassTypes.RepoPorts:
+    case ClassTypes.ReadModel:
+    case ClassTypes.RootEntity:
+    case ClassTypes.Entity:
+    case ClassTypes.ValueObject:
+    case ClassTypes.Controller:
+    case ClassTypes.UseCase:
+    case ClassTypes.DTO:
+    case ClassTypes.Package:
+    case ClassTypes.RepoAdapter:
+    case ClassTypes.RepoPort:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
-    case ClassTypes.DomainErrors:
-    case ClassTypes.ApplicationErrors:
-    case ClassTypes.Rules:
+    case ClassTypes.DomainError:
+    case ClassTypes.ApplicationError:
+    case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';
       break;

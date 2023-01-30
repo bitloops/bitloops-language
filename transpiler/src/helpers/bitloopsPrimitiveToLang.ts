@@ -17,10 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { SupportedLanguages } from '../target/supportedLanguages.js';
 import { TBitloopsPrimitives } from '../types.js';
-import { SupportedLanguages } from './supportedLanguages.js';
 
-export const bitloopsPrimitives = {
+export const bitloopsPrimitives: Record<string, TBitloopsPrimitives> = {
   string: 'string',
   bool: 'bool',
   double: 'double',
@@ -65,15 +65,6 @@ export const bitloopsTypeToLangMapping = {
       }
       case bitloopsPrimitives.bytes:
         return 'Uint8Array';
-
-      // 'bytes',
-      // 'enum',
-      // 'Timestamp',
-      // 'Any',
-      // 'Struct',
-      // 'Map',
-      // 'NullValue',
-      // 'Duration',
       case bitloopsPrimitives.regex: {
         return 'RegExp';
       }

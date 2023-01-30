@@ -18,10 +18,17 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { Event, TEventInputMetadata } from './Event';
+import { Event } from './Event';
+
+type TIntegrationEventInputMetadata = {
+  id?: string;
+  version?: string;
+  fromContextId: string;
+};
 
 export abstract class IntegrationEvent extends Event {
-  constructor(eventTopic: string, data: unknown, metadata: TEventInputMetadata) {
+  constructor(eventTopic: string, data: unknown, metadata: TIntegrationEventInputMetadata) {
     super(eventTopic, data, metadata);
+    this.metadata = { ...this.metadata, version: metadata.version };
   }
 }

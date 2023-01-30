@@ -17,69 +17,98 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d, decode } from 'bitloops-gherkin';
+import { BitloopsParser } from '../../../../src/parser/core/index.js';
+import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
+import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import {
-  BitloopsIntermediateSetupASTParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParser,
-  BitloopsSetupParserError,
-} from '../../../../src/index.js';
+  VALID_MULTIPLE_REST_SERVER_CASES,
+  VALID_REST_SERVER_CASES,
+} from '../mocks/restServerDeclaration/validRestServerCases.js';
+import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 
-const feature = loadFeature('__tests__/ast/setup/visitor/restServer.feature');
+const BOUNDED_CONTEXT = 'Hello world';
+const MODULE = 'Demo';
 
-defineFeature(feature, (test) => {
-  test('Valid Server Declaration', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
+describe('Rest Server is valid', () => {
+  let setupResult: IntermediateASTSetup;
 
-    given(/^A valid Server Declaration (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsSetupParser();
-      const initialModelOutput = parser.parse(blString);
-      const intermediateParser = new BitloopsIntermediateSetupASTParser();
-      if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageSetupAST,
-        );
+  VALID_REST_SERVER_CASES.forEach((testRestServer) => {
+    test(`${testRestServer.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testRestServer.inputBLString,
+            fileId: testRestServer.fileId,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          setupResult = result.setup;
+        }
       }
-    });
-
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      const resultTree = setupResult[testRestServer.fileId];
+      const value = resultTree
+        .getRootChildrenNodesByType(BitloopsTypesMapping.TRESTServerInstance)[0]
+        .getValue();
+      expect(value).toMatchObject(testRestServer.restServer);
     });
   });
+});
 
-  test('Multiple Valid Server Declarations', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
+describe('Multiple valid Rest Servers', () => {
+  let setupResult: IntermediateASTSetup;
 
-    given(/^Valid Server Declarations (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsSetupParser();
-      const initialModelOutput = parser.parse(blString);
-      const intermediateParser = new BitloopsIntermediateSetupASTParser();
-      if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageSetupAST,
-        );
+  VALID_MULTIPLE_REST_SERVER_CASES.forEach((testRestServer) => {
+    test(`${testRestServer.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: 'fileId',
+            fileContents: '',
+          },
+        ],
+        setup: [
+          {
+            fileContents: testRestServer.inputBLString,
+            fileId: testRestServer.fileId,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          setupResult = result.setup;
+        }
       }
-    });
+      const resultTree = setupResult[testRestServer.fileId];
+      const restServerDefintionNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TRESTServerInstance,
+      );
+      const values = restServerDefintionNodes.map((node) => node.getValue());
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      // console.log('result', result);
-      // console.log('modelOutput', JSON.parse(modelOutput));
-      expect(result).toMatchObject(JSON.parse(modelOutput));
+      expect(values).toMatchObject(testRestServer.restServers);
     });
   });
 });

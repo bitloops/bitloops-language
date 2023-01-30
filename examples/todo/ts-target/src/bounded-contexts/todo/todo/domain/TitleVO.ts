@@ -15,7 +15,7 @@ export class TitleVO extends Domain.ValueObject<TitleProps> {
     super(props);
   }
 
-  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBounds> {
+  public static create(props: TitleProps): Either<TitleVO, DomainErrors.TitleOutOfBoundsError> {
     const res = Domain.applyRules([new Rules.TitleOutOfBounds(props.title)]);
     if (res) return fail(res);
     return ok(new TitleVO(props));

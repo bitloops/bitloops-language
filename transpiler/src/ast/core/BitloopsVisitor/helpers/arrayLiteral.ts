@@ -20,21 +20,56 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TArrayLiteralExpression } from '../../../../types.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ArrayLiteralExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/arrayLiteralExpressionBuilder.js';
+import { ArrayLiteralExpressionNode } from '../../intermediate-ast/nodes/Expression/ArrayLiteralExpression.js';
+
+// export const arrayLiteralVisitor = (
+//   thisVisitor: BitloopsVisitor,
+//   ctx: BitloopsParser.ArrayLiteralContext,
+// ): TArrayLiteralExpression => {
+//   // index 0 is the '[', 1 the elementList
+//   const children = thisVisitor.visitChildren(ctx)?.[1];
+//   if (!children) {
+//     return {
+//       arrayLiteral: [],
+//     };
+//   }
+//   const expressions = children.filter((child) => child !== undefined);
+//   return {
+//     arrayLiteral: expressions,
+//   };
+// };
 
 export const arrayLiteralVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrayLiteralContext,
-): TArrayLiteralExpression => {
-  // index 0 is the '['
+): ArrayLiteralExpressionNode => {
+  // index 0 is the '[', 1 the elementList
   const children = thisVisitor.visitChildren(ctx)?.[1];
   if (!children) {
-    return {
-      arrayLiteral: [],
-    };
+    return new ArrayLiteralExpressionNodeBuilder().withArrayElements([]).build();
   }
-  const expressions = children.filter((child) => child !== undefined);
-  return {
-    arrayLiteral: expressions,
-  };
+
+  const expressionNodes: ExpressionNode[] = children.filter((child) => child !== undefined);
+
+  return new ArrayLiteralExpressionNodeBuilder().withArrayElements(expressionNodes).build();
 };
+
+// export const dtoDeclarationVisitor = (
+//   thisVisitor: BitloopsVisitor,
+//   ctx: BitloopsParser.DtoDeclarationContext,
+// ): { DTOs: DTONode } => {
+//   const dtoIdentifierNode: DTOIdentifierNode = thisVisitor.visit(ctx.dtoIdentifier());
+
+//   const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
+
+//   const dtoNode = new DTONodeBuilder(thisVisitor.intermediateASTTree)
+//     .withIdentifier(dtoIdentifierNode)
+//     .withVariables(fieldListNode)
+//     .build();
+
+//   return {
+//     DTOs: dtoNode,
+//   };
+// };

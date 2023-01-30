@@ -17,38 +17,52 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-//  import { modelToTargetLanguage } from '../../../src/functions/modelToTargetLanguage/index.js';
 
-import { d } from 'bitloops-gherkin';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_DTO_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 
-//  const feature = loadFeature('./__tests__/features/toTargetLanguage/dtoEvaluation.feature');
-const feature = loadFeature('__tests__/target/typescript/core/dtoEvaluation.feature');
+describe('Valid dto evaluation test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-defineFeature(feature, (test) => {
-  let dtoType;
-  let result;
-  let value;
+  VALID_DTO_EVALUATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-  test('DTO Evaluation is valid', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      dtoType = type;
-    });
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const evaluationNode = testCase.evaluation;
+      tree.insertChild(evaluationNode);
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
 
-    given(/^I have a dtoEvaluation (.*)$/, (dtoEvaluation) => {
-      value = d(dtoEvaluation);
-    });
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
+      });
 
-    when('I generate the code', () => {
-      const dtoValue = JSON.parse(value);
-      result = modelToTargetLanguage({ type: dtoType, value: dtoValue });
-    });
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(d(output));
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

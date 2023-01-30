@@ -21,30 +21,40 @@ import { TDomainEvaluation, TTargetDependenciesTypeScript } from '../../../../..
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { getChildDependencies } from '../../../../dependencies.js';
+import { DomainEvaluationPropsTypeIdentifiers } from '../../../../type-identifiers/domainEvaluationProps.js';
 
 export const domainEvaluationToTargetLanguage = (
   evaluation: TDomainEvaluation,
 ): TTargetDependenciesTypeScript => {
-  const domainProperties = evaluation.props;
-  const domainName = evaluation.name;
+  const domainProperties = evaluation.domainEvaluation.props;
 
   let resultDomainProps: TTargetDependenciesTypeScript;
-  if ('regularEvaluation' in domainProperties) {
+  if (DomainEvaluationPropsTypeIdentifiers.isExpression(domainProperties)) {
     resultDomainProps = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TRegularEvaluation,
+      type: BitloopsTypesMapping.TExpression,
       value: domainProperties,
     });
   } else {
     resultDomainProps = modelToTargetLanguage({
       type: BitloopsTypesMapping.TEvaluationFields,
-      value: domainProperties,
+      value: domainProperties.fields,
     });
   }
 
+  const domainName = getDomainName(evaluation);
   const dependencies = [...resultDomainProps.dependencies, ...getChildDependencies(domainName)];
 
   return {
     output: `${domainName}.create(${resultDomainProps.output});`,
     dependencies,
   };
+};
+
+const getDomainName = (evaluation: TDomainEvaluation): string => {
+  const domainEvaluation = evaluation.domainEvaluation;
+  let domainName;
+  if ('entityIdentifier' in domainEvaluation) domainName = domainEvaluation.entityIdentifier;
+  if ('valueObjectIdentifier' in domainEvaluation)
+    domainName = domainEvaluation.valueObjectIdentifier;
+  return domainName;
 };

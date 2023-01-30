@@ -19,67 +19,64 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TRepoPort } from '../../../../types.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { RepoPortBuilder } from '../../intermediate-ast/builders/repo-port/RepoPortNodeBuilder.js';
+import { ExtendsRepoPortsNode } from '../../intermediate-ast/nodes/extendsRepoPortNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { MethodDefinitionListNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
+import { RepoPortIdentifierNode } from '../../intermediate-ast/nodes/repo-port/RepoPortIdentifierNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
 
 export const repoPortDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoPortDeclarationContext,
-): { RepoPorts: { [x: string]: TRepoPort } } => {
-  const repoPortName = ctx.repoPortIdentifier().getText();
-  let aggregateRootName: string;
-  let readModelName: string;
+): void => {
+  const repoPortName: RepoPortIdentifierNode = thisVisitor.visit(ctx.repoPortIdentifier());
 
-  const extendedRepoPorts = thisVisitor.visit(ctx.repoExtendsList());
-  let definitionMethods = { definitionMethods: {} };
+  const extendsRepoPorts: ExtendsRepoPortsNode = thisVisitor.visit(ctx.repoExtendsList());
+
+  //TODO whart if definitionMethods are missing
+  let definitionMethods: MethodDefinitionListNode;
   if (ctx.repoPortMethodDefinitions()) {
     definitionMethods = thisVisitor.visit(ctx.repoPortMethodDefinitions());
   }
 
-  let result;
-  if (ctx.ReadModelIdentifier()?.getText()) {
-    readModelName = ctx.ReadModelIdentifier().getText();
-    result = {
-      RepoPorts: {
-        [repoPortName]: {
-          readModelName,
-          extendedRepoPorts,
-          ...definitionMethods,
-        },
-      },
-    };
-  }
+  const metadata = produceMetadata(ctx, thisVisitor);
+  if (ctx.readModelIdentifier()) {
+    const readModelIdentifier = thisVisitor.visit(ctx.readModelIdentifier());
+    new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
+      .withDefinitionMethodsNode(definitionMethods)
+      .withExtendsRepoPortNode(extendsRepoPorts)
+      .withRepoPortIdentifierNode(repoPortName)
+      .withReadModelIdentifier(readModelIdentifier)
+      .build();
+  } else if (ctx.entityIdentifier()) {
+    const aggregateRootIdentifierNode = thisVisitor.visit(ctx.entityIdentifier());
 
-  if (ctx.aggregateRootIdentifier()?.getText()) {
-    aggregateRootName = ctx.aggregateRootIdentifier().getText();
-    result = {
-      RepoPorts: {
-        [repoPortName]: {
-          aggregateRootName,
-          extendedRepoPorts,
-          ...definitionMethods,
-        },
-      },
-    };
+    new RepoPortBuilder(thisVisitor.intermediateASTTree, metadata)
+      .withDefinitionMethodsNode(definitionMethods)
+      .withExtendsRepoPortNode(extendsRepoPorts)
+      .withRepoPortIdentifierNode(repoPortName)
+      .withEntityIdentifier(aggregateRootIdentifierNode)
+      .build();
   }
-
   // TODO Handle Identifier with < > if we want to extend a repoPort with a generic type
   // TODO Method definitions of user
-
-  return result;
 };
 
 export const repoPortExtendableIdentifierVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RepoPortExtendableIdentifierContext,
-): any => {
+): IdentifierNode => {
+  let identifier = '';
   if (ctx.RepoPortIdentifier()) {
-    return ctx.RepoPortIdentifier().getText();
+    identifier = ctx.RepoPortIdentifier().getText();
+  } else if (ctx.UpperCaseIdentifier(0) && !ctx.UpperCaseIdentifier(1)) {
+    identifier = ctx.UpperCaseIdentifier(0).getText();
+  } else if (ctx.UpperCaseIdentifier(0) && ctx.UpperCaseIdentifier(1)) {
+    identifier = `${ctx.UpperCaseIdentifier(0).getText()}<${ctx.UpperCaseIdentifier(1).getText()}>`;
   }
-  if (ctx.UpperCaseIdentifier(0) && !ctx.UpperCaseIdentifier(1)) {
-    return ctx.UpperCaseIdentifier(0).getText();
-  }
-  if (ctx.UpperCaseIdentifier(0) && ctx.UpperCaseIdentifier(1)) {
-    return `${ctx.UpperCaseIdentifier(0).getText()}<${ctx.UpperCaseIdentifier(1).getText()}>`;
-  }
+
+  return new IdentifierNodeBuilder().withName(identifier).build();
 };

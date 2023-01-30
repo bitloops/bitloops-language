@@ -17,54 +17,47 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d } from 'bitloops-gherkin';
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { validRepoPortCases } from './mocks/repoPort.js';
 
-const feature = loadFeature('__tests__/ast/core/repoPortDeclaration.feature');
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-defineFeature(feature, (test) => {
-  let boundedContext: string;
-  let module: string;
-  let blString: string;
-  let modelOutput: string;
-  let result: any;
-  test('Repo port declaration is valid', ({ given, when, then }) => {
-    given(
-      /^Valid bounded context (.*), module (.*), Port declaration (.*) strings$/,
-      (arg0, arg1, arg2) => {
-        boundedContext = d(arg0);
-        module = d(arg1);
-        blString = d(arg2);
-      },
-    );
+describe('Repo Port declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  validRepoPortCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
+        }
       }
-    });
+      const repoPortNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TRepoPort);
+      expect(repoPortNodes.length).toBe(1);
+      const value = repoPortNodes[0].getValue();
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      expect(value).toMatchObject(testCase.expected);
     });
   });
 });

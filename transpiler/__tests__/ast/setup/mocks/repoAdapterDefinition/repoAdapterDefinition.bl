@@ -1,0 +1,11 @@
+const mongoConnection = RepoConnections.Mongo({
+  host: 'localhost',
+  port: 27017,
+  database: 'todo',
+});
+
+const todoRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: 'todos',
+  }) concretes [Hello world][Demo]TodoRepoPort;
+  

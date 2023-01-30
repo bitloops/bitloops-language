@@ -19,6 +19,7 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { EvaluationBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationBuilder.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const evaluationVisitor = (
@@ -26,7 +27,5 @@ export const evaluationVisitor = (
   ctx: BitloopsParser.EvaluationContext,
 ): any => {
   const evaluation = thisVisitor.visitChildren(ctx)[0];
-  return {
-    evaluation,
-  };
+  return new EvaluationBuilder().withEvaluation(evaluation).build();
 };

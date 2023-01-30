@@ -17,104 +17,65 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TBitloopsOutputTargetContent,
-  TBitloopsTargetContent,
-  TBitloopsTargetGeneratorParams,
-  TBoundedContexts,
-  TClassType,
-  TComponentType,
-  TContextData,
-  TDependencyParentTypescript,
-  ISetupData,
-} from '../../../types.js';
-import { BitloopsTargetGeneratorError } from '../../BitloopsTargetGeneratorError.js';
-import { mappingClassTypeToComponentType } from '../../../helpers/mappings.js';
+import { TContextData, TDependencyParentTypescript } from '../../../types.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
-import { modelToTypescriptModel } from './model-transformation/modelToTsModel.js';
-import { deepClone } from '../../../utils/deepClone.js';
+import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
+import {
+  IIntermediateASTToTarget,
+  TargetGeneratorError,
+  TTargetCoreContent,
+  TTargetCoreFinalContent,
+} from '../../types.js';
+import { IntermediateAST } from '../../../ast/core/types.js';
 
-interface IBitloopsIntermediateASTToTarget {
-  ASTToTarget(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsTargetContent | BitloopsTargetGeneratorError;
-  formatCode(
-    targetContent: TBitloopsOutputTargetContent,
-    config?: any,
-  ): TBitloopsOutputTargetContent;
-  generateImports(params: TBitloopsTargetContent): TBitloopsOutputTargetContent;
-}
-
-export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateASTToTarget {
-  private getComponentType(classType: TClassType): TComponentType {
-    return mappingClassTypeToComponentType[classType] as TComponentType;
-  }
-
-  ASTToTarget(
-    params: TBitloopsTargetGeneratorParams,
-  ): TBitloopsTargetContent | BitloopsTargetGeneratorError {
-    const { intermediateAST, setupData } = params;
-    const result = [];
-    for (const boundedContextName of Object.keys(intermediateAST)) {
-      for (const moduleName of Object.keys(intermediateAST[boundedContextName])) {
+export class IntermediateASTToTarget implements IIntermediateASTToTarget {
+  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
+    const { core } = params;
+    const result: TTargetCoreContent[] = [];
+    for (const [boundedContextName, boundedContext] of Object.entries(core)) {
+      for (const [moduleName, intermediateASTTree] of Object.entries(boundedContext)) {
         const contextData: TContextData = {
           boundedContext: boundedContextName,
           module: moduleName,
         };
 
-        // TODO this may be moved to a previous model not specifically for typescript
-        if (this.moduleHasRepoAdaptersDefined(setupData, { boundedContextName, moduleName })) {
-          this.injectRepoAdaptersFromSetupToModel(intermediateAST, setupData, {
-            boundedContextName,
-            moduleName,
+        const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
+        classTypeNodes.forEach((intermediateASTNode) => {
+          const generatedString = modelToTargetLanguage({
+            type: intermediateASTNode.getNodeType(),
+            value: intermediateASTNode.getValue(),
+            contextData,
+            model: intermediateASTTree,
           });
-        }
-        for (const classType of Object.keys(intermediateAST[boundedContextName][moduleName])) {
-          const componentType = this.getComponentType(classType as TClassType);
-          for (const [componentName, component] of Object.entries(
-            intermediateAST[boundedContextName][moduleName][classType],
-          )) {
-            try {
-              const componentCopy = deepClone(component);
-              const transformedIntermediateAST = modelToTypescriptModel({
-                type: componentType,
-                value: { [componentName]: componentCopy },
-              });
-              const generatedString = modelToTargetLanguage({
-                type: componentType,
-                value: transformedIntermediateAST,
-                setupData,
-                contextData,
-                model: intermediateAST,
-              });
 
-              result.push({
-                boundedContext: boundedContextName,
-                module: moduleName,
-                classType: classType,
-                className: componentName,
-                fileContent: generatedString,
-              });
-            } catch (error) {
-              console.log('BitloopsTargetGeneratorError', error);
-              return new BitloopsTargetGeneratorError(error.message);
-            }
-          }
-        }
+          const classTypeNode = intermediateASTNode as ClassTypeNode;
+          result.push({
+            boundedContext: boundedContextName,
+            module: moduleName,
+            classType: classTypeNode.getClassType?.(),
+            className: classTypeNode.getClassName?.(),
+            fileContent: generatedString,
+          });
+        });
       }
     }
     return result;
   }
 
-  generateImports(params: TBitloopsTargetContent): TBitloopsOutputTargetContent {
-    const formattedCode: TBitloopsOutputTargetContent = [];
+  generateImports(params: TTargetCoreContent[]): TTargetCoreFinalContent[] {
+    const formattedCode: TTargetCoreFinalContent[] = [];
     for (const { boundedContext, classType, module, className, fileContent } of params) {
       const { output } = fileContent;
       const parentDependecies = fileContent.dependencies as TDependencyParentTypescript[];
 
-      const importsResult = this.generateDepndenciesString(parentDependecies, false);
-      const finalContent = importsResult + output;
+      let finalContent;
+      if (classType) {
+        const importsResult = this.generateDepndenciesString(parentDependecies, false);
+        finalContent = importsResult + output;
+      } else {
+        finalContent = output;
+      }
 
       formattedCode.push({
         boundedContext,
@@ -127,11 +88,8 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
     return formattedCode;
   }
 
-  formatCode(
-    targetContent: TBitloopsOutputTargetContent,
-    config?: any,
-  ): TBitloopsOutputTargetContent {
-    const formattedCode: TBitloopsOutputTargetContent = [];
+  formatCode(targetContent: TTargetCoreFinalContent[], config?: any): TTargetCoreFinalContent[] {
+    const formattedCode: TTargetCoreFinalContent[] = [];
     for (const { boundedContext, classType, module, className, fileContent } of targetContent) {
       const formattedContent = formatString(fileContent, config);
 
@@ -163,22 +121,5 @@ export class BitloopsIntermediateASTToTarget implements IBitloopsIntermediateAST
       result += ';';
     }
     return result;
-  }
-
-  private moduleHasRepoAdaptersDefined(
-    setupData: ISetupData,
-    { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
-  ): boolean {
-    return !!setupData?.repos?.repoAdapters?.[boundedContextName]?.[moduleName];
-  }
-
-  private injectRepoAdaptersFromSetupToModel(
-    intermediateAST: TBoundedContexts,
-    setupData: Readonly<ISetupData>,
-    { boundedContextName, moduleName }: { boundedContextName: string; moduleName: string },
-  ): void {
-    intermediateAST[boundedContextName][moduleName].RepoAdapters = deepClone(
-      setupData.repos.repoAdapters[boundedContextName][moduleName],
-    );
   }
 }

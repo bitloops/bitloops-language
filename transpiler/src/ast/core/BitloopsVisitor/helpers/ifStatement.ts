@@ -18,25 +18,43 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { StatementListNode } from './../../intermediate-ast/nodes/statements/StatementList.js';
+import { ThenStatementsNodeBuilder } from './../../intermediate-ast/builders/statements/ifStatement/ThenStatements.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TCondition, TIfStatement } from '../../../../types.js';
+import { produceMetadata } from '../metadata.js';
+import { IfStatementBuilder } from '../../intermediate-ast/builders/statements/ifStatement/IfStatementBuilder.js';
+import { ElseStatementsNodeBuilder } from '../../intermediate-ast/builders/statements/ifStatement/ElseStatements.js';
+import { IfStatementNode } from '../../intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 
 export const ifStatementVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IfStatementContext,
-): TIfStatement => {
-  const condition: TCondition = thisVisitor.visit(ctx.condition());
-  const thenStatements = thisVisitor.visit(ctx.statement(0));
-  const returnObject = {
-    ifStatement: {
-      ...condition,
-      thenStatements: thenStatements.statements,
-    },
-  };
-  if (ctx.statement(1)) {
-    const elseStatements = thisVisitor.visit(ctx.statement(1));
-    returnObject.ifStatement['elseStatements'] = elseStatements.statements;
+): IfStatementNode => {
+  const conditionNode = thisVisitor.visit(ctx.condition());
+  const thenStatementsList: StatementListNode = thisVisitor.visit(ctx.statementList(0));
+  // TODO When statementListNode is implemented, provide a method to get just the statements nodes array
+  // and remove below line (!and else TODO)
+  // const { statements: thenStatements } = thenStatementsRes;
+  const thenStatements = thenStatementsList;
+
+  const thenStatementsNode = new ThenStatementsNodeBuilder(thenStatementsList.getMetadata())
+    .withStatements(thenStatements)
+    .build();
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const ifStatementNode = new IfStatementBuilder(metadata)
+    .withCondition(conditionNode)
+    .withThenStatements(thenStatementsNode);
+
+  if (ctx.statementList(1)) {
+    const elseStatementList = thisVisitor.visit(ctx.statementList(1));
+
+    const elseStatements = elseStatementList;
+    const elseStatementsNode = new ElseStatementsNodeBuilder(elseStatementList.getMetadata())
+      .withStatements(elseStatements)
+      .build();
+    ifStatementNode.withElseStatements(elseStatementsNode);
   }
-  return returnObject;
+  return ifStatementNode.build();
 };

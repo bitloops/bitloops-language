@@ -20,17 +20,25 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TArgumentDependency, TInstanceOf } from '../../../../types.js';
+import { IsInstanceOfExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/IsIntanceOfExpressionBuilder.js';
+import { ClassNodeBuilder } from '../../intermediate-ast/builders/ClassBuilder.js';
+import { ExpressionBuilder } from '../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 // result is Error
 // {"isInstanceOf":[{"value":"result","type":"variable"},{"class":"Error"}]}
 export const isInstanceOfVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.IsInstanceOfContext,
-): TInstanceOf => {
-  const regularVariableEvaluation: TArgumentDependency = thisVisitor.visit(ctx.regularIdentifier());
+  ctx: BitloopsParser.IsInstanceOfExpressionContext,
+): ExpressionNode => {
+  const expression = thisVisitor.visit(ctx.expression());
+
   const classToCompare = ctx.classTypes().getText();
-  return {
-    isInstanceOf: [regularVariableEvaluation, { class: classToCompare }],
-  };
+  const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
+  const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
+    .withClass(classNode)
+    .withExpression(expression)
+    .build();
+
+  return new ExpressionBuilder().withExpression(isInstanceOfNode).build();
 };

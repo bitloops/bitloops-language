@@ -17,18 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { bitloopsTypeToLangMapping } from '../../../../../helpers/bitloopsPrimitiveToLang.js';
-import { isBitloopsPrimitive } from '../../../../../helpers/isBitloopsPrimitive.js';
-import { SupportedLanguages } from '../../../../../helpers/supportedLanguages.js';
-import { isOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
+import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import { TDomainPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainPrivateMethod = (
-  methodName: string,
-  methodInfo: TDomainPrivateMethod,
-): TTargetDependenciesTypeScript => {
+const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;
@@ -37,48 +31,38 @@ const domainPrivateMethod = (
     value: statements,
   });
 
-  const parametersString = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TParameterDependencies,
-    value: methodInfo.privateMethod.parameterDependencies,
+  const parametersTarget = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TParameterList,
+    value: { parameters: methodInfo.privateMethod.parameters },
   });
-  const mappedReturnTypeOutput = methodInfo.privateMethod.returnType;
+  const privateMethodValues = methodInfo.privateMethod;
   let mappedReturnType;
 
-  if (isOkErrorReturnType(mappedReturnTypeOutput)) {
+  if (hasOkErrorReturnType(privateMethodValues)) {
     const resOkErrorReturnType = modelToTargetLanguage({
       type: BitloopsTypesMapping.TOkErrorReturnType,
-      value: mappedReturnTypeOutput,
+      value: { returnType: privateMethodValues.returnType },
     });
     mappedReturnType = {
       output: resOkErrorReturnType.output,
       dependencies: resOkErrorReturnType.dependencies,
     };
   } else {
-    if (isBitloopsPrimitive(mappedReturnTypeOutput)) {
-      mappedReturnType = {
-        output: bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](mappedReturnTypeOutput),
-        dependencies: [],
-      };
-    }
+    mappedReturnType = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: { type: privateMethodValues.type },
+    });
   }
-  const ToLanguageMapping = (
-    methodName: string,
-    returnType: string,
-    parametersString: string,
-    methodStatements: string,
-  ): string => {
-    return `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`;
-  };
-  const result = ToLanguageMapping(
-    methodName,
-    mappedReturnType.output as string,
-    parametersString.output,
-    statementsString.output,
-  );
+
+  const methodName = privateMethod.identifier;
+  const parametersString = parametersTarget.output;
+  const returnType = mappedReturnType.output;
+  const methodStatements = statementsString.output;
+
   return {
-    output: result,
+    output: `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`,
     dependencies: [
-      ...parametersString.dependencies,
+      ...parametersTarget.dependencies,
       ...statementsString.dependencies,
       ...mappedReturnType.dependencies,
     ],

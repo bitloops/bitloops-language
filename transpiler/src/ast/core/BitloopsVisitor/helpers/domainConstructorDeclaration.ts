@@ -20,26 +20,21 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityCreate } from '../../../../types.js';
-import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
+import { DomainCreateNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateBuilder.js';
+import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
 
 export const domainConstructorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorDeclarationContext,
-): TEntityCreate => {
-  const functionBody = thisVisitor.visit(ctx.functionBody());
-  const returnType = thisVisitor.visit(ctx.returnOkErrorType());
-  const parameters = thisVisitor.visit(ctx.formalParameterList());
+): DomainCreateNode => {
+  const statementListNode = thisVisitor.visit(ctx.functionBody());
+  const returnTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
+  const propsParameter = thisVisitor.visit(ctx.domainConstructorParam());
 
-  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(
-    functionBody.statements,
-    returnType,
-  );
-
-  const result: TEntityCreate = {
-    returnType,
-    statements: statementsWithModifiedReturn,
-    parameterDependency: parameters[0],
-  };
-  return result;
+  const domainCreateNode = new DomainCreateNodeBuilder()
+    .withStatements(statementListNode)
+    .withReturnType(returnTypeNode)
+    .withParameter(propsParameter)
+    .build();
+  return domainCreateNode;
 };

@@ -20,39 +20,31 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import {
-  TDomainPrivateMethod,
-  TParameterDependencies,
-  TReturnType,
-  TOkErrorReturnType,
-} from '../../../../types.js';
-import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
-import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
+import { produceMetadata } from '../metadata.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { PrivateMethodDeclarationNodeBuilder } from '../../intermediate-ast/builders/methods/PrivateMethodDeclarationNodeBuilder.js';
+import { PrivateMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 
 export const privateMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PrivateMethodDeclarationContext,
-): { methodName: string; methodInfo: TDomainPrivateMethod } => {
-  const methodName = ctx.identifier().getText();
-  const parameterDependencies: TParameterDependencies = thisVisitor.visit(
-    ctx.formalParameterList(),
-  );
-  const returnType: TReturnType | TOkErrorReturnType = thisVisitor.visit(
+): PrivateMethodDeclarationNode => {
+  const methodNameNode = thisVisitor.visit(ctx.identifier());
+  const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
+  const returnType: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode = thisVisitor.visit(
     ctx.returnPrivateMethodType(),
   );
-  const { statements } = thisVisitor.visit(ctx.functionBody());
-  const returnOkType = returnType as TOkErrorReturnType;
+  const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
 
-  const statementsWithModifiedReturn = modifyReturnOkErrorStatements(statements, returnOkType);
-
-  addReturnOkVoidStatement(statementsWithModifiedReturn, returnOkType);
-
-  const methodInfo: TDomainPrivateMethod = {
-    privateMethod: {
-      parameterDependencies,
-      returnType,
-      statements: statementsWithModifiedReturn,
-    },
-  };
-  return { methodName, methodInfo };
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const methodNode = new PrivateMethodDeclarationNodeBuilder(metadata)
+    .withIdentifier(methodNameNode)
+    .withParameters(parameterDependencies)
+    .withReturnType(returnType)
+    .withStatements(statements)
+    .build();
+  return methodNode;
 };
