@@ -30,6 +30,7 @@ export class IntermediateASTValidationError extends Error {}
 
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | IntermediateASTValidationError[];
+  createSymbolTable: (ast: IntermediateAST) => void;
 }
 
 export type TControllerUseCaseExecuteNodeType =

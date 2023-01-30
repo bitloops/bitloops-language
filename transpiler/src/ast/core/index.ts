@@ -30,6 +30,7 @@ export class IntermediateASTParser implements IIntermediateASTParser {
       return intermediateAST;
     }
 
+    this.validator.createSymbolTable(intermediateAST);
     const validationResult = this.validateIntermediateASTTree(intermediateAST);
     if (isIntermediateASTValidationErrors(validationResult)) {
       return validationResult;

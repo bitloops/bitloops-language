@@ -156,7 +156,9 @@ export abstract class IntermediateASTNode {
     });
   }
 
-  public validate(): void | IntermediateASTNodeValidationError {
+  public validate(
+    _symbolTable?: Record<string, boolean>,
+  ): void | IntermediateASTNodeValidationError {
     return;
   }
 

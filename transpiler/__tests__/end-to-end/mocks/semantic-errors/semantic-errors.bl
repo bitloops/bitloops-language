@@ -1,0 +1,22 @@
+// Props TitleProps {
+//     string title;
+//   }
+
+// ValueObject TitleVO {
+//     constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+//       applyRules(TitleOutOfBoundsRule(props.title));
+//     }
+//   }
+// Props TodoProps {
+//     optional UUIDv4 id;
+//     TitleVO title;
+//     bool completed;
+//   }
+Root Entity TodoEntity {    
+    constructor(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+    
+    check(title: TitleVO):  (OK(void), Errors()) {
+        this.title = title;
+      }
+}
+
