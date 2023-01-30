@@ -22,10 +22,8 @@ import { ICoreError } from '../../ICoreError';
 export type ErrorMessage = ICoreError;
 
 // TODO replace all with ErrorMessage
-export interface IBaseController<Req, Res> {
+export interface IBaseRESTController<Req, Res> {
   execute(req: Req, res: Res): Promise<void>;
-
-  //   jsonResponse(res: Res, code: number, message: string);
 
   ok<T>(res: Res, dto?: T): any;
 
@@ -33,15 +31,31 @@ export interface IBaseController<Req, Res> {
 
   badRequest(res: Res, message?: ErrorMessage): any;
 
+  unauthorized(res: Res, message?: ErrorMessage): any;
+
   paymentRequired(res: Res, message?: ErrorMessage): any;
 
   forbidden(res: Res, message?: ErrorMessage): any;
 
   notFound(res: Res, message?: ErrorMessage): any;
 
+  methodNotAllowed(res: Res, message?: ErrorMessage): any;
+
   conflict(res: Res, message?: ErrorMessage): any;
+
+  requestTimeout(res: Res, message?: ErrorMessage): any;
+
+  payloadTooLarge(res: Res, message?: ErrorMessage): any;
+
+  unsupportedMediaType(res: Res, message?: ErrorMessage): any;
+
+  unprocessableEntity(res: Res, message?: ErrorMessage): any;
 
   tooMany(res: Res, message?: ErrorMessage): any;
 
   fail(res: Res, error: Error | string): any;
+
+  badGateway(res: Res, message?: ErrorMessage): any;
+
+  serverUnavailable(res: Res, message?: ErrorMessage): any;
 }

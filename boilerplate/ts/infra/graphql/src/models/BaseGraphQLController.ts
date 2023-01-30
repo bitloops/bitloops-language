@@ -18,10 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { ApolloError, AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server';
-import { IBaseController } from './IBaseController';
+import { Infra } from '@bitloops/bl-boilerplate-core';
 
 export abstract class BaseGraphQLController<TRequest, TResponseData>
-  implements IBaseController<TRequest, TResponseData>
+  implements Infra.GraphQL.IBaseController<TRequest, TResponseData>
 {
   protected abstract executeImpl(req: TRequest): Promise<TResponseData | ApolloError>;
 
@@ -38,24 +38,16 @@ export abstract class BaseGraphQLController<TRequest, TResponseData>
     throw result;
   }
 
-  public ok(dto: TResponseData) {
-    return dto;
+  public ok(dto?: TResponseData) {
+    return dto ?? 'OK';
   }
 
-  public created() {
-    return 'Created';
-  }
-
-  public clientError(errorId: string, message?: string) {
+  public badUserInput(errorId: string, message?: string) {
     return new UserInputError(message ? message : 'User input error', { errorId });
   }
 
-  public unauthorized(errorId: string, message?: string) {
-    return new AuthenticationError(message ? message : 'Unauthorized', { errorId });
-  }
-
-  public paymentRequired(errorId: string, message?: string) {
-    return new ApolloError(message ? message : 'Payment required', 'PAYMENT_REQUIRED', { errorId });
+  public badRequest(errorId: string, message: string) {
+    return new UserInputError(message, { errorId });
   }
 
   public forbidden(errorId: string, message: string) {
@@ -67,25 +59,15 @@ export abstract class BaseGraphQLController<TRequest, TResponseData>
     return new ApolloError(message ? message : 'Not found', 'NOT_FOUND', { errorId });
   }
 
-  public conflict(errorId: string, message: string) {
-    return new ApolloError(message ? message : 'Conflict', 'CONFLICT', { errorId });
+  public unauthorized(errorId: string, message?: string) {
+    return new AuthenticationError(message ? message : 'Unauthorized', { errorId });
   }
 
-  public tooMany(errorId: string, message?: string) {
-    return new ApolloError(message ? message : 'Too many', 'TOO_MANY', { errorId });
+  public internalError(errorId: string, message: string) {
+    return new ApolloError(message, errorId);
   }
 
   public fail(error: Error | string) {
     return new ApolloError(error instanceof Error ? error.message : error);
-  }
-
-  public badRequest(errorId: string, message: string) {
-    return new UserInputError(message, { errorId });
-  }
-  public internalError(errorId: string, message: string) {
-    return new ApolloError(message, errorId);
-  }
-  public subscriptionError(errorId: string, message: string) {
-    return new ApolloError(message, errorId);
   }
 }

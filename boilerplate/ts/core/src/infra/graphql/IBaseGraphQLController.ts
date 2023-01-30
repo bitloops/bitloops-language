@@ -17,23 +17,19 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-export interface IBaseController<TRequest, TResponseData> {
+export interface IBaseGraphQLController<TRequest, TResponseData> {
   execute(req: TRequest): Promise<TResponseData>;
 
-  ok(dto: TResponseData): TResponseData;
-  created(): any;
+  ok(dto?: TResponseData): TResponseData | string;
 
-  clientError(message: string, errorId: string): any;
-  paymentRequired(message: string, errorId: string): any;
-  conflict(message: string, errorId: string): any;
-  tooMany(message: string, errorId: string): any;
+  // Should act as a custom error
   fail(error: Error | string, errorId: string): any;
 
   // GraphQL-specific error messages
+  badUserInput(message: string, errorId: string): any;
   badRequest(message: string, errorId: string): any;
   forbidden(message: string, errorId: string): any;
   notFound(message: string, errorId: string): any;
   unauthorized(message: string, errorId: string): any;
   internalError(message: string, errorId: string): any;
-  subscriptionError(message: string, errorId: string): any;
 }
