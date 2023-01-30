@@ -20,7 +20,7 @@
 export interface IBaseGraphQLController<TRequest, TResponseData> {
   execute(req: TRequest): Promise<TResponseData>;
 
-  ok(dto?: TResponseData): TResponseData | string;
+  ok(dto?: TResponseData): TResponseData;
 
   // Should act as a custom error
   fail(error: Error | string, errorId: string): any;

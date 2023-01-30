@@ -39,7 +39,7 @@ export abstract class BaseGraphQLController<TRequest, TResponseData>
   }
 
   public ok(dto?: TResponseData) {
-    return dto ?? 'OK';
+    return dto ?? ({} as TResponseData);
   }
 
   public badUserInput(errorId: string, message?: string) {

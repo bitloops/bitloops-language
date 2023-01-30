@@ -38,7 +38,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.1.0",
+    "@bitloops/bl-boilerplate-core": "^0.1.1",
     "@fastify/cors": "^8.1.0",
     "@fastify/formbody": "^7.3.0",
     "fastify": "^4.11.0"

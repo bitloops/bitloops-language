@@ -19,7 +19,6 @@
  */
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { ICoreError } from '@bitloops/bl-boilerplate-core/lib/cjs/types/ICoreError';
 
 // TODO change all errors to be consistent with ErrorMessage
 export abstract class BaseFastifyController
@@ -78,11 +77,11 @@ export abstract class BaseFastifyController
     return BaseFastifyController.jsonResponse(res, 404, message ?? 'Not found');
   }
 
-  public methodNotAllowed(res: FastifyReply, message?: ICoreError) {
+  public methodNotAllowed(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 405, message ?? 'Method not allowed');
   }
 
-  public requestTimeout(res: FastifyReply, message?: ICoreError) {
+  public requestTimeout(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 408, message ?? 'Request timeout');
   }
 
@@ -90,15 +89,15 @@ export abstract class BaseFastifyController
     return BaseFastifyController.jsonResponse(res, 409, message ?? 'Conflict');
   }
 
-  public payloadTooLarge(res: FastifyReply, message?: ICoreError) {
+  public payloadTooLarge(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 413, message ?? 'Payload too large');
   }
 
-  public unsupportedMediaType(res: FastifyReply, message?: ICoreError) {
+  public unsupportedMediaType(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 415, message ?? 'Unsupported media type');
   }
 
-  public unprocessableEntity(res: FastifyReply, message?: ICoreError) {
+  public unprocessableEntity(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 422, message ?? 'Unprocessable entity');
   }
 
@@ -114,11 +113,11 @@ export abstract class BaseFastifyController
     });
   }
 
-  public badGateway(res: FastifyReply, message?: ICoreError) {
+  public badGateway(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 502, message ?? 'Bad gateway');
   }
 
-  public serverUnavailable(res: FastifyReply, message?: ICoreError) {
+  public serverUnavailable(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
     return BaseFastifyController.jsonResponse(res, 503, message ?? 'Server unavailable');
   }
 }
