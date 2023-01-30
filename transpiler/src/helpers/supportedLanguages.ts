@@ -17,10 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-const SupportedLanguages = {
-  TypeScript: 'TypeScript',
-  // Java = 'Java',
-};
+
+import { SupportedLanguages } from '../target/supportedLanguages.js';
 
 const languageExtensions: Record<string, string> = {
   TypeScript: '.ts',
@@ -45,9 +43,4 @@ const getLanguageFileSuffixExtension = (language: string): string => {
   return languageSuffixExtensions[language];
 };
 
-export {
-  getLanguageFileExtension,
-  isLanguageSupported,
-  SupportedLanguages,
-  getLanguageFileSuffixExtension,
-};
+export { getLanguageFileExtension, isLanguageSupported, getLanguageFileSuffixExtension };

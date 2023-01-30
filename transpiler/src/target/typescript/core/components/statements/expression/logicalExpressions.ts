@@ -45,20 +45,17 @@ enum LOGICAL_EXPRESSION_MODEL_IDs {
 export const notExpressionToTargetLanguage = (
   value: TNotExpression,
 ): TTargetDependenciesTypeScript => {
-  const langMapping = (value: TNotExpression): TTargetDependenciesTypeScript => {
-    const { notExpression } = value;
+  const { notExpression } = value;
 
-    const expression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
-      value: notExpression,
-    });
+  const expression = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: notExpression,
+  });
 
-    return {
-      output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT} ${expression.output}`,
-      dependencies: [...expression.dependencies],
-    };
+  return {
+    output: `${LOGICAL_OPERATORS_TYPESCRIPT.NOT}(${expression.output})`,
+    dependencies: [...expression.dependencies],
   };
-  return langMapping(value);
 };
 
 export const orExpressionToTargetLanguage = (
@@ -69,12 +66,12 @@ export const orExpressionToTargetLanguage = (
     const { left, right } = orExpression;
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 
@@ -94,12 +91,12 @@ export const andExpressionToTargetLanguage = (
     const { left, right } = andExpression;
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 
@@ -119,12 +116,12 @@ export const xorExpressionToTargetLanguage = (
     const { left, right } = xorExpression;
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 

@@ -17,38 +17,53 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d } from 'bitloops-gherkin';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('./__tests__/target/typescript/core/ifStatement.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_IF_STATEMENT_TEST_CASES } from './mocks/statements/ifStatement.js';
 
-defineFeature(feature, (test) => {
-  let ifStatementType;
-  let result;
-  let value;
+describe('Valid If statement test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('IfStatement with a valid condition and statements', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      ifStatementType = type;
-    });
+  VALID_IF_STATEMENT_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.ifStatement;
 
-    given(/^I have an ifStatement (.*)$/, (ifStatement) => {
-      value = d(ifStatement);
-    });
+      tree.insertChild(input);
 
-    when('I generate the code', () => {
-      const ifStatementValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: ifStatementType,
-        value: ifStatementValue,
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
+
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(d(output));
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

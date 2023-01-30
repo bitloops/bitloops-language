@@ -18,156 +18,249 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { LogicalExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalExpressionBuilder.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TExpression } from '../../../../types.js';
+import { AdditiveExpressionBuilder } from '../../intermediate-ast/builders/expressions/additiveExpresssion.js';
+// import { AdditiveExpressionNode } from '../../../../refactoring-arch/intermediate-ast/nodes/Expression/AdditiveExpression.js';
+import { OperatorBuilder } from '../../intermediate-ast/builders/expressions/operatorBuilder.js';
+import { MultiplicativeExpressionBuilder } from '../../intermediate-ast/builders/expressions/multiplicativeExpression.js';
+import { LeftExpressionBuilder } from '../../intermediate-ast/builders/expressions/leftExpressionBuilder.js';
+import { LiteralBuilder } from '../../intermediate-ast/builders/expressions/literal/LiteralBuilder.js';
+import { RightExpressionBuilder } from '../../intermediate-ast/builders/expressions/rightExpressionBuilder.js';
+import { ExpressionBuilder } from '../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ParenthesizedExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/parenthesizedExprBuilder.js';
+import { RelationalExpressionBuilder } from '../../intermediate-ast/builders/expressions/relationalBuilder.js';
+import { EqualityExpressionBuilder } from '../../intermediate-ast/builders/expressions/equalityBuilderExpression.js';
+import { LogicalAndExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalAndExpressionBuilder.js';
+import { LogicalOrExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalOrExpressionBuilder.js';
+import { LogicalXorExpressionBuilder } from '../../intermediate-ast/builders/expressions/Logical/logicalXorExpressionBuilder.js';
+import { NotExpressionNodeBuilder } from '../../intermediate-ast/builders/expressions/Logical/notExpression.js';
+import { EnvironmentalVariableNodeBuilder } from '../../intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { produceMetadata } from '../metadata.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { DefaultEnvVarValueNodeBuilder } from '../../intermediate-ast/builders/setup/DefaultEnvVarValueNodeBuilder.js';
+import { LiteralNode } from '../../intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EqualityExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  const operator = ctx.op.text;
-  return {
-    expression: {
-      equalityExpression: {
-        left: left.expression,
-        right: right.expression,
-        operator: operator,
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new EqualityExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const relationalExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.RelationalExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  const operator = ctx.op.text;
-  return {
-    expression: {
-      relationalExpression: {
-        left: left.expression,
-        right: right.expression,
-        operator: operator,
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new RelationalExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const logicalAndExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.LogicalAndExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  return {
-    expression: {
-      logicalExpression: {
-        andExpression: {
-          left: left.expression,
-          right: right.expression,
-        },
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new LogicalAndExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const logicalExpression = new LogicalExpressionBuilder().withANDExpression(node).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
+
+  return expressionNode;
 };
 
 export const logicalOrExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.LogicalOrExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  return {
-    expression: {
-      logicalExpression: {
-        orExpression: {
-          left: left.expression,
-          right: right.expression,
-        },
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new LogicalOrExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const logicalExpression = new LogicalExpressionBuilder().withORExpression(node).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
+
+  return expressionNode;
 };
 
 export const logicalXorExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.LogicalXorExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  return {
-    expression: {
-      logicalExpression: {
-        xorExpression: {
-          left: left.expression,
-          right: right.expression,
-        },
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new LogicalXorExpressionBuilder()
+    .withLeftExpression(left)
+    .withOperator(operator)
+    .withRightExpression(right)
+    .build();
+
+  const logicalExpression = new LogicalExpressionBuilder().withXORExpression(node).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
+
+  return expressionNode;
 };
 
 export const logicalNotExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.NotExpressionContext,
-): TExpression => {
+): ExpressionNode => {
   const expression = thisVisitor.visit(ctx.expression());
-  return {
-    expression: {
-      logicalExpression: { notExpression: expression.expression },
-    },
-  };
+  const notExpression = new NotExpressionNodeBuilder().withExpression(expression).build();
+  const logicalExpression = new LogicalExpressionBuilder().withNOTExpression(notExpression).build();
+  const expressionNode = new ExpressionBuilder().withExpression(logicalExpression).build();
+  return expressionNode;
 };
 
 export const multiplicativeExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MultiplicativeExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  const operator = ctx.op.text;
-  return {
-    expression: {
-      multiplicativeExpression: {
-        left: left.expression,
-        right: right.expression,
-        operator: operator,
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new MultiplicativeExpressionBuilder()
+    .withLeftExpression(left)
+    .withRightExpression(right)
+    .withOperator(operator)
+    .build();
+
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const additiveExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.AdditiveExpressionContext,
-): TExpression => {
-  const left = thisVisitor.visit(ctx.expression(0));
-  const right = thisVisitor.visit(ctx.expression(1));
-  const operator = ctx.op.text;
-  return {
-    expression: {
-      additiveExpression: {
-        left: left.expression,
-        right: right.expression,
-        operator: operator,
-      },
-    },
-  };
+): ExpressionNode => {
+  const leftExp = thisVisitor.visit(ctx.expression(0));
+  const left = new LeftExpressionBuilder().withExpression(leftExp).build();
+  const rightExp = thisVisitor.visit(ctx.expression(1));
+  const right = new RightExpressionBuilder().withExpression(rightExp).build();
+
+  const operator = new OperatorBuilder().withSymbol(ctx.op.text).build();
+
+  const node = new AdditiveExpressionBuilder()
+    .withLeftExpression(left)
+    .withRightExpression(right)
+    .withOperator(operator)
+    .build();
+  const expressionNode = new ExpressionBuilder().withExpression(node).build();
+
+  return expressionNode;
 };
 
 export const parenthesizedExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ParenthesizedExpressionContext,
-): TExpression => {
+) => {
   const expression = thisVisitor.visit(ctx.expression());
-  return {
-    expression: {
-      parenthesizedExpression: expression.expression,
-    },
-  };
+  const parenthesizedExpr = new ParenthesizedExpressionNodeBuilder()
+    .withExpression(expression)
+    .build();
+  return new ExpressionBuilder().withExpression(parenthesizedExpr).build();
+};
+
+export const LiteralExpressionVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctxLiteral: BitloopsParser.LiteralExpressionContext,
+): ExpressionNode => {
+  const actualLiteral = thisVisitor.visit(ctxLiteral.literal());
+  const literalExpr = new LiteralBuilder().withLiteral(actualLiteral).build();
+  return new ExpressionBuilder().withExpression(literalExpr).build();
+};
+
+export const enviromentVariableVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+): ExpressionNode => {
+  const identifierNode = new IdentifierNodeBuilder().withName(ctx.envVariable().getText()).build();
+
+  const envVar = new EnvironmentalVariableNodeBuilder().withIdentifier(identifierNode).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  return new ExpressionBuilder(metadata).withExpression(envVar).build();
+};
+
+export const envVarWithDefaultValueExpressionVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
+): ExpressionNode => {
+  const identifierCtx = ctx.identifier() ? ctx.identifier() : ctx.upperCaseIdentifier();
+  const identifierNode: IdentifierNode = thisVisitor.visit(identifierCtx);
+
+  const literalNode: LiteralNode = thisVisitor.visit(ctx.literal());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+
+  const defaultEnvVarValueNode = new DefaultEnvVarValueNodeBuilder()
+    .withLiteral(literalNode)
+    .build();
+
+  const envVar = new EnvironmentalVariableNodeBuilder(metadata)
+    .withIdentifier(identifierNode)
+    .withDefaultValue(defaultEnvVarValueNode)
+    .build();
+
+  return new ExpressionBuilder(metadata).withExpression(envVar).build();
 };

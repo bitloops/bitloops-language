@@ -18,20 +18,19 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  TBoundedContexts,
-  TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
-  TEntities,
-  TEntityMethods,
+  TDomainPrivateMethods,
+  TDomainPublicMethods,
+  TEntity,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
-import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
-import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
+import { getParentDependencies } from '../../dependencies.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -54,73 +53,76 @@ const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   },
 ];
 
-const entityMethods = (objectValueMethods: TEntityMethods): TTargetDependenciesTypeScript => {
-  const result = domainMethods(objectValueMethods);
+const entityMethods = (
+  privateMethods: TDomainPrivateMethods,
+  publicMethods: TDomainPublicMethods,
+): TTargetDependenciesTypeScript => {
+  const result = domainMethods(publicMethods, privateMethods);
+
   return { output: result.output, dependencies: result.dependencies };
 };
 
-const entitiesToTargetLanguage = (params: {
-  entities: TEntities;
-  model: TBoundedContexts;
-  contextData: TContextData;
+const initialEntityLangMapping = (entityName: string, propsName: string): string =>
+  `export class ${entityName} extends Domain.Entity<${propsName}> { `;
+
+const entityToTargetLanguage = (params: {
+  entity: TEntity;
+  model: IntermediateASTTree;
 }): TTargetDependenciesTypeScript => {
-  const { entities, model, contextData } = params;
-
-  const { boundedContext, module } = contextData;
-
-  const modelForContext = model[boundedContext][module];
-
-  const initialEntityLangMapping = (entityName: string, propsName: string) =>
-    `export class ${entityName} extends Domain.Entity<${propsName}> { `;
+  const { entity, model } = params;
 
   let result = '';
-  let parentDependencies;
   let dependencies = ENTITY_DEPENDENCIES;
 
-  for (const [entityName, entity] of Object.entries(entities)) {
-    const { methods, create, constantVars } = entity;
-    const propsName = create.parameterDependency.type;
-    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsName)) {
-      throw new Error(`Entity props type of ${entityName} cannot be an array`);
-    }
+  const { entityValues, entityIdentifier } = entity.Entity;
+  const { privateMethods, publicMethods, create, constants } = entityValues;
 
-    dependencies = [...dependencies, ...getChildDependencies(propsName)];
+  const propsNameType = create.domainCreateParameter.parameterType;
 
-    if (constantVars) {
-      // TODO fix with new model/types
-      const constantVariablesModel = constantVariables(constantVars as any);
-      result += constantVariablesModel.output;
-      dependencies = [...dependencies, ...constantVariablesModel.dependencies];
-    }
+  const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TDomainConstructorParameter,
+    value: propsNameType,
+  });
 
-    result += initialEntityLangMapping(entityName, propsName);
+  dependencies = [...dependencies, ...propsTypeDependencies];
 
-    const entityCreateModel = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TEntityCreate,
-      value: create,
-    });
-    result += entityCreateModel.output;
-    dependencies = [...dependencies, ...entityCreateModel.dependencies];
-
-    const gettersModel = generateGetters(propsName, modelForContext, methods);
-    result += gettersModel.output;
-    dependencies = [...dependencies, ...gettersModel.dependencies];
-
-    if (methods) {
-      const entityMethodsModel = entityMethods(methods);
-      result += entityMethodsModel.output;
-      dependencies = [...dependencies, ...entityMethodsModel.dependencies];
-    }
-
-    result += '}';
-
-    parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-      classType: ClassTypes.Entities,
-      className: entityName,
-    });
+  if (constants) {
+    // TODO fix with new model/types
+    const constantVariablesModel = constantVariables(constants as any);
+    result += constantVariablesModel.output;
+    dependencies = [...dependencies, ...constantVariablesModel.dependencies];
   }
+
+  result += initialEntityLangMapping(entityIdentifier, propsName);
+
+  const entityCreateModel = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TEntityCreate,
+    value: { create },
+  });
+  result += entityCreateModel.output;
+  dependencies = [...dependencies, ...entityCreateModel.dependencies];
+
+  const gettersModel = generateGetters({
+    propsName,
+    model,
+    publicMethods,
+    privateMethods,
+  });
+  result += gettersModel.output;
+  dependencies = [...dependencies, ...gettersModel.dependencies];
+
+  const entityMethodsModel = entityMethods(privateMethods, publicMethods);
+  result += entityMethodsModel.output;
+  dependencies = [...dependencies, ...entityMethodsModel.dependencies];
+
+  result += '}';
+
+  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+    classType: ClassTypes.Entity,
+    className: entityIdentifier,
+  });
 
   return { output: result, dependencies: parentDependencies };
 };
 
-export { entitiesToTargetLanguage };
+export { entityToTargetLanguage };

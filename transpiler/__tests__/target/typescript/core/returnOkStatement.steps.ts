@@ -17,37 +17,53 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/returnOkStatement.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_RETURN_OK_STATEMENT_TEST_CASES } from './mocks/statements/return.js';
 
-defineFeature(feature, (test) => {
-  let propsType;
-  let result;
-  let value;
+describe('Return ok test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Return OK statement success to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      propsType = type;
-    });
+  VALID_RETURN_OK_STATEMENT_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.return;
 
-    given(/^I have a return statement (.*)$/, (returnStatement) => {
-      value = returnStatement;
-    });
+      tree.insertChild(input);
 
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: propsType,
-        value: propsValue,
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
+
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

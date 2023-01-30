@@ -1,89 +1,114 @@
-import { BitloopsLanguageASTContext } from '../../index.js';
-import { TBoundedContexts } from '../../types.js';
+import { OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
+import { OriginalAST } from '../../parser/index.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
+import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
+import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
+import { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';
+import {
+  IntermediateASTParserError,
+  IntermediateASTValidationError,
+  IIntermediateASTParser,
+  IntermediateASTError,
+  IIntermediateASTValidator,
+  IntermediateAST,
+  IntermediateASTSetup,
+  TBoundedContexts,
+} from './types.js';
 
-export interface IBitloopsIntermediateASTParser {
-  parse: (ast: BitloopsLanguageASTContext) => TBoundedContexts | BitloopsIntermediateASTParserError;
-}
+export class IntermediateASTParser implements IIntermediateASTParser {
+  private validator: IIntermediateASTValidator;
+  private intermediateASTTransformer: IntermediateASTToCompletedIntermediateASTTransformer;
 
-export class BitloopsIntermediateASTParserError extends Error {}
-
-export class BitloopsIntermediateASTParser implements IBitloopsIntermediateASTParser {
-  parse(ast: BitloopsLanguageASTContext): TBoundedContexts | BitloopsIntermediateASTParserError {
-    let boundedContextsData: TBoundedContexts = {};
-    let partialBoundedContextsData: TBoundedContexts = {};
-    for (const [boundedContextName, boundedContext] of Object.entries(ast)) {
-      for (const classes of Object.values(boundedContext)) {
-        for (const classData of Object.values(classes)) {
-          const bitloopsVisitor = new BitloopsVisitor();
-          const visitorModel = bitloopsVisitor.visit(classData.initialAST);
-          partialBoundedContextsData = {
-            [boundedContextName]: { [classData.module]: visitorModel },
-          };
-          boundedContextsData = mergeBoundedContextData(
-            boundedContextsData,
-            partialBoundedContextsData,
-          );
-        }
-      }
-    }
-    return boundedContextsData;
+  constructor() {
+    this.validator = new IntermediateASTValidator();
+    this.intermediateASTTransformer = new IntermediateASTToCompletedIntermediateASTTransformer();
   }
-}
 
-const mergeBoundedContextData = (
-  mainBoundedContextData: TBoundedContexts,
-  newBoundedContextData: TBoundedContexts,
-): TBoundedContexts => {
-  const result = { ...mainBoundedContextData };
-  for (const [boundedContextName, boundedContextData] of Object.entries(newBoundedContextData)) {
-    for (const [moduleName, moduleData] of Object.entries(boundedContextData)) {
-      for (const [classType, classTypeData] of Object.entries(moduleData)) {
-        for (const [className, classData] of Object.entries(classTypeData)) {
-          if (classTypeExists(boundedContextName, moduleName, classType, result)) {
-            result[boundedContextName][moduleName][classType][className] = classData;
-          } else if (moduleExists(boundedContextName, moduleName, result)) {
-            result[boundedContextName][moduleName][classType] = { [className]: classData };
-          } else if (boundedContextExists(boundedContextName, result)) {
-            result[boundedContextName][moduleName] = { [classType]: { [className]: classData } };
-          } else {
-            result[boundedContextName] = {
-              [moduleName]: { [classType]: { [className]: classData } },
+  parse(ast: OriginalAST): IntermediateAST | IntermediateASTError {
+    const intermediateAST = this.originalASTToIntermediateASTTree(ast);
+    if (isIntermediateASTParserError(intermediateAST)) {
+      return intermediateAST;
+    }
+
+    const validationResult = this.validateIntermediateASTTree(intermediateAST);
+    if (isIntermediateASTValidationErrors(validationResult)) {
+      return validationResult;
+    }
+
+    const completedASTTree = this.completeIntermediateASTTree(intermediateAST);
+
+    return completedASTTree;
+  }
+
+  private originalASTToIntermediateASTTree(
+    ast: OriginalAST,
+  ): IntermediateAST | IntermediateASTParserError[] {
+    const intermediateASTCoreTree = this.originalASTCoreToIntermediateASTTree(ast.core);
+    if (isIntermediateASTParserError(intermediateASTCoreTree)) {
+      return intermediateASTCoreTree;
+    }
+    if (!ast.setup) {
+      return {
+        core: intermediateASTCoreTree,
+      };
+    }
+    const intermediateASTSetupTree = this.originalASTSetupToIntermediateASTTree(ast.setup);
+    return {
+      core: intermediateASTCoreTree,
+      setup: intermediateASTSetupTree,
+    };
+  }
+
+  private originalASTSetupToIntermediateASTTree(astSetup: OriginalASTSetup): IntermediateASTSetup {
+    const setupAST: IntermediateASTSetup = {};
+    for (const [fileId, ASTData] of Object.entries(astSetup)) {
+      const bitloopsVisitor = new BitloopsVisitor(fileId);
+      bitloopsVisitor.visit(ASTData.ASTContext);
+      const { intermediateASTTree } = bitloopsVisitor;
+
+      setupAST[fileId] = intermediateASTTree;
+    }
+    return setupAST;
+  }
+
+  private originalASTCoreToIntermediateASTTree(
+    astCore: OriginalASTCore,
+    // TODO IntermediateASTParserError will be generated in previous step if it exists, visitor is not expected to generate it
+    // TODO Remove this when error listener for syntax errors is implemented
+  ): TBoundedContexts | IntermediateASTParserError[] {
+    const boundedContexts: TBoundedContexts = {};
+    for (const [boundedContextName, boundedContext] of Object.entries(astCore)) {
+      for (const [moduleName, module] of Object.entries(boundedContext)) {
+        for (const [fileId, ASTData] of Object.entries(module)) {
+          const bitloopsVisitor = new BitloopsVisitor(fileId);
+          bitloopsVisitor.visit(ASTData.ASTContext);
+          const { intermediateASTTree } = bitloopsVisitor;
+
+          if (boundedContexts[boundedContextName] === undefined) {
+            boundedContexts[boundedContextName] = {
+              [moduleName]: intermediateASTTree,
             };
+          } else if (boundedContexts[boundedContextName][moduleName] === undefined) {
+            boundedContexts[boundedContextName][moduleName] = intermediateASTTree;
+          } else {
+            // merge trees
+            const existingTree = boundedContexts[boundedContextName][moduleName];
+            boundedContexts[boundedContextName][moduleName] =
+              existingTree.mergeWithTree(intermediateASTTree);
           }
         }
       }
     }
+    return boundedContexts;
   }
-  return result;
-};
 
-const classTypeExists = (
-  boundedContextName: string,
-  moduleName: string,
-  classType: string,
-  boundedContextsData: TBoundedContexts,
-): boolean => {
-  return (
-    boundedContextsData[boundedContextName] &&
-    boundedContextsData[boundedContextName][moduleName] &&
-    boundedContextsData[boundedContextName][moduleName][classType]
-  );
-};
+  private completeIntermediateASTTree(intermediateAST: IntermediateAST): IntermediateAST {
+    return this.intermediateASTTransformer.complete(intermediateAST);
+  }
 
-const moduleExists = (
-  boundedContextName: string,
-  moduleName: string,
-  boundedContextsData: TBoundedContexts,
-): boolean => {
-  return !!(
-    boundedContextsData[boundedContextName] && boundedContextsData[boundedContextName][moduleName]
-  );
-};
-
-const boundedContextExists = (
-  boundedContextName: string,
-  boundedContextsData: TBoundedContexts,
-): boolean => {
-  return !!boundedContextsData[boundedContextName];
-};
+  private validateIntermediateASTTree(
+    intermediateAST: IntermediateAST,
+  ): void | IntermediateASTValidationError[] {
+    return this.validator.validate(intermediateAST);
+  }
+}

@@ -17,91 +17,56 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/structDeclaration.feature');
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { StructBuilderDirector } from './builders/structDeclaration.js';
+import { VALID_STRUCT_DECLARATION_TEST_CASES } from './mocks/structDeclaration.js';
 
-defineFeature(feature, (test) => {
-  let structType;
-  let result;
-  let value;
+describe('Valid struct test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('Struct declaration success to Typescript object', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      structType = type;
-    });
+  VALID_STRUCT_DECLARATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-    and(/^language is "(.*)"$/, (_lang) => {
-    });
-
-    given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
-      value = structDeclaration;
-    });
-
-    when('I generate the code', () => {
-      const structValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: structType,
-        value: structValue,
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const structDeclarationNode = new StructBuilderDirector().buildStructWithRequiredFields({
+        name: testCase.name,
+        fields: testCase.fields,
       });
-    });
+      tree.insertChild(structDeclarationNode);
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
-    });
-  });
-
-  test('Struct declaration with no fields to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      structType = type;
-    });
-
-    and(/^language is "(.*)"$/, (_lang) => {
-    });
-
-    given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
-      value = structDeclaration;
-    });
-
-    when('I generate the code', () => {
-      const structValue = JSON.parse(value);
-      result = () => {
-        modelToTargetLanguage({ type: structType, value: structValue });
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
       };
-    });
 
-    then(/^I should see the (.*) output$/, (error) => {
-      expect(result).toThrow(error);
-    });
-  });
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
+      });
 
-  test('Struct declaration with fields not formatted as array to Typescript', ({
-    given,
-    and,
-    when,
-    then,
-  }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      structType = type;
-    });
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
-    and(/^language is "(.*)"$/, (_lang) => {
-    });
-
-    given(/^I have a structDeclaration (.*)$/, (structDeclaration) => {
-      value = structDeclaration;
-    });
-
-    when('I generate the code', () => {
-      const structValue = JSON.parse(value);
-      result = () => {
-        modelToTargetLanguage({ type: structType, value: structValue, });
-      };
-    });
-
-    then(/^I should see the (.*) output$/, (error) => {
-      expect(result).toThrow(error);
+      //then
+      const formattedOutput = formatString(testCase.output, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

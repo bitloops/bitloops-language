@@ -1,42 +1,37 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { TApplicationError, TEvaluationFields } from '../../../../types.js';
+import { ApplicationErrorBuilder } from '../../intermediate-ast/builders/Error/ApplicationErrorBuilder.js';
+import { EvaluationFieldListNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { ApplicationErrorNode } from '../../intermediate-ast/nodes/Error/ApplicationError.js';
+import { EvaluationFieldListNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { evaluationFieldListVisitor } from './evaluationFieldList.js';
-import { formalParameterListVisitor } from './formalParameterList.js';
-
+import { produceMetadata } from '../metadata.js';
+export enum applicationErrorErrors {
+  INVALID_ARGS = 'ApplicationErrorDeclaration must have two fields: ErrorId and message',
+  NO_MESSAGE = 'ApplicationErrorDeclaration misses ErrorId field',
+  NO_ERROR_ID = 'ApplicationErrorDeclaration misses message field',
+}
 export const applicationErrorDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ApplicationErrorDeclarationContext,
-): {
-  ApplicationErrors: {
-    [key: string]: TApplicationError;
-  };
-} => {
+): ApplicationErrorNode => {
   const errorName: string = ctx.applicationErrorIdentifier().getText();
-  const fieldsList: TEvaluationFields = evaluationFieldListVisitor(
-    thisVisitor,
-    ctx.evaluationFieldList(),
-  );
-  if (fieldsList.length != 2) {
-    throw new TypeError('DomainErrorDeclaration must have two fields: ErrorId and message');
-  }
-  const errorId =
-    fieldsList.find((field) => field.name === 'errorId').expression ||
-    ((): never => {
-      throw new TypeError('DomainErrorDeclaration misses ErrorId field');
-    })();
-  const message =
-    fieldsList.find((field) => field.name === 'message').expression ||
-    ((): never => {
-      throw new TypeError('DomainErrorDeclaration misses message field');
-    })();
-  return {
-    ApplicationErrors: {
-      [errorName]: {
-        parameters: formalParameterListVisitor(thisVisitor, ctx.formalParameterList()),
-        errorId: { expression: errorId },
-        message: { expression: message },
-      },
-    },
-  };
+  const identifier: IdentifierNode = new IdentifierNodeBuilder().withName(errorName).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  // TEvaluationFields, TODO fix temp as any
+  const parameters: ParameterListNode = thisVisitor.visit(ctx.parameterList());
+  const fieldsList: EvaluationFieldListNode = ctx.evaluationFieldList()
+    ? thisVisitor.visit(ctx.evaluationFieldList())
+    : new EvaluationFieldListNodeBuilder().build();
+  const errorId = fieldsList.findFieldWithName('errorId');
+  const message = fieldsList.findFieldWithName('message');
+  const applicationError = new ApplicationErrorBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withIdentifier(identifier)
+    .withErrorId(errorId)
+    .withParameters(parameters)
+    .withMessage(message)
+    .build();
+  return applicationError;
 };

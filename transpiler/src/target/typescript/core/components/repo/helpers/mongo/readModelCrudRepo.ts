@@ -1,34 +1,36 @@
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import {
-  TPropsValues,
   TVariable,
   TTargetDependenciesTypeScript,
+  fieldKey,
+  TReadModel,
+  TProps,
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 const DOCUMENT_NAME = 'document';
 
-const getReadModelFields = (readModelValues: TPropsValues): string => {
-  return readModelValues.variables
-    .filter((variable) => variable.name !== 'id')
+const getReadModelFields = (readModelValues: TProps | TReadModel): string => {
+  return readModelValues['ReadModel'].fields
+    .filter((variable) => variable[fieldKey].identifier !== 'id')
     .map((variable) => {
-      const { name } = variable;
-      return `${name}: ${DOCUMENT_NAME}.${name}`;
+      const { identifier } = variable[fieldKey];
+      return `${identifier}: ${DOCUMENT_NAME}.${identifier}`;
     })
     .join(', ');
 };
 
-const getReadModelIdVariable = (readModelValues: TPropsValues): TVariable => {
-  const [aggregateIdVariable] = readModelValues.variables
-    .filter((variable) => variable.name === 'id')
+const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable => {
+  const [aggregateIdVariable] = readModelValues['ReadModel'].fields
+    .filter((variable) => variable[fieldKey].identifier === 'id')
     .map((variable) => variable);
   return aggregateIdVariable;
 };
 
 export const fetchTypeScriptReadModelCrudBaseRepo = (
   readModelName: string,
-  readModelValues: TPropsValues,
+  readModelValues: TProps | TReadModel,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseReadModelName = (
@@ -38,7 +40,7 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
   const readModelIdVariable = getReadModelIdVariable(readModelValues);
   const mappedReadModelIdType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: readModelIdVariable.type,
+    value: { type: readModelIdVariable[fieldKey].type },
   });
 
   const readModelFields = getReadModelFields(readModelValues);

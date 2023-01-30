@@ -17,35 +17,51 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_BUILTIN_CLASS_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/builtInClassEvaluation.feature');
+describe('Valid builtin class evaluation test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-defineFeature(feature, (test) => {
-  let builtInClassEvaluationType;
-  let result;
-  let value;
+  VALID_BUILTIN_CLASS_EVALUATION_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-  test('BuiltIn Class evaluation', ({ given, when, then }) => {
-    given(/^type is "(.*)"$/, (arg0) => {
-      builtInClassEvaluationType = arg0;
-    });
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const evaluationNode = testCase.evaluation;
+      tree.insertChild(evaluationNode);
 
-    given(/^I have a builtIn class evaluation (.*)$/, (arg0) => {
-      value = arg0;
-    });
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
 
-    when('I generate the code', () => {
-      const builtInClassEvaluationValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: builtInClassEvaluationType,
-        value: builtInClassEvaluationValue,
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

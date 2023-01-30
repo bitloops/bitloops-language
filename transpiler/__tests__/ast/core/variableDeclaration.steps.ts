@@ -17,51 +17,49 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { decode, d } from 'bitloops-gherkin';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { validVariableDeclarationCases } from './mocks/statements/variableDeclaration.js';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-const feature = loadFeature('__tests__/ast/core/variableDeclaration.feature');
+describe('Variable declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-defineFeature(feature, (test) => {
-  test('VariableDeclaration is valid', ({ given, when, then }) => {
-    const boundedContext = 'Hello World';
-    const module = 'core';
-    let blString;
-    let modelOutput;
-    let result;
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    given(/^A valid variableDeclaration (.*) string$/, (arg0) => {
-      blString = decode(arg0);
-    });
+  validVariableDeclarationCases.forEach((testVariableDeclaration) => {
+    test(`${testVariableDeclaration.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testVariableDeclaration.fileId,
+            fileContents: testVariableDeclaration.inputBLString,
+          },
+        ],
+      });
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
+        }
       }
-    });
+      const variableDeclarationNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TVariableDeclaration,
+      );
+      const value = variableDeclarationNodes[0].getValue();
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      expect(value).toMatchObject(testVariableDeclaration.expected);
+      expect(variableDeclarationNodes.length).toBe(1);
     });
   });
 });

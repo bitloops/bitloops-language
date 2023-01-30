@@ -25,10 +25,8 @@ options {
     superClass=BitloopsLexerBase;
 }
 
-
 MultiLineComment:               '/*' .*? '*/'             -> channel(HIDDEN);
 SingleLineComment:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
-RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpressionChar* {this.IsRegexPossible()}? '/' IdentifierPart*;
 
 OpenBracket:                    '[';
 CloseBracket:                   ']';
@@ -87,6 +85,7 @@ BitXorAssign:                   '^=';
 BitOrAssign:                    '|=';
 ARROW:                          '=>';
 
+
 /// Null Literals
 
 NullLiteral:                    'null';
@@ -94,11 +93,10 @@ NullLiteral:                    'null';
 /// Boolean Literals
 
 BooleanLiteral:                 'true'
-              |                 'false';
+              |                 'false'
+              ;
 
-/// Numeric Literals
-
-IntegerLiteral:              '-'? DecimalIntegerLiteral
+IntegerLiteral:                DecimalIntegerLiteral
               ;
 
 
@@ -112,6 +110,8 @@ HexIntegerLiteral:              '0' [xX] HexDigit+;
 OctalIntegerLiteral:            '0' [0-7]+;
 OctalIntegerLiteral2:           '0' [oO] [0-7]+;
 BinaryIntegerLiteral:           '0' [bB] [01]+;
+
+Digits:                         [0-9]+;
 
 /// Keywords
 Optional:                       'optional';
@@ -147,16 +147,10 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+CorsOptions:                    'corsOptions';
 
-/// Future Reserved Words
-
-// Class:                          'class';
-// Enum:                           'enum';
 Extends:                        'extends';
-// Super:                          'super';
 Const:                          'const';
-// Export:                         'export';
-// Import:                         'import';
 RepoPort:                       'RepoPort';
 Props:                          'Props';
 ReadModel:                      'ReadModel';
@@ -261,6 +255,7 @@ JestTestGetClass: 'JestTestGetClass';
 JestTestBuiltInFunction: 'JestTestBuiltInFunction';
 JestTestBuiltInClass: 'JestTestBuiltInClass';
 JestTestBitloopsPrimaryType: 'JestTestBitloopsPrimaryType';
+JestTestReturnStatement: 'JestTestReturnStatement';
 
 // Abstract: 'abstract';
 
@@ -302,22 +297,41 @@ ErrorIdentifier:                (DomainErrors | ApplicationErrors) Dot UpperCase
 ControllerIdentifier:           UpperCaseStart IdentifierPart* 'Controller';
 UseCaseIdentifier:              UpperCaseStart IdentifierPart* UseCase;
 PackagePortIdentifier:          UpperCaseStart IdentifierPart* PackagePort;
+PackageAdapterIdentifier:        [A-Z] [0-9a-zA-Z]* 'PackageAdapter';
 PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
 ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
 RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+SetLanguage:                    'setLanguage';
+TypeScript:                     'TypeScript';
+Java:                           'Java';
+FastifyServer:                  'REST.Fastify';
+ExpressServer:                  'REST.Express';
+GraphQLServerType:              'GraphQL';
+RESTRouter:                     'RESTRouter';
+GraphQLServer:                  'GraphQLServer';
+RESTServer:                     'RESTServer';
+
+EnvPrefix:                      'Env';
+EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
+
+Concretes:                      'concretes';
+
+GET:                            'Get';
+POST:                           'Post';
+PUT:                            'Put';
+DELETE:                         'Delete';
+PATCH:                          'Patch';
+OPTIONS:                        'Options';
+
+RepoAdapters:                   'RepoAdapters';
+RepoConnections:                'RepoConnections';
+Mongo:                          'Mongo';
+
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;
-// GetClassEvaluation:             (RegularVariableEvaluation | ThisVariableEvaluation) '.getClass()';
-
-// RegularMethodEvaluation:                RegularVariableEvaluation '(' RegularVariableEvaluation? ')';
-
-// ThisVariableEvaluation:                 This '.' RegularVariableEvaluation ;
-// RegularVariableEvaluation:              (RegularEvaluationPart | UpperCaseIdentifier) ('.' RegularEvaluationPart)*;
-
-
 
 /// String Literals
 StringLiteral:                 ('"' DoubleStringCharacter* '"'
@@ -330,9 +344,6 @@ BackTick:                       '`' {this.IncreaseTemplateDepth();} -> pushMode(
 WhiteSpaces:                    [\t\u000B\u000C\u0020\u00A0]+ -> channel(HIDDEN);
 
 LineTerminator:                 [\r\n\u2028\u2029] -> channel(HIDDEN);
-
-/// Comments
-
 
 HtmlComment:                    '<!--' .*? '-->' -> channel(HIDDEN);
 CDataComment:                   '<![CDATA[' .*? ']]>' -> channel(HIDDEN);
@@ -399,21 +410,13 @@ fragment HexDigit
     ;
 fragment DecimalIntegerLiteral
     : '0'
-    | [1-9] [0-9]*
+    | [-]? [1-9] [0-9]*
     ;
 fragment ExponentPart
     : [eE] [+-]? [0-9]+
     ;
 fragment RegularEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-// fragment RegularMethodEvaluationPart: [a-zA-Z_][a-zA-Z0-9]*;
-// fragment RegularEvaluationPart
-//     : RegularEvaluationStart
-//     | [\p{Mn}]
-//     | [\p{Nd}]
-//     | [\p{Pc}]
-//     | '\u200C'
-//     | '\u200D'
-//     ;
+
 fragment RegularEvaluationStart
     : [\p{L}]
     | [$_]
@@ -454,3 +457,4 @@ fragment RegularExpressionClassChar
 fragment RegularExpressionBackslashSequence
     : '\\' ~[\r\n\u2028\u2029]
     ;
+

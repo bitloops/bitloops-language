@@ -20,19 +20,28 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TProps } from '../../../../types.js';
+import { PropsIdentifierNode } from '../../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
+import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { produceMetadata } from '../metadata.js';
+import { PropsNodeBuilder } from '../../intermediate-ast/builders/Props/PropsNodeBuilder.js';
+import { PropsNode } from '../../intermediate-ast/nodes/Props/PropsNode.js';
 
 export const propsDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PropsDeclarationContext,
-): { Props: TProps } => {
-  const identifier = ctx.PropsIdentifier().getText();
-  const variables = thisVisitor.visit(ctx.fieldList());
+): { Props: PropsNode } => {
+  const propsIdentifierNode: PropsIdentifierNode = thisVisitor.visit(ctx.propsIdentifier());
+
+  const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+
+  const propsNode = new PropsNodeBuilder(thisVisitor.intermediateASTTree, metadata)
+    .withIdentifier(propsIdentifierNode)
+    .withVariables(fieldListNode)
+    .build();
+
   return {
-    Props: {
-      [identifier]: {
-        variables,
-      },
-    },
+    Props: propsNode,
   };
 };

@@ -17,55 +17,91 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d } from 'bitloops-gherkin';
 
-const feature = loadFeature('__tests__/ast/core/restController.feature');
-
+import assert from 'assert';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { validRestControllerStatementTestCases } from './mocks/controllers/restController.js';
+import { RestControllerBuilder } from './builders/controllers/restControllerBuilder.js';
 import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+  TParameterList,
+  TRESTController,
+  TRESTControllerExecute,
+  TRestMethods,
+  TServerType,
+} from '../../../src/types.js';
 
-defineFeature(feature, (test) => {
-  let boundedContext: string;
-  let module: string;
-  let blString: string;
-  let modelOutput: string;
-  let result: any;
-  test('Rest Controller is valid', ({ given, when, then }) => {
-    given(
-      /^Valid bounded context (.*), module (.*), useCases (.*), Rest Controller (.*) strings$/,
-      (arg0, arg1, _arg2, arg3) => {
-        boundedContext = d(arg0);
-        module = d(arg1);
-        blString = d(arg3);
-      },
-    );
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+describe('Rest controller declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  validRestControllerStatementTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+        setup: [
+          {
+            fileId: 'empty',
+            fileContents: testCase.setupBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
+        }
       }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      const restControllerNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TRESTController,
+      );
+      assert(restControllerNodes.length === 1);
+      const value = restControllerNodes[0].getValue();
+      const expectedValue = getExpectedRestControllerOutput(testCase);
+
+      expect(value).toMatchObject(expectedValue);
     });
   });
 });
+
+const getExpectedRestControllerOutput = ({
+  RESTControllerIdentifier,
+  parameters,
+  method,
+  execute,
+  serverType,
+}: {
+  RESTControllerIdentifier: string;
+  parameters: TParameterList;
+  method: TRestMethods;
+  execute: TRESTControllerExecute;
+  serverType: TServerType;
+}): TRESTController => {
+  const controller = new RestControllerBuilder()
+    .withIdentifier(RESTControllerIdentifier)
+    .withParameters(parameters)
+    .withMethod(method)
+    .withExecute(execute)
+    .withServerType(serverType)
+    .build();
+
+  return controller;
+};

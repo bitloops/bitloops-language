@@ -20,13 +20,20 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TExpression } from '../../../../types.js';
-// export type TEvaluationFields = ({ name: string } & TExpression);
+import { EvaluationFieldNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { EvaluationFieldNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
+
 export const evaluationFieldVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EvaluationFieldContext,
-): { name: string } & TExpression => {
-  const identifier = ctx.Identifier().getText();
+): EvaluationFieldNode => {
   const expression = thisVisitor.visit(ctx.expression());
-  return { name: identifier, ...expression };
+  const identifierNode = thisVisitor.visit(ctx.identifier());
+
+  const evaluationFieldNode = new EvaluationFieldNodeBuilder()
+    .withIdentifier(identifierNode)
+    .withExpression(expression)
+    .build();
+
+  return evaluationFieldNode;
 };

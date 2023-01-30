@@ -17,49 +17,49 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { d } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { BitloopsParser, OriginalAST } from '../../../src/parser/index.js';
+import { TArgumentList, TEvaluationValues } from '../../../src/types.js';
+import { EvaluationBuilderDirector } from './builders/evaluationDirector.js';
+import { validBuiltinClassEvaluations } from './mocks/builtinClassEvaluation.js';
 
-const feature = loadFeature('./__tests__/ast/core/builtInClassEvaluation.feature');
+const boundedContext = 'Hello World';
+const module = 'core';
 
-defineFeature(feature, (test) => {
-  let blString;
-  let modelOutput;
-  let result;
-
-  test('BuiltIn Class is valid', ({ given, when, then }) => {
-    given(/^A valid builtIn class (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
-
-    when('I generate the model', () => {
+describe('Valid builtin class type', () => {
+  validBuiltinClassEvaluations.forEach((mock) => {
+    test(`${mock.description}`, () => {
       const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: 'Hello World',
-          module: 'core',
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
+      if (isParserErrors(initialModelOutput)) {
+        throw new Error(initialModelOutput[0].message);
       }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = d(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      const intermediateParser = new IntermediateASTParser();
+      const result = intermediateParser.parse(initialModelOutput as OriginalAST);
+      if (isIntermediateASTError(result)) {
+        throw new Error(result[0].message);
+      }
+      const { core } = result;
+      const resultTree = core[boundedContext].core;
+      const expected = getExpected(mock.builtInIdentifier, mock.argumentList);
+      const value = resultTree.getCurrentNode().getValue();
+      expect(value).toMatchObject(expected);
     });
   });
 });
+const getExpected = (idName: string, args: TArgumentList): TEvaluationValues => {
+  return new EvaluationBuilderDirector().buildBuiltInClassEvaluation(idName, args).evaluation;
+};

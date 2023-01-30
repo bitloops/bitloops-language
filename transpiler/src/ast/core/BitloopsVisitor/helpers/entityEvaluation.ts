@@ -18,20 +18,28 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { EntityEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/EntityEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TEntityEvaluation } from '../../../../types.js';
+import { DomainEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
+import { EntityEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/EntityEvaluationBuilder.js';
+import { produceMetadata } from '../metadata.js';
 
 export const entityEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityEvaluationContext,
-): TEntityEvaluation => {
-  const identifier = ctx.entityIdentifier().getText();
-  const domainInput = thisVisitor.visit(ctx.domainEvaluationInput());
-  return {
-    entity: {
-      props: domainInput,
-      name: identifier,
-    },
-  };
+): EntityEvaluationNode => {
+  const props = thisVisitor.visit(ctx.domainEvaluationInput());
+  const entityIdentifier = thisVisitor.visit(ctx.entityIdentifier());
+
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const domainEvaluation = new DomainEvaluationNodeBuilder(metadata)
+    .withIdentifier(entityIdentifier)
+    .withProps(props)
+    .build();
+
+  const node = new EntityEvaluationNodeBuilder(metadata)
+    .withDomainEvaluation(domainEvaluation)
+    .build();
+  return node;
 };

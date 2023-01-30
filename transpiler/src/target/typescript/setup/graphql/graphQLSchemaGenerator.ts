@@ -1,12 +1,8 @@
-import {
-  TBoundedContexts,
-  TGraphQLOperation,
-  TModule,
-  TResolver,
-  TResolvers,
-} from '../../../../types.js';
+import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { TGraphQLOperation } from '../../../../types.js';
+import { TBoundedContexts } from '../../../../ast/core/types.js';
 import { ClassTypeToGraphQLMapping } from './dtoToGraphQLMapping.js';
-import { AllResolvers, ResolverValues } from './types.js';
+import { AllResolvers, ResolverValues, TResolver, TResolvers } from './types.js';
 
 const operationTypeMapping: Record<TGraphQLOperation, string> = {
   query: 'queries',
@@ -33,7 +29,7 @@ export class GraphQLSchemaGenerator {
 
   private prepareSchemaAndHandlersOfResolver = (
     resolver: TResolver,
-    moduleModel: TModule,
+    moduleModel: IntermediateASTTree,
   ): ResolverValues => {
     const { controller, input, output, operationName } = resolver;
     const inputType: string | null = typeof input === 'string' ? this.trimDTOSuffix(input) : input;
@@ -68,7 +64,7 @@ export class GraphQLSchemaGenerator {
   private generateInputAndTypesOfResolver(
     inputType: string | null,
     output: string,
-    moduleModel: TModule,
+    moduleModel: IntermediateASTTree,
   ): ResolverValues {
     const resolverValues: ResolverValues = {
       typeDefs: {
@@ -97,7 +93,7 @@ export class GraphQLSchemaGenerator {
   }
 
   private generateResolverInputTypeDefs(
-    moduleModel: TModule,
+    moduleModel: IntermediateASTTree,
     inputType: string,
   ): { input: Record<string, string>; types: Record<string, string> } {
     const mapper = new ClassTypeToGraphQLMapping();
@@ -118,7 +114,7 @@ export class GraphQLSchemaGenerator {
   }
 
   private generateResolverOutputTypeDefs(
-    moduleModel: TModule,
+    moduleModel: IntermediateASTTree,
     output: string,
   ): { types: Record<string, string> } {
     const mapper = new ClassTypeToGraphQLMapping();

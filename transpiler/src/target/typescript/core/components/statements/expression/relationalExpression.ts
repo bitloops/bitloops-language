@@ -35,12 +35,12 @@ export const relationalExpressionToTargetLanguage = (
     });
 
     const leftExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: left,
     });
 
     const rightExpression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: right,
     });
 

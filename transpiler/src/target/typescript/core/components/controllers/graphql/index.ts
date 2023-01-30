@@ -39,36 +39,38 @@ const getServerImports = (): TDependenciesTypeScript => {
   return dependencies;
 };
 
+const controllerHeader = (controllerName: string, inputType: string, outputType: string): string =>
+  `export class ${controllerName} extends GraphQL.BaseController<GraphQL.TRequest<${inputType}>,${outputType}> { `;
+
 const graphQLControllersToTargetLanguage = (
   controllers: TGraphQLController,
   contextData: { boundedContext: string; module: string },
 ): TTargetDependenciesTypeScript => {
-  // TODO for all controllers
   let dependencies = getServerImports();
-  const controllerName = Object.keys(controllers)[0];
+  const controllerName = controllers.GraphQLController.graphQLControllerIdentifier;
 
-  const controller = controllers[controllerName];
-  const { inputType, outputType } = controller;
+  const controllerInfo = controllers.GraphQLController;
+  const { inputType, parameters, execute } = controllerInfo;
+  const outputType = execute.returnType;
   const tsInputType = inputType !== null ? inputType : 'void';
-  let result = `export class ${controllerName} extends GraphQL.BaseController<GraphQL.TRequest<${tsInputType}>,${outputType}> { `;
+  let result = controllerHeader(controllerName, tsInputType, outputType);
 
   const inputDependency = inputType ? getChildDependencies(inputType) : [];
   const outputDependency = getChildDependencies(outputType);
   dependencies = dependencies.concat(inputDependency, outputDependency);
-  if (!controller.execute || !controller.parameterDependencies) {
+  if (!execute || !parameters) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
-  const fieldsModel = buildFieldsFromDependencies(controller.parameterDependencies, contextData);
+  const fieldsModel = buildFieldsFromDependencies({ parameters }, contextData);
   result += fieldsModel.output;
 
-  const executeModel = buildExecuteMethod(controller.execute);
+  const executeModel = buildExecuteMethod(execute);
   result += executeModel.output;
 
-  const finalObjValLang = '}';
-  result += finalObjValLang;
+  result += '}';
   dependencies = [...dependencies, ...fieldsModel.dependencies, ...executeModel.dependencies];
   const parentDependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.Controllers,
+    classType: ClassTypes.Controller,
     className: controllerName,
   });
   return { output: result, dependencies: parentDependencies };

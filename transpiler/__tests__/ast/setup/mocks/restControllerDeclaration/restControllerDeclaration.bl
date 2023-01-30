@@ -1,0 +1,3 @@
+const todoRESTRouter = RESTRouter(REST.Fastify) {
+    Post('/'): [Hello World][core]HelloWorldController(createTodoUseCase);
+  }

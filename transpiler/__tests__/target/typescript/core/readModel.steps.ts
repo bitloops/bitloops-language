@@ -17,39 +17,51 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_READ_MODEL_TEST_CASES } from './mocks/readModel/index.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/readModel.feature');
+describe('Valid read model test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-defineFeature(feature, (test) => {
-  let readModelType;
-  let result;
-  let value;
+  VALID_READ_MODEL_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-  test('Read models with one or two variables to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      readModelType = type;
-    });
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const readModelNode = testCase.readModel;
+      tree.insertChild(readModelNode);
 
-    and(/^language is "(.*)"$/, (_lang) => {
-      // pass
-    });
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
 
-    given(/^I have a readModel (.*)$/, (prop) => {
-      value = prop;
-    });
-
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: readModelType,
-        value: propsValue,
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

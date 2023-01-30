@@ -17,49 +17,54 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
+// import { defineFeature, loadFeature } from 'jest-cucumber';
+import assert from 'assert';
 
-import { d, decode } from 'bitloops-gherkin';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { validApplyRulesStatementTestCases } from './mocks/statements/builtInFunction.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-const feature = loadFeature('./__tests__/ast/core/builtinStatement.feature');
+describe('Apply rules statement is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-defineFeature(feature, (test) => {
-  test('builtIn Statement is valid', ({ given, when, then }) => {
-    let blString;
-    let modelOutput;
-    let result;
-    given(/^A valid built-in statement (.*) string$/, (arg0) => {
-      blString = d(arg0);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: 'Hello World',
-          module: 'core',
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+  validApplyRulesStatementTestCases.forEach((testStatement) => {
+    test(`${testStatement.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testStatement.fileId,
+            fileContents: testStatement.inputBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTError(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
+        }
       }
-    });
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = decode(arg0);
-      expect(result).toEqual(JSON.parse(modelOutput));
+      const propsNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TBuiltInFunction,
+      );
+      assert(propsNodes.length === 1);
+      const value = propsNodes[0].getValue();
+
+      expect(value).toMatchObject(testStatement.applyRules);
     });
   });
 });

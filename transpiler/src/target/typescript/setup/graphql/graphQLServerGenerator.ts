@@ -1,9 +1,11 @@
+import { TTargetDependenciesTypeScript } from '../../../../types.js';
 import {
+  AllResolvers,
   IAddResolversToServer,
   IServer,
-  TTargetDependenciesTypeScript,
-} from '../../../../types.js';
-import { AllResolvers, ResolversBuilder, SchemaBuilder } from './types.js';
+  ResolversBuilder,
+  SchemaBuilder,
+} from './types.js';
 
 export class GraphQLServerGenerator {
   generateAllServersCode(

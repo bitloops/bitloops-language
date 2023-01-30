@@ -18,172 +18,86 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TClassTypesValues } from './helpers/mappings.js';
-import { BitloopsLanguageAST } from './index.js';
-
-export type TModule = {
-  Props?: TProps;
-  Controllers?: TRESTController | TGraphQLController;
-  UseCases?: TUseCase;
-  ApplicationErrors?: TApplicationErrors;
-  DomainErrors?: TDomainErrors;
-  RootEntities?: TRootEntities;
-  Entities?: TEntities;
-  ValueObjects?: TValueObjects;
-  DTOs?: TDTO;
-  Structs?: TStructs;
-  Packages?: TPackages;
-  Rules?: TRules;
-  RepoPorts?: TRepoPorts;
-  RepoAdapters?: TRepoAdapters;
-  ReadModels?: TReadModels;
-};
-
-export type TClassType =
-  | 'Props'
-  | 'Controllers'
-  | 'UseCases'
-  | 'ApplicationErrors'
-  | 'DomainErrors'
-  | 'RootEntities'
-  | 'Entities'
-  | 'ValueObjects'
-  | 'DTOs'
-  | 'Structs'
-  | 'Packages'
-  | 'Rules'
-  | 'RepoPorts'
-  | 'RepoAdapters'
-  | 'ReadModels';
-
-export type TComponentType =
-  | 'TProps'
-  | 'TControllers'
-  | 'TUseCase'
-  | 'TApplicationErrors'
-  | 'TDomainErrors'
-  | 'TRootEntities'
-  | 'TEntities'
-  | 'TValueObjects'
-  | 'TDTOs'
-  | 'TStructs'
-  | 'TPackages'
-  | 'TRules'
-  | 'TRepoPorts'
-  | 'TRepoAdapters'
-  | 'TReadModels';
 
 export type TClassName = string;
-type TClassInformation = {
-  moduleName: TModuleName;
-  fileId: string;
-  contents: BitloopsLanguageAST;
-};
-
-export type TFileId = string;
-type TFileContents = string;
-
-export type TParserCoreInputData = {
-  boundedContext: TBoundedContextName;
-  module: TModuleName;
-  fileId: TFileId;
-  fileContents: TFileContents;
-}[];
-
-export type TASTCoreInputData = {
-  boundedContext: string;
-  classes: Record<TClassType, Record<TClassName, TClassInformation>>;
-};
 
 export type TContextData = { boundedContext: string; module: string };
 
-export type TBitloopsTargetContent = {
-  boundedContext: TBoundedContextName;
-  module: TModuleName;
-  classType: TClassType;
-  className: TClassName;
-  fileContent: TTargetDependenciesTypeScript;
-}[];
-
-export type TBitloopsOutputTargetContent = {
-  boundedContext: TBoundedContextName;
-  module: TModuleName;
-  classType: TClassType;
-  className: TClassName;
-  fileContent: string;
-}[];
-
-export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
-
-export type TBitloopsTargetSetupContent = {
-  fileId: string;
-  fileType: string;
-  fileContent: string;
-}[];
-
-export type TBitloopsTargetGeneratorParams = {
-  intermediateAST: TBoundedContexts;
-  setupData: ISetupData;
-  targetLanguage: string;
-  formatterConfig?: any;
-  sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
+export const fieldsKey = 'fields';
+export const evaluationFieldsKey = 'fields';
+export type TVariables = {
+  [fieldsKey]: TVariable[];
 };
 
-export type TBitloopsClasses =
-  | TProps
-  | TValueObjects
-  | TRESTController
-  | TUseCase
-  | TDomainErrors
-  | TDTO
-  | TStructs;
+export const identifierKey = 'identifier';
+export type TIdentifier = string;
 
-export type TModuleName = string;
-export type TBoundedContext = Record<TModuleName, TModule>;
+export const optionalKey = 'optional';
+export type TOptional = boolean;
 
-export type TBoundedContextName = string;
-export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
-
-export type TVariables = TVariable[];
-
+export const fieldKey = 'field';
 export type TVariable = {
-  optional?: boolean;
-  type: TBitloopsPrimaryType;
-  name: string;
+  [fieldKey]: {
+    [optionalKey]?: TOptional;
+    [identifierKey]: TIdentifier;
+  } & TBitloopsPrimaryType;
 };
+
+/**
+ * Props
+ */
+export type TPropsIdentifier = string;
+export const PropsIdentifierKey = 'propsIdentifier';
+
+export const PropsKey = 'Props';
 
 export type TPropsValues = {
-  variables: TVariables;
+  [PropsIdentifierKey]: TPropsIdentifier;
+} & TVariables;
+
+export type TProps = {
+  [PropsKey]: TPropsValues;
 };
 
-export type TProps = Record<string, TPropsValues>;
-
-export type TReadModelValues = {
-  variables: TVariables;
-};
-export type TReadModels = Record<string, TReadModelValues>;
-
-export type TParamDependencyType = TBitloopsPrimaryType;
-// (name: string)
-export type TParameterDependency = {
-  type: TParamDependencyType;
-  value: string;
-};
-export type TParameterDependencies = TParameterDependency[];
-
-export type TArgumentDependencyType = TBitloopsPrimitives | 'variable';
-// (name)
-export type TArgumentDependency = {
-  value: string;
-  type: TArgumentDependencyType;
+/**
+ * Read Model
+ */
+export type TReadModelIdentifier = string;
+export const ReadModelIdentifierKey = 'readModelIdentifier';
+export const ReadModelKey = 'ReadModel';
+export type TReadModel = {
+  [ReadModelKey]: {
+    [ReadModelIdentifierKey]: TReadModelIdentifier;
+  } & TVariables;
 };
 
-export type TArgumentDependencies = TArgumentDependency[];
+export type TParameterType = TBitloopsPrimaryType;
 
-export type TClassInstantiation = {
-  classInstantiation: {
-    className: string;
-    argumentDependencies?: TArgumentDependencies;
+export type TParameterIdentifier = string;
+export type TParameter = {
+  parameter: {
+    value: TParameterIdentifier;
+  } & TParameterType;
+};
+
+// props, TodoProps
+export type TDomainCreateParameter = {
+  domainCreateParameter: {
+    [identifierKey]: TIdentifier;
+    parameterType: TPropsIdentifier;
   };
+};
+
+export type TParameterList = {
+  parameters: TParameter[];
+};
+
+export type TArgument = {
+  argument: TExpression;
+};
+
+export type TArgumentList = {
+  argumentList: TArgument[];
 };
 
 // Needed to check type on runtime, otherwise simple literal gets thrown away.
@@ -222,89 +136,103 @@ export const BitloopsBuiltInClassNames = {
 export const bitloopsBuiltInClasses = [BitloopsBuiltInClassNames.UUIDv4] as const;
 export type TBitloopsBuiltInClasses = typeof bitloopsBuiltInClasses[number];
 
-type TBitloopsIdentifier = string;
+export type TBitloopsIdentifier = string;
 
 export type TParam = 'variable' | 'method' | TBitloopsPrimitives | TBitloopsIdentifier;
 
-export type TBitloopsPrimaryType =
-  | TBitloopsPrimitives
-  | TBitloopsBuiltInClasses
-  | TBitloopsIdentifier
-  | ArrayBitloopsPrimType;
-
-export type ArrayBitloopsPrimType = {
-  arrayType: {
-    value: TBitloopsPrimaryType;
-  };
+export const primitivesTypeKey = 'primitiveType';
+export type TBitloopsPrimitivesObject = {
+  [primitivesTypeKey]: TBitloopsPrimitives;
 };
 
-export type TReturnType = TBitloopsPrimitives | TBitloopsIdentifier;
-
-export type TBackTickString = {
-  backTickString: string;
-  // TODO add support for inside expressions
+export const buildInClassTypeKey = 'buildInClassType';
+export type TBitloopsBuiltInClassesObject = {
+  [buildInClassTypeKey]: TBitloopsBuiltInClasses;
 };
 
-export type TString = {
-  string: string;
+export const bitloopsIdentifiersTypeKey = 'bitloopsIdentifierType';
+export type TBitloopsIdentifierObject = {
+  [bitloopsIdentifiersTypeKey]: TBitloopsIdentifier;
 };
+
+export const arrayPrimaryTypeKey = 'arrayPrimaryType';
+export type ArrayBitloopsPrimTypeObject = {
+  [arrayPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
+};
+
+export const bitloopsPrimaryTypeKey = 'type';
+export type TBitloopsPrimaryTypeValues =
+  | TBitloopsPrimitivesObject
+  | TBitloopsBuiltInClassesObject
+  | TBitloopsIdentifierObject
+  | ArrayBitloopsPrimTypeObject;
+
+export type TBitloopsPrimaryType = {
+  [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
+};
+
+export type TDomainRule = {
+  DomainRule: {
+    domainRuleIdentifier: string;
+    error: string;
+    statements: TStatements;
+    isBrokenIfCondition: TCondition;
+  } & Partial<TParameterList>;
+};
+
+/**
+ * This type exists because not all expressions work as a condition, only the ones that evaluate to boolean.
+ * (at least in most languages)
+ */
+export type TCondition = {
+  condition: TExpression;
+};
+
+export const DomainErrorKey = 'DomainError';
+export const DomainErrorIdentifier = 'identifier';
+export type TErrorMessage = { message: TExpression };
+export type TErrorId = { errorId: TExpression };
 
 export type TDomainError = {
-  message: TExpression;
-  errorId: TExpression;
-  parameters?: TParameterDependencies;
-};
-// TODO finalize TRule
-export type TRule = {
-  parameters?: TParameterDependencies;
-  error: string;
-  statements: TStatements;
-  isBrokenIfCondition: TCondition;
+  [DomainErrorKey]: TDomainErrorValue;
 };
 
-export type TRules = Record<string, TRule>;
+export type TDomainErrorValue = {
+  [DomainErrorIdentifier]: TIdentifier;
+} & TErrorMessage &
+  TErrorId &
+  Partial<TParameterList>;
 
-export type TDomainErrors = Record<string, TDomainError>;
-
+export const ApplicationErrorKey = 'ApplicationError';
+export const ApplicationErrorIdentifier = 'identifier';
 export type TApplicationError = {
-  message: TExpression; // TBackTickString | TString;
-  errorId: TExpression;
-  parameters?: TParameterDependencies;
+  [ApplicationErrorKey]: TApplicationErrorValue;
 };
 
-export type TApplicationErrors = Record<string, TApplicationError>;
+export type TApplicationErrorValue = {
+  [ApplicationErrorIdentifier]: TIdentifier;
+} & TErrorMessage &
+  TErrorId &
+  Partial<TParameterList>;
+
 export type TInstanceOf = {
-  isInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
+  isInstanceOf: TExpression & { class: string };
 };
 
 export type TPropsEvaluation = {
   props: {
-    fields: TEvaluationFields;
-    name: string;
-  };
-};
-
-export type TNotInstanceOf = {
-  isNotInstanceOf: [TArgumentDependency, { class: string }]; // ArgumentsDependencies, e.g. name
+    [PropsIdentifierKey]: string;
+  } & TEvaluationFields;
 };
 
 export type TGetClass = {
-  getClass: TRegularEvaluation;
-};
-
-export type TRegularEvaluation = {
-  regularEvaluation: {
-    type: TParam;
-    value: string;
-    argumentDependencies?: TArgumentDependencies; // ArgumentsDependencies, e.g. name
-  };
+  getClass: TExpression;
 };
 
 export type TBuiltInClassEvaluation = {
   builtInClass: {
     className: string;
-    argumentDependencies: TArgumentDependencies;
-  };
+  } & TArgumentList;
 };
 
 // export type TCondition = {
@@ -312,48 +240,57 @@ export type TBuiltInClassEvaluation = {
 //   evaluateFalse?: TEvaluation;
 // };
 export type TEvaluationValues =
-  | TRegularEvaluation
   | TStructEvaluation
+  | TCorsOptionsEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
-  | TInstanceOf
   | TErrorEvaluation
-  | TNotInstanceOf
-  | TGetClass
-  | TBuiltInClassEvaluation;
+  | TBuiltInClassEvaluation
+  | TBuiltInFunctionValues;
+
+export type TMethodCallExpression = {
+  methodCallExpression: TExpression & TArgumentList;
+};
 
 export type TEvaluation = {
   evaluation: TEvaluationValues;
 };
 
-export type TCondition = {
-  condition: TExpression;
-};
-
 export type TIfStatement = {
   ifStatement: {
     condition: TExpression;
-    thenStatements: TStatements;
-    elseStatements?: TStatements;
+    thenStatements: {
+      statements: TStatements;
+    };
+    elseStatements?: {
+      statements: TStatements;
+    };
   };
 };
 
-export type TEvaluationFields = ({ name: string } & TExpression)[];
+export type TEvaluationField = {
+  evaluationField: { identifier: string } & TExpression;
+};
+export type TEvaluationFields = {
+  [evaluationFieldsKey]: TEvaluationField[];
+};
+
+export type TCorsOptionsEvaluation = {
+  corsOptions: TEvaluationFields;
+};
 
 export type TStructEvaluation = {
   struct: {
-    fields: TEvaluationFields;
-    name: string;
-  };
+    [structIdentifierKey]: string;
+  } & TEvaluationFields;
 };
 
 export type TDTOEvaluation = {
   dto: {
-    fields: TEvaluationFields;
-    name: string;
-  };
+    [DTOIdentifierKey]: TDTOIdentifier;
+  } & TEvaluationFields;
 };
 
 export type TValueObjectEvaluation = {
@@ -365,18 +302,26 @@ export type TEntityEvaluation = {
 };
 
 export type TDomainEvaluation = {
-  props: TEvaluationFields | TRegularEvaluation;
-  name: string;
+  domainEvaluation: {
+    props: TDomainEvaluationExpression;
+  } & TDomainEvaluationName;
 };
 
+type TDomainEvaluationName =
+  | {
+      entityIdentifier: TEntityIdentifier;
+    }
+  | { valueObjectIdentifier: TValueObjectIdentifier };
+
+export type TDomainEvaluationExpression = TEvaluationFields | TExpression;
+
+export const expressionKey = 'expression';
 export type TExpression = {
-  expression: TExpressionValues;
+  [expressionKey]: TExpressionValues;
 };
 
 export type TExpressionValues =
   | TEvaluation
-  | TClassInstantiation
-  | TBackTickString
   | TLogicalExpression
   | TMultiplicativeExpression
   | TAdditiveExpression
@@ -384,74 +329,139 @@ export type TExpressionValues =
   | TEqualityExpression
   | TParenthesizedExpression
   | TArrayLiteralExpression
-  | TToStringExpression;
+  | TToStringExpression
+  | TLiteral
+  | TIdentifierExpression
+  | TMethodCallExpression
+  | TThisExpression
+  | TMemberDotExpression
+  | TAssignmentExpression
+  | TInstanceOf
+  | TGetClass
+  | TEnvironmentVariableExpression
+  | TObjectLiteral;
 
-export type TToStringExpression = {
-  toString: {
-    value: string;
+export type TAssignmentExpression = {
+  assignmentExpression: {
+    left: TExpression;
+  } & TExpression;
+};
+
+export type TMemberDotExpression = {
+  memberDotExpression: TExpression & {
+    identifier: string;
   };
+};
+
+export type TIdentifierExpression = {
+  identifier: string;
+};
+export type TToStringExpression = {
+  toStringMethod: TExpression;
+};
+
+export type TLiteral = {
+  literal: TLiteralValues;
+};
+/* 🔧 TODO: add 'T' prefix */
+export type TLiteralValues =
+  | StringLiteral
+  | BooleanLiteral
+  | TNumericLiteral
+  | NullLiteral
+  | TemplateStringLiteral;
+
+export type StringLiteral = {
+  stringLiteral: string;
+};
+export type TemplateStringLiteral = {
+  templateStringLiteral: string;
+};
+
+export type BooleanLiteral = {
+  booleanLiteral: string;
+};
+export type NullLiteral = {
+  nullLiteral: string;
+};
+
+export type TNumericLiteral = {
+  numericLiteral: TNumericLiteralValues;
+};
+export type TNumericLiteralValues = IntegerLiteral | DecimalLiteral;
+
+export type TIntegerLiteralType = 'int32' | 'int64';
+export type IntegerLiteral = {
+  integerLiteral: {
+    value: string;
+    type: TIntegerLiteralType; //| 'uint32' | 'uint64';
+  };
+};
+export type DecimalLiteral = {
+  decimalLiteral: {
+    value: string;
+    type: 'float' | 'double'; //| 'float32' | 'float64';
+  };
+};
+
+export type TThisExpression = {
+  thisExpression: 'this';
 };
 
 export type TArrayLiteralExpression = {
   arrayLiteral: TExpression[];
 };
 
-//TODO maybe return should have two keys: ok and error
 export type TReturnStatement = {
   return: TExpression;
 };
 
 export const returnOKKey = 'returnOK';
 export type TReturnOKStatement = {
-  [returnOKKey]: TExpression;
+  [returnOKKey]: TExpression | null;
 };
 
+export const returnErrorKey = 'returnError';
 export type TReturnErrorStatement = {
-  returnError: TExpression;
-};
-
-export type TConstDecompositionNested = {
-  names: string[];
-} & TEvaluation;
-
-export type TConstDecomposition = {
-  constDecomposition: TConstDecompositionNested;
+  [returnErrorKey]: TExpression;
 };
 
 export type TConstDeclarationValue = {
-  name: string;
-  type?: TBitloopsPrimaryType;
-} & TExpression;
+  identifier: string;
+} & Partial<TBitloopsPrimaryType> &
+  TExpression;
 
+export const constDeclarationKey = 'constDeclaration';
 export type TConstDeclaration = {
-  constDeclaration: TConstDeclarationValue;
+  [constDeclarationKey]: TConstDeclarationValue;
 };
 
+export const variableDeclarationKey = 'variableDeclaration';
 export type TVariableDeclaration = {
-  variableDeclaration: {
-    name: string;
-    type: TBitloopsPrimaryType;
-  } & TExpression;
+  [variableDeclarationKey]: {
+    identifier: string;
+  } & TBitloopsPrimaryType &
+    TExpression;
 };
 
-export type TThisDeclaration = {
-  thisDeclaration: {
-    name: string;
-  } & TExpression;
+export type TBreakStatement = {
+  breakStatement: 'break';
 };
 
-export type TBreakStatement = 'break';
+export type TAppliedRule = {
+  appliedRule: {
+    domainRuleIdentifier: string;
+  } & TArgumentList;
+};
 
 export type TApplyRules = {
-  applyRules: {
-    name: string;
-    arguments: TArgumentDependencies;
-  }[];
+  applyRules: TAppliedRule[];
 };
 
-export type TBuildInFunction = {
-  buildInFunction: TApplyRules;
+export type TBuiltInFunction = {
+  builtInFunction: TBuiltInFunctionValues;
 };
+export type TBuiltInFunctionValues = TApplyRules;
 
 export type TStatement =
   | TBreakStatement
@@ -460,11 +470,9 @@ export type TStatement =
   | TReturnStatement
   | TReturnOKStatement
   | TReturnErrorStatement
-  | TConstDecomposition
   | TConstDeclaration
-  | TThisDeclaration
   | TVariableDeclaration
-  | TBuildInFunction
+  | TBuiltInFunction
   | TExpression;
 
 export type TStatements = TStatement[];
@@ -475,103 +483,210 @@ export type TConstantVariable = {
   name: string;
 };
 
+export type TDomainPrivateMethods = TDomainPrivateMethod[];
+
+type TDomainPrivateMethodValues = {
+  identifier: TIdentifier;
+  statements: TStatements;
+} & TParameterList;
+
+export type TDomainPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType &
+  TDomainPrivateMethodValues;
+
+export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
+  TOkErrorReturnType;
+
 export type TDomainPrivateMethod = {
-  privateMethod: {
-    parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
-    returnType: TReturnType | TOkErrorReturnType;
-    statements: TStatements;
-  };
+  privateMethod:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType;
 };
+
+export type TDomainPublicMethods = TDomainPublicMethod[];
 
 export type TDomainPublicMethod = {
   publicMethod: {
-    parameterDependencies: TParameterDependencies;
-    returnType: TOkErrorReturnType;
+    identifier: TIdentifier;
     statements: TStatements;
-  };
+  } & TOkErrorReturnType &
+    TParameterList;
 };
 
-export type TValueObjectMethodInfo = TDomainPrivateMethod;
-
-export type TValueObjectMethods = Record<string, TValueObjectMethodInfo>;
-
-export type TOkErrorReturnType = {
+export type TReturnOkType = {
   ok: TBitloopsPrimaryType;
-  errors?: string[]; // TODO remove optional if we have empty array for no errors
+};
+
+export type TErrorIdentifier = {
+  error: string; // e.g. DomainErrors.InvalidName
+};
+export type TErrorIdentifiers = TErrorIdentifier[];
+
+// export type TOkErrorReturnTypeValues = {
+//   errors: TErrorIdentifiers;
+// } & TReturnOkType;
+export type TOkErrorReturnType = {
+  returnType: {
+    errors: TErrorIdentifiers;
+  } & TReturnOkType;
 };
 
 export type TDomainCreateMethod = {
-  parameterDependency: TParameterDependency; // ParametersDependencies, e.g. name: string
-  returnType: TOkErrorReturnType;
-  statements: TStatements;
+  create: {
+    statements: TStatements;
+  } & TOkErrorReturnType &
+    TDomainCreateParameter;
 };
-
-type TDomainMethodName = string;
-
-export type TDomainMethod = TDomainPublicMethod | TDomainPrivateMethod;
-export type TDomainMethods = Record<TDomainMethodName, TDomainMethod>;
 
 export type TValueObjectCreate = TDomainCreateMethod;
 
-export type TValueObjectValues = {
-  constantVars: TConstDeclarationValue[]; //TConstantVariable[];
-  methods: TValueObjectMethods;
-  create: TValueObjectCreate;
+export type TValueObjectIdentifier = string;
+
+export type TValueObject = {
+  ValueObject: {
+    valueObjectIdentifier: TValueObjectIdentifier;
+    constants?: TConstDeclaration[]; //TConstantVariable[];
+    privateMethods?: TDomainPrivateMethods;
+  } & TValueObjectCreate;
 };
 
-export type TValueObjects = Record<string, TValueObjectValues>;
-
-export type TEntities = Record<string, TEntityValues>;
+export type TEntityIdentifier = string;
+export type TEntity = {
+  Entity: {
+    entityIdentifier: TEntityIdentifier;
+    entityValues: TEntityValues;
+  };
+};
 
 export type TEntityValues = {
-  constantVars?: TConstDeclarationValue[]; // TConstantVariable[];
-  methods?: TEntityMethods;
-  create: TEntityCreate;
-};
-
-export type TEntityMethods = TDomainMethods;
+  constants?: TConstDeclaration[]; // TConstantVariable[];
+  publicMethods?: TDomainPublicMethods;
+  privateMethods?: TDomainPrivateMethods;
+} & TEntityCreate;
 
 export type TEntityCreate = TDomainCreateMethod;
 
-export type TRootEntities = Record<string, TEntityValues>;
-
-export type TDTOValues = {
-  fields: TVariables;
+export const RootEntityKey = 'RootEntity';
+export type TRootEntity = {
+  [RootEntityKey]: {
+    entityIdentifier: TEntityIdentifier;
+    entityValues: TEntityValues;
+  };
 };
 
+export const StructKey = 'Struct';
+export type TStructIdentifier = string;
+export const structIdentifierKey = 'StructIdentifier';
+
 export type TStructDeclaration = {
-  fields: TVariables;
+  [StructKey]: {
+    [structIdentifierKey]: TStructIdentifier;
+  } & TVariables;
 };
 
 export type TExecute = {
-  parameterDependencies: TParameterDependencies; // ParametersDependencies, e.g. name: string
   statements: TStatements;
+} & TOkErrorReturnType &
+  Partial<TParameter>;
+
+export type TDTOIdentifier = string;
+export const DTOIdentifierKey = 'DTOIdentifier';
+
+export const DTOKey = 'DTO';
+export type TDTO = {
+  [DTOKey]: {
+    [DTOIdentifierKey]: TDTOIdentifier;
+  } & TVariables;
 };
 
-export type TDTO = Record<string, TDTOValues>;
+export type TStruct = Record<string, TStructDeclaration>;
 
-export type TStructs = Record<string, TStructDeclaration>;
+export const UseCaseKey = 'UseCase';
+export type TUseCaseIdentifier = string;
+export const UseCaseIdentifierKey = 'UseCaseIdentifier';
 
-export type TUseCaseValues = {
-  returnTypes: TOkErrorReturnType;
-  execute: TExecute;
-  parameterDependencies: TParameterDependencies; // TODO maybe make this optional
+export type TUseCase = {
+  [UseCaseKey]: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+    execute: TExecute;
+  } & TParameterList;
 };
 
-export type TUseCase = Record<string, TUseCaseValues>;
+export const languageKey = 'language';
+export type TLanguage = 'TypeScript' | 'Java'; //TODO add for unknown languages
 
-export type TBaseControllerValues = {
-  useCase?: string;
-  // TODO remove dependencies
-  parameterDependencies: TParameterDependencies; // Controller constructor parameters
+export const configInvocationKey = 'configInvocation';
+export type TConfigInvocation = {
+  [configInvocationKey]: {
+    [languageKey]: TLanguage;
+  };
 };
+
+export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
+export type TPackageAdapterIdentifier = string;
+
+export const packageConcretionKey = 'packageConcretion';
+export type TPackageConcretion = {
+  [packageConcretionKey]: {
+    [PackagePortIdentifierKey]: TPackagePortIdentifier;
+    [packageAdapterIdentifierKey]: TPackageAdapterIdentifier;
+  } & TBoundedContextModule;
+};
+
+export const repoAdapterClassNameKey = 'repoAdapterClassName';
+export type TRepoAdapterClassName = {
+  [repoAdapterClassNameKey]: string;
+};
+
+export type TRepoDatabaseType = {
+  dbType: TRepoSupportedTypes;
+};
+
+export const repoAdapterOptionsKey = 'repoAdapterOptions';
+export type TRepoAdapterOptions = {
+  [repoAdapterOptionsKey]: TEvaluationFields;
+};
+
+export const concretedRepoPortKey = 'concretedRepoPort';
+export type TConcretedRepoPort = string;
+
+export type TRepoAdapterConnectionInfo = TRepoConnectionExpression;
+export const repoAdapterExpressionKey = 'repoAdapterExpression';
+export type TRepoAdapterExpression = {
+  [repoAdapterExpressionKey]: {
+    [concretedRepoPortKey]: TConcretedRepoPort;
+  } & TRepoAdapterClassName &
+    TRepoDatabaseType &
+    TRepoAdapterOptions &
+    TBoundedContextModule &
+    TRepoAdapterConnectionInfo;
+};
+
+export const repoAdapterKey = 'repoAdapter';
+export type TRepoAdapter = {
+  [repoAdapterKey]: {
+    [identifierKey]: TIdentifier;
+  } & TRepoAdapterExpression;
+};
+
+export const setupRepoAdapterDefinitionKey = 'setupRepoAdapterDefinition';
+export type TSetupRepoAdapterDefinition = {
+  [setupRepoAdapterDefinitionKey]: {
+    [identifierKey]: TIdentifier;
+  } & TRepoAdapterExpression;
+};
+
+export type TBaseControllerValues = TParameterList;
 
 export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
 
-export type TRESTControllerValues = TBaseControllerValues & {
-  parameterDependencies: TParameterDependencies;
-  method: TRestMethods;
-  execute: TRESTControllerExecute;
+export type TRESTControllerIdentifier = string;
+export type TRESTController = {
+  RESTController: TBaseControllerValues & {
+    serverType?: TServerType;
+    RESTControllerIdentifier: TRESTControllerIdentifier;
+    method: TRestMethods;
+    execute: TRESTControllerExecute;
+  };
 };
 
 export type TRESTControllerExecute = {
@@ -581,17 +696,18 @@ export type TRESTControllerExecute = {
 
 export type TRESTControllerDependencies = [string, string]; // e.g. (request, reply)
 
-export type TRESTController = Record<string, TRESTControllerValues>;
-type GraphQLControllerName = string;
-export type TGraphQLController = Record<GraphQLControllerName, TGraphQLControllerValues>;
+export type GraphQLControllerIdentifier = string;
 
-export type TGraphQLControllerValues = TBaseControllerValues & {
-  type: 'graphql';
-  operationType: TGraphQLOperation;
-  inputType: null | string;
-  operationName: string;
-  execute: TGraphQLControllerExecute;
-  outputType: string; // should be same as return type of execute
+export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
+
+export type TGraphQLController = {
+  GraphQLController: TBaseControllerValues & {
+    graphQLControllerIdentifier: GraphQLControllerIdentifier;
+    inputType: null | string;
+    operationType: TGraphQLOperation;
+    operationName: string;
+    execute: TGraphQLControllerExecute;
+  };
 };
 
 export type TGraphQLControllerExecute = {
@@ -606,8 +722,9 @@ export type TDefaultCase = {
 };
 
 export type TRegularCase = {
-  caseValue: TExpressionValues;
-  statements: TStatements;
+  regularCase: {
+    statements: TStatements;
+  } & TExpression;
 };
 
 export type TSwitchStatement = {
@@ -622,22 +739,6 @@ export type TEvaluatePrimitive = {
   type: TBitloopsPrimitives;
 };
 
-// SETUP Files Types
-
-// interface IController {
-//   boundedContext: string;
-//   module: string;
-//   useCase: string;
-//   content: string;
-// }
-
-interface IUseCaseDependencyInjection {
-  boundedContext: string;
-  module: string;
-  useCase: string;
-  content: string;
-}
-
 export type TRouterName = string;
 
 export interface IRouterRoute {
@@ -647,337 +748,209 @@ export interface IRouterRoute {
   useCaseName: string;
 }
 
-type PackagePortName = string;
-type PackageAdapterName = string;
+export type TRouterDefinition = {
+  routerDefinition: {
+    identifier: TIdentifier;
+  } & TRouterExpression;
+};
 
-export type TPackagesMapping = Record<PackagePortName, PackageAdapterName>;
+export type TRestRouter = 'RESTRouter';
+export type TRouterArguments = {
+  routerArguments: { serverType: TServerType };
+};
+export type THTTPMethodVerb = 'Get' | 'Put' | 'Post' | 'Delete' | 'Patch' | 'Options';
 
-export type TPackagesSetup = {
-  [boundedContext: string]: {
-    [module: string]: TPackagesMapping;
+export type TControllerInstanceName = string;
+
+export type TRouterController = {
+  routerController: {
+    httpMethodVerb: THTTPMethodVerb;
+    RESTControllerIdentifier: TRESTControllerIdentifier;
+    controllerInstanceName: TControllerInstanceName;
+  } & StringLiteral &
+    TBoundedContextModule &
+    TArgumentList;
+};
+
+export type TRouterControllers = {
+  routerControllers: TRouterController[];
+};
+
+export type TRouterExpression = {
+  routerExpression: {
+    restRouter: TRestRouter;
+  } & TRouterArguments &
+    TRouterControllers;
+};
+
+export type TUseCaseDefinition = {
+  useCaseDefinition: {
+    identifier: TIdentifier;
+  } & TUseCaseExpression;
+};
+
+export type TUseCaseExpression = {
+  useCaseExpression: {
+    [UseCaseIdentifierKey]: TUseCaseIdentifier;
+  } & TArgumentList &
+    TBoundedContextModule;
+};
+
+export const RepoConnectionDefinitionKey = 'RepoConnectionDefinition';
+export type TRepoConnectionDefinition = {
+  [RepoConnectionDefinitionKey]: {
+    identifier: TIdentifier;
+  } & TRepoConnectionExpression;
+};
+
+export const RepoConnectionExpressionKey = 'RepoConnectionExpression';
+export type TRepoConnectionExpression = {
+  [RepoConnectionExpressionKey]: {
+    dbType: TRepoSupportedTypes;
+  } & TRepoConnectionOptions;
+};
+
+export const RepoConnectionOptionsKey = 'options';
+export type TRepoConnectionOptions = {
+  [RepoConnectionOptionsKey]: TEvaluationFields;
+};
+
+export type TBoundedContextModule = {
+  boundedContextModule: {
+    boundedContextName: TBoundedContextName;
+    moduleName: TModuleName;
   };
 };
 
-export interface ISetupData {
-  controllers?: TControllers;
-  useCases?: TUseCases;
-  useCaseDependencyInjections?: IUseCaseDependencyInjection[];
-  setup?: TSetupInfo;
-  packages?: TPackagesSetup;
-  repos?: TReposSetup;
-}
+export type TBoundedContextName = TWordsWithSpaces;
 
-export type TUseCases = {
-  [boundedContext: string]: {
-    [module: string]: TUseCasesOfModule;
-  };
-};
+export type TModuleName = TWordsWithSpaces;
 
-export type TUseCasesOfModule = {
-  [UseCaseClassName: string]: {
-    instances: TUseCaseDefinitions[];
-  };
-};
-
-export type TControllers = {
-  [boundedContext: string]: {
-    [module: string]: TControllerOfModule;
-  };
-};
-
-export type TControllerOfModule = {
-  [ControllerClassName: string]: TRestControllerDefinitions | TGraphQLControllerInstances;
+export type TWordsWithSpaces = {
+  wordsWithSpaces: string;
 };
 
 export const repoSupportedTypes = ['DB.Postgres', 'DB.MySQL', 'DB.SQLite', 'DB.Mongo'] as const;
 export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
 
-export type TReposSetup = {
-  connections: {
-    [connectionName: string]: TRepoConnectionInfo;
-  };
-  repoAdapters: {
-    [boundedContext: string]: {
-      [module: string]: TSetupRepoAdapters;
-    };
-  };
-};
-
-type RepoAdapterName = string;
-export type TSetupRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
-
-export type TRepoAdapters = Record<RepoAdapterName, TRepoAdapterInfo>;
-
-export type TRepoConnectionInfo = {
-  dbType: TRepoSupportedTypes;
-  host: TSingleExpression;
-  port: TSingleExpression;
-  database: TSingleExpression;
-};
-
-export type TRepoAdapterInfo = {
-  dbType: TRepoSupportedTypes;
-  repoPort: string;
-  connection: TSingleExpression; // Name of connection instance
-  collection: TSingleExpression;
-  instanceIdentifier: string;
-};
-
-export enum ControllerTypeOfDefinition {
-  REST = 'rest',
-  GRAPHQL = 'graphql',
-}
-
-export type TUseCaseDefinitions = {
-  instanceName: string;
-  dependencies: string[]; // Replace with correct type
-};
-
-export type TRestControllerDefinitions = {
-  type: ControllerTypeOfDefinition.REST;
-  method: string; // TODO replace with type
-  serverType: TServerType;
-  instances: {
-    url: string;
-    controllerInstance: string;
-    dependencies: string[]; // Replace with correct type
-  }[];
-};
-
-export type TGraphQLControllerInstances = {
-  type: ControllerTypeOfDefinition.GRAPHQL;
-  instances: {
-    controllerInstance: string;
-    dependencies: string[]; // Replace with correct type
-  }[];
-};
-
-export type TSetupInfo = {
-  language: string;
-  servers?: TServers;
-  routers?: TRouters;
-};
-
-export type TServers = Partial<{
-  [key in TServerType]: {
-    serverInstances: (TRESTServerInstance | TGraphQLServerInstance)[];
-  };
-}>;
-
 export type TServerType = 'REST.Fastify' | 'REST.Express' | 'GraphQL';
 export type TRouterInstanceName = string;
-export type TRestServerInstanceRouters = Record<TRouterInstanceName, { routerPrefix: string }>;
-export type TRESTServerInstance = {
-  port: TSingleExpression;
-  apiPrefix?: string;
-  routers: TRestServerInstanceRouters;
-};
 
-export type TGraphQLServerInstance = {
-  port: TSingleExpression;
-  resolvers: TControllerResolverBind[];
-};
-
-export type TControllerResolverBind = {
-  boundedContext: string;
-  module: string;
-  controllerClassName: string;
-  controllerInstance: string;
-  dependencies: string[]; // Replace with correct type
-};
-
-export type TRoutes = {
-  methodURLMap: Record<
-    TMethodAndPath,
-    {
-      controllerClass: string;
-      // controllerInstance: string;
-      boundedContext: string;
-      module: string;
-    }
-  >;
-};
-type TRouters = Partial<Record<TServerType, TRoutersInfo>>;
-export type TRoutersInfo = Record<TRouterInstanceName, TRoutes>;
-
-export type TMethodAndPath = string;
-
-/**
- * GraphQL Setup
- */
-export type TGraphQLSetupData = {
-  // TODO discuss useCases, controllers di
-  servers: IServer[];
-  resolvers: TResolvers;
-  addResolversToServer: IAddResolversToServer[];
-  // DTOs: { [boundedContent: string]: { [moduleName: string]: { DTOs: TDTO } } }; // Referenced DTOs are also needed
-  bitloopsModel: TBoundedContexts;
-};
-
-export interface IServer {
-  type: string;
-  name: string;
-  port: string;
-}
-
-export type TResolvers = TResolver[];
-
-export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
-
-export type TResolver = {
-  boundedContext: string;
-  module: string;
-  operationType: TGraphQLOperation;
-  operationName: string;
-  input: string | null; // a DTO or nothing for no input
-  output: string; // a DTO
-  controller: string;
-};
-
-export interface IAddResolversToServer {
-  serverName: string;
-  resolver: {
-    name: string; // Should match the Operation name
-    boundedContext: string;
-    module: string;
+export type TRouterPrefix = StringLiteral;
+export type TRestServerInstanceRouters = TRestServerInstanceRouter[];
+export type TRestServerInstanceRouter = {
+  serverRoute: {
+    identifier: TRouterInstanceName;
+    routerPrefix: TRouterPrefix;
   };
-}
-export type TDefinitionMethods = Record<string, TDefinitionMethodInfo>;
-
-export type TPackagePort = {
-  name: string;
-  definitionMethods: TDefinitionMethods;
 };
+
+export type TRestServerPort = TExpression;
+
+export type TAPIPrefix = StringLiteral;
+
+export type TRESTServerInstance = {
+  restServer: {
+    serverOptions: TEvaluationFields;
+    serverRoutes: TRestServerInstanceRouters;
+  };
+};
+
+export const GraphQLServerInstanceKey = 'graphQLServer';
+export type TGraphQLServerInstance = {
+  [GraphQLServerInstanceKey]: {
+    [ControllerResolversKey]: TControllerResolvers;
+  } & TGraphQLServerOptions;
+};
+
+export const ControllerResolverKey = 'controllerResolver';
+export type TControllerResolver = {
+  [ControllerResolverKey]: {
+    graphQLControllerIdentifier: GraphQLControllerIdentifier;
+    controllerInstanceName: TControllerInstanceName;
+  } & TBoundedContextModule &
+    TArgumentList;
+};
+
+export const ControllerResolversKey = 'controllerResolvers';
+export type TControllerResolvers = TControllerResolver[];
+
+export const GraphQLServerOptionsKey = 'graphQLServerOptions';
+export type TGraphQLServerOptions = {
+  [GraphQLServerOptionsKey]: TEvaluationFields;
+};
+
+export const methodDefinitionListKey = 'methodDefinitionList';
+export type TDefinitionMethods = { [methodDefinitionListKey]: TDefinitionMethodInfo[] };
+
+export const PackagePortIdentifierKey = 'PackagePortIdentifier';
+export type TPackagePortIdentifier = string;
+export type TPackagePort = {
+  [PackagePortIdentifierKey]: TPackagePortIdentifier;
+} & TDefinitionMethods;
 
 export type TDefinitionMethodInfo = {
-  parameterDependencies: TParameterDependencies;
-  returnType: TReturnType;
+  methodDefinition: {
+    identifier: TIdentifier;
+  } & TBitloopsPrimaryType &
+    TParameterList;
 };
 
-export type TPackages = Record<string, TPackage>;
-
+export const PackageIdentifierKey = 'PackageIdentifier';
+export type TPackageIdentifier = string;
 export type TPackage = {
-  port: TPackagePort;
-  adapters: TPackageAdapterNames;
+  Package: {
+    [PackageIdentifierKey]: TPackageIdentifier;
+    port: TPackagePort;
+    adapters: TPackageAdapterNames;
+  };
 };
 
-export type TRepoPorts = Record<string, TRepoPort>;
+export const repoPortKey = 'RepoPort';
+export type TExtendsRepoPorts = { [identifierKey]: TIdentifier }[];
 
+export type TRepoPortIdentifier = string;
+export const repoPortIdentifierKey = 'repoPortIdentifier';
 export type TAggregateRepoPort = {
-  readModelName?: never; // TODO remove and use type identifiers from here `src/target/typescript/core/type-identifiers/repoPort.ts`
-  aggregateRootName: string;
-  extendedRepoPorts: string[];
-  definitionMethods: TDefinitionMethods;
+  [repoPortKey]: {
+    [repoPortIdentifierKey]: TRepoPortIdentifier;
+    entityIdentifier: string;
+    extendsRepoPorts: TExtendsRepoPorts;
+    methodDefinitionList?: TDefinitionMethodInfo[];
+  };
 };
 
 export type TReadModelRepoPort = {
-  readModelName: string;
-  aggregateRootName?: never;
-  extendedRepoPorts: string[];
-  definitionMethods: TDefinitionMethods;
+  [repoPortKey]: {
+    [repoPortIdentifierKey]: TRepoPortIdentifier;
+    readModelIdentifier: string;
+    extendsRepoPorts: TExtendsRepoPorts;
+    methodDefinitionList?: TDefinitionMethodInfo[];
+  };
 };
 
 export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
 
 export type TPackageAdapterNames = string[];
 
-/**
- * Setup Expression
- */
-// singleExpression
-//     : singleExpression Or singleExpression                                   # LogicalOrExpression
-//     | EnvPrefix OpenParen Identifier Comma literal CloseParen                # EnvPrefixExpression
-//     | envVariable                                                            # EnvVariableExpression
-//     | literal                                                                # LiteralExpression
-//     | identifier                                                             # IdentifierExpression //Identifier or Variable method
-
-export type TSingleExpressionValue = // | TMultiplicativeExpression
-  // | TAdditiveExpression
-  // | TRelationalExpression
-  // | TEqualityExpression
-  // | TParenthesizedExpression;
-  | TLogicalSingleExpression
-  | TEnvVarWithDefaultValueExpression
-  | TEnvironmentVariableExpression
-  | TLiteralExpression
-  | TIdentifierExpression
-  | TObjectLiteral;
-
-export type TSingleExpression = {
-  expression: TSingleExpressionValue;
-};
-// env(FASTIFY_PORT, env(FASTIFY_PORT, 3000))
-// process.env.FASTIFY_PORT || 5001
-export type TEnvVarWithDefaultValueExpression = {
-  envVarDefault: TEnvironmentVariableExpression & {
-    defaultValue: TLiteralExpression; // | TIdentifierExpression;
-  };
-};
-
 export type TObjectLiteral = {
   objectLiteral: {
     name: string;
-    expression: TSingleExpressionValue;
+    expression: TExpression;
   }[];
 };
 
 export type TEnvironmentVariableExpression = {
-  envVariable: {
-    value: string;
-  };
-};
-
-export type TLiteralExpression = {
-  literal: {
-    type: TBitloopsPrimitives | 'number';
-    value: string;
-  };
-};
-
-export type TIdentifierExpression = {
-  identifier: {
-    value: string;
-  };
-};
-
-export type TLogicalSingleExpression = {
-  logicalExpression:
-    | TNotSingleExpression
-    | TAndSingleExpression
-    | TOrSingleExpression
-    | TXorSingleExpression;
-};
-
-export type TNotSingleExpression = {
-  notExpression: TSingleExpression;
-};
-
-export type TAndSingleExpression = {
-  andExpression: {
-    left: TSingleExpression;
-    right: TSingleExpression;
+  environmentVariable: {
+    identifier: string;
+    defaultValue?: TLiteralValues;
   };
 };
 
 export type TErrorEvaluation = {
   errorEvaluation: {
-    name: string;
-    argumentDependencies?: TArgumentDependencies;
-  };
-};
-
-export type TOrSingleExpression = {
-  orExpression: {
-    left: TSingleExpression;
-    right: TSingleExpression;
-  };
-};
-
-export type TXorSingleExpression = {
-  xorExpression: {
-    left: TSingleExpression;
-    right: TSingleExpression;
-  };
+    error: string;
+  } & Partial<TArgumentList>;
 };
 
 export type TLogicalExpression = {
@@ -985,35 +958,35 @@ export type TLogicalExpression = {
 };
 
 export type TNotExpression = {
-  notExpression: TExpressionValues;
+  notExpression: TExpression;
 };
 
 export type TAndExpression = {
   andExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TOrExpression = {
   orExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TXorExpression = {
   xorExpression: {
-    left: TExpressionValues;
-    right: TExpressionValues;
+    left: TExpression;
+    right: TExpression;
   };
 };
 
 export type TMultiplicativeExpression = {
   multiplicativeExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TMultiplicativeOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
@@ -1021,9 +994,9 @@ export type TMultiplicativeOperator = '*' | '/' | '%';
 
 export type TAdditiveExpression = {
   additiveExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TAdditiveOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
@@ -1031,9 +1004,9 @@ export type TAdditiveOperator = '+' | '-';
 
 export type TRelationalExpression = {
   relationalExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TRelationalOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
@@ -1041,16 +1014,16 @@ export type TRelationalOperator = '<' | '<=' | '>' | '>=';
 
 export type TEqualityExpression = {
   equalityExpression: {
-    left: TExpressionValues;
+    left: TExpression;
     operator: TEqualityOperator;
-    right: TExpressionValues;
+    right: TExpression;
   };
 };
 
 export type TEqualityOperator = '==' | '!=';
 
 export type TParenthesizedExpression = {
-  parenthesizedExpression: TExpressionValues;
+  parenthesizedExpression: TExpression;
 };
 
 type TDependencyTypescript = {
@@ -1061,6 +1034,7 @@ type TDependencyTypescript = {
 };
 
 export type TDependencyChildTypescript = TDependencyTypescript & {
+  // when type is relative
   classType?: TClassTypesValues;
   className?: string;
 };
@@ -1074,3 +1048,20 @@ export type TTargetDependenciesTypeScript = {
   output: string;
   dependencies: TDependenciesTypeScript;
 };
+
+export enum RepoConnectionOptions {
+  host = 'host',
+  port = 'port',
+  database = 'database',
+}
+
+export enum RepoAdapterOptions {
+  connection = 'connection',
+  collection = 'collection',
+}
+
+export enum RestServerOptions {
+  server = 'server',
+  apiPrefix = 'apiPrefix',
+  port = 'port',
+}

@@ -20,8 +20,8 @@
 import { TBreakStatement, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
 const breakStmtToTargetLanguage = (variable: TBreakStatement): TTargetDependenciesTypeScript => {
-  if (variable !== 'break') {
-    throw new Error(`Invalid break statement: ${variable}`);
+  if (variable.breakStatement !== 'break') {
+    throw new Error(`Invalid break statement: ${JSON.stringify(variable)}`);
   }
   return { output: 'break', dependencies: [] };
 };

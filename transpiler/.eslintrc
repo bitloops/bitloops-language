@@ -1,7 +1,12 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "prettier", "jest", "eslint-plugin-prettier"],
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "jest",
+    "eslint-plugin-prettier"
+  ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -10,8 +15,12 @@
     "prettier"
   ],
   "rules": {
-    "prettier/prettier": 2, // Means error
-    "quotes": [2, "single", "avoid-escape"],
+    "prettier/prettier": 2,
+    "quotes": [
+      2,
+      "single",
+      "avoid-escape"
+    ],
     "@typescript-eslint/explicit-function-return-type": "warn",
     "jest/no-standalone-expect": "off",
     "@typescript-eslint/no-namespace": 0,
@@ -19,7 +28,14 @@
     "@typescript-eslint/ban-ts-comment": "off"
   },
   "parserOptions": {
-    "project": ["tsconfig.base.json", "tsconfig.esm.json", "tsconfig.cjs.json"]
+    "project": [
+      "tsconfig.json",
+      "tsconfig.esm.json",
+      "tsconfig.cjs.json"
+    ]
   },
-  "ignorePatterns": ["jest.config.ts"]
+  "ignorePatterns": [
+    "jest.config.ts",
+    "*.mock.ts"
+  ]
 }
