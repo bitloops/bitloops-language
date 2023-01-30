@@ -29,6 +29,7 @@ import { GetAllTodoGQLController } from './driving-adapters/GetAllTodoGQLControl
 import { DeleteTodoRESTController } from './driving-adapters/DeleteTodoRESTController';
 import { UpdateTodoRESTController } from './driving-adapters/UpdateTodoRestCotroller';
 import { GetByIdTodoRESTController } from './driving-adapters/GetByIdTodoRESTController';
+import { HealthRESTController } from './driving-adapters/HealthRESTController';
 
 import client from '../../../shared/infra/db/mongo';
 import { UpdateTodoUseCase } from './application/UpdateTodoUseCase';
@@ -56,6 +57,8 @@ const deleteTodoController = new DeleteTodoRESTController(
   new DeleteTodoUseCase(new MongoTodoWriteRepo(client)),
 );
 
+const healthController = new HealthRESTController();
+
 export {
   createTodoRESTController,
   todoGetAllController,
@@ -63,4 +66,5 @@ export {
   updateTodoController,
   deleteTodoController,
   todoGetByIdRESTController,
+  healthController,
 };

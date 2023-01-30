@@ -24,6 +24,7 @@ import {
   updateTodoController,
   deleteTodoController,
   todoGetByIdRESTController,
+  healthController,
 } from '../../../../../bounded-contexts/todo/todo/DI';
 
 const todoRESTRouter = async (fastify: Fastify.Instance) => {
@@ -45,4 +46,10 @@ const todoRESTRouter = async (fastify: Fastify.Instance) => {
   });
 };
 
-export { todoRESTRouter };
+const healthRESTRouter = async (fastify: Fastify.Instance) => {
+  fastify.get('/', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+    return healthController.execute(request, reply);
+  });
+};
+
+export { todoRESTRouter, healthRESTRouter };
