@@ -23,7 +23,6 @@ import { createUUIDv4 } from '../../helpers';
 
 export type TEventInputMetadata = {
   id?: string;
-  version?: string;
   fromContextId: string;
 };
 
@@ -39,7 +38,6 @@ export abstract class Event implements IEvent {
     this.metadata = {
       id: metadata.id || createUUIDv4(),
       createdAtTimestamp: Date.now(),
-      version: metadata.version,
       fromContextId: metadata.fromContextId,
     };
   }

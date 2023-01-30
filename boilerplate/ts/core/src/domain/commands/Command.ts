@@ -30,18 +30,15 @@ export abstract class Command implements ICommand {
   private createdTimestamp: number;
   public readonly metadata?: CommandMetadata;
   public readonly commandTopic: string;
-  public readonly toContextId: string;
 
-  constructor(commandName: string, toContextId: string, orchestrated?: boolean) {
+  constructor(commandName: string, toContextId: string, createdTimestamp?: number) {
     this.uuid = createUUIDv4();
-    this.createdTimestamp = Date.now();
+    this.createdTimestamp = createdTimestamp || Date.now();
     this.commandTopic = Command.getCommandTopic(commandName, toContextId); //`${toContextId}${TOPIC_DELIMITER}${commandName}`;
-    this.toContextId = toContextId;
     this.metadata = {
       responseTopic: `${commandName}${TOPIC_DELIMITER}${this.uuid}`,
       toContextId,
-      orchestrated: orchestrated ?? false,
-      createdTimestamp: this.createdTimestamp || Date.now(),
+      createdTimestamp: this.createdTimestamp,
     };
   }
 
