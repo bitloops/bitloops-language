@@ -22,7 +22,10 @@ import { healthRESTRouter, todoRESTRouter } from '../routers/index';
 
 const routers = async (serverInstance: Fastify.Instance, _opts: any) => {
   serverInstance.register(todoRESTRouter, { prefix: '/todo' });
+};
+
+const healthRouters = async (serverInstance: Fastify.Instance, _opts: any) => {
   serverInstance.register(healthRESTRouter, { prefix: '/health' });
 };
 
-export { routers };
+export { routers, healthRouters };

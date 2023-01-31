@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { routers } from './api';
+import { routers, healthRouters } from './api';
 
 const corsOptions = {
   origin: '*',
@@ -33,11 +33,20 @@ fastify.register(routers, {
   prefix: '/api',
 });
 
+const healthFastify = Fastify.Server({
+  logger: true,
+});
+healthFastify.register(Fastify.cors, corsOptions);
+healthFastify.register(Fastify.formBody);
+healthFastify.register(healthRouters);
+
 const port = process.env.FASTIFY_PORT || 5001;
+const healthPort = process.env.HEALTH_FASTIFY_PORT || 5000;
 
 const start = async () => {
   try {
     await fastify.listen({ host: '0.0.0.0', port: +port });
+    await healthFastify.listen({ host: '0.0.0.0', port: +healthPort });
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
