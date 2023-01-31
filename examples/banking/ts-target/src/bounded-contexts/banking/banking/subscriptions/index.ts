@@ -5,7 +5,6 @@ import {
   depositMoneyCommandHandler,
   withdrawMoneyCommandHandler,
 } from '../DI';
-import { CustomerCreated } from '../domain/events/TodoCreated';
 import { InsertPINCommand } from '../application/insert-card-pin/index';
 import { DepositMoneyCommand } from '../application/deposit-money/DepositMoneyCommand';
 import { WithdrawMoneyCommand } from '../application/withdraw-money/WithdrawMoneyCommand';
@@ -18,13 +17,14 @@ export const setUpTodoSubscriptions = async () => {
     InsertPINCommand.getCommandTopic(),
     insertPINCommandHandler.execute.bind(insertPINCommandHandler),
   );
+
   await commandBus.register(
     DepositMoneyCommand.getCommandTopic(),
-    depositMoneyCommandHandler.execute.bind(insertPINCommandHandler),
+    depositMoneyCommandHandler.execute.bind(depositMoneyCommandHandler),
   );
   await commandBus.register(
     WithdrawMoneyCommand.getCommandTopic(),
-    withdrawMoneyCommandHandler.execute.bind(insertPINCommandHandler),
+    withdrawMoneyCommandHandler.execute.bind(withdrawMoneyCommandHandler),
   );
   // const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
   // await queryBus.register(

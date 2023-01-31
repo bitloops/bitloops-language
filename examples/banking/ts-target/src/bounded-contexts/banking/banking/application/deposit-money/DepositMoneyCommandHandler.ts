@@ -43,6 +43,7 @@ export class DepositMoneyCommandHandler
     if (depositOrError.isFail()) {
       return fail(depositOrError.value);
     }
+    await this.accountRepo.update(accountEntity);
     return ok();
   }
 }

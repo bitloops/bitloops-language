@@ -7,7 +7,7 @@ import { CurrencyVO } from '../../domain/CurrencyVO';
 export class MongoAccountWriteRepoMapper {
   static toDomain(persistedAccount: any): AccountEntity {
     const balanceProps = {
-      currency: CurrencyVO.create(persistedAccount.balance.currency).value,
+      currency: CurrencyVO.create({ code: persistedAccount.balance.currency }).value,
       amount: persistedAccount.balance.amount,
     };
     const accountProps = {

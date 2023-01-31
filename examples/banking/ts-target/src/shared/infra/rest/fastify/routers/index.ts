@@ -28,10 +28,10 @@ const bankingRESTRouter = async (fastify: Fastify.Instance) => {
   fastify.post('/insertPIN', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return insertCardPINRESTCommandController.execute(request, reply);
   });
-  fastify.get('/depositMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+  fastify.post('/depositMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return depositMoneyRESTCommandController.execute(request, reply);
   });
-  fastify.get('/withDrawMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+  fastify.post('/withdrawMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return withdrawMoneyRESTCommandController.execute(request, reply);
   });
 };

@@ -29,6 +29,10 @@ export class WithdrawMoneyRESTCommandController extends Fastify.BaseController {
           this.badRequest(response, result.value);
           break;
         }
+        case DomainErrors.InsufficientBalance: {
+          this.badRequest(response, result.value);
+          break;
+        }
         default:
           this.fail(response, result.value.message);
       }

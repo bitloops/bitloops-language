@@ -16,14 +16,14 @@
  */
 export interface CRUDRepoPort<Aggregate, AggregateId> {
   getAll(): Promise<Aggregate[]>;
-  getById(aggregateRootId: AggregateId): Promise<Aggregate>;
+  getById(aggregateRootId: AggregateId): Promise<Aggregate | null>;
   save(aggregate: Aggregate): Promise<void>;
   update(aggregate: Aggregate): Promise<void>;
   delete(aggregateRootId: AggregateId): Promise<void>;
 }
 
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
-  getById(aggregateRootId: AggregateId): Promise<Aggregate>;
+  getById(aggregateRootId: AggregateId): Promise<Aggregate | null>;
   save(aggregate: Aggregate): Promise<void>;
   update(aggregate: Aggregate): Promise<void>;
   delete(aggregateRootId: AggregateId): Promise<void>;

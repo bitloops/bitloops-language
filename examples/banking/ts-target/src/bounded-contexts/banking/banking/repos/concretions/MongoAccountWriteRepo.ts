@@ -42,10 +42,9 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
         _id: account.id.toString(),
       },
       {
-        $set: {
-          balance: account.balance.props,
-        },
+        $set: MongoAccountWriteRepoMapper.toPersistence(account),
       },
     );
+    await Domain.dispatchEventsCallback(account.id /*, metadata*/);
   }
 }

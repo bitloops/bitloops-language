@@ -18,7 +18,7 @@ const customersInputData: any[] = [
   },
 ];
 
-const acccountsInputData: any[] = [
+const accountsInputData: any[] = [
   {
     _id: '85c5d65a-2c7e-4a9c-ad31-e367bb3c4f95',
     balance: {
@@ -39,7 +39,7 @@ async function main() {
   const insertResult = await customersCollection.insertMany(customersInputData);
   console.log('Inserted documents =>', insertResult);
 
-  const accountInsertResult = await accountsCollection.insertMany(acccountsInputData);
+  const accountInsertResult = await accountsCollection.insertMany(accountsInputData);
   console.log('Inserted documents =>', accountInsertResult);
 
   const customersFindResult = await customersCollection.find({}).toArray();

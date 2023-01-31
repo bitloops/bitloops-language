@@ -42,6 +42,7 @@ export class WithdrawMoneyCommandHandler
     if (withdrawOrError.isFail()) {
       return fail(withdrawOrError.value);
     }
+    await this.accountRepo.update(accountEntity);
     return ok();
   }
 }

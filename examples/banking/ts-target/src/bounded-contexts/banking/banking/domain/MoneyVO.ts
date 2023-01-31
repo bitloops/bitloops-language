@@ -2,6 +2,7 @@ import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from './errors';
 import { Rules } from './rules';
 import { CurrencyVO } from './CurrencyVO';
+import { IncompatibleCurrenciesError } from './errors/IncompatibleCurrenciesError';
 
 interface MoneyProps {
   currency: CurrencyVO;
@@ -28,5 +29,13 @@ export class MoneyVO extends Domain.ValueObject<MoneyProps> {
 
   get amount(): number {
     return this.props.amount;
+  }
+
+  public deduct(amount: MoneyVO): Either<MoneyVO, DomainErrors.InvalidMonetaryValue> {
+    if (!this.currency.equals(amount.currency)) {
+      return fail(new IncompatibleCurrenciesError(this.props.currency.code, amount.currency.code));
+    }
+    const value = this.props.amount - amount.amount;
+    return MoneyVO.create({ amount: value, currency: this.props.currency });
   }
 }

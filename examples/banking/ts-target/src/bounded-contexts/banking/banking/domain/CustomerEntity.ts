@@ -4,6 +4,7 @@ import { EmailVO } from './EmailVO';
 import { PINVO } from './PINVO';
 import { AccountIdVO } from './AccountIdVO';
 import { DomainErrors } from './errors/index';
+import { fail } from '@bitloops/bl-boilerplate-core';
 
 export interface CustomerProps {
   id?: Domain.UUIDv4;

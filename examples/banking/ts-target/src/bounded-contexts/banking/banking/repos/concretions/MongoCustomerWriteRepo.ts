@@ -42,13 +42,10 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
         _id: customer.id.toString(),
       },
       {
-        $set: {
-          email: customer.email.email,
-          pin: customer.pin.pin,
-          accountId: customer.accountId.toString(),
-        },
+        $set: MongoCustomerWriteRepoMapper.toPersistence(customer),
       },
     );
+    await Domain.dispatchEventsCallback(customer.id /*, metadata*/);
   }
 
   async getByEmail(email: string): Promise<CustomerEntity | null> {

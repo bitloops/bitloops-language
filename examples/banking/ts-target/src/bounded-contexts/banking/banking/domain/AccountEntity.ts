@@ -1,7 +1,8 @@
-import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
+import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { AccountCreated } from './events/AccountCreated';
 import { MoneyVO } from './MoneyVO';
 import { DomainErrors } from './errors/index';
+import { Rules } from './rules/index';
 
 export interface AccountProps {
   id?: Domain.UUIDv4;
@@ -31,9 +32,13 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
   }
 
   public withdrawAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
-    const updatedAmount = this.props.balance.amount - amount;
+    const finalAmount = this.props.balance.amount - amount;
+    const res = Domain.applyRules([
+      new Rules.AccountCannotHaveNegativeBalance(finalAmount, this.props.balance.amount),
+    ]);
+    if (res) return fail(res);
     const balanceVO = MoneyVO.create({
-      amount: updatedAmount,
+      amount: finalAmount,
       currency: this.props.balance.currency,
     });
     if (balanceVO.isFail()) {

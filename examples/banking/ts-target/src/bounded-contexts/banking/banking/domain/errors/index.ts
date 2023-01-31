@@ -5,6 +5,8 @@ import { InvalidMonetaryValueError } from './InvalidMonetaryValueError';
 import { InvalidAmountError } from './InvalidAmountError';
 import { InvalidCustomerPINError } from './InvalidCustomerPINError';
 import { PINLengthError } from './PINLengthError';
+import { IncompatibleCurrenciesError } from './IncompatibleCurrenciesError';
+import { InsufficientBalanceError } from './InsufficientBalanceError';
 
 export namespace DomainErrors {
   export class InvalidEmail extends InvalidEmailError {}
@@ -14,4 +16,6 @@ export namespace DomainErrors {
   export class InvalidMonetaryValue extends InvalidMonetaryValueError {}
   export class InvalidAmount extends InvalidAmountError {}
   export class InvalidCustomerPIN extends InvalidCustomerPINError {}
+  export class IncompatibleCurrencies extends IncompatibleCurrenciesError {}
+  export class InsufficientBalance extends InsufficientBalanceError {}
 }

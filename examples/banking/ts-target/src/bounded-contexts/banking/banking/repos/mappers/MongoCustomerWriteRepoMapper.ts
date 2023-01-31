@@ -9,8 +9,8 @@ export class MongoCustomerWriteRepoMapper {
   static toDomain(persistedCustomer: any): CustomerEntity {
     const customerProps = {
       id: new Domain.UUIDv4(persistedCustomer._id) as Domain.UUIDv4,
-      email: EmailVO.create(persistedCustomer.email).value as EmailVO,
-      pin: PINVO.create(persistedCustomer.pin).value as PINVO,
+      email: EmailVO.create({ email: persistedCustomer.email }).value as EmailVO,
+      pin: PINVO.create({ pin: persistedCustomer.pin }).value as PINVO,
       accountId: AccountIdVO.create(persistedCustomer.accountId).value as AccountIdVO,
     };
     return CustomerEntity.create(customerProps).value;
