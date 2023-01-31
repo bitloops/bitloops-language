@@ -47,6 +47,7 @@ export class InsertPINCommandHandler
     if (validationPinRes.isFail()) {
       return fail(validationPinRes.value);
     }
+    //TODO return customerID
     return ok();
   }
 }
