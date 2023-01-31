@@ -1,5 +1,7 @@
-import { ToDoNotFoundError } from './ToDoNotFoundError';
+import { AccountNotFoundError } from './AccountNotFoundError.js';
+import { CustomerNotFoundError } from './CustomerNotFoundError';
 
 export namespace ApplicationErrors {
-  export class ToDoNotFound extends ToDoNotFoundError {}
+  export class CustomerNotFound extends CustomerNotFoundError {}
+  export class AccountNotFound extends AccountNotFoundError {}
 }

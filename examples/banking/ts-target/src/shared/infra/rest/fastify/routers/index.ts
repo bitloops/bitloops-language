@@ -19,39 +19,35 @@
  */
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import {
-  createTodoRESTController,
-  todoGetAllController,
-  updateTodoController,
-  deleteTodoController,
-  todoGetByIdRESTController,
-  createTodoRESTCommandController,
-  getAllTodosQueryController,
-} from '../../../../../bounded-contexts/todo/todo/DI';
+  depositMoneyRESTCommandController,
+  insertCardPINRESTCommandController,
+  withdrawMoneyRESTCommandController,
+} from '../../../../../bounded-contexts/banking/banking/DI.js';
 
 const todoRESTRouter = async (fastify: Fastify.Instance) => {
-  fastify.post('/', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return createTodoRESTController.execute(request, reply);
+  fastify.post('/insertPIN', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+    return insertCardPINRESTCommandController.execute(request, reply);
   });
-  fastify.get('/', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return todoGetAllController.execute(request, reply);
+  fastify.get('/depositMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+    return depositMoneyRESTCommandController.execute(request, reply);
   });
-  fastify.get('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return todoGetByIdRESTController.execute(request, reply);
+  fastify.get('/withDrawMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+    return withdrawMoneyRESTCommandController.execute(request, reply);
   });
-  fastify.put('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return updateTodoController.execute(request, reply);
-  });
+  // fastify.put('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+  //   return updateTodoController.execute(request, reply);
+  // });
 
-  fastify.delete('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return deleteTodoController.execute(request, reply);
-  });
-  fastify.post('/command', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return createTodoRESTCommandController.execute(request, reply);
-  });
+  // fastify.delete('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+  //   return deleteTodoController.execute(request, reply);
+  // });
+  // fastify.post('/command', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+  //   return createTodoRESTCommandController.execute(request, reply);
+  // });
 
-  fastify.get('/query', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return getAllTodosQueryController.execute(request, reply);
-  });
+  // fastify.get('/query', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
+  //   return getAllTodosQueryController.execute(request, reply);
+  // });
 };
 
 export { todoRESTRouter };

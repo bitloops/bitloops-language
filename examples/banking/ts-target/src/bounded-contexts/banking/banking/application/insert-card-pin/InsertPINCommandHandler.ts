@@ -1,40 +1,52 @@
+import { PINVO } from '../../domain/PINVO.js';
 import { DomainErrors } from '../../domain/errors/index.js';
-import { CreateTodoCommand } from './commands/';
+import { ICustomerWriteRepo } from '../../repos/interfaces/ICustomerWriteRepo.js';
+import { ApplicationErrors } from '../errors/index.js';
+import { InsertPINCommand } from './InsertPINCommand';
 
 import {
   Application,
-  Domain,
   failWithPublish as failResp,
   okWithpublish as okResp,
   Either,
 } from '@bitloops/bl-boilerplate-core';
 
-type InsertPINCommandHandlerResponse = Either<void, DomainErrors.>;
+type InsertPINCommandHandlerResponse = Either<
+  void,
+  | ApplicationErrors.CustomerNotFound
+  | DomainErrors.PINIsNotPositiveNumber
+  | DomainErrors.InvalidCustomerPIN
+  | DomainErrors.InvalidCustomerPIN
+>;
 
-export class CreateTodoCommandHandler
-  implements Application.IUseCase<CreateTodoCommand, Promise<InsertPINCommandHandlerResponse>>
+export class InsertPINCommandHandler
+  implements Application.IUseCase<InsertPINCommand, Promise<InsertPINCommandHandlerResponse>>
 {
-  private todoRepo: Application.Repo.ICRUDWritePort<TodoEntity, Domain.UUIDv4>;
+  private customerRepo: ICustomerWriteRepo;
 
-  constructor(todoRepo: Application.Repo.ICRUDWritePort<TodoEntity, Domain.UUIDv4>) {
-    this.todoRepo = todoRepo;
+  constructor(customerRepo: ICustomerWriteRepo) {
+    this.customerRepo = customerRepo;
   }
 
-  async execute(command: CreateTodoCommand): Promise<InsertPINCommandHandlerResponse> {
+  async execute(command: InsertPINCommand): Promise<InsertPINCommandHandlerResponse> {
     const fail = failResp(command.metadata);
     const ok = okResp(command.metadata);
 
-    const title = TitleVO.create({ title: command.title });
+    const customerEntity = await this.customerRepo.getByEmail(command.email);
 
-    if (title.isFail()) {
-      return fail(title.value);
+    if (!customerEntity) {
+      return fail(new ApplicationErrors.CustomerNotFound(command.email));
     }
-    const todo = TodoEntity.create({ title: title.value, completed: false });
-    if (todo.isFail()) {
-      return fail(todo.value);
+    const pinProvided = PINVO.create({ pin: command.pin });
+
+    if (pinProvided.isFail()) {
+      return fail(pinProvided.value);
     }
 
-    await this.todoRepo.save(todo.value);
+    const validationPinRes = customerEntity.validatePIN(pinProvided.value);
+    if (validationPinRes.isFail()) {
+      return fail(validationPinRes.value);
+    }
     return ok();
   }
 }

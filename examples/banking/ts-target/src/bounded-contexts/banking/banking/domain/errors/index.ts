@@ -4,10 +4,12 @@ import { InvalidCurrencyError } from './InvalidCurrencyError.js';
 import { InvalidMonetaryValueError } from './InvalidMonetaryValueError.js';
 import { InvalidAmountError } from './InvalidAmountError.js';
 import { InvalidCustomerPINError } from './InvalidCustomerPINError.js';
+import { PINLengthError } from './PINLengthError.js';
 
 export namespace DomainErrors {
   export class InvalidEmail extends InvalidEmailError {}
   export class PINIsNotPositiveNumber extends PINIsNotPositiveNumberError {}
+  export class PINLength extends PINLengthError {}
   export class InvalidCurrency extends InvalidCurrencyError {}
   export class InvalidMonetaryValue extends InvalidMonetaryValueError {}
   export class InvalidAmount extends InvalidAmountError {}

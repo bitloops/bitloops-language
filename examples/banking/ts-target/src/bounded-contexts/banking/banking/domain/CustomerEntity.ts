@@ -42,10 +42,10 @@ export class CustomerEntity extends Domain.Aggregate<CustomerProps> {
     return this.props.accountId;
   }
 
-  validatePIN(pin: string): Either<void, DomainErrors.InvalidCustomerPIN> {
-    if (this.props.pin.pin !== pin) {
-      return fail(new DomainErrors.InvalidCustomerPIN(pin));
+  validatePIN(pin: PINVO): Either<void, DomainErrors.InvalidCustomerPIN> {
+    if (this.props.pin.equals(pin)) {
+      return ok();
     }
-    return ok();
+    return fail(new DomainErrors.InvalidCustomerPIN(pin.pin));
   }
 }

@@ -15,7 +15,9 @@ export class PINVO extends Domain.ValueObject<PINProps> {
     super(props);
   }
 
-  public static create(props: PINProps): Either<PINVO, DomainErrors.InvalidEmail> {
+  public static create(
+    props: PINProps,
+  ): Either<PINVO, DomainErrors.PINIsNotPositiveNumber | DomainErrors.InvalidCustomerPIN> {
     const res = Domain.applyRules([
       // TODO check if 2 rules work
       new Rules.PINIsPositiveNumber(props.pin),

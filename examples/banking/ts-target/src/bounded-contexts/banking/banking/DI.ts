@@ -17,33 +17,50 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { Container } from '@bitloops/bl-boilerplate-core';
 import client from '../../../shared/infra/db/mongo';
-import { CONTEXT_ID } from './config';
 
-import { MongoTodoWriteRepo } from './repos/concretions/MongoToDoWriteRepo';
-import { MongoTodoReadRepo } from './repos/concretions/MongoToDoReadRepo';
+import { MongoCustomerWriteRepo } from './repos/concretions/MongoCustomerWriteRepo';
+import { InsertPINCommandHandler } from './application/insert-card-pin/InsertPINCommandHandler.js';
+import { MongoAccountWriteRepo } from './repos/concretions/MongoAccountWriteRepo.js';
+import { DepositMoneyCommandHandler } from './application/deposit-money/DepositMoneyCommandHandler.js';
+import { WithdrawMoneyCommandHandler } from './application/withdraw-money/WithdrawMoneyCommandHandler.js';
+import { WithdrawMoneyRESTCommandController } from '../../../api/todo/modules/todo/withdraw-money/WithdrawMoneyRESTCommandController.js';
+import { Container } from '@bitloops/bl-boilerplate-core';
+import { CONTEXT_ID } from './config/index.js';
+import { DepositMoneyRESTCommandController } from '../../../api/todo/modules/todo/deposit-money/DepositMoneyRESTCommandController.js';
+import { InsertCardPINRESTCommandController } from '../../../api/todo/modules/todo/insert-card-pin/InsertCardPINRESTCommandController.js';
 
-import { CreateTodoCommandHandler } from './application/CreateTodoCommandHandler';
-import { GetAllTodosQueryHandler } from './application/get-all/GetAllTodosQueryHandler';
+const insertPINCommandHandler = new InsertPINCommandHandler(new MongoCustomerWriteRepo(client));
+const depositMoneyCommandHandler = new DepositMoneyCommandHandler(
+  new MongoAccountWriteRepo(client),
+);
+const withdrawMoneyCommandHandler = new WithdrawMoneyCommandHandler(
+  new MongoAccountWriteRepo(client),
+);
 
-import { CreateTodoRESTCommandController } from '../../../api/todo/modules/todo/create-todo/CreateTodoRESTCommandController';
-import { GetAllQueryController } from '../../../api/todo/modules/todo/get-all-todos/GetAllQueryController';
-
-const createTodoCommandHandler = new CreateTodoCommandHandler(new MongoTodoWriteRepo(client));
-const getAllTodosQueryHandler = new GetAllTodosQueryHandler(new MongoTodoReadRepo(client));
-
-const createTodoRESTCommandController = new CreateTodoRESTCommandController(
+const insertCardPINRESTCommandController = new InsertCardPINRESTCommandController(
   Container.getCommandBusFromContext(CONTEXT_ID),
 );
 
-const getAllTodosQueryController = new GetAllQueryController(
-  Container.getQueryBusFromContext(CONTEXT_ID),
+const depositMoneyRESTCommandController = new DepositMoneyRESTCommandController(
+  Container.getCommandBusFromContext(CONTEXT_ID),
 );
+const withdrawMoneyRESTCommandController = new WithdrawMoneyRESTCommandController(
+  Container.getCommandBusFromContext(CONTEXT_ID),
+);
+// const getAllTodosQueryHandler = new GetAllTodosQueryHandler(new MongoTodoReadRepo(client));
+
+// const getAllTodosQueryController = new GetAllQueryController(
+//   Container.getQueryBusFromContext(CONTEXT_ID),
+// );
 
 export {
-  createTodoRESTCommandController,
-  getAllTodosQueryController,
-  createTodoCommandHandler,
-  getAllTodosQueryHandler,
+  insertPINCommandHandler,
+  depositMoneyCommandHandler,
+  withdrawMoneyCommandHandler,
+  insertCardPINRESTCommandController,
+  depositMoneyRESTCommandController,
+  withdrawMoneyRESTCommandController,
+  //   getAllTodosQueryController,
+  //   getAllTodosQueryHandler,
 };

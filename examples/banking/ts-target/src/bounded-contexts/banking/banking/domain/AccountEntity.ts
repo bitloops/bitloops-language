@@ -30,12 +30,20 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return this.props.balance;
   }
 
-  public updateBalance(balance: MoneyVO): Either<void, never> {
-    this.props.balance = balance;
+  public withdrawAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
+    const updatedAmount = this.props.balance.amount - amount;
+    const balanceVO = MoneyVO.create({
+      amount: updatedAmount,
+      currency: this.props.balance.currency,
+    });
+    if (balanceVO.isFail()) {
+      return fail(balanceVO.value);
+    }
+    this.props.balance = balanceVO.value;
     return ok();
   }
 
-  public addToBalanceAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
+  public depositAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
     const updatedAmount = this.props.balance.amount + amount;
     const balanceVO = MoneyVO.create({
       amount: updatedAmount,

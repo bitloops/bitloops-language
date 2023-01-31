@@ -1,5 +1,5 @@
 import { PINHasLengthOfFourRule } from './PINHasLengthOfFourRule.js';
-import { PINIsPositiveNumberRule } from './PinIsPositiveNumberRule.js';
+import { PINIsPositiveNumberRule } from './PINIsPositiveNumberRule.js';
 import { ValidEmailRule } from './ValidEmailRule';
 import { AmountOutOfBoundsRule } from './AmountOutOfBoundsRule.js';
 import { AmountIsPositiveNumberRule } from './AmountIsPositiveNumberRule.js';
