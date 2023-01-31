@@ -18,10 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { ApolloError, AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server';
-import { IBaseController } from './IBaseController';
+import { Infra } from '@bitloops/bl-boilerplate-core';
 
 export abstract class BaseGraphQLController<TRequest, TResponseData>
-  implements IBaseController<TRequest, TResponseData>
+  implements Infra.GraphQL.IBaseController<TRequest, TResponseData>
 {
   protected abstract executeImpl(req: TRequest): Promise<TResponseData | ApolloError>;
 
@@ -33,51 +33,38 @@ export abstract class BaseGraphQLController<TRequest, TResponseData>
         return result;
       }
     } catch (err) {
-      //   console.log(`[BaseController]: Uncaught controller error`);
-      //   console.log(err);
       this.fail('An unexpected error occurred');
     }
     throw result;
   }
 
-  public ok(dto: TResponseData) {
-    return dto;
+  public ok(dto?: TResponseData) {
+    return dto ?? ({} as TResponseData);
   }
 
-  public created() {
-    return 'Created';
+  public badUserInput(errorId: string, message?: string) {
+    return new UserInputError(message ? message : 'User input error', { errorId });
   }
 
-  public clientError(message?: string) {
-    return new UserInputError(message ? message : 'User input error');
+  public badRequest(errorId: string, message: string) {
+    return new UserInputError(message, { errorId });
   }
 
-  public unauthorized(message?: string) {
-    return new AuthenticationError(message ? message : 'Unauthorized');
+  public forbidden(errorId: string, message: string) {
+    return new ForbiddenError(message ? message : 'Forbidden', { errorId });
   }
 
-  public paymentRequired(message?: string) {
-    return new ApolloError(message ? message : 'Payment required', 'PAYMENT_REQUIRED');
-  }
-
-  // public forbidden(res: FastifyReply, message?: ErrorMessage) {
-  //   return BaseFastifyController.jsonResponse(res, 403, message ? message : 'Forbidden');
-  // }
-  public forbidden(message?: string) {
-    return new ForbiddenError(message ? message : 'Forbidden');
-  }
-
-  public notFound(message?: string) {
+  public notFound(errorId: string, message?: string) {
     // No error code for notFound for graphql
-    return new ApolloError(message ? message : 'Not found', 'NOT_FOUND');
+    return new ApolloError(message ? message : 'Not found', 'NOT_FOUND', { errorId });
   }
 
-  public conflict(message?: string) {
-    return new ApolloError(message ? message : 'Conflict', 'CONFLICT');
+  public unauthorized(errorId: string, message?: string) {
+    return new AuthenticationError(message ? message : 'Unauthorized', { errorId });
   }
 
-  public tooMany(message?: string) {
-    return new ApolloError(message ? message : 'Too many', 'TOO_MANY');
+  public internalError(errorId: string, message: string) {
+    return new ApolloError(message, errorId);
   }
 
   public fail(error: Error | string) {

@@ -22,26 +22,34 @@ import { SubscriberHandler } from '../../domain/messages/IMessageBus';
 import { IMessage } from '../../domain/messages/IMessage';
 
 export class InProcessMessageBus implements IInProcessMessageBus {
-  private subscribers: Record<string, SubscriberHandler[]> = {};
+  private subscribers: Record<string, SubscriberHandler<IMessage>[]> = {};
 
   //   constructor() {} // public defaultTriesCount: number = 3 // Count of attempts to send to the receiver
 
-  public getSubscriberHandlers(topic: string): SubscriberHandler[] {
+  public getSubscriberHandlers<T extends IMessage>(topic: string): SubscriberHandler<T>[] {
     if (!this.subscribers[topic]) {
       return [];
     }
     return this.subscribers[topic];
   }
 
-  public async subscribe(topic: string, subscriberHandler: SubscriberHandler) {
+  public async subscribe<T extends IMessage>(
+    topic: string,
+    subscriberHandler: SubscriberHandler<T>,
+  ) {
+    console.log('in process message received');
     if (!this.subscribers[topic]) {
       this.subscribers[topic] = [];
     }
 
+    // @ts-ignore
     this.subscribers[topic].push(subscriberHandler);
   }
 
-  public async unsubscribe(topic: string, subscriberHandler: SubscriberHandler) {
+  public async unsubscribe<T extends IMessage>(
+    topic: string,
+    subscriberHandler: SubscriberHandler<T>,
+  ) {
     if (!this.subscribers[topic]) {
       return;
     }

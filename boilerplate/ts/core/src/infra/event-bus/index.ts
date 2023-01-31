@@ -21,18 +21,15 @@ import { IEvent } from '../../domain/events/IEvent';
 import { IEventBus, EventHandler } from '../../domain/events/IEventBus';
 import { IMessageBus } from '../../domain/messages/IMessageBus';
 
-//TODO try to add T in class declaration
 export class EventBus implements IEventBus {
-  // private prefix: string = "event";
   private messageBus: IMessageBus;
 
   constructor(messageBus: IMessageBus) {
     this.messageBus = messageBus;
   }
 
-  async subscribe(topic: string, eventHandler: EventHandler): Promise<void> {
+  async subscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void> {
     console.log('EventBus subscribe: topic', topic);
-    // @ts-ignore: TS2345
     await this.messageBus.subscribe(topic, eventHandler);
   }
 
@@ -41,8 +38,13 @@ export class EventBus implements IEventBus {
     return this.messageBus.publish(topic, message);
   }
 
-  async unsubscribe(topic: string, eventHandler: EventHandler): Promise<void> {
-    // @ts-ignore: TS2345
+  async unsubscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void> {
     await this.messageBus.unsubscribe(topic, eventHandler);
+  }
+
+  async publishMany(params: Array<{ topic: string; message: IEvent }>): Promise<void> {
+    for (const param of params) {
+      await this.publish(param.topic, param.message);
+    }
   }
 }

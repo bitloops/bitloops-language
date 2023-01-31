@@ -17,7 +17,7 @@ export class CreateTodoRESTController extends Fastify.BaseController {
     if (result.isFail()) {
       switch (result.value.constructor) {
         case DomainErrors.TitleOutOfBoundsError: {
-          this.clientError(response, result.value.message);
+          this.badRequest(response, result.value);
           break;
         }
         default:

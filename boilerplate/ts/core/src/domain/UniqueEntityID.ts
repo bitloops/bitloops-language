@@ -17,7 +17,7 @@
 import { createUUIDv4 } from '../helpers';
 import { Identifier } from './Identifier';
 
-export class UUIDv4 extends Identifier<string | number> {
+export class UniqueEntityID extends Identifier<string | number> {
   constructor(id?: string | number) {
     super(id ? id : createUUIDv4());
   }
