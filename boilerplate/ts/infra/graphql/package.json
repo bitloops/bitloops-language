@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-graphql",
-  "version": "0.0.4",
+  "version": "0.1.2",
   "description": "TypeScript boilerplate code for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
@@ -24,15 +24,6 @@
     "boilerplate",
     "core"
   ],
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.48.1",
-    "@typescript-eslint/parser": "^5.48.1",
-    "eslint": "^8.25.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
-  },
   "scripts": {
     "clean": "rm -rf ./lib",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
@@ -47,8 +38,18 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.1.1",
     "apollo-server": "^3.10.3",
     "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
   },
   "exports": {
     ".": {

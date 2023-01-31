@@ -17,40 +17,32 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { v4 as uuid } from 'uuid';
 import { QueryMetadata, IQuery } from './IQuery';
-import { config } from '../../config';
-import { getTopic } from '../../helpers';
+import { config, TOPIC_PREFIXES } from '../../config';
+import { createUUIDv4, getTopic } from '../../helpers';
 
-const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
+const { TOPIC_DELIMITER } = config;
 
 export abstract class Query implements IQuery {
-  private static prefix: string = TOPIC_PREFIXES.Query;
+  private static prefix: TOPIC_PREFIXES.Query = TOPIC_PREFIXES.Query;
 
   public readonly uuid: string;
   private createdTimestamp: number;
   public readonly metadata: QueryMetadata;
   public readonly queryTopic: string;
-  public readonly toContextId: string;
 
-  constructor(queryName: string, toContextId: string, orchestrated?: boolean) {
-    this.uuid = uuid();
-    this.createdTimestamp = Date.now();
+  constructor(queryName: string, toContextId: string, createdTimestamp?: number) {
+    this.uuid = createUUIDv4();
+    this.createdTimestamp = createdTimestamp || Date.now();
     this.queryTopic = Query.getQueryTopic(queryName, toContextId);
-    this.toContextId = toContextId;
     this.metadata = {
       responseTopic: `${queryName}${TOPIC_DELIMITER}${this.uuid}`,
       toContextId,
-      orchestrated: orchestrated ?? false,
+      createdTimestamp: this.createdTimestamp,
     };
   }
 
   static getQueryTopic(queryName: string, toContextId: string): string {
-    return getTopic({
-      topicPrefix: Query.prefix,
-      name: queryName,
-      contextId: toContextId,
-      topicDelimiter: TOPIC_DELIMITER,
-    });
+    return getTopic(Query.prefix, queryName, toContextId);
   }
 }

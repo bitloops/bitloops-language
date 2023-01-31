@@ -17,18 +17,29 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { config, TOPIC_PREFIXES } from '../config';
+
 type GetTopicTypeParams = {
-  topicPrefix: string;
+  topicPrefix: TOPIC_PREFIXES;
   name: string;
   contextId: string;
   topicDelimiter: string;
 };
 
-export const getTopic = ({ topicPrefix, name, contextId, topicDelimiter }: GetTopicTypeParams) => {
+const getTopicString = ({ topicPrefix, name, contextId, topicDelimiter }: GetTopicTypeParams) => {
   return `${topicPrefix}${topicDelimiter}${contextId}${topicDelimiter}${name}`;
 };
 
-export const getIntegrationTopic = (
+export const getTopic = (topicPrefix: TOPIC_PREFIXES, name: string, contextId: string) => {
+  return getTopicString({
+    topicPrefix,
+    name,
+    contextId,
+    topicDelimiter: config.TOPIC_DELIMITER,
+  });
+};
+
+const getIntegrationTopicString = (
   domainEventTopic: string,
   integrationEventTopicPrefix: string,
   topicDelimiter: string,
@@ -36,10 +47,31 @@ export const getIntegrationTopic = (
   return `${integrationEventTopicPrefix}${topicDelimiter}${domainEventTopic}`;
 };
 
-export const getProcessManagerTopic = (
+export const getIntegrationTopic = (domainEventTopic: string) => {
+  // return `${config.INTEGRATION_EVENT_TOPIC_PREFIX}${config.TOPIC_DELIMITER}${domainEventTopic}`;
+  return getIntegrationTopicString(
+    domainEventTopic,
+    config.INTEGRATION_EVENT_TOPIC_PREFIX,
+    config.TOPIC_DELIMITER,
+  );
+};
+
+const getProcessManagerTopicString = (
   integrationEventTopic: string,
   processManagerEventTopicPrefix: string,
   topicDelimiter: string,
 ) => {
   return `${processManagerEventTopicPrefix}${topicDelimiter}${integrationEventTopic}`;
+};
+
+export const getProcessManagerTopic = (integrationEventTopic: string) => {
+  return getProcessManagerTopicString(
+    integrationEventTopic,
+    config.PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
+    config.TOPIC_DELIMITER,
+  );
+};
+
+export const createUUIDv4 = () => {
+  return crypto.randomUUID();
 };

@@ -17,33 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICoreError } from '../../ICoreError';
 
-export type ErrorMessage = ICoreError;
+import { Event } from './Event';
 
-// TODO replace all with ErrorMessage
-export interface IBaseController<Req, Res> {
-  execute(req: Req, res: Res): Promise<void>;
+type TIntegrationEventInputMetadata = {
+  id?: string;
+  version?: string;
+  fromContextId: string;
+};
 
-  //   jsonResponse(res: Res, code: number, message: string);
-
-  ok<T>(res: Res, dto?: T): any;
-
-  created(res: Res): any;
-
-  clientError(res: Res, message?: string): any;
-
-  paymentRequired(res: Res, message?: string): any;
-
-  forbidden(res: Res, message?: ErrorMessage | string): any;
-
-  notFound(res: Res, message?: string): any;
-
-  conflict(res: Res, message?: string): any;
-
-  tooMany(res: Res, message?: string): any;
-
-  todo(res: Res): any;
-
-  fail(res: Res, error: Error | string): any;
+export abstract class IntegrationEvent extends Event {
+  constructor(eventTopic: string, data: unknown, metadata: TIntegrationEventInputMetadata) {
+    super(eventTopic, data, metadata);
+    this.metadata = { ...this.metadata, version: metadata.version };
+  }
 }

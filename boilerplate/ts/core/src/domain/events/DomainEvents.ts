@@ -19,28 +19,17 @@
  */
 import { IDomainEvent } from './IDomainEvent';
 import { AggregateRoot } from '../AggregateRoot';
-import { UUIDv4 } from '../UUIDv4';
+import { UniqueEntityID } from '../UniqueEntityID';
 import { IEventBus } from './IEventBus';
-// import { IIntegrationEvent } from "./IIntegrationEvent";
-// import { DomainEvent } from './DomainEvent';
-// import { IntegrationEvent } from "./IntegrationEvent";
-import { IEvent } from './IEvent';
-import { CommandMetadata } from '../commands/ICommand';
-import { EventBus } from '../../infra/event-bus';
-import { InProcessMessageBus } from '../../infra/message-bus/InProcessMessageBus';
-// import { config } from "../../config";
-// import { getProcessManagerTopic } from "../../helpers";
 
 // TODO two aggregates at the same time, only one will be marked as dispatched so the other one's events will be lost
 // TODO if a transaction fails the events will hang around until garbage collector clears them
-export class Events {
+export class DomainEvents {
   private markedAggregates: AggregateRoot<any>[] = [];
   private domainEventBus: IEventBus;
-  // private integrationEventBus: IEventBus;
 
   constructor(domainEventBus: IEventBus) {
     this.domainEventBus = domainEventBus;
-    // this.integrationEventBus = integrationEventBus;
   }
 
   /**
@@ -50,7 +39,6 @@ export class Events {
    * events to eventually be dispatched when the infrastructure commits
    * the unit of work.
    */
-
   public markAggregateForDispatch(aggregate: AggregateRoot<any>): void {
     const aggregateFound = !!this.findMarkedAggregateByID(aggregate.id);
 
@@ -59,18 +47,13 @@ export class Events {
     }
   }
 
-  private async dispatchAggregateEvents(
-    aggregate: AggregateRoot<any>,
-    _metadata?: CommandMetadata,
-  ): Promise<void> {
+  private async dispatchAggregateEvents(aggregate: AggregateRoot<any>): Promise<void> {
     const promises: Promise<void>[] = [];
     console.log('dispatchAggregateEvents: aggregate', aggregate);
+    //TODO dispatch domain Events and have integration events handlers listen to them
     aggregate.domainEvents.forEach((event: IDomainEvent) => {
       promises.push(this.dispatch(event));
     });
-    // aggregate.integrationEvents.forEach((event: IIntegrationEvent) => {
-    //   promises.push(this.dispatch(event, metadata));
-    // });
     await Promise.all(promises);
   }
 
@@ -79,7 +62,7 @@ export class Events {
     this.markedAggregates.splice(index, 1);
   }
 
-  private findMarkedAggregateByID(id: UUIDv4): AggregateRoot<any> | null {
+  private findMarkedAggregateByID(id: UniqueEntityID): AggregateRoot<any> | null {
     let found: AggregateRoot<any> | null = null;
     for (const aggregate of this.markedAggregates) {
       if (aggregate.id.equals(id)) {
@@ -90,11 +73,11 @@ export class Events {
     return found;
   }
 
-  public async dispatchEventsForAggregate(id: UUIDv4, metadata?: CommandMetadata): Promise<void> {
+  public async dispatchEventsForAggregate(id: UniqueEntityID): Promise<void> {
     const aggregate = this.findMarkedAggregateByID(id);
 
     if (aggregate) {
-      await this.dispatchAggregateEvents(aggregate, metadata);
+      await this.dispatchAggregateEvents(aggregate);
       aggregate.clearEvents();
       this.removeAggregateFromMarkedDispatchList(aggregate);
     }
@@ -104,7 +87,6 @@ export class Events {
     callback: (event: IDomainEvent) => Promise<void>,
     eventClassName: string,
   ): Promise<void> {
-    // @ts-ignore: TS2345
     await this.domainEventBus.subscribe(eventClassName, callback);
   }
 
@@ -112,31 +94,7 @@ export class Events {
     this.markedAggregates = [];
   }
 
-  private async dispatch<T extends IEvent>(event: T, metadata?: CommandMetadata): Promise<void> {
-    // console.log('dispatch: event', event);
-    // console.log('dispatch: event instanceof DomainEvent', event instanceof DomainEvent);
-    // console.log('dispatch: event instanceof IntegrationEvent', event instanceof IntegrationEvent);
-    // console.log('dispatch: event.eventName', event.eventTopic);
-    if (metadata) {
-      event.setMetadata(metadata);
-    }
-    // if (event instanceof DomainEvent) {
+  private async dispatch(event: IDomainEvent): Promise<void> {
     await this.domainEventBus.publish(event.eventTopic, event);
-    // }
-    // else if (event instanceof IntegrationEvent) {
-    // TODO serialize event before sending
-    // if (metadata?.orchestrated) {
-    //   const processManagerTopic = getProcessManagerTopic(
-    //     event.eventTopic,
-    //     config.PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
-    //     config.TOPIC_DELIMITER
-    //   );
-    //   await this.integrationEventBus.publish(processManagerTopic, event);
-    // }
-    // await this.integrationEventBus.publish(event.eventTopic, event);
-    // }
   }
 }
-
-const inProcessEventBus = new EventBus(new InProcessMessageBus());
-export const events = new Events(inProcessEventBus);

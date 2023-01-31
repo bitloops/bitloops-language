@@ -18,24 +18,45 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-enum TOPIC_PREFIXES {
+// @TEMPLATE import { CONTEXT_ID as ${camelCase(BOUNDED_CONTEXT)}ContextId } from '../BoundedContexts/${kebab(BOUNDED_CONTEXT)}/config';
+
+// TODO Remove comments
+export enum CONTEXT_TYPES {
+  InProcess = 'InProcess',
+  External = 'External',
+}
+
+export enum TOPIC_PREFIXES {
   Event = 'event',
   Command = 'command',
   Query = 'query',
 }
 const TOPIC_DELIMITER = '.';
 const INTEGRATION_EVENT_TOPIC_PREFIX = 'integration';
+const PROCESS_MANAGER_EVENT_TOPIC_PREFIX = 'orchestrated';
+
+export enum MESSAGE_BUS {
+  EVENT_BUS = 'EVENT_BUS',
+  COMMAND_BUS = 'COMMAND_BUS',
+  INTEGRATION_EVENT_BUS = 'INTEGRATION_EVENT_BUS',
+  QUERY_BUS = 'QUERY_BUS',
+}
 
 type Config = {
-  TOPIC_PREFIXES: typeof TOPIC_PREFIXES;
   TOPIC_DELIMITER: string;
   INTEGRATION_EVENT_TOPIC_PREFIX: string;
+  PROCESS_MANAGER_EVENT_TOPIC_PREFIX: string;
 };
-
+// TODO maybe getting it from the project find away to get it all from the project
 const config: Config = {
-  TOPIC_PREFIXES,
   TOPIC_DELIMITER,
   INTEGRATION_EVENT_TOPIC_PREFIX,
+  PROCESS_MANAGER_EVENT_TOPIC_PREFIX,
 };
 
-export { config };
+type ApplicationConfig = {
+  CONTEXT_IDs_MAPPINGS: Record<string, Record<MESSAGE_BUS, CONTEXT_TYPES>>;
+  CONTEXT_IDs: Record<string, string>;
+};
+
+export { Config, config, ApplicationConfig };
