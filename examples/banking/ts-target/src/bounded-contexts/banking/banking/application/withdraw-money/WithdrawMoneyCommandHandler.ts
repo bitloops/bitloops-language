@@ -1,6 +1,6 @@
-import { DomainErrors } from '../../domain/errors/index.js';
-import { IAccountWriteRepo } from '../../repos/interfaces/IAccountWriteRepo.js';
-import { ApplicationErrors } from '../errors/index.js';
+import { DomainErrors } from '../../domain/errors/index';
+import { IAccountWriteRepo } from '../../repos/interfaces/IAccountWriteRepo';
+import { ApplicationErrors } from '../errors/index';
 import { WithdrawMoneyCommand } from './WithdrawMoneyCommand';
 
 import {

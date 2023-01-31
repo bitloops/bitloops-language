@@ -1,8 +1,9 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from '../../../../../bounded-contexts/banking/banking/domain/errors/index.js';
-import { InsertPINCommand } from '../../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommand.js';
-import { InsertPINRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO.js';
+import { DomainErrors } from '../../../../../bounded-contexts/banking/banking/domain/errors/index';
+import { InsertPINCommand } from '../../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommand';
+import { InsertPINRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO';
+import { ApplicationErrors } from '../../../../../bounded-contexts/banking/banking/application/errors/index';
 
 type InsertCardPinUseCaseResponse = Either<void, DomainErrors.InvalidMonetaryValue>;
 
@@ -29,8 +30,13 @@ export class InsertCardPINRESTCommandController extends Fastify.BaseController {
           this.unauthorized(response, result.value);
           break;
         }
+        case DomainErrors.PINLength:
         case DomainErrors.PINIsNotPositiveNumber: {
           this.badRequest(response, result.value);
+          break;
+        }
+        case ApplicationErrors.CustomerNotFound: {
+          this.notFound(response, result.value);
           break;
         }
         default:

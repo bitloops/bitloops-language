@@ -2,7 +2,7 @@ import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
 import { WITHDRAW_MONEY_COMMAND_NAME } from '../../contracts';
-import { WithdrawMoneyRequestDTO } from '../../dtos/WithdrawMoneyRequestDTO.js';
+import { WithdrawMoneyRequestDTO } from '../../dtos/WithdrawMoneyRequestDTO';
 
 export class WithdrawMoneyCommand extends Application.Command {
   public accountId: string;

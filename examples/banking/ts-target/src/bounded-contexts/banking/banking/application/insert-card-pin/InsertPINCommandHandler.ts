@@ -1,7 +1,7 @@
-import { PINVO } from '../../domain/PINVO.js';
-import { DomainErrors } from '../../domain/errors/index.js';
-import { ICustomerWriteRepo } from '../../repos/interfaces/ICustomerWriteRepo.js';
-import { ApplicationErrors } from '../errors/index.js';
+import { PINVO } from '../../domain/PINVO';
+import { DomainErrors } from '../../domain/errors/index';
+import { ICustomerWriteRepo } from '../../repos/interfaces/ICustomerWriteRepo';
+import { ApplicationErrors } from '../errors/index';
 import { InsertPINCommand } from './InsertPINCommand';
 
 import {

@@ -1,7 +1,7 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { AccountCreated } from './events/AccountCreated';
 import { MoneyVO } from './MoneyVO';
-import { DomainErrors } from './errors/index.js';
+import { DomainErrors } from './errors/index';
 
 export interface AccountProps {
   id?: Domain.UUIDv4;

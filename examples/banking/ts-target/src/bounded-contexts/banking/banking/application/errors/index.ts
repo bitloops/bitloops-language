@@ -1,4 +1,4 @@
-import { AccountNotFoundError } from './AccountNotFoundError.js';
+import { AccountNotFoundError } from './AccountNotFoundError';
 import { CustomerNotFoundError } from './CustomerNotFoundError';
 
 export namespace ApplicationErrors {

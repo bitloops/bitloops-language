@@ -17,18 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { Container } from '@bitloops/bl-boilerplate-core';
 import client from '../../../shared/infra/db/mongo';
 
+import { MongoAccountWriteRepo } from './repos/concretions/MongoAccountWriteRepo';
 import { MongoCustomerWriteRepo } from './repos/concretions/MongoCustomerWriteRepo';
-import { InsertPINCommandHandler } from './application/insert-card-pin/InsertPINCommandHandler.js';
-import { MongoAccountWriteRepo } from './repos/concretions/MongoAccountWriteRepo.js';
-import { DepositMoneyCommandHandler } from './application/deposit-money/DepositMoneyCommandHandler.js';
-import { WithdrawMoneyCommandHandler } from './application/withdraw-money/WithdrawMoneyCommandHandler.js';
-import { WithdrawMoneyRESTCommandController } from '../../../api/todo/modules/todo/withdraw-money/WithdrawMoneyRESTCommandController.js';
-import { Container } from '@bitloops/bl-boilerplate-core';
-import { CONTEXT_ID } from './config/index.js';
-import { DepositMoneyRESTCommandController } from '../../../api/todo/modules/todo/deposit-money/DepositMoneyRESTCommandController.js';
-import { InsertCardPINRESTCommandController } from '../../../api/todo/modules/todo/insert-card-pin/InsertCardPINRESTCommandController.js';
+import { InsertPINCommandHandler } from './application/insert-card-pin/InsertPINCommandHandler';
+import { DepositMoneyCommandHandler } from './application/deposit-money/DepositMoneyCommandHandler';
+import { WithdrawMoneyCommandHandler } from './application/withdraw-money/WithdrawMoneyCommandHandler';
+import { WithdrawMoneyRESTCommandController } from '../../../api/todo/modules/todo/withdraw-money/WithdrawMoneyRESTCommandController';
+import { DepositMoneyRESTCommandController } from '../../../api/todo/modules/todo/deposit-money/DepositMoneyRESTCommandController';
+import { InsertCardPINRESTCommandController } from '../../../api/todo/modules/todo/insert-card-pin/InsertCardPINRESTCommandController';
+import { CONTEXT_ID } from './config/index';
 
 const insertPINCommandHandler = new InsertPINCommandHandler(new MongoCustomerWriteRepo(client));
 const depositMoneyCommandHandler = new DepositMoneyCommandHandler(

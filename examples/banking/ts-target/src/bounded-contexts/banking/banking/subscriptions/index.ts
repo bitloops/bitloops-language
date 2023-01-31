@@ -1,19 +1,31 @@
-// import { Container } from '@bitloops/bl-boilerplate-core';
-// import { GetAllTodosQuery } from '../application/get-all/GetAllTodosQuery';
-// import { TodoCreatedPublishIntegrationEventHandler } from '../application/TodoCreatedPublishIntegrationEventHandler';
-// import { CONTEXT_ID } from '../config';
-// import { createTodoCommandHandler, getAllTodosQueryHandler } from '../DI';
-// import { CustomerCreated } from '../domain/events/TodoCreated';
-// import { InsertPINCommand } from '../application/insert-card-pin/index.js';
+import { Container } from '@bitloops/bl-boilerplate-core';
+import { CONTEXT_ID } from '../config';
+import {
+  insertPINCommandHandler,
+  depositMoneyCommandHandler,
+  withdrawMoneyCommandHandler,
+} from '../DI';
+import { CustomerCreated } from '../domain/events/TodoCreated';
+import { InsertPINCommand } from '../application/insert-card-pin/index';
+import { DepositMoneyCommand } from '../application/deposit-money/DepositMoneyCommand';
+import { WithdrawMoneyCommand } from '../application/withdraw-money/WithdrawMoneyCommand';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
   // console.log('CreateUserCommand.getCommandTopic()', InsertPINCommand.getCommandTopic());
-  // const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
-  // await commandBus.register(
-  //   InsertPINCommand.getCommandTopic(),
-  //   createTodoCommandHandler.execute.bind(createTodoCommandHandler),
-  // );
+  const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
+  await commandBus.register(
+    InsertPINCommand.getCommandTopic(),
+    insertPINCommandHandler.execute.bind(insertPINCommandHandler),
+  );
+  await commandBus.register(
+    DepositMoneyCommand.getCommandTopic(),
+    depositMoneyCommandHandler.execute.bind(insertPINCommandHandler),
+  );
+  await commandBus.register(
+    WithdrawMoneyCommand.getCommandTopic(),
+    withdrawMoneyCommandHandler.execute.bind(insertPINCommandHandler),
+  );
   // const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
   // await queryBus.register(
   //   GetAllTodosQuery.getQueryTopic(),

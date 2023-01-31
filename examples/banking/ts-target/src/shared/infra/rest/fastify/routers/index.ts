@@ -22,9 +22,9 @@ import {
   depositMoneyRESTCommandController,
   insertCardPINRESTCommandController,
   withdrawMoneyRESTCommandController,
-} from '../../../../../bounded-contexts/banking/banking/DI.js';
+} from '../../../../../bounded-contexts/banking/banking/DI';
 
-const todoRESTRouter = async (fastify: Fastify.Instance) => {
+const bankingRESTRouter = async (fastify: Fastify.Instance) => {
   fastify.post('/insertPIN', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return insertCardPINRESTCommandController.execute(request, reply);
   });
@@ -34,20 +34,6 @@ const todoRESTRouter = async (fastify: Fastify.Instance) => {
   fastify.get('/withDrawMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return withdrawMoneyRESTCommandController.execute(request, reply);
   });
-  // fastify.put('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-  //   return updateTodoController.execute(request, reply);
-  // });
-
-  // fastify.delete('/:id', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-  //   return deleteTodoController.execute(request, reply);
-  // });
-  // fastify.post('/command', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-  //   return createTodoRESTCommandController.execute(request, reply);
-  // });
-
-  // fastify.get('/query', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-  //   return getAllTodosQueryController.execute(request, reply);
-  // });
 };
 
-export { todoRESTRouter };
+export { bankingRESTRouter };

@@ -1,7 +1,7 @@
 import { Domain } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
-import { CustomerEntity } from '../CustomerEntity.js';
+import { CustomerEntity } from '../CustomerEntity';
 
 const TODO_CREATED_EVENT_NAME = 'TODO_CREATED_EVENT_NAME';
 const FROM_CONTEXT_ID = contextId;

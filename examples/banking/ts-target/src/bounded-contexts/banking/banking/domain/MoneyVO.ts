@@ -1,7 +1,7 @@
 import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from './errors';
 import { Rules } from './rules';
-import { CurrencyVO } from './CurrencyVO.js';
+import { CurrencyVO } from './CurrencyVO';
 
 interface MoneyProps {
   currency: CurrencyVO;

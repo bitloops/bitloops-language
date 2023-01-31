@@ -1,8 +1,8 @@
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
-import { AccountIdVO } from '../../domain/AccountIdVO.js';
-import { CustomerEntity } from '../../domain/CustomerEntity.js';
-import { EmailVO } from '../../domain/EmailVO.js';
-import { PINVO } from '../../domain/PINVO.js';
+import { AccountIdVO } from '../../domain/AccountIdVO';
+import { CustomerEntity } from '../../domain/CustomerEntity';
+import { EmailVO } from '../../domain/EmailVO';
+import { PINVO } from '../../domain/PINVO';
 import { Domain } from '@bitloops/bl-boilerplate-core';
 
 export class MongoCustomerWriteRepoMapper {

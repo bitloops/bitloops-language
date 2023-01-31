@@ -1,9 +1,9 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { CustomerCreated } from './events/TodoCreated';
-import { EmailVO } from './EmailVO.js';
-import { PINVO } from './PINVO.js';
-import { AccountIdVO } from './AccountIdVO.js';
-import { DomainErrors } from './errors/index.js';
+import { EmailVO } from './EmailVO';
+import { PINVO } from './PINVO';
+import { AccountIdVO } from './AccountIdVO';
+import { DomainErrors } from './errors/index';
 
 export interface CustomerProps {
   id?: Domain.UUIDv4;

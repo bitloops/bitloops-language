@@ -1,8 +1,8 @@
 import { Domain } from '@bitloops/bl-boilerplate-core';
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
-import { ICustomerWriteRepo } from '../interfaces/ICustomerWriteRepo.js';
-import { CustomerEntity } from '../../domain/CustomerEntity.js';
-import { MongoCustomerWriteRepoMapper } from '../mappers/MongoCustomerWriteRepoMapper.js';
+import { ICustomerWriteRepo } from '../interfaces/ICustomerWriteRepo';
+import { CustomerEntity } from '../../domain/CustomerEntity';
+import { MongoCustomerWriteRepoMapper } from '../mappers/MongoCustomerWriteRepoMapper';
 
 const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'banking';
 const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'customers';
@@ -16,10 +16,11 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
     this.collection = this.client.db(this.dbName).collection(this.collectionName);
   }
 
-  async getById(customerId: Domain.UUIDv4): Promise<CustomerEntity> {
+  async getById(customerId: Domain.UUIDv4): Promise<CustomerEntity | null> {
     const res = await this.collection.findOne({
       _id: customerId.toString(),
     });
+    if (res === null) return res;
     return MongoCustomerWriteRepoMapper.toDomain(res);
   }
 
@@ -50,10 +51,11 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
     );
   }
 
-  async getByEmail(email: string): Promise<CustomerEntity> {
+  async getByEmail(email: string): Promise<CustomerEntity | null> {
     const res = await this.collection.findOne({
       email,
     });
+    if (res === null) return res;
     return MongoCustomerWriteRepoMapper.toDomain(res);
   }
 }

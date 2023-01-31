@@ -1,8 +1,8 @@
 import { Domain } from '@bitloops/bl-boilerplate-core';
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
-import { AccountEntity } from '../../domain/AccountEntity.js';
-import { IAccountWriteRepo } from '../interfaces/IAccountWriteRepo.js';
-import { MongoAccountWriteRepoMapper } from '../mappers/MongoAccountWriteRepoMapper copy.js';
+import { AccountEntity } from '../../domain/AccountEntity';
+import { IAccountWriteRepo } from '../interfaces/IAccountWriteRepo';
+import { MongoAccountWriteRepoMapper } from '../mappers/MongoAccountWriteRepoMapper';
 
 const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'banking';
 const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'accounts';

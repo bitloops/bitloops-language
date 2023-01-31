@@ -2,7 +2,7 @@ import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
 import { DEPOSIT_MONEY_COMMAND_NAME } from '../../contracts';
-import { DepositMoneyRequestDTO } from '../../dtos/DepositMoneyRequestDTO.js';
+import { DepositMoneyRequestDTO } from '../../dtos/DepositMoneyRequestDTO';
 
 export class DepositMoneyCommand extends Application.Command {
   public accountId: string;

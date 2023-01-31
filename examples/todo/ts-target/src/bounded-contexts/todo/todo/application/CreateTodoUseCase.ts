@@ -4,7 +4,7 @@ import { CreateTodoRequestDTO } from '../dtos/CreateTodoRequestDTO';
 import { TodoEntity } from '../domain/TodoEntity';
 import { TitleVO } from '../domain/TitleVO';
 import { DomainErrors } from '../domain/errors';
-import { TodoWriteRepoPort } from '../ports/TodoWriteRepoPort.js';
+import { TodoWriteRepoPort } from '../ports/TodoWriteRepoPort';
 
 type CreateTodoUseCaseResponse = Either<void, DomainErrors.TitleOutOfBoundsError>;
 

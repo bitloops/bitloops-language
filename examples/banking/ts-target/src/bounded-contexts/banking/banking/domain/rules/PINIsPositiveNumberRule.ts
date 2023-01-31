@@ -7,6 +7,7 @@ export class PINIsPositiveNumberRule implements Domain.IRule {
   public Error = new DomainErrors.PINIsNotPositiveNumber(this.pin);
 
   public isBrokenIf(): boolean {
-    return /^\d+$/.test(this.pin) === false;
+    return /^\+?(0|[1-9]\d*)$/.test(this.pin) === false;
+    // return /^\d+$/.test(this.pin) === false;
   }
 }

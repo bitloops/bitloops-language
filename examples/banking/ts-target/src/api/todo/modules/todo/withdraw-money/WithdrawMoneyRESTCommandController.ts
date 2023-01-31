@@ -1,8 +1,8 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from '../../../../../bounded-contexts/banking/banking/domain/errors/index.js';
-import { WithdrawMoneyCommand } from '../../../../../bounded-contexts/banking/banking/application/withdraw-money/WithdrawMoneyCommand.js';
-import { WithdrawMoneyRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/WithdrawMoneyRequestDTO.js';
+import { DomainErrors } from '../../../../../bounded-contexts/banking/banking/domain/errors/index';
+import { WithdrawMoneyCommand } from '../../../../../bounded-contexts/banking/banking/application/withdraw-money/WithdrawMoneyCommand';
+import { WithdrawMoneyRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/WithdrawMoneyRequestDTO';
 
 type WithdrawMoneyUseCaseResponse = Either<void, DomainErrors.InvalidMonetaryValue>;
 

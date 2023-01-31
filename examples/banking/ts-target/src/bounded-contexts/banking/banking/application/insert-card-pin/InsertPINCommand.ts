@@ -2,7 +2,7 @@ import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
 import { INSERT_PIN_COMMAND_NAME } from '../../contracts';
-import { InsertPINRequestDTO } from '../../dtos/InsertPINRequestDTO.js';
+import { InsertPINRequestDTO } from '../../dtos/InsertPINRequestDTO';
 
 export class InsertPINCommand extends Application.Command {
   public email: string;

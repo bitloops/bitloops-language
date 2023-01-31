@@ -1,10 +1,10 @@
-import { InvalidEmailError } from './InvalidEmailError.js';
-import { PINIsNotPositiveNumberError } from './PINIsNotPositiveNumberError.js';
-import { InvalidCurrencyError } from './InvalidCurrencyError.js';
-import { InvalidMonetaryValueError } from './InvalidMonetaryValueError.js';
-import { InvalidAmountError } from './InvalidAmountError.js';
-import { InvalidCustomerPINError } from './InvalidCustomerPINError.js';
-import { PINLengthError } from './PINLengthError.js';
+import { InvalidEmailError } from './InvalidEmailError';
+import { PINIsNotPositiveNumberError } from './PINIsNotPositiveNumberError';
+import { InvalidCurrencyError } from './InvalidCurrencyError';
+import { InvalidMonetaryValueError } from './InvalidMonetaryValueError';
+import { InvalidAmountError } from './InvalidAmountError';
+import { InvalidCustomerPINError } from './InvalidCustomerPINError';
+import { PINLengthError } from './PINLengthError';
 
 export namespace DomainErrors {
   export class InvalidEmail extends InvalidEmailError {}

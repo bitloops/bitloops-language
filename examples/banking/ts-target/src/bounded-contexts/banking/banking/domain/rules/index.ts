@@ -1,8 +1,8 @@
-import { PINHasLengthOfFourRule } from './PINHasLengthOfFourRule.js';
-import { PINIsPositiveNumberRule } from './PINIsPositiveNumberRule.js';
+import { PINHasLengthOfFourRule } from './PINHasLengthOfFourRule';
+import { PINIsPositiveNumberRule } from './PINIsPositiveNumberRule';
 import { ValidEmailRule } from './ValidEmailRule';
-import { AmountOutOfBoundsRule } from './AmountOutOfBoundsRule.js';
-import { AmountIsPositiveNumberRule } from './AmountIsPositiveNumberRule.js';
+import { AmountOutOfBoundsRule } from './AmountOutOfBoundsRule';
+import { AmountIsPositiveNumberRule } from './AmountIsPositiveNumberRule';
 
 export namespace Rules {
   export class ValidEmail extends ValidEmailRule {}
