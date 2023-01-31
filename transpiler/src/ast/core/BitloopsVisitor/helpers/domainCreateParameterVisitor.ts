@@ -6,19 +6,24 @@ import { DomainCreateParameterTypeNode } from '../../intermediate-ast/nodes/Doma
 import { DomainCreateParameterTypeNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { produceMetadata } from '../metadata.js';
 
 export const domainCreateParameterVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorParamContext,
 ): DomainCreateParameterNode => {
-  const parameterIdentifier: IdentifierNode = new IdentifierNodeBuilder()
+  const metadata = produceMetadata(ctx, _thisVisitor);
+
+  const parameterIdentifier: IdentifierNode = new IdentifierNodeBuilder(metadata)
     .withName(ctx.id.text)
     .build();
-  const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder()
+  const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder(
+    metadata,
+  )
     .withValue(ctx.type.text)
     .build();
 
-  const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
+  const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder(metadata)
     .withIdentifierNode(parameterIdentifier)
     .withTypeNode(parameterType)
     .build();

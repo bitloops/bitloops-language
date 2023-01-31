@@ -1,13 +1,14 @@
 import { ArrayPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/ArrayPrimaryTypeNode.js';
 import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class ArrayPrimaryTypeBuilder implements IBuilder<ArrayPrimaryTypeNode> {
   private arrayPrimaryTypeNode: ArrayPrimaryTypeNode;
   private bitloopsPrimaryTypeNode: BitloopsPrimaryTypeNode;
 
-  constructor() {
-    this.arrayPrimaryTypeNode = new ArrayPrimaryTypeNode();
+  constructor(nodeMetadata?: TNodeMetadata) {
+    this.arrayPrimaryTypeNode = new ArrayPrimaryTypeNode(nodeMetadata);
   }
 
   public withPrimaryType(primaryTypeNode: BitloopsPrimaryTypeNode): ArrayPrimaryTypeBuilder {

@@ -1021,8 +1021,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
+    const metadata = produceMetadata(ctx, this);
     const bitloopsIdentifierType = ctx.bitloopsIdentifiers().getText();
-    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder()
+    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder(metadata)
       .withType(bitloopsIdentifierType)
       .build();
     return bitloopsIdentifierTypeNode;

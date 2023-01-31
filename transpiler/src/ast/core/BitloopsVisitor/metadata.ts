@@ -3,14 +3,21 @@ import BitloopsVisitor from './BitloopsVisitor.js';
 
 export const produceMetadata = (ctx: any, visitor: BitloopsVisitor): TNodeMetadata => {
   const { start, stop } = ctx as any;
+  let stopColumn: number;
+  // For lexer tokens start.column and stop.column are the same at ctx,
+  // but stop.stop and start.start are different (these are characters' indexes)
+  // if (start.line == stop.line) we use the difference of the indexes to find the stop column
+  // (lexer token is only a word, so it will be in one line)
+  if (start.line == stop.line) stopColumn = stop.column + stop.stop - start.start + 1;
+  else stopColumn = stop.column;
   const metadata = {
     start: {
       line: start.line,
-      column: start.column,
+      column: start.column + 1, // +1 because antlr4 starts counting columns from 0
     },
     end: {
       line: stop.line,
-      column: stop.column,
+      column: stopColumn + 1, // +1 because antlr4 starts counting columns from 0
     },
     fileId: visitor.currentFile,
   };

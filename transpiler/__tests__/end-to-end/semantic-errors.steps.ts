@@ -17,25 +17,31 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ClassTypes } from '../../src/helpers/mappings.js';
 import Transpiler from '../../src/Transpiler.js';
-import { TOutputTargetContent } from '../../src/target/types.js';
-import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
 import { SEMANTIC_ERRORS_END_TO_END_TEST_CASES } from './mocks/semantic-errors/semantic-errors.js';
-import { transpiler } from '../../src/index.js';
+import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
+import { BitloopsParser } from '../../src/parser/index.js';
+import { IntermediateASTParser } from '../../src/ast/core/index.js';
+import { TargetGenerator } from '../../src/target/index.js';
 
 describe('Semantic error End To End', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  const fileId = 'fileName';
-  const classType = ClassTypes.RootEntity;
   const options = {
     formatterConfig: null,
     targetLanguage: 'TypeScript',
   };
-  let targetCode: TOutputTargetContent;
 
   SEMANTIC_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
+    const parser = new BitloopsParser();
+    const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
+    const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
+
+    const transpiler = new Transpiler(
+      parser,
+      originalLanguageASTToIntermediateModelTransformer,
+      intermediateASTModelToTargetLanguageGenerator,
+    );
     it(`${testCase.description}`, async () => {
       // given
       const input = {
@@ -43,7 +49,7 @@ describe('Semantic error End To End', () => {
           {
             boundedContext,
             module,
-            fileId,
+            fileId: testCase.fileId,
             fileContents: testCase.input,
           },
         ],
@@ -52,30 +58,12 @@ describe('Semantic error End To End', () => {
       // when
       const result = transpiler.transpile(input, options);
       if (!Transpiler.isTranspileError(result)) {
-        targetCode = result;
-      } else {
-        console.log('ERROR', result);
+        throw new Error('Transpiler should return error');
       }
-
-      // then
-      //   const formattedOutput = formatString(
-      //     testCase.expectedOutputs as string,
-      //     options.formatterConfig,
-      //   );
-
-      console.log('EXIT', targetCode);
-      const formattedOutput = formatString(testCase.output as string, options.formatterConfig);
-      const expectedOutput = [
-        {
-          boundedContext,
-          module,
-          classType,
-          className: testCase.className,
-          fileContent: formattedOutput,
-        },
-      ];
-
-      expect(targetCode.core).toEqual(expectedOutput);
+      result.forEach((error) => {
+        expect(error).toBeInstanceOf(IntermediateASTValidationError);
+        console.log((error as IntermediateASTValidationError).message);
+      });
     });
   });
 });
