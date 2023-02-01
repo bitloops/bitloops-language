@@ -40,4 +40,19 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
       accountId: document.accountId,
     };
   }
+
+  async getByAccountId(accountId: string): Promise<CustomerReadModel | null> {
+    const document = await this.collection.findOne({
+      accountId,
+    });
+
+    if (!document) {
+      return null;
+    }
+    return {
+      id: document._id.toString(),
+      email: document.email,
+      accountId: document.accountId,
+    };
+  }
 }

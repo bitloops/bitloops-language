@@ -21,6 +21,7 @@ import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import {
   depositMoneyRESTCommandController,
   getAccountByIdController,
+  getCustomerByAccountIdController,
   getCustomerByIdController,
   insertCardPINRESTCommandController,
   withdrawMoneyRESTCommandController,
@@ -50,6 +51,14 @@ const bankingRESTRouter = async (fastify: Fastify.Instance) => {
     {},
     async (request: Fastify.Request, reply: Fastify.Reply) => {
       return getCustomerByIdController.execute(request, reply);
+    },
+  );
+
+  fastify.get(
+    '/customers/account/:accountId',
+    {},
+    async (request: Fastify.Request, reply: Fastify.Reply) => {
+      return getCustomerByAccountIdController.execute(request, reply);
     },
   );
 };

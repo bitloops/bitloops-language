@@ -7,25 +7,25 @@ import {
 import { CustomerReadModel } from '../../domain/CustomerReadModel';
 import { ICustomerReadRepo } from '../../repos/interfaces/ICustomerReadRepo';
 import { ApplicationErrors } from '../errors/index';
-import { GetCustomerQuery } from './GetCustomerQuery';
+import { GetCustomerByIdQuery } from './GetCustomerByIdQuery';
 
 type GetCustomerResponse = Either<CustomerReadModel, ApplicationErrors.CustomerNotFound>;
 
 export class GetCustomerQueryHandler
-  implements Application.IUseCase<GetCustomerQuery, Promise<GetCustomerResponse>>
+  implements Application.IUseCase<GetCustomerByIdQuery, Promise<GetCustomerResponse>>
 {
   constructor(private customerRepo: ICustomerReadRepo) {}
 
-  async execute(query: GetCustomerQuery): Promise<GetCustomerResponse> {
+  async execute(query: GetCustomerByIdQuery): Promise<GetCustomerResponse> {
     const fail = failResp(query.metadata);
     const ok = okResp(query.metadata);
 
-    const requestId = query.customerId;
+    const requestId = query.id;
     const customer = await this.customerRepo.getById(requestId);
     if (!customer) {
       return fail(new ApplicationErrors.CustomerNotFound(requestId));
     }
 
-    return await okResp(query.metadata)(customer);
+    return await ok(customer);
   }
 }

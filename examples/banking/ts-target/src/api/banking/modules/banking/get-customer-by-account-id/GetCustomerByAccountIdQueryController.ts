@@ -2,25 +2,25 @@ import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
 import { CustomerReadModel } from '../../../../../bounded-contexts/banking/banking/domain/CustomerReadModel';
 import { ApplicationErrors } from '../../../../../bounded-contexts/banking/banking/application/errors';
-import { GetCustomerByIdQuery } from '../../../../../bounded-contexts/banking/banking/application/get-customer-details-by-id/GetCustomerByIdQuery';
+import { GetCustomerByAccountIdQuery } from '../../../../../bounded-contexts/banking/banking/application/get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 
-type GetCustomerBydIdUseCaseResponse = Either<
+type GetCustomerByEmailUseCaseResponse = Either<
   CustomerReadModel,
-  ApplicationErrors.CustomerNotFound
+  ApplicationErrors.CustomerByAccountIdNotFound
 >;
 
-export class GetCustomerByIdQueryController extends Fastify.BaseController {
+export class GetCustomerByAccountIdQueryController extends Fastify.BaseController {
   constructor(private queryBus: Infra.QueryBus.IQueryBus) {
     super();
     this.queryBus = queryBus;
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
-    const { customerId } = request.params;
-    const query = new GetCustomerByIdQuery(customerId);
-    const result = await this.queryBus.query<GetCustomerBydIdUseCaseResponse>(query);
+    const { accountId } = request.params;
+    const query = new GetCustomerByAccountIdQuery(accountId);
+    const result = await this.queryBus.query<GetCustomerByEmailUseCaseResponse>(query);
     if (result.isFail()) {
       switch (result.value.constructor) {
-        case ApplicationErrors.CustomerNotFound:
+        case ApplicationErrors.CustomerByAccountIdNotFound:
           return this.notFound(response, result.value);
         default:
           return this.fail(response, result.value.message);

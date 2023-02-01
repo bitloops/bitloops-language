@@ -31,10 +31,12 @@ import { DepositMoneyRESTCommandController } from '../../../api/banking/modules/
 import { WithdrawMoneyRESTCommandController } from '../../../api/banking/modules/banking/withdraw-money/WithdrawMoneyRESTCommandController';
 import { GetAccountByIdQueryController } from '../../../api/banking/modules/banking/get-account-by-id/GetAccountByIdQueryController';
 import { GetAccountQueryHandler } from './application/get-account-details/GetAccountQueryHandler';
-import { GetCustomerQueryHandler } from './application/get-customer-details/GetCustomerQueryHandler';
+import { GetCustomerQueryHandler } from './application/get-customer-details-by-id/GetCustomerQueryHandler';
 import { MongoCustomerReadRepo } from './repos/concretions/MongoCustomerReadRepo';
 import { MongoAccountReadRepo } from './repos/concretions/MongoAccountReadRepo';
 import { GetCustomerByIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-id/GetCustomerByIdQueryController';
+import { GetCustomerByAccountIdQueryHandler } from './application/get-customer-details-by-account-id/GetCustomerByAccountIdQueryHandler';
+import { GetCustomerByAccountIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-account-id/GetCustomerByAccountIdQueryController';
 
 const insertPINCommandHandler = new InsertPINCommandHandler(new MongoCustomerWriteRepo(client));
 const depositMoneyCommandHandler = new DepositMoneyCommandHandler(
@@ -56,6 +58,9 @@ const withdrawMoneyRESTCommandController = new WithdrawMoneyRESTCommandControlle
 );
 
 const getCustomerByIdQueryHandler = new GetCustomerQueryHandler(new MongoCustomerReadRepo(client));
+const getCustomerByAccountIdQueryHandler = new GetCustomerByAccountIdQueryHandler(
+  new MongoCustomerReadRepo(client),
+);
 
 const getAccountByIdQueryHandler = new GetAccountQueryHandler(new MongoAccountReadRepo(client));
 
@@ -64,6 +69,10 @@ const getAccountByIdController = new GetAccountByIdQueryController(
 );
 
 const getCustomerByIdController = new GetCustomerByIdQueryController(
+  Container.getQueryBusFromContext(CONTEXT_ID),
+);
+
+const getCustomerByAccountIdController = new GetCustomerByAccountIdQueryController(
   Container.getQueryBusFromContext(CONTEXT_ID),
 );
 
@@ -78,4 +87,6 @@ export {
   getAccountByIdQueryHandler,
   getAccountByIdController,
   getCustomerByIdController,
+  getCustomerByAccountIdController,
+  getCustomerByAccountIdQueryHandler,
 };

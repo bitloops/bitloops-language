@@ -9,7 +9,12 @@ import { MoneyDepositedIntegrationEvent } from '../../../banking/banking/contrac
 export const setUpNotificationsSubscriptions = () => {
   const integrationEventBus = Container.getIntegrationEventBusFromContext(CONTEXT_ID);
   const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
-  const moneyDepositedIntegrationHandler = new MoneyDepositedIntegrationHandler(commandBus);
+  const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
+
+  const moneyDepositedIntegrationHandler = new MoneyDepositedIntegrationHandler(
+    commandBus,
+    queryBus,
+  );
   integrationEventBus.subscribe<MoneyDepositedIntegrationEvent>(
     MoneyDepositedIntegrationEvent.getEventTopic('v1'),
     (event) => {

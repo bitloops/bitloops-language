@@ -6,16 +6,18 @@ import {
   withdrawMoneyCommandHandler,
   getAccountByIdQueryHandler,
   getCustomerByIdQueryHandler,
+  getCustomerByAccountIdQueryHandler,
 } from '../DI';
 import { InsertPINCommand } from '../application/insert-card-pin/index';
 import { DepositMoneyCommand } from '../application/deposit-money/DepositMoneyCommand';
 import { WithdrawMoneyCommand } from '../application/withdraw-money/WithdrawMoneyCommand';
 import { GetAccountQuery } from '../application/get-account-details/GetAccountQuery';
-import { GetCustomerQuery } from '../application/get-customer-details/GetCustomerQuery';
+import { GetCustomerByIdQuery } from '../application/get-customer-details-by-id/GetCustomerByIdQuery';
 import { MoneyDepositedToAccount } from '../domain/events/MoneyDepositedToAccount';
 import { MoneyWithdrawnFromAccount } from '../domain/events/MoneyWithdrawnFromAccount';
 import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/MoneyWithdrawnPublishIntegrationEventHandler';
 import { MoneyDepositedPublishIntegrationEventHandler } from '../application/MoneyDepositedPublishIntegrationEventHandler';
+import { GetCustomerByAccountIdQuery } from '../application/get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
@@ -41,8 +43,13 @@ export const setUpTodoSubscriptions = async () => {
     getAccountByIdQueryHandler.execute.bind(getAccountByIdQueryHandler),
   );
   await queryBus.register(
-    GetCustomerQuery.getQueryTopic(),
+    GetCustomerByIdQuery.getQueryTopic(),
     getCustomerByIdQueryHandler.execute.bind(getCustomerByIdQueryHandler),
+  );
+
+  await queryBus.register(
+    GetCustomerByAccountIdQuery.getQueryTopic(),
+    getCustomerByAccountIdQueryHandler.execute.bind(getCustomerByAccountIdQueryHandler),
   );
 
   // // Domain events subscriptions
