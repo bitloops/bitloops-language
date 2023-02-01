@@ -31,10 +31,10 @@ import {
 } from './nodes/IntermediateASTNode.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
-  private symbolTable: Record<string, boolean>; //it must be different for each bounded context
+  private symbolTable: Set<string>; //it must be different for each bounded context
 
   constructor() {
-    this.symbolTable = {};
+    this.symbolTable = new Set();
   }
 
   createSymbolTable(ast: IntermediateAST): void {
@@ -44,55 +44,55 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           switch (true) {
             case node.getClassNodeName() === 'entityIdentifier' &&
               node.getParent().getClassNodeName() === 'RootEntity':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'propsIdentifier' &&
               node.getParent().getClassNodeName() === 'Props':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'valueObjectIdentifier' &&
               node.getParent().getClassNodeName() === 'ValueObject':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'identifier' &&
               node.getParent().getClassNodeName() === 'DomainError':
-              this.symbolTable['DomainErrors.' + node.getIdentifierName()] = true;
+              this.symbolTable.add('DomainErrors.' + node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'identifier' &&
               node.getParent().getClassNodeName() === 'ApplicationError':
-              this.symbolTable['ApplicationErrors.' + node.getIdentifierName()] = true;
+              this.symbolTable.add('ApplicationErrors.' + node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'DTOIdentifier' &&
               node.getParent().getClassNodeName() === 'DTO':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'repoPortIdentifier' &&
               node.getParent().getClassNodeName() === 'RepoPort':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'UseCaseIdentifier' &&
               node.getParent().getClassNodeName() === 'UseCase':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() == 'RESTControllerIdentifier' &&
               node.getParent().getClassNodeName() === 'RESTController':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'StructIdentifier' &&
               node.getParent().getClassNodeName() === 'Struct':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'graphQLControllerIdentifier' &&
               node.getParent().getClassNodeName() === 'GraphQLController':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'readModelIdentifier' &&
               node.getParent().getClassNodeName() === 'ReadModel':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'domainRuleIdentifier' &&
               node.getParent().getClassNodeName() === 'DomainRule':
-              this.symbolTable[node.getIdentifierName()] = true;
+              this.symbolTable.add(node.getIdentifierName());
               break;
           }
         });
@@ -116,7 +116,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
 
   private validateNodes(
     ASTTree: IntermediateASTTree,
-    symbolTable: Record<string, boolean>,
+    symbolTable: Set<string>,
   ): IntermediateASTNodeValidationError[] {
     const errors: IntermediateASTNodeValidationError[] = [];
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
@@ -129,14 +129,14 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
 
   private validateClassTypeNodes(
     ASTTree: IntermediateASTTree,
-    symbolTable: Record<string, boolean>,
+    symbolTable: Set<string>,
   ): IntermediateASTNodeValidationError[] {
     const errors: IntermediateASTNodeValidationError[] = [];
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
         //improvement: to check parent node and do not check avoid checking of the declaration node
         case BitloopsTypesMapping.TBitloopsIdentifier:
-          if (!symbolTable[node.getValue().bitloopsIdentifierType]) {
+          if (!symbolTable.has(node.getValue().bitloopsIdentifierType)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Type ${node.getValue().bitloopsIdentifierType} not found from ${
@@ -151,7 +151,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TEntityIdentifier:
-          if (!symbolTable[node.getValue().entityIdentifier]) {
+          if (!symbolTable.has(node.getValue().entityIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Entity ${node.getValue().entityIdentifier} not found at from ${
@@ -166,7 +166,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TDomainCreateParameterType:
-          if (!symbolTable[node.getValue().parameterType]) {
+          if (!symbolTable.has(node.getValue().parameterType)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Type ${node.getValue().parameterType} not found from ${
@@ -181,7 +181,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TErrorIdentifier:
-          if (!symbolTable[node.getValue().error]) {
+          if (!symbolTable.has(node.getValue().error)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Error ${node.getValue().error} not found from ${node.getMetadata().start.line}:${
@@ -196,7 +196,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TGraphQLControllerExecuteReturnType:
-          if (!symbolTable[node.getValue().returnType]) {
+          if (!symbolTable.has(node.getValue().returnType)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Type ${node.getValue().returnType} not found from ${
@@ -211,7 +211,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TDomainRuleIdentifier:
-          if (!symbolTable[node.getValue().domainRuleIdentifier]) {
+          if (!symbolTable.has(node.getValue().domainRuleIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
                 `DomainRule ${node.getValue().domainRuleIdentifier} not found from ${
