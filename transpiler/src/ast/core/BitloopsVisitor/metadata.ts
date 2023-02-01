@@ -6,9 +6,13 @@ export const produceMetadata = (ctx: any, visitor: BitloopsVisitor): TNodeMetada
   let stopColumn: number;
   // For lexer tokens start.column and stop.column are the same at ctx,
   // but stop.stop and start.start are different (these are characters' indexes)
-  // if (start.line == stop.line) we use the difference of the indexes to find the stop column
-  // (lexer token is only a word, so it will be in one line)
-  if (start.line == stop.line) stopColumn = stop.column + stop.stop - start.start + 1;
+  // if (start.column == stop.column) we use the difference of the indexes to find the stop column
+  // (lexer token is only a word, so it will be in the same line)
+
+  // TODO: this doesn't work for parser rules that contain multiple lexer tokens (eg domainConstructorParam),
+  // it will be fixed at parser
+  if (start.line === stop.line && start.column === stop.column)
+    stopColumn = stop.column + stop.stop - start.start + 1;
   else stopColumn = stop.column;
   const metadata = {
     start: {

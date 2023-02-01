@@ -163,7 +163,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
               ),
             );
           }
-          break; //add metadata
+          break;
 
         case BitloopsTypesMapping.TDomainCreateParameterType:
           if (!symbolTable[node.getValue().parameterType]) {
