@@ -1,0 +1,1 @@
+RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;

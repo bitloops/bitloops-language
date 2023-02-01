@@ -98,29 +98,45 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         });
       }
     }
+    for (const ASTTree of Object.values(ast.setup)) {
+      ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTIdentifierNode) => {
+        switch (true) {
+          case node.getClassNodeName() === 'identifier' &&
+            node.getParent().getClassNodeName() === 'RepoConnectionDefinition':
+            this.symbolTable.add(node.getIdentifierName());
+            break;
+          case node.getClassNodeName() === 'identifier' &&
+            node.getParent().getClassNodeName() === 'setupRepoAdapterDefinition':
+            this.symbolTable.add(node.getIdentifierName());
+            break;
+        }
+      });
+    }
   }
 
   validate(ast: IntermediateAST): void | IntermediateASTValidationError[] {
     const errors: IntermediateASTValidationError[] = [];
     for (const boundedContext of Object.values(ast.core)) {
       for (const ASTTree of Object.values(boundedContext)) {
-        errors.push(...this.validateNodes(ASTTree, this.symbolTable));
+        errors.push(...this.validateNodes(ASTTree));
 
-        errors.push(...this.validateClassTypeNodes(ASTTree, this.symbolTable));
+        errors.push(...this.validateClassTypeNodes(ASTTree));
       }
+    }
+    for (const ASTTree of Object.values(ast.setup)) {
+      errors.push(...this.validateNodes(ASTTree));
+
+      errors.push(...this.validateClassTypeNodes(ASTTree));
     }
     // TODO validate setup
 
     if (errors.length > 0) return errors;
   }
 
-  private validateNodes(
-    ASTTree: IntermediateASTTree,
-    symbolTable: Set<string>,
-  ): IntermediateASTNodeValidationError[] {
+  private validateNodes(ASTTree: IntermediateASTTree): IntermediateASTNodeValidationError[] {
     const errors: IntermediateASTNodeValidationError[] = [];
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-      const validationRes = node.validate(symbolTable);
+      const validationRes = node.validate(this.symbolTable);
       if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
         errors.push(validationRes);
     });
@@ -129,14 +145,12 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
 
   private validateClassTypeNodes(
     ASTTree: IntermediateASTTree,
-    symbolTable: Set<string>,
   ): IntermediateASTNodeValidationError[] {
     const errors: IntermediateASTNodeValidationError[] = [];
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
-        //improvement: to check parent node and do not check avoid checking of the declaration node
         case BitloopsTypesMapping.TBitloopsIdentifier:
-          if (!symbolTable.has(node.getValue().bitloopsIdentifierType)) {
+          if (!this.symbolTable.has(node.getValue().bitloopsIdentifierType)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Type ${node.getValue().bitloopsIdentifierType} not found from ${
@@ -151,7 +165,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TEntityIdentifier:
-          if (!symbolTable.has(node.getValue().entityIdentifier)) {
+          if (!this.symbolTable.has(node.getValue().entityIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Entity ${node.getValue().entityIdentifier} not found at from ${
@@ -166,7 +180,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TDomainCreateParameterType:
-          if (!symbolTable.has(node.getValue().parameterType)) {
+          if (!this.symbolTable.has(node.getValue().parameterType)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Type ${node.getValue().parameterType} not found from ${
@@ -181,7 +195,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TErrorIdentifier:
-          if (!symbolTable.has(node.getValue().error)) {
+          if (!this.symbolTable.has(node.getValue().error)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Error ${node.getValue().error} not found from ${node.getMetadata().start.line}:${
@@ -196,7 +210,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TGraphQLControllerExecuteReturnType:
-          if (!symbolTable.has(node.getValue().returnType)) {
+          if (!this.symbolTable.has(node.getValue().returnType)) {
             errors.push(
               new IntermediateASTValidationError(
                 `Type ${node.getValue().returnType} not found from ${
@@ -211,7 +225,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TDomainRuleIdentifier:
-          if (!symbolTable.has(node.getValue().domainRuleIdentifier)) {
+          if (!this.symbolTable.has(node.getValue().domainRuleIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
                 `DomainRule ${node.getValue().domainRuleIdentifier} not found from ${
@@ -223,6 +237,99 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
               ),
             );
           }
+          break;
+
+        case BitloopsTypesMapping.TUseCaseIdentifier:
+          if (!this.symbolTable.has(node.getValue().UseCaseIdentifier)) {
+            errors.push(
+              new IntermediateASTValidationError(
+                `Use Case ${node.getValue().UseCaseIdentifier} not found from ${
+                  node.getMetadata().start.line
+                }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+                  node.getMetadata().end.column
+                } of file ${node.getMetadata().fileId}`,
+                node.getMetadata(),
+              ),
+            );
+          }
+          break;
+
+        case BitloopsTypesMapping.TRESTControllerIdentifier:
+          if (!this.symbolTable.has(node.getValue().RESTControllerIdentifier)) {
+            errors.push(
+              new IntermediateASTValidationError(
+                `Controller ${node.getValue().RESTControllerIdentifier} not found from ${
+                  node.getMetadata().start.line
+                }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+                  node.getMetadata().end.column
+                } of file ${node.getMetadata().fileId}`,
+                node.getMetadata(),
+              ),
+            );
+          }
+          break;
+
+        case BitloopsTypesMapping.TConcretedRepoPort:
+          if (!this.symbolTable.has(node.getValue().concretedRepoPort)) {
+            errors.push(
+              new IntermediateASTValidationError(
+                `Repo port ${node.getValue().concretedRepoPort} not found from ${
+                  node.getMetadata().start.line
+                }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+                  node.getMetadata().end.column
+                } of file ${node.getMetadata().fileId}`,
+                node.getMetadata(),
+              ),
+            );
+          }
+          break;
+
+        case BitloopsTypesMapping.TRepoAdapterOptions:
+          if (
+            node.getFirstChild().getFirstChild().getFirstChild().getValue().identifier ===
+            'connection'
+          ) {
+            const expressionNode = node
+              .getFirstChild()
+              .getFirstChild()
+              .getFirstChild()
+              .getNextSibling()
+              .getFirstChild();
+            if (!this.symbolTable.has(expressionNode.getValue().identifier)) {
+              // const
+              errors.push(
+                new IntermediateASTValidationError(
+                  `Connection ${expressionNode.getValue().identifier} not found from ${
+                    expressionNode.getMetadata().start.line
+                  }:${expressionNode.getMetadata().start.column} to ${
+                    expressionNode.getMetadata().end.line
+                  }:${expressionNode.getMetadata().end.column} of file ${
+                    expressionNode.getMetadata().fileId
+                  }`,
+                  expressionNode.getMetadata(),
+                ),
+              );
+            }
+          }
+          break;
+
+        case BitloopsTypesMapping.TIdentifierExpression:
+          if (
+            node.getParent().getParent().getParent().getParent().getNodeType() ===
+            BitloopsTypesMapping.TUseCaseExpression
+          )
+            if (!this.symbolTable.has(node.getValue().identifier)) {
+              errors.push(
+                new IntermediateASTValidationError(
+                  `Adapter ${node.getValue().identifier} not found from ${
+                    node.getMetadata().start.line
+                  }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+                    node.getMetadata().end.column
+                  } of file ${node.getMetadata().fileId}`,
+                  node.getMetadata(),
+                ),
+              );
+            }
           break;
       }
     });

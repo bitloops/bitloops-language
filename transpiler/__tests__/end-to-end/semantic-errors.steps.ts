@@ -18,13 +18,16 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import Transpiler from '../../src/Transpiler.js';
-import { SEMANTIC_ERRORS_END_TO_END_TEST_CASES } from './mocks/semantic-errors/semantic-errors.js';
+import {
+  SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES,
+  SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES,
+} from './mocks/semantic-errors/semantic-errors.js';
 import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
 import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
 
-describe('Semantic error End To End', () => {
+describe('Semantic core error End To End', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const options = {
@@ -32,7 +35,7 @@ describe('Semantic error End To End', () => {
     targetLanguage: 'TypeScript',
   };
 
-  SEMANTIC_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
+  SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
@@ -42,7 +45,10 @@ describe('Semantic error End To End', () => {
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
-    it(`${testCase.description}`, async () => {
+    const itif = (condition) => (condition ? it : it.skip);
+
+    // it(`${testCase.description}`, async () => {
+    itif(!testCase['skip'])(`${testCase.description}`, async () => {
       // given
       const input = {
         core: [
@@ -50,7 +56,15 @@ describe('Semantic error End To End', () => {
             boundedContext,
             module,
             fileId: testCase.fileId,
-            fileContents: testCase.input,
+            fileContents: testCase.inputCore,
+          },
+        ],
+        setup: [
+          {
+            boundedContext,
+            module,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputSetup,
           },
         ],
       };
@@ -60,9 +74,73 @@ describe('Semantic error End To End', () => {
       if (!Transpiler.isTranspileError(result)) {
         throw new Error('Transpiler should return error');
       }
+      let i = 0;
       result.forEach((error) => {
         expect(error).toBeInstanceOf(IntermediateASTValidationError);
-        console.log((error as IntermediateASTValidationError).message);
+        expect((error as IntermediateASTValidationError).message).toEqual(
+          testCase.expectedErrorMessages[i],
+        );
+        // console.log((error as IntermediateASTValidationError).message);
+        i++;
+      });
+    });
+  });
+});
+
+describe('Semantic setup error End To End', () => {
+  const boundedContext = 'Todo';
+  const module = 'Todo';
+  const options = {
+    formatterConfig: null,
+    targetLanguage: 'TypeScript',
+  };
+
+  SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
+    const parser = new BitloopsParser();
+    const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
+    const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
+
+    const transpiler = new Transpiler(
+      parser,
+      originalLanguageASTToIntermediateModelTransformer,
+      intermediateASTModelToTargetLanguageGenerator,
+    );
+    const itif = (condition) => (condition ? it : it.skip);
+    // it(`${testCase.description}`, async () => {
+    itif(!testCase['skip'])(`${testCase.description}`, async () => {
+      // given
+      const input = {
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputCore,
+          },
+        ],
+        setup: [
+          {
+            boundedContext,
+            module,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputSetup,
+          },
+        ],
+      };
+
+      // when
+      const result = transpiler.transpile(input, options);
+      if (!Transpiler.isTranspileError(result)) {
+        throw new Error('Transpiler should return error');
+      }
+      let i = 0;
+      result.forEach((error) => {
+        expect(error).toBeInstanceOf(IntermediateASTValidationError);
+        expect((error as IntermediateASTValidationError).message).toEqual(
+          testCase.expectedErrorMessages[i],
+        );
+        // console.log((error as IntermediateASTValidationError).message);
+        i++;
       });
     });
   });
