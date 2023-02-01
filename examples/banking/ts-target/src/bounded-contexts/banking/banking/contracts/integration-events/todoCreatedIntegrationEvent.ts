@@ -1,7 +1,7 @@
 // TODO use protobufs
 
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { CustomerCreated } from '../../domain/events/TodoCreated';
+import { CustomerCreated } from '../../domain/events/CustomerCreated';
 
 type TodoIntegrationSchemaV1 = {
   title: string;

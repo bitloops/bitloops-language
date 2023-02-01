@@ -30,6 +30,6 @@ export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
 }
 
 export interface CRUDReadRepoPort<ReadModel> {
-  getAll(): Promise<ReadModel[]>;
-  getById(id: string): Promise<ReadModel>;
+  getAll(): Promise<ReadModel[] | null>;
+  getById(id: string): Promise<ReadModel | null>;
 }

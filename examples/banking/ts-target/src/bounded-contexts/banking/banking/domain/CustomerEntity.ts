@@ -1,5 +1,5 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-import { CustomerCreated } from './events/TodoCreated';
+import { CustomerCreated } from './events/CustomerCreated';
 import { EmailVO } from './EmailVO';
 import { PINVO } from './PINVO';
 import { AccountIdVO } from './AccountIdVO';

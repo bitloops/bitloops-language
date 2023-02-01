@@ -25,10 +25,16 @@ import { MongoCustomerWriteRepo } from './repos/concretions/MongoCustomerWriteRe
 import { InsertPINCommandHandler } from './application/insert-card-pin/InsertPINCommandHandler';
 import { DepositMoneyCommandHandler } from './application/deposit-money/DepositMoneyCommandHandler';
 import { WithdrawMoneyCommandHandler } from './application/withdraw-money/WithdrawMoneyCommandHandler';
-import { WithdrawMoneyRESTCommandController } from '../../../api/todo/modules/todo/withdraw-money/WithdrawMoneyRESTCommandController';
-import { DepositMoneyRESTCommandController } from '../../../api/todo/modules/todo/deposit-money/DepositMoneyRESTCommandController';
-import { InsertCardPINRESTCommandController } from '../../../api/todo/modules/todo/insert-card-pin/InsertCardPINRESTCommandController';
 import { CONTEXT_ID } from './config/index';
+import { InsertCardPINRESTCommandController } from '../../../api/banking/modules/banking/insert-card-pin/InsertCardPINRESTCommandController';
+import { DepositMoneyRESTCommandController } from '../../../api/banking/modules/banking/deposit-money/DepositMoneyRESTCommandController';
+import { WithdrawMoneyRESTCommandController } from '../../../api/banking/modules/banking/withdraw-money/WithdrawMoneyRESTCommandController';
+import { GetAccountByIdQueryController } from '../../../api/banking/modules/banking/get-account-by-id/GetAccountByIdQueryController';
+import { GetAccountQueryHandler } from './application/get-account-details/GetAccountQueryHandler';
+import { GetCustomerQueryHandler } from './application/get-customer-details/GetCustomerQueryHandler';
+import { MongoCustomerReadRepo } from './repos/concretions/MongoCustomerReadRepo';
+import { MongoAccountReadRepo } from './repos/concretions/MongoAccountReadRepo';
+import { GetCustomerByIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-id/GetCustomerByIdQueryController';
 
 const insertPINCommandHandler = new InsertPINCommandHandler(new MongoCustomerWriteRepo(client));
 const depositMoneyCommandHandler = new DepositMoneyCommandHandler(
@@ -48,11 +54,18 @@ const depositMoneyRESTCommandController = new DepositMoneyRESTCommandController(
 const withdrawMoneyRESTCommandController = new WithdrawMoneyRESTCommandController(
   Container.getCommandBusFromContext(CONTEXT_ID),
 );
-// const getAllTodosQueryHandler = new GetAllTodosQueryHandler(new MongoTodoReadRepo(client));
 
-// const getAllTodosQueryController = new GetAllQueryController(
-//   Container.getQueryBusFromContext(CONTEXT_ID),
-// );
+const getCustomerByIdQueryHandler = new GetCustomerQueryHandler(new MongoCustomerReadRepo(client));
+
+const getAccountByIdQueryHandler = new GetAccountQueryHandler(new MongoAccountReadRepo(client));
+
+const getAccountByIdController = new GetAccountByIdQueryController(
+  Container.getQueryBusFromContext(CONTEXT_ID),
+);
+
+const getCustomerByIdController = new GetCustomerByIdQueryController(
+  Container.getQueryBusFromContext(CONTEXT_ID),
+);
 
 export {
   insertPINCommandHandler,
@@ -61,6 +74,8 @@ export {
   insertCardPINRESTCommandController,
   depositMoneyRESTCommandController,
   withdrawMoneyRESTCommandController,
-  //   getAllTodosQueryController,
-  //   getAllTodosQueryHandler,
+  getCustomerByIdQueryHandler,
+  getAccountByIdQueryHandler,
+  getAccountByIdController,
+  getCustomerByIdController,
 };

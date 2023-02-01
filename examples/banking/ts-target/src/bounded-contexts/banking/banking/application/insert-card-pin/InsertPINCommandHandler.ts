@@ -11,8 +11,12 @@ import {
   Either,
 } from '@bitloops/bl-boilerplate-core';
 
+type TCustomerId = {
+  customerId: string;
+};
+
 type InsertPINCommandHandlerResponse = Either<
-  void,
+  TCustomerId,
   | ApplicationErrors.CustomerNotFound
   | DomainErrors.PINIsNotPositiveNumber
   | DomainErrors.InvalidCustomerPIN
@@ -47,7 +51,6 @@ export class InsertPINCommandHandler
     if (validationPinRes.isFail()) {
       return fail(validationPinRes.value);
     }
-    //TODO return customerID
-    return ok();
+    return ok({ customerId: customerEntity.id.toString() });
   }
 }

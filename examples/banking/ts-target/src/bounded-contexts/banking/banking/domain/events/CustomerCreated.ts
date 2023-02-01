@@ -15,7 +15,9 @@ export class CustomerCreated extends Domain.Event {
       fromContextId: CustomerCreated.fromContextId,
       id: uuid,
     };
+
     super(CustomerCreated.getEventTopic(), customer, metadata, customer.id);
+    this.customer = customer;
   }
 
   static getEventTopic() {

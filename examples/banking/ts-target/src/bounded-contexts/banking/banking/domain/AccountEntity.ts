@@ -3,6 +3,8 @@ import { AccountCreated } from './events/AccountCreated';
 import { MoneyVO } from './MoneyVO';
 import { DomainErrors } from './errors/index';
 import { Rules } from './rules/index';
+import { MoneyDepositedToAccount } from './events/MoneyDepositedToAccount';
+import { MoneyWithdrawnFromAccount } from './events/MoneyWithdrawnFromAccount';
 
 export interface AccountProps {
   id?: Domain.UUIDv4;
@@ -15,12 +17,12 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
   }
 
   public static create(props: AccountProps): Either<AccountEntity, never> {
-    const todo = new AccountEntity(props);
+    const account = new AccountEntity(props);
     const isNew = !props.id;
     if (isNew) {
-      todo.addDomainEvent(new AccountCreated(todo));
+      account.addDomainEvent(new AccountCreated(account));
     }
-    return ok(todo);
+    return ok(account);
   }
 
   get id() {
@@ -32,6 +34,13 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
   }
 
   public withdrawAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
+    const amountToBeWithdrawn = MoneyVO.create({
+      amount,
+      currency: this.props.balance.currency,
+    });
+    if (amountToBeWithdrawn.isFail()) {
+      return fail(amountToBeWithdrawn.value);
+    }
     const finalAmount = this.props.balance.amount - amount;
     const res = Domain.applyRules([
       new Rules.AccountCannotHaveNegativeBalance(finalAmount, this.props.balance.amount),
@@ -45,10 +54,20 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
       return fail(balanceVO.value);
     }
     this.props.balance = balanceVO.value;
+    this.addDomainEvent(new MoneyWithdrawnFromAccount(this));
     return ok();
   }
 
   public depositAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
+    const amountToBeAdded = MoneyVO.create({
+      amount,
+      currency: this.props.balance.currency,
+    });
+
+    if (amountToBeAdded.isFail()) {
+      return fail(amountToBeAdded.value);
+    }
+
     const updatedAmount = this.props.balance.amount + amount;
     const balanceVO = MoneyVO.create({
       amount: updatedAmount,
@@ -58,6 +77,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
       return fail(balanceVO.value);
     }
     this.props.balance = balanceVO.value;
+    this.addDomainEvent(new MoneyDepositedToAccount(this));
     return ok();
   }
 }

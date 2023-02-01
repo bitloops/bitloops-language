@@ -20,6 +20,8 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import {
   depositMoneyRESTCommandController,
+  getAccountByIdController,
+  getCustomerByIdController,
   insertCardPINRESTCommandController,
   withdrawMoneyRESTCommandController,
 } from '../../../../../bounded-contexts/banking/banking/DI';
@@ -34,6 +36,22 @@ const bankingRESTRouter = async (fastify: Fastify.Instance) => {
   fastify.post('/withdrawMoney', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
     return withdrawMoneyRESTCommandController.execute(request, reply);
   });
+
+  fastify.get(
+    '/accounts/:accountId',
+    {},
+    async (request: Fastify.Request, reply: Fastify.Reply) => {
+      return getAccountByIdController.execute(request, reply);
+    },
+  );
+
+  fastify.get(
+    '/customers/:customerId',
+    {},
+    async (request: Fastify.Request, reply: Fastify.Reply) => {
+      return getCustomerByIdController.execute(request, reply);
+    },
+  );
 };
 
 export { bankingRESTRouter };

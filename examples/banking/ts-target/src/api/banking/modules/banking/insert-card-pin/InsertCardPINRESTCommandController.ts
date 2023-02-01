@@ -5,7 +5,7 @@ import { InsertPINCommand } from '../../../../../bounded-contexts/banking/bankin
 import { InsertPINRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO';
 import { ApplicationErrors } from '../../../../../bounded-contexts/banking/banking/application/errors/index';
 
-type InsertCardPinUseCaseResponse = Either<void, DomainErrors.InvalidMonetaryValue>;
+type InsertCardPinUseCaseResponse = Either<string, DomainErrors.InvalidMonetaryValue>;
 
 export class InsertCardPINRESTCommandController extends Fastify.BaseController {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {
@@ -43,7 +43,7 @@ export class InsertCardPINRESTCommandController extends Fastify.BaseController {
           this.fail(response, result.value.message);
       }
     } else {
-      this.created(response);
+      this.ok(response, result.value);
     }
   }
 }

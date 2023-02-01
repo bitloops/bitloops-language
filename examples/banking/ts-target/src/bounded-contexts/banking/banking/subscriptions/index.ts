@@ -4,10 +4,14 @@ import {
   insertPINCommandHandler,
   depositMoneyCommandHandler,
   withdrawMoneyCommandHandler,
+  getAccountByIdQueryHandler,
+  getCustomerByIdQueryHandler,
 } from '../DI';
 import { InsertPINCommand } from '../application/insert-card-pin/index';
 import { DepositMoneyCommand } from '../application/deposit-money/DepositMoneyCommand';
 import { WithdrawMoneyCommand } from '../application/withdraw-money/WithdrawMoneyCommand';
+import { GetAccountQuery } from '../application/get-account-details/GetAccountQuery';
+import { GetCustomerQuery } from '../application/get-customer-details/GetCustomerQuery';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
@@ -26,11 +30,17 @@ export const setUpTodoSubscriptions = async () => {
     WithdrawMoneyCommand.getCommandTopic(),
     withdrawMoneyCommandHandler.execute.bind(withdrawMoneyCommandHandler),
   );
-  // const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
-  // await queryBus.register(
-  //   GetAllTodosQuery.getQueryTopic(),
-  //   getAllTodosQueryHandler.execute.bind(getAllTodosQueryHandler),
-  // );
+
+  const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
+  await queryBus.register(
+    GetAccountQuery.getQueryTopic(),
+    getAccountByIdQueryHandler.execute.bind(getAccountByIdQueryHandler),
+  );
+  await queryBus.register(
+    GetCustomerQuery.getQueryTopic(),
+    getCustomerByIdQueryHandler.execute.bind(getCustomerByIdQueryHandler),
+  );
+
   // // Domain events subscriptions
   // const domainEventBus = Container.getEventBusFromContext(CONTEXT_ID);
   // // Possible we need the external domain event bus here for integration events, different from domain events one
