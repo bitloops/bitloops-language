@@ -5,8 +5,9 @@ import { WithdrawMoneyCommand } from './WithdrawMoneyCommand';
 
 import {
   Application,
-  failWithPublish as failResp,
-  okWithpublish as okResp,
+  RespondWithPublish,
+  ok,
+  fail,
   Either,
   Domain,
 } from '@bitloops/bl-boilerplate-core';
@@ -28,9 +29,8 @@ export class WithdrawMoneyCommandHandler
     this.accountRepo = accountRepo;
   }
 
+  @RespondWithPublish()
   async execute(command: WithdrawMoneyCommand): Promise<InsertPINCommandHandlerResponse> {
-    const fail = failResp(command.metadata);
-    const ok = okResp(command.metadata);
     const accountId = new Domain.UUIDv4(command.accountId);
 
     const accountEntity = await this.accountRepo.getById(accountId);

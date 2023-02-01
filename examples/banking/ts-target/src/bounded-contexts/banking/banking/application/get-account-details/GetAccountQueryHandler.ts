@@ -1,9 +1,4 @@
-import {
-  Application,
-  Either,
-  okWithpublish as okResp,
-  failWithPublish as failResp,
-} from '@bitloops/bl-boilerplate-core';
+import { Application, Either, RespondWithPublish, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { AccountReadModel } from '../../domain/AccountReadModel';
 import { IAccountReadRepo } from '../../repos/interfaces/IAccountReadRepo';
 import { ApplicationErrors } from '../errors';
@@ -16,10 +11,8 @@ export class GetAccountQueryHandler
 {
   constructor(private accountRepo: IAccountReadRepo) {}
 
+  @RespondWithPublish()
   async execute(query: GetAccountQuery): Promise<GetAccountDetailsResponse> {
-    const fail = failResp(query.metadata);
-    const ok = okResp(query.metadata);
-
     const requestId = query.accountId;
     const account = await this.accountRepo.getById(requestId);
 
@@ -27,6 +20,6 @@ export class GetAccountQueryHandler
       return fail(new ApplicationErrors.AccountNotFound(requestId));
     }
 
-    return await ok(account);
+    return ok(account);
   }
 }

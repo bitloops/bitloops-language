@@ -37,6 +37,8 @@ import { MongoAccountReadRepo } from './repos/concretions/MongoAccountReadRepo';
 import { GetCustomerByIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-id/GetCustomerByIdQueryController';
 import { GetCustomerByAccountIdQueryHandler } from './application/get-customer-details-by-account-id/GetCustomerByAccountIdQueryHandler';
 import { GetCustomerByAccountIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-account-id/GetCustomerByAccountIdQueryController';
+import { SendEmailVerificationCommandHandler } from './application/send-email-verification/SendEmailVerificationCommandHandler';
+import { MockEmailService } from './services/concretions';
 
 const insertPINCommandHandler = new InsertPINCommandHandler(new MongoCustomerWriteRepo(client));
 const depositMoneyCommandHandler = new DepositMoneyCommandHandler(
@@ -44,6 +46,10 @@ const depositMoneyCommandHandler = new DepositMoneyCommandHandler(
 );
 const withdrawMoneyCommandHandler = new WithdrawMoneyCommandHandler(
   new MongoAccountWriteRepo(client),
+);
+
+const sendEmailVerificationCommandHandler = new SendEmailVerificationCommandHandler(
+  new MockEmailService(),
 );
 
 const insertCardPINRESTCommandController = new InsertCardPINRESTCommandController(
@@ -89,4 +95,5 @@ export {
   getCustomerByIdController,
   getCustomerByAccountIdController,
   getCustomerByAccountIdQueryHandler,
+  sendEmailVerificationCommandHandler,
 };

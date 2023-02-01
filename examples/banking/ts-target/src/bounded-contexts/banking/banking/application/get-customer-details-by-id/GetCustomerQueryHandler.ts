@@ -1,9 +1,4 @@
-import {
-  Application,
-  Either,
-  okWithpublish as okResp,
-  failWithPublish as failResp,
-} from '@bitloops/bl-boilerplate-core';
+import { Application, Either, RespondWithPublish, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { CustomerReadModel } from '../../domain/CustomerReadModel';
 import { ICustomerReadRepo } from '../../repos/interfaces/ICustomerReadRepo';
 import { ApplicationErrors } from '../errors/index';
@@ -16,16 +11,14 @@ export class GetCustomerQueryHandler
 {
   constructor(private customerRepo: ICustomerReadRepo) {}
 
+  @RespondWithPublish()
   async execute(query: GetCustomerByIdQuery): Promise<GetCustomerResponse> {
-    const fail = failResp(query.metadata);
-    const ok = okResp(query.metadata);
-
     const requestId = query.id;
     const customer = await this.customerRepo.getById(requestId);
     if (!customer) {
       return fail(new ApplicationErrors.CustomerNotFound(requestId));
     }
 
-    return await ok(customer);
+    return ok(customer);
   }
 }

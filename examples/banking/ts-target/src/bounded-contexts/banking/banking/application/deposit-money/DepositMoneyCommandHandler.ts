@@ -5,10 +5,11 @@ import { DepositMoneyCommand } from './DepositMoneyCommand';
 
 import {
   Application,
-  failWithPublish as failResp,
-  okWithpublish as okResp,
   Either,
   Domain,
+  RespondWithPublish,
+  ok,
+  fail,
 } from '@bitloops/bl-boilerplate-core';
 
 type InsertPINCommandHandlerResponse = Either<
@@ -28,9 +29,8 @@ export class DepositMoneyCommandHandler
     this.accountRepo = accountRepo;
   }
 
+  @RespondWithPublish()
   async execute(command: DepositMoneyCommand): Promise<InsertPINCommandHandlerResponse> {
-    const fail = failResp(command.metadata);
-    const ok = okResp(command.metadata);
     const accountId = new Domain.UUIDv4(command.accountId);
 
     const accountEntity = await this.accountRepo.getById(accountId);

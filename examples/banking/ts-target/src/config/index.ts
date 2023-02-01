@@ -1,6 +1,6 @@
 import { Constants } from '@bitloops/bl-boilerplate-core';
 import { CONTEXT_ID as BANKING_CONTEXT_ID } from '../bounded-contexts/banking/banking/config';
-import { CONTEXT_ID as NOTIFICATIONS_CONTEXT_ID } from '../bounded-contexts/notification/notification/config';
+import { CONTEXT_ID as NOTIFICATIONS_CONTEXT_ID } from '../bounded-contexts/marketing/marketing/config';
 // import { CONTEXT_ID as NOTIFICATIONS_CONTEXT_ID } from '../bounded-contexts/notifications/notifications/config';
 
 // banking remove this line and implement it correctly

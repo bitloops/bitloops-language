@@ -1,6 +1,6 @@
 import { SendEmailCommand } from './commands';
 
-import { Application, okWithpublish as okResp, Either } from '@bitloops/bl-boilerplate-core';
+import { Application, ok, RespondWithPublish, Either } from '@bitloops/bl-boilerplate-core';
 
 import { IEmailService } from '../services/concretions/IEmailService';
 
@@ -13,8 +13,8 @@ export class SendEmailCommandHandler
     this.emailService = emailService;
   }
 
+  @RespondWithPublish()
   async execute(command: SendEmailCommand): Promise<SendEmailCommandHandlerResponse> {
-    const ok = okResp(command.metadata);
     await this.emailService.send({
       origin: command.origin,
       destination: command.destination,

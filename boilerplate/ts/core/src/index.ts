@@ -28,7 +28,7 @@ import { IMessageBus as IMessageBusImport } from './domain/messages/IMessageBus'
 
 import { Container } from './Container';
 import { IDomainEvent as IDomainEventImport } from './domain/events/IDomainEvent';
-import { fail as failWithPublish, ok as okWithpublish } from './ResultWithPublish';
+import { RespondWithPublish } from './ResultWithPublish';
 import { Command as CommandImport } from './domain/commands/Command';
 import { Query as QueryImport } from './domain/queries/Query';
 
@@ -120,15 +120,4 @@ namespace Constants {
   export type ApplicationConfig = ApplicationConfigImport;
 }
 
-export {
-  Application,
-  Domain,
-  Either,
-  Infra,
-  fail,
-  ok,
-  Container,
-  failWithPublish,
-  okWithpublish,
-  Constants,
-};
+export { Application, Domain, Either, Infra, fail, ok, Container, RespondWithPublish, Constants };
