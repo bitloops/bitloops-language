@@ -12,6 +12,10 @@ import { DepositMoneyCommand } from '../application/deposit-money/DepositMoneyCo
 import { WithdrawMoneyCommand } from '../application/withdraw-money/WithdrawMoneyCommand';
 import { GetAccountQuery } from '../application/get-account-details/GetAccountQuery';
 import { GetCustomerQuery } from '../application/get-customer-details/GetCustomerQuery';
+import { MoneyDepositedToAccount } from '../domain/events/MoneyDepositedToAccount';
+import { MoneyWithdrawnFromAccount } from '../domain/events/MoneyWithdrawnFromAccount';
+import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/MoneyWithdrawnPublishIntegrationEventHandler';
+import { MoneyDepositedPublishIntegrationEventHandler } from '../application/MoneyDepositedPublishIntegrationEventHandler';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
@@ -42,15 +46,28 @@ export const setUpTodoSubscriptions = async () => {
   );
 
   // // Domain events subscriptions
-  // const domainEventBus = Container.getEventBusFromContext(CONTEXT_ID);
-  // // Possible we need the external domain event bus here for integration events, different from domain events one
-  // const integrationEventBus = Container.getIntegrationEventBusFromContext(CONTEXT_ID);
-  // const todoCreatedPublishIntegrationEventHandler = new TodoCreatedPublishIntegrationEventHandler(
-  //   integrationEventBus,
-  // );
-  // await domainEventBus.subscribe<CustomerCreated>(CustomerCreated.getEventTopic(), (event) => {
-  //   todoCreatedPublishIntegrationEventHandler.handle(event);
-  // });
+  const domainEventBus = Container.getEventBusFromContext(CONTEXT_ID);
+  // Possible we need the external domain event bus here for integration events, different from domain events one
+  const integrationEventBus = Container.getIntegrationEventBusFromContext(CONTEXT_ID);
+  const moneyDepositedIntegrationEventHandler = new MoneyDepositedPublishIntegrationEventHandler(
+    integrationEventBus,
+  );
+  await domainEventBus.subscribe<MoneyDepositedToAccount>(
+    MoneyDepositedToAccount.getEventTopic(),
+    (event) => {
+      moneyDepositedIntegrationEventHandler.handle(event);
+    },
+  );
+
+  const moneyWithdrawnIntegrationEventHandler = new MoneyWithdrawnPublishIntegrationEventHandler(
+    integrationEventBus,
+  );
+  await domainEventBus.subscribe<MoneyWithdrawnFromAccount>(
+    MoneyWithdrawnFromAccount.getEventTopic(),
+    (event) => {
+      moneyWithdrawnIntegrationEventHandler.handle(event);
+    },
+  );
 };
 
 setUpTodoSubscriptions();
