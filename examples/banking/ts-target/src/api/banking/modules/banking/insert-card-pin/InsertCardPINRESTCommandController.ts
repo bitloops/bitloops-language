@@ -20,9 +20,9 @@ export class InsertCardPINRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new InsertPINCommand(dto);
-    const result = (await this.commandBus.sendAndGetResponse(command, [
+    const result = await this.commandBus.sendAndGetResponse<InsertCardPinUseCaseResponse>(command, [
       DomainErrors.InvalidMonetaryValue,
-    ])) as InsertCardPinUseCaseResponse;
+    ]);
 
     if (result.isFail()) {
       switch (result.value.constructor) {

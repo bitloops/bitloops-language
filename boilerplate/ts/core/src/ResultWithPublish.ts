@@ -8,7 +8,6 @@ type Metadata = CommandMetadata | QueryMetadata;
 export const fail = (metadata?: Metadata) => {
   return async <A, L>(l: L): Promise<Either<A, L>> => {
     const res: Either<A, L> = new Fail(l);
-    console.log('metadata1:::', metadata);
     if (metadata) await replyToResponseTopic(metadata, res);
     return res;
   };
@@ -23,7 +22,6 @@ export const ok = (metadata?: Metadata) => {
 };
 
 const replyToResponseTopic = async <L, A>(metadata: Metadata, res: Either<L, A>) => {
-  console.log('replyToResponseTopic metadata:::', metadata);
   const messageBus = Container.getMessageBusFromContext(metadata.toContextId);
   if (metadata.responseTopic) await messageBus.publish(metadata.responseTopic, res);
 };

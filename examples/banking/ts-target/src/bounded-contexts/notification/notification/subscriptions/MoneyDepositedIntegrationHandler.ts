@@ -1,6 +1,5 @@
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { TodoCreatedIntegrationEvent } from '../../../../config/integration-events';
-import { MoneyDepositedIntegrationEvent } from '../../banking/banking/contracts';
+import { MoneyDepositedIntegrationEvent } from '../../../banking/banking/contracts';
 import { SendEmailCommand } from '../application/commands';
 
 export class MoneyDepositedIntegrationHandler /*<ToDoCreatedIntegration>*/ {
@@ -17,6 +16,6 @@ export class MoneyDepositedIntegrationHandler /*<ToDoCreatedIntegration>*/ {
     });
 
     await this.commandBus.send(command);
-    console.log(`[AfterTodoCreated]: Successfully sent SendEmail Command`);
+    console.log(`[AfterMoneyDepositedIntegrationEvent]: Successfully sent SendEmail Command`);
   }
 }

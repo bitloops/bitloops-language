@@ -6,6 +6,8 @@ import { InsertPINCommand } from './InsertPINCommand';
 
 import {
   Application,
+  ok,
+  fail,
   failWithPublish as failResp,
   okWithpublish as okResp,
   Either,
@@ -23,6 +25,29 @@ type InsertPINCommandHandlerResponse = Either<
   | DomainErrors.InvalidCustomerPIN
 >;
 
+function RespondWithPublish() {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = async function (...args: any[]) {
+      const metadata = args[0].metadata;
+      const fail = failResp(metadata);
+      const ok = okResp(metadata);
+      console.log('testDecorator', metadata);
+      // Call the original method with the correct context
+      const result = (await originalMethod.apply(this, args)) as InsertPINCommandHandlerResponse;
+      console.log('result is: ', result);
+      console.log('result is ok', result.isOk());
+      // Wrap the result in okWithPublish or failWithPublish
+      if (result.isOk()) {
+        return ok(result.value);
+      } else {
+        return fail(result.value);
+      }
+    };
+    return descriptor;
+  };
+}
+
 export class InsertPINCommandHandler
   implements Application.IUseCase<InsertPINCommand, Promise<InsertPINCommandHandlerResponse>>
 {
@@ -32,9 +57,10 @@ export class InsertPINCommandHandler
     this.customerRepo = customerRepo;
   }
 
+  @RespondWithPublish()
   async execute(command: InsertPINCommand): Promise<InsertPINCommandHandlerResponse> {
-    const fail = failResp(command.metadata);
-    const ok = okResp(command.metadata);
+    // const fail = failResp(command.metadata);
+    // const ok = okResp(command.metadata);
 
     const customerEntity = await this.customerRepo.getByEmail(command.email);
 

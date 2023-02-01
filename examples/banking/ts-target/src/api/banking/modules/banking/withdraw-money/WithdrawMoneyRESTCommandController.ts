@@ -19,9 +19,9 @@ export class WithdrawMoneyRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new WithdrawMoneyCommand(dto);
-    const result = (await this.commandBus.sendAndGetResponse(command, [
+    const result = await this.commandBus.sendAndGetResponse<WithdrawMoneyUseCaseResponse>(command, [
       DomainErrors.InvalidMonetaryValue,
-    ])) as WithdrawMoneyUseCaseResponse;
+    ]);
 
     if (result.isFail()) {
       switch (result.value.constructor) {

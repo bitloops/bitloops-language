@@ -9,5 +9,5 @@ import { appConfig } from './config';
 
   // subscriptions
   await import('./bounded-contexts/banking/banking/subscriptions');
-  // await import('./bounded-contexts/notification/notification/subscriptions');
+  await import('./bounded-contexts/notification/notification/subscriptions');
 })();

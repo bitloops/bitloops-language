@@ -1,4 +1,4 @@
-import { SendEmailCommand } from './commands/';
+import { SendEmailCommand } from './commands';
 
 import { Application, okWithpublish as okResp, Either } from '@bitloops/bl-boilerplate-core';
 
