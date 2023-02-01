@@ -1,5 +1,5 @@
 const STANDARD_BL_ERROR_PREFIX = 'BL';
-const STANDARD_VALUE_ERROR_PREFIX = 'VL';
+const STANDARD_VALUE_ERROR_PREFIX = 'SV';
 const DELIMITER = '_';
 
 export class StandardErrorUtils {
