@@ -21,9 +21,9 @@ import Transpiler from '../../src/Transpiler.js';
 import { TOutputTargetContent } from '../../src/target/types.js';
 import { SETUP_END_TO_END_TEST_CASES } from './mocks/setup/setup.js';
 import { transpiler } from '../../src/index.js';
+import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
 
 describe('Valid Setup End To End', () => {
-  const fileId = 'fileName';
   const options = {
     formatterConfig: null,
     targetLanguage: 'TypeScript',
@@ -34,19 +34,18 @@ describe('Valid Setup End To End', () => {
     it(`${testCase.description}`, async () => {
       // given
       const input = {
-        setup: [
-          {
-            fileId,
-            fileContents: testCase.input,
-          },
-        ],
-        core: [],
+        setup: testCase.inputSetup,
+        core: testCase.inputCore,
       };
 
       // when
       const result = transpiler.transpile(input, options);
       if (!Transpiler.isTranspileError(result)) {
         targetCode = result;
+      } else {
+        result.forEach((error) => {
+          throw new Error((error as IntermediateASTValidationError).message);
+        });
       }
 
       // then

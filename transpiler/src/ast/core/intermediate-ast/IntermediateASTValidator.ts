@@ -98,20 +98,21 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         });
       }
     }
-    for (const ASTTree of Object.values(ast.setup)) {
-      ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTIdentifierNode) => {
-        switch (true) {
-          case node.getClassNodeName() === 'identifier' &&
-            node.getParent().getClassNodeName() === 'RepoConnectionDefinition':
-            this.symbolTable.add(node.getIdentifierName());
-            break;
-          case node.getClassNodeName() === 'identifier' &&
-            node.getParent().getClassNodeName() === 'setupRepoAdapterDefinition':
-            this.symbolTable.add(node.getIdentifierName());
-            break;
-        }
-      });
-    }
+    if (ast.setup)
+      for (const ASTTree of Object.values(ast.setup)) {
+        ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTIdentifierNode) => {
+          switch (true) {
+            case node.getClassNodeName() === 'identifier' &&
+              node.getParent().getClassNodeName() === 'RepoConnectionDefinition':
+              this.symbolTable.add(node.getIdentifierName());
+              break;
+            case node.getClassNodeName() === 'identifier' &&
+              node.getParent().getClassNodeName() === 'setupRepoAdapterDefinition':
+              this.symbolTable.add(node.getIdentifierName());
+              break;
+          }
+        });
+      }
   }
 
   validate(ast: IntermediateAST): void | IntermediateASTValidationError[] {
@@ -123,11 +124,12 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         errors.push(...this.validateClassTypeNodes(ASTTree));
       }
     }
-    for (const ASTTree of Object.values(ast.setup)) {
-      errors.push(...this.validateNodes(ASTTree));
+    if (ast.setup)
+      for (const ASTTree of Object.values(ast.setup)) {
+        errors.push(...this.validateNodes(ASTTree));
 
-      errors.push(...this.validateClassTypeNodes(ASTTree));
-    }
+        errors.push(...this.validateClassTypeNodes(ASTTree));
+      }
     // TODO validate setup
 
     if (errors.length > 0) return errors;
@@ -153,7 +155,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().bitloopsIdentifierType)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Type ${node.getValue().bitloopsIdentifierType} not found from ${
+                `Type ${node.getValue().bitloopsIdentifierType} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -168,7 +170,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().entityIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Entity ${node.getValue().entityIdentifier} not found at from ${
+                `Entity ${node.getValue().entityIdentifier} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -183,7 +185,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().parameterType)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Type ${node.getValue().parameterType} not found from ${
+                `Type ${node.getValue().parameterType} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -198,7 +200,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().error)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Error ${node.getValue().error} not found from ${node.getMetadata().start.line}:${
+                `Error ${node.getValue().error} not found: from ${node.getMetadata().start.line}:${
                   node.getMetadata().start.column
                 } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
                   node.getMetadata().fileId
@@ -213,7 +215,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().returnType)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Type ${node.getValue().returnType} not found from ${
+                `Type ${node.getValue().returnType} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -228,7 +230,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().domainRuleIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
-                `DomainRule ${node.getValue().domainRuleIdentifier} not found from ${
+                `DomainRule ${node.getValue().domainRuleIdentifier} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -243,7 +245,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().UseCaseIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Use Case ${node.getValue().UseCaseIdentifier} not found from ${
+                `Use Case ${node.getValue().UseCaseIdentifier} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -258,7 +260,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().RESTControllerIdentifier)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Controller ${node.getValue().RESTControllerIdentifier} not found from ${
+                `Controller ${node.getValue().RESTControllerIdentifier} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -273,7 +275,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           if (!this.symbolTable.has(node.getValue().concretedRepoPort)) {
             errors.push(
               new IntermediateASTValidationError(
-                `Repo port ${node.getValue().concretedRepoPort} not found from ${
+                `Repo port ${node.getValue().concretedRepoPort} not found: from ${
                   node.getMetadata().start.line
                 }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                   node.getMetadata().end.column
@@ -299,7 +301,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
               // const
               errors.push(
                 new IntermediateASTValidationError(
-                  `Connection ${expressionNode.getValue().identifier} not found from ${
+                  `Connection ${expressionNode.getValue().identifier} not found: from ${
                     expressionNode.getMetadata().start.line
                   }:${expressionNode.getMetadata().start.column} to ${
                     expressionNode.getMetadata().end.line
@@ -313,6 +315,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           }
           break;
 
+        //write it with getFirstChild() etc
         case BitloopsTypesMapping.TIdentifierExpression:
           if (
             node.getParent().getParent().getParent().getParent().getNodeType() ===
@@ -321,7 +324,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
             if (!this.symbolTable.has(node.getValue().identifier)) {
               errors.push(
                 new IntermediateASTValidationError(
-                  `Adapter ${node.getValue().identifier} not found from ${
+                  `Adapter ${node.getValue().identifier} not found: from ${
                     node.getMetadata().start.line
                   }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
                     node.getMetadata().end.column

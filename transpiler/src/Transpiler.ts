@@ -1,8 +1,15 @@
 import {
   isIntermediateASTError,
+  isIntermediateASTValidationErrors,
   isOriginalParserOrIntermediateASTError,
 } from './ast/core/guards/index.js';
-import { IIntermediateASTParser, IntermediateAST, IntermediateASTError } from './ast/core/types.js';
+import {
+  IIntermediateASTParser,
+  IIntermediateASTValidator,
+  IntermediateAST,
+  IntermediateASTError,
+  IntermediateASTValidationError,
+} from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import {
   IOriginalParser,
@@ -17,6 +24,7 @@ import { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpil
 export default class Transpiler {
   constructor(
     private parser: IOriginalParser,
+    private validator: IIntermediateASTValidator,
     private originalLanguageASTToIntermediateModelTransformer: IIntermediateASTParser,
     private intermediateASTModelToTargetLanguageGenerator: ITargetGenerator,
   ) {}
@@ -30,7 +38,18 @@ export default class Transpiler {
       return intermediateModel;
     }
 
-    const targetCode = this.intermediateASTModelToTargetLanguage(intermediateModel, options);
+    const validatedIntermediateModel = this.validateIntermediateModel(intermediateModel);
+    if (isIntermediateASTError(validatedIntermediateModel)) {
+      return validatedIntermediateModel;
+    }
+
+    const completedIntermediateModel = this.completeIntermediateModel(validatedIntermediateModel);
+
+    const targetCode = this.intermediateASTModelToTargetLanguage(
+      completedIntermediateModel,
+      options,
+    );
+
     if (isTargetGeneratorError(targetCode)) {
       return targetCode;
     }
@@ -67,6 +86,21 @@ export default class Transpiler {
     options: TTranspileOptions,
   ): TOutputTargetContent | TargetGeneratorError[] {
     return this.intermediateASTModelToTargetLanguageGenerator.generate(ASTModel, options);
+  }
+
+  private validateIntermediateModel(
+    intermediateModel: IntermediateAST,
+  ): IntermediateASTValidationError[] | IntermediateAST {
+    this.validator.createSymbolTable(intermediateModel);
+    const validationResult = this.validator.validate(intermediateModel);
+    if (isIntermediateASTValidationErrors(validationResult)) {
+      return validationResult;
+    }
+    return intermediateModel;
+  }
+
+  private completeIntermediateModel(intermediateModel: IntermediateAST): IntermediateAST {
+    return this.originalLanguageASTToIntermediateModelTransformer.complete(intermediateModel);
   }
 
   static isTranspileError(

@@ -24,6 +24,7 @@ export type IntermediateASTError = IntermediateASTParserError[] | IntermediateAS
 
 export interface IIntermediateASTParser {
   parse: (ast: OriginalAST) => IntermediateAST | IntermediateASTError;
+  complete: (ast: IntermediateAST) => IntermediateAST;
 }
 
 export class IntermediateASTParserError extends Error {}

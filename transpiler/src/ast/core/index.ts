@@ -1,41 +1,30 @@
 import { OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
-import { isIntermediateASTParserError, isIntermediateASTValidationErrors } from './guards/index.js';
+import { isIntermediateASTParserError } from './guards/index.js';
 import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
-import { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';
 import {
   IntermediateASTParserError,
-  IntermediateASTValidationError,
   IIntermediateASTParser,
   IntermediateASTError,
-  IIntermediateASTValidator,
   IntermediateAST,
   IntermediateASTSetup,
   TBoundedContexts,
 } from './types.js';
 
 export class IntermediateASTParser implements IIntermediateASTParser {
-  private validator: IIntermediateASTValidator;
   private intermediateASTTransformer: IntermediateASTToCompletedIntermediateASTTransformer;
 
   constructor() {
-    this.validator = new IntermediateASTValidator();
     this.intermediateASTTransformer = new IntermediateASTToCompletedIntermediateASTTransformer();
   }
 
   parse(ast: OriginalAST): IntermediateAST | IntermediateASTError {
     const intermediateAST = this.originalASTToIntermediateASTTree(ast);
-    if (isIntermediateASTParserError(intermediateAST)) {
-      return intermediateAST;
-    }
+    return intermediateAST;
+  }
 
-    this.validator.createSymbolTable(intermediateAST);
-    const validationResult = this.validateIntermediateASTTree(intermediateAST);
-    if (isIntermediateASTValidationErrors(validationResult)) {
-      return validationResult;
-    }
-
+  complete(intermediateAST: IntermediateAST): IntermediateAST {
     const completedASTTree = this.completeIntermediateASTTree(intermediateAST);
 
     return completedASTTree;
@@ -106,10 +95,6 @@ export class IntermediateASTParser implements IIntermediateASTParser {
   private completeIntermediateASTTree(intermediateAST: IntermediateAST): IntermediateAST {
     return this.intermediateASTTransformer.complete(intermediateAST);
   }
-
-  private validateIntermediateASTTree(
-    intermediateAST: IntermediateAST,
-  ): void | IntermediateASTValidationError[] {
-    return this.validator.validate(intermediateAST);
-  }
 }
+
+export { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';

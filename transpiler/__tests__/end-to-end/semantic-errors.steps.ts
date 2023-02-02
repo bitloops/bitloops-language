@@ -24,7 +24,7 @@ import {
 } from './mocks/semantic-errors/semantic-errors.js';
 import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
 import { BitloopsParser } from '../../src/parser/index.js';
-import { IntermediateASTParser } from '../../src/ast/core/index.js';
+import { IntermediateASTParser, IntermediateASTValidator } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
 
 describe('Semantic core error End To End', () => {
@@ -37,11 +37,13 @@ describe('Semantic core error End To End', () => {
 
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
+    const validator = new IntermediateASTValidator();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
+      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
@@ -55,7 +57,7 @@ describe('Semantic core error End To End', () => {
           {
             boundedContext,
             module,
-            fileId: testCase.fileId,
+            fileId: testCase.fileIdCore,
             fileContents: testCase.inputCore,
           },
         ],
@@ -63,7 +65,7 @@ describe('Semantic core error End To End', () => {
           {
             boundedContext,
             module,
-            fileId: testCase.fileId,
+            fileId: testCase.fileIdSetup,
             fileContents: testCase.inputSetup,
           },
         ],
@@ -97,24 +99,24 @@ describe('Semantic setup error End To End', () => {
 
   SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
+    const validator = new IntermediateASTValidator();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
+      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
-    const itif = (condition) => (condition ? it : it.skip);
-    // it(`${testCase.description}`, async () => {
-    itif(!testCase['skip'])(`${testCase.description}`, async () => {
+    it(`${testCase.description}`, async () => {
       // given
       const input = {
         core: [
           {
             boundedContext,
             module,
-            fileId: testCase.fileId,
+            fileId: testCase.fileIdCore,
             fileContents: testCase.inputCore,
           },
         ],
@@ -122,7 +124,7 @@ describe('Semantic setup error End To End', () => {
           {
             boundedContext,
             module,
-            fileId: testCase.fileId,
+            fileId: testCase.fileIdSetup,
             fileContents: testCase.inputSetup,
           },
         ],
