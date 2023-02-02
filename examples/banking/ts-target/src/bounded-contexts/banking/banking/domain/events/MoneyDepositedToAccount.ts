@@ -6,7 +6,7 @@ import { AccountEntity } from '../AccountEntity';
 const MONEY_DEPOSITED_TO_ACCOUNT_EVENT_NAME = 'MONEY_DEPOSITED_TO_ACCOUNT_EVENT_NAME';
 const FROM_CONTEXT_ID = contextId;
 
-export class MoneyDepositedToAccount extends Domain.Event {
+export class MoneyDepositedToAccount extends Domain.Event<AccountEntity> {
   public static readonly eventName = MONEY_DEPOSITED_TO_ACCOUNT_EVENT_NAME;
   public static readonly fromContextId = FROM_CONTEXT_ID;
 

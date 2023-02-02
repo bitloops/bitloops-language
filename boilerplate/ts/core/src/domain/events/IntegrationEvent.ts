@@ -26,8 +26,8 @@ type TIntegrationEventInputMetadata = {
   fromContextId: string;
 };
 
-export abstract class IntegrationEvent extends Event {
-  constructor(eventTopic: string, data: unknown, metadata: TIntegrationEventInputMetadata) {
+export abstract class IntegrationEvent<T> extends Event<T> {
+  constructor(eventTopic: string, data: T, metadata: TIntegrationEventInputMetadata) {
     super(eventTopic, data, metadata);
     this.metadata = { ...this.metadata, version: metadata.version };
   }

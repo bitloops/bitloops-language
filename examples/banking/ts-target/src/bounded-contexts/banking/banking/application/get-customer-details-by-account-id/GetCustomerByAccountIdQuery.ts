@@ -1,7 +1,7 @@
 import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
-import { GET_CUSTOMER_BY_EMAIL_QUERY_NAME } from '../../contracts';
+import { GET_CUSTOMER_BY_EMAIL_QUERY_NAME } from '../../contracts/topics';
 
 export class GetCustomerByAccountIdQuery extends Application.Query {
   public static readonly queryName = GET_CUSTOMER_BY_EMAIL_QUERY_NAME;

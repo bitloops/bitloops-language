@@ -6,7 +6,7 @@ import { AccountEntity } from '../AccountEntity';
 const ACCOUNT_CREATED_EVENT_NAME = 'ACCOUNT_CREATED_EVENT_NAME';
 const FROM_CONTEXT_ID = contextId;
 
-export class AccountCreated extends Domain.Event {
+export class AccountCreated extends Domain.Event<AccountEntity> {
   public static readonly eventName = ACCOUNT_CREATED_EVENT_NAME;
   public static readonly fromContextId = FROM_CONTEXT_ID;
 

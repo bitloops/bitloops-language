@@ -26,12 +26,12 @@ export type TDomainEventInputMetadata = {
   fromContextId: string;
 };
 
-export class DomainEvent extends Event implements IDomainEvent {
+export class DomainEvent<T> extends Event<T> implements IDomainEvent {
   private aggregateId: UUIDv4;
 
   constructor(
     eventName: string,
-    data: any,
+    data: T,
     metadata: TDomainEventInputMetadata,
     aggregateId: UUIDv4,
   ) {

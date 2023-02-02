@@ -26,13 +26,13 @@ export type TEventInputMetadata = {
   fromContextId: string;
 };
 
-export abstract class Event implements IEvent {
+export abstract class Event<T> implements IEvent {
   public static readonly prefix: TOPIC_PREFIXES.Event = TOPIC_PREFIXES.Event;
   public metadata: Readonly<TEventMetadata>;
 
   constructor(
     public readonly eventTopic: string,
-    public readonly data: any,
+    public readonly data: T,
     metadata: TEventInputMetadata,
   ) {
     this.metadata = {

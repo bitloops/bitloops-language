@@ -10,9 +10,9 @@ export class IncrementDepositsCommand extends Application.Command {
   // Set static name so we can refer to them easily
   public static readonly commandName = INCREMENT_DEPOSITS_COMMAND_NAME;
 
-  constructor(insertPinRequestDTO: IncrementDepositsDTO) {
+  constructor(incrementDepositsDTO: IncrementDepositsDTO) {
     super(IncrementDepositsCommand.commandName, contextId);
-    const { accountId } = insertPinRequestDTO;
+    const { accountId } = incrementDepositsDTO;
     this.accountId = accountId;
   }
 

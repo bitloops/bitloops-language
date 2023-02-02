@@ -54,7 +54,7 @@ namespace Domain {
   export class UUIDv4 extends UUIDv4Import {}
   export type IRule = IRuleImport;
   export const applyRules = applyRulesImport;
-  export class Event extends DomainEvent {}
+  export class Event<T> extends DomainEvent<T> {}
   export type IDomainEvent = IDomainEventImport;
   export const dispatchEventsCallback = dispatchEventsCallbackImport;
   export const StandardValues = StandardValuesImport;
@@ -89,7 +89,7 @@ namespace Infra {
   }
 
   export namespace EventBus {
-    export class IntegrationEvent extends IntegrationEventImport {}
+    export class IntegrationEvent<T> extends IntegrationEventImport<T> {}
     export class EventBus extends EventBusImport {}
     export type IEventBus = IEventBusImport;
   }

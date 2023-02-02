@@ -18,7 +18,7 @@ export class SendEmailVerificationCommandHandler
   async execute(
     command: SendEmailVerificationCommand,
   ): Promise<SendEmailVerificationCommandHandlerResponse> {
-    const content = 'Hello, this is a test email';
+    const content = 'This is a verification message!';
     const params = {
       origin: 'origin@email.com',
       destination: command.email,

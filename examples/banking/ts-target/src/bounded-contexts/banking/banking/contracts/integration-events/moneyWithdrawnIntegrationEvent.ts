@@ -15,7 +15,8 @@ type MoneyWithdrawnInput = {
 
 type ToIntegrationDataMapper = (data: MoneyWithdrawnInput) => MoneyDepositedIntegrationEventPayload;
 
-export class MoneyWithdrawnIntegrationEvent extends Infra.EventBus.IntegrationEvent {
+export class MoneyWithdrawnIntegrationEvent extends Infra.EventBus
+  .IntegrationEvent<MoneyDepositedIntegrationEventPayload> {
   static versions = ['v1'];
   static versionMappers: Record<string, ToIntegrationDataMapper> = {
     v1: MoneyWithdrawnIntegrationEvent.toIntegrationDataV1,

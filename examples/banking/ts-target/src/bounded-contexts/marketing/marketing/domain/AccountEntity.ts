@@ -1,10 +1,17 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-import { AccountCreated } from './events/AccountCreated';
+import { DepositsCounterVO } from './DepositsCounterVO';
+import { DepositsIncrementedDomainEvent } from './events/DepositsIncrementedDomainEvent';
+import { DomainErrors } from './errors';
 
 export interface AccountProps {
   id?: Domain.UUIDv4;
-  deposits: number; // TODO make read model
+  deposits: DepositsCounterVO;
 }
+
+type TAccountSnapshot = {
+  id: string;
+  deposits: number;
+};
 
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
   private constructor(props: AccountProps) {
@@ -13,10 +20,10 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
 
   public static create(props: AccountProps): Either<AccountEntity, never> {
     const account = new AccountEntity(props);
-    const isNew = !props.id;
-    if (isNew) {
-      account.addDomainEvent(new AccountCreated(account));
-    }
+    // const isNew = !props.id;
+    // if (isNew) {
+    //   account.addDomainEvent(new AccountCreated(account));
+    // }
     return ok(account);
   }
 
@@ -28,8 +35,35 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return this.props.deposits;
   }
 
-  public incrementDeposits(): Either<void, never> {
-    this.props.deposits++;
+  public isFirstDeposit(): boolean {
+    return this.props.deposits.counter === 1;
+  }
+
+  public hasReachedMilestoneDeposits(): boolean {
+    return this.props.deposits.counter % 10 === 0;
+  }
+
+  public incrementDeposits(): Either<void, DomainErrors.InvalidNumberOfTransactions> {
+    const newDepositsCount = this.props.deposits.increment();
+    if (newDepositsCount.isFail()) {
+      return fail(newDepositsCount.value);
+    }
+    this.props.deposits = newDepositsCount.value;
+    this.addDomainEvent(new DepositsIncrementedDomainEvent(this));
     return ok();
+  }
+
+  public toSnapshot(): TAccountSnapshot {
+    return {
+      id: this.id.toString(),
+      deposits: this.deposits.counter,
+    };
+  }
+
+  public static fromSnapshot(data: TAccountSnapshot): AccountEntity {
+    return new AccountEntity({
+      id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
+      deposits: DepositsCounterVO.create({ counter: data.deposits }).value as DepositsCounterVO,
+    });
   }
 }
