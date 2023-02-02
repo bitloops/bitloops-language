@@ -76,7 +76,6 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
     expectedErrorMessages: [
       'Type TodoProps not found: from 22:24 to 22:33 of file propsNotFound.bl',
     ],
-    skip: true,
   },
   {
     description: 'Application error not found',

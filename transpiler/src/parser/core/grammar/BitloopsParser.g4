@@ -387,7 +387,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorParam 
-    : id=Identifier Colon type=PropsIdentifier
+    : identifier Colon propsIdentifier
     ;
 
 domainConstructorDeclaration

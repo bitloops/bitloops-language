@@ -7,6 +7,7 @@ import { DomainCreateParameterTypeNodeBuilder } from '../../intermediate-ast/bui
 import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { produceMetadata } from '../metadata.js';
+import { PropsIdentifierNode } from '../../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
 
 export const domainCreateParameterVisitor = (
   _thisVisitor: BitloopsVisitor,
@@ -14,13 +15,15 @@ export const domainCreateParameterVisitor = (
 ): DomainCreateParameterNode => {
   const metadata = produceMetadata(ctx, _thisVisitor);
 
+  const identifierName: IdentifierNode = _thisVisitor.visit(ctx.identifier());
+  const propsIdentifier: PropsIdentifierNode = _thisVisitor.visit(ctx.propsIdentifier());
   const parameterIdentifier: IdentifierNode = new IdentifierNodeBuilder(metadata)
-    .withName(ctx.id.text)
+    .withName(identifierName.getIdentifierName())
     .build();
   const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder(
-    metadata,
+    propsIdentifier.getMetadata(),
   )
-    .withValue(ctx.type.text)
+    .withValue(propsIdentifier.getIdentifierName())
     .build();
 
   const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder(metadata)

@@ -47,10 +47,8 @@ describe('Semantic core error End To End', () => {
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
-    const itif = (condition) => (condition ? it : it.skip);
 
-    // it(`${testCase.description}`, async () => {
-    itif(!testCase['skip'])(`${testCase.description}`, async () => {
+    it(`${testCase.description}`, async () => {
       // given
       const input = {
         core: [
