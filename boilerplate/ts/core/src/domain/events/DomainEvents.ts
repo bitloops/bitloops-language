@@ -49,8 +49,6 @@ export class DomainEvents {
 
   private async dispatchAggregateEvents(aggregate: AggregateRoot<any>): Promise<void> {
     const promises: Promise<void>[] = [];
-    console.log('dispatchAggregateEvents: aggregate', aggregate);
-    //TODO dispatch domain Events and have integration events handlers listen to them
     aggregate.domainEvents.forEach((event: IDomainEvent) => {
       promises.push(this.dispatch(event));
     });
