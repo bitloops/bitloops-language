@@ -18,10 +18,12 @@ export class MongoAccountReadRepo implements IAccountReadRepo {
     const documents = await this.collection.find({}).toArray();
     const res: AccountReadModel[] = [];
     documents.forEach((document) => {
-      res.push({
-        id: document._id.toString(),
-        balance: document.balance,
-      });
+      res.push(
+        AccountReadModel.fromSnapshot({
+          id: document._id.toString(),
+          balance: document.balance,
+        }),
+      );
     });
     return res;
   }
@@ -33,9 +35,9 @@ export class MongoAccountReadRepo implements IAccountReadRepo {
     if (!document) {
       return null;
     }
-    return {
+    return AccountReadModel.fromSnapshot({
       id: document._id.toString(),
       balance: document.balance,
-    };
+    });
   }
 }

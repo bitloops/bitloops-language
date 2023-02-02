@@ -1,6 +1,6 @@
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { MoneyDepositedIntegrationEvent } from '../../../banking/banking/contracts';
-import { IncrementDepositsCommand } from '../application/increase-deposit-counter';
+import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts';
+import { IncrementDepositsCommand } from '../../increase-deposit-counter';
 
 export class MoneyDepositedIntegrationHandler {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {}

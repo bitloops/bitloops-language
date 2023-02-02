@@ -2,7 +2,7 @@ import { Container } from '@bitloops/bl-boilerplate-core';
 import { CONTEXT_ID } from '../config';
 // import { sendEmailCommandHandler } from '../DI';
 // import { SendEmailCommand } from '../application/commands';
-import { MoneyDepositedIntegrationHandler } from './MoneyDepositedIntegrationHandler';
+import { MoneyDepositedIntegrationHandler } from '../application/event-handlers/integration/MoneyDepositedIntegrationHandler';
 import { MoneyDepositedIntegrationEvent } from '../../../banking/banking/contracts/index';
 import { IncrementDepositsCommand } from '../application/increase-deposit-counter';
 import {
@@ -14,7 +14,7 @@ import { DepositsIncrementedDomainEvent } from '../domain/events/DepositsIncreme
 import { SendEmailCommand } from '../application/send-email';
 
 // Subscriptions
-export const setUpNotificationsSubscriptions = () => {
+export const setupSubscriptions = () => {
   const integrationEventBus = Container.getIntegrationEventBusFromContext(CONTEXT_ID);
   const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
   const domainEventBus = Container.getEventBusFromContext(CONTEXT_ID);
@@ -45,4 +45,4 @@ export const setUpNotificationsSubscriptions = () => {
   );
 };
 
-setUpNotificationsSubscriptions();
+setupSubscriptions();

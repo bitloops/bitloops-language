@@ -29,12 +29,17 @@ export class IncrementDepositsCommandHandler
 
     if (!account) {
       // Create account with 0 deposits
-      const depositVO = DepositsCounterVO.create({ counter: 1 });
+      const depositVO = DepositsCounterVO.create({ counter: 0 });
       if (depositVO.isFail()) {
         return fail(depositVO.value);
       }
-      const newAccount = AccountEntity.create({ deposits: depositVO.value, id: requestId });
-      await this.accountsRepo.save(newAccount.value);
+      const newAccountOrError = AccountEntity.create({ deposits: depositVO.value, id: requestId });
+      if (newAccountOrError.isFail()) {
+        return fail(newAccountOrError.value);
+      }
+      const newAccount = newAccountOrError.value;
+      newAccount.incrementDeposits();
+      await this.accountsRepo.save(newAccount);
       return ok();
     }
     account.incrementDeposits();

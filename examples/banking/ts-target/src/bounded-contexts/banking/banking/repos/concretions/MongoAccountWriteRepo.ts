@@ -2,7 +2,6 @@ import { Domain } from '@bitloops/bl-boilerplate-core';
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
 import { AccountEntity } from '../../domain/AccountEntity';
 import { IAccountWriteRepo } from '../interfaces/IAccountWriteRepo';
-import { MongoAccountWriteRepoMapper } from '../mappers/MongoAccountWriteRepoMapper';
 
 const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'banking';
 const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'accounts';
@@ -21,7 +20,11 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
       _id: accountId.toString(),
     });
     if (res === null) return res;
-    return MongoAccountWriteRepoMapper.toDomain(res);
+    const { _id, ...accountInfo } = res as any;
+    return AccountEntity.fromSnapshot({
+      ...accountInfo,
+      id: _id.toString(),
+    });
   }
 
   async delete(account: Domain.UUIDv4): Promise<void> {
@@ -31,18 +34,23 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
   }
 
   async save(account: AccountEntity): Promise<void> {
-    await this.collection.insertOne(MongoAccountWriteRepoMapper.toPersistence(account));
+    const { id, ...accountInfo } = account.toSnapshot();
+    await this.collection.insertOne({
+      _id: id as unknown as Mongo.ObjectId,
+      ...accountInfo,
+    });
     // add command metadata if they exist
     await Domain.dispatchEventsCallback(account.id /*, metadata*/);
   }
 
   async update(account: AccountEntity): Promise<void> {
+    const { id, ...accountInfo } = account.toSnapshot();
     await this.collection.updateOne(
       {
-        _id: account.id.toString(),
+        _id: id,
       },
       {
-        $set: MongoAccountWriteRepoMapper.toPersistence(account),
+        $set: accountInfo,
       },
     );
     await Domain.dispatchEventsCallback(account.id /*, metadata*/);

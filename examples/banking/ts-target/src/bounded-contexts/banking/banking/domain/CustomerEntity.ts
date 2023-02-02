@@ -13,6 +13,13 @@ export interface CustomerProps {
   accountId: AccountIdVO;
 }
 
+type TCustomerEntitySnapshot = {
+  id: string;
+  email: string;
+  pin: string;
+  accountId: string;
+};
+
 export class CustomerEntity extends Domain.Aggregate<CustomerProps> {
   private constructor(props: CustomerProps) {
     super(props, props.id);
@@ -48,5 +55,24 @@ export class CustomerEntity extends Domain.Aggregate<CustomerProps> {
       return ok();
     }
     return fail(new DomainErrors.InvalidCustomerPIN(pin.pin));
+  }
+
+  public toSnapshot(): TCustomerEntitySnapshot {
+    return {
+      id: this.id.toString(),
+      email: this.email.email,
+      pin: this.pin.pin,
+      accountId: this.accountId.id,
+    };
+  }
+
+  public static fromSnapshot(data: TCustomerEntitySnapshot): CustomerEntity {
+    const customerProps = {
+      id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
+      email: EmailVO.create({ email: data.email }).value as EmailVO,
+      pin: PINVO.create({ pin: data.pin }).value as PINVO,
+      accountId: AccountIdVO.create({ id: data.accountId }).value as AccountIdVO,
+    };
+    return new CustomerEntity(customerProps);
   }
 }

@@ -18,11 +18,13 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
     const documents = await this.collection.find({}).toArray();
     const res: CustomerReadModel[] = [];
     documents.forEach((document) => {
-      res.push({
-        id: document._id.toString(),
-        email: document.email,
-        accountId: document.accountId,
-      });
+      res.push(
+        CustomerReadModel.fromSnapshot({
+          id: document._id.toString(),
+          email: document.email,
+          accountId: document.accountId,
+        }),
+      );
     });
     return res;
   }
@@ -34,11 +36,11 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
     if (!document) {
       return null;
     }
-    return {
+    return CustomerReadModel.fromSnapshot({
       id: document._id.toString(),
       email: document.email,
       accountId: document.accountId,
-    };
+    });
   }
 
   async getByAccountId(accountId: string): Promise<CustomerReadModel | null> {
@@ -49,10 +51,10 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
     if (!document) {
       return null;
     }
-    return {
+    return CustomerReadModel.fromSnapshot({
       id: document._id.toString(),
       email: document.email,
       accountId: document.accountId,
-    };
+    });
   }
 }

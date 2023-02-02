@@ -1,3 +1,3 @@
-const CONTEXT_ID = 'notifications';
+const CONTEXT_ID = 'marketing';
 
 export { CONTEXT_ID };

@@ -1,7 +1,6 @@
 import { Constants } from '@bitloops/bl-boilerplate-core';
 import { CONTEXT_ID as BANKING_CONTEXT_ID } from '../bounded-contexts/banking/banking/config';
-import { CONTEXT_ID as NOTIFICATIONS_CONTEXT_ID } from '../bounded-contexts/marketing/marketing/config';
-// import { CONTEXT_ID as NOTIFICATIONS_CONTEXT_ID } from '../bounded-contexts/notifications/notifications/config';
+import { CONTEXT_ID as MARKETING_CONTEXT_ID } from '../bounded-contexts/marketing/marketing/config';
 
 // banking remove this line and implement it correctly
 const isProduction = process.env.IS_PRODUCTION === 'true';
@@ -18,16 +17,12 @@ const appConfig: Constants.ApplicationConfig = {
       INTEGRATION_EVENT_BUS: Constants.CONTEXT_TYPES.InProcess,
       QUERY_BUS: Constants.CONTEXT_TYPES.InProcess,
     },
-    [NOTIFICATIONS_CONTEXT_ID]: {
+    [MARKETING_CONTEXT_ID]: {
       COMMAND_BUS: Constants.CONTEXT_TYPES.InProcess,
       EVENT_BUS: Constants.CONTEXT_TYPES.InProcess,
       INTEGRATION_EVENT_BUS: Constants.CONTEXT_TYPES.InProcess,
       QUERY_BUS: Constants.CONTEXT_TYPES.InProcess,
     },
-  },
-  CONTEXT_IDs: {
-    bankingS: BANKING_CONTEXT_ID,
-    // what's this ?
   },
 };
 

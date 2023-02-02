@@ -20,10 +20,6 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
 
   public static create(props: AccountProps): Either<AccountEntity, never> {
     const account = new AccountEntity(props);
-    // const isNew = !props.id;
-    // if (isNew) {
-    //   account.addDomainEvent(new AccountCreated(account));
-    // }
     return ok(account);
   }
 

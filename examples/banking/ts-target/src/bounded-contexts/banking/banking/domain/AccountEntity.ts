@@ -5,11 +5,20 @@ import { DomainErrors } from './errors/index';
 import { Rules } from './rules/index';
 import { MoneyDepositedToAccount } from './events/MoneyDepositedToAccount';
 import { MoneyWithdrawnFromAccount } from './events/MoneyWithdrawnFromAccount';
+import { CurrencyVO } from './CurrencyVO';
 
 export interface AccountProps {
   id?: Domain.UUIDv4;
   balance: MoneyVO;
 }
+
+type TAccountEntitySnapshot = {
+  id: string;
+  balance: {
+    currency: string;
+    amount: number;
+  };
+};
 
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
   private constructor(props: AccountProps) {
@@ -79,5 +88,27 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     this.props.balance = balanceVO.value;
     this.addDomainEvent(new MoneyDepositedToAccount(this));
     return ok();
+  }
+
+  public toSnapshot(): TAccountEntitySnapshot {
+    return {
+      id: this.id.toString(),
+      balance: {
+        currency: this.props.balance.currency.code,
+        amount: this.props.balance.amount,
+      },
+    };
+  }
+
+  public static fromSnapshot(data: TAccountEntitySnapshot): AccountEntity {
+    const balanceProps = {
+      currency: CurrencyVO.create({ code: data.balance.currency }).value,
+      amount: data.balance.amount,
+    };
+    const accountProps = {
+      id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
+      balance: MoneyVO.create(balanceProps).value as MoneyVO,
+    };
+    return new AccountEntity(accountProps);
   }
 }

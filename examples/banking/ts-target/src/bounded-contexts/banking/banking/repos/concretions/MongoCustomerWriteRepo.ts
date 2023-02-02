@@ -2,7 +2,6 @@ import { Domain } from '@bitloops/bl-boilerplate-core';
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
 import { ICustomerWriteRepo } from '../interfaces/ICustomerWriteRepo';
 import { CustomerEntity } from '../../domain/CustomerEntity';
-import { MongoCustomerWriteRepoMapper } from '../mappers/MongoCustomerWriteRepoMapper';
 
 const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'banking';
 const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'customers';
@@ -21,7 +20,12 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
       _id: customerId.toString(),
     });
     if (res === null) return res;
-    return MongoCustomerWriteRepoMapper.toDomain(res);
+
+    const { _id, ...customerInfo } = res as any;
+    return CustomerEntity.fromSnapshot({
+      id: _id,
+      ...customerInfo,
+    });
   }
 
   async delete(customer: Domain.UUIDv4): Promise<void> {
@@ -31,18 +35,23 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
   }
 
   async save(customer: CustomerEntity): Promise<void> {
-    await this.collection.insertOne(MongoCustomerWriteRepoMapper.toPersistence(customer));
+    const { id, ...customerInfo } = customer.toSnapshot();
+    await this.collection.insertOne({
+      _id: id as unknown as Mongo.ObjectId,
+      ...customerInfo,
+    });
     // add command metadata if they exist
     await Domain.dispatchEventsCallback(customer.id /*, metadata*/);
   }
 
   async update(customer: CustomerEntity): Promise<void> {
+    const { id, ...customerInfo } = customer.toSnapshot();
     await this.collection.updateOne(
       {
         _id: customer.id.toString(),
       },
       {
-        $set: MongoCustomerWriteRepoMapper.toPersistence(customer),
+        $set: customerInfo,
       },
     );
     await Domain.dispatchEventsCallback(customer.id /*, metadata*/);
@@ -53,6 +62,10 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
       email,
     });
     if (res === null) return res;
-    return MongoCustomerWriteRepoMapper.toDomain(res);
+    const { _id, ...customerInfo } = res as any;
+    return CustomerEntity.fromSnapshot({
+      id: _id,
+      ...customerInfo,
+    });
   }
 }
