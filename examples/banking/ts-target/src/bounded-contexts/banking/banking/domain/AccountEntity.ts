@@ -90,7 +90,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return ok();
   }
 
-  public toSnapshot(): TAccountEntitySnapshot {
+  public toPrimitives(): TAccountEntitySnapshot {
     return {
       id: this.id.toString(),
       balance: {
@@ -100,7 +100,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     };
   }
 
-  public static fromSnapshot(data: TAccountEntitySnapshot): AccountEntity {
+  public static fromPrimitives(data: TAccountEntitySnapshot): AccountEntity {
     const balanceProps = {
       currency: CurrencyVO.create({ code: data.balance.currency }).value,
       amount: data.balance.amount,

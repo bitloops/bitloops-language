@@ -20,7 +20,7 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
       _id: accountId.toString(),
     })) as any;
     if (res === null) return res;
-    return AccountEntity.fromSnapshot({
+    return AccountEntity.fromPrimitives({
       ...res,
       id: res._id.toString(),
     });
@@ -34,7 +34,7 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
 
   ///TODO change to insert?
   async save(account: AccountEntity): Promise<void> {
-    const accountSnapshot = account.toSnapshot();
+    const accountSnapshot = account.toPrimitives();
     const { id, ...accountData } = accountSnapshot;
 
     await this.collection.insertOne({
@@ -46,7 +46,7 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
   }
 
   async update(account: AccountEntity): Promise<void> {
-    const accountSnapshot = account.toSnapshot();
+    const accountSnapshot = account.toPrimitives();
     const { id, ...accountData } = accountSnapshot;
     await this.collection.updateOne(
       {

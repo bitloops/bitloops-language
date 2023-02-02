@@ -22,7 +22,7 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
     if (res === null) return res;
 
     const { _id, ...customerInfo } = res as any;
-    return CustomerEntity.fromSnapshot({
+    return CustomerEntity.fromPrimitives({
       id: _id,
       ...customerInfo,
     });
@@ -35,7 +35,7 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
   }
 
   async save(customer: CustomerEntity): Promise<void> {
-    const { id, ...customerInfo } = customer.toSnapshot();
+    const { id, ...customerInfo } = customer.toPrimitives();
     await this.collection.insertOne({
       _id: id as unknown as Mongo.ObjectId,
       ...customerInfo,
@@ -45,7 +45,7 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
   }
 
   async update(customer: CustomerEntity): Promise<void> {
-    const { id, ...customerInfo } = customer.toSnapshot();
+    const { id, ...customerInfo } = customer.toPrimitives();
     await this.collection.updateOne(
       {
         _id: customer.id.toString(),
@@ -63,7 +63,7 @@ export class MongoCustomerWriteRepo implements ICustomerWriteRepo {
     });
     if (res === null) return res;
     const { _id, ...customerInfo } = res as any;
-    return CustomerEntity.fromSnapshot({
+    return CustomerEntity.fromPrimitives({
       id: _id,
       ...customerInfo,
     });

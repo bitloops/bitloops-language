@@ -19,7 +19,7 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
     const res: CustomerReadModel[] = [];
     documents.forEach((document) => {
       res.push(
-        CustomerReadModel.fromSnapshot({
+        CustomerReadModel.fromPrimitives({
           id: document._id.toString(),
           email: document.email,
           accountId: document.accountId,
@@ -36,7 +36,7 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
     if (!document) {
       return null;
     }
-    return CustomerReadModel.fromSnapshot({
+    return CustomerReadModel.fromPrimitives({
       id: document._id.toString(),
       email: document.email,
       accountId: document.accountId,
@@ -51,7 +51,7 @@ export class MongoCustomerReadRepo implements ICustomerReadRepo {
     if (!document) {
       return null;
     }
-    return CustomerReadModel.fromSnapshot({
+    return CustomerReadModel.fromPrimitives({
       id: document._id.toString(),
       email: document.email,
       accountId: document.accountId,

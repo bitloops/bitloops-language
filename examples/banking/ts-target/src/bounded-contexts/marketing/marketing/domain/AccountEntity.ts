@@ -49,14 +49,14 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return ok();
   }
 
-  public toSnapshot(): TAccountSnapshot {
+  public toPrimitives(): TAccountSnapshot {
     return {
       id: this.id.toString(),
       deposits: this.deposits.counter,
     };
   }
 
-  public static fromSnapshot(data: TAccountSnapshot): AccountEntity {
+  public static fromPrimitives(data: TAccountSnapshot): AccountEntity {
     return new AccountEntity({
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       deposits: DepositsCounterVO.create({ counter: data.deposits }).value as DepositsCounterVO,

@@ -57,7 +57,7 @@ export class CustomerEntity extends Domain.Aggregate<CustomerProps> {
     return fail(new DomainErrors.InvalidCustomerPIN(pin.pin));
   }
 
-  public toSnapshot(): TCustomerEntitySnapshot {
+  public toPrimitives(): TCustomerEntitySnapshot {
     return {
       id: this.id.toString(),
       email: this.email.email,
@@ -66,7 +66,7 @@ export class CustomerEntity extends Domain.Aggregate<CustomerProps> {
     };
   }
 
-  public static fromSnapshot(data: TCustomerEntitySnapshot): CustomerEntity {
+  public static fromPrimitives(data: TCustomerEntitySnapshot): CustomerEntity {
     const customerProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       email: EmailVO.create({ email: data.email }).value as EmailVO,

@@ -19,7 +19,7 @@ export class MongoAccountReadRepo implements IAccountReadRepo {
     const res: AccountReadModel[] = [];
     documents.forEach((document) => {
       res.push(
-        AccountReadModel.fromSnapshot({
+        AccountReadModel.fromPrimitives({
           id: document._id.toString(),
           balance: document.balance,
         }),
@@ -35,7 +35,7 @@ export class MongoAccountReadRepo implements IAccountReadRepo {
     if (!document) {
       return null;
     }
-    return AccountReadModel.fromSnapshot({
+    return AccountReadModel.fromPrimitives({
       id: document._id.toString(),
       balance: document.balance,
     });

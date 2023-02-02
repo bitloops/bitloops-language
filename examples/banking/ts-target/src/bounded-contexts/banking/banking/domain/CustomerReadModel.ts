@@ -7,7 +7,7 @@ export type TCustomerReadModelSnapshot = {
 export class CustomerReadModel {
   constructor(public id: string, public email: string, public accountId: string) {}
 
-  static fromSnapshot(snapshot: TCustomerReadModelSnapshot): CustomerReadModel {
+  static fromPrimitives(snapshot: TCustomerReadModelSnapshot): CustomerReadModel {
     return new CustomerReadModel(snapshot.id, snapshot.email, snapshot.accountId);
   }
 }

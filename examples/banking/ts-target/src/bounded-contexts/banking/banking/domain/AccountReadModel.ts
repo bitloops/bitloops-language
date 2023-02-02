@@ -15,7 +15,7 @@ export class AccountReadModel {
     },
   ) {}
 
-  static fromSnapshot(snapshot: TAccountReadModelSnapshot): AccountReadModel {
+  static fromPrimitives(snapshot: TAccountReadModelSnapshot): AccountReadModel {
     return new AccountReadModel(snapshot.id, snapshot.balance);
   }
 }
