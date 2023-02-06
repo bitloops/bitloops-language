@@ -33,6 +33,10 @@ import {
 } from './nodes/IntermediateASTNode.js';
 import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
 import { BoundedContextNameNode } from './nodes/setup/BoundedContextNameNode.js';
+import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { SetupRepoAdapterDefinitionNode } from './nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
+import { RouterControllerNode } from './nodes/setup/RouterControllerNode.js';
+import { UseCaseExpressionNode } from './nodes/setup/UseCaseExpressionNode.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
   private symbolTableCore: Record<string, Set<string>>; //it must be different for each bounded context
@@ -311,16 +315,14 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
     const errors: IntermediateASTNodeValidationError[] = [];
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
-        //fix nodes
         case BitloopsTypesMapping.TConcretedRepoPort:
           {
             const boundedContextNode = (
-              node
-                .getParent()
-                .getParent()
-                .getChildren()[1]
-                .getFirstChild() as BoundedContextModuleNode
-            ).getBoundedContext();
+              node.getParent().getParent() as SetupRepoAdapterDefinitionNode
+            )
+              .getRepoAdapterExpression()
+              .getBoundedContextModule()
+              .getBoundedContext();
 
             const boundedContext = boundedContextNode.getName();
             if (!(boundedContext in this.symbolTableCore)) {
@@ -346,14 +348,14 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
 
         case BitloopsTypesMapping.TRepoAdapterOptions:
           if (
-            node.getFirstChild().getFirstChild().getFirstChild().getValue().identifier ===
-            'connection'
+            (node as RepoAdapterOptionsNode)
+              .getEvaluationFieldList()
+              .findFieldWithName('connection')
           ) {
-            const expressionNode = node
-              .getFirstChild()
-              .getFirstChild()
-              .getFirstChild()
-              .getNextSibling()
+            const expressionNode = (node as RepoAdapterOptionsNode)
+              .getEvaluationFieldList()
+              .findFieldWithName('connection')
+              .getExpression()
               .getFirstChild();
 
             if (!this.symbolTableSetup[fileId].has(expressionNode.getValue().identifier)) {
@@ -375,28 +377,35 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         //write it with getFirstChild() etc
-        case BitloopsTypesMapping.TIdentifierExpression:
-          if (
-            node.getParent().getParent().getParent().getParent().getNodeType() ===
-            BitloopsTypesMapping.TUseCaseExpression
-          )
-            if (!this.symbolTableSetup[fileId].has(node.getValue().identifier)) {
+        case BitloopsTypesMapping.TUseCaseExpression:
+          {
+            const identifierNode = (node as UseCaseExpressionNode)
+              .getArgumentList()
+              .getFirstChild()
+              .getFirstChild()
+              .getFirstChild();
+            if (!this.symbolTableSetup[fileId].has(identifierNode.getValue().identifier)) {
               errors.push(
                 new IntermediateASTValidationError(
-                  `Adapter ${node.getValue().identifier} not found: from ${
-                    node.getMetadata().start.line
-                  }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
-                    node.getMetadata().end.column
-                  } of file ${node.getMetadata().fileId}`,
-                  node.getMetadata(),
+                  `Adapter ${identifierNode.getValue().identifier} not found: from ${
+                    identifierNode.getMetadata().start.line
+                  }:${identifierNode.getMetadata().start.column} to ${
+                    identifierNode.getMetadata().end.line
+                  }:${identifierNode.getMetadata().end.column} of file ${
+                    identifierNode.getMetadata().fileId
+                  }`,
+                  identifierNode.getMetadata(),
                 ),
               );
             }
+          }
           break;
 
         case BitloopsTypesMapping.TUseCaseIdentifier: {
           const boundedContextNode = (
-            node.getParent().getFirstChild() as BoundedContextModuleNode
+            (
+              node.getParent() as UseCaseExpressionNode
+            ).getBoundedContextModule() as BoundedContextModuleNode
           ).getBoundedContext();
           const boundedContext = boundedContextNode.getName();
           if (!(boundedContext in this.symbolTableCore)) {
@@ -421,7 +430,9 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         }
         case BitloopsTypesMapping.TRESTControllerIdentifier: {
           const boundedContextNode = (
-            node.getParent().getChildren()[2] as BoundedContextModuleNode
+            (
+              node.getParent() as RouterControllerNode
+            ).getBoundedContextModule() as BoundedContextModuleNode
           ).getBoundedContext();
           const boundedContext = boundedContextNode.getName();
           if (!(boundedContext in this.symbolTableCore)) {
