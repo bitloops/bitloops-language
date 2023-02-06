@@ -34,6 +34,7 @@ import {
 import { PackageConcretionNode } from './nodes/package/PackageConcretionNode.js';
 import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
 import { BoundedContextNameNode } from './nodes/setup/BoundedContextNameNode.js';
+import { ControllerResolverNode } from './nodes/setup/ControllerResolverNode.js';
 import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
 import { RepoConnectionDefinitionNode } from './nodes/setup/repo/RepoConnectionDefinitionNode.js';
 import { SetupRepoAdapterDefinitionNode } from './nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
@@ -468,6 +469,36 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           }
           break;
         }
+        case BitloopsTypesMapping.TGraphQLControllerIdentifier: {
+          const boundedContextNode = (
+            (
+              node.getParent() as ControllerResolverNode
+            ).getBoundedContextModule() as BoundedContextModuleNode
+          ).getBoundedContext();
+          const boundedContext = boundedContextNode.getName();
+          if (!(boundedContext in this.symbolTableCore)) {
+            errors.push(this.bcError(boundedContextNode));
+            break;
+          }
+          if (
+            !this.symbolTableCore[boundedContext].has(node.getValue().graphQLControllerIdentifier)
+          ) {
+            errors.push(
+              new IntermediateASTValidationError(
+                `Controller ${
+                  node.getValue().graphQLControllerIdentifier
+                } not found in bounded context ${boundedContext}: from ${
+                  node.getMetadata().start.line
+                }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+                  node.getMetadata().end.column
+                } of file ${node.getMetadata().fileId}`,
+                node.getMetadata(),
+              ),
+            );
+          }
+          break;
+        }
+
         case BitloopsTypesMapping.TPackagePortIdentifier: {
           const boundedContextNode = (
             (

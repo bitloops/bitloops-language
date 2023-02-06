@@ -249,6 +249,20 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
       'Router todoRESTRouter not found: from 12:14 to 12:28 of file setupRouterNotFound.bl',
     ],
   },
+  {
+    description: 'Controller not found for graphql server',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/graphQLController.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupGraphQLServer.bl',
+    ),
+    fileIdSetup: 'setupGraphQLServer.bl',
+    fileIdCore: 'graphQLController.bl',
+    expectedErrorMessages: [
+      'Controller HelloWorldController not found in bounded context Todo: from 4:17 to 4:37 of file setupGraphQLServer.bl',
+    ],
+  },
 ];
 
 export const SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES = [
