@@ -26,7 +26,9 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     super(props, props.id);
   }
 
-  public static create(props: AccountProps): Either<AccountEntity, never> {
+  public static create(
+    props: AccountProps,
+  ): Either<AccountEntity, DomainErrors.InvalidMonetaryValue | Domain.StandardVO.Currency.Value> {
     const account = new AccountEntity(props);
     const isNew = !props.id;
     if (isNew) {
@@ -113,9 +115,9 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
 
   public static fromPrimitives(data: TAccountEntityPrimitives): AccountEntity {
     const balanceProps = {
-      currency: Domain.StandardVO.Currency.create({
+      currency: Domain.StandardVO.Currency.Value.create({
         currencyCode: data.balance.currency,
-      }).value as Domain.StandardVO.Currency,
+      }).value as Domain.StandardVO.Currency.Value,
       amount: data.balance.amount,
     };
 

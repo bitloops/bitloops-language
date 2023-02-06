@@ -104,3 +104,4 @@ dist
 .tern-port
 lib/
 documentation/package-lock.json
+examples/banking/ts-target/src/scripts/data/

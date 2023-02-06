@@ -6,8 +6,10 @@ import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
 // const url = "mongodb+srv://<username>:<password>@clustername.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true";
 
 // const url = 'mongodb://localhost:27021';
-const url = 'mongodb://localhost:30002/?directConnection=true&replicaSet=my-replica-set';
-const client = new Mongo.Client(url);
+const baseUrl = 'mongodb://127.0.0.1:30001/?directConnection=true&replicaSet=my-replica-set';
+// const baseUrl2 = 'mongodb://127.0.0.1:30001/?replicaSet=my-replica-set';
+
+const client = new Mongo.Client(baseUrl);
 
 // Database Name
 const dbName = 'test_banking';

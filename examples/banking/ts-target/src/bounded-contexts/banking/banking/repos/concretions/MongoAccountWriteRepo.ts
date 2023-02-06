@@ -85,6 +85,7 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
   //   }
   // }
 
+  // @Optimistic
   async update(account: AccountEntity, session?: Mongo.ClientSession): Promise<void> {
     const { id, ...accountInfo } = account.toPrimitives();
     await this.collection.updateOne(

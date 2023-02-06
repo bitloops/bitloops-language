@@ -4,7 +4,7 @@ import { Rules } from './rules';
 import { IncompatibleCurrenciesError } from './errors/IncompatibleCurrenciesError';
 
 interface MoneyProps {
-  currency: Domain.StandardVO.Currency;
+  currency: Domain.StandardVO.Currency.Value;
   amount: number;
 }
 
@@ -13,7 +13,9 @@ export class MoneyVO extends Domain.ValueObject<MoneyProps> {
     super(props);
   }
 
-  public static create(props: MoneyProps): Either<MoneyVO, DomainErrors.InvalidMonetaryValue> {
+  public static create(
+    props: MoneyProps,
+  ): Either<MoneyVO, DomainErrors.InvalidMonetaryValue | Domain.StandardVO.Currency.ErrorTypes> {
     const res = Domain.applyRules([
       new Rules.AmountIsPositiveNumber(props.amount.toString()),
       new Rules.BalanceAmountOutOfBounds(props.amount),
@@ -22,7 +24,7 @@ export class MoneyVO extends Domain.ValueObject<MoneyProps> {
     return ok(new MoneyVO(props));
   }
 
-  get currency(): Domain.StandardVO.Currency {
+  get currency(): Domain.StandardVO.Currency.Value {
     return this.props.currency;
   }
 
