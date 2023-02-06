@@ -91,7 +91,6 @@ export default class Transpiler {
   private validateIntermediateModel(
     intermediateModel: IntermediateAST,
   ): IntermediateASTValidationError[] | IntermediateAST {
-    this.validator.createSymbolTable(intermediateModel);
     const validationResult = this.validator.validate(intermediateModel);
     if (isIntermediateASTValidationErrors(validationResult)) {
       return validationResult;

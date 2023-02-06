@@ -62,7 +62,6 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
       'Error DomainErrors.TitleOutOfBoundsError not found: from 10:58 to 10:92 of file domainErrorNotFound.bl',
     ],
   },
-  //the following needs FIX!! (metadata)
   {
     description: 'Props not found',
     inputCore: FileUtil.readFileString(
@@ -162,7 +161,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupUseCaseNotFound.bl',
     fileIdCore: 'useCases.bl',
     expectedErrorMessages: [
-      'Use Case GetAllTodosUseCase not found: from 15:39 to 15:57 of file setupUseCaseNotFound.bl',
+      'Use Case GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupUseCaseNotFound.bl',
     ],
   },
   {
@@ -176,7 +175,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupControllerNotFound.bl',
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
-      'Controller GetTodosRESTController not found: from 19:27 to 19:49 of file setupControllerNotFound.bl',
+      'Controller GetTodosRESTController not found in bounded context Todo: from 19:27 to 19:49 of file setupControllerNotFound.bl',
     ],
   },
   {
@@ -191,7 +190,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdCore: 'repoPorts.bl',
     expectedErrorMessages: [
       'Entity TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
-      'Repo port TodoReadRepoPort not found: from 15:28 to 15:44 of file setupRepoPortNotFound.bl',
+      'Repo port TodoReadRepoPort not found in bounded context Todo: from 15:28 to 15:44 of file setupRepoPortNotFound.bl',
     ],
   },
   {
@@ -220,6 +219,90 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
       'Adapter todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
+    ],
+  },
+];
+
+export const SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES = [
+  {
+    description: 'Bounded context not found',
+    core: [
+      {
+        boundedContext: 'Todo',
+        module: 'Todo',
+        fileId: 'useCases.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/useCases.bl',
+        ),
+      },
+    ],
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupUseCaseDifferentBC.bl',
+    ),
+    fileIdSetup: 'setupUseCaseDifferentBC.bl',
+    expectedErrorMessages: [
+      'Bounded Context Demo not found: from 12:17 to 12:21 of file setupUseCaseDifferentBC.bl',
+      'Bounded Context Demo not found: from 15:28 to 15:32 of file setupUseCaseDifferentBC.bl',
+    ],
+  },
+  {
+    description: 'Use case not found in different bounded context',
+    core: [
+      {
+        boundedContext: 'Todo',
+        module: 'Todo',
+        fileId: 'useCases.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/useCases.bl',
+        ),
+      },
+      {
+        boundedContext: 'Demo',
+        module: 'Todo',
+        fileId: 'dtoNotFound.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/semantic-errors/dtoNotFound.bl',
+        ),
+      },
+    ],
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupUseCaseDifferentBC.bl',
+    ),
+    fileIdSetup: 'setupUseCaseDifferentBC.bl',
+    expectedErrorMessages: [
+      'Type DeleteTodoRequestDTO not found: from 42:24 to 42:44 of file dtoNotFound.bl',
+      'Repo port TodoReadRepoPort not found in bounded context Demo: from 12:28 to 12:44 of file setupUseCaseDifferentBC.bl',
+      'Use Case GetAllTodosUseCase not found in bounded context Demo: from 15:39 to 15:57 of file setupUseCaseDifferentBC.bl',
+    ],
+  },
+  {
+    description: 'Repo port not found in different bounded context',
+    core: [
+      {
+        boundedContext: 'Todo',
+        module: 'Todo',
+        fileId: 'useCases.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/useCases.bl',
+        ),
+      },
+      {
+        boundedContext: 'Demo',
+        module: 'Todo',
+        fileId: 'repoPorts.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/repoPorts.bl',
+        ),
+      },
+    ],
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoPortDifferentBC.bl',
+    ),
+    fileIdSetup: 'setupRepoPortDifferentBC.bl',
+    expectedErrorMessages: [
+      'Entity TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
+      'Repo port TodoReadRepoPort not found in bounded context Demo: from 12:28 to 12:44 of file setupRepoPortDifferentBC.bl',
+      'Use Case GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupRepoPortDifferentBC.bl',
     ],
   },
 ];

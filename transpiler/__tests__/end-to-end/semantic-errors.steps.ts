@@ -19,6 +19,7 @@
  */
 import Transpiler from '../../src/Transpiler.js';
 import {
+  SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES,
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES,
   SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES,
 } from './mocks/semantic-errors/semantic-errors.js';
@@ -118,6 +119,59 @@ describe('Semantic setup error End To End', () => {
             fileContents: testCase.inputCore,
           },
         ],
+        setup: [
+          {
+            boundedContext,
+            module,
+            fileId: testCase.fileIdSetup,
+            fileContents: testCase.inputSetup,
+          },
+        ],
+      };
+
+      // when
+      const result = transpiler.transpile(input, options);
+      if (!Transpiler.isTranspileError(result)) {
+        throw new Error('Transpiler should return error');
+      }
+      let i = 0;
+      result.forEach((error) => {
+        // console.log('ERROR', error);
+        expect(error).toBeInstanceOf(IntermediateASTValidationError);
+        expect((error as IntermediateASTValidationError).message).toEqual(
+          testCase.expectedErrorMessages[i],
+        );
+        // console.log((error as IntermediateASTValidationError).message);
+        i++;
+      });
+    });
+  });
+});
+
+describe('Semantic bounded context errors End To End', () => {
+  const options = {
+    formatterConfig: null,
+    targetLanguage: 'TypeScript',
+  };
+
+  SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
+    const boundedContext = 'Demo';
+    const module = 'Todo';
+    const parser = new BitloopsParser();
+    const validator = new IntermediateASTValidator();
+    const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
+    const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
+
+    const transpiler = new Transpiler(
+      parser,
+      validator,
+      originalLanguageASTToIntermediateModelTransformer,
+      intermediateASTModelToTargetLanguageGenerator,
+    );
+    it(`${testCase.description}`, async () => {
+      // given
+      const input = {
+        core: testCase.core,
         setup: [
           {
             boundedContext,
