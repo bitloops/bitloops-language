@@ -218,7 +218,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupRepoAdapterNotFound.bl',
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
-      'Adapter todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
+      'Argument todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
     ],
   },
   {

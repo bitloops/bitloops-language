@@ -132,6 +132,14 @@ export const SETUP_END_TO_END_TEST_CASES: Array<TestCase> = [
           'transpiler/__tests__/end-to-end/mocks/setup/core/domain.bl',
         ),
       },
+      // {
+      //   boundedContext: 'Demo',
+      //   module: 'Hello World',
+      //   fileId: 'packagePort.bl',
+      //   fileContents: FileUtil.readFileString(
+      //     'transpiler/__tests__/end-to-end/mocks/setup/core/packagePort.bl',
+      //   ),
+      // },
     ],
     expectedOutputs: getExpectedSetupOutputs(setupFilePaths),
   },

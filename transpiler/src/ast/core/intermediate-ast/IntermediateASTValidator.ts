@@ -393,15 +393,13 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
 
         case BitloopsTypesMapping.TUseCaseExpression:
           {
-            const identifierNode = (node as UseCaseExpressionNode)
-              .getArgumentList()
-              .getFirstChild()
-              .getFirstChild()
-              .getFirstChild();
+            const argumentListNode = (node as UseCaseExpressionNode).getArgumentList();
+            if (!argumentListNode.hasChildren()) break;
+            const identifierNode = argumentListNode.getFirstChild().getFirstChild().getFirstChild();
             if (!this.symbolTableSetup[fileId].has(identifierNode.getValue().identifier)) {
               errors.push(
                 new IntermediateASTValidationError(
-                  `Adapter ${identifierNode.getValue().identifier} not found: from ${
+                  `Argument ${identifierNode.getValue().identifier} not found: from ${
                     identifierNode.getMetadata().start.line
                   }:${identifierNode.getMetadata().start.column} to ${
                     identifierNode.getMetadata().end.line
