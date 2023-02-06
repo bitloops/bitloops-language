@@ -31,6 +31,7 @@ import {
   IntermediateASTNodeValidationError,
   IntermediateASTNode,
 } from './nodes/IntermediateASTNode.js';
+import { PackageConcretionNode } from './nodes/package/PackageConcretionNode.js';
 import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
 import { BoundedContextNameNode } from './nodes/setup/BoundedContextNameNode.js';
 import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
@@ -64,7 +65,8 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTIdentifierNode) => {
           switch (true) {
             case node.getClassNodeName() === 'entityIdentifier' &&
-              node.getParent().getClassNodeName() === 'RootEntity':
+              (node.getParent().getClassNodeName() === 'RootEntity' ||
+                node.getParent().getClassNodeName() === 'Entity'):
               this.symbolTableCore[boundedContextName].add(node.getIdentifierName());
               break;
             case node.getClassNodeName() === 'propsIdentifier' &&
@@ -119,6 +121,10 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
               node.getParent().getClassNodeName() === 'DomainRule':
               this.symbolTableCore[boundedContextName].add(node.getIdentifierName());
               break;
+            case node.getClassNodeName() === 'PackagePortIdentifier' &&
+              node.getParent().getClassNodeName() === 'port':
+              this.symbolTableCore[boundedContextName].add(node.getIdentifierName());
+              break;
           }
         });
       }
@@ -136,6 +142,11 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
             break;
           case node.getClassNodeName() === 'identifier' &&
             node.getParent().getClassNodeName() === 'setupRepoAdapterDefinition': {
+            this.symbolTableSetup[fileId].add(node.getIdentifierName());
+            break;
+          }
+          case node.getClassNodeName() === 'identifier' &&
+            node.getParent().getClassNodeName() === 'routerDefinition': {
             this.symbolTableSetup[fileId].add(node.getIdentifierName());
             break;
           }
@@ -376,7 +387,6 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           }
           break;
 
-        //write it with getFirstChild() etc
         case BitloopsTypesMapping.TUseCaseExpression:
           {
             const identifierNode = (node as UseCaseExpressionNode)
@@ -454,6 +464,50 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
             );
           }
           break;
+        }
+        case BitloopsTypesMapping.TPackagePortIdentifier: {
+          const boundedContextNode = (
+            (
+              node.getParent() as PackageConcretionNode
+            ).getBoundedContextModule() as BoundedContextModuleNode
+          ).getBoundedContext();
+          const boundedContext = boundedContextNode.getName();
+          if (!(boundedContext in this.symbolTableCore)) {
+            errors.push(this.bcError(boundedContextNode));
+            break;
+          }
+          if (!this.symbolTableCore[boundedContext].has(node.getValue().PackagePortIdentifier)) {
+            errors.push(
+              new IntermediateASTValidationError(
+                `Package port ${
+                  node.getValue().PackagePortIdentifier
+                } not found in bounded context ${boundedContext}: from ${
+                  node.getMetadata().start.line
+                }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+                  node.getMetadata().end.column
+                } of file ${node.getMetadata().fileId}`,
+                node.getMetadata(),
+              ),
+            );
+          }
+          break;
+        }
+        case BitloopsTypesMapping.TRestServerInstanceRouter: {
+          const identifierNode = node.getFirstChild();
+          if (!this.symbolTableSetup[fileId].has(identifierNode.getValue().identifier)) {
+            errors.push(
+              new IntermediateASTValidationError(
+                `Router ${identifierNode.getValue().identifier} not found: from ${
+                  identifierNode.getMetadata().start.line
+                }:${identifierNode.getMetadata().start.column} to ${
+                  identifierNode.getMetadata().end.line
+                }:${identifierNode.getMetadata().end.column} of file ${
+                  identifierNode.getMetadata().fileId
+                }`,
+                identifierNode.getMetadata(),
+              ),
+            );
+          }
         }
       }
     });
