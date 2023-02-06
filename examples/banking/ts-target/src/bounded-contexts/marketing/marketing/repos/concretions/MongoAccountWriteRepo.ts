@@ -48,6 +48,7 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
   async update(account: AccountEntity): Promise<void> {
     const accountSnapshot = account.toPrimitives();
     const { id, ...accountData } = accountSnapshot;
+
     await this.collection.updateOne(
       {
         _id: id,

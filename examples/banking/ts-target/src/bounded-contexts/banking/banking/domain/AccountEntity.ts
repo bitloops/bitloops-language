@@ -10,14 +10,16 @@ import { CurrencyVO } from './CurrencyVO';
 export interface AccountProps {
   id?: Domain.UUIDv4;
   balance: MoneyVO;
+  version: number;
 }
 
-type TAccountEntitySnapshot = {
+type TAccountEntityPrimitives = {
   id: string;
   balance: {
     currency: string;
     amount: number;
   };
+  version: number;
 };
 
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
@@ -29,6 +31,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     const account = new AccountEntity(props);
     const isNew = !props.id;
     if (isNew) {
+      account.props.version = 1;
       account.addDomainEvent(new AccountCreated(account));
     }
     return ok(account);
@@ -40,6 +43,14 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
 
   get balance(): MoneyVO {
     return this.props.balance;
+  }
+
+  get version(): number {
+    return this.props.version;
+  }
+
+  public incrementVersion(): void {
+    this.props.version++;
   }
 
   public withdrawAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
@@ -90,17 +101,18 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return ok();
   }
 
-  public toPrimitives(): TAccountEntitySnapshot {
+  public toPrimitives(): TAccountEntityPrimitives {
     return {
       id: this.id.toString(),
       balance: {
         currency: this.props.balance.currency.code,
         amount: this.props.balance.amount,
       },
+      version: this.props.version,
     };
   }
 
-  public static fromPrimitives(data: TAccountEntitySnapshot): AccountEntity {
+  public static fromPrimitives(data: TAccountEntityPrimitives): AccountEntity {
     const balanceProps = {
       currency: CurrencyVO.create({ code: data.balance.currency }).value,
       amount: data.balance.amount,
@@ -108,6 +120,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     const accountProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       balance: MoneyVO.create(balanceProps).value as MoneyVO,
+      version: data.version,
     };
     return new AccountEntity(accountProps);
   }

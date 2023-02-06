@@ -105,7 +105,7 @@ export class Container {
     if (!Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId]) {
       throw new Error(`Context id: ${contextId} is missing from mappings`);
     }
-    if (Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].QUERY_BUS === CONTEXT_TYPES.InProcess) {
+    if (Container.appConfig_MAPPINGS[contextId].QUERY_BUS === CONTEXT_TYPES.InProcess) {
       queryBus = Container.inProcessQueryBus;
     } else if (
       Container.appConfig.CONTEXT_IDs_MAPPINGS[contextId].QUERY_BUS === CONTEXT_TYPES.External

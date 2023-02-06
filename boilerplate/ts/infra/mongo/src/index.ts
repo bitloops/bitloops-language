@@ -4,6 +4,8 @@ import {
   Document as DocumentImport,
   ObjectId as ObjectIdImport,
   Collection as CollectionImport,
+  TransactionOptions as TransactionOptionsImport,
+  ClientSession as ClientSessionImport
 } from 'mongodb';
 
 namespace Mongo {
@@ -13,6 +15,8 @@ namespace Mongo {
 
   export type WithId<TSchema> = WithIdImport<TSchema>;
   export type Document = DocumentImport;
+  export type TransactionOptions = TransactionOptionsImport;
+  export type ClientSession = ClientSessionImport;
 }
 
 export { Mongo };
