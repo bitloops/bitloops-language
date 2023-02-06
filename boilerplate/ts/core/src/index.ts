@@ -46,7 +46,7 @@ import { QueryBus as QueryBusImport } from './infra/query-bus/QueryBus';
 
 import {
   CurrencyVO as CurrencyVOImport,
-  // ErrorTypes as CurrencyVOErrorTypesImport,
+  ErrorTypes as CurrencyVOErrorTypesImport,
 } from './domain/standard-values';
 
 namespace Domain {
@@ -62,7 +62,10 @@ namespace Domain {
   export type IDomainEvent = IDomainEventImport;
   export const dispatchEventsCallback = dispatchEventsCallbackImport;
   export namespace StandardVO {
-    export class Currency extends CurrencyVOImport {}
+    export namespace Currency {
+      export class Value extends CurrencyVOImport {}
+      export type ErrorTypes = CurrencyVOErrorTypesImport;
+    }
   }
 }
 

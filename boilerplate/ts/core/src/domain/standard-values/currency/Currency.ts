@@ -47,7 +47,7 @@ interface CurrencyProps {
   standard?: string;
 }
 
-type ErrorTypes = CurrencyStandardDoesNotExistError | CurrencyCodeDoesNotExistError;
+export type ErrorTypes = CurrencyStandardDoesNotExistError | CurrencyCodeDoesNotExistError;
 
 export class CurrencyVO extends ValueObject<CurrencyProps> {
   private code: string;

@@ -1,1 +1,1 @@
-export { CurrencyVO } from './currency/Currency';
+export { CurrencyVO, ErrorTypes } from './currency/Currency';
