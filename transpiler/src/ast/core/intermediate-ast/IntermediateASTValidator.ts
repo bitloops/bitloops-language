@@ -35,8 +35,10 @@ import { PackageConcretionNode } from './nodes/package/PackageConcretionNode.js'
 import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
 import { BoundedContextNameNode } from './nodes/setup/BoundedContextNameNode.js';
 import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { RepoConnectionDefinitionNode } from './nodes/setup/repo/RepoConnectionDefinitionNode.js';
 import { SetupRepoAdapterDefinitionNode } from './nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
 import { RouterControllerNode } from './nodes/setup/RouterControllerNode.js';
+import { RouterDefinitionNode } from './nodes/setup/RouterDefinitionNode.js';
 import { UseCaseExpressionNode } from './nodes/setup/UseCaseExpressionNode.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
@@ -52,7 +54,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
     this.createSymbolTablesCore(ast.core);
     const errors: IntermediateASTValidationError[] = [];
     errors.push(...this.validateCore(ast.core));
-    // if (errors.length > 0) return errors; //maybe no return
+    // if (errors.length > 0) return errors;
     this.createSymbolTablesSetup(ast.setup);
     errors.push(...this.validateSetup(ast.setup));
     if (errors.length > 0) return errors;
@@ -134,20 +136,21 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
   private createSymbolTablesSetup(setup: IntermediateASTSetup): void {
     for (const [fileId, ASTTree] of Object.entries(setup)) {
       this.symbolTableSetup[fileId] = new Set();
-      ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTIdentifierNode) => {
+      ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
         switch (true) {
-          case node.getClassNodeName() === 'identifier' &&
-            node.getParent().getClassNodeName() === 'RepoConnectionDefinition':
-            this.symbolTableSetup[fileId].add(node.getIdentifierName());
-            break;
-          case node.getClassNodeName() === 'identifier' &&
-            node.getParent().getClassNodeName() === 'setupRepoAdapterDefinition': {
-            this.symbolTableSetup[fileId].add(node.getIdentifierName());
+          case node.getClassNodeName() === 'RepoConnectionDefinition': {
+            const identifierNode = (node as RepoConnectionDefinitionNode).getIdentifier();
+            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
             break;
           }
-          case node.getClassNodeName() === 'identifier' &&
-            node.getParent().getClassNodeName() === 'routerDefinition': {
-            this.symbolTableSetup[fileId].add(node.getIdentifierName());
+          case node.getClassNodeName() === 'setupRepoAdapterDefinition': {
+            const identifierNode = (node as SetupRepoAdapterDefinitionNode).getIdentifier();
+            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
+            break;
+          }
+          case node.getClassNodeName() === 'routerDefinition': {
+            const identifierNode = (node as RouterDefinitionNode).getIdentifier();
+            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
             break;
           }
         }

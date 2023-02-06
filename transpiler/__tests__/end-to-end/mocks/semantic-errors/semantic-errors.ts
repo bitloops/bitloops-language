@@ -150,91 +150,91 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
 ];
 
 export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
-  // {
-  //   description: 'Use case not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/useCases.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupUseCaseNotFound.bl',
-  //   ),
-  //   fileIdSetup: 'setupUseCaseNotFound.bl',
-  //   fileIdCore: 'useCases.bl',
-  //   expectedErrorMessages: [
-  //     'Use Case GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupUseCaseNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Controller not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/controllers.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupControllerNotFound.bl',
-  //   ),
-  //   fileIdSetup: 'setupControllerNotFound.bl',
-  //   fileIdCore: 'controllers.bl',
-  //   expectedErrorMessages: [
-  //     'Controller GetTodosRESTController not found in bounded context Todo: from 19:27 to 19:49 of file setupControllerNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Repo port not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/repoPorts.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoPortNotFound.bl',
-  //   ),
-  //   fileIdSetup: 'setupRepoPortNotFound.bl',
-  //   fileIdCore: 'repoPorts.bl',
-  //   expectedErrorMessages: [
-  //     'Entity TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
-  //     'Repo port TodoReadRepoPort not found in bounded context Todo: from 15:28 to 15:44 of file setupRepoPortNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Repo connection not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/controllers.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoConnectionNotFound.bl',
-  //   ),
-  //   fileIdSetup: 'setupRepoConnectionNotFound.bl',
-  //   fileIdCore: 'controllers.bl',
-  //   expectedErrorMessages: [
-  //     'Connection mongoConnection not found: from 13:17 to 13:32 of file setupRepoConnectionNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Repo adapter not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/controllers.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoAdapterNotFound.bl',
-  //   ),
-  //   fileIdSetup: 'setupRepoAdapterNotFound.bl',
-  //   fileIdCore: 'controllers.bl',
-  //   expectedErrorMessages: [
-  //     'Adapter todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Package port not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/packagePort.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupPackagePortNotFound.bl',
-  //   ),
-  //   fileIdSetup: 'setupPackagePortNotFound.bl',
-  //   fileIdCore: 'packagePort.bl',
-  //   expectedErrorMessages: [
-  //     'Package port UtilitiesPackagePort not found in bounded context Todo: from 1:53 to 1:73 of file setupPackagePortNotFound.bl',
-  //   ],
-  // },
+  {
+    description: 'Use case not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/useCases.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupUseCaseNotFound.bl',
+    ),
+    fileIdSetup: 'setupUseCaseNotFound.bl',
+    fileIdCore: 'useCases.bl',
+    expectedErrorMessages: [
+      'Use Case GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupUseCaseNotFound.bl',
+    ],
+  },
+  {
+    description: 'Controller not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/controllers.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupControllerNotFound.bl',
+    ),
+    fileIdSetup: 'setupControllerNotFound.bl',
+    fileIdCore: 'controllers.bl',
+    expectedErrorMessages: [
+      'Controller GetTodosRESTController not found in bounded context Todo: from 19:27 to 19:49 of file setupControllerNotFound.bl',
+    ],
+  },
+  {
+    description: 'Repo port not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/repoPorts.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoPortNotFound.bl',
+    ),
+    fileIdSetup: 'setupRepoPortNotFound.bl',
+    fileIdCore: 'repoPorts.bl',
+    expectedErrorMessages: [
+      'Entity TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
+      'Repo port TodoReadRepoPort not found in bounded context Todo: from 15:28 to 15:44 of file setupRepoPortNotFound.bl',
+    ],
+  },
+  {
+    description: 'Repo connection not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/controllers.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoConnectionNotFound.bl',
+    ),
+    fileIdSetup: 'setupRepoConnectionNotFound.bl',
+    fileIdCore: 'controllers.bl',
+    expectedErrorMessages: [
+      'Connection mongoConnection not found: from 13:17 to 13:32 of file setupRepoConnectionNotFound.bl',
+    ],
+  },
+  {
+    description: 'Repo adapter not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/controllers.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoAdapterNotFound.bl',
+    ),
+    fileIdSetup: 'setupRepoAdapterNotFound.bl',
+    fileIdCore: 'controllers.bl',
+    expectedErrorMessages: [
+      'Adapter todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
+    ],
+  },
+  {
+    description: 'Package port not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/packagePort.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupPackagePortNotFound.bl',
+    ),
+    fileIdSetup: 'setupPackagePortNotFound.bl',
+    fileIdCore: 'packagePort.bl',
+    expectedErrorMessages: [
+      'Package port UtilitiesPackagePort not found in bounded context Todo: from 1:53 to 1:73 of file setupPackagePortNotFound.bl',
+    ],
+  },
   {
     description: 'Router not found',
     inputCore: FileUtil.readFileString(
