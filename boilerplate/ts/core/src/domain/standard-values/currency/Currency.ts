@@ -54,6 +54,10 @@ export class CurrencyVO extends ValueObject<CurrencyProps> {
   private ISO4217CurrencyCodes: ISO4217CurrencyCodesType;
   private availableCurrencyStandards: AvailableCurrencyStandards;
   private standard;
+  public static readonly Errors = {
+    CurrencyStandardDoesNotExistError,
+    CurrencyCodeDoesNotExistError,
+  };
 
   get currencyCode(): string {
     return this.code;
@@ -70,8 +74,8 @@ export class CurrencyVO extends ValueObject<CurrencyProps> {
   get availableStandards(): string[] {
     return Object.keys(this.availableCurrencyStandards);
   }
-
-  private constructor(props: CurrencyProps) {
+  // TODO find a way to export the VO class using private keyword
+  protected constructor(props: CurrencyProps) {
     super(props);
     this.code = this.props.currencyCode.toUpperCase();
     this.ISO4217CurrencyCodes = ISO_4217_CURRENCY_CODES;

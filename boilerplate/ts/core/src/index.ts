@@ -43,7 +43,11 @@ import {
 import { CommandBus as CommandBusImport } from './infra/command-bus/';
 import { IQueryBus as IQueryBusImport } from './domain/queries/IQueryBus';
 import { QueryBus as QueryBusImport } from './infra/query-bus/QueryBus';
-import * as StandardValuesImport from './domain/standard-values';
+
+import {
+  CurrencyVO as CurrencyVOImport,
+  // ErrorTypes as CurrencyVOErrorTypesImport,
+} from './domain/standard-values';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -57,7 +61,9 @@ namespace Domain {
   export class Event<T> extends DomainEvent<T> {}
   export type IDomainEvent = IDomainEventImport;
   export const dispatchEventsCallback = dispatchEventsCallbackImport;
-  export const StandardValues = StandardValuesImport;
+  export namespace StandardVO {
+    export class Currency extends CurrencyVOImport {}
+  }
 }
 
 namespace Application {
