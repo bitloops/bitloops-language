@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  mongo1:
+    container_name: mongo1
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data1:/data/db
+      - ./rs-init.sh:/scripts/rs-init.sh
+    networks:
+      - mongors-network
+    ports:
+      - 27021:27017
+    links:
+      - mongo2
+      - mongo3
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+  mongo2:
+    container_name: mongo2
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data2:/data/db
+    networks:
+      - mongors-network
+    ports:
+      - 27022:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+  mongo3:
+    container_name: mongo3
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data3:/data/db
+    networks:
+      - mongors-network
+    ports:
+      - 27023:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+
+networks:
+  mongors-network:
+    driver: bridge
+
+# single node
+# version: '3.4'
+
+# services:
+#   mongodb:
+#     image: mongo
+#     hostname: mongodb
+#     restart: always
+#     container_name: mongodb
+#     ports:
+#       - 27017:27017
+#     networks:
+#       - mongo-network
+#     healthcheck:
+#       test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u mongo -p mongo --quiet) -eq 1
+#       interval: 10s
+#       start_period: 30s
+#     command: ["--replSet", "dbrs", "--bind_ip_all"]
+
+# networks:
+#   mongo-network:
+#     driver: bridge

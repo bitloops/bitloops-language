@@ -3,7 +3,7 @@ import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
 import { AccountEntity } from '../../domain/AccountEntity';
 import { IAccountWriteRepo } from '../interfaces/IAccountWriteRepo';
 // TODO add to boilerplate
-import { Application } from '@bitloops/bl-boilerplate-core/';
+// import { Application } from '@bitloops/bl-boilerplate-core/';
 
 const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'banking';
 const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'accounts';
@@ -53,37 +53,38 @@ export class MongoAccountWriteRepo implements IAccountWriteRepo {
     await Domain.dispatchEventsCallback(account.id /*, metadata*/);
   }
 
-  async updateWithOptimistic(account: AccountEntity): Promise<void> {
-    const session = this.client.startSession();
-    try {
-      //TODO Lock write (exclusive lock probably)
-      const transactionOptions: Mongo.TransactionOptions = {
-        readConcern: { level: 'snapshot' },
-        writeConcern: { w: 'majority' },
-        readPreference: 'primary',
-      };
-      session.startTransaction(transactionOptions);
-      // Read current db aggregate
-      const toBeUpdated = await this.getById(account.id, session);
-      if (toBeUpdated === null) return Application.Repo.Error.NotFoundError();
+  // async updateWithOptimistic(account: AccountEntity): Promise<void> {
+  //   const session = this.client.startSession();
+  //   try {
+  //     //TODO Lock write (exclusive lock probably)
+  //     const transactionOptions: Mongo.TransactionOptions = {
+  //       readConcern: { level: 'snapshot' },
+  //       writeConcern: { w: 'majority' },
+  //       readPreference: 'primary',
+  //     };
+  //     session.startTransaction(transactionOptions);
+  //     // Read current db aggregate
+  //     const toBeUpdated = await this.getById(account.id, session);
+  //     if (toBeUpdated === null) return Application.Repo.Error.NotFoundError();
 
-      const version = toBeUpdated.version;
-      if (account.version !== version) {
-        return Application.Repo.Error.ConcurrencyError();
-      }
-      account.incrementVersion();
+  //     const version = toBeUpdated.version;
+  //     if (account.version !== version) {
+  //       return Application.Repo.Error.ConcurrencyError();
+  //     }
+  //     account.incrementVersion();
 
-      await this.update(account, session);
+  //     await this.update(account, session);
 
-      await session.commitTransaction();
-    } catch (e) {
-      console.log(e);
-      await session.abortTransaction();
-      //throw
-    } finally {
-      session.endSession();
-    }
-  }
+  //     await session.commitTransaction();
+  //   } catch (e) {
+  //     console.log(e);
+  //     await session.abortTransaction();
+  //     //throw
+  //   } finally {
+  //     session.endSession();
+  //   }
+  // }
+
   async update(account: AccountEntity, session?: Mongo.ClientSession): Promise<void> {
     const { id, ...accountInfo } = account.toPrimitives();
     await this.collection.updateOne(

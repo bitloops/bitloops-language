@@ -5,7 +5,6 @@ import { DomainErrors } from './errors/index';
 import { Rules } from './rules/index';
 import { MoneyDepositedToAccount } from './events/MoneyDepositedToAccount';
 import { MoneyWithdrawnFromAccount } from './events/MoneyWithdrawnFromAccount';
-import { CurrencyVO } from './CurrencyVO';
 
 export interface AccountProps {
   id?: Domain.UUIDv4;
@@ -105,7 +104,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return {
       id: this.id.toString(),
       balance: {
-        currency: this.props.balance.currency.code,
+        currency: this.props.balance.currency.currencyCode,
         amount: this.props.balance.amount,
       },
       version: this.props.version,
@@ -114,9 +113,12 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
 
   public static fromPrimitives(data: TAccountEntityPrimitives): AccountEntity {
     const balanceProps = {
-      currency: CurrencyVO.create({ code: data.balance.currency }).value,
+      currency: Domain.StandardVO.Currency.create({
+        currencyCode: data.balance.currency,
+      }).value as Domain.StandardVO.Currency,
       amount: data.balance.amount,
     };
+
     const accountProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       balance: MoneyVO.create(balanceProps).value as MoneyVO,

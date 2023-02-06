@@ -92,25 +92,3 @@ export class CurrencyVO extends ValueObject<CurrencyProps> {
     return ok(new CurrencyVO(props));
   }
 }
-
-// const currency = CurrencyVO.create({ currencyCode: 'usd' });
-// console.log('isFail', currency.isFail());
-// console.log('isOk', currency.isOk());
-// // console.log('value', currency.value);
-
-// if (currency.isOk()) {
-//   console.log('currencyCode', currency.value.currencyCode);
-//   console.log('symbol', currency.value.symbol);
-//   console.log('availableStandards', currency.value.availableStandards);
-// }
-
-// const currency2 = CurrencyVO.create({ currencyCode: 'EUR', standard: 'ISO_4217' });
-// console.log('isFail2', currency2.isFail());
-// console.log('isOk2', currency2.isOk());
-// console.log('value2', currency2.value);
-
-// if (currency2.isOk()) {
-//   console.log('currencyCode', currency2.value.currencyCode);
-//   console.log('symbol2', currency2.value.symbol);
-//   console.log('currency.value.name', currency2.value.name);
-// }
