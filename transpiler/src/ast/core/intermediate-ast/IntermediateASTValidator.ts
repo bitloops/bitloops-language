@@ -395,20 +395,23 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           {
             const argumentListNode = (node as UseCaseExpressionNode).getArgumentList();
             if (!argumentListNode.hasChildren()) break;
-            const identifierNode = argumentListNode.getFirstChild().getFirstChild().getFirstChild();
-            if (!this.symbolTableSetup[fileId].has(identifierNode.getValue().identifier)) {
-              errors.push(
-                new IntermediateASTValidationError(
-                  `Argument ${identifierNode.getValue().identifier} not found: from ${
-                    identifierNode.getMetadata().start.line
-                  }:${identifierNode.getMetadata().start.column} to ${
-                    identifierNode.getMetadata().end.line
-                  }:${identifierNode.getMetadata().end.column} of file ${
-                    identifierNode.getMetadata().fileId
-                  }`,
-                  identifierNode.getMetadata(),
-                ),
-              );
+            const argumentsNode = argumentListNode.getChildren();
+            for (const expressionNode of argumentsNode) {
+              const identifierNode = expressionNode.getFirstChild().getFirstChild();
+              if (!this.symbolTableSetup[fileId].has(identifierNode.getValue().identifier)) {
+                errors.push(
+                  new IntermediateASTValidationError(
+                    `Argument ${identifierNode.getValue().identifier} not found: from ${
+                      identifierNode.getMetadata().start.line
+                    }:${identifierNode.getMetadata().start.column} to ${
+                      identifierNode.getMetadata().end.line
+                    }:${identifierNode.getMetadata().end.column} of file ${
+                      identifierNode.getMetadata().fileId
+                    }`,
+                    identifierNode.getMetadata(),
+                  ),
+                );
+              }
             }
           }
           break;
@@ -493,6 +496,26 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
                 node.getMetadata(),
               ),
             );
+          }
+          const argumentListNode = (node.getParent() as ControllerResolverNode).getArgumentList();
+          if (!argumentListNode.hasChildren()) break;
+          const argumentsNode = argumentListNode.getChildren();
+          for (const expressionNode of argumentsNode) {
+            const identifierNode = expressionNode.getFirstChild().getFirstChild();
+            if (!this.symbolTableSetup[fileId].has(identifierNode.getValue().identifier)) {
+              errors.push(
+                new IntermediateASTValidationError(
+                  `Argument ${identifierNode.getValue().identifier} not found: from ${
+                    identifierNode.getMetadata().start.line
+                  }:${identifierNode.getMetadata().start.column} to ${
+                    identifierNode.getMetadata().end.line
+                  }:${identifierNode.getMetadata().end.column} of file ${
+                    identifierNode.getMetadata().fileId
+                  }`,
+                  identifierNode.getMetadata(),
+                ),
+              );
+            }
           }
           break;
         }

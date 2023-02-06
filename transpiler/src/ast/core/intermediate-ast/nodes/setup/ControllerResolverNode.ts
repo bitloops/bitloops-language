@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { ControllerResolverKey } from '../../../../../types.js';
+import { ArgumentListNode } from '../ArgumentList/ArgumentListNode.js';
 import { GraphQLControllerIdentifierNode } from '../controllers/graphql/GraphQLControllerIdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { BoundedContextModuleNode } from './BoundedContextModuleNode.js';
@@ -30,5 +31,15 @@ export class ControllerResolverNode extends IntermediateASTNode {
       throw new Error('BoundedContext module not found');
     }
     return boundedContextModule;
+  }
+
+  public getArgumentList(): ArgumentListNode {
+    const argumentList = this.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    if (!argumentList) {
+      throw new Error('Argument list not found');
+    }
+    return argumentList;
   }
 }

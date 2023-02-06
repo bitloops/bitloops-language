@@ -28,7 +28,7 @@ import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser, IntermediateASTValidator } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
 
-describe.skip('Semantic core error End To End', () => {
+describe('Semantic core error End To End', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const options = {
@@ -136,7 +136,6 @@ describe('Semantic setup error End To End', () => {
       }
       let i = 0;
       result.forEach((error) => {
-        // console.log('ERROR', error);
         expect(error).toBeInstanceOf(IntermediateASTValidationError);
         expect((error as IntermediateASTValidationError).message).toEqual(
           testCase.expectedErrorMessages[i],
@@ -148,7 +147,7 @@ describe('Semantic setup error End To End', () => {
   });
 });
 
-describe.skip('Semantic bounded context errors End To End', () => {
+describe('Semantic bounded context errors End To End', () => {
   const options = {
     formatterConfig: null,
     targetLanguage: 'TypeScript',
