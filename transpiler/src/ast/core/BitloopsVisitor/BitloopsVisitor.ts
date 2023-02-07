@@ -255,6 +255,10 @@ import {
 import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
+import { apiDeclarationVisitor } from './helpers/setup/apiDeclarationVisitor.js';
+import { ApiDeclarationNode } from '../intermediate-ast/nodes/setup/Api/ApiDeclarationNode.js';
+import { ApiIdentifierNode } from '../intermediate-ast/nodes/setup/Api/ApiIdentifierNode.js';
+import { apiIdentifierVisitor } from './helpers/setup/apiIdentifierVisitor.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1097,6 +1101,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.BoundedContextModuleDeclarationContext,
   ): BoundedContextModuleNode {
     return boundedContextModuleVisitor(this, ctx);
+  }
+
+  visitApiDeclaration(ctx: BitloopsParser.ApiDeclarationContext): ApiDeclarationNode {
+    return apiDeclarationVisitor(this, ctx);
+  }
+
+  visitApiIdentifier(ctx: BitloopsParser.ApiIdentifierContext): ApiIdentifierNode {
+    return apiIdentifierVisitor(this, ctx);
   }
 
   visitBoundedContextDeclaration(

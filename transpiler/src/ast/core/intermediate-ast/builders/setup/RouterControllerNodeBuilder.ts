@@ -2,7 +2,7 @@ import { ArgumentListNode } from '../../nodes/ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../../nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { StringLiteralNode } from '../../nodes/Expression/Literal/StringLiteralNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { BoundedContextModuleNode } from '../../nodes/setup/BoundedContextModuleNode.js';
+import { ApiDeclarationNode } from '../../nodes/setup/Api/ApiDeclarationNode.js';
 import { HTTPMethodVerbNode } from '../../nodes/setup/HTTPMethodVerbNode.js';
 import { RouterControllerNode } from '../../nodes/setup/RouterControllerNode.js';
 import { IBuilder } from '../IBuilder.js';
@@ -11,7 +11,7 @@ export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNod
   private routerControllerNode: RouterControllerNode;
   private methodNode: HTTPMethodVerbNode;
   private pathNode: StringLiteralNode;
-  private bcModuleNode: BoundedContextModuleNode;
+  private apiDeclarationNode: ApiDeclarationNode;
   private restControllerIdentifierNode: RESTControllerIdentifierNode;
   private argumentListNode: ArgumentListNode;
 
@@ -29,10 +29,8 @@ export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNod
     return this;
   }
 
-  public withBoundedContextModule(
-    bcModuleNode: BoundedContextModuleNode,
-  ): RouterControllerNodeBuilder {
-    this.bcModuleNode = bcModuleNode;
+  public withApiDeclaration(apiDeclarationNode: ApiDeclarationNode): RouterControllerNodeBuilder {
+    this.apiDeclarationNode = apiDeclarationNode;
     return this;
   }
 
@@ -51,7 +49,7 @@ export class RouterControllerNodeBuilder implements IBuilder<RouterControllerNod
   public build(): RouterControllerNode {
     this.routerControllerNode.addChild(this.methodNode);
     this.routerControllerNode.addChild(this.pathNode);
-    this.routerControllerNode.addChild(this.bcModuleNode);
+    this.routerControllerNode.addChild(this.apiDeclarationNode);
     this.routerControllerNode.addChild(this.restControllerIdentifierNode);
     this.routerControllerNode.addChild(this.argumentListNode);
 

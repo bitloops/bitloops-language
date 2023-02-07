@@ -1,7 +1,7 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
 import { ArgumentListBuilderDirector } from '../../../core/builders/argumentListBuilderDirector.js';
 import { StringLiteralBuilder } from '../../../core/builders/stringLiteral.js';
-import { BoundedContextModuleBuilderDirector } from '../../builders/boundedContextModuleBuilderDirector.js';
+import { ApiDeclarationBuilderDirector } from '../../builders/apiDeclarationBuilderDirector.js';
 import { RouterControllerBuilder } from '../../builders/routerControllerBuilder.js';
 import { RouterDefinitionBuilderDirector } from '../../builders/routerDefinitionBuilderDirector.js';
 
@@ -17,8 +17,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
         constIdentifier: 'helloWorldRESTRouter',
         controllerIdentifier: 'HelloWorldController',
         controllerIntanceName: 'helloWorldController1',
-        boundedContextName: 'Bounded Context',
-        moduleName: 'Module',
+        apiName: 'ApiTest',
         method: 'Get',
         path: '/hello1',
       }),
@@ -35,12 +34,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
         controllers: [
           new RouterControllerBuilder()
             .withArguments(new ArgumentListBuilderDirector().buildEmptyArgumentList())
-            .withBoundedContextModule(
-              new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
-                boundedContextName: 'Bounded Context',
-                moduleName: 'Module',
-              }),
-            )
+            .withApiDeclaration(new ApiDeclarationBuilderDirector().buildApiDeclaration('ApiTest'))
             .withControllerIdentifier('HelloWorldController')
             .withControllerInstanceName('helloWorldController1')
             .withMethod('Get')
@@ -48,12 +42,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
             .build(),
           new RouterControllerBuilder()
             .withArguments(new ArgumentListBuilderDirector().buildArgumentList(['myUseCase']))
-            .withBoundedContextModule(
-              new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
-                boundedContextName: 'Hello World',
-                moduleName: 'My Module2',
-              }),
-            )
+            .withApiDeclaration(new ApiDeclarationBuilderDirector().buildApiDeclaration('ApiTest'))
             .withControllerIdentifier('HelloWorldController')
             .withControllerInstanceName('helloWorldController2')
             .withMethod('Post')

@@ -768,8 +768,16 @@ export type TRouterController = {
     RESTControllerIdentifier: TRESTControllerIdentifier;
     controllerInstanceName: TControllerInstanceName;
   } & StringLiteral &
-    TBoundedContextModule &
+    TApiDeclaration &
     TArgumentList;
+};
+
+export type TApiDeclaration = {
+  apiDeclaration: TApiIdentifier;
+};
+
+export type TApiIdentifier = {
+  apiIdentifier: string;
 };
 
 export type TRouterControllers = {

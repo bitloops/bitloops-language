@@ -36,11 +36,11 @@ const getByIdTodoUseCase = [Todo][Todo]GetByIdTodoUseCase(todoReadRepo);
 // REST ROUTERS
 
 const todoRESTRouter = RESTRouter(REST.Fastify) {
-  Post('/'): [Todo][Todo]CreateTodoRESTController(createTodoUseCase);
-  Get('/'): [Todo][Todo]GetTodosRESTController(getAllTodoUseCase);
-  Patch('/:id'): [Todo][Todo]UpdateTodoRESTController(updateTodoUseCase);
-  Delete('/:id'): [Todo][Todo]DeleteTodoRESTController(deleteTodoUseCase);
-  Get('/:id'): [Todo][Todo]GetTodoRESTController(getByIdTodoUseCase);
+  Post('/'): [Todo]CreateTodoRESTController(createTodoUseCase);
+  Get('/'): [Todo]GetTodosRESTController(getAllTodoUseCase);
+  Patch('/:id'): [Todo]UpdateTodoRESTController(updateTodoUseCase);
+  Delete('/:id'): [Todo]DeleteTodoRESTController(deleteTodoUseCase);
+  Get('/:id'): [Todo]GetTodoRESTController(getByIdTodoUseCase);
   
   // Get('/:id'): [Todo][Todo]AutoRESTController(getByIdTodoUseCase);
 }

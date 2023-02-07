@@ -3,16 +3,16 @@ import {
   TRouterController,
   THTTPMethodVerb,
   StringLiteral,
-  TBoundedContextModule,
   TRESTControllerIdentifier,
   TArgumentList,
   TControllerInstanceName,
+  TApiDeclaration,
 } from '../../../../src/types.js';
 
 export class RouterControllerBuilder implements IBuilder<TRouterController> {
   private method: THTTPMethodVerb;
   private path: StringLiteral;
-  private bcModule: TBoundedContextModule;
+  private apiDeclaration: TApiDeclaration;
   private restControllerIdentifier: TRESTControllerIdentifier;
   private argumentList: TArgumentList;
   private controllerInstanceName: TControllerInstanceName;
@@ -27,8 +27,8 @@ export class RouterControllerBuilder implements IBuilder<TRouterController> {
     return this;
   }
 
-  public withBoundedContextModule(bcModule: TBoundedContextModule): RouterControllerBuilder {
-    this.bcModule = bcModule;
+  public withApiDeclaration(apiDeclaration: TApiDeclaration): RouterControllerBuilder {
+    this.apiDeclaration = apiDeclaration;
     return this;
   }
 
@@ -58,7 +58,7 @@ export class RouterControllerBuilder implements IBuilder<TRouterController> {
         RESTControllerIdentifier: this.restControllerIdentifier,
         controllerInstanceName: this.controllerInstanceName,
         ...this.path,
-        ...this.bcModule,
+        ...this.apiDeclaration,
         ...this.argumentList,
       },
     };

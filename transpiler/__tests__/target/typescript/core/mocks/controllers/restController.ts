@@ -1,12 +1,10 @@
 import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
 import { RESTControllerIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
 import { StringLiteralBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/StringLiteralBuilder.js';
-import { BoundedContextModuleNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/BoundedContextModuleNodeBuilder.js';
-import { BoundedContextNameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/BoundedContextNameNodeBuilder.js';
+import { ApiDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/api/ApiDeclarationNodeBuilder.js';
+import { ApiIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/api/ApiIdentifierNodeBuilder.js';
 import { HTTPMethodVerbNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/HTTPMethodVerbNodeBuilder.js';
-import { ModuleNameNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/ModuleNameNodeBuilder.js';
 import { RouterControllerNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/RouterControllerNodeBuilder.js';
-import { WordsWithSpacesNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/setup/WordsWithSpacesNodeBuilder.js';
 import { RESTControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { RouterControllerNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/setup/RouterControllerNode.js';
 import { TServerType } from '../../../../../../src/types.js';
@@ -33,18 +31,9 @@ export const VALID_REST_CONTROLLER_TEST_CASES: TestCase[] = [
       .withMethod(new HTTPMethodVerbNodeBuilder().withVerb('GET').build())
       .withPath(new StringLiteralBuilder().withValue('/').build())
       .withArguments(new ArgumentListNodeBuilder().withArguments([]).build())
-      .withBoundedContextModule(
-        new BoundedContextModuleNodeBuilder()
-          .withBoundedContext(
-            new BoundedContextNameNodeBuilder()
-              .withName(new WordsWithSpacesNodeBuilder().withName('Hello World').build())
-              .build(),
-          )
-          .withModule(
-            new ModuleNameNodeBuilder()
-              .withName(new WordsWithSpacesNodeBuilder().withName('Demo').build())
-              .build(),
-          )
+      .withApiDeclaration(
+        new ApiDeclarationNodeBuilder()
+          .withApiIdentifier(new ApiIdentifierNodeBuilder().withName('ApiTest').build())
           .build(),
       )
       .withControllerIdentifier(

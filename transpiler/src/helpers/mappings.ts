@@ -227,6 +227,8 @@ const BitloopsTypesMapping = {
   TGraphQLServerOptions: 'TGraphQLServerOptions',
   TGraphQLServerInstance: 'TGraphQLServerInstance',
   TRESTServerInstance: 'TRESTServerInstance',
+  TApiDeclaration: 'TApiDeclaration',
+  TApiIdentifier: 'TApiIdentifier',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

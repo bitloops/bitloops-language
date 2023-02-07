@@ -23,7 +23,7 @@ import { RouterControllerNodeBuilder } from '../../../intermediate-ast/builders/
 import { ArgumentListNode } from '../../../intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../../../intermediate-ast/nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { StringLiteralNode } from '../../../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
-import { BoundedContextModuleNode } from '../../../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { ApiDeclarationNode } from '../../../intermediate-ast/nodes/setup/Api/ApiDeclarationNode.js';
 import { HTTPMethodVerbNode } from '../../../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
 import { RouterControllerNode } from '../../../intermediate-ast/nodes/setup/RouterControllerNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
@@ -35,9 +35,7 @@ export const routerControllerVisitor = (
 ): RouterControllerNode => {
   const methodNode: HTTPMethodVerbNode = thisVisitor.visit(ctx.httpMethodVerb());
   const pathStringNode: StringLiteralNode = thisVisitor.visit(ctx.pathString());
-  const boundedContextModuleNode: BoundedContextModuleNode = thisVisitor.visit(
-    ctx.boundedContextModuleDeclaration(),
-  );
+  const apiDeclarationNode: ApiDeclarationNode = thisVisitor.visit(ctx.apiDeclaration());
   const restControllerIdentifierNode: RESTControllerIdentifierNode = thisVisitor.visit(
     ctx.restControllerIdentifier(),
   );
@@ -48,7 +46,7 @@ export const routerControllerVisitor = (
   return new RouterControllerNodeBuilder(metadata)
     .withMethod(methodNode)
     .withPath(pathStringNode)
-    .withBoundedContextModule(boundedContextModuleNode)
+    .withApiDeclaration(apiDeclarationNode)
     .withControllerIdentifier(restControllerIdentifierNode)
     .withArguments(argumentListNode)
     .build();

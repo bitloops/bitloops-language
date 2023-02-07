@@ -53,12 +53,16 @@ describe('Use case definition is valid', () => {
         ],
       });
 
-      if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
-          setupResult = result.setup;
-        }
+      if (isParserErrors(initialModelOutput)) {
+        throw initialModelOutput;
       }
+      const result = intermediateParser.parse(initialModelOutput);
+      if (isIntermediateASTError(result)) {
+        throw result;
+      }
+
+      setupResult = result.setup;
+
       const resultTree = setupResult[testRouter.fileId];
       const routerDefintionNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TRouterDefinition,

@@ -8,7 +8,7 @@ import {
 } from '../../../../src/types.js';
 import { ArgumentListBuilderDirector } from '../../core/builders/argumentListBuilderDirector.js';
 import { StringLiteralBuilder } from '../../core/builders/stringLiteral.js';
-import { BoundedContextModuleBuilderDirector } from './boundedContextModuleBuilderDirector.js';
+import { ApiDeclarationBuilderDirector } from './apiDeclarationBuilderDirector.js';
 import { RouterArgumentsBuilder } from './routerArgumentsBuilder.js';
 import { RouterControllerBuilder } from './routerControllerBuilder.js';
 import { RouterControllersBuilder } from './routerControllersBuilder.js';
@@ -26,24 +26,19 @@ export class RouterDefinitionBuilderDirector {
     constIdentifier,
     controllerIdentifier,
     controllerIntanceName,
-    boundedContextName,
-    moduleName,
+    apiName,
     method,
     path,
   }: {
     constIdentifier: TIdentifier;
     controllerIdentifier: TRESTControllerIdentifier;
     controllerIntanceName: TControllerInstanceName;
-    boundedContextName: string;
-    moduleName: string;
+    apiName: string;
     method: THTTPMethodVerb;
     path: string;
   }): TRouterDefinition {
     const argumentList = new ArgumentListBuilderDirector().buildEmptyArgumentList();
-    const bcModule = new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
-      boundedContextName,
-      moduleName,
-    });
+    const apiDeclaration = new ApiDeclarationBuilderDirector().buildApiDeclaration(apiName);
     const pathStringLiteral = new StringLiteralBuilder().withValue(path).build();
 
     const routerArguments = new RouterArgumentsBuilder().withServerType('REST.Fastify').build();
@@ -51,7 +46,7 @@ export class RouterDefinitionBuilderDirector {
       .withControllers([
         new RouterControllerBuilder()
           .withArguments(argumentList)
-          .withBoundedContextModule(bcModule)
+          .withApiDeclaration(apiDeclaration)
           .withControllerIdentifier(controllerIdentifier)
           .withControllerInstanceName(controllerIntanceName)
           .withMethod(method)

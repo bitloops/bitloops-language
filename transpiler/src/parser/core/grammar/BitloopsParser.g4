@@ -897,8 +897,16 @@ wordsWithSpaces
     : alpha_numeric_ws+
     ;
 
+apiIdentifier
+    : Identifier
+    ;
+
+apiDeclaration
+    : OpenBracket apiIdentifier CloseBracket
+    ;
+
 routerController
-    : httpMethodVerb OpenParen pathString CloseParen Colon boundedContextModuleDeclaration restControllerIdentifier methodArguments SemiColon?
+    : httpMethodVerb OpenParen pathString CloseParen Colon apiDeclaration restControllerIdentifier methodArguments SemiColon?
     ;
 
 boundedContextDeclaration
