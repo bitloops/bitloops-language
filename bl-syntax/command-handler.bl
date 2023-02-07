@@ -1,0 +1,52 @@
+
+
+@RespondWithPublish // Here we should think on how can we indicate that this Handler expects a response 
+//not without request/response manner - shall it be a different element (with response?)
+CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
+    execute (command: WithdrawMoneyCommand): (OK(void), Errors(
+        ApplicationErrors.AccountNotFound
+        | DomainErrors.PINIsNotPositiveNumber
+        | DomainErrors.InvalidCustomerPIN
+        )) {
+        
+        const accountId = UUIDv4(command.accountId);
+        const accountEntity = this.accountRepo.getById(accountId); // as a comment this. might not be useful accountRepo will be fine in my mind (Antonis)
+
+        if(NOT accountEntity) { // Here we might have to do an improvement to be something like not exists? 
+            return ApplicationErrors.AccountNotFound(command.accountId);
+        }
+
+        accountEntity.withdrawAmount(command.amount); //provide the available aggregate methods
+        this.accountRepo.update(accountEntity);
+    }
+  }
+
+  // typescript
+  export class WithdrawMoneyCommandHandler
+  implements Application.IUseCase<WithdrawMoneyCommand, Promise<InsertPINCommandHandlerResponse>>
+{
+  private accountRepo: IAccountWriteRepo;
+
+  constructor(accountRepo: IAccountWriteRepo) {
+    this.accountRepo = accountRepo;
+  }
+
+  @RespondWithPublish()
+  async execute(command: WithdrawMoneyCommand): Promise<InsertPINCommandHandlerResponse> {
+    const accountId = new Domain.UUIDv4(command.accountId);
+
+    const accountEntity = await this.accountRepo.getById(accountId);
+
+    if (!accountEntity) {
+      return fail(new ApplicationErrors.AccountNotFound(command.accountId));
+    }
+    const withdrawOrError = accountEntity.withdrawAmount(command.amount);
+    if (withdrawOrError.isFail()) {
+      return fail(withdrawOrError.value);
+    }
+    await this.accountRepo.update(accountEntity);
+    return ok();
+  }
+}
+
+
