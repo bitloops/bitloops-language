@@ -5,8 +5,9 @@ import {
   ObjectId as ObjectIdImport,
   Collection as CollectionImport,
   TransactionOptions as TransactionOptionsImport,
-  ClientSession as ClientSessionImport
+  ClientSession as ClientSessionImport,
 } from 'mongodb';
+import { OptimisticConcurrency } from './decorators/concurrency';
 
 namespace Mongo {
   export class Client extends MongoClient {}
@@ -19,4 +20,4 @@ namespace Mongo {
   export type ClientSession = ClientSessionImport;
 }
 
-export { Mongo };
+export { Mongo, OptimisticConcurrency };

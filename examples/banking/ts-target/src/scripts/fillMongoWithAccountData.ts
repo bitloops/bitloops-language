@@ -1,9 +1,7 @@
 import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';
-// or as an es module:
-// import { MongoClient } from 'mongodb'
 
 // Connection URL
-const url = 'mongodb://127.0.0.1:30001,127.0.0.1:30002,host3:27017/?replicaSet=myRs';
+const url = 'mongodb://127.0.0.1:30001/?directConnection=true&replicaSet=my-replica-set';
 const client = new Mongo.Client(url);
 
 // Database Name
