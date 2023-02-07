@@ -9,7 +9,7 @@ console.log('isProduction', isProduction);
 const appConfig: Constants.ApplicationConfig = {
   //NOTES:
   //- Command and Query bus need to be the same because message bus needed for response topic is figured out by them
-  // - Integration and Command need to be the same because integration is subscribed to a message bus for the response of the command
+  // -Integration and Command need to be the same because integration is subscribed to a message bus for the response of the command
   CONTEXT_IDs_MAPPINGS: {
     [BANKING_CONTEXT_ID]: {
       COMMAND_BUS: Constants.CONTEXT_TYPES.InProcess,

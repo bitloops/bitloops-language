@@ -1,6 +1,6 @@
 import { Infra, Application } from '@bitloops/bl-boilerplate-core';
-import { MoneyDepositedIntegrationEvent } from '../contracts';
-import { MoneyDepositedToAccount } from '../domain/events/MoneyDepositedToAccount';
+import { MoneyDepositedIntegrationEvent } from '../../../contracts';
+import { MoneyDepositedToAccount } from '../../../domain/events/MoneyDepositedToAccount';
 
 export class MoneyDepositedPublishIntegrationEventHandler implements Application.IHandle {
   constructor(private eventBus: Infra.EventBus.IEventBus) {}
