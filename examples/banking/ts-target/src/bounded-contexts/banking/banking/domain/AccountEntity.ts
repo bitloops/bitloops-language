@@ -23,7 +23,7 @@ type TAccountEntityPrimitives = {
 
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
   private constructor(props: AccountProps) {
-    props.version |= 1;
+    props.version ||= 1;
     super(props, props.id);
   }
 
