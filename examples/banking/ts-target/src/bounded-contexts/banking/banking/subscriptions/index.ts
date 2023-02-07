@@ -20,7 +20,7 @@ import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/Mon
 import { MoneyDepositedPublishIntegrationEventHandler } from '../application/MoneyDepositedPublishIntegrationEventHandler';
 import { GetCustomerByAccountIdQuery } from '../application/get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 import { SendEmailVerificationCommand } from '../application/send-email-verification';
-import { AfterMoneyDepositedHandler } from '../application/AfterMoneyDepositedHandler';
+import { SendEmailAfterMoneyDepositedHandler } from '../application/AfterMoneyDepositedHandler';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
@@ -67,7 +67,7 @@ export const setUpTodoSubscriptions = async () => {
   const moneyDepositedIntegrationEventHandler = new MoneyDepositedPublishIntegrationEventHandler(
     integrationEventBus,
   );
-  const afterMoneyDepositedHandler = new AfterMoneyDepositedHandler(commandBus, queryBus);
+  const afterMoneyDepositedHandler = new SendEmailAfterMoneyDepositedHandler(commandBus, queryBus);
   await domainEventBus.subscribe<MoneyDepositedToAccount>(
     MoneyDepositedToAccount.getEventTopic(),
     (event) => {
