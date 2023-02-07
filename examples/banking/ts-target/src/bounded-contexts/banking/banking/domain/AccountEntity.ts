@@ -23,6 +23,7 @@ type TAccountEntityPrimitives = {
 
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
   private constructor(props: AccountProps) {
+    props.version |= 1;
     super(props, props.id);
   }
 
@@ -32,7 +33,6 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     const account = new AccountEntity(props);
     const isNew = !props.id;
     if (isNew) {
-      account.props.version = 1;
       account.addDomainEvent(new AccountCreated(account));
     }
     return ok(account);
