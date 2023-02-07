@@ -76,6 +76,7 @@ describe('Semantic core error End To End', () => {
         throw new Error('Transpiler should return error');
       }
       let i = 0;
+      // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
       result.forEach((error) => {
         expect(error).toBeInstanceOf(IntermediateASTValidationError);
         expect((error as IntermediateASTValidationError).message).toEqual(
@@ -135,6 +136,7 @@ describe('Semantic setup error End To End', () => {
         throw new Error('Transpiler should return error');
       }
       let i = 0;
+      // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
       result.forEach((error) => {
         expect(error).toBeInstanceOf(IntermediateASTValidationError);
         expect((error as IntermediateASTValidationError).message).toEqual(
@@ -187,6 +189,7 @@ describe('Semantic bounded context errors End To End', () => {
         throw new Error('Transpiler should return error');
       }
       let i = 0;
+      // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
       result.forEach((error) => {
         expect(error).toBeInstanceOf(IntermediateASTValidationError);
         expect((error as IntermediateASTValidationError).message).toEqual(

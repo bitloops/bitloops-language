@@ -13,7 +13,7 @@ const todoReadRepo = RepoAdapters.Mongo({
     collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
   }) concretes [Todo][Todo]TodoReadRepoPort;
 
-const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);
+// const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);
 
 const todoRESTRouter = RESTRouter(REST.Fastify) {
     Get('/'): [Todo][Todo]GetTodosRESTController(getAllTodoUseCase);
