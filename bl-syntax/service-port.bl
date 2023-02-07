@@ -1,0 +1,7 @@
+ServicePort EmailServicePort {
+    sendEmail(email: Email): void;
+
+    sendEmailWithAttachment(email: Email, attachment: Attachment): void;
+
+    sendEmailWithHeaders(email: Email, headers: Header[]): void;
+}

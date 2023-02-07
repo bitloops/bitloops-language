@@ -1,0 +1,17 @@
+// Evaluation in TS
+// const currency = Domain.StandardVO.Currency.Value.create({ currencyCode: data.balance.currency, }).value 
+
+// Evaluation in BL
+// const currency = StandardVO.Currency.create({ currencyCode: data.balance.currency, })
+
+Props MoneyProps {
+  //Let's check this exact syntax
+  StandardVO.Currency currency;
+  float amount;
+}
+ValueObject MoneyVO {
+    
+ constructor(props: MoneyProps): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValue, StandardVO.Currency.Errors)) {
+    applyRules(AmountIsPositiveNumberRule(props.amount.toString()), BalanceAmountOutOfBoundsRule(props.amount))
+  }
+}

@@ -1,0 +1,7 @@
+// optimistic concurrency
+const todoWriteRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+    useOptimistic: true
+  }) concretes [Todo][Todo]TodoWriteRepoPort;
+  

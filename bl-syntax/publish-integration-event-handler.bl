@@ -1,0 +1,20 @@
+
+PublishIntegrationEventHandler MoneyDepositedPublishIntegrationEventHandler {    
+  handle(event: MoneyDepositedToAccountDomainEvent) {
+
+    const accountId = event.account.id;
+    const balance = event.account.balance;
+    const events = MoneyDepositedIntegrationEvent.create({
+      accountId: accountId.toString(),
+      balanceAmount: balance.amount,
+    });
+    
+    this.eventBus.publishMany(events);
+  }
+}
+
+
+  //1. Add mapper to MoneyDepositedIntegrationEvent.create  (TODO fix)
+  // e.g.  const eventsWithTopic = events.map((event) => {
+  //   return { message: event, topic: event.eventTopic };
+  // });

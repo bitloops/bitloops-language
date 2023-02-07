@@ -1,11 +1,11 @@
 
-// Perhpas we could use Structs to define the data schema for each version
+// Structs or DTOs for each version of the integration event
 Struct TodoIntegrationSchemaV1 {
   string accountId;
   int32 balanceAmount;
 }
 
-Props TodoIntegrationSchemaV2Props {
+Struct TodoIntegrationSchemaV2 {
   string accountId;
   int32 amount;
 }
@@ -13,14 +13,47 @@ Props TodoIntegrationSchemaV2Props {
 Props MoneyDepositedInputProps {
   string accountId;
   int32 balanceAmount;
-}; // v1 | v2 ...
+}; 
 
-IntegrationEvent MoneyDepositedIntegrationEvent <MoneyDepositedIntegrationEventPayload> {
-  versions: ['v1', 'v2'];
+IntegrationEvent MoneyDepositedIntegrationEvent {
   input: MoneyDepositedInputProps;
+  versions: ['v1.0.0', 'v2'];
 
   // Basically just needs to define a mapper of data for each version
+  // Predefined method names based on provided versions, (concat of standard word + CammelCase version)
   toIntegrationDataV1(data): TodoIntegrationSchemaV1 {
+    return {
+      accountId: data.accountId,
+      balanceAmount: data.balanceAmount,
+    };
+  }
+
+  toIntegrationDataV2(data): TodoIntegrationSchemaV2 {
+    return {
+      accountId: data.accountId,
+      amount: data.balanceAmount,
+    };
+  }
+
+  // Needs to define the topic for each version, we could have a default topic
+  getEventTopic(version) {
+    return `integration.${MoneyDepositedIntegrationEvent.name}.${version}`;
+  }
+}
+
+
+
+IntegrationEvent MoneyDepositedIntegrationEvent {
+  input: MoneyDepositedInputProps;
+  versions: {
+    v1.0.0: mapperForFirstVersion;
+    v2: toIntegrationDataV2;
+  }
+
+  // Basically just needs to define a mapper of data for each version
+
+  // You can name them whatever you want
+  mapperForFirstVersion(data): TodoIntegrationSchemaV1 {
     return {
       accountId: data.accountId,
       balanceAmount: data.balanceAmount,
