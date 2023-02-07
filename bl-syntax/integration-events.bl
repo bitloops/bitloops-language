@@ -1,0 +1,41 @@
+
+// Perhpas we could use Structs to define the data schema for each version
+Struct TodoIntegrationSchemaV1 {
+  string accountId;
+  int32 balanceAmount;
+}
+
+Props TodoIntegrationSchemaV2Props {
+  string accountId;
+  int32 amount;
+}
+
+Props MoneyDepositedInputProps {
+  string accountId;
+  int32 balanceAmount;
+}; // v1 | v2 ...
+
+IntegrationEvent MoneyDepositedIntegrationEvent <MoneyDepositedIntegrationEventPayload> {
+  versions: ['v1', 'v2'];
+  input: MoneyDepositedInputProps;
+
+  // Basically just needs to define a mapper of data for each version
+  toIntegrationDataV1(data): TodoIntegrationSchemaV1 {
+    return {
+      accountId: data.accountId,
+      balanceAmount: data.balanceAmount,
+    };
+  }
+
+  toIntegrationDataV2(data): TodoIntegrationSchemaV2 {
+    return {
+      accountId: data.accountId,
+      amount: data.balanceAmount,
+    };
+  }
+
+  // Needs to define the topic for each version, we could have a default topic
+  getEventTopic(version) {
+    return `integration.${MoneyDepositedIntegrationEvent.name}.${version}`;
+  }
+}
