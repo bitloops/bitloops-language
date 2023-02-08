@@ -1,5 +1,5 @@
 
-PublishIntegrationEventHandler MoneyDepositedPublishIntegrationEventHandler {    
+DomainToIntegrationEventHandler MoneyDepositedDomainToIntegrationEventHandler {    
   handle(event: MoneyDepositedToAccountDomainEvent) {
 
     const accountId = event.account.id;
@@ -14,7 +14,9 @@ PublishIntegrationEventHandler MoneyDepositedPublishIntegrationEventHandler {
 }
 
 
-  //1. Add mapper to MoneyDepositedIntegrationEvent.create  (TODO fix)
-  // e.g.  const eventsWithTopic = events.map((event) => {
-  //   return { message: event, topic: event.eventTopic };
-  // });
+//1. Add mapper to MoneyDepositedIntegrationEvent.create  (TODO fix)
+// e.g.  const eventsWithTopic = events.map((event) => {
+//   return { message: event, topic: event.eventTopic };
+// });
+// 2. Perhaps allow the injection of custom services here, for the creation of fat events
+// They would need to have explicit DIs.
