@@ -41,33 +41,27 @@ IntegrationEvent MoneyDepositedIntegrationEvent {
   }
 }
 
+@disabled['v2']
+IntegrationEvent MoneyDepositedIntegrationEvent(input: MoneyDepositedInputProps) {
+  // Maybe have disable list of versions?
 
-
-IntegrationEvent MoneyDepositedIntegrationEvent {
-  input: MoneyDepositedInputProps;
-  versions: {
-    v1.0.0: mapperForFirstVersion;
-    v2: toIntegrationDataV2;
-  }
-
-  // Basically just needs to define a mapper of data for each version
-
-  // You can name them whatever you want
-  mapperForFirstVersion(data): TodoIntegrationSchemaV1 {
+  'v1.0.9' : TodoIntegrationSchemaV1 {
+    const fullName = `${input.firstName} ${input.lastName}`;
     return {
-      accountId: data.accountId,
-      balanceAmount: data.balanceAmount,
+      accountId: input.accountId,
+      balanceAmount: input.balanceAmount,
     };
   }
 
-  toIntegrationDataV2(data): TodoIntegrationSchemaV2 {
+  'v2' : TodoIntegrationSchemaV2 {
     return {
-      accountId: data.accountId,
-      amount: data.balanceAmount,
+      accountId: input.accountId,
+      amount: input.balanceAmount,
     };
   }
 
   // Needs to define the topic for each version, we could have a default topic
+  // This could be automated??
   getEventTopic(version) {
     return `integration.${MoneyDepositedIntegrationEvent.name}.${version}`;
   }

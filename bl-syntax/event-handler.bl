@@ -1,17 +1,21 @@
 // Works for Domain Event and Integration Event
-EventHandler SendEmailAfterMoneyDepositedHandler {
+@disabled
+// Do we need to distinguish Integration and Domain event handlers?
+IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(version: 'v1') {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   //and get the eventTopic to subscribe from it
-  version: 'v1'
+  version: 'v1' // Use this or above?
+  //Use this syntax or @disabled
+  disabled: false
   
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedToAccountDomainEvent) {
+  handle(event: MoneyDepositedToAccountDomainEvent): void {
     const account = event.account;
     const accountId = account.id;
 
-    //TODO revesit 
-    const getCustomerQuery = GetCustomerByAccountIdQuery.create(accountId.toString());
+    //TODO revisit 
+    const getCustomerQuery = GetCustomerByAccountIdQuery.create({accountId: accountId.toString()});
     const customerQueryResult = this.queryBus.query(
       getCustomerQuery,
     );
@@ -20,9 +24,9 @@ EventHandler SendEmailAfterMoneyDepositedHandler {
     }
     const email = customerQueryResult.email;
 
-    const command = new SendEmailVerificationCommand({ accountId: accountId.toString(), email });
+    const command =  SendEmailVerificationCommand.create({ accountId: accountId.toString(), email });
 
-    await this.commandBus.send(command);
+    this.commandBus.send(command);
   }
 }
   

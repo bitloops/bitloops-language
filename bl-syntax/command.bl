@@ -4,13 +4,20 @@ DTO InsertPINRequestDTO  {
 }
 
 Command InsertPINCommand {
-    commandName: 'INSERT_PIN_COMMAND_NAME';  
-    commandDTO: InsertPINRequestDTO;
+    // commandTopic: `${commandName}.${contextId}`;
+    //Properties instead of DTO
+    string email;
+    string pin;
+    // commandDTO: InsertPINRequestDTO;
+
+    // Will we allow to override the default commandTopic? And if yes should we use getCommandTopic function or just a property?
+
+    // Should we declare here which commandHandler will handle this command?
 
     //It can be default
-    getCommandTopic(): string {
-      // Will we have a "global" contextId?
-      return this.commandName + '.' + contextId;
-    }
+    // getCommandTopic(): string {
+    //   // Will we have a "global" contextId?
+    //   return this.commandName + '.' + contextId;
+    // }
   }
   

@@ -1,10 +1,11 @@
 DomainEvent AccountCreatedDomainEvent<AccountEntity> {
+    //Optional?
     eventName: 'ACCOUNT_CREATED';
 
     //default
-    getEventTopic() {
-        return AccountCreated.eventName;
-    }
+    // getEventTopic() {
+    //     return AccountCreated.eventName;
+    // }
 }
 
 //Should also be added in:  
@@ -16,9 +17,7 @@ Root Entity AccountEntity {
     constructor(props: TodoProps): (OK(AccountEntity), Errors()) {
         const isNew = props.id != null;
         if (isNew) {
-            this.addDomainEvent(new AccountCreatedDomainEvent());
-            // or this?
-            this.addDomainEvent<AccountCreatedDomainEvent>();
+            this.addDomainEvent(AccountCreatedDomainEvent.create());
             // or this?
             this.addDomainEvent(AccountCreatedDomainEvent);
         }

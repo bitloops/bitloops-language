@@ -7,7 +7,7 @@ Props TitleProps {
 }
 
 ValueObject TitleVO {
-  constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+  constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError | DomainErrors.TitleEmptyError)  ) {
     applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
@@ -27,7 +27,7 @@ ReadModel TodoReadModel {
 Root Entity TodoEntity {
   constructor(props: TodoProps): (OK(TodoEntity), Errors()) {}
 
-  complete(): (OK(void), Errors()) {
+complete(): (OK(void), Errors()) {
     this.completed = true;
   }
 

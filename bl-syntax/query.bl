@@ -1,14 +1,6 @@
-DTO GetCustomerByIdDTO  {
-    string id;
-}
-
 Query GetCustomerByIdQuery {
-    queryName: 'GET_CUSTOMER_BY_ID_QUERY_NAME';
-    queryDTO: GetCustomerByIdDTO;
-    
-    //It can be default
-    getQueryTopic(): string {
-      return GetCustomerByIdQuery.queryName + '.' + contextId;
-    }
+    // queryName: 'GET_CUSTOMER_BY_ID_QUERY_NAME';
+    // queryDTO: GetCustomerByIdDTO;
+    string id;
   }
   

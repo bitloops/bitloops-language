@@ -5,3 +5,4 @@ const todoWriteRepo = RepoAdapters.Mongo({
     useOptimistic: true
   }) concretes [Todo][Todo]TodoWriteRepoPort;
   
+  // Declare internal/external command,event bus etc for each bc

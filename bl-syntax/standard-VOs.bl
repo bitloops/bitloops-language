@@ -6,12 +6,22 @@
 
 Props MoneyProps {
   //Let's check this exact syntax
+  StandardVO["Currency"] currency;
+  // or
   StandardVO.Currency currency;
   float amount;
 }
 ValueObject MoneyVO {
     
- constructor(props: MoneyProps): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValue, StandardVO.Currency.Errors)) {
+ constructor(props: MoneyProps): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValue /*| StandardVO.Currency.Errors*/)) {
+  // this will be created in the command handler by the user  
+  // const errorOk = Currency.create(props.currency)
+    // if (errorOk.isError()) {
+    //   return errorOk
+    // }
+
+
     applyRules(AmountIsPositiveNumberRule(props.amount.toString()), BalanceAmountOutOfBoundsRule(props.amount))
   }
 }
+ 
