@@ -1,7 +1,3 @@
-DTO InsertPINRequestDTO  {
-    string email;
-    string pin;
-}
 
 Command InsertPINCommand {
     // commandTopic: `${commandName}.${contextId}`;

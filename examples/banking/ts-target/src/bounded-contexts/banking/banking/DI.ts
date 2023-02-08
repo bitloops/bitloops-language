@@ -26,17 +26,17 @@ import { InsertPINCommandHandler } from './application/insert-card-pin/InsertPIN
 import { DepositMoneyCommandHandler } from './application/deposit-money/DepositMoneyCommandHandler';
 import { WithdrawMoneyCommandHandler } from './application/withdraw-money/WithdrawMoneyCommandHandler';
 import { CONTEXT_ID } from './config/index';
-import { InsertCardPINRESTCommandController } from '../../../api/banking/modules/banking/insert-card-pin/InsertCardPINRESTCommandController';
-import { DepositMoneyRESTCommandController } from '../../../api/banking/modules/banking/deposit-money/DepositMoneyRESTCommandController';
-import { WithdrawMoneyRESTCommandController } from '../../../api/banking/modules/banking/withdraw-money/WithdrawMoneyRESTCommandController';
-import { GetAccountByIdQueryController } from '../../../api/banking/modules/banking/get-account-by-id/GetAccountByIdQueryController';
+import { InsertCardPINRESTCommandController } from '../../../api/banking/banking/insert-card-pin/InsertCardPINRESTCommandController';
+import { DepositMoneyRESTCommandController } from '../../../api/banking/banking/deposit-money/DepositMoneyRESTCommandController';
+import { WithdrawMoneyRESTCommandController } from '../../../api/banking/banking/withdraw-money/WithdrawMoneyRESTCommandController';
+import { GetAccountByIdQueryController } from '../../../api/banking/banking/get-account-by-id/GetAccountByIdQueryController';
 import { GetAccountQueryHandler } from './application/get-account-details/GetAccountQueryHandler';
 import { GetCustomerQueryHandler } from './application/get-customer-details-by-id/GetCustomerQueryHandler';
 import { MongoCustomerReadRepo } from './repos/concretions/MongoCustomerReadRepo';
 import { MongoAccountReadRepo } from './repos/concretions/MongoAccountReadRepo';
-import { GetCustomerByIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-id/GetCustomerByIdQueryController';
+import { GetCustomerByIdQueryController } from '../../../api/banking/banking/get-customer-by-id/GetCustomerByIdQueryController';
 import { GetCustomerByAccountIdQueryHandler } from './application/get-customer-details-by-account-id/GetCustomerByAccountIdQueryHandler';
-import { GetCustomerByAccountIdQueryController } from '../../../api/banking/modules/banking/get-customer-by-account-id/GetCustomerByAccountIdQueryController';
+import { GetCustomerByAccountIdQueryController } from '../../../api/banking/banking/get-customer-by-account-id/GetCustomerByAccountIdQueryController';
 import { SendEmailVerificationCommandHandler } from './application/send-email-verification/SendEmailVerificationCommandHandler';
 import { MockEmailService } from './services/concretions';
 

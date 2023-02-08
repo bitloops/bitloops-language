@@ -1,9 +1,10 @@
 
 
-@RespondWithPublish // Here we should think on how can we indicate that this Handler expects a response 
+@Respond // Here we should think on how can we indicate that this Handler expects a response 
 //not without request/response manner - shall it be a different element (with response?)
 CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
-    execute (command: WithdrawMoneyCommand): (OK(void), Errors(
+      // Should this be named handle or execute?
+     handle(command: WithdrawMoneyCommand): (OK(void), Errors(
         ApplicationErrors.AccountNotFound
         | DomainErrors.PINIsNotPositiveNumber
         | DomainErrors.InvalidCustomerPIN
@@ -12,6 +13,7 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
         const accountId = UUIDv4(command.accountId);
         const accountEntity = this.accountRepo.getById(accountId); // as a comment this. might not be useful accountRepo will be fine in my mind (Antonis)
 
+        // or accountEnttity == null or accountEntity.exists()
         if(NOT accountEntity) { // Here we might have to do an improvement to be something like not exists? 
             return ApplicationErrors.AccountNotFound(command.accountId);
         }
@@ -48,5 +50,3 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     return ok();
   }
 }
-
-

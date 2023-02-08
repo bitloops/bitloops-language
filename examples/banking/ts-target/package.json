@@ -20,11 +20,12 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@bitloops/bl-boilerplate-core": "^0.1.1",
+    "@bitloops/bl-boilerplate-infra-graphql": "^0.1.2",
     "@bitloops/bl-boilerplate-infra-mongo": "^0.0.3",
     "@bitloops/bl-boilerplate-infra-rest-fastify": "^0.0.4",
-    "@bitloops/bl-boilerplate-infra-graphql": "^0.1.2",
     "@types/bcrypt-nodejs": "0.0.31",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "got": "^12.5.3"
   },
   "devDependencies": {
     "@types/jest": "^28.1.3",

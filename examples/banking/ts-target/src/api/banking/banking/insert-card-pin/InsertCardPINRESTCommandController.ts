@@ -1,9 +1,9 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from '../../../../../bounded-contexts/banking/banking/domain/errors/index';
-import { InsertPINCommand } from '../../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommand';
-import { InsertPINRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO';
-import { ApplicationErrors } from '../../../../../bounded-contexts/banking/banking/application/errors/index';
+import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
+import { InsertPINCommand } from '../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommand';
+import { InsertPINRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO';
+import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors/index';
 
 type InsertCardPinUseCaseResponse = Either<string, DomainErrors.InvalidMonetaryValue>;
 

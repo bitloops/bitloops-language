@@ -1,8 +1,8 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { CustomerReadModel } from '../../../../../bounded-contexts/banking/banking/domain/CustomerReadModel';
-import { ApplicationErrors } from '../../../../../bounded-contexts/banking/banking/application/errors';
-import { GetCustomerByIdQuery } from '../../../../../bounded-contexts/banking/banking/application/get-customer-details-by-id/GetCustomerByIdQuery';
+import { CustomerReadModel } from '../../../../bounded-contexts/banking/banking/domain/CustomerReadModel';
+import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors';
+import { GetCustomerByIdQuery } from '../../../../bounded-contexts/banking/banking/application/get-customer-details-by-id/GetCustomerByIdQuery';
 
 type GetCustomerBydIdUseCaseResponse = Either<
   CustomerReadModel,

@@ -1,8 +1,8 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from '../../../../../bounded-contexts/banking/banking/domain/errors/index';
-import { DepositMoneyCommand } from '../../../../../bounded-contexts/banking/banking/application/deposit-money/DepositMoneyCommand';
-import { DepositMoneyRequestDTO } from '../../../../../bounded-contexts/banking/banking/dtos/DepositMoneyRequestDTO';
+import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
+import { DepositMoneyCommand } from '../../../../bounded-contexts/banking/banking/application/deposit-money/DepositMoneyCommand';
+import { DepositMoneyRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/DepositMoneyRequestDTO';
 
 type DepositMoneyUseCaseResponse = Either<void, DomainErrors.InvalidMonetaryValue>;
 

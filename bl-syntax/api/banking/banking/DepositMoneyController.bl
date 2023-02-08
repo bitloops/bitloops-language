@@ -1,0 +1,28 @@
+ RESTController DepositMoneyController (commandBus: CommandBusPort) { // Will we have command bus here? If we have composition controller it needs command or query buses as dependencies
+  method: REST.Methods.POST;
+  execute(request, response) {
+    const amount = request.body.amount;
+    const accountId = request.body.accountId;
+
+    const command = DepositMoneyCommand.create({
+        amount: amount,
+        accountId: accountId,
+    });
+    
+    const result = this.commandBus.request(command) // Does request sound good?(instead of sendAndGetResponse)
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case DomainErrors.InvalidMonetaryValue: {
+          this.badRequest(response, result.value);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.created(response);
+    }
+  }
+}

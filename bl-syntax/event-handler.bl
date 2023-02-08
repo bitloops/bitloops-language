@@ -1,30 +1,23 @@
 // Works for Domain Event and Integration Event
 @disabled
 // Do we need to distinguish Integration and Domain event handlers?
-IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(version: 'v1') {
+IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
-  //and get the eventTopic to subscribe from it
-  version: 'v1' // Use this or above?
+  // and get the eventTopic to subscribe from it
+  
+  eventVersion: 'v1'; // Use this or above?
   //Use this syntax or @disabled
-  disabled: false
+  // disabled: false
   
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedToAccountDomainEvent): void {
+  handle(event: MoneyDepositedToAccountIntegrationEvent): void {
     const account = event.account;
     const accountId = account.id;
 
-    //TODO revisit 
-    const getCustomerQuery = GetCustomerByAccountIdQuery.create({accountId: accountId.toString()});
-    const customerQueryResult = this.queryBus.query(
-      getCustomerQuery,
-    );
-    if (customerQueryResult is Error) {
-      return;
-    }
-    const email = customerQueryResult.email;
+    const email = this.customerService.getEmailByAccountId(accountId.toString());
 
-    const command =  SendEmailVerificationCommand.create({ accountId: accountId.toString(), email });
+    const command = SendEmailVerificationCommand.create({ accountId: accountId.toString(), email });
 
     this.commandBus.send(command);
   }
@@ -32,3 +25,25 @@ IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(version: 'v1') {
   
 //1. In TS we can check if query bus/command bus are unused and not include them in the dependencies
 //2. In IntermediateAST -> CompleteAST we need to find the type of customerQueryResult
+
+@disabled
+DomainEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
+  //should we support use case as dependency
+  // If Subscribed to integration-event, we need to define what version
+  // and get the eventTopic to subscribe from it
+  
+  //Use this syntax or @disabled
+  // disabled: false
+  
+  //Should we have void as return type for visibility
+  handle(event: MoneyDepositedToAccountDomainEvent): void {
+    const account = event.account;
+    const accountId = account.id;
+
+    const email = this.customerService.getEmailByAccountId(accountId.toString());
+
+    const command = SendEmailVerificationCommand.create({ accountId: accountId.toString(), email });
+
+    this.commandBus.send(command);
+  }
+}

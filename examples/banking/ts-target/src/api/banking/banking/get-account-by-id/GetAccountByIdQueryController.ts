@@ -1,8 +1,8 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { AccountReadModel } from '../../../../../bounded-contexts/banking/banking/domain/AccountReadModel';
-import { GetAccountQuery } from '../../../../../bounded-contexts/banking/banking/application/get-account-details/GetAccountQuery';
-import { ApplicationErrors } from '../../../../../bounded-contexts/banking/banking/application/errors';
+import { AccountReadModel } from '../../../../bounded-contexts/banking/banking/domain/AccountReadModel';
+import { GetAccountQuery } from '../../../../bounded-contexts/banking/banking/application/get-account-details/GetAccountQuery';
+import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors';
 
 type GetAccountByIdUseCaseResponse = Either<AccountReadModel, ApplicationErrors.AccountNotFound>;
 

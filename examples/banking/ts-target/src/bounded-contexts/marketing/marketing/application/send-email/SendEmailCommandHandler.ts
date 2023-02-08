@@ -1,5 +1,5 @@
 import { Application, ok, RespondWithPublish, Either } from '@bitloops/bl-boilerplate-core';
-import { IEmailService } from '../../services/concretions/IEmailService';
+import { IEmailService } from '../../services/interfaces/IEmailService';
 import { SendEmailCommand } from './SendEmailCommand';
 
 type SendEmailCommandHandlerResponse = Either<void, void>;

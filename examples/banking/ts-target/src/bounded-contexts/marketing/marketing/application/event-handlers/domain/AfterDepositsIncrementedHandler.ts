@@ -5,11 +5,13 @@ import {
 } from '../../../../../banking/banking/contracts';
 import { DepositsIncrementedDomainEvent } from '../../../domain/events/DepositsIncrementedDomainEvent';
 import { SendEmailCommand } from '../../send-email';
+import { ICustomerService } from '../../../services/interfaces/ICustomerService';
 
 export class AfterDepositsIncrementedHandler implements Application.IHandle {
   constructor(
     private commandBus: Infra.CommandBus.ICommandBus,
     private queryBus: Infra.QueryBus.IQueryBus,
+    private customerService: ICustomerService,
   ) {}
 
   public async handle(event: DepositsIncrementedDomainEvent): Promise<void> {
@@ -25,16 +27,11 @@ export class AfterDepositsIncrementedHandler implements Application.IHandle {
       return;
     }
 
-    const getCustomerQuery = new GetCustomerByAccountIdQuery(data.id.toString());
-    const customerQueryResult = await this.queryBus.query<GetCustomerByAccountIdUseCaseResponse>(
-      getCustomerQuery,
-    );
-    if (customerQueryResult.isFail()) {
-      return;
-    }
+    const destinationEmail = await this.customerService.getEmailByAccountId(data.id.toString());
+
     const command = new SendEmailCommand({
       origin: 'ant@ant.com',
-      destination: customerQueryResult.value.email,
+      destination: destinationEmail,
       content: emailContent,
     });
 

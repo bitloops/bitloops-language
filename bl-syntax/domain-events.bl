@@ -1,5 +1,5 @@
 DomainEvent AccountCreatedDomainEvent<AccountEntity> {
-    //Optional?
+    //Optional? Created by default for the firstpart of the name?
     eventName: 'ACCOUNT_CREATED';
 
     //default
@@ -7,6 +7,8 @@ DomainEvent AccountCreatedDomainEvent<AccountEntity> {
     //     return AccountCreated.eventName;
     // }
 }
+
+DomainEvent AccountCreatedDomainEvent<AccountEntity>
 
 //Should also be added in:  
 //1. Aggregate create when new object  -> account.addDomainEvent(new AccountCreated(account));
@@ -21,10 +23,6 @@ Root Entity AccountEntity {
             // or this?
             this.addDomainEvent(AccountCreatedDomainEvent);
         }
-    }
-
-    public incrementVersion(): void {
-        this.version+= 1;
     }
 
 }
