@@ -22,7 +22,7 @@ import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { validUseCaseDeclarationCases } from './mocks/useCase.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -49,7 +49,7 @@ describe('UseCase declaration is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const parseResult = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(parseResult)) {
+        if (!isIntermediateASTValidationErrors(parseResult)) {
           const result = intermediateParser.complete(parseResult);
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }

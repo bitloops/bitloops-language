@@ -23,7 +23,7 @@ import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { validRestControllerStatementTestCases } from './mocks/controllers/restController.js';
 import { RestControllerBuilder } from './builders/controllers/restControllerBuilder.js';
@@ -65,7 +65,7 @@ describe('Rest controller declaration is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const parseResult = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(parseResult)) {
+        if (!isIntermediateASTValidationErrors(parseResult)) {
           const result = intermediateParser.complete(parseResult);
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }

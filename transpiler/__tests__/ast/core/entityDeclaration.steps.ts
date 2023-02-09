@@ -22,7 +22,7 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { validEntityTestCases } from './mocks/entity/entity.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -49,7 +49,7 @@ describe('Entity declaration is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const parseResult = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(parseResult)) {
+        if (!isIntermediateASTValidationErrors(parseResult)) {
           const result = intermediateParser.complete(parseResult);
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }

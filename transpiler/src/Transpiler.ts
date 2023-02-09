@@ -1,5 +1,4 @@
 import {
-  isIntermediateASTError,
   isIntermediateASTValidationErrors,
   isOriginalParserOrIntermediateASTError,
 } from './ast/core/guards/index.js';
@@ -37,13 +36,7 @@ export default class Transpiler {
     if (isOriginalParserOrIntermediateASTError(intermediateModel)) {
       return intermediateModel;
     }
-
-    const validatedIntermediateModel = this.validateIntermediateModel(intermediateModel);
-    if (isIntermediateASTError(validatedIntermediateModel)) {
-      return validatedIntermediateModel;
-    }
-
-    const completedIntermediateModel = this.completeIntermediateModel(validatedIntermediateModel);
+    const completedIntermediateModel = this.completeIntermediateModel(intermediateModel);
 
     const targetCode = this.intermediateASTModelToTargetLanguage(
       completedIntermediateModel,
@@ -66,7 +59,9 @@ export default class Transpiler {
     }
 
     const intermediateModel = this.originalASTToIntermediateModel(originalAST);
-    return intermediateModel;
+    const validatedIntermediateModel = this.validateIntermediateModel(intermediateModel);
+
+    return validatedIntermediateModel;
   }
 
   private bitloopsCodeToOriginalAST(
@@ -75,9 +70,7 @@ export default class Transpiler {
     return this.parser.parse(parseInputData);
   }
 
-  private originalASTToIntermediateModel(
-    originalLanguageAST: OriginalAST,
-  ): IntermediateAST | IntermediateASTError {
+  private originalASTToIntermediateModel(originalLanguageAST: OriginalAST): IntermediateAST {
     return this.originalLanguageASTToIntermediateModelTransformer.parse(originalLanguageAST);
   }
 
@@ -88,7 +81,7 @@ export default class Transpiler {
     return this.intermediateASTModelToTargetLanguageGenerator.generate(ASTModel, options);
   }
 
-  public validateIntermediateModel(
+  private validateIntermediateModel(
     intermediateModel: IntermediateAST,
   ): IntermediateASTValidationError[] | IntermediateAST {
     const validationResult = this.validator.validate(intermediateModel);
@@ -107,7 +100,7 @@ export default class Transpiler {
   ): value is TTranspileError[] {
     if (
       !isParserErrors(value) &&
-      !isIntermediateASTError(value) &&
+      !isIntermediateASTValidationErrors(value) &&
       !isTargetGeneratorError(value)
     ) {
       return false;

@@ -29,7 +29,7 @@
     "morgan": "^1.10.0",
     "uuid": "^8.3.2",
     "validator": "^13.7.0",
-    "@bitloops/bl-boilerplate-core": "^0.1.1",
+    "@bitloops/bl-boilerplate-core": "^0.0.6",
     "@bitloops/bl-boilerplate-infra-rest-fastify": "^0.0.3"
   },
   "devDependencies": {

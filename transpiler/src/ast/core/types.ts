@@ -20,14 +20,12 @@ export type IntermediateASTSetup = {
   [fileId: string]: IntermediateASTTree;
 };
 
-export type IntermediateASTError = IntermediateASTParserError[] | IntermediateASTValidationError[];
-
+export type IntermediateASTError = IntermediateASTValidationError[];
 export interface IIntermediateASTParser {
-  parse: (ast: OriginalAST) => IntermediateAST | IntermediateASTError;
+  parse: (ast: OriginalAST) => IntermediateAST;
   complete: (ast: IntermediateAST) => IntermediateAST;
 }
 
-export class IntermediateASTParserError extends Error {}
 export class IntermediateASTValidationError extends Error {
   private _metadata: TNodeMetadata;
   private _message: string;

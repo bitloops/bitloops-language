@@ -1,12 +1,9 @@
 import { OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
-import { isIntermediateASTParserError } from './guards/index.js';
 import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
 import {
-  IntermediateASTParserError,
   IIntermediateASTParser,
-  IntermediateASTError,
   IntermediateAST,
   IntermediateASTSetup,
   TBoundedContexts,
@@ -19,7 +16,7 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     this.intermediateASTTransformer = new IntermediateASTToCompletedIntermediateASTTransformer();
   }
 
-  parse(ast: OriginalAST): IntermediateAST | IntermediateASTError {
+  parse(ast: OriginalAST): IntermediateAST {
     const intermediateAST = this.originalASTToIntermediateASTTree(ast);
     return intermediateAST;
   }
@@ -30,13 +27,8 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     return completedASTTree;
   }
 
-  private originalASTToIntermediateASTTree(
-    ast: OriginalAST,
-  ): IntermediateAST | IntermediateASTParserError[] {
+  private originalASTToIntermediateASTTree(ast: OriginalAST): IntermediateAST {
     const intermediateASTCoreTree = this.originalASTCoreToIntermediateASTTree(ast.core);
-    if (isIntermediateASTParserError(intermediateASTCoreTree)) {
-      return intermediateASTCoreTree;
-    }
     if (!ast.setup) {
       return {
         core: intermediateASTCoreTree,
@@ -61,11 +53,7 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     return setupAST;
   }
 
-  private originalASTCoreToIntermediateASTTree(
-    astCore: OriginalASTCore,
-    // TODO IntermediateASTParserError will be generated in previous step if it exists, visitor is not expected to generate it
-    // TODO Remove this when error listener for syntax errors is implemented
-  ): TBoundedContexts | IntermediateASTParserError[] {
+  private originalASTCoreToIntermediateASTTree(astCore: OriginalASTCore): TBoundedContexts {
     const boundedContexts: TBoundedContexts = {};
     for (const [boundedContextName, boundedContext] of Object.entries(astCore)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
