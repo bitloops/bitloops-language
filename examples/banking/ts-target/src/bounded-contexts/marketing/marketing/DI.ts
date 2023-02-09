@@ -15,7 +15,7 @@ const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
 const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
 const customerService = new CustomerService();
 
-const afterDepositsIncrementedHandler = new SendEmailAfterDepositsIncrementedHandler(
+const sendEmailAfterDepositsIncrementedHandler = new SendEmailAfterDepositsIncrementedHandler(
   commandBus,
   queryBus,
   customerService,
@@ -25,6 +25,6 @@ const sendEmailCommandHandler = new SendEmailCommandHandler(new MockEmailService
 
 export {
   incrementDepositsCommandHandler,
-  afterDepositsIncrementedHandler,
+  sendEmailAfterDepositsIncrementedHandler,
   sendEmailCommandHandler,
 };

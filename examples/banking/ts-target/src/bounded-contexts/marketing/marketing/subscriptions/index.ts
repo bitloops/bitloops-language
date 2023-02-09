@@ -6,7 +6,7 @@ import { MoneyDepositedIntegrationHandler } from '../application/event-handlers/
 import { MoneyDepositedIntegrationEvent } from '../../../banking/banking/contracts/index';
 import { IncrementDepositsCommand } from '../application/increase-deposit-counter';
 import {
-  afterDepositsIncrementedHandler,
+  sendEmailAfterDepositsIncrementedHandler,
   incrementDepositsCommandHandler,
   sendEmailCommandHandler,
 } from '../DI';
@@ -30,7 +30,7 @@ export const setupSubscriptions = () => {
   domainEventBus.subscribe<DepositsIncrementedDomainEvent>(
     DepositsIncrementedDomainEvent.getEventTopic(),
     (event) => {
-      afterDepositsIncrementedHandler.handle(event);
+      sendEmailAfterDepositsIncrementedHandler.handle(event);
     },
   );
 

@@ -30,6 +30,7 @@ export class MoneyDepositedIntegrationHandler {
     console.log(`[AfterMoneyDepositedIntegrationEvent]: Successfully sent Increment Command`);
   }
 }
+// Maybe this should be generated in the setup
 // and in subscriptions
 const moneyDepositedIntegrationHandler = new MoneyDepositedIntegrationHandler(commandBus);
   integrationEventBus.subscribe<MoneyDepositedIntegrationEvent>(
@@ -46,21 +47,15 @@ type TIntegrationEventHandlerIdentifier = string;
 type TIntegrationEventHandler = {
   integrationEventHandler: {
     integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
-    eventVersion: string;
+    eventVersion: string; // or probably StringLiteral
     handle: THandle;
   } & TParameterList;
 }
 
 type THandle = {
   statements: TStatements;
-} & TParameter or TParameterIntegrationEvent;
-
-type TParameterIntegrationEvent = {
-  parameterIntegrationEvent: {
-    value: TParameterIdentifier;
-    type: TIntegrationEventIdentifier;
-  };
-};
+} & TParameter;
+// But in grammar use a paremeter with IntegrationEventIdentifier as type, not generic bitloops primary type
   
 //1. In TS we can check if query bus/command bus are unused and not include them in the dependencies
 //2. In IntermediateAST -> CompleteAST we need to find the type of customerQueryResult
@@ -95,14 +90,7 @@ type TDomainEventHandler = {
 
 type THandle = {
   statements: TStatements;
-} & TParameter or TParameterDomainEvent;
-
-type TParameterDomainEvent = {
-  parameterDomainEvent: {
-    value: TParameterIdentifier;
-    type: TDomainEventIdentifier;
-  };
-};
+} & TParameter;
 
 // TS 
 export class SendEmailAfterDepositsIncrementedHandler implements Application.IHandle {
@@ -137,3 +125,12 @@ export class SendEmailAfterDepositsIncrementedHandler implements Application.IHa
     console.log(`[AfterMoneyDepositsIncrementedDomainEvent]: Successfully sent SendEmail Command`);
   }
 }
+
+// Maybe this should be generated in the setup
+// and in subscriptions
+domainEventBus.subscribe<DepositsIncrementedDomainEvent>(
+  DepositsIncrementedDomainEvent.getEventTopic(),
+  (event) => {
+    sendEmailAfterDepositsIncrementedHandler.handle(event);
+  },
+);

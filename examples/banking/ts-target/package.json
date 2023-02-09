@@ -25,7 +25,7 @@
     "@bitloops/bl-boilerplate-infra-rest-fastify": "^0.0.4",
     "@types/bcrypt-nodejs": "0.0.31",
     "dotenv": "^16.0.1",
-    "got": "^12.5.3"
+    "got": "^11.8.3"
   },
   "devDependencies": {
     "@types/jest": "^28.1.3",
