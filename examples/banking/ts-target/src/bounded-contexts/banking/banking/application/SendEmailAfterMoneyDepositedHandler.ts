@@ -4,7 +4,7 @@ import { SendEmailVerificationCommand } from './send-email-verification';
 import { GetCustomerByAccountIdQuery } from './get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 import { GetCustomerByAccountIdUseCaseResponse } from './get-customer-details-by-account-id/GetCustomerByAccountIdQueryHandler';
 
-export class AfterMoneyDepositedHandler implements Application.IHandle {
+export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle {
   constructor(
     private commandBus: Infra.CommandBus.ICommandBus,
     private queryBus: Infra.QueryBus.IQueryBus,

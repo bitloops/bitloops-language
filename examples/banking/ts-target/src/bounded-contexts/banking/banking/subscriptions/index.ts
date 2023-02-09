@@ -16,11 +16,12 @@ import { GetAccountQuery } from '../application/get-account-details/GetAccountQu
 import { GetCustomerByIdQuery } from '../application/get-customer-details-by-id/GetCustomerByIdQuery';
 import { MoneyDepositedToAccount } from '../domain/events/MoneyDepositedToAccount';
 import { MoneyWithdrawnFromAccount } from '../domain/events/MoneyWithdrawnFromAccount';
-import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/MoneyWithdrawnPublishIntegrationEventHandler';
-import { MoneyDepositedPublishIntegrationEventHandler } from '../application/MoneyDepositedPublishIntegrationEventHandler';
+
+import { MoneyDepositedPublishIntegrationEventHandler } from '../application/event-handlers/domain/MoneyDepositedPublishIntegrationEventHandler';
 import { GetCustomerByAccountIdQuery } from '../application/get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 import { SendEmailVerificationCommand } from '../application/send-email-verification';
-import { AfterMoneyDepositedHandler } from '../application/AfterMoneyDepositedHandler';
+import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/event-handlers/domain/MoneyWithdrawnPublishIntegrationEventHandler.js';
+import { SendEmailAfterMoneyDepositedHandler } from '../application/SendEmailAfterMoneyDepositedHandler.js';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
@@ -67,7 +68,7 @@ export const setUpTodoSubscriptions = async () => {
   const moneyDepositedIntegrationEventHandler = new MoneyDepositedPublishIntegrationEventHandler(
     integrationEventBus,
   );
-  const afterMoneyDepositedHandler = new AfterMoneyDepositedHandler(commandBus, queryBus);
+  const afterMoneyDepositedHandler = new SendEmailAfterMoneyDepositedHandler(commandBus, queryBus);
   await domainEventBus.subscribe<MoneyDepositedToAccount>(
     MoneyDepositedToAccount.getEventTopic(),
     (event) => {

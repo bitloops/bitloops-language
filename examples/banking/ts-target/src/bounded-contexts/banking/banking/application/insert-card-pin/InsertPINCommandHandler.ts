@@ -15,7 +15,6 @@ type InsertPINCommandHandlerResponse = Either<
   | ApplicationErrors.CustomerNotFound
   | DomainErrors.PINIsNotPositiveNumber
   | DomainErrors.InvalidCustomerPIN
-  | DomainErrors.InvalidCustomerPIN
 >;
 
 export class InsertPINCommandHandler

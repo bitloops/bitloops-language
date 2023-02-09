@@ -1,17 +1,17 @@
 import { Infra } from '@bitloops/bl-boilerplate-core';
 import { CustomerCreated } from '../../domain/events/CustomerCreated';
 
-type TodoIntegrationSchemaV1 = {
+type IntegrationSchemaV1 = {
   accountId: string;
   balanceAmount: number;
 };
 
-type MoneyDepositedIntegrationEventPayload = TodoIntegrationSchemaV1;
+type MoneyDepositedIntegrationEventPayload = IntegrationSchemaV1;
 
 type MoneyDepositedInput = {
   accountId: string;
   balanceAmount: number;
-}; // v1 | v2 ...
+};
 
 type ToIntegrationDataMapper = (data: MoneyDepositedInput) => MoneyDepositedIntegrationEventPayload;
 
@@ -39,7 +39,7 @@ export class MoneyDepositedIntegrationEvent extends Infra.EventBus
     });
   }
 
-  static toIntegrationDataV1(data: MoneyDepositedInput): TodoIntegrationSchemaV1 {
+  static toIntegrationDataV1(data: MoneyDepositedInput): IntegrationSchemaV1 {
     return {
       accountId: data.accountId,
       balanceAmount: data.balanceAmount,

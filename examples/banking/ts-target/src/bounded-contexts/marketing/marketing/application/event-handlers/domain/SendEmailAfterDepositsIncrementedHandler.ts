@@ -7,7 +7,7 @@ import { DepositsIncrementedDomainEvent } from '../../../domain/events/DepositsI
 import { SendEmailCommand } from '../../send-email';
 import { ICustomerService } from '../../../services/interfaces/ICustomerService';
 
-export class AfterDepositsIncrementedHandler implements Application.IHandle {
+export class SendEmailAfterDepositsIncrementedHandler implements Application.IHandle {
   constructor(
     private commandBus: Infra.CommandBus.ICommandBus,
     private queryBus: Infra.QueryBus.IQueryBus,
