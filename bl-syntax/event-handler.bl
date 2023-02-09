@@ -1,17 +1,13 @@
-// Works for Domain Event and Integration Event
-@disabled
-// Do we need to distinguish Integration and Domain event handlers?
+
 IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   // and get the eventTopic to subscribe from it
   
-  eventVersion: 'v1'; // Use this or above?
-  //Use this syntax or @disabled
-  // disabled: false
+  eventVersion: 'v1';
   
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedToAccountIntegrationEvent): void {
+  handle(event: MoneyDepositedToAccountIntegrationEvent) {
     const account = event.account;
     const accountId = account.id;
 
@@ -26,17 +22,13 @@ IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: Cus
 //1. In TS we can check if query bus/command bus are unused and not include them in the dependencies
 //2. In IntermediateAST -> CompleteAST we need to find the type of customerQueryResult
 
-@disabled
 DomainEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   // and get the eventTopic to subscribe from it
   
-  //Use this syntax or @disabled
-  // disabled: false
-  
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedToAccountDomainEvent): void {
+  handle(event: MoneyDepositedToAccountDomainEvent) {
     const account = event.account;
     const accountId = account.id;
 

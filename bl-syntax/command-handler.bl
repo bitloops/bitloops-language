@@ -1,10 +1,8 @@
 
 
-@Respond // Here we should think on how can we indicate that this Handler expects a response 
-//not without request/response manner - shall it be a different element (with response?)
+//Always respond
 CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
-      // Should this be named handle or execute?
-     handle(command: WithdrawMoneyCommand): (OK(void), Errors(
+     execute(command: WithdrawMoneyCommand): (OK(void), Errors(
         ApplicationErrors.AccountNotFound
         | DomainErrors.PINIsNotPositiveNumber
         | DomainErrors.InvalidCustomerPIN

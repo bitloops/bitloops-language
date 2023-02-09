@@ -11,6 +11,8 @@
     
     const result = this.commandBus.request(command) // Does request sound good?(instead of sendAndGetResponse)
 
+    this.commandBus.publish(command) // Does request sound good?(instead of sendAndGetResponse)
+
     if (result is Error) {
       switch (result.getClass()) {
         case DomainErrors.InvalidMonetaryValue: {

@@ -18,7 +18,6 @@ ValueObject MoneyVO {
   //     return errorOk
   //   }
 
-
     applyRules(AmountIsPositiveNumberRule(props.amount.toString()), BalanceAmountOutOfBoundsRule(props.amount))
   }
 }

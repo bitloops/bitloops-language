@@ -2,10 +2,13 @@
 const todoWriteRepo = RepoAdapters.Mongo({
     connection: mongoConnection,
     collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-    useOptimistic: true
+    useOptimistic: false
   }) concretes [Todo][Todo]TodoWriteRepoPort;
 
   [Todo][Todo]Controller;
   [Todo]Controller; 
   
   // Declare internal/external command,event bus etc for each bc
+
+
+  // DIs for commandHandlers/queryHandlers/domainEventHandlers/integrationEventHandlers
