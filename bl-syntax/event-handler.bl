@@ -1,5 +1,5 @@
 // BL
-IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
+IntegrationEventHandler MoneyDepositedIntegrationHandler(commandBus: ICommandBus) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   // and get the eventTopic to subscribe from it
@@ -7,13 +7,11 @@ IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: Cus
   eventVersion: 'v1';
   
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedToAccountIntegrationEvent) {
-    const account = event.account;
-    const accountId = account.id;
+  handle(event: MoneyDepositedIntegrationEvent) {
+    const data = event.data;
+    const accountId = data.accountId;
 
-    const email = this.customerService.getEmailByAccountId(accountId.toString());
-
-    const command = SendEmailVerificationCommand.create({ accountId: accountId.toString(), email });
+    const command = IncrementDepositsCommand.create({ accountId: accountId.toString() });
 
     this.commandBus.send(command);
   }
@@ -67,13 +65,13 @@ type TParameterIntegrationEvent = {
 //1. In TS we can check if query bus/command bus are unused and not include them in the dependencies
 //2. In IntermediateAST -> CompleteAST we need to find the type of customerQueryResult
 
-DomainEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
+DomainEventHandler SendEmailAfterDepositsIncrementedHandler(customerService: CustomerServicePort) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   // and get the eventTopic to subscribe from it
   
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedToAccountDomainEvent) {
+  handle(event: DepositsIncrementedDomainEvent) {
     const account = event.account;
     const accountId = account.id;
 
@@ -105,3 +103,37 @@ type TParameterDomainEvent = {
     type: TDomainEventIdentifier;
   };
 };
+
+// TS 
+export class SendEmailAfterDepositsIncrementedHandler implements Application.IHandle {
+  constructor(
+    private commandBus: Infra.CommandBus.ICommandBus,
+    private queryBus: Infra.QueryBus.IQueryBus,
+    private customerService: ICustomerService,
+  ) {}
+
+  public async handle(event: DepositsIncrementedDomainEvent): Promise<void> {
+    const { data } = event;
+    const depositsCounter = data.deposits.counter;
+
+    let emailContent = '';
+    if (data.isFirstDeposit()) {
+      emailContent = 'Congrats, you have made your first deposit!';
+    } else if (data.hasReachedMilestoneDeposits()) {
+      emailContent = `Congrats, you have made ${depositsCounter} deposits!`;
+    } else {
+      return;
+    }
+
+    const destinationEmail = await this.customerService.getEmailByAccountId(data.id.toString());
+
+    const command = new SendEmailCommand({
+      origin: 'ant@ant.com',
+      destination: destinationEmail,
+      content: emailContent,
+    });
+
+    await this.commandBus.send(command);
+    console.log(`[AfterMoneyDepositsIncrementedDomainEvent]: Successfully sent SendEmail Command`);
+  }
+}
