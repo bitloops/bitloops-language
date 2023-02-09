@@ -21,6 +21,34 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     }
   }
 
+  {
+    "commandHandler": {
+      "identifier": IdentifierNode;
+      "execute": ExecuteNode;
+      "repositoryIdentifier": RepositoryIdentifierNode;
+    }
+  }
+
+  {
+    "execute": {
+      "parameter": ParameterNode;
+      "stataments": statementListNode;
+      "returnType": ReturnOKErrorTypeNode;
+    }
+  }
+
+  type TCommandHandler = {
+    [CommandKey]: {
+      [commandIdentifierKey]: TCommandIdentifier;
+       execute: TExecute;
+       [repositoryIdentifierKey]: TRepositoryidentifier;
+    };
+  }
+
+  type TExecute = {
+    statements: TStatements;
+  } & TOkErrorReturnType & TParameter;
+
   // typescript
   export class WithdrawMoneyCommandHandler
   implements Application.IUseCase<WithdrawMoneyCommand, Promise<InsertPINCommandHandlerResponse>>

@@ -73,19 +73,34 @@ IntegrationEvent MoneyDepositedIntegrationEvent(input: MoneyDepositedToAccountDo
 
 //AST
 
+type TVersionName = string;
+
 type TVersionMapper = {
-  publicMethod: {
-    identifier: TIdentifier;
+  versionMapper: {
+    versionName: TVersionName;
     statements: TStatements;
-  } & TOkErrorReturnType &
-    TParameterList;
+    returnSchemaType: TBitloopsPrimaryType; or TBitloopsIdentifier or TStructIdentifier(it will be inside TBitloopsIdentifier as well)
+  }
 };
+
+type TIntegrationEventInput = {
+  integrationEventInput: TParameter;
+}
+
+type TIntegrationEventIdentifier = string;
 
 type TIntegrationEvent = {
   integrationEvent: {
-
-  }
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TVersionMapper & TIntegrationEventInput & TParameter or TParameterPropsDomainEvent;
 }
+
+type TParameterPropsDomainEvent = {
+  parameterPropsDomainEvent: {
+    value: TParameterIdentifier;
+    type: TDomainEventIdentifier | TPropsIdentifier;
+  };
+};
 
 //Typescript
 type TodoIntegrationSchemaV1 = {

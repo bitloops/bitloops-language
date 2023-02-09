@@ -1,4 +1,4 @@
-
+// BL
 IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: CustomerServicePort) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
@@ -18,6 +18,51 @@ IntegrationEventHandler SendEmailAfterMoneyDepositedHandler(customerService: Cus
     this.commandBus.send(command);
   }
 }
+
+// TS
+export class MoneyDepositedIntegrationHandler {
+  constructor(private commandBus: Infra.CommandBus.ICommandBus) {}
+
+  public async handle(event: MoneyDepositedIntegrationEvent): Promise<void> {
+    const { data } = event;
+
+    const command = new IncrementDepositsCommand({ accountId: data.accountId });
+
+    await this.commandBus.send(command);
+    console.log(`[AfterMoneyDepositedIntegrationEvent]: Successfully sent Increment Command`);
+  }
+}
+// and in subscriptions
+const moneyDepositedIntegrationHandler = new MoneyDepositedIntegrationHandler(commandBus);
+  integrationEventBus.subscribe<MoneyDepositedIntegrationEvent>(
+    MoneyDepositedIntegrationEvent.getEventTopic('v1'),
+    (event) => {
+      moneyDepositedIntegrationHandler.handle(event);
+    },
+  );
+
+// AST
+
+type TIntegrationEventHandlerIdentifier = string;
+
+type TIntegrationEventHandler = {
+  integrationEventHandler: {
+    integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
+    eventVersion: string;
+    handle: THandle;
+  } & TParameterList;
+}
+
+type THandle = {
+  statements: TStatements;
+} & TParameter or TParameterIntegrationEvent;
+
+type TParameterIntegrationEvent = {
+  parameterIntegrationEvent: {
+    value: TParameterIdentifier;
+    type: TIntegrationEventIdentifier;
+  };
+};
   
 //1. In TS we can check if query bus/command bus are unused and not include them in the dependencies
 //2. In IntermediateAST -> CompleteAST we need to find the type of customerQueryResult
@@ -39,3 +84,24 @@ DomainEventHandler SendEmailAfterMoneyDepositedHandler(customerService: Customer
     this.commandBus.send(command);
   }
 }
+
+// AST
+type TDomainEventHandlerIdentifier = string;
+
+type TDomainEventHandler = {
+  domainEventHandler: {
+    domainEventHandlerIdentifier: TDomainEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList;
+}
+
+type THandle = {
+  statements: TStatements;
+} & TParameter or TParameterDomainEvent;
+
+type TParameterDomainEvent = {
+  parameterDomainEvent: {
+    value: TParameterIdentifier;
+    type: TDomainEventIdentifier;
+  };
+};

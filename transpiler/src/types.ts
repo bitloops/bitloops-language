@@ -1065,3 +1065,10 @@ export enum RestServerOptions {
   apiPrefix = 'apiPrefix',
   port = 'port',
 }
+
+// export type TCommand = {
+//   [commandKey]: {
+//     [commandIdentifierKey]: TCommandIdentifier;
+//     commandTopic: TExpression
+//   } & TVariables;
+// };

@@ -1,5 +1,6 @@
 
 Command InsertPINCommand {
+    //Command topic should be ${contextId}.${commandName}
     // commandTopic: `${commandName}.${contextId}`;
     //Properties instead of DTO
     string email;
@@ -16,4 +17,23 @@ Command InsertPINCommand {
     //   return this.commandName + '.' + contextId;
     // }
   }
-  
+
+
+//AST
+{
+  "command" : {
+    "commandIdentifier": IdentifierNode;
+    "commandTopic": ExpressionNode;
+    "fields": FieldListNode;
+  }
+}
+
+export type TCommand = {
+  [CommandKey]: {
+    [CommandIdentifierKey]: TDTOIdentifier;
+    commandTopic: TExpression
+  } & TVariables;
+};
+
+//TS 
+

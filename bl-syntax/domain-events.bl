@@ -29,6 +29,19 @@ Root Entity AccountEntity {
 
 }
 
+//AST
+{
+  "domainEvent": {
+    "entityIdentifier": EntityIdentifierNode;
+    "name": IdentifierNode;
+  }
+}
+
+type TDomainEvent = {
+  entityIdentifier: TEntityIdentifier;
+  name: string;
+}
+
 
 
 private constructor(props: AccountProps) {

@@ -4,3 +4,19 @@ Query GetCustomerByIdQuery {
     string id;
   }
   
+
+  //AST
+{
+  "query" : {
+    "queryIdentifier": IdentifierNode;
+    "queryTopic": ExpressionNode;
+    "fields": FieldListNode;
+  }
+}
+
+export type TQuery = {
+  [queryKey]: {
+    [queryIdentifierKey]: TQueryIdentifier;
+    queryTopic: TExpression
+  } & TVariables;
+};

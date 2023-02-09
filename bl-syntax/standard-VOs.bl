@@ -21,4 +21,12 @@ ValueObject MoneyVO {
     applyRules(AmountIsPositiveNumberRule(props.amount.toString()), BalanceAmountOutOfBoundsRule(props.amount))
   }
 }
+
+
+{
+  "props": {
+    "propsIdentifier":  PropsIdentifierNode;
+    "fieldListKey": FieldListNode; //It should accept standard VOs
+  }
+}
  
