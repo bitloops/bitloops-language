@@ -19,17 +19,15 @@
  */
 import { ICoreError } from '../ICoreError';
 
-// TODO make errorId mandatory and replace message
 interface IAppError extends ICoreError {
-  errorId?: string;
+  errorId: string;
+  message: string;
 }
 
 export abstract class AppError implements IAppError {
-  public readonly message: string;
-  public readonly errorId?: string;
+  // This errorId should have the same value with class property errorId
+  // and is used for reading
+  public static readonly errorId: string;
 
-  constructor(message: string, errorId?: string) {
-    this.message = message;
-    if (errorId) this.errorId = errorId;
-  }
+  constructor(public readonly message: string, public readonly errorId: string) {}
 }

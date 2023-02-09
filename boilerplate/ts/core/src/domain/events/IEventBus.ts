@@ -20,10 +20,11 @@
 import { IEvent } from './IEvent';
 import { GenericMessageHandler } from '../messages/IMessageBus';
 
-export type EventHandler = GenericMessageHandler<IEvent>;
+export type EventHandler<T extends IEvent> = GenericMessageHandler<T>;
 
 export interface IEventBus {
-  subscribe(topic: string, eventHandler: EventHandler): Promise<void>;
-  unsubscribe(topic: string, eventHandler: EventHandler): Promise<void>;
+  subscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void>;
+  unsubscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void>;
   publish(topic: string, message: IEvent): Promise<void>;
+  publishMany(params: Array<{ topic: string; message: IEvent }>): Promise<void>;
 }

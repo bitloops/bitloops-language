@@ -16,16 +16,13 @@
  */
 import { Entity } from './Entity';
 import { IDomainEvent } from './events/IDomainEvent';
-import { UUIDv4 } from './UUIDv4';
-// import { IIntegrationEvent } from "./events/IIntegrationEvent";
-// import { IDomainIntegrationEvent } from "./events/IDomainIntegrationEvent";
-import { events } from './events/Events';
+import { UniqueEntityID } from './UniqueEntityID';
+import { Container } from '../Container';
 
 export abstract class AggregateRoot<T> extends Entity<T> {
   private _domainEvents: IDomainEvent[] = [];
-  // private _integrationEvents: IIntegrationEvent[] = [];
 
-  get id(): UUIDv4 {
+  get id(): UniqueEntityID {
     return this._id;
   }
 
@@ -33,12 +30,9 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     return this._domainEvents;
   }
 
-  // get integrationEvents(): IIntegrationEvent[] {
-  //   return this._integrationEvents;
-  // }
-
   protected addDomainEvent(domainEvent: IDomainEvent): void {
     // Add the domain event to this aggregate's list of domain events
+    const { events } = Container.getServices();
     this._domainEvents.push(domainEvent);
     // Add this aggregate instance to the domain event's list of aggregates who's
     // events it eventually needs to dispatch.
@@ -46,22 +40,6 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     // Log the domain event
     this.logDomainEventAdded(domainEvent);
   }
-
-  // protected addIntegrationEvent(integrationEvent: IIntegrationEvent): void {
-  //   // Add the intregration event to this aggregate's list of integration events
-  //   // this.addDomainEvent(domainIntegrationEvent)
-  //   const { events } = Container.getServices();
-  //   this._integrationEvents.push(integrationEvent);
-
-  //   events.markAggregateForDispatch(this);
-
-  //   this.logIntegrationEventAdded(integrationEvent);
-  // }
-
-  // protected addDomainIntegrationEvent(event: IDomainIntegrationEvent): void {
-  //   this.addDomainEvent(event.toDomain());
-  //   this.addIntegrationEvent(event.toIntegration());
-  // }
 
   public clearEvents(): void {
     this._domainEvents.splice(0, this._domainEvents.length);
@@ -77,8 +55,4 @@ export abstract class AggregateRoot<T> extends Entity<T> {
       domainEventClass?.constructor?.name,
     );
   }
-
-  // private logIntegrationEventAdded(integrationEvent: IIntegrationEvent): void {
-  //   console.info(`[Integration Event Created]:`, integrationEvent);
-  // }
 }

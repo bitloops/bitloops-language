@@ -17,13 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { CommandMetadata } from '../commands/ICommand';
 import { IMessage } from '../messages/IMessage';
 
+export type TEventMetadata = {
+  id: string;
+  createdAtTimestamp: number;
+  version?: string;
+  fromContextId: string;
+};
+
 export interface IEvent extends IMessage {
-  uuid: string;
   eventTopic: string;
-  setMetadata(metadata: CommandMetadata): void;
-  // aggregateName: string;
-  // version?: number;
+  data: any;
+  metadata: TEventMetadata;
 }

@@ -19,12 +19,18 @@
  */
 import { IMessage } from './IMessage';
 
-export type SubscriberHandler = (message: IMessage) => void;
 export type GenericMessageHandler<T extends IMessage> = (message: T) => void;
+export type SubscriberHandler<T extends IMessage> = GenericMessageHandler<T>;
 
 export interface IMessageBus {
-  subscribe(topic: string, subscriberHandler: SubscriberHandler): Promise<void>;
-  unsubscribe(topic: string, subscriberHandler: SubscriberHandler): Promise<void>;
+  subscribe<T extends IMessage>(
+    topic: string,
+    subscriberHandler: SubscriberHandler<T>,
+  ): Promise<void>;
+  unsubscribe<T extends IMessage>(
+    topic: string,
+    subscriberHandler: SubscriberHandler<T>,
+  ): Promise<void>;
   publish(topic: string, message: IMessage): Promise<void>;
-  getSubscriberHandlers(topic: string): SubscriberHandler[];
+  getSubscriberHandlers<T extends IMessage>(topic: string): SubscriberHandler<T>[];
 }

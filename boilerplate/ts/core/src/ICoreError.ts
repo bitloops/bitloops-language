@@ -20,5 +20,5 @@
 //TODO maybe errorId mandatory
 export interface ICoreError {
   message: string;
-  errorId?: string;
+  errorId: string;
 }
