@@ -88,7 +88,7 @@ export default class Transpiler {
     return this.intermediateASTModelToTargetLanguageGenerator.generate(ASTModel, options);
   }
 
-  private validateIntermediateModel(
+  public validateIntermediateModel(
     intermediateModel: IntermediateAST,
   ): IntermediateASTValidationError[] | IntermediateAST {
     const validationResult = this.validator.validate(intermediateModel);

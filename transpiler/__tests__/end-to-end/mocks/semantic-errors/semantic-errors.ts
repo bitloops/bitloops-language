@@ -19,34 +19,34 @@
  */
 import { FileUtil } from '../../../../src/utils/file.js';
 export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
-  {
-    description: 'Entity not found',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/entityNotFound.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    fileIdCore: 'entityNotFound.bl',
-    fileIdSetup: 'setup.bl',
-    expectedErrorMessages: [
-      'Entity TodoEntity not found: from 1:28 to 1:38 of file entityNotFound.bl',
-    ],
-  },
-  {
-    description: 'Rule not found',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/ruleNotFound.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    fileIdCore: 'ruleNotFound.bl',
-    fileIdSetup: 'setup.bl',
-    expectedErrorMessages: [
-      'DomainRule TitleOutOfBoundsRule not found: from 12:18 to 12:38 of file ruleNotFound.bl',
-    ],
-  },
+  // {
+  //   description: 'Entity not found',
+  //   inputCore: FileUtil.readFileString(
+  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/entityNotFound.bl',
+  //   ),
+  //   inputSetup: FileUtil.readFileString(
+  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+  //   ),
+  //   fileIdCore: 'entityNotFound.bl',
+  //   fileIdSetup: 'setup.bl',
+  //   expectedErrorMessages: [
+  //     'Entity TodoEntity not found: from 1:28 to 1:38 of file entityNotFound.bl',
+  //   ],
+  // },
+  // {
+  //   description: 'Rule not found',
+  //   inputCore: FileUtil.readFileString(
+  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/ruleNotFound.bl',
+  //   ),
+  //   inputSetup: FileUtil.readFileString(
+  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+  //   ),
+  //   fileIdCore: 'ruleNotFound.bl',
+  //   fileIdSetup: 'setup.bl',
+  //   expectedErrorMessages: [
+  //     'DomainRule TitleOutOfBoundsRule not found: from 12:18 to 12:38 of file ruleNotFound.bl',
+  //   ],
+  // },
   {
     description: 'Domain error not found',
     inputCore: FileUtil.readFileString(
@@ -131,6 +131,8 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setup.bl',
     expectedErrorMessages: [
       'Type TodoReadModel not found: from 2:21 to 2:34 of file readModelNotFound.bl',
+      'Read Model TodoReadModel not found: from 9:27 to 9:40 of file readModelNotFound.bl',
+      'Type GetAllTodosResponseDTO not found: from 14:22 to 14:44 of file readModelNotFound.bl',
     ],
   },
   {

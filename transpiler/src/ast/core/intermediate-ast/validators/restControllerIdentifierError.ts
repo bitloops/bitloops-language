@@ -1,11 +1,11 @@
 import { IntermediateASTValidationError } from '../../types.js';
-import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
+import { RESTControllerIdentifierNode } from '../nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
 import { RouterControllerNode } from '../nodes/setup/RouterControllerNode.js';
 import { boundedContextError } from './index.js';
 
 export const restControllerIdentifierError = (
-  node: IntermediateASTNode,
+  node: RESTControllerIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
@@ -17,16 +17,14 @@ export const restControllerIdentifierError = (
     errors.push(boundedContextError(boundedContextNode));
     return errors;
   }
-  if (!thisSymbolTableCore[boundedContext].has(node.getValue().RESTControllerIdentifier)) {
+  if (!thisSymbolTableCore[boundedContext].has(node.getIdentifierName())) {
     errors.push(
       new IntermediateASTValidationError(
-        `Controller ${
-          node.getValue().RESTControllerIdentifier
-        } not found in bounded context ${boundedContext}: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
+        `Controller ${node.getIdentifierName()} not found in bounded context ${boundedContext}: from ${
+          node.getMetadata().start.line
+        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+          node.getMetadata().end.column
+        } of file ${node.getMetadata().fileId}`,
         node.getMetadata(),
       ),
     );

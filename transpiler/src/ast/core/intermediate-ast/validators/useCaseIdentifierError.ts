@@ -1,22 +1,22 @@
 import { IntermediateASTValidationError } from '../../types.js';
-import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
 import { UseCaseExpressionNode } from '../nodes/setup/UseCaseExpressionNode.js';
+import { UseCaseIdentifierNode } from '../nodes/UseCase/UseCaseIdentifierNode.js';
 import { boundedContextError } from './index.js';
 
 export const useCaseIdentifierCoreError = (
-  node: IntermediateASTNode,
+  node: UseCaseIdentifierNode,
   thisSymbolTable: Set<string>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
-  if (!thisSymbolTable.has(node.getValue().UseCaseIdentifier))
+  if (!thisSymbolTable.has(node.getIdentifierName()))
     errors.push(
       new IntermediateASTValidationError(
-        `Use Case ${node.getValue().UseCaseIdentifier} not found: from ${
-          node.getMetadata().start.line
-        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
-          node.getMetadata().end.column
-        } of file ${node.getMetadata().fileId}`,
+        `Use Case ${node.getIdentifierName()} not found: from ${node.getMetadata().start.line}:${
+          node.getMetadata().start.column
+        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
+          node.getMetadata().fileId
+        }`,
         node.getMetadata(),
       ),
     );
@@ -24,7 +24,7 @@ export const useCaseIdentifierCoreError = (
 };
 
 export const useCaseIdentifierSetupError = (
-  node: IntermediateASTNode,
+  node: UseCaseIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
@@ -38,16 +38,14 @@ export const useCaseIdentifierSetupError = (
     errors.push(boundedContextError(boundedContextNode));
     return errors;
   }
-  if (!thisSymbolTableCore[boundedContext].has(node.getValue().UseCaseIdentifier)) {
+  if (!thisSymbolTableCore[boundedContext].has(node.getIdentifierName())) {
     errors.push(
       new IntermediateASTValidationError(
-        `Use Case ${
-          node.getValue().UseCaseIdentifier
-        } not found in bounded context ${boundedContext}: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
+        `Use Case ${node.getIdentifierName()} not found in bounded context ${boundedContext}: from ${
+          node.getMetadata().start.line
+        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+          node.getMetadata().end.column
+        } of file ${node.getMetadata().fileId}`,
         node.getMetadata(),
       ),
     );

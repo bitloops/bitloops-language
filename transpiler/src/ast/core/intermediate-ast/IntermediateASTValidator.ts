@@ -26,29 +26,44 @@ import {
   TBoundedContexts,
 } from '../types.js';
 import { IntermediateASTTree } from './IntermediateASTTree.js';
+import { ArgumentNode } from './nodes/ArgumentList/ArgumentNode.js';
+import { BitloopsIdentifierTypeNode } from './nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
+import { GraphQLControllerExecuteReturnTypeNode } from './nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
+import { GraphQLControllerIdentifierNode } from './nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
 import { GraphQLControllerNode } from './nodes/controllers/graphql/GraphQLControllerNode.js';
+import { RESTControllerIdentifierNode } from './nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
+import { DomainCreateParameterTypeNode } from './nodes/Domain/DomainCreateParameterTypeNode.js';
+import { DomainRuleIdentifierNode } from './nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { DomainRuleNode } from './nodes/DomainRule/DomainRuleNode.js';
 import { DTONode } from './nodes/DTO/DTONode.js';
 import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
+import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { ApplicationErrorNode } from './nodes/Error/ApplicationError.js';
 import { DomainErrorNode } from './nodes/Error/DomainErrorNode.js';
+import { ErrorIdentifierNode } from './nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 import {
   IntermediateASTNodeValidationError,
   IntermediateASTNode,
 } from './nodes/IntermediateASTNode.js';
 import { PackageConcretionNode } from './nodes/package/PackageConcretionNode.js';
+import { PackagePortIdentifierNode } from './nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { PackagePortNode } from './nodes/package/packagePort/PackagePortNode.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 import { ReadModelNode } from './nodes/readModel/ReadModel.js';
+import { ReadModelIdentifierNode } from './nodes/readModel/ReadModelIdentifierNode.js';
 import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
 import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
+import { ConcretedRepoPortNode } from './nodes/setup/repo/ConcretedRepoPortNode.js';
+import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
 import { RepoConnectionDefinitionNode } from './nodes/setup/repo/RepoConnectionDefinitionNode.js';
 import { SetupRepoAdapterDefinitionNode } from './nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
 import { RouterDefinitionNode } from './nodes/setup/RouterDefinitionNode.js';
+import { ServerRouteNode } from './nodes/setup/ServerRouteNode.js';
 import { UseCaseDefinitionNode } from './nodes/setup/UseCaseDefinitionNode.js';
 import { StructNode } from './nodes/struct/StructNode.js';
+import { UseCaseIdentifierNode } from './nodes/UseCase/UseCaseIdentifierNode.js';
 import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
 import {
   bitloopsIdentifierError,
@@ -67,6 +82,7 @@ import {
   restControllerIdentifierError,
   restServerInstanceRouterError,
   graphQLControllerIdentifierError,
+  readModelIdentifierError,
 } from './validators/index.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
@@ -265,35 +281,75 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
         case BitloopsTypesMapping.TBitloopsIdentifier:
-          errors.push(...bitloopsIdentifierError(node, this.symbolTableCore[boundedContext]));
+          errors.push(
+            ...bitloopsIdentifierError(
+              node as BitloopsIdentifierTypeNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
           break;
 
         case BitloopsTypesMapping.TEntityIdentifier:
-          errors.push(...entityIdentifierError(node, this.symbolTableCore[boundedContext]));
+          errors.push(
+            ...entityIdentifierError(
+              node as EntityIdentifierNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
+          break;
+
+        case BitloopsTypesMapping.TReadModelIdentifier:
+          errors.push(
+            ...readModelIdentifierError(
+              node as ReadModelIdentifierNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
           break;
 
         case BitloopsTypesMapping.TDomainCreateParameterType:
           errors.push(
-            ...domainCreateParameterTypeError(node, this.symbolTableCore[boundedContext]),
+            ...domainCreateParameterTypeError(
+              node as DomainCreateParameterTypeNode,
+              this.symbolTableCore[boundedContext],
+            ),
           );
           break;
 
         case BitloopsTypesMapping.TErrorIdentifier:
-          errors.push(...errorIdentifierError(node, this.symbolTableCore[boundedContext]));
+          errors.push(
+            ...errorIdentifierError(
+              node as ErrorIdentifierNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
           break;
 
         case BitloopsTypesMapping.TGraphQLControllerExecuteReturnType:
           errors.push(
-            ...graphQLControllerExecuteReturnTypeError(node, this.symbolTableCore[boundedContext]),
+            ...graphQLControllerExecuteReturnTypeError(
+              node as GraphQLControllerExecuteReturnTypeNode,
+              this.symbolTableCore[boundedContext],
+            ),
           );
           break;
 
         case BitloopsTypesMapping.TDomainRuleIdentifier:
-          errors.push(...domainRuleIdentifierError(node, this.symbolTableCore[boundedContext]));
+          errors.push(
+            ...domainRuleIdentifierError(
+              node as DomainRuleIdentifierNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
           break;
 
         case BitloopsTypesMapping.TUseCaseIdentifier: {
-          errors.push(...useCaseIdentifierCoreError(node, this.symbolTableCore[boundedContext]));
+          errors.push(
+            ...useCaseIdentifierCoreError(
+              node as UseCaseIdentifierNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
           break;
         }
       }
@@ -309,36 +365,62 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
         case BitloopsTypesMapping.TConcretedRepoPort:
-          errors.push(...concretedRepoPortError(node, this.symbolTableCore));
+          errors.push(
+            ...concretedRepoPortError(node as ConcretedRepoPortNode, this.symbolTableCore),
+          );
           break;
 
         case BitloopsTypesMapping.TRepoAdapterOptions:
-          errors.push(...repoAdapterOptionsError(node, this.symbolTableSetup[fileId]));
+          errors.push(
+            ...repoAdapterOptionsError(
+              node as RepoAdapterOptionsNode,
+              this.symbolTableSetup[fileId],
+            ),
+          );
           break;
 
         case BitloopsTypesMapping.TUseCaseIdentifier: {
-          errors.push(...useCaseIdentifierSetupError(node, this.symbolTableCore));
+          errors.push(
+            ...useCaseIdentifierSetupError(node as UseCaseIdentifierNode, this.symbolTableCore),
+          );
           break;
         }
         case BitloopsTypesMapping.TRESTControllerIdentifier: {
-          errors.push(...restControllerIdentifierError(node, this.symbolTableCore));
+          errors.push(
+            ...restControllerIdentifierError(
+              node as RESTControllerIdentifierNode,
+              this.symbolTableCore,
+            ),
+          );
           break;
         }
         case BitloopsTypesMapping.TGraphQLControllerIdentifier: {
-          errors.push(...graphQLControllerIdentifierError(node, this.symbolTableCore));
+          errors.push(
+            ...graphQLControllerIdentifierError(
+              node as GraphQLControllerIdentifierNode,
+              this.symbolTableCore,
+            ),
+          );
           break;
         }
 
         case BitloopsTypesMapping.TPackagePortIdentifier: {
-          errors.push(...packagePortIdentifierError(node, this.symbolTableCore));
+          errors.push(
+            ...packagePortIdentifierError(node as PackagePortIdentifierNode, this.symbolTableCore),
+          );
           break;
         }
         case BitloopsTypesMapping.TRestServerInstanceRouter: {
-          errors.push(...restServerInstanceRouterError(node, this.symbolTableSetup[fileId]));
+          errors.push(
+            ...restServerInstanceRouterError(
+              node as ServerRouteNode,
+              this.symbolTableSetup[fileId],
+            ),
+          );
           break;
         }
         case BitloopsTypesMapping.TArgument:
-          errors.push(...argumentError(node, this.symbolTableSetup[fileId]));
+          errors.push(...argumentError(node as ArgumentNode, this.symbolTableSetup[fileId]));
           break;
       }
     });

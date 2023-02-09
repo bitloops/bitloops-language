@@ -17,6 +17,8 @@ import {
   useCaseIdentifierSetupError,
 } from './useCaseIdentifierError.js';
 
+import { readModelIdentifierError } from './readModelIdentifierError.js';
+
 export {
   bitloopsIdentifierError,
   boundedContextError,
@@ -34,4 +36,5 @@ export {
   packagePortIdentifierError,
   restServerInstanceRouterError,
   graphQLControllerIdentifierError,
+  readModelIdentifierError,
 };

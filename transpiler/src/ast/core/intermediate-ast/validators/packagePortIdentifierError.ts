@@ -1,11 +1,11 @@
 import { IntermediateASTValidationError } from '../../types.js';
-import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 import { PackageConcretionNode } from '../nodes/package/PackageConcretionNode.js';
+import { PackagePortIdentifierNode } from '../nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
 import { boundedContextError } from './index.js';
 
 export const packagePortIdentifierError = (
-  node: IntermediateASTNode,
+  node: PackagePortIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
@@ -19,16 +19,14 @@ export const packagePortIdentifierError = (
     errors.push(boundedContextError(boundedContextNode));
     return errors;
   }
-  if (!thisSymbolTableCore[boundedContext].has(node.getValue().PackagePortIdentifier)) {
+  if (!thisSymbolTableCore[boundedContext].has(node.getIdentifierName())) {
     errors.push(
       new IntermediateASTValidationError(
-        `Package port ${
-          node.getValue().PackagePortIdentifier
-        } not found in bounded context ${boundedContext}: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
+        `Package port ${node.getIdentifierName()} not found in bounded context ${boundedContext}: from ${
+          node.getMetadata().start.line
+        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+          node.getMetadata().end.column
+        } of file ${node.getMetadata().fileId}`,
         node.getMetadata(),
       ),
     );

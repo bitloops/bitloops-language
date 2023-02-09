@@ -1,11 +1,11 @@
 import { IntermediateASTValidationError } from '../../types.js';
-import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
+import { GraphQLControllerIdentifierNode } from '../nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
 import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
 import { ControllerResolverNode } from '../nodes/setup/ControllerResolverNode.js';
 import { boundedContextError } from './index.js';
 
 export const graphQLControllerIdentifierError = (
-  node: IntermediateASTNode,
+  node: GraphQLControllerIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
@@ -19,16 +19,14 @@ export const graphQLControllerIdentifierError = (
     errors.push(boundedContextError(boundedContextNode));
     return errors;
   }
-  if (!thisSymbolTableCore[boundedContext].has(node.getValue().graphQLControllerIdentifier)) {
+  if (!thisSymbolTableCore[boundedContext].has(node.getIdentifierName())) {
     errors.push(
       new IntermediateASTValidationError(
-        `Controller ${
-          node.getValue().graphQLControllerIdentifier
-        } not found in bounded context ${boundedContext}: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
+        `Controller ${node.getIdentifierName()} not found in bounded context ${boundedContext}: from ${
+          node.getMetadata().start.line
+        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
+          node.getMetadata().end.column
+        } of file ${node.getMetadata().fileId}`,
         node.getMetadata(),
       ),
     );
