@@ -67,7 +67,6 @@ import { UseCaseIdentifierNode } from './nodes/UseCase/UseCaseIdentifierNode.js'
 import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
 import {
   bitloopsIdentifierError,
-  boundedContextError,
   concretedRepoPortError,
   domainCreateParameterTypeError,
   domainRuleIdentifierError,
@@ -83,6 +82,7 @@ import {
   restServerInstanceRouterError,
   graphQLControllerIdentifierError,
   readModelIdentifierError,
+  boundedContextValidationError,
 } from './validators/index.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
@@ -195,39 +195,41 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
     }
   }
 
-  private createSymbolTablesSetup(setup: IntermediateASTSetup): void {
+  private createSymbolTablesSetup(
+    setup: IntermediateASTSetup,
+  ): void | IntermediateASTValidationError[] {
     for (const [fileId, ASTTree] of Object.entries(setup)) {
       this.symbolTableSetup[fileId] = new Set();
       ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-        switch (true) {
-          case node.getNodeType() === BitloopsTypesMapping.TRepoConnectionDefinition: {
+        switch (node.getNodeType()) {
+          case BitloopsTypesMapping.TRepoConnectionDefinition: {
             const identifierNode = (node as RepoConnectionDefinitionNode).getIdentifier();
             this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
             break;
           }
-          case node.getNodeType() === BitloopsTypesMapping.TSetupRepoAdapterDefinition: {
+          case BitloopsTypesMapping.TSetupRepoAdapterDefinition: {
             const identifierNode = (node as SetupRepoAdapterDefinitionNode).getIdentifier();
             this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
             break;
           }
-          case node.getNodeType() === BitloopsTypesMapping.TRouterDefinition: {
+          case BitloopsTypesMapping.TRouterDefinition: {
             const identifierNode = (node as RouterDefinitionNode).getIdentifier();
             this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
             break;
           }
-          case node.getNodeType() === BitloopsTypesMapping.TUseCaseDefinition: {
+          case BitloopsTypesMapping.TUseCaseDefinition: {
             const identifierNode = (node as UseCaseDefinitionNode).getIdentifier();
             this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
             break;
           }
-          case node.getNodeType() === BitloopsTypesMapping.TPackageConcretion: {
+          case BitloopsTypesMapping.TPackageConcretion: {
             const boundedContextModule = (node as PackageConcretionNode).getBoundedContextModule();
             const boundedContextNode = (
               boundedContextModule as BoundedContextModuleNode
             ).getBoundedContext();
             const boundedContext = boundedContextNode.getName();
             if (!(boundedContext in this.symbolTableCore)) {
-              boundedContextError(boundedContextNode);
+              new boundedContextValidationError(boundedContextNode);
               break;
             }
             const identifierNode = (node as PackageConcretionNode).getPackageAdapterIdentifier();

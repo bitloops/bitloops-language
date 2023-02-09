@@ -1,5 +1,6 @@
 import { IntermediateASTValidationError } from '../../types.js';
 import { ReadModelIdentifierNode } from '../nodes/readModel/ReadModelIdentifierNode.js';
+import { identifierValidationError } from './validationErrors.js';
 
 export const readModelIdentifierError = (
   node: ReadModelIdentifierNode,
@@ -7,15 +8,6 @@ export const readModelIdentifierError = (
 ): IntermediateASTValidationError[] => {
   const errors = [];
   if (!thisSymbolTable.has(node.getIdentifierName()))
-    errors.push(
-      new IntermediateASTValidationError(
-        `Read Model ${node.getIdentifierName()} not found: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
-        node.getMetadata(),
-      ),
-    );
+    errors.push(new identifierValidationError(node.getIdentifierName(), node));
   return errors;
 };
