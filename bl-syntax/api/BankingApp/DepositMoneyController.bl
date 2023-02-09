@@ -26,3 +26,13 @@ RESTController DepositMoneyController (commandBus: CommandBusPort) { // Will we 
       }
     }
   }
+  
+
+  export type TRESTController = {
+    RESTController: TParameterList & {
+      serverType?: TServerType;
+      RESTControllerIdentifier: TRESTControllerIdentifier;
+      method: TRestMethods;
+      execute: TRESTControllerExecute;
+    };
+  };
