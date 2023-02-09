@@ -4,6 +4,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { UseCaseExecuteNode } from './UseCaseExecuteNode.js';
+import { UseCaseIdentifierNode } from './UseCaseIdentifierNode.js';
 
 export class UseCaseNode extends ClassTypeNode {
   private static classType = ClassTypes.UseCase;
@@ -30,5 +31,9 @@ export class UseCaseNode extends ClassTypeNode {
       BitloopsTypesMapping.TUseCaseExecute,
     );
     return useCaseExecute.getStatements();
+  }
+
+  public getIdentifier(): UseCaseIdentifierNode {
+    return this.getChildNodeByType<UseCaseIdentifierNode>(BitloopsTypesMapping.TUseCaseIdentifier);
   }
 }

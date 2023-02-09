@@ -387,7 +387,7 @@ privateMethodDeclarationList
     ;
 
 domainConstructorParam 
-    : id=Identifier Colon type=PropsIdentifier
+    : identifier Colon propsIdentifier
     ;
 
 domainConstructorDeclaration
@@ -888,7 +888,7 @@ bindControllerResolvers
     ;
 
 controllerResolverBind
-    : boundedContextModuleDeclaration ControllerIdentifier methodArguments
+    : boundedContextModuleDeclaration graphQLControllerIdentifier methodArguments
     ;
 
 alpha_numeric_ws: IntegerLiteral | WS | UpperCaseIdentifier | Identifier;

@@ -9,7 +9,7 @@ import { ApplicationErrorBuilder } from './builders/applicationErrorBuilder.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -37,7 +37,7 @@ describe('An application error is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           const { core } = result;
           resultTree = core[BOUNDED_CONTEXT].core;
         }

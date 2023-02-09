@@ -2,6 +2,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../../helpers/mapp
 import { TGraphQLController } from '../../../../../../types.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ControllerNode } from '../ControllerNode.js';
+import { GraphQLControllerIdentifierNode } from './GraphQLControllerIdentifierNode.js';
 
 export class GraphQLControllerNode extends ControllerNode {
   private static classNodeName = 'GraphQLController';
@@ -18,5 +19,12 @@ export class GraphQLControllerNode extends ControllerNode {
   public getName(): string {
     const value: TGraphQLController = this.getValue();
     return value.GraphQLController.graphQLControllerIdentifier;
+  }
+
+  public getIdentifier(): GraphQLControllerIdentifierNode {
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TGraphQLControllerIdentifier,
+    ) as GraphQLControllerIdentifierNode;
+    return identifier;
   }
 }

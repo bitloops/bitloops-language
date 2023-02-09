@@ -1,6 +1,7 @@
 import { ClassTypes, BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { StructIdentifierNode } from './StructIdentifierNode.js';
 
 export class StructNode extends ClassTypeNode {
   private static classType = ClassTypes.Struct;
@@ -13,5 +14,11 @@ export class StructNode extends ClassTypeNode {
       metadata,
       classNodeName: StructNode.classNodeName,
     });
+  }
+  public getIdentifier(): StructIdentifierNode {
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TStructIdentifier,
+    ) as StructIdentifierNode;
+    return identifier;
   }
 }

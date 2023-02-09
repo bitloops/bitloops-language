@@ -19,7 +19,7 @@
  */
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { validRootEntityTestCases } from './mocks/rootEntity/rootEntity.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
@@ -48,8 +48,9 @@ describe('Root Entity declaration is valid', () => {
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        const parseResult = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(parseResult)) {
+          const result = intermediateParser.complete(parseResult);
           const { core } = result;
           resultTree = core[BOUNDED_CONTEXT].core;
         }

@@ -19,7 +19,7 @@
  */
 import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
-import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import { VALID_GRAPHQL_SERVER_CASES } from '../mocks/graphQLServerDeclaration/index.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
@@ -54,8 +54,9 @@ describe('GraphQL Server is valid', () => {
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        const parseResult = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(parseResult)) {
+          const result = intermediateParser.complete(parseResult);
           setupResult = result.setup;
         }
       }

@@ -36,7 +36,7 @@ import {
   validMethodCallTestCases,
 } from './mocks/expression.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 
@@ -64,7 +64,7 @@ describe('Expression is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -98,7 +98,7 @@ describe('Method call invocation', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -132,7 +132,7 @@ describe('Literal is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -166,7 +166,7 @@ describe('Identifier is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -200,7 +200,7 @@ describe('Member dot expression test cases', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -234,7 +234,7 @@ describe('Assignment expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -268,7 +268,7 @@ describe('Array literal expression test cases', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -302,7 +302,7 @@ describe('Additive expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -336,7 +336,7 @@ describe('Multiplicative Expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -370,7 +370,7 @@ describe('Relational Expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -403,7 +403,7 @@ describe('Equality expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -436,7 +436,7 @@ describe('Logical And Expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -469,7 +469,7 @@ describe('Logical Or Expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -503,7 +503,7 @@ describe('Logical XOR Expression', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }

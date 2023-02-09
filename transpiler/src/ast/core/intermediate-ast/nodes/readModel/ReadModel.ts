@@ -2,6 +2,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { ReadModelKey } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { ReadModelIdentifierNode } from './ReadModelIdentifierNode.js';
 
 export class ReadModelNode extends ClassTypeNode {
   private static classType = ClassTypes.ReadModel;
@@ -15,5 +16,11 @@ export class ReadModelNode extends ClassTypeNode {
       metadata,
       classNodeName: ReadModelNode.classNodeName,
     });
+  }
+  public getIdentifier(): ReadModelIdentifierNode {
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TReadModelIdentifier,
+    ) as ReadModelIdentifierNode;
+    return identifier;
   }
 }

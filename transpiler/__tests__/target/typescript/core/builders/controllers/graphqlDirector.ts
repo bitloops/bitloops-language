@@ -25,6 +25,7 @@ import { IfStatementBuilderDirector } from '../statement/ifStatementDirector.js'
 import { SwitchStatementBuilderDirector } from '../statement/switchDirector.js';
 import { ParameterBuilderDirector } from '../parameterDirector.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { GraphQLControllerExecuteReturnTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/controllers/graphQL/GraphQLControllerExecuteReturnTypeNodeBuilder.js';
 
 export class GraphQLControllerBuilderDirector {
   buildGraphQLControllerWithThisUseCaseExecute(
@@ -172,7 +173,9 @@ export class GraphQLControllerBuilderDirector {
         new GraphQLControllerExecuteNodeBuilder()
           .withDependencies(this.reqResExecuteDependencies())
           .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
-          .withReturnType(returnDTO)
+          .withReturnType(
+            new GraphQLControllerExecuteReturnTypeNodeBuilder(null).withType(returnDTO).build(),
+          )
           .build(),
       )
       .build();
@@ -198,7 +201,9 @@ export class GraphQLControllerBuilderDirector {
         new GraphQLControllerExecuteNodeBuilder()
           .withDependencies(this.reqResExecuteDependencies())
           .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
-          .withReturnType(returnDTO)
+          .withReturnType(
+            new GraphQLControllerExecuteReturnTypeNodeBuilder(null).withType(returnDTO).build(),
+          )
           .build(),
       )
       .build();
