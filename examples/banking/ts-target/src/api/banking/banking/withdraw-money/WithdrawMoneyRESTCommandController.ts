@@ -1,10 +1,9 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { Either, Infra } from '@bitloops/bl-boilerplate-core';
+import { Infra } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
 import { WithdrawMoneyCommand } from '../../../../bounded-contexts/banking/banking/application/withdraw-money/WithdrawMoneyCommand';
 import { WithdrawMoneyRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/WithdrawMoneyRequestDTO';
-
-type WithdrawMoneyUseCaseResponse = Either<void, DomainErrors.InvalidMonetaryValue>;
+import { WithdrawMoneyCommandHandlerResponse } from '../../../../bounded-contexts/banking/banking/application/withdraw-money/WithdrawMoneyCommandHandler.js';
 
 export class WithdrawMoneyRESTCommandController extends Fastify.BaseController {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {
@@ -19,9 +18,10 @@ export class WithdrawMoneyRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new WithdrawMoneyCommand(dto);
-    const result = await this.commandBus.sendAndGetResponse<WithdrawMoneyUseCaseResponse>(command, [
-      DomainErrors.InvalidMonetaryValue,
-    ]);
+    const result = await this.commandBus.sendAndGetResponse<WithdrawMoneyCommandHandlerResponse>(
+      command,
+      [DomainErrors.InvalidMonetaryValue],
+    );
 
     if (result.isFail()) {
       switch (result.value.constructor) {

@@ -4,24 +4,19 @@ import { ICustomerReadRepo } from '../../repos/interfaces/ICustomerReadRepo';
 import { ApplicationErrors } from '../errors/index';
 import { GetCustomerByAccountIdQuery } from './GetCustomerByAccountIdQuery';
 
-export type GetCustomerByAccountIdUseCaseResponse = Either<
+export type GetCustomerByAccountIdResponse = Either<
   CustomerReadModel,
   ApplicationErrors.CustomerByAccountIdNotFound
 >;
 
 export class GetCustomerByAccountIdQueryHandler
   implements
-    Application.IUseCase<
-      GetCustomerByAccountIdQuery,
-      Promise<GetCustomerByAccountIdUseCaseResponse>
-    >
+    Application.IUseCase<GetCustomerByAccountIdQuery, Promise<GetCustomerByAccountIdResponse>>
 {
   constructor(private customerRepo: ICustomerReadRepo) {}
 
   @RespondWithPublish()
-  async execute(
-    query: GetCustomerByAccountIdQuery,
-  ): Promise<GetCustomerByAccountIdUseCaseResponse> {
+  async execute(query: GetCustomerByAccountIdQuery): Promise<GetCustomerByAccountIdResponse> {
     const requestAccountId = query.accountId;
     const customer = await this.customerRepo.getByAccountId(requestAccountId);
     if (!customer) {

@@ -12,7 +12,7 @@ import {
   Domain,
 } from '@bitloops/bl-boilerplate-core';
 
-type InsertPINCommandHandlerResponse = Either<
+export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFound
   | DomainErrors.PINIsNotPositiveNumber
@@ -21,7 +21,8 @@ type InsertPINCommandHandlerResponse = Either<
 >;
 
 export class WithdrawMoneyCommandHandler
-  implements Application.IUseCase<WithdrawMoneyCommand, Promise<InsertPINCommandHandlerResponse>>
+  implements
+    Application.IUseCase<WithdrawMoneyCommand, Promise<WithdrawMoneyCommandHandlerResponse>>
 {
   private accountRepo: IAccountWriteRepo;
 
@@ -30,7 +31,7 @@ export class WithdrawMoneyCommandHandler
   }
 
   @RespondWithPublish()
-  async execute(command: WithdrawMoneyCommand): Promise<InsertPINCommandHandlerResponse> {
+  async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
 
     const accountEntity = await this.accountRepo.getById(accountId);

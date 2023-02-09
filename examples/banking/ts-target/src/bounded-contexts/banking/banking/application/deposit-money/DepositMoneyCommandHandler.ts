@@ -12,7 +12,7 @@ import {
   fail,
 } from '@bitloops/bl-boilerplate-core';
 
-type InsertPINCommandHandlerResponse = Either<
+export type InsertPINCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFound
   | DomainErrors.PINIsNotPositiveNumber

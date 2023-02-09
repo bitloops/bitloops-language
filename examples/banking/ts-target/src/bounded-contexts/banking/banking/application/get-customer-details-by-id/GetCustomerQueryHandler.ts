@@ -4,7 +4,7 @@ import { ICustomerReadRepo } from '../../repos/interfaces/ICustomerReadRepo';
 import { ApplicationErrors } from '../errors/index';
 import { GetCustomerByIdQuery } from './GetCustomerByIdQuery';
 
-type GetCustomerResponse = Either<CustomerReadModel, ApplicationErrors.CustomerNotFound>;
+export type GetCustomerResponse = Either<CustomerReadModel, ApplicationErrors.CustomerNotFound>;
 
 export class GetCustomerQueryHandler
   implements Application.IUseCase<GetCustomerByIdQuery, Promise<GetCustomerResponse>>

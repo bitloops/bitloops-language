@@ -10,7 +10,7 @@ type TCustomerId = {
   customerId: string;
 };
 
-type InsertPINCommandHandlerResponse = Either<
+export type InsertPINCommandHandlerResponse = Either<
   TCustomerId,
   | ApplicationErrors.CustomerNotFound
   | DomainErrors.PINIsNotPositiveNumber

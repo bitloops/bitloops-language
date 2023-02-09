@@ -4,7 +4,7 @@ import { IAccountReadRepo } from '../../repos/interfaces/IAccountReadRepo';
 import { ApplicationErrors } from '../errors';
 import { GetAccountQuery } from './GetAccountQuery';
 
-type GetAccountDetailsResponse = Either<AccountReadModel, ApplicationErrors.AccountNotFound>;
+export type GetAccountDetailsResponse = Either<AccountReadModel, ApplicationErrors.AccountNotFound>;
 
 export class GetAccountQueryHandler
   implements Application.IUseCase<GetAccountQuery, Promise<GetAccountDetailsResponse>>

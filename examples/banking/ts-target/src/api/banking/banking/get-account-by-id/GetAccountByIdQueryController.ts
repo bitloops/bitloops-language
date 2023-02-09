@@ -1,10 +1,8 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { Either, Infra } from '@bitloops/bl-boilerplate-core';
-import { AccountReadModel } from '../../../../bounded-contexts/banking/banking/domain/AccountReadModel';
+import { Infra } from '@bitloops/bl-boilerplate-core';
 import { GetAccountQuery } from '../../../../bounded-contexts/banking/banking/application/get-account-details/GetAccountQuery';
 import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors';
-
-type GetAccountByIdUseCaseResponse = Either<AccountReadModel, ApplicationErrors.AccountNotFound>;
+import { GetAccountDetailsResponse } from '../../../../bounded-contexts/banking/banking/application/get-account-details/GetAccountQueryHandler.js';
 
 export class GetAccountByIdQueryController extends Fastify.BaseController {
   constructor(private queryBus: Infra.QueryBus.IQueryBus) {
@@ -13,8 +11,8 @@ export class GetAccountByIdQueryController extends Fastify.BaseController {
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const { accountId } = request.params;
-    const query = new GetAccountQuery(accountId);
-    const result = await this.queryBus.query<GetAccountByIdUseCaseResponse>(query);
+    const query = new GetAccountQuery({ accountId });
+    const result = await this.queryBus.query<GetAccountDetailsResponse>(query);
 
     if (result.isFail()) {
       switch (result.value.constructor) {

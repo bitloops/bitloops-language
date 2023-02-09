@@ -1,11 +1,10 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { Either, Infra } from '@bitloops/bl-boilerplate-core';
+import { Infra } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
 import { InsertPINCommand } from '../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommand';
+import { InsertPINCommandHandlerResponse } from '../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommandHandler.js';
 import { InsertPINRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO';
 import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors/index';
-
-type InsertCardPinUseCaseResponse = Either<string, DomainErrors.InvalidMonetaryValue>;
 
 export class InsertCardPINRESTCommandController extends Fastify.BaseController {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {
@@ -20,9 +19,10 @@ export class InsertCardPINRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new InsertPINCommand(dto);
-    const result = await this.commandBus.sendAndGetResponse<InsertCardPinUseCaseResponse>(command, [
-      DomainErrors.InvalidMonetaryValue,
-    ]);
+    const result = await this.commandBus.sendAndGetResponse<InsertPINCommandHandlerResponse>(
+      command,
+      [DomainErrors.InvalidMonetaryValue],
+    );
 
     if (result.isFail()) {
       switch (result.value.constructor) {

@@ -2,20 +2,23 @@ import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
 import { INSERT_PIN_COMMAND_NAME } from '../../contracts';
-import { InsertPINRequestDTO } from '../../dtos/InsertPINRequestDTO';
+
+type TInsertPinCommand = {
+  email: string;
+  pin: string;
+};
 
 export class InsertPINCommand extends Application.Command {
-  public email: string;
-  public pin: string;
+  public readonly email: string;
+  public readonly pin: string;
 
   // Set static name so we can refer to them easily
   public static readonly commandName = INSERT_PIN_COMMAND_NAME;
 
-  constructor(insertPinRequestDTO: InsertPINRequestDTO) {
+  constructor(insertPinRequestDTO: TInsertPinCommand) {
     super(InsertPINCommand.commandName, contextId);
-    const { email, pin } = insertPinRequestDTO;
-    this.email = email;
-    this.pin = pin;
+    this.email = insertPinRequestDTO.email;
+    this.pin = insertPinRequestDTO.pin;
   }
 
   static getCommandTopic(): string {
