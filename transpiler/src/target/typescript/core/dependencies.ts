@@ -217,6 +217,10 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.ReadModel,
     };
+  } else if (dependencyName.endsWith('DomainEvent')) {
+    return {
+      classType: ClassTypes.DomainEvent,
+    };
   }
   //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
 

@@ -39,6 +39,7 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
+  DOMAIN_EVENTS = 'domain/events/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -57,6 +58,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapter]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
+  [ClassTypes.DomainEvent]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENTS,
 };
 
 const getTargetFileDestination = (
@@ -113,6 +115,7 @@ const getTargetFileDestination = (
     case ClassTypes.RepoPort:
     case ClassTypes.RepoAdapter:
     case ClassTypes.DomainRule:
+    case ClassTypes.DomainEvent:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -144,6 +147,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Package:
     case ClassTypes.RepoAdapter:
     case ClassTypes.RepoPort:
+    case ClassTypes.DomainEvent:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
