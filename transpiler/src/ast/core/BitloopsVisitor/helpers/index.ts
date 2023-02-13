@@ -141,3 +141,9 @@ export {
   domainEventDeclarationVisitor,
   domainEventIdentifierVisitor,
 } from './domainEventDeclaration.js';
+export {
+  domainEventHandlerDeclarationVisitor,
+  domainEventHandlerIdentifierVisitor,
+  domainEventHandlerHandleMethodParameterVisitor,
+  domainEventHandlerHandleMethodVisitor,
+} from './domainEventHandlerDeclaration.js';

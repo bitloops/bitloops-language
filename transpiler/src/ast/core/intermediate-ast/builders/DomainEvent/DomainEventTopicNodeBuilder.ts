@@ -3,9 +3,6 @@ import { DomainEventTopicNode } from '../../nodes/DomainEvent/DomainEventTopicNo
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IBuilder } from '../IBuilder.js';
 
-// THis type will change to something like = { evaluationField: { name: string } & TExpression }
-// export type TEvaluationField = ({ name: string } & TExpression)[];
-
 export class DomainEventTopicNodeBuilder implements IBuilder<DomainEventTopicNode> {
   private topicNode: DomainEventTopicNode;
   private expression: ExpressionNode;

@@ -1097,3 +1097,17 @@ export type TDomainEvent = {
     topic: TExpression;
   };
 };
+
+type TDomainEventHandlerIdentifier = string;
+
+export type TDomainEventHandler = {
+  domainEventHandler: {
+    domainEventHandlerIdentifier: TDomainEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies;
+};
+
+export type THandle = {
+  statements: TStatements;
+} & TParameter;

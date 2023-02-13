@@ -142,6 +142,10 @@ import {
   packagePortIdentifierVisitor,
   domainEventDeclarationVisitor,
   domainEventIdentifierVisitor,
+  domainEventHandlerDeclarationVisitor,
+  domainEventHandlerIdentifierVisitor,
+  domainEventHandlerHandleMethodVisitor,
+  domainEventHandlerHandleMethodParameterVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -1259,12 +1263,34 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitDomainEventDeclaration(ctx: BitloopsParser.DomainEventDeclarationContext): void {
-    return domainEventDeclarationVisitor(this, ctx);
+    domainEventDeclarationVisitor(this, ctx);
   }
 
   visitDomainEventIdentifier(
     ctx: BitloopsParser.DomainEventIdentifierContext,
   ): DomainEventIdentifierNode {
     return domainEventIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerDeclaration(
+    ctx: BitloopsParser.DomainEventHandlerDeclarationContext,
+  ): void {
+    domainEventHandlerDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerIdentifier(ctx: BitloopsParser.DomainEventHandlerIdentifierContext): any {
+    return domainEventHandlerIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerHandleDeclaration(
+    ctx: BitloopsParser.DomainEventHandlerHandleDeclarationContext,
+  ): any {
+    return domainEventHandlerHandleMethodVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerHandleParameter(
+    ctx: BitloopsParser.DomainEventHandlerHandleParameterContext,
+  ): any {
+    return domainEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 }

@@ -209,6 +209,7 @@ sourceElement
     | repoPortDeclaration
     | readModelDeclaration
     | domainEventDeclaration
+    | domainEventHandlerDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -454,6 +455,25 @@ domainEventDeclaration
 domainEventIdentifier
     : DomainEventIdentifier
     ;
+
+
+// 
+domainEventHandlerIdentifier
+    : DomainEventHandlerIdentifier
+    ;
+
+domainEventHandlerDeclaration
+    : DomainEventHandler domainEventHandlerIdentifier parameterList OpenBrace domainEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+domainEventHandlerHandleDeclaration
+    : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+domainEventHandlerHandleParameter
+    : parameterIdentifier Colon domainEventIdentifier
+    ;
+//
 
 dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?

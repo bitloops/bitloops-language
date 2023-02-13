@@ -1,0 +1,12 @@
+DomainEventHandler SendEmailAfterDepositsIncrementedDomainEventHandler(customerService: CustomerServicePort) {
+  handle(event: DepositsIncrementedDomainEvent) {
+    // const account = event.account;
+    // const accountId = account.id;
+
+    // const email = this.customerService.getEmailByAccountId(accountId.toString());
+
+    // const command = SendEmailVerificationCommand.create({ accountId: accountId.toString(), email });
+
+    this.commandBus.send(command);
+  }
+}

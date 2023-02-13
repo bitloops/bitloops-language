@@ -60,7 +60,7 @@ type THandle = {
 //1. In TS we can check if query bus/command bus are unused and not include them in the dependencies
 //2. In IntermediateAST -> CompleteAST we need to find the type of customerQueryResult
 
-DomainEventHandler SendEmailAfterDepositsIncrementedHandler(customerService: CustomerServicePort) {
+DomainEventHandler SendEmailAfterDepositsIncrementedDomainEventHandler(customerService: CustomerServicePort) {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   // and get the eventTopic to subscribe from it

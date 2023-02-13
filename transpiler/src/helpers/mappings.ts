@@ -230,6 +230,9 @@ const BitloopsTypesMapping = {
   TDomainEvent: 'TDomainEvent',
   TDomainEventIdentifier: 'TDomainEventIdentifier',
   DomainEventTopic: 'DomainEventTopic',
+  TDomainEventHandler: 'TDomainEventHandler',
+  TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
+  TDomainEventHandlerHandleMethod: 'TDomainEventHandlerHandleMethod',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -253,6 +256,7 @@ const ClassTypes = {
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
   DomainEvent: 'DomainEvent',
+  DomainEventHandler: 'DomainEventHandler',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -284,6 +288,7 @@ const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesV
   [ClassTypes.ApplicationError]: BitloopsTypesMapping.TApplicationError,
   [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
   [ClassTypes.DomainEvent]: BitloopsTypesMapping.TDomainEvent,
+  [ClassTypes.DomainEventHandler]: BitloopsTypesMapping.TDomainEventHandler,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

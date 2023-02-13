@@ -1,0 +1,6 @@
+DomainEventHandler SendEmailAfterDepositsIncrementedDomainEventHandler() {
+  handle(event: DepositsIncrementedDomainEvent) {
+
+    this.commandBus.send(command);
+  }
+}
