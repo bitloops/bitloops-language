@@ -4,7 +4,8 @@ import { formatString } from '../../../../src/target/typescript/core/codeFormatt
 
 type TestCase = {
   description: string;
-  input: string;
+  inputSetup: { fileId: string; fileContents: string }[];
+  inputCore: { boundedContext: string; module: string; fileId: string; fileContents: string }[];
   expectedOutputs: TTargetSetupContent[];
 };
 
@@ -44,12 +45,32 @@ const setupFilePaths = {
     fileType: 'REST.Fastify.API',
     formatterParser: 'typescript',
   },
+  'di.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/DI.ts',
+    fileType: 'DI',
+    formatterParser: 'typescript',
+  },
+  'domainError.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/domain/errors/index.ts',
+    fileType: 'DomainError',
+    formatterParser: 'typescript',
+  },
+  'applicationError.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/application/errors/index.ts',
+    fileType: 'ApplicationError',
+    formatterParser: 'typescript',
+  },
+  'domainRule.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/domain/rules/index.ts',
+    fileType: 'DomainRule',
+    formatterParser: 'typescript',
+  },
 };
 
 const getExpectedSetupOutputs = (
   setupFilePaths: Record<string, { fileId: string; fileType: string; formatterParser: string }>,
 ): TTargetSetupContent[] => {
-  const basePath = 'transpiler/__tests__/end-to-end/mocks/setup/';
+  const basePath = 'transpiler/__tests__/end-to-end/mocks/setup/outputs/';
 
   const expectedOutput: TTargetSetupContent[] = [];
   for (const [mockFileName, { fileId, fileType, formatterParser }] of Object.entries(
@@ -70,7 +91,56 @@ const getExpectedSetupOutputs = (
 export const SETUP_END_TO_END_TEST_CASES: Array<TestCase> = [
   {
     description: '',
-    input: FileUtil.readFileString('transpiler/__tests__/end-to-end/mocks/setup/setup.bl'),
+    inputSetup: [
+      {
+        fileId: 'setup.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/setup/setup.bl',
+        ),
+      },
+    ],
+    inputCore: [
+      {
+        boundedContext: 'Demo',
+        module: 'Hello World',
+        fileId: 'useCases.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/setup/core/useCases.bl',
+        ),
+      },
+      {
+        boundedContext: 'Demo',
+        module: 'Hello World',
+        fileId: 'controllers.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/setup/core/controllers.bl',
+        ),
+      },
+      {
+        boundedContext: 'Demo',
+        module: 'Hello World',
+        fileId: 'repoPorts.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/setup/core/repoPorts.bl',
+        ),
+      },
+      {
+        boundedContext: 'Demo',
+        module: 'Hello World',
+        fileId: 'domain.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/setup/core/domain.bl',
+        ),
+      },
+      // {
+      //   boundedContext: 'Demo',
+      //   module: 'Hello World',
+      //   fileId: 'packagePort.bl',
+      //   fileContents: FileUtil.readFileString(
+      //     'transpiler/__tests__/end-to-end/mocks/setup/core/packagePort.bl',
+      //   ),
+      // },
+    ],
     expectedOutputs: getExpectedSetupOutputs(setupFilePaths),
   },
 ];

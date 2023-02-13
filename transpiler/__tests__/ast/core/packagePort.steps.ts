@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
@@ -52,7 +52,7 @@ describe('Package port declaration is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
@@ -86,7 +86,7 @@ describe('Parsing 2 package ports', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }

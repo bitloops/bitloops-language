@@ -22,7 +22,7 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { validValueObjectTestCases } from './mocks/valueObject/valueObject.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -49,7 +49,7 @@ describe('Value Object declaration is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }

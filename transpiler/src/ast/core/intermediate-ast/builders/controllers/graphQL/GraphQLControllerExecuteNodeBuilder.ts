@@ -28,11 +28,9 @@ export class GraphQLControllerExecuteNodeBuilder implements IBuilder<GraphQLCont
   }
 
   public withReturnType(
-    returnType: string,
-    nodeMeta?: TNodeMetadata,
+    returnType: GraphQLControllerExecuteReturnTypeNode,
   ): GraphQLControllerExecuteNodeBuilder {
-    this.returnType = new GraphQLControllerExecuteReturnTypeNode(nodeMeta);
-    this.returnType.buildLeafValue(returnType);
+    this.returnType = returnType;
     return this;
   }
 

@@ -1,0 +1,14 @@
+Props TitleProps {
+    string title;
+  }
+
+DomainError TitleOutOfBoundsError(title: string)  {
+    message: 'Title is out of range',
+    errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+  }
+
+ValueObject TitleVO {
+    constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+      applyRules(TitleOutOfBoundsRule(props.title));
+    }
+  }

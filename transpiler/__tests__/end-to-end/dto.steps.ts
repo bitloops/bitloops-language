@@ -47,6 +47,7 @@ describe('Valid DTO End To End', () => {
             fileContents: testCase.input,
           },
         ],
+        setup: [],
       };
 
       // when

@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
@@ -48,8 +48,9 @@ describe('Domain constructor declaration is valid', () => {
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        const parseResult = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(parseResult)) {
+          const result = intermediateParser.complete(parseResult);
           resultTree = result.core[BOUNDED_CONTEXT].core;
         }
       }

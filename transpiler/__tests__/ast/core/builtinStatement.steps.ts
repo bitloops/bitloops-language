@@ -22,7 +22,7 @@ import assert from 'assert';
 
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { validApplyRulesStatementTestCases } from './mocks/statements/builtInFunction.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
@@ -52,7 +52,7 @@ describe('Apply rules statement is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           const { core } = result;
           resultTree = core[BOUNDED_CONTEXT].core;
         }

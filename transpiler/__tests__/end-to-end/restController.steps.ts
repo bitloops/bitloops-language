@@ -23,6 +23,7 @@ import { TOutputTargetContent } from '../../src/target/types.js';
 import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
 import { transpiler } from '../../src/index.js';
 import { REST_CONTROLLER_END_TO_END_TEST_CASES } from './mocks/rest-controller/rest-controller.js';
+import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
 
 describe('Valid Rest controller End To End', () => {
   const fileId = 'fileName';
@@ -59,6 +60,10 @@ describe('Valid Rest controller End To End', () => {
       const result = transpiler.transpile(input, options);
       if (!Transpiler.isTranspileError(result)) {
         targetCode = result;
+      } else {
+        result.forEach((error) => {
+          throw new Error((error as IntermediateASTValidationError).message);
+        });
       }
 
       // then
@@ -73,7 +78,7 @@ describe('Valid Rest controller End To End', () => {
         },
       ];
 
-      expect(targetCode.core).toEqual(expectedOutput);
+      expect(targetCode.core[0]).toEqual(expectedOutput[0]);
     });
   });
 });

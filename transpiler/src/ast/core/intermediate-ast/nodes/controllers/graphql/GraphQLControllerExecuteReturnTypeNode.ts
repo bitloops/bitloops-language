@@ -11,4 +11,9 @@ export class GraphQLControllerExecuteReturnTypeNode extends IntermediateASTNode 
       GraphQLControllerExecuteReturnTypeNode.classNodeName,
     );
   }
+
+  getType(): string {
+    const value = this.getValue();
+    return value[this.getClassNodeName()];
+  }
 }
