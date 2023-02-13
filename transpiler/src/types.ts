@@ -1087,3 +1087,22 @@ export type TEventHandlerBusDependencies = {
 //     commandTopic: TExpression
 //   } & TVariables;
 // };
+
+export type TIntegrationVersionMappers = {
+  integrationVersionMappers: TIntegrationVersionMapper[];
+};
+
+export type TIntegrationVersionMapper = {
+  integrationVersionMappers: {
+    statements: TStatements;
+    [structIdentifierKey]: TStructIdentifier;
+  } & StringLiteral;
+};
+
+export type TIntegrationEventIdentifier = string;
+export type TIntegrationEvent = {
+  integrationEvent: {
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TIntegrationVersionMappers &
+    TParameter;
+};

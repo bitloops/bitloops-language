@@ -411,8 +411,13 @@ integrationEventIdentifier
     : IntegrationEventIdentifier
     ;
 
+integrationEventInputType
+    : propsIdentifier
+    | domainEventIdentifier
+    ;
+
 integrationEventInput
-    : OpenParen parameterIdentifier Colon (propsIdentifier | domainEventIdentifier) CloseParen
+    : OpenParen parameterIdentifier Colon integrationEventInputType CloseParen
     ;
 
 versionName

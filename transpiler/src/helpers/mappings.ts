@@ -232,6 +232,7 @@ const BitloopsTypesMapping = {
   TIntegrationEventInput: 'TIntegrationEventInput',
   TIntegrationVersionMappers: 'TIntegrationVersionMappers',
   TIntegrationEvent: 'TIntegrationEvent',
+  TIntegrationVersionMapper: 'TIntegrationVersionMapper',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

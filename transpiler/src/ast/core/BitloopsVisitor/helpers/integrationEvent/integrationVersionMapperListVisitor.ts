@@ -19,31 +19,25 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { IntegrationEventNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationEventNodeBuilder.js';
-import { IntegrationEventIdentifierNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
+import { IntegrationVersionMapperListNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationVersionMapperListNodeBuilder.js';
 import { IntegrationVersionMapperListNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationVersionMapperListNode.js';
-import { ParameterNode } from '../../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { IntegrationVersionMapperNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationVersionMapperNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
-export const integrationEventDeclarationVisitor = (
+export const integrationVersionMapperListVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.IntegrationEventDeclarationContext,
-): void => {
-  const integrationEventIdentifierNode: IntegrationEventIdentifierNode = thisVisitor.visit(
-    ctx.integrationEventIdentifier(),
-  );
-
-  const parameterNode: ParameterNode = thisVisitor.visit(ctx.integrationEventInput());
-
-  const integrationVersionMapperListNode: IntegrationVersionMapperListNode = thisVisitor.visit(
-    ctx.integrationVersionMapperList(),
+  ctx: BitloopsParser.IntegrationVersionMapperListContext,
+): IntegrationVersionMapperListNode => {
+  // eslint-disable-next-line no-debugger
+  debugger;
+  const versionMapperWithUndefined = thisVisitor.visitChildren(ctx);
+  const versionMapperNodes: IntegrationVersionMapperNode[] = versionMapperWithUndefined.filter(
+    (versionMapper) => versionMapper !== undefined,
   );
 
   const metadata = produceMetadata(ctx, thisVisitor);
-  new IntegrationEventNodeBuilder(thisVisitor.intermediateASTTree, metadata)
-    .withInput(parameterNode)
-    .withIdentifier(integrationEventIdentifierNode)
-    .withVersionMappers(integrationVersionMapperListNode)
+  return new IntegrationVersionMapperListNodeBuilder(metadata)
+    .withVersionMappers(versionMapperNodes)
     .build();
 };

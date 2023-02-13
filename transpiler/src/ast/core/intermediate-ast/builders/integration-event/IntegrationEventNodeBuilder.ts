@@ -19,16 +19,16 @@
  */
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { IntegrationEventIdentifierNode } from '../../nodes/integration-event/IntegrationEventIdentifierNode.js';
-import { IntegrationEventInputNode } from '../../nodes/integration-event/IntegrationEventInputNode.js';
 import { IntegrationEventNode } from '../../nodes/integration-event/IntegrationEventNode.js';
 import { IntegrationVersionMapperListNode } from '../../nodes/integration-event/IntegrationVersionMapperListNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
+import { ParameterNode } from '../../nodes/ParameterList/ParameterNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class IntegrationEventNodeBuilder implements IBuilder<IntegrationEventNode> {
   private integrationEventNode: IntegrationEventNode;
   private identifierNode: IntegrationEventIdentifierNode;
-  private inputNode: IntegrationEventInputNode;
+  private inputNode: ParameterNode;
   private versionMapperListNode: IntegrationVersionMapperListNode;
   private intermediateASTTree: IntermediateASTTree;
 
@@ -42,7 +42,7 @@ export class IntegrationEventNodeBuilder implements IBuilder<IntegrationEventNod
     return this;
   }
 
-  withInput(input: IntegrationEventInputNode): IntegrationEventNodeBuilder {
+  withInput(input: ParameterNode): IntegrationEventNodeBuilder {
     this.inputNode = input;
     return this;
   }

@@ -257,6 +257,15 @@ import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQ
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { integrationEventDeclarationVisitor } from './helpers/integrationEvent/integrationEventVisitor.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
+import { IntegrationEventIdentifierNodeBuilder } from '../intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
+import { IntegrationEventIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
+import { integrationEventInputVisitor } from './helpers/integrationEvent/integrationEventInputVisitor.js';
+import { integrationEventInputTypeVisitor } from './helpers/integrationEvent/integrationEventInputTypeVisitor.js';
+import { IntegrationVersionMapperListNode } from '../intermediate-ast/nodes/integration-event/IntegrationVersionMapperListNode.js';
+import { integrationVersionMapperListVisitor } from './helpers/integrationEvent/integrationVersionMapperListVisitor.js';
+import { IntegrationVersionMapperNode } from '../intermediate-ast/nodes/integration-event/IntegrationVersionMapperNode.js';
+import { integrationVersionMapperVisitor } from './helpers/integrationEvent/integrationVersionMapperVisitor.js';
+import { StructIdentifierNode } from '../intermediate-ast/nodes/struct/StructIdentifierNode.js';
 
 type TContextInfo = {
   boundedContextName: string;
@@ -325,7 +334,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return propsIdentifierNode;
   }
 
-  visitStructIdentifier(ctx: BitloopsParser.StructIdentifierContext): IdentifierNode {
+  visitStructIdentifier(ctx: BitloopsParser.StructIdentifierContext): StructIdentifierNode {
     const identifierName = ctx.UpperCaseIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
     const structIdentifierNode = new StructIdentifierNodeBuilder(metadata)
@@ -1264,5 +1273,48 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIntegrationEventDeclaration(ctx: BitloopsParser.IntegrationEventDeclarationContext): void {
     integrationEventDeclarationVisitor(this, ctx);
+  }
+
+  visitIntegrationEventIdentifier(
+    ctx: BitloopsParser.IntegrationEventIdentifierContext,
+  ): IntegrationEventIdentifierNode {
+    const identifierName = ctx.IntegrationEventIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const integrationEventIdentifierNode = new IntegrationEventIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return integrationEventIdentifierNode;
+  }
+
+  visitIntegrationEventInputType(
+    ctx: BitloopsParser.IntegrationEventInputTypeContext,
+  ): BitloopsPrimaryTypeNode {
+    return integrationEventInputTypeVisitor(this, ctx);
+  }
+
+  visitIntegrationEventInput(ctx: BitloopsParser.IntegrationEventInputContext): ParameterNode {
+    return integrationEventInputVisitor(this, ctx);
+  }
+
+  visitIntegrationVersionMapperList(
+    ctx: BitloopsParser.IntegrationVersionMapperListContext,
+  ): IntegrationVersionMapperListNode {
+    return integrationVersionMapperListVisitor(this, ctx);
+  }
+
+  visitIntegrationVersionMapper(
+    ctx: BitloopsParser.IntegrationVersionMapperContext,
+  ): IntegrationVersionMapperNode {
+    return integrationVersionMapperVisitor(this, ctx);
+  }
+
+  visitVersionName(ctx: BitloopsParser.VersionNameContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
+
+  visitIntegrationReturnSchemaType(
+    ctx: BitloopsParser.IntegrationReturnSchemaTypeContext,
+  ): StructIdentifierNode {
+    return this.visit(ctx.structIdentifier());
   }
 }

@@ -19,31 +19,26 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { IntegrationEventNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationEventNodeBuilder.js';
-import { IntegrationEventIdentifierNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
-import { IntegrationVersionMapperListNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationVersionMapperListNode.js';
+import { ParameterNodeBuilder } from '../../../intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ParameterIdentifierNode } from '../../../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 import { ParameterNode } from '../../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
-export const integrationEventDeclarationVisitor = (
+export const integrationEventInputVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.IntegrationEventDeclarationContext,
-): void => {
-  const integrationEventIdentifierNode: IntegrationEventIdentifierNode = thisVisitor.visit(
-    ctx.integrationEventIdentifier(),
+  ctx: BitloopsParser.IntegrationEventInputContext,
+): ParameterNode => {
+  const parameterIdentifierNode: ParameterIdentifierNode = thisVisitor.visit(
+    ctx.parameterIdentifier(),
   );
 
-  const parameterNode: ParameterNode = thisVisitor.visit(ctx.integrationEventInput());
-
-  const integrationVersionMapperListNode: IntegrationVersionMapperListNode = thisVisitor.visit(
-    ctx.integrationVersionMapperList(),
-  );
+  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.integrationEventInputType());
 
   const metadata = produceMetadata(ctx, thisVisitor);
-  new IntegrationEventNodeBuilder(thisVisitor.intermediateASTTree, metadata)
-    .withInput(parameterNode)
-    .withIdentifier(integrationEventIdentifierNode)
-    .withVersionMappers(integrationVersionMapperListNode)
+  return new ParameterNodeBuilder(metadata)
+    .withIdentifier(parameterIdentifierNode)
+    .withType(type)
     .build();
 };
