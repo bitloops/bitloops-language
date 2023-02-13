@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { ArgumentListNode } from '../ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../controllers/restController/RESTControllerIdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { BoundedContextModuleNode } from './BoundedContextModuleNode.js';
@@ -29,5 +30,15 @@ export class RouterControllerNode extends IntermediateASTNode {
       throw new Error('BoundedContext module not found');
     }
     return boundedContextModule;
+  }
+
+  public getArgumentList(): ArgumentListNode {
+    const argumentList = this.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    if (!argumentList) {
+      throw new Error('Argument list not found');
+    }
+    return argumentList;
   }
 }

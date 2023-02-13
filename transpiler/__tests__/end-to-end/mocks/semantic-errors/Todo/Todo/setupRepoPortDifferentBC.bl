@@ -1,0 +1,15 @@
+Config.setLanguage(TypeScript);
+
+const mongoConnection = RepoConnections.Mongo({
+    host: 'localhost',
+    port: 27017,
+    database: Env(MONGO_DB_DATABASE,'todo'),
+  });
+  
+const todoReadRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+  }) concretes [Demo][Todo]TodoReadRepoPort;
+
+
+const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);

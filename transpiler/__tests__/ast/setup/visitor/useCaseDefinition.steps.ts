@@ -19,7 +19,7 @@
  */
 import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
-import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
 import {
@@ -58,7 +58,7 @@ describe('Use case definition is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           setupResult = result.setup;
         }
       }
@@ -100,7 +100,7 @@ describe('Multiple use case definitions are valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           setupResult = result.setup;
         }
       }

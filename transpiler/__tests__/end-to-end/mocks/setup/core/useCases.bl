@@ -1,0 +1,7 @@
+UseCase HelloWorldUseCase () {
+    execute (): (OK(TodoReadModel[]), Errors()) {
+        const hellloWorld = this.helloWorldRepo.getAll();
+
+    return hellloWorld;
+    }
+  }

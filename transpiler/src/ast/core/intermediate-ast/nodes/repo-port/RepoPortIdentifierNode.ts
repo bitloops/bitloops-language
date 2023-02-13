@@ -6,6 +6,6 @@ export class RepoPortIdentifierNode extends IntermediateASTIdentifierNode {
   private static classNodeName = 'repoPortIdentifier';
 
   constructor(metadata?: TNodeMetadata) {
-    super(BitloopsTypesMapping.TRepoPort, RepoPortIdentifierNode.classNodeName, metadata);
+    super(BitloopsTypesMapping.TRepoPortIdentifier, RepoPortIdentifierNode.classNodeName, metadata);
   }
 }
