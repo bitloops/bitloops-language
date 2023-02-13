@@ -22,7 +22,6 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
 import { validDomainEventHandlersTestCases } from './mocks/domainEventHandlers/index.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
@@ -48,11 +47,11 @@ describe('Entity declaration is valid', () => {
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
-          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
-        }
+        const tree = intermediateParser.parse(initialModelOutput);
+        const result = intermediateParser.complete(tree);
+        resultTree = result.core[BOUNDED_CONTEXT][MODULE];
       }
+
       const nodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TDomainEventHandler);
       const value = nodes[0].getValue();
 

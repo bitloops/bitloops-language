@@ -234,6 +234,7 @@ const BitloopsTypesMapping = {
   TDomainEventHandler: 'TDomainEventHandler',
   TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
   TDomainEventHandlerHandleMethod: 'TDomainEventHandlerHandleMethod',
+  TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
