@@ -1087,3 +1087,13 @@ export type TEventHandlerBusDependencies = {
 //     commandTopic: TExpression
 //   } & TVariables;
 // };
+
+export const DomainEventIdentifierKey = 'DomainEventIdentifier';
+
+export type TDomainEvent = {
+  domainEvent: {
+    [DomainEventIdentifierKey]: TDTOIdentifier;
+    entityIdentifier: TEntityIdentifier;
+    topic: TExpression;
+  };
+};

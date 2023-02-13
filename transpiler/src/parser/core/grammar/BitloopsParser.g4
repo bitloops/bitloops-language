@@ -208,6 +208,7 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | domainEventDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -443,6 +444,15 @@ repoPortExtendableIdentifier
     : RepoPortIdentifier
     | UpperCaseIdentifier 
     | UpperCaseIdentifier '<' UpperCaseIdentifier '>'
+    ;
+
+
+domainEventDeclaration
+    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' SemiColon?
+    ;
+
+domainEventIdentifier
+    : DomainEventIdentifier
     ;
 
 dtoDeclaration

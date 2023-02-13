@@ -227,6 +227,8 @@ const BitloopsTypesMapping = {
   TGraphQLServerOptions: 'TGraphQLServerOptions',
   TGraphQLServerInstance: 'TGraphQLServerInstance',
   TRESTServerInstance: 'TRESTServerInstance',
+  TDomainEvent: 'TDomainEvent',
+  TDomainEventIdentifier: 'TDomainEventIdentifier',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -249,6 +251,7 @@ const ClassTypes = {
   RepoAdapter: 'RepoAdapter',
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
+  DomainEvent: 'DomainEvent',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -263,7 +266,7 @@ export const mappingBitloopsBuiltInClassToLayer = {
   [BitloopsBuiltInClassNames.UUIDv4]: ArchitectureLayers.Domain,
 };
 
-const mappingClassTypeToComponentType = {
+const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesValues> = {
   [ClassTypes.Controller]: BitloopsTypesMapping.TController,
   [ClassTypes.UseCase]: BitloopsTypesMapping.TUseCase,
   [ClassTypes.ValueObject]: BitloopsTypesMapping.TValueObject,
@@ -279,6 +282,7 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
   [ClassTypes.ApplicationError]: BitloopsTypesMapping.TApplicationError,
   [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
+  [ClassTypes.DomainEvent]: BitloopsTypesMapping.TDomainEvent,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

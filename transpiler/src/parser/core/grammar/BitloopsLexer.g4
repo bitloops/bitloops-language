@@ -304,6 +304,7 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+DomainEventIdentifier:          UpperCaseStart IdentifierPart* DomainEvent;
 SetLanguage:                    'setLanguage';
 TypeScript:                     'TypeScript';
 Java:                           'Java';
