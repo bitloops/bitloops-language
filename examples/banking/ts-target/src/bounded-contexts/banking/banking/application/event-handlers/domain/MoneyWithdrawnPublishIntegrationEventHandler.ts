@@ -1,9 +1,13 @@
-import { Infra, Application } from '@bitloops/bl-boilerplate-core';
+import { Infra, Application, Container } from '@bitloops/bl-boilerplate-core';
+import { CONTEXT_ID } from '../../../config/index.js';
 import { MoneyWithdrawnIntegrationEvent } from '../../../contracts';
 import { MoneyWithdrawnFromAccount } from '../../../domain/events/MoneyWithdrawnFromAccount';
 
 export class MoneyWithdrawnPublishIntegrationEventHandler implements Application.IHandle {
-  constructor(private eventBus: Infra.EventBus.IEventBus) {}
+  private eventBus: Infra.EventBus.IEventBus;
+  constructor() {
+    this.eventBus = Container.getIntegrationEventBusFromContext(CONTEXT_ID);
+  }
 
   public async handle(event: MoneyWithdrawnFromAccount): Promise<void> {
     const { account } = event;

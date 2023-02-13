@@ -1074,6 +1074,13 @@ export enum RestServerOptions {
   port = 'port',
 }
 
+// DomainEventHandler & IntegrationEventHandler
+export type TEventHandlerBusDependencies = {
+  commandBus: boolean;
+  queryBus: boolean;
+  integrationEventBus: boolean;
+};
+
 // export type TCommand = {
 //   [commandKey]: {
 //     [commandIdentifierKey]: TCommandIdentifier;
