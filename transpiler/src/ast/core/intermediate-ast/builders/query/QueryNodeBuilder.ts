@@ -1,42 +1,42 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { CommandDeclarationNode } from '../../nodes/command/CommandDeclarationNode.js';
+import { QueryDeclarationNode } from '../../nodes/query/QueryDeclarationNode.js';
 import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 // produce the QueryNodeBuilder builder
-export class CommandNodeBuilder implements IBuilder<CommandDeclarationNode> {
-  private commandNode: CommandDeclarationNode;
+export class QueryNodeBuilder implements IBuilder<QueryDeclarationNode> {
+  private queryNode: QueryDeclarationNode;
   private identifierNode: IdentifierNode;
   private fieldListNode: FieldListNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
-    this.commandNode = new CommandDeclarationNode(metadata);
+    this.queryNode = new QueryDeclarationNode(metadata);
   }
 
-  public withIdentifier(commandIdentifierNode: IdentifierNode): CommandNodeBuilder {
-    this.identifierNode = commandIdentifierNode;
-    const commandName = commandIdentifierNode.getIdentifierName();
-    this.commandNode.setClassName(commandName);
+  public withIdentifier(queryIdentifierNode: IdentifierNode): QueryNodeBuilder {
+    this.identifierNode = queryIdentifierNode;
+    const queryName = queryIdentifierNode.getIdentifierName();
+    this.queryNode.setClassName(queryName);
     return this;
   }
 
-  public withFieldList(fieldListNode: FieldListNode): CommandNodeBuilder {
+  public withFieldList(fieldListNode: FieldListNode): QueryNodeBuilder {
     this.fieldListNode = fieldListNode;
     return this;
   }
 
-  public build(): CommandDeclarationNode {
-    this.intermediateASTTree.insertChild(this.commandNode);
+  public build(): QueryDeclarationNode {
+    this.intermediateASTTree.insertChild(this.queryNode);
     this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.fieldListNode);
     this.intermediateASTTree.setCurrentNodeToRoot();
 
-    this.commandNode.buildObjectValue();
+    this.queryNode.buildObjectValue();
 
-    return this.commandNode;
+    return this.queryNode;
   }
 }

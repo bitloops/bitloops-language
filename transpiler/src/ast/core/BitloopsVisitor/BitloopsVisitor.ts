@@ -256,6 +256,7 @@ import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/Control
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { commandDeclarationVisitor } from './helpers/commandDeclarationVisitor.js';
+import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
@@ -1252,5 +1253,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitCommandDeclaration(ctx: BitloopsParser.CommandDeclarationContext): void {
     return commandDeclarationVisitor(this, ctx);
+  }
+
+  visitQueryIdentifier(ctx: BitloopsParser.QueryIdentifierContext): IdentifierNode {
+    const queryName = ctx.QueryIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const queryIdentifierNode = new IdentifierNodeBuilder(metadata).withName(queryName).build();
+    return queryIdentifierNode;
+  }
+
+  visitQueryDeclaration(ctx: BitloopsParser.QueryDeclarationContext): void {
+    return queryDeclarationVisitor(this, ctx);
   }
 }

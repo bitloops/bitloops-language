@@ -209,6 +209,7 @@ sourceElement
     | repoPortDeclaration
     | readModelDeclaration
     | commandDeclaration
+    | queryDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -408,7 +409,7 @@ commandIdentifier
     ;
 
 commandDeclaration
-    : Command commandIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    : Command commandIdentifier OpenBrace fieldList CloseBrace
     ;
 
 queryIdentifier

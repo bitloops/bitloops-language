@@ -230,6 +230,7 @@ const BitloopsTypesMapping = {
   TCommandIdentifier: 'TCommandIdentifier',
   TQueryIdentifier: 'TQueryIdentifier',
   TCommand: 'TCommand',
+  TQuery: 'TQuery',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -253,6 +254,7 @@ const ClassTypes = {
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
   Command: 'Command',
+  Query: 'Query',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;

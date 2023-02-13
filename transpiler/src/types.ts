@@ -1068,11 +1068,18 @@ export enum RestServerOptions {
 
 export type TCommandIdentifier = string;
 const commandKey = 'command';
-export const commandIdentifierKey = 'commandIdentifier';
 
 export type TCommand = {
   [commandKey]: {
-    [commandIdentifierKey]: TCommandIdentifier;
+    [identifierKey]: TCommandIdentifier;
     commandTopic: TExpression;
+  } & TVariables;
+};
+
+const queryKey = 'query';
+export type TQuery = {
+  [queryKey]: {
+    [identifierKey]: TCommandIdentifier;
+    queryTopic: TExpression;
   } & TVariables;
 };
