@@ -160,12 +160,20 @@ export type ArrayBitloopsPrimTypeObject = {
   [arrayPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
 };
 
+export const standardValueObjectTypeKey = 'standardValueObject';
+export type TStandardValueObject = {
+  [standardValueObjectTypeKey]: TStandardVO;
+};
+
+type TStandardVO = string;
+
 export const bitloopsPrimaryTypeKey = 'type';
 export type TBitloopsPrimaryTypeValues =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
-  | ArrayBitloopsPrimTypeObject;
+  | ArrayBitloopsPrimTypeObject
+  | TStandardValueObject;
 
 export type TBitloopsPrimaryType = {
   [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;

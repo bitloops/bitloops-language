@@ -34,12 +34,15 @@ Root Entity AccountEntity {
   "domainEvent": {
     "entityIdentifier": EntityIdentifierNode;
     "name": IdentifierNode;
+    "topic": ExpressionNode;
   }
+  // 'default_topic' -> ExpressionNode;
 }
 
 type TDomainEvent = {
   entityIdentifier: TEntityIdentifier;
   name: string;
+  topic: TExpression;
 }
 
 

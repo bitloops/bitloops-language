@@ -256,15 +256,24 @@ import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/Control
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 
+type TContextInfo = {
+  boundedContextName: string;
+  moduleName: string;
+};
+
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
 
   private _intermediateASTTree: IntermediateASTTree;
   private _currentFile: string;
+  private _contextInfo: TContextInfo | null = null;
 
-  constructor(currentFile: string) {
+  constructor(currentFile: string, contextInfo?: TContextInfo) {
     super();
     this._currentFile = currentFile;
+    if (contextInfo) {
+      this._contextInfo = contextInfo;
+    }
     this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
@@ -274,6 +283,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   public get currentFile(): string {
     return this._currentFile;
+  }
+
+  public get contextInfo(): TContextInfo | null {
+    return this._contextInfo;
   }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {

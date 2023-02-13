@@ -1,14 +1,40 @@
 // optimistic concurrency
 const todoWriteRepo = RepoAdapters.Mongo({
-    connection: mongoConnection,
-    collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-    useOptimistic: false
-  }) concretes [Todo][Todo]TodoWriteRepoPort;
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+  // useOptimistic: false
+}) concretes [Todo][Todo]TodoWriteRepoPort;
 
-  [Todo][Todo]Controller;
-  [Todo]Controller; 
+[Todo]Controller;
+
+// Declare internal/external command,event bus etc for each bc 
+
+AppConfig {
+  COMMAND_BUS: MessageBus.InProcess, 
+  EVENT_BUS: MessageBus.InProcess,
+  INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+  QUERY_BUS: MessageBus.InProcess,
+}
   
-  // Declare internal/external command,event bus etc for each bc
+  
+// DIs for commandHandlers/queryHandlers/domainEventHandlers/integrationEventHandlers
+const todoWriteRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+}) concretes [Todo][Todo]TodoWriteRepoPort;
 
+const todoReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
+}) concretes [Todo][Todo]TodoReadRepoPort;
 
-  // DIs for commandHandlers/queryHandlers/domainEventHandlers/integrationEventHandlers
+const emailService = EmailServiceAdapters.SendGrid({
+  apiKey: Env(SENDGRID_API_KEY),
+}) concretes [Banking][Banking]EmailServicePort;
+
+// USE CASES
+DI {
+  [Banking][Banking]CreateTodoCommandHandler(todoWriteRepo, emailService);
+  [Banking][Banking]GetAllTodosQueryHandler(todoReadRepo);
+  [Banking][Banking]SendEmailAfterMoneyDepositedDomainEventHandler();
+}
