@@ -1093,7 +1093,7 @@ export type TIntegrationVersionMappers = {
 };
 
 export type TIntegrationVersionMapper = {
-  integrationVersionMappers: {
+  integrationVersionMapper: {
     statements: TStatements;
     [structIdentifierKey]: TStructIdentifier;
   } & StringLiteral;
@@ -1101,7 +1101,7 @@ export type TIntegrationVersionMapper = {
 
 export type TIntegrationEventIdentifier = string;
 export type TIntegrationEvent = {
-  integrationEvent: {
+  IntegrationEvent: {
     integrationEventIdentifier: TIntegrationEventIdentifier;
   } & TIntegrationVersionMappers &
     TParameter;

@@ -259,4 +259,20 @@ export class StatementDirector {
 
     return ifValue.build();
   }
+
+  buildConstDeclarationWithStructEvaluation({
+    name,
+    structIdentifier,
+    fields,
+  }: {
+    name: string;
+    structIdentifier: string;
+    fields: TEvaluationField[];
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithStructEvaluation({
+      name,
+      structIdentifier,
+      fields,
+    });
+  }
 }

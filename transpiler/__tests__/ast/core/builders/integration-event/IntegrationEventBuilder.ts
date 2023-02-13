@@ -32,7 +32,7 @@ export class IntegrationEventDeclarationBuilder implements IBuilder<TIntegration
 
   public build(): TIntegrationEvent {
     const integrationEvent: TIntegrationEvent = {
-      integrationEvent: {
+      IntegrationEvent: {
         integrationEventIdentifier: this.identifierName,
         ...this.versionMappers,
         ...this.input,
