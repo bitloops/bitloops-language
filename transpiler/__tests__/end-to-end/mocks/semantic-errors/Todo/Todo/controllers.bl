@@ -1,0 +1,25 @@
+// RESTController GetTodosRESTController (getAllTodosUseCase: GetAllTodosUseCase) {
+//     method: REST.Methods.GET;
+//     execute(request, response) {
+//       const result = this.getAllTodosUseCase.execute();
+  
+//       this.ok(response, result);
+//     }
+//   }
+
+
+UseCase GetAllTodosUseCase (todoRepo: TodoReadRepoPort) {
+execute (): (OK(TodoReadModel[]), Errors()) {
+    const todos = this.todoRepo.getAll();
+
+    return todos;
+}
+}
+  
+RepoPort TodoReadRepoPort<TodoReadModel> extends CRUDReadRepoPort;
+
+ReadModel TodoReadModel {
+  string id;
+  string title;
+  bool completed;
+}

@@ -262,6 +262,7 @@ import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/Control
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
+import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 
 type TContextInfo = {
   boundedContextName: string;
@@ -746,6 +747,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
+  visitGraphQLControllerReturnType(ctx: BitloopsParser.GraphQLControllerReturnTypeContext) {
+    return graphQLControllerReturnTypeVisitor(this, ctx);
+  }
+
   visitMethodDefinitionList(
     ctx: BitloopsParser.MethodDefinitionListContext,
   ): MethodDefinitionListNode {
@@ -1041,8 +1046,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
+    const metadata = produceMetadata(ctx, this);
     const bitloopsIdentifierType = ctx.bitloopsIdentifiers().getText();
-    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder()
+    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder(metadata)
       .withType(bitloopsIdentifierType)
       .build();
     return bitloopsIdentifierTypeNode;

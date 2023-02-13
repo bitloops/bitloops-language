@@ -1,8 +1,14 @@
 import {
-  isIntermediateASTError,
+  isIntermediateASTValidationErrors,
   isOriginalParserOrIntermediateASTError,
 } from './ast/core/guards/index.js';
-import { IIntermediateASTParser, IntermediateAST, IntermediateASTError } from './ast/core/types.js';
+import {
+  IIntermediateASTParser,
+  IIntermediateASTValidator,
+  IntermediateAST,
+  IntermediateASTError,
+  IntermediateASTValidationError,
+} from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import {
   IOriginalParser,
@@ -17,6 +23,7 @@ import { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpil
 export default class Transpiler {
   constructor(
     private parser: IOriginalParser,
+    private validator: IIntermediateASTValidator,
     private originalLanguageASTToIntermediateModelTransformer: IIntermediateASTParser,
     private intermediateASTModelToTargetLanguageGenerator: ITargetGenerator,
   ) {}
@@ -29,8 +36,13 @@ export default class Transpiler {
     if (isOriginalParserOrIntermediateASTError(intermediateModel)) {
       return intermediateModel;
     }
+    const completedIntermediateModel = this.completeIntermediateModel(intermediateModel);
 
-    const targetCode = this.intermediateASTModelToTargetLanguage(intermediateModel, options);
+    const targetCode = this.intermediateASTModelToTargetLanguage(
+      completedIntermediateModel,
+      options,
+    );
+
     if (isTargetGeneratorError(targetCode)) {
       return targetCode;
     }
@@ -47,7 +59,9 @@ export default class Transpiler {
     }
 
     const intermediateModel = this.originalASTToIntermediateModel(originalAST);
-    return intermediateModel;
+    const validatedIntermediateModel = this.validateIntermediateModel(intermediateModel);
+
+    return validatedIntermediateModel;
   }
 
   private bitloopsCodeToOriginalAST(
@@ -56,9 +70,7 @@ export default class Transpiler {
     return this.parser.parse(parseInputData);
   }
 
-  private originalASTToIntermediateModel(
-    originalLanguageAST: OriginalAST,
-  ): IntermediateAST | IntermediateASTError {
+  private originalASTToIntermediateModel(originalLanguageAST: OriginalAST): IntermediateAST {
     return this.originalLanguageASTToIntermediateModelTransformer.parse(originalLanguageAST);
   }
 
@@ -69,12 +81,26 @@ export default class Transpiler {
     return this.intermediateASTModelToTargetLanguageGenerator.generate(ASTModel, options);
   }
 
+  private validateIntermediateModel(
+    intermediateModel: IntermediateAST,
+  ): IntermediateASTValidationError[] | IntermediateAST {
+    const validationResult = this.validator.validate(intermediateModel);
+    if (isIntermediateASTValidationErrors(validationResult)) {
+      return validationResult;
+    }
+    return intermediateModel;
+  }
+
+  private completeIntermediateModel(intermediateModel: IntermediateAST): IntermediateAST {
+    return this.originalLanguageASTToIntermediateModelTransformer.complete(intermediateModel);
+  }
+
   static isTranspileError(
     value: TOutputTargetContent | TTranspileError[],
   ): value is TTranspileError[] {
     if (
       !isParserErrors(value) &&
-      !isIntermediateASTError(value) &&
+      !isIntermediateASTValidationErrors(value) &&
       !isTargetGeneratorError(value)
     ) {
       return false;

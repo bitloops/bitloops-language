@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { BitloopsParser, OriginalAST } from '../../../src/parser/index.js';
@@ -49,7 +49,7 @@ describe('Valid builtin class type', () => {
 
       const intermediateParser = new IntermediateASTParser();
       const result = intermediateParser.parse(initialModelOutput as OriginalAST);
-      if (isIntermediateASTError(result)) {
+      if (isIntermediateASTValidationErrors(result)) {
         throw new Error(result[0].message);
       }
       const { core } = result;

@@ -1,0 +1,27 @@
+Props TitleProps {
+    string title;
+  }
+
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title.length > 150 OR title.length < 4);
+}
+
+ValueObject TitleVO {
+    constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+      applyRules(TitleOutOfBoundsRule(props.title));
+    }
+  }
+
+  DomainError TitleOutOfBoundsError(title: string)  {
+    message: 'Title is out of range',
+    errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+  }
+
+
+Entity TodoEntity {    
+    constructor(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+    
+    check(title: TitleVO):  (OK(void), Errors()) {
+        this.title = title;
+      }
+}

@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -55,7 +55,7 @@
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/src/index.js lib/esm/src/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
-    "prepack": "npm run build",
+    "prepack": "npm run build:full",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-silent": "node --experimental-vm-modules node_modules/jest/bin/jest.js --silent",
     "test:watch": "jest --watch",

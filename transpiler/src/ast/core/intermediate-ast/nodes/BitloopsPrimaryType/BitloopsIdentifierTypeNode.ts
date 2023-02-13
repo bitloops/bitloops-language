@@ -10,4 +10,10 @@ export class BitloopsIdentifierTypeNode extends BitloopsPrimaryTypeNode {
     this.classNodeName = BitloopsIdentifierTypeNode.blIdentifierClassNodeName;
     this.nodeType = BitloopsTypesMapping.TBitloopsIdentifier;
   }
+  public getIdentifierName(): string {
+    const identifierClassNodeName = this.getClassNodeName();
+    const identifierValue = this.getValue();
+    const identifierName: string = identifierValue[identifierClassNodeName];
+    return identifierName;
+  }
 }
