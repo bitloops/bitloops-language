@@ -179,6 +179,7 @@ Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
 Constructor:                    'constructor';
+IntegrationEvent:               'IntegrationEvent';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
@@ -304,6 +305,8 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+IntegrationEventIdentifier:     UpperCaseStart IdentifierPart* IntegrationEvent;
+DomainEventIdentifier:          UpperCaseStart IdentifierPart* DomainEvent;
 SetLanguage:                    'setLanguage';
 TypeScript:                     'TypeScript';
 Java:                           'Java';

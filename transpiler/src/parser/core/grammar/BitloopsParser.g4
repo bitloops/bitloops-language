@@ -208,6 +208,7 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | integrationEventDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -400,6 +401,38 @@ useCaseIdentifier
 
 useCaseDeclaration
     : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
+    ;
+
+domainEventIdentifier
+    : DomainEventIdentifier
+    ;
+
+integrationEventIdentifier
+    : IntegrationEventIdentifier
+    ;
+
+integrationEventInput
+    : OpenParen parameterIdentifier Colon (propsIdentifier | domainEventIdentifier) CloseParen
+    ;
+
+versionName
+    : StringLiteral
+    ;
+
+integrationReturnSchemaType
+    : Colon structIdentifier
+    ;
+
+integrationVersionMapper
+    : versionName integrationReturnSchemaType OpenBrace statementList CloseBrace
+    ;
+
+integrationVersionMapperList
+    : OpenBrace integrationVersionMapper+ CloseBrace
+    ;
+
+integrationEventDeclaration
+    : IntegrationEvent integrationEventIdentifier integrationEventInput integrationVersionMapperList
     ;
 
 propsDeclaration
