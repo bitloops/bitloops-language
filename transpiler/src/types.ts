@@ -1067,7 +1067,7 @@ export enum RestServerOptions {
 }
 
 export type TCommandIdentifier = string;
-const commandKey = 'command';
+export const commandKey = 'command';
 
 export type TCommand = {
   [commandKey]: {

@@ -39,6 +39,8 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
+  COMMANDS = 'commands/',
+  QUERIES = 'queries/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -57,6 +59,8 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapter]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
+  [ClassTypes.Command]: PROJECT_RELATIVE_PATHS.COMMANDS,
+  [ClassTypes.Query]: PROJECT_RELATIVE_PATHS.QUERIES,
 };
 
 const getTargetFileDestination = (
