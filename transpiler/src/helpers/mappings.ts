@@ -229,6 +229,7 @@ const BitloopsTypesMapping = {
   TRESTServerInstance: 'TRESTServerInstance',
   TDomainEvent: 'TDomainEvent',
   TDomainEventIdentifier: 'TDomainEventIdentifier',
+  DomainEventTopic: 'DomainEventTopic',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

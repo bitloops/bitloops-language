@@ -1,17 +1,18 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { ExpressionBuilderDirector } from '../../directors/ExpressionDirector.js';
 import { DomainEventDeclarationNode } from '../../nodes/DomainEvent/DomainEventDeclarationNode.js';
 import { DomainEventIdentifierNode } from '../../nodes/DomainEvent/DomainEventIdentifierNode.js';
+import { DomainEventTopicNode } from '../../nodes/DomainEvent/DomainEventTopicNode.js';
 import { EntityIdentifierNode } from '../../nodes/Entity/EntityIdentifierNode.js';
-import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
+import { DomainEventTopicNodeBuilder } from './DomainEventTopicNodeBuilder.js';
 
 export class DomainEventDeclarationNodeBuilder implements IBuilder<DomainEventDeclarationNode> {
   private domainEventNode: DomainEventDeclarationNode;
   private identifierNode: DomainEventIdentifierNode;
   private entityIdentifier: EntityIdentifierNode;
-  private topic: ExpressionNode;
+  private topic: DomainEventTopicNode;
+  private contextInfo: { boundedContextName: string; moduleName: string };
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -35,20 +36,12 @@ export class DomainEventDeclarationNodeBuilder implements IBuilder<DomainEventDe
     return this;
   }
 
-  private generateTopicName(): string {
-    const domainEventName = this.identifierNode.getIdentifierName();
-    // convert cammelCase to snake_case and remove the 'DomainEvent' suffix and upper case all letters
-    const topicName = domainEventName
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
-      .toUpperCase()
-      .replace(/_DOMAIN_EVENT$/, '');
-    return topicName;
-  }
-
-  private topicStringToExpressionNode(topic: string): ExpressionNode {
-    const topicExpressionNode = ExpressionBuilderDirector.buildStringLiteralExpression(topic);
-    return topicExpressionNode;
+  public withContextInfo(contextInfo: {
+    boundedContextName: string;
+    moduleName: string;
+  }): DomainEventDeclarationNodeBuilder {
+    this.contextInfo = contextInfo;
+    return this;
   }
 
   public build(): DomainEventDeclarationNode {
@@ -56,7 +49,9 @@ export class DomainEventDeclarationNodeBuilder implements IBuilder<DomainEventDe
     this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.entityIdentifier);
     if (!this.topic) {
-      this.topic = this.topicStringToExpressionNode(this.generateTopicName());
+      this.topic = new DomainEventTopicNodeBuilder()
+        .generateTopicName(this.identifierNode.getIdentifierName(), this.contextInfo)
+        .build();
       this.intermediateASTTree.insertSibling(this.topic);
     }
     this.intermediateASTTree.setCurrentNodeToRoot();

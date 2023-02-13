@@ -137,3 +137,7 @@ export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
 export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';
+export {
+  domainEventDeclarationVisitor,
+  domainEventIdentifierVisitor,
+} from './domainEventDeclaration.js';

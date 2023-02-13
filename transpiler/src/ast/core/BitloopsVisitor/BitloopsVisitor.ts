@@ -140,6 +140,8 @@ import {
   graphQLOperationInputTypeVisitor,
   graphQLExecuteDependenciesVisitor,
   packagePortIdentifierVisitor,
+  domainEventDeclarationVisitor,
+  domainEventIdentifierVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -255,6 +257,7 @@ import {
 import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
+import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 
 type TContextInfo = {
   boundedContextName: string;
@@ -1253,5 +1256,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGraphQLServerDeclaration(ctx: BitloopsParser.GraphQLServerDeclarationContext): void {
     return graphQLServerDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventDeclaration(ctx: BitloopsParser.DomainEventDeclarationContext): void {
+    return domainEventDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventIdentifier(
+    ctx: BitloopsParser.DomainEventIdentifierContext,
+  ): DomainEventIdentifierNode {
+    return domainEventIdentifierVisitor(this, ctx);
   }
 }
