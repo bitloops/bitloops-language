@@ -208,6 +208,7 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | commandDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -400,6 +401,22 @@ useCaseIdentifier
 
 useCaseDeclaration
     : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
+    ;
+
+commandIdentifier
+    : CommandIdentifier
+    ;
+
+commandDeclaration
+    : Command commandIdentifier OpenBrace fieldList CloseBrace SemiColon?
+    ;
+
+queryIdentifier
+    : QueryIdentifier
+    ;
+
+queryDeclaration
+    : Query queryIdentifier OpenBrace fieldList CloseBrace
     ;
 
 propsDeclaration

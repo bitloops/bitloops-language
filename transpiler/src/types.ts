@@ -1066,9 +1066,13 @@ export enum RestServerOptions {
   port = 'port',
 }
 
-// export type TCommand = {
-//   [commandKey]: {
-//     [commandIdentifierKey]: TCommandIdentifier;
-//     commandTopic: TExpression
-//   } & TVariables;
-// };
+export type TCommandIdentifier = string;
+const commandKey = 'command';
+export const commandIdentifierKey = 'commandIdentifier';
+
+export type TCommand = {
+  [commandKey]: {
+    [commandIdentifierKey]: TCommandIdentifier;
+    commandTopic: TExpression;
+  } & TVariables;
+};

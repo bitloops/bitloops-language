@@ -82,6 +82,7 @@ export class IntermediateASTParser implements IIntermediateASTParser {
         for (const [fileId, ASTData] of Object.entries(module)) {
           const bitloopsVisitor = new BitloopsVisitor(fileId);
           bitloopsVisitor.visit(ASTData.ASTContext);
+          // console.log('tree', new BitloopsParser(ASTData.ASTContext));
           const { intermediateASTTree } = bitloopsVisitor;
 
           if (boundedContexts[boundedContextName] === undefined) {

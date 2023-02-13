@@ -10,7 +10,7 @@ import {
   TBitloopsPrimitives,
 } from '../../../../../src/types.js';
 
-export class BitloopsPrimaryTypeDirector {
+export class BitloopsPrimaryTypeNodeDirector {
   buildDoubleArrayPrimitiveType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
     const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()

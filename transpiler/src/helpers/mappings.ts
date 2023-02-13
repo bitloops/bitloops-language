@@ -227,6 +227,9 @@ const BitloopsTypesMapping = {
   TGraphQLServerOptions: 'TGraphQLServerOptions',
   TGraphQLServerInstance: 'TGraphQLServerInstance',
   TRESTServerInstance: 'TRESTServerInstance',
+  TCommandIdentifier: 'TCommandIdentifier',
+  TQueryIdentifier: 'TQueryIdentifier',
+  TCommand: 'TCommand',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -249,6 +252,7 @@ const ClassTypes = {
   RepoAdapter: 'RepoAdapter',
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
+  Command: 'Command',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
