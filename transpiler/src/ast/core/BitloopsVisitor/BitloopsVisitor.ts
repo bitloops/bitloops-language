@@ -146,6 +146,7 @@ import {
   domainEventHandlerIdentifierVisitor,
   domainEventHandlerHandleMethodVisitor,
   domainEventHandlerHandleMethodParameterVisitor,
+  integrationEventEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -681,6 +682,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEntityEvaluation(ctx: BitloopsParser.EntityEvaluationContext): any {
     return entityEvaluationVisitor(this, ctx);
+  }
+
+  visitIntegrationEventEvaluation(ctx: BitloopsParser.IntegrationEventEvaluationContext): any {
+    return integrationEventEvaluationVisitor(this, ctx);
   }
 
   visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {

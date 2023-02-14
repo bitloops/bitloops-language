@@ -254,6 +254,7 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
+  | TIntegrationEventEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
   | TBuiltInFunctionValues;
@@ -307,6 +308,13 @@ export type TValueObjectEvaluation = {
 
 export type TEntityEvaluation = {
   entity: TDomainEvaluation;
+};
+
+export type TIntegrationEventEvaluation = {
+  integrationEvent: {
+    props: TDomainEvaluationExpression;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  };
 };
 
 export type TDomainEvaluation = {

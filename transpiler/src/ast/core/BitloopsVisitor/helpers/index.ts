@@ -147,3 +147,4 @@ export {
   domainEventHandlerHandleMethodParameterVisitor,
   domainEventHandlerHandleMethodVisitor,
 } from './domainEventHandlerDeclaration.js';
+export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';

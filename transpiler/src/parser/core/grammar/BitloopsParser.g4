@@ -259,6 +259,7 @@ evaluation
     | entityEvaluation
     | propsEvaluation
     | structEvaluation
+    | integrationEventEvaluation
     ;
 
 corsOptionsEvaluation
@@ -558,6 +559,10 @@ domainEvaluationInput
 
 entityEvaluation
     : entityIdentifier domainEvaluationInput
+    ;
+
+integrationEventEvaluation
+    : integrationEventIdentifier Dot Create domainEvaluationInput
     ;
 
 structEvaluation
