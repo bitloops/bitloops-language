@@ -6,6 +6,7 @@ import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.j
 import { IBuilder } from '../IBuilder.js';
 import { IntegrationEventHandlerIdentifierNode } from '../../nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
 import { EvaluationFieldNode } from '../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { EventHandlerBusDependenciesNode } from '../../nodes/DomainEventHandler/EventHandlerBusDependenciesNode.js';
 
 export class IntegrationEventHandlerDeclarationNodeBuilder
   implements IBuilder<IntegrationEventHandlerDeclarationNode>
@@ -15,6 +16,7 @@ export class IntegrationEventHandlerDeclarationNodeBuilder
   private parameterListNode: ParameterListNode;
   private handleNode: EventHandleNode;
   private evaluationField: EvaluationFieldNode;
+  private eventHandlerBusDependencies?: EventHandlerBusDependenciesNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -50,12 +52,21 @@ export class IntegrationEventHandlerDeclarationNodeBuilder
     return this;
   }
 
+  public withEventBusDependencies(
+    eventHandlerBusDependencies: EventHandlerBusDependenciesNode,
+  ): IntegrationEventHandlerDeclarationNodeBuilder {
+    this.eventHandlerBusDependencies = eventHandlerBusDependencies;
+    return this;
+  }
+
   public build(): IntegrationEventHandlerDeclarationNode {
     this.intermediateASTTree.insertChild(this.integrationEventHandlerNode);
     this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.parameterListNode);
     this.intermediateASTTree.insertSibling(this.handleNode);
     this.intermediateASTTree.insertSibling(this.evaluationField);
+    if (this.eventHandlerBusDependencies)
+      this.intermediateASTTree.insertSibling(this.eventHandlerBusDependencies);
 
     this.intermediateASTTree.setCurrentNodeToRoot();
     this.integrationEventHandlerNode.buildObjectValue();
