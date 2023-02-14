@@ -25,6 +25,7 @@ import {
   GraphQLControllerNodeTSTransformer,
   RestControllerNodeTSTransformer,
 } from './node-transformers/controllers/index.js';
+import { DomainEventHandlerNodeTSTransformer } from './node-transformers/domainEventHandler.js';
 import {
   DomainCreateMethodNodeTSTransformer,
   DomainPrivateMethodNodeTSTransformer,
@@ -79,6 +80,8 @@ export class IntermediateModelToASTTargetTransformer
         return new DomainPrivateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TUseCase:
         return new UseCaseNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TDomainEventHandler:
+        return new DomainEventHandlerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:
         return null;
     }

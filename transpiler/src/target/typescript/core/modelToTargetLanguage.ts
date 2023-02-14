@@ -121,6 +121,12 @@ import { domainConstructorParameterToTargetLanguage } from './components/domain/
 import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
+import { domainEventToTargetLanguage } from './components/domain-event/index.js';
+import {
+  domainEventHandlerToTargetLanguage,
+  generateHandlerAttributesAndConstructor,
+  generateEventHandlerHandleMethod,
+} from './components/domain-event-handler/index.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -485,6 +491,22 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TEnvironmentVariableExpression: {
       res = environmentVariableToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainEvent: {
+      res = domainEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainEventHandler: {
+      res = domainEventHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.THandlerAttributesAndConstructor: {
+      res = generateHandlerAttributesAndConstructor(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.THandle: {
+      res = generateEventHandlerHandleMethod(value);
       break;
     }
     default: {

@@ -19,4 +19,25 @@ export class ParameterListBuilderDirector {
       })),
     };
   }
+
+  buildParameterListWithOneParameter({
+    parameterIdentifier,
+    parameterType,
+  }: {
+    parameterIdentifier: string;
+    parameterType: string;
+  }): TParameterList {
+    return {
+      parameters: [
+        {
+          parameter: {
+            value: parameterIdentifier,
+            type: {
+              bitloopsIdentifierType: parameterType,
+            },
+          },
+        },
+      ],
+    };
+  }
 }
