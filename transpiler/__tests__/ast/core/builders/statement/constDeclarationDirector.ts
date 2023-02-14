@@ -263,6 +263,26 @@ export class ConstDeclarationBuilderDirector {
       .build();
     return constDeclaration;
   }
+
+  buildConstDeclarationWithStructEvaluation({
+    name,
+    structIdentifier,
+    fields,
+  }: {
+    name: string;
+    structIdentifier: string;
+    fields: TEvaluationField[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildStructEvaluation(structIdentifier, fields),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
 }
 
 export class VariableDeclarationBuilderDirector {

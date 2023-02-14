@@ -228,15 +228,22 @@ const BitloopsTypesMapping = {
   TGraphQLServerOptions: 'TGraphQLServerOptions',
   TGraphQLServerInstance: 'TGraphQLServerInstance',
   TRESTServerInstance: 'TRESTServerInstance',
+  TIntegrationEventIdentifier: 'TIntegrationEventIdentifier',
+  TIntegrationEventInput: 'TIntegrationEventInput',
+  TIntegrationVersionMappers: 'TIntegrationVersionMappers',
+  TIntegrationEvent: 'TIntegrationEvent',
+  TIntegrationVersionMapper: 'TIntegrationVersionMapper',
   TDomainEvent: 'TDomainEvent',
   TDomainEventIdentifier: 'TDomainEventIdentifier',
   DomainEventTopic: 'DomainEventTopic',
   TDomainEventHandler: 'TDomainEventHandler',
   TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
-  TDomainEventHandlerHandleMethod: 'TDomainEventHandlerHandleMethod',
+  TEventHandlerHandleMethod: 'TEventHandlerHandleMethod',
   TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
   THandlerAttributesAndConstructor: 'THandlerAttributesAndConstructor',
   THandle: 'THandle',
+  TIntegrationEventHandlerIdentifier: 'TIntegrationEventHandlerIdentifier',
+  TIntegrationEventHandler: 'TIntegrationEventHandler',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -259,8 +266,10 @@ const ClassTypes = {
   RepoAdapter: 'RepoAdapter',
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
+  IntegrationEvent: 'IntegrationEvent',
   DomainEvent: 'DomainEvent',
   DomainEventHandler: 'DomainEventHandler',
+  IntegrationEventHandler: 'IntegrationEventHandler',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -293,6 +302,8 @@ const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesV
   [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
   [ClassTypes.DomainEvent]: BitloopsTypesMapping.TDomainEvent,
   [ClassTypes.DomainEventHandler]: BitloopsTypesMapping.TDomainEventHandler,
+  [ClassTypes.IntegrationEvent]: BitloopsTypesMapping.TIntegrationEvent,
+  [ClassTypes.IntegrationEventHandler]: BitloopsTypesMapping.TIntegrationEventHandler,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

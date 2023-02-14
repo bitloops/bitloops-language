@@ -209,8 +209,10 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | integrationEventDeclaration
     | domainEventDeclaration
     | domainEventHandlerDeclaration
+    | integrationEventHandlerDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -405,6 +407,39 @@ useCaseDeclaration
     : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
     ;
 
+integrationEventIdentifier
+    : IntegrationEventIdentifier
+    ;
+
+integrationEventInputType
+    : propsIdentifier
+    | domainEventIdentifier
+    ;
+
+integrationEventInput
+    : OpenParen parameterIdentifier Colon integrationEventInputType CloseParen
+    ;
+
+versionName
+    : StringLiteral
+    ;
+
+integrationReturnSchemaType
+    : Colon structIdentifier
+    ;
+
+integrationVersionMapper
+    : versionName integrationReturnSchemaType OpenBrace statementList CloseBrace
+    ;
+
+integrationVersionMapperList
+    : OpenBrace integrationVersionMapper+ CloseBrace
+    ;
+
+integrationEventDeclaration
+    : IntegrationEvent integrationEventIdentifier integrationEventInput integrationVersionMapperList
+    ;
+
 propsDeclaration
     : Props propsIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
@@ -457,7 +492,6 @@ domainEventIdentifier
     : DomainEventIdentifier
     ;
 
-
 // 
 domainEventHandlerIdentifier
     : DomainEventHandlerIdentifier
@@ -471,10 +505,31 @@ domainEventHandlerHandleDeclaration
     : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
     ;
 
+eventHandlerHandleIdentifier
+    : domainEventIdentifier
+    | integrationEventIdentifier
+    ;
+
 domainEventHandlerHandleParameter
-    : parameterIdentifier Colon domainEventIdentifier
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
     ;
 //
+
+integrationEventHandlerIdentifier
+    : IntegrationEventHandlerIdentifier
+    ;
+
+integrationEventHandlerDeclaration
+    : IntegrationEventHandler integrationEventHandlerIdentifier parameterList OpenBrace evaluationField SemiColon integrationEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+integrationEventHandlerHandleDeclaration
+    : Handle OpenParen integrationEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+integrationEventHandlerHandleParameter
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    ;
 
 dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?
