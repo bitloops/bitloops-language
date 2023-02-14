@@ -477,34 +477,35 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {
     const value = ctx.errorIdentifier().getText();
     return {
-      type: value, // 'variable',
       value: value,
     };
   }
 
   visitIdentifierString(ctx: BitloopsParser.IdentifierStringContext) {
     return {
-      type: 'variable',
       value: ctx.Identifier().getText(),
     };
   }
 
   visitExecuteExpression(_ctx: BitloopsParser.ExecuteExpressionContext) {
     return {
-      type: 'variable',
       value: 'execute',
     };
   }
   visitDeleteKeyword(_ctx: BitloopsParser.DeleteKeywordContext) {
     return {
-      type: 'variable',
       value: 'delete',
     };
   }
-  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
-    // TODO Find why all these return this weird object and fix it
+
+  visitHandleKeywordIdentifier(_ctx: BitloopsParser.HandleKeywordIdentifierContext) {
     return {
-      type: 'variable',
+      value: 'handle',
+    };
+  }
+
+  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
+    return {
       value: (ctx as any).getText(),
     };
   }

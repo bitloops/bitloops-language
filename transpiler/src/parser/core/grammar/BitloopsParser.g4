@@ -125,6 +125,7 @@ regularIdentifier
     | Execute                                                   # ExecuteExpression
     | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
+    | Handle                                                    # HandleKeywordIdentifier
     ;
 
 regularStructEvaluation
