@@ -1,6 +1,6 @@
 import { DomainEventHandlerDeclarationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/DomainEventHandler/DomainEventHandlerDeclarationNodeBuilder.js';
 import { DomainEventHandlerIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/DomainEventHandler/DomainEventHandlerIdentifierNodeBuilder.js';
-import { DomainEventHandlerHandleMethodNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/DomainEventHandler/HandleMethodNodeBuilder.js';
+import { EventHandlerHandleMethodNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/HandleMethodNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
 import { StatementListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
@@ -22,7 +22,7 @@ export class DomainEventHandlerBuilderDirector {
     statements: StatementNode[];
   }): DomainEventHandlerDeclarationNode {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-    const handleNode = new DomainEventHandlerHandleMethodNodeBuilder()
+    const handleNode = new EventHandlerHandleMethodNodeBuilder()
       .withParameter(executeParameter)
       .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
       .build();
