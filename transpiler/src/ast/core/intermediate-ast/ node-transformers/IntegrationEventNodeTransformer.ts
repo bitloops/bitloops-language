@@ -1,4 +1,4 @@
-import { DomainEventHandlerDeclarationNodeBuilder } from '../builders/DomainEventHandler/DomainEventHandlerDeclarationNodeBuilder.js';
+// import { DomainEventHandlerDeclarationNodeBuilder } from '../builders/DomainEventHandler/DomainEventHandlerDeclarationNodeBuilder.js';
 import { EventHandlerBusDependenciesNodeBuilder } from '../builders/DomainEventHandler/EventHandlerBusDependenciesNodeBuilder.js';
 import { IntegrationEventNode } from '../nodes/integration-event/IntegrationEventNode.js';
 import { NodeModelToTargetASTTransformer } from './index.js';
@@ -14,6 +14,6 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
       .build();
     this.node.addChild(eventBusDependenciesNode);
 
-    const domainEventHandler = new DomainEventHandlerDeclarationNodeBuilder(this.tree).build();
+    // const domainEventHandler = new DomainEventHandlerDeclarationNodeBuilder(this.tree).build();
   }
 }

@@ -41,6 +41,8 @@ enum PROJECT_RELATIVE_PATHS {
   STRUCTS = 'structs/',
   DOMAIN_EVENTS = 'domain/events/',
   DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
+  INTEGRATION_EVENTS = 'contracts/integration-events/',
+  INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -61,6 +63,8 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
   [ClassTypes.DomainEvent]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENTS,
   [ClassTypes.DomainEventHandler]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENT_HANDLERS,
+  [ClassTypes.IntegrationEvent]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENTS,
+  [ClassTypes.IntegrationEventHandler]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENT_HANDLERS,
 };
 
 const getTargetFileDestination = (
