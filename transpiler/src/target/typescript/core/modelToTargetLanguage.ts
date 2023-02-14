@@ -489,7 +489,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TCommand: {
-      res = commandToTargetLanguage(value);
+      res = commandToTargetLanguage(value, contextData);
       break;
     }
     default: {

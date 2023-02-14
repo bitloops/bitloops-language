@@ -22,6 +22,8 @@ import {
   fieldsKey,
   identifierKey,
   TCommand,
+  TContextData,
+  TDependenciesTypeScript,
   TTargetDependenciesTypeScript,
   TVariable,
 } from '../../../../../types.js';
@@ -29,29 +31,54 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 
-const commandToTargetLanguage = (command: TCommand): TTargetDependenciesTypeScript => {
+const COMMAND_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Application',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
+
+const commandToTargetLanguage = (
+  command: TCommand,
+  contextData: TContextData,
+): TTargetDependenciesTypeScript => {
   let result = '';
-  let dependencies = [];
+  let dependencies = COMMAND_DEPENDENCIES;
   const commandValues = command.command;
   const commandName = commandValues[identifierKey];
+
+  const commandTopicExpression = commandValues.commandTopic;
+  const commandTopicResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpression,
+    value: commandTopicExpression,
+  });
+
+  dependencies = [...dependencies, ...commandTopicResult.dependencies];
+
+  const commandTopic = commandTopicResult.output;
   const fields = commandValues[fieldsKey];
 
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: fields,
   });
+  dependencies = [...dependencies, ...variablesResult.dependencies];
 
   const CommandInterface = 'Application.Command';
+  const contextId = `'${contextData.boundedContext}'`;
 
-  const commandNameDeclaration = `public static readonly commandName = ${commandName};`;
+  const commandNameDeclaration = `public static readonly commandName = ${commandTopic};`;
   const getCommandTopic = `static getCommandTopic(): string {
-    return super.getCommandTopic(InsertPINCommand.commandName, contextId);
+    return super.getCommandTopic(InsertPINCommand.commandName, ${contextId});
   }`;
 
   const dtoTypeName = commandName;
-  const commandType = getCommandType(dtoTypeName, variablesResult.output);
+  const commandTypeName = getCommandTypeName(dtoTypeName);
+  const commandType = getCommandType(commandTypeName, variablesResult.output);
 
-  const constructorProduced = getConstructor(dtoTypeName, commandName, fields);
+  const constructorProduced = getConstructor(commandTypeName, commandName, fields, contextId);
   const classProperties = variablesToClassProperties(variablesResult.output);
 
   result += commandType;
@@ -61,7 +88,6 @@ const commandToTargetLanguage = (command: TCommand): TTargetDependenciesTypeScri
   result += constructorProduced;
   result += getCommandTopic;
   result += '}';
-  console.log('result', result);
   dependencies.push(...variablesResult.dependencies);
 
   dependencies = getParentDependencies(dependencies, {
@@ -72,23 +98,31 @@ const commandToTargetLanguage = (command: TCommand): TTargetDependenciesTypeScri
   return { output: result, dependencies };
 };
 
-const getCommandType = (dtoTypeName: string, variablesString: string): string => {
-  const type = `type T${dtoTypeName} = {
+const getCommandTypeName = (dtoTypeName: string): string => {
+  return `T${dtoTypeName}`;
+};
+
+const getCommandType = (commandTypeName: string, variablesString: string): string => {
+  const type = `type ${commandTypeName} = {
     ${variablesString}
   }
   `;
   return type;
 };
 
-//dtoName should have lowercase first letter
-const getConstructor = (dtoTypeName: string, commandName: string, fields: TVariable[]): string => {
+const getConstructor = (
+  dtoTypeName: string,
+  commandName: string,
+  fields: TVariable[],
+  contextId: string,
+): string => {
   const commandNameWithoutSuffix = commandName.replace('Command', '');
   const commandWithLowerCaseStartLetter =
     commandNameWithoutSuffix.charAt(0).toLowerCase() + commandNameWithoutSuffix.slice(1);
 
   const dtoName = `${commandWithLowerCaseStartLetter}RequestDTO`;
   let constructorValue = `constructor(${dtoName}: ${dtoTypeName}) {
-    super(${commandName}.commandName, contextId);
+    super(${commandName}.commandName, ${contextId});
   `;
 
   for (const field of fields) {

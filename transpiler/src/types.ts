@@ -1075,6 +1075,7 @@ export enum RestServerOptions {
 }
 
 export type TCommandIdentifier = string;
+export type TCommandTopicIdentifier = string;
 export const commandKey = 'command';
 
 export type TCommand = {
@@ -1107,4 +1108,3 @@ export type TDomainEvent = {
     topic: TExpression;
   };
 };
-export type TCommandTopicIdentifier = string;

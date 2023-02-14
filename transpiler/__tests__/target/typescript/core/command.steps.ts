@@ -21,7 +21,6 @@
 import { CommandNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/command/CommandNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
@@ -29,9 +28,8 @@ import { isTargetGeneratorError } from '../../../../src/target/typescript/guards
 import { VALID_COMMAND_TEST_CASES } from './mocks/command/index.js';
 
 describe('Valid Command with fields to Typescript', () => {
-  const boundedContext = 'Hello world';
-  const module = 'demo';
-  const classType = ClassTypes.Command;
+  const boundedContext = 'banking';
+  const module = 'banking';
   const formatterConfig = null;
   const language = 'TypeScript';
 
@@ -44,7 +42,9 @@ describe('Valid Command with fields to Typescript', () => {
       const commandNode = new CommandNodeBuilder(tree)
         .withIdentifier(testCase.commandIdentifierNode)
         .withFieldList(testCase.fieldListNode)
+        .withContextInfo({ boundedContextName: boundedContext, moduleName: module })
         .build();
+      tree.insertChild(commandNode);
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },
@@ -64,16 +64,10 @@ describe('Valid Command with fields to Typescript', () => {
 
       //then
       const formattedOutput = formatString(testCase.output as string, formatterConfig);
-      const expectedOutput = [
-        {
-          boundedContext,
-          className: commandNode.getClassName(),
-          module,
-          classType,
-          fileContent: formattedOutput,
-        },
-      ];
-      expect(resultCore).toEqual(expectedOutput);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

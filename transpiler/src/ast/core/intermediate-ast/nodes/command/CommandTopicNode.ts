@@ -3,7 +3,7 @@ import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class CommandTopicNode extends IntermediateASTIdentifierNode {
-  private static classNodeName = 'commandTopicIdentifier';
+  private static classNodeName = 'commandTopic';
 
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TCommandTopicIdentifier, CommandTopicNode.classNodeName, metadata);
