@@ -150,7 +150,9 @@ export class MoneyDepositedIntegrationEvent extends Infra.EventBus
 }
 // in case of DomainEvent as input it will generate the publish handler
 export class MoneyDepositedPublishIntegrationEventHandler implements Application.IHandle {
-  constructor(private eventBus: Infra.EventBus.IEventBus) {}
+  constructor(private eventBus: Infra.EventBus.IEventBus) {
+    // here get the integration event bus from container, instead from dependency
+  }
 
   public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<void> {
     const { account } = event;

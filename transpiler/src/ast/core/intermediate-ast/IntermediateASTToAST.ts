@@ -12,6 +12,8 @@ import { DomainEventHandlerNodeTransformer } from './ node-transformers/DomainEv
 import { DomainEventHandlerDeclarationNode } from './nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
 import { IntegrationEventHandlerDeclarationNode } from './nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
 import { IntegrationEventHandlerNodeTransformer } from './ node-transformers/IntegrationEventHandlerNodeTransformer.js';
+import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
+import { IntegrationEventNodeTransformer } from './ node-transformers/IntegrationEventNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -127,6 +129,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
           intermediateASTTree,
           integrationEventHandlerNode,
         );
+      }
+      case BitloopsTypesMapping.TIntegrationEvent: {
+        const integrationEventNode = intermediateASTNode as IntegrationEventNode;
+        return new IntegrationEventNodeTransformer(intermediateASTTree, integrationEventNode);
       }
       default:
         return null;
