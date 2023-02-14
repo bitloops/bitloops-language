@@ -3,8 +3,10 @@ import { ArgumentNodeBuilder } from '../builders/ArgumentList/ArgumentNodeBuilde
 import { DomainEventHandlerDeclarationNodeBuilder } from '../builders/DomainEventHandler/DomainEventHandlerDeclarationNodeBuilder.js';
 import { DomainEventHandlerIdentifierNodeBuilder } from '../builders/DomainEventHandler/DomainEventHandlerIdentifierNodeBuilder.js';
 import { EventHandlerBusDependenciesNodeBuilder } from '../builders/DomainEventHandler/EventHandlerBusDependenciesNodeBuilder.js';
+import { IntegrationEventEvaluationNodeBuilder } from '../builders/expressions/evaluation/IntegrationEventEvaluationNodeBuilder.js';
 import { ExpressionBuilder } from '../builders/expressions/ExpressionBuilder.js';
 import { IdentifierExpressionBuilder } from '../builders/expressions/IdentifierExpressionBuilder.js';
+import { MemberDotExpressionNodeBuilder } from '../builders/expressions/MemberDot/memberDotBuilder.js';
 import { MethodCallExpressionNodeBuilder } from '../builders/expressions/methodCallExprBuilder.js';
 import { ThisExpressionNodeBuilder } from '../builders/expressions/thisExpressionBuilder.js';
 import { EventHandlerHandleMethodNodeBuilder } from '../builders/HandleMethodNodeBuilder.js';
@@ -16,7 +18,9 @@ import { StatementListNodeBuilder } from '../builders/statements/StatementListNo
 import { BitloopsPrimaryTypeNodeBuilderDirector } from '../directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
 import { DomainEventHandlerIdentifierNode } from '../nodes/DomainEventHandler/DomainEventHandlerIdentifierNode.js';
 import { EventHandleNode } from '../nodes/EventHandleNode.js';
+import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';
 import { IntegrationEventNode } from '../nodes/integration-event/IntegrationEventNode.js';
+import { ConstDeclarationNode } from '../nodes/statements/ConstDeclarationNode.js';
 import { NodeModelToTargetASTTransformer } from './index.js';
 
 export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransformer<IntegrationEventNode> {
@@ -25,8 +29,8 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
   }
 
   private addBuiltinBusDependencies(): void {
-    if (this.node.hasInputDomainEventIdentifier()) {
-      const domainEventIdentifier = this.node.getInputIdentifier();
+    const domainEventIdentifier = this.node.getInputDomainEventIdentifier();
+    if (domainEventIdentifier) {
       const domainToIntegrationEventIdentifierNode =
         this.buildDomainToIntegrationEventIdentifier(domainEventIdentifier);
 
@@ -41,6 +45,9 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
         .withHandleMethod(eventHandleNode)
         .withEventBusDependencies(eventBusDependenciesNode)
         .build();
+
+      const rootNode = this.tree.getRootNode();
+      rootNode.addChild(domainEventHandler);
     }
   }
 
@@ -65,15 +72,52 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
       .withType(typeNode)
       .withIdentifier(parameterIdentifierNode)
       .build();
+
     const constIdentifierName = 'events';
+    const constDeclarationNode = this.buildConstDeclarationNode(constIdentifierName);
+    const methodCallExprNode = this.buildMethodCallExpression(constIdentifierName);
+    const statementListNode = new StatementListNodeBuilder()
+      .withStatements([constDeclarationNode, methodCallExprNode])
+      .build();
+
+    return new EventHandlerHandleMethodNodeBuilder()
+      .withParameter(parameterNode)
+      .withStatementList(statementListNode)
+      .build();
+  }
+
+  private buildConstDeclarationNode(constIdentifierName: string): ConstDeclarationNode {
     const constIdentifierNode = new IdentifierNodeBuilder().withName(constIdentifierName).build();
-    // const integrationEventEvaluation = new IntegrationEventEvaluationNodeBuilder().build();
+    const integrationEventEvaluation = new IntegrationEventEvaluationNodeBuilder()
+      .withIdentifier()
+      .withPropsInput()
+      .build();
     const constDeclarationNode = new ConstDeclarationNodeBuilder()
       .withIdentifier(constIdentifierNode)
-      .withExpression(null) // TODO add integrationEventEvaluation when it's ready
+      .withExpression(null)
       .build();
+    return constDeclarationNode;
+  }
+
+  private buildMethodCallExpression(constIdentifierName: string): ExpressionNode {
     const thisExprNode = new ExpressionBuilder()
       .withExpression(new ThisExpressionNodeBuilder().build())
+      .build();
+    const thisEventBusExpr = new ExpressionBuilder()
+      .withExpression(
+        new MemberDotExpressionNodeBuilder()
+          .withExpression(thisExprNode)
+          .withIdentifier(new IdentifierExpressionBuilder().withValue('eventBus').build())
+          .build(),
+      )
+      .build();
+    const thisEventBusPublishManyExpr = new ExpressionBuilder()
+      .withExpression(
+        new MemberDotExpressionNodeBuilder()
+          .withExpression(thisEventBusExpr)
+          .withIdentifier(new IdentifierExpressionBuilder().withValue('publishMany').build())
+          .build(),
+      )
       .build();
 
     const argumentIdentifierExpression = new ExpressionBuilder()
@@ -83,22 +127,15 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
       .withExpression(argumentIdentifierExpression)
       .build();
     const argumentListNode = new ArgumentListNodeBuilder().withArguments([argumentNode]).build();
+
     const methodCallExprNode = new ExpressionBuilder()
       .withExpression(
         new MethodCallExpressionNodeBuilder()
-          .withExpression(thisExprNode)
+          .withExpression(thisEventBusPublishManyExpr)
           .withArgumentsList(argumentListNode)
           .build(),
       )
       .build();
-
-    const statementListNode = new StatementListNodeBuilder()
-      .withStatements([constDeclarationNode, methodCallExprNode])
-      .build();
-
-    return new EventHandlerHandleMethodNodeBuilder()
-      .withParameter(parameterNode)
-      .withStatementList(statementListNode)
-      .build();
+    return methodCallExprNode;
   }
 }

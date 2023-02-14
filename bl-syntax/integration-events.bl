@@ -46,7 +46,7 @@ Props MoneyDepositedInputProps {
  * in the case of a DomainEvent, we generate the domainEventHandler that publishes the integration event
  */
 // @disabled['v2']
-IntegrationEvent MoneyDepositedIntegrationEventHandler(input: MoneyDepositedToAccountDomainEvent) {
+IntegrationEvent MoneyDepositedIntegrationEvent(input: MoneyDepositedToAccountDomainEvent) {
   // Maybe have disable list of versions?
 
   'v1.0.9' : TodoIntegrationSchemaV1 {
