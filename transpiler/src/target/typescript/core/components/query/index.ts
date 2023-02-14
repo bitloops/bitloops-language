@@ -21,7 +21,7 @@ import {
   fieldKey,
   fieldsKey,
   identifierKey,
-  TCommand,
+  TQuery,
   TContextData,
   TDependenciesTypeScript,
   TTargetDependenciesTypeScript,
@@ -31,7 +31,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 
-const COMMAND_DEPENDENCIES: TDependenciesTypeScript = [
+const QUERY_DEPENDENCIES: TDependenciesTypeScript = [
   {
     type: 'absolute',
     default: false,
@@ -40,25 +40,25 @@ const COMMAND_DEPENDENCIES: TDependenciesTypeScript = [
   },
 ];
 
-const commandToTargetLanguage = (
-  command: TCommand,
+const queryToTargetLanguage = (
+  query: TQuery,
   contextData: TContextData,
 ): TTargetDependenciesTypeScript => {
   let result = '';
-  let dependencies = COMMAND_DEPENDENCIES;
-  const commandValues = command.command;
-  const commandName = commandValues[identifierKey];
+  let dependencies = QUERY_DEPENDENCIES;
+  const queryValues = query.query;
+  const queryName = queryValues[identifierKey];
 
-  const commandTopicExpression = commandValues.commandTopic;
-  const commandTopicResult = modelToTargetLanguage({
+  const queryTopicExpression = queryValues.queryTopic;
+  const queryTopicResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
-    value: commandTopicExpression,
+    value: queryTopicExpression,
   });
 
-  dependencies = [...dependencies, ...commandTopicResult.dependencies];
+  dependencies = [...dependencies, ...queryTopicResult.dependencies];
 
-  const commandTopic = commandTopicResult.output;
-  const fields = commandValues[fieldsKey];
+  const queryTopic = queryTopicResult.output;
+  const fields = queryValues[fieldsKey];
 
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
@@ -66,64 +66,65 @@ const commandToTargetLanguage = (
   });
   dependencies = [...dependencies, ...variablesResult.dependencies];
 
-  const CommandInterface = 'Application.Command';
+  const QueryInterface = 'Application.Query';
   const contextId = `'${contextData.boundedContext}'`;
 
-  const commandNameDeclaration = `public static readonly commandName = ${commandTopic};`;
-  const getCommandTopic = `static getCommandTopic(): string {
-    return super.getCommandTopic(${commandName}.commandName, ${contextId});
-  }`;
+  const queryNameDeclaration = `public static readonly queryName = ${queryTopic};`;
 
-  const dtoTypeName = commandName;
-  const commandTypeName = getCommandTypeName(dtoTypeName);
-  const commandType = getCommandType(commandTypeName, variablesResult.output);
+  const getQueryTopic = `static getQueryTopic(): string {
+      return super.getQueryTopic(${queryName}.queryName, ${contextId});
+    }`;
 
-  const constructorProduced = getConstructor(commandTypeName, commandName, fields, contextId);
+  const dtoTypeName = queryName;
+  const queryTypeName = getQueryTypeName(dtoTypeName);
+  const queryType = getQueryType(queryTypeName, variablesResult.output);
+
+  const constructorProduced = getConstructor(queryTypeName, queryName, fields, contextId);
   const classProperties = variablesToClassProperties(variablesResult.output);
 
-  result += commandType;
-  result += `export class ${commandName} extends ${CommandInterface} {`;
+  result += queryType;
+  result += `export class ${queryName} extends ${QueryInterface} {`;
   result += classProperties;
-  result += commandNameDeclaration;
+  result += queryNameDeclaration;
   result += constructorProduced;
-  result += getCommandTopic;
+  result += getQueryTopic;
   result += '}';
   dependencies.push(...variablesResult.dependencies);
 
   dependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.Command,
-    className: commandName,
+    classType: ClassTypes.Query,
+    className: queryName,
   });
 
   return { output: result, dependencies };
 };
 
-const getCommandTypeName = (dtoTypeName: string): string => {
+const getQueryTypeName = (dtoTypeName: string): string => {
   return `T${dtoTypeName}`;
 };
 
-const getCommandType = (commandTypeName: string, variablesString: string): string => {
-  const type = `type ${commandTypeName} = {
-    ${variablesString}
-  }
-  `;
+const getQueryType = (queryTypeName: string, variablesString: string): string => {
+  const type = `type ${queryTypeName} = {
+      ${variablesString}
+    }
+    `;
   return type;
 };
 
 const getConstructor = (
   dtoTypeName: string,
-  commandName: string,
+  queryName: string,
   fields: TVariable[],
   contextId: string,
 ): string => {
-  const commandNameWithoutSuffix = commandName.replace('Command', '');
-  const commandWithLowerCaseStartLetter =
-    commandNameWithoutSuffix.charAt(0).toLowerCase() + commandNameWithoutSuffix.slice(1);
+  const queryNameWithoutSuffix = queryName.replace('Query', '');
+  const queryWithLowerCaseStartLetter =
+    queryNameWithoutSuffix.charAt(0).toLowerCase() + queryNameWithoutSuffix.slice(1);
 
-  const dtoName = `${commandWithLowerCaseStartLetter}RequestDTO`;
+  const dtoName = `${queryWithLowerCaseStartLetter}RequestDTO`;
   let constructorValue = `constructor(${dtoName}: ${dtoTypeName}) {
-    super(${commandName}.commandName, ${contextId});
-  `;
+      super(${queryName}.queryName, ${contextId});
+    `;
 
   for (const field of fields) {
     const fieldName = field[fieldKey][identifierKey];
@@ -145,4 +146,4 @@ const variablesToClassProperties = (variableString: string): string => {
   return classProperties;
 };
 
-export { commandToTargetLanguage };
+export { queryToTargetLanguage };

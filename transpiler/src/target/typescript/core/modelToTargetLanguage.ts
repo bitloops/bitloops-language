@@ -122,6 +122,7 @@ import { corsOptionsToTargetLanguage } from './components/statements/expression/
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
 import { commandToTargetLanguage } from './components/command/index.js';
+import { queryToTargetLanguage } from './components/query/index.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -490,6 +491,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TCommand: {
       res = commandToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TQuery: {
+      res = queryToTargetLanguage(value, contextData);
       break;
     }
     default: {

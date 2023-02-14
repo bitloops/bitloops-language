@@ -3,7 +3,7 @@ import { IntermediateASTIdentifierNode } from '../IntermediateASTIdentifierNode.
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class QueryTopicNode extends IntermediateASTIdentifierNode {
-  private static classNodeName = 'queryTopicIdentifier';
+  private static classNodeName = 'queryTopic';
 
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TQueryTopicIdentifier, QueryTopicNode.classNodeName, metadata);

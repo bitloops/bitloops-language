@@ -23,7 +23,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class QueryDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.Query;
-  private static classNodeName = 'Query';
+  private static classNodeName = 'query';
 
   constructor(metadata?: TNodeMetadata) {
     super({
