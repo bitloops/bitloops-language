@@ -25,6 +25,8 @@ import { GraphQLExecuteDependenciesNodeBuilder } from '../../../../intermediate-
 import { produceMetadata } from '../../../metadata.js';
 import { GraphQLControllerExecuteDependenciesNode } from '../../../../intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteDependenciesNode.js';
 import { GraphQLControllerExecuteNode } from '../../../../intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteNode.js';
+import { GraphQLControllerExecuteReturnTypeNode } from '../../../../intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
+import { GraphQLControllerExecuteReturnTypeNodeBuilder } from '../../../../intermediate-ast/builders/controllers/graphQL/GraphQLControllerExecuteReturnTypeNodeBuilder.js';
 
 export const graphQLControllerExecuteVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -32,7 +34,7 @@ export const graphQLControllerExecuteVisitor = (
 ): GraphQLControllerExecuteNode => {
   const executeParams = thisVisitor.visit(ctx.graphQLControllerParameters());
 
-  const returnType = ctx.graphQLControllerReturnType().getText();
+  const returnType = thisVisitor.visit(ctx.graphQLControllerReturnType());
   const statementListNode = thisVisitor.visit(ctx.functionBody());
   const executeNode = new GraphQLControllerExecuteNodeBuilder()
     .withDependencies(executeParams)
@@ -49,5 +51,15 @@ export const graphQLExecuteDependenciesVisitor = (
   const requestIdentifier = ctx.Identifier().getText();
   return new GraphQLExecuteDependenciesNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withDependency(requestIdentifier)
+    .build();
+};
+
+export const graphQLControllerReturnTypeVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.GraphQLControllerReturnTypeContext,
+): GraphQLControllerExecuteReturnTypeNode => {
+  const returnType = ctx.DTOIdentifier().getText();
+  return new GraphQLControllerExecuteReturnTypeNodeBuilder(produceMetadata(ctx, thisVisitor))
+    .withType(returnType)
     .build();
 };

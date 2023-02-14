@@ -19,7 +19,7 @@
  */
 import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
-import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import {
   VALID_MULTIPLE_REST_SERVER_CASES,
@@ -58,7 +58,7 @@ describe('Rest Server is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           setupResult = result.setup;
         }
       }
@@ -98,7 +98,7 @@ describe('Multiple valid Rest Servers', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           setupResult = result.setup;
         }
       }

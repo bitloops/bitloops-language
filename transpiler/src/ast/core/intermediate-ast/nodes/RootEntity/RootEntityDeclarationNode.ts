@@ -3,7 +3,7 @@ import { RootEntityKey } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 
 export class RootEntityDeclarationNode extends ClassTypeNode {
@@ -27,11 +27,9 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
   }
 
   public getIdentifier(): EntityIdentifierNode {
-    const [resultNode] = this.getChildren().filter((node: IntermediateASTNode) => {
-      node.getClassNodeName() === EntityIdentifierNode.getClassNodeName();
-    });
-
-    const identifierNode = resultNode as EntityIdentifierNode;
-    return identifierNode;
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TEntityIdentifier,
+    ) as EntityIdentifierNode;
+    return identifier;
   }
 }

@@ -25,13 +25,13 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     "commandHandler": {
       "identifier": IdentifierNode;
       "execute": ExecuteNode;
-      "repositoryIdentifier": RepositoryIdentifierNode;
+      "parameters": ParameterListNode;
     }
   }
 
   {
     "execute": {
-      "parameter": ParameterNode;
+      "parameter": ParameterNode; // Grammar should define a command identifier parameter(specific), but model will be parameter(general)
       "stataments": statementListNode;
       "returnType": ReturnOKErrorTypeNode;
     }
@@ -41,8 +41,7 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     [CommandKey]: {
       [commandIdentifierKey]: TCommandIdentifier;
        execute: TExecute;
-       [repositoryIdentifierKey]: TRepositoryidentifier;
-    };
+    } & TParameterList;
   }
 
   type TExecute = {

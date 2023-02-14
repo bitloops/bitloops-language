@@ -23,6 +23,7 @@ import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { IdentifierExpressionBuilder } from '../../../intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { produceMetadata } from '../../metadata.js';
 
 export const identifierExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -30,6 +31,7 @@ export const identifierExpressionVisitor = (
 ): ExpressionNode => {
   const regularEvaluation = thisVisitor.visitChildren(ctx)[0];
   const { value } = regularEvaluation;
-  const identifierExpr = new IdentifierExpressionBuilder().withValue(value).build();
-  return new ExpressionBuilder().withExpression(identifierExpr).build();
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const identifierExpr = new IdentifierExpressionBuilder(metadata).withValue(value).build();
+  return new ExpressionBuilder(metadata).withExpression(identifierExpr).build();
 };

@@ -3,9 +3,11 @@ import { ParserSyntacticError } from './types.js';
 
 export class VerboseErrorListener extends (antlr as any).error.ErrorListener {
   private errors: ParserSyntacticError[];
-  constructor() {
+  private fileId: string;
+  constructor(fileId: string) {
     super();
     this.errors = [];
+    this.fileId = fileId;
   }
   syntaxError = (
     _recognizer: any,
@@ -19,7 +21,15 @@ export class VerboseErrorListener extends (antlr as any).error.ErrorListener {
     const start = offendingToken.start;
     const stop = offendingToken.stop;
 
-    const error = new ParserSyntacticError(msg, offendingToken, line, column, start, stop);
+    const error = new ParserSyntacticError(
+      msg,
+      offendingToken,
+      line,
+      column,
+      start,
+      stop,
+      this.fileId,
+    );
     this.errors.push(error);
   };
 
@@ -29,5 +39,9 @@ export class VerboseErrorListener extends (antlr as any).error.ErrorListener {
 
   public getErrors(): ParserSyntacticError[] {
     return this.errors;
+  }
+
+  public getFileId(): string {
+    return this.fileId;
   }
 }

@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
+import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 // This would extend the ExpressionNode class instead
@@ -15,5 +16,9 @@ export class ApplicationErrorNode extends ClassTypeNode {
       classNodeName: ApplicationErrorNode.classNodeName,
     });
     this.nodeType = BitloopsTypesMapping.TApplicationError;
+  }
+  public getIdentifier(): IdentifierNode {
+    const identifier = this.getChildNodeByType(BitloopsTypesMapping.TIdentifier) as IdentifierNode;
+    return identifier;
   }
 }

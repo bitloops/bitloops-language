@@ -257,16 +257,26 @@ import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQ
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { commandDeclarationVisitor } from './helpers/commandDeclarationVisitor.js';
 import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
+import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
+
+type TContextInfo = {
+  boundedContextName: string;
+  moduleName: string;
+};
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
 
   private _intermediateASTTree: IntermediateASTTree;
   private _currentFile: string;
+  private _contextInfo: TContextInfo | null = null;
 
-  constructor(currentFile: string) {
+  constructor(currentFile: string, contextInfo?: TContextInfo) {
     super();
     this._currentFile = currentFile;
+    if (contextInfo) {
+      this._contextInfo = contextInfo;
+    }
     this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
   }
 
@@ -276,6 +286,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   public get currentFile(): string {
     return this._currentFile;
+  }
+
+  public get contextInfo(): TContextInfo | null {
+    return this._contextInfo;
   }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {
@@ -728,6 +742,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
+  visitGraphQLControllerReturnType(ctx: BitloopsParser.GraphQLControllerReturnTypeContext) {
+    return graphQLControllerReturnTypeVisitor(this, ctx);
+  }
+
   visitMethodDefinitionList(
     ctx: BitloopsParser.MethodDefinitionListContext,
   ): MethodDefinitionListNode {
@@ -1023,8 +1041,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
+    const metadata = produceMetadata(ctx, this);
     const bitloopsIdentifierType = ctx.bitloopsIdentifiers().getText();
-    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder()
+    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder(metadata)
       .withType(bitloopsIdentifierType)
       .build();
     return bitloopsIdentifierTypeNode;

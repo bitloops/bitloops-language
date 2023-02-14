@@ -16,9 +16,7 @@
     "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
-    "plugins": [
-      { "transform": "ts-auto-mock/transformer", "cacheBetweenTests": false }
-    ]
+    "plugins": [{ "transform": "ts-auto-mock/transformer", "cacheBetweenTests": false }]
   },
   "include": ["src/*.ts", "src/**/*.ts", "src/**/*.js", "global.d.ts"],
   "exclude": ["node_modules", "src/**/*.spec.ts", "src/**/*.spec.js"]

@@ -1,0 +1,8 @@
+RESTController GetHelloWorldRESTController (helloWorldUseCase: HelloWorldUseCase) {
+  method: REST.Methods.GET;
+  execute(request, response) {
+    const result = this.helloWorldUseCase.execute();
+
+    this.ok(response, result);
+  }
+}

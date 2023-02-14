@@ -6,19 +6,27 @@ import { DomainCreateParameterTypeNode } from '../../intermediate-ast/nodes/Doma
 import { DomainCreateParameterTypeNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { produceMetadata } from '../metadata.js';
+import { PropsIdentifierNode } from '../../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
 
 export const domainCreateParameterVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstructorParamContext,
 ): DomainCreateParameterNode => {
-  const parameterIdentifier: IdentifierNode = new IdentifierNodeBuilder()
-    .withName(ctx.id.text)
+  const metadata = produceMetadata(ctx, _thisVisitor);
+
+  const identifierName: IdentifierNode = _thisVisitor.visit(ctx.identifier());
+  const propsIdentifier: PropsIdentifierNode = _thisVisitor.visit(ctx.propsIdentifier());
+  const parameterIdentifier: IdentifierNode = new IdentifierNodeBuilder(metadata)
+    .withName(identifierName.getIdentifierName())
     .build();
-  const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder()
-    .withValue(ctx.type.text)
+  const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder(
+    propsIdentifier.getMetadata(),
+  )
+    .withValue(propsIdentifier.getIdentifierName())
     .build();
 
-  const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
+  const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder(metadata)
     .withIdentifierNode(parameterIdentifier)
     .withTypeNode(parameterType)
     .build();

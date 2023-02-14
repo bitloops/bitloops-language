@@ -26,13 +26,15 @@ import { PrimitiveTypeBuilder } from '../../intermediate-ast/builders/BitloopsPr
 import { PrimitiveTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/PrimitiveTypeNode.js';
 import { BitloopsPrimaryTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
 import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { produceMetadata } from '../metadata.js';
 
 export const bitloopsPrimaryTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.BitloopsPrimaryTypeContext,
 ): BitloopsPrimaryTypeNode => {
+  const metadata = produceMetadata(ctx, _thisVisitor);
   const [primaryTypeNode] = _thisVisitor.visitChildren(ctx);
-  const bitloopsPrimaryTypeNode = new BitloopsPrimaryTypeBuilder()
+  const bitloopsPrimaryTypeNode = new BitloopsPrimaryTypeBuilder(metadata)
     .withPrimaryType(primaryTypeNode)
     .build();
   return bitloopsPrimaryTypeNode;
@@ -42,8 +44,9 @@ export const primitivePrimTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PrimitivePrimTypeContext,
 ): PrimitiveTypeNode => {
+  const metadata = produceMetadata(ctx, _thisVisitor);
   const primitiveType = ctx.primitives().getText();
-  const primitiveTypeNode = new PrimitiveTypeBuilder().withType(primitiveType).build();
+  const primitiveTypeNode = new PrimitiveTypeBuilder(metadata).withType(primitiveType).build();
   return primitiveTypeNode;
 };
 
@@ -51,8 +54,11 @@ export const arrayBitloopsPrimTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,
 ): ArrayPrimaryTypeNode => {
+  const metadata = produceMetadata(ctx, thisVisitor);
   const value = thisVisitor.visit(ctx.bitloopsPrimaryTypeValues());
-  const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder().withPrimaryType(value).build();
+  const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder(metadata)
+    .withPrimaryType(value)
+    .build();
 
   return arrayBitloopsPrimaryTypeNode;
   // return {

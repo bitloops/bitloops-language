@@ -160,12 +160,20 @@ export type ArrayBitloopsPrimTypeObject = {
   [arrayPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
 };
 
+export const standardValueObjectTypeKey = 'standardValueObject';
+export type TStandardValueObject = {
+  [standardValueObjectTypeKey]: TStandardVO;
+};
+
+type TStandardVO = string;
+
 export const bitloopsPrimaryTypeKey = 'type';
 export type TBitloopsPrimaryTypeValues =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
-  | ArrayBitloopsPrimTypeObject;
+  | ArrayBitloopsPrimTypeObject
+  | TStandardValueObject;
 
 export type TBitloopsPrimaryType = {
   [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
@@ -1083,3 +1091,16 @@ export type TQuery = {
     queryTopic: TExpression;
   } & TVariables;
 };
+// DomainEventHandler & IntegrationEventHandler
+export type TEventHandlerBusDependencies = {
+  commandBus: boolean;
+  queryBus: boolean;
+  integrationEventBus: boolean;
+};
+
+// export type TCommand = {
+//   [commandKey]: {
+//     [commandIdentifierKey]: TCommandIdentifier;
+//     commandTopic: TExpression
+//   } & TVariables;
+// };

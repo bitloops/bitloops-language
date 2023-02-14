@@ -1,0 +1,12 @@
+// GraphQLController HelloWorldController ( ) {
+//     operation: GraphQL.Operations.Query;
+//     input: HelloWorldRequestDTO;
+  
+//     execute(request): HelloWorldResponseDTO {
+//       this.ok('Hello World!');
+//     }
+//   }
+
+  DTO HelloWorldResponseDTO {
+    string dto;
+  }

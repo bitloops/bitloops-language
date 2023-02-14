@@ -17,11 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { helloWorldController1 } from '../../../../../bounded-contexts/demo/hello-world/DI';
-const helloWorldRESTRouter = async (fastify: Fastify.Instance) => {
-  fastify.get('/hello', {}, async (request: Fastify.Request, reply: Fastify.Reply) => {
-    return helloWorldController1.execute(request, reply);
-  });
-};
-export { helloWorldRESTRouter };
+import { HelloWorldUseCase } from './application/HelloWorldUseCase';
+import { GetHelloWorldRESTController } from './driving-adapters/GetHelloWorldRESTController';
+
+const myUseCase = new HelloWorldUseCase();
+const getHelloWorldRESTController1 = new GetHelloWorldRESTController(myUseCase);
+
+export { getHelloWorldRESTController1 };

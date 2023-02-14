@@ -6,7 +6,7 @@
 
 Props MoneyProps {
 
-  StandardVO.Currency currency;
+  StandardVO.Currency currency; // in model only Currency
   float amount;
 }
 ValueObject MoneyVO {

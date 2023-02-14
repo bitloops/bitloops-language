@@ -1,4 +1,8 @@
-import { TBoundedContextName, TModuleName } from '../../ast/core/types.js';
+import {
+  IntermediateASTValidationError,
+  TBoundedContextName,
+  TModuleName,
+} from '../../ast/core/types.js';
 import Parser from './grammar/BitloopsParser.js';
 
 export class ASTContext extends Parser.ProgramContext {}
@@ -51,6 +55,7 @@ export interface IOriginalParser {
 }
 
 export type OriginalParserError = ParserSyntacticError[];
+export type OriginalValidatorError = IntermediateASTValidationError[];
 
 export class ParserSyntacticError extends Error {
   private _offendingToken: any;
@@ -58,6 +63,7 @@ export class ParserSyntacticError extends Error {
   private _column: number;
   private _start: number;
   private _stop: number;
+  private _fileId: string;
   constructor(
     message: string,
     offendingToken: any,
@@ -65,6 +71,7 @@ export class ParserSyntacticError extends Error {
     column: number,
     start: number,
     stop: number,
+    fileId: string,
   ) {
     super(message);
 
@@ -73,6 +80,7 @@ export class ParserSyntacticError extends Error {
     this._column = column;
     this._start = start;
     this._stop = stop;
+    this._fileId = fileId;
   }
 
   get offendingToken(): any {
@@ -93,5 +101,9 @@ export class ParserSyntacticError extends Error {
 
   get stop(): number {
     return this._stop;
+  }
+
+  get fileId(): string {
+    return this._fileId;
   }
 }

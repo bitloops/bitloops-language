@@ -21,7 +21,7 @@ import { MoneyDepositedPublishIntegrationEventHandler } from '../application/eve
 import { GetCustomerByAccountIdQuery } from '../application/get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 import { SendEmailVerificationCommand } from '../application/send-email-verification';
 import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/event-handlers/domain/MoneyWithdrawnPublishIntegrationEventHandler.js';
-import { SendEmailAfterMoneyDepositedHandler } from '../application/SendEmailAfterMoneyDepositedHandler.js';
+import { SendEmailAfterMoneyDepositedHandler } from '../application/event-handlers/domain/SendEmailAfterMoneyDepositedHandler.js';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method
@@ -64,11 +64,8 @@ export const setUpTodoSubscriptions = async () => {
   // // Domain events subscriptions
   const domainEventBus = Container.getEventBusFromContext(CONTEXT_ID);
   // Possible we need the external domain event bus here for integration events, different from domain events one
-  const integrationEventBus = Container.getIntegrationEventBusFromContext(CONTEXT_ID);
-  const moneyDepositedIntegrationEventHandler = new MoneyDepositedPublishIntegrationEventHandler(
-    integrationEventBus,
-  );
-  const afterMoneyDepositedHandler = new SendEmailAfterMoneyDepositedHandler(commandBus, queryBus);
+  const moneyDepositedIntegrationEventHandler = new MoneyDepositedPublishIntegrationEventHandler();
+  const afterMoneyDepositedHandler = new SendEmailAfterMoneyDepositedHandler();
   await domainEventBus.subscribe<MoneyDepositedToAccount>(
     MoneyDepositedToAccount.getEventTopic(),
     (event) => {
@@ -77,9 +74,7 @@ export const setUpTodoSubscriptions = async () => {
     },
   );
 
-  const moneyWithdrawnIntegrationEventHandler = new MoneyWithdrawnPublishIntegrationEventHandler(
-    integrationEventBus,
-  );
+  const moneyWithdrawnIntegrationEventHandler = new MoneyWithdrawnPublishIntegrationEventHandler();
   await domainEventBus.subscribe<MoneyWithdrawnFromAccount>(
     MoneyWithdrawnFromAccount.getEventTopic(),
     (event) => {

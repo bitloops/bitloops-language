@@ -18,6 +18,8 @@ export class RepoPortNode extends ClassTypeNode {
   }
 
   public getIdentifier(): IdentifierNode {
-    return this.getChildNodeByType<RepoPortIdentifierNode>(BitloopsTypesMapping.TRepoPort);
+    return this.getChildNodeByType<RepoPortIdentifierNode>(
+      BitloopsTypesMapping.TRepoPortIdentifier,
+    );
   }
 }
