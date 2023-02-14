@@ -20,6 +20,7 @@ export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTra
   }
 
   private prependAwaitToAllDependencyCalls(): void {
-    this.prependAwaitTransformer.run();
+    const extraDependencies = this.node.getExtraDependencies();
+    this.prependAwaitTransformer.prependAwaitToAllDependencyCalls(extraDependencies);
   }
 }

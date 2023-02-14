@@ -11,16 +11,13 @@ interface NodeWithDependencies extends IntermediateASTNode {
 export class PrependAwaitNodeTSTransformer {
   constructor(private node: NodeWithDependencies, private tree: IntermediateASTTree) {}
 
-  run(): void {
-    this.prependAwaitToAllDependencyCalls();
-  }
-
-  private prependAwaitToAllDependencyCalls(): void {
-    const useCaseDependencies = this.node.getAllDependenciesIdentifiers();
-    if (!useCaseDependencies.length) {
+  public prependAwaitToAllDependencyCalls(extraDependencies: string[] = []): void {
+    const methodDependencies = this.node.getAllDependenciesIdentifiers();
+    methodDependencies.push(...extraDependencies);
+    if (!methodDependencies.length) {
       return;
     }
-    this.prependAwaitToDependencies(useCaseDependencies);
+    this.prependAwaitToDependencies(methodDependencies);
   }
 
   private prependAwaitToDependencies(dependencies: string[]): void {

@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
@@ -30,5 +31,17 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TDomainEventHandlerHandleMethod,
     );
     return useCaseExecute.getStatements();
+  }
+
+  getExtraDependencies(): string[] {
+    const eventBusDependencies = this.getChildNodeByType<DomainEventHandleNode>(
+      BitloopsTypesMapping.TEventHandlerBusDependencies,
+    );
+    const nodeValue = eventBusDependencies.getValue() as TEventHandlerBusDependencies;
+    // loop through all keys of nodeValue, and if they are true add them to the array
+    const extraDependencies = Object.keys(nodeValue.eventHandlerBusDependencies).filter(
+      (key) => nodeValue.eventHandlerBusDependencies[key] === true,
+    );
+    return extraDependencies;
   }
 }
