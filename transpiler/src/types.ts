@@ -1131,3 +1131,13 @@ export type TDomainEventHandler = {
 export type THandle = {
   statements: TStatements;
 } & TParameter;
+
+type TIntegrationEventHandlerIdentifier = string;
+export type TIntegrationEventHandler = {
+  integrationEventHandler: {
+    integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies &
+    TEvaluationField;
+};

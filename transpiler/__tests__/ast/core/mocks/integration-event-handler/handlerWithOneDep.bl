@@ -1,0 +1,9 @@
+IntegrationEventHandler MoneyDepositedIntegrationEventHandler(commandBus: ICommandBus) {
+    
+    eventVersion: 'v1';
+    
+    handle(event: MoneyDepositedIntegrationEvent) {
+  
+      this.commandBus.send(command);
+    }
+}
