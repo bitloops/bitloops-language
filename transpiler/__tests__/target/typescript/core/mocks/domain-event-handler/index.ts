@@ -43,4 +43,31 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
       'transpiler/__tests__/target/typescript/core/mocks/domain-event-handler/sendEmailHandler.mock.ts',
     ),
   },
+  {
+    description: 'event handler with injected dependency',
+    domainEventHandler: new DomainEventHandlerBuilderDirector().buildDomainEventHandler({
+      identifier: 'SendEmailAfterMoneyDepositedHandler',
+      parameters: [
+        new ParameterBuilderDirector().buildIdentifierParameter('emailRepo', 'IEmailRepoPort'),
+      ],
+      executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
+        'event',
+        'MoneyDepositedToAccountDomainEvent',
+      ),
+      statements: [
+        new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
+          'email',
+          'example@email.com',
+        ),
+        new ExpressionBuilderDirector().buildThisDependencyMethodCall(
+          'commandBus',
+          'send',
+          new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
+        ),
+      ],
+    }),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain-event-handler/handlerWithDependency.mock.ts',
+    ),
+  },
 ];
