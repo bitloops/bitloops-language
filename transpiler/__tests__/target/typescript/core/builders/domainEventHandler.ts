@@ -33,6 +33,7 @@ export class DomainEventHandlerBuilderDirector {
       )
       .withParameterList(new ParameterListNodeBuilder(null).withParameters(parameters).build())
       .withHandleMethod(handleNode)
+      .withDefaultEventBusDependencies()
       .build();
   }
 }

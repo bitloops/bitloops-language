@@ -24,22 +24,25 @@ import { TargetGenerator } from '../../../../src/target/index.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
-import { VALID_DOMAIN_EVENT_TEST_CASES, contextInfo } from './mocks/domain-event/index.js';
+import {
+  VALID_DOMAIN_EVENT_HANDLER_TEST_CASES,
+  contextInfo,
+} from './mocks/domain-event-handler/index.js';
 
 describe('Valid domain event handler declaration test cases', () => {
   const formatterConfig = null;
   const language = 'TypeScript';
   const { boundedContextName, moduleName } = contextInfo;
 
-  VALID_DOMAIN_EVENT_TEST_CASES.forEach((testCase) => {
+  VALID_DOMAIN_EVENT_HANDLER_TEST_CASES.forEach((testCase) => {
     let resultCore: TTargetCoreFinalContent[];
 
     it(`${testCase.description}`, () => {
       // given
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-      const domainEvent = testCase.domainEvent;
+      const domainEventHandler = testCase.domainEventHandler;
 
-      tree.insertChild(domainEvent);
+      tree.insertChild(domainEventHandler);
 
       const intermediateAST = {
         core: { [boundedContextName]: { [moduleName]: tree } },

@@ -29,20 +29,6 @@ export class DomainEventTopicNodeBuilder implements IBuilder<DomainEventTopicNod
     return this;
   }
 
-  static generateDefaultTopicName(
-    domainEventIdentifier: string,
-    contextInfo: { boundedContextName: string; moduleName: string },
-  ): string {
-    const { boundedContextName, moduleName } = contextInfo;
-    const topicName = domainEventIdentifier
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
-      .toUpperCase()
-      .replace(/_DOMAIN_EVENT$/, '');
-    const fullTopicName = `${boundedContextName}.${moduleName}.DOMAIN_EVENT.${topicName}`;
-    return fullTopicName;
-  }
-
   private topicStringToExpressionNode(topic: string): ExpressionNode {
     const topicExpressionNode = ExpressionBuilderDirector.buildStringLiteralExpression(topic);
     return topicExpressionNode;
