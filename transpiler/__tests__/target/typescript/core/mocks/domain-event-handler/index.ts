@@ -19,11 +19,9 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
     description: 'sendEmail DomainEventHandler',
     domainEventHandler: new DomainEventHandlerBuilderDirector().buildDomainEventHandler({
       identifier: 'SendEmailAfterMoneyDepositedHandler',
-      parameters: [
-        new ParameterBuilderDirector().buildIdentifierParameter('todoRepo', 'TodoWriteRepoPort'),
-      ],
+      parameters: [],
       executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
-        'requestDTO',
+        'event',
         'CreateTodoRequestDTO',
       ),
       statements: [

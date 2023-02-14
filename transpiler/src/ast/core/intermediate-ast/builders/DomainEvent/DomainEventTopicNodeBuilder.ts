@@ -1,3 +1,4 @@
+import { TopicUtils } from '../../../../../utils/topic.js';
 import { ExpressionBuilderDirector } from '../../directors/ExpressionDirector.js';
 import { DomainEventTopicNode } from '../../nodes/DomainEvent/DomainEventTopicNode.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
@@ -19,7 +20,7 @@ export class DomainEventTopicNodeBuilder implements IBuilder<DomainEventTopicNod
     domainEventIdentifier: string,
     contextInfo: { boundedContextName: string; moduleName: string },
   ): DomainEventTopicNodeBuilder {
-    const topic = DomainEventTopicNodeBuilder.generateDefaultTopicName(
+    const topic = TopicUtils.generateDefaultDomainEventTopicName(
       domainEventIdentifier,
       contextInfo,
     );
