@@ -140,6 +140,12 @@ import {
   graphQLOperationInputTypeVisitor,
   graphQLExecuteDependenciesVisitor,
   packagePortIdentifierVisitor,
+  domainEventDeclarationVisitor,
+  domainEventIdentifierVisitor,
+  domainEventHandlerDeclarationVisitor,
+  domainEventHandlerIdentifierVisitor,
+  domainEventHandlerHandleMethodVisitor,
+  domainEventHandlerHandleMethodParameterVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -256,6 +262,7 @@ import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/Control
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { integrationEventDeclarationVisitor } from './helpers/integrationEvent/integrationEventVisitor.js';
+import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 import { IntegrationEventIdentifierNodeBuilder } from '../intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
 import { IntegrationEventIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
@@ -1316,5 +1323,37 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.IntegrationReturnSchemaTypeContext,
   ): StructIdentifierNode {
     return this.visit(ctx.structIdentifier());
+  }
+
+  visitDomainEventDeclaration(ctx: BitloopsParser.DomainEventDeclarationContext): void {
+    domainEventDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventIdentifier(
+    ctx: BitloopsParser.DomainEventIdentifierContext,
+  ): DomainEventIdentifierNode {
+    return domainEventIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerDeclaration(
+    ctx: BitloopsParser.DomainEventHandlerDeclarationContext,
+  ): void {
+    domainEventHandlerDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerIdentifier(ctx: BitloopsParser.DomainEventHandlerIdentifierContext): any {
+    return domainEventHandlerIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerHandleDeclaration(
+    ctx: BitloopsParser.DomainEventHandlerHandleDeclarationContext,
+  ): any {
+    return domainEventHandlerHandleMethodVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerHandleParameter(
+    ctx: BitloopsParser.DomainEventHandlerHandleParameterContext,
+  ): any {
+    return domainEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 }

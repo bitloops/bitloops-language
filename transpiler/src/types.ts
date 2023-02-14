@@ -1076,9 +1076,11 @@ export enum RestServerOptions {
 
 // DomainEventHandler & IntegrationEventHandler
 export type TEventHandlerBusDependencies = {
-  commandBus: boolean;
-  queryBus: boolean;
-  integrationEventBus: boolean;
+  eventHandlerBusDependencies: {
+    commandBus: boolean;
+    queryBus: boolean;
+    integrationEventBus: boolean;
+  };
 };
 
 // export type TCommand = {
@@ -1106,3 +1108,26 @@ export type TIntegrationEvent = {
   } & TIntegrationVersionMappers &
     TParameter;
 };
+export const DomainEventIdentifierKey = 'DomainEventIdentifier';
+
+export type TDomainEvent = {
+  domainEvent: {
+    [DomainEventIdentifierKey]: TDTOIdentifier;
+    entityIdentifier: TEntityIdentifier;
+    topic: TExpression;
+  };
+};
+
+type TDomainEventHandlerIdentifier = string;
+
+export type TDomainEventHandler = {
+  domainEventHandler: {
+    domainEventHandlerIdentifier: TDomainEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies;
+};
+
+export type THandle = {
+  statements: TStatements;
+} & TParameter;

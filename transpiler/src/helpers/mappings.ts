@@ -233,6 +233,13 @@ const BitloopsTypesMapping = {
   TIntegrationVersionMappers: 'TIntegrationVersionMappers',
   TIntegrationEvent: 'TIntegrationEvent',
   TIntegrationVersionMapper: 'TIntegrationVersionMapper',
+  TDomainEvent: 'TDomainEvent',
+  TDomainEventIdentifier: 'TDomainEventIdentifier',
+  DomainEventTopic: 'DomainEventTopic',
+  TDomainEventHandler: 'TDomainEventHandler',
+  TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
+  TDomainEventHandlerHandleMethod: 'TDomainEventHandlerHandleMethod',
+  TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -256,6 +263,8 @@ const ClassTypes = {
   DomainRule: 'DomainRule',
   ReadModel: 'ReadModel',
   IntegrationEvent: 'IntegrationEvent',
+  DomainEvent: 'DomainEvent',
+  DomainEventHandler: 'DomainEventHandler',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -270,7 +279,7 @@ export const mappingBitloopsBuiltInClassToLayer = {
   [BitloopsBuiltInClassNames.UUIDv4]: ArchitectureLayers.Domain,
 };
 
-const mappingClassTypeToComponentType = {
+const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesValues> = {
   [ClassTypes.Controller]: BitloopsTypesMapping.TController,
   [ClassTypes.UseCase]: BitloopsTypesMapping.TUseCase,
   [ClassTypes.ValueObject]: BitloopsTypesMapping.TValueObject,
@@ -286,6 +295,9 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
   [ClassTypes.ApplicationError]: BitloopsTypesMapping.TApplicationError,
   [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
+  [ClassTypes.DomainEvent]: BitloopsTypesMapping.TDomainEvent,
+  [ClassTypes.DomainEventHandler]: BitloopsTypesMapping.TDomainEventHandler,
+  [ClassTypes.IntegrationEvent]: BitloopsTypesMapping.TIntegrationEvent,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

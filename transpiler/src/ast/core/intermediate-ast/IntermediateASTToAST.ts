@@ -8,6 +8,8 @@ import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../type
 import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
 import { RestControllerTypeTransformer } from './ node-transformers/RestControllerTypeTransformer.js';
 import { RepoAdapterNodesTransformer } from './ node-transformers/RepoAdapterNodesTransformer.js';
+import { DomainEventHandlerNodeTransformer } from './ node-transformers/DomainEventHandlerNodeTransformer.js';
+import { DomainEventHandlerDeclarationNode } from './nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -111,6 +113,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TOkErrorReturnType: {
         const returnOkErrorNode = intermediateASTNode as ReturnOkErrorTypeNode;
         return new ReturnOKErrorNodeTransformer(intermediateASTTree, returnOkErrorNode);
+      }
+      case BitloopsTypesMapping.TDomainEventHandler: {
+        const domainEventHandlerNode = intermediateASTNode as DomainEventHandlerDeclarationNode;
+        return new DomainEventHandlerNodeTransformer(intermediateASTTree, domainEventHandlerNode);
       }
       default:
         return null;

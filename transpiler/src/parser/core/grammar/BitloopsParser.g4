@@ -209,6 +209,8 @@ sourceElement
     | repoPortDeclaration
     | readModelDeclaration
     | integrationEventDeclaration
+    | domainEventDeclaration
+    | domainEventHandlerDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -403,10 +405,6 @@ useCaseDeclaration
     : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
     ;
 
-domainEventIdentifier
-    : DomainEventIdentifier
-    ;
-
 integrationEventIdentifier
     : IntegrationEventIdentifier
     ;
@@ -482,6 +480,33 @@ repoPortExtendableIdentifier
     | UpperCaseIdentifier 
     | UpperCaseIdentifier '<' UpperCaseIdentifier '>'
     ;
+
+
+domainEventDeclaration
+    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' SemiColon?
+    ;
+
+domainEventIdentifier
+    : DomainEventIdentifier
+    ;
+
+// 
+domainEventHandlerIdentifier
+    : DomainEventHandlerIdentifier
+    ;
+
+domainEventHandlerDeclaration
+    : DomainEventHandler domainEventHandlerIdentifier parameterList OpenBrace domainEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+domainEventHandlerHandleDeclaration
+    : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+domainEventHandlerHandleParameter
+    : parameterIdentifier Colon domainEventIdentifier
+    ;
+//
 
 dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?
