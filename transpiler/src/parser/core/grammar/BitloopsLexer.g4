@@ -308,6 +308,7 @@ DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
 CommandIdentifier:              UpperCaseStart IdentifierPart* Command;
 QueryIdentifier:                UpperCaseStart IdentifierPart* Query;
+DomainEventIdentifier:          UpperCaseStart IdentifierPart* DomainEvent;
 SetLanguage:                    'setLanguage';
 TypeScript:                     'TypeScript';
 Java:                           'Java';

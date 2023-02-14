@@ -36,7 +36,6 @@ const commandToTargetLanguage = (command: TCommand): TTargetDependenciesTypeScri
   const commandName = commandValues[identifierKey];
   const fields = commandValues[fieldsKey];
 
-  //TODO change for class members
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
     value: fields,
@@ -44,7 +43,6 @@ const commandToTargetLanguage = (command: TCommand): TTargetDependenciesTypeScri
 
   const CommandInterface = 'Application.Command';
 
-  //TODO fix commandName
   const commandNameDeclaration = `public static readonly commandName = ${commandName};`;
   const getCommandTopic = `static getCommandTopic(): string {
     return super.getCommandTopic(InsertPINCommand.commandName, contextId);
@@ -77,20 +75,25 @@ const commandToTargetLanguage = (command: TCommand): TTargetDependenciesTypeScri
 const getCommandType = (dtoTypeName: string, variablesString: string): string => {
   const type = `type T${dtoTypeName} = {
     ${variablesString}
-  }`;
+  }
+  `;
   return type;
 };
 
+//dtoName should have lowercase first letter
 const getConstructor = (dtoTypeName: string, commandName: string, fields: TVariable[]): string => {
   const commandNameWithoutSuffix = commandName.replace('Command', '');
-  const dtoName = `${commandNameWithoutSuffix}RequestDTO`;
+  const commandWithLowerCaseStartLetter =
+    commandNameWithoutSuffix.charAt(0).toLowerCase() + commandNameWithoutSuffix.slice(1);
+
+  const dtoName = `${commandWithLowerCaseStartLetter}RequestDTO`;
   let constructorValue = `constructor(${dtoName}: ${dtoTypeName}) {
     super(${commandName}.commandName, contextId);
   `;
 
   for (const field of fields) {
     const fieldName = field[fieldKey][identifierKey];
-    constructorValue += `this.${fieldName} = ${dtoName}.${fieldName}`;
+    constructorValue += `this.${fieldName} = ${dtoName}.${fieldName}  \n`;
   }
   constructorValue += '}';
   return constructorValue;

@@ -30,9 +30,11 @@ export const queryDeclarationVisitor = (
   const metadata = produceMetadata(ctx, thisVisitor);
   const queryIdentifierNode = thisVisitor.visit(ctx.queryIdentifier());
   const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
+  const contextInfo = thisVisitor.contextInfo;
 
   new QueryNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(queryIdentifierNode)
     .withFieldList(fieldListNode)
+    .withContextInfo(contextInfo)
     .build();
 };

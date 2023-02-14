@@ -6,6 +6,7 @@ import { OptionalBuilder } from '../../../../src/ast/core/intermediate-ast/build
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../../../target/typescript/core/builders/bitloopsPrimaryTypeDirector.js';
+import { QueryTopicNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/query/QueryTopicNodeBuilder.js';
 
 export const validQueryTestCases = [
   {
@@ -25,6 +26,14 @@ export const validQueryTestCases = [
           .build(),
       )
       .withIdentifier(new IdentifierNodeBuilder().withName('GetCustomerByIdQuery').build())
+      .withTopic(
+        new QueryTopicNodeBuilder()
+          .generateTopicName('GetCustomerByIdQuery', {
+            boundedContextName: 'banking',
+            moduleName: 'banking',
+          })
+          .build(),
+      )
       .build(),
   },
 ];

@@ -1098,9 +1098,13 @@ export type TEventHandlerBusDependencies = {
   integrationEventBus: boolean;
 };
 
-// export type TCommand = {
-//   [commandKey]: {
-//     [commandIdentifierKey]: TCommandIdentifier;
-//     commandTopic: TExpression
-//   } & TVariables;
-// };
+export const DomainEventIdentifierKey = 'DomainEventIdentifier';
+
+export type TDomainEvent = {
+  domainEvent: {
+    [DomainEventIdentifierKey]: TDTOIdentifier;
+    entityIdentifier: TEntityIdentifier;
+    topic: TExpression;
+  };
+};
+export type TCommandTopicIdentifier = string;

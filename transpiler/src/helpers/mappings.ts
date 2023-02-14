@@ -232,6 +232,10 @@ const BitloopsTypesMapping = {
   TQueryIdentifier: 'TQueryIdentifier',
   TCommand: 'TCommand',
   TQuery: 'TQuery',
+  TDomainEvent: 'TDomainEvent',
+  TDomainEventIdentifier: 'TDomainEventIdentifier',
+  TCommandTopicIdentifier: 'TCommandTopicIdentifier',
+  TQueryTopicIdentifier: 'TQueryTopicIdentifier',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -256,6 +260,7 @@ const ClassTypes = {
   ReadModel: 'ReadModel',
   Command: 'Command',
   Query: 'Query',
+  DomainEvent: 'DomainEvent',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -270,7 +275,7 @@ export const mappingBitloopsBuiltInClassToLayer = {
   [BitloopsBuiltInClassNames.UUIDv4]: ArchitectureLayers.Domain,
 };
 
-const mappingClassTypeToComponentType = {
+const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesValues> = {
   [ClassTypes.Controller]: BitloopsTypesMapping.TController,
   [ClassTypes.UseCase]: BitloopsTypesMapping.TUseCase,
   [ClassTypes.ValueObject]: BitloopsTypesMapping.TValueObject,
@@ -286,6 +291,9 @@ const mappingClassTypeToComponentType = {
   [ClassTypes.Struct]: BitloopsTypesMapping.TStruct,
   [ClassTypes.ApplicationError]: BitloopsTypesMapping.TApplicationError,
   [ClassTypes.ReadModel]: BitloopsTypesMapping.TReadModel,
+  [ClassTypes.DomainEvent]: BitloopsTypesMapping.TDomainEvent,
+  [ClassTypes.Command]: BitloopsTypesMapping.TCommand,
+  [ClassTypes.Query]: BitloopsTypesMapping.TQuery,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

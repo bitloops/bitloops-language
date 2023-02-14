@@ -7,9 +7,12 @@ export const VALID_COMMAND_TEST_CASES = [
   {
     description: 'Command with one field',
     fieldListNode: new FieldListNodeBuilder()
-      .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('id', 'string')])
+      .withFields([
+        new FieldBuilderDirector().buildRequiredPrimitiveField('email', 'string'),
+        new FieldBuilderDirector().buildRequiredPrimitiveField('pin', 'string'),
+      ])
       .build(),
-    commandIdentifierNode: new IdentifierNodeBuilder().withName('InsertPinCommand').build(),
+    commandIdentifierNode: new IdentifierNodeBuilder().withName('InsertPINCommand').build(),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/command/insertPINCommand.mock.ts',
     ),

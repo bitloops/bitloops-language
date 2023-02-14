@@ -1,4 +1,5 @@
 import { CommandNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/command/CommandNodeBuilder.js';
+import { CommandTopicNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/command/CommandTopicNodeBuilder.js';
 import { FieldListNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldListNodeBuilder.js';
 import { FieldNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
@@ -32,6 +33,14 @@ export const validCommandTestCases = [
           .build(),
       )
       .withIdentifier(new IdentifierNodeBuilder().withName('InsertPINCommand').build())
+      .withTopic(
+        new CommandTopicNodeBuilder()
+          .generateTopicName('InsertPINCommand', {
+            boundedContextName: 'banking',
+            moduleName: 'banking',
+          })
+          .build(),
+      )
       .build(),
   },
 ];

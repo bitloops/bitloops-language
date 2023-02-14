@@ -255,11 +255,11 @@ import {
 import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
-import { commandDeclarationVisitor } from './helpers/commandDeclarationVisitor.js';
+import { commandDeclarationVisitor } from './helpers/commandDeclaration.js';
 import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 
-type TContextInfo = {
+export type TContextInfo = {
   boundedContextName: string;
   moduleName: string;
 };

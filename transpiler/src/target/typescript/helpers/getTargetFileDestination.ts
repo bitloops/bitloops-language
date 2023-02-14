@@ -61,6 +61,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
   [ClassTypes.Command]: PROJECT_RELATIVE_PATHS.COMMANDS,
   [ClassTypes.Query]: PROJECT_RELATIVE_PATHS.QUERIES,
+  DomainEvent: '',
 };
 
 const getTargetFileDestination = (
@@ -148,6 +149,8 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Package:
     case ClassTypes.RepoAdapter:
     case ClassTypes.RepoPort:
+    case ClassTypes.Command:
+    case ClassTypes.Query:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
