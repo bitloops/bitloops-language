@@ -26,7 +26,7 @@ import { formatString } from '../../../../src/target/typescript/core/codeFormatt
 import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
 import { VALID_DOMAIN_EVENT_TEST_CASES, contextInfo } from './mocks/domain-event/index.js';
 
-describe('Valid domain event declaration test cases', () => {
+describe('Valid domain event handler declaration test cases', () => {
   const formatterConfig = null;
   const language = 'TypeScript';
   const { boundedContextName, moduleName } = contextInfo;

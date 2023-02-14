@@ -22,7 +22,7 @@ export const VALID_DOMAIN_EVENT_TEST_CASES: TestCase[] = [
       contextInfo,
     ),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/domainEvent/accountCreatedDomainEvent.mock.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/domain-event/accountCreatedDomainEvent.mock.ts',
     ),
   },
 ];

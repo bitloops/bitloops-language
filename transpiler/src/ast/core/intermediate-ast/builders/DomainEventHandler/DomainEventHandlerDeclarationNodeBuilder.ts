@@ -21,10 +21,10 @@ export class DomainEventHandlerDeclarationNodeBuilder
   }
 
   public withIdentifier(
-    dtoIdentifierNode: DomainEventHandlerIdentifierNode,
+    identifierNode: DomainEventHandlerIdentifierNode,
   ): DomainEventHandlerDeclarationNodeBuilder {
-    this.identifierNode = dtoIdentifierNode;
-    const dtoName = dtoIdentifierNode.getIdentifierName();
+    this.identifierNode = identifierNode;
+    const dtoName = identifierNode.getIdentifierName();
     this.domainEventHandlerNode.setClassName(dtoName);
     return this;
   }
