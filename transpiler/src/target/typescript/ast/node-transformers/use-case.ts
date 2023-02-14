@@ -1,7 +1,7 @@
 import { IdentifierExpressionNode } from '../../../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { MemberDotExpressionNode } from '../../../../ast/core/intermediate-ast/nodes/Expression/MemberDot/MemberDotExpression.js';
-import { MethodCallExpressionNode } from '../../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 import { UseCaseNode } from '../../../../ast/core/intermediate-ast/nodes/UseCase/UseCaseNode.js';
+import { PrependAwaitNodeTSTransformer } from './generic/prependAwait.js';
 import { NodeModelToTargetASTTransformer } from './index.js';
 
 export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<UseCaseNode> {
@@ -12,11 +12,8 @@ export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<Us
   }
 
   private prependAwaitToAllDependencyCalls(): void {
-    const useCaseDependencies = this.node.getAllDependenciesIdentifiers();
-    if (!useCaseDependencies.length) {
-      return;
-    }
-    this.prependAwaitToDependencies(useCaseDependencies);
+    const awaitTransformer = new PrependAwaitNodeTSTransformer(this.node, this.tree);
+    awaitTransformer.prependAwaitToAllDependencyCalls();
   }
 
   /*
@@ -65,20 +62,6 @@ export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<Us
     const identifierIsLeftPartOfMemberDotExpression =
       grandParent instanceof MemberDotExpressionNode;
     return identifierIsLeftPartOfMemberDotExpression;
-  }
-
-  private prependAwaitToDependencies(dependencies: string[]): void {
-    const statements = this.node.getStatements();
-    const methodCallNodes = this.tree.getMethodCallsThatUseThisDependencies(
-      dependencies,
-      statements,
-    );
-    methodCallNodes.forEach((node) => this.prependAwaitToMethodCallNode(node));
-  }
-
-  private prependAwaitToMethodCallNode(node: MethodCallExpressionNode): void {
-    const thisNode = node.getThisNode();
-    thisNode.updateValue('await this');
   }
 
   private appendDotValue(str: string): string {

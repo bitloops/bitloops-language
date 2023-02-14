@@ -1,7 +1,7 @@
-import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { MethodCallExpressionNode } from '../../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
-import { IntermediateASTNode } from '../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { StatementNode } from '../../../../ast/core/intermediate-ast/nodes/statements/Statement.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { MethodCallExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
+import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { StatementNode } from '../../../../../ast/core/intermediate-ast/nodes/statements/Statement.js';
 
 interface NodeWithDependencies extends IntermediateASTNode {
   getAllDependenciesIdentifiers(): string[];
