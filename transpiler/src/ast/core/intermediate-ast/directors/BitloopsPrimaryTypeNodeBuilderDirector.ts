@@ -27,7 +27,7 @@ export class BitloopsPrimaryTypeNodeBuilderDirector {
   private builder: BitloopsPrimaryTypeBuilder;
   private metadata: TNodeMetadata;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(metadata?: TNodeMetadata) {
     this.builder = new BitloopsPrimaryTypeBuilder(metadata);
     this.metadata = metadata;
   }
