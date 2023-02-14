@@ -261,18 +261,27 @@ import {
 import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
 import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
-import { integrationEventDeclarationVisitor } from './helpers/integrationEvent/integrationEventVisitor.js';
+import { integrationEventDeclarationVisitor } from './helpers/integration-event/integrationEventVisitor.js';
 import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 import { IntegrationEventIdentifierNodeBuilder } from '../intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
 import { IntegrationEventIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
-import { integrationEventInputVisitor } from './helpers/integrationEvent/integrationEventInputVisitor.js';
-import { integrationEventInputTypeVisitor } from './helpers/integrationEvent/integrationEventInputTypeVisitor.js';
+import { integrationEventInputVisitor } from './helpers/integration-event/integrationEventInputVisitor.js';
+import { integrationEventInputTypeVisitor } from './helpers/integration-event/integrationEventInputTypeVisitor.js';
 import { IntegrationVersionMapperListNode } from '../intermediate-ast/nodes/integration-event/IntegrationVersionMapperListNode.js';
-import { integrationVersionMapperListVisitor } from './helpers/integrationEvent/integrationVersionMapperListVisitor.js';
+import { integrationVersionMapperListVisitor } from './helpers/integration-event/integrationVersionMapperListVisitor.js';
 import { IntegrationVersionMapperNode } from '../intermediate-ast/nodes/integration-event/IntegrationVersionMapperNode.js';
-import { integrationVersionMapperVisitor } from './helpers/integrationEvent/integrationVersionMapperVisitor.js';
+import { integrationVersionMapperVisitor } from './helpers/integration-event/integrationVersionMapperVisitor.js';
 import { StructIdentifierNode } from '../intermediate-ast/nodes/struct/StructIdentifierNode.js';
+import {
+  integrationEventHandlerDeclarationVisitor,
+  integrationEventHandlerHandleMethodParameterVisitor,
+  integrationEventHandlerHandleMethodVisitor,
+  integrationEventHandlerIdentifierVisitor,
+} from './helpers/integration-event/integrationEventHandlerDeclarationVisitor.js';
+import { IntegrationEventHandlerIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
+import { BitloopsPrimaryTypeNodeBuilderDirector } from '../intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
+import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
 
 type TContextInfo = {
   boundedContextName: string;
@@ -1355,5 +1364,40 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.DomainEventHandlerHandleParameterContext,
   ): any {
     return domainEventHandlerHandleMethodParameterVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerDeclaration(
+    ctx: BitloopsParser.IntegrationEventHandlerDeclarationContext,
+  ): void {
+    integrationEventHandlerDeclarationVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerIdentifier(
+    ctx: BitloopsParser.IntegrationEventHandlerIdentifierContext,
+  ): IntegrationEventHandlerIdentifierNode {
+    return integrationEventHandlerIdentifierVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerHandleDeclaration(
+    ctx: BitloopsParser.IntegrationEventHandlerHandleDeclarationContext,
+  ): EventHandleNode {
+    return integrationEventHandlerHandleMethodVisitor(this, ctx);
+  }
+
+  visitEventHandlerHandleIdentifier(
+    ctx: BitloopsParser.EventHandlerHandleIdentifierContext,
+  ): BitloopsPrimaryTypeNode {
+    const type = ctx.domainEventIdentifier()
+      ? ctx.domainEventIdentifier().getText()
+      : ctx.integrationEventIdentifier().getText();
+
+    const metadata = produceMetadata(ctx, this);
+    return new BitloopsPrimaryTypeNodeBuilderDirector(metadata).buildIdentifierPrimaryType(type);
+  }
+
+  visitIntegrationEventHandlerHandleParameter(
+    ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
+  ): ParameterNode {
+    return integrationEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 }

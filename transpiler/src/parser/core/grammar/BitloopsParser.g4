@@ -211,6 +211,7 @@ sourceElement
     | integrationEventDeclaration
     | domainEventDeclaration
     | domainEventHandlerDeclaration
+    | integrationEventHandlerDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -503,10 +504,31 @@ domainEventHandlerHandleDeclaration
     : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
     ;
 
+eventHandlerHandleIdentifier
+    : domainEventIdentifier
+    | integrationEventIdentifier
+    ;
+
 domainEventHandlerHandleParameter
-    : parameterIdentifier Colon domainEventIdentifier
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
     ;
 //
+
+integrationEventHandlerIdentifier
+    : IntegrationEventHandlerIdentifier
+    ;
+
+integrationEventHandlerDeclaration
+    : IntegrationEventHandler integrationEventHandlerIdentifier parameterList OpenBrace evaluationField SemiColon integrationEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+integrationEventHandlerHandleDeclaration
+    : Handle OpenParen integrationEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+integrationEventHandlerHandleParameter
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    ;
 
 dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?

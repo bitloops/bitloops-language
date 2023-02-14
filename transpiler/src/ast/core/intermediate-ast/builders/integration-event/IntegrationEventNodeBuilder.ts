@@ -37,8 +37,10 @@ export class IntegrationEventNodeBuilder implements IBuilder<IntegrationEventNod
     this.integrationEventNode = new IntegrationEventNode(metadata);
   }
 
-  withIdentifier(identifier: IntegrationEventIdentifierNode): IntegrationEventNodeBuilder {
-    this.identifierNode = identifier;
+  withIdentifier(identifierNode: IntegrationEventIdentifierNode): IntegrationEventNodeBuilder {
+    this.identifierNode = identifierNode;
+    const integrationEventName = identifierNode.getIdentifierName();
+    this.integrationEventNode.setClassName(integrationEventName);
     return this;
   }
 
