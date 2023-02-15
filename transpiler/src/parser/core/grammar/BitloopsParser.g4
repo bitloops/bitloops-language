@@ -257,6 +257,8 @@ evaluation
     | entityEvaluation
     | propsEvaluation
     | structEvaluation
+    | commandEvaluation
+    | queryEvaluation
     ;
 
 corsOptionsEvaluation
@@ -500,6 +502,14 @@ domainEvaluationInput
 
 entityEvaluation
     : entityIdentifier domainEvaluationInput
+    ;
+
+commandEvaluation
+    : commandIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+
+queryEvaluation
+    : queryIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
     ;
 
 structEvaluation

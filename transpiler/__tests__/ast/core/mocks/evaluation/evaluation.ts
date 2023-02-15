@@ -56,4 +56,26 @@ export const validEvaluationTestCases: Array<TestCase> = [
       ],
     }),
   },
+  {
+    description: 'valid Command Evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestEvaluation { CreateTodoCommand.create({ message: 'Hello, World!' })}",
+    evaluation: new EvaluationBuilderDirector().buildCommandEvaluation('CreateTodoCommand', [
+      new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
+    ]),
+  },
+  {
+    description: 'valid Query Evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestEvaluation { GetAllTodoQuery.create({ message: 'Hello, World!' })}",
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation('GetAllTodoQuery', [
+      new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
+    ]),
+  },
+  {
+    description: 'valid Query Evaluation with no fields',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestEvaluation { GetAllTodoQuery.create()}',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation('GetAllTodoQuery'),
+  },
 ];

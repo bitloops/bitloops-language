@@ -140,6 +140,8 @@ import {
   graphQLOperationInputTypeVisitor,
   graphQLExecuteDependenciesVisitor,
   packagePortIdentifierVisitor,
+  commandEvaluationVisitor,
+  queryEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -656,6 +658,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEntityEvaluation(ctx: BitloopsParser.EntityEvaluationContext): any {
     return entityEvaluationVisitor(this, ctx);
+  }
+  visitCommandEvaluation(ctx: BitloopsParser.CommandEvaluationContext): any {
+    return commandEvaluationVisitor(this, ctx);
+  }
+
+  visitQueryEvaluation(ctx: BitloopsParser.QueryEvaluationContext): any {
+    return queryEvaluationVisitor(this, ctx);
   }
 
   visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {

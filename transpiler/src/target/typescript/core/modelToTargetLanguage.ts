@@ -123,6 +123,8 @@ import { literalExpressionToTargetLanguage } from './components/statements/expre
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
 import { commandToTargetLanguage } from './components/command/index.js';
 import { queryToTargetLanguage } from './components/query/index.js';
+import { commandEvaluationToTargetLanguage } from './components/statements/expression/evaluation/commandEvaluation.js';
+import { queryEvaluationToTargetLanguage } from './components/statements/expression/evaluation/queryEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -300,6 +302,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDTOEvaluation: {
       res = DTOEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TCommandEvaluation: {
+      res = commandEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TQueryEvaluation: {
+      res = queryEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {

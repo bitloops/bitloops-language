@@ -71,6 +71,18 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       value: evaluation,
     });
   }
+  if (EvaluationTypeIdentifiers.isCommandEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TCommandEvaluation,
+      value: evaluation,
+    });
+  }
+  if (EvaluationTypeIdentifiers.isQueryEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TQueryEvaluation,
+      value: evaluation,
+    });
+  }
   if (EvaluationTypeIdentifiers.isErrorEvaluation(evaluation)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TErrorEvaluation,

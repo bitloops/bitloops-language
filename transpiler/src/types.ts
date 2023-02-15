@@ -256,7 +256,9 @@ export type TEvaluationValues =
   | TEntityEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
-  | TBuiltInFunctionValues;
+  | TBuiltInFunctionValues
+  | TCommandEvaluation
+  | TQueryEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -299,6 +301,18 @@ export type TDTOEvaluation = {
   dto: {
     [DTOIdentifierKey]: TDTOIdentifier;
   } & TEvaluationFields;
+};
+
+export type TCommandEvaluation = {
+  command: {
+    [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
+};
+
+export type TQueryEvaluation = {
+  query: {
+    [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
 };
 
 export type TValueObjectEvaluation = {
