@@ -494,7 +494,7 @@ dtoEvaluation
     ;
 
 valueObjectEvaluation
-    : valueObjectIdentifier domainEvaluationInput
+    : valueObjectIdentifier Dot Create domainEvaluationInput
     ;
 
 domainEvaluationInput
