@@ -33,4 +33,11 @@ export const VALID_PRIMARY_TYPE_TEST_CASES = [
     ),
     output: 'TodoReadModel[]',
   },
+  {
+    description: 'Standard value object - Currency',
+    bitloopsPrimaryType: new BitloopsPrimaryTypeDirector().buildStandardValueObjectPrimaryType(
+      'Currency',
+    ),
+    output: 'Domain.StandardVO.Currency.Value',
+  },
 ];

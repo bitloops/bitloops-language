@@ -106,7 +106,10 @@ import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/
 import { readModelToTargetLanguage } from './components/read-model/index.js';
 import { rootEntityToTargetLanguage } from './components/root-entity/index.js';
 import { entityValuesToTargetLanguage } from './components/entity-values/index.js';
-import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
+import {
+  bitloopsPrimaryTypeToTargetLanguage,
+  standardValueTypeToTargetLanguage,
+} from './components/bitloopsPrimaryType.js';
 import { builtInClassEvaluationToTargetLanguage } from './components/builtin-class/index.js';
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
@@ -465,6 +468,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TStandardValueType: {
+      res = standardValueTypeToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainConstructorParameter: {
