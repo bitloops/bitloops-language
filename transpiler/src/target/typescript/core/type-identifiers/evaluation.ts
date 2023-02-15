@@ -18,7 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TErrorEvaluation, TEvaluationValues, TStructEvaluation } from '../../../../types.js';
+import {
+  TErrorEvaluation,
+  TEvaluationValues,
+  TIntegrationEventEvaluation,
+  TStructEvaluation,
+} from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
 export class EvaluationTypeIdentifiers {
@@ -31,6 +36,15 @@ export class EvaluationTypeIdentifiers {
 
   static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
     if ('errorEvaluation' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isIntegrationEventEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TIntegrationEventEvaluation {
+    if ('integrationEvent' in evaluation) {
       return true;
     }
     return false;

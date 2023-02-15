@@ -16,6 +16,9 @@ import { DTOIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/
 import { ErrorIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { StructIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CorsOptionsEvaluationBuilder.js';
+import { IntegrationEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/IntegrationEventEvaluationNodeBuilder.js';
+import { IntegrationEventIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
+import { DomainEvaluationPropsNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -53,6 +56,24 @@ export class EvaluationBuilderDirector {
         entityName,
         fieldListNode,
       );
+    const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
+  buildIntegrationEventEvaluation(
+    integrationEventName: string,
+    fieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const identifier = new IntegrationEventIdentifierNodeBuilder()
+      .withName(integrationEventName)
+      .build();
+
+    const props = new DomainEvaluationPropsNodeBuilder()
+      .withEvaluationFieldList(fieldListNode)
+      .build();
+    const entityEvaluationNode = new IntegrationEventEvaluationNodeBuilder()
+      .withIdentifier(identifier)
+      .withPropsInput(props)
+      .build();
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
     return evaluationNode;
   }
