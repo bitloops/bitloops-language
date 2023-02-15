@@ -48,13 +48,6 @@ const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTy
   }
   result.output += ') {}';
 
-  // const readModelIntermediateModel = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TVariables,
-  //   value: fields,
-  // });
-
-  // result.output += readModelIntermediateModel.output;
-  // result.dependencies.push(...readModelIntermediateModel.dependencies);
   result.output += '}';
 
   return result;
