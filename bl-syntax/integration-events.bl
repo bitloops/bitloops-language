@@ -46,22 +46,22 @@ Props MoneyDepositedInputProps {
  * in the case of a DomainEvent, we generate the domainEventHandler that publishes the integration event
  */
 // @disabled['v2']
-IntegrationEvent MoneyDepositedIntegrationEvent(input: MoneyDepositedToAccountDomainEvent) {
+IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {
   // Maybe have disable list of versions?
 
-  'v1.0.9' : TodoIntegrationSchemaV1 {
-    const fullName = `${input.firstName} ${input.lastName}`;
-    return {
+  'v1' : IntegrationSchemaV1 {
+    const moneyDeposited = IntegrationSchemaV1({
       accountId: event.account.id.toString(),
-      balanceAmount: input.balanceAmount,
-    };
+      amount: event.account.balance.amount,
+    });
+    return moneyDeposited;
   }
 
-  'v2' : TodoIntegrationSchemaV2 {
-    return {
-      accountId: input.accountId,
-      amount: input.balanceAmount,
-    };
+  'v2.0.1' : IntegrationSchemaV2 {
+    const moneyDeposited = IntegrationSchemaV2({
+      accountId: event.account.id.toString(),
+    });
+    return moneyDeposited;
   }
 
   // Needs to define the topic for each version, we could have a default topic

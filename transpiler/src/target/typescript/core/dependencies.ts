@@ -221,13 +221,11 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.DomainEvent,
     };
+  } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
+    return {
+      classType: ClassTypes.Struct,
+    };
   }
-  //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
-
-  //   return {
-  //     classType: ClassTypes.Structs,
-  //   };
-  // }
 
   // TODO We are not throwing because of structs
   // console.error(`Unknown class type for ${dependencyName}`)

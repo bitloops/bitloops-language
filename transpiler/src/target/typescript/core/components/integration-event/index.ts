@@ -22,11 +22,13 @@ import {
   TContextData,
   TDependenciesTypeScript,
   TIntegrationEvent,
+  TIntegrationVersionMapper,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { getParentDependencies } from '../../dependencies.js';
+import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { StringUtils } from '../../../../../utils/index.js';
 
 const INTEGRATION_EVENT_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -36,6 +38,13 @@ const INTEGRATION_EVENT_DEPENDENCIES: TDependenciesTypeScript = [
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
+const INTEGRATION_EVENT_CONSTANTS = {
+  integrationSchemasTypeName: 'TIntegrationSchemas',
+  integrationDataMapperTypeName: 'ToIntegrationDataMapper',
+  versionMappersFieldName: 'versionMappers',
+  versionsFieldName: 'versions',
+  fromContextIdFieldName: 'fromContextId',
+};
 
 export const integrationEventToTargetLanguage = (
   integrationEventModel: TIntegrationEvent,
@@ -52,7 +61,6 @@ export const integrationEventToTargetLanguage = (
   const { integrationVersionMappers, integrationEventIdentifier, parameter } = IntegrationEvent;
 
   const eventInputParameter = modelToTargetLanguage({
-    //in create and methods
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { [bitloopsPrimaryTypeKey]: parameter[bitloopsPrimaryTypeKey] },
   });
@@ -60,19 +68,28 @@ export const integrationEventToTargetLanguage = (
   const eventInputParameterType = eventInputParameter.output;
   const eventInputParameterValue = parameter.value;
 
-  const integrationDataMapperTypeName = 'ToIntegrationDataMapper';
-  const integrationSchemasTypeName = 'IntegrationSchemas';
+  const versionMapperMethods = generateVersionMapperMethods(
+    integrationVersionMappers,
+    eventInputParameterValue,
+    eventInputParameterType,
+  );
+  dependencies.push(...versionMapperMethods.dependencies);
 
-  result += `type ${integrationSchemasTypeName} = ${schemas}`;
-  result += `type ${integrationDataMapperTypeName} = (${eventInputParameterValue}: ${eventInputParameterType}) => ${integrationSchemasTypeName};`;
-  result += `export class ${integrationEventIdentifier} extends Infra.EventBus.IntegrationEvent<${integrationSchemasTypeName}> { `;
-  result += `public static readonly fromContextId = '${contextData.boundedContext}';`;
-  result += `static versions = ${versions};`;
-  result += `static versionMappers: Record<string, ${integrationDataMapperTypeName}> = ${versionMappers};`;
-  result += generateConstructor(domainEventName, entityName);
-  result += generateVersionMapperMethods(domainEventName, entityName);
-  result += generateEventTopicMethod(domainEventName, entityName);
-  result += `static getEventTopic() { return ${domainEventName}.eventName; }`;
+  const { versions, versionMappers, integrationSchemas } = getVersionMappersInfo(
+    integrationVersionMappers,
+    integrationEventIdentifier,
+  );
+
+  result += `type ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName} = ${integrationSchemas};`;
+  result += `type ${INTEGRATION_EVENT_CONSTANTS.integrationDataMapperTypeName} = (${eventInputParameterValue}: ${eventInputParameterType}) => ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName};`;
+  result += `export class ${integrationEventIdentifier} extends Infra.EventBus.IntegrationEvent<${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}> { `;
+  result += `public static readonly ${INTEGRATION_EVENT_CONSTANTS.fromContextIdFieldName} = '${contextData.boundedContext}';`;
+  result += `static ${INTEGRATION_EVENT_CONSTANTS.versionsFieldName} = ${versions};`;
+  result += `static ${INTEGRATION_EVENT_CONSTANTS.versionMappersFieldName}: Record<string, ${INTEGRATION_EVENT_CONSTANTS.integrationDataMapperTypeName}> = ${versionMappers};`;
+  result += generateConstructor(integrationEventIdentifier);
+  result += generateCreate(eventInputParameterType, integrationEventIdentifier);
+  result += versionMapperMethods.output;
+  result += generateEventTopicMethod(integrationEventIdentifier);
   result += '}';
 
   const finalDependencies = getParentDependencies(dependencies, {
@@ -83,26 +100,109 @@ export const integrationEventToTargetLanguage = (
   return { output: result, dependencies: finalDependencies };
 };
 
-const generateConstructor = (domainEventIdentifier: string, entityIdentifier: string): string => {
-  // entity identifier will be same as Entity Class name, but with first letter in lower case and without Entity suffix
-  // e.g. AccountEntity => account
-  const entityIdentifierAttribute =
-    entityIdentifier.charAt(0).toLowerCase() + entityIdentifier.slice(1, -6);
+const generateConstructor = (integrationEventIdentifier: string): string => {
   return (
-    `constructor(public readonly ${entityIdentifierAttribute}: ${entityIdentifier}, uuid?: string) {` +
+    `constructor(data: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string, uuid?: string) {` +
     '   const metadata = {' +
-    `   fromContextId: ${domainEventIdentifier}.fromContextId,` +
+    `   fromContextId: ${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.fromContextIdFieldName},` +
     '   id: uuid,' +
+    '   version,' +
     ' };' +
-    ` super(${domainEventIdentifier}.getEventTopic(), ${entityIdentifierAttribute}, metadata, ${entityIdentifierAttribute}.id);` +
+    ` super(${integrationEventIdentifier}.getEventTopic(version), data, metadata);` +
     '}'
   );
 };
 
-const generateEventTopicMethod = (
-  domainEventIdentifier: string,
-  entityIdentifier: string,
+const generateCreate = (
+  eventInputParameterType: string,
+  integrationEventIdentifier: string,
 ): string => {
-  const res = `static getEventTopic() { return ${domainEventName}.eventName; }`;
-  return res;
+  return (
+    `static create(event: ${eventInputParameterType}): ${integrationEventIdentifier}[] {` +
+    `   return ${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.versionsFieldName}.map((version) => {` +
+    `       const mapper = ${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.versionMappersFieldName}[version];` +
+    '       const data = mapper(event);' +
+    `       return new ${integrationEventIdentifier}(data, version)` +
+    '   });' +
+    '}'
+  );
+};
+
+const generateVersionMapperMethods = (
+  integrationVersionMappers: TIntegrationVersionMapper[],
+  eventInputParameterValue: string,
+  eventInputParameterType: string,
+): TTargetDependenciesTypeScript => {
+  let versionMappers = '';
+  const dependencies: TDependenciesTypeScript = [];
+
+  for (const versionMapper of integrationVersionMappers) {
+    const { integrationVersionMapper } = versionMapper;
+    const { stringLiteral, StructIdentifier, statements } = integrationVersionMapper;
+
+    const versionMapperStatements = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TStatements,
+      value: statements,
+    });
+    dependencies.push(...versionMapperStatements.dependencies);
+
+    const structDependency = getChildDependencies(StructIdentifier);
+    dependencies.push(...structDependency);
+
+    versionMappers += `static ${getVersionMapperMethodName(
+      stringLiteral,
+    )}(${eventInputParameterValue}: ${eventInputParameterType}): ${StructIdentifier} {`;
+    versionMappers += versionMapperStatements.output;
+    versionMappers += '}';
+  }
+  return { output: versionMappers, dependencies };
+};
+
+const getVersionMappersInfo = (
+  integrationVersionMappers: TIntegrationVersionMapper[],
+  integrationEventIdentifier: string,
+): { versions: string; versionMappers: string; integrationSchemas: string } => {
+  // eslint-disable-next-line no-debugger
+  debugger;
+  let versions = '[';
+  let versionMappers = '{';
+  let schemas = '';
+  for (const versionMapper of integrationVersionMappers) {
+    const { integrationVersionMapper } = versionMapper;
+    const { stringLiteral, StructIdentifier } = integrationVersionMapper;
+    const stringLiteralToTarget = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TLiteral,
+      value: { literal: { stringLiteral } },
+    });
+    versions += `${stringLiteralToTarget.output},`;
+    schemas += `${StructIdentifier} |`;
+    versionMappers += `${
+      stringLiteralToTarget.output
+    }: ${integrationEventIdentifier}.${getVersionMapperMethodName(stringLiteral)},`;
+  }
+  versions += ']';
+  versionMappers += '}';
+  const integrationSchemas = StringUtils.removeLastCharactersOfString(schemas, 1);
+  return {
+    versions,
+    versionMappers,
+    integrationSchemas,
+  };
+};
+
+const getVersionMapperMethodName = (versionName: string): string => {
+  const versionNameWithoutDots = versionName.replaceAll('.', '');
+  return `toIntegrationData${versionNameWithoutDots}`;
+};
+
+const generateEventTopicMethod = (integrationEventIdentifier: string): string => {
+  return (
+    'static getEventTopic(version?: string) {' +
+    '   const topic = `integration.${' +
+    integrationEventIdentifier +
+    '.name}`;' +
+    '   const eventTopic = version === undefined ? topic : `${topic}.${version}`;' +
+    '   return eventTopic' +
+    '}'
+  );
 };

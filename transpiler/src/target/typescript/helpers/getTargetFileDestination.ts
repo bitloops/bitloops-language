@@ -123,6 +123,9 @@ const getTargetFileDestination = (
     case ClassTypes.DomainRule:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Struct:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -156,6 +159,9 @@ const getFilePathRelativeToModule = (
     case ClassTypes.RepoPort:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Struct:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
