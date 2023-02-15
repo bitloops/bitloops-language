@@ -19,7 +19,7 @@ export class MongoTodoReadRepo implements TodoReadRepoPort {
     });
     return res;
   }
-  async getById(todoId: string): Promise<TodoReadModel> {
+  async getById(todoId: string): Promise<TodoReadModel | null> {
     const document = await this.collection.findOne({
       _id: todoId,
     });
