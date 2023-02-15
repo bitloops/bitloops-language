@@ -1,6 +1,6 @@
 Entity TodoEntity {    
     constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidDayError)) {           
-        return TodoEntity(props);   
+        return TodoEntity.create(props);   
     } 
 
     public greet(day: string): (OK(void), Errors(DomainErrors.InvalidDayError)) {

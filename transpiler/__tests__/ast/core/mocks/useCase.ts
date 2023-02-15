@@ -14,7 +14,7 @@ export const validUseCaseDeclarationCases = [
     description: 'UseCase declaration with domain evaluations',
     fileId: 'testFile.bl',
     inputBLString:
-      'UseCase CreateTodoUseCase ( ) {   execute ( ) : ( OK ( CreateTodoResponseDTO ) , Errors ( ) ) {     const title = TitleVO({ title: requestDTO.title });     const todo = TodoEntity({title: title, completed: false});     return CreateTodoResponseDTO ( { message: todo } ) ;   } }',
+      'UseCase CreateTodoUseCase ( ) {   execute ( ) : ( OK ( CreateTodoResponseDTO ) , Errors ( ) ) {     const title = TitleVO({ title: requestDTO.title });     const todo = TodoEntity.create({title: title, completed: false});     return CreateTodoResponseDTO ( { message: todo } ) ;   } }',
     expected: new UseCaseBuilderDirector().buildUseCaseWithDomainDeclarations({
       identifier: 'CreateTodoUseCase',
       executeReturnTypes: {
@@ -26,7 +26,7 @@ export const validUseCaseDeclarationCases = [
     description: 'UseCase declaration without error',
     fileId: 'testFile.bl',
     inputBLString:
-      'UseCase CreateTodoUseCase ( ) {   execute ( ) : ( OK ( void ) , Errors ( ) ) {     const title = TitleVO({ title: requestDTO.title });     const todo = TodoEntity({title: title, completed: false});   } }',
+      'UseCase CreateTodoUseCase ( ) {   execute ( ) : ( OK ( void ) , Errors ( ) ) {     const title = TitleVO({ title: requestDTO.title });     const todo = TodoEntity.create({title: title, completed: false});   } }',
     expected: new UseCaseBuilderDirector().buildUseCaseWithoutErrorAndReturnTypeVoid({
       identifier: 'CreateTodoUseCase',
     }),
