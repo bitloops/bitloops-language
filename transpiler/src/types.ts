@@ -1108,7 +1108,7 @@ export type TQuery = {
   } & TVariables;
 };
 
-const commandHandlerKey = 'commandHandler';
+export const commandHandlerKey = 'commandHandler';
 export type TCommandHandlerIdentifier = TIdentifier;
 export type TCommandHandler = {
   [commandHandlerKey]: {
@@ -1117,7 +1117,7 @@ export type TCommandHandler = {
   } & TParameterList;
 };
 
-const queryHandlerKey = 'queryHandler';
+export const queryHandlerKey = 'queryHandler';
 export type TQueryHandlerIdentifier = TIdentifier;
 
 export type TQueryHandler = {

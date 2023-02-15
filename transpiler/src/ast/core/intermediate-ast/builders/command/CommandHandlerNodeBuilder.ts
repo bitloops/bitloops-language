@@ -19,7 +19,6 @@
  */
 
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { CommandDeclarationNode } from '../../nodes/command/CommandDeclarationNode.js';
 import { CommandHandlerNode } from '../../nodes/command/CommandHandlerNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
@@ -37,7 +36,7 @@ export class CommandHandlerNodeBuilder implements IBuilder<CommandHandlerNode> {
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
-    this.commandHandlerNode = new CommandDeclarationNode(metadata);
+    this.commandHandlerNode = new CommandHandlerNode(metadata);
   }
 
   public withIdentifier(commandIdentifierNode: IdentifierNode): CommandHandlerNodeBuilder {
@@ -57,7 +56,7 @@ export class CommandHandlerNodeBuilder implements IBuilder<CommandHandlerNode> {
     return this;
   }
 
-  public build(): CommandDeclarationNode {
+  public build(): CommandHandlerNode {
     this.intermediateASTTree.insertChild(this.commandHandlerNode);
     this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.executeNode);

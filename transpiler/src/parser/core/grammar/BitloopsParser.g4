@@ -68,6 +68,8 @@ bitloopsIdentifiers
     | RepoPortIdentifier
     | ReadModelIdentifier
     | structIdentifier
+    | commandIdentifier
+    | queryIdentifier
     ;
 
 primitives
@@ -211,6 +213,8 @@ sourceElement
     | commandDeclaration
     | queryDeclaration
     | domainEventDeclaration
+    | commandHandler
+    | queryHandler
     ;
 
 // TODO fix JestTestReturnOkErrorType

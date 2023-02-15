@@ -3,7 +3,7 @@ import { ParameterListNodeBuilder } from '../../../../../src/ast/core/intermedia
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
 import { ReturnOkTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { StatementListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
-import { UseCaseExecuteNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/UseCase/UseCaseExecuteNodeBuilder.js';
+import { ExecuteNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ExecuteNodeBuilder.js';
 import { UseCaseIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
 import { UseCaseNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
@@ -14,13 +14,13 @@ import { StatementNode } from '../../../../../src/ast/core/intermediate-ast/node
 import { UseCaseNode } from '../../../../../src/ast/core/intermediate-ast/nodes/UseCase/UseCaseNode.js';
 import { ArgumentDirector } from './argument.js';
 import { ArgumentListDirector } from './argumentList.js';
-import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { EvaluationBuilderDirector } from './evaluation.js';
 import { ExpressionBuilderDirector } from './expression.js';
 import { ParameterBuilderDirector } from './parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from './statement/constDeclaration.js';
 import { IfStatementBuilderDirector } from './statement/ifStatementDirector.js';
 import { ReturnStatementBuilderDirector } from './statement/returnDirector.js';
+import { BitloopsPrimaryTypeDirector } from '../../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
 export class UseCaseBuilderDirector {
   buildUseCase({
@@ -37,7 +37,7 @@ export class UseCaseBuilderDirector {
     statements: StatementNode[];
   }): UseCaseNode {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-    const executeBuilder = new UseCaseExecuteNodeBuilder(null)
+    const executeBuilder = new ExecuteNodeBuilder(null)
       .withReturnType(returnType)
       .withParameter(executeParameter)
       .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build());
@@ -172,7 +172,7 @@ export class UseCaseBuilderDirector {
       .withIdentifier(new UseCaseIdentifierNodeBuilder(null).withName(identifier).build())
       .withParameterList(new ParameterListNodeBuilder(null).withParameters(params).build())
       .withExecute(
-        new UseCaseExecuteNodeBuilder(null)
+        new ExecuteNodeBuilder(null)
           .withReturnType(
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(

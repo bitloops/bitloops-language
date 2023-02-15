@@ -18,13 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { commandKey } from '../../../../../types.js';
+import { commandHandlerKey } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class CommandHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.CommandHandler;
-  private static classNodeName = commandKey;
+  private static classNodeName = commandHandlerKey;
 
   constructor(metadata?: TNodeMetadata) {
     super({

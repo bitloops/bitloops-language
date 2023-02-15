@@ -23,7 +23,7 @@ import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
-import { validCommandHandlerCases } from './mocks/commandHandler.js';
+import { validCommandHandlerCases } from './mocks/commandHandlerDeclaration/commandHandlerDeclaration.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';

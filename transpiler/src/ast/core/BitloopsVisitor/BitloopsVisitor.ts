@@ -110,7 +110,7 @@ import {
   switchStatementVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
-  useCaseExecuteDeclarationVisitor,
+  executeDeclarationVisitor,
   structDeclarationVisitor,
   packagePortDeclarationVisitor,
   repoPortDeclarationVisitor,
@@ -974,8 +974,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
     useCaseDeclarationVisitor(this, ctx);
   }
-  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.ExecuteDeclarationContext): any {
-    return useCaseExecuteDeclarationVisitor(this, ctx);
+  visitExecuteDeclaration(ctx: BitloopsParser.ExecuteDeclarationContext): any {
+    return executeDeclarationVisitor(this, ctx);
   }
 
   visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): void {
