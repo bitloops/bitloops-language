@@ -61,6 +61,14 @@ export const VALID_EVALUATION_TEST_CASES = [
     ),
     output: 'AddressVO.create(addressProps)',
   },
+  {
+    description: 'Entity constructor evaluation with identifier expression',
+    evaluation: new EvaluationBuilderDirector().buildEntityConstructorEvaluationWithExpression(
+      'TodoEntity',
+      new ExpressionBuilderDirector().buildIdentifierExpression('todoProps'),
+    ),
+    output: 'new TodoEntity(todoProps)',
+  },
 ];
 
 export const VALID_ERROR_EVALUATION_TEST_CASES = [
