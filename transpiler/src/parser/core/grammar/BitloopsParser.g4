@@ -436,7 +436,7 @@ commandHandlerIdentifier
     ;
 
 queryHandler
-    : QueryHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    : QueryHandler queryHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 queryHandlerIdentifier

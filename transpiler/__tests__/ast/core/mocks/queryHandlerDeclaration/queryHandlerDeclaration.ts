@@ -9,22 +9,23 @@ export const validQueryHandlerCases = [
     description: 'QueryHandler declaration without error',
     fileId: 'testFile.bl',
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/core/mocks/queryHandlerDeclaration/withdrawMoneyQueryHandler.bl',
+      'transpiler/__tests__/ast/core/mocks/queryHandlerDeclaration/getByIdQueryHandler.bl',
     ),
     expected: new QueryHandlerDeclarationBuilder()
-      .withIdentifier('WithdrawMoneyQueryHandler')
+      .withIdentifier('GetCustomerQueryHandler')
       .withParameterList(
         new ParameterListBuilderDirector().buildParams([
           new ParameterBuilderDirector().buildIdentifierParameter(
-            'accountRepo',
-            'AccountWriteRepoPort',
+            'customerRepo',
+            'CustomerReadRepoPort',
           ),
         ]),
       )
       .withExecute(
-        new ExecuteBuilderDirector().buildCommandExecuteWithRepo(
-          'ApplicationErrors.AccountNotFound',
-        ),
+        new ExecuteBuilderDirector().buildQueryExecuteWithRepo({
+          identifierOK: 'CustomerReadModel',
+          identifierError: 'ApplicationErrors.CustomerNotFound',
+        }),
       )
       .build(),
   },

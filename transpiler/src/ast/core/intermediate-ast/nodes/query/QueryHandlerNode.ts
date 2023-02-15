@@ -18,13 +18,13 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { queryKey } from '../../../../../types.js';
+import { queryHandlerKey } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class QueryHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.QueryHandler;
-  private static classNodeName = queryKey;
+  private static classNodeName = queryHandlerKey;
 
   constructor(metadata?: TNodeMetadata) {
     super({

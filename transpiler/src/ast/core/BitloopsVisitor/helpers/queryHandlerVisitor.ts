@@ -29,7 +29,7 @@ export const queryHandlerVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.QueryHandlerContext,
 ): void => {
-  const identifierNode: IdentifierNode = thisVisitor.visit(ctx.commandHandlerIdentifier());
+  const identifierNode: IdentifierNode = thisVisitor.visit(ctx.queryHandlerIdentifier());
 
   const executeNode: ExecuteNode = thisVisitor.visit(ctx.executeDeclaration());
 

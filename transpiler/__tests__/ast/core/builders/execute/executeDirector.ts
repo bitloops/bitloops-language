@@ -174,6 +174,66 @@ export class ExecuteBuilderDirector {
     return executeDeclaration;
   }
 
+  buildQueryExecuteWithRepo(executeReturnTypes: {
+    identifierOK: string;
+    identifierError?: string;
+  }): TExecute {
+    const executeDeclaration = this.executeBuilder
+      .withReturnType(
+        new ReturnOkErrorTypeBuilder()
+          .withOk(
+            new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+              executeReturnTypes.identifierOK,
+            ),
+          )
+          .withErrors([{ error: executeReturnTypes.identifierError }])
+          .build(),
+      )
+      .withStatements([
+        new ConstDeclarationBuilderDirector().buildBuiltInClassWithMemberDotArgument({
+          name: 'requestId',
+          builtInClassIdentifier: 'UUIDv4',
+          builtInClassArgs: ['query', 'id'],
+        }),
+        new ConstDeclarationBuilderDirector().buildConstDeclarationWithExpression({
+          name: 'customer',
+          expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+            new ExpressionBuilderDirector().buildMemberExpression(
+              new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildThisExpression(),
+                'customerRepo',
+              ),
+              'getById',
+            ),
+            new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+              new ArgumentBuilderDirector().buildIdentifierArgument('requestId'),
+            ]),
+          ),
+        }),
+        new StatementDirector().buildIfStatement({
+          condition: new ExpressionBuilderDirector().buildLogicalNotExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('customer'),
+          ),
+          thenStatements: [
+            new StatementDirector().buildReturnErrorStatement(
+              new ExpressionBuilderDirector().buildEvaluation(
+                new EvaluationBuilderDirector().buildErrorEvaluation(
+                  'ApplicationErrors.CustomerNotFound',
+                  new ArgumentListBuilderDirector().buildMemberDotArguments([['query', 'id']]),
+                ),
+              ),
+            ),
+          ],
+        }),
+        new StatementDirector().buildReturnOKStatement(
+          new ExpressionBuilderDirector().buildIdentifierExpression('customer'),
+        ),
+      ])
+      .build();
+
+    return executeDeclaration;
+  }
+
   buildExecuteWithDomainEvaluationsAndNoReturn(): TExecute {
     const executeDeclaration = this.executeBuilder
       .withReturnType(

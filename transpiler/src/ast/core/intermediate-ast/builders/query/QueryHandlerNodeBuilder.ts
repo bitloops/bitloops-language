@@ -19,7 +19,6 @@
  */
 
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { QueryDeclarationNode } from '../../nodes/query/QueryDeclarationNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
@@ -37,7 +36,7 @@ export class QueryHandlerNodeBuilder implements IBuilder<QueryHandlerNode> {
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
-    this.queryHandlerNode = new QueryDeclarationNode(metadata);
+    this.queryHandlerNode = new QueryHandlerNode(metadata);
   }
 
   public withIdentifier(queryIdentifierNode: IdentifierNode): QueryHandlerNodeBuilder {
@@ -57,7 +56,7 @@ export class QueryHandlerNodeBuilder implements IBuilder<QueryHandlerNode> {
     return this;
   }
 
-  public build(): QueryDeclarationNode {
+  public build(): QueryHandlerNode {
     this.intermediateASTTree.insertChild(this.queryHandlerNode);
     this.intermediateASTTree.insertChild(this.identifierNode);
     this.intermediateASTTree.insertSibling(this.executeNode);
