@@ -257,7 +257,8 @@ export type TEvaluationValues =
   | TEntityConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
-  | TBuiltInFunctionValues;
+  | TBuiltInFunctionValues
+  | TStandardVOEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -299,6 +300,12 @@ export type TStructEvaluation = {
 export type TDTOEvaluation = {
   dto: {
     [DTOIdentifierKey]: TDTOIdentifier;
+  } & TEvaluationFields;
+};
+
+export type TStandardVOEvaluation = {
+  standardVO: {
+    [identifierKey]: TIdentifier;
   } & TEvaluationFields;
 };
 

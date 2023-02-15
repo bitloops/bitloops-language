@@ -258,6 +258,7 @@ evaluation
     | entityConstructorEvaluation
     | propsEvaluation
     | structEvaluation
+    | standardVOEvaluation
     ;
 
 corsOptionsEvaluation
@@ -512,6 +513,10 @@ entityConstructorEvaluation
 
 structEvaluation
     : structIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    ;
+
+standardVOEvaluation
+    : StandardVO Dot upperCaseIdentifier Dot Create OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
     
 builtInClassEvaluation

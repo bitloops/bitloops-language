@@ -42,6 +42,7 @@ const BitloopsTypesMapping = {
   TStructEvaluation: 'TStructEvaluation',
   TPropsEvaluation: 'TPropsEvaluation',
   TDTOEvaluation: 'TDTOEvaluation',
+  TStandardVOEvaluation: 'TStandardVOEvaluation',
   TCondition: 'TCondition',
   TExpression: 'TExpression',
   TReturnStatement: 'TReturnStatement',

@@ -180,6 +180,7 @@ Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
 Constructor:                    'constructor';
+StandardVO:                     'StandardVO';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode

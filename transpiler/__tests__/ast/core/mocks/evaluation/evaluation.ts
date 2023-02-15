@@ -2,6 +2,7 @@ import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDi
 import { EvaluationBuilderDirector } from '../../builders/evaluationDirector.js';
 import { TEvaluation } from '../../../../../src/types.js';
 import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
+import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 
 type TestCase = {
   description: string;
@@ -65,5 +66,24 @@ export const validEvaluationTestCases: Array<TestCase> = [
         new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
       ],
     }),
+  },
+];
+
+export const validStandardVOEvaluationTestCases: Array<TestCase> = [
+  {
+    description: 'valid Currency Standard VO',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'JestTestEvaluation {StandardVO.Currency.create({ currencyCode: data.balance.currency, })}',
+    evaluation: new EvaluationBuilderDirector().buildStandardVOEvaluation('Currency', [
+      new EvaluationFieldBuilderDirector().buildEvaluationField(
+        'currencyCode',
+        new ExpressionBuilderDirector().buildMemberExpressionOutOfVariables(
+          'data',
+          'balance',
+          'currency',
+        ),
+      ),
+    ]),
   },
 ];
