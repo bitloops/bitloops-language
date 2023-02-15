@@ -66,6 +66,15 @@ describe('Integration event declaration is valid', () => {
 
       expect(value).toMatchObject(testCase.expected);
       expect(integrationEventNodes.length).toBe(1);
+
+      // check for domainEventHandler from complete step
+      const domainEventHandlerNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TDomainEventHandler,
+      );
+      const domainEventHandlerNodesValue = domainEventHandlerNodes[0].getValue();
+
+      expect(domainEventHandlerNodesValue).toMatchObject(testCase.expectedDomainEventHandler);
+      expect(domainEventHandlerNodes.length).toBe(1);
     });
   });
 });

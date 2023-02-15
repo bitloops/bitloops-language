@@ -103,6 +103,33 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
 
+  buildConstDeclarationIntegrationEvaluation({
+    name,
+    integrationEventIdentifier,
+    integrationEventInput,
+  }: {
+    name: string;
+    integrationEventIdentifier: string;
+    integrationEventInput: string;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
+            integrationEventIdentifier,
+            {
+              expression: new ExpressionBuilderDirector().buildIdentifierExpression(
+                integrationEventInput,
+              ),
+            },
+          ),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
   buildConstDeclarationWithMemberThisExpression({
     name,
     rightExpression,
