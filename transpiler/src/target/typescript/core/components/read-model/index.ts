@@ -27,11 +27,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
 
-const initialReadModel = (readModelIdentifier: string): string =>
-  `export type ${readModelIdentifier} = { `;
-
 const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTypeScript => {
-  const finalReadModel = '} | null';
   const result: TTargetDependenciesTypeScript = {
     output: '',
     dependencies: [],
@@ -39,16 +35,27 @@ const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTy
 
   const { fields, readModelIdentifier } = readModel.ReadModel;
   guardAgainstUndefinedAndArray({ fields });
-  result.output += initialReadModel(readModelIdentifier);
+  result.output += `export class ${readModelIdentifier} { `;
 
-  const readModelIntermediateModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TVariables,
-    value: fields,
-  });
+  result.output += 'constructor(';
+  for (const field of fields) {
+    const fieldIntermediateModel = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TVariable,
+      value: field,
+    });
+    result.output += `public ${fieldIntermediateModel.output}, `;
+    result.dependencies.push(...fieldIntermediateModel.dependencies);
+  }
+  result.output += ') {}';
 
-  result.output += readModelIntermediateModel.output;
-  result.dependencies.push(...readModelIntermediateModel.dependencies);
-  result.output += finalReadModel;
+  // const readModelIntermediateModel = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TVariables,
+  //   value: fields,
+  // });
+
+  // result.output += readModelIntermediateModel.output;
+  // result.dependencies.push(...readModelIntermediateModel.dependencies);
+  result.output += '}';
 
   return result;
 };

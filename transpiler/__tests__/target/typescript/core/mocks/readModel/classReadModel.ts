@@ -1,1 +1,3 @@
-export type ClassReadModel = { name: string; numOfTeachers?: number } | null;
+export class ClassReadModel {
+  constructor(public name: string, public numOfTeachers?: number) {}
+}
