@@ -217,7 +217,16 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.ReadModel,
     };
+  } else if (dependencyName.endsWith('Command')) {
+    return {
+      classType: ClassTypes.Command,
+    };
+  } else if (dependencyName.endsWith('Query')) {
+    return {
+      classType: ClassTypes.Query,
+    };
   }
+
   //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
 
   //   return {

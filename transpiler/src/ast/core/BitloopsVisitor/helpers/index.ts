@@ -136,4 +136,8 @@ export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
 export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
-export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';
+export {
+  commandEvaluationVisitor,
+  queryEvaluationVisitor,
+  errorEvaluationVisitor,
+} from './expression/evaluation/index.js';

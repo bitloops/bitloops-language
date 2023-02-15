@@ -8,6 +8,7 @@ import { EntityEvaluationBuilderDirector } from '../../builders/domainEvaluation
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { ValueObjectEvaluationBuilderDirector } from '../../builders/domainEvaluation/valueObjectEvaluation.js';
 import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -60,6 +61,37 @@ export const VALID_EVALUATION_TEST_CASES = [
       new ExpressionBuilderDirector().buildIdentifierExpression('addressProps'),
     ),
     output: 'AddressVO.create(addressProps)',
+  },
+  {
+    description: 'Command evaluation',
+    evaluation: new EvaluationBuilderDirector().buildCommandEvaluation(
+      new IdentifierNodeBuilder().withName('AddCourseCommand').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
+        ])
+        .build(),
+    ),
+    output: "new AddCourseCommand({course: 'Math'})",
+  },
+  {
+    description: 'Query evaluation with args',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation(
+      new IdentifierNodeBuilder().withName('GetTodoQuery').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('type', 'task'),
+        ])
+        .build(),
+    ),
+    output: "new GetTodoQuery({type: 'task'})",
+  },
+  {
+    description: 'Query evaluation without args',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation(
+      new IdentifierNodeBuilder().withName('GetTodoQuery').build(),
+    ),
+    output: 'new GetTodoQuery()',
   },
 ];
 

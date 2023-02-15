@@ -18,12 +18,32 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TErrorEvaluation, TEvaluationValues, TStructEvaluation } from '../../../../types.js';
+import {
+  TCommandEvaluation,
+  TErrorEvaluation,
+  TEvaluationValues,
+  TQueryEvaluation,
+  TStructEvaluation,
+} from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
 export class EvaluationTypeIdentifiers {
   static isStructEvaluation(evaluation: TEvaluationValues): evaluation is TStructEvaluation {
     if (STRUCT_STRING in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isCommandEvaluation(evaluation: TEvaluationValues): evaluation is TCommandEvaluation {
+    if ('command' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isQueryEvaluation(evaluation: TEvaluationValues): evaluation is TQueryEvaluation {
+    if ('query' in evaluation) {
       return true;
     }
     return false;

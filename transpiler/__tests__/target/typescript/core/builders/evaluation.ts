@@ -16,6 +16,9 @@ import { DTOIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/
 import { ErrorIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { StructIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CorsOptionsEvaluationBuilder.js';
+import { CommandEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CommandEvaluationNodeBuilder.js';
+import { QueryEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/QueryEvaluationNodeBuilder.js';
+import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -95,6 +98,31 @@ export class EvaluationBuilderDirector {
       .build();
 
     return new EvaluationBuilder().withEvaluation(evaluationNode).build();
+  }
+
+  buildCommandEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode?: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new CommandEvaluationNodeBuilder().withIdentifier(identifierNode);
+
+    if (evaluationFieldListNode) {
+      evaluationNode.withEvaluationFieldList(evaluationFieldListNode);
+    }
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
+  }
+
+  buildQueryEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode?: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new QueryEvaluationNodeBuilder().withIdentifier(identifierNode);
+    if (evaluationFieldListNode) {
+      evaluationNode.withEvaluationFieldList(evaluationFieldListNode);
+    }
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
   }
 
   buildBuiltInClassEvaluation(

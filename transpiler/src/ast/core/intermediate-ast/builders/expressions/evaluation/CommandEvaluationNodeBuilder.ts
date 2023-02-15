@@ -17,31 +17,41 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { CorsOptionsEvaluationNode } from '../../../nodes/Expression/Evaluation/CorsOptionsEvaluation.js';
+import { CommandEvaluationNode } from '../../../nodes/Expression/Evaluation/CommandEvaluationNode.js';
 import { EvaluationFieldListNode } from '../../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
+import { IdentifierNode } from '../../../nodes/identifier/IdentifierNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class CorsOptionsEvaluationNodeBuilder implements IBuilder<CorsOptionsEvaluationNode> {
-  private corsOptionsEvaluationNode: CorsOptionsEvaluationNode;
-  private evaluationFieldListNode: EvaluationFieldListNode;
+export class CommandEvaluationNodeBuilder implements IBuilder<CommandEvaluationNode> {
+  private commandEvaluationNode: CommandEvaluationNode;
+  private identifierNode: IdentifierNode;
+  private evaluationFieldListNode?: EvaluationFieldListNode;
 
-  constructor(nodeMetadata?: TNodeMetadata) {
-    this.corsOptionsEvaluationNode = new CorsOptionsEvaluationNode(nodeMetadata);
+  constructor(metadata?: TNodeMetadata) {
+    this.commandEvaluationNode = new CommandEvaluationNode(metadata);
+  }
+
+  public withIdentifier(name: IdentifierNode): CommandEvaluationNodeBuilder {
+    this.identifierNode = name;
+    return this;
   }
 
   public withEvaluationFieldList(
     evaluationFieldListNode: EvaluationFieldListNode,
-  ): CorsOptionsEvaluationNodeBuilder {
+  ): CommandEvaluationNodeBuilder {
     this.evaluationFieldListNode = evaluationFieldListNode;
     return this;
   }
 
-  public build(): CorsOptionsEvaluationNode {
-    this.corsOptionsEvaluationNode.addChild(this.evaluationFieldListNode);
+  public build(): CommandEvaluationNode {
+    this.commandEvaluationNode.addChild(this.identifierNode);
+    if (this.evaluationFieldListNode) {
+      this.commandEvaluationNode.addChild(this.evaluationFieldListNode);
+    }
 
-    this.corsOptionsEvaluationNode.buildObjectValue();
+    this.commandEvaluationNode.buildObjectValue();
 
-    return this.corsOptionsEvaluationNode;
+    return this.commandEvaluationNode;
   }
 }
