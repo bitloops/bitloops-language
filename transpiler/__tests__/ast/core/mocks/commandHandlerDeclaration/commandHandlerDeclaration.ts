@@ -1,18 +1,18 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
-import { QueryHandlerDeclarationBuilder } from '../../builders/query/queryHandlerBuilder.js';
+import { CommandHandlerDeclarationBuilder } from '../../builders/command/commandHandlerBuilder.js';
 import { ExecuteBuilderDirector } from '../../builders/execute/executeDirector.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
 
-export const validQueryHandlerCases = [
+export const validCommandHandlerCases = [
   {
-    description: 'QueryHandler declaration without error',
+    description: 'CommandHandler declaration without error',
     fileId: 'testFile.bl',
     inputBLString: FileUtil.readFileString(
-      'transpiler/__tests__/ast/core/mocks/queryHandlerDeclaration/withdrawMoneyQueryHandler.bl',
+      'transpiler/__tests__/ast/core/mocks/commandHandlerDeclaration/withdrawMoneyCommandHandler.bl',
     ),
-    expected: new QueryHandlerDeclarationBuilder()
-      .withIdentifier('WithdrawMoneyQueryHandler')
+    expected: new CommandHandlerDeclarationBuilder()
+      .withIdentifier('WithdrawMoneyCommandHandler')
       .withParameterList(
         new ParameterListBuilderDirector().buildParams([
           new ParameterBuilderDirector().buildIdentifierParameter(

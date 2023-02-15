@@ -12,7 +12,7 @@ import { RepoPortBuilder } from '../../../../../src/ast/core/intermediate-ast/bu
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { RepoPortNode } from '../../../../../src/ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class RepoPortNodeBuilderDirector {
   private builder: RepoPortBuilder;
@@ -60,7 +60,7 @@ export class RepoPortNodeBuilderDirector {
                         new ParameterIdentifierNodeBuilder().withIdentifier('id').build(),
                       )
                       .withType(
-                        new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                        new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'),
                       )
                       .build(),
                     new ParameterNodeBuilder()
@@ -68,13 +68,13 @@ export class RepoPortNodeBuilderDirector {
                         new ParameterIdentifierNodeBuilder().withIdentifier('title').build(),
                       )
                       .withType(
-                        new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                        new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'),
                       )
                       .build(),
                   ])
                   .build(),
               )
-              .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+              .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
               .build(),
           ])
           .build(),
@@ -101,7 +101,7 @@ export class RepoPortNodeBuilderDirector {
             new MethodDefinitionNodeBuilder()
               .withIdentifier(new IdentifierNodeBuilder().withName('getTodo').build())
               .withType(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoReadModel'),
+                new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('TodoReadModel'),
               )
               .build(),
           ])

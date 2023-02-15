@@ -125,6 +125,8 @@ import { commandToTargetLanguage } from './components/command/index.js';
 import { queryToTargetLanguage } from './components/query/index.js';
 import { commandEvaluationToTargetLanguage } from './components/statements/expression/evaluation/commandEvaluation.js';
 import { queryEvaluationToTargetLanguage } from './components/statements/expression/evaluation/queryEvaluation.js';
+import { commandHandlerToTargetLanguage } from './components/commandHandler/index.js';
+import { queryHandlerToTargetLanguage } from './components/queryHandler/index.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -505,6 +507,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TQuery: {
       res = queryToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TCommandHandler: {
+      res = commandHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TQueryHandler: {
+      res = queryHandlerToTargetLanguage(value, contextData);
       break;
     }
     default: {

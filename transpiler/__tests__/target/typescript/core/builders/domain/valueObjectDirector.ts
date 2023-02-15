@@ -18,7 +18,7 @@ import { ReturnOkErrorTypeNode } from '../../../../../../src/ast/core/intermedia
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
-import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
 import { DomainCreateParameterTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
@@ -94,7 +94,7 @@ export class ValueObjectBuilderDirector {
     return new ReturnOkErrorTypeNodeBuilder()
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(ok))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(ok))
           .build(),
       )
       .withErrors(

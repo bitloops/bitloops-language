@@ -1,4 +1,4 @@
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 
@@ -14,7 +14,7 @@ export const VALID_CONST_DECLARATION_TEST_CASES = [
           'helloWorld',
         ),
       ],
-      new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('Hello'),
+      new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('Hello'),
     ),
     output: "const hello: Hello = {name:'helloWorld'}",
   },
@@ -31,7 +31,7 @@ export const VALID_CONST_DECLARATION_TEST_CASES = [
     constDeclaration: new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
       'id',
       'e25-453',
-      new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+      new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
     ),
     output: "const id: Domain.UUIDv4 = 'e25-453'",
   },

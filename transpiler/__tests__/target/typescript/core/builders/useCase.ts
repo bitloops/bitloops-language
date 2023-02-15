@@ -20,7 +20,7 @@ import { ParameterBuilderDirector } from './parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from './statement/constDeclaration.js';
 import { IfStatementBuilderDirector } from './statement/ifStatementDirector.js';
 import { ReturnStatementBuilderDirector } from './statement/returnDirector.js';
-import { BitloopsPrimaryTypeDirector } from '../../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class UseCaseBuilderDirector {
   buildUseCase({
@@ -177,7 +177,7 @@ export class UseCaseBuilderDirector {
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
