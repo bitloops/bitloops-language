@@ -1074,8 +1074,8 @@ export enum RestServerOptions {
   port = 'port',
 }
 
-export type TCommandIdentifier = string;
-export type TCommandTopicIdentifier = string;
+export type TCommandIdentifier = TIdentifier;
+export type TCommandTopicIdentifier = TIdentifier;
 export const commandKey = 'command';
 
 export type TCommand = {
@@ -1085,13 +1085,34 @@ export type TCommand = {
   } & TVariables;
 };
 
-const queryKey = 'query';
+export const queryKey = 'query';
+export type TQueryIdentifier = TIdentifier;
 export type TQuery = {
   [queryKey]: {
-    [identifierKey]: TCommandIdentifier;
+    [identifierKey]: TQueryIdentifier;
     queryTopic: TExpression;
   } & TVariables;
 };
+
+const commandHandlerKey = 'commandHandler';
+export type TCommandHandlerIdentifier = TIdentifier;
+export type TCommandHandler = {
+  [commandHandlerKey]: {
+    [identifierKey]: TCommandHandlerIdentifier;
+    execute: TExecute;
+  } & TParameterList;
+};
+
+const queryHandlerKey = 'queryHandler';
+export type TQueryHandlerIdentifier = TIdentifier;
+
+export type TQueryHandler = {
+  [queryHandlerKey]: {
+    [identifierKey]: TQueryHandlerIdentifier;
+    execute: TExecute;
+  } & TParameterList;
+};
+
 // DomainEventHandler & IntegrationEventHandler
 export type TEventHandlerBusDependencies = {
   commandBus: boolean;

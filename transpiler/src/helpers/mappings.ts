@@ -236,6 +236,8 @@ const BitloopsTypesMapping = {
   TDomainEventIdentifier: 'TDomainEventIdentifier',
   TCommandTopicIdentifier: 'TCommandTopicIdentifier',
   TQueryTopicIdentifier: 'TQueryTopicIdentifier',
+  TCommandHandler: 'TCommandHandler',
+  TQueryHandler: 'TQueryHandler',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -261,6 +263,8 @@ const ClassTypes = {
   Command: 'Command',
   Query: 'Query',
   DomainEvent: 'DomainEvent',
+  CommandHandler: 'CommandHandler',
+  QueryHandler: 'QueryHandler',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -294,6 +298,8 @@ const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesV
   [ClassTypes.DomainEvent]: BitloopsTypesMapping.TDomainEvent,
   [ClassTypes.Command]: BitloopsTypesMapping.TCommand,
   [ClassTypes.Query]: BitloopsTypesMapping.TQuery,
+  [ClassTypes.CommandHandler]: BitloopsTypesMapping.TCommandHandler,
+  [ClassTypes.QueryHandler]: BitloopsTypesMapping.TQueryHandler,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

@@ -18,16 +18,15 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
-import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { isParserErrors, isIntermediateASTValidationErrors } from '../../../src/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
 import { validCommandTestCases } from './mocks/command.js';
-import { isIntermediateASTValidationErrors } from '../../../src/index.js';
 
-const BOUNDED_CONTEXT = 'banking';
-const MODULE = 'banking';
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
 describe('Command declaration is valid', () => {
   let resultTree: IntermediateASTTree;
@@ -35,30 +34,33 @@ describe('Command declaration is valid', () => {
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  validCommandTestCases.forEach((testCommand) => {
-    test(`${testCommand.description}`, () => {
+  validCommandTestCases.forEach((testCommandDeclaration) => {
+    test(`${testCommandDeclaration.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
             boundedContext: BOUNDED_CONTEXT,
             module: MODULE,
-            fileId: testCommand.fileId,
-            fileContents: testCommand.inputBLString,
+            fileId: testCommandDeclaration.fileId,
+            fileContents: testCommandDeclaration.inputBLString,
           },
         ],
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTValidationErrors(result)) {
+        const parseResult = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(parseResult)) {
+          const result = intermediateParser.complete(parseResult);
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
+      const CommandDeclarationNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TCommand,
+      );
+      const value = CommandDeclarationNodes[0].getValue();
 
-      const commandNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TCommand);
-      const value = commandNodes[0].getValue();
-
-      expect(value).toMatchObject(testCommand.commandDeclaration.getValue());
+      expect(value).toMatchObject(testCommandDeclaration.expected);
+      expect(CommandDeclarationNodes.length).toBe(1);
     });
   });
 });

@@ -402,7 +402,7 @@ useCaseIdentifier
     ;
 
 useCaseDeclaration
-    : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
+    : UseCase useCaseIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 commandIdentifier
@@ -420,6 +420,23 @@ queryIdentifier
 queryDeclaration
     : Query queryIdentifier OpenBrace fieldList CloseBrace
     ;
+
+commandHandler
+    : CommandHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+commandHandlerIdentifier
+    : CommandHandlerIdentifier 
+    ;
+
+queryHandler
+    : QueryHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+queryHandlerIdentifier
+    : QueryHandlerIdentifier 
+    ;
+
 
 propsDeclaration
     : Props propsIdentifier OpenBrace fieldList CloseBrace SemiColon?
@@ -528,7 +545,7 @@ domainErrorIdentifier
 applicationErrorIdentifier
     : DomainErrorIdentifier;
 
-useCaseExecuteDeclaration
+executeDeclaration
     : Execute OpenParen parameter? CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 

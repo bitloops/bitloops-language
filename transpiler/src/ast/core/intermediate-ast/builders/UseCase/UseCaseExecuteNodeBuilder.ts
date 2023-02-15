@@ -2,17 +2,17 @@ import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterNode } from '../../nodes/ParameterList/ParameterNode.js';
 import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../nodes/statements/StatementList.js';
-import { UseCaseExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
 import { IBuilder } from '../IBuilder.js';
 
-export class UseCaseExecuteNodeBuilder implements IBuilder<UseCaseExecuteNode> {
+export class UseCaseExecuteNodeBuilder implements IBuilder<ExecuteNode> {
   private parameter?: ParameterNode;
   private statementList: StatementListNode;
   private returnType: ReturnOkErrorTypeNode;
-  private useCaseExecuteNode: UseCaseExecuteNode;
+  private useCaseExecuteNode: ExecuteNode;
 
   constructor(metadata?: TNodeMetadata) {
-    this.useCaseExecuteNode = new UseCaseExecuteNode(metadata);
+    this.useCaseExecuteNode = new ExecuteNode(metadata);
   }
 
   public withParameter(parameter: ParameterNode): UseCaseExecuteNodeBuilder {
@@ -30,7 +30,7 @@ export class UseCaseExecuteNodeBuilder implements IBuilder<UseCaseExecuteNode> {
     return this;
   }
 
-  public build(): UseCaseExecuteNode {
+  public build(): ExecuteNode {
     this.useCaseExecuteNode.addChild(this.statementList);
     this.useCaseExecuteNode.addChild(this.returnType);
     if (this.parameter) this.useCaseExecuteNode.addChild(this.parameter);

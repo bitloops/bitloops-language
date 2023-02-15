@@ -258,6 +258,8 @@ import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVis
 import { commandDeclarationVisitor } from './helpers/commandDeclaration.js';
 import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
+import { commandHandlerVisitor } from './helpers/commandHandler.js';
+import { queryHandlerVisitor } from './helpers/queryHandlerVisitor.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -963,7 +965,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
     useCaseDeclarationVisitor(this, ctx);
   }
-  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
+  visitUseCaseExecuteDeclaration(ctx: BitloopsParser.ExecuteDeclarationContext): any {
     return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 
@@ -1283,5 +1285,33 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitQueryDeclaration(ctx: BitloopsParser.QueryDeclarationContext): void {
     return queryDeclarationVisitor(this, ctx);
+  }
+
+  visitCommandHandler(ctx: BitloopsParser.CommandHandlerContext): void {
+    return commandHandlerVisitor(this, ctx);
+  }
+
+  visitCommandHandlerIdentifier(
+    ctx: BitloopsParser.CommandHandlerIdentifierContext,
+  ): IdentifierNode {
+    const commandHandlerName = ctx.CommandHandlerIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const commandHandlerIdentifierNode = new IdentifierNodeBuilder(metadata)
+      .withName(commandHandlerName)
+      .build();
+    return commandHandlerIdentifierNode;
+  }
+
+  visitQueryHandler(ctx: BitloopsParser.QueryHandlerContext): void {
+    return queryHandlerVisitor(this, ctx);
+  }
+
+  visitQueryHandlerIdentifier(ctx: BitloopsParser.QueryHandlerIdentifierContext): IdentifierNode {
+    const queryHandlerName = ctx.QueryHandlerIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const queryHandlerIdentifierNode = new IdentifierNodeBuilder(metadata)
+      .withName(queryHandlerName)
+      .build();
+    return queryHandlerIdentifierNode;
   }
 }

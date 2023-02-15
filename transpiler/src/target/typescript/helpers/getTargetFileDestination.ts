@@ -41,6 +41,8 @@ enum PROJECT_RELATIVE_PATHS {
   STRUCTS = 'structs/',
   COMMANDS = 'commands/',
   QUERIES = 'queries/',
+  QUERY_HANDLERS = 'query-handlers',
+  COMMAND_HANDLERS = 'command-handlers',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -62,6 +64,8 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Command]: PROJECT_RELATIVE_PATHS.COMMANDS,
   [ClassTypes.Query]: PROJECT_RELATIVE_PATHS.QUERIES,
   DomainEvent: '',
+  [ClassTypes.QueryHandler]: PROJECT_RELATIVE_PATHS.QUERY_HANDLERS,
+  [ClassTypes.CommandHandler]: PROJECT_RELATIVE_PATHS.COMMAND_HANDLERS,
 };
 
 const getTargetFileDestination = (

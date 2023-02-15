@@ -17,32 +17,32 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
-import { isParserErrors, isIntermediateASTValidationErrors } from '../../../src/index.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
-import { validQueryTestCases } from './mocks/query.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
+import { validCommandHandlerCases } from './mocks/commandHandler.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Query declaration is valid', () => {
+describe('CommandHandler declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  validQueryTestCases.forEach((testQueryDeclaration) => {
-    test(`${testQueryDeclaration.description}`, () => {
+  validCommandHandlerCases.forEach((testCommandHandlerDeclaration) => {
+    test(`${testCommandHandlerDeclaration.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
             boundedContext: BOUNDED_CONTEXT,
             module: MODULE,
-            fileId: testQueryDeclaration.fileId,
-            fileContents: testQueryDeclaration.inputBLString,
+            fileId: testCommandHandlerDeclaration.fileId,
+            fileContents: testCommandHandlerDeclaration.inputBLString,
           },
         ],
       });
@@ -54,13 +54,13 @@ describe('Query declaration is valid', () => {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const QueryDeclarationNodes = resultTree.getRootChildrenNodesByType(
-        BitloopsTypesMapping.TQuery,
+      const commandHandlerDeclarationNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TCommandHandler,
       );
-      const value = QueryDeclarationNodes[0].getValue();
+      const value = commandHandlerDeclarationNodes[0].getValue();
 
-      expect(value).toMatchObject(testQueryDeclaration.expected);
-      expect(QueryDeclarationNodes.length).toBe(1);
+      expect(value).toMatchObject(testCommandHandlerDeclaration.expected);
+      expect(commandHandlerDeclarationNodes.length).toBe(1);
     });
   });
 });

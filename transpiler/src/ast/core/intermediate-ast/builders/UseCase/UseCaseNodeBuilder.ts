@@ -1,7 +1,7 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
-import { UseCaseExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
 import { UseCaseIdentifierNode } from '../../nodes/UseCase/UseCaseIdentifierNode.js';
 import { UseCaseNode } from '../../nodes/UseCase/UseCaseNode.js';
 import { IBuilder } from '../IBuilder.js';
@@ -9,7 +9,7 @@ import { IBuilder } from '../IBuilder.js';
 export class UseCaseNodeBuilder implements IBuilder<UseCaseNode> {
   private useCaseNode: UseCaseNode;
   private identifierNode: UseCaseIdentifierNode;
-  private executeNode: UseCaseExecuteNode;
+  private executeNode: ExecuteNode;
   private parameterListNode: ParameterListNode;
   private intermediateASTTree: IntermediateASTTree;
 
@@ -30,7 +30,7 @@ export class UseCaseNodeBuilder implements IBuilder<UseCaseNode> {
     return this;
   }
 
-  public withExecute(executeNode: UseCaseExecuteNode): UseCaseNodeBuilder {
+  public withExecute(executeNode: ExecuteNode): UseCaseNodeBuilder {
     this.executeNode = executeNode;
     return this;
   }

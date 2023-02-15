@@ -25,7 +25,7 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 
 // import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 import { UseCaseIdentifierNode } from '../../intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
-import { UseCaseExecuteNode } from '../../intermediate-ast/nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../intermediate-ast/nodes/UseCase/UseCaseExecuteNode.js';
 import { produceMetadata } from '../metadata.js';
 import { UseCaseNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
@@ -40,7 +40,7 @@ export const useCaseDeclarationVisitor = (
 ): void => {
   const useCaseIdentifierNode: UseCaseIdentifierNode = thisVisitor.visit(ctx.useCaseIdentifier());
 
-  const useCaseExecuteNode: UseCaseExecuteNode = thisVisitor.visit(ctx.useCaseExecuteDeclaration());
+  const useCaseExecuteNode: ExecuteNode = thisVisitor.visit(ctx.executeDeclaration());
 
   const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
 
@@ -54,8 +54,8 @@ export const useCaseDeclarationVisitor = (
 
 export const useCaseExecuteDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.UseCaseExecuteDeclarationContext,
-): UseCaseExecuteNode => {
+  ctx: BitloopsParser.ExecuteDeclarationContext,
+): ExecuteNode => {
   const returnTypeNode: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
   const parameterNode: ParameterNode = ctx.parameter() ? thisVisitor.visit(ctx.parameter()) : null;
   const statementListNode: StatementListNode = thisVisitor.visit(ctx.functionBody());

@@ -5,16 +5,16 @@ import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { ReturnOkErrorTypeBuilder } from '../returnOkErrorType.js';
 import { StatementDirector } from '../statement/statementDirector.js';
-import { UseCaseExecuteBuilder } from './useCaseExecuteBuilder.js';
+import { ExecuteBuilder } from './executeBuilder.js';
 
-export class UseCaseExecuteBuilderDirector {
-  private useCaseExecuteBuilder: UseCaseExecuteBuilder;
+export class ExecuteBuilderDirector {
+  private executeBuilder: ExecuteBuilder;
   constructor() {
-    this.useCaseExecuteBuilder = new UseCaseExecuteBuilder();
+    this.executeBuilder = new ExecuteBuilder();
   }
 
   buildExecuteWithOneReturnDTO(): TExecute {
-    const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
+    const executeDeclaration = this.executeBuilder
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(
@@ -37,14 +37,14 @@ export class UseCaseExecuteBuilderDirector {
       ])
       .build();
 
-    return useCaseExecuteDeclaration;
+    return executeDeclaration;
   }
 
   buildExecuteWithDomainEvaluations(executeReturnTypes: {
     identifierOK: string;
     identifierError?: string;
   }): TExecute {
-    const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
+    const executeDeclaration = this.executeBuilder
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(
@@ -96,11 +96,11 @@ export class UseCaseExecuteBuilderDirector {
       ])
       .build();
 
-    return useCaseExecuteDeclaration;
+    return executeDeclaration;
   }
 
   buildExecuteWithDomainEvaluationsAndNoReturn(): TExecute {
-    const useCaseExecuteDeclaration = this.useCaseExecuteBuilder
+    const executeDeclaration = this.executeBuilder
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
@@ -139,6 +139,6 @@ export class UseCaseExecuteBuilderDirector {
       ])
       .build();
 
-    return useCaseExecuteDeclaration;
+    return executeDeclaration;
   }
 }

@@ -18,8 +18,8 @@ import { StatementListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { IntermediateASTTree } from '../../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
+import { BitloopsPrimaryTypeDirector } from '../../../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
 import { ArgumentDirector } from '../../builders/argument.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { RootEntityBuilderDirector } from '../../builders/domain/rootEntityDirector.js';
 import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
