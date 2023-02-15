@@ -128,6 +128,7 @@ import {
   generateEventHandlerHandleMethod,
 } from './components/domain-event-handler/index.js';
 import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
+import { standardVOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/standardVOEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -305,6 +306,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDTOEvaluation: {
       res = DTOEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TStandardVOEvaluation: {
+      res = standardVOEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {

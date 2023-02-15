@@ -19,6 +19,8 @@ import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/in
 import { DomainEvaluationBuilderDirector } from './domainEvaluation/index.js';
 import { EntityIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { EntityConstructorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EntityConstructorEvaluationNodeBuilder.js';
+import { StandardVOEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/StandardVOEvaluationNodeBuilder.js';
+import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -109,6 +111,18 @@ export class EvaluationBuilderDirector {
     evaluationFieldListNode: EvaluationFieldListNode,
   ): EvaluationNode {
     const evaluationNode = new DTOEvaluationNodeBuilder()
+      .withIdentifier(identifierNode)
+      .withEvaluationFieldList(evaluationFieldListNode)
+      .build();
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode).build();
+  }
+
+  buildStandardVOEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new StandardVOEvaluationNodeBuilder()
       .withIdentifier(identifierNode)
       .withEvaluationFieldList(evaluationFieldListNode)
       .build();
