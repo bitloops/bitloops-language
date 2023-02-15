@@ -149,6 +149,8 @@ const BitloopsTypesMapping = {
   ArrayBitloopsPrimType: 'ArrayBitloopsPrimType',
   TBitloopsIdentifier: 'TBitloopsIdentifier',
   TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
+  TStandardValueType: 'TStandardValueType',
+  TStandardVOType: 'TStandardVOType',
   TMethodCallExpression: 'TMethodCallExpression',
   TThisExpression: 'TThisExpression',
   TStringLiteral: 'TStringLiteral',

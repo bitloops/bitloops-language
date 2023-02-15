@@ -150,6 +150,17 @@ export type TBitloopsBuiltInClassesObject = {
   [buildInClassTypeKey]: TBitloopsBuiltInClasses;
 };
 
+export type TStandardValueType = {
+  standardValueType: StandardVOType;
+};
+
+export type TStandardValueTypeValues = StandardVOType; // | StandardRuleType | StandardEnumType; etc(extendable)
+
+export type TStandardVO = string;
+export type StandardVOType = {
+  standardVOType: TStandardVO;
+};
+
 export const bitloopsIdentifiersTypeKey = 'bitloopsIdentifierType';
 export type TBitloopsIdentifierObject = {
   [bitloopsIdentifiersTypeKey]: TBitloopsIdentifier;
@@ -160,20 +171,13 @@ export type ArrayBitloopsPrimTypeObject = {
   [arrayPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
 };
 
-export const standardValueObjectTypeKey = 'standardValueObject';
-export type TStandardValueObject = {
-  [standardValueObjectTypeKey]: TStandardVO;
-};
-
-type TStandardVO = string;
-
 export const bitloopsPrimaryTypeKey = 'type';
 export type TBitloopsPrimaryTypeValues =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
   | ArrayBitloopsPrimTypeObject
-  | TStandardValueObject;
+  | TStandardValueType;
 
 export type TBitloopsPrimaryType = {
   [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;

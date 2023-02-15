@@ -265,6 +265,8 @@ import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQ
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
+import { StandardVOTypeNodeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/StandardVOTypeNodeBuilder.js';
+import { StandardValueTypeNodeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/StandardValueTypeNodeBuilder.js';
 
 type TContextInfo = {
   boundedContextName: string;
@@ -1054,6 +1056,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const buildInClassType = ctx.bitloopsBuiltInClass().getText();
     const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
     return buildInClassTypeNode;
+  }
+
+  visitStandardValueTypePrimType(ctx: any) {
+    const value = this.visit(ctx.standardValueType());
+    return new StandardValueTypeNodeBuilder(produceMetadata(ctx, this)).withValue(value).build();
+  }
+
+  visitStandardVOType(ctx: BitloopsParser.StandardVOTypeContext) {
+    const identifier = ctx.upperCaseIdentifier().getText();
+    return new StandardVOTypeNodeBuilder(produceMetadata(ctx, this)).withValue(identifier).build();
   }
 
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
