@@ -14,7 +14,7 @@ export const validValueObjectEvaluationTestCases: Array<TestCase> = [
   {
     description: 'valid value object evaluation',
     fileId: 'testFile.bl',
-    inputBLString: "JestTestEvaluation { NameVO({ message: 'Hello, World!' })}",
+    inputBLString: "JestTestEvaluation { NameVO.create({ message: 'Hello, World!' })}",
     evaluation: new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
       fields: [
         new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
@@ -25,7 +25,7 @@ export const validValueObjectEvaluationTestCases: Array<TestCase> = [
     description: 'valid value object evaluation with error',
     fileId: 'testFile.bl',
     inputBLString: `JestTestEvaluation { 
-  NameVO({ 
+  NameVO.create({ 
     message : 'Avenue', 
     error: errorMessage 
   }) 
@@ -43,7 +43,7 @@ export const validValueObjectEvaluationTestCases: Array<TestCase> = [
   {
     description: 'Value object evaluation with props identifier',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestEvaluation { NameVO(props) }',
+    inputBLString: 'JestTestEvaluation { NameVO.create(props) }',
     evaluation: new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
       expression: new ExpressionBuilderDirector().buildIdentifierExpression('props'),
     }),
@@ -52,7 +52,7 @@ export const validValueObjectEvaluationTestCases: Array<TestCase> = [
     description: 'Nested value object evaluation',
     fileId: 'testFile.bl',
     inputBLString: `JestTestEvaluation { 
-      NameVO({ 
+      NameVO.create({ 
         message : 'Avenue',
         address: Address({ street : 'Avenue', city : 'New York' } ) 
       }) 

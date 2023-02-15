@@ -147,3 +147,4 @@ export {
   domainEventHandlerHandleMethodParameterVisitor,
   domainEventHandlerHandleMethodVisitor,
 } from './domainEventHandlerDeclaration.js';
+export { entityConstructorEvaluationVisitor } from './expression/evaluation/index.js';

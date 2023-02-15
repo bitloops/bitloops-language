@@ -254,6 +254,7 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
+  | TEntityConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
   | TBuiltInFunctionValues;
@@ -307,6 +308,9 @@ export type TValueObjectEvaluation = {
 
 export type TEntityEvaluation = {
   entity: TDomainEvaluation;
+};
+export type TEntityConstructorEvaluation = {
+  entityConstructor: TDomainEvaluation;
 };
 
 export type TDomainEvaluation = {
