@@ -3,6 +3,7 @@ import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryT
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { IntegrationEventIdentifierNode } from './IntegrationEventIdentifierNode.js';
 
 export class IntegrationEventNode extends ClassTypeNode {
   private static classType = ClassTypes.IntegrationEvent;
@@ -30,5 +31,16 @@ export class IntegrationEventNode extends ClassTypeNode {
       }
     }
     return null;
+  }
+
+  public getIntegrationEventIdentifier(): string {
+    const integrationEventIdentifier = this.getChildNodeByType<IntegrationEventIdentifierNode>(
+      BitloopsTypesMapping.TIntegrationEventIdentifier,
+    );
+    if (!integrationEventIdentifier) {
+      throw new Error('Integration Event Identifier not found');
+    }
+
+    return integrationEventIdentifier.getIdentifierName();
   }
 }

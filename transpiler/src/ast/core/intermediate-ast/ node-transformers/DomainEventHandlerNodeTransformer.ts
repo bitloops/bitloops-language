@@ -8,9 +8,12 @@ export class DomainEventHandlerNodeTransformer extends NodeModelToTargetASTTrans
   }
 
   private addBuiltinBusDependencies(): void {
-    const eventBusDependenciesNode = new EventHandlerBusDependenciesNodeBuilder()
-      .withCommandBus()
-      .build();
-    this.node.addChild(eventBusDependenciesNode);
+    const extraDependencies = this.node.getExtraDependenciesNode();
+    if (!extraDependencies) {
+      const eventBusDependenciesNode = new EventHandlerBusDependenciesNodeBuilder()
+        .withCommandBus()
+        .build();
+      this.node.addChild(eventBusDependenciesNode);
+    }
   }
 }

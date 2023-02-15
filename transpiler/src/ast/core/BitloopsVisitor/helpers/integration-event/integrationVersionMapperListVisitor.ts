@@ -29,8 +29,6 @@ export const integrationVersionMapperListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IntegrationVersionMapperListContext,
 ): IntegrationVersionMapperListNode => {
-  // eslint-disable-next-line no-debugger
-  debugger;
   const versionMapperWithUndefined = thisVisitor.visitChildren(ctx);
   const versionMapperNodes: IntegrationVersionMapperNode[] = versionMapperWithUndefined.filter(
     (versionMapper) => versionMapper !== undefined,

@@ -45,4 +45,11 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
     );
     return extraDependencies;
   }
+
+  getExtraDependenciesNode(): EventHandlerBusDependenciesNode | null {
+    const eventBusDependencies = this.getChildNodeByType<EventHandlerBusDependenciesNode>(
+      BitloopsTypesMapping.TEventHandlerBusDependencies,
+    );
+    return eventBusDependencies;
+  }
 }
