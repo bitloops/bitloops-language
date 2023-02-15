@@ -1,1 +1,3 @@
-export type NameReadModel = { name: string } | null;
+export class NameReadModel {
+  constructor(public name: string) {}
+}

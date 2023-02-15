@@ -58,7 +58,7 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
         });
         return res;
       }
-      async getById(${readModelId}: ${mappedReadModelIdType.output}): Promise<${readModelName}> {
+      async getById(${readModelId}: ${mappedReadModelIdType.output}): Promise<${readModelName} | null> {
         const ${DOCUMENT_NAME} = await this.collection.findOne({
             _id: ${readModelId},
         });
