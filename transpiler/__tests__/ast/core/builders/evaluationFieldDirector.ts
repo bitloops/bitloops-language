@@ -34,4 +34,20 @@ export class EvaluationFieldBuilderDirector {
       new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
     );
   }
+
+  buildMemberDotExpressionEvaluationField({
+    identifierName,
+    leftIdentifierValueName,
+    rightIdentifierValueName,
+  }: {
+    identifierName: string;
+    leftIdentifierValueName: string;
+    rightIdentifierValueName: string;
+  }): TEvaluationField {
+    const memberDotExpression = new ExpressionBuilderDirector().buildMemberExpression(
+      new ExpressionBuilderDirector().buildIdentifierExpression(leftIdentifierValueName),
+      rightIdentifierValueName,
+    );
+    return this.buildEvaluationField(identifierName, memberDotExpression);
+  }
 }

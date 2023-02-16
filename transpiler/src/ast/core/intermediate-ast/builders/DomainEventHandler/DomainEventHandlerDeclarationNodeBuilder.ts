@@ -1,5 +1,5 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { DomainEventHandleNode } from '../../nodes/DomainEventHandler/DomainEventHandleNode.js';
+import { EventHandleNode } from '../../nodes/EventHandleNode.js';
 import { DomainEventHandlerDeclarationNode } from '../../nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
 import { DomainEventHandlerIdentifierNode } from '../../nodes/DomainEventHandler/DomainEventHandlerIdentifierNode.js';
 import { EventHandlerBusDependenciesNode } from '../../nodes/DomainEventHandler/EventHandlerBusDependenciesNode.js';
@@ -13,9 +13,9 @@ export class DomainEventHandlerDeclarationNodeBuilder
 {
   private domainEventHandlerNode: DomainEventHandlerDeclarationNode;
   private identifierNode: DomainEventHandlerIdentifierNode;
-  private parameterListNode: ParameterListNode;
-  private handleNode: DomainEventHandleNode;
-  private eventBusDependenciesNode: EventHandlerBusDependenciesNode;
+  private parameterListNode?: ParameterListNode;
+  private handleNode: EventHandleNode;
+  private eventHandlerBusDependencies?: EventHandlerBusDependenciesNode;
   private intermediateASTTree: IntermediateASTTree;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
@@ -39,26 +39,33 @@ export class DomainEventHandlerDeclarationNodeBuilder
     return this;
   }
 
-  public withHandleMethod(handle: DomainEventHandleNode): DomainEventHandlerDeclarationNodeBuilder {
+  public withHandleMethod(handle: EventHandleNode): DomainEventHandlerDeclarationNodeBuilder {
     this.handleNode = handle;
     return this;
   }
 
   public withDefaultEventBusDependencies(): DomainEventHandlerDeclarationNodeBuilder {
-    this.eventBusDependenciesNode = new EventHandlerBusDependenciesNodeBuilder()
+    this.eventHandlerBusDependencies = new EventHandlerBusDependenciesNodeBuilder()
       .withCommandBus()
       .build();
+    return this;
+  }
+
+  public withEventBusDependencies(
+    eventHandlerBusDependencies: EventHandlerBusDependenciesNode,
+  ): DomainEventHandlerDeclarationNodeBuilder {
+    this.eventHandlerBusDependencies = eventHandlerBusDependencies;
     return this;
   }
 
   public build(): DomainEventHandlerDeclarationNode {
     this.intermediateASTTree.insertChild(this.domainEventHandlerNode);
     this.intermediateASTTree.insertChild(this.identifierNode);
-    this.intermediateASTTree.insertSibling(this.parameterListNode);
     this.intermediateASTTree.insertSibling(this.handleNode);
-    if (this.eventBusDependenciesNode) {
-      this.intermediateASTTree.insertSibling(this.eventBusDependenciesNode);
-    }
+    if (this.parameterListNode) this.intermediateASTTree.insertSibling(this.parameterListNode);
+
+    if (this.eventHandlerBusDependencies)
+      this.intermediateASTTree.insertSibling(this.eventHandlerBusDependencies);
 
     this.intermediateASTTree.setCurrentNodeToRoot();
     this.domainEventHandlerNode.buildObjectValue();

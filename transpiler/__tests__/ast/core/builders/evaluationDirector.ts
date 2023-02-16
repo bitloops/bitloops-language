@@ -108,6 +108,22 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildIntegrationEventEvaluation(
+    integrationEventIdentifier: string,
+    propsParam: PropsParam,
+  ): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      evaluation: {
+        integrationEvent: {
+          integrationEventIdentifier,
+          props,
+        },
+      },
+    };
+  }
+
   buildEntityConstructorEvaluation(entityIdentifier: string, propsParam: PropsParam): TEvaluation {
     const { fields, expression } = propsParam;
     const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };

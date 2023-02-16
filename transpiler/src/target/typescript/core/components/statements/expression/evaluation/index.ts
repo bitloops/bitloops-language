@@ -71,6 +71,12 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       value: evaluation,
     });
   }
+  if (EvaluationTypeIdentifiers.isIntegrationEventEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TIntegrationEventEvaluation,
+      value: evaluation,
+    });
+  }
   if (EvaluationTypeIdentifiers.isErrorEvaluation(evaluation)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TErrorEvaluation,

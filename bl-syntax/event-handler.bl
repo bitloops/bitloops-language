@@ -1,5 +1,5 @@
 // BL
-IntegrationEventHandler MoneyDepositedIntegrationHandler(commandBus: ICommandBus) {
+IntegrationEventHandler MoneyDepositedIntegrationHandler() {
   //should we support use case as dependency
   // If Subscribed to integration-event, we need to define what version
   // and get the eventTopic to subscribe from it
