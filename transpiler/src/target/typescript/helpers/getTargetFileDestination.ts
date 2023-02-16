@@ -73,6 +73,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.DomainEventHandler]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENT_HANDLERS,
   [ClassTypes.IntegrationEvent]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENTS,
   [ClassTypes.IntegrationEventHandler]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENT_HANDLERS,
+  [ClassTypes.ServicePort]: PROJECT_RELATIVE_PATHS.PORTS,
 };
 
 const getTargetFileDestination = (
@@ -138,6 +139,7 @@ const getTargetFileDestination = (
     case ClassTypes.Query:
     case ClassTypes.QueryHandler:
     case ClassTypes.Struct:
+    case ClassTypes.ServicePort:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -178,6 +180,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.CommandHandler:
     case ClassTypes.QueryHandler:
     case ClassTypes.Struct:
+    case ClassTypes.ServicePort:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;

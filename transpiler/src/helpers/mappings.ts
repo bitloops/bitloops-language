@@ -259,6 +259,8 @@ const BitloopsTypesMapping = {
   THandle: 'THandle',
   TIntegrationEventHandlerIdentifier: 'TIntegrationEventHandlerIdentifier',
   TIntegrationEventHandler: 'TIntegrationEventHandler',
+  TServicePortIdentifier: 'TServicePortIdentifier',
+  TServicePort: 'TServicePort',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -289,6 +291,7 @@ const ClassTypes = {
   IntegrationEvent: 'IntegrationEvent',
   DomainEventHandler: 'DomainEventHandler',
   IntegrationEventHandler: 'IntegrationEventHandler',
+  ServicePort: 'ServicePort',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -327,6 +330,7 @@ const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesV
   [ClassTypes.DomainEventHandler]: BitloopsTypesMapping.TDomainEventHandler,
   [ClassTypes.IntegrationEvent]: BitloopsTypesMapping.TIntegrationEvent,
   [ClassTypes.IntegrationEventHandler]: BitloopsTypesMapping.TIntegrationEventHandler,
+  [ClassTypes.ServicePort]: BitloopsTypesMapping.TServicePort,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };
