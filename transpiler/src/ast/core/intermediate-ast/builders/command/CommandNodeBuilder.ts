@@ -27,7 +27,6 @@ import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { CommandTopicNodeBuilder } from './CommandTopicNodeBuilder.js';
 
-// produce the QueryNodeBuilder builder
 export class CommandNodeBuilder implements IBuilder<CommandDeclarationNode> {
   private commandNode: CommandDeclarationNode;
   private identifierNode: IdentifierNode;

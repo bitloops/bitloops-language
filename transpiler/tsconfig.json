@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "experimentalDecorators": true,
     "target": "ES2022",
     "module": "Node16",
     "lib": ["ES2022"],

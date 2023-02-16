@@ -26,7 +26,6 @@ import { ExecuteNode } from '../../nodes/ExecuteNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { QueryHandlerNode } from '../../nodes/query/QueryHandlerNode.js';
 
-// produce the QueryNodeBuilder builder
 export class QueryHandlerNodeBuilder implements IBuilder<QueryHandlerNode> {
   private queryHandlerNode: QueryHandlerNode;
   private identifierNode: IdentifierNode;

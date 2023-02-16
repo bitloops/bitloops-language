@@ -8,7 +8,6 @@ import { QueryTopicNode } from '../../nodes/query/QueryTopicNode.js';
 import { QueryTopicNodeBuilder } from './QueryTopicNodeBuilder.js';
 import { TContextInfo } from '../../../BitloopsVisitor/BitloopsVisitor.js';
 
-// produce the QueryNodeBuilder builder
 export class QueryNodeBuilder implements IBuilder<QueryDeclarationNode> {
   private queryNode: QueryDeclarationNode;
   private identifierNode: IdentifierNode;

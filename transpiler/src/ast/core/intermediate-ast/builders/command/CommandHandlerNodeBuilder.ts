@@ -26,7 +26,6 @@ import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.j
 import { ExecuteNode } from '../../nodes/ExecuteNode.js';
 import { IBuilder } from '../IBuilder.js';
 
-// produce the QueryNodeBuilder builder
 export class CommandHandlerNodeBuilder implements IBuilder<CommandHandlerNode> {
   private commandHandlerNode: CommandHandlerNode;
   private identifierNode: IdentifierNode;
