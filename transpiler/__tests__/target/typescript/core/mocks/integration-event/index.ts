@@ -46,4 +46,48 @@ export const VALID_INTEGRATION_EVENT_TEST_CASES: TestCase[] = [
       'transpiler/__tests__/target/typescript/core/mocks/integration-event/moneyDepositedIntegrationEvent.mock.ts',
     ),
   },
+  {
+    description: 'an integration event with two version mappers',
+    integrationEvent:
+      new IntegrationEventNodeBuilderDirector().buildIntegrationEventWithTwoVersionMappers({
+        integrationEventIdentifier: 'MoneyDepositedIntegrationEvent',
+        parameterName: 'event',
+        parameterType: 'MoneyDepositedToAccountDomainEvent',
+        versionMapper1:
+          new IntegrationVersionMapperNodeBuilderDirector().buildWithReturnStructEvaluationStatement(
+            {
+              versionName: 'v1',
+              schemaType: 'IntegrationSchemaV1',
+              constIdentifier: 'moneyDeposited',
+              evaluationFieldNodes: [
+                new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+                  'accountId',
+                  'testAccount',
+                ),
+                new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+                  'amount',
+                  'testAmount',
+                ),
+              ],
+            },
+          ),
+        versionMapper2:
+          new IntegrationVersionMapperNodeBuilderDirector().buildWithReturnStructEvaluationStatement(
+            {
+              versionName: 'v2.0.1',
+              schemaType: 'IntegrationSchemaV2',
+              constIdentifier: 'moneyDeposited',
+              evaluationFieldNodes: [
+                new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+                  'accountId',
+                  'testAccount',
+                ),
+              ],
+            },
+          ),
+      }),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/integration-event/moneyDepositedIntegrationEventTwoMappers.mock.ts',
+    ),
+  },
 ];

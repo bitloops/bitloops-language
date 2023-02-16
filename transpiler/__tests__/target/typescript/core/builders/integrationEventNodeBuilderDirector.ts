@@ -45,4 +45,36 @@ export class IntegrationEventNodeBuilderDirector {
       .withVersionMappers(versionMappers)
       .build();
   }
+
+  buildIntegrationEventWithTwoVersionMappers({
+    integrationEventIdentifier,
+    parameterName,
+    parameterType,
+    versionMapper1,
+    versionMapper2,
+  }: {
+    integrationEventIdentifier: string;
+    parameterName: string;
+    parameterType: TBitloopsIdentifier;
+    versionMapper1: IntegrationVersionMapperNode;
+    versionMapper2: IntegrationVersionMapperNode;
+  }): IntegrationEventNode {
+    const identifierNode = new IntegrationEventIdentifierNodeBuilder()
+      .withName(integrationEventIdentifier)
+      .build();
+
+    const parameterNode = new ParameterBuilderDirector().buildIdentifierParameter(
+      parameterName,
+      parameterType,
+    );
+
+    const versionMappers = new IntegrationVersionMapperListNodeBuilder()
+      .withVersionMappers([versionMapper1, versionMapper2])
+      .build();
+    return this.builder
+      .withIdentifier(identifierNode)
+      .withInput(parameterNode)
+      .withVersionMappers(versionMappers)
+      .build();
+  }
 }
