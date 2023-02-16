@@ -42,4 +42,10 @@ export const validBitloopsPrimaryTypeTestCases: Array<TestCase> = [
     inputBLString: 'JestTestBitloopsPrimaryType { double[][]  }',
     type: new BitloopsPrimaryTypeDirector().buildDoubleArrayPrimaryType('double'),
   },
+  {
+    description: 'valid standard value object type',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestBitloopsPrimaryType { StandardVO.Currency }',
+    type: new BitloopsPrimaryTypeDirector().buildStandardValueObjectPrimaryType('Currency'),
+  },
 ];

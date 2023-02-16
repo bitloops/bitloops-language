@@ -145,5 +145,8 @@ export {
   domainEventHandlerHandleMethodParameterVisitor,
   domainEventHandlerHandleMethodVisitor,
 } from './domainEventHandlerDeclaration.js';
+export {
+  entityConstructorEvaluationVisitor,
+  standardVOEvaluationVisitor,
+} from './expression/evaluation/index.js';
 export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';
-export { entityConstructorEvaluationVisitor } from './expression/evaluation/index.js';

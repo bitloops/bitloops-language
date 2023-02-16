@@ -30,6 +30,7 @@ import {
   buildInClassTypeKey,
   bitloopsIdentifiersTypeKey,
   TBitloopsBuiltInClassesObject,
+  TStandardValueType,
 } from '../../../../types.js';
 
 export class BitloopsPrimTypeIdentifiers {
@@ -68,6 +69,15 @@ export class BitloopsPrimTypeIdentifiers {
   ): primaryType is TBitloopsIdentifierObject {
     if (bitloopsIdentifiersTypeKey in primaryType) {
       return typeof primaryType[bitloopsIdentifiersTypeKey] === 'string';
+    }
+    return false;
+  }
+
+  static isStandardValueType(
+    primaryType: TBitloopsPrimaryTypeValues,
+  ): primaryType is TStandardValueType {
+    if ('standardValueType' in primaryType) {
+      return true;
     }
     return false;
   }

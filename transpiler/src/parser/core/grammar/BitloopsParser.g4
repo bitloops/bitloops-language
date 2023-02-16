@@ -154,10 +154,14 @@ bitloopsPrimaryTypeValues
     | bitloopsBuiltInClass                              #BitloopsBuiltInClassPrimType
     | bitloopsPrimaryTypeValues OpenBracket CloseBracket      #ArrayBitloopsPrimType
     | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
+    | standardValueType                                 #StandardValueTypePrimType
     ;
 
 bitloopsBuiltInClass
     : UUIDv4
+    ;
+standardValueType
+    : StandardVO Dot upperCaseIdentifier                #StandardVOType
     ;
 
 methodDefinitionList
@@ -269,6 +273,7 @@ evaluation
     | structEvaluation
     | commandEvaluation
     | queryEvaluation
+    | standardVOEvaluation
     | integrationEventEvaluation
     ;
 
@@ -621,6 +626,10 @@ integrationEventEvaluation
 
 structEvaluation
     : structIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    ;
+
+standardVOEvaluation
+    : StandardVO Dot upperCaseIdentifier Dot Create OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
     
 builtInClassEvaluation

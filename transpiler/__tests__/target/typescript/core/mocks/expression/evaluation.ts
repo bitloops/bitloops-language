@@ -296,3 +296,21 @@ export const VALID_VALUE_OBJECT_EVALUATION_TEST_CASES = [
     output: 'AddressVO.create(addressProps)',
   },
 ];
+
+export const VALID_STANDARD_VO_EVALUATION_TEST_CASES = [
+  {
+    description: 'Currency Standard Value Object evaluation',
+    evaluation: new EvaluationBuilderDirector().buildStandardVOEvaluation(
+      new IdentifierNodeBuilder().withName('Currency').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'currencyCode',
+            'EUR',
+          ),
+        ])
+        .build(),
+    ),
+    output: "Domain.StandardVO.Currency.Value.create({ currencyCode: 'EUR' })",
+  },
+];

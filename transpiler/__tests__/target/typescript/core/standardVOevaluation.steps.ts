@@ -24,16 +24,15 @@ import { TargetGenerator } from '../../../../src/target/index.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
-import { VALID_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
-// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { VALID_STANDARD_VO_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 
-describe('Valid evaluation test cases', () => {
+describe('Valid standard VO evaluation test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
   const language = 'TypeScript';
 
-  VALID_EVALUATION_TEST_CASES.forEach((testCase) => {
+  VALID_STANDARD_VO_EVALUATION_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       let resultCore: TTargetCoreFinalContent[];
 

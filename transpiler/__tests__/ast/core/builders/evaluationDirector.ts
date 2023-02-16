@@ -83,6 +83,20 @@ export class EvaluationBuilderDirector {
       evaluation,
     };
   }
+  /**
+   *
+   * @param standardVOIdentifier e.g 'Currency'
+   */
+  buildStandardVOEvaluation(standardVOIdentifier: string, fields: TEvaluationField[]): TEvaluation {
+    return {
+      evaluation: {
+        standardVO: {
+          [identifierKey]: standardVOIdentifier,
+          [evaluationFieldsKey]: fields,
+        },
+      },
+    };
+  }
 
   buildErrorEvaluation(errorIdentifier: string, args?: TArgumentList): TEvaluation {
     if (!args)

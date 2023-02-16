@@ -25,6 +25,7 @@ import {
   TEntityConstructorEvaluation,
   TErrorEvaluation,
   TEvaluationValues,
+  TStandardVOEvaluation,
   TStructEvaluation,
 } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
@@ -71,6 +72,15 @@ export class EvaluationTypeIdentifiers {
     evaluation: TEvaluationValues,
   ): evaluation is TEntityConstructorEvaluation {
     if ('entityConstructor' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isStandardVOEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TStandardVOEvaluation {
+    if ('standardVO' in evaluation) {
       return true;
     }
     return false;

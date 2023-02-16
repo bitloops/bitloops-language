@@ -42,6 +42,23 @@ export class FieldBuilderDirector {
     return fieldNode;
   }
 
+  buildStandardVOField(name: string, standardVOIdentifier: string, optional: boolean): FieldNode {
+    {
+      const typeNode = new BitloopsPrimaryTypeNodeDirector().buildStandardValueObjectPrimaryType(
+        standardVOIdentifier,
+      );
+
+      const optionalNode = new OptionalBuilder().withOptional(optional).build();
+      const identifierNode = new IdentifierNodeBuilder().withName(name).build();
+      const fieldNode = this.builder
+        .withName(identifierNode)
+        .withType(typeNode)
+        .withOptional(optionalNode)
+        .build();
+      return fieldNode;
+    }
+  }
+
   buildRequiredArrayField(name: string, type: TBitloopsPrimitives): FieldNode {
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
