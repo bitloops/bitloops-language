@@ -7,6 +7,7 @@ import {
   TExpression,
   evaluationFieldsKey,
   TEvaluationField,
+  identifierKey,
 } from '../../../../src/types.js';
 
 type PropsParam =
@@ -46,6 +47,21 @@ export class EvaluationBuilderDirector {
       evaluation: {
         dto: {
           [DTOIdentifierKey]: dtoIdentifier,
+          [evaluationFieldsKey]: fields,
+        },
+      },
+    };
+  }
+
+  /**
+   *
+   * @param standardVOIdentifier e.g 'Currency'
+   */
+  buildStandardVOEvaluation(standardVOIdentifier: string, fields: TEvaluationField[]): TEvaluation {
+    return {
+      evaluation: {
+        standardVO: {
+          [identifierKey]: standardVOIdentifier,
           [evaluationFieldsKey]: fields,
         },
       },

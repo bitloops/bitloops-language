@@ -181,6 +181,7 @@ Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
 Constructor:                    'constructor';
+StandardVO:                     'StandardVO';
 IntegrationEvent:               'IntegrationEvent';
 
 /// The following tokens are also considered to be FutureReservedWords

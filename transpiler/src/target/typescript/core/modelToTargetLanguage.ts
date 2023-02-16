@@ -106,7 +106,10 @@ import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/
 import { readModelToTargetLanguage } from './components/read-model/index.js';
 import { rootEntityToTargetLanguage } from './components/root-entity/index.js';
 import { entityValuesToTargetLanguage } from './components/entity-values/index.js';
-import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
+import {
+  bitloopsPrimaryTypeToTargetLanguage,
+  standardValueTypeToTargetLanguage,
+} from './components/bitloopsPrimaryType.js';
 import { builtInClassEvaluationToTargetLanguage } from './components/builtin-class/index.js';
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
@@ -131,6 +134,7 @@ import { integrationEventEvaluationToTargetLanguage } from './components/integra
 import { integrationEventToTargetLanguage } from './components/integration-event/index.js';
 import { integrationEventHandlerToTargetLanguage } from './components/integration-event/integrationEventHandler.js';
 import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
+import { standardVOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/standardVOEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -310,6 +314,10 @@ const modelToTargetLanguage = (props: {
       res = DTOEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TStandardVOEvaluation: {
+      res = standardVOEvaluationToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {
       res = definitionMethodInfoToTargetLanguage(value);
       break;
@@ -463,6 +471,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TStandardValueType: {
+      res = standardValueTypeToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainConstructorParameter: {

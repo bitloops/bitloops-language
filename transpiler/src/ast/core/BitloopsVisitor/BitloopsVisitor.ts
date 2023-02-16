@@ -148,6 +148,7 @@ import {
   domainEventHandlerHandleMethodParameterVisitor,
   integrationEventEvaluationVisitor,
   entityConstructorEvaluationVisitor,
+  standardVOEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -266,6 +267,8 @@ import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVis
 import { integrationEventDeclarationVisitor } from './helpers/integration-event/integrationEventVisitor.js';
 import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
+import { StandardVOTypeNodeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/StandardVOTypeNodeBuilder.js';
+import { StandardValueTypeNodeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/StandardValueTypeNodeBuilder.js';
 import { IntegrationEventIdentifierNodeBuilder } from '../intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
 import { IntegrationEventIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
 import { integrationEventInputVisitor } from './helpers/integration-event/integrationEventInputVisitor.js';
@@ -670,6 +673,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitDtoEvaluation(ctx: BitloopsParser.DtoEvaluationContext) {
     return dtoEvaluationVisitor(this, ctx);
   }
+
+  visitStandardVOEvaluation(ctx: BitloopsParser.StandardVOEvaluationContext) {
+    return standardVOEvaluationVisitor(this, ctx);
+  }
   visitEvaluation(ctx: BitloopsParser.EvaluationContext) {
     return evaluationVisitor(this, ctx);
   }
@@ -1072,6 +1079,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const buildInClassType = ctx.bitloopsBuiltInClass().getText();
     const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
     return buildInClassTypeNode;
+  }
+
+  visitStandardValueTypePrimType(ctx: any) {
+    const value = this.visit(ctx.standardValueType());
+    return new StandardValueTypeNodeBuilder(produceMetadata(ctx, this)).withValue(value).build();
+  }
+
+  visitStandardVOType(ctx: BitloopsParser.StandardVOTypeContext) {
+    const identifier = ctx.upperCaseIdentifier().getText();
+    return new StandardVOTypeNodeBuilder(produceMetadata(ctx, this)).withValue(identifier).build();
   }
 
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {

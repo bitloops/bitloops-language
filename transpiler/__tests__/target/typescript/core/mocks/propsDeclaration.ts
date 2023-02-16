@@ -45,4 +45,17 @@ export const VALID_PROPS_DECLARATION_TEST_CASES: TestCase[] = [
     output:
       "import { Domain } from '@bitloops/bl-boilerplate-core'; export interface TodoProps { id?: Domain.UUIDv4; }",
   },
+  {
+    description: 'Props with standard VO type',
+    propsDeclaration: new PropsDeclarationBuilderDirector().buildProps(
+      'TodoProps',
+      new FieldListNodeBuilder()
+        .withFields([
+          new FieldBuilderDirector().buildStandardVOField('currency', 'Currency', false),
+        ])
+        .build(),
+    ),
+    output:
+      "import { Domain } from '@bitloops/bl-boilerplate-core'; export interface TodoProps { currency: Domain.StandardVO.Currency.Value; }",
+  },
 ];

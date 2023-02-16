@@ -23,7 +23,10 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { validEvaluationTestCases } from './mocks/evaluation/evaluation.js';
+import {
+  validEvaluationTestCases,
+  validStandardVOEvaluationTestCases,
+} from './mocks/evaluation/evaluation.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
@@ -58,6 +61,34 @@ describe('Evaluation is valid', () => {
       const value = resultTree.getCurrentNode().getValue();
 
       expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+
+  describe('Standard VO is valid', () => {
+    validStandardVOEvaluationTestCases.forEach((testCase) => {
+      test(`${testCase.description}`, () => {
+        const initialModelOutput = parser.parse({
+          core: [
+            {
+              boundedContext: BOUNDED_CONTEXT,
+              module: MODULE,
+              fileId: testCase.fileId,
+              fileContents: testCase.inputBLString,
+            },
+          ],
+        });
+
+        if (!isParserErrors(initialModelOutput)) {
+          const result = intermediateParser.parse(initialModelOutput);
+          if (!isIntermediateASTValidationErrors(result)) {
+            resultTree = result.core[BOUNDED_CONTEXT][MODULE];
+          }
+        }
+        const expectedNodeValues = testCase.evaluation;
+        const value = resultTree.getCurrentNode().getValue();
+
+        expect(value).toMatchObject(expectedNodeValues);
+      });
     });
   });
 });
