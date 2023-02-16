@@ -68,6 +68,8 @@ bitloopsIdentifiers
     | RepoPortIdentifier
     | ReadModelIdentifier
     | structIdentifier
+    | commandIdentifier
+    | queryIdentifier
     ;
 
 primitives
@@ -213,6 +215,11 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | commandDeclaration
+    | queryDeclaration
+    | domainEventDeclaration
+    | commandHandler
+    | queryHandler
     | integrationEventDeclaration
     | domainEventDeclaration
     | domainEventHandlerDeclaration
@@ -265,6 +272,8 @@ evaluation
     | entityConstructorEvaluation
     | propsEvaluation
     | structEvaluation
+    | commandEvaluation
+    | queryEvaluation
     | standardVOEvaluation
     | integrationEventEvaluation
     ;
@@ -412,8 +421,41 @@ useCaseIdentifier
     ;
 
 useCaseDeclaration
-    : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
+    : UseCase useCaseIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
+
+commandIdentifier
+    : CommandIdentifier
+    ;
+
+commandDeclaration
+    : Command commandIdentifier OpenBrace fieldList CloseBrace
+    ;
+
+queryIdentifier
+    : QueryIdentifier
+    ;
+
+queryDeclaration
+    : Query queryIdentifier OpenBrace fieldList CloseBrace
+    ;
+
+commandHandler
+    : CommandHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+commandHandlerIdentifier
+    : CommandHandlerIdentifier 
+    ;
+
+queryHandler
+    : QueryHandler queryHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+queryHandlerIdentifier
+    : QueryHandlerIdentifier 
+    ;
+
 
 integrationEventIdentifier
     : IntegrationEventIdentifier
@@ -500,7 +542,6 @@ domainEventIdentifier
     : DomainEventIdentifier
     ;
 
-// 
 domainEventHandlerIdentifier
     : DomainEventHandlerIdentifier
     ;
@@ -572,6 +613,14 @@ entityConstructorEvaluation
     : entityIdentifier domainEvaluationInput
     ;
 
+commandEvaluation
+    : commandIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+
+queryEvaluation
+    : queryIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+    
 integrationEventEvaluation
     : integrationEventIdentifier Dot Create domainEvaluationInput
     ;
@@ -606,7 +655,7 @@ domainErrorIdentifier
 applicationErrorIdentifier
     : DomainErrorIdentifier;
 
-useCaseExecuteDeclaration
+executeDeclaration
     : Execute OpenParen parameter? CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 

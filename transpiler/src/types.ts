@@ -263,6 +263,8 @@ export type TEvaluationValues =
   | TErrorEvaluation
   | TBuiltInClassEvaluation
   | TBuiltInFunctionValues
+  | TCommandEvaluation
+  | TQueryEvaluation
   | TStandardVOEvaluation;
 
 export type TMethodCallExpression = {
@@ -306,6 +308,18 @@ export type TDTOEvaluation = {
   dto: {
     [DTOIdentifierKey]: TDTOIdentifier;
   } & TEvaluationFields;
+};
+
+export type TCommandEvaluation = {
+  command: {
+    [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
+};
+
+export type TQueryEvaluation = {
+  query: {
+    [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
 };
 
 export type TStandardVOEvaluation = {
@@ -1105,6 +1119,45 @@ export enum RestServerOptions {
   port = 'port',
 }
 
+export type TCommandIdentifier = TIdentifier;
+export type TCommandTopicIdentifier = TIdentifier;
+export const commandKey = 'command';
+
+export type TCommand = {
+  [commandKey]: {
+    [identifierKey]: TCommandIdentifier;
+    commandTopic: TExpression;
+  } & TVariables;
+};
+
+export const queryKey = 'query';
+export type TQueryIdentifier = TIdentifier;
+export type TQuery = {
+  [queryKey]: {
+    [identifierKey]: TQueryIdentifier;
+    queryTopic: TExpression;
+  } & TVariables;
+};
+
+export const commandHandlerKey = 'commandHandler';
+export type TCommandHandlerIdentifier = TIdentifier;
+export type TCommandHandler = {
+  [commandHandlerKey]: {
+    [identifierKey]: TCommandHandlerIdentifier;
+    execute: TExecute;
+  } & TParameterList;
+};
+
+export const queryHandlerKey = 'queryHandler';
+export type TQueryHandlerIdentifier = TIdentifier;
+
+export type TQueryHandler = {
+  [queryHandlerKey]: {
+    [identifierKey]: TQueryHandlerIdentifier;
+    execute: TExecute;
+  } & TParameterList;
+};
+
 // DomainEventHandler & IntegrationEventHandler
 export type TEventHandlerBusDependencies = {
   eventHandlerBusDependencies: {
@@ -1113,13 +1166,6 @@ export type TEventHandlerBusDependencies = {
     integrationEventBus: boolean;
   };
 };
-
-// export type TCommand = {
-//   [commandKey]: {
-//     [commandIdentifierKey]: TCommandIdentifier;
-//     commandTopic: TExpression
-//   } & TVariables;
-// };
 
 export type TIntegrationVersionMappers = {
   integrationVersionMappers: TIntegrationVersionMapper[];

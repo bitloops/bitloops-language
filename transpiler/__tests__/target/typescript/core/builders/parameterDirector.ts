@@ -7,7 +7,7 @@ import {
   TBitloopsIdentifier,
   TBitloopsPrimitives,
 } from '../../../../../src/types.js';
-import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class ParameterBuilderDirector {
   private builder: ParameterNodeBuilder;
@@ -22,7 +22,7 @@ export class ParameterBuilderDirector {
   ): ParameterNode {
     return this.builder
       .withIdentifier(this.parameterIdentifier(parameterName))
-      .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(primitiveType))
+      .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType(primitiveType))
       .build();
   }
 
@@ -32,7 +32,7 @@ export class ParameterBuilderDirector {
   ): ParameterNode {
     return this.builder
       .withIdentifier(this.parameterIdentifier(parameterName))
-      .withType(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(identifierType))
+      .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(identifierType))
       .build();
   }
 
@@ -42,7 +42,9 @@ export class ParameterBuilderDirector {
   ): ParameterNode {
     return this.builder
       .withIdentifier(this.parameterIdentifier(parameterName))
-      .withType(new BitloopsPrimaryTypeDirector().buildArrayIdentifierPrimaryType(identifierType))
+      .withType(
+        new BitloopsPrimaryTypeNodeDirector().buildArrayIdentifierPrimaryType(identifierType),
+      )
       .build();
   }
 
@@ -52,7 +54,7 @@ export class ParameterBuilderDirector {
   ): ParameterNode {
     return this.builder
       .withIdentifier(this.parameterIdentifier(parameterName))
-      .withType(new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(builtInType))
+      .withType(new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType(builtInType))
       .build();
   }
 

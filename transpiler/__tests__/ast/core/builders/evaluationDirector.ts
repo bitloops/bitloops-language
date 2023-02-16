@@ -8,6 +8,8 @@ import {
   evaluationFieldsKey,
   TEvaluationField,
   identifierKey,
+  TQueryEvaluation,
+  TCommandEvaluation,
 } from '../../../../src/types.js';
 
 type PropsParam =
@@ -53,6 +55,34 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildCommandEvaluation(commandIdentifier: string, fields?: TEvaluationField[]): TEvaluation {
+    const evaluation: TCommandEvaluation = {
+      command: {
+        [identifierKey]: commandIdentifier,
+      },
+    };
+    if (fields) {
+      evaluation.command[evaluationFieldsKey] = fields;
+    }
+    return {
+      evaluation,
+    };
+  }
+
+  buildQueryEvaluation(commandIdentifier: string, fields?: TEvaluationField[]): TEvaluation {
+    const evaluation: TQueryEvaluation = {
+      query: {
+        [identifierKey]: commandIdentifier,
+      },
+    };
+
+    if (fields) {
+      evaluation.query[evaluationFieldsKey] = fields;
+    }
+    return {
+      evaluation,
+    };
+  }
   /**
    *
    * @param standardVOIdentifier e.g 'Currency'

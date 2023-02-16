@@ -1,11 +1,7 @@
-
-
 //Always respond
 CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
      execute(command: WithdrawMoneyCommand): (OK(void), Errors(
         ApplicationErrors.AccountNotFound
-        | DomainErrors.PINIsNotPositiveNumber
-        | DomainErrors.InvalidCustomerPIN
         )) {
         
         const accountId = UUIDv4(command.accountId);
@@ -49,8 +45,16 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
   } & TOkErrorReturnType & TParameter;
 
   // typescript
+
+  export type WithdrawMoneyCommandHandlerResponse = Either<
+  void,
+  | ApplicationErrors.AccountNotFound
+  | DomainErrors.PINIsNotPositiveNumber
+  | DomainErrors.InvalidCustomerPIN
+>;
+
   export class WithdrawMoneyCommandHandler
-  implements Application.IUseCase<WithdrawMoneyCommand, Promise<InsertPINCommandHandlerResponse>>
+  implements Application.IUseCase<WithdrawMoneyCommand, Promise<WithdrawMoneyCommandHandlerResponse>>
 {
   private accountRepo: IAccountWriteRepo;
 

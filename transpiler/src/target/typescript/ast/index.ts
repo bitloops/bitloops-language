@@ -21,6 +21,7 @@
 import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../helpers/mappings.js';
+import { CommandHandlerNodeTSTransformer } from './node-transformers/commandHandler.js';
 import {
   GraphQLControllerNodeTSTransformer,
   RestControllerNodeTSTransformer,
@@ -33,6 +34,7 @@ import {
 } from './node-transformers/domainMethods/index.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { IntegrationEventHandlerNodeTSTransformer } from './node-transformers/integrationEventHandler.js';
+import { QueryHandlerNodeTSTransformer } from './node-transformers/queryHandler.js';
 import { UseCaseNodeTSTransformer } from './node-transformers/use-case.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 
@@ -88,6 +90,10 @@ export class IntermediateModelToASTTargetTransformer
           intermediateASTTree,
           intermediateASTNode,
         );
+      case BitloopsTypesMapping.TCommandHandler:
+        return new CommandHandlerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TQueryHandler:
+        return new QueryHandlerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:
         return null;
     }

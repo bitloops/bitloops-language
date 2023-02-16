@@ -22,6 +22,7 @@ import {
   TBitloopsPrimitives,
   TConstDeclaration,
   TEvaluationField,
+  TExpression,
   TVariableDeclaration,
 } from '../../../../../src/types.js';
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
@@ -291,6 +292,20 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
 
+  buildConstDeclarationWithExpression({
+    name,
+    expression,
+  }: {
+    name: string;
+    expression: TExpression;
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(expression)
+      .build();
+    return constDeclaration;
+  }
+
   buildConstDeclarationWithStructEvaluation({
     name,
     structIdentifier,
@@ -305,6 +320,29 @@ export class ConstDeclarationBuilderDirector {
       .withExpression(
         new ExpressionBuilderDirector().buildEvaluation(
           new EvaluationBuilderDirector().buildStructEvaluation(structIdentifier, fields),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
+  buildBuiltInClassWithMemberDotArgument({
+    name,
+    builtInClassIdentifier,
+    builtInClassArgs,
+  }: {
+    name: string;
+    builtInClassIdentifier: string;
+    builtInClassArgs: string[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
+            builtInClassIdentifier,
+            new ArgumentListBuilderDirector().buildMemberDotArguments([builtInClassArgs]),
+          ),
         ),
       )
       .build();

@@ -10,6 +10,8 @@ import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
 import { IfStatementBuilderDirector } from './ifStatementDirector.js';
 import { BreakStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/BreakStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
+import { ReturnErrorStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
+import { ReturnErrorStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 
 export class StatementBuilderDirector {
   /**
@@ -43,6 +45,10 @@ export class StatementBuilderDirector {
 
   buildReturnOKStatement(expression: ExpressionNode): ReturnOKStatementNode {
     return new ReturnOKStatementNodeBuilder().withExpression(expression).build();
+  }
+
+  buildReturnErrorStatement(expression: ExpressionNode): ReturnErrorStatementNode {
+    return new ReturnErrorStatementNodeBuilder().withExpression(expression).build();
   }
 
   buildExpressionEntityEvaluationWithIdentifier(

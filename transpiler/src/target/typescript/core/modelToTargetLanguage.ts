@@ -124,6 +124,12 @@ import { domainConstructorParameterToTargetLanguage } from './components/domain/
 import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
+import { commandToTargetLanguage } from './components/command/index.js';
+import { queryToTargetLanguage } from './components/query/index.js';
+import { commandEvaluationToTargetLanguage } from './components/statements/expression/evaluation/commandEvaluation.js';
+import { queryEvaluationToTargetLanguage } from './components/statements/expression/evaluation/queryEvaluation.js';
+import { commandHandlerToTargetLanguage } from './components/commandHandler/index.js';
+import { queryHandlerToTargetLanguage } from './components/queryHandler/index.js';
 import { domainEventToTargetLanguage } from './components/domain-event/index.js';
 import {
   domainEventHandlerToTargetLanguage,
@@ -313,6 +319,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDTOEvaluation: {
       res = DTOEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TCommandEvaluation: {
+      res = commandEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TQueryEvaluation: {
+      res = queryEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TStandardVOEvaluation: {
@@ -516,6 +530,22 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TEnvironmentVariableExpression: {
       res = environmentVariableToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TCommand: {
+      res = commandToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TQuery: {
+      res = queryToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TCommandHandler: {
+      res = commandHandlerToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TQueryHandler: {
+      res = queryHandlerToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainEvent: {

@@ -19,7 +19,7 @@ import { ReturnStatementBuilderDirector } from '../statement/returnDirector.js';
 import { StatementBuilderDirector } from '../statement/statementDirector.js';
 import { ParameterBuilderDirector } from '../parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from '../statement/constDeclaration.js';
-import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { ArgumentDirector } from '../argument.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFIeld.js';
 import { IfStatementBuilderDirector } from '../statement/ifStatementDirector.js';
@@ -89,7 +89,7 @@ export class RestControllerBuilderDirector {
               'name',
             ),
           ],
-          new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('HelloWorldRequestDTO'),
+          new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('HelloWorldRequestDTO'),
         ),
         new ConstDeclarationBuilderDirector().buildConstDeclarationThisUseCaseExecute(
           'result',

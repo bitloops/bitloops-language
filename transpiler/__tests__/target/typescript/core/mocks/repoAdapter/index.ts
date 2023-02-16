@@ -19,7 +19,7 @@ import { IntermediateASTTree } from '../../../../../../src/ast/core/intermediate
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { ArgumentDirector } from '../../builders/argument.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { RootEntityBuilderDirector } from '../../builders/domain/rootEntityDirector.js';
 import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
@@ -68,7 +68,7 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -93,7 +93,7 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -184,7 +184,7 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -209,7 +209,7 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -304,11 +304,11 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
       fields: [
         new FieldNodeBuilder()
           .withName(new IdentifierNodeBuilder().withName('name').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'))
           .build(),
         new FieldNodeBuilder()
           .withName(new IdentifierNodeBuilder().withName('id').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'))
           .build(),
       ],
     }),
@@ -405,7 +405,7 @@ export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -430,7 +430,7 @@ export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -473,11 +473,11 @@ export const VALID_MULTIPLE_REPO_ADAPTER_DEFINITIONS = [
       fields: [
         new FieldNodeBuilder()
           .withName(new IdentifierNodeBuilder().withName('name').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'))
           .build(),
         new FieldNodeBuilder()
           .withName(new IdentifierNodeBuilder().withName('id').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'))
           .build(),
       ],
     }),

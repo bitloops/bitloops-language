@@ -16,6 +16,8 @@ import { DTOIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/
 import { ErrorIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { StructIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CorsOptionsEvaluationBuilder.js';
+import { CommandEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CommandEvaluationNodeBuilder.js';
+import { QueryEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/QueryEvaluationNodeBuilder.js';
 import { IntegrationEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/IntegrationEventEvaluationNodeBuilder.js';
 import { IntegrationEventIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
 import { DomainEvaluationPropsNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
@@ -137,6 +139,31 @@ export class EvaluationBuilderDirector {
       .build();
 
     return new EvaluationBuilder().withEvaluation(evaluationNode).build();
+  }
+
+  buildCommandEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode?: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new CommandEvaluationNodeBuilder().withIdentifier(identifierNode);
+
+    if (evaluationFieldListNode) {
+      evaluationNode.withEvaluationFieldList(evaluationFieldListNode);
+    }
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
+  }
+
+  buildQueryEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode?: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new QueryEvaluationNodeBuilder().withIdentifier(identifierNode);
+    if (evaluationFieldListNode) {
+      evaluationNode.withEvaluationFieldList(evaluationFieldListNode);
+    }
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
   }
 
   buildStandardVOEvaluation(

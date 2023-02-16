@@ -20,17 +20,13 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-// import { addReturnOkVoidStatement } from './addReturnOkVoidStatement.js';
-// import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
-
-// import { modifyReturnOkErrorStatements } from './modifyReturnOkErrorStatements.js';
 import { UseCaseIdentifierNode } from '../../intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
-import { UseCaseExecuteNode } from '../../intermediate-ast/nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../intermediate-ast/nodes/ExecuteNode.js';
 import { produceMetadata } from '../metadata.js';
 import { UseCaseNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
-import { UseCaseExecuteNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseExecuteNodeBuilder.js';
+import { ExecuteNodeBuilder } from '../../intermediate-ast/builders/ExecuteNodeBuilder.js';
 import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ParameterNode } from '../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
 
@@ -40,7 +36,7 @@ export const useCaseDeclarationVisitor = (
 ): void => {
   const useCaseIdentifierNode: UseCaseIdentifierNode = thisVisitor.visit(ctx.useCaseIdentifier());
 
-  const useCaseExecuteNode: UseCaseExecuteNode = thisVisitor.visit(ctx.useCaseExecuteDeclaration());
+  const useCaseExecuteNode: ExecuteNode = thisVisitor.visit(ctx.executeDeclaration());
 
   const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
 
@@ -52,16 +48,16 @@ export const useCaseDeclarationVisitor = (
     .build();
 };
 
-export const useCaseExecuteDeclarationVisitor = (
+export const executeDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.UseCaseExecuteDeclarationContext,
-): UseCaseExecuteNode => {
+  ctx: BitloopsParser.ExecuteDeclarationContext,
+): ExecuteNode => {
   const returnTypeNode: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
   const parameterNode: ParameterNode = ctx.parameter() ? thisVisitor.visit(ctx.parameter()) : null;
   const statementListNode: StatementListNode = thisVisitor.visit(ctx.functionBody());
 
   const metadata = produceMetadata(ctx, thisVisitor);
-  const executeNodeBuilder = new UseCaseExecuteNodeBuilder(metadata)
+  const executeNodeBuilder = new ExecuteNodeBuilder(metadata)
     .withStatementList(statementListNode)
     .withReturnType(returnTypeNode);
   if (parameterNode) executeNodeBuilder.withParameter(parameterNode);
