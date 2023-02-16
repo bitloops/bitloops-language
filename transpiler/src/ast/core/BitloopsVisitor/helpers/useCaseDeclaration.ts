@@ -21,7 +21,7 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { UseCaseIdentifierNode } from '../../intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
-import { ExecuteNode } from '../../intermediate-ast/nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../intermediate-ast/nodes/ExecuteNode.js';
 import { produceMetadata } from '../metadata.js';
 import { UseCaseNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';

@@ -2,7 +2,7 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { CommandHandlerNodeBuilder } from '../../intermediate-ast/builders/command/CommandHandlerNodeBuilder.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
-import { ExecuteNode } from '../../intermediate-ast/nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../intermediate-ast/nodes/ExecuteNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
 

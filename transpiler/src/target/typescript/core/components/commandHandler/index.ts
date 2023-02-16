@@ -36,6 +36,18 @@ const COMMAND_HANDLER_DEPENDENCIES: TDependenciesTypeScript = [
     value: 'Application',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'RespondWithPublish',
+    from: '@bitloops/bl-boilerplate-core',
+  },
 ];
 
 export const commandHandlerToTargetLanguage = (
@@ -109,7 +121,7 @@ const initialCommandHandler = (
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
   if (!isDependenciesEmpty(dependencies))
-    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {}; `;
+    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
   return result;
 };
 

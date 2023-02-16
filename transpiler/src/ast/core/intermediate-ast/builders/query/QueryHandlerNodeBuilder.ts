@@ -22,7 +22,7 @@ import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
-import { ExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../nodes/ExecuteNode.js';
 import { IBuilder } from '../IBuilder.js';
 import { QueryHandlerNode } from '../../nodes/query/QueryHandlerNode.js';
 

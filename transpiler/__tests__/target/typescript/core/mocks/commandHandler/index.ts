@@ -17,14 +17,17 @@ export const VALID_COMMAND_HANDLER_TEST_CASES = [
     commandHandler: new CommandHandlerBuilderDirector().buildCommand({
       identifier: 'WithdrawMoneyCommandHandler',
       parameters: [
-        new ParameterBuilderDirector().buildIdentifierParameter('accountRepo', 'IAccountWriteRepo'),
+        new ParameterBuilderDirector().buildIdentifierParameter(
+          'accountRepo',
+          'AccountWriteRepoPort',
+        ),
       ],
       returnType: new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorTypePrimitiveType(
         'void',
         [
-          'ApplicationErrors.AccountNotFound',
-          'DomainErrors.PINIsNotPositiveNumber',
-          'DomainErrors.InvalidCustomerPIN',
+          'ApplicationErrors.AccountNotFoundError',
+          'DomainErrors.PINIsNotPositiveNumberError',
+          'DomainErrors.InvalidCustomerPINError',
         ],
       ),
       executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
@@ -81,7 +84,7 @@ export const VALID_COMMAND_HANDLER_TEST_CASES = [
             new StatementBuilderDirector().buildReturnErrorStatement(
               new ExpressionBuilderDirector().buildEvaluationExpression(
                 new EvaluationBuilderDirector().buildErrorEvaluation(
-                  'ApplicationErrors.AccountNotFound',
+                  'ApplicationErrors.AccountNotFoundError',
                   new ArgumentListDirector().buildArgumentListWithMemberDotExpression(
                     'command',
                     'accountId',

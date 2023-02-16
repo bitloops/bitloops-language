@@ -1,7 +1,7 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
-import { ExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../nodes/ExecuteNode.js';
 import { UseCaseIdentifierNode } from '../../nodes/UseCase/UseCaseIdentifierNode.js';
 import { UseCaseNode } from '../../nodes/UseCase/UseCaseNode.js';
 import { IBuilder } from '../IBuilder.js';

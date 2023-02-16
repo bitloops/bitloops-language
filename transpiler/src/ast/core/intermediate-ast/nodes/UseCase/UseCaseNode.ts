@@ -3,7 +3,7 @@ import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
-import { ExecuteNode } from './UseCaseExecuteNode.js';
+import { ExecuteNode } from '../ExecuteNode.js';
 import { UseCaseIdentifierNode } from './UseCaseIdentifierNode.js';
 
 export class UseCaseNode extends ClassTypeNode {
@@ -27,9 +27,7 @@ export class UseCaseNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const useCaseExecute = this.getChildNodeByType<ExecuteNode>(
-      BitloopsTypesMapping.TUseCaseExecute,
-    );
+    const useCaseExecute = this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
     return useCaseExecute.getStatements();
   }
 

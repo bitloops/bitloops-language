@@ -21,6 +21,9 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { queryHandlerKey } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
+import { StatementNode } from '../statements/Statement.js';
+import { ExecuteNode } from '../ExecuteNode.js';
 
 export class QueryHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.QueryHandler;
@@ -33,5 +36,17 @@ export class QueryHandlerNode extends ClassTypeNode {
       metadata,
       classNodeName: QueryHandlerNode.classNodeName,
     });
+  }
+
+  getStatements(): StatementNode[] {
+    const useCaseExecute = this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
+    return useCaseExecute.getStatements();
+  }
+
+  getAllDependenciesIdentifiers(): string[] {
+    const parameterList = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterList.getIdentifiers();
   }
 }

@@ -35,7 +35,7 @@ const useCaseExecuteString = (
   statements: string,
   responseTypeName: string,
 ): string => {
-  let result = '@RespondWithPublish()\nasync execute';
+  let result = '\n@RespondWithPublish()\nasync execute';
   result += `${parameterOutput}`;
   result += `: Promise<${responseTypeName}> {`;
   result += statements;

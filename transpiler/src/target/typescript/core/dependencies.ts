@@ -225,6 +225,14 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.Query,
     };
+  } else if (dependencyName.endsWith('CommandHandler')) {
+    return {
+      classType: ClassTypes.Command,
+    };
+  } else if (dependencyName.endsWith('QueryHandler')) {
+    return {
+      classType: ClassTypes.Query,
+    };
   } else if (dependencyName.endsWith('DomainEvent')) {
     return {
       classType: ClassTypes.DomainEvent,

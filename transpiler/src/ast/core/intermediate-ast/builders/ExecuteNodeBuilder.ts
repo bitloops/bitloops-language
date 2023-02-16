@@ -2,7 +2,7 @@ import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
 import { ParameterNode } from '../nodes/ParameterList/ParameterNode.js';
 import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../nodes/statements/StatementList.js';
-import { ExecuteNode } from '../nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../nodes/ExecuteNode.js';
 import { IBuilder } from './IBuilder.js';
 
 export class ExecuteNodeBuilder implements IBuilder<ExecuteNode> {

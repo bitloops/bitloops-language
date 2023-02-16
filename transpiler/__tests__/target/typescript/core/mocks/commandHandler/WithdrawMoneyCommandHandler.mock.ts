@@ -1,43 +1,34 @@
 import {
   Application,
-  RespondWithPublish,
-  ok,
-  fail,
   Either,
+  RespondWithPublish,
   Domain,
+  fail,
+  ok,
 } from '@bitloops/bl-boilerplate-core';
-
-import { DomainErrors } from '../../domain/errors/index';
-import { IAccountWriteRepo } from '../../repos/interfaces/IAccountWriteRepo';
-import { ApplicationErrors } from '../errors/index';
-import { WithdrawMoneyCommand } from './WithdrawMoneyCommand';
-
+import { ApplicationErrors } from './errors/index';
+import { DomainErrors } from '../domain/errors/index';
+import { AccountWriteRepoPort } from '../ports/AccountWriteRepoPort';
+import { WithdrawMoneyCommand } from './commands/WithdrawMoneyCommand';
 export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
-  | ApplicationErrors.AccountNotFound
-  | DomainErrors.PINIsNotPositiveNumber
-  | DomainErrors.InvalidCustomerPIN
+  | ApplicationErrors.AccountNotFoundError
+  | DomainErrors.PINIsNotPositiveNumberError
+  | DomainErrors.InvalidCustomerPINError
 >;
-
 export class WithdrawMoneyCommandHandler
   implements
     Application.IUseCase<WithdrawMoneyCommand, Promise<WithdrawMoneyCommandHandlerResponse>>
 {
-  constructor(private accountRepo: IAccountWriteRepo) {}
-
+  constructor(private accountRepo: AccountWriteRepoPort) {}
   @RespondWithPublish()
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
-
     const accountEntity = await this.accountRepo.getById(accountId);
-
     if (!accountEntity) {
-      return fail(new ApplicationErrors.AccountNotFound(command.accountId));
+      return fail(new ApplicationErrors.AccountNotFoundError(command.accountId));
     }
-    const withdrawOrError = accountEntity.withdrawAmount(command.amount);
-    if (withdrawOrError.isFail()) {
-      return fail(withdrawOrError.value);
-    }
+    accountEntity.withdrawAmount(command.amount);
     await this.accountRepo.update(accountEntity);
     return ok();
   }

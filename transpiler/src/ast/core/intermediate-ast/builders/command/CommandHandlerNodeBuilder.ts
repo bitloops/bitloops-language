@@ -23,7 +23,7 @@ import { CommandHandlerNode } from '../../nodes/command/CommandHandlerNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
-import { ExecuteNode } from '../../nodes/UseCase/UseCaseExecuteNode.js';
+import { ExecuteNode } from '../../nodes/ExecuteNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 // produce the QueryNodeBuilder builder
