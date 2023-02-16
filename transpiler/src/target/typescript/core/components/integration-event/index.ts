@@ -162,8 +162,6 @@ const getVersionMappersInfo = (
   integrationVersionMappers: TIntegrationVersionMapper[],
   integrationEventIdentifier: string,
 ): { versions: string; versionMappers: string; integrationSchemas: string } => {
-  // eslint-disable-next-line no-debugger
-  debugger;
   let versions = '[';
   let versionMappers = '{';
   let schemas = '';

@@ -5,12 +5,12 @@ import { StatementListNode } from '../nodes/statements/StatementList.js';
 import { IBuilder } from './IBuilder.js';
 
 export class EventHandlerHandleMethodNodeBuilder implements IBuilder<EventHandleNode> {
-  private domainEventHandleNode: EventHandleNode;
+  private eventHandleNode: EventHandleNode;
   private parameter: ParameterNode;
   private statementList: StatementListNode;
 
   constructor(metadata?: TNodeMetadata) {
-    this.domainEventHandleNode = new EventHandleNode(metadata);
+    this.eventHandleNode = new EventHandleNode(metadata);
   }
 
   public withParameter(parameter: ParameterNode): EventHandlerHandleMethodNodeBuilder {
@@ -24,11 +24,11 @@ export class EventHandlerHandleMethodNodeBuilder implements IBuilder<EventHandle
   }
 
   public build(): EventHandleNode {
-    this.domainEventHandleNode.addChild(this.statementList);
-    this.domainEventHandleNode.addChild(this.parameter);
+    this.eventHandleNode.addChild(this.statementList);
+    this.eventHandleNode.addChild(this.parameter);
 
-    this.domainEventHandleNode.buildObjectValue();
+    this.eventHandleNode.buildObjectValue();
 
-    return this.domainEventHandleNode;
+    return this.eventHandleNode;
   }
 }
