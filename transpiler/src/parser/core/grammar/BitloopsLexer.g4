@@ -163,6 +163,7 @@ ValueObject:                    'ValueObject';
 AggregateRoot:                  'AggregateRoot';
 Entity:                         'Entity';
 DomainEventHandler:             'DomainEventHandler';
+IntegrationEventHandler:        'IntegrationEventHandler';
 DomainEvent:                    'DomainEvent';
 Service:                        'Service';
 Repository:                     'Repository';
@@ -181,6 +182,7 @@ IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
 Constructor:                    'constructor';
 StandardVO:                     'StandardVO';
+IntegrationEvent:               'IntegrationEvent';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
@@ -307,8 +309,10 @@ RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+IntegrationEventIdentifier:     UpperCaseStart IdentifierPart* IntegrationEvent;
 DomainEventIdentifier:          UpperCaseStart IdentifierPart* DomainEvent;
 DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandler;
+IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
 SetLanguage:                    'setLanguage';
 TypeScript:                     'TypeScript';
 Java:                           'Java';

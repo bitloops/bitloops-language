@@ -8,7 +8,6 @@ export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<Us
   run(): void {
     this.prependAwaitToAllDependencyCalls();
     this.transformDotValueOfDomainEvaluations();
-    this.tree.buildValueRecursiveBottomUp(this.node);
   }
 
   private prependAwaitToAllDependencyCalls(): void {

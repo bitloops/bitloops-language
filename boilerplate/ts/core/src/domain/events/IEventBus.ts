@@ -26,5 +26,5 @@ export interface IEventBus {
   subscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void>;
   unsubscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void>;
   publish(topic: string, message: IEvent): Promise<void>;
-  publishMany(params: Array<{ topic: string; message: IEvent }>): Promise<void>;
+  publishMany(params: Array<IEvent>): Promise<void>;
 }

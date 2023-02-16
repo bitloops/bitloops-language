@@ -58,6 +58,23 @@ export const validEvaluationTestCases: Array<TestCase> = [
     }),
   },
   {
+    description: 'Valid integration event evaluation',
+    fileId: 'testFile.bl',
+    inputBLString:
+      "JestTestEvaluation { NameIntegrationEvent.create({ message: 'Hello, World!' })}",
+    evaluation: new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
+      'NameIntegrationEvent',
+      {
+        fields: [
+          new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+            'message',
+            'Hello, World!',
+          ),
+        ],
+      },
+    ),
+  },
+  {
     description: 'Valid entity constructor evaluation',
     fileId: 'testFile.bl',
     inputBLString: "JestTestEvaluation { NameEntity({ message: 'Hello, World!' })}",

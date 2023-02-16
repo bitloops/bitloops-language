@@ -46,22 +46,22 @@ Props MoneyDepositedInputProps {
  * in the case of a DomainEvent, we generate the domainEventHandler that publishes the integration event
  */
 // @disabled['v2']
-IntegrationEvent MoneyDepositedIntegrationEvent(input: MoneyDepositedToAccountDomainEvent) {
+IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {
   // Maybe have disable list of versions?
 
-  'v1.0.9' : TodoIntegrationSchemaV1 {
-    const fullName = `${input.firstName} ${input.lastName}`;
-    return {
+  'v1' : IntegrationSchemaV1 {
+    const moneyDeposited = IntegrationSchemaV1({
       accountId: event.account.id.toString(),
-      balanceAmount: input.balanceAmount,
-    };
+      amount: event.account.balance.amount,
+    });
+    return moneyDeposited;
   }
 
-  'v2' : TodoIntegrationSchemaV2 {
-    return {
-      accountId: input.accountId,
-      amount: input.balanceAmount,
-    };
+  'v2.0.1' : IntegrationSchemaV2 {
+    const moneyDeposited = IntegrationSchemaV2({
+      accountId: event.account.id.toString(),
+    });
+    return moneyDeposited;
   }
 
   // Needs to define the topic for each version, we could have a default topic
@@ -150,7 +150,9 @@ export class MoneyDepositedIntegrationEvent extends Infra.EventBus
 }
 // in case of DomainEvent as input it will generate the publish handler
 export class MoneyDepositedPublishIntegrationEventHandler implements Application.IHandle {
-  constructor(private eventBus: Infra.EventBus.IEventBus) {}
+  constructor(private eventBus: Infra.EventBus.IEventBus) {
+    // here get the integration event bus from container, instead from dependency
+  }
 
   public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<void> {
     const { account } = event;

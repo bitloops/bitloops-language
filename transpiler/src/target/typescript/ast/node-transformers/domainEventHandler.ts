@@ -16,7 +16,6 @@ export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTra
 
   run(): void {
     this.prependAwaitToAllDependencyCalls();
-    this.tree.buildValueRecursiveBottomUp(this.node);
   }
 
   private prependAwaitToAllDependencyCalls(): void {

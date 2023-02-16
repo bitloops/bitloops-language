@@ -3,14 +3,14 @@ import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
 
-export class DomainEventHandleNode extends IntermediateASTNode {
-  private static NAME = 'handle';
+export class IntegrationVersionMapperNode extends IntermediateASTNode {
+  private static classNodeName = 'integrationVersionMapper';
 
   constructor(metadata?: TNodeMetadata) {
     super(
-      BitloopsTypesMapping.TDomainEventHandlerHandleMethod,
+      BitloopsTypesMapping.TIntegrationVersionMapper,
       metadata,
-      DomainEventHandleNode.NAME,
+      IntegrationVersionMapperNode.classNodeName,
     );
   }
 

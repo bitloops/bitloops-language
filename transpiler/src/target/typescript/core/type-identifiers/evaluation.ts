@@ -19,6 +19,7 @@
  */
 
 import {
+  TIntegrationEventEvaluation,
   TEntityConstructorEvaluation,
   TErrorEvaluation,
   TEvaluationValues,
@@ -37,6 +38,15 @@ export class EvaluationTypeIdentifiers {
 
   static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
     if ('errorEvaluation' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isIntegrationEventEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TIntegrationEventEvaluation {
+    if ('integrationEvent' in evaluation) {
       return true;
     }
     return false;

@@ -10,19 +10,9 @@ export class MoneyDepositedPublishIntegrationEventHandler implements Application
   }
 
   public async handle(event: MoneyDepositedToAccount): Promise<void> {
-    const { account } = event;
+    const events = MoneyDepositedIntegrationEvent.create(event);
 
-    const { id: accountId, balance } = account;
-    const events = MoneyDepositedIntegrationEvent.create({
-      accountId: accountId.toString(),
-      balanceAmount: balance.amount,
-    });
-
-    const eventsWithTopic = events.map((event) => {
-      return { message: event, topic: event.eventTopic };
-    });
-
-    await this.eventBus.publishMany(eventsWithTopic);
+    await this.eventBus.publishMany(events);
 
     console.log(
       `[AfterTodoCreatedDomainEvent]: Successfully published MoneyDepositedIntegrationEvent`,

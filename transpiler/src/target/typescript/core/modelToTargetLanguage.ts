@@ -130,6 +130,9 @@ import {
   generateHandlerAttributesAndConstructor,
   generateEventHandlerHandleMethod,
 } from './components/domain-event-handler/index.js';
+import { integrationEventEvaluationToTargetLanguage } from './components/integration-event-evaluation/index.js';
+import { integrationEventToTargetLanguage } from './components/integration-event/index.js';
+import { integrationEventHandlerToTargetLanguage } from './components/integration-event/integrationEventHandler.js';
 import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
 import { standardVOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/standardVOEvaluation.js';
 
@@ -498,6 +501,10 @@ const modelToTargetLanguage = (props: {
       res = bitloopsErrorEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TIntegrationEventEvaluation: {
+      res = integrationEventEvaluationToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TAssignmentExpression: {
       res = assignmentExpressionToTargetLanguage(value);
       break;
@@ -524,6 +531,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.THandle: {
       res = generateEventHandlerHandleMethod(value);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEvent: {
+      res = integrationEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventHandler: {
+      res = integrationEventHandlerToTargetLanguage(value, contextData);
       break;
     }
     default: {

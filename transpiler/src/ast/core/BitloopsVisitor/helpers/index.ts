@@ -151,3 +151,4 @@ export {
   entityConstructorEvaluationVisitor,
   standardVOEvaluationVisitor,
 } from './expression/evaluation/index.js';
+export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';

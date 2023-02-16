@@ -1,10 +1,11 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
+import { EventHandleNode } from '../EventHandleNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
-import { DomainEventHandleNode } from './DomainEventHandleNode.js';
+import { EventHandlerBusDependenciesNode } from './EventHandlerBusDependenciesNode.js';
 
 export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.DomainEventHandler;
@@ -27,14 +28,14 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const useCaseExecute = this.getChildNodeByType<DomainEventHandleNode>(
-      BitloopsTypesMapping.TDomainEventHandlerHandleMethod,
+    const useCaseExecute = this.getChildNodeByType<EventHandleNode>(
+      BitloopsTypesMapping.TEventHandlerHandleMethod,
     );
     return useCaseExecute.getStatements();
   }
 
   getExtraDependencies(): string[] {
-    const eventBusDependencies = this.getChildNodeByType<DomainEventHandleNode>(
+    const eventBusDependencies = this.getChildNodeByType<EventHandlerBusDependenciesNode>(
       BitloopsTypesMapping.TEventHandlerBusDependencies,
     );
     const nodeValue = eventBusDependencies.getValue() as TEventHandlerBusDependencies;
@@ -43,5 +44,12 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
       (key) => nodeValue.eventHandlerBusDependencies[key] === true,
     );
     return extraDependencies;
+  }
+
+  getExtraDependenciesNode(): EventHandlerBusDependenciesNode | null {
+    const eventBusDependencies = this.getChildNodeByType<EventHandlerBusDependenciesNode>(
+      BitloopsTypesMapping.TEventHandlerBusDependencies,
+    );
+    return eventBusDependencies;
   }
 }

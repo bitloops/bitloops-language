@@ -258,6 +258,7 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
+  | TIntegrationEventEvaluation
   | TEntityConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
@@ -322,6 +323,13 @@ export type TEntityEvaluation = {
 };
 export type TEntityConstructorEvaluation = {
   entityConstructor: TDomainEvaluation;
+};
+
+export type TIntegrationEventEvaluation = {
+  integrationEvent: {
+    props: TDomainEvaluationExpression;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  };
 };
 
 export type TDomainEvaluation = {
@@ -1105,6 +1113,24 @@ export type TEventHandlerBusDependencies = {
 //   } & TVariables;
 // };
 
+export type TIntegrationVersionMappers = {
+  integrationVersionMappers: TIntegrationVersionMapper[];
+};
+
+export type TIntegrationVersionMapper = {
+  integrationVersionMapper: {
+    statements: TStatements;
+    [structIdentifierKey]: TStructIdentifier;
+  } & StringLiteral;
+};
+
+export type TIntegrationEventIdentifier = string;
+export type TIntegrationEvent = {
+  IntegrationEvent: {
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TIntegrationVersionMappers &
+    TParameter;
+};
 export const DomainEventIdentifierKey = 'DomainEventIdentifier';
 
 export type TDomainEvent = {
@@ -1128,3 +1154,17 @@ export type TDomainEventHandler = {
 export type THandle = {
   statements: TStatements;
 } & TParameter;
+
+type TIntegrationEventHandlerIdentifier = string;
+export type TIntegrationEventHandler = {
+  integrationEventHandler: {
+    integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies &
+    TEvaluationField;
+};
+
+export enum IntegrationEventHandlerOptions {
+  eventVersion = 'eventVersion',
+}

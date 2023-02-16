@@ -42,9 +42,12 @@ export class EventBus implements IEventBus {
     await this.messageBus.unsubscribe(topic, eventHandler);
   }
 
-  async publishMany(params: Array<{ topic: string; message: IEvent }>): Promise<void> {
-    for (const param of params) {
-      await this.publish(param.topic, param.message);
+  async publishMany(events: Array<IEvent>): Promise<void> {
+    const eventsWithTopic = events.map((event) => {
+      return { message: event, topic: event.eventTopic };
+    });
+    for (const event of eventsWithTopic) {
+      await this.publish(event.topic, event.message);
     }
   }
 }

@@ -41,6 +41,8 @@ enum PROJECT_RELATIVE_PATHS {
   STRUCTS = 'structs/',
   DOMAIN_EVENTS = 'domain/events/',
   DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
+  INTEGRATION_EVENTS = 'contracts/integration-events/',
+  INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -61,6 +63,8 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
   [ClassTypes.DomainEvent]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENTS,
   [ClassTypes.DomainEventHandler]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENT_HANDLERS,
+  [ClassTypes.IntegrationEvent]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENTS,
+  [ClassTypes.IntegrationEventHandler]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENT_HANDLERS,
 };
 
 const getTargetFileDestination = (
@@ -119,6 +123,9 @@ const getTargetFileDestination = (
     case ClassTypes.DomainRule:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Struct:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -152,6 +159,9 @@ const getFilePathRelativeToModule = (
     case ClassTypes.RepoPort:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Struct:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;

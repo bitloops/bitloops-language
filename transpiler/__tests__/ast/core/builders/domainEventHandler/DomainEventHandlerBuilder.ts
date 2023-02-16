@@ -49,6 +49,17 @@ export class DomainEventHandlerBuilder implements IBuilder<TDomainEventHandler> 
     return this;
   }
 
+  public withIntegrationEventBusDependency(): DomainEventHandlerBuilder {
+    this.busDependencies = {
+      eventHandlerBusDependencies: {
+        commandBus: false,
+        integrationEventBus: true,
+        queryBus: false,
+      },
+    };
+    return this;
+  }
+
   public build(): TDomainEventHandler {
     const eventHandler: TDomainEventHandler = {
       domainEventHandler: {

@@ -63,6 +63,21 @@ export const VALID_EVALUATION_TEST_CASES = [
     output: 'AddressVO.create(addressProps)',
   },
   {
+    description: 'Integration event evaluation with one argument',
+    evaluation: new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
+      'TodoCreatedIntegrationEvent',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'name',
+            'superMarketList',
+          ),
+        ])
+        .build(),
+    ),
+    output: "TodoCreatedIntegrationEvent.create({name: 'superMarketList'})",
+  },
+  {
     description: 'Entity constructor evaluation with identifier expression',
     evaluation: new EvaluationBuilderDirector().buildEntityConstructorEvaluationWithExpression(
       'TodoEntity',
