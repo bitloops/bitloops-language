@@ -94,6 +94,7 @@ export const queryHandlerToTargetLanguage = (
   const executeResult = executeToTargetLanguage(
     queryHandler[queryHandlerKey].execute,
     queryHandlerResponseTypeName,
+    true,
   );
 
   result += executeResult.output;

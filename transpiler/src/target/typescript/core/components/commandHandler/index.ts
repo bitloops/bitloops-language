@@ -93,6 +93,7 @@ export const commandHandlerToTargetLanguage = (
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
     commandHandlerResponseTypeName,
+    true,
   );
 
   result += executeResult.output;
