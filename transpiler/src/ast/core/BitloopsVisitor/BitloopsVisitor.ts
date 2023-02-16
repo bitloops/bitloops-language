@@ -287,6 +287,9 @@ import {
 import { IntegrationEventHandlerIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
 import { BitloopsPrimaryTypeNodeBuilderDirector } from '../intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
 import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
+import { servicePortDeclarationVisitor } from './helpers/service-port/servicePortDeclarationVisitor.js';
+import { servicePortIdentifierVisitor } from './helpers/service-port/servicePortIdentifierVisitor.js';
+import { ServicePortIdentifierNode } from '../intermediate-ast/nodes/service-port/ServicePortIdentifierNode.js';
 
 type TContextInfo = {
   boundedContextName: string;
@@ -1426,5 +1429,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
   ): ParameterNode {
     return integrationEventHandlerHandleMethodParameterVisitor(this, ctx);
+  }
+
+  visitServicePortDeclaration(ctx: BitloopsParser.ServicePortDeclarationContext): void {
+    servicePortDeclarationVisitor(this, ctx);
+  }
+
+  visitServicePortIdentifier(
+    ctx: BitloopsParser.ServicePortIdentifierContext,
+  ): ServicePortIdentifierNode {
+    return servicePortIdentifierVisitor(this, ctx);
   }
 }
