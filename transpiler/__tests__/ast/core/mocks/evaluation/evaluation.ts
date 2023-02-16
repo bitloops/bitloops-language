@@ -39,7 +39,7 @@ export const validEvaluationTestCases: Array<TestCase> = [
   {
     description: 'valid value object evaluation',
     fileId: 'testFile.bl',
-    inputBLString: "JestTestEvaluation { NameVO({ message: 'Hello, World!' })}",
+    inputBLString: "JestTestEvaluation { NameVO.create({ message: 'Hello, World!' })}",
     evaluation: new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
       fields: [
         new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
@@ -49,7 +49,7 @@ export const validEvaluationTestCases: Array<TestCase> = [
   {
     description: 'Valid entity evaluation',
     fileId: 'testFile.bl',
-    inputBLString: "JestTestEvaluation { NameEntity({ message: 'Hello, World!' })}",
+    inputBLString: "JestTestEvaluation { NameEntity.create({ message: 'Hello, World!' })}",
     evaluation: new EvaluationBuilderDirector().buildEntityEvaluation('NameEntity', {
       fields: [
         new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
@@ -72,5 +72,15 @@ export const validEvaluationTestCases: Array<TestCase> = [
         ],
       },
     ),
+  },
+  {
+    description: 'Valid entity constructor evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestEvaluation { NameEntity({ message: 'Hello, World!' })}",
+    evaluation: new EvaluationBuilderDirector().buildEntityConstructorEvaluation('NameEntity', {
+      fields: [
+        new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
+      ],
+    }),
   },
 ];

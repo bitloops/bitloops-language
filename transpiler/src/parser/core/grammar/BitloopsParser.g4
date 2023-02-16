@@ -257,6 +257,7 @@ evaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
+    | entityConstructorEvaluation
     | propsEvaluation
     | structEvaluation
     | integrationEventEvaluation
@@ -549,7 +550,7 @@ dtoEvaluation
     ;
 
 valueObjectEvaluation
-    : valueObjectIdentifier domainEvaluationInput
+    : valueObjectIdentifier Dot Create domainEvaluationInput
     ;
 
 domainEvaluationInput
@@ -558,6 +559,10 @@ domainEvaluationInput
     ;
 
 entityEvaluation
+    : entityIdentifier Dot Create domainEvaluationInput
+    ;
+
+entityConstructorEvaluation
     : entityIdentifier domainEvaluationInput
     ;
 

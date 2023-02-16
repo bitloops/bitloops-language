@@ -19,6 +19,9 @@ import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/in
 import { IntegrationEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/IntegrationEventEvaluationNodeBuilder.js';
 import { IntegrationEventIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
 import { DomainEvaluationPropsNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
+import { DomainEvaluationBuilderDirector } from './domainEvaluation/index.js';
+import { EntityIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
+import { EntityConstructorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EntityConstructorEvaluationNodeBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -87,6 +90,22 @@ export class EvaluationBuilderDirector {
         entityName,
         expressionNode,
       );
+    const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
+
+  buildEntityConstructorEvaluationWithExpression(
+    entityName: string,
+    expressionNode: ExpressionNode,
+  ): EvaluationNode {
+    const domainEvaluation =
+      new DomainEvaluationBuilderDirector().buildDomainEvaluationWithExpressionProps(
+        new EntityIdentifierNodeBuilder().withName(entityName).build(),
+        expressionNode,
+      );
+    const entityEvaluationNode = new EntityConstructorEvaluationNodeBuilder()
+      .withDomainEvaluation(domainEvaluation)
+      .build();
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
     return evaluationNode;
   }

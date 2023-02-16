@@ -82,6 +82,12 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       type: BitloopsTypesMapping.TErrorEvaluation,
       value: evaluation,
     });
+  }
+  if (EvaluationTypeIdentifiers.isEntityConstructorEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TEntityConstructorEvaluation,
+      value: evaluation,
+    });
   } else {
     throw new Error(`Unsupported evaluation: ${JSON.stringify(variable)}`);
   }

@@ -124,6 +124,21 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildEntityConstructorEvaluation(entityIdentifier: string, propsParam: PropsParam): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      evaluation: {
+        entityConstructor: {
+          domainEvaluation: {
+            entityIdentifier,
+            props,
+          },
+        },
+      },
+    };
+  }
+
   // private buildDomainEvaluation(
   //   domainIdentifier: string,
   //   propsParam: PropsParam,

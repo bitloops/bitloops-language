@@ -130,6 +130,7 @@ import {
 import { integrationEventEvaluationToTargetLanguage } from './components/integration-event-evaluation/index.js';
 import { integrationEventToTargetLanguage } from './components/integration-event/index.js';
 import { integrationEventHandlerToTargetLanguage } from './components/integration-event/integrationEventHandler.js';
+import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -347,6 +348,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TEntityEvaluation: {
       res = entityEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TEntityConstructorEvaluation: {
+      res = entityConstructorEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEntityValues: {
