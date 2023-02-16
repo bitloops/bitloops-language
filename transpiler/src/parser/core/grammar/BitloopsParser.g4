@@ -224,6 +224,7 @@ sourceElement
     | domainEventDeclaration
     | domainEventHandlerDeclaration
     | integrationEventHandlerDeclaration
+    | servicePortDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -766,6 +767,14 @@ packagePortIdentifier
 
 packagePortDeclaration
     : PackagePort packagePortIdentifier OpenBrace methodDefinitionList CloseBrace
+    ;
+
+servicePortIdentifier
+    : ServicePortIdentifier
+    ;
+
+servicePortDeclaration
+    : ServicePort servicePortIdentifier OpenBrace methodDefinitionList CloseBrace
     ;
 
 methodDeclaration

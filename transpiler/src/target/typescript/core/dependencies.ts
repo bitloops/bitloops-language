@@ -241,6 +241,10 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.IntegrationEvent,
     };
+  } else if (dependencyName.endsWith('ServicePort')) {
+    return {
+      classType: ClassTypes.ServicePort,
+    };
   } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
     return {
       classType: ClassTypes.Struct,

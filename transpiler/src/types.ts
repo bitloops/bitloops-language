@@ -951,6 +951,14 @@ export type TPackage = {
   };
 };
 
+export const ServicePortIdentifierKey = 'ServicePortIdentifier';
+export type TServicePortIdentifier = string;
+export type TServicePort = {
+  ServicePort: {
+    [ServicePortIdentifierKey]: TServicePortIdentifier;
+  } & TDefinitionMethods;
+};
+
 export const repoPortKey = 'RepoPort';
 export type TExtendsRepoPorts = { [identifierKey]: TIdentifier }[];
 
