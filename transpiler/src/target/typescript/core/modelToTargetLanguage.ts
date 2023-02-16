@@ -532,7 +532,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TQueryHandler: {
-      res = queryHandlerToTargetLanguage(value, contextData);
+      res = queryHandlerToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainEvent: {

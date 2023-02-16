@@ -17,132 +17,131 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  fieldKey,
-  fieldsKey,
-  identifierKey,
-  TCommand,
-  TContextData,
-  TDependenciesTypeScript,
-  TTargetDependenciesTypeScript,
-  TVariable,
-} from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import {
+  queryHandlerKey,
+  TQueryHandler,
+  TDependenciesTypeScript,
+  TDependencyChildTypescript,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { getParentDependencies } from '../../dependencies.js';
+import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { executeToTargetLanguage } from '../use-case/execute.js';
 
-const COMMAND_DEPENDENCIES: TDependenciesTypeScript = [
+const QUERY_HANDLER_DEPENDENCIES: TDependenciesTypeScript = [
   {
     type: 'absolute',
     default: false,
     value: 'Application',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'RespondWithPublish',
+    from: '@bitloops/bl-boilerplate-core',
+  },
 ];
 
-const queryHandlerToTargetLanguage = (
-  command: TCommand,
-  contextData: TContextData,
+export const queryHandlerToTargetLanguage = (
+  queryHandler: TQueryHandler,
 ): TTargetDependenciesTypeScript => {
-  let result = '';
-  let dependencies = COMMAND_DEPENDENCIES;
-  const commandValues = command.command;
-  const commandName = commandValues[identifierKey];
+  const { execute, parameters, identifier: queryHandlerName } = queryHandler[queryHandlerKey];
+  const { returnType } = execute;
+  const queryHandlerInputType = execute.parameter ? execute.parameter.type : null;
+  const queryHandlerResponseTypeName = `${queryHandlerName}Response`;
 
-  const commandTopicExpression = commandValues.commandTopic;
-  const commandTopicResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: commandTopicExpression,
+  let dependencies = QUERY_HANDLER_DEPENDENCIES;
+  const queryHandlerReturnTypesResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TOkErrorReturnType,
+    value: { returnType },
   });
+  dependencies = [...dependencies, ...queryHandlerReturnTypesResult.dependencies];
 
-  dependencies = [...dependencies, ...commandTopicResult.dependencies];
+  const { output: queryName, dependencies: queryHandlerDependenciesResult } = modelToTargetLanguage(
+    {
+      type: BitloopsTypesMapping.TParameterList,
+      value: { parameters },
+    },
+  );
+  dependencies = [...dependencies, ...queryHandlerDependenciesResult];
 
-  const commandTopic = commandTopicResult.output;
-  const fields = commandValues[fieldsKey];
+  let queryHandlerInputName = null;
+  if (queryHandlerInputType) {
+    const inputTypeOutput = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: { type: queryHandlerInputType },
+    });
+    queryHandlerInputName = inputTypeOutput.output;
+    dependencies = [...dependencies, ...inputTypeOutput.dependencies];
+  }
 
-  const variablesResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TVariables,
-    value: fields,
-  });
-  dependencies = [...dependencies, ...variablesResult.dependencies];
+  let result = initialQueryHandler(
+    queryHandlerReturnTypesResult.output,
+    queryHandlerResponseTypeName,
+    queryHandlerInputName,
+    queryName,
+    queryHandlerName,
+  );
 
-  const CommandInterface = 'Application.Command';
-  const contextId = `'${contextData.boundedContext}'`;
+  const executeResult = executeToTargetLanguage(
+    queryHandler[queryHandlerKey].execute,
+    queryHandlerResponseTypeName,
+  );
 
-  const commandNameDeclaration = `public static readonly commandName = ${commandTopic};`;
-  const getCommandTopic = `static getCommandTopic(): string {
-      return super.getCommandTopic(${commandName}.commandName, ${contextId});
-    }`;
-
-  const dtoTypeName = commandName;
-  const commandTypeName = getCommandTypeName(dtoTypeName);
-  const commandType = getCommandType(commandTypeName, variablesResult.output);
-
-  const constructorProduced = getConstructor(commandTypeName, commandName, fields, contextId);
-  const classProperties = variablesToClassProperties(variablesResult.output);
-
-  result += commandType;
-  result += `export class ${commandName} extends ${CommandInterface} {`;
-  result += classProperties;
-  result += commandNameDeclaration;
-  result += constructorProduced;
-  result += getCommandTopic;
+  result += executeResult.output;
   result += '}';
-  dependencies.push(...variablesResult.dependencies);
+  dependencies = [...dependencies, ...executeResult.dependencies];
 
-  dependencies = getParentDependencies(dependencies, {
-    classType: ClassTypes.Command,
-    className: commandName,
+  const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
+    classType: ClassTypes.UseCase,
+    className: queryHandlerName,
   });
 
-  return { output: result, dependencies };
+  return { output: result, dependencies: parentDependencies };
 };
 
-const getCommandTypeName = (dtoTypeName: string): string => {
-  return `T${dtoTypeName}`;
-};
-
-const getCommandType = (commandTypeName: string, variablesString: string): string => {
-  const type = `type ${commandTypeName} = {
-      ${variablesString}
-    }
-    `;
-  return type;
-};
-
-const getConstructor = (
-  dtoTypeName: string,
-  commandName: string,
-  fields: TVariable[],
-  contextId: string,
+const initialQueryHandler = (
+  returnTypesResult: string,
+  responseTypeName: string,
+  inputType: string,
+  dependencies: string,
+  queryHandlerName: string,
 ): string => {
-  const commandNameWithoutSuffix = commandName.replace('Command', '');
-  const commandWithLowerCaseStartLetter =
-    commandNameWithoutSuffix.charAt(0).toLowerCase() + commandNameWithoutSuffix.slice(1);
-
-  const dtoName = `${commandWithLowerCaseStartLetter}RequestDTO`;
-  let constructorValue = `constructor(${dtoName}: ${dtoTypeName}) {
-      super(${commandName}.commandName, ${contextId});
-    `;
-
-  for (const field of fields) {
-    const fieldName = field[fieldKey][identifierKey];
-    constructorValue += `this.${fieldName} = ${dtoName}.${fieldName}  \n`;
-  }
-  constructorValue += '}';
-  return constructorValue;
+  const queryHandlerResponseType = `export type ${responseTypeName} = ${returnTypesResult};`;
+  let result = queryHandlerResponseType;
+  const responseType = `Promise<${responseTypeName}>`;
+  result += `export class ${queryHandlerName} implements Application.IUseCase<${
+    inputType ? inputType : 'void'
+  }, ${responseType}> {`;
+  if (!isDependenciesEmpty(dependencies))
+    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
+  return result;
 };
 
-const variablesToClassProperties = (variableString: string): string => {
-  const variablesSplitted = variableString.split(';', -1);
-
-  let classProperties = '';
-  for (const variable of variablesSplitted) {
-    if (variable.trim().length > 0) {
-      classProperties += `public readonly ${variable}; `;
-    }
-  }
-  return classProperties;
+const isDependenciesEmpty = (dependencies: string): boolean => {
+  const strippedDependencies = dependencies.replace(/\s/g, '');
+  if (strippedDependencies === '()') return true;
+  return false;
 };
 
-export { queryHandlerToTargetLanguage };
+const addPrivateToConstructorDependencies = (dependencies: string): string => {
+  const strippedDependencies = dependencies.replace(/\s/g, '');
+  if (strippedDependencies === '()') return dependencies;
+  const strippedDependenciesWithoutParenthesis = strippedDependencies.replace(/\(|\)/g, '');
+  const dependenciesArray = strippedDependenciesWithoutParenthesis.split(',');
+  const result = dependenciesArray.map((dependency) => {
+    const dependencyArray = dependency.split(':');
+    const dependencyName = dependencyArray[0];
+    const dependencyType = dependencyArray[1];
+    return `private ${dependencyName}: ${dependencyType}`;
+  });
+  return `(${result.join(',')})`;
+};
