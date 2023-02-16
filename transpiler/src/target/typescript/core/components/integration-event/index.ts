@@ -51,7 +51,7 @@ export const integrationEventToTargetLanguage = (
   contextData?: TContextData,
 ): TTargetDependenciesTypeScript => {
   if (!contextData) {
-    throw new Error('Context data is required for domain event');
+    throw new Error('Context data is required for integration event');
   }
   const { IntegrationEvent } = integrationEventModel;
 

@@ -129,6 +129,7 @@ import {
 } from './components/domain-event-handler/index.js';
 import { integrationEventEvaluationToTargetLanguage } from './components/integration-event-evaluation/index.js';
 import { integrationEventToTargetLanguage } from './components/integration-event/index.js';
+import { integrationEventHandlerToTargetLanguage } from './components/integration-event/integrationEventHandler.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -517,6 +518,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TIntegrationEvent: {
       res = integrationEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventHandler: {
+      res = integrationEventHandlerToTargetLanguage(value, contextData);
       break;
     }
     default: {

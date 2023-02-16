@@ -1149,3 +1149,7 @@ export type TIntegrationEventHandler = {
     TEventHandlerBusDependencies &
     TEvaluationField;
 };
+
+export enum IntegrationEventHandlerOptions {
+  eventVersion = 'eventVersion',
+}

@@ -1,14 +1,14 @@
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { DomainEventHandlerDeclarationNode } from '../../../../ast/core/intermediate-ast/nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
 import { NodeModelToTargetASTTransformer } from './index.js';
 import { PrependAwaitNodeTSTransformer } from './generic/prependAwait.js';
+import { IntegrationEventHandlerDeclarationNode } from '../../../../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
 
-export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTransformer<DomainEventHandlerDeclarationNode> {
+export class IntegrationEventHandlerNodeTSTransformer extends NodeModelToTargetASTTransformer<IntegrationEventHandlerDeclarationNode> {
   private prependAwaitTransformer: PrependAwaitNodeTSTransformer;
 
   constructor(
     protected tree: IntermediateASTTree,
-    protected node: DomainEventHandlerDeclarationNode,
+    protected node: IntegrationEventHandlerDeclarationNode,
   ) {
     super(tree, node);
     this.prependAwaitTransformer = new PrependAwaitNodeTSTransformer(node, tree);
@@ -19,7 +19,7 @@ export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTra
   }
 
   private prependAwaitToAllDependencyCalls(): void {
-    const extraDependencies = this.node.getExtraDependencies();
+    const extraDependencies = this.node.getEventBusDependencies();
     this.prependAwaitTransformer.prependAwaitToAllDependencyCalls(extraDependencies);
   }
 }

@@ -32,6 +32,7 @@ import {
   DomainPublicMethodNodeTSTransformer,
 } from './node-transformers/domainMethods/index.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
+import { IntegrationEventHandlerNodeTSTransformer } from './node-transformers/integrationEventHandler.js';
 import { UseCaseNodeTSTransformer } from './node-transformers/use-case.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 
@@ -82,6 +83,11 @@ export class IntermediateModelToASTTargetTransformer
         return new UseCaseNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TDomainEventHandler:
         return new DomainEventHandlerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TIntegrationEventHandler:
+        return new IntegrationEventHandlerNodeTSTransformer(
+          intermediateASTTree,
+          intermediateASTNode,
+        );
       default:
         return null;
     }

@@ -221,6 +221,10 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.DomainEvent,
     };
+  } else if (dependencyName.endsWith('IntegrationEvent')) {
+    return {
+      classType: ClassTypes.IntegrationEvent,
+    };
   } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
     return {
       classType: ClassTypes.Struct,
