@@ -21,3 +21,4 @@
 export { commandEvaluationVisitor } from './commandEvaluation.js';
 export { queryEvaluationVisitor } from './queryEvaluation.js';
 export { errorEvaluationVisitor } from './errorEvaluation.js';
+export { entityConstructorEvaluationVisitor } from './entityConstructorEvaluation.js';

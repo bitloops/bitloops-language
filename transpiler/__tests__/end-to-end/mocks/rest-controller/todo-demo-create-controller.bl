@@ -23,8 +23,8 @@ RESTController CreateTodoRESTController (createTodoUseCase: CreateTodoUseCase) {
 
 UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
-    const title = TitleVO({ title: requestDTO.title });
-    const todo = TodoEntity({ title: title, completed: false });
+    const title = TitleVO.create({ title: requestDTO.title });
+    const todo = TodoEntity.create({ title: title, completed: false });
     this.todoRepo.save(todo);
   }
 }

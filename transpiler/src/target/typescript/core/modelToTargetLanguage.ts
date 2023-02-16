@@ -127,6 +127,16 @@ import { commandEvaluationToTargetLanguage } from './components/statements/expre
 import { queryEvaluationToTargetLanguage } from './components/statements/expression/evaluation/queryEvaluation.js';
 import { commandHandlerToTargetLanguage } from './components/commandHandler/index.js';
 import { queryHandlerToTargetLanguage } from './components/queryHandler/index.js';
+import { domainEventToTargetLanguage } from './components/domain-event/index.js';
+import {
+  domainEventHandlerToTargetLanguage,
+  generateHandlerAttributesAndConstructor,
+  generateEventHandlerHandleMethod,
+} from './components/domain-event-handler/index.js';
+import { integrationEventEvaluationToTargetLanguage } from './components/integration-event-evaluation/index.js';
+import { integrationEventToTargetLanguage } from './components/integration-event/index.js';
+import { integrationEventHandlerToTargetLanguage } from './components/integration-event/integrationEventHandler.js';
+import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -354,6 +364,10 @@ const modelToTargetLanguage = (props: {
       res = entityEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TEntityConstructorEvaluation: {
+      res = entityConstructorEvaluationToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TEntityValues: {
       res = entityValuesToTargetLanguage({
         entityValues: value,
@@ -489,6 +503,10 @@ const modelToTargetLanguage = (props: {
       res = bitloopsErrorEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TIntegrationEventEvaluation: {
+      res = integrationEventEvaluationToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TAssignmentExpression: {
       res = assignmentExpressionToTargetLanguage(value);
       break;
@@ -510,11 +528,35 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TCommandHandler: {
-      res = commandHandlerToTargetLanguage(value, contextData);
+      res = commandHandlerToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TQueryHandler: {
       res = queryHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainEvent: {
+      res = domainEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainEventHandler: {
+      res = domainEventHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.THandlerAttributesAndConstructor: {
+      res = generateHandlerAttributesAndConstructor(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.THandle: {
+      res = generateEventHandlerHandleMethod(value);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEvent: {
+      res = integrationEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventHandler: {
+      res = integrationEventHandlerToTargetLanguage(value, contextData);
       break;
     }
     default: {

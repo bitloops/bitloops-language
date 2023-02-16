@@ -5,7 +5,6 @@ export default {
     'ts-jest': {
       tsconfig: 'tsconfig.esm.json',
       useESM: true,
-      compiler: 'ttypescript',
     },
     setupFiles: ['<rootDir>config.js'],
   },

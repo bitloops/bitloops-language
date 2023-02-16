@@ -93,6 +93,29 @@ export const VALID_EVALUATION_TEST_CASES = [
     ),
     output: 'new GetTodoQuery()',
   },
+  {
+    description: 'Integration event evaluation with one argument',
+    evaluation: new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
+      'TodoCreatedIntegrationEvent',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'name',
+            'superMarketList',
+          ),
+        ])
+        .build(),
+    ),
+    output: "TodoCreatedIntegrationEvent.create({name: 'superMarketList'})",
+  },
+  {
+    description: 'Entity constructor evaluation with identifier expression',
+    evaluation: new EvaluationBuilderDirector().buildEntityConstructorEvaluationWithExpression(
+      'TodoEntity',
+      new ExpressionBuilderDirector().buildIdentifierExpression('todoProps'),
+    ),
+    output: 'new TodoEntity(todoProps)',
+  },
 ];
 
 export const VALID_ERROR_EVALUATION_TEST_CASES = [

@@ -1,0 +1,17 @@
+IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {
+    'v1' : MoneyDepositedIntegrationSchemaV1 {
+      const moneyDeposited = MoneyDepositedIntegrationSchemaV1({
+        accountId: event.accountId,
+        amount: event.balanceAmount
+      });
+      return moneyDeposited;
+    }
+
+    'v2.0.1' : MoneyDepositedIntegrationSchemaV2 {
+        const moneyDeposited = MoneyDepositedIntegrationSchemaV2({
+          accountId: event.accountId,
+          amount: 20
+        });
+        return moneyDeposited;
+    }
+}

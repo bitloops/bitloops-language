@@ -104,22 +104,26 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
 
-  buildBuiltInClassWithMemberDotArgument({
+  buildConstDeclarationIntegrationEvaluation({
     name,
-    builtInClassIdentifier,
-    builtInClassArgs,
+    integrationEventIdentifier,
+    integrationEventInput,
   }: {
     name: string;
-    builtInClassIdentifier: string;
-    builtInClassArgs: string[];
+    integrationEventIdentifier: string;
+    integrationEventInput: string;
   }): TConstDeclaration {
     const constDeclaration = this.constDeclarationBuilder
       .withIdentifier(name)
       .withExpression(
         new ExpressionBuilderDirector().buildEvaluation(
-          new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
-            builtInClassIdentifier,
-            new ArgumentListBuilderDirector().buildMemberDotArguments([builtInClassArgs]),
+          new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
+            integrationEventIdentifier,
+            {
+              expression: new ExpressionBuilderDirector().buildIdentifierExpression(
+                integrationEventInput,
+              ),
+            },
           ),
         ),
       )
@@ -298,6 +302,49 @@ export class ConstDeclarationBuilderDirector {
     const constDeclaration = this.constDeclarationBuilder
       .withIdentifier(name)
       .withExpression(expression)
+      .build();
+    return constDeclaration;
+  }
+
+  buildConstDeclarationWithStructEvaluation({
+    name,
+    structIdentifier,
+    fields,
+  }: {
+    name: string;
+    structIdentifier: string;
+    fields: TEvaluationField[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildStructEvaluation(structIdentifier, fields),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
+  buildBuiltInClassWithMemberDotArgument({
+    name,
+    builtInClassIdentifier,
+    builtInClassArgs,
+  }: {
+    name: string;
+    builtInClassIdentifier: string;
+    builtInClassArgs: string[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildBuiltInClassEvaluation(
+            builtInClassIdentifier,
+            new ArgumentListBuilderDirector().buildMemberDotArguments([builtInClassArgs]),
+          ),
+        ),
+      )
       .build();
     return constDeclaration;
   }

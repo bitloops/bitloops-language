@@ -142,6 +142,14 @@ import {
   packagePortIdentifierVisitor,
   commandEvaluationVisitor,
   queryEvaluationVisitor,
+  domainEventDeclarationVisitor,
+  domainEventIdentifierVisitor,
+  domainEventHandlerDeclarationVisitor,
+  domainEventHandlerIdentifierVisitor,
+  domainEventHandlerHandleMethodVisitor,
+  domainEventHandlerHandleMethodParameterVisitor,
+  integrationEventEvaluationVisitor,
+  entityConstructorEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -262,6 +270,26 @@ import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 import { commandHandlerVisitor } from './helpers/commandHandler.js';
 import { queryHandlerVisitor } from './helpers/queryHandlerVisitor.js';
+import { integrationEventDeclarationVisitor } from './helpers/integration-event/integrationEventVisitor.js';
+import { DomainEventIdentifierNode } from '../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
+import { IntegrationEventIdentifierNodeBuilder } from '../intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
+import { IntegrationEventIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
+import { integrationEventInputVisitor } from './helpers/integration-event/integrationEventInputVisitor.js';
+import { integrationEventInputTypeVisitor } from './helpers/integration-event/integrationEventInputTypeVisitor.js';
+import { IntegrationVersionMapperListNode } from '../intermediate-ast/nodes/integration-event/IntegrationVersionMapperListNode.js';
+import { integrationVersionMapperListVisitor } from './helpers/integration-event/integrationVersionMapperListVisitor.js';
+import { IntegrationVersionMapperNode } from '../intermediate-ast/nodes/integration-event/IntegrationVersionMapperNode.js';
+import { integrationVersionMapperVisitor } from './helpers/integration-event/integrationVersionMapperVisitor.js';
+import { StructIdentifierNode } from '../intermediate-ast/nodes/struct/StructIdentifierNode.js';
+import {
+  integrationEventHandlerDeclarationVisitor,
+  integrationEventHandlerHandleMethodParameterVisitor,
+  integrationEventHandlerHandleMethodVisitor,
+  integrationEventHandlerIdentifierVisitor,
+} from './helpers/integration-event/integrationEventHandlerDeclarationVisitor.js';
+import { IntegrationEventHandlerIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
+import { BitloopsPrimaryTypeNodeBuilderDirector } from '../intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
+import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -330,7 +358,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return propsIdentifierNode;
   }
 
-  visitStructIdentifier(ctx: BitloopsParser.StructIdentifierContext): IdentifierNode {
+  visitStructIdentifier(ctx: BitloopsParser.StructIdentifierContext): StructIdentifierNode {
     const identifierName = ctx.UpperCaseIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
     const structIdentifierNode = new StructIdentifierNodeBuilder(metadata)
@@ -476,34 +504,35 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {
     const value = ctx.errorIdentifier().getText();
     return {
-      type: value, // 'variable',
       value: value,
     };
   }
 
   visitIdentifierString(ctx: BitloopsParser.IdentifierStringContext) {
     return {
-      type: 'variable',
       value: ctx.Identifier().getText(),
     };
   }
 
   visitExecuteExpression(_ctx: BitloopsParser.ExecuteExpressionContext) {
     return {
-      type: 'variable',
       value: 'execute',
     };
   }
   visitDeleteKeyword(_ctx: BitloopsParser.DeleteKeywordContext) {
     return {
-      type: 'variable',
       value: 'delete',
     };
   }
-  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
-    // TODO Find why all these return this weird object and fix it
+
+  visitHandleKeywordIdentifier(_ctx: BitloopsParser.HandleKeywordIdentifierContext) {
     return {
-      type: 'variable',
+      value: 'handle',
+    };
+  }
+
+  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
+    return {
       value: (ctx as any).getText(),
     };
   }
@@ -667,6 +696,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitQueryEvaluation(ctx: BitloopsParser.QueryEvaluationContext): any {
     return queryEvaluationVisitor(this, ctx);
+  }
+
+  visitIntegrationEventEvaluation(ctx: BitloopsParser.IntegrationEventEvaluationContext): any {
+    return integrationEventEvaluationVisitor(this, ctx);
+  }
+  visitEntityConstructorEvaluation(ctx: BitloopsParser.EntityConstructorEvaluationContext): any {
+    return entityConstructorEvaluationVisitor(this, ctx);
   }
 
   visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {
@@ -1322,5 +1358,119 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(queryHandlerName)
       .build();
     return queryHandlerIdentifierNode;
+  }
+
+  visitIntegrationEventDeclaration(ctx: BitloopsParser.IntegrationEventDeclarationContext): void {
+    integrationEventDeclarationVisitor(this, ctx);
+  }
+
+  visitIntegrationEventIdentifier(
+    ctx: BitloopsParser.IntegrationEventIdentifierContext,
+  ): IntegrationEventIdentifierNode {
+    const identifierName = ctx.IntegrationEventIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const integrationEventIdentifierNode = new IntegrationEventIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return integrationEventIdentifierNode;
+  }
+
+  visitIntegrationEventInputType(
+    ctx: BitloopsParser.IntegrationEventInputTypeContext,
+  ): BitloopsPrimaryTypeNode {
+    return integrationEventInputTypeVisitor(this, ctx);
+  }
+
+  visitIntegrationEventInput(ctx: BitloopsParser.IntegrationEventInputContext): ParameterNode {
+    return integrationEventInputVisitor(this, ctx);
+  }
+
+  visitIntegrationVersionMapperList(
+    ctx: BitloopsParser.IntegrationVersionMapperListContext,
+  ): IntegrationVersionMapperListNode {
+    return integrationVersionMapperListVisitor(this, ctx);
+  }
+
+  visitIntegrationVersionMapper(
+    ctx: BitloopsParser.IntegrationVersionMapperContext,
+  ): IntegrationVersionMapperNode {
+    return integrationVersionMapperVisitor(this, ctx);
+  }
+
+  visitVersionName(ctx: BitloopsParser.VersionNameContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
+
+  visitIntegrationReturnSchemaType(
+    ctx: BitloopsParser.IntegrationReturnSchemaTypeContext,
+  ): StructIdentifierNode {
+    return this.visit(ctx.structIdentifier());
+  }
+
+  visitDomainEventDeclaration(ctx: BitloopsParser.DomainEventDeclarationContext): void {
+    domainEventDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventIdentifier(
+    ctx: BitloopsParser.DomainEventIdentifierContext,
+  ): DomainEventIdentifierNode {
+    return domainEventIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerDeclaration(
+    ctx: BitloopsParser.DomainEventHandlerDeclarationContext,
+  ): void {
+    domainEventHandlerDeclarationVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerIdentifier(ctx: BitloopsParser.DomainEventHandlerIdentifierContext): any {
+    return domainEventHandlerIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerHandleDeclaration(
+    ctx: BitloopsParser.DomainEventHandlerHandleDeclarationContext,
+  ): any {
+    return domainEventHandlerHandleMethodVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerHandleParameter(
+    ctx: BitloopsParser.DomainEventHandlerHandleParameterContext,
+  ): any {
+    return domainEventHandlerHandleMethodParameterVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerDeclaration(
+    ctx: BitloopsParser.IntegrationEventHandlerDeclarationContext,
+  ): void {
+    integrationEventHandlerDeclarationVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerIdentifier(
+    ctx: BitloopsParser.IntegrationEventHandlerIdentifierContext,
+  ): IntegrationEventHandlerIdentifierNode {
+    return integrationEventHandlerIdentifierVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerHandleDeclaration(
+    ctx: BitloopsParser.IntegrationEventHandlerHandleDeclarationContext,
+  ): EventHandleNode {
+    return integrationEventHandlerHandleMethodVisitor(this, ctx);
+  }
+
+  visitEventHandlerHandleIdentifier(
+    ctx: BitloopsParser.EventHandlerHandleIdentifierContext,
+  ): BitloopsPrimaryTypeNode {
+    const type = ctx.domainEventIdentifier()
+      ? ctx.domainEventIdentifier().getText()
+      : ctx.integrationEventIdentifier().getText();
+
+    const metadata = produceMetadata(ctx, this);
+    return new BitloopsPrimaryTypeNodeBuilderDirector(metadata).buildIdentifierPrimaryType(type);
+  }
+
+  visitIntegrationEventHandlerHandleParameter(
+    ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
+  ): ParameterNode {
+    return integrationEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 }

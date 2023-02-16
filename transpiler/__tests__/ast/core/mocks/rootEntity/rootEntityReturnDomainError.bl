@@ -1,6 +1,6 @@
 Root Entity TodoEntity {    
     constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
-        return TodoEntity(props);   
+        return TodoEntity.create(props);   
     } 
 
     public greet(): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {    

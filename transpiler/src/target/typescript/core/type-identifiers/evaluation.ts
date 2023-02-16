@@ -20,9 +20,11 @@
 
 import {
   TCommandEvaluation,
+  TQueryEvaluation,
+  TIntegrationEventEvaluation,
+  TEntityConstructorEvaluation,
   TErrorEvaluation,
   TEvaluationValues,
-  TQueryEvaluation,
   TStructEvaluation,
 } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
@@ -51,6 +53,24 @@ export class EvaluationTypeIdentifiers {
 
   static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
     if ('errorEvaluation' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isIntegrationEventEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TIntegrationEventEvaluation {
+    if ('integrationEvent' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isEntityConstructorEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TEntityConstructorEvaluation {
+    if ('entityConstructor' in evaluation) {
       return true;
     }
     return false;

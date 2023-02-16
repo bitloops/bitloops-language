@@ -39,10 +39,14 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
-  COMMANDS = 'commands/',
-  QUERIES = 'queries/',
+  COMMANDS = '/',
+  QUERIES = '/',
   QUERY_HANDLERS = 'query-handlers',
   COMMAND_HANDLERS = 'command-handlers',
+  DOMAIN_EVENTS = 'domain/events/',
+  DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
+  INTEGRATION_EVENTS = 'contracts/integration-events/',
+  INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -63,9 +67,12 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
   [ClassTypes.Command]: PROJECT_RELATIVE_PATHS.COMMANDS,
   [ClassTypes.Query]: PROJECT_RELATIVE_PATHS.QUERIES,
-  DomainEvent: '',
   [ClassTypes.QueryHandler]: PROJECT_RELATIVE_PATHS.QUERY_HANDLERS,
   [ClassTypes.CommandHandler]: PROJECT_RELATIVE_PATHS.COMMAND_HANDLERS,
+  [ClassTypes.DomainEvent]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENTS,
+  [ClassTypes.DomainEventHandler]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENT_HANDLERS,
+  [ClassTypes.IntegrationEvent]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENTS,
+  [ClassTypes.IntegrationEventHandler]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENT_HANDLERS,
 };
 
 const getTargetFileDestination = (
@@ -122,6 +129,11 @@ const getTargetFileDestination = (
     case ClassTypes.RepoPort:
     case ClassTypes.RepoAdapter:
     case ClassTypes.DomainRule:
+    case ClassTypes.DomainEvent:
+    case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Struct:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -155,6 +167,11 @@ const getFilePathRelativeToModule = (
     case ClassTypes.RepoPort:
     case ClassTypes.Command:
     case ClassTypes.Query:
+    case ClassTypes.DomainEvent:
+    case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Struct:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;

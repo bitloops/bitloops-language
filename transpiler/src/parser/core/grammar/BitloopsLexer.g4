@@ -166,6 +166,8 @@ QueryHandler:                   'QueryHandler';
 ValueObject:                    'ValueObject';
 AggregateRoot:                  'AggregateRoot';
 Entity:                         'Entity';
+DomainEventHandler:             'DomainEventHandler';
+IntegrationEventHandler:        'IntegrationEventHandler';
 DomainEvent:                    'DomainEvent';
 Service:                        'Service';
 Repository:                     'Repository';
@@ -183,6 +185,7 @@ Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
 Constructor:                    'constructor';
+IntegrationEvent:               'IntegrationEvent';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
@@ -225,6 +228,7 @@ Set: 'set';
 
 // Constructor: 'constructor';
 Execute: 'execute';
+Handle: 'handle';
 Create:  'create';
 Namespace: 'namespace';
 // Require: 'require';
@@ -313,6 +317,9 @@ QueryIdentifier:                UpperCaseStart IdentifierPart* Query;
 DomainEventIdentifier:          UpperCaseStart IdentifierPart* DomainEvent;
 CommandHandlerIdentifier:       UpperCaseStart IdentifierPart* CommandHandler;
 QueryHandlerIdentifier:         UpperCaseStart IdentifierPart* QueryHandler;
+IntegrationEventIdentifier:     UpperCaseStart IdentifierPart* IntegrationEvent;
+DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandler;
+IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
 SetLanguage:                    'setLanguage';
 TypeScript:                     'TypeScript';
 Java:                           'Java';

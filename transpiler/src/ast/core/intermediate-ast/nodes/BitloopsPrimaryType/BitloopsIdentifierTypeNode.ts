@@ -16,4 +16,12 @@ export class BitloopsIdentifierTypeNode extends BitloopsPrimaryTypeNode {
     const identifierName: string = identifierValue[identifierClassNodeName];
     return identifierName;
   }
+
+  public isDomainEventIdentifier(): boolean {
+    const identifierName = this.getIdentifierName();
+    if (identifierName.endsWith('DomainEvent')) {
+      return true;
+    }
+    return false;
+  }
 }

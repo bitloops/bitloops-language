@@ -8,6 +8,12 @@ import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../type
 import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
 import { RestControllerTypeTransformer } from './ node-transformers/RestControllerTypeTransformer.js';
 import { RepoAdapterNodesTransformer } from './ node-transformers/RepoAdapterNodesTransformer.js';
+import { DomainEventHandlerNodeTransformer } from './ node-transformers/DomainEventHandlerNodeTransformer.js';
+import { DomainEventHandlerDeclarationNode } from './nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
+import { IntegrationEventHandlerDeclarationNode } from './nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
+import { IntegrationEventHandlerNodeTransformer } from './ node-transformers/IntegrationEventHandlerNodeTransformer.js';
+import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
+import { IntegrationEventNodeTransformer } from './ node-transformers/IntegrationEventNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -111,6 +117,22 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TOkErrorReturnType: {
         const returnOkErrorNode = intermediateASTNode as ReturnOkErrorTypeNode;
         return new ReturnOKErrorNodeTransformer(intermediateASTTree, returnOkErrorNode);
+      }
+      case BitloopsTypesMapping.TDomainEventHandler: {
+        const domainEventHandlerNode = intermediateASTNode as DomainEventHandlerDeclarationNode;
+        return new DomainEventHandlerNodeTransformer(intermediateASTTree, domainEventHandlerNode);
+      }
+      case BitloopsTypesMapping.TIntegrationEventHandler: {
+        const integrationEventHandlerNode =
+          intermediateASTNode as IntegrationEventHandlerDeclarationNode;
+        return new IntegrationEventHandlerNodeTransformer(
+          intermediateASTTree,
+          integrationEventHandlerNode,
+        );
+      }
+      case BitloopsTypesMapping.TIntegrationEvent: {
+        const integrationEventNode = intermediateASTNode as IntegrationEventNode;
+        return new IntegrationEventNodeTransformer(intermediateASTTree, integrationEventNode);
       }
       default:
         return null;

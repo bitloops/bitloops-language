@@ -101,6 +101,8 @@ const BitloopsTypesMapping = {
   TEntityEvaluation: 'TEntityEvaluation',
   TCommandEvaluation: 'TCommandEvaluation',
   TQueryEvaluation: 'TQueryEvaluation',
+  TIntegrationEventEvaluation: 'TIntegrationEventEvaluation',
+  TEntityConstructorEvaluation: 'TEntityConstructorEvaluation',
   TEntity: 'TEntity',
   TEntityValues: 'TEntityValues',
   TRootEntity: 'TRootEntity',
@@ -240,6 +242,20 @@ const BitloopsTypesMapping = {
   TQueryTopicIdentifier: 'TQueryTopicIdentifier',
   TCommandHandler: 'TCommandHandler',
   TQueryHandler: 'TQueryHandler',
+  TIntegrationEventIdentifier: 'TIntegrationEventIdentifier',
+  TIntegrationEventInput: 'TIntegrationEventInput',
+  TIntegrationVersionMappers: 'TIntegrationVersionMappers',
+  TIntegrationEvent: 'TIntegrationEvent',
+  TIntegrationVersionMapper: 'TIntegrationVersionMapper',
+  DomainEventTopic: 'DomainEventTopic',
+  TDomainEventHandler: 'TDomainEventHandler',
+  TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
+  TEventHandlerHandleMethod: 'TEventHandlerHandleMethod',
+  TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
+  THandlerAttributesAndConstructor: 'THandlerAttributesAndConstructor',
+  THandle: 'THandle',
+  TIntegrationEventHandlerIdentifier: 'TIntegrationEventHandlerIdentifier',
+  TIntegrationEventHandler: 'TIntegrationEventHandler',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -267,6 +283,9 @@ const ClassTypes = {
   DomainEvent: 'DomainEvent',
   CommandHandler: 'CommandHandler',
   QueryHandler: 'QueryHandler',
+  IntegrationEvent: 'IntegrationEvent',
+  DomainEventHandler: 'DomainEventHandler',
+  IntegrationEventHandler: 'IntegrationEventHandler',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -302,6 +321,9 @@ const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesV
   [ClassTypes.Query]: BitloopsTypesMapping.TQuery,
   [ClassTypes.CommandHandler]: BitloopsTypesMapping.TCommandHandler,
   [ClassTypes.QueryHandler]: BitloopsTypesMapping.TQueryHandler,
+  [ClassTypes.DomainEventHandler]: BitloopsTypesMapping.TDomainEventHandler,
+  [ClassTypes.IntegrationEvent]: BitloopsTypesMapping.TIntegrationEvent,
+  [ClassTypes.IntegrationEventHandler]: BitloopsTypesMapping.TIntegrationEventHandler,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

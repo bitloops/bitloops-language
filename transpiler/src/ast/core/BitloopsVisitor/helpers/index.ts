@@ -133,8 +133,17 @@ export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
 export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
+export { commandEvaluationVisitor, queryEvaluationVisitor } from './expression/evaluation/index.js';
+export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';
 export {
-  commandEvaluationVisitor,
-  queryEvaluationVisitor,
-  errorEvaluationVisitor,
-} from './expression/evaluation/index.js';
+  domainEventDeclarationVisitor,
+  domainEventIdentifierVisitor,
+} from './domainEventDeclaration.js';
+export {
+  domainEventHandlerDeclarationVisitor,
+  domainEventHandlerIdentifierVisitor,
+  domainEventHandlerHandleMethodParameterVisitor,
+  domainEventHandlerHandleMethodVisitor,
+} from './domainEventHandlerDeclaration.js';
+export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';
+export { entityConstructorEvaluationVisitor } from './expression/evaluation/index.js';

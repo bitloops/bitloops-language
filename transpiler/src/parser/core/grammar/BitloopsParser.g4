@@ -127,6 +127,7 @@ regularIdentifier
     | Execute                                                   # ExecuteExpression
     | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
+    | Handle                                                    # HandleKeywordIdentifier
     ;
 
 regularStructEvaluation
@@ -215,6 +216,10 @@ sourceElement
     | domainEventDeclaration
     | commandHandler
     | queryHandler
+    | integrationEventDeclaration
+    | domainEventDeclaration
+    | domainEventHandlerDeclaration
+    | integrationEventHandlerDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -259,10 +264,12 @@ evaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
+    | entityConstructorEvaluation
     | propsEvaluation
     | structEvaluation
     | commandEvaluation
     | queryEvaluation
+    | integrationEventEvaluation
     ;
 
 corsOptionsEvaluation
@@ -444,6 +451,39 @@ queryHandlerIdentifier
     ;
 
 
+integrationEventIdentifier
+    : IntegrationEventIdentifier
+    ;
+
+integrationEventInputType
+    : propsIdentifier
+    | domainEventIdentifier
+    ;
+
+integrationEventInput
+    : OpenParen parameterIdentifier Colon integrationEventInputType CloseParen
+    ;
+
+versionName
+    : StringLiteral
+    ;
+
+integrationReturnSchemaType
+    : Colon structIdentifier
+    ;
+
+integrationVersionMapper
+    : versionName integrationReturnSchemaType OpenBrace statementList CloseBrace
+    ;
+
+integrationVersionMapperList
+    : OpenBrace integrationVersionMapper+ CloseBrace
+    ;
+
+integrationEventDeclaration
+    : IntegrationEvent integrationEventIdentifier integrationEventInput integrationVersionMapperList
+    ;
+
 propsDeclaration
     : Props propsIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
@@ -496,6 +536,44 @@ domainEventIdentifier
     : DomainEventIdentifier
     ;
 
+domainEventHandlerIdentifier
+    : DomainEventHandlerIdentifier
+    ;
+
+domainEventHandlerDeclaration
+    : DomainEventHandler domainEventHandlerIdentifier parameterList OpenBrace domainEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+domainEventHandlerHandleDeclaration
+    : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+eventHandlerHandleIdentifier
+    : domainEventIdentifier
+    | integrationEventIdentifier
+    ;
+
+domainEventHandlerHandleParameter
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    ;
+//
+
+integrationEventHandlerIdentifier
+    : IntegrationEventHandlerIdentifier
+    ;
+
+integrationEventHandlerDeclaration
+    : IntegrationEventHandler integrationEventHandlerIdentifier parameterList OpenBrace evaluationField SemiColon integrationEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+integrationEventHandlerHandleDeclaration
+    : Handle OpenParen integrationEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+integrationEventHandlerHandleParameter
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    ;
+
 dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
@@ -513,7 +591,7 @@ dtoEvaluation
     ;
 
 valueObjectEvaluation
-    : valueObjectIdentifier domainEvaluationInput
+    : valueObjectIdentifier Dot Create domainEvaluationInput
     ;
 
 domainEvaluationInput
@@ -522,6 +600,10 @@ domainEvaluationInput
     ;
 
 entityEvaluation
+    : entityIdentifier Dot Create domainEvaluationInput
+    ;
+
+entityConstructorEvaluation
     : entityIdentifier domainEvaluationInput
     ;
 
@@ -531,6 +613,10 @@ commandEvaluation
 
 queryEvaluation
     : queryIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+    
+integrationEventEvaluation
+    : integrationEventIdentifier Dot Create domainEvaluationInput
     ;
 
 structEvaluation

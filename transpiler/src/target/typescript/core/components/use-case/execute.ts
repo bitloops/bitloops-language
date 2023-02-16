@@ -2,7 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TExecute, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-export const useCaseExecuteToTargetLanguage = (
+export const executeToTargetLanguage = (
   variable: TExecute,
   responseTypeName: string,
 ): TTargetDependenciesTypeScript => {
@@ -35,7 +35,7 @@ const useCaseExecuteString = (
   statements: string,
   responseTypeName: string,
 ): string => {
-  let result = 'async execute';
+  let result = '@RespondWithPublish()\nasync execute';
   result += `${parameterOutput}`;
   result += `: Promise<${responseTypeName}> {`;
   result += statements;

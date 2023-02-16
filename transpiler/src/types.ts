@@ -254,6 +254,8 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
+  | TIntegrationEventEvaluation
+  | TEntityConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
   | TBuiltInFunctionValues
@@ -321,6 +323,16 @@ export type TValueObjectEvaluation = {
 
 export type TEntityEvaluation = {
   entity: TDomainEvaluation;
+};
+export type TEntityConstructorEvaluation = {
+  entityConstructor: TDomainEvaluation;
+};
+
+export type TIntegrationEventEvaluation = {
+  integrationEvent: {
+    props: TDomainEvaluationExpression;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  };
 };
 
 export type TDomainEvaluation = {
@@ -1129,11 +1141,31 @@ export type TQueryHandler = {
 
 // DomainEventHandler & IntegrationEventHandler
 export type TEventHandlerBusDependencies = {
-  commandBus: boolean;
-  queryBus: boolean;
-  integrationEventBus: boolean;
+  eventHandlerBusDependencies: {
+    commandBus: boolean;
+    queryBus: boolean;
+    integrationEventBus: boolean;
+  };
 };
 
+export type TIntegrationVersionMappers = {
+  integrationVersionMappers: TIntegrationVersionMapper[];
+};
+
+export type TIntegrationVersionMapper = {
+  integrationVersionMapper: {
+    statements: TStatements;
+    [structIdentifierKey]: TStructIdentifier;
+  } & StringLiteral;
+};
+
+export type TIntegrationEventIdentifier = string;
+export type TIntegrationEvent = {
+  IntegrationEvent: {
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TIntegrationVersionMappers &
+    TParameter;
+};
 export const DomainEventIdentifierKey = 'DomainEventIdentifier';
 
 export type TDomainEvent = {
@@ -1143,3 +1175,31 @@ export type TDomainEvent = {
     topic: TExpression;
   };
 };
+
+type TDomainEventHandlerIdentifier = string;
+
+export type TDomainEventHandler = {
+  domainEventHandler: {
+    domainEventHandlerIdentifier: TDomainEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies;
+};
+
+export type THandle = {
+  statements: TStatements;
+} & TParameter;
+
+type TIntegrationEventHandlerIdentifier = string;
+export type TIntegrationEventHandler = {
+  integrationEventHandler: {
+    integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies &
+    TEvaluationField;
+};
+
+export enum IntegrationEventHandlerOptions {
+  eventVersion = 'eventVersion',
+}

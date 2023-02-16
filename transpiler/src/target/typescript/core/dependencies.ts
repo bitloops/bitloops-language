@@ -225,14 +225,19 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.Query,
     };
+  } else if (dependencyName.endsWith('DomainEvent')) {
+    return {
+      classType: ClassTypes.DomainEvent,
+    };
+  } else if (dependencyName.endsWith('IntegrationEvent')) {
+    return {
+      classType: ClassTypes.IntegrationEvent,
+    };
+  } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
+    return {
+      classType: ClassTypes.Struct,
+    };
   }
-
-  //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
-
-  //   return {
-  //     classType: ClassTypes.Structs,
-  //   };
-  // }
 
   // TODO We are not throwing because of structs
   // console.error(`Unknown class type for ${dependencyName}`)
