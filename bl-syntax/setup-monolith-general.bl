@@ -16,8 +16,6 @@ const mongoConnection = RepoConnections.Mongo({
 // SERVERS
 const bankingRESTRouter = RESTRouter(REST.Fastify) {
   Post('/'): [BankingApp]DepositMoneyController();
-  //OR we dont let the same name in 2 Apps
-  Post('/'): DepositMoneyController();
 }
 
 RESTServer({

@@ -147,6 +147,7 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+AddDomainEvent:                 'addDomainEvent';
 CorsOptions:                    'corsOptions';
 
 Extends:                        'extends';

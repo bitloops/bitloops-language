@@ -314,6 +314,7 @@ statement
 
 builtInFunction
     : ApplyRules OpenParen applyRuleStatementRulesList CloseParen SemiColon? # ApplyRulesStatement
+    | (identifier | This) Dot AddDomainEvent OpenParen domainEventIdentifier CloseParen SemiColon? # AddDomainEventStatement
     ;
 
 applyRuleStatementRulesList
