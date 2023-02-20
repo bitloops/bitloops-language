@@ -17,7 +17,6 @@ export type WithdrawMoneyCommandHandlerResponse = Either<
   | ApplicationErrors.AccountNotFound
   | DomainErrors.PINIsNotPositiveNumber
   | DomainErrors.InvalidCustomerPIN
-  | DomainErrors.InvalidCustomerPIN
 >;
 
 export class WithdrawMoneyCommandHandler

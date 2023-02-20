@@ -7,7 +7,7 @@ import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-
 import { OptionalBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/OptionalBuilder.js';
 import { FieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { TBitloopsBuiltInClasses, TBitloopsPrimitives } from '../../../../../src/types.js';
-import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class FieldBuilderDirector {
   private builder: FieldNodeBuilder;
@@ -44,7 +44,7 @@ export class FieldBuilderDirector {
 
   buildStandardVOField(name: string, standardVOIdentifier: string, optional: boolean): FieldNode {
     {
-      const typeNode = new BitloopsPrimaryTypeDirector().buildStandardValueObjectPrimaryType(
+      const typeNode = new BitloopsPrimaryTypeNodeDirector().buildStandardValueObjectPrimaryType(
         standardVOIdentifier,
       );
 
@@ -85,7 +85,7 @@ export class FieldBuilderDirector {
   buildRequiredBuiltInClassField(name: string, type: TBitloopsBuiltInClasses): FieldNode {
     const optionalNode = new OptionalBuilder().withOptional(false).build();
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();
-    const primaryType = new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(type);
+    const primaryType = new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType(type);
     const fieldNode = this.builder
       .withName(identifierNode)
       .withOptional(optionalNode)
@@ -97,7 +97,7 @@ export class FieldBuilderDirector {
   buildOptionalBuiltInClassField(name: string, type: TBitloopsBuiltInClasses): FieldNode {
     const optionalNode = new OptionalBuilder().withOptional(true).build();
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();
-    const primaryType = new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(type);
+    const primaryType = new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType(type);
     const fieldNode = this.builder
       .withName(identifierNode)
       .withOptional(optionalNode)

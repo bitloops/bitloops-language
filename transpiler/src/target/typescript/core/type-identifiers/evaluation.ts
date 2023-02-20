@@ -19,6 +19,8 @@
  */
 
 import {
+  TCommandEvaluation,
+  TQueryEvaluation,
   TIntegrationEventEvaluation,
   TEntityConstructorEvaluation,
   TErrorEvaluation,
@@ -31,6 +33,20 @@ const STRUCT_STRING = 'struct';
 export class EvaluationTypeIdentifiers {
   static isStructEvaluation(evaluation: TEvaluationValues): evaluation is TStructEvaluation {
     if (STRUCT_STRING in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isCommandEvaluation(evaluation: TEvaluationValues): evaluation is TCommandEvaluation {
+    if ('command' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isQueryEvaluation(evaluation: TEvaluationValues): evaluation is TQueryEvaluation {
+    if ('query' in evaluation) {
       return true;
     }
     return false;

@@ -23,6 +23,7 @@ import { DTOEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evalu
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { DTOEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
+import { produceMetadata } from '../metadata.js';
 
 export const dtoEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -31,7 +32,7 @@ export const dtoEvaluationVisitor = (
   const dtoIdentifierNode: DTOIdentifierNode = thisVisitor.visit(ctx.dtoIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
 
-  const dtoEvaluationNode = new DTOEvaluationNodeBuilder()
+  const dtoEvaluationNode = new DTOEvaluationNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withIdentifier(dtoIdentifierNode)
     .withEvaluationFieldList(fieldList)
     .build();

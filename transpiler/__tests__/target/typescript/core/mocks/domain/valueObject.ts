@@ -11,7 +11,7 @@ import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes
 import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { ArgumentDirector } from '../../builders/argument.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
@@ -94,7 +94,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
         new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
           'vName',
           'Kostas',
-          new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+          new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'),
         ),
       ],
       constructorParameterNode: { propIdentifier: 'props', propClassName: 'NameProps' },
@@ -116,7 +116,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -143,7 +143,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
-          .withReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+          .withReturnType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
           .withStatements(
             new StatementListNodeBuilder()
               .withStatements([

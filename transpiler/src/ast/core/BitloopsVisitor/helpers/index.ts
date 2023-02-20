@@ -84,10 +84,7 @@ export {
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 // export { getClassEvaluationVisitor } from './getClassEvaluation.js';
-export {
-  useCaseDeclarationVisitor,
-  useCaseExecuteDeclarationVisitor,
-} from './useCaseDeclaration.js';
+export { useCaseDeclarationVisitor, executeDeclarationVisitor } from './useCaseDeclaration.js';
 export {
   equalityExpressionVisitor,
   relationalExpressionVisitor,
@@ -136,6 +133,7 @@ export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
 export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
+export { commandEvaluationVisitor, queryEvaluationVisitor } from './expression/evaluation/index.js';
 export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';
 export {
   domainEventDeclarationVisitor,

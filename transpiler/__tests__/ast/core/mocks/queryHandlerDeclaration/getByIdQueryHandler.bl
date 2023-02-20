@@ -1,0 +1,16 @@
+
+QueryHandler GetCustomerQueryHandler (customerRepo: CustomerReadRepoPort) {
+    execute(query: GetCustomerByIdQuery): (OK(CustomerReadModel), Errors(
+        ApplicationErrors.CustomerNotFound
+       )) {
+       
+       const requestId = UUIDv4(query.id);
+       const customer = this.customerRepo.getById(requestId);
+
+       if(NOT customer) {
+           return ApplicationErrors.CustomerNotFound(query.id);
+       }
+
+       return customer;
+   }
+ }

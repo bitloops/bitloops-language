@@ -9,7 +9,7 @@ import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermed
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Props/PropsNode.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { EntityBuilderDirector } from '../../builders/domain/entityDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
@@ -50,7 +50,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
               .withOk(
                 new ReturnOkTypeNodeBuilder()
                   .withType(
-                    new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoEntity'),
+                    new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('TodoEntity'),
                   )
                   .build(),
               )
@@ -78,7 +78,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
-          .withReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+          .withReturnType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
           .withStatements(
             new StatementListNodeBuilder()
               .withStatements([
@@ -151,7 +151,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -176,7 +176,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())

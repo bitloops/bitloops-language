@@ -63,6 +63,37 @@ export const VALID_EVALUATION_TEST_CASES = [
     output: 'AddressVO.create(addressProps)',
   },
   {
+    description: 'Command evaluation',
+    evaluation: new EvaluationBuilderDirector().buildCommandEvaluation(
+      new IdentifierNodeBuilder().withName('AddCourseCommand').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
+        ])
+        .build(),
+    ),
+    output: "new AddCourseCommand({course: 'Math'})",
+  },
+  {
+    description: 'Query evaluation with args',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation(
+      new IdentifierNodeBuilder().withName('GetTodoQuery').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('type', 'task'),
+        ])
+        .build(),
+    ),
+    output: "new GetTodoQuery({type: 'task'})",
+  },
+  {
+    description: 'Query evaluation without args',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation(
+      new IdentifierNodeBuilder().withName('GetTodoQuery').build(),
+    ),
+    output: 'new GetTodoQuery()',
+  },
+  {
     description: 'Integration event evaluation with one argument',
     evaluation: new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
       'TodoCreatedIntegrationEvent',

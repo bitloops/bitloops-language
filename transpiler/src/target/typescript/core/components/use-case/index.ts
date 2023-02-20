@@ -27,7 +27,7 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
-import { useCaseExecuteToTargetLanguage } from './execute.js';
+import { executeToTargetLanguage } from './execute.js';
 
 const USE_CASE_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -105,7 +105,7 @@ export const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesT
     useCaseName,
   );
 
-  const executeResult = useCaseExecuteToTargetLanguage(
+  const executeResult = executeToTargetLanguage(
     useCase[UseCaseKey].execute,
     useCaseResponseTypeName,
   );

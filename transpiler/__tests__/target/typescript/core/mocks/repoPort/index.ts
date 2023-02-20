@@ -6,7 +6,7 @@ import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { ReturnOkErrorTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
 import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { RootEntityBuilderDirector } from '../../builders/domain/rootEntityDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
@@ -58,7 +58,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -83,7 +83,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -142,7 +142,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -167,7 +167,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -207,7 +207,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
       fields: [
         new FieldNodeBuilder()
           .withName(new IdentifierNodeBuilder().withName('name').build())
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'))
           .build(),
       ],
     }),

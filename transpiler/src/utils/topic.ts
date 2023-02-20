@@ -25,6 +25,20 @@ export class TopicUtils {
     return TopicUtils.generateDefaultTopicName(domainEventIdentifier, contextInfo, 'DOMAIN_EVENT');
   }
 
+  static generateDefaultCommandTopicName(
+    commandIdentifier: string,
+    contextInfo: { boundedContextName: string; moduleName: string },
+  ): string {
+    return TopicUtils.generateDefaultTopicName(commandIdentifier, contextInfo, 'COMMAND');
+  }
+
+  static generateDefaultQueryTopicName(
+    queryIdentifier: string,
+    contextInfo: { boundedContextName: string; moduleName: string },
+  ): string {
+    return TopicUtils.generateDefaultTopicName(queryIdentifier, contextInfo, 'QUERY');
+  }
+
   /**
    *
    * @param replaceString Identifier's suffix to be replaced, in uppercase and with underscores

@@ -8,7 +8,7 @@ import {
   TBitloopsIdentifier,
   TBitloopsPrimitives,
 } from '../../../../../src/types.js';
-import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class ReturnOkErrorTypeBuilderDirector {
   private builder: ReturnOkErrorTypeNodeBuilder;
@@ -21,7 +21,7 @@ export class ReturnOkErrorTypeBuilderDirector {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(entityName))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(entityName))
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -34,7 +34,9 @@ export class ReturnOkErrorTypeBuilderDirector {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildArrayIdentifierPrimaryType(entityName))
+          .withType(
+            new BitloopsPrimaryTypeNodeDirector().buildArrayIdentifierPrimaryType(entityName),
+          )
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -45,7 +47,7 @@ export class ReturnOkErrorTypeBuilderDirector {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(primitiveType))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType(primitiveType))
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -64,7 +66,7 @@ export class ReturnOkErrorTypeBuilderDirector {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(primitiveType))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType(primitiveType))
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors(errorIdentifiersNode).build())
@@ -83,7 +85,9 @@ export class ReturnOkErrorTypeBuilderDirector {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(identifierName))
+          .withType(
+            new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(identifierName),
+          )
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors(errorIdentifiersNode).build())
@@ -94,7 +98,9 @@ export class ReturnOkErrorTypeBuilderDirector {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(builtInClass))
+          .withType(
+            new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType(builtInClass),
+          )
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())

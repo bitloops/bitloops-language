@@ -1,6 +1,6 @@
 Query GetCustomerByIdQuery {
     string id;
-  }
+}
   
 
   //AST
