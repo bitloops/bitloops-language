@@ -34,6 +34,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     const isNew = !props.id;
     if (isNew) {
       account.addDomainEvent(new AccountCreated(account));
+      // account.addDomainEvent(AccountCreated);
     }
     return ok(account);
   }

@@ -1,0 +1,22 @@
+const bankingWriteRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: Env(MONGO_DB_Banking_COLLECTION, 'bankings'),
+}) concretes BankingWriteRepoPort;
+  
+const bankingReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_Banking_COLLECTION, 'bankings'),
+}) concretes BankingReadRepoPort;
+
+const emailService = EmailServiceAdapters.SendGrid({
+  apiKey: Env(SENDGRID_API_KEY),
+}) concretes EmailServicePort;
+
+// USE CASES
+DI {
+  CreateBankingCommandHandler(bankingWriteRepo, emailService);
+  GetAllBankingsQueryHandler(bankingReadRepo);
+  SendEmailAfterMoneyDepositedDomainEventHandler();
+}
+
+

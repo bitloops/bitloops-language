@@ -1,10 +1,15 @@
-RESTController DepositMoneyController (commandBus: CommandBusPort) { // Will we have command bus here? If we have composition controller it needs command or query buses as dependencies
+RESTController DepositMoneyController () { // The command bus will be set from the module context
     method: REST.Methods.POST;
+    context: {
+      boundedContext: 'Banking';
+      module: 'Banking';
+    }
+
     execute(request, response) {
       const amount = request.body.amount;
       const accountId = request.body.accountId;
   
-      const command = [banking][banking]DepositMoneyCommand.create({
+      const command = DepositMoneyCommand.create({
           amount: amount,
           accountId: accountId,
       });

@@ -18,7 +18,7 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
 
         accountEntity.withdrawAmount(command.amount); //provide the available aggregate methods
         this.accountRepo.update(accountEntity);
-    }
+    } 
   }
 
   {

@@ -5,8 +5,6 @@ const todoWriteRepo = RepoAdapters.Mongo({
   // useOptimistic: false
 }) concretes [Todo][Todo]TodoWriteRepoPort;
 
-[Todo]Controller;
-
 // Declare internal/external command,event bus etc for each bc 
 
 AppConfig {
@@ -37,4 +35,19 @@ DI {
   [Banking][Banking]CreateTodoCommandHandler(todoWriteRepo, emailService);
   [Banking][Banking]GetAllTodosQueryHandler(todoReadRepo);
   [Banking][Banking]SendEmailAfterMoneyDepositedDomainEventHandler();
+}
+
+const todoRESTRouter = RESTRouter(REST.Fastify) {
+  Post('/'): [BankingApp]DepositMoneyController();
+}
+
+// SERVERS
+
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+  // corsOptions: { origin: '*' },
+}) {
+  '/todo': todoRESTRouter;
 }

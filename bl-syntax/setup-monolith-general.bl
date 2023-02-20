@@ -1,0 +1,36 @@
+Config.setLanguage(TypeScript);
+
+Config.setBuses({
+    COMMAND_BUS: MessageBus.External,//Here it should be Kafka, Nats etc MessageBus.External.Nats
+    EVENT_BUS: MessageBus.InProcess,
+    INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+    QUERY_BUS: MessageBus.InProcess,
+})
+
+const mongoConnection = RepoConnections.Mongo({
+  host: 'localhost',
+  port: 27017,
+  database: Env(MONGO_DB_DATABASE,'banking'),
+});
+
+// SERVERS
+const bankingRESTRouter = RESTRouter(REST.Fastify) {
+  Post('/'): [BankingApp]DepositMoneyController();
+  //OR we dont let the same name in 2 Apps
+  Post('/'): DepositMoneyController();
+}
+
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+  // corsOptions: { origin: '*' },
+}) {
+  '/banking': bankingRESTRouter;
+}
+
+//monolith can have 1 setup but μservices can have different setups (modules+ apps)
+
+
+// Monolith - 1 Setup model
+// 2 type of setup models or 1? (module + api types)
