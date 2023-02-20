@@ -63,7 +63,9 @@ export class IntermediateASTTree {
     return this.rootNode;
   }
 
-  public getRootChildrenNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
+  public getRootChildrenNodesByType<T extends IntermediateASTNode = IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T[] {
     const rootChildren = this.rootNode.getChildren();
     const classTypeNodes = [];
     for (const child of rootChildren) {
@@ -71,7 +73,7 @@ export class IntermediateASTTree {
         classTypeNodes.push(child);
       }
     }
-    return classTypeNodes;
+    return classTypeNodes as T[];
   }
 
   public getRootChildrenNodesValueByType<T = any>(nodeType: TBitloopsTypesValues): T[] {

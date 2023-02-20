@@ -107,10 +107,10 @@ const getAggregateIdVariable = (aggregatePropsModel: TProps): TVariable => {
   return aggregateIdVariable;
 };
 
-export const fetchTypeScriptAggregateCrudBaseRepo = (
+export const fetchAggregateCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TProps,
-  model: IntermediateASTTree,
+  _model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(
@@ -119,49 +119,60 @@ export const fetchTypeScriptAggregateCrudBaseRepo = (
   );
 
   const aggregateIdVariable = getAggregateIdVariable(aggregatePropsModel);
-  const mappedAggregateType = modelToTargetLanguage({
+  const aggregateIdType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: aggregateIdVariable[fieldKey].type },
   });
 
-  const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
+  // const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
 
   const aggregateRootId = lowerCaseEntityName + 'Id';
   const output = `
     async getAll(): Promise<${entityName}[]> {
       throw new Error('Method not implemented.');
     }
-    async getById(${aggregateRootId}: ${mappedAggregateType.output}): Promise<${entityName}> {
-      return (await this.collection.findOne({
+    async getById(${aggregateRootId}: ${aggregateIdType.output}): Promise<${entityName} | null> {
+      const res = await this.collection.findOne({
         _id: ${aggregateRootId}.toString(),
-      })) as unknown as ${entityName};
+      });
+      if (!res) {
+        return null;
+      }
+      const { _id, ...rest } = res;
+      return ${entityName}.fromPrimitives({
+        id: _id,
+        ...rest,
+      });
     }
-    async delete(${aggregateRootId}: ${mappedAggregateType.output}): Promise<void> {
+    async delete(${aggregateRootId}: ${aggregateIdType.output}): Promise<void> {
       await this.collection.deleteOne({
         _id: ${aggregateRootId}.toString(),
       });
     }
     async save(${lowerCaseEntityName}: ${entityName}): Promise<void> {
+      const {id, ...rest} = ${lowerCaseEntityName}.toPrimitives();
       await this.collection.insertOne({
-        _id: ${lowerCaseEntityName}.id.toString() as unknown as Mongo.ObjectId,
-        ${deepFields}
+        _id: id as unknown as Mongo.ObjectId,
+        ...rest,
       });
+      await Domain.dispatchEventsCallback(${lowerCaseEntityName}.id);
     }
     async update(${lowerCaseEntityName}: ${entityName}): Promise<void> {
+      const {id, ...rest} = ${lowerCaseEntityName}.toPrimitives();
       await this.collection.updateOne(
         {
-          _id: ${lowerCaseEntityName}.id.toString(),
+          _id: id,
         },
         {
-          $set: {
-        ${deepFields}
-          },
+          $set: rest,
         },
       );
+      await Domain.dispatchEventsCallback(${lowerCaseEntityName}.id);
     }
+    // TODO add getByField
     `;
   const entityNameDependency = getChildDependencies(entityName);
-  dependencies = [...dependencies, ...entityNameDependency, ...mappedAggregateType.dependencies];
+  dependencies = [...dependencies, ...entityNameDependency, ...aggregateIdType.dependencies];
   return {
     output,
     dependencies,

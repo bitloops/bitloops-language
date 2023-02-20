@@ -26,7 +26,6 @@ import {
   identifierKey,
   TRootEntity,
   TBitloopsPrimaryType,
-  TDependenciesTypeScript,
   RootEntityKey,
   TProps,
   TReadModel,
@@ -34,8 +33,8 @@ import {
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
-import { fetchTypeScriptAggregateCrudBaseRepo } from './mongo/aggregateCrudRepo.js';
-import { fetchTypeScriptReadModelCrudBaseRepo } from './mongo/readModelCrudRepo.js';
+import { fetchAggregateCrudBaseRepo } from './mongo/aggregateCrudRepo.js';
+import { fetchReadModelCrudBaseRepo } from './mongo/readModelCrudRepo.js';
 import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { RootEntityDeclarationNode } from '../../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 import { RepoPortTypeIdentifiers } from '../../../type-identifiers/repoPort.js';
@@ -43,16 +42,13 @@ import { ReadModelNode } from '../../../../../../ast/core/intermediate-ast/nodes
 import { PropsNode } from '../../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { RepoPortNode } from '../../../../../../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { RepoAdapterNode } from '../../../../../../ast/core/intermediate-ast/nodes/RepoAdapterNode.js';
-
-const CRUDWriteRepoPort = 'CRUDWriteRepoPort';
-const CRUDReadRepoPort = 'CRUDReadRepoPort';
+import { repoExtendsCRUDReadRepo, repoExtendsCRUDWriteRepo } from './CRUDRepos.js';
 
 const getPropsModel = (
   repoPort: TRepoPort,
   model: IntermediateASTTree,
-): { output: TProps | TReadModel; dependencies: TDependenciesTypeScript } => {
+): { output: TProps | TReadModel } => {
   let propsModel: TProps | TReadModel;
-  const dependencies = [];
   if (RepoPortTypeIdentifiers.isAggregateRepoPort(repoPort)) {
     const { entityIdentifier } = repoPort[repoPortKey];
     const aggregateModels = model.getRootChildrenNodesByType(
@@ -92,7 +88,7 @@ const getPropsModel = (
   } else {
     throw new Error(`Invalid repo port ${JSON.stringify(repoPort)}`);
   }
-  return { output: propsModel, dependencies };
+  return { output: propsModel };
 };
 
 const repoBodyLangMapping = (
@@ -102,10 +98,7 @@ const repoBodyLangMapping = (
   model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   const repoPortInfo = repoPortNode.getValue() as TRepoPort;
-  const { output: propsModel, dependencies: propsDependencies } = getPropsModel(
-    repoPortInfo,
-    model,
-  );
+  const { output: propsModel } = getPropsModel(repoPortInfo, model);
 
   const repoAdapterExpression = repoAdapterDefinition.getExpression();
   const repoAdapterOptions = repoAdapterExpression.getOptions();
@@ -142,7 +135,6 @@ const repoBodyLangMapping = (
     ...collection.dependencies,
     ...connection.dependencies,
     ...dbName.dependencies,
-    ...propsDependencies,
   ];
   let result = '';
   switch (dbType) {
@@ -152,28 +144,17 @@ const repoBodyLangMapping = (
       const collection = ${collection.output};
       this.collection = this.client.db(dbName).collection(collection);
      }`;
-      if (
-        repoPortInfo[repoPortKey].extendsRepoPorts
-          .map((repoPort) => repoPort[identifierKey])
-          .includes(CRUDWriteRepoPort)
-      ) {
-        const writeRepoPort = repoPortInfo as TAggregateRepoPort;
-
-        const methodsResult = fetchTypeScriptAggregateCrudBaseRepo(
-          writeRepoPort[repoPortKey].entityIdentifier,
+      if (repoExtendsCRUDWriteRepo(repoPortInfo)) {
+        const methodsResult = fetchAggregateCrudBaseRepo(
+          repoPortInfo[repoPortKey].entityIdentifier,
           propsModel as TProps,
           model,
         );
         result += methodsResult.output;
         dependencies = [...dependencies, ...methodsResult.dependencies];
-      } else if (
-        repoPortInfo[repoPortKey].extendsRepoPorts
-          .map((repoPort) => repoPort[identifierKey])
-          .includes(CRUDReadRepoPort)
-      ) {
-        const readRepoPort = repoPortInfo as TReadModelRepoPort;
-        const methodsResult = fetchTypeScriptReadModelCrudBaseRepo(
-          readRepoPort[repoPortKey].readModelIdentifier,
+      } else if (repoExtendsCRUDReadRepo(repoPortInfo)) {
+        const methodsResult = fetchReadModelCrudBaseRepo(
+          repoPortInfo[repoPortKey].readModelIdentifier,
           propsModel,
         );
         result += methodsResult.output;

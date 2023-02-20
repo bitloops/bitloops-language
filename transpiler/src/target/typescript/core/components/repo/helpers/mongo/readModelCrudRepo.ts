@@ -28,7 +28,7 @@ const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable
   return aggregateIdVariable;
 };
 
-export const fetchTypeScriptReadModelCrudBaseRepo = (
+export const fetchReadModelCrudBaseRepo = (
   readModelName: string,
   readModelValues: TProps | TReadModel,
 ): TTargetDependenciesTypeScript => {
@@ -51,10 +51,12 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
         const documents = await this.collection.find({}).toArray();
         const res: ${readModelName}[] = [];
         documents.forEach((${DOCUMENT_NAME}) => {
-            res.push({
-                id: ${DOCUMENT_NAME}._id.toString(),
-                ${readModelFields}
-            });
+          const { _id, ...rest } = ${DOCUMENT_NAME};
+            res.push(
+              ${readModelName}.fromPrimitives({
+                id: _id,
+                ...rest,
+              });
         });
         return res;
       }
@@ -62,14 +64,14 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
         const ${DOCUMENT_NAME} = await this.collection.findOne({
             _id: ${readModelId},
         });
-        let res = null
-        if (${DOCUMENT_NAME}) {
-            res = {
-                id: ${DOCUMENT_NAME}._id.toString(), 
-                ${readModelFields}
-            };
+        if (!${DOCUMENT_NAME}) {
+          return null;
         }
-        return res;
+        const { _id, ...rest } = ${DOCUMENT_NAME};
+        return ${readModelName}.fromPrimitives({
+          id: _id,
+          ...rest,
+        });
       }
       `;
 
