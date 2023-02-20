@@ -1,7 +1,7 @@
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { MethodDefinitionNodeBuilderDirector } from '../../builders/methodDefinitionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ServicePortNodeBuilderDirector } from '../../builders/servicePortNodeBuilderDirector.js';
 
 export const VALID_SERVICE_PORT_TEST_CASES = [
@@ -13,7 +13,7 @@ export const VALID_SERVICE_PORT_TEST_CASES = [
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'getTestData',
           parameters: [new ParameterBuilderDirector().buildPrimitiveParameter('value', 'string')],
-          type: new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TestDataSchema'),
+          type: new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('TestDataSchema'),
         }),
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'sendTestData',
@@ -21,7 +21,7 @@ export const VALID_SERVICE_PORT_TEST_CASES = [
             new ParameterBuilderDirector().buildIdentifierParameter('value', 'TestDataSchema'),
             new ParameterBuilderDirector().buildPrimitiveParameter('value2', 'string'),
           ],
-          type: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
+          type: new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'),
         }),
       ],
     }),

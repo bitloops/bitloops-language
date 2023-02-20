@@ -67,6 +67,7 @@ bitloopsIdentifiers
     | EntityIdentifier
     | RepoPortIdentifier
     | ReadModelIdentifier
+    | servicePortIdentifier
     | structIdentifier
     | commandIdentifier
     | queryIdentifier
