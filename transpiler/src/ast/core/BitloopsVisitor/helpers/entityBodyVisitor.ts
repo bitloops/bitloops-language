@@ -15,8 +15,8 @@ export const entityBodyVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.EntityBodyContext,
 ): EntityValuesNode => {
-  const domainConstructorDeclarationNode: DomainCreateNode = thisVisitor.visit(
-    ctx.domainConstructorDeclaration(),
+  const domainCreateDeclarationNode: DomainCreateNode = thisVisitor.visit(
+    ctx.domainCreateDeclaration(),
   );
 
   const constantVarNodes: ConstDeclarationListNode = ctx.domainConstDeclarationList()
@@ -34,7 +34,7 @@ export const entityBodyVisitor = (
   const metadata = produceMetadata(ctx, thisVisitor);
   const entityValuesNode = new EntityValuesNodeBuilder(metadata)
     .withConstants(constantVarNodes)
-    .withCreate(domainConstructorDeclarationNode)
+    .withCreate(domainCreateDeclarationNode)
     .withPublicMethods(publicMethodNodes)
     .withPrivateMethods(privateMethodNodes)
     .build();

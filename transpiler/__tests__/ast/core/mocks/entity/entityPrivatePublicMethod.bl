@@ -1,6 +1,6 @@
 Entity TodoEntity {    
     constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
-        return TodoEntity.create(props);   
+        return TodoEntity(props);   
     }  
     
     complete(): (OK(TodoEntity), Errors()) { 

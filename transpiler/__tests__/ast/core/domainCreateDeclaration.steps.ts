@@ -23,18 +23,18 @@ import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/Inte
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
-import { validDomainConstructorDeclarationCases } from './mocks/domainConstructorDeclaration.js';
+import { validDomainCreateDeclarationCases } from './mocks/domainCreateDeclaration.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Domain constructor declaration is valid', () => {
+describe('Domain create declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  validDomainConstructorDeclarationCases.forEach((testCase) => {
+  validDomainCreateDeclarationCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [

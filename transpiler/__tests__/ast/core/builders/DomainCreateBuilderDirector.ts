@@ -23,7 +23,7 @@ export class DomainCreateBuilderDirector {
   }): TDomainCreateMethod {
     return this.builder
       .withStatements(
-        new StatementListDirector().buildOneReturnStatementEntityEvaluation(
+        new StatementListDirector().buildOneReturnStatementEntityConstructorEvaluation(
           entityName,
           entityPropsIdentifier,
         ),

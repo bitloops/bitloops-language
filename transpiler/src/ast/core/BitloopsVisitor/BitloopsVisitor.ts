@@ -78,7 +78,6 @@ import {
   fieldVisitor,
   dtoDeclarationVisitor,
   propsDeclarationVisitor,
-  domainConstructorDeclarationVisitor,
   valueObjectDeclarationVisitor,
   privateMethodDeclarationVisitor,
   privateMethodDeclarationListVisitor,
@@ -151,6 +150,7 @@ import {
   integrationEventEvaluationVisitor,
   entityConstructorEvaluationVisitor,
   standardVOEvaluationVisitor,
+  domainCreateDeclarationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -866,15 +866,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return propsDeclarationVisitor(this, ctx);
   }
 
-  visitDomainConstructorDeclaration(
-    ctx: BitloopsParser.DomainConstructorDeclarationContext,
+  visitDomainCreateDeclaration(
+    ctx: BitloopsParser.DomainCreateDeclarationContext,
   ): DomainCreateNode {
-    return domainConstructorDeclarationVisitor(this, ctx);
+    return domainCreateDeclarationVisitor(this, ctx);
   }
 
-  visitDomainConstructorParam(
-    ctx: BitloopsParser.DomainConstructorParamContext,
-  ): DomainCreateParameterNode {
+  visitDomainCreateParam(ctx: BitloopsParser.DomainCreateParamContext): DomainCreateParameterNode {
     return domainCreateParameterVisitor(this, ctx);
   }
 

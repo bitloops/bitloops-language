@@ -245,7 +245,7 @@ jestTestDeclaration
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
     | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
     | JestTestMethodDefinitionList OpenBrace methodDefinitionList CloseBrace SemiColon?
-    | JestTestCreateMethodDeclaration OpenBrace domainConstructorDeclaration CloseBrace SemiColon?
+    | JestTestCreateMethodDeclaration OpenBrace domainCreateDeclaration CloseBrace SemiColon?
     | JestTestPrivateMethodDeclaration OpenBrace privateMethodDeclaration CloseBrace SemiColon?
     | JestTestPublicMethodDeclaration OpenBrace publicMethodDeclaration CloseBrace SemiColon?
     | JestTestValueObjectDeclaration OpenBrace valueObjectDeclaration CloseBrace SemiColon?
@@ -396,11 +396,11 @@ entityDeclaration
 ;
 
 entityBody
-    : OpenBrace domainConstDeclarationList? domainConstructorDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
+    : OpenBrace domainConstDeclarationList? domainCreateDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
     ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainConstructorDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
+    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainCreateDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
     ;
 domainConstDeclarationList
     : domainConstDeclaration+
@@ -414,12 +414,12 @@ privateMethodDeclarationList
     : privateMethodDeclaration+
     ;
 
-domainConstructorParam 
+domainCreateParam 
     : identifier Colon propsIdentifier
     ;
 
-domainConstructorDeclaration
-    : Constructor OpenParen domainConstructorParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
+domainCreateDeclaration
+    : Static Create OpenParen domainCreateParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
