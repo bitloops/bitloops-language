@@ -29,4 +29,21 @@ export const VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES: TestCase[] = [
     output:
       'const res = Domain.applyRules([new DomainRules.TooLongStringRule(props.name),]);if (res) return fail(res);',
   },
+  {
+    description: 'valid add domain event with this identifier',
+    builtinFunction:
+      new BuiltinFunctionStatementBuilderDirector().buildAddDomainEventWithThisIdentifier(
+        'AccountCreatedDomainEvent',
+      ),
+    output: 'this.addDomainEventClass(AccountCreatedDomainEvent);',
+  },
+  {
+    description: 'valid add domain event with identifier',
+    builtinFunction:
+      new BuiltinFunctionStatementBuilderDirector().buildAddDomainEventWithIdentifier(
+        'AccountCreatedDomainEvent',
+        'account',
+      ),
+    output: 'account.addDomainEventClass(AccountCreatedDomainEvent);',
+  },
 ];

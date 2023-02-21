@@ -503,10 +503,20 @@ export type TApplyRules = {
   applyRules: TAppliedRule[];
 };
 
+export type TThisIdentifier = string;
+
+export type TAddDomainEvent = {
+  addDomainEvent: {
+    [DomainEventIdentifierKey]: TDomainEventIdentifier;
+    identifier?: TIdentifier;
+    thisIdentifier?: TThisIdentifier;
+  };
+};
+
 export type TBuiltInFunction = {
   builtInFunction: TBuiltInFunctionValues;
 };
-export type TBuiltInFunctionValues = TApplyRules;
+export type TBuiltInFunctionValues = TApplyRules | TAddDomainEvent;
 
 export type TStatement =
   | TBreakStatement
@@ -1187,9 +1197,11 @@ export type TIntegrationEvent = {
 };
 export const DomainEventIdentifierKey = 'DomainEventIdentifier';
 
+export type TDomainEventIdentifier = string;
+
 export type TDomainEvent = {
   domainEvent: {
-    [DomainEventIdentifierKey]: TDTOIdentifier;
+    [DomainEventIdentifierKey]: TDomainEventIdentifier;
     entityIdentifier: TEntityIdentifier;
     topic: TExpression;
   };

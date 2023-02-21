@@ -19,14 +19,19 @@
  */
 import { TBuiltInFunction } from '../../../../../src/types.js';
 import { BuiltInFunctionStatementDirector } from '../../builders/statement/builtInFunctionDirector.js';
-// import { FieldBuilderDirector } from '../builders/fieldDirector.js';
-// import { IdentifierBuilder } from '../builders/identifier.js';
 
 type ApplyRulesTestCase = {
   description: string;
   fileId: string;
   inputBLString: string;
   applyRules: TBuiltInFunction;
+};
+
+type AddDomainEventTestCase = {
+  description: string;
+  fileId: string;
+  inputBLString: string;
+  addDomainEvent: TBuiltInFunction;
 };
 
 export const validApplyRulesStatementTestCases: ApplyRulesTestCase[] = [
@@ -71,6 +76,26 @@ export const validApplyRulesStatementTestCases: ApplyRulesTestCase[] = [
         name: 'IsLongNameRule',
         args: [['props', 'name']],
       },
+    ),
+  },
+];
+
+export const validAddDomainEventStatementTestCases: AddDomainEventTestCase[] = [
+  {
+    description: 'addDomainEvent with identifier',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestBuiltInFunction { account.addDomainEvent(AccountCreatedDomainEvent) }',
+    addDomainEvent: new BuiltInFunctionStatementDirector().buildAddDomainEventWithIdentifier({
+      identifier: 'account',
+      domainEventIdentifier: 'AccountCreatedDomainEvent',
+    }),
+  },
+  {
+    description: 'addDomainEvent with this identifier',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestBuiltInFunction { this.addDomainEvent(AccountCreatedDomainEvent) }',
+    addDomainEvent: new BuiltInFunctionStatementDirector().buildAddDomainEventWithThisIdentifier(
+      'AccountCreatedDomainEvent',
     ),
   },
 ];

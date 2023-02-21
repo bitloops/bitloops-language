@@ -4,9 +4,12 @@ import {
   TArgumentList,
   TBuiltInFunction,
   TBuiltInFunctionValues,
+  TDomainEventIdentifier,
+  TIdentifier,
 } from './../../../../../src/types.js';
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
+import { AddDomainEventBuilder } from './addDomainEventBuilder.js';
 
 export class BuiltInFunctionStatementDirector {
   private builtInFunctionStatementBuilder: BuiltInFunctionStatementBuilder;
@@ -110,6 +113,38 @@ export class BuiltInFunctionStatementDirector {
     }
 
     return applyRules;
+  }
+
+  buildAddDomainEventWithIdentifier({
+    domainEventIdentifier,
+    identifier,
+  }: {
+    domainEventIdentifier: TDomainEventIdentifier;
+    identifier: TIdentifier;
+  }): TBuiltInFunction {
+    const addDomainEvent = new AddDomainEventBuilder()
+      .withDomainEventIdentifier(domainEventIdentifier)
+      .withIdentifier(identifier)
+      .build();
+
+    const builtInFunction = this.builtInFunctionStatementBuilder
+      .withBuiltInFunctionValues(addDomainEvent)
+      .build();
+    return builtInFunction;
+  }
+
+  buildAddDomainEventWithThisIdentifier(
+    domainEventIdentifier: TDomainEventIdentifier,
+  ): TBuiltInFunction {
+    const addDomainEvent = new AddDomainEventBuilder()
+      .withDomainEventIdentifier(domainEventIdentifier)
+      .withThisIdentifier('this')
+      .build();
+
+    const builtInFunction = this.builtInFunctionStatementBuilder
+      .withBuiltInFunctionValues(addDomainEvent)
+      .build();
+    return builtInFunction;
   }
 }
 
