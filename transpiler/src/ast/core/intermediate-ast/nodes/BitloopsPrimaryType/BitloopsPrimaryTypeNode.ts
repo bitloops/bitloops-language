@@ -21,4 +21,46 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
   isBitloopsIdentifierType(): this is BitloopsIdentifierTypeNode {
     return this.getNodeType() === BitloopsTypesMapping.TBitloopsIdentifier;
   }
+
+  isPrimaryWithPrimitiveTypeChild(): boolean {
+    if (this.getNodeType() !== BitloopsTypesMapping.TBitloopsPrimaryType) {
+      return false;
+    }
+    const child = this.getChildNodeByType<PrimitiveTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimitives,
+    );
+    return !!child;
+  }
+
+  isPrimaryWithBitloopsIdentifierTypeChild(): boolean {
+    if (this.getNodeType() !== BitloopsTypesMapping.TBitloopsPrimaryType) {
+      return false;
+    }
+    const child = this.getChildNodeByType<BitloopsIdentifierTypeNode>(
+      BitloopsTypesMapping.TBitloopsIdentifier,
+    );
+    return !!child;
+  }
+
+  getPrimitiveTypeNode(): PrimitiveTypeNode {
+    if (this.isPrimitiveType()) {
+      return this;
+    }
+    if (this.isPrimaryWithPrimitiveTypeChild()) {
+      return this.getChildNodeByType<PrimitiveTypeNode>(BitloopsTypesMapping.TBitloopsPrimitives);
+    }
+    throw new Error('This is not a primitive type node');
+  }
+
+  getBitloopsIdentifierTypeNode(): BitloopsIdentifierTypeNode {
+    if (this.isBitloopsIdentifierType()) {
+      return this;
+    }
+    if (this.isPrimaryWithBitloopsIdentifierTypeChild()) {
+      return this.getChildNodeByType<BitloopsIdentifierTypeNode>(
+        BitloopsTypesMapping.TBitloopsIdentifier,
+      );
+    }
+    throw new Error('This is not a BitloopsIdentifier type node');
+  }
 }

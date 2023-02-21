@@ -50,7 +50,7 @@ import { PackageConcretionNode } from './nodes/package/PackageConcretionNode.js'
 import { PackagePortIdentifierNode } from './nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { PackagePortNode } from './nodes/package/packagePort/PackagePortNode.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
-import { ReadModelNode } from './nodes/readModel/ReadModel.js';
+import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 import { ReadModelIdentifierNode } from './nodes/readModel/ReadModelIdentifierNode.js';
 import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';

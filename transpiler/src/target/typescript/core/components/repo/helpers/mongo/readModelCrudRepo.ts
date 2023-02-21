@@ -44,6 +44,7 @@ export const fetchReadModelCrudBaseRepo = (
   });
 
   const readModelFields = getReadModelFields(readModelValues);
+  console.log('readModelFields', readModelFields);
 
   const readModelId = lowerCaseReadModelName + 'Id';
   const output = `

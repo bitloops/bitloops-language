@@ -3,7 +3,7 @@ import { ReadModelIdentifierNodeBuilder } from '../../../../../src/ast/core/inte
 import { ReadModelNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/readModel/ReadModelNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { FieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
-import { ReadModelNode } from '../../../../../src/ast/core/intermediate-ast/nodes/readModel/ReadModel.js';
+import { ReadModelNode } from '../../../../../src/ast/core/intermediate-ast/nodes/readModel/ReadModelNode.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 
 export class ReadModelBuilderDirector {

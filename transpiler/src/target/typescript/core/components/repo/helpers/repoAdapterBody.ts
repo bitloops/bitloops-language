@@ -21,9 +21,6 @@ import {
   TRepoPort,
   TTargetDependenciesTypeScript,
   repoPortKey,
-  TAggregateRepoPort,
-  TReadModelRepoPort,
-  identifierKey,
   TRootEntity,
   TBitloopsPrimaryType,
   RootEntityKey,
@@ -38,7 +35,7 @@ import { fetchReadModelCrudBaseRepo } from './mongo/readModelCrudRepo.js';
 import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { RootEntityDeclarationNode } from '../../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 import { RepoPortTypeIdentifiers } from '../../../type-identifiers/repoPort.js';
-import { ReadModelNode } from '../../../../../../ast/core/intermediate-ast/nodes/readModel/ReadModel.js';
+import { ReadModelNode } from '../../../../../../ast/core/intermediate-ast/nodes/readModel/ReadModelNode.js';
 import { PropsNode } from '../../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { RepoPortNode } from '../../../../../../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { RepoAdapterNode } from '../../../../../../ast/core/intermediate-ast/nodes/RepoAdapterNode.js';
