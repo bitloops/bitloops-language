@@ -30,6 +30,12 @@ const buildInFunctionToTargetLanguage = (
       type: BitloopsTypesMapping.TApplyRules,
       value: buildInFunction,
     });
+  }
+  if ('addDomainEvent' in buildInFunction) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TAddDomainEvent,
+      value: buildInFunction,
+    });
   } else {
     throw new Error(`Unsupported buildInFunction: ${Object.keys(buildInFunction)}`);
   }

@@ -142,6 +142,7 @@ import { integrationEventHandlerToTargetLanguage } from './components/integratio
 import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
 import { standardVOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/standardVOEvaluation.js';
 import { servicePortToTargetLanguage } from './components/service-port/index.js';
+import { addDomainEventToTargetLanguage } from './components/statements/buildInFunctions/addDomainEvent.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -574,6 +575,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TServicePort: {
       res = servicePortToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TAddDomainEvent: {
+      res = addDomainEventToTargetLanguage(value);
       break;
     }
     default: {
