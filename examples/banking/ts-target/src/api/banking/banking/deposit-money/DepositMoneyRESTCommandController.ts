@@ -1,5 +1,5 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { Infra } from '@bitloops/bl-boilerplate-core';
+import { Domain, Infra } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
 import { DepositMoneyCommand } from '../../../../bounded-contexts/banking/banking/application/deposit-money/DepositMoneyCommand';
 import { DepositMoneyRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/DepositMoneyRequestDTO';
@@ -26,6 +26,18 @@ export class DepositMoneyRESTCommandController extends Fastify.BaseController {
     if (result.isFail()) {
       switch (result.value.constructor) {
         case DomainErrors.InvalidMonetaryValue: {
+          this.badRequest(response, result.value);
+          break;
+        }
+        case DomainErrors.InsufficientBalance: {
+          this.badRequest(response, result.value);
+          break;
+        }
+        case Domain.StandardVO.Currency.Value.Errors.CurrencyCodeDoesNotExistError: {
+          this.badRequest(response, result.value);
+          break;
+        }
+        case Domain.StandardVO.Currency.Value.Errors.CurrencyStandardDoesNotExistError: {
           this.badRequest(response, result.value);
           break;
         }

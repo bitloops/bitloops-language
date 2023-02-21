@@ -31,6 +31,7 @@ import {
   bitloopsIdentifiersTypeKey,
   TBitloopsBuiltInClassesObject,
   TStandardValueType,
+  TBitloopsPrimitives,
 } from '../../../../types.js';
 
 export class BitloopsPrimTypeIdentifiers {
@@ -53,6 +54,18 @@ export class BitloopsPrimTypeIdentifiers {
       return bitloopsBuiltInClasses.includes(type[buildInClassTypeKey]);
     }
     return false;
+  };
+
+  static builtInClassToPrimitiveType = (
+    type: TBitloopsBuiltInClassesObject,
+  ): TBitloopsPrimitives => {
+    const builtInClass = type[buildInClassTypeKey];
+    switch (builtInClass) {
+      case 'UUIDv4':
+        return 'string';
+      default:
+        return 'string';
+    }
   };
 
   static isBitloopsPrimitive(

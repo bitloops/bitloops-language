@@ -42,7 +42,7 @@ export const findIdOfRepoDomainObject = (
       throw new Error(`${type} ${repoDependencyName} not found`);
     }
 
-    const aggregatePropsNode = ast.getPropsFromEntity(rootEntityNode);
+    const aggregatePropsNode = ast.getDomainCreateOfEntity(rootEntityNode);
 
     if (!aggregatePropsNode) {
       const aggregateNodeIdentifier = rootEntityNode.getIdentifier().getValue();

@@ -29,7 +29,10 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
 
   public static create(
     props: AccountProps,
-  ): Either<AccountEntity, DomainErrors.InvalidMonetaryValue | Domain.StandardVO.Currency.Value> {
+  ): Either<
+    AccountEntity,
+    DomainErrors.InvalidMonetaryValue | Domain.StandardVO.Currency.ErrorTypes
+  > {
     const account = new AccountEntity(props);
     const isNew = !props.id;
     if (isNew) {
@@ -55,7 +58,9 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     this.props.version++;
   }
 
-  public withdrawAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
+  public withdrawAmount(
+    amount: number,
+  ): Either<void, DomainErrors.InvalidMonetaryValue | DomainErrors.InsufficientBalance> {
     const amountToBeWithdrawn = MoneyVO.create({
       amount,
       currency: this.props.balance.currency,
@@ -80,7 +85,9 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return ok();
   }
 
-  public depositAmount(amount: number): Either<void, DomainErrors.InvalidMonetaryValue> {
+  public depositAmount(
+    amount: number,
+  ): Either<void, DomainErrors.InvalidMonetaryValue | DomainErrors.InsufficientBalance> {
     const amountToBeAdded = MoneyVO.create({
       amount,
       currency: this.props.balance.currency,

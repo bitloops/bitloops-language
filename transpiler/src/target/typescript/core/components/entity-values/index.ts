@@ -30,6 +30,8 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
+import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 const entityMethods = (
   privateMethods: TDomainPrivateMethods,
@@ -55,9 +57,7 @@ const entityValuesToTargetLanguage = (params: {
   let dependencies = [];
   const { privateMethods, publicMethods, create, constants } = entityValues;
   const propsNameType = create.domainCreateParameter[PropsIdentifierKey];
-  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-  //   throw new Error('Array is not supported as entity props type');
-  // }
+
   const { output: propsName, dependencies: entityPropsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: propsNameType },
@@ -89,6 +89,11 @@ const entityValuesToTargetLanguage = (params: {
 
   const entityMethodsModel = entityMethods(privateMethods, publicMethods);
   result += entityMethodsModel.output;
+
+  // const fromPrimitives = generateFromPrimitives({});
+  // const toPrimitives = generateToPrimitives(propsNameType);
+  // result += fromPrimitives.output;
+  // result += toPrimitives.output;
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   result += '}';
@@ -96,4 +101,91 @@ const entityValuesToTargetLanguage = (params: {
   return { output: result, dependencies };
 };
 
-export { entityValuesToTargetLanguage };
+const getEntityPrimitivesObject = (
+  model: IntermediateASTTree,
+  entityIdentifier: string,
+): Record<string, any> => {
+  const entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
+  const propsNode = model.getPropsNodeOfEntity(entityNode);
+  const fieldNodes = propsNode.getFieldListNode().getFieldNodes();
+  //get value objects, standard values and builtIn classes
+  //for each value object, get its props
+  //for each prop get its values
+  const primitivesValues = {};
+  fieldNodes.forEach((fieldNode) => {
+    const identifier = fieldNode.getIdentifierNode().getValue().identifier;
+    const type = fieldNode.getTypeNode().getValue().type;
+    primitivesValues[identifier] = type;
+  });
+  return primitivesValues;
+};
+
+const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: string): string => {
+  const typeName = `T${entityName}Primitives`;
+  let resultType = `type ${typeName} = {\n`;
+  for (const key in primitivesObject) {
+    const type = primitivesObject[key];
+    if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
+      const typeTarget = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: { type },
+      });
+      resultType += `${key}: ${typeTarget.output};\n`;
+    } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
+      const typeTarget = BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
+      resultType += `${key}: ${typeTarget};\n`;
+    }
+  }
+  resultType += '};';
+  return resultType;
+};
+
+const generateToPrimitives = (
+  primitivesObject: Record<string, any>,
+  entityName: string,
+): string => {
+  const typeName = `T${entityName}Primitives`;
+  let result = `public toPrimitives(): ${typeName} {`;
+  result += 'return {\n';
+  for (const key in primitivesObject) {
+    if (key === 'id') {
+      result += 'id: this.id.toString(),';
+    } else {
+      result += `${key}: this.props.${key},`;
+    }
+  }
+  result += '};\n}';
+
+  return result;
+};
+
+const generateFromPrimitives = (
+  primitivesObject: Record<string, any>,
+  entityName: string,
+): string => {
+  const typeName = `T${entityName}Primitives`;
+  const propsName = `${entityName}Props`;
+  let result = `public static fromPrimitives(data: ${typeName}): ${entityName} {`;
+  result += `const ${propsName} = {`;
+  for (const key in primitivesObject) {
+    if (key === 'id') {
+      result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
+    } else {
+      result += `${key}: data.${key},`;
+    }
+    result += '\n';
+  }
+  result += '};\n';
+  result += `return new ${entityName}(${propsName});\n`;
+  result += '}';
+
+  return result;
+};
+
+export {
+  entityValuesToTargetLanguage,
+  getEntityPrimitivesObject,
+  getPrimitivesType,
+  generateFromPrimitives,
+  generateToPrimitives,
+};

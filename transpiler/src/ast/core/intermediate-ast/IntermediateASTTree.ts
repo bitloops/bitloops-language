@@ -19,6 +19,7 @@ import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterN
 import { TBitloopsPrimaryType } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
+import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -207,6 +208,23 @@ export class IntermediateASTTree {
     return restControllerFound;
   };
 
+  public getEntityByIdentifier = (identifier: string): EntityDeclarationNode => {
+    const entityNodes = this.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TEntity,
+    ) as EntityDeclarationNode[];
+
+    let entityFound: EntityDeclarationNode = null;
+    for (const entityNode of entityNodes) {
+      const entityIdentifier = entityNode.getIdentifier();
+
+      if (identifier === entityIdentifier.getValue().entityIdentifier) {
+        entityFound = entityNode;
+      }
+    }
+
+    return entityFound;
+  };
+
   public getValueOfPropsWithIdentifierFromDomainCreate(
     domainCreateParameterNode: DomainCreateParameterNode,
     identifier: string,
@@ -367,10 +385,31 @@ export class IntermediateASTTree {
     return result;
   }
 
-  public getPropsFromEntity(rootEntityNode: RootEntityDeclarationNode): DomainCreateParameterNode {
-    const domainCreate = rootEntityNode.getDomainCreateNode();
+  public getDomainCreateOfEntity(
+    entityNode: RootEntityDeclarationNode | EntityDeclarationNode,
+  ): DomainCreateParameterNode {
+    const domainCreate = entityNode.getDomainCreateNode();
     const propsNode = domainCreate.getParameterNode();
     return propsNode;
+  }
+
+  public getPropsNodeOfEntity(
+    entityNode: EntityDeclarationNode | RootEntityDeclarationNode,
+  ): PropsNode | null {
+    const domainCreate = this.getDomainCreateOfEntity(entityNode);
+    const propsIdentifier = domainCreate.getTypeNode().getType();
+
+    const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
+
+    const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
+      node.getNodeType() === BitloopsTypesMapping.TProps;
+
+    for (const propsNode of propsNodes) {
+      if (isPropsNode(propsNode) && propsNode.getIdentifierValue() === propsIdentifier) {
+        return propsNode;
+      }
+    }
+    return null;
   }
 
   private getNodesWithPolicy(

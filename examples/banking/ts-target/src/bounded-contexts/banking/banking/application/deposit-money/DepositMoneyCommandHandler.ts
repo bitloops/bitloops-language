@@ -17,7 +17,8 @@ export type InsertPINCommandHandlerResponse = Either<
   | ApplicationErrors.AccountNotFound
   | DomainErrors.PINIsNotPositiveNumber
   | DomainErrors.InvalidCustomerPIN
-  | DomainErrors.InvalidCustomerPIN
+  | DomainErrors.InsufficientBalance
+  | Domain.StandardVO.Currency.ErrorTypes
 >;
 
 export class DepositMoneyCommandHandler
