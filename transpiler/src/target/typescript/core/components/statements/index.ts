@@ -37,7 +37,6 @@ export const keysToTypeMapping = {
   constDecomposition: BitloopsTypesMapping.TConstDecomposition,
   constDeclaration: BitloopsTypesMapping.TConstDeclaration,
   expression: BitloopsTypesMapping.TExpression,
-  thisDeclaration: BitloopsTypesMapping.TThisDeclaration,
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
   builtInFunction: BitloopsTypesMapping.TBuiltInFunction,
   breakStatement: BitloopsTypesMapping.TBreakStatement,

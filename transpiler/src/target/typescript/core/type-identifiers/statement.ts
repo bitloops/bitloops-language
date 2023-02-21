@@ -46,12 +46,6 @@ export class StatementTypeIdentifiers {
     return false;
   };
 
-  // static isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
-  //   if (typeof value === 'string') return false;
-  //   if ('thisDeclaration' in value) return true;
-  //   else return false;
-  // };
-
   static isExpression = (value: TStatement): value is TExpression => {
     if (typeof value === 'string') return false;
     if ('expression' in value) return true;

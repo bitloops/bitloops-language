@@ -257,7 +257,6 @@ JestTestValueObjectDeclaration: 'JestTestValueObjectDeclaration';
 JestTestEntityDeclaration: 'JestTestEntityDeclaration';
 JestTestCondition: 'JestTestCondition';
 JestTestVariableDeclaration: 'JestTestVariableDeclaration';
-JestTestThisDeclaration: 'JestTestThisDeclaration';
 JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';

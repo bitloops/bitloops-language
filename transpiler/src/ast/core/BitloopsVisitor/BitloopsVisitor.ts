@@ -296,6 +296,10 @@ import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
 import { servicePortDeclarationVisitor } from './helpers/service-port/servicePortDeclarationVisitor.js';
 import { servicePortIdentifierVisitor } from './helpers/service-port/servicePortIdentifierVisitor.js';
 import { ServicePortIdentifierNode } from '../intermediate-ast/nodes/service-port/ServicePortIdentifierNode.js';
+import { addDomainEventStatementVisitor } from './helpers/addDomainEventStatementVisitor.js';
+import { BuiltInFunctionNode } from '../intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
+import { ThisIdentifierNode } from '../intermediate-ast/nodes/ThisIdentifier/ThisIdentifierNode.js';
+import { ThisIdentifierNodeBuilder } from '../intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1502,5 +1506,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.ServicePortIdentifierContext,
   ): ServicePortIdentifierNode {
     return servicePortIdentifierVisitor(this, ctx);
+  }
+
+  visitAddDomainEventStatement(
+    ctx: BitloopsParser.AddDomainEventStatementContext,
+  ): BuiltInFunctionNode {
+    return addDomainEventStatementVisitor(this, ctx);
+  }
+
+  visitThisIdentifier(ctx: BitloopsParser.ThisIdentifierContext): ThisIdentifierNode {
+    const thisName = ctx.This().getText();
+    return new ThisIdentifierNodeBuilder(produceMetadata(ctx, this)).withName(thisName).build();
   }
 }
