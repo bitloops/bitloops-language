@@ -12,10 +12,18 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
   async getAll(): Promise<TodoEntity[]> {
     throw new Error('Method not implemented.');
   }
-  async getById(todoId: Domain.UUIDv4): Promise<TodoEntity> {
-    return (await this.collection.findOne({
+  async getById(todoId: Domain.UUIDv4): Promise<TodoEntity | null> {
+    const res = await this.collection.findOne({
       _id: todoId.toString(),
-    })) as unknown as TodoEntity;
+    });
+    if (!res) {
+      return null;
+    }
+    const { _id, ...rest } = res;
+    return TodoEntity.fromPrimitives({
+      id: _id,
+      ...rest,
+    });
   }
   async delete(todoId: Domain.UUIDv4): Promise<void> {
     await this.collection.deleteOne({
@@ -23,23 +31,23 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
     });
   }
   async save(todo: TodoEntity): Promise<void> {
+    const { id, ...rest } = todo.toPrimitives();
     await this.collection.insertOne({
-      _id: todo.id.toString() as unknown as Mongo.ObjectId,
-      completed: todo.completed,
-      title: todo.title.title,
+      _id: id as unknown as Mongo.ObjectId,
+      ...rest,
     });
+    await Domain.dispatchEventsCallback(todo.id);
   }
   async update(todo: TodoEntity): Promise<void> {
+    const { id, ...rest } = todo.toPrimitives();
     await this.collection.updateOne(
       {
-        _id: todo.id.toString(),
+        _id: id,
       },
       {
-        $set: {
-          completed: todo.completed,
-          title: todo.title.title,
-        },
+        $set: rest,
       },
     );
+    await Domain.dispatchEventsCallback(todo.id);
   }
 }

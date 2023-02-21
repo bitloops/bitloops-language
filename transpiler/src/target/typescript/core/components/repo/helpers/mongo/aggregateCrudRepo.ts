@@ -164,8 +164,8 @@ export const fetchAggregateCrudBaseRepo = (
       );
       await Domain.dispatchEventsCallback(${lowerCaseEntityName}.id);
     }
-    // TODO add getByField
     `;
+  // TODO add getByField
   const entityNameDependency = getChildDependencies(entityName);
   dependencies = [...dependencies, ...entityNameDependency, ...aggregateIdType.dependencies];
   return {

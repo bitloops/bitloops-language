@@ -57,7 +57,8 @@ export const fetchReadModelCrudBaseRepo = (
               ${readModelName}.fromPrimitives({
                 id: _id,
                 ...rest,
-              });
+              })
+              );
         });
         return res;
       }

@@ -12,10 +12,13 @@ export class MongoTodoReadRepo implements TodoReadRepoPort {
     const documents = await this.collection.find({}).toArray();
     const res: TodoReadModel[] = [];
     documents.forEach((document) => {
-      res.push({
-        id: document._id.toString(),
-        name: document.name,
-      });
+      const { _id, ...rest } = document;
+      res.push(
+        TodoReadModel.fromPrimitives({
+          id: _id,
+          ...rest,
+        }),
+      );
     });
     return res;
   }
@@ -23,13 +26,13 @@ export class MongoTodoReadRepo implements TodoReadRepoPort {
     const document = await this.collection.findOne({
       _id: todoId,
     });
-    let res = null;
-    if (document) {
-      res = {
-        id: document._id.toString(),
-        name: document.name,
-      };
+    if (!document) {
+      return null;
     }
-    return res;
+    const { _id, ...rest } = document;
+    return TodoReadModel.fromPrimitives({
+      id: _id,
+      ...rest,
+    });
   }
 }
