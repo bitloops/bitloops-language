@@ -12,6 +12,7 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
   private parameters: TParameterList;
   private returnType: TOkErrorReturnType;
   private statements: TStatements;
+  private staticBoolean?: boolean;
 
   public withIdentifier(identifier: TIdentifier): PublicMethodBuilder {
     this.identifier = identifier;
@@ -33,6 +34,11 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
     return this;
   }
 
+  public withStatic(staticBoolean: boolean): PublicMethodBuilder {
+    this.staticBoolean = staticBoolean;
+    return this;
+  }
+
   public build(): TDomainPublicMethod {
     const publicMethod = {
       publicMethod: {
@@ -40,6 +46,7 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
         ...this.parameters,
         ...this.returnType,
         statements: this.statements,
+        static: this.staticBoolean ?? false,
       },
     };
 

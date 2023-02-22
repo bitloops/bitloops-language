@@ -62,7 +62,7 @@ export { fieldListVisitor } from './fieldList.js';
 export { fieldVisitor } from './field.js';
 export { dtoDeclarationVisitor } from './dtoDeclaration.js';
 export { propsDeclarationVisitor } from './propsDeclaration.js';
-export { domainConstructorDeclarationVisitor } from './domainConstructorDeclaration.js';
+export { domainCreateDeclarationVisitor } from './domainCreateDeclaration.js';
 export { valueObjectDeclarationVisitor } from './valueObjectDeclaration.js';
 export { privateMethodDeclarationVisitor } from './privateMethodDeclaration.js';
 export { privateMethodDeclarationListVisitor } from './privateMethodDeclarationList.js';

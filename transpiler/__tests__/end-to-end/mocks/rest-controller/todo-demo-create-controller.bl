@@ -44,7 +44,7 @@ Props TitleProps {
 }
 
 ValueObject TitleVO {
-  constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+  static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
     applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
@@ -57,7 +57,7 @@ Props TodoProps {
 
 
 Root Entity TodoEntity {
-  constructor(props: TodoProps): (OK(TodoEntity), Errors()) {}
+  static create(props: TodoProps): (OK(TodoEntity), Errors()) {}
 
   complete(): (OK(void), Errors()) {
     this.completed = true;
