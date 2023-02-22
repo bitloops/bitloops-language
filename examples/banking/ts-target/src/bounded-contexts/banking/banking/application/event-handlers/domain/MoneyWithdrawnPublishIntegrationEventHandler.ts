@@ -1,6 +1,6 @@
 import { Infra, Application, Container } from '@bitloops/bl-boilerplate-core';
-import { CONTEXT_ID } from '../../../config/index.js';
-import { MoneyWithdrawnIntegrationEvent } from '../../../contracts';
+import { CONTEXT_ID } from '../../../config/index';
+import { MoneyWithdrawnIntegrationEvent } from '../../../contracts/integration-events';
 import { MoneyWithdrawnFromAccount } from '../../../domain/events/MoneyWithdrawnFromAccount';
 
 export class MoneyWithdrawnPublishIntegrationEventHandler implements Application.IHandle {
