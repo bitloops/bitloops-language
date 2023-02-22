@@ -1,4 +1,5 @@
-import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
+import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/mappings.js';
 import {
   TVariable,
   TTargetDependenciesTypeScript,
@@ -8,18 +9,9 @@ import {
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { getGettersMethodImplementation } from './getByFieldsMethods.js';
 
 const DOCUMENT_NAME = 'document';
-
-const getReadModelFields = (readModelValues: TProps | TReadModel): string => {
-  return readModelValues['ReadModel'].fields
-    .filter((variable) => variable[fieldKey].identifier !== 'id')
-    .map((variable) => {
-      const { identifier } = variable[fieldKey];
-      return `${identifier}: ${DOCUMENT_NAME}.${identifier}`;
-    })
-    .join(', ');
-};
 
 const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable => {
   const [aggregateIdVariable] = readModelValues['ReadModel'].fields
@@ -28,9 +20,10 @@ const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable
   return aggregateIdVariable;
 };
 
-export const fetchTypeScriptReadModelCrudBaseRepo = (
+export const fetchReadModelCrudBaseRepo = (
   readModelName: string,
   readModelValues: TProps | TReadModel,
+  model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseReadModelName = (
@@ -43,7 +36,11 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
     value: { type: readModelIdVariable[fieldKey].type },
   });
 
-  const readModelFields = getReadModelFields(readModelValues);
+  const gettersMethodImplementation = getGettersMethodImplementation(
+    readModelName,
+    model,
+    ClassTypes.ReadModel,
+  );
 
   const readModelId = lowerCaseReadModelName + 'Id';
   const output = `
@@ -51,10 +48,13 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
         const documents = await this.collection.find({}).toArray();
         const res: ${readModelName}[] = [];
         documents.forEach((${DOCUMENT_NAME}) => {
-            res.push({
-                id: ${DOCUMENT_NAME}._id.toString(),
-                ${readModelFields}
-            });
+          const { _id, ...rest } = ${DOCUMENT_NAME};
+            res.push(
+              ${readModelName}.fromPrimitives({
+                id: _id,
+                ...rest,
+              })
+              );
         });
         return res;
       }
@@ -62,15 +62,16 @@ export const fetchTypeScriptReadModelCrudBaseRepo = (
         const ${DOCUMENT_NAME} = await this.collection.findOne({
             _id: ${readModelId},
         });
-        let res = null
-        if (${DOCUMENT_NAME}) {
-            res = {
-                id: ${DOCUMENT_NAME}._id.toString(), 
-                ${readModelFields}
-            };
+        if (!${DOCUMENT_NAME}) {
+          return null;
         }
-        return res;
+        const { _id, ...rest } = ${DOCUMENT_NAME};
+        return ${readModelName}.fromPrimitives({
+          id: _id,
+          ...rest,
+        });
       }
+      ${gettersMethodImplementation}
       `;
 
   const entityNameDependency = getChildDependencies(readModelName);
