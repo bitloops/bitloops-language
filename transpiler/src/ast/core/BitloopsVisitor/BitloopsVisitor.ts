@@ -300,6 +300,8 @@ import { addDomainEventStatementVisitor } from './helpers/addDomainEventStatemen
 import { BuiltInFunctionNode } from '../intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
 import { ThisIdentifierNode } from '../intermediate-ast/nodes/ThisIdentifier/ThisIdentifierNode.js';
 import { ThisIdentifierNodeBuilder } from '../intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
+import { StaticNodeBuilder } from '../intermediate-ast/builders/methods/StaticNodeBuilder.js';
+import { StaticNode } from '../intermediate-ast/nodes/methods/StaticNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1527,5 +1529,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitThisIdentifier(ctx: BitloopsParser.ThisIdentifierContext): ThisIdentifierNode {
     const thisName = ctx.This().getText();
     return new ThisIdentifierNodeBuilder(produceMetadata(ctx, this)).withName(thisName).build();
+  }
+
+  visitStaticKeyword(ctx: BitloopsParser.StaticKeywordContext): StaticNode {
+    return new StaticNodeBuilder(produceMetadata(ctx, this)).withValue(true).build();
   }
 }

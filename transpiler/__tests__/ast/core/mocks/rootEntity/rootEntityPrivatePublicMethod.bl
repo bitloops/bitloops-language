@@ -7,6 +7,10 @@ Root Entity TodoEntity {
     complete(): (OK(TodoEntity), Errors()) {     
         return TodoEntity.create({id: 7, title: 'Super important'});   
     }
+
+    static changeProps(props: TodoProps): void {
+        props.title = 'Super important';
+    }
     
     isValidName(name: string): bool { 
         return true;

@@ -790,12 +790,16 @@ methodDeclaration
     | privateMethodDeclaration           # PrivateMethodDeclarationExpression
     ;
 
+staticKeyword
+    : Static
+    ;
+
 privateMethodDeclaration
-    : Private? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
+    : Private? staticKeyword? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
+    : Public? staticKeyword? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnPublicMethodType

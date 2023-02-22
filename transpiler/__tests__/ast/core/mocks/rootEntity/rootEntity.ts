@@ -56,6 +56,22 @@ export const validRootEntityTestCases = [
             }),
           )
           .withPrivateMethods([
+            new PrivateMethodBuilderDirector().buildStaticMethodWithInputPropsAndPrimitiveReturnType(
+              {
+                methodName: 'changeProps',
+                returnType: 'void',
+                propsType: 'TodoProps',
+                statements: [
+                  new ExpressionBuilderDirector().buildAssignmentExpression(
+                    new ExpressionBuilderDirector().buildMemberExpression(
+                      new ExpressionBuilderDirector().buildIdentifierExpression('props'),
+                      'title',
+                    ),
+                    new ExpressionBuilderDirector().buildStringLiteralExpression('Super important'),
+                  ),
+                ],
+              },
+            ),
             new PrivateMethodBuilderDirector().buildMethodWithStringParamsAndBooleanReturnType({
               methodName: 'isValidName',
               booleanValue: true,

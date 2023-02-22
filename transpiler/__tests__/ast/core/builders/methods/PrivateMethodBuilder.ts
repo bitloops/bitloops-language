@@ -2,6 +2,7 @@ import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/
 import {
   TBitloopsPrimaryType,
   TDomainPrivateMethod,
+  TDomainPrivateMethodValues,
   TDomainPrivateMethodValuesOkErrorReturnType,
   TDomainPrivateMethodValuesPrimaryReturnType,
   TIdentifier,
@@ -16,6 +17,7 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
   private primaryReturnType: TBitloopsPrimaryType;
   private okErrorReturnType: TOkErrorReturnType;
   private statements: TStatements;
+  private staticBoolean?: boolean;
 
   public withIdentifier(identifier: TIdentifier): PrivateMethodBuilder {
     this.identifier = identifier;
@@ -42,11 +44,17 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     return this;
   }
 
+  public withStatic(staticBoolean: boolean): PrivateMethodBuilder {
+    this.staticBoolean = staticBoolean;
+    return this;
+  }
+
   public build(): TDomainPrivateMethod {
-    const privateMethodValues = {
+    const privateMethodValues: TDomainPrivateMethodValues = {
       identifier: this.identifier,
       ...this.parameters,
       statements: this.statements,
+      static: this.staticBoolean ?? false,
     };
 
     if (this.primaryReturnType) {

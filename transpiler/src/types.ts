@@ -540,10 +540,15 @@ export type TConstantVariable = {
 
 export type TDomainPrivateMethods = TDomainPrivateMethod[];
 
-type TDomainPrivateMethodValues = {
+type TStatic = {
+  static: boolean;
+};
+
+export type TDomainPrivateMethodValues = {
   identifier: TIdentifier;
   statements: TStatements;
-} & TParameterList;
+} & TParameterList &
+  TStatic;
 
 export type TDomainPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType &
   TDomainPrivateMethodValues;
@@ -564,7 +569,8 @@ export type TDomainPublicMethod = {
     identifier: TIdentifier;
     statements: TStatements;
   } & TOkErrorReturnType &
-    TParameterList;
+    TParameterList &
+    TStatic;
 };
 
 export type TReturnOkType = {

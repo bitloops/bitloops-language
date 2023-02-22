@@ -262,6 +262,7 @@ const BitloopsTypesMapping = {
   TServicePort: 'TServicePort',
   TThisIdentifier: 'TThisIdentifier',
   TAddDomainEvent: 'TAddDomainEvent',
+  TStatic: 'TStatic',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
