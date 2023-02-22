@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  // bitloopsIdentifiersTypeKey,
   PropsIdentifierKey,
   TContextData,
   TDomainPrivateMethods,
@@ -32,7 +31,8 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
-// import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
+import { TypeUtils } from '../../../../../utils/index.js';
+import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 
 const entityMethods = (
   privateMethods: TDomainPrivateMethods,
@@ -102,7 +102,11 @@ const getEntityPrimitivesObject = (
   model: IntermediateASTTree,
   entityIdentifier: string,
 ): Record<string, any> => {
-  const entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
+  let entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
+  if (entityNode === null) {
+    entityNode = model.getRootEntityByIdentifier(entityIdentifier) as RootEntityDeclarationNode;
+  }
+
   const propsNode = model.getPropsNodeOfEntity(entityNode);
   const fieldPrimitives = propsNode.getFieldsPrimitives(model);
   return fieldPrimitives;
@@ -123,8 +127,7 @@ const buildPrimitivesTypeValue = (
 
   for (const key in primitivesObject) {
     const type = primitivesObject[key];
-    console.log('typeof type', type, typeof type);
-    if (typeof type === 'object' && type !== null) {
+    if (TypeUtils.hasObjectType(type)) {
       result += `${key}: ${buildPrimitivesTypeValue(type, entityName)};\n`;
     } else {
       result += `${key}: ${type};\n`;
@@ -145,12 +148,10 @@ const generateToPrimitives = (
     if (primitivesKey === 'id') {
       result += 'id: this.id.toString(),';
     } else {
-      if (typeof primitivesValue === 'object' && primitivesValue !== null) {
-        // const objToBuild = { [primitivesKey]: {} };
+      if (TypeUtils.hasObjectType(primitivesValue)) {
         //for keys add to result
         result += `${primitivesKey}: {\n`;
         for (const key in primitivesValue) {
-          // objToBuild[primitivesKey][key] = `this.props.${primitivesKey}.${key}`;
           result += `${key}: this.props.${primitivesKey}.${key},`;
         }
 
@@ -177,7 +178,7 @@ const generateFromPrimitives = (
     if (primitivesKey === 'id') {
       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
     } else {
-      if (typeof primitivesValue === 'object' && primitivesValue !== null) {
+      if (TypeUtils.hasObjectType(primitivesValue)) {
         const valueObjectName =
           `${primitivesKey}`.charAt(0).toUpperCase() + `${primitivesKey}VO`.slice(1);
         let voString = `${valueObjectName}.create({\n`;

@@ -226,6 +226,23 @@ export class IntermediateASTTree {
     return entityFound;
   };
 
+  public getRootEntityByIdentifier = (identifier: string): RootEntityDeclarationNode => {
+    const rootEntityNodes = this.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TRootEntity,
+    ) as RootEntityDeclarationNode[];
+
+    let rootEntityFound: RootEntityDeclarationNode = null;
+    for (const rootEntityNode of rootEntityNodes) {
+      const entityIdentifier = rootEntityNode.getIdentifier();
+
+      if (identifier === entityIdentifier.getValue().entityIdentifier) {
+        rootEntityFound = rootEntityNode;
+      }
+    }
+
+    return rootEntityFound;
+  };
+
   public getValueObjectByIdentifier = (identifier: string): ValueObjectDeclarationNode => {
     const valueObjectDeclarationNodes = this.getRootChildrenNodesByType(
       BitloopsTypesMapping.TValueObject,

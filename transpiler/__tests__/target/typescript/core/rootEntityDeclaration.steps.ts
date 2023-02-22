@@ -23,15 +23,15 @@ import { TargetGenerator } from '../../../../src/target/index.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
-import { VALID_AGGREGATE_TEST_CASES } from './mocks/domain/aggregate.js';
+import { VALID_ROOT_ENTITY_TEST_CASES } from './mocks/domain/rootEntity.js';
 
-describe('Aggregate test cases', () => {
+describe('Root Entity test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
   const language = 'TypeScript';
 
-  VALID_AGGREGATE_TEST_CASES.forEach((testCase) => {
+  VALID_ROOT_ENTITY_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
       let resultCore: TTargetCoreFinalContent[];
 
@@ -39,9 +39,15 @@ describe('Aggregate test cases', () => {
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const entity = testCase.entity;
       const props = testCase.props;
+      const valueObject = testCase.valueObject;
 
       tree.insertChild(entity);
-      tree.insertSibling(props);
+      for (const prop of props) {
+        tree.insertSibling(prop);
+      }
+      if (valueObject) {
+        tree.insertSibling(valueObject);
+      }
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },

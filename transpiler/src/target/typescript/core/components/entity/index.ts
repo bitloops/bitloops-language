@@ -86,10 +86,8 @@ const entityToTargetLanguage = (params: {
   const propsNameType = create.domainCreateParameter.parameterType;
 
   const primitivesObject = getEntityPrimitivesObject(model, entityIdentifier);
-  console.log('primitivesObject', primitivesObject);
 
   const primitivesType = getPrimitivesType(primitivesObject, entityIdentifier);
-  console.log('primitiveType', primitivesType);
   result += primitivesType + '\n';
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
@@ -129,11 +127,9 @@ const entityToTargetLanguage = (params: {
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   const fromPrimitives = generateFromPrimitives(primitivesObject, entityIdentifier);
-  console.log('fromPrimitives', fromPrimitives);
   result += fromPrimitives + '\n';
 
   const toPrimitives = generateToPrimitives(primitivesObject, entityIdentifier);
-  console.log('toPrimitives', toPrimitives);
   result += toPrimitives + '\n';
   result += '}';
 

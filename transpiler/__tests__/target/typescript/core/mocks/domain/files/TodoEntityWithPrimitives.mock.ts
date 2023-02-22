@@ -30,6 +30,7 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       completed: data.completed,
     };
+    return new TodoEntity(TodoEntityProps);
   }
   public toPrimitives(): TTodoEntityPrimitives {
     return {

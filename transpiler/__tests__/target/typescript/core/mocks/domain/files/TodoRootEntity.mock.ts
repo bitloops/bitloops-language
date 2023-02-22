@@ -1,8 +1,7 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './TodoProps';
-import { DomainErrors } from './errors/index';
 import { TitleVO } from './TitleVO';
-type TTodoEntityPrimitives = {
+type TTodoRootEntityPrimitives = {
   id: string;
   completed: boolean;
   title: {
@@ -10,13 +9,13 @@ type TTodoEntityPrimitives = {
     language: string;
   };
 };
-export class TodoEntity extends Domain.Entity<TodoProps> {
+export class TodoRootEntity extends Domain.Aggregate<TodoProps> {
   private constructor(props: TodoProps) {
     super(props, props.id);
+    this.props.completed = false;
   }
-  public static create(props: TodoProps): Either<TodoEntity, DomainErrors.InvalidTitleError> {
-    const id = 7;
-    return ok(new TodoEntity(props));
+  public static create(props: TodoProps): Either<TodoRootEntity, never> {
+    return ok(new TodoRootEntity(props));
   }
   get id() {
     return this._id;
@@ -27,14 +26,15 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
   get title(): TitleVO {
     return this.props.title;
   }
-  private isValidName(name: string): boolean {
+  public uncomplete(): Either<void, never> {
+    this.props.completed = false;
+    return ok();
+  }
+  public complete(): Either<boolean, never> {
     return true;
   }
-  public complete(): Either<TodoEntity, never> {
-    return 'hey';
-  }
-  public static fromPrimitives(data: TTodoEntityPrimitives): TodoEntity {
-    const TodoEntityProps = {
+  public static fromPrimitives(data: TTodoRootEntityPrimitives): TodoRootEntity {
+    const TodoRootEntityProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       completed: data.completed,
       title: TitleVO.create({
@@ -42,9 +42,9 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
         language: data.title.language,
       }).value as TitleVO,
     };
-    return new TodoEntity(TodoEntityProps);
+    return new TodoRootEntity(TodoRootEntityProps);
   }
-  public toPrimitives(): TTodoEntityPrimitives {
+  public toPrimitives(): TTodoRootEntityPrimitives {
     return {
       id: this.id.toString(),
       completed: this.props.completed,
