@@ -20,6 +20,7 @@ import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclaration
 import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statement/builtinFunctionDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type TestCase = {
   description: string;
@@ -133,6 +134,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PrivateMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('isInvalidName').build())
@@ -160,6 +162,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
     }),

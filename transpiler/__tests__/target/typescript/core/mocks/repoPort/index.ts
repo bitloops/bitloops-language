@@ -20,6 +20,7 @@ import { ReadModelNode } from '../../../../../../src/ast/core/intermediate-ast/n
 import { RepoPortNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type RepoPortTestCase = {
   description: string;
@@ -75,6 +76,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -98,6 +100,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],
@@ -159,6 +162,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -182,6 +186,7 @@ export const VALID_REPO_PORT_TEST_CASES: RepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],

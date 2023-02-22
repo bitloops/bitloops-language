@@ -14,6 +14,7 @@ import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
 import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type TestCase = {
   description: string;
@@ -66,6 +67,7 @@ export const VALID_AGGREGATE_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -89,6 +91,7 @@ export const VALID_AGGREGATE_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(true).build())
           .build(),
       ],
       privateMethods: [],
@@ -122,7 +125,7 @@ export const VALID_AGGREGATE_TEST_CASES: TestCase[] = [
         this.props.completed = false;
         return ok();
       }
-      public complete(): Either<boolean, never> {
+      public static complete(): Either<boolean, never> {
         return true;
       }
     }`,
