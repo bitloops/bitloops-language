@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  // bitloopsIdentifiersTypeKey,
   PropsIdentifierKey,
   TContextData,
   TDomainPrivateMethods,
@@ -31,7 +32,7 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
-import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
+// import { BitloopsPrimTypeIdentifiers } from '../../type-identifiers/bitloopsPrimType.js';
 
 const entityMethods = (
   privateMethods: TDomainPrivateMethods,
@@ -90,10 +91,6 @@ const entityValuesToTargetLanguage = (params: {
   const entityMethodsModel = entityMethods(privateMethods, publicMethods);
   result += entityMethodsModel.output;
 
-  // const fromPrimitives = generateFromPrimitives({});
-  // const toPrimitives = generateToPrimitives(propsNameType);
-  // result += fromPrimitives.output;
-  // result += toPrimitives.output;
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   result += '}';
@@ -107,17 +104,8 @@ const getEntityPrimitivesObject = (
 ): Record<string, any> => {
   const entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
   const propsNode = model.getPropsNodeOfEntity(entityNode);
-  const fieldNodes = propsNode.getFieldListNode().getFieldNodes();
-  //get value objects, standard values and builtIn classes
-  //for each value object, get its props
-  //for each prop get its values
-  const primitivesValues = {};
-  fieldNodes.forEach((fieldNode) => {
-    const identifier = fieldNode.getIdentifierNode().getValue().identifier;
-    const type = fieldNode.getTypeNode().getValue().type;
-    primitivesValues[identifier] = type;
-  });
-  return primitivesValues;
+  const fieldPrimitives = propsNode.getFieldsPrimitives(model);
+  return fieldPrimitives;
 };
 
 const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: string): string => {
@@ -125,16 +113,9 @@ const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: st
   let resultType = `type ${typeName} = {\n`;
   for (const key in primitivesObject) {
     const type = primitivesObject[key];
-    if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
-      const typeTarget = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TBitloopsPrimaryType,
-        value: { type },
-      });
-      resultType += `${key}: ${typeTarget.output};\n`;
-    } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
-      const typeTarget = BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
-      resultType += `${key}: ${typeTarget};\n`;
-    }
+    console.log('type', type);
+    console.log('typeof type', typeof type);
+    resultType += `${key}: ${type};\n`;
   }
   resultType += '};';
   return resultType;
@@ -147,16 +128,38 @@ const generateToPrimitives = (
   const typeName = `T${entityName}Primitives`;
   let result = `public toPrimitives(): ${typeName} {`;
   result += 'return {\n';
-  for (const key in primitivesObject) {
-    if (key === 'id') {
+  for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+    if (primitivesKey === 'id') {
       result += 'id: this.id.toString(),';
     } else {
-      result += `${key}: this.props.${key},`;
+      if (hasJsonStructure(primitivesValue)) {
+        const dataFromJSON = JSON.parse(primitivesValue);
+        const objToBuild = { [primitivesKey]: {} };
+        //for keys add to result
+        for (const key in dataFromJSON) {
+          objToBuild[primitivesKey][key] = `this.props.${primitivesKey}.${key}`;
+        }
+        const jsonToAdd = JSON.stringify(objToBuild[primitivesKey]);
+        result += `${primitivesKey}: ${jsonToAdd},`;
+      } else {
+        result += `${primitivesKey}: this.props.${primitivesKey},`;
+      }
     }
   }
   result += '};\n}';
 
   return result;
+};
+
+const hasJsonStructure = (str: string) => {
+  if (typeof str !== 'string') return false;
+  try {
+    const result = JSON.parse(str);
+    const type = Object.prototype.toString.call(result);
+    return type === '[object Object]' || type === '[object Array]';
+  } catch (err) {
+    return false;
+  }
 };
 
 const generateFromPrimitives = (
@@ -167,11 +170,23 @@ const generateFromPrimitives = (
   const propsName = `${entityName}Props`;
   let result = `public static fromPrimitives(data: ${typeName}): ${entityName} {`;
   result += `const ${propsName} = {`;
-  for (const key in primitivesObject) {
-    if (key === 'id') {
+  for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+    if (primitivesKey === 'id') {
       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
     } else {
-      result += `${key}: data.${key},`;
+      if (hasJsonStructure(primitivesValue)) {
+        const valueObjectName =
+          `${primitivesKey}`.charAt(0).toUpperCase() + `${primitivesKey}VO`.slice(1);
+        const dataFromJSON = JSON.parse(primitivesValue);
+        let voString = `${valueObjectName}.create({\n`;
+        for (const key in dataFromJSON) {
+          voString += `${key}: data.${primitivesKey}.${key},\n`;
+        }
+        voString += `}).value as ${valueObjectName},`;
+        result += `${primitivesKey}: ${voString}`;
+      } else {
+        result += `${primitivesKey}: data.${primitivesKey},`;
+      }
     }
     result += '\n';
   }
