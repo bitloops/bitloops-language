@@ -23,7 +23,13 @@ export class SendEmailAfterDepositsIncrementedHandler implements Application.IHa
       return;
     }
 
-    const destinationEmail = await this.customerService.getEmailByAccountId(data.id.toString());
+    const destinationEmailOrError = await this.customerService.getEmailByAccountId(
+      data.id.toString(),
+    );
+    if (destinationEmailOrError.isFail()) {
+      return;
+    }
+    const destinationEmail = destinationEmailOrError.value.email;
 
     const command = new SendEmailCommand({
       origin: 'ant@ant.com',
