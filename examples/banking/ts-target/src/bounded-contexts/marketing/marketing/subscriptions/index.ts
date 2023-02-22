@@ -19,7 +19,7 @@ export const setupSubscriptions = () => {
   const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
   const domainEventBus = Container.getEventBusFromContext(CONTEXT_ID);
 
-  const moneyDepositedIntegrationHandler = new MoneyDepositedIntegrationHandler(commandBus);
+  const moneyDepositedIntegrationHandler = new MoneyDepositedIntegrationHandler();
   integrationEventBus.subscribe<MoneyDepositedIntegrationEvent>(
     MoneyDepositedIntegrationEvent.getEventTopic('v1'),
     (event) => {
