@@ -23,7 +23,6 @@
     "@bitloops/bl-boilerplate-infra-graphql": "^0.1.2",
     "@bitloops/bl-boilerplate-infra-mongo": "^0.0.3",
     "@bitloops/bl-boilerplate-infra-rest-fastify": "^0.0.4",
-    "@types/bcrypt-nodejs": "0.0.31",
     "dotenv": "^16.0.1"
   },
   "devDependencies": {
