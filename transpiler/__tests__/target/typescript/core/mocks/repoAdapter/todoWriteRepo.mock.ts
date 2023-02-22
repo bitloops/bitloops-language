@@ -50,4 +50,17 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
     );
     await Domain.dispatchEventsCallback(todoRoot.id);
   }
+  async getByCompleted(completed: boolean): Promise<TodoRootEntity | null> {
+    const res = await this.collection.findOne({
+      completed,
+    });
+    if (!res) {
+      return null;
+    }
+    const { _id, ...rest } = res;
+    return TodoRootEntity.fromPrimitives({
+      id: _id,
+      ...rest,
+    });
+  }
 }

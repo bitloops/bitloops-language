@@ -133,6 +133,7 @@ const repoBodyLangMapping = (
     ...connection.dependencies,
     ...dbName.dependencies,
   ];
+
   let result = '';
   switch (dbType) {
     case 'DB.Mongo': {
@@ -153,6 +154,7 @@ const repoBodyLangMapping = (
         const methodsResult = fetchReadModelCrudBaseRepo(
           repoPortInfo[repoPortKey].readModelIdentifier,
           propsModel,
+          model,
         );
         result += methodsResult.output;
         dependencies = [...dependencies, ...methodsResult.dependencies];

@@ -1,5 +1,5 @@
 import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/mappings.js';
 import {
   TTargetDependenciesTypeScript,
   TVariable,
@@ -8,6 +8,7 @@ import {
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { FieldsWithGetters } from '../../repoPort/helpers/fieldsWithGetters.js';
 
 // const getVOProps = (voName: string, model: IntermediateASTTree): DomainCreateParameterNode => {
 //   const voModel = model.getRootChildrenNodesByType(
@@ -94,6 +95,32 @@ import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 //     })
 //     .join(', ');
 // };
+const getGettersMethodImplementation = (entityName: string, model: IntermediateASTTree): string => {
+  const fieldWithGetters = new FieldsWithGetters(model);
+  const fieldsThatNeedGetters = fieldWithGetters.findFields(entityName, ClassTypes.RootEntity);
+  let result = '';
+  for (const { nameOfField, primitiveTypeOfField } of fieldsThatNeedGetters) {
+    const { resultSignature, localIdentifier } = FieldsWithGetters.getByOneMethodSignature(
+      entityName,
+      nameOfField,
+      primitiveTypeOfField,
+    );
+    result += `async ${resultSignature} {
+      const res = await this.collection.findOne({
+        ${localIdentifier},
+      });
+      if (!res) {
+        return null;
+      }
+      const { _id, ...rest } = res;
+      return ${entityName}.fromPrimitives({
+        id: _id,
+        ...rest,
+      });
+    }\n`;
+  }
+  return result;
+};
 
 const getAggregateIdVariable = (aggregatePropsModel: TProps): TVariable => {
   const [aggregateIdVariable] = aggregatePropsModel['Props'].fields
@@ -105,7 +132,7 @@ const getAggregateIdVariable = (aggregatePropsModel: TProps): TVariable => {
 export const fetchAggregateCrudBaseRepo = (
   entityName: string,
   aggregatePropsModel: TProps,
-  _model: IntermediateASTTree,
+  model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseEntityName = (entityName.charAt(0).toLowerCase() + entityName.slice(1)).slice(
@@ -120,6 +147,7 @@ export const fetchAggregateCrudBaseRepo = (
   });
 
   // const deepFields = getAggregateDeepFields(aggregatePropsModel, lowerCaseEntityName, model);
+  const getByFields = getGettersMethodImplementation(entityName, model);
 
   const aggregateRootId = lowerCaseEntityName + 'Id';
   const output = `
@@ -164,8 +192,8 @@ export const fetchAggregateCrudBaseRepo = (
       );
       await Domain.dispatchEventsCallback(${lowerCaseEntityName}.id);
     }
+    ${getByFields}
     `;
-  // TODO add getByField
   const entityNameDependency = getChildDependencies(entityName);
   dependencies = [...dependencies, ...entityNameDependency, ...aggregateIdType.dependencies];
   return {

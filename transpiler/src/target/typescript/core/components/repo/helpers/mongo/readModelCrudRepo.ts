@@ -1,4 +1,5 @@
-import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
+import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/mappings.js';
 import {
   TVariable,
   TTargetDependenciesTypeScript,
@@ -8,18 +9,19 @@ import {
 } from '../../../../../../../types.js';
 import { getChildDependencies } from '../../../../dependencies.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
+import { FieldsWithGetters } from '../../repoPort/helpers/fieldsWithGetters.js';
 
 const DOCUMENT_NAME = 'document';
 
-const getReadModelFields = (readModelValues: TProps | TReadModel): string => {
-  return readModelValues['ReadModel'].fields
-    .filter((variable) => variable[fieldKey].identifier !== 'id')
-    .map((variable) => {
-      const { identifier } = variable[fieldKey];
-      return `${identifier}: ${DOCUMENT_NAME}.${identifier}`;
-    })
-    .join(', ');
-};
+// const getReadModelFields = (readModelValues: TProps | TReadModel): string => {
+//   return readModelValues['ReadModel'].fields
+//     .filter((variable) => variable[fieldKey].identifier !== 'id')
+//     .map((variable) => {
+//       const { identifier } = variable[fieldKey];
+//       return `${identifier}: ${DOCUMENT_NAME}.${identifier}`;
+//     })
+//     .join(', ');
+// };
 
 const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable => {
   const [aggregateIdVariable] = readModelValues['ReadModel'].fields
@@ -28,9 +30,37 @@ const getReadModelIdVariable = (readModelValues: TProps | TReadModel): TVariable
   return aggregateIdVariable;
 };
 
+const getGettersMethodImplementation = (entityName: string, model: IntermediateASTTree): string => {
+  const fieldWithGetters = new FieldsWithGetters(model);
+  const fieldsThatNeedGetters = fieldWithGetters.findFields(entityName, ClassTypes.ReadModel);
+  let result = '';
+  for (const { nameOfField, primitiveTypeOfField } of fieldsThatNeedGetters) {
+    const { resultSignature, localIdentifier } = FieldsWithGetters.getByOneMethodSignature(
+      entityName,
+      nameOfField,
+      primitiveTypeOfField,
+    );
+    result += `async ${resultSignature} {
+      const res = await this.collection.findOne({
+        ${localIdentifier},
+      });
+      if (!res) {
+        return null;
+      }
+      const { _id, ...rest } = res;
+      return ${entityName}.fromPrimitives({
+        id: _id,
+        ...rest,
+      });
+    }\n`;
+  }
+  return result;
+};
+
 export const fetchReadModelCrudBaseRepo = (
   readModelName: string,
   readModelValues: TProps | TReadModel,
+  model: IntermediateASTTree,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const lowerCaseReadModelName = (
@@ -43,8 +73,7 @@ export const fetchReadModelCrudBaseRepo = (
     value: { type: readModelIdVariable[fieldKey].type },
   });
 
-  const readModelFields = getReadModelFields(readModelValues);
-  console.log('readModelFields', readModelFields);
+  const gettersMethodImplementation = getGettersMethodImplementation(readModelName, model);
 
   const readModelId = lowerCaseReadModelName + 'Id';
   const output = `
@@ -75,6 +104,7 @@ export const fetchReadModelCrudBaseRepo = (
           ...rest,
         });
       }
+      ${gettersMethodImplementation}
       `;
 
   const entityNameDependency = getChildDependencies(readModelName);

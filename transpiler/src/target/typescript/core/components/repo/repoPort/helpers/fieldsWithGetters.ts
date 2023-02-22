@@ -17,8 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// More specifically the code generation algorithm will identify all the Entities
-// belonging to the Aggregate, and create all the CRUD methods with the respective data types.
 import { TBitloopsPrimitives, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { ClassTypes, TClassTypesValues } from '../../../../../../../helpers/mappings.js';
 import { IntermediateASTTree } from '../../../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
@@ -74,11 +72,13 @@ export class FieldsWithGetters {
       .map((field) => {
         const { nameOfField, primitiveTypeOfField } = field;
 
-        const mappedPrimitive =
-          bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](primitiveTypeOfField);
-        const nameOfFieldCapitalized = nameOfField[0].toUpperCase() + nameOfField.slice(1);
-        const methodName = `getBy${nameOfFieldCapitalized}`;
-        return `${methodName}(${nameOfField}: ${mappedPrimitive}): Promise<${repoDependencyName} | null>;`;
+        return (
+          FieldsWithGetters.getByOneMethodSignature(
+            repoDependencyName,
+            nameOfField,
+            primitiveTypeOfField,
+          ).resultSignature + ';'
+        );
       })
       .join('\n');
     return {
@@ -87,30 +87,42 @@ export class FieldsWithGetters {
     };
   }
 
-  //   private getRepoDependencyWithoutSuffix(repoDependencyName: string): string {
-  //     let entityNameWithoutSuffix = repoDependencyName.replace('RootEntity', '');
-  //     entityNameWithoutSuffix = entityNameWithoutSuffix.replace('Entity', '');
-  //     entityNameWithoutSuffix = entityNameWithoutSuffix.replace('ReadModel', '');
-  //     const entityNameCapitalized =
-  //       entityNameWithoutSuffix[0].toUpperCase() + entityNameWithoutSuffix.slice(1);
-  //   }
+  static getByOneMethodSignature(
+    repoDependencyName: string,
+    nameOfField: string,
+    primitiveTypeOfField: TBitloopsPrimitives,
+  ): { resultSignature: string; localIdentifier: string } {
+    const mappedPrimitive =
+      bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](primitiveTypeOfField);
+    const nameOfFieldCapitalized = nameOfField[0].toUpperCase() + nameOfField.slice(1);
+    const methodName = `getBy${nameOfFieldCapitalized}`;
+    return {
+      resultSignature: `${methodName}(${nameOfField}: ${mappedPrimitive}): Promise<${repoDependencyName} | null>`,
+      localIdentifier: nameOfField,
+    };
+  }
 
   private findPrimitivesAndValueObjectsWithOnePrimitiveProperty(
     fieldListNode: FieldListNode,
   ): Array<FieldWithGetter> {
     const primitiveFields = fieldListNode.getPrimitiveFields();
-    const valueObjectPrimitives =
+    const valueObjectFieldsWithOnePrimitiveProperty =
       this.ast.getValueObjectFieldsWithOnePrimitiveProperty(fieldListNode);
 
-    return [
+    const primitivesAndValueObjectsWithOnePrimitiveProperty = [
       ...primitiveFields.map((field) => ({
         nameOfField: field.fieldValue,
         primitiveTypeOfField: field.fieldType,
       })),
-      ...valueObjectPrimitives.map((field) => ({
+      ...valueObjectFieldsWithOnePrimitiveProperty.map((field) => ({
         nameOfField: field.fieldValue,
         primitiveTypeOfField: field.fieldType,
       })),
     ];
+
+    const fieldsExceptId = primitivesAndValueObjectsWithOnePrimitiveProperty.filter(
+      (field) => field.nameOfField !== 'id',
+    );
+    return fieldsExceptId;
   }
 }

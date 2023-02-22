@@ -35,4 +35,17 @@ export class MongoTodoReadRepo implements TodoReadRepoPort {
       ...rest,
     });
   }
+  async getByName(name: string): Promise<TodoReadModel | null> {
+    const res = await this.collection.findOne({
+      name,
+    });
+    if (!res) {
+      return null;
+    }
+    const { _id, ...rest } = res;
+    return TodoReadModel.fromPrimitives({
+      id: _id,
+      ...rest,
+    });
+  }
 }
