@@ -50,7 +50,7 @@ const graphQLControllersToTargetLanguage = (
   const controllerName = controllers.GraphQLController.graphQLControllerIdentifier;
 
   const controllerInfo = controllers.GraphQLController;
-  const { inputType, parameters, execute } = controllerInfo;
+  const { inputType, parameters, execute, controllerBusDependencies } = controllerInfo;
   const outputType = execute.returnType;
   const tsInputType = inputType !== null ? inputType : 'void';
   let result = controllerHeader(controllerName, tsInputType, outputType);
@@ -61,7 +61,9 @@ const graphQLControllersToTargetLanguage = (
   if (!execute || !parameters) {
     throw new Error('Controller must have execute and parameterDependencies');
   }
-  const fieldsModel = buildFieldsFromDependencies({ parameters }, contextData);
+  const fieldsModel = buildFieldsFromDependencies({ parameters }, contextData, {
+    controllerBusDependencies,
+  });
   result += fieldsModel.output;
 
   const executeModel = buildExecuteMethod(execute);

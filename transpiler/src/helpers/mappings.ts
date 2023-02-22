@@ -254,6 +254,7 @@ const BitloopsTypesMapping = {
   TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
   TEventHandlerHandleMethod: 'TEventHandlerHandleMethod',
   TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
+  TControllerBusDependencies: 'TControllerBusDependencies',
   THandlerAttributesAndConstructor: 'THandlerAttributesAndConstructor',
   THandle: 'THandle',
   TIntegrationEventHandlerIdentifier: 'TIntegrationEventHandlerIdentifier',
