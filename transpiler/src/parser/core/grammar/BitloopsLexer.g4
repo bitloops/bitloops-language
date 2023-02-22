@@ -147,6 +147,7 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+AddDomainEvent:                 'addDomainEvent';
 CorsOptions:                    'corsOptions';
 
 Extends:                        'extends';
@@ -256,7 +257,6 @@ JestTestValueObjectDeclaration: 'JestTestValueObjectDeclaration';
 JestTestEntityDeclaration: 'JestTestEntityDeclaration';
 JestTestCondition: 'JestTestCondition';
 JestTestVariableDeclaration: 'JestTestVariableDeclaration';
-JestTestThisDeclaration: 'JestTestThisDeclaration';
 JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';

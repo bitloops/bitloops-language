@@ -30,6 +30,11 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     return this._domainEvents;
   }
 
+  protected addDomainEventClass(domainEventClass: any): void {
+    const domainEvent = new domainEventClass(this);
+    this.addDomainEvent(domainEvent);
+  }
+
   protected addDomainEvent(domainEvent: IDomainEvent): void {
     // Add the domain event to this aggregate's list of domain events
     const { events } = Container.getServices();
