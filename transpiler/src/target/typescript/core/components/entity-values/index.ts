@@ -110,15 +110,28 @@ const getEntityPrimitivesObject = (
 
 const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: string): string => {
   const typeName = `T${entityName}Primitives`;
-  let resultType = `type ${typeName} = {\n`;
+  let resultType = `type ${typeName} = `;
+  resultType += buildPrimitivesTypeValue(primitivesObject, entityName);
+  return resultType;
+};
+
+const buildPrimitivesTypeValue = (
+  primitivesObject: Record<string, any>,
+  entityName: string,
+): string => {
+  let result = '{\n';
+
   for (const key in primitivesObject) {
     const type = primitivesObject[key];
-    console.log('type', type);
-    console.log('typeof type', typeof type);
-    resultType += `${key}: ${type};\n`;
+    console.log('typeof type', type, typeof type);
+    if (typeof type === 'object' && type !== null) {
+      result += `${key}: ${buildPrimitivesTypeValue(type, entityName)};\n`;
+    } else {
+      result += `${key}: ${type};\n`;
+    }
   }
-  resultType += '};';
-  return resultType;
+  result += '}';
+  return result;
 };
 
 const generateToPrimitives = (
@@ -132,15 +145,16 @@ const generateToPrimitives = (
     if (primitivesKey === 'id') {
       result += 'id: this.id.toString(),';
     } else {
-      if (hasJsonStructure(primitivesValue)) {
-        const dataFromJSON = JSON.parse(primitivesValue);
-        const objToBuild = { [primitivesKey]: {} };
+      if (typeof primitivesValue === 'object' && primitivesValue !== null) {
+        // const objToBuild = { [primitivesKey]: {} };
         //for keys add to result
-        for (const key in dataFromJSON) {
-          objToBuild[primitivesKey][key] = `this.props.${primitivesKey}.${key}`;
+        result += `${primitivesKey}: {\n`;
+        for (const key in primitivesValue) {
+          // objToBuild[primitivesKey][key] = `this.props.${primitivesKey}.${key}`;
+          result += `${key}: this.props.${primitivesKey}.${key},`;
         }
-        const jsonToAdd = JSON.stringify(objToBuild[primitivesKey]);
-        result += `${primitivesKey}: ${jsonToAdd},`;
+
+        result += '},';
       } else {
         result += `${primitivesKey}: this.props.${primitivesKey},`;
       }
@@ -149,17 +163,6 @@ const generateToPrimitives = (
   result += '};\n}';
 
   return result;
-};
-
-const hasJsonStructure = (str: string) => {
-  if (typeof str !== 'string') return false;
-  try {
-    const result = JSON.parse(str);
-    const type = Object.prototype.toString.call(result);
-    return type === '[object Object]' || type === '[object Array]';
-  } catch (err) {
-    return false;
-  }
 };
 
 const generateFromPrimitives = (
@@ -174,15 +177,14 @@ const generateFromPrimitives = (
     if (primitivesKey === 'id') {
       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
     } else {
-      if (hasJsonStructure(primitivesValue)) {
+      if (typeof primitivesValue === 'object' && primitivesValue !== null) {
         const valueObjectName =
           `${primitivesKey}`.charAt(0).toUpperCase() + `${primitivesKey}VO`.slice(1);
-        const dataFromJSON = JSON.parse(primitivesValue);
         let voString = `${valueObjectName}.create({\n`;
-        for (const key in dataFromJSON) {
+        for (const key in primitivesValue) {
           voString += `${key}: data.${primitivesKey}.${key},\n`;
         }
-        voString += `}).value as ${valueObjectName},`;
+        voString += `\n}).value as ${valueObjectName},`;
         result += `${primitivesKey}: ${voString}`;
       } else {
         result += `${primitivesKey}: data.${primitivesKey},`;

@@ -38,7 +38,7 @@ export class PropsNode extends ClassTypeNode {
     return fieldListNode;
   }
 
-  public getFieldsPrimitives(tree: IntermediateASTTree): Record<string, string> {
+  public getFieldsPrimitives(tree: IntermediateASTTree): Record<string, any> {
     const fieldNodes = this.getFieldListNode().getFieldNodes();
     const primitivesValues = {};
     fieldNodes.forEach((fieldNode) => {
@@ -64,7 +64,7 @@ export class PropsNode extends ClassTypeNode {
         for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(fieldPrimitives)) {
           primitivesValues[identifier][fieldPrimitiveKey] = fieldPrimitiveValue;
         }
-        primitivesValues[identifier] = JSON.stringify(primitivesValues[identifier]);
+        // primitivesValues[identifier] = JSON.stringify(primitivesValues[identifier]);
       }
     });
     return primitivesValues;
