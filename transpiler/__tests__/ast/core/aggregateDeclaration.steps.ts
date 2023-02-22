@@ -28,6 +28,7 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
+// test commen
 describe('Root Entity declaration is valid', () => {
   let resultTree: IntermediateASTTree;
 
