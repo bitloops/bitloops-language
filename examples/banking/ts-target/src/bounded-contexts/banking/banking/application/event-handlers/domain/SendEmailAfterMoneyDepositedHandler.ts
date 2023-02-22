@@ -3,7 +3,7 @@ import { MoneyDepositedToAccount } from '../../../domain/events/MoneyDepositedTo
 import { SendEmailVerificationCommand } from '../../send-email-verification';
 import { GetCustomerByAccountIdQuery } from '../../get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 import { GetCustomerByAccountIdResponse } from '../../get-customer-details-by-account-id/GetCustomerByAccountIdQueryHandler';
-import { CONTEXT_ID } from '../../../config/index.js';
+import { CONTEXT_ID } from '../../../config/index';
 
 export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle {
   private commandBus: Infra.CommandBus.ICommandBus;

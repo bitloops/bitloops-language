@@ -1,7 +1,7 @@
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { MoneyDepositedToAccount } from '../../domain/events/MoneyDepositedToAccount.js';
 import { IntegrationSchemaV1 } from '../../structs/IntegrationSchemaV1.js';
 import { IntegrationSchemaV2 } from '../../structs/IntegrationSchemaV2.js';
+import { MoneyDepositedToAccount } from '../../domain/events/MoneyDepositedToAccount';
 
 type IntegrationSchemas = IntegrationSchemaV1 | IntegrationSchemaV2;
 type ToIntegrationDataMapper = (data: MoneyDepositedToAccount) => IntegrationSchemas;
