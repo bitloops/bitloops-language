@@ -129,6 +129,9 @@ regularIdentifier
     | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
     | Handle                                                    # HandleKeywordIdentifier
+    | Method                                                    # MethodKeywordIdentifier
+    | GraphQLOperation                                          # OperationKeywordIdentifier
+    | Input                                                     # InputKeywordIdentifier
     ;
 
 regularStructEvaluation
