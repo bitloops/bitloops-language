@@ -47,14 +47,19 @@ describe('Root Entity declaration is valid', () => {
         ],
       });
 
-      if (!isParserErrors(initialModelOutput)) {
-        const parseResult = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTValidationErrors(parseResult)) {
-          const result = intermediateParser.complete(parseResult);
-          const { core } = result;
-          resultTree = core[BOUNDED_CONTEXT].core;
-        }
+      if (isParserErrors(initialModelOutput)) {
+        throw initialModelOutput;
       }
+
+      const parseResult = intermediateParser.parse(initialModelOutput);
+      if (isIntermediateASTValidationErrors(parseResult)) {
+        throw parseResult;
+      }
+
+      const result = intermediateParser.complete(parseResult);
+      const { core } = result;
+      resultTree = core[BOUNDED_CONTEXT].core;
+
       const rootEntityNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TRootEntity,
       );

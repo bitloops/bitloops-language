@@ -129,6 +129,8 @@ regularIdentifier
     | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
     | Handle                                                    # HandleKeywordIdentifier
+    | EntityIdentifier                                          # EntityIdentifierString
+    | ValueObjectIdentifier                                     # ValueObjectIdentifierString
     ;
 
 regularStructEvaluation

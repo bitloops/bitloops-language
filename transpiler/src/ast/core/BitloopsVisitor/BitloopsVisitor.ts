@@ -524,6 +524,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitEntityIdentifierString(ctx: BitloopsParser.EntityIdentifierStringContext) {
+    return {
+      value: ctx.EntityIdentifier().getText(),
+    };
+  }
+
+  visitValueObjectIdentifierString(ctx: BitloopsParser.ValueObjectIdentifierStringContext) {
+    return {
+      value: ctx.ValueObjectIdentifier().getText(),
+    };
+  }
+
   visitExecuteExpression(_ctx: BitloopsParser.ExecuteExpressionContext) {
     return {
       value: 'execute',

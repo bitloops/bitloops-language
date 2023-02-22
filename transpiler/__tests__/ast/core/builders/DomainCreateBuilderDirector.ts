@@ -1,4 +1,4 @@
-import { TDomainCreateMethod } from '../../../../src/types.js';
+import { TDomainCreateMethod, TStatements } from '../../../../src/types.js';
 import { DomainCreateBuilder } from './DomainCreateBuilder.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
 import { StatementDirector } from './statement/statementDirector.js';
@@ -28,6 +28,31 @@ export class DomainCreateBuilderDirector {
           entityPropsIdentifier,
         ),
       )
+      .withReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+          entityName,
+          errorName,
+        ),
+      )
+      .withParameter(entityPropsIdentifier, entityPropsName)
+      .build();
+  }
+
+  buildCreateEntityWithStatements({
+    entityName,
+    entityPropsIdentifier,
+    errorName,
+    entityPropsName,
+    statements,
+  }: {
+    entityName: string;
+    entityPropsIdentifier: string;
+    errorName: string;
+    entityPropsName: string;
+    statements: TStatements;
+  }): TDomainCreateMethod {
+    return this.builder
+      .withStatements(statements)
       .withReturnType(
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
           entityName,
