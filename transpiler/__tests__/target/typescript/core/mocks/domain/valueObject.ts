@@ -44,7 +44,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       },
       statements: [
         new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'name'),
           new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
         ),
         new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
@@ -74,9 +74,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     export class TitleVO extends Domain.ValueObject<TitleProps> {
       private constructor(props: TitleProps) {
         super(props);
-        this.props.name = 'newName';
       }
       public static create(props: TitleProps): Either<TitleVO, DomainErrors.InvalidTitleError> {
+        props.name = 'newName';
         const res = Domain.applyRules([new DomainRules.InvalidTitleRule(props.title)]);
         if (res) return fail(res);
         return ok(new TitleVO(props));
@@ -104,7 +104,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       },
       statements: [
         new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'name'),
           new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
         ),
       ],
@@ -176,9 +176,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     export class NameVO extends Domain.ValueObject<NameProps> {
       private constructor(props: NameProps) {
         super(props);
-        this.props.name = 'newName';
       }
       public static create(props: NameProps): Either<NameVO, DomainErrors.InvalidNameError> {
+        props.name = 'newName';
         return ok(new NameVO(props));
       }
       get name(): string {
