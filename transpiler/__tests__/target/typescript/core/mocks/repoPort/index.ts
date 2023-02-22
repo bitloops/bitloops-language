@@ -20,6 +20,7 @@ import { ReadModelNode } from '../../../../../../src/ast/core/intermediate-ast/n
 import { RepoPortNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
 
@@ -84,6 +85,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -107,6 +109,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],
@@ -170,6 +173,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -193,6 +197,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],
@@ -257,6 +262,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -280,6 +286,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],
@@ -362,6 +369,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -385,6 +393,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],

@@ -17,6 +17,7 @@ import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type TestCase = {
   description: string;
@@ -66,6 +67,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [
@@ -88,6 +90,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
     }),
@@ -139,7 +142,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
       },
       statements: [
         new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'completed'),
           new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
         ),
       ],
@@ -168,6 +171,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -191,6 +195,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
       privateMethods: [],
@@ -206,9 +211,9 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
     export class TodoEntity extends Domain.Entity<TodoProps> {
       private constructor(props: TodoProps) {
         super(props, props.id);
-        this.props.completed = false;
       }
       public static create(props: TodoProps): Either<TodoEntity, never> {
+        props.completed = false;
         return ok(new TodoEntity(props));
       }
       get id() {

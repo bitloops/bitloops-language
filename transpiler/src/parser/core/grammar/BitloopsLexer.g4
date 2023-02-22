@@ -186,7 +186,6 @@ VO:                             'VO';
 Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
-Constructor:                    'constructor';
 StandardVO:                     'StandardVO';
 IntegrationEvent:               'IntegrationEvent';
 

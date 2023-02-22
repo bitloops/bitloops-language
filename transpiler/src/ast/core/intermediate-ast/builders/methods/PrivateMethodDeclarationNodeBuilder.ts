@@ -2,6 +2,7 @@ import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/Bitloop
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PrivateMethodDeclarationNode } from '../../nodes/methods/PrivateMethodDeclarationNode.js';
+import { StaticNode } from '../../nodes/methods/StaticNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
 import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../nodes/statements/StatementList.js';
@@ -13,6 +14,7 @@ export class PrivateMethodDeclarationNodeBuilder implements IBuilder<PrivateMeth
   private parameters: ParameterListNode;
   private returnType: ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode;
   private statements: StatementListNode;
+  private staticNode: StaticNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.privateMethodDeclarationNode = new PrivateMethodDeclarationNode(metadata);
@@ -40,11 +42,17 @@ export class PrivateMethodDeclarationNodeBuilder implements IBuilder<PrivateMeth
     return this;
   }
 
+  public withStatic(staticNode: StaticNode): PrivateMethodDeclarationNodeBuilder {
+    this.staticNode = staticNode;
+    return this;
+  }
+
   public build(): PrivateMethodDeclarationNode {
     this.privateMethodDeclarationNode.addChild(this.identifier);
     this.privateMethodDeclarationNode.addChild(this.parameters);
     this.privateMethodDeclarationNode.addChild(this.returnType);
     this.privateMethodDeclarationNode.addChild(this.statements);
+    this.privateMethodDeclarationNode.addChild(this.staticNode);
 
     this.privateMethodDeclarationNode.buildObjectValue();
 

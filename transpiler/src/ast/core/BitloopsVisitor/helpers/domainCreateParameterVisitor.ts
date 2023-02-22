@@ -11,7 +11,7 @@ import { PropsIdentifierNode } from '../../intermediate-ast/nodes/Props/PropsIde
 
 export const domainCreateParameterVisitor = (
   _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.DomainConstructorParamContext,
+  ctx: BitloopsParser.DomainCreateParamContext,
 ): DomainCreateParameterNode => {
   const metadata = produceMetadata(ctx, _thisVisitor);
 

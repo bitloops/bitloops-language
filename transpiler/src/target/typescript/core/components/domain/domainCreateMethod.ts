@@ -29,26 +29,12 @@ import {
 } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
-import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
 
 export const domainCreate = (
   variable: TDomainCreateMethod,
   classType: TClassTypesValues = ClassTypes.ValueObject,
 ): TTargetDependenciesTypeScript => {
   const { domainCreateParameter, returnType, statements } = variable.create;
-
-  const statementsResult = {
-    thisStatements: [],
-    restStatements: [],
-  };
-
-  for (const statement of statements) {
-    if (isThisDeclaration(statement)) {
-      statementsResult.thisStatements.push(statement);
-    } else {
-      statementsResult.restStatements.push(statement);
-    }
-  }
 
   const domainCreateParameterType = domainCreateParameter.parameterType;
   const returnOkType = returnType.ok.type;
@@ -64,16 +50,11 @@ export const domainCreate = (
       value: { type: returnOkType },
     });
 
-  const producedConstructor = internalConstructor(
-    propsName,
-    statementsResult.thisStatements,
-    classType,
-    // ClassTypes.ValueObject,
-  );
+  const producedConstructor = internalConstructor(propsName, classType);
 
   let statementsModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
-    value: statementsResult.restStatements,
+    value: statements,
   });
 
   const returnTypeModel = modelToTargetLanguage({
@@ -94,12 +75,11 @@ export const domainCreate = (
   }
 
   const domainCreateParameterValue = domainCreateParameter[identifierKey];
-  const result = `${producedConstructor.output} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
+  const result = `${producedConstructor} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {
     output: result,
     dependencies: [
-      ...producedConstructor.dependencies,
       ...returnTypeModel.dependencies,
       ...statementsModel.dependencies,
       ...propsTypeDependencies,

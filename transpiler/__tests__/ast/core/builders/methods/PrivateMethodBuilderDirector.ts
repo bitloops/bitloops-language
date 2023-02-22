@@ -1,5 +1,7 @@
 import {
+  TBitloopsIdentifier,
   TBitloopsPrimaryType,
+  TBitloopsPrimitives,
   TDomainPrivateMethod,
   TStatements,
 } from '../../../../../src/types.js';
@@ -32,6 +34,33 @@ export class PrivateMethodBuilderDirector {
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))
       .withPrimaryReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
       .withStatements(new StatementListDirector().buildOneBooleanReturnStatement(booleanValue))
+      .build();
+  }
+
+  buildStaticMethodWithInputPropsAndPrimitiveReturnType({
+    propsType,
+    methodName,
+    returnType,
+    statements,
+  }: {
+    propsType: TBitloopsIdentifier;
+    methodName: string;
+    returnType: TBitloopsPrimitives;
+    statements: TStatements;
+  }): TDomainPrivateMethod {
+    return this.builder
+      .withIdentifier(new IdentifierBuilder().withName(methodName).build())
+      .withParameters(
+        new ParameterListBuilderDirector().buildParameterListWithOneParameter({
+          parameterIdentifier: 'props',
+          parameterType: propsType,
+        }),
+      )
+      .withPrimaryReturnType(
+        new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(returnType),
+      )
+      .withStatements(statements)
+      .withStatic(true)
       .build();
   }
 

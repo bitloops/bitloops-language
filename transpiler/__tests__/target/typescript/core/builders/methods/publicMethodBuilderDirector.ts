@@ -1,5 +1,6 @@
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { PublicMethodDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
 import { PublicMethodDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../returnOkErrorTypeBuilderDirector.js';
@@ -35,6 +36,7 @@ export class PublicMethodBuilderDirector {
           identifierArgumentName,
         }),
       )
+      .withStatic(new StaticNodeBuilder().withValue(false).build())
       .build();
   }
 
@@ -61,6 +63,7 @@ export class PublicMethodBuilderDirector {
           identifierArgumentName,
         }),
       )
+      .withStatic(new StaticNodeBuilder().withValue(false).build())
       .build();
   }
 }
