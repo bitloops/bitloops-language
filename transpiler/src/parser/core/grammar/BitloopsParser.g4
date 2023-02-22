@@ -131,6 +131,9 @@ regularIdentifier
     | Handle                                                    # HandleKeywordIdentifier
     | EntityIdentifier                                          # EntityIdentifierString
     | ValueObjectIdentifier                                     # ValueObjectIdentifierString
+    | Method                                                    # MethodKeywordIdentifier
+    | GraphQLOperation                                          # OperationKeywordIdentifier
+    | Input                                                     # InputKeywordIdentifier
     ;
 
 regularStructEvaluation

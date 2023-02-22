@@ -55,64 +55,8 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
         ok: 'TodoRootEntity',
         errors: [],
       },
-      statements: [
-        new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
-          new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
-        ),
-      ],
-      publicMethods: [
-        new PublicMethodDeclarationNodeBuilder()
-          .withIdentifier(new IdentifierNodeBuilder().withName('uncomplete').build())
-          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
-          .withReturnType(
-            new ReturnOkErrorTypeNodeBuilder()
-              .withOk(
-                new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
-                  .build(),
-              )
-              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
-              .build(),
-          )
-          .withStatements(
-            new StatementListNodeBuilder()
-              .withStatements([
-                new ExpressionBuilderDirector().buildAssignmentExpression(
-                  new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
-                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
-                ),
-                new ReturnStatementBuilderDirector().buildEmptyReturnOK(),
-              ])
-              .build(),
-          )
-          .withStatic(new StaticNodeBuilder().withValue(false).build())
-          .build(),
-        new PublicMethodDeclarationNodeBuilder()
-          .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
-          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
-          .withReturnType(
-            new ReturnOkErrorTypeNodeBuilder()
-              .withOk(
-                new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
-                  .build(),
-              )
-              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
-              .build(),
-          )
-          .withStatements(
-            new StatementListNodeBuilder()
-              .withStatements([
-                new ReturnStatementBuilderDirector().buildReturn(
-                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
-                ),
-              ])
-              .build(),
-          )
-          .withStatic(new StaticNodeBuilder().withValue(false).build())
-          .build(),
-      ],
+      statements: [],
+      publicMethods: [],
       privateMethods: [],
     }),
     props: new PropsDeclarationBuilderDirector().buildProps(
@@ -173,64 +117,8 @@ export const VALID_SINGLE_REPO_ADAPTER_DEFINITIONS = [
         ok: 'TodoRootEntity',
         errors: [],
       },
-      statements: [
-        new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
-          new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
-        ),
-      ],
-      publicMethods: [
-        new PublicMethodDeclarationNodeBuilder()
-          .withIdentifier(new IdentifierNodeBuilder().withName('uncomplete').build())
-          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
-          .withReturnType(
-            new ReturnOkErrorTypeNodeBuilder()
-              .withOk(
-                new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
-                  .build(),
-              )
-              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
-              .build(),
-          )
-          .withStatements(
-            new StatementListNodeBuilder()
-              .withStatements([
-                new ExpressionBuilderDirector().buildAssignmentExpression(
-                  new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
-                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
-                ),
-                new ReturnStatementBuilderDirector().buildEmptyReturnOK(),
-              ])
-              .build(),
-          )
-          .withStatic(new StaticNodeBuilder().withValue(false).build())
-          .build(),
-        new PublicMethodDeclarationNodeBuilder()
-          .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
-          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
-          .withReturnType(
-            new ReturnOkErrorTypeNodeBuilder()
-              .withOk(
-                new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
-                  .build(),
-              )
-              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
-              .build(),
-          )
-          .withStatements(
-            new StatementListNodeBuilder()
-              .withStatements([
-                new ReturnStatementBuilderDirector().buildReturn(
-                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
-                ),
-              ])
-              .build(),
-          )
-          .withStatic(new StaticNodeBuilder().withValue(false).build())
-          .build(),
-      ],
+      statements: [],
+      publicMethods: [],
       privateMethods: [],
     }),
     props: new PropsDeclarationBuilderDirector().buildProps(

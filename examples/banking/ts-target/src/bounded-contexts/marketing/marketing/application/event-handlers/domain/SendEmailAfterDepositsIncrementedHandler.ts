@@ -1,8 +1,4 @@
 import { Infra, Application } from '@bitloops/bl-boilerplate-core';
-import {
-  GetCustomerByAccountIdQuery,
-  GetCustomerByAccountIdUseCaseResponse,
-} from '../../../../../banking/banking/contracts';
 import { DepositsIncrementedDomainEvent } from '../../../domain/events/DepositsIncrementedDomainEvent';
 import { SendEmailCommand } from '../../send-email';
 import { ICustomerService } from '../../../services/interfaces/ICustomerService';

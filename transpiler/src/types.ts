@@ -747,7 +747,7 @@ export type TRESTController = {
     RESTControllerIdentifier: TRESTControllerIdentifier;
     method: TRestMethods;
     execute: TRESTControllerExecute;
-  };
+  } & Partial<TControllerBusDependencies>;
 };
 
 export type TRESTControllerExecute = {
@@ -768,7 +768,7 @@ export type TGraphQLController = {
     operationType: TGraphQLOperation;
     operationName: string;
     execute: TGraphQLControllerExecute;
-  };
+  } & Partial<TControllerBusDependencies>;
 };
 
 export type TGraphQLControllerExecute = {
@@ -1180,6 +1180,13 @@ export type TEventHandlerBusDependencies = {
     commandBus: boolean;
     queryBus: boolean;
     integrationEventBus: boolean;
+  };
+};
+
+export type TControllerBusDependencies = {
+  controllerBusDependencies: {
+    commandBus: boolean;
+    queryBus: boolean;
   };
 };
 

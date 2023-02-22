@@ -1,38 +1,36 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { TBitloopsPrimitives, TValueObjectIdentifier } from '../../../../../types.js';
+import { ReadModelKey, TBitloopsPrimitives, TValueObjectIdentifier } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { FieldListNode } from '../FieldList/FieldListNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
-import { PropsIdentifierNode } from './PropsIdentifierNode.js';
+import { ReadModelIdentifierNode } from './ReadModelIdentifierNode.js';
 
-export class PropsNode extends ClassTypeNode {
-  private static classType = ClassTypes.Props;
-  private static classNodeName = 'Props';
+export class ReadModelNode extends ClassTypeNode {
+  private static classType = ClassTypes.ReadModel;
+  private static nodeType = BitloopsTypesMapping.TReadModel;
+  private static classNodeName = ReadModelKey;
 
   constructor(metadata?: TNodeMetadata) {
     super({
-      classType: PropsNode.classType,
-      nodeType: BitloopsTypesMapping.TProps,
+      classType: ReadModelNode.classType,
+      nodeType: ReadModelNode.nodeType,
       metadata,
-      classNodeName: PropsNode.classNodeName,
+      classNodeName: ReadModelNode.classNodeName,
     });
   }
-
-  public getPropsIdentifierNode(): PropsIdentifierNode {
-    const identifierNode: PropsIdentifierNode = this.getChildNodeByType(
-      BitloopsTypesMapping.TPropsIdentifier,
-    );
-    return identifierNode;
+  public getIdentifier(): ReadModelIdentifierNode {
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TReadModelIdentifier,
+    ) as ReadModelIdentifierNode;
+    return identifier;
   }
 
   public getIdentifierValue(): string {
-    const identifierNode: PropsIdentifierNode = this.getPropsIdentifierNode();
-    return identifierNode.getValue().propsIdentifier;
+    return this.getIdentifier().getIdentifierName();
   }
 
   public getFieldListNode(): FieldListNode {
-    const fieldListNode: FieldListNode = this.getChildNodeByType(BitloopsTypesMapping.TVariables);
-    return fieldListNode;
+    return this.getChildNodeByType<FieldListNode>(BitloopsTypesMapping.TVariables);
   }
 
   public getPrimitiveFields(): Array<{ fieldValue: string; fieldType: TBitloopsPrimitives }> {

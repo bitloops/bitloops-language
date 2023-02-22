@@ -18,11 +18,7 @@ export class MoneyWithdrawnPublishIntegrationEventHandler implements Application
       balanceAmount: balance.amount,
     });
 
-    const eventsWithTopic = events.map((event) => {
-      return { message: event, topic: event.eventTopic };
-    });
-
-    await this.eventBus.publishMany(eventsWithTopic);
+    await this.eventBus.publishMany(events);
 
     console.log(
       `[MoneyWithdrawnIntegrationEvent]: Successfully published MoneyWithdrawnIntegrationEvent`,

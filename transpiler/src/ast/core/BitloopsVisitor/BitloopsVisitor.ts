@@ -554,6 +554,22 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'handle',
     };
   }
+  visitMethodKeywordIdentifier(ctx: BitloopsParser.MethodKeywordIdentifierContext) {
+    return {
+      value: ctx.Method().getText(),
+    };
+  }
+  visitOperationKeywordIdentifier(ctx: BitloopsParser.OperationKeywordIdentifierContext) {
+    return {
+      value: ctx.GraphQLOperation().getText(),
+    };
+  }
+
+  visitInputKeywordIdentifier(ctx: BitloopsParser.InputKeywordIdentifierContext) {
+    return {
+      value: ctx.Input().getText(),
+    };
+  }
 
   visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
     return {

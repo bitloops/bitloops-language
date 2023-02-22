@@ -7,6 +7,8 @@ import { RESTControllerExecuteNode } from './../../../nodes/controllers/restCont
 import { ParameterListNode } from '../../../nodes/ParameterList/ParameterListNode.js';
 import { RESTMethodNode } from './../../../nodes/controllers/restController/RESTMethodNode.js';
 import { RESTServerTypeNode } from '../../../nodes/controllers/restController/RESTServerTypeNode.js';
+import { ControllerBusDependenciesNodeBuilder } from '../ControllerBusDependenciesNodeBuilder.js';
+import { ControllerBusDependenciesNode } from '../../../nodes/controllers/ControllerBusDependenciesNode.js';
 
 export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
   private restControllerNode: RESTControllerNode;
@@ -16,6 +18,7 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
   private controllerExecuteNode: RESTControllerExecuteNode;
   private serverTypeNode: RESTServerTypeNode;
   private intermediateASTTree: IntermediateASTTree;
+  private busDependencies: ControllerBusDependenciesNode;
 
   constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
     this.intermediateASTTree = intermediateASTTree;
@@ -50,6 +53,14 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
     this.serverTypeNode = serverTypeNode;
     return this;
   }
+
+  public withDefaultEventBusDependencies(): RESTControllerNodeBuilder {
+    this.busDependencies = new ControllerBusDependenciesNodeBuilder()
+      .withCommandBus()
+      .withQueryBus()
+      .build();
+    return this;
+  }
   public build(): RESTControllerNode {
     this.intermediateASTTree.insertChild(this.restControllerNode);
     this.intermediateASTTree.insertChild(this.restControllerIdentifierNode);
@@ -59,6 +70,9 @@ export class RESTControllerNodeBuilder implements IBuilder<RESTControllerNode> {
 
     if (this.serverTypeNode) {
       this.intermediateASTTree.insertSibling(this.serverTypeNode);
+    }
+    if (this.busDependencies) {
+      this.intermediateASTTree.insertSibling(this.busDependencies);
     }
 
     this.intermediateASTTree.setCurrentNodeToRoot();

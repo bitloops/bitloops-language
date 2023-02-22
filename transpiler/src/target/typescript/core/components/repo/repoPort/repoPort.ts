@@ -28,9 +28,10 @@ import {
   repoPortIdentifierKey,
 } from '../../../../../../types.js';
 import { findIdOfRepoDomainObject } from './helpers/domainIDofRepoPort.js';
+import { FieldsWithGetters } from './helpers/fieldsWithGetters.js';
 import { findIfWriteOrReadRepoPort } from './helpers/mappers.js';
 import { noMethodsRepoPort } from './helpers/noMethodsPort.js';
-import { buildRepoPortWithMethods } from './helpers/withMethodsPort.js';
+import { buildRepoPortWithGettersAndMethods } from './helpers/withMethodsPort.js';
 
 export const repoPortToTargetLanguage = (
   repoPort: TRepoPort,
@@ -39,7 +40,7 @@ export const repoPortToTargetLanguage = (
   const repoPortValues = repoPort[repoPortKey];
   const repoPortName = repoPort[repoPortKey][repoPortIdentifierKey];
 
-  const { methodDefinitionList: definitionMethods } = repoPortValues;
+  const { methodDefinitionList } = repoPortValues;
 
   const { repoDependencyName, type } = findIfWriteOrReadRepoPort(repoPort);
 
@@ -48,9 +49,20 @@ export const repoPortToTargetLanguage = (
     output: '',
     dependencies: [],
   };
+  const fieldWithGetters = new FieldsWithGetters(bitloopsModel);
+  const fieldsThatNeedGetters = fieldWithGetters.findFields(repoDependencyName, type);
 
-  if (!definitionMethods || Object.keys(definitionMethods).length === 0) {
+  if (
+    (!methodDefinitionList || Object.keys(methodDefinitionList).length === 0) &&
+    fieldsThatNeedGetters.length === 0
+  ) {
     return noMethodsRepoPort(repoPortName, repoDependencyName, repoPort, domainObjectIdType);
   }
-  return buildRepoPortWithMethods(repoPortName, repoDependencyName, repoPort, domainObjectIdType);
+  return buildRepoPortWithGettersAndMethods(
+    repoPortName,
+    repoDependencyName,
+    repoPort,
+    domainObjectIdType,
+    fieldsThatNeedGetters,
+  );
 };

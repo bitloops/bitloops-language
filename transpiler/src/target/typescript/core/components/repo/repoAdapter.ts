@@ -23,13 +23,12 @@ import {
   TTargetDependenciesTypeScript,
   TRepoAdapter,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { ClassTypes } from '../../../../../helpers/mappings.js';
 import { repoBodyLangMapping } from './helpers/repoAdapterBody.js';
 import { getRepoAdapterClassName } from './helpers/repoAdapterName.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { RepoPortNode } from '../../../../../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
-import { RepoAdapterNode } from '../../../../../ast/core/intermediate-ast/nodes/RepoAdapterNode.js';
+import { findRepoAdapterAndRepoPort as findRepoAdapterAndRepoPortNodes } from './helpers/guards.js';
 
 const getDbTypeImports = (dbType: TRepoSupportedTypes): TDependenciesTypeScript => {
   switch (dbType) {
@@ -71,38 +70,24 @@ export const repoAdapterToTargetLanguage = (
   const repoAdapterExpression = repoAdapter.repoAdapter.repoAdapterExpression;
   const { dbType, concretedRepoPort } = repoAdapterExpression;
 
-  const repoPorts = model.getRootChildrenNodesByType(
-    BitloopsTypesMapping.TRepoPort,
-  ) as RepoPortNode[];
-
-  const repoPortNode = repoPorts.find(
-    (node) => node.getIdentifier().getIdentifierName() === concretedRepoPort,
+  const [nodesFound, error] = findRepoAdapterAndRepoPortNodes(
+    model,
+    concretedRepoPort,
+    repoAdapterInstanceName,
   );
-
-  if (!repoPortNode) {
-    throw new Error(`Repo port ${concretedRepoPort} not found in model!`);
+  if (error) {
+    throw new Error(error);
   }
+  const { repoAdapterNode, repoPortNode } = nodesFound;
 
-  const repoAdapterDefinitions = model.getRootChildrenNodesByType(
-    BitloopsTypesMapping.TRepoAdapter,
-  ) as RepoAdapterNode[];
-
-  const repoAdapterDefinition = repoAdapterDefinitions.find(
-    (node) => node.getIdentifier().getIdentifierName() === repoAdapterInstanceName,
-  );
-
-  if (!repoAdapterDefinition) {
-    throw new Error(`Repo adapter ${repoAdapterInstanceName} not found in model!`);
-  }
-
-  let dependencies = getDbTypeImports(dbType);
+  const dependencies = getDbTypeImports(dbType);
 
   const repoStart = getRepoHeader(concretedRepoPort, dbType);
 
-  const repoBody = repoBodyLangMapping(dbType, repoPortNode, repoAdapterDefinition, model);
+  const repoBody = repoBodyLangMapping(dbType, repoPortNode, repoAdapterNode, model);
   const repoEnd = '}';
 
-  dependencies = [...dependencies, ...repoStart.dependencies, ...repoBody.dependencies];
+  dependencies.push(...repoStart.dependencies, ...repoBody.dependencies);
   const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.RepoAdapter,
     className: repoAdapterInstanceName,

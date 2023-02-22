@@ -28,12 +28,14 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/m
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../../../dependencies.js';
 import { mapExtendedRepoPorts } from './mappers.js';
+import { FieldWithGetter, FieldsWithGetters } from './fieldsWithGetters.js';
 
-export const buildRepoPortWithMethods = (
+export const buildRepoPortWithGettersAndMethods = (
   repoPortName: string,
   repoDependencyName: string,
   repoPortInfo: TRepoPort,
   domainIdValue: TTargetDependenciesTypeScript,
+  fieldsWithGetters: FieldWithGetter[],
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const { methodDefinitionList, extendsRepoPorts } = repoPortInfo[repoPortKey];
@@ -46,20 +48,30 @@ export const buildRepoPortWithMethods = (
   const extendedRepoPortsString = extendedRepoPortsRes.map((x) => x.output).join(', ');
   dependencies = [...dependencies, ...extendedRepoPortsRes.flatMap((x) => x.dependencies)];
 
-  const methodsModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDefinitionMethods,
-    value: methodDefinitionList,
-  });
-  dependencies = [...dependencies, ...methodsModel.dependencies];
+  let output = `export interface ${repoPortName} extends ${extendedRepoPortsString} {`;
+  if (fieldsWithGetters.length > 0) {
+    const gettersResult = FieldsWithGetters.generateGettersInterfacesTarget(
+      repoDependencyName,
+      fieldsWithGetters,
+    );
+    output += gettersResult.output;
+    dependencies.push(...gettersResult.dependencies);
+  }
+
+  if (methodDefinitionList && Object.keys(methodDefinitionList).length > 0) {
+    const methodsModel = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TDefinitionMethods,
+      value: methodDefinitionList,
+    });
+    dependencies = [...dependencies, ...methodsModel.dependencies];
+    output += methodsModel.output;
+  }
+  output += '}';
+
   const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.RepoPort,
     className: repoPortName,
   });
-
-  const output =
-    `export interface ${repoPortName} extends ${extendedRepoPortsString} {` +
-    methodsModel.output +
-    '}';
   return {
     output,
     dependencies: parentDependencies,
