@@ -27,7 +27,7 @@ import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statemen
 type TestCase = {
   description: string;
   entity: EntityDeclarationNode;
-  valueObject?: ValueObjectDeclarationNode;
+  valueObjects?: ValueObjectDeclarationNode[];
   props: PropsNode[];
   output: string;
 };
@@ -35,35 +35,66 @@ type TestCase = {
 export const VALID_ENTITY_TEST_CASES: TestCase[] = [
   {
     description: 'Entity with public/private methods and value object in props',
-    valueObject: new ValueObjectBuilderDirector().buildValueObject('TitleVO', {
-      constantNodes: [],
-      constructorParameterNode: {
-        propIdentifier: 'props',
-        propClassName: 'TitleProps',
-      },
-      returnTypeParams: {
-        ok: 'TitleVO',
-        errors: ['DomainErrors.InvalidTitleError'],
-      },
-      statements: [
-        new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
-          new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
-        ),
-        new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
-          {
-            ruleIdentifier: 'InvalidTitleRule',
-            argumentListNode: new ArgumentListNodeBuilder()
-              .withArguments([
-                new ArgumentDirector().buildArgument(
-                  new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'title'),
-                ),
-              ])
-              .build(),
-          },
-        ]),
-      ],
-    }),
+    valueObjects: [
+      new ValueObjectBuilderDirector().buildValueObject('TitleVO', {
+        constantNodes: [],
+        constructorParameterNode: {
+          propIdentifier: 'props',
+          propClassName: 'TitleProps',
+        },
+        returnTypeParams: {
+          ok: 'TitleVO',
+          errors: ['DomainErrors.InvalidTitleError'],
+        },
+        statements: [
+          new ExpressionBuilderDirector().buildAssignmentExpression(
+            new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+            new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
+          ),
+          new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
+            {
+              ruleIdentifier: 'InvalidTitleRule',
+              argumentListNode: new ArgumentListNodeBuilder()
+                .withArguments([
+                  new ArgumentDirector().buildArgument(
+                    new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'title'),
+                  ),
+                ])
+                .build(),
+            },
+          ]),
+        ],
+      }),
+      new ValueObjectBuilderDirector().buildValueObject('LanguageVO', {
+        constantNodes: [],
+        constructorParameterNode: {
+          propIdentifier: 'props',
+          propClassName: 'LanguageProps',
+        },
+        returnTypeParams: {
+          ok: 'LanguageVO',
+          errors: ['DomainErrors.InvalidLanguageError'],
+        },
+        statements: [
+          new ExpressionBuilderDirector().buildAssignmentExpression(
+            new ExpressionBuilderDirector().buildThisMemberDotExpression('code'),
+            new ExpressionBuilderDirector().buildStringLiteralExpression('newCode'),
+          ),
+          new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
+            {
+              ruleIdentifier: 'InvalidCodeRule',
+              argumentListNode: new ArgumentListNodeBuilder()
+                .withArguments([
+                  new ArgumentDirector().buildArgument(
+                    new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'code'),
+                  ),
+                ])
+                .build(),
+            },
+          ]),
+        ],
+      }),
+    ],
     entity: new EntityBuilderDirector().buildEntitySimplified('TodoEntity', {
       constantNodes: [],
       constructorParameterNode: {
@@ -143,8 +174,17 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
         new FieldListNodeBuilder()
           .withFields([
             new FieldBuilderDirector().buildRequiredPrimitiveField('title', 'string'),
-            new FieldBuilderDirector().buildRequiredPrimitiveField('language', 'string'),
+            new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField(
+              'language',
+              'LanguageVO',
+            ),
           ])
+          .build(),
+      ),
+      new PropsDeclarationBuilderDirector().buildProps(
+        'LanguageProps',
+        new FieldListNodeBuilder()
+          .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('code', 'string')])
           .build(),
       ),
     ],

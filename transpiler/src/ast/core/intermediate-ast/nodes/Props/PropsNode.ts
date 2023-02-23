@@ -64,7 +64,6 @@ export class PropsNode extends ClassTypeNode {
         for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(fieldPrimitives)) {
           primitivesValues[identifier][fieldPrimitiveKey] = fieldPrimitiveValue;
         }
-        // primitivesValues[identifier] = JSON.stringify(primitivesValues[identifier]);
       }
     });
     return primitivesValues;

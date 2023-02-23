@@ -144,6 +144,34 @@ const generateToPrimitives = (
   const typeName = `T${entityName}Primitives`;
   let result = `public toPrimitives(): ${typeName} {`;
   result += 'return {\n';
+  // for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+  //   if (primitivesKey === 'id') {
+  //     result += 'id: this.id.toString(),';
+  //   } else {
+  //     if (TypeUtils.hasObjectType(primitivesValue)) {
+  //       //for keys add to result
+  //       result += `${primitivesKey}: {\n`;
+  //       for (const key in primitivesValue) {
+  //         if (TypeUtils.hasObjectType(primitivesValue[key])) {
+  //           result += generateToPrimitives(primitivesValue[key]);
+  //         }
+  //         result += `${key}: this.props.${primitivesKey}.${key},`;
+  //       }
+
+  //       result += '},';
+  //     } else {
+  //       result += `${primitivesKey}: this.props.${primitivesKey},`;
+  //     }
+  //   }
+  // }
+  result += buildPrimitives(primitivesObject);
+  result += '};\n}';
+
+  return result;
+};
+
+const buildPrimitives = (primitivesObject: Record<string, any>, keyToAppend = ''): string => {
+  let result = '';
   for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
     if (primitivesKey === 'id') {
       result += 'id: this.id.toString(),';
@@ -152,17 +180,31 @@ const generateToPrimitives = (
         //for keys add to result
         result += `${primitivesKey}: {\n`;
         for (const key in primitivesValue) {
-          result += `${key}: this.props.${primitivesKey}.${key},`;
+          if (TypeUtils.hasObjectType(primitivesValue[key])) {
+            const updatedKey = `${primitivesKey}.${key}`;
+            result += buildPrimitives({ [key]: primitivesValue[key] }, updatedKey);
+          } else {
+            if (keyToAppend.length > 0) {
+              result += `${key}: this.props.${keyToAppend}.${key},`;
+            } else {
+              result += `${key}: this.props.${primitivesKey}.${key},`;
+            }
+          }
+          console.log('result', result);
         }
 
         result += '},';
       } else {
-        result += `${primitivesKey}: this.props.${primitivesKey},`;
+        let strToAppend = '';
+        if (keyToAppend) {
+          strToAppend += `${primitivesKey}: this.props.${keyToAppend}.${primitivesKey},`;
+        } else {
+          strToAppend += `${primitivesKey}: this.props.${primitivesKey},`;
+        }
+        result += strToAppend;
       }
     }
   }
-  result += '};\n}';
-
   return result;
 };
 
@@ -174,31 +216,60 @@ const generateFromPrimitives = (
   const propsName = `${entityName}Props`;
   let result = `public static fromPrimitives(data: ${typeName}): ${entityName} {`;
   result += `const ${propsName} = {`;
-  for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
-    if (primitivesKey === 'id') {
-      result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
-    } else {
-      if (TypeUtils.hasObjectType(primitivesValue)) {
-        const valueObjectName =
-          `${primitivesKey}`.charAt(0).toUpperCase() + `${primitivesKey}VO`.slice(1);
-        let voString = `${valueObjectName}.create({\n`;
-        for (const key in primitivesValue) {
-          voString += `${key}: data.${primitivesKey}.${key},\n`;
-        }
-        voString += `\n}).value as ${valueObjectName},`;
-        result += `${primitivesKey}: ${voString}`;
-      } else {
-        result += `${primitivesKey}: data.${primitivesKey},`;
-      }
-    }
-    result += '\n';
-  }
+  console.log('primitivesObject', primitivesObject);
+  // result += buildFromPrimitives(primitivesObject);
+  // for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+  //   if (primitivesKey === 'id') {
+  //     result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
+  //   } else {
+  //     if (TypeUtils.hasObjectType(primitivesValue)) {
+  //       const valueObjectName = StringUtils.upperCaseFirstLetter(`${primitivesKey}VO`);
+
+  //       let voString = `${valueObjectName}.create({\n`;
+  //       for (const key in primitivesValue) {
+  //         voString += `${key}: data.${primitivesKey}.${key},\n`;
+  //       }
+  //       voString += `\n}).value as ${valueObjectName},`;
+  //       result += `${primitivesKey}: ${voString}`;
+  //     } else {
+  //       result += `${primitivesKey}: data.${primitivesKey},`;
+  //     }
+  //   }
+  //   result += '\n';
+  // }
   result += '};\n';
   result += `return new ${entityName}(${propsName});\n`;
   result += '}';
 
   return result;
 };
+
+// const buildFromPrimitives = (primitivesObject: Record<string, any>): string => {
+//   let result = '';
+//   for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+//     if (primitivesKey === 'id') {
+//       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
+//     } else {
+//       if (TypeUtils.hasObjectType(primitivesValue)) {
+//         const valueObjectName = StringUtils.upperCaseFirstLetter(`${primitivesKey}VO`);
+
+//         let voString = `${valueObjectName}.create({\n`;
+//         for (const key in primitivesValue) {
+//           const voDeepString = buildFromPrimitives(primitivesValue);
+//           // voString += `${key}: ${voDeepString},\n`;
+//           voString += `${key}: ${voDeepString}.${key},\n`;
+//           // voString += `${key}: data.${primitivesKey}.${key},\n`;
+//         }
+//         voString += `\n}).value as ${valueObjectName},`;
+//         result += `${primitivesKey}: ${voString}`;
+//       } else {
+//         result += `${primitivesKey}: data.${primitivesKey},`;
+//       }
+//     }
+//     result += '\n';
+//   }
+//   return result;
+// };
 
 export {
   entityValuesToTargetLanguage,

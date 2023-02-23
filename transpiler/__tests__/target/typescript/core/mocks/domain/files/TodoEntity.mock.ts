@@ -2,12 +2,15 @@ import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './TodoProps';
 import { DomainErrors } from './errors/index';
 import { TitleVO } from './TitleVO';
+import { LanguageVO } from './LanguageVO';
 type TTodoEntityPrimitives = {
   id: string;
   completed: boolean;
   title: {
     title: string;
-    language: string;
+    language: {
+      code: string;
+    };
   };
 };
 export class TodoEntity extends Domain.Entity<TodoProps> {
@@ -39,7 +42,7 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
       completed: data.completed,
       title: TitleVO.create({
         title: data.title.title,
-        language: data.title.language,
+        language: LanguageVO.create({ code: data.title.language.code }).value as LanguageVO,
       }).value as TitleVO,
     };
     return new TodoEntity(TodoEntityProps);
@@ -50,7 +53,9 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
       completed: this.props.completed,
       title: {
         title: this.props.title.title,
-        language: this.props.title.language,
+        language: {
+          code: this.props.title.language.code,
+        },
       },
     };
   }
