@@ -38,7 +38,14 @@ export class PropsNode extends ClassTypeNode {
     return fieldListNode;
   }
 
-  public getFieldsPrimitives(tree: IntermediateASTTree): Record<string, any> {
+  public getFieldsPrimitives(tree: IntermediateASTTree): Record<
+    string,
+    | {
+        primitiveValue: string;
+        identifier?: string;
+      }
+    | string
+  > {
     const fieldNodes = this.getFieldListNode().getFieldNodes();
     const primitivesValues = {};
     fieldNodes.forEach((fieldNode) => {
@@ -57,13 +64,24 @@ export class PropsNode extends ClassTypeNode {
         typeTarget = BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
         primitivesValues[identifier] = typeTarget;
       } else if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {
+        //TODO add valueObjectIdentifier to the result
         const valueObject = tree.getValueObjectByIdentifier(type[bitloopsIdentifiersTypeKey]);
         const propsNode = tree.getPropsNodeOfValueObject(valueObject);
         const fieldPrimitives = propsNode.getFieldsPrimitives(tree);
         primitivesValues[identifier] = {};
+        const valueObjectIdentifier = valueObject.getIdentifier();
         for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(fieldPrimitives)) {
-          primitivesValues[identifier][fieldPrimitiveKey] = fieldPrimitiveValue;
+          primitivesValues[identifier][fieldPrimitiveKey] = {
+            primitiveValue: fieldPrimitiveValue,
+            identifier: valueObjectIdentifier,
+          };
         }
+      } else if (BitloopsPrimTypeIdentifiers.isStandardValueType(type)) {
+        const result = BitloopsPrimTypeIdentifiers.standardVOToPrimitiveType(type);
+        primitivesValues[identifier] = {
+          primitiveValue: result.primitive,
+          identifier: result.type,
+        };
       }
     });
     return primitivesValues;

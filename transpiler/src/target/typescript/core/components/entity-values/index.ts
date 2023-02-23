@@ -31,7 +31,7 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
-import { StringUtils, TypeUtils } from '../../../../../utils/index.js';
+import { TypeUtils } from '../../../../../utils/index.js';
 import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 
 const entityMethods = (
@@ -109,6 +109,7 @@ const getEntityPrimitivesObject = (
 
   const propsNode = model.getPropsNodeOfEntity(entityNode);
   const fieldPrimitives = propsNode.getFieldsPrimitives(model);
+  console.log('fieldPrimitives', fieldPrimitives);
   return fieldPrimitives;
 };
 
@@ -126,7 +127,7 @@ const buildPrimitivesTypeValue = (
   let result = '{\n';
 
   for (const key in primitivesObject) {
-    const type = primitivesObject[key];
+    const type = primitivesObject[key].primitiveValue ?? primitivesObject[key];
     if (TypeUtils.hasObjectType(type)) {
       result += `${key}: ${buildPrimitivesTypeValue(type, entityName)};\n`;
     } else {
@@ -152,16 +153,18 @@ const generateToPrimitives = (
 
 const buildToPrimitives = (primitivesObject: Record<string, any>, keyToAppend = ''): string => {
   let result = '';
-  for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+  for (const [primitivesKey, value] of Object.entries(primitivesObject)) {
     if (primitivesKey === 'id') {
       result += 'id: this.id.toString(),';
     } else {
+      const primitivesValue = value.primitiveValue ?? value;
       if (TypeUtils.hasObjectType(primitivesValue)) {
         result += `${primitivesKey}: {\n`;
         for (const key in primitivesValue) {
-          if (TypeUtils.hasObjectType(primitivesValue[key])) {
+          const voProperty = primitivesValue[key].primitiveValue;
+          if (TypeUtils.hasObjectType(voProperty)) {
             const updatedKey = `${primitivesKey}.${key}`;
-            result += buildToPrimitives({ [key]: primitivesValue[key] }, updatedKey);
+            result += buildToPrimitives({ [key]: voProperty }, updatedKey);
           } else {
             if (keyToAppend.length > 0) {
               result += `${key}: this.props.${keyToAppend}.${key},`;
@@ -194,7 +197,6 @@ const generateFromPrimitives = (
   const propsName = `${entityName}Props`;
   let result = `public static fromPrimitives(data: ${typeName}): ${entityName} {`;
   result += `const ${propsName} = {`;
-  console.log('primitivesObject', primitivesObject);
   result += buildFromPrimitives(primitivesObject);
   result += '};\n';
   result += `return new ${entityName}(${propsName});\n`;
@@ -203,20 +205,27 @@ const generateFromPrimitives = (
   return result;
 };
 
+const getIdentifierFromNestedType = (key: Record<string, any>): string => {
+  const { identifier } = Object.values(key)[0];
+  return identifier;
+};
+
 const buildFromPrimitives = (primitivesObject: Record<string, any>, keyToAppend = ''): string => {
   let result = '';
-  for (const [primitivesKey, primitivesValue] of Object.entries(primitivesObject)) {
+  for (const [primitivesKey, value] of Object.entries(primitivesObject)) {
     if (primitivesKey === 'id') {
       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
     } else {
+      const primitivesValue = value.primitiveValue ?? value;
       if (TypeUtils.hasObjectType(primitivesValue)) {
-        const valueObjectName = StringUtils.upperCaseFirstLetter(`${primitivesKey}VO`);
+        const valueObjectName = getIdentifierFromNestedType(primitivesValue);
 
         let voString = `${valueObjectName}.create({\n`;
         for (const key in primitivesValue) {
-          if (TypeUtils.hasObjectType(primitivesValue[key])) {
+          const voProperty = primitivesValue[key].primitiveValue;
+          if (TypeUtils.hasObjectType(voProperty)) {
             const updatedKey = `${primitivesKey}.${key}`;
-            voString += buildFromPrimitives({ [key]: primitivesValue[key] }, updatedKey);
+            voString += buildFromPrimitives({ [key]: voProperty }, updatedKey);
           } else {
             if (keyToAppend.length > 0) {
               voString += `${key}: data.${keyToAppend}.${key},`;

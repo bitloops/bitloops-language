@@ -80,6 +80,21 @@ export class BitloopsPrimTypeIdentifiers {
     }
   };
 
+  static standardVOToPrimitiveType = (
+    type: TStandardValueType,
+  ): { type?: string; primitive: string } => {
+    const standardVOType = type.standardValueType.standardVOType;
+    switch (standardVOType) {
+      case 'CurrencyVO':
+        return {
+          type: 'Domain.StandardVO.Currency.Value',
+          primitive: 'string',
+        };
+      default:
+        return { primitive: 'string' };
+    }
+  };
+
   static isBitloopsPrimitive(
     primaryType: TBitloopsPrimaryTypeValues,
   ): primaryType is TBitloopsPrimitivesObject {
