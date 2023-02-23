@@ -50,6 +50,8 @@ import {
   ControllerResolverKey,
   GraphQLServerOptionsKey,
   evaluationFieldsKey,
+  TConfigBusesInvocation,
+  configBusesInvocationKey,
 } from '../../../types.js';
 
 import { TBoundedContexts } from '../../../ast/core/types.js';
@@ -80,9 +82,16 @@ interface ISetup {
   generateStartupFile(
     allServers: TRestAndGraphQLServers,
     reposData: TRepoConnectionDefinition[],
+    eventBusConfig: TConfigBusesInvocation,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput;
+
+  generateAppConfigFile(
+    busesConfig: TConfigBusesInvocation | null,
+    boundedContexts: string[],
+    license?: string,
+  ): TSetupOutput | null;
   generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[];
   generateServerRouters(routerDefinitions: TRouterDefinition[]): TSetupOutput[];
   generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
@@ -640,28 +649,84 @@ export { routers };
   generateStartupFile(
     servers: TRestAndGraphQLServers,
     reposData: TRepoConnectionDefinition[],
+    eventBusConfig: TConfigBusesInvocation | null,
     setupTypeMapper: Record<string, string>,
     license?: string,
   ): TSetupOutput {
-    const imports = [];
+    let imports = '';
+    if (eventBusConfig) {
+      imports += `import { Container } from '@bitloops/bl-boilerplate-core';
+import { appConfig } from './config';
+`;
+    }
+    const dynamicAwaitImports = [];
     for (const serverType of Object.keys(servers)) {
       for (let i = 0; i < servers[serverType].serverInstances.length; i++) {
         const filePath = `${setupTypeMapper[`${serverType}.Server`]}app${i}${
           esmEnabled ? '.js' : ''
         }`;
-        imports.push(`await import('..${filePath}${esmEnabled ? '.js' : ''}');`);
+        dynamicAwaitImports.push(`await import('..${filePath}${esmEnabled ? '.js' : ''}');`);
       }
     }
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
-    imports.push(...dbConnections);
+    dynamicAwaitImports.push(...dbConnections);
     // TODO check if map here is needed
     const body = `(async () => {
-  ${imports.map((i) => i).join('\n  ')}
+      ${eventBusConfig ? 'await Container.initializeServices(appConfig);' : ''}
+  ${dynamicAwaitImports.map((i) => i).join('\n  ')}
 })();
 `;
     return {
       fileId: 'index.ts',
       fileType: 'startup',
+      content: (license || '') + imports + body,
+    };
+  }
+
+  generateAppConfigFile(
+    busesConfig: TConfigBusesInvocation | null,
+    boundedContexts: string[],
+    license?: string,
+  ): TSetupOutput | null {
+    if (!busesConfig) {
+      return null;
+    }
+    let contextIdMappings = '';
+    const { commandBus, eventBus, integrationEventBus, queryBus } =
+      busesConfig[configBusesInvocationKey];
+    const commandBusType = commandBus === 'InProcess' ? 'InProcess' : 'External';
+    const eventBusType = eventBus === 'InProcess' ? 'InProcess' : 'External';
+    const integrationEventBusType = integrationEventBus === 'InProcess' ? 'InProcess' : 'External';
+    const queryBusType = queryBus === 'InProcess' ? 'InProcess' : 'External';
+
+    for (const boundedContext of boundedContexts) {
+      contextIdMappings += `
+      ${boundedContext}: {
+        COMMAND_BUS: Constants.CONTEXT_TYPES.${commandBusType},
+        EVENT_BUS: Constants.CONTEXT_TYPES.${eventBusType},
+        INTEGRATION_EVENT_BUS: Constants.CONTEXT_TYPES.${integrationEventBusType},
+        QUERY_BUS: Constants.CONTEXT_TYPES.${queryBusType},
+      },`;
+    }
+
+    const body = `
+    import { Constants } from '@bitloops/bl-boilerplate-core';
+import { CONTEXT_ID as BANKING_CONTEXT_ID } from '../bounded-contexts/banking/banking/config';
+import { CONTEXT_ID as MARKETING_CONTEXT_ID } from '../bounded-contexts/marketing/marketing/config';
+
+const appConfig: Constants.ApplicationConfig = {
+  //NOTES:
+  //- Command and Query bus need to be the same because message bus needed for response topic is figured out by them
+  // -Integration and Command need to be the same because integration is subscribed to a message bus for the response of the command
+  CONTEXT_IDs_MAPPINGS: {
+    ${contextIdMappings}
+  },
+};
+
+export {  appConfig };`;
+    return {
+      fileId: 'index.ts',
+      fileType: 'config',
       content: (license || '') + body,
     };
   }

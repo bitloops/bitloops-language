@@ -32,6 +32,7 @@ import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import {
+  TConfigBusesInvocation,
   TPackageConcretion,
   TRepoConnectionDefinition,
   TRouterDefinition,
@@ -51,12 +52,14 @@ const setupMapper = {
   OUTPUT_ROUTERS_FOLDER: 'routers/',
   OUTPUT_SHARED_FOLDER: 'src/shared/',
   OUTPUT_SRC_FOLDER: 'src/',
+  OUTPUT_CONFIG_FOLDER: 'config/',
 }; // TODO optionally get this from the config
 
 const setupTypeMapper = {
   SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
   BOUNDED_CONTEXTS: 'bounded-contexts',
   startup: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
+  config: `/${setupMapper.OUTPUT_CONFIG_FOLDER}`,
   DI: '',
   'package.json': '/./',
   Config: '/./',
@@ -125,6 +128,9 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         BitloopsTypesMapping.TRouterDefinition,
       );
       const elementsPerModule: TSetupElementsPerModule = groupSetupElementsPerModule(setupTree);
+      const eventBusConfig = setupTree.getRootChildrenNodesValueByType<TConfigBusesInvocation>(
+        BitloopsTypesMapping.TConfigBusesInvocationNode,
+      )?.[0];
 
       // Step 1. Generate routes files
       const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
@@ -166,6 +172,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       const startupFile = setupGenerator.generateStartupFile(
         allServers,
         repoConnectionDefinitions,
+        eventBusConfig ?? null,
         setupTypeMapper,
         license,
       );
@@ -207,7 +214,12 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         pathsAndContents.push(rule);
       });
 
-      // Step 10. Write files
+      // Step 10. Generate AppConfig(Buses)
+      const boundedContexts = Object.keys(bitloopsModel);
+      const appConfig = setupGenerator.generateAppConfigFile(eventBusConfig, boundedContexts);
+      if (appConfig !== null) pathsAndContents.push(appConfig);
+
+      // Step 11. Write files
       pathsAndContents.forEach((pathAndContent) => {
         const { fileType, content, fileId } = pathAndContent;
         if (setupTypeMapper[fileType] === undefined)
