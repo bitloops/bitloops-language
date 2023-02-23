@@ -1,7 +1,7 @@
-import { TLanguage } from '../../../../../types.js';
-import { LanguageNode } from '../../nodes/setup/LanguageNode.js';
-import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { IBuilder } from '../IBuilder.js';
+import { TLanguage } from '../../../../../../../types.js';
+import { LanguageNode } from '../../../../nodes/setup/config/language/LanguageNode.js';
+import { TNodeMetadata } from '../../../../nodes/IntermediateASTNode.js';
+import { IBuilder } from '../../../IBuilder.js';
 
 export class LanguageNodeBuilder implements IBuilder<LanguageNode> {
   private languageNode: LanguageNode;

@@ -682,6 +682,17 @@ export type TConfigInvocation = {
   };
 };
 
+export type TBusType = 'InProcess' | 'External';
+export const configBusesInvocationKey = 'busesConfig';
+export type TConfigBusesInvocation = {
+  [configBusesInvocationKey]: {
+    eventBus: TBusType;
+    integrationEventBus: TBusType;
+    commandBus: TBusType;
+    queryBus: TBusType;
+  };
+};
+
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
 export type TPackageAdapterIdentifier = string;
 

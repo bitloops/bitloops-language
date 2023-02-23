@@ -926,8 +926,36 @@ languageSetterMethod
     ;
 
 configInvocation
-    : Config Dot languageSetterMethod 
+    : Config Dot languageSetterMethod                                                       # SetLanguageConfig 
+    | Config Dot SetBuses OpenParen OpenBrace busesConfig CloseBrace CloseParen SemiColon?  # SetBusesConfig
     ;
+
+busesConfig
+    : busConfig (Comma busConfig)* Comma?
+    ;
+
+busConfig
+    : busIdentifier Colon MessageBus Dot busType
+    ;
+
+busIdentifier
+    : CommandBus
+    | EventBus
+    | IntegrationEventBus
+    | QueryBus
+    ;
+
+busType
+    : InProcess
+    | External
+    ;
+
+// Config.setBuses({
+//     COMMAND_BUS: MessageBus.External,//Here it should be Kafka, Nats etc MessageBus.External.Nats
+//     EVENT_BUS: MessageBus.InProcess,
+//     INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+//     QUERY_BUS: MessageBus.InProcess,
+// })
 
 restRouter
     : RESTRouter
@@ -1124,4 +1152,5 @@ setupStatement
     | repoConnectionDefinition # repoConnectionDefinitionStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
+
     ;

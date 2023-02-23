@@ -322,7 +322,7 @@ QueryHandlerIdentifier:         UpperCaseStart IdentifierPart* QueryHandler;
 IntegrationEventIdentifier:     UpperCaseStart IdentifierPart* IntegrationEvent;
 DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandler;
 IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
-SetLanguage:                    'setLanguage';
+SetBuses:                       'setBuses';
 TypeScript:                     'TypeScript';
 Java:                           'Java';
 FastifyServer:                  'REST.Fastify';
@@ -331,6 +331,16 @@ GraphQLServerType:              'GraphQL';
 RESTRouter:                     'RESTRouter';
 GraphQLServer:                  'GraphQLServer';
 RESTServer:                     'RESTServer';
+
+// Buses
+SetLanguage:                    'setLanguage';
+CommandBus:                     'COMMAND_BUS';
+EventBus:                       'EVENT_BUS';
+IntegrationEventBus:            'INTEGRATION_EVENT_BUS';
+QueryBus:                       'QUERY_BUS';
+MessageBus:                     'MessageBus';
+External:                       'External';
+InProcess:                      'InProcess';
 
 EnvPrefix:                      'Env';
 EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
