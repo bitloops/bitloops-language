@@ -14,12 +14,22 @@ export class DependencyInjectionsBuilder implements IBuilder<TDependencyInjectio
     type: TDependencyInjectionType;
     identifier: TIdentifier;
     argumentList: TArgumentList;
+    boundedContext: string;
+    module: string;
   }): DependencyInjectionsBuilder {
-    const { type, identifier, argumentList } = params;
+    const { type, identifier, argumentList, boundedContext, module } = params;
     const dependencyInjection: TDependencyInjection = {
       dependencyInjection: {
         type,
         identifier,
+        boundedContextModule: {
+          boundedContextName: {
+            wordsWithSpaces: boundedContext,
+          },
+          moduleName: {
+            wordsWithSpaces: module,
+          },
+        },
         ...argumentList,
       },
     };

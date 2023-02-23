@@ -707,7 +707,8 @@ export type TDependencyInjection = {
   dependencyInjection: {
     type: TDependencyInjectionType;
     identifier: TIdentifier;
-  } & TArgumentList;
+  } & TArgumentList &
+    TBoundedContextModule;
 };
 
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';

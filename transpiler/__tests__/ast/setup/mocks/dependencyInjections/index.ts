@@ -2,12 +2,6 @@ import { FileUtil } from '../../../../../src/utils/file.js';
 import { ArgumentListBuilderDirector } from '../../../core/builders/argumentListBuilderDirector.js';
 import { DependencyInjectionsBuilder } from '../../builders/dependencyInjectionsBuilder.js';
 
-// DI {
-//   CreateBankingCommandHandler(bankingWriteRepo, emailService);
-//   GetAllBankingsQueryHandler(bankingReadRepo);
-//   UpdateBankingCommandHandler();
-// }
-
 export const VALID_DEPENDENCY_INJECTIONS_INVOCATIONS = [
   {
     inputBLString: FileUtil.readFileString(
@@ -23,16 +17,22 @@ export const VALID_DEPENDENCY_INJECTIONS_INVOCATIONS = [
           'bankingWriteRepo',
           'emailService',
         ]),
+        boundedContext: 'Banking',
+        module: 'Banking',
       })
       .withDependencyInjection({
         type: 'QueryHandler',
         identifier: 'GetAllBankingsQueryHandler',
         argumentList: new ArgumentListBuilderDirector().buildArgumentList(['bankingReadRepo']),
+        boundedContext: 'Banking',
+        module: 'Banking',
       })
       .withDependencyInjection({
         type: 'CommandHandler',
         identifier: 'UpdateBankingCommandHandler',
         argumentList: new ArgumentListBuilderDirector().buildArgumentList([]),
+        boundedContext: 'Banking',
+        module: 'Banking',
       })
       .build(),
   },
@@ -50,21 +50,29 @@ export const VALID_DEPENDENCY_INJECTIONS_INVOCATIONS = [
           'bankingWriteRepo',
           'emailService',
         ]),
+        boundedContext: 'Banking',
+        module: 'Banking',
       })
       .withDependencyInjection({
         type: 'QueryHandler',
         identifier: 'GetAllBankingsQueryHandler',
         argumentList: new ArgumentListBuilderDirector().buildArgumentList(['bankingReadRepo']),
+        boundedContext: 'Banking',
+        module: 'Banking',
       })
       .withDependencyInjection({
         type: 'EventHandler',
         identifier: 'UserCreatedDomainEventHandler',
         argumentList: new ArgumentListBuilderDirector().buildArgumentList([]),
+        boundedContext: 'Marketing',
+        module: 'Marketing',
       })
       .withDependencyInjection({
         type: 'IntegrationEventHandler',
         identifier: 'UserCreatedIntegrationEventHandler',
         argumentList: new ArgumentListBuilderDirector().buildArgumentList([]),
+        boundedContext: 'Marketing',
+        module: 'Marketing',
       })
       .build(),
   },

@@ -1015,10 +1015,10 @@ dependencyInjectionList
     ;
 
 dependencyInjection
-    : commandHandlerIdentifier methodArguments              # CommandHandlerDependencyInjection
-    | queryHandlerIdentifier methodArguments                # QueryHandlerDependencyInjection
-    | domainEventHandlerIdentifier methodArguments          # DomainEventHandlerDependencyInjection
-    | integrationEventHandlerIdentifier methodArguments     # IntegrationEventHandlerDependencyInjection
+    : boundedContextModuleDeclaration commandHandlerIdentifier methodArguments              # CommandHandlerDependencyInjection
+    | boundedContextModuleDeclaration queryHandlerIdentifier methodArguments                # QueryHandlerDependencyInjection
+    | boundedContextModuleDeclaration domainEventHandlerIdentifier methodArguments          # DomainEventHandlerDependencyInjection
+    | boundedContextModuleDeclaration integrationEventHandlerIdentifier methodArguments     # IntegrationEventHandlerDependencyInjection
     ;
 
 routerDefinition
@@ -1168,5 +1168,4 @@ setupStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
     | dependencyInjections # dependencyInjectionsStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
-
     ;

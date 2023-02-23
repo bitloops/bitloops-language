@@ -4,15 +4,24 @@ import { DependencyInjectionNode } from '../../../nodes/setup/dependency-injecti
 import { IdentifierNode } from '../../../nodes/identifier/IdentifierNode.js';
 import { ArgumentListNode } from '../../../nodes/ArgumentList/ArgumentListNode.js';
 import { DependencyInjectionClassType } from '../../../nodes/setup/dependency-injections/DependencyInjectionClassType.js';
+import { BoundedContextModuleNode } from '../../../nodes/setup/BoundedContextModuleNode.js';
 
 export class DependencyInjectionNodeBuilder implements IBuilder<DependencyInjectionNode> {
   private dependencyInjectionNode: DependencyInjectionNode;
+  private bcModuleNode: BoundedContextModuleNode;
   private type: DependencyInjectionClassType;
   private identifier: IdentifierNode;
   private argumentListNode: ArgumentListNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.dependencyInjectionNode = new DependencyInjectionNode(metadata);
+  }
+
+  public withBoundedContextModule(
+    bcModuleNode: BoundedContextModuleNode,
+  ): DependencyInjectionNodeBuilder {
+    this.bcModuleNode = bcModuleNode;
+    return this;
   }
 
   public withType(type: DependencyInjectionClassType): DependencyInjectionNodeBuilder {
@@ -31,6 +40,7 @@ export class DependencyInjectionNodeBuilder implements IBuilder<DependencyInject
   }
 
   public build(): DependencyInjectionNode {
+    this.dependencyInjectionNode.addChild(this.bcModuleNode);
     this.dependencyInjectionNode.addChild(this.type);
     this.dependencyInjectionNode.addChild(this.identifier);
     this.dependencyInjectionNode.addChild(this.argumentListNode);

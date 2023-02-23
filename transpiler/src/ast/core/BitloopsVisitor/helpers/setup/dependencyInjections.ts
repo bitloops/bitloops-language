@@ -25,6 +25,7 @@ import { DependencyInjectionNodeBuilder } from '../../../intermediate-ast/builde
 import { DependencyInjectionsNodeBuilder } from '../../../intermediate-ast/builders/setup/dependency-injections/DependencyInjectionsNodeBuilder.js';
 import { DomainEventHandlerIdentifierNode } from '../../../intermediate-ast/nodes/DomainEventHandler/DomainEventHandlerIdentifierNode.js';
 import { IntegrationEventHandlerIdentifierNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
+import { BoundedContextModuleNode } from '../../../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
 import { DependencyInjectionNode } from '../../../intermediate-ast/nodes/setup/dependency-injections/DependencyInjectionNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
@@ -59,7 +60,13 @@ export const commandHandlerDependencyInjectionVisitor = (
   const type = new DependencyInjectionClassTypeBuilder().withType('CommandHandler').build();
   const methodArguments = thisVisitor.visit(ctx.methodArguments());
   const identifier = thisVisitor.visit(ctx.commandHandlerIdentifier());
+
+  const bcModuleNode: BoundedContextModuleNode = thisVisitor.visit(
+    ctx.boundedContextModuleDeclaration(),
+  );
+
   return new DependencyInjectionNodeBuilder(metadata)
+    .withBoundedContextModule(bcModuleNode)
     .withType(type)
     .withIdentifier(identifier)
     .withArguments(methodArguments)
@@ -74,7 +81,12 @@ export const queryHandlerDependencyInjectionVisitor = (
   const type = new DependencyInjectionClassTypeBuilder().withType('QueryHandler').build();
   const methodArguments = thisVisitor.visit(ctx.methodArguments());
   const identifier = thisVisitor.visit(ctx.queryHandlerIdentifier());
+  const bcModuleNode: BoundedContextModuleNode = thisVisitor.visit(
+    ctx.boundedContextModuleDeclaration(),
+  );
+
   return new DependencyInjectionNodeBuilder(metadata)
+    .withBoundedContextModule(bcModuleNode)
     .withType(type)
     .withIdentifier(identifier)
     .withArguments(methodArguments)
@@ -95,7 +107,11 @@ export const domainEventHandlerDependencyInjectionVisitor = (
     .withName(domainEventIdentifier.getIdentifierName())
     .build();
 
+  const bcModuleNode: BoundedContextModuleNode = thisVisitor.visit(
+    ctx.boundedContextModuleDeclaration(),
+  );
   return new DependencyInjectionNodeBuilder(metadata)
+    .withBoundedContextModule(bcModuleNode)
     .withType(type)
     .withIdentifier(identifier)
     .withArguments(methodArguments)
@@ -118,7 +134,12 @@ export const integrationEventHandlerDependencyInjectionVisitor = (
   const identifier = new IdentifierNodeBuilder(eventHandlerIdentifier.getMetadata())
     .withName(eventHandlerIdentifier.getIdentifierName())
     .build();
+
+  const bcModuleNode: BoundedContextModuleNode = thisVisitor.visit(
+    ctx.boundedContextModuleDeclaration(),
+  );
   return new DependencyInjectionNodeBuilder(metadata)
+    .withBoundedContextModule(bcModuleNode)
     .withType(type)
     .withIdentifier(identifier)
     .withArguments(methodArguments)
