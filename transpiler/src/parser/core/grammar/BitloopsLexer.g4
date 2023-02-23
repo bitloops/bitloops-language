@@ -342,6 +342,8 @@ MessageBus:                     'MessageBus';
 External:                       'External';
 InProcess:                      'InProcess';
 
+DI:                             'DI';
+
 EnvPrefix:                      'Env';
 EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
 

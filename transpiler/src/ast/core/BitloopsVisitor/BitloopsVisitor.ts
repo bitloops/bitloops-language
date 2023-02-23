@@ -307,6 +307,14 @@ import {
   busesConfigInvocationVisitor,
   busesConfigVisitor,
 } from './helpers/setup/config/busesConfigInvocation.js';
+import {
+  commandHandlerDependencyInjectionVisitor,
+  dependencyInjectionListVisitor,
+  dependencyInjectionsVisitor,
+  domainEventHandlerDependencyInjectionVisitor,
+  integrationEventHandlerDependencyInjectionVisitor,
+  queryHandlerDependencyInjectionVisitor,
+} from './helpers/setup/dependencyInjections.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1316,6 +1324,38 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitBusConfig(ctx: BitloopsParser.BusConfigContext): any {
     return busConfigVisitor(this, ctx);
+  }
+
+  visitDependencyInjections(ctx: BitloopsParser.DependencyInjectionsContext): void {
+    dependencyInjectionsVisitor(this, ctx);
+  }
+
+  visitDependencyInjectionList(ctx: BitloopsParser.DependencyInjectionListContext): any {
+    return dependencyInjectionListVisitor(this, ctx);
+  }
+
+  visitCommandHandlerDependencyInjection(
+    ctx: BitloopsParser.CommandHandlerDependencyInjectionContext,
+  ): any {
+    return commandHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitQueryHandlerDependencyInjection(
+    ctx: BitloopsParser.QueryHandlerDependencyInjectionContext,
+  ): any {
+    return queryHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerDependencyInjection(
+    ctx: BitloopsParser.DomainEventHandlerDependencyInjectionContext,
+  ): any {
+    return domainEventHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerDependencyInjection(
+    ctx: BitloopsParser.IntegrationEventHandlerDependencyInjectionContext,
+  ): any {
+    return integrationEventHandlerDependencyInjectionVisitor(this, ctx);
   }
 
   // visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {

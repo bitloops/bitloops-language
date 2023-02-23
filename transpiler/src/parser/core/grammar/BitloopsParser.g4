@@ -1006,6 +1006,21 @@ useCaseDefinition
     : Const identifier Assign useCaseExpression SemiColon?
     ;
 
+dependencyInjections
+    : DI OpenBrace dependencyInjectionList CloseBrace
+    ;
+
+dependencyInjectionList
+    : dependencyInjection (SemiColon dependencyInjection)* SemiColon?
+    ;
+
+dependencyInjection
+    : commandHandlerIdentifier methodArguments              # CommandHandlerDependencyInjection
+    | queryHandlerIdentifier methodArguments                # QueryHandlerDependencyInjection
+    | domainEventHandlerIdentifier methodArguments          # DomainEventHandlerDependencyInjection
+    | integrationEventHandlerIdentifier methodArguments     # IntegrationEventHandlerDependencyInjection
+    ;
+
 routerDefinition
     : Const identifier Assign routerExpression SemiColon?
     ;
@@ -1151,6 +1166,7 @@ setupStatement
     | serverDeclaration  # serverDeclarationStatement
     | repoConnectionDefinition # repoConnectionDefinitionStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
+    | dependencyInjections # dependencyInjectionsStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
 
     ;

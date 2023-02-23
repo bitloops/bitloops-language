@@ -693,6 +693,23 @@ export type TConfigBusesInvocation = {
   };
 };
 
+export const dependencyInjectionKey = 'dependencyInjections';
+export type TDependencyInjections = {
+  [dependencyInjectionKey]: TDependencyInjection[];
+};
+
+export type TDependencyInjectionType =
+  | 'CommandHandler'
+  | 'QueryHandler'
+  | 'EventHandler'
+  | 'IntegrationEventHandler';
+export type TDependencyInjection = {
+  dependencyInjection: {
+    type: TDependencyInjectionType;
+    identifier: TIdentifier;
+  } & TArgumentList;
+};
+
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
 export type TPackageAdapterIdentifier = string;
 
