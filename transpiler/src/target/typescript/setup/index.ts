@@ -33,18 +33,13 @@ import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
 import {
   TPackageConcretion,
-  TSetupRepoAdapterDefinition,
   TRepoConnectionDefinition,
   TRouterDefinition,
-  TUseCaseDefinition,
-  TGraphQLServerInstance,
 } from '../../../types.js';
 import { groupServers } from './servers/index.js';
-import { DependencyInjectionsGenerator } from './diHandler.js';
-import { UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
-import { ControllerHelpers } from './controller/index.js';
-import { TSetupElementsPerBoundedContext } from './definitions.js';
-import { SetupTypeScriptRepos } from './repos/index.js';
+import { DependencyInjectionsGenerator } from './dependency-injections/diHandler.js';
+import { TSetupElementsPerModule } from './definitions.js';
+import { groupSetupElementsPerModule } from './helpers.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
 
@@ -129,30 +124,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
         BitloopsTypesMapping.TRouterDefinition,
       );
-      const graphQLServerInstances =
-        setupTree.getRootChildrenNodesValueByType<TGraphQLServerInstance>(
-          BitloopsTypesMapping.TGraphQLServerInstance,
-        );
-      const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
-        BitloopsTypesMapping.TUseCaseDefinition,
-      );
-      const repoAdapterDefinitions =
-        setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
-          BitloopsTypesMapping.TSetupRepoAdapterDefinition,
-        );
-
-      const elementsPerBoundedContext: TSetupElementsPerBoundedContext = {
-        useCases:
-          UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions),
-        restControllers:
-          ControllerHelpers.getRESTControllersForEachBoundedContextModule(routerDefinitions),
-        graphQLControllers:
-          ControllerHelpers.getGraphQLControllersForEachBoundedContextModule(
-            graphQLServerInstances,
-          ),
-        repoAdapters:
-          SetupTypeScriptRepos.getRepoAdaptersForEachBoundedContextModule(repoAdapterDefinitions),
-      };
+      const elementsPerModule: TSetupElementsPerModule = groupSetupElementsPerModule(setupTree);
 
       // Step 1. Generate routes files
       const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
@@ -174,7 +146,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
 
       const diGenerator = new DependencyInjectionsGenerator();
       const DIs = diGenerator.generateDIs(
-        elementsPerBoundedContext,
+        elementsPerModule,
         bitloopsModel,
         setupTypeMapper,
         license,
