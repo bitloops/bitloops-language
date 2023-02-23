@@ -41,17 +41,13 @@ import {
   TDomainErrorValue,
   TApplicationErrorValue,
   TDomainRule,
-  TUseCaseDefinition,
   RestServerOptions,
-  TRouterController,
-  TSetupRepoAdapterDefinition,
   TRestServerInstanceRouters,
   TLiteral,
   TGraphQLController,
   GraphQLServerInstanceKey,
   ControllerResolversKey,
   ControllerResolverKey,
-  TControllerResolver,
   GraphQLServerOptionsKey,
   evaluationFieldsKey,
 } from '../../../types.js';
@@ -62,16 +58,11 @@ import { StringUtils } from '../../../utils/index.js';
 import { getRecursivelyFileInDirectory } from '../../../utils/getRecursivelyFileInDirectory.js';
 import { GenerateServerParams } from './definitions.js';
 import { graphQLSetupDataToTargetLanguage } from './graphql/index.js';
-import {
-  getFilePathRelativeToModule,
-  getTargetFileDestination,
-} from '../helpers/getTargetFileDestination.js';
+import { getTargetFileDestination } from '../helpers/getTargetFileDestination.js';
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
 import { modelToTargetLanguage } from '../core/modelToTargetLanguage.js';
 import { TSetupOutput } from './index.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
-import { TUseCase, UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
-import { ControllerHelpers } from './controller/index.js';
 import { isGraphQLServerInstance, isRestServer, TRestAndGraphQLServers } from './servers/index.js';
 import { NodeValueHelpers } from './helpers.js';
 import { RestFastifyGenerator } from './servers/fastify.js';
@@ -95,15 +86,6 @@ interface ISetup {
   generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[];
   generateServerRouters(routerDefinitions: TRouterDefinition[]): TSetupOutput[];
   generateServers(servers: TRestAndGraphQLServers, bitloopsModel: TBoundedContexts): TSetupOutput[];
-  generateDIs(
-    routerDefinitions: TRouterDefinition[],
-    graphQLServerInstances: TGraphQLServerInstance[],
-    useCaseDefinitions: TUseCaseDefinition[],
-    repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
-    bitloopsModel: TBoundedContexts,
-    setupTypeMapper: Record<string, string>,
-    license?: string,
-  ): TSetupOutput[];
   generateRepoConnections(repoConnectionDefinitions: TRepoConnectionDefinition[]): TSetupOutput[];
 
   generatePackageFiles(
@@ -183,205 +165,6 @@ export class SetupTypeScript implements ISetup {
 
   getNodeDevDependencies(): TNodePackages {
     return this.nodeDevDependencies;
-  }
-
-  generateDIs(
-    routerDefinitions: TRouterDefinition[],
-    graphQLServerInstances: TGraphQLServerInstance[],
-    useCaseDefinitions: TUseCaseDefinition[],
-    repoAdapterDefinitions: TSetupRepoAdapterDefinition[],
-    bitloopsModel: TBoundedContexts,
-    setupTypeMapper: Record<string, string>,
-    license?: string,
-  ): TSetupOutput[] {
-    const result: TSetupOutput[] = [];
-    // For each module in each bounded context generate 1 DI file that contains all
-    // the use cases and controllers of that module that are concreted in the setup.bl
-    // TODO Add support for other types of DIs such as repositories, etc.
-    const useCases =
-      UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions);
-    const useCasesLength = Object.keys(useCases).length;
-
-    const controllers =
-      ControllerHelpers.getRESTControllersForEachBoundedContextModule(routerDefinitions);
-    const controllersLength = Object.keys(controllers).length;
-
-    const graphQLControllers =
-      ControllerHelpers.getGraphQLControllersForEachBoundedContextModule(graphQLServerInstances);
-    const graphQLControllersLength = Object.keys(graphQLControllers).length;
-
-    const repoAdaptersLength = repoAdapterDefinitions.length;
-
-    for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
-      for (const moduleName of Object.keys(boundedContext)) {
-        // console.log('module', module);
-        const diFileName = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
-          boundedContextName,
-        )}/${kebabCase(moduleName)}/DI.ts`;
-        let diContent = '';
-        // Gather all imports
-        if (repoAdaptersLength > 0) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIImports(
-            repoAdapterDefinitions,
-            setupTypeMapper,
-          );
-        }
-
-        if (useCasesLength > 0)
-          diContent += this.generateDIUseCaseImports(useCases[boundedContextName][moduleName]);
-
-        if (controllersLength > 0)
-          diContent += this.generateDIControllersImports(
-            controllers[boundedContextName][moduleName],
-          );
-
-        if (graphQLControllersLength > 0) {
-          diContent += this.generateDIGraphQLControllersImports(
-            graphQLControllers[boundedContextName][moduleName],
-          );
-        }
-
-        diContent += '\n';
-        if (repoAdaptersLength > 0) {
-          diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(repoAdapterDefinitions);
-        }
-
-        if (useCasesLength > 0)
-          diContent += this.generateUseCasesDIs(useCases[boundedContextName][moduleName]);
-
-        if (controllersLength > 0)
-          diContent += this.generateControllerDIsAndExports(
-            controllers[boundedContextName][moduleName],
-          );
-
-        if (graphQLControllersLength > 0) {
-          diContent += this.generateGraphQLControllerDIsAndExports(
-            graphQLControllers[boundedContextName][moduleName],
-          );
-        }
-
-        result.push({
-          fileId: diFileName,
-          fileType: 'DI',
-          content: (license || '') + diContent,
-          context: {
-            boundedContextName,
-            moduleName,
-          },
-        });
-      }
-    }
-    return result;
-  }
-
-  private generateDIUseCaseImports(useCases: TUseCase[]): string {
-    let result = '';
-    for (const useCase of useCases) {
-      const { useCaseExpression } = useCase;
-      const { UseCaseIdentifier } = useCaseExpression;
-      // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCase, UseCaseIdentifier);
-      result += `import { ${UseCaseIdentifier} } from './${path}${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
-    }
-    return result;
-  }
-
-  private generateDIControllersImports(controllers: TRouterController[]): string {
-    let result = '';
-    for (const controller of controllers) {
-      const { routerController } = controller;
-      const { RESTControllerIdentifier } = routerController;
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.Controller,
-        RESTControllerIdentifier,
-      );
-      result += `import { ${RESTControllerIdentifier} } from './${path}${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
-    }
-    return result;
-  }
-
-  private generateDIGraphQLControllersImports(controllers: TControllerResolver[]): string {
-    let result = '';
-    for (const controller of controllers) {
-      const resolver = controller[ControllerResolverKey];
-      const { graphQLControllerIdentifier } = resolver;
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.Controller,
-        graphQLControllerIdentifier,
-      );
-      result += `import { ${graphQLControllerIdentifier} } from './${path}${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
-    }
-    return result;
-  }
-
-  private generateUseCasesDIs(useCases: TUseCase[]): string {
-    let result = '';
-    for (const useCase of useCases) {
-      const { useCaseExpression, instanceName } = useCase;
-      const { UseCaseIdentifier, argumentList } = useCaseExpression;
-      const useCaseDependencies = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TArgumentList,
-        value: { argumentList },
-      });
-      result += `const ${instanceName} = new ${UseCaseIdentifier}${useCaseDependencies.output};\n`;
-    }
-    return result;
-  }
-
-  private generateControllerDIsAndExports(controllers: TRouterController[]): string {
-    let controllerDIContent = '';
-    let exportsString = 'export {';
-    const controllerInstanceNames = [];
-    for (const controller of controllers) {
-      const { routerController } = controller;
-      const { RESTControllerIdentifier, controllerInstanceName, argumentList } = routerController;
-
-      const controllerDependencies = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TArgumentList,
-        value: { argumentList },
-      });
-
-      controllerDIContent += `const ${controllerInstanceName} = new ${RESTControllerIdentifier}${controllerDependencies.output};\n`;
-      controllerInstanceNames.push(controllerInstanceName);
-    }
-    for (const controllerName of controllerInstanceNames) {
-      exportsString += `${controllerName}, `;
-    }
-    exportsString += '};\n';
-
-    return controllerDIContent + '\n' + exportsString;
-  }
-
-  private generateGraphQLControllerDIsAndExports(
-    controllerResolvers: TControllerResolver[],
-  ): string {
-    let controllerDIContent = '';
-    let exportsString = 'export {';
-    const controllerInstanceNames = [];
-    for (const controllerResolverInstance of controllerResolvers) {
-      const controllerResolver = controllerResolverInstance[ControllerResolverKey];
-      const { graphQLControllerIdentifier, controllerInstanceName, argumentList } =
-        controllerResolver;
-
-      const controllerDependencies = modelToTargetLanguage({
-        type: BitloopsTypesMapping.TArgumentList,
-        value: { argumentList },
-      });
-
-      controllerDIContent += `const ${controllerInstanceName} = new ${graphQLControllerIdentifier}${controllerDependencies.output};\n`;
-      controllerInstanceNames.push(controllerInstanceName);
-    }
-    for (const controllerName of controllerInstanceNames) {
-      exportsString += `${controllerName}, `;
-    }
-    exportsString += '};\n';
-    return controllerDIContent + '\n' + exportsString;
   }
 
   private findPackageAdapterFileContent(

@@ -40,6 +40,11 @@ import {
   TGraphQLServerInstance,
 } from '../../../types.js';
 import { groupServers } from './servers/index.js';
+import { DependencyInjectionsGenerator } from './diHandler.js';
+import { UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
+import { ControllerHelpers } from './controller/index.js';
+import { TSetupElementsPerBoundedContext } from './definitions.js';
+import { SetupTypeScriptRepos } from './repos/index.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
 
@@ -128,6 +133,26 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         setupTree.getRootChildrenNodesValueByType<TGraphQLServerInstance>(
           BitloopsTypesMapping.TGraphQLServerInstance,
         );
+      const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
+        BitloopsTypesMapping.TUseCaseDefinition,
+      );
+      const repoAdapterDefinitions =
+        setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
+          BitloopsTypesMapping.TSetupRepoAdapterDefinition,
+        );
+
+      const elementsPerBoundedContext: TSetupElementsPerBoundedContext = {
+        useCases:
+          UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions),
+        restControllers:
+          ControllerHelpers.getRESTControllersForEachBoundedContextModule(routerDefinitions),
+        graphQLControllers:
+          ControllerHelpers.getGraphQLControllersForEachBoundedContextModule(
+            graphQLServerInstances,
+          ),
+        repoAdapters:
+          SetupTypeScriptRepos.getRepoAdaptersForEachBoundedContextModule(repoAdapterDefinitions),
+      };
 
       // Step 1. Generate routes files
       const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
@@ -146,27 +171,16 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       });
 
       // Step 3. Generate DIs
-      const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
-        BitloopsTypesMapping.TUseCaseDefinition,
-      );
-      const repoAdapterDefinitions =
-        setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
-          BitloopsTypesMapping.TSetupRepoAdapterDefinition,
-        );
-      const controllerDIs = setupGenerator.generateDIs(
-        routerDefinitions,
-        graphQLServerInstances,
-        useCaseDefinitions,
-        repoAdapterDefinitions,
+
+      const diGenerator = new DependencyInjectionsGenerator();
+      const DIs = diGenerator.generateDIs(
+        elementsPerBoundedContext,
         bitloopsModel,
         setupTypeMapper,
         license,
       );
-      // console.log('controllerDIs:', controllerDIs);
+      pathsAndContents.push(...DIs);
       // console.log('--------------------------------');
-      controllerDIs.forEach((controllerDI) => {
-        pathsAndContents.push(controllerDI);
-      });
 
       // Step 4. Setup server file
       const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);
