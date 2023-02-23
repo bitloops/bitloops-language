@@ -42,7 +42,9 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
       completed: data.completed,
       title: TitleVO.create({
         title: data.title.title,
-        language: LanguageVO.create({ code: data.title.language.code }).value as LanguageVO,
+        language: LanguageVO.create({
+          code: data.title.language.code,
+        }).value as LanguageVO,
       }).value as TitleVO,
     };
     return new TodoEntity(TodoEntityProps);
