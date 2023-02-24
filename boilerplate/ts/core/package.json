@@ -39,11 +39,11 @@
   "license": "GPL-3.0",
   "dependencies": {
     "class-transformer": "^0.5.1",
-    "nats": "^2.10.2",
+    "nats": "^2.12.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",
