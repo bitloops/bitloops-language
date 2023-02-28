@@ -19,136 +19,136 @@
  */
 import { FileUtil } from '../../../../src/utils/file.js';
 export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
-  // {
-  //   description: 'Entity not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/entityNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'entityNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Entity TodoEntity not found: from 1:28 to 1:38 of file entityNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Rule not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/ruleNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'ruleNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'DomainRule TitleOutOfBoundsRule not found: from 12:18 to 12:38 of file ruleNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Domain error not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/domainErrorNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'domainErrorNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Error DomainErrors.TitleOutOfBoundsError not found: from 5:49 to 5:83 of file domainErrorNotFound.bl',
-  //     'Error DomainErrors.TitleOutOfBoundsError not found: from 10:60 to 10:94 of file domainErrorNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Props not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/propsNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'propsNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Type TodoProps not found: from 22:26 to 22:35 of file propsNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Application error not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/applicationErrorNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'applicationErrorNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Error ApplicationErrors.ToDoNotFoundError not found: from 46:14 to 46:49 of file applicationErrorNotFound.bl',
-  //     'Error ApplicationErrors.ToDoNotFoundError not found: from 40:65 to 40:100 of file applicationErrorNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'DTO not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/dtoNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'dtoNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Type DeleteTodoRequestDTO not found: from 42:24 to 42:44 of file dtoNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Repo port not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/repoPortNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'repoPortNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Type TodoWriteRepoPort not found: from 43:38 to 43:55 of file repoPortNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Read model not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/readModelNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'readModelNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Type TodoReadModel not found: from 2:21 to 2:34 of file readModelNotFound.bl',
-  //     'Read Model TodoReadModel not found: from 9:27 to 9:40 of file readModelNotFound.bl',
-  //     'Type GetAllTodosResponseDTO not found: from 14:22 to 14:44 of file readModelNotFound.bl',
-  //   ],
-  // },
-  // {
-  //   description: 'Use case not found',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/useCaseNotFound.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   fileIdCore: 'useCaseNotFound.bl',
-  //   fileIdSetup: 'setup.bl',
-  //   expectedErrorMessages: [
-  //     'Type GetAllTodosUseCase not found: from 1:63 to 1:81 of file useCaseNotFound.bl',
-  //   ],
-  // },
+  {
+    description: 'Entity not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/entityNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'entityNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier TodoEntity not found: from 1:28 to 1:38 of file entityNotFound.bl',
+    ],
+  },
+  {
+    description: 'Rule not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/ruleNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'ruleNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier TitleOutOfBoundsRule not found: from 12:18 to 12:38 of file ruleNotFound.bl',
+    ],
+  },
+  {
+    description: 'Domain error not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/domainErrorNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'domainErrorNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier DomainErrors.TitleOutOfBoundsError not found: from 5:49 to 5:83 of file domainErrorNotFound.bl',
+      'Identifier DomainErrors.TitleOutOfBoundsError not found: from 10:60 to 10:94 of file domainErrorNotFound.bl',
+    ],
+  },
+  {
+    description: 'Props not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/propsNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'propsNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier TodoProps not found: from 22:26 to 22:35 of file propsNotFound.bl',
+    ],
+  },
+  {
+    description: 'Application error not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/applicationErrorNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'applicationErrorNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier ApplicationErrors.ToDoNotFoundError not found: from 46:14 to 46:49 of file applicationErrorNotFound.bl',
+      'Identifier ApplicationErrors.ToDoNotFoundError not found: from 40:65 to 40:100 of file applicationErrorNotFound.bl',
+    ],
+  },
+  {
+    description: 'DTO not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/dtoNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'dtoNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier DeleteTodoRequestDTO not found: from 42:24 to 42:44 of file dtoNotFound.bl',
+    ],
+  },
+  {
+    description: 'Repo port not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/repoPortNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'repoPortNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier TodoWriteRepoPort not found: from 43:38 to 43:55 of file repoPortNotFound.bl',
+    ],
+  },
+  {
+    description: 'Read model not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/readModelNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'readModelNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier TodoReadModel not found: from 2:21 to 2:34 of file readModelNotFound.bl',
+      'Identifier TodoReadModel not found: from 9:27 to 9:40 of file readModelNotFound.bl',
+      'Identifier GetAllTodosResponseDTO not found: from 14:22 to 14:44 of file readModelNotFound.bl',
+    ],
+  },
+  {
+    description: 'Use case not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/useCaseNotFound.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    fileIdCore: 'useCaseNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    expectedErrorMessages: [
+      'Identifier GetAllTodosUseCase not found: from 1:63 to 1:81 of file useCaseNotFound.bl',
+    ],
+  },
   {
     description: 'Command and Query not found',
     inputCore: FileUtil.readFileString(
@@ -178,7 +178,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupUseCaseNotFound.bl',
     fileIdCore: 'useCases.bl',
     expectedErrorMessages: [
-      'Use Case GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupUseCaseNotFound.bl',
+      'Identifier GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupUseCaseNotFound.bl',
     ],
   },
   {
@@ -192,8 +192,8 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupControllerNotFound.bl',
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
-      'Controller GetTodosRESTController not found in bounded context Todo: from 19:27 to 19:49 of file setupControllerNotFound.bl',
-      'Argument getAllTodoUseCase not found: from 19:50 to 19:67 of file setupControllerNotFound.bl',
+      'Identifier GetTodosRESTController not found in bounded context Todo: from 19:27 to 19:49 of file setupControllerNotFound.bl',
+      'Identifier getAllTodoUseCase not found: from 19:50 to 19:67 of file setupControllerNotFound.bl',
     ],
   },
   {
@@ -207,8 +207,8 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupRepoPortNotFound.bl',
     fileIdCore: 'repoPorts.bl',
     expectedErrorMessages: [
-      'Entity TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
-      'Repo port TodoReadRepoPort not found in bounded context Todo: from 15:28 to 15:44 of file setupRepoPortNotFound.bl',
+      'Identifier TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
+      'Identifier TodoReadRepoPort not found in bounded context Todo: from 15:28 to 15:44 of file setupRepoPortNotFound.bl',
     ],
   },
   {
@@ -222,7 +222,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupRepoConnectionNotFound.bl',
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
-      'Connection mongoConnection not found: from 13:17 to 13:32 of file setupRepoConnectionNotFound.bl',
+      'Identifier mongoConnection not found: from 13:17 to 13:32 of file setupRepoConnectionNotFound.bl',
     ],
   },
   {
@@ -236,7 +236,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupRepoAdapterNotFound.bl',
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
-      'Argument todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
+      'Identifier todoReadRepo not found: from 17:58 to 17:70 of file setupRepoAdapterNotFound.bl',
     ],
   },
   {
@@ -250,7 +250,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupPackagePortNotFound.bl',
     fileIdCore: 'packagePort.bl',
     expectedErrorMessages: [
-      'Package port UtilitiesPackagePort not found in bounded context Todo: from 1:53 to 1:73 of file setupPackagePortNotFound.bl',
+      'Identifier UtilitiesPackagePort not found in bounded context Todo: from 1:53 to 1:73 of file setupPackagePortNotFound.bl',
     ],
   },
   {
@@ -264,7 +264,7 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupRouterNotFound.bl',
     fileIdCore: 'controllers.bl',
     expectedErrorMessages: [
-      'Router todoRESTRouter not found: from 12:14 to 12:28 of file setupRouterNotFound.bl',
+      'Identifier todoRESTRouter not found: from 12:14 to 12:28 of file setupRouterNotFound.bl',
     ],
   },
   {
@@ -278,12 +278,12 @@ export const SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setupGraphQLServer.bl',
     fileIdCore: 'graphQLController.bl',
     expectedErrorMessages: [
-      'Controller HelloWorldController not found in bounded context Todo: from 4:17 to 4:37 of file setupGraphQLServer.bl',
-      'Controller HelloWorld2Controller not found in bounded context Todo: from 5:17 to 5:38 of file setupGraphQLServer.bl',
-      'Argument useCase1Dependency not found: from 5:39 to 5:57 of file setupGraphQLServer.bl',
-      'Controller HelloWorld3Controller not found in bounded context Todo: from 6:17 to 6:38 of file setupGraphQLServer.bl',
-      'Argument useCase2Dependency not found: from 6:39 to 6:57 of file setupGraphQLServer.bl',
-      'Argument usersRepo not found: from 6:59 to 6:68 of file setupGraphQLServer.bl',
+      'Identifier HelloWorldController not found in bounded context Todo: from 4:17 to 4:37 of file setupGraphQLServer.bl',
+      'Identifier HelloWorld2Controller not found in bounded context Todo: from 5:17 to 5:38 of file setupGraphQLServer.bl',
+      'Identifier useCase1Dependency not found: from 5:39 to 5:57 of file setupGraphQLServer.bl',
+      'Identifier HelloWorld3Controller not found in bounded context Todo: from 6:17 to 6:38 of file setupGraphQLServer.bl',
+      'Identifier useCase2Dependency not found: from 6:39 to 6:57 of file setupGraphQLServer.bl',
+      'Identifier usersRepo not found: from 6:59 to 6:68 of file setupGraphQLServer.bl',
     ],
   },
 ];
@@ -335,9 +335,9 @@ export const SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES = [
     ),
     fileIdSetup: 'setupUseCaseDifferentBC.bl',
     expectedErrorMessages: [
-      'Type DeleteTodoRequestDTO not found: from 42:24 to 42:44 of file dtoNotFound.bl',
-      'Repo port TodoReadRepoPort not found in bounded context Demo: from 12:28 to 12:44 of file setupUseCaseDifferentBC.bl',
-      'Use Case GetAllTodosUseCase not found in bounded context Demo: from 15:39 to 15:57 of file setupUseCaseDifferentBC.bl',
+      'Identifier DeleteTodoRequestDTO not found: from 42:24 to 42:44 of file dtoNotFound.bl',
+      'Identifier TodoReadRepoPort not found in bounded context Demo: from 12:28 to 12:44 of file setupUseCaseDifferentBC.bl',
+      'Identifier GetAllTodosUseCase not found in bounded context Demo: from 15:39 to 15:57 of file setupUseCaseDifferentBC.bl',
     ],
   },
   {
@@ -365,9 +365,9 @@ export const SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES = [
     ),
     fileIdSetup: 'setupRepoPortDifferentBC.bl',
     expectedErrorMessages: [
-      'Entity TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
-      'Repo port TodoReadRepoPort not found in bounded context Demo: from 12:28 to 12:44 of file setupRepoPortDifferentBC.bl',
-      'Use Case GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupRepoPortDifferentBC.bl',
+      'Identifier TodoEntity not found: from 2:28 to 2:38 of file repoPorts.bl',
+      'Identifier TodoReadRepoPort not found in bounded context Demo: from 12:28 to 12:44 of file setupRepoPortDifferentBC.bl',
+      'Identifier GetAllTodosUseCase not found in bounded context Todo: from 15:39 to 15:57 of file setupRepoPortDifferentBC.bl',
     ],
   },
 ];

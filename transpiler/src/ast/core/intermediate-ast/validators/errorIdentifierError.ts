@@ -1,6 +1,7 @@
 import { IntermediateASTValidationError } from '../../types.js';
 
 import { ErrorIdentifierNode } from '../nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { identifierValidationError } from './index.js';
 
 export const errorIdentifierError = (
   node: ErrorIdentifierNode,
@@ -8,15 +9,6 @@ export const errorIdentifierError = (
 ): IntermediateASTValidationError[] => {
   const errors = [];
   if (!thisSymbolTable.has(node.getIdentifierName()))
-    errors.push(
-      new IntermediateASTValidationError(
-        `Error ${node.getIdentifierName()} not found: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
-        node.getMetadata(),
-      ),
-    );
+    errors.push(new identifierValidationError(node.getIdentifierName(), node));
   return errors;
 };
