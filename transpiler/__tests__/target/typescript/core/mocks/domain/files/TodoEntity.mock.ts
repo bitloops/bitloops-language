@@ -1,8 +1,8 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './TodoProps';
 import { DomainErrors } from './errors/index';
-import { TitleVO } from './TitleVO';
 import { LanguageVO } from './LanguageVO';
+import { TitleVO } from './TitleVO';
 type TTodoEntityPrimitives = {
   id: string;
   completed: boolean;

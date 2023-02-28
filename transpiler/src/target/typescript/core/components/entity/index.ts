@@ -89,7 +89,7 @@ const entityToTargetLanguage = (params: {
 
   const primitivesType = getPrimitivesType(primitivesObject, entityIdentifier);
   result += primitivesType + '\n';
-  console.log('primitivestype', primitivesType);
+  console.log('primitives type', primitivesType);
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TDomainConstructorParameter,

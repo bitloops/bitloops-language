@@ -20,6 +20,7 @@
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { PropsNode } from '../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { isVO } from '../../../../../helpers/typeGuards.js';
 import {
   TTargetDependenciesTypeScript,
   fieldKey,
@@ -27,7 +28,9 @@ import {
   TDomainPrivateMethods,
   TProps,
   PropsIdentifierKey,
+  TVariable,
 } from '../../../../../types.js';
+import { StringUtils } from '../../../../../utils/StringUtils.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const generateGetters = ({
@@ -48,7 +51,7 @@ export const generateGetters = ({
   ) as PropsNode[];
   const propsValues = allPropsNodes.map((propsNode) => propsNode.getValue()) as TProps[];
 
-  const methodNames = [];
+  const methodNames: string[] = [];
   if (publicMethods) {
     for (const method of publicMethods) {
       methodNames.push(method.publicMethod.identifier);
@@ -78,20 +81,56 @@ export const generateGetters = ({
     return { output: gettersResult, dependencies };
   }
 
-  for (const propVariable of propsValue.Props.fields) {
+  const propsFields = propsValue.Props.fields;
+  const { result: gettersOutput, dependencies: gettersDependencies } = buildGetterString(
+    propsFields,
+    dependencies,
+    methodNames,
+    allPropsNodes,
+  );
+  gettersResult += gettersOutput;
+  dependencies.push(...gettersDependencies);
+
+  return { output: gettersResult, dependencies };
+};
+
+const buildGetterString = (
+  propsFields: TVariable[],
+  dependencies: any[],
+  methodNames: string[],
+  allPropsNodes: PropsNode[],
+): { result: string; dependencies: any[] } => {
+  let result = '';
+  for (const propVariable of propsFields) {
     const { type, identifier } = propVariable[fieldKey];
     const res = modelToTargetLanguage({
       value: { type },
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     const returnType = res.output;
+    if (isVO(returnType)) {
+      const propsName = StringUtils.removeLastCharactersOfString(returnType, 2) + 'Props';
+      const props = allPropsNodes.find(
+        (propsNode) => propsNode.getValue().Props[PropsIdentifierKey] === propsName,
+      );
+      const propsFields = props.getValue().Props.fields;
+      //here remove duplicate classNames
+      const { dependencies: gettersDependencies } = buildGetterString(
+        propsFields,
+        dependencies,
+        methodNames,
+        allPropsNodes,
+      );
+      dependencies.push(...gettersDependencies);
+    }
+
     dependencies.push(...res.dependencies);
     const getterName = identifier;
     if (methodNames.includes(getterName)) {
       continue;
     }
     const getter = `get ${getterName}(): ${returnType} { return this.props.${identifier}; } `;
-    gettersResult += getter;
+    result += getter;
   }
-  return { output: gettersResult, dependencies };
+  return { result, dependencies };
 };
