@@ -30,7 +30,6 @@ import {
   PropsIdentifierKey,
   TVariable,
 } from '../../../../../types.js';
-import { StringUtils } from '../../../../../utils/StringUtils.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const generateGetters = ({
@@ -83,6 +82,7 @@ export const generateGetters = ({
 
   const propsFields = propsValue.Props.fields;
   const { result: gettersOutput, dependencies: gettersDependencies } = buildGetterString(
+    model,
     propsFields,
     dependencies,
     methodNames,
@@ -95,6 +95,7 @@ export const generateGetters = ({
 };
 
 const buildGetterString = (
+  model: IntermediateASTTree,
   propsFields: TVariable[],
   dependencies: any[],
   methodNames: string[],
@@ -109,13 +110,15 @@ const buildGetterString = (
     });
     const returnType = res.output;
     if (isVO(returnType)) {
-      const propsName = StringUtils.removeLastCharactersOfString(returnType, 2) + 'Props';
+      const voNode = model.getValueObjectByIdentifier(returnType);
+      const propsNode = model.getPropsNodeOfValueObject(voNode);
+      const propsName = propsNode.getValue().Props[PropsIdentifierKey];
       const props = allPropsNodes.find(
         (propsNode) => propsNode.getValue().Props[PropsIdentifierKey] === propsName,
       );
       const propsFields = props.getValue().Props.fields;
-      //here remove duplicate classNames
       const { dependencies: gettersDependencies } = buildGetterString(
+        model,
         propsFields,
         dependencies,
         methodNames,
