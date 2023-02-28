@@ -84,6 +84,8 @@ import {
   graphQLControllerIdentifierError,
   readModelIdentifierError,
 } from './validators/index.js';
+import { CommandDeclarationNode } from './nodes/command/CommandDeclarationNode.js';
+import { QueryDeclarationNode } from './nodes/query/QueryDeclarationNode.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
   private symbolTableCore: Record<string, Set<string>>;
@@ -187,6 +189,16 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
             case BitloopsTypesMapping.TPackagePort: {
               const identifier = (node as PackagePortNode).identifier;
               this.symbolTableCore[boundedContextName].add(identifier);
+              break;
+            }
+            case BitloopsTypesMapping.TCommand: {
+              const identifierNode = (node as CommandDeclarationNode).getIdentifier();
+              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
+              break;
+            }
+            case BitloopsTypesMapping.TQuery: {
+              const identifierNode = (node as QueryDeclarationNode).getIdentifier();
+              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
           }
