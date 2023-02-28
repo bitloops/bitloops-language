@@ -23,8 +23,8 @@ Query GetAllTodosQuery {
 CommandHandler CreateTodoCommandHandler (todoRepo: TodoWriteRepoPort){
   execute (command: CreateTodoCommand): (OK(void),Errors(DomainErrors.TitleOutOfBoundsError))
   {
-    const title = TitleVO({ title: command.title });
-    const todo = TodoEntity({ title: title, completed: false });
+    const title = TitleVO.create({ title: command.title });
+    const todo = TodoEntity.create({ title: title, completed: false });
     this.todoRepo.save(todo);
   }
 }
@@ -38,9 +38,9 @@ CommandHandler UpdateTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
       return ApplicationErrors.ToDoNotFoundError(requestIdString);
     }
 
-    const title = TitleVO({ title: command.title });
+    const title = TitleVO.create({ title: command.title });
 
-    const todo = TodoEntity({ title: title, completed: command.completed, id: requestId });
+    const todo = TodoEntity.create({ title: title, completed: command.completed, id: requestId });
     this.todoRepo.update(todo);
   }
 }
