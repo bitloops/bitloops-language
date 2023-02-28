@@ -16,11 +16,13 @@ import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueOb
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
-import { TBitloopsPrimaryType } from '../../../types.js';
+import { TBitloopsPrimaryType, TBitloopsPrimitives } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
 import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
 import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
+import { FieldListNode } from './nodes/FieldList/FieldListNode.js';
+import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -65,7 +67,9 @@ export class IntermediateASTTree {
     return this.rootNode;
   }
 
-  public getRootChildrenNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
+  public getRootChildrenNodesByType<T extends IntermediateASTNode = IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T[] {
     const rootChildren = this.rootNode.getChildren();
     const classTypeNodes = [];
     for (const child of rootChildren) {
@@ -73,7 +77,7 @@ export class IntermediateASTTree {
         classTypeNodes.push(child);
       }
     }
-    return classTypeNodes;
+    return classTypeNodes as T[];
   }
 
   public getRootChildrenNodesValueByType<T = any>(nodeType: TBitloopsTypesValues): T[] {
@@ -192,6 +196,15 @@ export class IntermediateASTTree {
     return rootEntityFound;
   }
 
+  public getReadModelByIdentifier(identifier: string): ReadModelNode | null {
+    const readModelNodes = this.getRootChildrenNodesByType<ReadModelNode>(
+      BitloopsTypesMapping.TReadModel,
+    );
+    return (
+      readModelNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier) || null
+    );
+  }
+
   public getControllerByIdentifier = (identifier: string): RESTControllerNode => {
     const restControllerNodes = this.getRootChildrenNodesByType(
       BitloopsTypesMapping.TRESTController,
@@ -260,7 +273,7 @@ export class IntermediateASTTree {
     return valueObjectFound;
   };
 
-  public getValueOfPropsWithIdentifierFromDomainCreate(
+  public getPropsFieldTypeOfDomainCreateByFieldIdentifier(
     domainCreateParameterNode: DomainCreateParameterNode,
     identifier: string,
   ): TBitloopsPrimaryType | null {
@@ -470,6 +483,49 @@ export class IntermediateASTTree {
       }
     }
     return null;
+  }
+
+  public getValueObjectFieldsWithOnePrimitiveProperty(
+    fieldListNode: FieldListNode,
+  ): Array<{ fieldValue: string; fieldType: TBitloopsPrimitives }> {
+    const valueObjectFieldsOfProp = fieldListNode.getValueObjectFields();
+
+    const valueObjectNodes = this.getRootChildrenNodesByType<ValueObjectDeclarationNode>(
+      BitloopsTypesMapping.TValueObject,
+    );
+    const result: Array<{ fieldValue: string; fieldType: TBitloopsPrimitives }> = [];
+    const propsNodes = this.getRootChildrenNodesByType<PropsNode>(BitloopsTypesMapping.TProps);
+    const fieldsWithOnePrimitiveProperty = valueObjectFieldsOfProp.reduce((acc, field) => {
+      const valueObjectIdentifier = field.fieldType;
+      const valueObjectNode = this.findValueObject(valueObjectNodes, valueObjectIdentifier);
+      if (!valueObjectNode) {
+        throw new Error(`ValueObject ${field.fieldType} not found`);
+      }
+      const propsIdentifier = valueObjectNode.getPropsIdentifier();
+      const valueObjectPropsNode = this.findProps(propsNodes, propsIdentifier);
+      if (!valueObjectPropsNode) {
+        throw new Error(`Props ${propsIdentifier} not found`);
+      }
+      const hasOnlyOnePrimField = valueObjectPropsNode.hasOnlyOnePrimitiveField();
+      if (hasOnlyOnePrimField.result === false) {
+        return acc;
+      }
+      const initialPropIdentifier = field.fieldValue;
+
+      return [...acc, { fieldValue: initialPropIdentifier, fieldType: hasOnlyOnePrimField.type }];
+    }, result);
+    return fieldsWithOnePrimitiveProperty;
+  }
+
+  private findValueObject(
+    valueObjectNodes: ValueObjectDeclarationNode[],
+    identifier: string,
+  ): ValueObjectDeclarationNode {
+    return valueObjectNodes.find((node) => node.getIdentifier() === identifier);
+  }
+
+  private findProps(propsNodes: PropsNode[], identifier: string): PropsNode {
+    return propsNodes.find((node) => node.getIdentifierValue() === identifier);
   }
 
   private getNodesWithPolicy(

@@ -7,7 +7,7 @@ Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsErr
   }
 
 ValueObject TitleVO {
-    constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
       applyRules(TitleOutOfBoundsRule(props.title));
     }
   }

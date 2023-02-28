@@ -13,7 +13,8 @@ const incrementDepositsCommandHandler = new IncrementDepositsCommandHandler(
 
 const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);
 const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);
-const customerService = new CustomerService();
+
+const customerService = new CustomerService(queryBus);
 
 const sendEmailAfterDepositsIncrementedHandler = new SendEmailAfterDepositsIncrementedHandler(
   commandBus,

@@ -20,8 +20,8 @@ import { MoneyWithdrawnFromAccount } from '../domain/events/MoneyWithdrawnFromAc
 import { MoneyDepositedPublishIntegrationEventHandler } from '../application/event-handlers/domain/MoneyDepositedPublishIntegrationEventHandler';
 import { GetCustomerByAccountIdQuery } from '../application/get-customer-details-by-account-id/GetCustomerByAccountIdQuery';
 import { SendEmailVerificationCommand } from '../application/send-email-verification';
-import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/event-handlers/domain/MoneyWithdrawnPublishIntegrationEventHandler.js';
-import { SendEmailAfterMoneyDepositedHandler } from '../application/event-handlers/domain/SendEmailAfterMoneyDepositedHandler.js';
+import { MoneyWithdrawnPublishIntegrationEventHandler } from '../application/event-handlers/domain/MoneyWithdrawnPublishIntegrationEventHandler';
+import { SendEmailAfterMoneyDepositedHandler } from '../application/event-handlers/domain/SendEmailAfterMoneyDepositedHandler';
 
 export const setUpTodoSubscriptions = async () => {
   // // TODO maybe register use case instead of execute method

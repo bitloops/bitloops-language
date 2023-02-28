@@ -1,5 +1,6 @@
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { PrivateMethodDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/PrivateMethodDeclarationNodeBuilder.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
 import { PrivateMethodDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../returnOkErrorTypeBuilderDirector.js';
@@ -30,6 +31,7 @@ export class PrivateMethodBuilderDirector {
       .withStatements(
         new StatementListBuilderDirector().buildThisAssignmentExpression(thisIdentifierName),
       )
+      .withStatic(new StaticNodeBuilder().withValue(false).build())
       .build();
   }
 
@@ -51,6 +53,7 @@ export class PrivateMethodBuilderDirector {
       .withStatements(
         new StatementListBuilderDirector().buildThisPropsAssignmentExpression(thisIdentifierName),
       )
+      .withStatic(new StaticNodeBuilder().withValue(false).build())
       .build();
   }
 }

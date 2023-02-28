@@ -1,5 +1,5 @@
 ValueObject TitleVO {   
-    constructor(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.InvalidTitleError)) {     
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.InvalidTitleError)) { 
         applyRules(InvalidTitleRule(props.title));   
     } 
 }

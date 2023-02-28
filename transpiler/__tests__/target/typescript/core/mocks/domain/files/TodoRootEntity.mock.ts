@@ -12,9 +12,9 @@ type TTodoRootEntityPrimitives = {
 export class TodoRootEntity extends Domain.Aggregate<TodoProps> {
   private constructor(props: TodoProps) {
     super(props, props.id);
-    this.props.completed = false;
   }
   public static create(props: TodoProps): Either<TodoRootEntity, never> {
+    props.completed = false;
     return ok(new TodoRootEntity(props));
   }
   get id() {

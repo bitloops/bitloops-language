@@ -1,7 +1,6 @@
 import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
-import { GET_CUSTOMER_BY_ID_QUERY_NAME } from '../../contracts';
 
 type TGetCustomerByIdQuery = {
   id: string;
@@ -9,7 +8,7 @@ type TGetCustomerByIdQuery = {
 
 export class GetCustomerByIdQuery extends Application.Query {
   public readonly id: string;
-  public static readonly queryName = GET_CUSTOMER_BY_ID_QUERY_NAME;
+  public static readonly queryName = 'GET_CUSTOMER_BY_ID_QUERY_NAME';
 
   constructor(getCustomerByIdQuery: TGetCustomerByIdQuery) {
     super(GetCustomerByIdQuery.queryName, contextId);

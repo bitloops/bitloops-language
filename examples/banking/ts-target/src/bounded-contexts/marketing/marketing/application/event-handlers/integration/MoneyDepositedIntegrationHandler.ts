@@ -1,7 +1,7 @@
 import { Container, Infra, Application } from '@bitloops/bl-boilerplate-core';
 import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts';
-import { CONTEXT_ID } from '../../../config/index.js';
 import { IncrementDepositsCommand } from '../../increase-deposit-counter';
+import { CONTEXT_ID } from '../../../config';
 
 export class MoneyDepositedIntegrationHandler implements Application.IHandle {
   private commandBus: Infra.CommandBus.ICommandBus;

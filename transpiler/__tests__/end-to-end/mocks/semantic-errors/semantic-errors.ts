@@ -59,7 +59,7 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
     fileIdSetup: 'setup.bl',
     expectedErrorMessages: [
       'Error DomainErrors.TitleOutOfBoundsError not found: from 5:49 to 5:83 of file domainErrorNotFound.bl',
-      'Error DomainErrors.TitleOutOfBoundsError not found: from 10:58 to 10:92 of file domainErrorNotFound.bl',
+      'Error DomainErrors.TitleOutOfBoundsError not found: from 10:60 to 10:94 of file domainErrorNotFound.bl',
     ],
   },
   {
@@ -73,7 +73,7 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
     fileIdCore: 'propsNotFound.bl',
     fileIdSetup: 'setup.bl',
     expectedErrorMessages: [
-      'Type TodoProps not found: from 22:24 to 22:33 of file propsNotFound.bl',
+      'Type TodoProps not found: from 22:26 to 22:35 of file propsNotFound.bl',
     ],
   },
   {

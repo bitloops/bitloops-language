@@ -14,6 +14,8 @@ import { IntegrationEventHandlerDeclarationNode } from './nodes/integration-even
 import { IntegrationEventHandlerNodeTransformer } from './ node-transformers/IntegrationEventHandlerNodeTransformer.js';
 import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
 import { IntegrationEventNodeTransformer } from './ node-transformers/IntegrationEventNodeTransformer.js';
+import { ControllerNode } from './nodes/controllers/ControllerNode.js';
+import { ControllerNodeTransformer } from './ node-transformers/ControllerNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -133,6 +135,11 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TIntegrationEvent: {
         const integrationEventNode = intermediateASTNode as IntegrationEventNode;
         return new IntegrationEventNodeTransformer(intermediateASTTree, integrationEventNode);
+      }
+      case BitloopsTypesMapping.TGraphQLController:
+      case BitloopsTypesMapping.TRESTController: {
+        const controllerNode = intermediateASTNode as ControllerNode;
+        return new ControllerNodeTransformer(intermediateASTTree, controllerNode);
       }
       default:
         return null;

@@ -1,6 +1,6 @@
 import { Infra, Application, Container } from '@bitloops/bl-boilerplate-core';
-import { CONTEXT_ID } from '../../../config/index.js';
-import { MoneyWithdrawnIntegrationEvent } from '../../../contracts';
+import { CONTEXT_ID } from '../../../config/index';
+import { MoneyWithdrawnIntegrationEvent } from '../../../contracts/integration-events';
 import { MoneyWithdrawnFromAccount } from '../../../domain/events/MoneyWithdrawnFromAccount';
 
 export class MoneyWithdrawnPublishIntegrationEventHandler implements Application.IHandle {
@@ -18,11 +18,7 @@ export class MoneyWithdrawnPublishIntegrationEventHandler implements Application
       balanceAmount: balance.amount,
     });
 
-    const eventsWithTopic = events.map((event) => {
-      return { message: event, topic: event.eventTopic };
-    });
-
-    await this.eventBus.publishMany(eventsWithTopic);
+    await this.eventBus.publishMany(events);
 
     console.log(
       `[MoneyWithdrawnIntegrationEvent]: Successfully published MoneyWithdrawnIntegrationEvent`,

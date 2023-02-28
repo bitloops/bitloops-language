@@ -107,7 +107,6 @@ const BitloopsTypesMapping = {
   TEntity: 'TEntity',
   TEntityValues: 'TEntityValues',
   TRootEntity: 'TRootEntity',
-  TThisDeclaration: 'TThisDeclaration',
   TRepoPort: 'TRepoPort',
   TRepoPortIdentifier: 'TRepoPortIdentifier',
   TLogicalExpression: 'TLogicalExpression',
@@ -255,12 +254,16 @@ const BitloopsTypesMapping = {
   TDomainEventHandlerIdentifier: 'TDomainEventHandlerIdentifier',
   TEventHandlerHandleMethod: 'TEventHandlerHandleMethod',
   TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
+  TControllerBusDependencies: 'TControllerBusDependencies',
   THandlerAttributesAndConstructor: 'THandlerAttributesAndConstructor',
   THandle: 'THandle',
   TIntegrationEventHandlerIdentifier: 'TIntegrationEventHandlerIdentifier',
   TIntegrationEventHandler: 'TIntegrationEventHandler',
   TServicePortIdentifier: 'TServicePortIdentifier',
   TServicePort: 'TServicePort',
+  TThisIdentifier: 'TThisIdentifier',
+  TAddDomainEvent: 'TAddDomainEvent',
+  TStatic: 'TStatic',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

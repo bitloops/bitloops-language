@@ -1,7 +1,6 @@
 import { Application } from '@bitloops/bl-boilerplate-core';
 
 import { CONTEXT_ID as contextId } from '../../config';
-import { WITHDRAW_MONEY_COMMAND_NAME } from '../../contracts';
 import { WithdrawMoneyRequestDTO } from '../../dtos/WithdrawMoneyRequestDTO';
 
 export class WithdrawMoneyCommand extends Application.Command {
@@ -9,7 +8,7 @@ export class WithdrawMoneyCommand extends Application.Command {
   public amount: number;
 
   // Set static name so we can refer to them easily
-  public static readonly commandName = WITHDRAW_MONEY_COMMAND_NAME;
+  public static readonly commandName = 'WITHDRAW_MONEY_COMMAND_NAME';
 
   constructor(withdrawMoneyRequestDTO: WithdrawMoneyRequestDTO) {
     super(WithdrawMoneyCommand.commandName, contextId);

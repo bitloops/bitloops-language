@@ -78,7 +78,6 @@ import {
   fieldVisitor,
   dtoDeclarationVisitor,
   propsDeclarationVisitor,
-  domainConstructorDeclarationVisitor,
   valueObjectDeclarationVisitor,
   privateMethodDeclarationVisitor,
   privateMethodDeclarationListVisitor,
@@ -151,6 +150,7 @@ import {
   integrationEventEvaluationVisitor,
   entityConstructorEvaluationVisitor,
   standardVOEvaluationVisitor,
+  domainCreateDeclarationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -296,6 +296,12 @@ import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
 import { servicePortDeclarationVisitor } from './helpers/service-port/servicePortDeclarationVisitor.js';
 import { servicePortIdentifierVisitor } from './helpers/service-port/servicePortIdentifierVisitor.js';
 import { ServicePortIdentifierNode } from '../intermediate-ast/nodes/service-port/ServicePortIdentifierNode.js';
+import { addDomainEventStatementVisitor } from './helpers/addDomainEventStatementVisitor.js';
+import { BuiltInFunctionNode } from '../intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
+import { ThisIdentifierNode } from '../intermediate-ast/nodes/ThisIdentifier/ThisIdentifierNode.js';
+import { ThisIdentifierNodeBuilder } from '../intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
+import { StaticNodeBuilder } from '../intermediate-ast/builders/methods/StaticNodeBuilder.js';
+import { StaticNode } from '../intermediate-ast/nodes/methods/StaticNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -520,6 +526,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     };
   }
 
+  visitEntityIdentifierString(ctx: BitloopsParser.EntityIdentifierStringContext) {
+    return {
+      value: ctx.EntityIdentifier().getText(),
+    };
+  }
+
+  visitValueObjectIdentifierString(ctx: BitloopsParser.ValueObjectIdentifierStringContext) {
+    return {
+      value: ctx.ValueObjectIdentifier().getText(),
+    };
+  }
+
   visitExecuteExpression(_ctx: BitloopsParser.ExecuteExpressionContext) {
     return {
       value: 'execute',
@@ -534,6 +552,22 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitHandleKeywordIdentifier(_ctx: BitloopsParser.HandleKeywordIdentifierContext) {
     return {
       value: 'handle',
+    };
+  }
+  visitMethodKeywordIdentifier(ctx: BitloopsParser.MethodKeywordIdentifierContext) {
+    return {
+      value: ctx.Method().getText(),
+    };
+  }
+  visitOperationKeywordIdentifier(ctx: BitloopsParser.OperationKeywordIdentifierContext) {
+    return {
+      value: ctx.GraphQLOperation().getText(),
+    };
+  }
+
+  visitInputKeywordIdentifier(ctx: BitloopsParser.InputKeywordIdentifierContext) {
+    return {
+      value: ctx.Input().getText(),
     };
   }
 
@@ -862,15 +896,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return propsDeclarationVisitor(this, ctx);
   }
 
-  visitDomainConstructorDeclaration(
-    ctx: BitloopsParser.DomainConstructorDeclarationContext,
+  visitDomainCreateDeclaration(
+    ctx: BitloopsParser.DomainCreateDeclarationContext,
   ): DomainCreateNode {
-    return domainConstructorDeclarationVisitor(this, ctx);
+    return domainCreateDeclarationVisitor(this, ctx);
   }
 
-  visitDomainConstructorParam(
-    ctx: BitloopsParser.DomainConstructorParamContext,
-  ): DomainCreateParameterNode {
+  visitDomainCreateParam(ctx: BitloopsParser.DomainCreateParamContext): DomainCreateParameterNode {
     return domainCreateParameterVisitor(this, ctx);
   }
 
@@ -1502,5 +1534,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.ServicePortIdentifierContext,
   ): ServicePortIdentifierNode {
     return servicePortIdentifierVisitor(this, ctx);
+  }
+
+  visitAddDomainEventStatement(
+    ctx: BitloopsParser.AddDomainEventStatementContext,
+  ): BuiltInFunctionNode {
+    return addDomainEventStatementVisitor(this, ctx);
+  }
+
+  visitThisIdentifier(ctx: BitloopsParser.ThisIdentifierContext): ThisIdentifierNode {
+    const thisName = ctx.This().getText();
+    return new ThisIdentifierNodeBuilder(produceMetadata(ctx, this)).withName(thisName).build();
+  }
+
+  visitStaticKeyword(ctx: BitloopsParser.StaticKeywordContext): StaticNode {
+    return new StaticNodeBuilder(produceMetadata(ctx, this)).withValue(true).build();
   }
 }

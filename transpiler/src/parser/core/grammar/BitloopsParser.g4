@@ -129,6 +129,11 @@ regularIdentifier
     | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
     | Handle                                                    # HandleKeywordIdentifier
+    | EntityIdentifier                                          # EntityIdentifierString
+    | ValueObjectIdentifier                                     # ValueObjectIdentifierString
+    | Method                                                    # MethodKeywordIdentifier
+    | GraphQLOperation                                          # OperationKeywordIdentifier
+    | Input                                                     # InputKeywordIdentifier
     ;
 
 regularStructEvaluation
@@ -245,7 +250,7 @@ jestTestDeclaration
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
     | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
     | JestTestMethodDefinitionList OpenBrace methodDefinitionList CloseBrace SemiColon?
-    | JestTestCreateMethodDeclaration OpenBrace domainConstructorDeclaration CloseBrace SemiColon?
+    | JestTestCreateMethodDeclaration OpenBrace domainCreateDeclaration CloseBrace SemiColon?
     | JestTestPrivateMethodDeclaration OpenBrace privateMethodDeclaration CloseBrace SemiColon?
     | JestTestPublicMethodDeclaration OpenBrace publicMethodDeclaration CloseBrace SemiColon?
     | JestTestValueObjectDeclaration OpenBrace valueObjectDeclaration CloseBrace SemiColon?
@@ -314,6 +319,11 @@ statement
 
 builtInFunction
     : ApplyRules OpenParen applyRuleStatementRulesList CloseParen SemiColon? # ApplyRulesStatement
+    | (identifier | thisIdentifier) Dot AddDomainEvent OpenParen domainEventIdentifier CloseParen SemiColon? # AddDomainEventStatement
+    ;
+
+thisIdentifier
+    : This
     ;
 
 applyRuleStatementRulesList
@@ -391,11 +401,11 @@ entityDeclaration
 ;
 
 entityBody
-    : OpenBrace domainConstDeclarationList? domainConstructorDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
+    : OpenBrace domainConstDeclarationList? domainCreateDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
     ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainConstructorDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
+    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainCreateDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
     ;
 domainConstDeclarationList
     : domainConstDeclaration+
@@ -409,12 +419,12 @@ privateMethodDeclarationList
     : privateMethodDeclaration+
     ;
 
-domainConstructorParam 
+domainCreateParam 
     : identifier Colon propsIdentifier
     ;
 
-domainConstructorDeclaration
-    : Constructor OpenParen domainConstructorParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
+domainCreateDeclaration
+    : Static Create OpenParen domainCreateParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
@@ -783,12 +793,16 @@ methodDeclaration
     | privateMethodDeclaration           # PrivateMethodDeclarationExpression
     ;
 
+staticKeyword
+    : Static
+    ;
+
 privateMethodDeclaration
-    : Private? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
+    : Private? staticKeyword? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
+    : Public? staticKeyword? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnPublicMethodType

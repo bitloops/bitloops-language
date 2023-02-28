@@ -17,32 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { TStatements, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { ClassTypes } from '../../../../../helpers/mappings.js';
 
-//TODO props now must always have an id field (fix this not to be mandatory)
-export const internalConstructor = (
-  propsName: string,
-  statements: TStatements,
-  classType: string,
-): TTargetDependenciesTypeScript => {
+export const internalConstructor = (propsName: string, classType: string): string => {
   let superString;
   if (classType === ClassTypes.Entity) {
     superString = 'super(props, props.id)';
   } else {
     superString = 'super(props)';
   }
-  let res = `private constructor(props: ${propsName}) { ${superString}; `;
-  let dependencies = [];
-  if (statements) {
-    const statementsResult = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TStatements,
-      value: statements,
-    });
-    res += statementsResult.output;
-    dependencies = statementsResult.dependencies;
-  }
-  res += '}';
-  return { output: res, dependencies };
+  const res = `private constructor(props: ${propsName}) { ${superString}; }`;
+  return res;
 };

@@ -32,19 +32,31 @@ export class GraphQLControllerBuilderDirector {
     identifier: string,
     options?: { await: boolean },
   ): GraphQLControllerNode {
-    return this.controllerWithNoParams(identifier, 'query', 'RequestDTO', 'ResponseDTO', [
-      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
-    ]);
+    return this.controllerWithParams(
+      identifier,
+      'query',
+      'RequestDTO',
+      'ResponseDTO',
+      [new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options)],
+      [new ParameterBuilderDirector().buildIdentifierParameter('useCase', 'HelloWorldUseCase')],
+    );
   }
 
   buildControllerThatExecutesAndReturnsResult(
     identifier: string,
     options?: { await: boolean; dotValue: boolean },
   ): GraphQLControllerNode {
-    return this.controllerWithNoParams(identifier, 'query', 'RequestDTO', 'ResponseDTO', [
-      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
-      this.buildBasicIfTrueReturnStatement('ok', options?.dotValue ? 'result.value' : 'result'),
-    ]);
+    return this.controllerWithParams(
+      identifier,
+      'query',
+      'RequestDTO',
+      'ResponseDTO',
+      [
+        new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
+        this.buildBasicIfTrueReturnStatement('ok', options?.dotValue ? 'result.value' : 'result'),
+      ],
+      [new ParameterBuilderDirector().buildIdentifierParameter('useCase', 'HelloWorldUseCase')],
+    );
   }
 
   buildControllerThatReturnsHelloWorld(identifier: string): GraphQLControllerNode {
@@ -60,11 +72,18 @@ export class GraphQLControllerBuilderDirector {
     options?: { await: boolean; dotValue: boolean },
   ): GraphQLControllerNode {
     const identifierVal = options?.dotValue ? 'result.value' : 'result';
-    return this.controllerWithNoParams(identifier, 'query', 'RequestDTO', 'ResponseDTO', [
-      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
-      this.buildBasicIfTrueReturnStatement('ok', identifierVal),
-      this.buildBasicIfTrueReturnStatement('ok', identifierVal),
-    ]);
+    return this.controllerWithParams(
+      identifier,
+      'query',
+      'RequestDTO',
+      'ResponseDTO',
+      [
+        new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
+        this.buildBasicIfTrueReturnStatement('ok', identifierVal),
+        this.buildBasicIfTrueReturnStatement('ok', identifierVal),
+      ],
+      [new ParameterBuilderDirector().buildIdentifierParameter('useCase', 'HelloWorldUseCase')],
+    );
   }
 
   buildControllerWithSwitchStatement(

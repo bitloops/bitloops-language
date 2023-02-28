@@ -7,9 +7,9 @@ type TTodoEntityPrimitives = {
 export class TodoEntity extends Domain.Entity<TodoProps> {
   private constructor(props: TodoProps) {
     super(props, props.id);
-    this.props.completed = false;
   }
   public static create(props: TodoProps): Either<TodoEntity, never> {
+    props.completed = false;
     return ok(new TodoEntity(props));
   }
   get id() {

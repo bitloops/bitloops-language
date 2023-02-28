@@ -20,6 +20,7 @@ import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermed
 import { ArgumentDirector } from '../../builders/argument.js';
 import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
 import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statement/builtinFunctionDirector.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type TestCase = {
   description: string;
@@ -73,7 +74,7 @@ export const VALID_ROOT_ENTITY_TEST_CASES: TestCase[] = [
       },
       statements: [
         new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'completed'),
           new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
         ),
       ],
@@ -102,6 +103,7 @@ export const VALID_ROOT_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PublicMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
@@ -125,6 +127,7 @@ export const VALID_ROOT_ENTITY_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(true).build())
           .build(),
       ],
       privateMethods: [],

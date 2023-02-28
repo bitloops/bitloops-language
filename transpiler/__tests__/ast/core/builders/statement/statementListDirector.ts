@@ -94,12 +94,12 @@ export class StatementListDirector {
     return [new StatementDirector().buildReturnStatement(expression)];
   }
 
-  buildOneReturnStatementEntityEvaluation(
+  buildOneReturnStatementEntityConstructorEvaluation(
     entityName: string,
     identifierValue: string,
   ): TStatements {
     const expressionEntityEvaluation = new ExpressionBuilderDirector().buildEvaluation(
-      new EvaluationBuilderDirector().buildEntityEvaluation(entityName, {
+      new EvaluationBuilderDirector().buildEntityConstructorEvaluation(entityName, {
         expression: new ExpressionBuilderDirector().buildIdentifierExpression(identifierValue),
       }),
     );

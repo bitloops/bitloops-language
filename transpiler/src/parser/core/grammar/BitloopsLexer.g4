@@ -147,6 +147,7 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+AddDomainEvent:                 'addDomainEvent';
 CorsOptions:                    'corsOptions';
 
 Extends:                        'extends';
@@ -185,7 +186,6 @@ VO:                             'VO';
 Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
-Constructor:                    'constructor';
 StandardVO:                     'StandardVO';
 IntegrationEvent:               'IntegrationEvent';
 
@@ -256,7 +256,6 @@ JestTestValueObjectDeclaration: 'JestTestValueObjectDeclaration';
 JestTestEntityDeclaration: 'JestTestEntityDeclaration';
 JestTestCondition: 'JestTestCondition';
 JestTestVariableDeclaration: 'JestTestVariableDeclaration';
-JestTestThisDeclaration: 'JestTestThisDeclaration';
 JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';

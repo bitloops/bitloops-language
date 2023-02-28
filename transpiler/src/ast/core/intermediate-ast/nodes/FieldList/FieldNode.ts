@@ -26,4 +26,16 @@ export class FieldNode extends IntermediateASTNode {
   getTypeValue(): TBitloopsPrimaryTypeValues {
     return this.getTypeNode().getValue().type;
   }
+
+  isPrimitiveField(): boolean {
+    const typeNode = this.getTypeNode();
+    return typeNode.isPrimitiveType() || typeNode.isPrimaryWithPrimitiveTypeChild();
+  }
+
+  isBitloopsIdentifierField(): boolean {
+    const typeNode = this.getTypeNode();
+    return (
+      typeNode.isBitloopsIdentifierType() || typeNode.isPrimaryWithBitloopsIdentifierTypeChild()
+    );
+  }
 }

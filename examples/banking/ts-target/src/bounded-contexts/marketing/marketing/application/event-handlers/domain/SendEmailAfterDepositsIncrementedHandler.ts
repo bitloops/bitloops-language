@@ -1,8 +1,4 @@
 import { Infra, Application } from '@bitloops/bl-boilerplate-core';
-import {
-  GetCustomerByAccountIdQuery,
-  GetCustomerByAccountIdUseCaseResponse,
-} from '../../../../../banking/banking/contracts';
 import { DepositsIncrementedDomainEvent } from '../../../domain/events/DepositsIncrementedDomainEvent';
 import { SendEmailCommand } from '../../send-email';
 import { ICustomerService } from '../../../services/interfaces/ICustomerService';
@@ -27,7 +23,13 @@ export class SendEmailAfterDepositsIncrementedHandler implements Application.IHa
       return;
     }
 
-    const destinationEmail = await this.customerService.getEmailByAccountId(data.id.toString());
+    const destinationEmailOrError = await this.customerService.getEmailByAccountId(
+      data.id.toString(),
+    );
+    if (destinationEmailOrError.isFail()) {
+      return;
+    }
+    const destinationEmail = destinationEmailOrError.value.email;
 
     const command = new SendEmailCommand({
       origin: 'ant@ant.com',

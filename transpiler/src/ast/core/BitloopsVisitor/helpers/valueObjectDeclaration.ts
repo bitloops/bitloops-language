@@ -37,8 +37,8 @@ export const valueObjectDeclarationVisitor = (
     ctx.valueObjectIdentifier(),
   );
 
-  const domainConstructorDeclarationNode: DomainCreateNode = thisVisitor.visit(
-    ctx.domainConstructorDeclaration(),
+  const domainCreateDeclarationNode: DomainCreateNode = thisVisitor.visit(
+    ctx.domainCreateDeclaration(),
   );
   const constantVarNodes: ConstDeclarationListNode = ctx.domainConstDeclarationList()
     ? thisVisitor.visit(ctx.domainConstDeclarationList())
@@ -52,7 +52,7 @@ export const valueObjectDeclarationVisitor = (
   new ValueObjectDeclarationNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(valueObjectIdentifierNode)
     .withConstants(constantVarNodes)
-    .withCreate(domainConstructorDeclarationNode)
+    .withCreate(domainCreateDeclarationNode)
     .withPrivateMethods(privateMethodNodes)
     .build();
 };

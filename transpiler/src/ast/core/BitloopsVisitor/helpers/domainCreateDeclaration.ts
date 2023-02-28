@@ -23,13 +23,13 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 import { DomainCreateNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateBuilder.js';
 import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
 
-export const domainConstructorDeclarationVisitor = (
+export const domainCreateDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.DomainConstructorDeclarationContext,
+  ctx: BitloopsParser.DomainCreateDeclarationContext,
 ): DomainCreateNode => {
   const statementListNode = thisVisitor.visit(ctx.functionBody());
   const returnTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
-  const propsParameter = thisVisitor.visit(ctx.domainConstructorParam());
+  const propsParameter = thisVisitor.visit(ctx.domainCreateParam());
 
   const domainCreateNode = new DomainCreateNodeBuilder()
     .withStatements(statementListNode)

@@ -49,7 +49,10 @@ export const findIdOfRepoDomainObject = (
       throw new Error(`Props for aggregate ${aggregateNodeIdentifier} not found`);
     }
 
-    const propsValue = ast.getValueOfPropsWithIdentifierFromDomainCreate(aggregatePropsNode, 'id');
+    const propsValue = ast.getPropsFieldTypeOfDomainCreateByFieldIdentifier(
+      aggregatePropsNode,
+      'id',
+    );
 
     const idTypeRes = modelToTargetLanguage({
       value: propsValue,
