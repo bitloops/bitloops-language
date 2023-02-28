@@ -303,7 +303,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
           .build(),
       ),
       new PropsDeclarationBuilderDirector().buildProps(
-        'EmailVOProps',
+        'EmailProps',
         new FieldListNodeBuilder()
           .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('value', 'string')])
           .build(),
@@ -313,7 +313,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
       constantNodes: [],
       constructorParameterNode: {
         propIdentifier: 'props',
-        propClassName: 'EmailVOProps',
+        propClassName: 'EmailProps',
       },
       returnTypeParams: {
         ok: 'EmailVO',
@@ -410,7 +410,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
           .build(),
       ),
       new PropsDeclarationBuilderDirector().buildProps(
-        'EmailVOProps',
+        'EmailProps',
         new FieldListNodeBuilder()
           .withFields([
             new FieldBuilderDirector().buildRequiredPrimitiveField('value', 'string'),
@@ -423,7 +423,7 @@ export const VALID_WRITE_REPO_PORT_TEST_CASES: WriteRepoPortTestCase[] = [
       constantNodes: [],
       constructorParameterNode: {
         propIdentifier: 'props',
-        propClassName: 'EmailVOProps',
+        propClassName: 'EmailProps',
       },
       returnTypeParams: {
         ok: 'EmailVO',

@@ -6,6 +6,7 @@ import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 
+//fix this and entity to be extendable from a base class
 export class RootEntityDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.RootEntity;
   private static classNodeName = RootEntityKey;

@@ -14,18 +14,54 @@ import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
 import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
+import { FileUtil } from '../../../../../../src/utils/file.js';
+import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
+import { ArgumentDirector } from '../../builders/argument.js';
+import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
+import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statement/builtinFunctionDirector.js';
 import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type TestCase = {
   description: string;
   entity: EntityDeclarationNode;
-  props: PropsNode;
+  valueObject?: ValueObjectDeclarationNode;
+  props: PropsNode[];
   output: string;
 };
 
-export const VALID_AGGREGATE_TEST_CASES: TestCase[] = [
+export const VALID_ROOT_ENTITY_TEST_CASES: TestCase[] = [
   {
-    description: 'Aggregate with public and private method',
+    description: 'Root Entity with public and private method',
+    valueObject: new ValueObjectBuilderDirector().buildValueObject('TitleVO', {
+      constantNodes: [],
+      constructorParameterNode: {
+        propIdentifier: 'props',
+        propClassName: 'TitleProps',
+      },
+      returnTypeParams: {
+        ok: 'TitleVO',
+        errors: ['DomainErrors.InvalidTitleError'],
+      },
+      statements: [
+        new ExpressionBuilderDirector().buildAssignmentExpression(
+          new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+          new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
+        ),
+        new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
+          {
+            ruleIdentifier: 'InvalidTitleRule',
+            argumentListNode: new ArgumentListNodeBuilder()
+              .withArguments([
+                new ArgumentDirector().buildArgument(
+                  new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'title'),
+                ),
+              ])
+              .build(),
+          },
+        ]),
+      ],
+    }),
     entity: new RootEntityBuilderDirector().buildRootEntity('TodoRootEntity', {
       constantNodes: [],
       constructorParameterNode: {
@@ -96,38 +132,29 @@ export const VALID_AGGREGATE_TEST_CASES: TestCase[] = [
       ],
       privateMethods: [],
     }),
-    props: new PropsDeclarationBuilderDirector().buildProps(
-      'TodoProps',
-      new FieldListNodeBuilder()
-        .withFields([
-          new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
-          new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
-        ])
-        .build(),
+    props: [
+      new PropsDeclarationBuilderDirector().buildProps(
+        'TodoProps',
+        new FieldListNodeBuilder()
+          .withFields([
+            new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+            new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
+            new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField('title', 'TitleVO'),
+          ])
+          .build(),
+      ),
+      new PropsDeclarationBuilderDirector().buildProps(
+        'TitleProps',
+        new FieldListNodeBuilder()
+          .withFields([
+            new FieldBuilderDirector().buildRequiredPrimitiveField('title', 'string'),
+            new FieldBuilderDirector().buildRequiredPrimitiveField('language', 'string'),
+          ])
+          .build(),
+      ),
+    ],
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain/files/TodoRootEntity.mock.ts',
     ),
-    output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-    import { TodoProps } from './TodoProps';
-    export class TodoRootEntity extends Domain.Aggregate<TodoProps> {
-      private constructor(props: TodoProps) {
-        super(props, props.id);
-      }
-      public static create(props: TodoProps): Either<TodoRootEntity, never> {
-        props.completed = false;
-        return ok(new TodoRootEntity(props));
-      }
-      get id() {
-        return this._id;
-      }
-      get completed(): boolean {
-        return this.props.completed;
-      }
-      public uncomplete(): Either<void, never> {
-        this.props.completed = false;
-        return ok();
-      }
-      public static complete(): Either<boolean, never> {
-        return true;
-      }
-    }`,
   },
 ];

@@ -31,6 +31,7 @@ import {
   bitloopsIdentifiersTypeKey,
   TBitloopsBuiltInClassesObject,
   TStandardValueType,
+  TBitloopsPrimitives,
 } from '../../../../types.js';
 
 export class BitloopsPrimTypeIdentifiers {
@@ -53,6 +54,47 @@ export class BitloopsPrimTypeIdentifiers {
       return bitloopsBuiltInClasses.includes(type[buildInClassTypeKey]);
     }
     return false;
+  };
+
+  static isBitloopsValueObjectIdentifier(
+    primaryType: TBitloopsPrimaryTypeValues,
+  ): primaryType is TBitloopsIdentifierObject {
+    if (bitloopsIdentifiersTypeKey in primaryType) {
+      return (
+        typeof primaryType[bitloopsIdentifiersTypeKey] === 'string' &&
+        primaryType[bitloopsIdentifiersTypeKey].endsWith('VO')
+      );
+    }
+    return false;
+  }
+
+  static builtInClassToPrimitiveType = (
+    type: TBitloopsBuiltInClassesObject,
+  ): TBitloopsPrimitives => {
+    const builtInClass = type[buildInClassTypeKey];
+    switch (builtInClass) {
+      case 'UUIDv4':
+        return 'string';
+      default:
+        return 'string';
+    }
+  };
+
+  static standardVOToPrimitiveType = (
+    type: TStandardValueType,
+  ): { type?: string; primitive: any } => {
+    const standardVOType = type.standardValueType.standardVOType;
+    switch (standardVOType) {
+      case 'CurrencyVO':
+        return {
+          type: 'Domain.StandardVO.Currency.Value',
+          primitive: {
+            currencyCode: 'string',
+          },
+        };
+      default:
+        return { primitive: 'string' };
+    }
   };
 
   static isBitloopsPrimitive(
