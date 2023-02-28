@@ -58,6 +58,7 @@ import { ReadModelIdentifierNode } from './nodes/readModel/ReadModelIdentifierNo
 import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
+import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
 import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
 import { ConcretedRepoPortNode } from './nodes/setup/repo/ConcretedRepoPortNode.js';
 import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
@@ -211,6 +212,11 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
             case BitloopsTypesMapping.TIntegrationEvent: {
               const identifier = (node as IntegrationEventNode).getIntegrationEventIdentifier();
               this.symbolTableCore[boundedContextName].add(identifier);
+              break;
+            }
+            case BitloopsTypesMapping.TServicePort: {
+              const identifierNode = (node as ServicePortNode).getIdentifier();
+              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
           }

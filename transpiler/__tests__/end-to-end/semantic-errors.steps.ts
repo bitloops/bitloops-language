@@ -90,7 +90,7 @@ describe('Semantic core error End To End', () => {
   });
 });
 
-describe.skip('Semantic setup error End To End', () => {
+describe('Semantic setup error End To End', () => {
   const boundedContext = 'Todo';
   const module = 'Todo';
   const options = {
@@ -150,7 +150,7 @@ describe.skip('Semantic setup error End To End', () => {
   });
 });
 
-describe.skip('Semantic bounded context errors End To End', () => {
+describe('Semantic bounded context errors End To End', () => {
   const options = {
     formatterConfig: null,
     targetLanguage: 'TypeScript',
