@@ -22,8 +22,8 @@ DTO GetAllTodosResponseDTO {
 
 UseCase CreateTodoUseCase (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: CreateTodoRequestDTO): (OK(void), Errors(DomainErrors.TitleOutOfBoundsError)) {
-    const title = TitleVO({ title: requestDTO.title });
-    const todo = TodoEntity({ title: title, completed: false });
+    const title = TitleVO.create({ title: requestDTO.title });
+    const todo = TodoEntity.create({ title: title, completed: false });
     this.todoRepo.save(todo);
   }
 }
@@ -37,9 +37,9 @@ UseCase UpdateTodoUseCase (todoRepo: TodoWriteRepoPort) {
       return ApplicationErrors.ToDoNotFoundError(requestIdString);
     }
 
-    const title = TitleVO({ title: requestDTO.title });
+    const title = TitleVO.create({ title: requestDTO.title });
 
-    const todo = TodoEntity({ title: title, completed: requestDTO.completed, id: requestId });
+    const todo = TodoEntity.create({ title: title, completed: requestDTO.completed, id: requestId });
     this.todoRepo.update(todo);
   }
 }
