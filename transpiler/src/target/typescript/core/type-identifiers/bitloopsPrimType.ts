@@ -82,13 +82,15 @@ export class BitloopsPrimTypeIdentifiers {
 
   static standardVOToPrimitiveType = (
     type: TStandardValueType,
-  ): { type?: string; primitive: string } => {
+  ): { type?: string; primitive: any } => {
     const standardVOType = type.standardValueType.standardVOType;
     switch (standardVOType) {
       case 'CurrencyVO':
         return {
           type: 'Domain.StandardVO.Currency.Value',
-          primitive: 'string',
+          primitive: {
+            currencyCode: 'string',
+          },
         };
       default:
         return { primitive: 'string' };

@@ -81,6 +81,7 @@ export class PropsNode extends ClassTypeNode {
         primitivesValues[identifier] = {
           primitiveValue: result.primitive,
           identifier: result.type,
+          isStandardVO: true,
         };
       }
     });

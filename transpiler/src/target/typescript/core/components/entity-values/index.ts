@@ -123,15 +123,32 @@ const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: st
 const buildPrimitivesTypeValue = (
   primitivesObject: Record<string, any>,
   entityName: string,
+  isStandardValueType = false,
 ): string => {
   let result = '{\n';
 
   for (const key in primitivesObject) {
     const type = primitivesObject[key].primitiveValue ?? primitivesObject[key];
     if (TypeUtils.hasObjectType(type)) {
-      result += `${key}: ${buildPrimitivesTypeValue(type, entityName)};\n`;
+      let nestedType = type;
+      const isStandardVO = type.isStandardVO === true;
+      if (nestedType.primitiveValue) {
+        nestedType = type.primitiveValue;
+      } else if (isStandardVO) {
+        nestedType = type.primitiveValue;
+        if (TypeUtils.hasObjectType(nestedType)) {
+          nestedType = Object.values(nestedType)[0];
+        }
+      }
+      result += `${key}: ${buildPrimitivesTypeValue(nestedType, entityName, isStandardVO)};\n`;
     } else {
-      result += `${key}: ${type};\n`;
+      if (isStandardValueType) {
+        const objType = primitivesObject.primitiveValue || type;
+        result = objType;
+        return result;
+      } else {
+        result += `${key}: ${type};\n`;
+      }
     }
   }
   result += '}';
@@ -151,7 +168,11 @@ const generateToPrimitives = (
   return result;
 };
 
-const buildToPrimitives = (primitivesObject: Record<string, any>, keyToAppend = ''): string => {
+const buildToPrimitives = (
+  primitivesObject: Record<string, any>,
+  keyToAppend = '',
+  isStandardVO = false,
+): string => {
   let result = '';
   for (const [primitivesKey, value] of Object.entries(primitivesObject)) {
     if (primitivesKey === 'id') {
@@ -164,12 +185,24 @@ const buildToPrimitives = (primitivesObject: Record<string, any>, keyToAppend = 
           const voProperty = primitivesValue[key].primitiveValue;
           if (TypeUtils.hasObjectType(voProperty)) {
             const updatedKey = `${primitivesKey}.${key}`;
-            result += buildToPrimitives({ [key]: voProperty }, updatedKey);
+            const isStandardVO = voProperty.isStandardVO === true;
+            const primitivesObject = { [key]: voProperty };
+            result += buildToPrimitives(primitivesObject, updatedKey, isStandardVO);
           } else {
-            if (keyToAppend.length > 0) {
-              result += `${key}: this.props.${keyToAppend}.${key},`;
+            if (isStandardVO) {
+              let propsValue = '';
+              if (keyToAppend.length > 0) {
+                propsValue += `${primitivesKey}: this.props.${keyToAppend}.${key},`;
+              } else {
+                propsValue += `${primitivesKey}: ${key}: this.props.${keyToAppend}.${key},`;
+              }
+              return propsValue;
             } else {
-              result += `${key}: this.props.${primitivesKey}.${key},`;
+              if (keyToAppend.length > 0) {
+                result += `${key}: this.props.${keyToAppend}.${key},`;
+              } else {
+                result += `${key}: this.props.${primitivesKey}.${key},`;
+              }
             }
           }
         }
@@ -210,31 +243,50 @@ const getIdentifierFromNestedType = (key: Record<string, any>): string => {
   return identifier;
 };
 
-const buildFromPrimitives = (primitivesObject: Record<string, any>, keyToAppend = ''): string => {
+const buildFromPrimitives = (
+  primitivesObject: Record<string, any>,
+  keyToAppend = '',
+  isStandardValueType = false,
+): string => {
   let result = '';
   for (const [primitivesKey, value] of Object.entries(primitivesObject)) {
     if (primitivesKey === 'id') {
       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
     } else {
-      const primitivesValue = value.primitiveValue ?? value;
+      let primitivesValue = value.primitiveValue ?? value;
+      let nestedTypeName = '';
+      const isStandardVO = isStandardValueType === true || value.isStandardVO === true;
       if (TypeUtils.hasObjectType(primitivesValue)) {
-        const valueObjectName = getIdentifierFromNestedType(primitivesValue);
+        if (isStandardVO) {
+          primitivesValue = value.primitiveValue;
+          nestedTypeName = value.identifier;
+        } else {
+          nestedTypeName = getIdentifierFromNestedType(primitivesValue);
+        }
 
-        let voString = `${valueObjectName}.create({\n`;
+        let voString = `${nestedTypeName}.create({\n`;
         for (const key in primitivesValue) {
           const voProperty = primitivesValue[key].primitiveValue;
           if (TypeUtils.hasObjectType(voProperty)) {
             const updatedKey = `${primitivesKey}.${key}`;
-            voString += buildFromPrimitives({ [key]: voProperty }, updatedKey);
+            voString += buildFromPrimitives({ [key]: voProperty }, updatedKey, isStandardVO);
           } else {
-            if (keyToAppend.length > 0) {
-              voString += `${key}: data.${keyToAppend}.${key},`;
+            if (isStandardVO) {
+              if (keyToAppend.length > 0) {
+                voString += `${key}: data.${keyToAppend},`;
+              } else {
+                voString += `${key}: data.${primitivesKey},`;
+              }
             } else {
-              voString += `${key}: data.${primitivesKey}.${key},`;
+              if (keyToAppend.length > 0) {
+                voString += `${key}: data.${keyToAppend}.${key},`;
+              } else {
+                voString += `${key}: data.${primitivesKey}.${key},`;
+              }
             }
           }
         }
-        voString += `\n}).value as ${valueObjectName},`;
+        voString += `\n}).value as ${nestedTypeName},`;
         result += `${primitivesKey}: ${voString}`;
       } else {
         result += `${primitivesKey}: data.${primitivesKey},`;
