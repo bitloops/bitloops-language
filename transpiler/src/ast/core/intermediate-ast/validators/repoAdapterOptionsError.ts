@@ -1,6 +1,7 @@
 import { IntermediateASTValidationError } from '../../types.js';
 import { IdentifierExpressionNode } from '../nodes/Expression/IdentifierExpression.js';
 import { RepoAdapterOptionsNode } from '../nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { identifierValidationError } from './validationErrors.js';
 
 export const repoAdapterOptionsError = (
   node: RepoAdapterOptionsNode,
@@ -12,20 +13,11 @@ export const repoAdapterOptionsError = (
       .getEvaluationFieldList()
       .findFieldWithName('connection')
       .getExpression()
-      .getFirstChild();
+      .getFirstChild() as IdentifierExpressionNode;
 
-    if (!thisSymbolTable.has((expressionNode as IdentifierExpressionNode).getIdentifierName())) {
+    if (!thisSymbolTable.has(expressionNode.getIdentifierName())) {
       errors.push(
-        new IntermediateASTValidationError(
-          `Connection ${(
-            expressionNode as IdentifierExpressionNode
-          ).getIdentifierName()} not found: from ${expressionNode.getMetadata().start.line}:${
-            expressionNode.getMetadata().start.column
-          } to ${expressionNode.getMetadata().end.line}:${
-            expressionNode.getMetadata().end.column
-          } of file ${expressionNode.getMetadata().fileId}`,
-          expressionNode.getMetadata(),
-        ),
+        new identifierValidationError(expressionNode.getIdentifierName(), expressionNode),
       );
     }
   }
