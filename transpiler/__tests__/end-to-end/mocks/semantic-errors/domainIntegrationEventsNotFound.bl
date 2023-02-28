@@ -1,4 +1,10 @@
-DomainEvent TodoCreatedDomainEvent<TodoEntity>
+// DomainEvent TodoCreatedDomainEvent<TodoEntity>
+
+DomainEventHandler TodoCreatedDomainEventHandler() {
+    handle(event: TodoCreatedDomainEvent) {
+      this.commandBus.send(command);
+    }
+  }
 
 Props TitleProps {
     string title;
@@ -25,10 +31,42 @@ Props TodoProps {
     bool completed;
   }
 
-// Root Entity TodoEntity {    
-//     static create(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+Root Entity TodoEntity {    
+    static create(props: TodoProps): (OK(TodoEntity), Errors()) {} 
     
-//     check(title: TitleVO):  (OK(void), Errors()) {
-//         this.title = title;
-//       }
+    check(title: TitleVO):  (OK(void), Errors()) {
+        this.title = title;
+      }
+}
+
+DomainEvent MoneyDepositedToAccountDomainEvent<TodoEntity>
+
+// IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {
+//     // Maybe have disable list of versions?
+  
+//     'v1' : IntegrationSchemaV1 {
+//       const moneyDeposited = IntegrationSchemaV1({
+//         accountId: event.account.id.toString(),
+//         amount: event.account.balance.amount,
+//       });
+//       return moneyDeposited;
+//     }
+  
+//     'v2.0.1' : IntegrationSchemaV2 {
+//       const moneyDeposited = IntegrationSchemaV2({
+//         accountId: event.account.id.toString(),
+//       });
+//       return moneyDeposited;
+//     }
 // }
+
+IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
+    
+    eventVersion: 'v1';
+    
+    handle(event: MoneyDepositedIntegrationEvent) {
+  
+      this.commandBus.send(command);
+    }
+}
+
