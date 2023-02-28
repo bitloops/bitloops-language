@@ -28,12 +28,12 @@ import { getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { getEntityPrimitivesObject } from '../entity-values/index.js';
 import {
   generateFromPrimitives,
   generateToPrimitives,
-  getEntityPrimitivesObject,
   getPrimitivesType,
-} from '../entity-values/index.js';
+} from '../entity-values/fromToPrimitives.js';
 
 const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {

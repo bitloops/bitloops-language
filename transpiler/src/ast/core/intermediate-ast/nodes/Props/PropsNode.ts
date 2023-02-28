@@ -9,6 +9,16 @@ import { FieldListNode } from '../FieldList/FieldListNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { PropsIdentifierNode } from './PropsIdentifierNode.js';
 
+type TGetFieldPrimitives = Record<
+  string,
+  | {
+      primitiveValue: string;
+      identifier?: string;
+      isStandardVO?: boolean;
+    }
+  | string
+>;
+
 export class PropsNode extends ClassTypeNode {
   private static classType = ClassTypes.Props;
   private static classNodeName = 'Props';
@@ -39,14 +49,7 @@ export class PropsNode extends ClassTypeNode {
     return fieldListNode;
   }
 
-  public getFieldsPrimitives(tree: IntermediateASTTree): Record<
-    string,
-    | {
-        primitiveValue: string;
-        identifier?: string;
-      }
-    | string
-  > {
+  public getFieldsPrimitives(tree: IntermediateASTTree): TGetFieldPrimitives {
     const fieldNodes = this.getFieldListNode().getFieldNodes();
     const primitivesValues = {};
     fieldNodes.forEach((fieldNode) => {
@@ -65,7 +68,6 @@ export class PropsNode extends ClassTypeNode {
         typeTarget = BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
         primitivesValues[identifier] = typeTarget;
       } else if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {
-        //TODO add valueObjectIdentifier to the result
         const valueObject = tree.getValueObjectByIdentifier(type[bitloopsIdentifiersTypeKey]);
         const propsNode = tree.getPropsNodeOfValueObject(valueObject);
         const fieldPrimitives = propsNode.getFieldsPrimitives(tree);

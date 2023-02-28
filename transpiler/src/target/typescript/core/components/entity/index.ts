@@ -31,12 +31,12 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { getEntityPrimitivesObject } from '../entity-values/index.js';
 import {
   generateFromPrimitives,
   generateToPrimitives,
-  getEntityPrimitivesObject,
   getPrimitivesType,
-} from '../entity-values/index.js';
+} from '../entity-values/fromToPrimitives.js';
 
 const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -128,11 +128,9 @@ const entityToTargetLanguage = (params: {
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   const fromPrimitives = generateFromPrimitives(primitivesObject, entityIdentifier);
-  console.log('fromPrimitives', fromPrimitives);
   result += fromPrimitives + '\n';
 
   const toPrimitives = generateToPrimitives(primitivesObject, entityIdentifier);
-  console.log('toPrimitives', toPrimitives);
   result += toPrimitives + '\n';
   result += '}';
 
