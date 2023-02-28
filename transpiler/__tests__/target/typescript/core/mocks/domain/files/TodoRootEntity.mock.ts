@@ -30,7 +30,7 @@ export class TodoRootEntity extends Domain.Aggregate<TodoProps> {
     this.props.completed = false;
     return ok();
   }
-  public complete(): Either<boolean, never> {
+  public static complete(): Either<boolean, never> {
     return true;
   }
   public static fromPrimitives(data: TTodoRootEntityPrimitives): TodoRootEntity {
