@@ -1106,6 +1106,7 @@ export type TDependencyChildTypescript = TDependencyTypescript & {
   // when type is relative
   classType?: TClassTypesValues;
   className?: string;
+  contextInfo?: TContextData;
 };
 
 export type TDependencyParentTypescript = TDependencyTypescript & {

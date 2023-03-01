@@ -24,26 +24,34 @@ import {
   mappingBitloopsBuiltInClassToLayer,
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
-import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
+import {
+  TContextData,
+  TDependencyChildTypescript,
+  TDependencyParentTypescript,
+} from '../../../types.js';
 import { deepClone } from '../../../utils/deepClone.js';
 import { getFilePathRelativeToModule } from '../helpers/getTargetFileDestination.js';
 import { findRelativeDiffForImport } from '../utils/findRelativeDiff.js';
 
 export const getParentDependencies = (
   dependencies: TDependencyChildTypescript[],
-  { classType, className }: { classType: TClassTypesValues; className: string },
+  {
+    classType,
+    className,
+    contextInfo,
+  }: { classType: TClassTypesValues; className: string; contextInfo?: TContextData },
 ): TDependencyParentTypescript[] => {
-  const parentPathObj = getFilePathRelativeToModule(classType, className);
+  const parentPathObj = getFilePathRelativeToModule(classType, className, contextInfo);
   const parentPath = parentPathObj.path;
   const parentDependencies: TDependencyParentTypescript[] = [];
   const clonedDependencies = deepClone(dependencies);
   for (const dependency of clonedDependencies) {
-    const { type, value, classType, className } = dependency;
+    const { type, value, classType, className, contextInfo } = dependency;
     if (type === 'absolute') {
       parentDependencies.push(dependency as TDependencyParentTypescript);
       continue;
     }
-    const childPathObj = getFilePathRelativeToModule(classType, className);
+    const childPathObj = getFilePathRelativeToModule(classType, className, contextInfo);
     const childPath = childPathObj.path;
     const importString = findRelativeDiffForImport(parentPath, childPath, className);
     parentDependencies.push({
@@ -93,7 +101,10 @@ const removeParentDuplicates = (
   return parentDependenciesRemovedDuplicates;
 };
 
-export const getChildDependencies = (args: string | string[]): TDependencyChildTypescript[] => {
+export const getChildDependencies = (
+  args: string | string[],
+  contextData?: TContextData,
+): TDependencyChildTypescript[] => {
   let dependencyStrings = args;
   if (typeof args === 'string') {
     dependencyStrings = [args];
@@ -123,6 +134,7 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
       value,
       classType,
       className: fileName,
+      contextInfo: contextData,
     });
   }
   return result;

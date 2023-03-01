@@ -588,7 +588,7 @@ integrationEventHandlerHandleDeclaration
     ;
 
 integrationEventHandlerHandleParameter
-    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    : parameterIdentifier Colon boundedContextModuleDeclaration eventHandlerHandleIdentifier
     ;
 
 dtoDeclaration

@@ -26,6 +26,7 @@ import {
   bitloopsIdentifiersTypeKey,
   bitloopsPrimaryTypeKey,
   TBitloopsPrimaryType,
+  TContextData,
   TDependenciesTypeScript,
   TStandardValueType,
   TTargetDependenciesTypeScript,
@@ -37,6 +38,7 @@ import { BitloopsPrimTypeIdentifiers } from '../type-identifiers/bitloopsPrimTyp
 
 export const bitloopsPrimaryTypeToTargetLanguage = (
   type: TBitloopsPrimaryType,
+  contextData: TContextData,
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   let mappedType: string;
@@ -51,7 +53,7 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
     dependencies = getChildDependencies(buildInClassType);
   } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(primaryTypeValue)) {
     const value = primaryTypeValue.arrayPrimaryType;
-    const arrayPrimType = bitloopsPrimaryTypeToTargetLanguage({ type: value });
+    const arrayPrimType = bitloopsPrimaryTypeToTargetLanguage({ type: value }, contextData);
     const { output, dependencies: arrayPrimTypeDependencies } = arrayPrimType;
     mappedType = `${output}[]`;
     dependencies = [...dependencies, ...arrayPrimTypeDependencies];
@@ -59,7 +61,7 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
     mappedType = primaryTypeValue[bitloopsIdentifiersTypeKey];
     // If not primitive, then we have a dependency
     // const baseType = extractBaseTypeOfPrimaryType(type);
-    dependencies = getChildDependencies(mappedType);
+    dependencies = getChildDependencies(mappedType, contextData);
   } else if (BitloopsPrimTypeIdentifiers.isStandardValueType(primaryTypeValue)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TStandardValueType,

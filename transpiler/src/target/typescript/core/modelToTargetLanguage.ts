@@ -486,7 +486,7 @@ const modelToTargetLanguage = (props: {
       break;
     }
     case BitloopsTypesMapping.TBitloopsPrimaryType: {
-      res = bitloopsPrimaryTypeToTargetLanguage(value);
+      res = bitloopsPrimaryTypeToTargetLanguage(value, contextData);
       break;
     }
     case BitloopsTypesMapping.TStandardValueType: {

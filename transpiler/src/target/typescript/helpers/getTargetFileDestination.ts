@@ -24,6 +24,7 @@ import {
 } from '../../supportedLanguages.js';
 import { camelCase, pascalCase, kebabCase } from '../../../utils/caseStyles.js';
 import { ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import { TContextData } from '../../../types.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
@@ -152,6 +153,7 @@ const getTargetFileDestination = (
 const getFilePathRelativeToModule = (
   classType: string,
   className: string,
+  contextInfo?: TContextData,
   targetLanguage = SupportedLanguages.TypeScript as string,
 ): { path: string; filename: string; extension: string } => {
   const result = {
@@ -175,8 +177,6 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Query:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
-    case ClassTypes.IntegrationEvent:
-    case ClassTypes.IntegrationEventHandler:
     case ClassTypes.CommandHandler:
     case ClassTypes.QueryHandler:
     case ClassTypes.Struct:
@@ -189,6 +189,16 @@ const getFilePathRelativeToModule = (
     case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';
+      break;
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+      if (!contextInfo) {
+        throw new Error('Integration Events must include context info');
+      }
+      result.path = `${kebabCase(contextInfo.boundedContext)}/${kebabCase(contextInfo.module)}/${
+        ClassTypesPaths[classType]
+      }`;
+      result.filename = className;
       break;
     default:
       throw new Error(`Class type ${classType} is not supported`);
