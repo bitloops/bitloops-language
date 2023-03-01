@@ -27,26 +27,26 @@
   ],
   "devDependencies": {
     "@types/antlr4": "4.7.3",
-    "@types/eslint": "^8.4.6",
-    "@types/jest": "^29.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
+    "@types/eslint": "^8.21.1",
+    "@types/jest": "^29.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
     "env-cmd": "^10.1.0",
-    "eslint": "^8.25.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-jest": "~26.2",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "jest": "~28.1",
-    "jest-extended": "^3.0.2",
+    "jest-extended": "^3.2.4",
     "jest-ts-auto-mock": "^2.1.0",
-    "lint-staged": "^13.0.3",
-    "ts-auto-mock": "^3.6.2",
+    "lint-staged": "^13.1.2",
+    "ts-auto-mock": "^3.6.4",
     "ts-jest": "~28.0",
     "ts-node": "^10.9.1",
     "tsutils": "~3.21",
-    "ttypescript": "^1.5.13",
-    "typescript": "^4.8.4"
+    "ttypescript": "^1.5.15",
+    "typescript": "^4.9.5"
   },
   "scripts": {
     "clean": "rm -rf ./lib",
@@ -73,9 +73,9 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "antlr4": "^4.11.0",
+    "antlr4": "^4.12.0",
     "lodash": "^4.17.21",
-    "prettier": "^2.7.1"
+    "prettier": "^2.8.4"
   },
   "exports": {
     ".": {
