@@ -26,6 +26,12 @@ import {
   TDependencyInjection,
   TDependencyInjectionType,
   TArgument,
+  TCommandHandler,
+  commandHandlerKey,
+  identifierKey,
+  bitloopsPrimaryTypeKey,
+  queryHandlerKey,
+  TDomainEventHandler,
 } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
@@ -40,9 +46,12 @@ import {
 } from '../../../../helpers/mappings.js';
 import { TUseCase } from '../useCaseDefinition/index.js';
 import { TSetupElementsPerModule } from '../definitions.js';
+import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { DependencyInjectionsGenerator } from '../dependency-injections/diHandler.js';
+import { TQueryHandler } from '../../../../types.js';
 
-interface IDependencyInjectionsGenerator {
-  generateDIs(
+interface ISubscriptionsHandler {
+  generateSubscriptions(
     elementsPerBoundedContext: TSetupElementsPerModule,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
@@ -59,10 +68,10 @@ const typeToClassTypeMapping: Record<TDependencyInjectionType, TClassTypesValues
   IntegrationEventHandler: ClassTypes.IntegrationEventHandler,
 };
 
-export class DependencyInjectionsGenerator implements IDependencyInjectionsGenerator {
+export class SubscriptionsHandler implements ISubscriptionsHandler {
   constructor(private setupTypeScriptRepos: ISetupRepos = new SetupTypeScriptRepos()) {}
 
-  generateDIs(
+  generateSubscriptions(
     elementsPerBoundedContext: TSetupElementsPerModule,
     bitloopsModel: TBoundedContexts,
     setupTypeMapper: Record<string, string>,
@@ -73,10 +82,12 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
     // the use cases and controllers of that module that are concreted in the setup.bl
 
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
-      for (const moduleName of Object.keys(boundedContext)) {
+      for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
         const diFileName = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
           boundedContextName,
         )}/${kebabCase(moduleName)}/DI.ts`;
+
+        const DIs = elementsPerBoundedContext.dependencyInjections[boundedContextName][moduleName];
         // Gather all imports
         let diContent = this.generateDIFIleImports(
           elementsPerBoundedContext,
@@ -86,15 +97,17 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
         );
 
         diContent += '\n';
-        diContent += this.generateDIFileBody(
-          elementsPerBoundedContext,
-          boundedContextName,
-          moduleName,
+
+        const commandHandlersSubscriptions = this.generateCommandHandlersSubscriptions(
+          moduleTree,
+          DIs,
         );
+
+        diContent += commandHandlersSubscriptions;
 
         result.push({
           fileId: diFileName,
-          fileType: 'DI',
+          fileType: 'subscriptions',
           content: (license || '') + diContent,
           context: {
             boundedContextName,
@@ -105,6 +118,112 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
     }
     return result;
   }
+  private generateCommandHandlersSubscriptions(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): string {
+    const commandHandlers = moduleTree.getRootChildrenNodesValueByType<TCommandHandler>(
+      BitloopsTypesMapping.TCommandHandler,
+    );
+    let result = 'const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);';
+    for (const commandHandler of commandHandlers) {
+      const di = dependencyInjections.find(
+        (di) =>
+          di.dependencyInjection.identifier === commandHandler[commandHandlerKey][identifierKey],
+      );
+      if (!di) {
+        // Perhaps we could create uninitialized DI here(if they have no dependencies)
+        continue;
+      }
+      const { type, identifier } = di.dependencyInjection;
+      const instance = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
+
+      const commandNameModel =
+        commandHandler[commandHandlerKey].execute.parameter[bitloopsPrimaryTypeKey];
+      const command = modelToTargetLanguage({
+        value: { [bitloopsPrimaryTypeKey]: commandNameModel },
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      });
+      result += `
+      await commandBus.register(
+        ${command.output}.getCommandTopic(),
+        ${instance}.execute.bind(${instance}}),
+      );
+      `;
+    }
+    return result;
+  }
+
+  private generateQueryHandlersSubscriptions(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): string {
+    const queryHandlers = moduleTree.getRootChildrenNodesValueByType<TQueryHandler>(
+      BitloopsTypesMapping.TQueryHandler,
+    );
+    let result = 'const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);';
+    for (const queryHandler of queryHandlers) {
+      const di = dependencyInjections.find(
+        (di) => di.dependencyInjection.identifier === queryHandler[queryHandlerKey][identifierKey],
+      );
+      if (!di) {
+        // Perhaps we could create uninitialized DI here(if they have no dependencies)
+        continue;
+      }
+      const { type, identifier } = di.dependencyInjection;
+      const instance = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
+      const queryNameModel =
+        queryHandler[queryHandlerKey].execute.parameter[bitloopsPrimaryTypeKey];
+      const query = modelToTargetLanguage({
+        value: { [bitloopsPrimaryTypeKey]: queryNameModel },
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      });
+      result += `
+      await queryBus.register(
+        ${query.output}.getQueryTopic(),
+        ${instance}.execute.bind(${instance}}),
+      );
+      `;
+    }
+    return result;
+  }
+
+  private generateEventHandlersSubscriptions(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): string {
+    const eventHandlers = moduleTree.getRootChildrenNodesValueByType<TDomainEventHandler>(
+      BitloopsTypesMapping.TDomainEventHandler,
+    );
+    let result = 'const eventBus = Container.getEventBusFromContext(CONTEXT_ID);';
+    for (const eventHandler of eventHandlers) {
+      const di = dependencyInjections.find(
+        (di) =>
+          di.dependencyInjection.identifier ===
+          eventHandler.domainEventHandler.domainEventHandlerIdentifier,
+      );
+      if (!di) {
+        // Perhaps we could create uninitialized DI here(if they have no dependencies)
+        continue;
+      }
+      const { type, identifier } = di.dependencyInjection;
+      const instance = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
+      const eventNameModel =
+        eventHandler.domainEventHandler.handle.parameter[bitloopsPrimaryTypeKey];
+      const event = modelToTargetLanguage({
+        value: { [bitloopsPrimaryTypeKey]: eventNameModel },
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      });
+      result += `
+      await eventBus.register(
+        ${event.output}.getEventTopic(),
+        ${instance}.execute.bind(${instance}}),
+      );
+      `;
+    }
+    return result;
+  }
+
   private generateDIFIleImports(
     elementsPerBoundedContext: TSetupElementsPerModule,
     setupTypeMapper: Record<string, string>,
@@ -145,47 +264,6 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
 
     if (moduleGraphQLControllers) {
       diContent += this.generateDIGraphQLControllersImports(moduleGraphQLControllers);
-    }
-
-    return diContent;
-  }
-
-  private generateDIFileBody(
-    elementsPerBoundedContext: TSetupElementsPerModule,
-    boundedContextName: string,
-    moduleName: string,
-  ): string {
-    const {
-      useCases,
-      restControllers: controllers,
-      graphQLControllers,
-      repoAdapters,
-      dependencyInjections,
-    } = elementsPerBoundedContext;
-    const moduleRepoAdapters = repoAdapters[boundedContextName]?.[moduleName];
-    const moduleUseCases = useCases[boundedContextName]?.[moduleName];
-    const moduleRestControllers = controllers[boundedContextName]?.[moduleName];
-    const moduleGraphQLControllers = graphQLControllers[boundedContextName]?.[moduleName];
-    const moduleDIs = dependencyInjections[boundedContextName]?.[moduleName];
-
-    let diContent = '';
-    if (moduleRepoAdapters) {
-      diContent += this.setupTypeScriptRepos.generateRepoDIAdapters(moduleRepoAdapters);
-    }
-
-    if (moduleUseCases) {
-      diContent += this.generateUseCasesDIs(moduleUseCases);
-    }
-
-    if (moduleDIs) {
-      diContent = this.generateDependencyInjections(moduleDIs);
-    }
-
-    if (moduleRestControllers)
-      diContent += this.generateControllerDIsAndExports(moduleRestControllers);
-
-    if (moduleGraphQLControllers) {
-      diContent += this.generateGraphQLControllerDIsAndExports(moduleGraphQLControllers);
     }
 
     return diContent;
@@ -248,99 +326,5 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
       }';\n`;
     }
     return result;
-  }
-
-  private generateUseCasesDIs(useCases: TUseCase[]): string {
-    let result = '';
-    for (const useCase of useCases) {
-      const { useCaseExpression, instanceName } = useCase;
-      const { UseCaseIdentifier, argumentList } = useCaseExpression;
-      result += this.generateElementDI(instanceName, UseCaseIdentifier, argumentList);
-    }
-    return result;
-  }
-
-  private generateDependencyInjections(DIs: TDependencyInjection[]): string {
-    let result = '';
-    for (const di of DIs) {
-      const { dependencyInjection } = di;
-      const { identifier, type, argumentList } = dependencyInjection;
-      const instanceName = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
-      result += this.generateElementDI(instanceName, identifier, argumentList, true);
-    }
-
-    return result;
-  }
-  static generateDIsInstanceName(type: TDependencyInjectionType, identifier: string): string {
-    // cammelCase and lowerCase first letter
-    const name = identifier[0].toLowerCase() + identifier.slice(1);
-    return name;
-  }
-
-  private generateControllerDIsAndExports(controllers: TRouterController[]): string {
-    let controllerDIContent = '';
-    const controllerInstanceNames = [];
-    for (const controller of controllers) {
-      const { routerController } = controller;
-      const { RESTControllerIdentifier, controllerInstanceName, argumentList } = routerController;
-
-      controllerDIContent += this.generateElementDI(
-        controllerInstanceName,
-        RESTControllerIdentifier,
-        argumentList,
-      );
-      controllerInstanceNames.push(controllerInstanceName);
-    }
-    const exportsString = this.generateExports(controllerInstanceNames);
-
-    return controllerDIContent + '\n' + exportsString;
-  }
-
-  private generateGraphQLControllerDIsAndExports(
-    controllerResolvers: TControllerResolver[],
-  ): string {
-    let controllerDIContent = '';
-    const controllerInstanceNames = [];
-    for (const controllerResolverInstance of controllerResolvers) {
-      const controllerResolver = controllerResolverInstance[ControllerResolverKey];
-      const { graphQLControllerIdentifier, controllerInstanceName, argumentList } =
-        controllerResolver;
-
-      controllerDIContent += this.generateElementDI(
-        controllerInstanceName,
-        graphQLControllerIdentifier,
-        argumentList,
-      );
-      controllerInstanceNames.push(controllerInstanceName);
-    }
-    const exportsString = this.generateExports(controllerInstanceNames);
-    return controllerDIContent + '\n' + exportsString;
-  }
-
-  private generateElementDI(
-    instanceName: string,
-    classIdentifier: string,
-    argumentList: TArgument[],
-    exportInstance = false,
-  ): string {
-    const argumentsTarget = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TArgumentList,
-      value: { argumentList },
-    });
-
-    const exportString = exportInstance ? 'export ' : '';
-
-    return (
-      exportString + `const ${instanceName} = new ${classIdentifier}${argumentsTarget.output};\n`
-    );
-  }
-
-  private generateExports(identifiers: string[]): string {
-    let exportsString = 'export {';
-    for (const identifier of identifiers) {
-      exportsString += `${identifier}, `;
-    }
-    exportsString += '};\n';
-    return exportsString;
   }
 }

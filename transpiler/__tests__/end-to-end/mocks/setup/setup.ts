@@ -65,6 +65,11 @@ const setupFilePaths = {
     fileType: 'DomainRule',
     formatterParser: 'typescript',
   },
+  'appConfig.mock.ts': {
+    fileId: 'config/index.ts',
+    fileType: 'config',
+    formatterParser: 'typescript',
+  },
 };
 
 const getExpectedSetupOutputs = (
@@ -130,6 +135,14 @@ export const SETUP_END_TO_END_TEST_CASES: Array<TestCase> = [
         fileId: 'domain.bl',
         fileContents: FileUtil.readFileString(
           'transpiler/__tests__/end-to-end/mocks/setup/core/domain.bl',
+        ),
+      },
+      {
+        boundedContext: 'Demo',
+        module: 'Hello World',
+        fileId: 'commandHandlers.bl',
+        fileContents: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/setup/core/commandHandlers.bl',
         ),
       },
       // {

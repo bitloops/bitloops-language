@@ -17,9 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { Container } from '@bitloops/bl-boilerplate-core';
-import { appConfig } from './config';
-(async () => {
-  await Container.initializeServices(appConfig);
-  await import('../src/shared/infra/rest/fastify/app0');
-})();
+import { Constants } from '@bitloops/bl-boilerplate-core';
+
+const appConfig: Constants.ApplicationConfig = {
+  BUSES: {
+    COMMAND_BUS: Constants.CONTEXT_TYPES.InProcess,
+    EVENT_BUS: Constants.CONTEXT_TYPES.InProcess,
+    INTEGRATION_EVENT_BUS: Constants.CONTEXT_TYPES.InProcess,
+    QUERY_BUS: Constants.CONTEXT_TYPES.InProcess,
+  },
+};
+
+export { appConfig };

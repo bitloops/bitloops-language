@@ -3,12 +3,10 @@ import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   expressionKey,
   TDependencyInjections,
-  TDependencyInjectionType,
   TEvaluationField,
   TEvaluationFields,
   TExpression,
   TGraphQLServerInstance,
-  TIdentifier,
   TRouterDefinition,
   TSetupRepoAdapterDefinition,
   TUseCaseDefinition,
@@ -67,13 +65,4 @@ export const groupSetupElementsPerModule = (
       DependencyInjectionHelpers.getDependencyInjectionsForEachModule(dependencyInjections),
   };
   return elementsPerBoundedContext;
-};
-
-export const generateDIsInstanceName = (
-  _type: TDependencyInjectionType,
-  identifier: TIdentifier,
-): string => {
-  // cammelCase and lowerCase first letter
-  const name = identifier[0].toLowerCase() + identifier.slice(1);
-  return name;
 };

@@ -30,7 +30,7 @@ import {
 } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
   TConfigBusesInvocation,
   TPackageConcretion,
@@ -41,39 +41,10 @@ import { groupServers } from './servers/index.js';
 import { DependencyInjectionsGenerator } from './dependency-injections/diHandler.js';
 import { TSetupElementsPerModule } from './definitions.js';
 import { groupSetupElementsPerModule } from './helpers.js';
+import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
+import { setupTypeMapper } from './fileDestinations.js';
 
 export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
-
-const setupMapper = {
-  OUTPUT_DB_FOLDER: 'db/',
-  OUTPUT_INFRA_FOLDER: 'infra/',
-  OUTPUT_GRAPHQL_FOLDER: 'graphql/',
-  OUTPUT_REST_FOLDER: 'rest/',
-  OUTPUT_ROUTERS_FOLDER: 'routers/',
-  OUTPUT_SHARED_FOLDER: 'src/shared/',
-  OUTPUT_SRC_FOLDER: 'src/',
-  OUTPUT_CONFIG_FOLDER: 'config/',
-}; // TODO optionally get this from the config
-
-const setupTypeMapper = {
-  SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
-  BOUNDED_CONTEXTS: 'bounded-contexts',
-  startup: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
-  config: `/${setupMapper.OUTPUT_CONFIG_FOLDER}`,
-  DI: '',
-  'package.json': '/./',
-  Config: '/./',
-  'REST.Fastify.Router': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/routers/`,
-  'REST.Fastify.API': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/api/`,
-  'REST.Fastify.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/`,
-  'GraphQL.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}graphql/`,
-  'DB.Mongo': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  [ClassTypes.ApplicationError]: '',
-  [ClassTypes.DomainError]: '',
-  [ClassTypes.DomainRule]: '',
-};
 
 const license = `/**
 *  Bitloops Language
@@ -215,11 +186,20 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       });
 
       // Step 10. Generate AppConfig(Buses)
-      const boundedContexts = Object.keys(bitloopsModel);
-      const appConfig = setupGenerator.generateAppConfigFile(eventBusConfig, boundedContexts);
+      const appConfig = setupGenerator.generateAppConfigFile(eventBusConfig, license);
       if (appConfig !== null) pathsAndContents.push(appConfig);
 
-      // Step 11. Write files
+      // Step 11. Generate subscriptions
+      const subscriptionsHandler = new SubscriptionsHandler();
+      const subscriptions = subscriptionsHandler.generateSubscriptions(
+        elementsPerModule,
+        bitloopsModel,
+        setupTypeMapper,
+        license,
+      );
+      pathsAndContents.push(...subscriptions);
+
+      // Step 12. Write files
       pathsAndContents.forEach((pathAndContent) => {
         const { fileType, content, fileId } = pathAndContent;
         if (setupTypeMapper[fileType] === undefined)

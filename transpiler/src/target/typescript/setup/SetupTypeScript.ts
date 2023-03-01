@@ -89,7 +89,6 @@ interface ISetup {
 
   generateAppConfigFile(
     busesConfig: TConfigBusesInvocation | null,
-    boundedContexts: string[],
     license?: string,
   ): TSetupOutput | null;
   generateAPIs(servers: TRestAndGraphQLServers, license: string): TSetupOutput[];
@@ -685,13 +684,11 @@ import { appConfig } from './config';
 
   generateAppConfigFile(
     busesConfig: TConfigBusesInvocation | null,
-    boundedContexts: string[],
     license?: string,
   ): TSetupOutput | null {
     if (!busesConfig) {
       return null;
     }
-    let contextIdMappings = '';
     const { commandBus, eventBus, integrationEventBus, queryBus } =
       busesConfig[configBusesInvocationKey];
     const commandBusType = commandBus === 'InProcess' ? 'InProcess' : 'External';
@@ -699,27 +696,14 @@ import { appConfig } from './config';
     const integrationEventBusType = integrationEventBus === 'InProcess' ? 'InProcess' : 'External';
     const queryBusType = queryBus === 'InProcess' ? 'InProcess' : 'External';
 
-    for (const boundedContext of boundedContexts) {
-      contextIdMappings += `
-      ${boundedContext}: {
-        COMMAND_BUS: Constants.CONTEXT_TYPES.${commandBusType},
-        EVENT_BUS: Constants.CONTEXT_TYPES.${eventBusType},
-        INTEGRATION_EVENT_BUS: Constants.CONTEXT_TYPES.${integrationEventBusType},
-        QUERY_BUS: Constants.CONTEXT_TYPES.${queryBusType},
-      },`;
-    }
-
-    const body = `
-    import { Constants } from '@bitloops/bl-boilerplate-core';
-import { CONTEXT_ID as BANKING_CONTEXT_ID } from '../bounded-contexts/banking/banking/config';
-import { CONTEXT_ID as MARKETING_CONTEXT_ID } from '../bounded-contexts/marketing/marketing/config';
+    const body = `import { Constants } from '@bitloops/bl-boilerplate-core';
 
 const appConfig: Constants.ApplicationConfig = {
-  //NOTES:
-  //- Command and Query bus need to be the same because message bus needed for response topic is figured out by them
-  // -Integration and Command need to be the same because integration is subscribed to a message bus for the response of the command
-  CONTEXT_IDs_MAPPINGS: {
-    ${contextIdMappings}
+  BUSES: {
+    COMMAND_BUS: Constants.CONTEXT_TYPES.${commandBusType},
+    EVENT_BUS: Constants.CONTEXT_TYPES.${eventBusType},
+    INTEGRATION_EVENT_BUS: Constants.CONTEXT_TYPES.${integrationEventBusType},
+    QUERY_BUS: Constants.CONTEXT_TYPES.${queryBusType},
   },
 };
 
