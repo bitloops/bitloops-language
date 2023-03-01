@@ -1,7 +1,7 @@
 RESTController DepositMoneyController () { // The command bus will be set from the module context
     method: REST.Methods.POST;
     context: {
-      boundedContext: 'Banking';
+      boundedContext: 'Banking'; // BoundedContexts.Banking
       module: 'Banking';
     }
 
