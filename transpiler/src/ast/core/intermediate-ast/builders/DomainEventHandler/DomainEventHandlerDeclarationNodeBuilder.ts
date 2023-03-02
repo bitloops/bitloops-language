@@ -58,6 +58,11 @@ export class DomainEventHandlerDeclarationNodeBuilder
     return this;
   }
 
+  public withAutoDomainEventHandler(): DomainEventHandlerDeclarationNodeBuilder {
+    this.domainEventHandlerNode.isAutoDomainEventHandler = true;
+    return this;
+  }
+
   public build(): DomainEventHandlerDeclarationNode {
     this.intermediateASTTree.insertChild(this.domainEventHandlerNode);
     this.intermediateASTTree.insertChild(this.identifierNode);

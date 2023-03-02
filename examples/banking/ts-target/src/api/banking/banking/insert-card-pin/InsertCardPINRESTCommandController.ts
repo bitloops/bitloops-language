@@ -1,10 +1,12 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
-import { InsertPINCommand } from '../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommand';
-import { InsertPINCommandHandlerResponse } from '../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommandHandler.js';
 import { InsertPINRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/InsertPINRequestDTO';
-import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors/index';
+import {
+  DomainErrors,
+  ApplicationErrors,
+  InsertPINCommand,
+  InsertPINCommandHandlerResponse,
+} from '../../../../bounded-contexts/banking/banking/contracts';
 
 export class InsertCardPINRESTCommandController extends Fastify.BaseController {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {

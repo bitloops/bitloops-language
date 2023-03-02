@@ -4,6 +4,17 @@ const helloWorldRESTRouter = RESTRouter(REST.Fastify) {
     Get('/hello'): [Demo][Hello World]GetHelloWorldRESTController(myUseCase); 
 }  
 
+Config.setBuses({
+    COMMAND_BUS: MessageBus.InProcess,
+    EVENT_BUS: MessageBus.InProcess,
+    INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+    QUERY_BUS: MessageBus.InProcess,
+})
+
+DI {
+    [Demo][Hello World]WithdrawMoneyCommandHandler()
+}
+
 // [Demo][Hello World]BitloopsGherkinPackageAdapter concretes GherkinPackagePort; 
 RESTServer({   
     server: REST.Fastify,   

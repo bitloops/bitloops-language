@@ -1,0 +1,5 @@
+ServicePort TestServicePort { getTestData(value: string): TestDataSchema;}
+
+// Struct TestDataSchema { 
+//     string value; 
+// }

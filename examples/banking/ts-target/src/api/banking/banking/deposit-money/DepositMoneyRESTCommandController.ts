@@ -1,9 +1,11 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Domain, Infra } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
-import { DepositMoneyCommand } from '../../../../bounded-contexts/banking/banking/application/deposit-money/DepositMoneyCommand';
+import {
+  DepositMoneyCommand,
+  DepositMoneyCommandHandlerResponse,
+} from '../../../../bounded-contexts/banking/banking/contracts';
 import { DepositMoneyRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/DepositMoneyRequestDTO';
-import { InsertPINCommandHandlerResponse } from '../../../../bounded-contexts/banking/banking/application/insert-card-pin/InsertPINCommandHandler.js';
 
 export class DepositMoneyRESTCommandController extends Fastify.BaseController {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {
@@ -18,7 +20,7 @@ export class DepositMoneyRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new DepositMoneyCommand(dto);
-    const result = await this.commandBus.sendAndGetResponse<InsertPINCommandHandlerResponse>(
+    const result = await this.commandBus.sendAndGetResponse<DepositMoneyCommandHandlerResponse>(
       command,
       [DomainErrors.InvalidMonetaryValue],
     );

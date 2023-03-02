@@ -1,3 +1,3 @@
 export * from './application';
+export * from './domain';
 export * from './integration-events';
-export * from './topics';

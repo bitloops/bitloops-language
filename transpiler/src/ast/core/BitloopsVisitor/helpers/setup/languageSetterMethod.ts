@@ -21,8 +21,8 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
-import { LanguageNode } from '../../../intermediate-ast/nodes/setup/LanguageNode.js';
-import { LanguageNodeBuilder } from '../../../intermediate-ast/builders/setup/LanguageNodeBuilder.js';
+import { LanguageNode } from '../../../intermediate-ast/nodes/setup/config/language/LanguageNode.js';
+import { LanguageNodeBuilder } from '../../../intermediate-ast/builders/setup/config/language/LanguageNodeBuilder.js';
 import { TLanguage } from '../../../../../types.js';
 
 export const languageSetterMethodVisitor = (

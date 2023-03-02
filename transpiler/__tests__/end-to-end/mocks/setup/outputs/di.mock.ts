@@ -18,9 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { HelloWorldUseCase } from './application/HelloWorldUseCase';
+import { WithdrawMoneyCommandHandler } from './application/commandHandlers/WithdrawMoneyCommandHandler';
 import { GetHelloWorldRESTController } from './driving-adapters/GetHelloWorldRESTController';
 
 const myUseCase = new HelloWorldUseCase();
 const getHelloWorldRESTController1 = new GetHelloWorldRESTController(myUseCase);
 
 export { getHelloWorldRESTController1 };
+export const withdrawMoneyCommandHandler = new WithdrawMoneyCommandHandler();

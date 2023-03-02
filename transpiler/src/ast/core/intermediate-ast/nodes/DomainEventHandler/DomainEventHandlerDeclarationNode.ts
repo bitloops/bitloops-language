@@ -5,11 +5,13 @@ import { EventHandleNode } from '../EventHandleNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
+import { DomainEventHandlerIdentifierNode } from './DomainEventHandlerIdentifierNode.js';
 import { EventHandlerBusDependenciesNode } from './EventHandlerBusDependenciesNode.js';
 
 export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.DomainEventHandler;
   private static classNodeName = 'domainEventHandler';
+  private isAuto = false;
 
   constructor(metadata?: TNodeMetadata) {
     super({
@@ -18,6 +20,21 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
       metadata,
       classNodeName: DomainEventHandlerDeclarationNode.classNodeName,
     });
+  }
+
+  get isAutoDomainEventHandler(): boolean {
+    return this.isAuto;
+  }
+
+  set isAutoDomainEventHandler(isAuto: boolean) {
+    this.isAuto = isAuto;
+  }
+
+  public getIdentifier(): DomainEventHandlerIdentifierNode {
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TDomainEventHandlerIdentifier,
+    ) as DomainEventHandlerIdentifierNode;
+    return identifier;
   }
 
   getAllDependenciesIdentifiers(): string[] {

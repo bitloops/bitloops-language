@@ -151,7 +151,7 @@ const getTargetFileDestination = (
 };
 
 const getFilePathRelativeToModule = (
-  classType: string,
+  classType: TClassTypesValues,
   className: string,
   contextInfo?: TContextData,
   targetLanguage = SupportedLanguages.TypeScript as string,

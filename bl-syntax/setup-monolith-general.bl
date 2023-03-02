@@ -32,3 +32,25 @@ RESTServer({
 
 // Monolith - 1 Setup model
 // 2 type of setup models or 1? (module + api types)
+
+// Here for now
+const bankingWriteRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: Env(MONGO_DB_Banking_COLLECTION, 'bankings'),
+}) concretes BankingWriteRepoPort;
+  
+const bankingReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_Banking_COLLECTION, 'bankings'),
+}) concretes BankingReadRepoPort;
+
+const emailService = EmailServiceAdapters.SendGrid({
+  apiKey: Env(SENDGRID_API_KEY),
+}) concretes EmailServicePort;
+
+// USE CASES
+DI {
+  [Banking][Banking]CreateBankingCommandHandler(bankingWriteRepo, emailService);
+  [Banking][Banking]GetAllBankingsQueryHandler(bankingReadRepo);
+  [Marketing][Marketing]SendEmailAfterMoneyDepositedDomainEventHandler();
+}

@@ -17,6 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { Container } from '@bitloops/bl-boilerplate-core';
+import { appConfig } from './config';
 (async () => {
+  await Container.initializeServices(appConfig);
   await import('../src/shared/infra/rest/fastify/app0');
+  await import('./bounded-contexts/Demo/Hello World/subscriptions');
 })();
