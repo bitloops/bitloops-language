@@ -1,9 +1,11 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { DomainErrors } from '../../../../bounded-contexts/banking/banking/domain/errors/index';
-import { WithdrawMoneyCommand } from '../../../../bounded-contexts/banking/banking/application/withdraw-money/WithdrawMoneyCommand';
+import {
+  DomainErrors,
+  WithdrawMoneyCommand,
+  WithdrawMoneyCommandHandlerResponse,
+} from '../../../../bounded-contexts/banking/banking/contracts';
 import { WithdrawMoneyRequestDTO } from '../../../../bounded-contexts/banking/banking/dtos/WithdrawMoneyRequestDTO';
-import { WithdrawMoneyCommandHandlerResponse } from '../../../../bounded-contexts/banking/banking/application/withdraw-money/WithdrawMoneyCommandHandler.js';
 
 export class WithdrawMoneyRESTCommandController extends Fastify.BaseController {
   constructor(private commandBus: Infra.CommandBus.ICommandBus) {

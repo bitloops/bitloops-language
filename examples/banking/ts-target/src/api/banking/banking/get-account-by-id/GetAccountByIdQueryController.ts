@@ -1,8 +1,10 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { GetAccountQuery } from '../../../../bounded-contexts/banking/banking/application/get-account-details/GetAccountQuery';
-import { ApplicationErrors } from '../../../../bounded-contexts/banking/banking/application/errors';
-import { GetAccountDetailsResponse } from '../../../../bounded-contexts/banking/banking/application/get-account-details/GetAccountQueryHandler.js';
+import {
+  GetAccountQuery,
+  GetAccountDetailsResponse,
+  ApplicationErrors,
+} from '../../../../bounded-contexts/banking/banking/contracts';
 
 export class GetAccountByIdQueryController extends Fastify.BaseController {
   constructor(private queryBus: Infra.QueryBus.IQueryBus) {
