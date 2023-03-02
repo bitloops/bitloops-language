@@ -81,11 +81,18 @@ export const integrationEventHandlerToTargetLanguage = (
   result += handleMethod.output;
   result += '}';
 
+  // const fDependencies = getChildDependencies('MoneyDepositedIntegrationEvent', {
+  //   boundedContext: 'banking',
+  //   module: 'banking',
+  // });
+  // dependencies.push(...fDependencies);
+
   dependencies.push(...constructor.dependencies);
   dependencies.push(...handleMethod.dependencies);
   const finalDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.IntegrationEventHandler,
     className: integrationEventHandlerIdentifier,
+    contextData,
   });
 
   return { output: result, dependencies: finalDependencies };

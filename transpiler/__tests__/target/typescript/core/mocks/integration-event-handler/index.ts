@@ -13,8 +13,8 @@ type TIntegrationEventHandlerTestCase = {
 };
 
 export const contextInfo = {
-  boundedContextName: 'Banking',
-  moduleName: 'Banking',
+  boundedContextName: 'marketing',
+  moduleName: 'marketing',
 };
 
 export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEventHandlerTestCase> = [

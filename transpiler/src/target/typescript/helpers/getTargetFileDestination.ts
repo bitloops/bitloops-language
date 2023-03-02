@@ -193,11 +193,12 @@ const getFilePathRelativeToModule = (
     case ClassTypes.IntegrationEvent:
     case ClassTypes.IntegrationEventHandler:
       if (!contextInfo) {
-        throw new Error('Integration Events must include context info');
+        result.path = ClassTypesPaths[classType];
+      } else {
+        result.path = `${kebabCase(contextInfo.boundedContext)}/${kebabCase(contextInfo.module)}/${
+          ClassTypesPaths[classType]
+        }`;
       }
-      result.path = `${kebabCase(contextInfo.boundedContext)}/${kebabCase(contextInfo.module)}/${
-        ClassTypesPaths[classType]
-      }`;
       result.filename = className;
       break;
     default:

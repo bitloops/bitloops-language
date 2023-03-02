@@ -38,11 +38,13 @@ export const getParentDependencies = (
   {
     classType,
     className,
-    contextInfo,
-  }: { classType: TClassTypesValues; className: string; contextInfo?: TContextData },
+    contextData,
+  }: { classType: TClassTypesValues; className: string; contextData?: TContextData },
 ): TDependencyParentTypescript[] => {
-  const parentPathObj = getFilePathRelativeToModule(classType, className, contextInfo);
+  const parentPathObj = getFilePathRelativeToModule(classType, className);
   const parentPath = parentPathObj.path;
+  const parentPathObjContext = getFilePathRelativeToModule(classType, className, contextData);
+  const parentPathContext = parentPathObjContext.path;
   const parentDependencies: TDependencyParentTypescript[] = [];
   const clonedDependencies = deepClone(dependencies);
   for (const dependency of clonedDependencies) {
@@ -53,7 +55,8 @@ export const getParentDependencies = (
     }
     const childPathObj = getFilePathRelativeToModule(classType, className, contextInfo);
     const childPath = childPathObj.path;
-    const importString = findRelativeDiffForImport(parentPath, childPath, className);
+    const finalParentPath = contextInfo ? parentPathContext : parentPath;
+    const importString = findRelativeDiffForImport(finalParentPath, childPath, className);
     parentDependencies.push({
       type,
       default: dependency.default,
