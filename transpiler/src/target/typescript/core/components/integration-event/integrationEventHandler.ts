@@ -76,20 +76,14 @@ export const integrationEventHandlerToTargetLanguage = (
   });
 
   const handleMethod = modelToTargetLanguage({
-    value: integrationEventHandlerHandleMethod,
-    type: BitloopsTypesMapping.THandle,
+    value: { integrationEventHandlerHandleMethod },
+    type: BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod,
   });
 
   result += `export class ${integrationEventHandlerIdentifier} implements Application.IHandle { `;
   result += constructor.output;
   result += handleMethod.output;
   result += '}';
-
-  // const fDependencies = getChildDependencies('MoneyDepositedIntegrationEvent', {
-  //   boundedContext: 'banking',
-  //   module: 'banking',
-  // });
-  // dependencies.push(...fDependencies);
 
   dependencies.push(...constructor.dependencies);
   dependencies.push(...handleMethod.dependencies);

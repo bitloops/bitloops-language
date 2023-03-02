@@ -5,6 +5,7 @@ import { ConstDeclarationBuilderDirector } from '../../builders/statement/constD
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { IntegrationEventHandlerDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
 import { IntegrationEventHandlerBuilderDirector } from '../../builders/integrationEventHandlerNodeBuilderDirector.js';
+import { IntegrationEventParameterNodeBuilderDirector } from '../../builders/IntegrationEventParameterNodeBuilderDirector.js';
 
 type TIntegrationEventHandlerTestCase = {
   description: string;
@@ -25,10 +26,13 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
         identifier: 'MoneyDepositedIntegrationHandler',
         versionName: 'v1',
         parameters: [],
-        executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
-          'event',
-          'MoneyDepositedIntegrationEvent',
-        ),
+        executeParameter:
+          new IntegrationEventParameterNodeBuilderDirector().buildIntegrationEventParameter({
+            parameterName: 'event',
+            integrationTypeIdentifier: 'MoneyDepositedIntegrationEvent',
+            boundedContextName: 'banking',
+            moduleName: 'banking',
+          }),
         statements: [
           new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
             'email',
@@ -54,10 +58,13 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
         parameters: [
           new ParameterBuilderDirector().buildIdentifierParameter('emailRepo', 'IEmailRepoPort'),
         ],
-        executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
-          'event',
-          'MoneyDepositedIntegrationEvent',
-        ),
+        executeParameter:
+          new IntegrationEventParameterNodeBuilderDirector().buildIntegrationEventParameter({
+            parameterName: 'event',
+            integrationTypeIdentifier: 'MoneyDepositedIntegrationEvent',
+            boundedContextName: 'banking',
+            moduleName: 'banking',
+          }),
         statements: [
           new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
             'email',
