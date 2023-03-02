@@ -1,4 +1,4 @@
-import { TUseCaseDefinition, TUseCaseExpression, TIdentifier } from '../../../../types.js';
+import { TIdentifier, TUseCaseDefinition, TUseCaseExpression } from '../../../../types.js';
 
 export type TUseCase = {
   instanceName: TIdentifier;

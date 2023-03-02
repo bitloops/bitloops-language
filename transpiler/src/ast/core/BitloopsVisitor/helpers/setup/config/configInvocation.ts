@@ -18,15 +18,15 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { produceMetadata } from '../../metadata.js';
-import { LanguageNode } from '../../../intermediate-ast/nodes/setup/LanguageNode.js';
-import { ConfigInvocationNodeBuilder } from '../../../intermediate-ast/builders/setup/ConfigInvocationNodeBuilder.js';
+import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
+import BitloopsVisitor from '../../../BitloopsVisitor.js';
+import { produceMetadata } from '../../../metadata.js';
+import { LanguageNode } from '../../../../intermediate-ast/nodes/setup/config/language/LanguageNode.js';
+import { ConfigInvocationNodeBuilder } from '../../../../intermediate-ast/builders/setup/config/language/ConfigInvocationNodeBuilder.js';
 
 export const configInvocationVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ConfigInvocationContext,
+  ctx: BitloopsParser.SetLanguageConfigContext,
 ): void => {
   const languageNode: LanguageNode = thisVisitor.visit(ctx.languageSetterMethod());
 

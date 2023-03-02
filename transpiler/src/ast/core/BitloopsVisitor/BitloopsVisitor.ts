@@ -237,9 +237,9 @@ import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVe
 import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
 import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
-import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
+import { configInvocationVisitor } from './helpers/setup/config/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
-import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { LanguageNode } from '../intermediate-ast/nodes/setup/config/language/LanguageNode.js';
 import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
 import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
 import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
@@ -302,6 +302,19 @@ import { ThisIdentifierNode } from '../intermediate-ast/nodes/ThisIdentifier/Thi
 import { ThisIdentifierNodeBuilder } from '../intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
 import { StaticNodeBuilder } from '../intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { StaticNode } from '../intermediate-ast/nodes/methods/StaticNode.js';
+import {
+  busConfigVisitor,
+  busesConfigInvocationVisitor,
+  busesConfigVisitor,
+} from './helpers/setup/config/busesConfigInvocation.js';
+import {
+  commandHandlerDependencyInjectionVisitor,
+  dependencyInjectionListVisitor,
+  dependencyInjectionsVisitor,
+  domainEventHandlerDependencyInjectionVisitor,
+  integrationEventHandlerDependencyInjectionVisitor,
+  queryHandlerDependencyInjectionVisitor,
+} from './helpers/setup/dependencyInjections.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1298,8 +1311,51 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return stringEvaluation(ctx.StringLiteral().getText());
   }
 
-  visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
+  visitSetLanguageConfig(ctx: BitloopsParser.SetLanguageConfigContext): void {
     configInvocationVisitor(this, ctx);
+  }
+
+  visitSetBusesConfig(ctx: BitloopsParser.SetBusesConfigContext): void {
+    busesConfigInvocationVisitor(this, ctx);
+  }
+  visitBusesConfig(ctx: BitloopsParser.BusesConfigContext): any {
+    return busesConfigVisitor(this, ctx);
+  }
+
+  visitBusConfig(ctx: BitloopsParser.BusConfigContext): any {
+    return busConfigVisitor(this, ctx);
+  }
+
+  visitDependencyInjections(ctx: BitloopsParser.DependencyInjectionsContext): void {
+    dependencyInjectionsVisitor(this, ctx);
+  }
+
+  visitDependencyInjectionList(ctx: BitloopsParser.DependencyInjectionListContext): any {
+    return dependencyInjectionListVisitor(this, ctx);
+  }
+
+  visitCommandHandlerDependencyInjection(
+    ctx: BitloopsParser.CommandHandlerDependencyInjectionContext,
+  ): any {
+    return commandHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitQueryHandlerDependencyInjection(
+    ctx: BitloopsParser.QueryHandlerDependencyInjectionContext,
+  ): any {
+    return queryHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerDependencyInjection(
+    ctx: BitloopsParser.DomainEventHandlerDependencyInjectionContext,
+  ): any {
+    return domainEventHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerDependencyInjection(
+    ctx: BitloopsParser.IntegrationEventHandlerDependencyInjectionContext,
+  ): any {
+    return integrationEventHandlerDependencyInjectionVisitor(this, ctx);
   }
 
   visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {

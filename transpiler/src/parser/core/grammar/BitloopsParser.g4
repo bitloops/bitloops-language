@@ -926,8 +926,36 @@ languageSetterMethod
     ;
 
 configInvocation
-    : Config Dot languageSetterMethod 
+    : Config Dot languageSetterMethod                                                       # SetLanguageConfig 
+    | Config Dot SetBuses OpenParen OpenBrace busesConfig CloseBrace CloseParen SemiColon?  # SetBusesConfig
     ;
+
+busesConfig
+    : busConfig (Comma busConfig)* Comma?
+    ;
+
+busConfig
+    : busIdentifier Colon MessageBus Dot busType
+    ;
+
+busIdentifier
+    : CommandBus
+    | EventBus
+    | IntegrationEventBus
+    | QueryBus
+    ;
+
+busType
+    : InProcess
+    | External
+    ;
+
+// Config.setBuses({
+//     COMMAND_BUS: MessageBus.External,//Here it should be Kafka, Nats etc MessageBus.External.Nats
+//     EVENT_BUS: MessageBus.InProcess,
+//     INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+//     QUERY_BUS: MessageBus.InProcess,
+// })
 
 restRouter
     : RESTRouter
@@ -976,6 +1004,21 @@ packageConcretion
 
 useCaseDefinition
     : Const identifier Assign useCaseExpression SemiColon?
+    ;
+
+dependencyInjections
+    : DI OpenBrace dependencyInjectionList CloseBrace
+    ;
+
+dependencyInjectionList
+    : dependencyInjection (SemiColon dependencyInjection)* SemiColon?
+    ;
+
+dependencyInjection
+    : boundedContextModuleDeclaration commandHandlerIdentifier methodArguments              # CommandHandlerDependencyInjection
+    | boundedContextModuleDeclaration queryHandlerIdentifier methodArguments                # QueryHandlerDependencyInjection
+    | boundedContextModuleDeclaration domainEventHandlerIdentifier methodArguments          # DomainEventHandlerDependencyInjection
+    | boundedContextModuleDeclaration integrationEventHandlerIdentifier methodArguments     # IntegrationEventHandlerDependencyInjection
     ;
 
 routerDefinition
@@ -1123,5 +1166,6 @@ setupStatement
     | serverDeclaration  # serverDeclarationStatement
     | repoConnectionDefinition # repoConnectionDefinitionStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
+    | dependencyInjections # dependencyInjectionsStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
     ;

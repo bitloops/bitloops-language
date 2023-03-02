@@ -1,6 +1,7 @@
 import { IntermediateASTValidationError } from '../../types.js';
 import { ArgumentNode } from '../nodes/ArgumentList/ArgumentNode.js';
 import { IdentifierNode } from '../nodes/identifier/IdentifierNode.js';
+import { identifierValidationError } from './validationErrors.js';
 
 export const argumentError = (
   node: ArgumentNode,
@@ -8,20 +9,9 @@ export const argumentError = (
 ): IntermediateASTValidationError[] => {
   const errors = [];
   const expressionNode = node.getExpression();
-  const identifierNode = expressionNode.getFirstChild();
-  if (!thisSymbolTable.has((identifierNode as IdentifierNode).getIdentifierName())) {
-    errors.push(
-      new IntermediateASTValidationError(
-        `Argument ${(identifierNode as IdentifierNode).getIdentifierName()} not found: from ${
-          identifierNode.getMetadata().start.line
-        }:${identifierNode.getMetadata().start.column} to ${
-          identifierNode.getMetadata().end.line
-        }:${identifierNode.getMetadata().end.column} of file ${
-          identifierNode.getMetadata().fileId
-        }`,
-        identifierNode.getMetadata(),
-      ),
-    );
+  const identifierNode = expressionNode.getFirstChild() as IdentifierNode;
+  if (!thisSymbolTable.has(identifierNode.getIdentifierName())) {
+    errors.push(new identifierValidationError(identifierNode.getIdentifierName(), identifierNode));
   }
   return errors;
 };

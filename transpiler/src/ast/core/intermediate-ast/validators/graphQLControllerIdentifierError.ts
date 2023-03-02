@@ -2,7 +2,7 @@ import { IntermediateASTValidationError } from '../../types.js';
 import { GraphQLControllerIdentifierNode } from '../nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
 import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
 import { ControllerResolverNode } from '../nodes/setup/ControllerResolverNode.js';
-import { boundedContextError } from './index.js';
+import { boundedContextValidationError, identifierValidationError } from './index.js';
 
 export const graphQLControllerIdentifierError = (
   node: GraphQLControllerIdentifierNode,
@@ -16,20 +16,11 @@ export const graphQLControllerIdentifierError = (
   ).getBoundedContext();
   const boundedContext = boundedContextNode.getName();
   if (!(boundedContext in thisSymbolTableCore)) {
-    errors.push(boundedContextError(boundedContextNode));
+    errors.push(new boundedContextValidationError(boundedContextNode));
     return errors;
   }
   if (!thisSymbolTableCore[boundedContext].has(node.getIdentifierName())) {
-    errors.push(
-      new IntermediateASTValidationError(
-        `Controller ${node.getIdentifierName()} not found in bounded context ${boundedContext}: from ${
-          node.getMetadata().start.line
-        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
-          node.getMetadata().end.column
-        } of file ${node.getMetadata().fileId}`,
-        node.getMetadata(),
-      ),
-    );
+    errors.push(new identifierValidationError(node.getIdentifierName(), node, boundedContext));
   }
   return errors;
 };
