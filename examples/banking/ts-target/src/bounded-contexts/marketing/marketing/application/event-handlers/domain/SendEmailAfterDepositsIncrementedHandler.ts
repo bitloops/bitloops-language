@@ -2,39 +2,43 @@ import { Infra, Application } from '@bitloops/bl-boilerplate-core';
 import { DepositsIncrementedDomainEvent } from '../../../domain/events/DepositsIncrementedDomainEvent';
 import { SendEmailCommand } from '../../send-email';
 import { ICustomerService } from '../../../services/interfaces/ICustomerService';
+import { MarketingNotificationService } from '../../../domain/services/MarketingNotificationService.js';
+import { INotificationTemplateReadRepo } from '../../../repos/interfaces/INotificationTemplateReadRepo.js';
 
 export class SendEmailAfterDepositsIncrementedHandler implements Application.IHandle {
   constructor(
     private commandBus: Infra.CommandBus.ICommandBus,
-    private queryBus: Infra.QueryBus.IQueryBus,
-    private customerService: ICustomerService,
+    private customerService: ICustomerService, // private marketingRepo: Marketing
+    private notificationTemplateRepo: INotificationTemplateReadRepo,
   ) {}
 
   public async handle(event: DepositsIncrementedDomainEvent): Promise<void> {
-    const { data } = event;
-    const depositsCounter = data.deposits.counter;
+    const { data: account } = event;
 
-    let emailContent = '';
-    if (data.isFirstDeposit()) {
-      emailContent = 'Congrats, you have made your first deposit!';
-    } else if (data.hasReachedMilestoneDeposits()) {
-      emailContent = `Congrats, you have made ${depositsCounter} deposits!`;
-    } else {
-      return;
+    const marketingNotificationService = new MarketingNotificationService(
+      this.notificationTemplateRepo,
+    );
+    const emailToBeSentInfoResponse =
+      await marketingNotificationService.getNotificationTemplateToBeSent(account);
+    if (emailToBeSentInfoResponse.isFail()) {
+      return emailToBeSentInfoResponse.value;
     }
+    if (emailToBeSentInfoResponse.value === null) return;
+    const emailToBeSentInfo = emailToBeSentInfoResponse.value;
 
     const destinationEmailOrError = await this.customerService.getEmailByAccountId(
-      data.id.toString(),
+      account.id.toString(),
     );
     if (destinationEmailOrError.isFail()) {
       return;
     }
     const destinationEmail = destinationEmailOrError.value.email;
 
+    //TDOO fix text of template
     const command = new SendEmailCommand({
-      origin: 'ant@ant.com',
+      origin: emailToBeSentInfo.emailOrigin,
       destination: destinationEmail,
-      content: emailContent,
+      content: emailToBeSentInfo.notificationTemplate?.template.text || '',
     });
 
     await this.commandBus.send(command);

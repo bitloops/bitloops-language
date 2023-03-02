@@ -14,6 +14,10 @@ type TAccountSnapshot = {
 };
 
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
+  static notificationContentFirstDeposit = 'Congrats, you have made your first deposit!';
+  static notificationContentMilestoneDeposit = (depositsCounter: number) =>
+    `Congrats, you have made ${depositsCounter} deposits!`;
+
   private constructor(props: AccountProps) {
     super(props, props.id);
   }
