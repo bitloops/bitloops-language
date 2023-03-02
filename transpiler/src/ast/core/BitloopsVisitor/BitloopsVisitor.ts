@@ -1358,10 +1358,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return integrationEventHandlerDependencyInjectionVisitor(this, ctx);
   }
 
-  // visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
-  //   configInvocationVisitor(this, ctx);
-  // }
-
   visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
     return languageSetterMethodVisitor(this, ctx);
   }
