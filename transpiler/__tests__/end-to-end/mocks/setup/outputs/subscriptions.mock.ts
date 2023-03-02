@@ -17,12 +17,16 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { HelloWorldUseCase } from './application/HelloWorldUseCase';
-import { WithdrawMoneyCommandHandler } from './application/commandHandlers/WithdrawMoneyCommandHandler';
-import { GetHelloWorldRESTController } from './driving-adapters/GetHelloWorldRESTController';
+import { Container } from '@bitloops/bl-boilerplate-core';
+import { withdrawMoneyCommandHandler } from '../DI';
+import { WithdrawMoneyCommand } from '../application/commands/WithdrawMoneyCommand';
 
-const myUseCase = new HelloWorldUseCase();
-const getHelloWorldRESTController1 = new GetHelloWorldRESTController(myUseCase);
+const setUpSubscriptions = async () => {
+  const commandBus = Container.getCommandBus();
+  await commandBus.register(
+    WithdrawMoneyCommand.getCommandTopic(),
+    withdrawMoneyCommandHandler.execute.bind(withdrawMoneyCommandHandler),
+  );
+};
 
-export { getHelloWorldRESTController1 };
-export const withdrawMoneyCommandHandler = new WithdrawMoneyCommandHandler();
+setUpSubscriptions();

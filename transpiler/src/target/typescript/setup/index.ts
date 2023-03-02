@@ -42,9 +42,14 @@ import { DependencyInjectionsGenerator } from './dependency-injections/diHandler
 import { TSetupElementsPerModule } from './definitions.js';
 import { groupSetupElementsPerModule } from './helpers.js';
 import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
-import { setupTypeMapper } from './fileDestinations.js';
+import { setupTypeMapper, TSetupFileType } from './fileDestinations.js';
 
-export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
+export type TSetupOutput = {
+  fileId: string;
+  fileType: TSetupFileType;
+  content: string;
+  context?: any;
+};
 
 const license = `/**
 *  Bitloops Language

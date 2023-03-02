@@ -31,21 +31,48 @@ const setupMapper = {
   OUTPUT_CONFIG_FOLDER: 'config/',
 }; // TODO optionally get this from the config
 
-export const setupTypeMapper = {
+export type TSetupFileType =
+  | 'SRC_FOLDER'
+  | 'BOUNDED_CONTEXTS'
+  | 'startup'
+  | 'config'
+  | 'DI'
+  | 'subscriptions'
+  | 'package.json'
+  | 'Config'
+  | 'REST.Fastify.Router'
+  | 'REST.Fastify.API'
+  | 'REST.Fastify.Server'
+  | 'REST.Express.Server'
+  | 'GraphQL.Server'
+  | 'DB.Mongo'
+  | 'DB.Mongo.Index'
+  | 'DB.Mongo.Config'
+  | 'Package.Adapter'
+  | typeof ClassTypes.ApplicationError
+  | typeof ClassTypes.DomainError
+  | typeof ClassTypes.DomainRule;
+
+export type TSetupTypeMapper = Record<TSetupFileType, string>;
+
+export const setupTypeMapper: TSetupTypeMapper = {
   SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
   BOUNDED_CONTEXTS: 'bounded-contexts',
   startup: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
   config: `/${setupMapper.OUTPUT_CONFIG_FOLDER}`,
   DI: '',
+  subscriptions: '',
   'package.json': '/./',
   Config: '/./',
   'REST.Fastify.Router': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/routers/`,
   'REST.Fastify.API': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/api/`,
   'REST.Fastify.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/`,
+  'REST.Express.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}express/`,
   'GraphQL.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}graphql/`,
   'DB.Mongo': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
   'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
+  'Package.Adapter': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}package/`,
   [ClassTypes.ApplicationError]: '',
   [ClassTypes.DomainError]: '',
   [ClassTypes.DomainRule]: '',

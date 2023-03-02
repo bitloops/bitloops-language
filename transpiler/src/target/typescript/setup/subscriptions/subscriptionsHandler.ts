@@ -20,35 +20,33 @@
 //import path from 'path';
 import { kebabCase } from '../../../../utils/caseStyles.js';
 import {
-  TRouterController,
-  ControllerResolverKey,
-  TControllerResolver,
   TDependencyInjection,
-  TDependencyInjectionType,
-  TArgument,
   TCommandHandler,
   commandHandlerKey,
   identifierKey,
   bitloopsPrimaryTypeKey,
+  TBitloopsPrimaryTypeValues,
   queryHandlerKey,
+  TQueryHandler,
   TDomainEventHandler,
+  TIntegrationEventHandler,
+  expressionKey,
 } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
 import { getFilePathRelativeToModule } from '../../helpers/getTargetFileDestination.js';
-import { ISetupRepos, SetupTypeScriptRepos } from '../repos/index.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { TSetupOutput } from '../index.js';
 import {
   BitloopsTypesMapping,
   ClassTypes,
+  TBitloopsTypesValues,
   TClassTypesValues,
 } from '../../../../helpers/mappings.js';
-import { TUseCase } from '../useCaseDefinition/index.js';
 import { TSetupElementsPerModule } from '../definitions.js';
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { DependencyInjectionsGenerator } from '../dependency-injections/diHandler.js';
-import { TQueryHandler } from '../../../../types.js';
+import { TSetupTypeMapper } from '../fileDestinations.js';
 
 interface ISubscriptionsHandler {
   generateSubscriptions(
@@ -61,20 +59,20 @@ interface ISubscriptionsHandler {
 
 const esmEnabled = false;
 
-const typeToClassTypeMapping: Record<TDependencyInjectionType, TClassTypesValues> = {
-  CommandHandler: ClassTypes.CommandHandler,
-  QueryHandler: ClassTypes.QueryHandler,
-  EventHandler: ClassTypes.DomainEventHandler,
-  IntegrationEventHandler: ClassTypes.IntegrationEventHandler,
+type TComponentSubscriptionDependencies = Array<{
+  type: 'di' | TClassTypesValues;
+  identifier: string;
+}>;
+type ComponentSubscriptionsResult = {
+  output: string;
+  dependencies: TComponentSubscriptionDependencies;
 };
 
 export class SubscriptionsHandler implements ISubscriptionsHandler {
-  constructor(private setupTypeScriptRepos: ISetupRepos = new SetupTypeScriptRepos()) {}
-
   generateSubscriptions(
     elementsPerBoundedContext: TSetupElementsPerModule,
     bitloopsModel: TBoundedContexts,
-    setupTypeMapper: Record<string, string>,
+    setupTypeMapper: TSetupTypeMapper,
     license?: string,
   ): TSetupOutput[] {
     const result: TSetupOutput[] = [];
@@ -83,32 +81,29 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
 
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
-        const diFileName = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
+        const subscriptionsFileId = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
           boundedContextName,
-        )}/${kebabCase(moduleName)}/DI.ts`;
+        )}/${kebabCase(moduleName)}/subscriptions/index.ts`;
 
-        const DIs = elementsPerBoundedContext.dependencyInjections[boundedContextName][moduleName];
-        // Gather all imports
-        let diContent = this.generateDIFIleImports(
-          elementsPerBoundedContext,
-          setupTypeMapper,
-          boundedContextName,
-          moduleName,
-        );
+        const DIs =
+          elementsPerBoundedContext.dependencyInjections?.[boundedContextName]?.[moduleName] ?? [];
 
-        diContent += '\n';
-
-        const commandHandlersSubscriptions = this.generateCommandHandlersSubscriptions(
+        const methodName = 'setUpSubscriptions';
+        const commandHandlersSubscriptions = this.generateSetupsSubscriptions(
+          methodName,
           moduleTree,
           DIs,
         );
 
-        diContent += commandHandlersSubscriptions;
+        const containerImport = "import { Container } from '@bitloops/bl-boilerplate-core';\n";
+        const imports = this.generateImports(commandHandlersSubscriptions.dependencies);
+
+        const fileBody = commandHandlersSubscriptions.output + `\n${methodName}();\n`;
 
         result.push({
-          fileId: diFileName,
+          fileId: subscriptionsFileId,
           fileType: 'subscriptions',
-          content: (license || '') + diContent,
+          content: (license || '') + containerImport + imports + '\n' + fileBody,
           context: {
             boundedContextName,
             moduleName,
@@ -118,212 +113,258 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
     }
     return result;
   }
-  private generateCommandHandlersSubscriptions(
+
+  private generateSetupsSubscriptions(
+    setupSubscriptionsMethodName: string,
     moduleTree: IntermediateASTTree,
     dependencyInjections: TDependencyInjection[],
-  ): string {
-    const commandHandlers = moduleTree.getRootChildrenNodesValueByType<TCommandHandler>(
-      BitloopsTypesMapping.TCommandHandler,
-    );
-    let result = 'const commandBus = Container.getCommandBusFromContext(CONTEXT_ID);';
-    for (const commandHandler of commandHandlers) {
-      const di = dependencyInjections.find(
-        (di) =>
-          di.dependencyInjection.identifier === commandHandler[commandHandlerKey][identifierKey],
-      );
-      if (!di) {
-        // Perhaps we could create uninitialized DI here(if they have no dependencies)
-        continue;
-      }
-      const { type, identifier } = di.dependencyInjection;
-      const instance = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
+  ): ComponentSubscriptionsResult {
+    const methodName = `const ${setupSubscriptionsMethodName} = async () => {`;
 
-      const commandNameModel =
-        commandHandler[commandHandlerKey].execute.parameter[bitloopsPrimaryTypeKey];
-      const command = modelToTargetLanguage({
-        value: { [bitloopsPrimaryTypeKey]: commandNameModel },
-        type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      });
-      result += `
-      await commandBus.register(
-        ${command.output}.getCommandTopic(),
-        ${instance}.execute.bind(${instance}}),
-      );
-      `;
-    }
-    return result;
-  }
-
-  private generateQueryHandlersSubscriptions(
-    moduleTree: IntermediateASTTree,
-    dependencyInjections: TDependencyInjection[],
-  ): string {
-    const queryHandlers = moduleTree.getRootChildrenNodesValueByType<TQueryHandler>(
-      BitloopsTypesMapping.TQueryHandler,
-    );
-    let result = 'const queryBus = Container.getQueryBusFromContext(CONTEXT_ID);';
-    for (const queryHandler of queryHandlers) {
-      const di = dependencyInjections.find(
-        (di) => di.dependencyInjection.identifier === queryHandler[queryHandlerKey][identifierKey],
-      );
-      if (!di) {
-        // Perhaps we could create uninitialized DI here(if they have no dependencies)
-        continue;
-      }
-      const { type, identifier } = di.dependencyInjection;
-      const instance = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
-      const queryNameModel =
-        queryHandler[queryHandlerKey].execute.parameter[bitloopsPrimaryTypeKey];
-      const query = modelToTargetLanguage({
-        value: { [bitloopsPrimaryTypeKey]: queryNameModel },
-        type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      });
-      result += `
-      await queryBus.register(
-        ${query.output}.getQueryTopic(),
-        ${instance}.execute.bind(${instance}}),
-      );
-      `;
-    }
-    return result;
-  }
-
-  private generateEventHandlersSubscriptions(
-    moduleTree: IntermediateASTTree,
-    dependencyInjections: TDependencyInjection[],
-  ): string {
-    const eventHandlers = moduleTree.getRootChildrenNodesValueByType<TDomainEventHandler>(
-      BitloopsTypesMapping.TDomainEventHandler,
-    );
-    let result = 'const eventBus = Container.getEventBusFromContext(CONTEXT_ID);';
-    for (const eventHandler of eventHandlers) {
-      const di = dependencyInjections.find(
-        (di) =>
-          di.dependencyInjection.identifier ===
-          eventHandler.domainEventHandler.domainEventHandlerIdentifier,
-      );
-      if (!di) {
-        // Perhaps we could create uninitialized DI here(if they have no dependencies)
-        continue;
-      }
-      const { type, identifier } = di.dependencyInjection;
-      const instance = DependencyInjectionsGenerator.generateDIsInstanceName(type, identifier);
-      const eventNameModel =
-        eventHandler.domainEventHandler.handle.parameter[bitloopsPrimaryTypeKey];
-      const event = modelToTargetLanguage({
-        value: { [bitloopsPrimaryTypeKey]: eventNameModel },
-        type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      });
-      result += `
-      await eventBus.register(
-        ${event.output}.getEventTopic(),
-        ${instance}.execute.bind(${instance}}),
-      );
-      `;
-    }
-    return result;
-  }
-
-  private generateDIFIleImports(
-    elementsPerBoundedContext: TSetupElementsPerModule,
-    setupTypeMapper: Record<string, string>,
-    boundedContextName: string,
-    moduleName: string,
-  ): string {
-    const {
-      useCases,
-      restControllers: controllers,
-      graphQLControllers,
-      repoAdapters,
+    setupSubscriptionsMethodName += 'setUpSubscriptions();';
+    const commandHandlersSubscriptions = this.generateSubscriptionsForCommandHandlers(
+      moduleTree,
       dependencyInjections,
-    } = elementsPerBoundedContext;
-    const moduleRepoAdapters = repoAdapters[boundedContextName]?.[moduleName];
-    const moduleUseCases = useCases[boundedContextName]?.[moduleName];
-    const moduleRestControllers = controllers[boundedContextName]?.[moduleName];
-    const moduleGraphQLControllers = graphQLControllers[boundedContextName]?.[moduleName];
-    const moduleDIs = dependencyInjections[boundedContextName]?.[moduleName];
-    let diContent = '';
-    if (moduleRepoAdapters) {
-      diContent += this.setupTypeScriptRepos.generateRepoDIImports(
-        moduleRepoAdapters,
-        setupTypeMapper,
+    );
+
+    const queryHandlersSubscriptions = this.generateSubscriptionsForQueryHandlers(
+      moduleTree,
+      dependencyInjections,
+    );
+
+    const domainEventHandlersSubscriptions = this.generateSubscriptionsForDomainEventHandlers(
+      moduleTree,
+      dependencyInjections,
+    );
+
+    const integrationEventHandlersSubscriptions =
+      this.generateSubscriptionsForIntegrationEventHandlers(moduleTree, dependencyInjections);
+
+    const methodBody =
+      commandHandlersSubscriptions.output +
+      queryHandlersSubscriptions.output +
+      domainEventHandlersSubscriptions.output +
+      integrationEventHandlersSubscriptions.output;
+
+    const allDependencies = [
+      ...commandHandlersSubscriptions.dependencies,
+      ...queryHandlersSubscriptions.dependencies,
+      ...domainEventHandlersSubscriptions.dependencies,
+      ...integrationEventHandlersSubscriptions.dependencies,
+    ];
+
+    return {
+      output: methodName + methodBody + '\n\n}\n',
+      dependencies: allDependencies,
+    };
+  }
+
+  private generateSubscriptionsForCommandHandlers(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): ComponentSubscriptionsResult {
+    return this.generateSubscriptionsForComponent<TCommandHandler>({
+      moduleTree,
+      componentHandlerNodeType: BitloopsTypesMapping.TCommandHandler,
+      busIdentifier: 'commandBus',
+      busGetterFunction: 'Container.getCommandBus()',
+      componentClassType: ClassTypes.Command,
+      getDIForComponentHandler: (component) =>
+        dependencyInjections.find(
+          (di) => di.dependencyInjection.identifier === component[commandHandlerKey][identifierKey],
+        ),
+      getComponentFromComponentHandler: (handler) =>
+        handler[commandHandlerKey].execute.parameter[bitloopsPrimaryTypeKey],
+      subscriptionStatement: (
+        busIdentifier: string,
+        componentClassName: string,
+        handler: string,
+      ) => `await ${busIdentifier}.register(
+        ${componentClassName}.getCommandTopic(),
+        ${handler}.execute.bind(${handler}),
       );
-    }
-
-    if (moduleUseCases) {
-      diContent += this.generateDIUseCaseImports(moduleUseCases);
-    }
-
-    if (moduleDIs) {
-      diContent += this.generateDependencyInjectionImports(moduleDIs);
-    }
-
-    if (moduleRestControllers) {
-      diContent += this.generateDIControllersImports(moduleRestControllers);
-    }
-
-    if (moduleGraphQLControllers) {
-      diContent += this.generateDIGraphQLControllersImports(moduleGraphQLControllers);
-    }
-
-    return diContent;
+      `,
+    });
   }
 
-  private generateDIUseCaseImports(useCases: TUseCase[]): string {
-    let result = '';
-    for (const useCase of useCases) {
-      const { useCaseExpression } = useCase;
-      const { UseCaseIdentifier } = useCaseExpression;
-      // Gather all use case imports
-      const { path, filename } = getFilePathRelativeToModule(ClassTypes.UseCase, UseCaseIdentifier);
-      result += `import { ${UseCaseIdentifier} } from './${path}${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
-    }
-    return result;
-  }
-
-  private generateDependencyInjectionImports(DIs: TDependencyInjection[]): string {
-    let result = '';
-    for (const useCase of DIs) {
-      const { dependencyInjection } = useCase;
-      const { identifier, type } = dependencyInjection;
-      // Gather all use case imports
-      const classType = typeToClassTypeMapping[type];
-      const { path, filename } = getFilePathRelativeToModule(classType, identifier);
-      result += `import { ${identifier} } from './${path}${filename}${esmEnabled ? '.js' : ''}';\n`;
-    }
-    return result;
-  }
-
-  private generateDIControllersImports(controllers: TRouterController[]): string {
-    let result = '';
-    for (const controller of controllers) {
-      const { routerController } = controller;
-      const { RESTControllerIdentifier } = routerController;
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.Controller,
-        RESTControllerIdentifier,
+  private generateSubscriptionsForQueryHandlers(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): ComponentSubscriptionsResult {
+    return this.generateSubscriptionsForComponent<TQueryHandler>({
+      moduleTree,
+      componentHandlerNodeType: BitloopsTypesMapping.TQueryHandler,
+      busIdentifier: 'queryBus',
+      busGetterFunction: 'Container.getQueryBus()',
+      componentClassType: ClassTypes.Query,
+      getDIForComponentHandler: (component) =>
+        dependencyInjections.find(
+          (di) => di.dependencyInjection.identifier === component[queryHandlerKey][identifierKey],
+        ),
+      getComponentFromComponentHandler: (handler) =>
+        handler[queryHandlerKey].execute.parameter[bitloopsPrimaryTypeKey],
+      subscriptionStatement: (
+        busIdentifier: string,
+        componentClassName: string,
+        handler: string,
+      ) => `await ${busIdentifier}.register(
+        ${componentClassName}.getQueryTopic(),
+        ${handler}.execute.bind(${handler}),
       );
-      result += `import { ${RESTControllerIdentifier} } from './${path}${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
-    }
-    return result;
+      `,
+    });
   }
 
-  private generateDIGraphQLControllersImports(controllers: TControllerResolver[]): string {
-    let result = '';
-    for (const controller of controllers) {
-      const resolver = controller[ControllerResolverKey];
-      const { graphQLControllerIdentifier } = resolver;
-      const { path, filename } = getFilePathRelativeToModule(
-        ClassTypes.Controller,
-        graphQLControllerIdentifier,
+  private generateSubscriptionsForDomainEventHandlers(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): ComponentSubscriptionsResult {
+    return this.generateSubscriptionsForComponent<TDomainEventHandler>({
+      moduleTree,
+      componentHandlerNodeType: BitloopsTypesMapping.TDomainEventHandler,
+      busIdentifier: 'domainEventBus',
+      busGetterFunction: 'Container.getEventBus()',
+      componentClassType: ClassTypes.DomainEvent,
+      getDIForComponentHandler: (component) =>
+        dependencyInjections.find(
+          (di) =>
+            di.dependencyInjection.identifier ===
+            component.domainEventHandler.domainEventHandlerIdentifier,
+        ),
+      getComponentFromComponentHandler: (handler) =>
+        handler.domainEventHandler.handle.parameter[bitloopsPrimaryTypeKey],
+      subscriptionStatement: (
+        busIdentifier: string,
+        componentClassName: string,
+        handler: string,
+      ) => `await ${busIdentifier}.subscribe(
+        ${componentClassName}.getEventTopic(),
+        ${handler}.handle.bind(${handler}),
       );
-      result += `import { ${graphQLControllerIdentifier} } from './${path}${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
+      `,
+    });
+  }
+
+  private generateSubscriptionsForIntegrationEventHandlers(
+    moduleTree: IntermediateASTTree,
+    dependencyInjections: TDependencyInjection[],
+  ): ComponentSubscriptionsResult {
+    return this.generateSubscriptionsForComponent<TIntegrationEventHandler>({
+      moduleTree,
+      componentHandlerNodeType: BitloopsTypesMapping.TIntegrationEventHandler,
+      busIdentifier: 'integrationEventBus',
+      busGetterFunction: 'Container.getIntegrationEventBus()',
+      componentClassType: ClassTypes.IntegrationEvent,
+      getDIForComponentHandler: (component) =>
+        dependencyInjections.find(
+          (di) =>
+            di.dependencyInjection.identifier ===
+            component.integrationEventHandler.integrationEventHandlerIdentifier,
+        ),
+      getComponentFromComponentHandler: (handler) =>
+        handler.integrationEventHandler.handle.parameter[bitloopsPrimaryTypeKey],
+      subscriptionStatement: (
+        busIdentifier: string,
+        componentClassName: string,
+        handler: string,
+        integrationEventHandler,
+      ) => {
+        const version =
+          integrationEventHandler.integrationEventHandler.evaluationField[expressionKey];
+        const versionOutput = modelToTargetLanguage({
+          value: { expression: version },
+          type: BitloopsTypesMapping.TExpression,
+        });
+
+        return `await ${busIdentifier}.subscribe<${componentClassName}>(
+        ${componentClassName}.getEventTopic(${versionOutput.output}}),
+        ${handler}.handle.bind(${handler}),
+      );
+      `;
+      },
+    });
+  }
+
+  private generateSubscriptionsForComponent<T>(params: {
+    moduleTree: IntermediateASTTree;
+    componentHandlerNodeType: TBitloopsTypesValues;
+    busIdentifier: string;
+    busGetterFunction: string;
+    componentClassType: TClassTypesValues;
+    getDIForComponentHandler: (component: T) => TDependencyInjection | undefined;
+    getComponentFromComponentHandler: (handler: T) => TBitloopsPrimaryTypeValues;
+    subscriptionStatement: (
+      busIdentifier: string,
+      componentClassName: string,
+      componentHandlerIdentifier: string,
+      componentHandler?: T,
+    ) => string;
+  }): ComponentSubscriptionsResult {
+    const {
+      moduleTree,
+      componentHandlerNodeType,
+      busIdentifier,
+      busGetterFunction,
+      getComponentFromComponentHandler: extractComponentParameterTypeFromHandler,
+      getDIForComponentHandler: extractDIForComponent,
+      componentClassType: classType,
+      subscriptionStatement,
+    } = params;
+    const componentHandlers =
+      moduleTree.getRootChildrenNodesValueByType<T>(componentHandlerNodeType);
+    const dependencies: TComponentSubscriptionDependencies = [];
+    let result = `const ${busIdentifier} = ${busGetterFunction};`;
+    for (const componentHandler of componentHandlers) {
+      const di = extractDIForComponent(componentHandler);
+      if (!di) {
+        // Throw error to inform for unregistered DI?
+        continue;
+      }
+      const { type, identifier } = di.dependencyInjection;
+      const handlerInstance = DependencyInjectionsGenerator.generateDIsInstanceName(
+        type,
+        identifier,
+      );
+
+      const componentParameterType = extractComponentParameterTypeFromHandler(componentHandler);
+      const component = modelToTargetLanguage({
+        value: { [bitloopsPrimaryTypeKey]: componentParameterType },
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      });
+      result += subscriptionStatement(
+        busIdentifier,
+        component.output,
+        handlerInstance,
+        componentHandler,
+      );
+
+      dependencies.push({
+        type: 'di',
+        identifier: handlerInstance,
+      });
+      dependencies.push({
+        type: classType,
+        identifier: component.output,
+      });
+    }
+    if (dependencies.length === 0) {
+      return { output: '', dependencies };
+    }
+    return { output: result, dependencies };
+  }
+
+  private generateImports(dependencies: TComponentSubscriptionDependencies): string {
+    let result = '';
+    for (const dependency of dependencies) {
+      const { type, identifier } = dependency;
+      if (type === 'di') {
+        result += `import { ${identifier} } from '../DI';\n`;
+        continue;
+      }
+      const childPathObj = getFilePathRelativeToModule(type, identifier);
+      const childPath = childPathObj.path;
+      const filename = childPathObj.filename + (esmEnabled ? '.js' : '');
+      result += `import { ${identifier} } from '../${childPath}/${filename}';\n`;
     }
     return result;
   }

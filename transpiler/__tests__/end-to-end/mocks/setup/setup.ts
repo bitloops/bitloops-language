@@ -70,6 +70,11 @@ const setupFilePaths = {
     fileType: 'config',
     formatterParser: 'typescript',
   },
+  'subscriptions.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/subscriptions/index.ts',
+    fileType: 'subscriptions',
+    formatterParser: 'typescript',
+  },
 };
 
 const getExpectedSetupOutputs = (

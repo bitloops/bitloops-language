@@ -177,15 +177,15 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
       diContent += this.generateUseCasesDIs(moduleUseCases);
     }
 
-    if (moduleDIs) {
-      diContent = this.generateDependencyInjections(moduleDIs);
-    }
-
     if (moduleRestControllers)
       diContent += this.generateControllerDIsAndExports(moduleRestControllers);
 
     if (moduleGraphQLControllers) {
       diContent += this.generateGraphQLControllerDIsAndExports(moduleGraphQLControllers);
+    }
+
+    if (moduleDIs) {
+      diContent += this.generateDependencyInjections(moduleDIs);
     }
 
     return diContent;
@@ -213,7 +213,9 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
       // Gather all use case imports
       const classType = typeToClassTypeMapping[type];
       const { path, filename } = getFilePathRelativeToModule(classType, identifier);
-      result += `import { ${identifier} } from './${path}${filename}${esmEnabled ? '.js' : ''}';\n`;
+      result += `import { ${identifier} } from './${path}/${filename}${
+        esmEnabled ? '.js' : ''
+      }';\n`;
     }
     return result;
   }
@@ -271,8 +273,8 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
 
     return result;
   }
-  static generateDIsInstanceName(type: TDependencyInjectionType, identifier: string): string {
-    // cammelCase and lowerCase first letter
+  static generateDIsInstanceName(_type: TDependencyInjectionType, identifier: string): string {
+    // camelCase and lowerCase first letter
     const name = identifier[0].toLowerCase() + identifier.slice(1);
     return name;
   }
