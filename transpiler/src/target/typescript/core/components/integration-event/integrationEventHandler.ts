@@ -60,8 +60,12 @@ export const integrationEventHandlerToTargetLanguage = (
   let result = '';
   const dependencies = INTEGRATION_EVENT_HANDLER_DEPENDENCIES;
 
-  const { parameters, eventHandlerBusDependencies, handle, integrationEventHandlerIdentifier } =
-    integrationEventHandler;
+  const {
+    parameters,
+    eventHandlerBusDependencies,
+    integrationEventHandlerHandleMethod,
+    integrationEventHandlerIdentifier,
+  } = integrationEventHandler;
   const constructor = modelToTargetLanguage({
     value: {
       parameterList: { parameters },
@@ -72,7 +76,7 @@ export const integrationEventHandlerToTargetLanguage = (
   });
 
   const handleMethod = modelToTargetLanguage({
-    value: handle,
+    value: integrationEventHandlerHandleMethod,
     type: BitloopsTypesMapping.THandle,
   });
 

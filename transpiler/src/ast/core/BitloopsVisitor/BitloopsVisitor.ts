@@ -302,6 +302,7 @@ import { ThisIdentifierNode } from '../intermediate-ast/nodes/ThisIdentifier/Thi
 import { ThisIdentifierNodeBuilder } from '../intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
 import { StaticNodeBuilder } from '../intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { StaticNode } from '../intermediate-ast/nodes/methods/StaticNode.js';
+import { IntegrationEventParameterNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1522,7 +1523,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIntegrationEventHandlerHandleParameter(
     ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
-  ): ParameterNode {
+  ): IntegrationEventParameterNode {
     return integrationEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 
