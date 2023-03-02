@@ -36,6 +36,7 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
         .withIdentifier(domainToIntegrationEventIdentifierNode)
         .withHandleMethod(eventHandleNode)
         .withEventBusDependencies(eventBusDependenciesNode)
+        .withAutoDomainEventHandler()
         .build();
     }
   }

@@ -237,7 +237,7 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
         busIdentifier: string,
         componentClassName: string,
         handler: string,
-      ) => `await ${busIdentifier}.subscribe(
+      ) => `await ${busIdentifier}.subscribe<${componentClassName}>(
         ${componentClassName}.getEventTopic(),
         ${handler}.handle.bind(${handler}),
       );
