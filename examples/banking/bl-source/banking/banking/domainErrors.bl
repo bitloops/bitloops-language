@@ -1,0 +1,44 @@
+DomainError PINLengthError(pin: string) {
+    message: `PIN ${pin} length is invalid`,
+    errorId: 'ce26bf5a-0219-4a3e-a674-6f35c60073c7'
+}
+
+DomainError PINIsNotPositiveNumberError(pin: string) {
+    message: `PIN ${pin} is not a positive number`,
+    errorId: 'e09ec42c-4d31--b68a-ac84abe9464f' 
+}
+
+DomainError InvalidEmailError(email: string) {
+    message: `Email ${email} is invalid`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-ac84abe9464f'
+}
+
+DomainError InvalidCurrencyError(code: string) {
+    message: `Currency code ${code} is invalid`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-b68a78-b68a655'
+}
+
+DomainError InvalidMonetaryValueError(code: string) {
+    message: `Currency code ${code} is invalid`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-b68a78-b68a655'
+}
+
+DomainError InvalidAmountError(amount:  float) { //amount: string | float  -> type annotation takes one type only
+    message: `Amount ${amount} is invalid`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-b68a78-b68a655'
+}
+
+DomainError InvalidCustomerPINError(pin: string) {
+    message: `PIN ${pin} is invalid`,
+    errorId: 'ade5fa8d-4432-4924-a43d-74cc84246354'
+}
+
+DomainError IncompatibleCurrenciesError(firstCurrency: string, secondCurrency: string) {
+    message: `Currency ${firstCurrency} is not the same as ${secondCurrency}`,
+    errorId: 'a12ec42c-4d31-4f7c-b68a-b68a78-b68a655'
+}
+
+DomainError InsufficientBalanceError(balance: float) { 
+    message: `Insufficient balance: ${balance} in account`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-b68a78-b68a655'
+}
