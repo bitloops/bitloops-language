@@ -567,7 +567,6 @@ domainEventHandlerHandleDeclaration
 
 eventHandlerHandleIdentifier
     : domainEventIdentifier
-    | integrationEventIdentifier
     ;
 
 domainEventHandlerHandleParameter

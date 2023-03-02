@@ -1513,9 +1513,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitEventHandlerHandleIdentifier(
     ctx: BitloopsParser.EventHandlerHandleIdentifierContext,
   ): BitloopsPrimaryTypeNode {
-    const type = ctx.domainEventIdentifier()
-      ? ctx.domainEventIdentifier().getText()
-      : ctx.integrationEventIdentifier().getText();
+    const type = ctx.domainEventIdentifier().getText();
 
     const metadata = produceMetadata(ctx, this);
     return new BitloopsPrimaryTypeNodeBuilderDirector(metadata).buildIdentifierPrimaryType(type);
