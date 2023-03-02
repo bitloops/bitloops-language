@@ -1,6 +1,5 @@
 import { argumentError } from './argumentError.js';
 import { bitloopsIdentifierError } from './bitloopsIdentifierValidator.js';
-import { boundedContextError } from './boundedContextError.js';
 import { concretedRepoPortError } from './concretedRepoPortError.js';
 import { domainCreateParameterTypeError } from './domainCreateParameterTypeError.js';
 import { domainRuleIdentifierError } from './domainRuleIdentifierError.js';
@@ -18,10 +17,10 @@ import {
 } from './useCaseIdentifierError.js';
 
 import { readModelIdentifierError } from './readModelIdentifierError.js';
+import { boundedContextValidationError, identifierValidationError } from './validationErrors.js';
 
 export {
   bitloopsIdentifierError,
-  boundedContextError,
   domainCreateParameterTypeError,
   domainRuleIdentifierError,
   entityIdentifierError,
@@ -37,4 +36,6 @@ export {
   restServerInstanceRouterError,
   graphQLControllerIdentifierError,
   readModelIdentifierError,
+  identifierValidationError,
+  boundedContextValidationError,
 };
