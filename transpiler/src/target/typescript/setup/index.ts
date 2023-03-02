@@ -146,6 +146,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
 
       // Step 5. Startup File
       const startupFile = setupGenerator.generateStartupFile(
+        bitloopsModel,
         allServers,
         repoConnectionDefinitions,
         eventBusConfig ?? null,

@@ -22,4 +22,5 @@ import { appConfig } from './config';
 (async () => {
   await Container.initializeServices(appConfig);
   await import('../src/shared/infra/rest/fastify/app0');
+  await import('./bounded-contexts/Demo/Hello World/subscriptions');
 })();

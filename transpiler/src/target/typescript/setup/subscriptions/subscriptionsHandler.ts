@@ -103,6 +103,47 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
     return result;
   }
 
+  static modulesWithSubscriptions(
+    bitloopsModel: TBoundedContexts,
+  ): Array<{ boundedContextName: string; moduleName: string }> {
+    const res = [];
+    for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
+      for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
+        const commandHandlers = moduleTree.getRootChildrenNodesValueByType(
+          BitloopsTypesMapping.TCommandHandler,
+        );
+        if (commandHandlers.length > 0) {
+          res.push({ boundedContextName, moduleName });
+          continue;
+        }
+
+        const queryHandlers = moduleTree.getRootChildrenNodesValueByType(
+          BitloopsTypesMapping.TQueryHandler,
+        );
+        if (queryHandlers.length > 0) {
+          res.push({ boundedContextName, moduleName });
+          continue;
+        }
+
+        const domainEventHandlers = moduleTree.getRootChildrenNodesValueByType(
+          BitloopsTypesMapping.TDomainEventHandler,
+        );
+        if (domainEventHandlers.length > 0) {
+          res.push({ boundedContextName, moduleName });
+          continue;
+        }
+
+        const integrationEventHandlers = moduleTree.getRootChildrenNodesValueByType(
+          BitloopsTypesMapping.TIntegrationEventHandler,
+        );
+        if (integrationEventHandlers.length > 0) {
+          res.push({ boundedContextName, moduleName });
+        }
+      }
+    }
+    return res;
+  }
+
   private generateSetupsSubscriptions(
     setupSubscriptionsMethodName: string,
     moduleTree: IntermediateASTTree,

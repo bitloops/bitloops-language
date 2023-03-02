@@ -71,6 +71,7 @@ import { RestFastifyGenerator } from './servers/fastify.js';
 import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
 import { SupportedLanguages } from '../../supportedLanguages.js';
 import { TGraphQLSetupData } from './graphql/types.js';
+import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -80,6 +81,7 @@ type TPackageVersions = {
 
 interface ISetup {
   generateStartupFile(
+    bitloopsModel: TBoundedContexts,
     allServers: TRestAndGraphQLServers,
     reposData: TRepoConnectionDefinition[],
     eventBusConfig: TConfigBusesInvocation,
@@ -646,6 +648,7 @@ export { routers };
     return output;
   }
   generateStartupFile(
+    bitloopsModel: TBoundedContexts,
     servers: TRestAndGraphQLServers,
     reposData: TRepoConnectionDefinition[],
     eventBusConfig: TConfigBusesInvocation | null,
@@ -670,9 +673,20 @@ import { appConfig } from './config';
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
     dynamicAwaitImports.push(...dbConnections);
     // TODO check if map here is needed
+    const modules = SubscriptionsHandler.modulesWithSubscriptions(bitloopsModel);
+    let subscriptions = '';
+    if (modules.length > 0) {
+      subscriptions = modules
+        .map(
+          ({ boundedContextName, moduleName }) =>
+            `await import('./bounded-contexts/${boundedContextName}/${moduleName}/subscriptions')`,
+        )
+        .join(';\n  ');
+    }
     const body = `(async () => {
       ${eventBusConfig ? 'await Container.initializeServices(appConfig);' : ''}
   ${dynamicAwaitImports.map((i) => i).join('\n  ')}
+  ${subscriptions}
 })();
 `;
     return {
