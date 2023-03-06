@@ -1,20 +1,14 @@
 export type TNotificationTemplateSnapshot = {
   id: string;
   type: string;
-  template: {
-    text: string;
-    variables: string[];
-  };
+  template: string;
 };
 
 export class NotificationTemplateReadModel {
   constructor(
     public readonly id: string,
     public readonly type: string,
-    public readonly template: {
-      text: string;
-      variables: string[];
-    },
+    public readonly template: string,
   ) {}
 
   static fromPrimitives(snapshot: TNotificationTemplateSnapshot): NotificationTemplateReadModel {
