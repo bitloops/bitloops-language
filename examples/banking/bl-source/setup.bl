@@ -1,0 +1,44 @@
+Config.setLanguage(TypeScript);
+
+// DB CONNECTIONS
+
+const mongoConnection = RepoConnections.Mongo({
+  host: 'localhost',
+  port: 27017,
+  database: Env(MONGO_DB_DATABASE,'banking'),
+});
+
+// REPOSITORIES
+
+const accountWriteRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_ACCOUNT_COLLECTION, 'accounts'),
+}) concretes [Banking][Banking]AccountWriteRepoPort;
+
+const accountReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_ACCOUNT_COLLECTION, 'accounts'),
+}) concretes [Banking][Banking]AccountReadRepoPort;
+
+// COMMAND & QUERY HANDLERS, DOMAIN & INTEGRATION EVENT HANDLERS
+DI {
+  [Banking][Banking]WithdrawMoneyCommandHandler(accountWriteRepo);
+}
+
+// REST ROUTERS
+
+const bankingRouter = RESTRouter(REST.Fastify) {
+  Post('/insertPIN'): [Banking][Banking]InsertPINRESTController();
+  Post('/withdrawMoney'): [Todo][Todo]WithdrawMoneyRESTController();
+  Post('/depositMoney'): [Todo][Todo]DepositMoneyRESTController();
+}
+
+// SERVERS
+
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+}) {
+  '/banking': bankingRouter;
+}

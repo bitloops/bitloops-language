@@ -1,0 +1,14 @@
+Struct Balance {
+    string currency;
+    float amount;
+}
+
+ReadModel AccountReadModel {
+    string id;
+    Balance balance;
+} // Balance needs to be declared as struct first
+
+
+
+
+
