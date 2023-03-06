@@ -2,7 +2,7 @@ import { IntermediateASTValidationError } from '../../types.js';
 import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
 import { UseCaseExpressionNode } from '../nodes/setup/UseCaseExpressionNode.js';
 import { UseCaseIdentifierNode } from '../nodes/UseCase/UseCaseIdentifierNode.js';
-import { boundedContextError } from './index.js';
+import { boundedContextValidationError, identifierValidationError } from './index.js';
 
 export const useCaseIdentifierCoreError = (
   node: UseCaseIdentifierNode,
@@ -10,16 +10,7 @@ export const useCaseIdentifierCoreError = (
 ): IntermediateASTValidationError[] => {
   const errors = [];
   if (!thisSymbolTable.has(node.getIdentifierName()))
-    errors.push(
-      new IntermediateASTValidationError(
-        `Use Case ${node.getIdentifierName()} not found: from ${node.getMetadata().start.line}:${
-          node.getMetadata().start.column
-        } to ${node.getMetadata().end.line}:${node.getMetadata().end.column} of file ${
-          node.getMetadata().fileId
-        }`,
-        node.getMetadata(),
-      ),
-    );
+    errors.push(new identifierValidationError(node.getIdentifierName(), node));
   return errors;
 };
 
@@ -35,20 +26,11 @@ export const useCaseIdentifierSetupError = (
   ).getBoundedContext();
   const boundedContext = boundedContextNode.getName();
   if (!(boundedContext in thisSymbolTableCore)) {
-    errors.push(boundedContextError(boundedContextNode));
+    errors.push(new boundedContextValidationError(boundedContextNode));
     return errors;
   }
   if (!thisSymbolTableCore[boundedContext].has(node.getIdentifierName())) {
-    errors.push(
-      new IntermediateASTValidationError(
-        `Use Case ${node.getIdentifierName()} not found in bounded context ${boundedContext}: from ${
-          node.getMetadata().start.line
-        }:${node.getMetadata().start.column} to ${node.getMetadata().end.line}:${
-          node.getMetadata().end.column
-        } of file ${node.getMetadata().fileId}`,
-        node.getMetadata(),
-      ),
-    );
+    errors.push(new identifierValidationError(node.getIdentifierName(), node, boundedContext));
   }
   return errors;
 };

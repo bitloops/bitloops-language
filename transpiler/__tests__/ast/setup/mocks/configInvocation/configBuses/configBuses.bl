@@ -1,0 +1,6 @@
+Config.setBuses({
+    COMMAND_BUS: MessageBus.External,
+    EVENT_BUS: MessageBus.InProcess,
+    INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+    QUERY_BUS: MessageBus.InProcess,
+})

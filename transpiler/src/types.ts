@@ -682,6 +682,35 @@ export type TConfigInvocation = {
   };
 };
 
+export type TBusType = 'InProcess' | 'External';
+export const configBusesInvocationKey = 'busesConfig';
+export type TConfigBusesInvocation = {
+  [configBusesInvocationKey]: {
+    eventBus: TBusType;
+    integrationEventBus: TBusType;
+    commandBus: TBusType;
+    queryBus: TBusType;
+  };
+};
+
+export const dependencyInjectionKey = 'dependencyInjections';
+export type TDependencyInjections = {
+  [dependencyInjectionKey]: TDependencyInjection[];
+};
+
+export type TDependencyInjectionType =
+  | 'CommandHandler'
+  | 'QueryHandler'
+  | 'EventHandler'
+  | 'IntegrationEventHandler';
+export type TDependencyInjection = {
+  dependencyInjection: {
+    type: TDependencyInjectionType;
+    identifier: TIdentifier;
+  } & TArgumentList &
+    TBoundedContextModule;
+};
+
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
 export type TPackageAdapterIdentifier = string;
 
@@ -1106,6 +1135,7 @@ export type TDependencyChildTypescript = TDependencyTypescript & {
   // when type is relative
   classType?: TClassTypesValues;
   className?: string;
+  contextInfo?: TContextData;
 };
 
 export type TDependencyParentTypescript = TDependencyTypescript & {
@@ -1234,14 +1264,27 @@ export type THandle = {
   statements: TStatements;
 } & TParameter;
 
+export type TIntegrationEventHandlerHandleMethod = {
+  integrationEventHandlerHandleMethod: {
+    statements: TStatements;
+  } & TIntegrationEventParameter;
+};
+
+export type TIntegrationEventParameter = {
+  integrationEventParameter: {
+    value: TParameterIdentifier;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TBoundedContextModule;
+};
+
 type TIntegrationEventHandlerIdentifier = string;
 export type TIntegrationEventHandler = {
   integrationEventHandler: {
     integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
-    handle: THandle;
   } & TParameterList &
     TEventHandlerBusDependencies &
-    TEvaluationField;
+    TEvaluationField &
+    TIntegrationEventHandlerHandleMethod;
 };
 
 export enum IntegrationEventHandlerOptions {

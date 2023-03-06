@@ -19,6 +19,7 @@
  */
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
+import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 
 export class QueryDeclarationNode extends ClassTypeNode {
@@ -32,5 +33,10 @@ export class QueryDeclarationNode extends ClassTypeNode {
       metadata,
       classNodeName: QueryDeclarationNode.classNodeName,
     });
+  }
+
+  public getIdentifier(): IdentifierNode {
+    const identifier = this.getChildNodeByType(BitloopsTypesMapping.TIdentifier) as IdentifierNode;
+    return identifier;
   }
 }

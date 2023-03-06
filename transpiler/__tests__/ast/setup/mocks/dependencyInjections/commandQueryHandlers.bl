@@ -1,0 +1,5 @@
+DI {
+  [Banking][Banking]CreateBankingCommandHandler(bankingWriteRepo, emailService);
+  [Banking][Banking]GetAllBankingsQueryHandler(bankingReadRepo);
+  [Banking][Banking]UpdateBankingCommandHandler();
+}

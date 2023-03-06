@@ -1,8 +1,8 @@
-import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { LanguageNode } from '../../nodes/setup/LanguageNode.js';
-import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { ConfigInvocationNode } from '../../nodes/setup/ConfigInvocationNode.js';
-import { IBuilder } from '../IBuilder.js';
+import { IntermediateASTTree } from '../../../../IntermediateASTTree.js';
+import { LanguageNode } from '../../../../nodes/setup/config/language/LanguageNode.js';
+import { TNodeMetadata } from '../../../../nodes/IntermediateASTNode.js';
+import { ConfigInvocationNode } from '../../../../nodes/setup/config/language/ConfigInvocationNode.js';
+import { IBuilder } from '../../../IBuilder.js';
 
 export class ConfigInvocationNodeBuilder implements IBuilder<ConfigInvocationNode> {
   private languageNode: LanguageNode;
