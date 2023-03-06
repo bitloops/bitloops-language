@@ -3,12 +3,12 @@ DomainEvent MoneyWithdrawnFromAccountDomainEvent<AccountEntity>;
 DomainEvent AccountCreatedDomainEvent<AccountEntity>;
 
 Struct IntegrationSchemaV1 {
-  accountId: string;
-  amount: number;
+  string accountId;
+  int32 amount;
 }
 
 Struct IntegrationSchemaV2 {
-  accountId: string;
+  string accountId;
 }
 
 IntegrationEvent MoneyWithdrawnIntegrationEvent(event: MoneyWithdrawnFromAccountDomainEvent) {  

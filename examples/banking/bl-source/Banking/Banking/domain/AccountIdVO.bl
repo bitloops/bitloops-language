@@ -3,5 +3,5 @@ Props AccountIdProps {
 }
 
 ValueObject AccoundIdVO {
-    static create(props: AccountIdProps):(OK(AccountIdVO),Errors()) {};
+    static create(props: AccountIdProps):(OK(AccountIdVO),Errors()) {}
 }

@@ -15,14 +15,17 @@ Root Entity AccountEntity {
         return account;
     }
 
-    withdrawAmount(amount: number): (OK(void), Errors(DomainErrors.InvalidMonetaryValue | DomainErrors.InsufficientBalance)) {
-        const amountToBeWithdrawn = MoneyVO({ title: requestDTO.title });
+    withdrawAmount(amount: int32): (OK(void), Errors(DomainErrors.InvalidMonetaryValue | DomainErrors.InsufficientBalance)) {
+        const amountToBeWithdrawn = MoneyVO.create({ 
+            amount: amount,
+            currency: this.balance.currency,
+        });
         const finalAmount = this.balance.amount - amount;
-        applyRules(AccountCannotHaveNegativeBalance(finalAmount, this.balance.amount));
+        applyRules(AccountCannotHaveNegativeBalanceRule(finalAmount, this.balance.amount));
 
-        const balanceVO = MoneyVO({
-        amount: finalAmount,
-        currency: this.props.balance.currency,
+        const balanceVO = MoneyVO.create({
+            amount: finalAmount,
+            currency: this.balance.currency,
         });
         this.balance = balanceVO;
         this.addDomainEvent(MoneyWithdrawnFromAccountDomainEvent);

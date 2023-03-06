@@ -4,7 +4,7 @@ Query GetAccountQuery {
 
 Struct Balance {
     string currency;
-    number amount;
+    int32 amount;
 }
 
 ReadModel AccountReadModel {
