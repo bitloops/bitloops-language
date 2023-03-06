@@ -150,6 +150,7 @@ const getTargetFileDestination = (
   return result;
 };
 
+// TODO maybe this should change name and remove integrationEvent case to other function
 const getFilePathRelativeToModule = (
   classType: TClassTypesValues,
   className: string,
