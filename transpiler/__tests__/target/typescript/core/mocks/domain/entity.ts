@@ -359,7 +359,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
         new FieldListNodeBuilder()
           .withFields([
             new FieldBuilderDirector().buildRequiredPrimitiveField('amount', 'int32'),
-            new FieldBuilderDirector().buildStandardVOField('currency', 'CurrencyVO', true),
+            new FieldBuilderDirector().buildStandardVOField('currency', 'Currency', true),
           ])
           .build(),
       ),

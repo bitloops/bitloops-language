@@ -19,7 +19,7 @@ export class MongoTodoWriteRepo implements TodoWriteRepoPort {
     if (!res) {
       return null;
     }
-    const { _id, ...rest } = res;
+    const { _id, ...rest } = res as any;
     return TodoRootEntity.fromPrimitives({
       id: _id,
       ...rest,

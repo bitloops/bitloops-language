@@ -102,7 +102,7 @@ export const queryHandlerToTargetLanguage = (
   dependencies = [...dependencies, ...executeResult.dependencies];
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-    classType: ClassTypes.UseCase,
+    classType: ClassTypes.QueryHandler,
     className: queryHandlerName,
   });
 

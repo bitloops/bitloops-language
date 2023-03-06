@@ -101,7 +101,7 @@ export const commandHandlerToTargetLanguage = (
   dependencies = [...dependencies, ...executeResult.dependencies];
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-    classType: ClassTypes.UseCase,
+    classType: ClassTypes.CommandHandler,
     className: commandHandlerName,
   });
 

@@ -38,7 +38,7 @@ DomainError IncompatibleCurrenciesError(firstCurrency: string, secondCurrency: s
     errorId: 'a12ec42c-4d31-4f7c-b68a-b68a78-b68a655'
 }
 
-DomainError InsufficientBalanceError(balance: float) { 
+DomainError InsufficientBalanceError(amount: float, balance: float) { 
     message: `Insufficient balance: ${balance} in account`,
     errorId: 'e09ec42c-4d31-4f7c-b68a-b68a78-b68a655'
 }

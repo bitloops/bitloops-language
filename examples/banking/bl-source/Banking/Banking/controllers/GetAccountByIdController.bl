@@ -12,7 +12,7 @@ RESTController GetAccountByIdController () {
   
       if (result is Error) {
         switch (result.getClass()) {
-          case ApplicationErrors.AccountNotFound: {
+          case ApplicationErrors.AccountNotFoundError: {
             this.notFound(response, result.value);
             break;
           }

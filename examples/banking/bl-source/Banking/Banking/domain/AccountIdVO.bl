@@ -2,6 +2,6 @@ Props AccountIdProps {
     string id;
 }
 
-ValueObject AccoundIdVO {
+ValueObject AccountIdVO {
     static create(props: AccountIdProps):(OK(AccountIdVO),Errors()) {}
 }

@@ -18,15 +18,15 @@ RESTController WithdrawMoneyRESTController () {
 
     if (result is Error) {
       switch (result.getClass()) {
-        case ApplicationErrors.AccountNotFound: {
+        case ApplicationErrors.AccountNotFoundError: {
           this.notFound(response, result);
           break;
         }
-        case DomainErrors.InvalidMonetaryValue: {
+        case DomainErrors.InvalidMonetaryValueError: {
           this.badRequest(response, result);
           break;
         }
-        case DomainErrors.InsufficientBalance: {
+        case DomainErrors.InsufficientBalanceError: {
           this.badRequest(response, result);
           break;
         }

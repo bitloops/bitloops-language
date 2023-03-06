@@ -5,9 +5,9 @@ Command WithdrawMoneyCommand {
 
 CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     execute(command: WithdrawMoneyCommand): (OK(void), Errors(
-       ApplicationErrors.AccountNotFound
-       | DomainErrors.InsufficientBalance
-       | DomainErrors.InvalidMonetaryValue
+       ApplicationErrors.AccountNotFoundError
+       | DomainErrors.InsufficientBalanceError
+       | DomainErrors.InvalidMonetaryValueError
     //    | Domain.StandardVO.Currency.ErrorTypes
        )) {
        
@@ -15,7 +15,7 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
        const accountEntity = this.accountRepo.getById(accountId);
 
        if(NOT accountEntity) {
-           return ApplicationErrors.AccountNotFound(command.accountId);
+           return ApplicationErrors.AccountNotFoundError(command.accountId);
        }
 
        accountEntity.withdrawAmount(command.amount);

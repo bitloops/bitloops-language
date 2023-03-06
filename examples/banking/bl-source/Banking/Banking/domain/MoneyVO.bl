@@ -5,7 +5,7 @@ Props MoneyProps {
 
 ValueObject MoneyVO {
     static create(props: MoneyProps): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValueError /*| StandardVO.Currency.Errors*/)) {
-        applyRules(AmountIsPositiveNumberRule(props.amount.toString()), AmountOutOfBoundsRule(props.amount))
+        applyRules(AmountIsPositiveNumberRule(props.amount), AmountOutOfBoundsRule(props.amount))
     }
     // //only private methods inside valueObject declaration?
     // private deduct(amount: MoneyVO): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValueError)) {

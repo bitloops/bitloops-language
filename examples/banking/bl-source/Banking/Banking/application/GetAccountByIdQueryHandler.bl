@@ -14,13 +14,13 @@ ReadModel AccountReadModel {
 
 QueryHandler GetAccountQueryHandler (accountRepo: AccountReadRepoPort) {
     execute(query: GetAccountQuery): (OK(AccountReadModel), Errors(
-       ApplicationErrors.AccountNotFound
+       ApplicationErrors.AccountNotFoundError
        )) {
        const requestId = query.accountId;
        const account = this.accountRepo.getById(requestId);
 
        if(NOT account) {
-           return ApplicationErrors.AccountNotFound(requestId);
+           return ApplicationErrors.AccountNotFoundError(requestId);
        }
 
        return account;

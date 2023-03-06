@@ -25,12 +25,18 @@ DI {
   [Banking][Banking]WithdrawMoneyCommandHandler(accountWriteRepo);
 }
 
+Config.setBuses({
+  COMMAND_BUS: MessageBus.InProcess,
+  EVENT_BUS: MessageBus.InProcess,
+  INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+  QUERY_BUS: MessageBus.InProcess,
+})
 // REST ROUTERS
 
 const bankingRouter = RESTRouter(REST.Fastify) {
-  Post('/insertPIN'): [Banking][Banking]InsertPINRESTController();
-  Post('/withdrawMoney'): [Todo][Todo]WithdrawMoneyRESTController();
-  Post('/depositMoney'): [Todo][Todo]DepositMoneyRESTController();
+  Get('/account/:id'): [Banking][Banking]GetAccountByIdController();
+  Post('/withdrawMoney'): [Banking][Banking]WithdrawMoneyRESTController();
+  // Post('/depositMoney'): [Todo][Todo]DepositMoneyRESTController();
 }
 
 // SERVERS
