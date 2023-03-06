@@ -567,7 +567,6 @@ domainEventHandlerHandleDeclaration
 
 eventHandlerHandleIdentifier
     : domainEventIdentifier
-    | integrationEventIdentifier
     ;
 
 domainEventHandlerHandleParameter
@@ -588,7 +587,7 @@ integrationEventHandlerHandleDeclaration
     ;
 
 integrationEventHandlerHandleParameter
-    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    : parameterIdentifier Colon boundedContextModuleDeclaration integrationEventIdentifier
     ;
 
 dtoDeclaration

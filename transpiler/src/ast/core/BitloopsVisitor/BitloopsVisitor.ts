@@ -302,6 +302,7 @@ import { ThisIdentifierNode } from '../intermediate-ast/nodes/ThisIdentifier/Thi
 import { ThisIdentifierNodeBuilder } from '../intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
 import { StaticNodeBuilder } from '../intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { StaticNode } from '../intermediate-ast/nodes/methods/StaticNode.js';
+import { IntegrationEventParameterNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
 import {
   busConfigVisitor,
   busesConfigInvocationVisitor,
@@ -1568,9 +1569,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitEventHandlerHandleIdentifier(
     ctx: BitloopsParser.EventHandlerHandleIdentifierContext,
   ): BitloopsPrimaryTypeNode {
-    const type = ctx.domainEventIdentifier()
-      ? ctx.domainEventIdentifier().getText()
-      : ctx.integrationEventIdentifier().getText();
+    const type = ctx.domainEventIdentifier().getText();
 
     const metadata = produceMetadata(ctx, this);
     return new BitloopsPrimaryTypeNodeBuilderDirector(metadata).buildIdentifierPrimaryType(type);
@@ -1578,7 +1577,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIntegrationEventHandlerHandleParameter(
     ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
-  ): ParameterNode {
+  ): IntegrationEventParameterNode {
     return integrationEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 

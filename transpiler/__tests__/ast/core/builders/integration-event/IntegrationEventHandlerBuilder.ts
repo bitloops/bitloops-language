@@ -2,9 +2,9 @@ import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/
 import {
   TEvaluationField,
   TEventHandlerBusDependencies,
-  THandle,
   TIntegrationEventHandler,
-  TParameter,
+  TIntegrationEventHandlerHandleMethod,
+  TIntegrationEventParameter,
   TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
@@ -12,7 +12,7 @@ import {
 export class IntegrationEventHandlerBuilder implements IBuilder<TIntegrationEventHandler> {
   private identifierName: string;
   private parameters: TParameterList;
-  private handle: THandle;
+  private handle: TIntegrationEventHandlerHandleMethod;
   private evaluationField: TEvaluationField;
   private busDependencies: TEventHandlerBusDependencies;
 
@@ -36,11 +36,10 @@ export class IntegrationEventHandlerBuilder implements IBuilder<TIntegrationEven
     parameter,
   }: {
     statements: TStatements;
-    parameter: TParameter;
+    parameter: TIntegrationEventParameter;
   }): IntegrationEventHandlerBuilder {
     this.handle = {
-      statements,
-      ...parameter,
+      integrationEventHandlerHandleMethod: { statements, ...parameter },
     };
     return this;
   }
@@ -60,7 +59,7 @@ export class IntegrationEventHandlerBuilder implements IBuilder<TIntegrationEven
     const eventHandler: TIntegrationEventHandler = {
       integrationEventHandler: {
         integrationEventHandlerIdentifier: this.identifierName,
-        handle: this.handle,
+        ...this.handle,
         ...this.parameters,
         ...this.busDependencies,
         ...this.evaluationField,

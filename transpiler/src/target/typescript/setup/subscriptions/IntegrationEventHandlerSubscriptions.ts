@@ -3,8 +3,8 @@ import {
   TBitloopsPrimaryTypeValues,
   TDependencyInjection,
   TIntegrationEventHandler,
-  bitloopsPrimaryTypeKey,
   expressionKey,
+  bitloopsIdentifiersTypeKey,
 } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { ComponentSubscription } from './subscriptionComponent.js';
@@ -19,7 +19,12 @@ export class IntegrationEventHandlerSubscriptions extends ComponentSubscription<
   }
 
   getComponentFromComponentHandler(handler: TIntegrationEventHandler): TBitloopsPrimaryTypeValues {
-    return handler.integrationEventHandler.handle.parameter[bitloopsPrimaryTypeKey];
+    const { integrationEventIdentifier } =
+      handler.integrationEventHandler.integrationEventHandlerHandleMethod.integrationEventParameter;
+    const type: TBitloopsPrimaryTypeValues = {
+      [bitloopsIdentifiersTypeKey]: integrationEventIdentifier,
+    };
+    return type;
   }
 
   subscriptionStatement(

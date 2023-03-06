@@ -88,7 +88,29 @@ visitTestIdentifier(ctx: BitloopsParser.TestIdentifierContext): TestIdentifierNo
 
 ### Nodes
 
+All the nodes are classes that have a name, a type and some metadata(includes the start/end lines of the element).
+
+#### IntermediateASTNode
+
+`addChild`:
+
+`addSibling`:
+
+`buildObjectValue`:
+
+`buildArrayValue`:
+
+`buildLeafValue`:
+
+#### IntermediateASTTree
+
+`insertChild`: It inserts its child to currentNode and makes it the new currentNode.
+
+`insertSibling`: It inserts the node as child to the parent of the currentNode and makes it the new currentNode.
+
 #### TestDeclaration
+
+`TestDeclarationNode` is a class type node as we said, so it has to extend `ClassTypeNode`. This node has also class type attribute.
 
 ```ts
 export class TestDeclarationNode extends ClassTypeNode {
@@ -108,6 +130,8 @@ export class TestDeclarationNode extends ClassTypeNode {
 
 #### TestIdentifier
 
+`TestIdentifierNode` is an identifier node, so it has to extend `IntermediateASTIdentifierNode`.
+
 ```ts
 export class TetsIdentifierNode extends IntermediateASTIdentifierNode {
   private static classNodeName = "testIdentifier";
@@ -123,6 +147,8 @@ export class TetsIdentifierNode extends IntermediateASTIdentifierNode {
 ```
 
 #### FieldListNode
+
+`FieldListNode` is a simple node, so it has to extend `IntermediateASTNode`. This node and it's visitor is already implemented, but it can be reused and is a great example to show all the possible cases.
 
 ```ts
 export class FieldListNode extends IntermediateASTNode {
@@ -140,6 +166,8 @@ export class FieldListNode extends IntermediateASTNode {
 
 #### FieldNode
 
+`FieldNode` is a simple node as well, so it has to extend `IntermediateASTNode`.
+
 ```ts
 export class FieldNode extends IntermediateASTNode {
   private static classNodeName = "field";
@@ -152,7 +180,11 @@ export class FieldNode extends IntermediateASTNode {
 
 ### Builders
 
+Builders are following the [builder pattern](https://refactoring.guru/design-patterns/builder) and its one of them builds a node. Each `with...` method takes a node argument and returns itself.
+
 #### TestDeclaration
+
+`TestDeclarationNodeBuilder` builds `TestDeclarationNode` which is a class type node. This builder, as we said before, is responsible for adding the class type node under the root of the tree. So, it takes as argument the tree and in the build method it inserts to it it's children and sets the current node to root again. It also builds its value by calling `buildObjectValue` method. Builders that build class type nodes, also need to get the identifier name and set it as className to the class type node(here `TestDeclarationNode`). So, `withIdentifier` method is responsible for doing exactly this.
 
 ```ts
 export class TestDeclarationNodeBuilder
@@ -203,6 +235,8 @@ export class TestDeclarationNodeBuilder
 
 #### TestIdentifier
 
+`TestDeclarationNodeBuilder` builds `TestIdentifierNode`. It just builds its value by calling `buildLeafValue` method, because it's a leaf node. Here we don't need the `intermediateASTTree` we just handle the node, it is needed only in class type node builders.
+
 ```ts
 export class TestIdentifierNodeBuilder implements IBuilder<TestIdentifierNode> {
   private testIdentifierNode: TestIdentifierNode;
@@ -226,6 +260,8 @@ export class TestIdentifierNodeBuilder implements IBuilder<TestIdentifierNode> {
 ```
 
 #### FieldListNode
+
+`FieldListNodeBuilder` builds `FieldListNode`. It adds in this node all the fieldNodes children and builds its value by calling `buildArrayValue` method.
 
 ```ts
 export class FieldListNodeBuilder implements IBuilder<FieldListNode> {
@@ -255,6 +291,8 @@ export class FieldListNodeBuilder implements IBuilder<FieldListNode> {
 ```
 
 #### FieldNode
+
+`FieldNodeBuilder` builds `FieldNode`. It adds in this node all of its children and builds its value by calling `buildObjectValue` method.
 
 ```ts
 export class FieldNodeBuilder implements IBuilder<FieldNode> {

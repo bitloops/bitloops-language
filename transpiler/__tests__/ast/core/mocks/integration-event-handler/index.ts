@@ -3,6 +3,8 @@ import { ParameterListBuilderDirector } from '../../builders/parameterListBuilde
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
 import { IntegrationEventHandlerBuilder } from '../../builders/integration-event/IntegrationEventHandlerBuilder.js';
+import { IntegrationEventParameterBuilder } from '../../builders/IntegrationEventParameterBuilder.js';
+import { BoundedContextModuleBuilderDirector } from '../../../setup/builders/boundedContextModuleBuilderDirector.js';
 
 export const validIntegrationEventHandlersTestCases = [
   {
@@ -29,14 +31,16 @@ export const validIntegrationEventHandlersTestCases = [
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
         ],
-        parameter: {
-          parameter: {
-            value: 'event',
-            type: {
-              bitloopsIdentifierType: 'MoneyDepositedIntegrationEvent',
-            },
-          },
-        },
+        parameter: new IntegrationEventParameterBuilder()
+          .withValue('event')
+          .withIntegrationTypeIdentifier('MoneyDepositedIntegrationEvent')
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'banking',
+              moduleName: 'banking',
+            }),
+          )
+          .build(),
       })
       .withDefaultBusDependencies()
       .build(),
@@ -60,14 +64,16 @@ export const validIntegrationEventHandlersTestCases = [
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
         ],
-        parameter: {
-          parameter: {
-            value: 'event',
-            type: {
-              bitloopsIdentifierType: 'MoneyDepositedIntegrationEvent',
-            },
-          },
-        },
+        parameter: new IntegrationEventParameterBuilder()
+          .withValue('event')
+          .withIntegrationTypeIdentifier('MoneyDepositedIntegrationEvent')
+          .withBoundedContextModule(
+            new BoundedContextModuleBuilderDirector().buildBoundedContextModule({
+              boundedContextName: 'banking',
+              moduleName: 'banking',
+            }),
+          )
+          .build(),
       })
       .withDefaultBusDependencies()
       .build(),

@@ -64,7 +64,7 @@ IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
-    handle(event: MoneyDepositedIntegrationEvent) {
+    handle(event: [banking][banking]MoneyDepositedIntegrationEvent) {
   
       this.commandBus.send(command);
     }

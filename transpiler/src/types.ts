@@ -1135,6 +1135,7 @@ export type TDependencyChildTypescript = TDependencyTypescript & {
   // when type is relative
   classType?: TClassTypesValues;
   className?: string;
+  contextInfo?: TContextData;
 };
 
 export type TDependencyParentTypescript = TDependencyTypescript & {
@@ -1263,14 +1264,27 @@ export type THandle = {
   statements: TStatements;
 } & TParameter;
 
+export type TIntegrationEventHandlerHandleMethod = {
+  integrationEventHandlerHandleMethod: {
+    statements: TStatements;
+  } & TIntegrationEventParameter;
+};
+
+export type TIntegrationEventParameter = {
+  integrationEventParameter: {
+    value: TParameterIdentifier;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TBoundedContextModule;
+};
+
 type TIntegrationEventHandlerIdentifier = string;
 export type TIntegrationEventHandler = {
   integrationEventHandler: {
     integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
-    handle: THandle;
   } & TParameterList &
     TEventHandlerBusDependencies &
-    TEvaluationField;
+    TEvaluationField &
+    TIntegrationEventHandlerHandleMethod;
 };
 
 export enum IntegrationEventHandlerOptions {

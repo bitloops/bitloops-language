@@ -1,5 +1,4 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
-import { EventHandleNode } from '../../nodes/EventHandleNode.js';
 import { IntegrationEventHandlerDeclarationNode } from '../../nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
@@ -7,6 +6,7 @@ import { IBuilder } from '../IBuilder.js';
 import { IntegrationEventHandlerIdentifierNode } from '../../nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
 import { EvaluationFieldNode } from '../../nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { EventHandlerBusDependenciesNode } from '../../nodes/DomainEventHandler/EventHandlerBusDependenciesNode.js';
+import { IntegrationEventHandlerHandleMethodNode } from '../../nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 
 export class IntegrationEventHandlerDeclarationNodeBuilder
   implements IBuilder<IntegrationEventHandlerDeclarationNode>
@@ -14,7 +14,7 @@ export class IntegrationEventHandlerDeclarationNodeBuilder
   private integrationEventHandlerNode: IntegrationEventHandlerDeclarationNode;
   private identifierNode: IntegrationEventHandlerIdentifierNode;
   private parameterListNode: ParameterListNode;
-  private handleNode: EventHandleNode;
+  private handleNode: IntegrationEventHandlerHandleMethodNode;
   private evaluationField: EvaluationFieldNode;
   private eventHandlerBusDependencies?: EventHandlerBusDependenciesNode;
   private intermediateASTTree: IntermediateASTTree;
@@ -40,7 +40,9 @@ export class IntegrationEventHandlerDeclarationNodeBuilder
     return this;
   }
 
-  public withHandleMethod(handle: EventHandleNode): IntegrationEventHandlerDeclarationNodeBuilder {
+  public withHandleMethod(
+    handle: IntegrationEventHandlerHandleMethodNode,
+  ): IntegrationEventHandlerDeclarationNodeBuilder {
     this.handleNode = handle;
     return this;
   }

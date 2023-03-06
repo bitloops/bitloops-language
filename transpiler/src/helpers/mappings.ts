@@ -272,6 +272,8 @@ const BitloopsTypesMapping = {
   TThisIdentifier: 'TThisIdentifier',
   TAddDomainEvent: 'TAddDomainEvent',
   TStatic: 'TStatic',
+  TIntegrationEventHandlerHandleMethod: 'TIntegrationEventHandlerHandleMethod',
+  TIntegrationEventParameter: 'TIntegrationEventParameter',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
