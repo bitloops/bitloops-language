@@ -26,6 +26,8 @@ import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
 import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
+import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
 
 type TestCase = {
   description: string;
@@ -130,6 +132,20 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
           .withStatements(
             new StatementListNodeBuilder()
               .withStatements([
+                new ConstDeclarationBuilderDirector().buildValueObjectConstDeclarationWithEvaluationFields(
+                  {
+                    identifier: 'title',
+                    valueObjectIdentifier: 'TitleVO',
+                    evaluationFields: [
+                      new EvaluationFieldBuilderDirector().buildMemberDotEvaluationField(
+                        'title',
+                        'requestDTO',
+                        'title',
+                      ),
+                    ],
+                  },
+                ),
+                new StatementBuilderDirector().buildThisAssignmentExpression('title'),
                 new ReturnStatementBuilderDirector().buildReturn(
                   new ExpressionBuilderDirector().buildStringLiteralExpression('hey'),
                 ),
@@ -359,7 +375,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
         new FieldListNodeBuilder()
           .withFields([
             new FieldBuilderDirector().buildRequiredPrimitiveField('amount', 'int32'),
-            new FieldBuilderDirector().buildStandardVOField('currency', 'CurrencyVO', true),
+            new FieldBuilderDirector().buildStandardVOField('currency', 'Currency', true),
           ])
           .build(),
       ),

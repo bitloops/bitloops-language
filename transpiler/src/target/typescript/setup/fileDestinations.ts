@@ -28,7 +28,7 @@ const setupMapper = {
   OUTPUT_ROUTERS_FOLDER: 'routers/',
   OUTPUT_SHARED_FOLDER: 'src/shared/',
   OUTPUT_SRC_FOLDER: 'src/',
-  OUTPUT_CONFIG_FOLDER: 'config/',
+  OUTPUT_CONFIG_FOLDER: 'src/config/',
 }; // TODO optionally get this from the config
 
 export type TSetupFileType =

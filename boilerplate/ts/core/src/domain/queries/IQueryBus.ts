@@ -25,5 +25,5 @@ export type RegisterHandler<T extends IQuery> = GenericMessageHandler<T>;
 export interface IQueryBus {
   register<T extends IQuery>(queryName: string, registerHandler: RegisterHandler<T>): Promise<void>;
   unregister(queryName: string): Promise<void>;
-  query<T>(query: IQuery): Promise<T>;
+  query<T = any>(query: IQuery): Promise<T>;
 }

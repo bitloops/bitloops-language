@@ -1,0 +1,27 @@
+RESTController GetAccountByIdController () {
+    method: REST.Methods.POST;
+  
+    execute(request, response) {
+      const accountId = request.params.accountId;
+  
+      const query = GetAccountQuery.create({
+        accountId: accountId,
+      });
+      
+      const result = this.queryBus.query(query);
+  
+      if (result is Error) {
+        switch (result.getClass()) {
+          case ApplicationErrors.AccountNotFoundError: {
+            this.notFound(response, result.value);
+            break;
+          }
+          default: {
+            this.fail(response, result.message);
+          }
+        }
+      } else {
+        this.ok(response, result.value);
+      }
+    }
+  }

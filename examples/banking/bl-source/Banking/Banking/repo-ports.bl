@@ -1,0 +1,3 @@
+RepoPort AccountWriteRepoPort<AccountEntity> extends CRUDWriteRepoPort;
+
+RepoPort AccountReadRepoPort<AccountReadModel> extends CRUDReadRepoPort;

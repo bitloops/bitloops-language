@@ -3,7 +3,7 @@ import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/Money
 export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle {
   private commandBus: Infra.CommandBus.ICommandBus;
   constructor() {
-    this.commandBus = Container.getCommandBusFromContext('Banking');
+    this.commandBus = Container.getCommandBus();
   }
   public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<void> {
     const email = 'example@email.com';

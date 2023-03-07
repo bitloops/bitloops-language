@@ -316,6 +316,7 @@ import {
   integrationEventHandlerDependencyInjectionVisitor,
   queryHandlerDependencyInjectionVisitor,
 } from './helpers/setup/dependencyInjections.js';
+import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -694,11 +695,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return stringEvaluation(ctx.StringLiteral().getText());
   }
 
-  visitNullLiteral(_ctx: BitloopsParser.NullLiteralContext): any {
-    return {
-      type: 'NullValue',
-      value: 'null',
-    };
+  visitNullLiteral(ctx: BitloopsParser.NullLiteralContext): any {
+    return new NullLiteralBuilder(produceMetadata(ctx, this)).build();
   }
 
   visitBooleanLiteral(ctx: BitloopsParser.BooleanLiteralContext) {

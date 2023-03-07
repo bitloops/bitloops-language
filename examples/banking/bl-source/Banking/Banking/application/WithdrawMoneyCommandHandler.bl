@@ -1,0 +1,24 @@
+Command WithdrawMoneyCommand {
+    string accountId;
+    int32 amount;
+}
+
+CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
+    execute(command: WithdrawMoneyCommand): (OK(void), Errors(
+       ApplicationErrors.AccountNotFoundError
+       | DomainErrors.InsufficientBalanceError
+       | DomainErrors.InvalidMonetaryValueError
+    //    | Domain.StandardVO.Currency.ErrorTypes
+       )) {
+       
+       const accountId = UUIDv4(command.accountId);
+       const accountEntity = this.accountRepo.getById(accountId);
+
+       if(NOT accountEntity) {
+           return ApplicationErrors.AccountNotFoundError(command.accountId);
+       }
+
+       accountEntity.withdrawAmount(command.amount);
+       this.accountRepo.update(accountEntity);
+   } 
+ }

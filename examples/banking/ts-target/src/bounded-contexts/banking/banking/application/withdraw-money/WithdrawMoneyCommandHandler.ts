@@ -15,8 +15,6 @@ import {
 export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFound
-  | DomainErrors.PINIsNotPositiveNumber
-  | DomainErrors.InvalidCustomerPIN
   | DomainErrors.InsufficientBalance
   | Domain.StandardVO.Currency.ErrorTypes
 >;

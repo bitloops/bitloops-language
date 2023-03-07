@@ -1,0 +1,24 @@
+Rule ValidEmailRule(email: string) throws DomainErrors.InvalidEmailError {
+    isBrokenIf(false); //regex at bl??
+}
+
+Rule PINHasLengthOfFourRule(pin: string) throws DomainErrors.PINLengthError {
+    isBrokenIf(pin.length != 4);
+}
+
+Rule PINIsPositiveNumberRule(pin: string) throws DomainErrors.PINIsNotPositiveNumberError {
+    isBrokenIf(false); //regex at bl??
+}
+
+Rule AmountOutOfBoundsRule(amount: float) throws DomainErrors.InvalidAmountError { 
+    isBrokenIf(amount < 0 AND amount > 10000);
+}
+
+Rule AmountIsPositiveNumberRule(amount: float) throws DomainErrors.InvalidAmountError {
+    isBrokenIf(false); //regex at bl??
+}
+
+Rule AccountCannotHaveNegativeBalanceRule(amount: float, balance: float) throws DomainErrors.InsufficientBalanceError {
+    isBrokenIf(amount < 0);
+}
+  

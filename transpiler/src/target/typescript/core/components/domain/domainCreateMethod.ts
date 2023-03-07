@@ -29,6 +29,7 @@ import {
 } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
+import { keysToTypeMapping } from '../statements/index.js';
 
 export const domainCreate = (
   variable: TDomainCreateMethod,
@@ -62,12 +63,15 @@ export const domainCreate = (
     value: { returnType },
   });
 
-  const statementValues = statements.map((statement) => statement.valueOf());
+  // TODO move this to model to model
   const hasReturnStatements: boolean =
-    statementValues.filter(
-      (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
-    ).length === 0;
-  if (hasReturnStatements || statements.length === 0) {
+    statements.filter(
+      (statement) =>
+        keysToTypeMapping[Object.keys(statement)[0]] === BitloopsTypesMapping.TReturnStatement ||
+        keysToTypeMapping[Object.keys(statement)[0]] === BitloopsTypesMapping.TReturnOKStatement ||
+        keysToTypeMapping[Object.keys(statement)[0]] === BitloopsTypesMapping.TReturnErrorStatement,
+    ).length > 0;
+  if (!hasReturnStatements || statements.length === 0) {
     statementsModel = {
       output: statementsModel.output.concat(`return ok(new ${returnOkTypeName}(props));`),
       dependencies: statementsModel.dependencies,

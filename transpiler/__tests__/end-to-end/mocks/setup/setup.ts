@@ -66,7 +66,7 @@ const setupFilePaths = {
     formatterParser: 'typescript',
   },
   'appConfig.mock.ts': {
-    fileId: 'config/index.ts',
+    fileId: 'src/config/index.ts',
     fileType: 'config',
     formatterParser: 'typescript',
   },

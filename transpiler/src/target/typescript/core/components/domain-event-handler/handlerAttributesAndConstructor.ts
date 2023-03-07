@@ -51,14 +51,10 @@ const CONTAINER_DEPENDENCY: TDependencyChildTypescript = {
 
 export const generateHandlerAttributesAndConstructor = (
   value: ConstructorWithEventBusesInput,
-  contextData?: TContextData,
+  _contextData?: TContextData,
 ): TTargetDependenciesTypeScript => {
   const { parameterList, busDependencies } = value;
   const dependencies: TDependenciesTypeScript = [];
-  if (!contextData) {
-    throw new Error('Context data is required for generateHandlerAttributesAndConstructor');
-  }
-  const boundedContextId = contextData.boundedContext;
   const parametersRes = modelToTargetLanguage({
     type: BitloopsTypesMapping.TParameterList,
     value: parameterList,
@@ -78,10 +74,7 @@ export const generateHandlerAttributesAndConstructor = (
 
   dependencies.push(...parametersRes.dependencies);
   const superCall = 'super();';
-  const busesConstructorTarget = getDefaultBusConstructorStatements(
-    busDependencies,
-    boundedContextId,
-  );
+  const busesConstructorTarget = getDefaultBusConstructorStatements(busDependencies);
 
   const res =
     attributesTarget.output +
@@ -117,8 +110,7 @@ const getDefaultBusAttributes = (
     let res = '';
     if (commandBus) res += 'private commandBus: Infra.CommandBus.ICommandBus;';
     if (queryBus) res += 'private queryBus: Infra.QueryBus.IQueryBus;';
-    if (integrationEventBus)
-      res += 'private integrationEventBus: Infra.IntegrationEventBus.IIntegrationEventBus;';
+    if (integrationEventBus) res += 'private integrationEventBus: Infra.EventBus.IEventBus;';
     if (res !== '') {
       return { output: res, dependencies: [INFRA_DEPENDENCY] };
     }
@@ -145,17 +137,15 @@ const getDefaultBusAttributes = (
 
 const getDefaultBusConstructorStatements = (
   busDependencies: TEventHandlerBusDependencies | TControllerBusDependencies,
-  boundedContextId,
 ): TTargetDependenciesTypeScript => {
   if (isEventHandlerBusDependencies(busDependencies)) {
     const { commandBus, queryBus, integrationEventBus } =
       busDependencies.eventHandlerBusDependencies;
     let res = '';
-    if (commandBus)
-      res += `this.commandBus = Container.getCommandBusFromContext('${boundedContextId}');`;
-    if (queryBus) res += `this.queryBus = Container.getQueryBusFromContext('${boundedContextId}');`;
+    if (commandBus) res += 'this.commandBus = Container.getCommandBus();';
+    if (queryBus) res += 'this.queryBus = Container.getQueryBus();';
     if (integrationEventBus)
-      res += `this.integrationEventBus = Container.getIntegrationEventBusFromContext('${boundedContextId}');`;
+      res += 'this.integrationEventBus = Container.getIntegrationEventBus();';
     if (res !== '') {
       return { output: res, dependencies: [CONTAINER_DEPENDENCY] };
     }
@@ -166,9 +156,8 @@ const getDefaultBusConstructorStatements = (
   } else if (isControllerBusDependencies(busDependencies)) {
     const { commandBus, queryBus } = busDependencies.controllerBusDependencies;
     let res = '';
-    if (commandBus)
-      res += `this.commandBus = Container.getCommandBusFromContext('${boundedContextId}');`;
-    if (queryBus) res += `this.queryBus = Container.getQueryBusFromContext('${boundedContextId}');`;
+    if (commandBus) res += 'this.commandBus = Container.getCommandBus();';
+    if (queryBus) res += 'this.queryBus = Container.getQueryBus();';
     if (res !== '') {
       return { output: res, dependencies: [CONTAINER_DEPENDENCY] };
     }

@@ -1,6 +1,7 @@
 import { DomainEventHandlerDeclarationNodeBuilder } from '../builders/DomainEventHandler/DomainEventHandlerDeclarationNodeBuilder.js';
 import { DomainEventHandlerIdentifierNodeBuilder } from '../builders/DomainEventHandler/DomainEventHandlerIdentifierNodeBuilder.js';
 import { EventHandlerBusDependenciesNodeBuilder } from '../builders/DomainEventHandler/EventHandlerBusDependenciesNodeBuilder.js';
+import { ParameterListNodeBuilder } from '../builders/ParameterList/ParameterListNodeBuilder.js';
 import { EventHandlerHandleMethodNodeBuilderDirector } from '../directors/EventHandlerHandleMethodNodeBuilderDirector.js';
 import { DomainEventHandlerIdentifierNode } from '../nodes/DomainEventHandler/DomainEventHandlerIdentifierNode.js';
 import { IntegrationEventNode } from '../nodes/integration-event/IntegrationEventNode.js';
@@ -29,11 +30,13 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
           integrationEventEvaluationInputName: 'event',
           constIdentifierName: 'events',
           eventBusMethodCallName: 'publishMany',
-          eventBusMemberDotName: 'eventBus',
+          eventBusMemberDotName: 'integrationEventBus',
         });
 
+      const emptyParameterListNode = new ParameterListNodeBuilder().withParameters([]).build();
       new DomainEventHandlerDeclarationNodeBuilder(this.tree)
         .withIdentifier(domainToIntegrationEventIdentifierNode)
+        .withParameterList(emptyParameterListNode)
         .withHandleMethod(eventHandleNode)
         .withEventBusDependencies(eventBusDependenciesNode)
         .withAutoDomainEventHandler()

@@ -22,7 +22,7 @@ const ok = (metadata?: Metadata) => {
 };
 
 const replyToResponseTopic = async <L, A>(metadata: Metadata, res: Either<L, A>) => {
-  const messageBus = Container.getMessageBusFromContext(metadata.toContextId);
+  const messageBus = Container.getMessageBus();
   if (metadata.responseTopic) await messageBus.publish(metadata.responseTopic, res);
 };
 
