@@ -7,12 +7,4 @@ ValueObject MoneyVO {
     static create(props: MoneyProps): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValueError /*| StandardVO.Currency.Errors*/)) {
         applyRules(AmountIsPositiveNumberRule(props.amount), AmountOutOfBoundsRule(props.amount))
     }
-    // //only private methods inside valueObject declaration?
-    // private deduct(amount: MoneyVO): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValueError)) {
-    //     if (!this.currency.equals(amount.currency)) {
-    //         return Errors(DomainErrors.InvalidMonetaryValueError);
-    //     }
-    //     const value = this.amount - amount.amount;
-    //     return MoneyVO.create({ amount: value, currency: this.currency }); 
-    // }
 }
