@@ -10,6 +10,7 @@ export const VALID_READ_MODEL_TEST_CASES = [
       fields: [
         new FieldBuilderDirector().buildRequiredPrimitiveField('name', 'string'),
         new FieldBuilderDirector().buildOptionalPrimitiveField('numOfTeachers', 'int32'),
+        new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField('title', 'Title'),
       ],
     }),
     output: FileUtil.readFileString(

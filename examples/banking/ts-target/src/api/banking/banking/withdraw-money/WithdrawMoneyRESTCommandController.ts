@@ -20,7 +20,7 @@ export class WithdrawMoneyRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new WithdrawMoneyCommand(dto);
-    const result = await this.commandBus.sendAndGetResponse<WithdrawMoneyCommandHandlerResponse>(
+    const result = await this.commandBus.request<WithdrawMoneyCommandHandlerResponse>(
       command,
       [DomainErrors.InvalidMonetaryValue],
     );

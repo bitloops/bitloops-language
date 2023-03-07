@@ -8,14 +8,10 @@ export type TAccountReadModelSnapshot = {
 
 export class AccountReadModel {
   constructor(
-    public id: string,
-    public balance: {
-      currency: string;
-      amount: number;
-    },
+    public props: TAccountReadModelSnapshot
   ) {}
 
   static fromPrimitives(snapshot: TAccountReadModelSnapshot): AccountReadModel {
-    return new AccountReadModel(snapshot.id, snapshot.balance);
+    return new AccountReadModel(snapshot);
   }
 }

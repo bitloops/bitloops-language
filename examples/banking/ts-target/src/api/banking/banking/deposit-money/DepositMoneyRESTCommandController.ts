@@ -20,7 +20,7 @@ export class DepositMoneyRESTCommandController extends Fastify.BaseController {
     };
 
     const command = new DepositMoneyCommand(dto);
-    const result = await this.commandBus.sendAndGetResponse<DepositMoneyCommandHandlerResponse>(
+    const result = await this.commandBus.request<DepositMoneyCommandHandlerResponse>(
       command,
       [DomainErrors.InvalidMonetaryValue],
     );

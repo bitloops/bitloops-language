@@ -23,34 +23,39 @@ import {
   TVariables,
   fieldsKey,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTypeScript => {
-  const result: TTargetDependenciesTypeScript = {
-    output: '',
-    dependencies: [],
-  };
+  let result = '';
+  const dependencies = [];
 
   const { fields, readModelIdentifier } = readModel.ReadModel;
   guardAgainstUndefinedAndArray({ fields });
-  result.output += `export class ${readModelIdentifier} { `;
 
-  result.output += 'constructor(';
-  for (const field of fields) {
-    const fieldIntermediateModel = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TVariable,
-      value: field,
-    });
-    result.output += `public ${fieldIntermediateModel.output}, `;
-    result.dependencies.push(...fieldIntermediateModel.dependencies);
-  }
-  result.output += ') {}';
+  const readModelTypeName = getReadModelTypeName(readModelIdentifier);
 
-  result.output += '}';
+  const fieldIntermediateModel = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TVariables,
+    value: fields,
+  });
+  dependencies.push(...fieldIntermediateModel.dependencies);
 
-  return result;
+  result += `export type ${readModelTypeName} = { ${fieldIntermediateModel.output} };`;
+
+  result += `export class ${readModelIdentifier} { `;
+  result += `constructor(public props: ${readModelTypeName}) {}`;
+  result += getFromPrimitivesResult(readModelIdentifier, readModelTypeName);
+  result += '}';
+
+  const parentDependencies = getParentDependencies(dependencies, {
+    classType: ClassTypes.ReadModel,
+    className: readModelIdentifier,
+  });
+
+  return { output: result, dependencies: parentDependencies };
 };
 
 const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
@@ -60,6 +65,20 @@ const guardAgainstUndefinedAndArray = (variables: TVariables): void => {
   if (!isArray(variables[fieldsKey])) {
     throw new Error('Variables of Read Model are not array');
   }
+};
+
+const getReadModelTypeName = (readModelIdentifier: string): string => {
+  return `T${readModelIdentifier}Snapshot`;
+};
+
+const getFromPrimitivesResult = (
+  readModelIdentifier: string,
+  readModelTypeName: string,
+): string => {
+  let result = `static fromPrimitives(snapshot: ${readModelTypeName}): ${readModelIdentifier} {`;
+  result += `return new ${readModelIdentifier}(snapshot);`;
+  result += '}';
+  return result;
 };
 
 export { readModelToTargetLanguage };
