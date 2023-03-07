@@ -24,24 +24,31 @@ import {
   StructKey,
   structIdentifierKey,
 } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 const structDeclarationToTargetLanguage = (
   struct: TStructDeclaration,
 ): TTargetDependenciesTypeScript => {
-  const initialStructLangMapping = (structName: string): string => `export type ${structName} = { `;
-  const finalStructLangMapping = '};';
-
   let result = '';
   let dependencies = [];
-  result += initialStructLangMapping(struct[StructKey][structIdentifierKey]);
+
+  const structName = struct[StructKey][structIdentifierKey];
+  result += `export type ${structName} = { `;
+
   const structValuesResult = structDeclarationValuesToTargetLanguage(struct);
   result += structValuesResult.output;
   dependencies = [...dependencies, ...structValuesResult.dependencies];
-  result += finalStructLangMapping;
 
-  return { output: result, dependencies };
+  result += '};';
+
+  const parentDependecies = getParentDependencies(dependencies, {
+    classType: ClassTypes.Struct,
+    className: structName,
+  });
+
+  return { output: result, dependencies: parentDependecies };
 };
 
 const structDeclarationValuesToTargetLanguage = (
