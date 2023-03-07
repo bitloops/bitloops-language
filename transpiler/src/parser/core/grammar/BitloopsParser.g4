@@ -420,7 +420,7 @@ privateMethodDeclarationList
     ;
 
 domainCreateParam 
-    : identifier Colon propsIdentifier
+    : parameterIdentifier Colon propsIdentifier
     ;
 
 domainCreateDeclaration

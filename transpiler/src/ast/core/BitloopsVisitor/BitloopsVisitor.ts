@@ -195,7 +195,6 @@ import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js
 import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
@@ -914,7 +913,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return domainCreateDeclarationVisitor(this, ctx);
   }
 
-  visitDomainCreateParam(ctx: BitloopsParser.DomainCreateParamContext): DomainCreateParameterNode {
+  visitDomainCreateParam(ctx: BitloopsParser.DomainCreateParamContext): ParameterNode {
     return domainCreateParameterVisitor(this, ctx);
   }
 
