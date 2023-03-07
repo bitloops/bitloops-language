@@ -7,8 +7,8 @@ export class CreateTodoRESTController extends Fastify.BaseController {
   private queryBus: Infra.QueryBus.IQueryBus;
   constructor(private createTodoUseCase: CreateTodoUseCase) {
     super();
-    this.commandBus = Container.getCommandBusFromContext('Todo');
-    this.queryBus = Container.getQueryBusFromContext('Todo');
+    this.commandBus = Container.getCommandBus();
+    this.queryBus = Container.getQueryBus();
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const dto = { title: request.body.title };

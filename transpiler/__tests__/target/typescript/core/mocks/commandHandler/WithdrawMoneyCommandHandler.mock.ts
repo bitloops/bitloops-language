@@ -6,10 +6,10 @@ import {
   fail,
   ok,
 } from '@bitloops/bl-boilerplate-core';
-import { ApplicationErrors } from './errors/index';
-import { DomainErrors } from '../domain/errors/index';
-import { AccountWriteRepoPort } from '../ports/AccountWriteRepoPort';
-import { WithdrawMoneyCommand } from './commands/WithdrawMoneyCommand';
+import { ApplicationErrors } from '../errors/index';
+import { DomainErrors } from '../../domain/errors/index';
+import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
+import { WithdrawMoneyCommand } from '../commands/WithdrawMoneyCommand';
 export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFoundError

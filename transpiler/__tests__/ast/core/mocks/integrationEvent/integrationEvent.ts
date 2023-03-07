@@ -59,7 +59,7 @@ export const validIntegrationEventTestCases = [
           }),
           new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
-              'eventBus',
+              'integrationEventBus',
               'publishMany',
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['events']),
@@ -139,7 +139,7 @@ export const validIntegrationEventTestCases = [
           }),
           new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
-              'eventBus',
+              'integrationEventBus',
               'publishMany',
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['events']),

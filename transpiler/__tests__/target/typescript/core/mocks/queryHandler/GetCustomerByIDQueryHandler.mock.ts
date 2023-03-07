@@ -1,8 +1,8 @@
 import { Application, Either, RespondWithPublish, ok } from '@bitloops/bl-boilerplate-core';
-import { CustomerReadModel } from '../domain/CustomerReadModel';
-import { ApplicationErrors } from './errors/index';
-import { CustomerReadRepoPort } from '../ports/CustomerReadRepoPort';
-import { GetCustomerByIdQuery } from './queries/GetCustomerByIdQuery';
+import { CustomerReadModel } from '../../domain/CustomerReadModel';
+import { ApplicationErrors } from '../errors/index';
+import { CustomerReadRepoPort } from '../../ports/CustomerReadRepoPort';
+import { GetCustomerByIdQuery } from '../queries/GetCustomerByIdQuery';
 export type GetCustomerByIdQueryHandlerResponse = Either<
   CustomerReadModel,
   ApplicationErrors.CustomerNotFoundError

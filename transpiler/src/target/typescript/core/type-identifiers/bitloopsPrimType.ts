@@ -93,7 +93,7 @@ export class BitloopsPrimTypeIdentifiers {
           },
         };
       default:
-        return { primitive: 'string' };
+        throw new Error('Unknown standard value object type');
     }
   };
 

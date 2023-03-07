@@ -3,7 +3,7 @@ import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/c
 export class MoneyDepositedIntegrationHandler implements Application.IHandle {
   private commandBus: Infra.CommandBus.ICommandBus;
   constructor() {
-    this.commandBus = Container.getCommandBusFromContext('marketing');
+    this.commandBus = Container.getCommandBus();
   }
   public async handle(event: MoneyDepositedIntegrationEvent): Promise<void> {
     const email = 'example@email.com';
