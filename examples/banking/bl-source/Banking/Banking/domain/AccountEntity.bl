@@ -14,7 +14,7 @@ Root Entity AccountEntity {
         return account;
     }
 
-    withdrawAmount(amount: int32): (OK(void), Errors(DomainErrors.InvalidMonetaryValueError | DomainErrors.InsufficientBalanceError)) {
+    public withdrawAmount(amount: int32): (OK(void), Errors(DomainErrors.InvalidMonetaryValueError | DomainErrors.InsufficientBalanceError)) {
         const amountToBeWithdrawn = MoneyVO.create({ amount: amount, currency: this.balance.currency });
         const finalAmount = this.balance.amount - amount;
         applyRules(AccountCannotHaveNegativeBalanceRule(finalAmount, this.balance.amount));

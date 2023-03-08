@@ -15,9 +15,6 @@
     "testWithCoverage": "jest --coverage",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
-  "husky": {
-    "hooks": { "pre-commit": "npm run build", "pre-push": "npm run build" }
-  },
   "keywords": [],
   "dependencies": {
     "dotenv": "^16.0.1",

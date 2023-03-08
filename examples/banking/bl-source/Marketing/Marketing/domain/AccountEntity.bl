@@ -1,0 +1,28 @@
+Props AccountProps {
+    optional UUIDv4 id;
+    DepositsCounterVO deposits;
+}
+
+
+Root Entity AccountEntity {
+    static create(props: AccountProps): (OK(AccountEntity), Errors())  {
+        const account = AccountEntity(props);
+        return account;
+    }
+
+    isFirstDeposit(): bool {
+        return this.deposits.counter == 1;
+    }
+
+    hasReachedMilestone(): bool {
+        return this.deposits.counter % 10 == 0;
+    }
+
+    incrementDeposits(): (OK(void), Errors(DomainErrors.InvalidNumberOfTransactionsError)) {
+        // Breaks if we write this.deposits.counter = DepositsCounterVO.create({ counter: this.deposits.counter + 1}) ?
+        const newDeposits = DepositsCounterVO.create({ counter: this.deposits.counter + 1})
+        this.deposits = newDeposits;
+        this.addDomainEvent(DepositsIncrementedDomainEvent);
+    }
+
+}
