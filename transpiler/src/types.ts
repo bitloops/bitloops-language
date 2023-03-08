@@ -414,10 +414,15 @@ export type TLiteralValues =
   | BooleanLiteral
   | TNumericLiteral
   | NullLiteral
-  | TemplateStringLiteral;
+  | TemplateStringLiteral
+  | TRegexLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
+};
+
+export type TRegexLiteral = {
+  regexLiteral: string;
 };
 export type TemplateStringLiteral = {
   templateStringLiteral: string;

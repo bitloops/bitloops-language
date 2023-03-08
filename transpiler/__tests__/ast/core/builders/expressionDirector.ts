@@ -74,6 +74,15 @@ export class ExpressionBuilderDirector {
       },
     };
   }
+  buildRegexLiteralExpression(regexLiteral: string): TExpression {
+    return {
+      expression: {
+        literal: {
+          regexLiteral,
+        },
+      },
+    };
+  }
   buildTemplateStringLiteralExpression(templateStringLiteral: string): TExpression {
     return {
       expression: {

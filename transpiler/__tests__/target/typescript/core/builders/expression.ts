@@ -42,6 +42,7 @@ import { TemplateStringLiteralBuilder } from '../../../../../src/ast/core/interm
 import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { DefaultEnvVarValueNode } from '../../../../../src/ast/core/intermediate-ast/nodes/setup/DefaultEnvVarValueNode.js';
 import { EnvironmentalVariableNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
+import { RegexLiteralNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/RegexLiteralNodeBuilder.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -256,6 +257,13 @@ export class ExpressionBuilderDirector {
     const stringLit = new TemplateStringLiteralBuilder().withValue(value).build();
 
     const literalExpr = new LiteralBuilder().withLiteral(stringLit).build();
+    return new ExpressionBuilder().withExpression(literalExpr).build();
+  }
+
+  buildRegexLiteralExpression(value: string): ExpressionNode {
+    const regexLit = new RegexLiteralNodeBuilder().withValue(value).build();
+
+    const literalExpr = new LiteralBuilder().withLiteral(regexLit).build();
     return new ExpressionBuilder().withExpression(literalExpr).build();
   }
 

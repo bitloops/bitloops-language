@@ -260,4 +260,9 @@ export const VALID_LITERAL_TEST_CASES = [
     ),
     output: '`Hello ${world}`',
   },
+  {
+    description: 'Test a regex literal',
+    expression: new ExpressionBuilderDirector().buildRegexLiteralExpression('/S+@S+.S+/g'),
+    output: '/S+@S+.S+/g',
+  },
 ];

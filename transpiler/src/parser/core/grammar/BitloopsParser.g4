@@ -887,6 +887,7 @@ literal
     | StringLiteral             # StringLiteral
     | templateStringLiteral     # TemplateStringLiteralLabel
     | numericLiteral            # NumericLiteralLabel
+    | RegularExpressionLiteral  # RegularExpressionLiteralLabel
     ;
 
 templateStringLiteral
