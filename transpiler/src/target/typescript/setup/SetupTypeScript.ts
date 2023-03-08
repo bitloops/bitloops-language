@@ -109,43 +109,41 @@ interface ISetup {
 type TNodePackages = Record<string, string>;
 
 const REQUIRED_NODE_DEPENDENCIES = {
-  '@types/bcrypt-nodejs': '0.0.31',
-  compression: '^1.7.4',
-  dompurify: '^2.3.8',
+  // '@types/bcrypt-nodejs': '0.0.31',
+  // compression: '^1.7.4',
+  // dompurify: '^2.3.8',
   dotenv: '^16.0.1',
-  helmet: '^5.1.0',
-  jsdom: '^20.0.0',
-  morgan: '^1.10.0',
+  // helmet: '^5.1.0',
+  // jsdom: '^20.0.0',
+  // morgan: '^1.10.0',
   uuid: '^8.3.2',
-  validator: '^13.7.0',
+  // validator: '^13.7.0',
   '@bitloops/bl-boilerplate-core': '^0.0.6',
 };
 
 const REQUIRED_NODE_DEV_DEPENDENCIES = {
-  '@types/dompurify': '^2.3.3',
-  '@types/jest': '^28.1.3',
-  '@types/jsdom': '^20.0.0',
+  // '@types/dompurify': '^2.3.3',
+  // '@types/jest': '^28.1.3',
+  // '@types/jsdom': '^20.0.0',
   '@types/node': '^18.0.0',
-  '@types/randomatic': '^3.1.3',
-  '@types/validator': '^13.7.4',
+  // '@types/validator': '^13.7.4',
   '@typescript-eslint/eslint-plugin': '^5.30.6',
   '@typescript-eslint/parser': '^5.30.6',
   // 'env-cmd': '^10.1.0',
   eslint: '^8.19.0',
   'eslint-config-prettier': '^8.5.0',
   'eslint-plugin-prettier': '^4.2.1',
-  husky: '^8.0.1',
-  jest: '^28.1.3',
-  'jest-cucumber': '^3.0.1',
-  'jest-extended': '^3.0.1',
-  'jest-ts-auto-mock': '^2.1.0',
+  // husky: '^8.0.1',
+  // jest: '^28.1.3',
+  // 'jest-cucumber': '^3.0.1',
+  // 'jest-extended': '^3.0.1',
+  // 'jest-ts-auto-mock': '^2.1.0',
   nodemon: '^2.0.18',
   prettier: '^2.7.1',
   rimraf: '^3.0.2',
-  'ts-auto-mock': '^3.6.2',
-  'ts-jest': '^28.0.7',
+  // 'ts-auto-mock': '^3.6.2',
+  // 'ts-jest': '^28.0.7',
   'ts-node': '^10.8.1',
-  ttypescript: '^1.5.13',
   typescript: '^4.7.4',
 };
 
@@ -679,7 +677,9 @@ import { appConfig } from './config';
       subscriptions = modules
         .map(
           ({ boundedContextName, moduleName }) =>
-            `await import('./bounded-contexts/${boundedContextName}/${moduleName}/subscriptions')`,
+            `await import('./bounded-contexts/${kebabCase(boundedContextName)}/${kebabCase(
+              moduleName,
+            )}/subscriptions')`,
         )
         .join(';\n  ');
     }

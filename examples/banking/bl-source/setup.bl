@@ -23,6 +23,8 @@ const accountReadRepo = RepoAdapters.Mongo({
 // COMMAND & QUERY HANDLERS, DOMAIN & INTEGRATION EVENT HANDLERS
 DI {
   [Banking][Banking]WithdrawMoneyCommandHandler(accountWriteRepo);
+  [Banking][Banking]GetAccountQueryHandler(accountReadRepo);
+  [Banking][Banking]MoneyWithdrawnFromAccountDomainEventHandler();
 }
 
 Config.setBuses({

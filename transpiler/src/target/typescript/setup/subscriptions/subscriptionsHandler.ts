@@ -255,7 +255,7 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
 
   private generateImports(dependencies: TComponentSubscriptionDependencies): string {
     let result = '';
-    for (const dependency of dependencies) {
+    for (const dependency of this.removeDuplicateDependencies(dependencies)) {
       const { type, identifier } = dependency;
       if (type === 'di') {
         result += `import { ${identifier} } from '../DI';\n`;
@@ -264,7 +264,22 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
       const childPathObj = getFilePathRelativeToModule(type, identifier);
       const childPath = childPathObj.path;
       const filename = childPathObj.filename + (esmEnabled ? '.js' : '');
-      result += `import { ${identifier} } from '../${childPath}/${filename}';\n`;
+      result += `import { ${identifier} } from '../${childPath}${filename}';\n`;
+    }
+    return result;
+  }
+
+  private removeDuplicateDependencies(
+    dependencies: TComponentSubscriptionDependencies,
+  ): TComponentSubscriptionDependencies {
+    const result: TComponentSubscriptionDependencies = [];
+    const identifiers: Set<string> = new Set();
+    for (const dependency of dependencies) {
+      if (identifiers.has(dependency.identifier)) {
+        continue;
+      }
+      result.push(dependency);
+      identifiers.add(dependency.identifier);
     }
     return result;
   }

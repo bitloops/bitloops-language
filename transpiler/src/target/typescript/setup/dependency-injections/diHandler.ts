@@ -213,9 +213,7 @@ export class DependencyInjectionsGenerator implements IDependencyInjectionsGener
       // Gather all use case imports
       const classType = typeToClassTypeMapping[type];
       const { path, filename } = getFilePathRelativeToModule(classType, identifier);
-      result += `import { ${identifier} } from './${path}/${filename}${
-        esmEnabled ? '.js' : ''
-      }';\n`;
+      result += `import { ${identifier} } from './${path}${filename}${esmEnabled ? '.js' : ''}';\n`;
     }
     return result;
   }
