@@ -17,11 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  identifierKey,
-  TDomainCreateMethod,
-  TTargetDependenciesTypeScript,
-} from '../../../../../types.js';
+import { TDomainCreateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import {
   BitloopsTypesMapping,
   ClassTypes,
@@ -29,33 +25,20 @@ import {
 } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { internalConstructor } from './index.js';
-import { isThisDeclaration } from '../../../../../helpers/typeGuards.js';
+import { keysToTypeMapping } from '../statements/index.js';
 
 export const domainCreate = (
   variable: TDomainCreateMethod,
   classType: TClassTypesValues = ClassTypes.ValueObject,
 ): TTargetDependenciesTypeScript => {
-  const { domainCreateParameter, returnType, statements } = variable.create;
+  const { parameter, returnType, statements } = variable.create;
 
-  const statementsResult = {
-    thisStatements: [],
-    restStatements: [],
-  };
-
-  for (const statement of statements) {
-    if (isThisDeclaration(statement)) {
-      statementsResult.thisStatements.push(statement);
-    } else {
-      statementsResult.restStatements.push(statement);
-    }
-  }
-
-  const domainCreateParameterType = domainCreateParameter.parameterType;
+  const parameterType = parameter.type;
   const returnOkType = returnType.ok.type;
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDomainConstructorParameter,
-    value: domainCreateParameterType,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: parameterType },
   });
 
   const { output: returnOkTypeName, dependencies: returnOkTypeDependencies } =
@@ -64,16 +47,11 @@ export const domainCreate = (
       value: { type: returnOkType },
     });
 
-  const producedConstructor = internalConstructor(
-    propsName,
-    statementsResult.thisStatements,
-    classType,
-    // ClassTypes.ValueObject,
-  );
+  const producedConstructor = internalConstructor(propsName, classType);
 
   let statementsModel = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
-    value: statementsResult.restStatements,
+    value: statements,
   });
 
   const returnTypeModel = modelToTargetLanguage({
@@ -81,25 +59,27 @@ export const domainCreate = (
     value: { returnType },
   });
 
-  const statementValues = statements.map((statement) => statement.valueOf());
+  // TODO move this to model to model
   const hasReturnStatements: boolean =
-    statementValues.filter(
-      (statement) => Object.keys(statement)[0] === BitloopsTypesMapping.TReturnStatement,
-    ).length === 0;
-  if (hasReturnStatements || statements.length === 0) {
+    statements.filter(
+      (statement) =>
+        keysToTypeMapping[Object.keys(statement)[0]] === BitloopsTypesMapping.TReturnStatement ||
+        keysToTypeMapping[Object.keys(statement)[0]] === BitloopsTypesMapping.TReturnOKStatement ||
+        keysToTypeMapping[Object.keys(statement)[0]] === BitloopsTypesMapping.TReturnErrorStatement,
+    ).length > 0;
+  if (!hasReturnStatements || statements.length === 0) {
     statementsModel = {
       output: statementsModel.output.concat(`return ok(new ${returnOkTypeName}(props));`),
       dependencies: statementsModel.dependencies,
     };
   }
 
-  const domainCreateParameterValue = domainCreateParameter[identifierKey];
-  const result = `${producedConstructor.output} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
+  const parameterValue = parameter.value;
+  const result = `${producedConstructor} public static create(${parameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {
     output: result,
     dependencies: [
-      ...producedConstructor.dependencies,
       ...returnTypeModel.dependencies,
       ...statementsModel.dependencies,
       ...propsTypeDependencies,

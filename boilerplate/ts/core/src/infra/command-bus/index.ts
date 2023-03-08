@@ -49,7 +49,7 @@ export class CommandBus implements ICommandBus {
     return this.messageBus.publish(command.commandTopic, command);
   }
 
-  async sendAndGetResponse<T>(command: ICommand): Promise<T> {
+  async request<T>(command: ICommand): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       console.log(

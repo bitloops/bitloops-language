@@ -1,6 +1,8 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
-import { DomainCreateParameterNode } from './DomainCreateParameterNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { StatementNode } from '../statements/Statement.js';
+import { StatementListNode } from '../statements/StatementList.js';
 
 export class DomainCreateNode extends IntermediateASTNode {
   private static classNodeName = 'create';
@@ -9,9 +11,20 @@ export class DomainCreateNode extends IntermediateASTNode {
     super(BitloopsTypesMapping.TDomainCreateMethod, metadata, DomainCreateNode.classNodeName);
   }
 
-  getParameterNode(): DomainCreateParameterNode {
-    return this.getChildNodeByType<DomainCreateParameterNode>(
-      BitloopsTypesMapping.TDomainConstructorParameter,
+  getParameterNode(): ParameterNode {
+    return this.getChildNodeByType<ParameterNode>(BitloopsTypesMapping.TParameter);
+  }
+
+  getStatements(): StatementNode[] {
+    const statementList = this.getChildNodeByType<StatementListNode>(
+      BitloopsTypesMapping.TStatements,
     );
+    return statementList.statements;
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const parameterNode = this.getParameterNode();
+    if (!parameterNode) return [];
+    return [parameterNode];
   }
 }

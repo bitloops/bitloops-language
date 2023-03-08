@@ -12,4 +12,8 @@ export class ParameterListNode extends IntermediateASTNode {
   getIdentifiers(): string[] {
     return this.getChildren().map((child: ParameterNode) => child.getIdentifier());
   }
+
+  getParameters(): ParameterNode[] {
+    return this.getChildren() as ParameterNode[];
+  }
 }

@@ -17,24 +17,50 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TParameterList, TTargetDependenciesTypeScript } from '../../../../../../types.js';
+import {
+  TControllerBusDependencies,
+  TParameterList,
+  TTargetDependenciesTypeScript,
+} from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
+import { ConstructorWithEventBusesInput } from '../../domain-event-handler/handlerAttributesAndConstructor.js';
 
 const constructorToTarget = (paramsString: string, params: TParameterList): string => {
-  const constructorBody = params.parameters
+  const constructorParamsBody = params.parameters
     .map((parameterDependency) => {
       const { value } = parameterDependency.parameter;
       return `this.${value} = ${value};`;
     })
     .join(' ');
-  return `constructor${paramsString} { super(); ${constructorBody} }`;
+  return `constructor${paramsString} { super(); ${constructorParamsBody} }`;
+};
+
+const busDependenciesAreDefined = (
+  busDependencies: Partial<TControllerBusDependencies>,
+): busDependencies is TControllerBusDependencies => {
+  return busDependencies.controllerBusDependencies !== undefined;
 };
 
 export const buildFieldsFromDependencies = (
   params: TParameterList,
   contextData: { boundedContext: string; module: string },
+  busDependenciesModel: Partial<TControllerBusDependencies>,
 ): TTargetDependenciesTypeScript => {
+  if (busDependenciesAreDefined(busDependenciesModel)) {
+    const value: ConstructorWithEventBusesInput = {
+      parameterList: params,
+      busDependencies: busDependenciesModel,
+      needsSuper: true,
+    };
+    const constructor = modelToTargetLanguage({
+      value,
+      type: BitloopsTypesMapping.THandlerAttributesAndConstructor,
+      contextData,
+    });
+    return constructor;
+  }
+
   let result = params.parameters
     .map((parameterDependency) => {
       const { type, value } = parameterDependency.parameter;

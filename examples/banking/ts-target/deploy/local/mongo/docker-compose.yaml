@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mongo1:
+    image: mongo:5
+    container_name: mongo1
+    command: ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30001']
+    volumes:
+      - ./data/mongo-1:/data/db
+    ports:
+      - 30001:30001
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'my-replica-set',members:[{_id:0,host:\"mongo1:30001\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+
+  nats:
+    image: nats
+    ports:
+      - '4222:4222'
+    networks: ['nats']
+  nats-1:
+    image: nats
+    command: '--cluster nats://0.0.0.0:4222 --routes=nats://ruser:T0pS3cr3t@nats:4222'
+    networks: ['nats']
+    depends_on: ['nats']
+  nats-2:
+    image: nats
+    command: '--cluster nats://0.0.0.0:4222 --routes=nats://ruser:T0pS3cr3t@nats:4222'
+    networks: ['nats']
+    depends_on: ['nats']
+
+networks:
+  nats:
+    name: nats

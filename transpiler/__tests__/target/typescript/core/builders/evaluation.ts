@@ -16,6 +16,16 @@ import { DTOIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/
 import { ErrorIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { StructIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CorsOptionsEvaluationBuilder.js';
+import { CommandEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CommandEvaluationNodeBuilder.js';
+import { QueryEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/QueryEvaluationNodeBuilder.js';
+import { IntegrationEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/IntegrationEventEvaluationNodeBuilder.js';
+import { IntegrationEventIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
+import { DomainEvaluationPropsNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationPropsNodeBuilder.js';
+import { DomainEvaluationBuilderDirector } from './domainEvaluation/index.js';
+import { EntityIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
+import { EntityConstructorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EntityConstructorEvaluationNodeBuilder.js';
+import { StandardVOEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/StandardVOEvaluationNodeBuilder.js';
+import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -56,6 +66,24 @@ export class EvaluationBuilderDirector {
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
     return evaluationNode;
   }
+  buildIntegrationEventEvaluation(
+    integrationEventName: string,
+    fieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const identifier = new IntegrationEventIdentifierNodeBuilder()
+      .withName(integrationEventName)
+      .build();
+
+    const props = new DomainEvaluationPropsNodeBuilder()
+      .withEvaluationFieldList(fieldListNode)
+      .build();
+    const entityEvaluationNode = new IntegrationEventEvaluationNodeBuilder()
+      .withIdentifier(identifier)
+      .withPropsInput(props)
+      .build();
+    const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
 
   buildEntityEvaluationWithExpression(
     entityName: string,
@@ -66,6 +94,22 @@ export class EvaluationBuilderDirector {
         entityName,
         expressionNode,
       );
+    const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
+
+  buildEntityConstructorEvaluationWithExpression(
+    entityName: string,
+    expressionNode: ExpressionNode,
+  ): EvaluationNode {
+    const domainEvaluation =
+      new DomainEvaluationBuilderDirector().buildDomainEvaluationWithExpressionProps(
+        new EntityIdentifierNodeBuilder().withName(entityName).build(),
+        expressionNode,
+      );
+    const entityEvaluationNode = new EntityConstructorEvaluationNodeBuilder()
+      .withDomainEvaluation(domainEvaluation)
+      .build();
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
     return evaluationNode;
   }
@@ -90,6 +134,43 @@ export class EvaluationBuilderDirector {
     evaluationFieldListNode: EvaluationFieldListNode,
   ): EvaluationNode {
     const evaluationNode = new DTOEvaluationNodeBuilder()
+      .withIdentifier(identifierNode)
+      .withEvaluationFieldList(evaluationFieldListNode)
+      .build();
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode).build();
+  }
+
+  buildCommandEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode?: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new CommandEvaluationNodeBuilder().withIdentifier(identifierNode);
+
+    if (evaluationFieldListNode) {
+      evaluationNode.withEvaluationFieldList(evaluationFieldListNode);
+    }
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
+  }
+
+  buildQueryEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode?: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new QueryEvaluationNodeBuilder().withIdentifier(identifierNode);
+    if (evaluationFieldListNode) {
+      evaluationNode.withEvaluationFieldList(evaluationFieldListNode);
+    }
+
+    return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
+  }
+
+  buildStandardVOEvaluation(
+    identifierNode: IdentifierNode,
+    evaluationFieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new StandardVOEvaluationNodeBuilder()
       .withIdentifier(identifierNode)
       .withEvaluationFieldList(evaluationFieldListNode)
       .build();

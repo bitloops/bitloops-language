@@ -1,0 +1,38 @@
+Config.setDeployment(Deployment.Microservice);
+Config.setLanguage(TypeScript);
+
+Config.setBuses({
+    COMMAND_BUS: MessageBus.External,//Here it should be Kafka, Nats etc MessageBus.External.Nats
+    EVENT_BUS: MessageBus.InProcess,
+    INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+    QUERY_BUS: MessageBus.InProcess,
+})
+
+// DB CONNECTIONS
+
+const mongoConnection = RepoConnections.Mongo({
+  host: 'localhost',
+  port: 27017,
+  database: Env(MONGO_DB_DATABASE,'banking'),
+});
+
+const bankingWriteRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: Env(MONGO_DB_Banking_COLLECTION, 'bankings'),
+  }) concretes BankingWriteRepoPort;
+  
+  const bankingReadRepo = RepoAdapters.Mongo({
+    connection: mongoConnection,
+    collection: Env(MONGO_DB_Banking_COLLECTION, 'bankings'),
+  }) concretes BankingReadRepoPort;
+  
+  const emailService = EmailServiceAdapters.SendGrid({
+    apiKey: Env(SENDGRID_API_KEY),
+  }) concretes EmailServicePort;
+  
+  // USE CASES
+  DI {
+    CreateBankingCommandHandler(bankingWriteRepo, emailService);
+    GetAllBankingsQueryHandler(bankingReadRepo);
+    SendEmailAfterMoneyDepositedDomainEventHandler();
+  }

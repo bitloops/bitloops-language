@@ -19,7 +19,7 @@
  */
 import { BitloopsParser } from '../../../../src/parser/core/index.js';
 import { IntermediateASTParser } from '../../../../src/ast/core/index.js';
-import { isIntermediateASTError } from '../../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../../src/parser/core/guards/index.js';
 import { IntermediateASTSetup } from '../../../../src/ast/core/types.js';
 import { VALID_PACKAGE_CONCRETIONS } from '../mocks/packageConcretion/index.js';
@@ -55,7 +55,7 @@ describe('Valid Package Concretion', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           setupResult = result.setup;
         }
       }

@@ -1,4 +1,5 @@
-import { TDomainCreateMethod } from '../../../../src/types.js';
+import { TDomainCreateMethod, TStatements } from '../../../../src/types.js';
+import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { DomainCreateBuilder } from './DomainCreateBuilder.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
 import { StatementDirector } from './statement/statementDirector.js';
@@ -23,7 +24,7 @@ export class DomainCreateBuilderDirector {
   }): TDomainCreateMethod {
     return this.builder
       .withStatements(
-        new StatementListDirector().buildOneReturnStatementEntityEvaluation(
+        new StatementListDirector().buildOneReturnStatementEntityConstructorEvaluation(
           entityName,
           entityPropsIdentifier,
         ),
@@ -34,7 +35,38 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(entityPropsIdentifier, entityPropsName)
+      .withParameter(
+        entityPropsIdentifier,
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(entityPropsName),
+      )
+      .build();
+  }
+
+  buildCreateEntityWithStatements({
+    entityName,
+    entityPropsIdentifier,
+    errorName,
+    entityPropsName,
+    statements,
+  }: {
+    entityName: string;
+    entityPropsIdentifier: string;
+    errorName: string;
+    entityPropsName: string;
+    statements: TStatements;
+  }): TDomainCreateMethod {
+    return this.builder
+      .withStatements(statements)
+      .withReturnType(
+        new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+          entityName,
+          errorName,
+        ),
+      )
+      .withParameter(
+        entityPropsIdentifier,
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(entityPropsName),
+      )
       .build();
   }
 
@@ -57,7 +89,10 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(voPropsIdentifier, voPropsName)
+      .withParameter(
+        voPropsIdentifier,
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(voPropsName),
+      )
       .build();
   }
 
@@ -87,7 +122,10 @@ export class DomainCreateBuilderDirector {
           errorName,
         ),
       )
-      .withParameter(voPropsIdentifier, voPropsName)
+      .withParameter(
+        voPropsIdentifier,
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(voPropsName),
+      )
       .build();
   }
 }

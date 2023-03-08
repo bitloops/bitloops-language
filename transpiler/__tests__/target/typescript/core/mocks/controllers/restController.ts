@@ -58,9 +58,12 @@ export class HelloWorldController extends Fastify.BaseController {
     ),
     serverType: 'REST.Fastify',
     output: `import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
+import { TodoCreateUseCase } from '../application/TodoCreateUseCase';
 export class CreateTodoController extends Fastify.BaseController {
-  constructor() {
+  private useCase: TodoCreateUseCase;
+  constructor(useCase: TodoCreateUseCase) {
     super();
+    this.useCase = useCase;
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const result = await this.useCase.execute();

@@ -1,0 +1,63 @@
+
+Command InsertPINCommand {
+    //Command topic should be ${contextId}.${commandName}
+    // commandTopic: `${commandName}.${contextId}`;
+    //Properties instead of DTO
+    string email;
+    string pin;
+    // commandDTO: InsertPINRequestDTO;
+
+    // Will we allow to override the default commandTopic? And if yes should we use getCommandTopic function or just a property?
+
+    // Should we declare here which commandHandler will handle this command?
+
+    //It can be default
+    // getCommandTopic(): string {
+    //   // Will we have a "global" contextId?
+    //   return this.commandName + '.' + contextId;
+    // }
+  }
+
+
+//AST
+{
+  "command" : {
+    "commandIdentifier": IdentifierNode;
+    "commandTopic": ExpressionNode;
+    "fields": FieldListNode;
+  }
+}
+
+export type TCommand = {
+  [CommandKey]: {
+    [CommandIdentifierKey]: TDTOIdentifier;
+    commandTopic: TExpression 
+  } & TVariables;
+};
+
+// bl -  InsertPINCommand.create({email: 'email', pin: 'pin'})
+
+//TS 
+
+type TInsertPinCommand = {
+  email: string;
+  pin: string;
+};
+
+export class InsertPINCommand extends Application.Command {
+  public readonly email: string;
+  public readonly pin: string;
+
+  // Set static name so we can refer to them easily
+  public static readonly commandName = INSERT_PIN_COMMAND_NAME;
+
+  constructor(insertPinRequestDTO: TInsertPinCommand) {
+    super(InsertPINCommand.commandName, contextId);
+    this.email = insertPinRequestDTO.email;
+    this.pin = insertPinRequestDTO.pin;
+  }
+
+  static getCommandTopic(): string {
+    return super.getCommandTopic(InsertPINCommand.commandName, contextId);
+  }
+}

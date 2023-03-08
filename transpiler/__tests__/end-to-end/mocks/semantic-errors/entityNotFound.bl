@@ -1,0 +1,2 @@
+RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
+PackagePort GherkinPackagePort { encode(value: string): bytes; }

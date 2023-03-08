@@ -28,6 +28,12 @@ import { getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { getEntityPrimitivesObject } from '../entity-values/index.js';
+import {
+  generateFromPrimitives,
+  generateToPrimitives,
+  getPrimitivesType,
+} from '../entity-values/fromToPrimitives.js';
 
 const ROOT_ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -68,12 +74,16 @@ export const rootEntityToTargetLanguage = (params: {
   const { create, privateMethods, publicMethods, constants } =
     rootEntity[RootEntityKey].entityValues;
 
-  const propsNameType = create.domainCreateParameter.parameterType;
+  const propsNameType = create.parameter.type;
+  const primitivesObject = getEntityPrimitivesObject(model, rootEntityName);
+
+  const primitivesType = getPrimitivesType(primitivesObject, rootEntityName);
+  output += primitivesType + '\n';
 
   const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
     modelToTargetLanguage({
-      type: BitloopsTypesMapping.TDomainConstructorParameter,
-      value: propsNameType,
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: { type: propsNameType },
     });
 
   dependencies.push(...rootEntityPropsTypeDependencies);
@@ -105,6 +115,12 @@ export const rootEntityToTargetLanguage = (params: {
   const entityMethodsModel = domainMethods(publicMethods, privateMethods);
   output += entityMethodsModel.output;
   dependencies.push(...entityMethodsModel.dependencies);
+
+  const fromPrimitives = generateFromPrimitives(primitivesObject, rootEntityName);
+  output += fromPrimitives + '\n';
+
+  const toPrimitives = generateToPrimitives(primitivesObject, rootEntityName);
+  output += toPrimitives + '\n';
 
   output += '}';
 

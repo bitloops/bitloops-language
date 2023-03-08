@@ -79,8 +79,10 @@ const restControllersToTargetLanguage = (
     throw new Error('Controller must have execute and parameterDependencies');
   }
 
-  const { parameters } = controllerInfo;
-  const dependenciesRes = buildFieldsFromDependencies({ parameters }, contextData);
+  const { parameters, controllerBusDependencies } = controllerInfo;
+  const dependenciesRes = buildFieldsFromDependencies({ parameters }, contextData, {
+    controllerBusDependencies,
+  });
   result += dependenciesRes.output;
   dependencies = [...dependencies, ...dependenciesRes.dependencies];
 

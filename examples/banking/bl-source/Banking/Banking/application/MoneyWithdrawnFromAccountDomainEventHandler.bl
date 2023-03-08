@@ -1,0 +1,6 @@
+DomainEventHandler MoneyWithdrawnFromAccountDomainEventHandler() {
+
+    handle(event: MoneyWithdrawnFromAccountDomainEvent) {
+      console.log(event);
+    }
+}

@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  PropsIdentifierKey,
   TContextData,
   TDomainPrivateMethods,
   TDomainPublicMethods,
@@ -30,6 +29,8 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
+import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 
 const entityMethods = (
   privateMethods: TDomainPrivateMethods,
@@ -54,10 +55,8 @@ const entityValuesToTargetLanguage = (params: {
   let result = '{';
   let dependencies = [];
   const { privateMethods, publicMethods, create, constants } = entityValues;
-  const propsNameType = create.domainCreateParameter[PropsIdentifierKey];
-  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-  //   throw new Error('Array is not supported as entity props type');
-  // }
+  const propsNameType = create.parameter.type;
+
   const { output: propsName, dependencies: entityPropsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: propsNameType },
@@ -89,6 +88,7 @@ const entityValuesToTargetLanguage = (params: {
 
   const entityMethodsModel = entityMethods(privateMethods, publicMethods);
   result += entityMethodsModel.output;
+
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
   result += '}';
@@ -96,4 +96,18 @@ const entityValuesToTargetLanguage = (params: {
   return { output: result, dependencies };
 };
 
-export { entityValuesToTargetLanguage };
+const getEntityPrimitivesObject = (
+  model: IntermediateASTTree,
+  entityIdentifier: string,
+): Record<string, any> => {
+  let entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
+  if (entityNode === null) {
+    entityNode = model.getRootEntityByIdentifier(entityIdentifier) as RootEntityDeclarationNode;
+  }
+
+  const propsNode = model.getPropsNodeOfEntity(entityNode);
+  const fieldPrimitives = propsNode.getFieldsPrimitives(model);
+  return fieldPrimitives;
+};
+
+export { getEntityPrimitivesObject, entityValuesToTargetLanguage };

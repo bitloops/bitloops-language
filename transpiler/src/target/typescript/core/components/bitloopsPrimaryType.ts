@@ -18,15 +18,21 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { bitloopsTypeToLangMapping } from '../../../../helpers/bitloopsPrimitiveToLang.js';
-import { mappingBitloopsBuiltInClassToLayer } from '../../../../helpers/mappings.js';
+import {
+  BitloopsTypesMapping,
+  mappingBitloopsBuiltInClassToLayer,
+} from '../../../../helpers/mappings.js';
 import {
   bitloopsIdentifiersTypeKey,
   bitloopsPrimaryTypeKey,
   TBitloopsPrimaryType,
+  TDependenciesTypeScript,
+  TStandardValueType,
   TTargetDependenciesTypeScript,
 } from '../../../../types.js';
 import { SupportedLanguages } from '../../../supportedLanguages.js';
 import { getChildDependencies } from '../dependencies.js';
+import { modelToTargetLanguage } from '../modelToTargetLanguage.js';
 import { BitloopsPrimTypeIdentifiers } from '../type-identifiers/bitloopsPrimType.js';
 
 export const bitloopsPrimaryTypeToTargetLanguage = (
@@ -54,12 +60,39 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
     // If not primitive, then we have a dependency
     // const baseType = extractBaseTypeOfPrimaryType(type);
     dependencies = getChildDependencies(mappedType);
+  } else if (BitloopsPrimTypeIdentifiers.isStandardValueType(primaryTypeValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TStandardValueType,
+      value: primaryTypeValue,
+    });
   } else {
     throw new Error(`Invalid primary type ${JSON.stringify(type)}`);
   }
 
   return {
     output: mappedType,
+    dependencies,
+  };
+};
+
+const STANDARD_VO_DEPENDENCIES: TDependenciesTypeScript = [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
+
+export const standardValueTypeToTargetLanguage = (
+  type: TStandardValueType,
+): TTargetDependenciesTypeScript => {
+  const { standardVOType } = type.standardValueType;
+
+  const dependencies = STANDARD_VO_DEPENDENCIES;
+  const output = `Domain.StandardVO.${standardVOType}.Value`;
+  return {
+    output,
     dependencies,
   };
 };

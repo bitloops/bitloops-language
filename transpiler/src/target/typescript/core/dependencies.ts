@@ -24,28 +24,39 @@ import {
   mappingBitloopsBuiltInClassToLayer,
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
-import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
+import {
+  TContextData,
+  TDependencyChildTypescript,
+  TDependencyParentTypescript,
+} from '../../../types.js';
 import { deepClone } from '../../../utils/deepClone.js';
 import { getFilePathRelativeToModule } from '../helpers/getTargetFileDestination.js';
 import { findRelativeDiffForImport } from '../utils/findRelativeDiff.js';
 
 export const getParentDependencies = (
   dependencies: TDependencyChildTypescript[],
-  { classType, className }: { classType: TClassTypesValues; className: string },
+  {
+    classType,
+    className,
+    contextData,
+  }: { classType: TClassTypesValues; className: string; contextData?: TContextData },
 ): TDependencyParentTypescript[] => {
   const parentPathObj = getFilePathRelativeToModule(classType, className);
   const parentPath = parentPathObj.path;
+  const parentPathObjContext = getFilePathRelativeToModule(classType, className, contextData);
+  const parentPathContext = parentPathObjContext.path;
   const parentDependencies: TDependencyParentTypescript[] = [];
   const clonedDependencies = deepClone(dependencies);
   for (const dependency of clonedDependencies) {
-    const { type, value, classType, className } = dependency;
+    const { type, value, classType, className, contextInfo } = dependency;
     if (type === 'absolute') {
       parentDependencies.push(dependency as TDependencyParentTypescript);
       continue;
     }
-    const childPathObj = getFilePathRelativeToModule(classType, className);
+    const childPathObj = getFilePathRelativeToModule(classType, className, contextInfo);
     const childPath = childPathObj.path;
-    const importString = findRelativeDiffForImport(parentPath, childPath, className);
+    const finalParentPath = contextInfo ? parentPathContext : parentPath;
+    const importString = findRelativeDiffForImport(finalParentPath, childPath, className);
     parentDependencies.push({
       type,
       default: dependency.default,
@@ -93,7 +104,10 @@ const removeParentDuplicates = (
   return parentDependenciesRemovedDuplicates;
 };
 
-export const getChildDependencies = (args: string | string[]): TDependencyChildTypescript[] => {
+export const getChildDependencies = (
+  args: string | string[],
+  contextData?: TContextData,
+): TDependencyChildTypescript[] => {
   let dependencyStrings = args;
   if (typeof args === 'string') {
     dependencyStrings = [args];
@@ -123,6 +137,7 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
       value,
       classType,
       className: fileName,
+      contextInfo: contextData,
     });
   }
   return result;
@@ -217,13 +232,39 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.ReadModel,
     };
+  } else if (dependencyName.endsWith('Command')) {
+    return {
+      classType: ClassTypes.Command,
+    };
+  } else if (dependencyName.endsWith('Query')) {
+    return {
+      classType: ClassTypes.Query,
+    };
+  } else if (dependencyName.endsWith('CommandHandler')) {
+    return {
+      classType: ClassTypes.Command,
+    };
+  } else if (dependencyName.endsWith('QueryHandler')) {
+    return {
+      classType: ClassTypes.Query,
+    };
+  } else if (dependencyName.endsWith('DomainEvent')) {
+    return {
+      classType: ClassTypes.DomainEvent,
+    };
+  } else if (dependencyName.endsWith('IntegrationEvent')) {
+    return {
+      classType: ClassTypes.IntegrationEvent,
+    };
+  } else if (dependencyName.endsWith('ServicePort')) {
+    return {
+      classType: ClassTypes.ServicePort,
+    };
+  } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
+    return {
+      classType: ClassTypes.Struct,
+    };
   }
-  //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
-
-  //   return {
-  //     classType: ClassTypes.Structs,
-  //   };
-  // }
 
   // TODO We are not throwing because of structs
   // console.error(`Unknown class type for ${dependencyName}`)

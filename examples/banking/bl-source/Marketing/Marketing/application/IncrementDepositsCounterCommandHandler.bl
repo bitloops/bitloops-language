@@ -1,0 +1,27 @@
+Command WithdrawMoneyCommand {
+    string accountId;
+}
+
+CommandHandler IncrementDepositsCounterCommandHandler (accountRepo: AccountWriteRepoPort) {
+    execute(command: WithdrawMoneyCommand): (OK(void), Errors(
+        DomainErrors.InvalidNumberOfTransactionsError
+    //    | Domain.StandardVO.Currency.ErrorTypes
+       )) {
+        const accountId = UUIDv4(command.accountId);
+        const accountEntity = this.accountRepo.getById(accountId);
+
+        if(NOT accountEntity) {
+            
+            const depositVO = DepositsCounterVO.create({counter: 0});
+            const newAccount = AccountEntity.create({
+                id: accountId,
+                deposits: depositVO
+            });
+            newAccount.incrementDeposits();
+            this.accountRepo.save(newAccount);
+        } else {
+            accountEntity.incrementDeposits();
+            this.accountRepo.update(accountEntity);
+        }
+   } 
+ }

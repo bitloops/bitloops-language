@@ -10,6 +10,8 @@ import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
 import { IfStatementBuilderDirector } from './ifStatementDirector.js';
 import { BreakStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/BreakStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
+import { ReturnErrorStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
+import { ReturnErrorStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 
 export class StatementBuilderDirector {
   /**
@@ -45,6 +47,10 @@ export class StatementBuilderDirector {
     return new ReturnOKStatementNodeBuilder().withExpression(expression).build();
   }
 
+  buildReturnErrorStatement(expression: ExpressionNode): ReturnErrorStatementNode {
+    return new ReturnErrorStatementNodeBuilder().withExpression(expression).build();
+  }
+
   buildExpressionEntityEvaluationWithIdentifier(
     entityName: string,
     identifierName: string,
@@ -57,6 +63,22 @@ export class StatementBuilderDirector {
         entityName,
         expressionProps,
       ),
+    );
+  }
+
+  /**
+   * e.g. this.name = name
+   */
+  buildThisAssignmentExpression(identifierName: string): ExpressionNode {
+    const memberDotExpression = new ExpressionBuilderDirector().buildThisMemberDotExpression(
+      identifierName,
+    );
+    const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(
+      identifierName,
+    );
+    return new ExpressionBuilderDirector().buildAssignmentExpression(
+      memberDotExpression,
+      identifierExpression,
     );
   }
 }

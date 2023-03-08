@@ -1,15 +1,15 @@
-import { DomainCreateParameterNode } from '../../nodes/Domain/DomainCreateParameterNode.js';
 import { DomainCreateNode } from '../../nodes/Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../nodes/statements/StatementList.js';
 import { IBuilder } from '../IBuilder.js';
+import { ParameterNode } from '../../nodes/ParameterList/ParameterNode.js';
 
 export class DomainCreateNodeBuilder implements IBuilder<DomainCreateNode> {
   private domainCreateNode: DomainCreateNode;
   private statementListNode?: StatementListNode;
   private returnTypeNode: ReturnOkErrorTypeNode;
-  private parameterNode: DomainCreateParameterNode;
+  private parameterNode: ParameterNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.domainCreateNode = new DomainCreateNode(metadata);
@@ -25,7 +25,7 @@ export class DomainCreateNodeBuilder implements IBuilder<DomainCreateNode> {
     return this;
   }
 
-  public withParameter(parameterNode: DomainCreateParameterNode): DomainCreateNodeBuilder {
+  public withParameter(parameterNode: ParameterNode): DomainCreateNodeBuilder {
     this.parameterNode = parameterNode;
     return this;
   }

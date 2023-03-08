@@ -30,6 +30,8 @@ import {
   buildInClassTypeKey,
   bitloopsIdentifiersTypeKey,
   TBitloopsBuiltInClassesObject,
+  TStandardValueType,
+  TBitloopsPrimitives,
 } from '../../../../types.js';
 
 export class BitloopsPrimTypeIdentifiers {
@@ -54,6 +56,47 @@ export class BitloopsPrimTypeIdentifiers {
     return false;
   };
 
+  static isBitloopsValueObjectIdentifier(
+    primaryType: TBitloopsPrimaryTypeValues,
+  ): primaryType is TBitloopsIdentifierObject {
+    if (bitloopsIdentifiersTypeKey in primaryType) {
+      return (
+        typeof primaryType[bitloopsIdentifiersTypeKey] === 'string' &&
+        primaryType[bitloopsIdentifiersTypeKey].endsWith('VO')
+      );
+    }
+    return false;
+  }
+
+  static builtInClassToPrimitiveType = (
+    type: TBitloopsBuiltInClassesObject,
+  ): TBitloopsPrimitives => {
+    const builtInClass = type[buildInClassTypeKey];
+    switch (builtInClass) {
+      case 'UUIDv4':
+        return 'string';
+      default:
+        return 'string';
+    }
+  };
+
+  static standardVOToPrimitiveType = (
+    type: TStandardValueType,
+  ): { type?: string; primitive: any } => {
+    const standardVOType = type.standardValueType.standardVOType;
+    switch (standardVOType) {
+      case 'Currency':
+        return {
+          type: 'Domain.StandardVO.Currency.Value',
+          primitive: {
+            currencyCode: 'string',
+          },
+        };
+      default:
+        throw new Error('Unknown standard value object type');
+    }
+  };
+
   static isBitloopsPrimitive(
     primaryType: TBitloopsPrimaryTypeValues,
   ): primaryType is TBitloopsPrimitivesObject {
@@ -68,6 +111,15 @@ export class BitloopsPrimTypeIdentifiers {
   ): primaryType is TBitloopsIdentifierObject {
     if (bitloopsIdentifiersTypeKey in primaryType) {
       return typeof primaryType[bitloopsIdentifiersTypeKey] === 'string';
+    }
+    return false;
+  }
+
+  static isStandardValueType(
+    primaryType: TBitloopsPrimaryTypeValues,
+  ): primaryType is TStandardValueType {
+    if ('standardValueType' in primaryType) {
+      return true;
     }
     return false;
   }

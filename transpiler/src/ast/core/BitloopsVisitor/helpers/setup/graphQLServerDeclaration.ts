@@ -10,7 +10,7 @@ import { ControllerResolversNodeBuilder } from '../../../intermediate-ast/builde
 import { GraphQLServerOptionsNodeBuilder } from '../../../intermediate-ast/builders/setup/GraphQLServerOptionsNodeBuilder.js';
 import { GraphQLServerOptionsNode } from '../../../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { GraphQLServerNodeBuilder } from '../../../intermediate-ast/builders/setup/GraphQLServerNodeBuilder.js';
-import { GraphQLControllerIdentifierNodeBuilder } from '../../../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
+import { GraphQLControllerIdentifierNode } from '../../../intermediate-ast/nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
 
 export const graphQLServerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -62,14 +62,14 @@ export const controllerResolverBindVisitor = (
   const boundedContextModuleNode: BoundedContextModuleNode = thisVisitor.visit(
     ctx.boundedContextModuleDeclaration(),
   );
-  const controllerIdentifier: string = ctx.ControllerIdentifier().getText();
+  const controllerIdentifier: GraphQLControllerIdentifierNode = thisVisitor.visit(
+    ctx.graphQLControllerIdentifier(),
+  );
   const methodArguments: ArgumentListNode = thisVisitor.visit(ctx.methodArguments());
   const metadata = produceMetadata(ctx, thisVisitor);
 
   return new ControllerResolverNodeBuilder(metadata)
-    .withClassName(
-      new GraphQLControllerIdentifierNodeBuilder(null).withName(controllerIdentifier).build(),
-    )
+    .withClassName(controllerIdentifier)
     .withBoundedContextModule(boundedContextModuleNode)
     .withMethodArguments(methodArguments)
     .build();

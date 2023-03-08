@@ -24,6 +24,7 @@ import {
 } from '../../supportedLanguages.js';
 import { camelCase, pascalCase, kebabCase } from '../../../utils/caseStyles.js';
 import { ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import { TContextData } from '../../../types.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
@@ -39,6 +40,14 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
+  COMMANDS = 'application/commands/',
+  QUERIES = 'application/queries/',
+  QUERY_HANDLERS = 'application/queryHandlers/',
+  COMMAND_HANDLERS = 'application/commandHandlers/',
+  DOMAIN_EVENTS = 'domain/events/',
+  DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
+  INTEGRATION_EVENTS = 'contracts/integration-events/',
+  INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -57,6 +66,15 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.RepoAdapter]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
+  [ClassTypes.Command]: PROJECT_RELATIVE_PATHS.COMMANDS,
+  [ClassTypes.Query]: PROJECT_RELATIVE_PATHS.QUERIES,
+  [ClassTypes.QueryHandler]: PROJECT_RELATIVE_PATHS.QUERY_HANDLERS,
+  [ClassTypes.CommandHandler]: PROJECT_RELATIVE_PATHS.COMMAND_HANDLERS,
+  [ClassTypes.DomainEvent]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENTS,
+  [ClassTypes.DomainEventHandler]: PROJECT_RELATIVE_PATHS.DOMAIN_EVENT_HANDLERS,
+  [ClassTypes.IntegrationEvent]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENTS,
+  [ClassTypes.IntegrationEventHandler]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENT_HANDLERS,
+  [ClassTypes.ServicePort]: PROJECT_RELATIVE_PATHS.PORTS,
 };
 
 const getTargetFileDestination = (
@@ -113,6 +131,16 @@ const getTargetFileDestination = (
     case ClassTypes.RepoPort:
     case ClassTypes.RepoAdapter:
     case ClassTypes.DomainRule:
+    case ClassTypes.DomainEvent:
+    case ClassTypes.DomainEventHandler:
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+    case ClassTypes.Command:
+    case ClassTypes.CommandHandler:
+    case ClassTypes.Query:
+    case ClassTypes.QueryHandler:
+    case ClassTypes.Struct:
+    case ClassTypes.ServicePort:
       result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
@@ -122,9 +150,11 @@ const getTargetFileDestination = (
   return result;
 };
 
+// TODO maybe this should change name and remove integrationEvent case to other function
 const getFilePathRelativeToModule = (
-  classType: string,
+  classType: TClassTypesValues,
   className: string,
+  contextInfo?: TContextData,
   targetLanguage = SupportedLanguages.TypeScript as string,
 ): { path: string; filename: string; extension: string } => {
   const result = {
@@ -144,6 +174,14 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Package:
     case ClassTypes.RepoAdapter:
     case ClassTypes.RepoPort:
+    case ClassTypes.Command:
+    case ClassTypes.Query:
+    case ClassTypes.DomainEvent:
+    case ClassTypes.DomainEventHandler:
+    case ClassTypes.CommandHandler:
+    case ClassTypes.QueryHandler:
+    case ClassTypes.Struct:
+    case ClassTypes.ServicePort:
       result.path = ClassTypesPaths[classType];
       result.filename = className;
       break;
@@ -152,6 +190,17 @@ const getFilePathRelativeToModule = (
     case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';
+      break;
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+      if (!contextInfo) {
+        result.path = ClassTypesPaths[classType];
+      } else {
+        result.path = `${kebabCase(contextInfo.boundedContext)}/${kebabCase(contextInfo.module)}/${
+          ClassTypesPaths[classType]
+        }`;
+      }
+      result.filename = className;
       break;
     default:
       throw new Error(`Class type ${classType} is not supported`);

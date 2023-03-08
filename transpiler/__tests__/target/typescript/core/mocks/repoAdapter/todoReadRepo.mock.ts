@@ -12,24 +12,40 @@ export class MongoTodoReadRepo implements TodoReadRepoPort {
     const documents = await this.collection.find({}).toArray();
     const res: TodoReadModel[] = [];
     documents.forEach((document) => {
-      res.push({
-        id: document._id.toString(),
-        name: document.name,
-      });
+      const { _id, ...rest } = document as any;
+      res.push(
+        TodoReadModel.fromPrimitives({
+          id: _id,
+          ...rest,
+        }),
+      );
     });
     return res;
   }
-  async getById(todoId: string): Promise<TodoReadModel> {
+  async getById(todoId: string): Promise<TodoReadModel | null> {
     const document = await this.collection.findOne({
       _id: todoId,
     });
-    let res = null;
-    if (document) {
-      res = {
-        id: document._id.toString(),
-        name: document.name,
-      };
+    if (!document) {
+      return null;
     }
-    return res;
+    const { _id, ...rest } = document as any;
+    return TodoReadModel.fromPrimitives({
+      id: _id,
+      ...rest,
+    });
+  }
+  async getByName(name: string): Promise<TodoReadModel | null> {
+    const res = await this.collection.findOne({
+      name,
+    });
+    if (!res) {
+      return null;
+    }
+    const { _id, ...rest } = res as any;
+    return TodoReadModel.fromPrimitives({
+      id: _id,
+      ...rest,
+    });
   }
 }

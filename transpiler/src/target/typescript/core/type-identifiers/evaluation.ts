@@ -18,7 +18,16 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TErrorEvaluation, TEvaluationValues, TStructEvaluation } from '../../../../types.js';
+import {
+  TCommandEvaluation,
+  TQueryEvaluation,
+  TIntegrationEventEvaluation,
+  TEntityConstructorEvaluation,
+  TErrorEvaluation,
+  TEvaluationValues,
+  TStandardVOEvaluation,
+  TStructEvaluation,
+} from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
 export class EvaluationTypeIdentifiers {
@@ -29,8 +38,49 @@ export class EvaluationTypeIdentifiers {
     return false;
   }
 
+  static isCommandEvaluation(evaluation: TEvaluationValues): evaluation is TCommandEvaluation {
+    if ('command' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isQueryEvaluation(evaluation: TEvaluationValues): evaluation is TQueryEvaluation {
+    if ('query' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
   static isErrorEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
     if ('errorEvaluation' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isIntegrationEventEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TIntegrationEventEvaluation {
+    if ('integrationEvent' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isEntityConstructorEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TEntityConstructorEvaluation {
+    if ('entityConstructor' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static isStandardVOEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TStandardVOEvaluation {
+    if ('standardVO' in evaluation) {
       return true;
     }
     return false;

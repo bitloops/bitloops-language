@@ -104,6 +104,18 @@ export const validExpressionLiteralTestCases = [
     inputBLString: 'JestTestExpression { true }',
     expression: new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
   },
+  {
+    description: 'a regex literal',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { /hello/ }',
+    expression: new ExpressionBuilderDirector().buildRegexLiteralExpression('/hello/'),
+  },
+  {
+    description: 'a regex literal with flags',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { /S+@S+.S+/g }',
+    expression: new ExpressionBuilderDirector().buildRegexLiteralExpression('/S+@S+.S+/g'),
+  },
 ];
 
 export const validExpressionIdentifierTestCases = [

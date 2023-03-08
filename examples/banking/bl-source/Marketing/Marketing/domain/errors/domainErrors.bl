@@ -1,0 +1,4 @@
+DomainError InvalidNumberOfTransactionsError(counter: int32) {
+    message: `invalid number of transactions ${counter}`,
+    errorId: 'o91gc42c-4d31-4f7c-b68a-b68a78-b68a655'
+}

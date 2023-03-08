@@ -1,27 +1,29 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { DomainCreateParameterNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { DomainCreateParameterNode } from '../../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { DomainCreateParameterTypeNode } from '../../intermediate-ast/nodes/Domain/DomainCreateParameterTypeNode.js';
-import { DomainCreateParameterTypeNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
-import { IdentifierNodeBuilder } from '../../intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { produceMetadata } from '../metadata.js';
+import { PropsIdentifierNode } from '../../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
+import { ParameterNode } from '../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { BitloopsPrimaryTypeNodeBuilderDirector } from '../../intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
+import { ParameterNodeBuilder } from '../../intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ParameterIdentifierNode } from '../../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
 
 export const domainCreateParameterVisitor = (
   _thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.DomainConstructorParamContext,
-): DomainCreateParameterNode => {
-  const parameterIdentifier: IdentifierNode = new IdentifierNodeBuilder()
-    .withName(ctx.id.text)
-    .build();
-  const parameterType: DomainCreateParameterTypeNode = new DomainCreateParameterTypeNodeBuilder()
-    .withValue(ctx.type.text)
-    .build();
+  ctx: BitloopsParser.DomainCreateParamContext,
+): ParameterNode => {
+  const propsIdentifier: PropsIdentifierNode = _thisVisitor.visit(ctx.propsIdentifier());
+  const type: BitloopsPrimaryTypeNode = new BitloopsPrimaryTypeNodeBuilderDirector(
+    propsIdentifier.getMetadata(),
+  ).buildIdentifierPrimaryType(propsIdentifier.getIdentifierName());
 
-  const domainConstructorParameterNode = new DomainCreateParameterNodeBuilder()
-    .withIdentifierNode(parameterIdentifier)
-    .withTypeNode(parameterType)
-    .build();
+  const parameterIdentifier: ParameterIdentifierNode = _thisVisitor.visit(
+    ctx.parameterIdentifier(),
+  );
 
-  return domainConstructorParameterNode;
+  const metadata = produceMetadata(ctx, _thisVisitor);
+  return new ParameterNodeBuilder(metadata)
+    .withIdentifier(parameterIdentifier)
+    .withType(type)
+    .build();
 };

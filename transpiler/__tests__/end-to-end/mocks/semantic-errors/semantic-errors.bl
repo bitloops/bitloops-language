@@ -1,0 +1,116 @@
+Props TitleProps {
+    string title;
+  }
+
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title.length > 150 OR title.length < 4);
+}
+
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+      applyRules(TitleOutOfBoundsRule(props.title));
+    }
+  }
+
+  DomainError TitleOutOfBoundsError(title: string)  {
+    message: 'Title is out of range',
+    errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+  }
+
+Props TodoProps {
+    optional UUIDv4 id;
+    TitleVO title;
+    bool completed;
+  }
+
+Root Entity TodoEntity {    
+    static create(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+    
+    check(title: TitleVO):  (OK(void), Errors()) {
+        this.title = title;
+      }
+}
+
+DTO DeleteTodoRequestDTO {
+  string id;
+}
+
+ApplicationError ToDoNotFoundError(id: string)  {
+  message: `ToDo with id ${id} was not found`,
+  errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b403',
+}
+
+RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
+
+UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
+  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = UUIDv4(requestDTO.id);
+
+    const todoFound = this.todoRepo.getById(requestId);
+    if(NOT todoFound) {
+      const requestIdString = requestId.toString(); 
+      return ApplicationErrors.ToDoNotFoundError(requestIdString);
+    }
+
+    this.todoRepo.delete(requestId);
+  }
+}
+
+RESTController DeleteTodoRESTController (deleteTodoUseCase: DeleteTodoUseCase) {
+  method: REST.Methods.DELETE;
+  execute(request, response) {
+    const dto = DeleteTodoRequestDTO({ id: request.params.id });
+
+    const result = this.deleteTodoUseCase.execute(dto);
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.ToDoNotFoundError: {
+          this.notFound(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.ok(response);
+    }
+  }
+}
+
+Struct TodoStruct{
+  string id;
+  bool completed;
+}
+
+GraphQLController GetTodosdGQLController (getAllTodosUseCase: GetAllTodosUseCase) {
+  operation: GraphQL.Operations.Query;
+
+  execute (request): GetAllTodosResponseDTO {
+    const result = this.getAllTodosUseCase.execute();
+    const dto = GetAllTodosResponseDTO({ todos: result });
+
+    return this.ok(dto);
+  }
+}
+
+DTO GetAllTodosResponseDTO {
+  TodoReadModel[] todos;
+}
+
+UseCase GetAllTodosUseCase (todoRepo: TodoReadRepoPort) {
+  execute (): (OK(TodoReadModel[]), Errors()) {
+    const todos = this.todoRepo.getAll();
+
+    return todos;
+  }
+}
+
+RepoPort TodoReadRepoPort<TodoReadModel> extends CRUDReadRepoPort;
+
+ReadModel TodoReadModel {
+  string id;
+  string title;
+  bool completed;
+}

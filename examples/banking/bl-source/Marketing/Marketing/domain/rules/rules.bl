@@ -1,0 +1,5 @@
+Rule CounterIsPositiveNumberRule(counter: int32) throws DomainErrors.InvalidNumberOfTransactionsError {
+    isBrokenIf(counter < 0);
+}
+
+  

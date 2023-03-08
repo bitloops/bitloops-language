@@ -42,8 +42,12 @@ const domainPublicMethod = (methodInfo: TDomainPublicMethod): TTargetDependencie
   const returnTypeOuput = mappedReturnType.output;
   const parametersOutput = parametersString.output;
   const methodStatements = statementsString.output;
+
+  const isStatic = publicMethod.static;
+  const staticKeyWord = isStatic ? 'static ' : '';
+
   return {
-    output: `public ${methodName}${parametersOutput}: ${returnTypeOuput} { ${methodStatements} }`,
+    output: `public ${staticKeyWord} ${methodName}${parametersOutput}: ${returnTypeOuput} { ${methodStatements} }`,
     dependencies: [
       ...statementsString.dependencies,
       ...parametersString.dependencies,

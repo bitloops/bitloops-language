@@ -1,0 +1,13 @@
+const bankingRESTRouter = RESTRouter(REST.Fastify) {
+    Post('/'): DepositMoneyController();
+  }
+
+  // SERVERS
+  RESTServer({
+    server: REST.Fastify,
+    port: Env(FASTIFY_PORT, 5001),
+    apiPrefix: '/api',
+    // corsOptions: { origin: '*' },
+  }) {
+    '/banking': bankingRESTRouter;
+  }

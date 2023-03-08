@@ -1,0 +1,55 @@
+Props TitleProps {
+    string title;
+  }
+
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title.length > 150 OR title.length < 4);
+}
+
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+      applyRules(TitleOutOfBoundsRule(props.title));
+    }
+  }
+
+  DomainError TitleOutOfBoundsError(title: string)  {
+    message: 'Title is out of range',
+    errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+  }
+
+Props TodoProps {
+    optional UUIDv4 id;
+    TitleVO title;
+    bool completed;
+  }
+
+Root Entity TodoEntity {    
+    static create(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+    
+    check(title: TitleVO):  (OK(void), Errors()) {
+        this.title = title;
+      }
+}
+
+ApplicationError ToDoNotFoundError(id: string)  {
+    message: `ToDo with id ${id} was not found`,
+    errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b403',
+  }
+  
+  DTO DeleteTodoRequestDTO {
+    string id;
+  }
+  
+UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
+  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = UUIDv4(requestDTO.id);
+
+    const todoFound = this.todoRepo.getById(requestId);
+    if(NOT todoFound) {
+      const requestIdString = requestId.toString(); 
+      return ApplicationErrors.ToDoNotFoundError(requestIdString);
+    }
+
+    this.todoRepo.delete(requestId);
+  }
+}

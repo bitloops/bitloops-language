@@ -2,7 +2,7 @@ import { PackageNodeBuilderDirector } from '../../builders/packageNodeBuilderDir
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { MethodDefinitionNodeBuilderDirector } from '../../builders/methodDefinitionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 
 export const VALID_PACKAGE_TEST_CASES = [
   {
@@ -13,7 +13,7 @@ export const VALID_PACKAGE_TEST_CASES = [
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'encode',
           parameters: [new ParameterBuilderDirector().buildPrimitiveParameter('value', 'string')],
-          type: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bytes'),
+          type: new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bytes'),
         }),
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'decode',
@@ -21,7 +21,7 @@ export const VALID_PACKAGE_TEST_CASES = [
             new ParameterBuilderDirector().buildPrimitiveParameter('value', 'string'),
             new ParameterBuilderDirector().buildPrimitiveParameter('value2', 'string'),
           ],
-          type: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bytes'),
+          type: new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bytes'),
         }),
       ],
     }),

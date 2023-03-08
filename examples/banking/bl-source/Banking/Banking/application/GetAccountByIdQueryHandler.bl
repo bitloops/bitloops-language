@@ -1,0 +1,28 @@
+Query GetAccountQuery {
+    string accountId;
+}
+
+Struct Balance {
+    string currency;
+    int32 amount;
+}
+
+ReadModel AccountReadModel {
+    string id;
+    Balance balance;
+}
+
+QueryHandler GetAccountQueryHandler (accountRepo: AccountReadRepoPort) {
+    execute(query: GetAccountQuery): (OK(AccountReadModel), Errors(
+       ApplicationErrors.AccountNotFoundError
+       )) {
+       const requestId = query.accountId;
+       const account = this.accountRepo.getById(requestId);
+
+       if(NOT account) {
+           return ApplicationErrors.AccountNotFoundError(requestId);
+       }
+
+       return account;
+   } 
+ }

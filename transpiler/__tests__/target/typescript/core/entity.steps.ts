@@ -39,9 +39,17 @@ describe('Entity test cases', () => {
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const entity = testCase.entity;
       const props = testCase.props;
+      const valueObjects = testCase.valueObjects;
 
       tree.insertChild(entity);
-      tree.insertSibling(props);
+      for (const prop of props) {
+        tree.insertSibling(prop);
+      }
+      if (valueObjects && valueObjects.length > 0) {
+        for (const vo of valueObjects) {
+          tree.insertSibling(vo);
+        }
+      }
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },

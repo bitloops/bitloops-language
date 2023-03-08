@@ -1,6 +1,7 @@
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PublicMethodDeclarationNode } from '../../nodes/methods/PublicMethodDeclarationNode.js';
+import { StaticNode } from '../../nodes/methods/StaticNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
 import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementListNode } from '../../nodes/statements/StatementList.js';
@@ -12,6 +13,7 @@ export class PublicMethodDeclarationNodeBuilder implements IBuilder<PublicMethod
   private parameters: ParameterListNode;
   private returnType: ReturnOkErrorTypeNode;
   private statements: StatementListNode;
+  private staticNode: StaticNode;
 
   constructor(metadata?: TNodeMetadata) {
     this.publicMethodDeclarationNode = new PublicMethodDeclarationNode(metadata);
@@ -37,11 +39,17 @@ export class PublicMethodDeclarationNodeBuilder implements IBuilder<PublicMethod
     return this;
   }
 
+  public withStatic(staticNode: StaticNode): PublicMethodDeclarationNodeBuilder {
+    this.staticNode = staticNode;
+    return this;
+  }
+
   public build(): PublicMethodDeclarationNode {
     this.publicMethodDeclarationNode.addChild(this.identifier);
     this.publicMethodDeclarationNode.addChild(this.parameters);
     this.publicMethodDeclarationNode.addChild(this.returnType);
     this.publicMethodDeclarationNode.addChild(this.statements);
+    this.publicMethodDeclarationNode.addChild(this.staticNode);
 
     this.publicMethodDeclarationNode.buildObjectValue();
 

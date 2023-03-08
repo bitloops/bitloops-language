@@ -1,0 +1,12 @@
+Command WithdrawMoneyCommand {
+    string accountId;
+    string amount;
+}
+
+CommandHandler WithdrawMoneyCommandHandler () {
+    execute(command: WithdrawMoneyCommand): (OK(void), Errors(
+       )) {
+       
+       const accountId = UUIDv4(command.accountId);
+   }
+ }

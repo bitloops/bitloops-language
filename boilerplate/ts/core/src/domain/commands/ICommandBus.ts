@@ -30,5 +30,5 @@ export interface ICommandBus {
   ): Promise<void>;
   unregister(commandName: string): Promise<void>;
   send(command: ICommand): Promise<void>;
-  sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T>;
+  request<T = any>(command: ICommand, errorTypes?: TErrors): Promise<T>;
 }

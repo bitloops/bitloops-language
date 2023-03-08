@@ -7,7 +7,7 @@ import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-
 import { OptionalBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/OptionalBuilder.js';
 import { FieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { TBitloopsBuiltInClasses, TBitloopsPrimitives } from '../../../../../src/types.js';
-import { BitloopsPrimaryTypeDirector } from './bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 
 export class FieldBuilderDirector {
   private builder: FieldNodeBuilder;
@@ -42,6 +42,23 @@ export class FieldBuilderDirector {
     return fieldNode;
   }
 
+  buildStandardVOField(name: string, standardVOIdentifier: string, optional: boolean): FieldNode {
+    {
+      const typeNode = new BitloopsPrimaryTypeNodeDirector().buildStandardValueObjectPrimaryType(
+        standardVOIdentifier,
+      );
+
+      const optionalNode = new OptionalBuilder().withOptional(optional).build();
+      const identifierNode = new IdentifierNodeBuilder().withName(name).build();
+      const fieldNode = this.builder
+        .withName(identifierNode)
+        .withType(typeNode)
+        .withOptional(optionalNode)
+        .build();
+      return fieldNode;
+    }
+  }
+
   buildRequiredArrayField(name: string, type: TBitloopsPrimitives): FieldNode {
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
@@ -68,7 +85,7 @@ export class FieldBuilderDirector {
   buildRequiredBuiltInClassField(name: string, type: TBitloopsBuiltInClasses): FieldNode {
     const optionalNode = new OptionalBuilder().withOptional(false).build();
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();
-    const primaryType = new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(type);
+    const primaryType = new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType(type);
     const fieldNode = this.builder
       .withName(identifierNode)
       .withOptional(optionalNode)
@@ -80,7 +97,7 @@ export class FieldBuilderDirector {
   buildOptionalBuiltInClassField(name: string, type: TBitloopsBuiltInClasses): FieldNode {
     const optionalNode = new OptionalBuilder().withOptional(true).build();
     const identifierNode = new IdentifierNodeBuilder().withName(name).build();
-    const primaryType = new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType(type);
+    const primaryType = new BitloopsPrimaryTypeNodeDirector().buildBuiltinClassPrimaryType(type);
     const fieldNode = this.builder
       .withName(identifierNode)
       .withOptional(optionalNode)

@@ -22,9 +22,12 @@ import assert from 'assert';
 
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { isIntermediateASTError } from '../../../src/ast/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { validApplyRulesStatementTestCases } from './mocks/statements/builtInFunction.js';
+import {
+  validAddDomainEventStatementTestCases,
+  validApplyRulesStatementTestCases,
+} from './mocks/statements/builtInFunction.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 
@@ -52,7 +55,7 @@ describe('Apply rules statement is valid', () => {
 
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTError(result)) {
+        if (!isIntermediateASTValidationErrors(result)) {
           const { core } = result;
           resultTree = core[BOUNDED_CONTEXT].core;
         }
@@ -65,6 +68,44 @@ describe('Apply rules statement is valid', () => {
       const value = propsNodes[0].getValue();
 
       expect(value).toMatchObject(testStatement.applyRules);
+    });
+  });
+});
+
+describe('Add domain event statement is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  validAddDomainEventStatementTestCases.forEach((testStatement) => {
+    test(`${testStatement.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testStatement.fileId,
+            fileContents: testStatement.inputBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
+        }
+      }
+
+      const builtInFunctionNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TBuiltInFunction,
+      );
+      assert(builtInFunctionNodes.length === 1);
+      const value = builtInFunctionNodes[0].getValue();
+
+      expect(value).toMatchObject(testStatement.addDomainEvent);
     });
   });
 });

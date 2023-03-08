@@ -3,9 +3,10 @@ import { RootEntityKey } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
-import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 
+//fix this and entity to be extendable from a base class
 export class RootEntityDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.RootEntity;
   private static classNodeName = RootEntityKey;
@@ -27,11 +28,9 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
   }
 
   public getIdentifier(): EntityIdentifierNode {
-    const [resultNode] = this.getChildren().filter((node: IntermediateASTNode) => {
-      node.getClassNodeName() === EntityIdentifierNode.getClassNodeName();
-    });
-
-    const identifierNode = resultNode as EntityIdentifierNode;
-    return identifierNode;
+    const identifier = this.getChildNodeByType(
+      BitloopsTypesMapping.TEntityIdentifier,
+    ) as EntityIdentifierNode;
+    return identifier;
   }
 }

@@ -72,7 +72,7 @@ const valueObjectsToTargetLanguage = (params: {
   let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
 
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
-  const domainCreateProps = create.domainCreateParameter.parameterType;
+  const domainCreateProps = create.parameter.type;
   //TODO uncomment?
   // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
   //   throw new Error(
@@ -80,8 +80,8 @@ const valueObjectsToTargetLanguage = (params: {
   //   );
   // }
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDomainConstructorParameter,
-    value: domainCreateProps,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: domainCreateProps },
   });
   dependencies = [...dependencies, ...propsTypeDependencies];
 

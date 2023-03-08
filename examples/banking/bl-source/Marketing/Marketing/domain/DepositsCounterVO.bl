@@ -1,0 +1,9 @@
+Props DepositsCounterProps {
+    int32 counter;
+}
+
+ValueObject DepositsCounterVO {
+    static create(props: DepositsCounterProps):(OK(DepositsCounterVO),Errors(DomainErrors.InvalidNumberOfTransactionsError)) {
+        applyRules(CounterIsPositiveNumberRule(props.counter))
+    }
+}

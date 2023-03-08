@@ -106,7 +106,10 @@ import { rulesDeclarationToTargetLanguage } from './components/rulesDeclaration/
 import { readModelToTargetLanguage } from './components/read-model/index.js';
 import { rootEntityToTargetLanguage } from './components/root-entity/index.js';
 import { entityValuesToTargetLanguage } from './components/entity-values/index.js';
-import { bitloopsPrimaryTypeToTargetLanguage } from './components/bitloopsPrimaryType.js';
+import {
+  bitloopsPrimaryTypeToTargetLanguage,
+  standardValueTypeToTargetLanguage,
+} from './components/bitloopsPrimaryType.js';
 import { builtInClassEvaluationToTargetLanguage } from './components/builtin-class/index.js';
 import { arrayLiteralExpressionToTargetLanguage } from './components/statements/expression/arrayLiteralExpression.js';
 import { toStringToTarget } from './components/statements/expression/toStringExpression.js';
@@ -117,10 +120,30 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
 import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
+import { commandToTargetLanguage } from './components/command/index.js';
+import { queryToTargetLanguage } from './components/query/index.js';
+import { commandEvaluationToTargetLanguage } from './components/statements/expression/evaluation/commandEvaluation.js';
+import { queryEvaluationToTargetLanguage } from './components/statements/expression/evaluation/queryEvaluation.js';
+import { commandHandlerToTargetLanguage } from './components/commandHandler/index.js';
+import { queryHandlerToTargetLanguage } from './components/queryHandler/index.js';
+import { domainEventToTargetLanguage } from './components/domain-event/index.js';
+import {
+  domainEventHandlerToTargetLanguage,
+  generateHandlerAttributesAndConstructor,
+  generateEventHandlerHandleMethod,
+} from './components/domain-event-handler/index.js';
+import { integrationEventEvaluationToTargetLanguage } from './components/integration-event-evaluation/index.js';
+import { integrationEventToTargetLanguage } from './components/integration-event/index.js';
+import { integrationEventHandlerToTargetLanguage } from './components/integration-event/integrationEventHandler.js';
+import { entityConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/entityConstructorEvaluation.js';
+import { standardVOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/standardVOEvaluation.js';
+import { servicePortToTargetLanguage } from './components/service-port/index.js';
+import { addDomainEventToTargetLanguage } from './components/statements/buildInFunctions/addDomainEvent.js';
+import { integrationEventHandlerHandleMethod } from './components/integration-event/integrationEventHandlerHandleMethod.js';
+import { integrationEventParameterToTargetLanguage } from './components/integration-event/integrationEventParameter.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -300,6 +323,18 @@ const modelToTargetLanguage = (props: {
       res = DTOEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TCommandEvaluation: {
+      res = commandEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TQueryEvaluation: {
+      res = queryEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TStandardVOEvaluation: {
+      res = standardVOEvaluationToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {
       res = definitionMethodInfoToTargetLanguage(value);
       break;
@@ -338,6 +373,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TEntityEvaluation: {
       res = entityEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TEntityConstructorEvaluation: {
+      res = entityConstructorEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TEntityValues: {
@@ -451,8 +490,8 @@ const modelToTargetLanguage = (props: {
       res = bitloopsPrimaryTypeToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TDomainConstructorParameter: {
-      res = domainConstructorParameterToTargetLanguage(value);
+    case BitloopsTypesMapping.TStandardValueType: {
+      res = standardValueTypeToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuiltInClassEvaluation: {
@@ -475,6 +514,10 @@ const modelToTargetLanguage = (props: {
       res = bitloopsErrorEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TIntegrationEventEvaluation: {
+      res = integrationEventEvaluationToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TAssignmentExpression: {
       res = assignmentExpressionToTargetLanguage(value);
       break;
@@ -485,6 +528,62 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TEnvironmentVariableExpression: {
       res = environmentVariableToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TCommand: {
+      res = commandToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TQuery: {
+      res = queryToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TCommandHandler: {
+      res = commandHandlerToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TQueryHandler: {
+      res = queryHandlerToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainEvent: {
+      res = domainEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainEventHandler: {
+      res = domainEventHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.THandlerAttributesAndConstructor: {
+      res = generateHandlerAttributesAndConstructor(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.THandle: {
+      res = generateEventHandlerHandleMethod(value);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEvent: {
+      res = integrationEventToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventHandler: {
+      res = integrationEventHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod: {
+      res = integrationEventHandlerHandleMethod(value);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventParameter: {
+      res = integrationEventParameterToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TServicePort: {
+      res = servicePortToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TAddDomainEvent: {
+      res = addDomainEventToTargetLanguage(value);
       break;
     }
     default: {

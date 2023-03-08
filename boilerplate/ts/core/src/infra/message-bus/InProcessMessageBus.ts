@@ -37,7 +37,6 @@ export class InProcessMessageBus implements IInProcessMessageBus {
     topic: string,
     subscriberHandler: SubscriberHandler<T>,
   ) {
-    console.log('in process message received');
     if (!this.subscribers[topic]) {
       this.subscribers[topic] = [];
     }

@@ -59,8 +59,11 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
   const returnType = mappedReturnType.output;
   const methodStatements = statementsString.output;
 
+  const isStatic = privateMethod.static;
+  const staticKeyWord = isStatic ? 'static ' : '';
+
   return {
-    output: `private ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`,
+    output: `private ${staticKeyWord} ${methodName}${parametersString}: ${returnType} { ${methodStatements} }`,
     dependencies: [
       ...parametersTarget.dependencies,
       ...statementsString.dependencies,

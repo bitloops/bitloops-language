@@ -1,0 +1,4 @@
+ApplicationError ToDoNotFoundError(id: string)  {
+  message: `ToDo with id ${id} was not found`,
+  errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b403',
+}

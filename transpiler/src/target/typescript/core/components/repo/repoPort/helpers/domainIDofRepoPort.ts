@@ -42,14 +42,17 @@ export const findIdOfRepoDomainObject = (
       throw new Error(`${type} ${repoDependencyName} not found`);
     }
 
-    const aggregatePropsNode = ast.getPropsFromEntity(rootEntityNode);
+    const aggregatePropsNode = ast.getDomainCreateOfEntity(rootEntityNode);
 
     if (!aggregatePropsNode) {
       const aggregateNodeIdentifier = rootEntityNode.getIdentifier().getValue();
       throw new Error(`Props for aggregate ${aggregateNodeIdentifier} not found`);
     }
 
-    const propsValue = ast.getValueOfPropsWithIdentifierFromDomainCreate(aggregatePropsNode, 'id');
+    const propsValue = ast.getPropsFieldTypeOfDomainCreateByFieldIdentifier(
+      aggregatePropsNode,
+      'id',
+    );
 
     const idTypeRes = modelToTargetLanguage({
       value: propsValue,

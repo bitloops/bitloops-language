@@ -67,7 +67,10 @@ bitloopsIdentifiers
     | EntityIdentifier
     | RepoPortIdentifier
     | ReadModelIdentifier
+    | servicePortIdentifier
     | structIdentifier
+    | commandIdentifier
+    | queryIdentifier
     ;
 
 primitives
@@ -125,6 +128,12 @@ regularIdentifier
     | Execute                                                   # ExecuteExpression
     | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
+    | Handle                                                    # HandleKeywordIdentifier
+    | EntityIdentifier                                          # EntityIdentifierString
+    | ValueObjectIdentifier                                     # ValueObjectIdentifierString
+    | Method                                                    # MethodKeywordIdentifier
+    | GraphQLOperation                                          # OperationKeywordIdentifier
+    | Input                                                     # InputKeywordIdentifier
     ;
 
 regularStructEvaluation
@@ -151,10 +160,14 @@ bitloopsPrimaryTypeValues
     | bitloopsBuiltInClass                              #BitloopsBuiltInClassPrimType
     | bitloopsPrimaryTypeValues OpenBracket CloseBracket      #ArrayBitloopsPrimType
     | bitloopsIdentifiers                               #BitloopsIdentifierPrimType
+    | standardValueType                                 #StandardValueTypePrimType
     ;
 
 bitloopsBuiltInClass
     : UUIDv4
+    ;
+standardValueType
+    : StandardVO Dot upperCaseIdentifier                #StandardVOType
     ;
 
 methodDefinitionList
@@ -208,6 +221,16 @@ sourceElement
     | aggregateDeclaration
     | repoPortDeclaration
     | readModelDeclaration
+    | commandDeclaration
+    | queryDeclaration
+    | domainEventDeclaration
+    | commandHandler
+    | queryHandler
+    | integrationEventDeclaration
+    | domainEventDeclaration
+    | domainEventHandlerDeclaration
+    | integrationEventHandlerDeclaration
+    | servicePortDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -227,7 +250,7 @@ jestTestDeclaration
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
     | JestTestExpression OpenBrace expression CloseBrace SemiColon?  
     | JestTestMethodDefinitionList OpenBrace methodDefinitionList CloseBrace SemiColon?
-    | JestTestCreateMethodDeclaration OpenBrace domainConstructorDeclaration CloseBrace SemiColon?
+    | JestTestCreateMethodDeclaration OpenBrace domainCreateDeclaration CloseBrace SemiColon?
     | JestTestPrivateMethodDeclaration OpenBrace privateMethodDeclaration CloseBrace SemiColon?
     | JestTestPublicMethodDeclaration OpenBrace publicMethodDeclaration CloseBrace SemiColon?
     | JestTestValueObjectDeclaration OpenBrace valueObjectDeclaration CloseBrace SemiColon?
@@ -252,8 +275,13 @@ evaluation
     | dtoEvaluation
     | valueObjectEvaluation
     | entityEvaluation
+    | entityConstructorEvaluation
     | propsEvaluation
     | structEvaluation
+    | commandEvaluation
+    | queryEvaluation
+    | standardVOEvaluation
+    | integrationEventEvaluation
     ;
 
 corsOptionsEvaluation
@@ -291,6 +319,11 @@ statement
 
 builtInFunction
     : ApplyRules OpenParen applyRuleStatementRulesList CloseParen SemiColon? # ApplyRulesStatement
+    | (identifier | thisIdentifier) Dot AddDomainEvent OpenParen domainEventIdentifier CloseParen SemiColon? # AddDomainEventStatement
+    ;
+
+thisIdentifier
+    : This
     ;
 
 applyRuleStatementRulesList
@@ -368,11 +401,11 @@ entityDeclaration
 ;
 
 entityBody
-    : OpenBrace domainConstDeclarationList? domainConstructorDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
+    : OpenBrace domainConstDeclarationList? domainCreateDeclaration publicMethodDeclarationList? privateMethodDeclarationList?  CloseBrace
     ;
 
 valueObjectDeclaration 
-    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainConstructorDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
+    : ValueObject valueObjectIdentifier OpenBrace domainConstDeclarationList?  domainCreateDeclaration privateMethodDeclarationList? CloseBrace SemiColon?
     ;
 domainConstDeclarationList
     : domainConstDeclaration+
@@ -386,12 +419,12 @@ privateMethodDeclarationList
     : privateMethodDeclaration+
     ;
 
-domainConstructorParam 
-    : id=Identifier Colon type=PropsIdentifier
+domainCreateParam 
+    : parameterIdentifier Colon propsIdentifier
     ;
 
-domainConstructorDeclaration
-    : Constructor OpenParen domainConstructorParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
+domainCreateDeclaration
+    : Static Create OpenParen domainCreateParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 useCaseIdentifier
@@ -399,7 +432,73 @@ useCaseIdentifier
     ;
 
 useCaseDeclaration
-    : UseCase useCaseIdentifier parameterList? OpenBrace useCaseExecuteDeclaration CloseBrace SemiColon?
+    : UseCase useCaseIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+commandIdentifier
+    : CommandIdentifier
+    ;
+
+commandDeclaration
+    : Command commandIdentifier OpenBrace fieldList CloseBrace
+    ;
+
+queryIdentifier
+    : QueryIdentifier
+    ;
+
+queryDeclaration
+    : Query queryIdentifier OpenBrace fieldList CloseBrace
+    ;
+
+commandHandler
+    : CommandHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+commandHandlerIdentifier
+    : CommandHandlerIdentifier 
+    ;
+
+queryHandler
+    : QueryHandler queryHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    ;
+
+queryHandlerIdentifier
+    : QueryHandlerIdentifier 
+    ;
+
+
+integrationEventIdentifier
+    : IntegrationEventIdentifier
+    ;
+
+integrationEventInputType
+    : propsIdentifier
+    | domainEventIdentifier
+    ;
+
+integrationEventInput
+    : OpenParen parameterIdentifier Colon integrationEventInputType CloseParen
+    ;
+
+versionName
+    : StringLiteral
+    ;
+
+integrationReturnSchemaType
+    : Colon structIdentifier
+    ;
+
+integrationVersionMapper
+    : versionName integrationReturnSchemaType OpenBrace statementList CloseBrace
+    ;
+
+integrationVersionMapperList
+    : OpenBrace integrationVersionMapper+ CloseBrace
+    ;
+
+integrationEventDeclaration
+    : IntegrationEvent integrationEventIdentifier integrationEventInput integrationVersionMapperList
     ;
 
 propsDeclaration
@@ -445,6 +544,52 @@ repoPortExtendableIdentifier
     | UpperCaseIdentifier '<' UpperCaseIdentifier '>'
     ;
 
+
+domainEventDeclaration
+    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' SemiColon?
+    ;
+
+domainEventIdentifier
+    : DomainEventIdentifier
+    ;
+
+domainEventHandlerIdentifier
+    : DomainEventHandlerIdentifier
+    ;
+
+domainEventHandlerDeclaration
+    : DomainEventHandler domainEventHandlerIdentifier parameterList OpenBrace domainEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+domainEventHandlerHandleDeclaration
+    : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+eventHandlerHandleIdentifier
+    : domainEventIdentifier
+    ;
+
+domainEventHandlerHandleParameter
+    : parameterIdentifier Colon eventHandlerHandleIdentifier
+    ;
+//
+
+integrationEventHandlerIdentifier
+    : IntegrationEventHandlerIdentifier
+    ;
+
+integrationEventHandlerDeclaration
+    : IntegrationEventHandler integrationEventHandlerIdentifier parameterList OpenBrace evaluationField SemiColon integrationEventHandlerHandleDeclaration CloseBrace SemiColon?
+    ;
+
+integrationEventHandlerHandleDeclaration
+    : Handle OpenParen integrationEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    ;
+
+integrationEventHandlerHandleParameter
+    : parameterIdentifier Colon boundedContextModuleDeclaration integrationEventIdentifier
+    ;
+
 dtoDeclaration
     : DTO dtoIdentifier OpenBrace fieldList CloseBrace SemiColon?
     ;
@@ -462,7 +607,7 @@ dtoEvaluation
     ;
 
 valueObjectEvaluation
-    : valueObjectIdentifier domainEvaluationInput
+    : valueObjectIdentifier Dot Create domainEvaluationInput
     ;
 
 domainEvaluationInput
@@ -471,11 +616,31 @@ domainEvaluationInput
     ;
 
 entityEvaluation
+    : entityIdentifier Dot Create domainEvaluationInput
+    ;
+
+entityConstructorEvaluation
     : entityIdentifier domainEvaluationInput
+    ;
+
+commandEvaluation
+    : commandIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+
+queryEvaluation
+    : queryIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+    
+integrationEventEvaluation
+    : integrationEventIdentifier Dot Create domainEvaluationInput
     ;
 
 structEvaluation
     : structIdentifier OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
+    ;
+
+standardVOEvaluation
+    : StandardVO Dot upperCaseIdentifier Dot Create OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen
     ;
     
 builtInClassEvaluation
@@ -500,7 +665,7 @@ domainErrorIdentifier
 applicationErrorIdentifier
     : DomainErrorIdentifier;
 
-useCaseExecuteDeclaration
+executeDeclaration
     : Execute OpenParen parameter? CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
@@ -614,17 +779,29 @@ packagePortDeclaration
     : PackagePort packagePortIdentifier OpenBrace methodDefinitionList CloseBrace
     ;
 
+servicePortIdentifier
+    : ServicePortIdentifier
+    ;
+
+servicePortDeclaration
+    : ServicePort servicePortIdentifier OpenBrace methodDefinitionList CloseBrace
+    ;
+
 methodDeclaration
     : publicMethodDeclaration            # PublicMethodDeclarationExpression
     | privateMethodDeclaration           # PrivateMethodDeclarationExpression
     ;
 
+staticKeyword
+    : Static
+    ;
+
 privateMethodDeclaration
-    : Private? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
+    : Private? staticKeyword? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
+    : Public? staticKeyword? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnPublicMethodType
@@ -710,6 +887,7 @@ literal
     | StringLiteral             # StringLiteral
     | templateStringLiteral     # TemplateStringLiteralLabel
     | numericLiteral            # NumericLiteralLabel
+    | RegularExpressionLiteral  # RegularExpressionLiteralLabel
     ;
 
 templateStringLiteral
@@ -748,8 +926,36 @@ languageSetterMethod
     ;
 
 configInvocation
-    : Config Dot languageSetterMethod 
+    : Config Dot languageSetterMethod                                                       # SetLanguageConfig 
+    | Config Dot SetBuses OpenParen OpenBrace busesConfig CloseBrace CloseParen SemiColon?  # SetBusesConfig
     ;
+
+busesConfig
+    : busConfig (Comma busConfig)* Comma?
+    ;
+
+busConfig
+    : busIdentifier Colon MessageBus Dot busType
+    ;
+
+busIdentifier
+    : CommandBus
+    | EventBus
+    | IntegrationEventBus
+    | QueryBus
+    ;
+
+busType
+    : InProcess
+    | External
+    ;
+
+// Config.setBuses({
+//     COMMAND_BUS: MessageBus.External,//Here it should be Kafka, Nats etc MessageBus.External.Nats
+//     EVENT_BUS: MessageBus.InProcess,
+//     INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+//     QUERY_BUS: MessageBus.InProcess,
+// })
 
 restRouter
     : RESTRouter
@@ -798,6 +1004,21 @@ packageConcretion
 
 useCaseDefinition
     : Const identifier Assign useCaseExpression SemiColon?
+    ;
+
+dependencyInjections
+    : DI OpenBrace dependencyInjectionList CloseBrace
+    ;
+
+dependencyInjectionList
+    : dependencyInjection (SemiColon dependencyInjection)* SemiColon?
+    ;
+
+dependencyInjection
+    : boundedContextModuleDeclaration commandHandlerIdentifier methodArguments              # CommandHandlerDependencyInjection
+    | boundedContextModuleDeclaration queryHandlerIdentifier methodArguments                # QueryHandlerDependencyInjection
+    | boundedContextModuleDeclaration domainEventHandlerIdentifier methodArguments          # DomainEventHandlerDependencyInjection
+    | boundedContextModuleDeclaration integrationEventHandlerIdentifier methodArguments     # IntegrationEventHandlerDependencyInjection
     ;
 
 routerDefinition
@@ -888,7 +1109,7 @@ bindControllerResolvers
     ;
 
 controllerResolverBind
-    : boundedContextModuleDeclaration ControllerIdentifier methodArguments
+    : boundedContextModuleDeclaration graphQLControllerIdentifier methodArguments
     ;
 
 alpha_numeric_ws: IntegerLiteral | WS | UpperCaseIdentifier | Identifier;
@@ -953,5 +1174,6 @@ setupStatement
     | serverDeclaration  # serverDeclarationStatement
     | repoConnectionDefinition # repoConnectionDefinitionStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
+    | dependencyInjections # dependencyInjectionsStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
     ;

@@ -7,6 +7,9 @@ import {
   TExpression,
   evaluationFieldsKey,
   TEvaluationField,
+  identifierKey,
+  TQueryEvaluation,
+  TCommandEvaluation,
 } from '../../../../src/types.js';
 
 type PropsParam =
@@ -46,6 +49,49 @@ export class EvaluationBuilderDirector {
       evaluation: {
         dto: {
           [DTOIdentifierKey]: dtoIdentifier,
+          [evaluationFieldsKey]: fields,
+        },
+      },
+    };
+  }
+
+  buildCommandEvaluation(commandIdentifier: string, fields?: TEvaluationField[]): TEvaluation {
+    const evaluation: TCommandEvaluation = {
+      command: {
+        [identifierKey]: commandIdentifier,
+      },
+    };
+    if (fields) {
+      evaluation.command[evaluationFieldsKey] = fields;
+    }
+    return {
+      evaluation,
+    };
+  }
+
+  buildQueryEvaluation(commandIdentifier: string, fields?: TEvaluationField[]): TEvaluation {
+    const evaluation: TQueryEvaluation = {
+      query: {
+        [identifierKey]: commandIdentifier,
+      },
+    };
+
+    if (fields) {
+      evaluation.query[evaluationFieldsKey] = fields;
+    }
+    return {
+      evaluation,
+    };
+  }
+  /**
+   *
+   * @param standardVOIdentifier e.g 'Currency'
+   */
+  buildStandardVOEvaluation(standardVOIdentifier: string, fields: TEvaluationField[]): TEvaluation {
+    return {
+      evaluation: {
+        standardVO: {
+          [identifierKey]: standardVOIdentifier,
           [evaluationFieldsKey]: fields,
         },
       },
@@ -99,6 +145,37 @@ export class EvaluationBuilderDirector {
     return {
       evaluation: {
         entity: {
+          domainEvaluation: {
+            entityIdentifier,
+            props,
+          },
+        },
+      },
+    };
+  }
+
+  buildIntegrationEventEvaluation(
+    integrationEventIdentifier: string,
+    propsParam: PropsParam,
+  ): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      evaluation: {
+        integrationEvent: {
+          integrationEventIdentifier,
+          props,
+        },
+      },
+    };
+  }
+
+  buildEntityConstructorEvaluation(entityIdentifier: string, propsParam: PropsParam): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      evaluation: {
+        entityConstructor: {
           domainEvaluation: {
             entityIdentifier,
             props,

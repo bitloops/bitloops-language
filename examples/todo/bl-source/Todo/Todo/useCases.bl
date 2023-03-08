@@ -50,6 +50,8 @@ UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
 
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {
+
+// TS
       const requestIdString = requestId.toString(); 
       return ApplicationErrors.ToDoNotFoundError(requestIdString);
     }
