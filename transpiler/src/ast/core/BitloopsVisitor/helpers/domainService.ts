@@ -9,7 +9,7 @@ import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/Pa
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
 
-//TODO add support for const declarations
+//TODO add support for const declarations?
 export const domainServiceDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainServiceDeclarationContext,

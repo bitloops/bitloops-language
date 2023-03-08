@@ -3,10 +3,7 @@ import { INotificationTemplateReadRepo } from '../../repos/interfaces/INotificat
 import { AccountEntity } from '../AccountEntity.js';
 import { NotificationTemplateReadModel } from '../read-models/NotificationTemplateReadModel.js';
 
-export type NotificationTemplates = 'firstDeposit' | 'milestoneDeposit';
 export class MarketingNotificationService {
-  static emailOrigin = 'marketing@bitloops.com';
-
   constructor(private notificationTemplateRepo: INotificationTemplateReadRepo) {}
 
   public async getNotificationTemplateToBeSent(
@@ -17,6 +14,7 @@ export class MarketingNotificationService {
       void
     >
   > {
+    const emailOrigin = 'marketing@bitloops.com';
     let notificationTemplate: NotificationTemplateReadModel | null;
     if (account.isFirstDeposit()) {
       notificationTemplate = await this.notificationTemplateRepo.getByType('firstDeposit');
@@ -26,6 +24,6 @@ export class MarketingNotificationService {
       throw new Error('No notification template found');
     }
 
-    return ok({ emailOrigin: MarketingNotificationService.emailOrigin, notificationTemplate });
+    return ok({ emailOrigin: emailOrigin, notificationTemplate });
   }
 }

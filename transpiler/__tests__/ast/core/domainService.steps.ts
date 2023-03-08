@@ -47,7 +47,6 @@ describe('DomainService declaration is valid', () => {
         ],
       });
 
-      console.log(initialModelOutput);
       if (!isParserErrors(initialModelOutput)) {
         const parseResult = intermediateParser.parse(initialModelOutput);
         if (!isIntermediateASTValidationErrors(parseResult)) {
