@@ -41,7 +41,9 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
   public getPropsIdentifier(): TPropsIdentifier {
     const createNode = this.getCreateNode();
     const parameterNode = createNode.getParameterNode();
-    const propsIdentifierNode = parameterNode.getTypeNode();
-    return propsIdentifierNode.getType();
+    const typeNode = parameterNode.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+
+    return identifierTypeNode.getIdentifierName();
   }
 }

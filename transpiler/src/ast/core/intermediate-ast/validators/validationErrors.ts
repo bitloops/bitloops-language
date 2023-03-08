@@ -2,7 +2,6 @@ import { BitloopsIdentifierTypeNode } from '../nodes/BitloopsPrimaryType/Bitloop
 import { GraphQLControllerExecuteReturnTypeNode } from '../nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
 import { GraphQLControllerIdentifierNode } from '../nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
 import { RESTControllerIdentifierNode } from '../nodes/controllers/restController/RESTControllerIdentifierNode.js';
-import { DomainCreateParameterTypeNode } from '../nodes/Domain/DomainCreateParameterTypeNode.js';
 import { DomainRuleIdentifierNode } from '../nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { EntityIdentifierNode } from '../nodes/Entity/EntityIdentifierNode.js';
 import { ErrorIdentifierNode } from '../nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
@@ -20,7 +19,7 @@ type identifierNode =
   | EntityIdentifierNode
   | ReadModelIdentifierNode
   | ErrorIdentifierNode
-  | DomainCreateParameterTypeNode
+  // | DomainCreateParameterTypeNode
   | GraphQLControllerExecuteReturnTypeNode
   | DomainRuleIdentifierNode
   | UseCaseIdentifierNode

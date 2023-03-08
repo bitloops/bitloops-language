@@ -1,7 +1,6 @@
 import { argumentError } from './argumentError.js';
 import { bitloopsIdentifierError } from './bitloopsIdentifierValidator.js';
 import { concretedRepoPortError } from './concretedRepoPortError.js';
-import { domainCreateParameterTypeError } from './domainCreateParameterTypeError.js';
 import { domainRuleIdentifierError } from './domainRuleIdentifierError.js';
 import { entityIdentifierError } from './entityIdentifierError.js';
 import { errorIdentifierError } from './errorIdentifierError.js';
@@ -21,7 +20,6 @@ import { boundedContextValidationError, identifierValidationError } from './vali
 
 export {
   bitloopsIdentifierError,
-  domainCreateParameterTypeError,
   domainRuleIdentifierError,
   entityIdentifierError,
   errorIdentifierError,

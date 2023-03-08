@@ -1,8 +1,8 @@
 import { DomainCreateNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateBuilder.js';
-import { DomainCreateParameterNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { DomainCreateParameterTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
-import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { ParameterIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
+import { ParameterNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
 import { DomainCreateNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
 import { StatementListBuilderDirector } from './statement/statementListDirector.js';
 
@@ -32,10 +32,14 @@ export class DomainCreateBuilderDirector {
         new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypeBitloopsIdentifier(entityName),
       )
       .withParameter(
-        new DomainCreateParameterNodeBuilder()
-          .withIdentifierNode(new IdentifierNodeBuilder().withName(entityPropsName).build())
-          .withTypeNode(
-            new DomainCreateParameterTypeNodeBuilder().withValue(entityPropsIdentifierType).build(),
+        new ParameterNodeBuilder()
+          .withType(
+            new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(
+              entityPropsIdentifierType,
+            ),
+          )
+          .withIdentifier(
+            new ParameterIdentifierNodeBuilder(null).withIdentifier(entityPropsName).build(),
           )
           .build(),
       )
@@ -49,9 +53,9 @@ export class DomainCreateBuilderDirector {
       )
       .withReturnType(new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'))
       .withParameter(
-        new DomainCreateParameterNodeBuilder()
-          .withIdentifierNode(new IdentifierNodeBuilder().withName('some').build())
-          .withTypeNode(new DomainCreateParameterTypeNodeBuilder().withValue('SomeProps').build())
+        new ParameterNodeBuilder()
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('SomeProps'))
+          .withIdentifier(new ParameterIdentifierNodeBuilder(null).withIdentifier('some').build())
           .build(),
       )
       .build();
@@ -64,9 +68,9 @@ export class DomainCreateBuilderDirector {
       )
       .withReturnType(new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'))
       .withParameter(
-        new DomainCreateParameterNodeBuilder()
-          .withIdentifierNode(new IdentifierNodeBuilder().withName('some').build())
-          .withTypeNode(new DomainCreateParameterTypeNodeBuilder().withValue('SomeProps').build())
+        new ParameterNodeBuilder()
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('SomeProps'))
+          .withIdentifier(new ParameterIdentifierNodeBuilder(null).withIdentifier('some').build())
           .build(),
       )
       .build();

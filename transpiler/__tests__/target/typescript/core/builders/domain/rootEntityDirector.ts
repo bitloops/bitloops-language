@@ -22,10 +22,9 @@ import { ReturnOkErrorTypeNode } from '../../../../../../src/ast/core/intermedia
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../bitloopsPrimaryTypeDirector.js';
-import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
-import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { DomainCreateParameterTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
-import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { ParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { ParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
+import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 
 type TReturnType = {
   ok: string;
@@ -59,13 +58,15 @@ export class RootEntityBuilderDirector {
     } = params;
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
 
-    const parameterNode = new DomainCreateParameterNodeBuilder(null)
-      .withIdentifierNode(
-        new IdentifierNodeBuilder(null).withName(constructorParameterNode.propIdentifier).build(),
+    const parameterNode = new ParameterNodeBuilder()
+      .withType(
+        new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(
+          constructorParameterNode.propClassName,
+        ),
       )
-      .withTypeNode(
-        new DomainCreateParameterTypeNodeBuilder()
-          .withValue(constructorParameterNode.propClassName)
+      .withIdentifier(
+        new ParameterIdentifierNodeBuilder(null)
+          .withIdentifier(constructorParameterNode.propIdentifier)
           .build(),
       )
       .build();
@@ -90,7 +91,7 @@ export class RootEntityBuilderDirector {
   }
 
   private buildCreate(
-    parameterNode: DomainCreateParameterNode,
+    parameterNode: ParameterNode,
     returnTypeParams: TReturnType,
     statements: StatementNode[],
   ): DomainCreateNode {
