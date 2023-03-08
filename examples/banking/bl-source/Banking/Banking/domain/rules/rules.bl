@@ -16,7 +16,7 @@ Rule AmountOutOfBoundsRule(amount: float) throws DomainErrors.InvalidAmountError
 }
 
 Rule AmountIsPositiveNumberRule(amount: float) throws DomainErrors.InvalidAmountError {
-    isBrokenIf(/^\d+$/.test(amount) == false);
+    isBrokenIf(/^\d+$/.test(amount.toString()) == false);
 }
 
 Rule AccountCannotHaveNegativeBalanceRule(amount: float, balance: float) throws DomainErrors.InsufficientBalanceError {

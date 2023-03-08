@@ -1,3 +1,5 @@
+import { BL_BOILERPLATE_REST_FASTIFY } from '../package-template.js';
+
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -19,9 +21,7 @@
  */
 export class RestFastifyGenerator {
   static getDependencies(): Record<string, string> {
-    return {
-      '@bitloops/bl-boilerplate-infra-rest-fastify': '^0.0.3',
-    };
+    return BL_BOILERPLATE_REST_FASTIFY;
   }
 
   static getServerFile(serverPrefix: string, portStatement: string): string {

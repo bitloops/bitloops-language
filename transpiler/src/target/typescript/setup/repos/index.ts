@@ -13,6 +13,7 @@ import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { SetupTypescriptMongoRepo } from './mongo.js';
 import { NodeValueHelpers } from '../helpers.js';
 import { TRepoAdapter, TRepoAdapters } from '../definitions.js';
+import { BL_BOILERPLATE_INFRA_DB_MONGO } from '../package-template.js';
 
 type TCategorizedRepoConnections = Record<
   TRepoSupportedTypes,
@@ -21,22 +22,16 @@ type TCategorizedRepoConnections = Record<
   }
 >;
 
-const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; version: string }> = {
-  'DB.Mongo': {
-    packageName: '@bitloops/bl-boilerplate-infra-mongo',
-    version: '*',
-  },
+const dependenciesMap: Record<TRepoSupportedTypes, { [packageName: string]: string }> = {
+  'DB.Mongo': BL_BOILERPLATE_INFRA_DB_MONGO,
   'DB.MySQL': {
-    packageName: '@bitloops/bl-boilerplate-infra-mysql',
-    version: '*',
+    '@bitloops/bl-boilerplate-infra-mysql': '*',
   },
   'DB.Postgres': {
-    packageName: '@bitloops/bl-boilerplate-infra-pg',
-    version: '*',
+    '@bitloops/bl-boilerplate-infra-pg': '*',
   },
   'DB.SQLite': {
-    packageName: '@bitloops/bl-boilerplate-infra-sqlite3',
-    version: '*',
+    '@bitloops/bl-boilerplate-infra-sqlite3': '*',
   },
 };
 
@@ -172,12 +167,14 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   getPackageJSONDependencies(
     repoConnectionDefinitions: TRepoConnectionDefinition[],
   ): Record<string, string> {
-    const result = {};
+    let result = {};
     for (const connectionDefinition of repoConnectionDefinitions) {
       const dbType =
         connectionDefinition[RepoConnectionDefinitionKey][RepoConnectionExpressionKey].dbType;
-      const { packageName, version } = dependenciesMap[dbType];
-      result[packageName] = version;
+      result = {
+        ...result,
+        ...dependenciesMap[dbType],
+      };
     }
     return result;
   }
