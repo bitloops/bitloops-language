@@ -55,13 +55,10 @@ const getPropsModel = (
       (node) => node.getClassName() === entityIdentifier,
     );
     const aggregateModel = aggregateModelNode.getValue() as TRootEntity;
-    const aggregatePropsNameType =
-      aggregateModel[RootEntityKey].entityValues.create.domainCreateParameter['parameterType'];
+    const aggregatePropsNameType = aggregateModel[RootEntityKey].entityValues.create.parameter.type;
 
     const typeValue: TBitloopsPrimaryType = {
-      type: {
-        bitloopsIdentifierType: aggregatePropsNameType,
-      },
+      type: aggregatePropsNameType,
     };
 
     const { output: aggregatePropsName } = modelToTargetLanguage({

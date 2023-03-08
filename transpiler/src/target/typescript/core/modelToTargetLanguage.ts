@@ -120,7 +120,6 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
 import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
@@ -493,10 +492,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TStandardValueType: {
       res = standardValueTypeToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TDomainConstructorParameter: {
-      res = domainConstructorParameterToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TBuiltInClassEvaluation: {

@@ -17,11 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  identifierKey,
-  TDomainCreateMethod,
-  TTargetDependenciesTypeScript,
-} from '../../../../../types.js';
+import { TDomainCreateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import {
   BitloopsTypesMapping,
   ClassTypes,
@@ -35,14 +31,14 @@ export const domainCreate = (
   variable: TDomainCreateMethod,
   classType: TClassTypesValues = ClassTypes.ValueObject,
 ): TTargetDependenciesTypeScript => {
-  const { domainCreateParameter, returnType, statements } = variable.create;
+  const { parameter, returnType, statements } = variable.create;
 
-  const domainCreateParameterType = domainCreateParameter.parameterType;
+  const parameterType = parameter.type;
   const returnOkType = returnType.ok.type;
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDomainConstructorParameter,
-    value: domainCreateParameterType,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: parameterType },
   });
 
   const { output: returnOkTypeName, dependencies: returnOkTypeDependencies } =
@@ -78,8 +74,8 @@ export const domainCreate = (
     };
   }
 
-  const domainCreateParameterValue = domainCreateParameter[identifierKey];
-  const result = `${producedConstructor} public static create(${domainCreateParameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
+  const parameterValue = parameter.value;
+  const result = `${producedConstructor} public static create(${parameterValue}: ${propsName}): ${returnTypeModel.output} { ${statementsModel.output} }`;
 
   return {
     output: result,

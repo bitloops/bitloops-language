@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
-  PropsIdentifierKey,
   TContextData,
   TDomainPrivateMethods,
   TDomainPublicMethods,
@@ -56,7 +55,7 @@ const entityValuesToTargetLanguage = (params: {
   let result = '{';
   let dependencies = [];
   const { privateMethods, publicMethods, create, constants } = entityValues;
-  const propsNameType = create.domainCreateParameter[PropsIdentifierKey];
+  const propsNameType = create.parameter.type;
 
   const { output: propsName, dependencies: entityPropsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,

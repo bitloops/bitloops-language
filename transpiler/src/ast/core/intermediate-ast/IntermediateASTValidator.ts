@@ -34,7 +34,6 @@ import { GraphQLControllerIdentifierNode } from './nodes/controllers/graphql/Gra
 import { GraphQLControllerNode } from './nodes/controllers/graphql/GraphQLControllerNode.js';
 import { RESTControllerIdentifierNode } from './nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
-import { DomainCreateParameterTypeNode } from './nodes/Domain/DomainCreateParameterTypeNode.js';
 import { DomainEventDeclarationNode } from './nodes/DomainEvent/DomainEventDeclarationNode.js';
 import { DomainRuleIdentifierNode } from './nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { DomainRuleNode } from './nodes/DomainRule/DomainRuleNode.js';
@@ -73,7 +72,6 @@ import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDecla
 import {
   bitloopsIdentifierError,
   concretedRepoPortError,
-  domainCreateParameterTypeError,
   domainRuleIdentifierError,
   entityIdentifierError,
   errorIdentifierError,
@@ -339,14 +337,14 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           );
           break;
 
-        case BitloopsTypesMapping.TDomainCreateParameterType:
-          errors.push(
-            ...domainCreateParameterTypeError(
-              node as DomainCreateParameterTypeNode,
-              this.symbolTableCore[boundedContext],
-            ),
-          );
-          break;
+        // case BitloopsTypesMapping.TDomainCreateParameterType:
+        //   errors.push(
+        //     ...domainCreateParameterTypeError(
+        //       node as DomainCreateParameterTypeNode,
+        //       this.symbolTableCore[boundedContext],
+        //     ),
+        //   );
+        //   break;
 
         case BitloopsTypesMapping.TErrorIdentifier:
           errors.push(

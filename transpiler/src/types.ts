@@ -80,14 +80,6 @@ export type TParameter = {
   } & TParameterType;
 };
 
-// props, TodoProps
-export type TDomainCreateParameter = {
-  domainCreateParameter: {
-    [identifierKey]: TIdentifier;
-    parameterType: TPropsIdentifier;
-  };
-};
-
 export type TParameterList = {
   parameters: TParameter[];
 };
@@ -600,7 +592,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TDomainCreateParameter;
+    TParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;
