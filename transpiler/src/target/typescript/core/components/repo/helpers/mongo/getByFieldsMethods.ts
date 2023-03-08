@@ -23,7 +23,7 @@ export const getGettersMethodImplementation = (
       if (!res) {
         return null;
       }
-      const { _id, ...rest } = res;
+      const { _id, ...rest } = res as any;
       return ${entityName}.fromPrimitives({
         id: _id,
         ...rest,

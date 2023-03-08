@@ -14,7 +14,7 @@ RESTController WithdrawMoneyRESTController () {
         accountId: accountId,
     });
     
-    const result = this.commandBus.sendAndGetResponse(command) // Does request sound good?(instead of sendAndGetResponse)
+    const result = this.commandBus.request(command) // Does request sound good?(instead of sendAndGetResponse)
 
     if (result is Error) {
       switch (result.getClass()) {
@@ -23,11 +23,11 @@ RESTController WithdrawMoneyRESTController () {
           break;
         }
         case DomainErrors.InvalidMonetaryValueError: {
-          this.clientError(response, result);
+          this.badRequest(response, result);
           break;
         }
         case DomainErrors.InsufficientBalanceError: {
-          this.clientError(response, result);
+          this.badRequest(response, result);
           break;
         }
         default: {
