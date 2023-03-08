@@ -72,6 +72,7 @@ import { GraphQLControllerNode } from '../../../ast/core/intermediate-ast/nodes/
 import { SupportedLanguages } from '../../supportedLanguages.js';
 import { TGraphQLSetupData } from './graphql/types.js';
 import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
+import { BL_BOILERPLATE_CORE } from './package-template.js';
 
 type PackageAdapterContent = string;
 type TPackageVersions = {
@@ -118,7 +119,7 @@ const REQUIRED_NODE_DEPENDENCIES = {
   // morgan: '^1.10.0',
   uuid: '^8.3.2',
   // validator: '^13.7.0',
-  '@bitloops/bl-boilerplate-core': '^0.0.6',
+  ...BL_BOILERPLATE_CORE,
 };
 
 const REQUIRED_NODE_DEV_DEPENDENCIES = {
