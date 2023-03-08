@@ -5,7 +5,14 @@ export type TClassReadModelSnapshot = {
   title: Title;
 };
 export class ClassReadModel {
-  constructor(public props: TClassReadModelSnapshot) {}
+  public name: string;
+  public numOfTeachers?: number;
+  public title: Title;
+  constructor(public props: TClassReadModelSnapshot) {
+    this.name = props.name;
+    this.numOfTeachers = props.numOfTeachers;
+    this.title = props.title;
+  }
   static fromPrimitives(snapshot: TClassReadModelSnapshot): ClassReadModel {
     return new ClassReadModel(snapshot);
   }

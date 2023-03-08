@@ -21,7 +21,10 @@ import {
   TReadModel,
   TTargetDependenciesTypeScript,
   TVariables,
+  fieldKey,
   fieldsKey,
+  identifierKey,
+  optionalKey,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -42,11 +45,16 @@ const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTy
     value: fields,
   });
   dependencies.push(...fieldIntermediateModel.dependencies);
+  const readModelAttributes = generateReadModelAttributes({ fields });
+  dependencies.push(...readModelAttributes.dependencies);
 
   result += `export type ${readModelTypeName} = { ${fieldIntermediateModel.output} };`;
 
   result += `export class ${readModelIdentifier} { `;
-  result += `constructor(public props: ${readModelTypeName}) {}`;
+  result += readModelAttributes.output;
+  result += `constructor(public props: ${readModelTypeName}) {
+    ${generateConstructorBody({ fields })}
+  }`;
   result += getFromPrimitivesResult(readModelIdentifier, readModelTypeName);
   result += '}';
 
@@ -56,6 +64,36 @@ const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTy
   });
 
   return { output: result, dependencies: parentDependencies };
+};
+
+const generateReadModelAttributes = (fields: TVariables): TTargetDependenciesTypeScript => {
+  let result = '';
+  const dependencies = [];
+  for (const field of fields[fieldsKey]) {
+    const isOptional = field[fieldKey][optionalKey];
+    const fieldIdentifier = field[fieldKey][identifierKey];
+    const { type } = field[fieldKey];
+
+    const mappedType = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: { type },
+    });
+    result += `public ${fieldIdentifier}${isOptional ? '?' : ''}: ${mappedType.output};`;
+    dependencies.push(...mappedType.dependencies);
+  }
+  return {
+    output: result,
+    dependencies,
+  };
+};
+
+const generateConstructorBody = (fields: TVariables): string => {
+  let result = '';
+  for (const field of fields[fieldsKey]) {
+    const fieldIdentifier = field[fieldKey][identifierKey];
+    result += `this.${fieldIdentifier} = props.${fieldIdentifier};`;
+  }
+  return result;
 };
 
 const guardAgainstUndefinedAndArray = (variables: TVariables): void => {

@@ -1,6 +1,9 @@
 export type TNameReadModelSnapshot = { name: string };
 export class NameReadModel {
-  constructor(public props: TNameReadModelSnapshot) {}
+  public name: string;
+  constructor(public props: TNameReadModelSnapshot) {
+    this.name = props.name;
+  }
   static fromPrimitives(snapshot: TNameReadModelSnapshot): NameReadModel {
     return new NameReadModel(snapshot);
   }
