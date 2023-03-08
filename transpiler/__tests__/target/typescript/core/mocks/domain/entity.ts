@@ -162,6 +162,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
             new ParameterListNodeBuilder()
               .withParameters([
                 new ParameterBuilderDirector().buildPrimitiveParameter('name', 'string'),
+                new ParameterBuilderDirector().buildIdentifierParameter('title', 'TitleVO'),
               ])
               .build(),
           )
@@ -169,6 +170,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
           .withStatements(
             new StatementListNodeBuilder()
               .withStatements([
+                new StatementBuilderDirector().buildThisAssignmentExpression('title'),
                 new ReturnStatementBuilderDirector().buildReturn(
                   new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
                 ),

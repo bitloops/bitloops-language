@@ -5,6 +5,7 @@ import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ExecuteNode } from '../ExecuteNode.js';
 import { UseCaseIdentifierNode } from './UseCaseIdentifierNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
 
 export class UseCaseNode extends ClassTypeNode {
   private static classType = ClassTypes.UseCase;
@@ -33,5 +34,12 @@ export class UseCaseNode extends ClassTypeNode {
 
   public getIdentifier(): UseCaseIdentifierNode {
     return this.getChildNodeByType<UseCaseIdentifierNode>(BitloopsTypesMapping.TUseCaseIdentifier);
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const useCaseExecute = this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
+    const parameter = useCaseExecute.getParameter();
+    if (!parameter) return [];
+    return [parameter];
   }
 }

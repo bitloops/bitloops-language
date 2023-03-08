@@ -372,6 +372,28 @@ export class IntermediateASTTree {
     return identifiers;
   }
 
+  getIdentifiersOfDomainTypes(parameters: ParameterNode[]): string[] {
+    const identifiers: string[] = [];
+
+    for (const parameter of parameters) {
+      const typeNode = parameter.getType();
+      if (
+        typeNode.isBitloopsIdentifierType() ||
+        typeNode.isPrimaryWithBitloopsIdentifierTypeChild()
+      ) {
+        const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+        if (
+          identifierTypeNode.isValueObjectIdentifier() ||
+          identifierTypeNode.isEntityIdentifier()
+        ) {
+          identifiers.push(parameter.getIdentifier());
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
   getIdentifierExpressionNodesInStatements(
     statements: StatementNode[],
     identifiers: string[],
