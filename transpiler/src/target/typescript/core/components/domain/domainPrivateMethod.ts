@@ -18,11 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
-import { TDomainPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { TPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenciesTypeScript => {
+const domainPrivateMethod = (methodInfo: TPrivateMethod): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;

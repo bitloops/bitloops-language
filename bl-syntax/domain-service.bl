@@ -6,16 +6,14 @@ Struct NotificationTemplateInput {
 
 DomainService MarketingNotificationService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
 
-    public getNotificationTemplateToBeSent(account: AccountEntity)): (OK(notificationTemplateInput: NotificationTemplateInput), Errors()) {
+    public getNotificationTemplateToBeSent(account: AccountEntity)): (OK(NotificationTemplateInput), Errors()) {
         notificationTemplate: NotificationTemplateReadModel;
         if (account.isFirstDeposit()) {
           notificationTemplate = this.notificationTemplateRepo.getByType('firstDeposit');
         } else if (account.hasReachedMilestoneDeposits()) {
           notificationTemplate = this.notificationTemplateRepo.getByType('milestoneDeposit');
-        } else {
-          throw new Error('No notification template found');
-        }
+        } 
     
-        return { emailOrigin: 'marketing@bitloops.com', notificationTemplate };
+        return { emailOrigin: 'marketing@bitloops.com', notificationTemplate: notificationTemplate };
     }
 }

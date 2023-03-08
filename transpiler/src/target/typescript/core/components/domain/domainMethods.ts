@@ -19,8 +19,8 @@
  */
 import {
   TTargetDependenciesTypeScript,
-  TDomainPrivateMethods,
-  TDomainPublicMethods,
+  TPrivateMethods,
+  TPublicMethods,
 } from '../../../../../types.js';
 import { domainPublicMethod } from './domainPublicMethod.js';
 import { domainPrivateMethod } from './index.js';
@@ -29,8 +29,8 @@ import { domainPrivateMethod } from './index.js';
  * Public & private methods
  */
 export const domainMethods = (
-  publicMethods: TDomainPublicMethods,
-  privateMethods: TDomainPrivateMethods,
+  publicMethods: TPublicMethods,
+  privateMethods: TPrivateMethods,
 ): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
@@ -54,7 +54,7 @@ export const domainMethods = (
 };
 
 export const domainPrivateMethods = (
-  domainPrivateMethods: TDomainPrivateMethods,
+  domainPrivateMethods: TPrivateMethods,
 ): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];
@@ -71,7 +71,7 @@ export const domainPrivateMethods = (
 };
 
 const domainPublicMethods = (
-  domainPublicMethods: TDomainPublicMethods,
+  domainPublicMethods: TPublicMethods,
 ): TTargetDependenciesTypeScript => {
   let result = '';
   let dependencies = [];

@@ -1,7 +1,7 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TConstDeclaration,
-  TDomainPrivateMethods,
+  TPrivateMethods,
   TValueObject,
   TValueObjectCreate,
   TValueObjectIdentifier,
@@ -11,7 +11,7 @@ export class ValueObjectDeclarationBuilder implements IBuilder<TValueObject> {
   private identifierName: TValueObjectIdentifier;
   private constants?: TConstDeclaration[];
   private create: TValueObjectCreate;
-  private privateMethods?: TDomainPrivateMethods;
+  private privateMethods?: TPrivateMethods;
 
   public withIdentifier(identifierName: TValueObjectIdentifier): ValueObjectDeclarationBuilder {
     this.identifierName = identifierName;
@@ -28,7 +28,7 @@ export class ValueObjectDeclarationBuilder implements IBuilder<TValueObject> {
     return this;
   }
 
-  public withPrivateMethods(privateMethods: TDomainPrivateMethods): ValueObjectDeclarationBuilder {
+  public withPrivateMethods(privateMethods: TPrivateMethods): ValueObjectDeclarationBuilder {
     this.privateMethods = privateMethods;
     return this;
   }

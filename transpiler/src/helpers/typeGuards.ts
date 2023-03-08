@@ -1,8 +1,8 @@
 import {
   TExpression,
   TStatement,
-  TDomainPrivateMethodValuesOkErrorReturnType,
-  TDomainPrivateMethodValuesPrimaryReturnType,
+  TPrivateMethodValuesOkErrorReturnType,
+  TPrivateMethodValuesPrimaryReturnType,
   expressionKey,
   TMemberDotExpression,
 } from '../types.js';
@@ -27,9 +27,9 @@ export const isPrimitive = (value: any): boolean => {
 
 const hasOkErrorReturnType = (
   privateMethodValues:
-    | TDomainPrivateMethodValuesPrimaryReturnType
-    | TDomainPrivateMethodValuesOkErrorReturnType,
-): privateMethodValues is TDomainPrivateMethodValuesOkErrorReturnType => {
+    | TPrivateMethodValuesPrimaryReturnType
+    | TPrivateMethodValuesOkErrorReturnType,
+): privateMethodValues is TPrivateMethodValuesOkErrorReturnType => {
   if ('returnType' in privateMethodValues) return true;
   else return false;
 };

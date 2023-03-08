@@ -1,13 +1,13 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
-  TDomainPublicMethod,
+  TPublicMethod,
   TIdentifier,
   TOkErrorReturnType,
   TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
 
-export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
+export class PublicMethodBuilder implements IBuilder<TPublicMethod> {
   private identifier: TIdentifier;
   private parameters: TParameterList;
   private returnType: TOkErrorReturnType;
@@ -39,7 +39,7 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
     return this;
   }
 
-  public build(): TDomainPublicMethod {
+  public build(): TPublicMethod {
     const publicMethod = {
       publicMethod: {
         identifier: this.identifier,

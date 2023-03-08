@@ -17,11 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TDomainPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { TPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainPublicMethod = (methodInfo: TDomainPublicMethod): TTargetDependenciesTypeScript => {
+const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
   const { statements, parameters, returnType } = publicMethod;
   const statementsString = modelToTargetLanguage({

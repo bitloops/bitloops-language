@@ -132,8 +132,8 @@ const BitloopsTypesMapping = {
   TReadModel: 'TReadModels',
   TReadModelIdentifier: 'TReadModelIdentifier',
   TDomainMethods: 'TDomainMethods',
-  TDomainPublicMethod: 'TDomainPublicMethod',
-  TDomainPrivateMethod: 'TDomainPrivateMethod',
+  TPublicMethod: 'TPublicMethod',
+  TPrivateMethod: 'TPrivateMethod',
   TValueObjectMethods: 'TValueObjectMethods',
   TBitloopsPrimaryType: 'TBitloopsPrimaryType',
   TBuiltInClassEvaluation: 'TBuiltInClassEvaluation',
@@ -181,8 +181,8 @@ const BitloopsTypesMapping = {
   TErrorIdentifiers: 'TErrorIdentifiers',
   TReturnOkType: 'TReturnOkType',
   TExtendsRepoPorts: 'TExtendsRepoPorts',
-  TDomainPublicMethods: 'TDomainPublicMethods',
-  TDomainPrivateMethods: 'TDomainPrivateMethods',
+  TPublicMethods: 'TPublicMethods',
+  TPrivateMethods: 'TPrivateMethods',
   TRESTMethods: 'TRESTMethods',
   TRESTControllerExecute: 'TRESTControllerExecute',
   TRESTControllerExecuteDependencies: 'TRESTControllerExecuteDependencies',
@@ -264,6 +264,9 @@ const BitloopsTypesMapping = {
   TThisIdentifier: 'TThisIdentifier',
   TAddDomainEvent: 'TAddDomainEvent',
   TStatic: 'TStatic',
+  TDomainServiceMethod: 'TDomainServiceMethod',
+  TDomainService: 'TDomainService',
+  TDomainServiceIdentifier: 'TDomainServiceIdentifier',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
@@ -295,6 +298,7 @@ const ClassTypes = {
   DomainEventHandler: 'DomainEventHandler',
   IntegrationEventHandler: 'IntegrationEventHandler',
   ServicePort: 'ServicePort',
+  DomainService: 'DomainService',
 } as const;
 
 type TClassTypesKeys = keyof typeof ClassTypes;
@@ -334,6 +338,7 @@ const mappingClassTypeToComponentType: Record<TClassTypesValues, TBitloopsTypesV
   [ClassTypes.IntegrationEvent]: BitloopsTypesMapping.TIntegrationEvent,
   [ClassTypes.IntegrationEventHandler]: BitloopsTypesMapping.TIntegrationEventHandler,
   [ClassTypes.ServicePort]: BitloopsTypesMapping.TServicePort,
+  [ClassTypes.DomainService]: BitloopsTypesMapping.TDomainService,
 };
 
 export { BitloopsTypesMapping, ClassTypes, mappingClassTypeToComponentType };

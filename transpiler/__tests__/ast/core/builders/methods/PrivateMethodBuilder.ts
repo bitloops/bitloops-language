@@ -1,17 +1,17 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   TBitloopsPrimaryType,
-  TDomainPrivateMethod,
-  TDomainPrivateMethodValues,
-  TDomainPrivateMethodValuesOkErrorReturnType,
-  TDomainPrivateMethodValuesPrimaryReturnType,
+  TPrivateMethod,
+  TPrivateMethodValues,
+  TPrivateMethodValuesOkErrorReturnType,
+  TPrivateMethodValuesPrimaryReturnType,
   TIdentifier,
   TOkErrorReturnType,
   TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
 
-export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
+export class PrivateMethodBuilder implements IBuilder<TPrivateMethod> {
   private identifier: TIdentifier;
   private parameters: TParameterList;
   private primaryReturnType: TBitloopsPrimaryType;
@@ -49,8 +49,8 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     return this;
   }
 
-  public build(): TDomainPrivateMethod {
-    const privateMethodValues: TDomainPrivateMethodValues = {
+  public build(): TPrivateMethod {
+    const privateMethodValues: TPrivateMethodValues = {
       identifier: this.identifier,
       ...this.parameters,
       statements: this.statements,
@@ -58,15 +58,13 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     };
 
     if (this.primaryReturnType) {
-      const privateMethodPrimary =
-        privateMethodValues as TDomainPrivateMethodValuesPrimaryReturnType;
+      const privateMethodPrimary = privateMethodValues as TPrivateMethodValuesPrimaryReturnType;
       privateMethodPrimary.type = this.primaryReturnType.type;
       return {
         privateMethod: privateMethodPrimary,
       };
     } else if (this.okErrorReturnType) {
-      const privateMethodOkError =
-        privateMethodValues as TDomainPrivateMethodValuesOkErrorReturnType;
+      const privateMethodOkError = privateMethodValues as TPrivateMethodValuesOkErrorReturnType;
       privateMethodOkError.returnType = this.okErrorReturnType.returnType;
       return {
         privateMethod: privateMethodOkError,

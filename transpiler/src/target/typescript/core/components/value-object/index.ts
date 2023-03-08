@@ -19,7 +19,7 @@
  */
 import {
   TDependenciesTypeScript,
-  TDomainPrivateMethods,
+  TPrivateMethods,
   TTargetDependenciesTypeScript,
   TValueObject,
 } from '../../../../../types.js';
@@ -51,9 +51,7 @@ const VO_DEPENDENCIES: TDependenciesTypeScript = [
   },
 ];
 
-const valueObjectMethods = (
-  valueObjectMethods: TDomainPrivateMethods,
-): TTargetDependenciesTypeScript => {
+const valueObjectMethods = (valueObjectMethods: TPrivateMethods): TTargetDependenciesTypeScript => {
   const { output, dependencies } = domainPrivateMethods(valueObjectMethods);
 
   return { output, dependencies };
