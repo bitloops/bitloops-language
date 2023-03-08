@@ -28,6 +28,7 @@ import {
   BooleanLiteral,
   NullLiteral,
   TemplateStringLiteral,
+  TRegexLiteral,
 } from '../../../../types.js';
 
 export class LiteralTypeIdentifiers {
@@ -52,6 +53,10 @@ export class LiteralTypeIdentifiers {
       return true;
     }
     return false;
+  }
+
+  static isRegexLiteral(literalValue: TLiteralValues): literalValue is TRegexLiteral {
+    return this.isObject(literalValue) && 'regexLiteral' in literalValue;
   }
 
   static isNullLiteral(literalValue: TLiteralValues): literalValue is NullLiteral {

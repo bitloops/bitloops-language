@@ -69,9 +69,14 @@ export const literalExpressionToTargetLanguage = (
     return { output: 'null', dependencies: [] };
   }
   // `\`${backTickString}\``
-  if (LiteralTypeIdentifiers.isTemplateStringLiteral) {
+  if (LiteralTypeIdentifiers.isTemplateStringLiteral(literal)) {
     const { templateStringLiteral } = literal;
     return { output: '`' + templateStringLiteral + '`', dependencies: [] };
+  }
+
+  if (LiteralTypeIdentifiers.isRegexLiteral(literal)) {
+    const { regexLiteral } = literal;
+    return { output: regexLiteral, dependencies: [] };
   }
 
   throw new Error('Literal not supported');
