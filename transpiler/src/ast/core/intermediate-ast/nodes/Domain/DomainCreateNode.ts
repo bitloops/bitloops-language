@@ -21,4 +21,10 @@ export class DomainCreateNode extends IntermediateASTNode {
     );
     return statementList.statements;
   }
+
+  getMethodParameters(): ParameterNode[] {
+    const parameterNode = this.getParameterNode();
+    if (!parameterNode) return [];
+    return [parameterNode];
+  }
 }

@@ -24,6 +24,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ExecuteNode } from '../ExecuteNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
 
 export class CommandHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.CommandHandler;
@@ -39,8 +40,10 @@ export class CommandHandlerNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const useCaseExecute = this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
-    return useCaseExecute.getStatements();
+    const commandHandlerExecute = this.getChildNodeByType<ExecuteNode>(
+      BitloopsTypesMapping.TExecute,
+    );
+    return commandHandlerExecute.getStatements();
   }
 
   getAllDependenciesIdentifiers(): string[] {
@@ -48,5 +51,14 @@ export class CommandHandlerNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterList.getIdentifiers();
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const commandHandlerExecute = this.getChildNodeByType<ExecuteNode>(
+      BitloopsTypesMapping.TExecute,
+    );
+    const parameter = commandHandlerExecute.getParameter();
+    if (!parameter) return [];
+    return [parameter];
   }
 }
