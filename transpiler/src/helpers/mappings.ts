@@ -242,7 +242,6 @@ const BitloopsTypesMapping = {
   TGraphQLServerInstance: 'TGraphQLServerInstance',
   TRESTServerInstance: 'TRESTServerInstance',
   TApiDeclaration: 'TApiDeclaration',
-  TApiIdentifier: 'TApiIdentifier',
   TCommandIdentifier: 'TCommandIdentifier',
   TQueryIdentifier: 'TQueryIdentifier',
   TCommand: 'TCommand',

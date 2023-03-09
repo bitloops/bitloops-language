@@ -23,8 +23,8 @@ export interface IIntermediateApiASTToTarget {
 }
 
 export type TOutputTargetContent = {
-  core: TTargetCoreFinalContent[];
-  api: TTargetApiFinalContent[];
+  core?: TTargetCoreFinalContent[];
+  api?: TTargetApiFinalContent[];
   setup?: TTargetSetupContent[];
 };
 

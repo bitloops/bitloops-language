@@ -1,9 +1,9 @@
 import { TGraphQLController, TGraphQLOperation } from '../../../../../src/types.js';
-import { ArgumentBuilderDirector } from '../argumentDirector.js';
-import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
-import { ParameterBuilderDirector } from '../ParameterBuilderDirector.js';
-import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
-import { StatementDirector } from '../statement/statementDirector.js';
+import { ArgumentBuilderDirector } from '../../../core/builders/argumentDirector.js';
+import { ArgumentListBuilderDirector } from '../../../core/builders/argumentListBuilderDirector.js';
+import { ParameterBuilderDirector } from '../../../core/builders/ParameterBuilderDirector.js';
+import { ParameterListBuilderDirector } from '../../../core/builders/parameterListBuilderDirector.js';
+import { StatementDirector } from '../../../core/builders/statement/statementDirector.js';
 import { GraphQLControllerBuilder } from './graphQLControllerBuilder.js';
 import { GraphQLExecuteBuilder } from './graphQLExecuteBuilder.js';
 

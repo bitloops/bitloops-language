@@ -2,7 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { ArgumentListNode } from '../ArgumentList/ArgumentListNode.js';
 import { RESTControllerIdentifierNode } from '../controllers/restController/RESTControllerIdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
-import { BoundedContextModuleNode } from './BoundedContextModuleNode.js';
+import { ApiDeclarationNode } from './Api/ApiDeclarationNode.js';
 
 export class RouterControllerNode extends IntermediateASTNode {
   private static classNodeName = 'routerController';
@@ -22,14 +22,14 @@ export class RouterControllerNode extends IntermediateASTNode {
     return controllerIdentifier as RESTControllerIdentifierNode;
   }
 
-  public getBoundedContextModule(): BoundedContextModuleNode {
-    const boundedContextModule = this.getChildNodeByType<BoundedContextModuleNode>(
-      BitloopsTypesMapping.TBoundedContextModule,
+  public getApi(): ApiDeclarationNode {
+    const apiNode = this.getChildNodeByType<ApiDeclarationNode>(
+      BitloopsTypesMapping.TApiDeclaration,
     );
-    if (!boundedContextModule) {
-      throw new Error('BoundedContext module not found');
+    if (!apiNode) {
+      throw new Error('Api not found');
     }
-    return boundedContextModule;
+    return apiNode;
   }
 
   public getArgumentList(): ArgumentListNode {

@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TBoundedContexts } from '../../types.js';
+import { TIntermediateASTApi } from '../../types.js';
 import { IntermediateASTTree } from '../IntermediateASTTree.js';
 import { RouterDefinitionNode } from '../nodes/setup/RouterDefinitionNode.js';
 import { IASTToCompletedASTTransformer } from './index.js';
@@ -7,7 +7,7 @@ import { IASTToCompletedASTTransformer } from './index.js';
 export class RestControllerTypeTransformer implements IASTToCompletedASTTransformer {
   constructor(
     protected setupTree: IntermediateASTTree,
-    protected intermediateASTCore: TBoundedContexts,
+    protected intermediateASTApi: TIntermediateASTApi,
   ) {}
 
   run(): void {
@@ -30,24 +30,17 @@ export class RestControllerTypeTransformer implements IASTToCompletedASTTransfor
       for (const controllerNode of controllerNodes) {
         const identifierNode = controllerNode.getRouterControllerIdentifier();
 
-        const boundedContextModuleNode = controllerNode.getBoundedContextModule();
-        const moduleNode = boundedContextModuleNode.getModule();
-        const boundedContextNode = boundedContextModuleNode.getBoundedContext();
-        const moduleName = moduleNode.getName();
-        const boundedContextName = boundedContextNode.getName();
+        const apiDeclarationNode = controllerNode.getApi();
+        const apiName = apiDeclarationNode.getApiIdentifier();
 
-        if (
-          this.intermediateASTCore &&
-          this.intermediateASTCore[boundedContextName] &&
-          this.intermediateASTCore[boundedContextName][moduleName]
-        ) {
-          const coreTree = this.intermediateASTCore[boundedContextName][moduleName];
+        if (this.intermediateASTApi && this.intermediateASTApi[apiName]) {
+          const apiTree = this.intermediateASTApi[apiName];
 
-          const restControllerNodeFound = coreTree.getControllerByIdentifier(
+          const restControllerNodeFound = apiTree.getControllerByIdentifier(
             identifierNode.getValue().RESTControllerIdentifier,
           );
           restControllerNodeFound.addChild(serverTypeNode);
-          coreTree.buildValueRecursiveBottomUp(restControllerNodeFound);
+          apiTree.buildValueRecursiveBottomUp(restControllerNodeFound);
         }
       }
     }

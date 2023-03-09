@@ -23,11 +23,11 @@ import {
   TRestMethods,
   TServerType,
 } from '../../../../../src/types.js';
-import { StatementDirector } from '../../builders/statement/statementDirector.js';
-import { ArgumentBuilderDirector } from '../../builders/argumentDirector.js';
-import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
+import { StatementDirector } from '../../../core/builders/statement/statementDirector.js';
+import { ArgumentBuilderDirector } from '../../../core/builders/argumentDirector.js';
+import { ParameterBuilderDirector } from '../../../core/builders/ParameterBuilderDirector.js';
 import { RestExecuteBuilder } from '../../builders/controllers/restControllerExecuteBuilder.js';
-import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
+import { ArgumentListBuilderDirector } from '../../../core/builders/argumentListBuilderDirector.js';
 import { FileUtil } from '../../../../../src/utils/file.js';
 
 type RestControllerDeclarationTestCase = {
@@ -44,7 +44,7 @@ type RestControllerDeclarationTestCase = {
 
 export const validRestControllerStatementTestCases: RestControllerDeclarationTestCase[] = [
   {
-    description: 'Domain rule declaration with no statements',
+    description: 'Valid rest controller',
     fileId: 'testFile.bl',
     inputBLString: `RESTController HelloWorldController() { 
       method: REST.Methods.GET; 

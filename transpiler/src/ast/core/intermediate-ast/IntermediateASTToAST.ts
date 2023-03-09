@@ -4,7 +4,12 @@ import { IntermediateASTNode, TNodeType } from './nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkErrorNodeTransformer.js';
 import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
-import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../types.js';
+import {
+  IntermediateAST,
+  IntermediateASTSetup,
+  TBoundedContexts,
+  TIntermediateASTApi,
+} from '../types.js';
 import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
 import { RestControllerTypeTransformer } from './ node-transformers/RestControllerTypeTransformer.js';
 import { RepoAdapterNodesTransformer } from './ node-transformers/RepoAdapterNodesTransformer.js';
@@ -20,22 +25,23 @@ import { AddDIsForAutoDomainEventHandlersTransformer } from './ node-transformer
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
-    const boundedContexts = intermediateAST.core
-      ? this.completeCore(intermediateAST.core)
-      : intermediateAST.core;
+    const { core, setup, api } = intermediateAST;
+    const intermediateASTCore = core ? this.completeCore(core) : core;
+    const intermediateASTSetup = setup ? this.completeSetup(setup) : setup;
+    const intermediateASTApi = api;
 
-    const intermediateASTSetup = intermediateAST.setup
-      ? this.completeSetup(intermediateAST.setup)
-      : intermediateAST.setup;
+    if (setup && core) {
+      this.completeCoreFromSetup(intermediateASTCore, intermediateASTSetup);
+      this.completeSetupFromCores(intermediateASTSetup, intermediateASTCore);
+    }
 
-    if (intermediateAST.setup && intermediateAST.core) {
-      this.completeCoreFromSetup(intermediateAST);
-      this.completeSetupFromCores(intermediateAST.setup, intermediateAST.core);
+    if (setup && api) {
+      this.completeApiFromSetup(intermediateASTApi, intermediateASTSetup);
     }
 
     return {
-      core: boundedContexts,
-      api: intermediateAST.api,
+      core: intermediateASTCore,
+      api: intermediateASTApi,
       setup: intermediateASTSetup,
     };
   }
@@ -99,17 +105,28 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
   }
 
   // It mutates intermediateAST core
-  private completeCoreFromSetup(intermediateAST: IntermediateAST): void {
-    for (const setupTree of Object.values(intermediateAST.setup)) {
+  private completeCoreFromSetup(
+    intermediateASTCore: TBoundedContexts,
+    intermediateASTSetup: IntermediateASTSetup,
+  ): void {
+    for (const setupTree of Object.values(intermediateASTSetup)) {
       const injectRepoAdaptersTransformer = new RepoAdapterNodesTransformer(
         setupTree,
-        intermediateAST.core,
+        intermediateASTCore,
       );
       injectRepoAdaptersTransformer.run();
+    }
+  }
 
+  // It mutates intermediateAST api
+  private completeApiFromSetup(
+    intermediateASTApi: TIntermediateASTApi,
+    intermediateASTSetup: IntermediateASTSetup,
+  ): void {
+    for (const setupTree of Object.values(intermediateASTSetup)) {
       const restControllerTypeTransformer = new RestControllerTypeTransformer(
         setupTree,
-        intermediateAST.core,
+        intermediateASTApi,
       );
       restControllerTypeTransformer.run();
     }

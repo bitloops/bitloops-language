@@ -21,7 +21,7 @@
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import { ApiDeclarationNodeBuilder } from '../../../intermediate-ast/builders/setup/api/ApiDeclarationNodeBuilder.js';
 import { ApiDeclarationNode } from '../../../intermediate-ast/nodes/setup/Api/ApiDeclarationNode.js';
-import { ApiIdentifierNode } from '../../../intermediate-ast/nodes/setup/Api/ApiIdentifierNode.js';
+import { WordsWithSpacesNode } from '../../../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { produceMetadata } from '../../metadata.js';
 
@@ -29,9 +29,9 @@ export const apiDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ApiDeclarationContext,
 ): ApiDeclarationNode => {
-  const apiIdentifierNode: ApiIdentifierNode = thisVisitor.visit(ctx.apiIdentifier());
+  const wordsWithSpacesNode: WordsWithSpacesNode = thisVisitor.visit(ctx.wordsWithSpaces());
 
   const metadata = produceMetadata(ctx, thisVisitor);
 
-  return new ApiDeclarationNodeBuilder(metadata).withApiIdentifier(apiIdentifierNode).build();
+  return new ApiDeclarationNodeBuilder(metadata).withApiIdentifier(wordsWithSpacesNode).build();
 };

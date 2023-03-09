@@ -268,8 +268,6 @@ import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQ
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { apiDeclarationVisitor } from './helpers/setup/apiDeclarationVisitor.js';
 import { ApiDeclarationNode } from '../intermediate-ast/nodes/setup/Api/ApiDeclarationNode.js';
-import { ApiIdentifierNode } from '../intermediate-ast/nodes/setup/Api/ApiIdentifierNode.js';
-import { apiIdentifierVisitor } from './helpers/setup/apiIdentifierVisitor.js';
 import { commandDeclarationVisitor } from './helpers/commandDeclaration.js';
 import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
 import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
@@ -1243,10 +1241,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitApiDeclaration(ctx: BitloopsParser.ApiDeclarationContext): ApiDeclarationNode {
     return apiDeclarationVisitor(this, ctx);
-  }
-
-  visitApiIdentifier(ctx: BitloopsParser.ApiIdentifierContext): ApiIdentifierNode {
-    return apiIdentifierVisitor(this, ctx);
   }
 
   visitBoundedContextDeclaration(

@@ -1122,12 +1122,8 @@ wordsWithSpaces
     : alpha_numeric_ws+
     ;
 
-apiIdentifier
-    : Identifier
-    ;
-
 apiDeclaration
-    : OpenBracket apiIdentifier CloseBracket
+    : OpenBracket wordsWithSpaces CloseBracket
     ;
 
 routerController

@@ -35,8 +35,7 @@ import {
   TServerType,
 } from '../../../src/types.js';
 
-const BOUNDED_CONTEXT = 'Hello World';
-const MODULE = 'core';
+const API = 'Hello World App';
 
 describe('Rest controller declaration is valid', () => {
   let resultTree: IntermediateASTTree;
@@ -47,10 +46,9 @@ describe('Rest controller declaration is valid', () => {
   validRestControllerStatementTestCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse({
-        core: [
+        api: [
           {
-            boundedContext: BOUNDED_CONTEXT,
-            module: MODULE,
+            api: API,
             fileId: testCase.fileId,
             fileContents: testCase.inputBLString,
           },
@@ -63,12 +61,13 @@ describe('Rest controller declaration is valid', () => {
         ],
       });
 
-      if (!isParserErrors(initialModelOutput)) {
-        const parseResult = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTValidationErrors(parseResult)) {
-          const result = intermediateParser.complete(parseResult);
-          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
-        }
+      if (isParserErrors(initialModelOutput)) {
+        throw initialModelOutput;
+      }
+      const parseResult = intermediateParser.parse(initialModelOutput);
+      if (!isIntermediateASTValidationErrors(parseResult)) {
+        const result = intermediateParser.complete(parseResult);
+        resultTree = result.api[API];
       }
 
       const restControllerNodes = resultTree.getRootChildrenNodesByType(
