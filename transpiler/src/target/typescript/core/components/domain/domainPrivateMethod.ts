@@ -18,9 +18,30 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
-import { TPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  TPrivateMethod,
+  TPrivateMethodValuesOkErrorReturnType,
+  TPrivateMethodValuesPrimaryReturnType,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+
+export const getDomainMethodReturnTypeTarget = (
+  methodValues: TPrivateMethodValuesPrimaryReturnType | TPrivateMethodValuesOkErrorReturnType,
+): TTargetDependenciesTypeScript => {
+  if (hasOkErrorReturnType(methodValues)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TOkErrorReturnType,
+      value: { returnType: methodValues.returnType },
+    });
+  } else {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TBitloopsPrimaryType,
+      value: { type: methodValues.type },
+    });
+  }
+};
 
 const domainPrivateMethod = (methodInfo: TPrivateMethod): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
@@ -35,24 +56,8 @@ const domainPrivateMethod = (methodInfo: TPrivateMethod): TTargetDependenciesTyp
     type: BitloopsTypesMapping.TParameterList,
     value: { parameters: methodInfo.privateMethod.parameters },
   });
-  const privateMethodValues = methodInfo.privateMethod;
-  let mappedReturnType;
 
-  if (hasOkErrorReturnType(privateMethodValues)) {
-    const resOkErrorReturnType = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TOkErrorReturnType,
-      value: { returnType: privateMethodValues.returnType },
-    });
-    mappedReturnType = {
-      output: resOkErrorReturnType.output,
-      dependencies: resOkErrorReturnType.dependencies,
-    };
-  } else {
-    mappedReturnType = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: { type: privateMethodValues.type },
-    });
-  }
+  const mappedReturnType = getDomainMethodReturnTypeTarget(methodInfo.privateMethod);
 
   const methodName = privateMethod.identifier;
   const parametersString = parametersTarget.output;
@@ -71,4 +76,5 @@ const domainPrivateMethod = (methodInfo: TPrivateMethod): TTargetDependenciesTyp
     ],
   };
 };
+
 export { domainPrivateMethod };

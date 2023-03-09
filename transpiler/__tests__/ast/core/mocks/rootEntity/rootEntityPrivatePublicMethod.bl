@@ -8,11 +8,11 @@ Root Entity TodoEntity {
         return TodoEntity.create({id: 7, title: 'Super important'});   
     }
 
-    static changeProps(props: TodoProps): void {
+    private static changeProps(props: TodoProps): void {
         props.title = 'Super important';
     }
     
-    isValidName(name: string): bool { 
+    private isValidName(name: string): bool { 
         return true;
     }    
 }

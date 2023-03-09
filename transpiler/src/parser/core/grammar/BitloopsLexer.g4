@@ -337,7 +337,6 @@ GraphQLServer:                  'GraphQLServer';
 RESTServer:                     'RESTServer';
 
 // Buses
-SetLanguage:                    'setLanguage';
 CommandBus:                     'COMMAND_BUS';
 EventBus:                       'EVENT_BUS';
 IntegrationEventBus:            'INTEGRATION_EVENT_BUS';

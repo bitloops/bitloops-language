@@ -8,7 +8,7 @@ Entity TodoEntity {
         return entityRes;
     }
     
-    isValidName(name: string): bool { 
+    private isValidName(name: string): bool { 
         return true;
     }    
 }

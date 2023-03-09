@@ -1,3 +1,4 @@
+import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { PublicMethodDeclarationNode } from '../../nodes/methods/PublicMethodDeclarationNode.js';
@@ -11,7 +12,7 @@ export class PublicMethodDeclarationNodeBuilder implements IBuilder<PublicMethod
   private publicMethodDeclarationNode: PublicMethodDeclarationNode;
   private identifier: IdentifierNode;
   private parameters: ParameterListNode;
-  private returnType: ReturnOkErrorTypeNode;
+  private returnType: ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode;
   private statements: StatementListNode;
   private staticNode: StaticNode;
 
@@ -29,7 +30,9 @@ export class PublicMethodDeclarationNodeBuilder implements IBuilder<PublicMethod
     return this;
   }
 
-  public withReturnType(returnType: ReturnOkErrorTypeNode): PublicMethodDeclarationNodeBuilder {
+  public withReturnType(
+    returnType: ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode,
+  ): PublicMethodDeclarationNodeBuilder {
     this.returnType = returnType;
     return this;
   }

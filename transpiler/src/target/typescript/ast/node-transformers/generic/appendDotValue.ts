@@ -1,6 +1,5 @@
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IdentifierExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
-import { MemberDotExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/MemberDot/MemberDotExpression.js';
 import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { ParameterNode } from '../../../../../ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { StatementNode } from '../../../../../ast/core/intermediate-ast/nodes/statements/Statement.js';
@@ -33,35 +32,20 @@ export class AppendDotValueNodeTSTransformer {
     this.updateIdentifierNodes(identifierExpressionNodes);
   }
 
+  // In the case of member dot expressions, we only want to append .value to the left most part
   private updateIdentifierNodes(identifierExpressionNodes: IdentifierExpressionNode[]): void {
     identifierExpressionNodes.forEach((node) => {
-      if (this.identifierIsUsedByMemberDotExpression(node)) {
+      if (this.isMiddleOrRightPartOfMemberDotExpression(node)) {
         return;
       }
       node.identifierName = this.appendDotValue(node.identifierName);
     });
   }
 
-  /**
-   *  If its the left part of a member dot expression, then its grandParent is a member dot expression
-   * if its the right part of a member dot expression, then its parent is a member dot expression
-   */
-  private identifierIsUsedByMemberDotExpression(identifier: IdentifierExpressionNode): boolean {
-    const parent = identifier.getParent();
-    if (!parent) {
-      return false;
-    }
-    const identifierIsRightPartOfMemberDotExpression = parent instanceof MemberDotExpressionNode;
-    if (identifierIsRightPartOfMemberDotExpression) {
-      return true;
-    }
-    const grandParent = parent.getParent();
-    if (!grandParent) {
-      return false;
-    }
-    const identifierIsLeftPartOfMemberDotExpression =
-      grandParent instanceof MemberDotExpressionNode;
-    return identifierIsLeftPartOfMemberDotExpression;
+  private isMiddleOrRightPartOfMemberDotExpression(identifier: IdentifierExpressionNode): boolean {
+    return (
+      identifier.isUsedByMemberDotExpression() && !identifier.isLeftMostPartOfMemberDotExpression()
+    );
   }
 
   private appendDotValue(str: string): string {

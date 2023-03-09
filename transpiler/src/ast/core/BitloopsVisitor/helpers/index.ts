@@ -67,7 +67,7 @@ export { domainCreateDeclarationVisitor } from './domainCreateDeclaration.js';
 export { valueObjectDeclarationVisitor } from './valueObjectDeclaration.js';
 export { privateMethodDeclarationVisitor } from './privateMethodDeclaration.js';
 export { privateMethodDeclarationListVisitor } from './privateMethodDeclarationList.js';
-export { returnPrivateMethodTypeVisitor } from './returnPrivateMethodType.js';
+export { returnMethodTypeVisitor as returnPrivateMethodTypeVisitor } from './returnMethodType.js';
 export { domainConstDeclarationListVisitor } from './domainConstDeclarationList.js';
 export { entityDeclarationVisitor } from './entityDeclaration.js';
 export { aggregateDeclarationVisitor } from './aggregateDeclarationVisitor.js';

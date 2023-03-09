@@ -805,20 +805,17 @@ staticKeyword
     ;
 
 privateMethodDeclaration
-    : Private? staticKeyword? identifier parameterList? returnPrivateMethodType OpenBrace functionBody CloseBrace
+    : Private staticKeyword? identifier parameterList? returnMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? staticKeyword? identifier parameterList? returnPublicMethodType OpenBrace functionBody CloseBrace    
+    : Public? staticKeyword? identifier parameterList? returnMethodType OpenBrace functionBody CloseBrace    
     ;
 
-returnPublicMethodType
-    : Colon returnOkErrorType
+returnMethodType
+    : typeAnnotation 
+    | Colon returnOkErrorType
     ;
-
-returnPrivateMethodType
-    : typeAnnotation | (Colon returnOkErrorType)
-;
 
 parameterList
     : OpenParen CloseParen 

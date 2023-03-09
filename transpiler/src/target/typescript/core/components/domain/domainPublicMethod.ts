@@ -20,10 +20,11 @@
 import { TPublicMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getDomainMethodReturnTypeTarget } from './domainPrivateMethod.js';
 
 const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
-  const { statements, parameters, returnType } = publicMethod;
+  const { statements, parameters } = publicMethod;
   const statementsString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TStatements,
     value: statements,
@@ -34,10 +35,8 @@ const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeS
     value: { parameters },
   });
 
-  const mappedReturnType = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TOkErrorReturnType,
-    value: { returnType },
-  });
+  const mappedReturnType = getDomainMethodReturnTypeTarget(methodInfo.publicMethod);
+
   const methodName = publicMethod.identifier;
   const returnTypeOutput = mappedReturnType.output;
   const parametersOutput = parametersString.output;
