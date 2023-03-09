@@ -20,8 +20,8 @@
 import {
   TDependenciesTypeScript,
   TDependencyChildTypescript,
-  TDomainPrivateMethods,
-  TDomainPublicMethods,
+  TPrivateMethods,
+  TPublicMethods,
   TEntity,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
@@ -60,8 +60,8 @@ const ENTITY_DEPENDENCIES: () => TDependenciesTypeScript = () => [
 ];
 
 const entityMethods = (
-  privateMethods: TDomainPrivateMethods,
-  publicMethods: TDomainPublicMethods,
+  privateMethods: TPrivateMethods,
+  publicMethods: TPublicMethods,
 ): TTargetDependenciesTypeScript => {
   const result = domainMethods(publicMethods, privateMethods);
 

@@ -9,11 +9,7 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
   private static classNodeName = 'publicMethod';
 
   constructor(metadata?: TNodeMetadata) {
-    super(
-      BitloopsTypesMapping.TDomainPublicMethod,
-      metadata,
-      PublicMethodDeclarationNode.classNodeName,
-    );
+    super(BitloopsTypesMapping.TPublicMethod, metadata, PublicMethodDeclarationNode.classNodeName);
   }
 
   getStatements(): StatementNode[] {

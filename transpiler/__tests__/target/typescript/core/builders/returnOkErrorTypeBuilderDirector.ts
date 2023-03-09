@@ -17,11 +17,11 @@ export class ReturnOkErrorTypeBuilderDirector {
     this.builder = new ReturnOkErrorTypeNodeBuilder();
   }
 
-  buildReturnOkTypeBitloopsIdentifier(entityName: TBitloopsIdentifier): ReturnOkErrorTypeNode {
+  buildReturnOkTypeBitloopsIdentifier(identifier: TBitloopsIdentifier): ReturnOkErrorTypeNode {
     return this.builder
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(entityName))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(identifier))
           .build(),
       )
       .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())

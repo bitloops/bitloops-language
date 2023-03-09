@@ -24,8 +24,8 @@ import { isVO } from '../../../../../helpers/typeGuards.js';
 import {
   TTargetDependenciesTypeScript,
   fieldKey,
-  TDomainPublicMethods,
-  TDomainPrivateMethods,
+  TPublicMethods,
+  TPrivateMethods,
   TProps,
   PropsIdentifierKey,
   TVariable,
@@ -41,8 +41,8 @@ export const generateGetters = ({
 }: {
   propsName: string;
   model: IntermediateASTTree;
-  publicMethods?: TDomainPublicMethods;
-  privateMethods: TDomainPrivateMethods;
+  publicMethods?: TPublicMethods;
+  privateMethods: TPrivateMethods;
   isValueObject?: boolean;
 }): TTargetDependenciesTypeScript => {
   const allPropsNodes = model.getRootChildrenNodesByType(
