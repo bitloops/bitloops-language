@@ -20,20 +20,24 @@ import { VerboseErrorListener } from './VerboseErrorListener.js';
 export class BitloopsParser implements IOriginalParser {
   parse(inputData: TParserInputData): OriginalAST | ParserSyntacticError[] {
     const errors: ParserSyntacticError[] = [];
-    const parseResult: OriginalAST = { core: {}, api: {} };
+    const parseResult: OriginalAST = {};
 
-    const ASTCore = this.parseCore(inputData.core);
-    if (isParserErrors(ASTCore)) {
-      errors.push(...ASTCore);
-    } else {
-      parseResult.core = ASTCore;
+    if (inputData.core) {
+      const ASTCore = this.parseCore(inputData.core);
+      if (isParserErrors(ASTCore)) {
+        errors.push(...ASTCore);
+      } else {
+        parseResult.core = ASTCore;
+      }
     }
 
-    const ASTApi = this.parseApi(inputData.api);
-    if (isParserErrors(ASTApi)) {
-      errors.push(...ASTApi);
-    } else {
-      parseResult.api = ASTApi;
+    if (inputData.api) {
+      const ASTApi = this.parseApi(inputData.api);
+      if (isParserErrors(ASTApi)) {
+        errors.push(...ASTApi);
+      } else {
+        parseResult.api = ASTApi;
+      }
     }
 
     if (inputData.setup) {

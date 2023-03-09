@@ -53,18 +53,22 @@ export class TargetGenerator implements ITargetGenerator {
     const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
     const transformedIntermediateAST = modelToTargetASTTransformer.transform(intermediateAST);
 
-    const coreTargetOutput = this.generateCore(transformedIntermediateAST, options);
-    if (isTargetCoreGeneratorError(coreTargetOutput)) {
-      errors.push(coreTargetOutput);
-    } else {
-      generateResult.core = coreTargetOutput;
+    if (transformedIntermediateAST.api) {
+      const coreTargetOutput = this.generateCore(transformedIntermediateAST, options);
+      if (isTargetCoreGeneratorError(coreTargetOutput)) {
+        errors.push(coreTargetOutput);
+      } else {
+        generateResult.core = coreTargetOutput;
+      }
     }
 
-    const apiTargetOutput = this.generateApi(transformedIntermediateAST, options);
-    if (isTargetApiGeneratorError(apiTargetOutput)) {
-      errors.push(apiTargetOutput);
-    } else {
-      generateResult.api = apiTargetOutput;
+    if (transformedIntermediateAST.api) {
+      const apiTargetOutput = this.generateApi(transformedIntermediateAST, options);
+      if (isTargetApiGeneratorError(apiTargetOutput)) {
+        errors.push(apiTargetOutput);
+      } else {
+        generateResult.api = apiTargetOutput;
+      }
     }
 
     if (transformedIntermediateAST.setup) {

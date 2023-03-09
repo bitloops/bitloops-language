@@ -6,8 +6,8 @@ import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstD
 import { VariableDeclarationNode } from './intermediate-ast/nodes/variableDeclaration.js';
 
 export type IntermediateAST = {
-  core: TBoundedContexts;
-  api: TIntermediateASTApi;
+  core?: TBoundedContexts;
+  api?: TIntermediateASTApi;
   setup?: IntermediateASTSetup;
 };
 

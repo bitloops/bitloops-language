@@ -20,16 +20,19 @@ import { AddDIsForAutoDomainEventHandlersTransformer } from './ node-transformer
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
-    const boundedContexts = this.completeCore(intermediateAST.core);
+    const boundedContexts = intermediateAST.core
+      ? this.completeCore(intermediateAST.core)
+      : intermediateAST.core;
+
     const intermediateASTSetup = intermediateAST.setup
       ? this.completeSetup(intermediateAST.setup)
       : intermediateAST.setup;
-    if (intermediateAST.setup) {
-      this.completeCoreFromSetup(intermediateAST);
-    }
+
     if (intermediateAST.setup && intermediateAST.core) {
+      this.completeCoreFromSetup(intermediateAST);
       this.completeSetupFromCores(intermediateAST.setup, intermediateAST.core);
     }
+
     return {
       core: boundedContexts,
       api: intermediateAST.api,

@@ -32,13 +32,9 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     const intermediateASTCoreTree = this.originalASTCoreToIntermediateASTTree(ast.core);
 
     const intermediateASTApiTree = this.originalASTApiToIntermediateASTTree(ast.api);
-    if (!ast.setup) {
-      return {
-        core: intermediateASTCoreTree,
-        api: intermediateASTApiTree,
-      };
-    }
+
     const intermediateASTSetupTree = this.originalASTSetupToIntermediateASTTree(ast.setup);
+
     return {
       core: intermediateASTCoreTree,
       api: intermediateASTApiTree,
@@ -46,8 +42,9 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     };
   }
 
-  private originalASTSetupToIntermediateASTTree(astSetup: OriginalASTSetup): IntermediateASTSetup {
+  private originalASTSetupToIntermediateASTTree(astSetup?: OriginalASTSetup): IntermediateASTSetup {
     const setupAST: IntermediateASTSetup = {};
+    if (!astSetup) return setupAST;
     for (const [fileId, ASTData] of Object.entries(astSetup)) {
       const bitloopsVisitor = new BitloopsVisitor(fileId);
       bitloopsVisitor.visit(ASTData.ASTContext);
@@ -58,8 +55,9 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     return setupAST;
   }
 
-  private originalASTApiToIntermediateASTTree(astApi: OriginalASTApi): TIntermediateASTApi {
+  private originalASTApiToIntermediateASTTree(astApi?: OriginalASTApi): TIntermediateASTApi {
     const apis: TIntermediateASTApi = {};
+    if (!astApi) return apis;
     for (const [apiName, api] of Object.entries(astApi)) {
       for (const [fileId, ASTData] of Object.entries(api)) {
         const bitloopsVisitor = new BitloopsVisitor(fileId);
@@ -78,8 +76,9 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     return apis;
   }
 
-  private originalASTCoreToIntermediateASTTree(astCore: OriginalASTCore): TBoundedContexts {
+  private originalASTCoreToIntermediateASTTree(astCore?: OriginalASTCore): TBoundedContexts {
     const boundedContexts: TBoundedContexts = {};
+    if (!astCore) return boundedContexts;
     for (const [boundedContextName, boundedContext] of Object.entries(astCore)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
         for (const [fileId, ASTData] of Object.entries(module)) {

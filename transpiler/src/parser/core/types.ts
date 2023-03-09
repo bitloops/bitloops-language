@@ -10,8 +10,8 @@ export class ASTContext extends Parser.ProgramContext {}
 export class ASTSetupContext extends Parser.SetupProgramContext {}
 
 export type OriginalAST = {
-  core: OriginalASTCore;
-  api: OriginalASTApi;
+  core?: OriginalASTCore;
+  api?: OriginalASTApi;
   setup?: OriginalASTSetup;
 };
 
@@ -43,8 +43,8 @@ export type TFileId = string;
 type TFileContents = string;
 
 export type TParserInputData = {
-  core: TParserCoreInputData;
-  api: TParserApiInputData;
+  core?: TParserCoreInputData;
+  api?: TParserApiInputData;
   setup?: TParserSetupInputData;
 };
 
