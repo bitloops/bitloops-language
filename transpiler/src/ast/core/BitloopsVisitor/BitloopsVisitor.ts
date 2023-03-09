@@ -949,8 +949,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     entityDeclarationVisitor(this, ctx);
   }
 
-  visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext) {
-    return aggregateDeclarationVisitor(this, ctx);
+  visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext): void {
+    aggregateDeclarationVisitor(this, ctx);
   }
 
   visitEntityBody(ctx: BitloopsParser.EntityBodyContext): EntityValuesNode {
@@ -996,8 +996,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return privateMethodDeclarationVisitor(this, ctx);
   }
 
-  visitReturnPrivateMethodType(
-    ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
+  visitReturnMethodType(
+    ctx: BitloopsParser.ReturnMethodTypeContext,
   ): BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }

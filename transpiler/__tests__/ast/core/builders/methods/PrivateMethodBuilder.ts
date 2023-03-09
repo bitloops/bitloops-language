@@ -2,9 +2,9 @@ import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/
 import {
   TBitloopsPrimaryType,
   TDomainPrivateMethod,
-  TDomainPrivateMethodValues,
-  TDomainPrivateMethodValuesOkErrorReturnType,
-  TDomainPrivateMethodValuesPrimaryReturnType,
+  TDomainMethodValues,
+  TDomainMethodValuesOkErrorReturnType,
+  TDomainMethodValuesPrimaryReturnType,
   TIdentifier,
   TOkErrorReturnType,
   TParameterList,
@@ -50,7 +50,7 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
   }
 
   public build(): TDomainPrivateMethod {
-    const privateMethodValues: TDomainPrivateMethodValues = {
+    const privateMethodValues: TDomainMethodValues = {
       identifier: this.identifier,
       ...this.parameters,
       statements: this.statements,
@@ -58,15 +58,13 @@ export class PrivateMethodBuilder implements IBuilder<TDomainPrivateMethod> {
     };
 
     if (this.primaryReturnType) {
-      const privateMethodPrimary =
-        privateMethodValues as TDomainPrivateMethodValuesPrimaryReturnType;
+      const privateMethodPrimary = privateMethodValues as TDomainMethodValuesPrimaryReturnType;
       privateMethodPrimary.type = this.primaryReturnType.type;
       return {
         privateMethod: privateMethodPrimary,
       };
     } else if (this.okErrorReturnType) {
-      const privateMethodOkError =
-        privateMethodValues as TDomainPrivateMethodValuesOkErrorReturnType;
+      const privateMethodOkError = privateMethodValues as TDomainMethodValuesOkErrorReturnType;
       privateMethodOkError.returnType = this.okErrorReturnType.returnType;
       return {
         privateMethod: privateMethodOkError,

@@ -28,6 +28,7 @@ import { PublicMethodDeclarationNodeBuilder } from '../../intermediate-ast/build
 import { PublicMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { StaticNode } from '../../intermediate-ast/nodes/methods/StaticNode.js';
 import { StaticNodeBuilder } from '../../intermediate-ast/builders/methods/StaticNodeBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -35,7 +36,11 @@ export const publicMethodDeclarationVisitor = (
 ): PublicMethodDeclarationNode => {
   const methodNameNode = thisVisitor.visit(ctx.identifier());
   const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
-  const returnType: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnPublicMethodType())[1];
+
+  const returnType: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode = thisVisitor.visit(
+    ctx.returnMethodType(),
+  );
+
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
   const staticNode: StaticNode = ctx.staticKeyword()
     ? thisVisitor.visit(ctx.staticKeyword())

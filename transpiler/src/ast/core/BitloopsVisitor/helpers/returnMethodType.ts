@@ -23,9 +23,9 @@ import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPr
 import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
-export const returnPrivateMethodTypeVisitor = (
+export const returnMethodTypeVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
+  ctx: BitloopsParser.ReturnMethodTypeContext,
 ): BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode => {
   if (ctx.returnOkErrorType()) {
     return thisVisitor.visit(ctx.returnOkErrorType());

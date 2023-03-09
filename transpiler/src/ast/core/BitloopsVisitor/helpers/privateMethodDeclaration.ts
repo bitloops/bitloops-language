@@ -37,7 +37,7 @@ export const privateMethodDeclarationVisitor = (
   const methodNameNode = thisVisitor.visit(ctx.identifier());
   const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
   const returnType: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode = thisVisitor.visit(
-    ctx.returnPrivateMethodType(),
+    ctx.returnMethodType(),
   );
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
   const staticNode: StaticNode = ctx.staticKeyword()
