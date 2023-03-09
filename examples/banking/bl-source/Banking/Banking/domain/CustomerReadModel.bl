@@ -1,0 +1,14 @@
+
+
+ReadModel CustomerReadModel {
+    string id;
+    string email;
+    string accoundId;
+}
+
+
+
+
+
+
+

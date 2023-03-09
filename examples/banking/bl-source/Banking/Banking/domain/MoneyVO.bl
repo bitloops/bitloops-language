@@ -1,0 +1,10 @@
+Props MoneyProps {
+    StandardVO.Currency currency; 
+    float amount; 
+}
+
+ValueObject MoneyVO {
+    static create(props: MoneyProps): (OK(MoneyVO), Errors(DomainErrors.InvalidMonetaryValueError /*| StandardVO.Currency.Errors*/)) {
+        applyRules(AmountIsPositiveNumberRule(props.amount), AmountOutOfBoundsRule(props.amount))
+    }
+}

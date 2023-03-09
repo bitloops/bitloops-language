@@ -1,0 +1,76 @@
+// Command CreateTodoCommand {
+//     string title;
+//   }
+
+// Query GetByIdTodoQuery {
+//   string id;
+// }
+
+Props TitleProps {
+  string title;
+}
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title.length > 150 OR title.length < 4);
+}
+
+ValueObject TitleVO {
+  static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+    applyRules(TitleOutOfBoundsRule(props.title));
+  }
+}
+
+DomainError TitleOutOfBoundsError(title: string)  {
+  message: 'Title is out of range',
+  errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+}
+
+Props TodoProps {
+  optional UUIDv4 id;
+  TitleVO title;
+  bool completed;
+}
+
+Root Entity TodoEntity {    
+  static create(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+  
+  check(title: TitleVO):  (OK(void), Errors()) {
+      this.title = title;
+    }
+}
+
+RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
+
+CommandHandler CreateTodoCommandHandler (todoRepo: TodoWriteRepoPort){
+    execute (command: CreateTodoCommand): (OK(void),Errors(DomainErrors.TitleOutOfBoundsError))
+    {
+      const title = TitleVO.create({ title: command.title });
+      const todo = TodoEntity.create({ title: title, completed: false });
+      this.todoRepo.save(todo);
+    }
+  }
+
+ApplicationError ToDoNotFoundError(id: string)  {
+  message: `ToDo with id ${id} was not found`,
+  errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b403',
+}
+  
+RepoPort TodoReadRepoPort<TodoReadModel> extends CRUDReadRepoPort;
+
+ReadModel TodoReadModel {
+  string id;
+  string title;
+  bool completed;
+}
+
+QueryHandler GetByIdTodoQueryHandler (todoRepo: TodoReadRepoPort) {
+  execute (query: GetByIdTodoQuery): (OK(TodoReadModel), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = query.id;
+    const todo = this.todoRepo.getById(requestId);
+
+    if(NOT todo) {
+      return ApplicationErrors.ToDoNotFoundError(requestId);
+    }
+
+    return todo;
+  }
+}

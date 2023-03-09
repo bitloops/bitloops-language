@@ -1,11 +1,12 @@
 import { EventHandlerBusDependenciesNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/DomainEventHandler/EventHandlerBusDependenciesNodeBuilder.js';
-import { EventHandlerHandleMethodNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/HandleMethodNodeBuilder.js';
 import { IntegrationEventHandlerDeclarationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventHandlerDeclarationNodeBuilder.js';
+import { IntegrationEventHandlerHandleMethodNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventHandlerHandleMethodNodeBuilder.js';
 import { IntegrationEventHandlerIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventHandlerIdentifierNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
 import { StatementListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntegrationEventHandlerDeclarationNode } from '../../../../../src/ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
+import { IntegrationEventParameterNode } from '../../../../../src/ast/core/intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
 import { ParameterNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { StatementNode } from '../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
@@ -22,12 +23,12 @@ export class IntegrationEventHandlerBuilderDirector {
   }: {
     identifier: string;
     parameters: ParameterNode[];
-    executeParameter?: ParameterNode;
+    executeParameter?: IntegrationEventParameterNode;
     statements: StatementNode[];
     versionName: string;
   }): IntegrationEventHandlerDeclarationNode {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
-    const handleNode = new EventHandlerHandleMethodNodeBuilder()
+    const handleNode = new IntegrationEventHandlerHandleMethodNodeBuilder()
       .withParameter(executeParameter)
       .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
       .build();

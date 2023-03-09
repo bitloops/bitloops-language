@@ -29,7 +29,7 @@ import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
 
-const COMMAND_HANDLER_DEPENDENCIES: TDependenciesTypeScript = [
+const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -58,7 +58,7 @@ export const commandHandlerToTargetLanguage = (
   const commandHandlerInputType = execute.parameter ? execute.parameter.type : null;
   const commandHandlerResponseTypeName = `${commandHandlerName}Response`;
 
-  let dependencies = COMMAND_HANDLER_DEPENDENCIES;
+  let dependencies = COMMAND_HANDLER_DEPENDENCIES();
   const commandHandlerReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
@@ -101,7 +101,7 @@ export const commandHandlerToTargetLanguage = (
   dependencies = [...dependencies, ...executeResult.dependencies];
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {
-    classType: ClassTypes.UseCase,
+    classType: ClassTypes.CommandHandler,
     className: commandHandlerName,
   });
 

@@ -1,0 +1,41 @@
+RESTController WithdrawMoneyRESTController () {
+  method: REST.Methods.POST;
+  // context: {
+  //   boundedContext: 'Banking';
+  //   module: 'Banking';
+  // }
+
+  execute(request, response) {
+    const amount = request.body.amount;
+    const accountId = request.body.accountId;
+
+    const command = WithdrawMoneyCommand.create({
+        amount: amount,
+        accountId: accountId,
+    });
+    
+    const result = this.commandBus.request(command) // Does request sound good?(instead of sendAndGetResponse)
+
+    if (result is Error) {
+      switch (result.getClass()) {
+        case ApplicationErrors.AccountNotFoundError: {
+          this.notFound(response, result);
+          break;
+        }
+        case DomainErrors.InvalidMonetaryValueError: {
+          this.badRequest(response, result);
+          break;
+        }
+        case DomainErrors.InsufficientBalanceError: {
+          this.badRequest(response, result);
+          break;
+        }
+        default: {
+          this.fail(response, result.message);
+        }
+      }
+    } else {
+      this.created(response);
+    }
+  }
+}

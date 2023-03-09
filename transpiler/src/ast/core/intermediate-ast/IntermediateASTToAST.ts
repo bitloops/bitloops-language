@@ -16,6 +16,7 @@ import { IntegrationEventNode } from './nodes/integration-event/IntegrationEvent
 import { IntegrationEventNodeTransformer } from './ node-transformers/IntegrationEventNodeTransformer.js';
 import { ControllerNode } from './nodes/controllers/ControllerNode.js';
 import { ControllerNodeTransformer } from './ node-transformers/ControllerNodeTransformer.js';
+import { AddDIsForAutoDomainEventHandlersTransformer } from './ node-transformers/setup/AddDIForAutoEventHandlers.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -25,6 +26,9 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       : intermediateAST.setup;
     if (intermediateAST.setup) {
       this.completeCoreFromSetup(intermediateAST);
+    }
+    if (intermediateAST.setup && intermediateAST.core) {
+      this.completeSetupFromCores(intermediateAST.setup, intermediateAST.core);
     }
     return {
       core: boundedContexts,
@@ -104,6 +108,31 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
         intermediateAST.core,
       );
       restControllerTypeTransformer.run();
+    }
+  }
+
+  // It mutates intermediateAST setup
+  private completeSetupFromCores(setup: IntermediateASTSetup, core: TBoundedContexts): void {
+    let intermediateASTSetup: IntermediateASTSetup;
+    for (const [fileId, setupTree] of Object.entries(setup)) {
+      const treeUpdated = setupTree.copy(); // TODO implement copy method
+      const rootNode = treeUpdated.getRootNode();
+
+      const routerControllerNodesTransformer = new AddDIsForAutoDomainEventHandlersTransformer(
+        treeUpdated,
+        core,
+      );
+      routerControllerNodesTransformer.run();
+
+      treeUpdated.buildValueRecursiveBottomUp(rootNode);
+
+      if (!intermediateASTSetup) {
+        intermediateASTSetup = {
+          [fileId]: treeUpdated,
+        };
+      } else if (!intermediateASTSetup[fileId]) {
+        intermediateASTSetup[fileId] = treeUpdated;
+      }
     }
   }
 

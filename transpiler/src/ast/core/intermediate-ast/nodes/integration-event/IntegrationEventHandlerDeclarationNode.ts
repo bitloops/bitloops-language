@@ -2,10 +2,10 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandlerBusDependenciesNode } from '../DomainEventHandler/EventHandlerBusDependenciesNode.js';
-import { EventHandleNode } from '../EventHandleNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
+import { IntegrationEventHandlerHandleMethodNode } from './IntegrationEventHandlerHandleMethodNode.js';
 
 export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.IntegrationEventHandler;
@@ -28,8 +28,8 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const eventHandlerMethod = this.getChildNodeByType<EventHandleNode>(
-      BitloopsTypesMapping.TEventHandlerHandleMethod,
+    const eventHandlerMethod = this.getChildNodeByType<IntegrationEventHandlerHandleMethodNode>(
+      BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod,
     );
     return eventHandlerMethod.getStatements();
   }

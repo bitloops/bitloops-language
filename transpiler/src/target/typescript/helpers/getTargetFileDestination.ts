@@ -24,6 +24,7 @@ import {
 } from '../../supportedLanguages.js';
 import { camelCase, pascalCase, kebabCase } from '../../../utils/caseStyles.js';
 import { ClassTypes, TClassTypesValues } from '../../../helpers/mappings.js';
+import { TContextData } from '../../../types.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
@@ -39,10 +40,10 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
-  COMMANDS = 'application/commands',
-  QUERIES = 'application/queries',
-  QUERY_HANDLERS = 'application/queryHandlers',
-  COMMAND_HANDLERS = 'application/commandHandlers',
+  COMMANDS = 'application/commands/',
+  QUERIES = 'application/queries/',
+  QUERY_HANDLERS = 'application/queryHandlers/',
+  COMMAND_HANDLERS = 'application/commandHandlers/',
   DOMAIN_EVENTS = 'domain/events/',
   DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
   INTEGRATION_EVENTS = 'contracts/integration-events/',
@@ -152,9 +153,11 @@ const getTargetFileDestination = (
   return result;
 };
 
+// TODO maybe this should change name and remove integrationEvent case to other function
 const getFilePathRelativeToModule = (
-  classType: string,
+  classType: TClassTypesValues,
   className: string,
+  contextInfo?: TContextData,
   targetLanguage = SupportedLanguages.TypeScript as string,
 ): { path: string; filename: string; extension: string } => {
   const result = {
@@ -178,8 +181,6 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Query:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
-    case ClassTypes.IntegrationEvent:
-    case ClassTypes.IntegrationEventHandler:
     case ClassTypes.CommandHandler:
     case ClassTypes.QueryHandler:
     case ClassTypes.Struct:
@@ -193,6 +194,17 @@ const getFilePathRelativeToModule = (
     case ClassTypes.DomainRule:
       result.path = ClassTypesPaths[classType];
       result.filename = 'index';
+      break;
+    case ClassTypes.IntegrationEvent:
+    case ClassTypes.IntegrationEventHandler:
+      if (!contextInfo) {
+        result.path = ClassTypesPaths[classType];
+      } else {
+        result.path = `${kebabCase(contextInfo.boundedContext)}/${kebabCase(contextInfo.module)}/${
+          ClassTypesPaths[classType]
+        }`;
+      }
+      result.filename = className;
       break;
     default:
       throw new Error(`Class type ${classType} is not supported`);

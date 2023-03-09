@@ -1,0 +1,58 @@
+Config.setLanguage(TypeScript);
+
+// DB CONNECTIONS
+
+const mongoConnection = RepoConnections.Mongo({
+  host: 'localhost',
+  port: 27017,
+  database: Env(MONGO_DB_DATABASE,'banking'),
+});
+
+// REPOSITORIES
+
+const accountWriteRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_ACCOUNT_COLLECTION, 'accounts'),
+}) concretes [Banking][Banking]AccountWriteRepoPort;
+
+const accountReadRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_ACCOUNT_COLLECTION, 'accounts'),
+}) concretes [Banking][Banking]AccountReadRepoPort;
+
+const marketingAccountWriteRepo = RepoAdapters.Mongo({
+  connection: mongoConnection,
+  collection: Env(MONGO_DB_MARKETING_ACCOUNTS_COLLECTION, 'marketing_accounts'),
+}) concretes [Marketing][Marketing]AccountWriteRepoPort;
+
+// COMMAND & QUERY HANDLERS, DOMAIN & INTEGRATION EVENT HANDLERS
+DI {
+  [Banking][Banking]WithdrawMoneyCommandHandler(accountWriteRepo);
+  [Banking][Banking]GetAccountQueryHandler(accountReadRepo);
+  [Banking][Banking]MoneyWithdrawnFromAccountDomainEventHandler();
+  [Marketing][Marketing]IncrementDepositsCounterCommandHandler(marketingAccountWriteRepo);
+}
+
+Config.setBuses({
+  COMMAND_BUS: MessageBus.InProcess,
+  EVENT_BUS: MessageBus.InProcess,
+  INTEGRATION_EVENT_BUS: MessageBus.InProcess,
+  QUERY_BUS: MessageBus.InProcess,
+})
+// REST ROUTERS
+
+const bankingRouter = RESTRouter(REST.Fastify) {
+  Get('/account/:id'): [Banking][Banking]GetAccountByIdController();
+  Post('/withdrawMoney'): [Banking][Banking]WithdrawMoneyRESTController();
+  // Post('/depositMoney'): [Todo][Todo]DepositMoneyRESTController();
+}
+
+// SERVERS
+
+RESTServer({
+  server: REST.Fastify,
+  port: Env(FASTIFY_PORT, 5001),
+  apiPrefix: '/api',
+}) {
+  '/banking': bankingRouter;
+}

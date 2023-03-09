@@ -15,7 +15,6 @@ import { EntityEvaluationNode } from './nodes/Expression/Evaluation/EntityEvalua
 import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueObjectEvaluation.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
-import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
 import { TBitloopsPrimaryType, TBitloopsPrimitives } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
@@ -23,6 +22,7 @@ import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
 import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
 import { FieldListNode } from './nodes/FieldList/FieldListNode.js';
 import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
+import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -274,13 +274,14 @@ export class IntermediateASTTree {
   };
 
   public getPropsFieldTypeOfDomainCreateByFieldIdentifier(
-    domainCreateParameterNode: DomainCreateParameterNode,
+    parameterNode: ParameterNode,
     identifier: string,
   ): TBitloopsPrimaryType | null {
     const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
 
-    const typeNode = domainCreateParameterNode.getTypeNode();
-    const propsTypeNodeValue = typeNode.getType();
+    const typeNode = parameterNode.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+    const propsTypeNodeValue = identifierTypeNode.getIdentifierName();
 
     const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
       node.getNodeType() === BitloopsTypesMapping.TProps;
@@ -371,6 +372,28 @@ export class IntermediateASTTree {
     return identifiers;
   }
 
+  getIdentifiersOfDomainTypes(parameters: ParameterNode[]): string[] {
+    const identifiers: string[] = [];
+
+    for (const parameter of parameters) {
+      const typeNode = parameter.getType();
+      if (
+        typeNode.isBitloopsIdentifierType() ||
+        typeNode.isPrimaryWithBitloopsIdentifierTypeChild()
+      ) {
+        const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+        if (
+          identifierTypeNode.isValueObjectIdentifier() ||
+          identifierTypeNode.isEntityIdentifier()
+        ) {
+          identifiers.push(parameter.getIdentifier());
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
   getIdentifierExpressionNodesInStatements(
     statements: StatementNode[],
     identifiers: string[],
@@ -435,7 +458,7 @@ export class IntermediateASTTree {
 
   public getDomainCreateOfEntity(
     entityNode: RootEntityDeclarationNode | EntityDeclarationNode,
-  ): DomainCreateParameterNode {
+  ): ParameterNode {
     const domainCreate = entityNode.getDomainCreateNode();
     const propsNode = domainCreate.getParameterNode();
     return propsNode;
@@ -443,7 +466,7 @@ export class IntermediateASTTree {
 
   public getDomainCreateOfValueObject(
     valueObjectDeclarationNode: ValueObjectDeclarationNode,
-  ): DomainCreateParameterNode {
+  ): ParameterNode {
     const domainCreate = valueObjectDeclarationNode.getCreateNode();
     const propsNode = domainCreate.getParameterNode();
     return propsNode;
@@ -453,7 +476,9 @@ export class IntermediateASTTree {
     entityNode: EntityDeclarationNode | RootEntityDeclarationNode,
   ): PropsNode | null {
     const domainCreate = this.getDomainCreateOfEntity(entityNode);
-    const propsIdentifier = domainCreate.getTypeNode().getType();
+    const typeNode = domainCreate.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+    const propsIdentifier = identifierTypeNode.getIdentifierName();
 
     const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
 
@@ -470,7 +495,9 @@ export class IntermediateASTTree {
 
   public getPropsNodeOfValueObject(valueObjectNode: ValueObjectDeclarationNode): PropsNode | null {
     const domainCreate = this.getDomainCreateOfValueObject(valueObjectNode);
-    const propsIdentifier = domainCreate.getTypeNode().getType();
+    const typeNode = domainCreate.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+    const propsIdentifier = identifierTypeNode.getIdentifierName();
 
     const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
 

@@ -27,6 +27,7 @@ options {
 
 MultiLineComment:               '/*' .*? '*/'             -> channel(HIDDEN);
 SingleLineComment:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
+RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpressionChar* {this.IsRegexPossible()}? '/' IdentifierPart*;
 
 OpenBracket:                    '[';
 CloseBracket:                   ']';
@@ -325,6 +326,7 @@ DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandle
 IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
 DomainServiceIdentifier:        UpperCaseStart IdentifierPart* DomainService;
 SetLanguage:                    'setLanguage';
+SetBuses:                       'setBuses';
 TypeScript:                     'TypeScript';
 Java:                           'Java';
 FastifyServer:                  'REST.Fastify';
@@ -333,6 +335,18 @@ GraphQLServerType:              'GraphQL';
 RESTRouter:                     'RESTRouter';
 GraphQLServer:                  'GraphQLServer';
 RESTServer:                     'RESTServer';
+
+// Buses
+SetLanguage:                    'setLanguage';
+CommandBus:                     'COMMAND_BUS';
+EventBus:                       'EVENT_BUS';
+IntegrationEventBus:            'INTEGRATION_EVENT_BUS';
+QueryBus:                       'QUERY_BUS';
+MessageBus:                     'MessageBus';
+External:                       'External';
+InProcess:                      'InProcess';
+
+DI:                             'DI';
 
 EnvPrefix:                      'Env';
 EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;

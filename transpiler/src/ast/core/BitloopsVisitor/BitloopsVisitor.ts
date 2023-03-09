@@ -151,6 +151,7 @@ import {
   entityConstructorEvaluationVisitor,
   standardVOEvaluationVisitor,
   domainCreateDeclarationVisitor,
+  regexLiteralEvaluation,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -195,7 +196,6 @@ import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js
 import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
 import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
-import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
 import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
@@ -237,9 +237,9 @@ import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVe
 import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
 import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
-import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
+import { configInvocationVisitor } from './helpers/setup/config/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
-import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { LanguageNode } from '../intermediate-ast/nodes/setup/config/language/LanguageNode.js';
 import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
 import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
 import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
@@ -306,6 +306,21 @@ import {
   domainServiceDeclarationVisitor,
   domainServiceIdentifierVisitor,
 } from './helpers/domainService.js';
+import { IntegrationEventParameterNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
+import {
+  busConfigVisitor,
+  busesConfigInvocationVisitor,
+  busesConfigVisitor,
+} from './helpers/setup/config/busesConfigInvocation.js';
+import {
+  commandHandlerDependencyInjectionVisitor,
+  dependencyInjectionListVisitor,
+  dependencyInjectionsVisitor,
+  domainEventHandlerDependencyInjectionVisitor,
+  integrationEventHandlerDependencyInjectionVisitor,
+  queryHandlerDependencyInjectionVisitor,
+} from './helpers/setup/dependencyInjections.js';
+import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -684,11 +699,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return stringEvaluation(ctx.StringLiteral().getText());
   }
 
-  visitNullLiteral(_ctx: BitloopsParser.NullLiteralContext): any {
-    return {
-      type: 'NullValue',
-      value: 'null',
-    };
+  visitRegularExpressionLiteralLabel(
+    ctx: BitloopsParser.RegularExpressionLiteralLabelContext,
+  ): any {
+    return regexLiteralEvaluation(ctx.RegularExpressionLiteral().getText());
+  }
+
+  visitNullLiteral(ctx: BitloopsParser.NullLiteralContext): any {
+    return new NullLiteralBuilder(produceMetadata(ctx, this)).build();
   }
 
   visitBooleanLiteral(ctx: BitloopsParser.BooleanLiteralContext) {
@@ -906,7 +924,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return domainCreateDeclarationVisitor(this, ctx);
   }
 
-  visitDomainCreateParam(ctx: BitloopsParser.DomainCreateParamContext): DomainCreateParameterNode {
+  visitDomainCreateParam(ctx: BitloopsParser.DomainCreateParamContext): ParameterNode {
     return domainCreateParameterVisitor(this, ctx);
   }
 
@@ -1302,8 +1320,51 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return stringEvaluation(ctx.StringLiteral().getText());
   }
 
-  visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
+  visitSetLanguageConfig(ctx: BitloopsParser.SetLanguageConfigContext): void {
     configInvocationVisitor(this, ctx);
+  }
+
+  visitSetBusesConfig(ctx: BitloopsParser.SetBusesConfigContext): void {
+    busesConfigInvocationVisitor(this, ctx);
+  }
+  visitBusesConfig(ctx: BitloopsParser.BusesConfigContext): any {
+    return busesConfigVisitor(this, ctx);
+  }
+
+  visitBusConfig(ctx: BitloopsParser.BusConfigContext): any {
+    return busConfigVisitor(this, ctx);
+  }
+
+  visitDependencyInjections(ctx: BitloopsParser.DependencyInjectionsContext): void {
+    dependencyInjectionsVisitor(this, ctx);
+  }
+
+  visitDependencyInjectionList(ctx: BitloopsParser.DependencyInjectionListContext): any {
+    return dependencyInjectionListVisitor(this, ctx);
+  }
+
+  visitCommandHandlerDependencyInjection(
+    ctx: BitloopsParser.CommandHandlerDependencyInjectionContext,
+  ): any {
+    return commandHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitQueryHandlerDependencyInjection(
+    ctx: BitloopsParser.QueryHandlerDependencyInjectionContext,
+  ): any {
+    return queryHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitDomainEventHandlerDependencyInjection(
+    ctx: BitloopsParser.DomainEventHandlerDependencyInjectionContext,
+  ): any {
+    return domainEventHandlerDependencyInjectionVisitor(this, ctx);
+  }
+
+  visitIntegrationEventHandlerDependencyInjection(
+    ctx: BitloopsParser.IntegrationEventHandlerDependencyInjectionContext,
+  ): any {
+    return integrationEventHandlerDependencyInjectionVisitor(this, ctx);
   }
 
   visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
@@ -1516,9 +1577,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitEventHandlerHandleIdentifier(
     ctx: BitloopsParser.EventHandlerHandleIdentifierContext,
   ): BitloopsPrimaryTypeNode {
-    const type = ctx.domainEventIdentifier()
-      ? ctx.domainEventIdentifier().getText()
-      : ctx.integrationEventIdentifier().getText();
+    const type = ctx.domainEventIdentifier().getText();
 
     const metadata = produceMetadata(ctx, this);
     return new BitloopsPrimaryTypeNodeBuilderDirector(metadata).buildIdentifierPrimaryType(type);
@@ -1526,7 +1585,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIntegrationEventHandlerHandleParameter(
     ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
-  ): ParameterNode {
+  ): IntegrationEventParameterNode {
     return integrationEventHandlerHandleMethodParameterVisitor(this, ctx);
   }
 

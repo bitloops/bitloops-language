@@ -30,7 +30,7 @@ import { getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { domainPrivateMethods } from '../domain/domainMethods.js';
 
-const VO_DEPENDENCIES: TDependenciesTypeScript = [
+const VO_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -67,10 +67,10 @@ const valueObjectsToTargetLanguage = (params: {
     `export class ${voName} extends Domain.ValueObject<${propsName}> { `;
 
   let result = '';
-  let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
+  let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES();
 
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
-  const domainCreateProps = create.domainCreateParameter.parameterType;
+  const domainCreateProps = create.parameter.type;
   //TODO uncomment?
   // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
   //   throw new Error(
@@ -78,8 +78,8 @@ const valueObjectsToTargetLanguage = (params: {
   //   );
   // }
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDomainConstructorParameter,
-    value: domainCreateProps,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: domainCreateProps },
   });
   dependencies = [...dependencies, ...propsTypeDependencies];
 

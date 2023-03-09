@@ -28,7 +28,7 @@ export const inquirerSimpleConfirm = async (
   name: string,
   message = '',
   def = '',
-): Promise<string> => {
+): Promise<boolean> => {
   const question = [
     {
       type: 'confirm',

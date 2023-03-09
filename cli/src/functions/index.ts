@@ -19,3 +19,4 @@
  */
 export { getBoundedContextModules } from './getProjectStructure.js';
 export { getBitloopsFilesAndContents } from './readFilesContents.js';
+export { deleteFolderContent } from './deleteFolderContent.js';

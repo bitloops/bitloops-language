@@ -48,7 +48,7 @@ export const fetchReadModelCrudBaseRepo = (
         const documents = await this.collection.find({}).toArray();
         const res: ${readModelName}[] = [];
         documents.forEach((${DOCUMENT_NAME}) => {
-          const { _id, ...rest } = ${DOCUMENT_NAME};
+          const { _id, ...rest } = ${DOCUMENT_NAME} as any;
             res.push(
               ${readModelName}.fromPrimitives({
                 id: _id,
@@ -65,7 +65,7 @@ export const fetchReadModelCrudBaseRepo = (
         if (!${DOCUMENT_NAME}) {
           return null;
         }
-        const { _id, ...rest } = ${DOCUMENT_NAME};
+        const { _id, ...rest } = ${DOCUMENT_NAME} as any;
         return ${readModelName}.fromPrimitives({
           id: _id,
           ...rest,

@@ -30,46 +30,25 @@ import {
 } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import {
+  TConfigBusesInvocation,
   TPackageConcretion,
-  TSetupRepoAdapterDefinition,
   TRepoConnectionDefinition,
   TRouterDefinition,
-  TUseCaseDefinition,
-  TGraphQLServerInstance,
 } from '../../../types.js';
 import { groupServers } from './servers/index.js';
+import { DependencyInjectionsGenerator } from './dependency-injections/diHandler.js';
+import { TSetupElementsPerModule } from './definitions.js';
+import { groupSetupElementsPerModule } from './helpers.js';
+import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
+import { setupTypeMapper, TSetupFileType } from './fileDestinations.js';
 
-export type TSetupOutput = { fileId: string; fileType: string; content: string; context?: any };
-
-const setupMapper = {
-  OUTPUT_DB_FOLDER: 'db/',
-  OUTPUT_INFRA_FOLDER: 'infra/',
-  OUTPUT_GRAPHQL_FOLDER: 'graphql/',
-  OUTPUT_REST_FOLDER: 'rest/',
-  OUTPUT_ROUTERS_FOLDER: 'routers/',
-  OUTPUT_SHARED_FOLDER: 'src/shared/',
-  OUTPUT_SRC_FOLDER: 'src/',
-}; // TODO optionally get this from the config
-
-const setupTypeMapper = {
-  SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
-  BOUNDED_CONTEXTS: 'bounded-contexts',
-  startup: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
-  DI: '',
-  'package.json': '/./',
-  Config: '/./',
-  'REST.Fastify.Router': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/routers/`,
-  'REST.Fastify.API': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/api/`,
-  'REST.Fastify.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_REST_FOLDER}fastify/`,
-  'GraphQL.Server': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}graphql/`,
-  'DB.Mongo': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  'DB.Mongo.Index': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  'DB.Mongo.Config': `/${setupMapper.OUTPUT_SHARED_FOLDER}${setupMapper.OUTPUT_INFRA_FOLDER}${setupMapper.OUTPUT_DB_FOLDER}mongo/`,
-  [ClassTypes.ApplicationError]: '',
-  [ClassTypes.DomainError]: '',
-  [ClassTypes.DomainRule]: '',
+export type TSetupOutput = {
+  fileId: string;
+  fileType: TSetupFileType;
+  content: string;
+  context?: any;
 };
 
 const license = `/**
@@ -124,10 +103,10 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
         BitloopsTypesMapping.TRouterDefinition,
       );
-      const graphQLServerInstances =
-        setupTree.getRootChildrenNodesValueByType<TGraphQLServerInstance>(
-          BitloopsTypesMapping.TGraphQLServerInstance,
-        );
+      const elementsPerModule: TSetupElementsPerModule = groupSetupElementsPerModule(setupTree);
+      const eventBusConfig = setupTree.getRootChildrenNodesValueByType<TConfigBusesInvocation>(
+        BitloopsTypesMapping.TConfigBusesInvocationNode,
+      )?.[0];
 
       // Step 1. Generate routes files
       const routes = setupGenerator.generateServerRouters(routerDefinitions, license);
@@ -146,27 +125,16 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       });
 
       // Step 3. Generate DIs
-      const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
-        BitloopsTypesMapping.TUseCaseDefinition,
-      );
-      const repoAdapterDefinitions =
-        setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
-          BitloopsTypesMapping.TSetupRepoAdapterDefinition,
-        );
-      const controllerDIs = setupGenerator.generateDIs(
-        routerDefinitions,
-        graphQLServerInstances,
-        useCaseDefinitions,
-        repoAdapterDefinitions,
+
+      const diGenerator = new DependencyInjectionsGenerator();
+      const DIs = diGenerator.generateDIs(
+        elementsPerModule,
         bitloopsModel,
         setupTypeMapper,
         license,
       );
-      // console.log('controllerDIs:', controllerDIs);
+      pathsAndContents.push(...DIs);
       // console.log('--------------------------------');
-      controllerDIs.forEach((controllerDI) => {
-        pathsAndContents.push(controllerDI);
-      });
 
       // Step 4. Setup server file
       const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);
@@ -178,8 +146,11 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
 
       // Step 5. Startup File
       const startupFile = setupGenerator.generateStartupFile(
+        bitloopsModel,
+        elementsPerModule,
         allServers,
         repoConnectionDefinitions,
+        eventBusConfig ?? null,
         setupTypeMapper,
         license,
       );
@@ -221,7 +192,21 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         pathsAndContents.push(rule);
       });
 
-      // Step 10. Write files
+      // Step 10. Generate AppConfig(Buses)
+      const appConfig = setupGenerator.generateAppConfigFile(eventBusConfig, license);
+      if (appConfig !== null) pathsAndContents.push(appConfig);
+
+      // Step 11. Generate subscriptions
+      const subscriptionsHandler = new SubscriptionsHandler();
+      const subscriptions = subscriptionsHandler.generateSubscriptions(
+        elementsPerModule,
+        bitloopsModel,
+        setupTypeMapper,
+        license,
+      );
+      pathsAndContents.push(...subscriptions);
+
+      // Step 12. Write files
       pathsAndContents.forEach((pathAndContent) => {
         const { fileType, content, fileId } = pathAndContent;
         if (setupTypeMapper[fileType] === undefined)

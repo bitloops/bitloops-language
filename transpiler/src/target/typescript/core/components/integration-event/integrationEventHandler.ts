@@ -27,7 +27,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 
-const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: TDependenciesTypeScript = [
+const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -58,10 +58,14 @@ export const integrationEventHandlerToTargetLanguage = (
   const { integrationEventHandler } = integrationEventHandlerModel;
 
   let result = '';
-  const dependencies = INTEGRATION_EVENT_HANDLER_DEPENDENCIES;
+  const dependencies = INTEGRATION_EVENT_HANDLER_DEPENDENCIES();
 
-  const { parameters, eventHandlerBusDependencies, handle, integrationEventHandlerIdentifier } =
-    integrationEventHandler;
+  const {
+    parameters,
+    eventHandlerBusDependencies,
+    integrationEventHandlerHandleMethod,
+    integrationEventHandlerIdentifier,
+  } = integrationEventHandler;
   const constructor = modelToTargetLanguage({
     value: {
       parameterList: { parameters },
@@ -72,8 +76,8 @@ export const integrationEventHandlerToTargetLanguage = (
   });
 
   const handleMethod = modelToTargetLanguage({
-    value: handle,
-    type: BitloopsTypesMapping.THandle,
+    value: { integrationEventHandlerHandleMethod },
+    type: BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod,
   });
 
   result += `export class ${integrationEventHandlerIdentifier} implements Application.IHandle { `;
@@ -86,6 +90,7 @@ export const integrationEventHandlerToTargetLanguage = (
   const finalDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.IntegrationEventHandler,
     className: integrationEventHandlerIdentifier,
+    contextData,
   });
 
   return { output: result, dependencies: finalDependencies };

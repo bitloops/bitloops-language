@@ -71,4 +71,20 @@ export class StatementBuilderDirector {
       ),
     );
   }
+
+  /**
+   * e.g. this.name = name
+   */
+  buildThisAssignmentExpression(identifierName: string): ExpressionNode {
+    const memberDotExpression = new ExpressionBuilderDirector().buildThisMemberDotExpression(
+      identifierName,
+    );
+    const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(
+      identifierName,
+    );
+    return new ExpressionBuilderDirector().buildAssignmentExpression(
+      memberDotExpression,
+      identifierExpression,
+    );
+  }
 }

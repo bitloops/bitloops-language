@@ -61,8 +61,12 @@ const isVO = (name: string): boolean => {
   return name.endsWith('VO');
 };
 
+const isEntity = (name: string): boolean => {
+  return name.endsWith('Entity');
+};
+
 const isProps = (name: string): boolean => {
   return name.endsWith('Props');
 };
 
-export { isUndefined, isArray, hasOkErrorReturnType, isExpression, isVO, isProps };
+export { isUndefined, isArray, hasOkErrorReturnType, isExpression, isVO, isProps, isEntity };

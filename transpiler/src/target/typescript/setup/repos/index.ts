@@ -12,6 +12,8 @@ import { TSetupOutput } from '../index.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { SetupTypescriptMongoRepo } from './mongo.js';
 import { NodeValueHelpers } from '../helpers.js';
+import { TRepoAdapter, TRepoAdapters } from '../definitions.js';
+import { BL_BOILERPLATE_INFRA_DB_MONGO } from '../package-template.js';
 
 type TCategorizedRepoConnections = Record<
   TRepoSupportedTypes,
@@ -20,22 +22,16 @@ type TCategorizedRepoConnections = Record<
   }
 >;
 
-const dependenciesMap: Record<TRepoSupportedTypes, { packageName: string; version: string }> = {
-  'DB.Mongo': {
-    packageName: '@bitloops/bl-boilerplate-infra-mongo',
-    version: '*',
-  },
+const dependenciesMap: Record<TRepoSupportedTypes, { [packageName: string]: string }> = {
+  'DB.Mongo': BL_BOILERPLATE_INFRA_DB_MONGO,
   'DB.MySQL': {
-    packageName: '@bitloops/bl-boilerplate-infra-mysql',
-    version: '*',
+    '@bitloops/bl-boilerplate-infra-mysql': '*',
   },
   'DB.Postgres': {
-    packageName: '@bitloops/bl-boilerplate-infra-pg',
-    version: '*',
+    '@bitloops/bl-boilerplate-infra-pg': '*',
   },
   'DB.SQLite': {
-    packageName: '@bitloops/bl-boilerplate-infra-sqlite3',
-    version: '*',
+    '@bitloops/bl-boilerplate-infra-sqlite3': '*',
   },
 };
 
@@ -50,11 +46,11 @@ export interface ISetupRepos {
     license?: string,
   ): TSetupOutput[];
   generateRepoDIImports(
-    reposSetupData: Readonly<TSetupRepoAdapterDefinition[]>,
+    repoAdapters: Readonly<TRepoAdapter[]>,
     setupTypeMapper: Record<string, string>,
   ): string;
   generateRepoDIAdapters(
-    reposSetupData: Readonly<TSetupRepoAdapterDefinition[]>,
+    repoAdapters: Readonly<TRepoAdapter[]>,
     // boundedContext: string,
     // module: string,
   ): string;
@@ -99,7 +95,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   }
 
   generateRepoDIImports(
-    repoAdapters: Readonly<TSetupRepoAdapterDefinition[]>,
+    repoAdapters: Readonly<TRepoAdapter[]>,
     setupTypeMapper: Record<string, string>,
   ): string {
     if (repoAdapters.length === 0) return '';
@@ -111,9 +107,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     };
     const adapterImports: string[] = [];
     for (const repoAdapter of repoAdapters) {
-      const { setupRepoAdapterDefinition } = repoAdapter;
-      const { repoAdapterExpression, identifier: repoAdapterIdentifier } =
-        setupRepoAdapterDefinition;
+      const { repoAdapterExpression, instanceName } = repoAdapter;
       const { repoAdapterClassName, repoAdapterOptions, dbType } = repoAdapterExpression;
       const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
         repoAdapterOptions,
@@ -125,7 +119,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       });
       connections[dbType].push(stringConnection.output);
       adapterImports.push(
-        `import { ${repoAdapterClassName} } from './repos/concretions/${repoAdapterIdentifier}';`,
+        `import { ${repoAdapterClassName} } from './repos/concretions/${instanceName}';`,
       );
     }
 
@@ -148,12 +142,11 @@ export class SetupTypeScriptRepos implements ISetupRepos {
     return result.join('\n') + '\n';
   }
 
-  generateRepoDIAdapters(repoAdapters: Readonly<TSetupRepoAdapterDefinition[]>): string {
+  generateRepoDIAdapters(repoAdapters: Readonly<TRepoAdapter[]>): string {
     if (repoAdapters.length === 0) return '';
     const result: string[] = [];
     for (const repoAdapter of repoAdapters) {
-      const { setupRepoAdapterDefinition } = repoAdapter;
-      const { identifier: instanceIdentifier, repoAdapterExpression } = setupRepoAdapterDefinition;
+      const { instanceName, repoAdapterExpression } = repoAdapter;
       const { repoAdapterClassName, repoAdapterOptions } = repoAdapterExpression;
       const connection = NodeValueHelpers.findKeyOfEvaluationFieldList(
         repoAdapterOptions,
@@ -165,7 +158,7 @@ export class SetupTypeScriptRepos implements ISetupRepos {
       });
 
       result.push(
-        `const ${instanceIdentifier} = new ${repoAdapterClassName}(${stringConnection.output});`,
+        `const ${instanceName} = new ${repoAdapterClassName}(${stringConnection.output});`,
       );
     }
     return result.join('\n') + '\n';
@@ -174,12 +167,14 @@ export class SetupTypeScriptRepos implements ISetupRepos {
   getPackageJSONDependencies(
     repoConnectionDefinitions: TRepoConnectionDefinition[],
   ): Record<string, string> {
-    const result = {};
+    let result = {};
     for (const connectionDefinition of repoConnectionDefinitions) {
       const dbType =
         connectionDefinition[RepoConnectionDefinitionKey][RepoConnectionExpressionKey].dbType;
-      const { packageName, version } = dependenciesMap[dbType];
-      result[packageName] = version;
+      result = {
+        ...result,
+        ...dependenciesMap[dbType],
+      };
     }
     return result;
   }
@@ -243,5 +238,43 @@ export class SetupTypeScriptRepos implements ISetupRepos {
         content: (license || '') + indexContent,
       },
     ];
+  }
+
+  static getRepoAdaptersForEachBoundedContextModule(
+    repoAdapterDefinitions: Readonly<TSetupRepoAdapterDefinition[]>,
+  ): TRepoAdapters {
+    const repoAdapters: TRepoAdapters = {};
+    for (const useCase of repoAdapterDefinitions) {
+      const { setupRepoAdapterDefinition } = useCase;
+      const { identifier, repoAdapterExpression } = setupRepoAdapterDefinition;
+      const { boundedContextModule } = repoAdapterExpression;
+      const { boundedContextName, moduleName } = boundedContextModule;
+      const { wordsWithSpaces: boundedContext } = boundedContextName;
+      const { wordsWithSpaces: module } = moduleName;
+
+      if (!repoAdapters[boundedContext]) {
+        repoAdapters[boundedContext] = {
+          [module]: [
+            {
+              instanceName: identifier,
+              repoAdapterExpression,
+            },
+          ],
+        };
+      } else if (!repoAdapters[boundedContext][module]) {
+        repoAdapters[boundedContext][module] = [
+          {
+            instanceName: identifier,
+            repoAdapterExpression,
+          },
+        ];
+      } else {
+        repoAdapters[boundedContext][module].push({
+          instanceName: identifier,
+          repoAdapterExpression,
+        });
+      }
+    }
+    return repoAdapters;
   }
 }

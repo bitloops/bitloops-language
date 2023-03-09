@@ -29,7 +29,7 @@ import { AppError } from '../../application/AppError';
 type TError = typeof DomainError | typeof AppError;
 export type TErrors = Array<TError>;
 export class ExternalCommandBus extends CommandBus {
-  override async sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T> {
+  override async request<T>(command: ICommand, errorTypes?: TErrors): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       console.log(

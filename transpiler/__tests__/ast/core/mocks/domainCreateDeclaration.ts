@@ -1,3 +1,4 @@
+import { BitloopsPrimaryTypeDirector } from '../builders/bitloopsPrimaryTypeDirector.js';
 import { DomainCreateBuilder } from '../builders/DomainCreateBuilder.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../builders/returnOkErrorTypeBuilderDirector.js';
 import { StatementListDirector } from '../builders/statement/statementListDirector.js';
@@ -21,7 +22,10 @@ export const validDomainCreateDeclarationCases = [
           'DomainErrors.InvalidName',
         ),
       )
-      .withParameter('props', 'StringProps')
+      .withParameter(
+        'props',
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('StringProps'),
+      )
       .build(),
   },
   {
@@ -43,7 +47,10 @@ export const validDomainCreateDeclarationCases = [
           'DomainErrors.InvalidName',
         ),
       )
-      .withParameter('props', 'NameProps')
+      .withParameter(
+        'props',
+        new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('NameProps'),
+      )
       .build(),
   },
 ];

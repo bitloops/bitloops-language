@@ -27,7 +27,7 @@ export class SetupTypescriptMongoRepo implements ISetupTypescriptMongoRepo {
   } {
     let content = '';
 
-    content += "import { MongoClient } from 'mongodb';\n";
+    content += "import { Mongo } from '@bitloops/bl-boilerplate-infra-mongo';\n";
 
     content += Object.entries(connections)
       .map(([connectionName, connectionInfo]) => {
@@ -50,7 +50,7 @@ export class SetupTypescriptMongoRepo implements ISetupTypescriptMongoRepo {
         });
         return (
           `const ${connectionName}Url = 'mongodb://' + ${transpiledHostExpr.output} + ':${transpiledPortExpr.output}';\n` +
-          `export const ${connectionName} = new MongoClient(${connectionName}Url);\n`
+          `export const ${connectionName} = new Mongo.Client(${connectionName}Url);\n`
         );
       })
       .join('\n');

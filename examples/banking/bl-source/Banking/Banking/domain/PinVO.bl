@@ -1,0 +1,9 @@
+Props PINProps {
+    string pin;
+}
+
+ValueObject PINVO {
+    static create(props: PINProps): (OK(PINVO), Errors(DomainErrors.PINIsNotPositiveNumberError | DomainErrors.InvalidCustomerPINError)) { //Error at the end could be cut?
+        applyRules(PINIsPositiveNumberRule(props.pin),PINHasLengthOfFourRule(props.pin));
+    }
+}

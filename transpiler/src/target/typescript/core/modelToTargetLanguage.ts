@@ -120,7 +120,6 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { domainConstructorParameterToTargetLanguage } from './components/domain/domainConstructorParameter.js';
 import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
@@ -144,6 +143,8 @@ import { standardVOEvaluationToTargetLanguage } from './components/statements/ex
 import { servicePortToTargetLanguage } from './components/service-port/index.js';
 import { addDomainEventToTargetLanguage } from './components/statements/buildInFunctions/addDomainEvent.js';
 import { domainServiceToTargetLanguage } from './components/domain-service/index.js';
+import { integrationEventHandlerHandleMethod } from './components/integration-event/integrationEventHandlerHandleMethod.js';
+import { integrationEventParameterToTargetLanguage } from './components/integration-event/integrationEventParameter.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -494,10 +495,6 @@ const modelToTargetLanguage = (props: {
       res = standardValueTypeToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TDomainConstructorParameter: {
-      res = domainConstructorParameterToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TBuiltInClassEvaluation: {
       res = builtInClassEvaluationToTargetLanguage(value);
       break;
@@ -572,6 +569,14 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TIntegrationEventHandler: {
       res = integrationEventHandlerToTargetLanguage(value, contextData);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod: {
+      res = integrationEventHandlerHandleMethod(value);
+      break;
+    }
+    case BitloopsTypesMapping.TIntegrationEventParameter: {
+      res = integrationEventParameterToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TServicePort: {

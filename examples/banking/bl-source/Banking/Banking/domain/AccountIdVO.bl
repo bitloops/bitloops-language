@@ -1,0 +1,7 @@
+Props AccountIdProps {
+    string id;
+}
+
+ValueObject AccountIdVO {
+    static create(props: AccountIdProps):(OK(AccountIdVO),Errors()) {}
+}

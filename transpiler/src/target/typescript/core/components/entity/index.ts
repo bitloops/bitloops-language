@@ -38,7 +38,7 @@ import {
   getPrimitivesType,
 } from '../entity-values/fromToPrimitives.js';
 
-const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
+const ENTITY_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -78,12 +78,12 @@ const entityToTargetLanguage = (params: {
   const { entity, model } = params;
 
   let result = '';
-  let dependencies = ENTITY_DEPENDENCIES;
+  let dependencies = ENTITY_DEPENDENCIES();
 
   const { entityValues, entityIdentifier } = entity.Entity;
   const { privateMethods, publicMethods, create, constants } = entityValues;
 
-  const propsNameType = create.domainCreateParameter.parameterType;
+  const propsNameType = create.parameter.type;
 
   const primitivesObject = getEntityPrimitivesObject(model, entityIdentifier);
 
@@ -92,8 +92,8 @@ const entityToTargetLanguage = (params: {
   console.log('primitives type', primitivesType);
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDomainConstructorParameter,
-    value: propsNameType,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: propsNameType },
   });
 
   dependencies = [...dependencies, ...propsTypeDependencies];

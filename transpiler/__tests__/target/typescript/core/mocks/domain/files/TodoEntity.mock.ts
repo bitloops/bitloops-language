@@ -1,4 +1,4 @@
-import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
+import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './TodoProps';
 import { DomainErrors } from './errors/index';
 import { LanguageVO } from './LanguageVO';
@@ -30,11 +30,18 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
   get title(): TitleVO {
     return this.props.title;
   }
-  private isValidName(name: string): boolean {
+  private isValidName(name: string, title: TitleVO): boolean {
+    this.props.title = title.value;
     return true;
   }
   public complete(): Either<TodoEntity, never> {
-    return 'hey';
+    const title = TitleVO.create({ title: requestDTO.title });
+    if (!title.isFail()) {
+      this.props.title = title.value;
+      return 'hey';
+    } else {
+      return fail(title.value);
+    }
   }
   public static fromPrimitives(data: TTodoEntityPrimitives): TodoEntity {
     const TodoEntityProps = {

@@ -85,7 +85,7 @@ export class BitloopsPrimTypeIdentifiers {
   ): { type?: string; primitive: any } => {
     const standardVOType = type.standardValueType.standardVOType;
     switch (standardVOType) {
-      case 'CurrencyVO':
+      case 'Currency':
         return {
           type: 'Domain.StandardVO.Currency.Value',
           primitive: {
@@ -93,7 +93,7 @@ export class BitloopsPrimTypeIdentifiers {
           },
         };
       default:
-        return { primitive: 'string' };
+        throw new Error('Unknown standard value object type');
     }
   };
 

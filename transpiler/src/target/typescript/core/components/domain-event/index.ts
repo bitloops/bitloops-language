@@ -28,7 +28,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 
-const DOMAIN_EVENT_DEPENDENCIES: TDependenciesTypeScript = [
+const DOMAIN_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -47,7 +47,7 @@ export const domainEventToTargetLanguage = (
   const { domainEvent } = domainEventModel;
 
   let result = '';
-  const dependencies = DOMAIN_EVENT_DEPENDENCIES;
+  const dependencies = DOMAIN_EVENT_DEPENDENCIES();
 
   const domainEventName = domainEvent[DomainEventIdentifierKey];
   const entityName = domainEvent.entityIdentifier;

@@ -7,7 +7,7 @@ IntegrationEventHandler MoneyDepositedIntegrationHandler() {
   eventVersion: 'v1';
   
   //Should we have void as return type for visibility
-  handle(event: MoneyDepositedIntegrationEvent) {
+  handle(event: [banking][banking]MoneyDepositedIntegrationEvent) {
     const data = event.data;
     const accountId = data.accountId;
 

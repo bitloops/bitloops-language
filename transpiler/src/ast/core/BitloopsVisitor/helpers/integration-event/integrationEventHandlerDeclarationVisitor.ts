@@ -19,7 +19,6 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { EventHandleNode } from '../../../intermediate-ast/nodes/EventHandleNode.js';
 import { IntegrationEventHandlerIdentifierNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
 import { ParameterListNode } from '../../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
@@ -27,12 +26,14 @@ import { produceMetadata } from '../../metadata.js';
 import { IntegrationEventHandlerDeclarationNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationEventHandlerDeclarationNodeBuilder.js';
 import { IntegrationEventHandlerIdentifierNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationEventHandlerIdentifierNodeBuilder.js';
 import { StatementListNode } from '../../../intermediate-ast/nodes/statements/StatementList.js';
-import { EventHandlerHandleMethodNodeBuilder } from '../../../intermediate-ast/builders/HandleMethodNodeBuilder.js';
-import { ParameterNodeBuilder } from '../../../intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
-import { BitloopsPrimaryTypeNode } from '../../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ParameterIdentifierNode } from '../../../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
-import { ParameterNode } from '../../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { EvaluationFieldNode } from '../../../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { IntegrationEventHandlerHandleMethodNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationEventHandlerHandleMethodNodeBuilder.js';
+import { IntegrationEventHandlerHandleMethodNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
+import { IntegrationEventIdentifierNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventIdentifierNode.js';
+import { IntegrationEventParameterNodeBuilder } from '../../../intermediate-ast/builders/integration-event/IntegrationEventParameterNodeBuilder.js';
+import { IntegrationEventParameterNode } from '../../../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
+import { BoundedContextModuleNode } from '../../../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
 
 export const integrationEventHandlerDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -43,7 +44,7 @@ export const integrationEventHandlerDeclarationVisitor = (
   );
 
   const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
-  const handleNode: EventHandleNode = thisVisitor.visit(
+  const handleNode: IntegrationEventHandlerHandleMethodNode = thisVisitor.visit(
     ctx.integrationEventHandlerHandleDeclaration(),
   );
 
@@ -73,11 +74,13 @@ export const integrationEventHandlerIdentifierVisitor = (
 export const integrationEventHandlerHandleMethodVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IntegrationEventHandlerHandleDeclarationContext,
-): EventHandleNode => {
-  const parameter = thisVisitor.visit(ctx.integrationEventHandlerHandleParameter());
+): IntegrationEventHandlerHandleMethodNode => {
+  const parameter: IntegrationEventParameterNode = thisVisitor.visit(
+    ctx.integrationEventHandlerHandleParameter(),
+  );
   const statementList: StatementListNode = thisVisitor.visit(ctx.functionBody());
 
-  return new EventHandlerHandleMethodNodeBuilder(produceMetadata(ctx, thisVisitor))
+  return new IntegrationEventHandlerHandleMethodNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withParameter(parameter)
     .withStatementList(statementList)
     .build();
@@ -86,14 +89,19 @@ export const integrationEventHandlerHandleMethodVisitor = (
 export const integrationEventHandlerHandleMethodParameterVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.IntegrationEventHandlerHandleParameterContext,
-): ParameterNode => {
-  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.eventHandlerHandleIdentifier());
+): IntegrationEventParameterNode => {
+  const type: IntegrationEventIdentifierNode = thisVisitor.visit(ctx.integrationEventIdentifier());
+
+  const boundedContextModule: BoundedContextModuleNode = thisVisitor.visit(
+    ctx.boundedContextModuleDeclaration(),
+  );
 
   const parameterIdentifier: ParameterIdentifierNode = thisVisitor.visit(ctx.parameterIdentifier());
 
   const metadata = produceMetadata(ctx, thisVisitor);
-  return new ParameterNodeBuilder(metadata)
+  return new IntegrationEventParameterNodeBuilder(metadata)
     .withIdentifier(parameterIdentifier)
-    .withType(type)
+    .withIntegrationTypeIdentifier(type)
+    .withBoundedContextModule(boundedContextModule)
     .build();
 };
