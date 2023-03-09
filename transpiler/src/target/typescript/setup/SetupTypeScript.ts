@@ -58,7 +58,7 @@ import { TBoundedContexts } from '../../../ast/core/types.js';
 import { formatToLang } from '../helpers/codeFormatting.js';
 import { StringUtils } from '../../../utils/index.js';
 import { getRecursivelyFileInDirectory } from '../../../utils/getRecursivelyFileInDirectory.js';
-import { GenerateServerParams } from './definitions.js';
+import { GenerateServerParams, TSetupElementsPerModule } from './definitions.js';
 import { graphQLSetupDataToTargetLanguage } from './graphql/index.js';
 import { getTargetFileDestination } from '../helpers/getTargetFileDestination.js';
 import { ISetupRepos, SetupTypeScriptRepos } from './repos/index.js';
@@ -83,6 +83,7 @@ type TPackageVersions = {
 interface ISetup {
   generateStartupFile(
     bitloopsModel: TBoundedContexts,
+    elementsPerModule: TSetupElementsPerModule,
     allServers: TRestAndGraphQLServers,
     reposData: TRepoConnectionDefinition[],
     eventBusConfig: TConfigBusesInvocation,
@@ -648,6 +649,7 @@ export { routers };
   }
   generateStartupFile(
     bitloopsModel: TBoundedContexts,
+    elementsPerModule: TSetupElementsPerModule,
     servers: TRestAndGraphQLServers,
     reposData: TRepoConnectionDefinition[],
     eventBusConfig: TConfigBusesInvocation | null,
@@ -672,7 +674,7 @@ import { appConfig } from './config';
     const dbConnections = this.setupTypeScriptRepos.getStartupImports(reposData, setupTypeMapper);
     dynamicAwaitImports.push(...dbConnections);
     // TODO check if map here is needed
-    const modules = SubscriptionsHandler.modulesWithSubscriptions(bitloopsModel);
+    const modules = SubscriptionsHandler.modulesWithSubscriptions(bitloopsModel, elementsPerModule);
     let subscriptions = '';
     if (modules.length > 0) {
       subscriptions = modules

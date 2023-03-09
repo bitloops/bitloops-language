@@ -17,6 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-export { getBoundedContextModules } from './getProjectStructure.js';
-export { getBitloopsFilesAndContents } from './readFilesContents.js';
-export { deleteFolderContent } from './deleteFolderContent.js';
+import fs from 'fs/promises';
+
+export const deleteFolderContent = async (dirPath: string): Promise<void> => {
+  try {
+    await fs.access(dirPath);
+  } catch {
+    console.error('cannot access target directory path', dirPath);
+    return;
+  }
+  await fs.rm(dirPath, { recursive: true, force: true });
+  await fs.mkdir(dirPath);
+};

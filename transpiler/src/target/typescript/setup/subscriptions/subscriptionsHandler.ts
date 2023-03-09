@@ -68,6 +68,7 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
     // For each module in each bounded context generate 1 DI file that contains all
     // the use cases and controllers of that module that are concreted in the setup.bl
 
+    const methodName = 'setUpSubscriptions';
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
       for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
         const subscriptionsFileId = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
@@ -77,7 +78,9 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
         const DIs =
           elementsPerBoundedContext.dependencyInjections?.[boundedContextName]?.[moduleName] ?? [];
 
-        const methodName = 'setUpSubscriptions';
+        if (DIs.length === 0) {
+          continue;
+        }
         const commandHandlersSubscriptions = this.generateSetupsSubscriptions(
           methodName,
           moduleTree,
@@ -105,40 +108,18 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
 
   static modulesWithSubscriptions(
     bitloopsModel: TBoundedContexts,
+    elementsPerBoundedContext: TSetupElementsPerModule,
   ): Array<{ boundedContextName: string; moduleName: string }> {
     const res = [];
     for (const [boundedContextName, boundedContext] of Object.entries(bitloopsModel)) {
-      for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
-        const commandHandlers = moduleTree.getRootChildrenNodesValueByType(
-          BitloopsTypesMapping.TCommandHandler,
-        );
-        if (commandHandlers.length > 0) {
-          res.push({ boundedContextName, moduleName });
+      for (const moduleName of Object.keys(boundedContext)) {
+        const DIs =
+          elementsPerBoundedContext.dependencyInjections?.[boundedContextName]?.[moduleName] ?? [];
+
+        if (DIs.length === 0) {
           continue;
         }
-
-        const queryHandlers = moduleTree.getRootChildrenNodesValueByType(
-          BitloopsTypesMapping.TQueryHandler,
-        );
-        if (queryHandlers.length > 0) {
-          res.push({ boundedContextName, moduleName });
-          continue;
-        }
-
-        const domainEventHandlers = moduleTree.getRootChildrenNodesValueByType(
-          BitloopsTypesMapping.TDomainEventHandler,
-        );
-        if (domainEventHandlers.length > 0) {
-          res.push({ boundedContextName, moduleName });
-          continue;
-        }
-
-        const integrationEventHandlers = moduleTree.getRootChildrenNodesValueByType(
-          BitloopsTypesMapping.TIntegrationEventHandler,
-        );
-        if (integrationEventHandlers.length > 0) {
-          res.push({ boundedContextName, moduleName });
-        }
+        res.push({ boundedContextName, moduleName });
       }
     }
     return res;
