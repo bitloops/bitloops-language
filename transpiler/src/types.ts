@@ -541,33 +541,24 @@ type TStatic = {
   static: boolean;
 };
 
-export type TDomainPrivateMethodValues = {
+export type TDomainMethodValues = {
   identifier: TIdentifier;
   statements: TStatements;
 } & TParameterList &
   TStatic;
 
-export type TDomainPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType &
-  TDomainPrivateMethodValues;
+export type TDomainMethodValuesPrimaryReturnType = TDomainMethodValues & TBitloopsPrimaryType;
 
-export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
-  TOkErrorReturnType;
+export type TDomainMethodValuesOkErrorReturnType = TDomainMethodValues & TOkErrorReturnType;
 
 export type TDomainPrivateMethod = {
-  privateMethod:
-    | TDomainPrivateMethodValuesPrimaryReturnType
-    | TDomainPrivateMethodValuesOkErrorReturnType;
+  privateMethod: TDomainMethodValuesPrimaryReturnType | TDomainMethodValuesOkErrorReturnType;
 };
 
 export type TDomainPublicMethods = TDomainPublicMethod[];
 
 export type TDomainPublicMethod = {
-  publicMethod: {
-    identifier: TIdentifier;
-    statements: TStatements;
-  } & TOkErrorReturnType &
-    TParameterList &
-    TStatic;
+  publicMethod: TDomainMethodValuesPrimaryReturnType | TDomainMethodValuesOkErrorReturnType;
 };
 
 export type TReturnOkType = {
