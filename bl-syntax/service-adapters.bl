@@ -1,0 +1,46 @@
+
+// Http service
+ServiceAdapter SlackNotificationServiceAdapter (http: Services.HTTP) {
+    // Which bl-service to use
+    // pass options
+    options: {
+        defaultBaseUrl: 'localhost:3000',
+        timeout: 2500
+    }
+
+    public sendSlackNotification(): void {
+        options.timeout = 5000
+        const response = this.http.post('/slack').body({json: {hello: "hello"}}).headers()
+        const result = response.json()
+        // will we allow users to try catch?
+        if (result is Error) {
+            switch(result.getClass()) {
+                case HttpError:
+                    // do something
+                    break;
+                case TimeoutError:
+                    // do something
+                    break;
+                default:
+                    // do something
+                    break;
+            }
+
+        }
+    }
+}
+
+// Message service
+
+ServiceAdapter SlackNotificationServiceAdapter (messagingService: Services.Messaging.NATS) {
+    options: {
+    }
+
+    public sendSlackNotification(): void {
+        const response = this.messagingService.publish('slack-topic', {hello: "hello"})
+    }
+}
+
+// Email service
+
+// File system
