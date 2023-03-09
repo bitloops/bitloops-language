@@ -27,7 +27,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 
-const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: TDependenciesTypeScript = [
+const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -58,7 +58,7 @@ export const integrationEventHandlerToTargetLanguage = (
   const { integrationEventHandler } = integrationEventHandlerModel;
 
   let result = '';
-  const dependencies = INTEGRATION_EVENT_HANDLER_DEPENDENCIES;
+  const dependencies = INTEGRATION_EVENT_HANDLER_DEPENDENCIES();
 
   const {
     parameters,

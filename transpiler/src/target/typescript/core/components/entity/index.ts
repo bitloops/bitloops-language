@@ -38,7 +38,7 @@ import {
   getPrimitivesType,
 } from '../entity-values/fromToPrimitives.js';
 
-const ENTITY_DEPENDENCIES: TDependenciesTypeScript = [
+const ENTITY_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -78,7 +78,7 @@ const entityToTargetLanguage = (params: {
   const { entity, model } = params;
 
   let result = '';
-  let dependencies = ENTITY_DEPENDENCIES;
+  let dependencies = ENTITY_DEPENDENCIES();
 
   const { entityValues, entityIdentifier } = entity.Entity;
   const { privateMethods, publicMethods, create, constants } = entityValues;

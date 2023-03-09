@@ -30,7 +30,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
 import { StringUtils } from '../../../../../utils/index.js';
 
-const INTEGRATION_EVENT_DEPENDENCIES: TDependenciesTypeScript = [
+const INTEGRATION_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -56,7 +56,7 @@ export const integrationEventToTargetLanguage = (
   const { IntegrationEvent } = integrationEventModel;
 
   let result = '';
-  const dependencies = INTEGRATION_EVENT_DEPENDENCIES;
+  const dependencies = INTEGRATION_EVENT_DEPENDENCIES();
 
   const { integrationVersionMappers, integrationEventIdentifier, parameter } = IntegrationEvent;
 

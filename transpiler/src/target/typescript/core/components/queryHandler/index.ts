@@ -29,7 +29,7 @@ import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
 
-const QUERY_HANDLER_DEPENDENCIES: TDependenciesTypeScript = [
+const QUERY_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -58,7 +58,7 @@ export const queryHandlerToTargetLanguage = (
   const queryHandlerInputType = execute.parameter ? execute.parameter.type : null;
   const queryHandlerResponseTypeName = `${queryHandlerName}Response`;
 
-  let dependencies = QUERY_HANDLER_DEPENDENCIES;
+  let dependencies = QUERY_HANDLER_DEPENDENCIES();
   const queryHandlerReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },

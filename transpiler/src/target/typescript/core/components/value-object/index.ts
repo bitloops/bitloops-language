@@ -30,7 +30,7 @@ import { getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { domainPrivateMethods } from '../domain/domainMethods.js';
 
-const VO_DEPENDENCIES: TDependenciesTypeScript = [
+const VO_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -69,7 +69,7 @@ const valueObjectsToTargetLanguage = (params: {
     `export class ${voName} extends Domain.ValueObject<${propsName}> { `;
 
   let result = '';
-  let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES;
+  let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES();
 
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
   const domainCreateProps = create.parameter.type;

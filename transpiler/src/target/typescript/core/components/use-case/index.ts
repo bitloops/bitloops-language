@@ -29,7 +29,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { executeToTargetLanguage } from './execute.js';
 
-const USE_CASE_DEPENDENCIES: TDependenciesTypeScript = [
+const USE_CASE_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
@@ -74,7 +74,7 @@ export const useCaseToTargetLanguage = (useCase: TUseCase): TTargetDependenciesT
   const useCaseInputType = execute.parameter ? execute.parameter.type : null;
   const useCaseResponseTypeName = `${useCaseName}Response`;
 
-  let dependencies = USE_CASE_DEPENDENCIES;
+  let dependencies = USE_CASE_DEPENDENCIES();
   const useCaseReturnTypesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
