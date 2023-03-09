@@ -52,7 +52,7 @@ const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTy
 
   result += `export class ${readModelIdentifier} { `;
   result += readModelAttributes.output;
-  result += `constructor(public props: ${readModelTypeName}) {
+  result += `constructor(props: ${readModelTypeName}) {
     ${generateConstructorBody({ fields })}
   }`;
   result += getFromPrimitivesResult(readModelIdentifier, readModelTypeName);

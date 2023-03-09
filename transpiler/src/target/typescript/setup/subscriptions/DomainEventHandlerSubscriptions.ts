@@ -1,3 +1,4 @@
+import { BitloopsTypesMapping, ClassTypes } from '../../../../helpers/mappings.js';
 import {
   TBitloopsPrimaryTypeValues,
   TDependencyInjection,
@@ -7,6 +8,11 @@ import {
 import { ComponentSubscription } from './subscriptionComponent.js';
 
 export class DomainEventHandlerSubscriptions extends ComponentSubscription<TDomainEventHandler> {
+  componentHandlerNodeType = BitloopsTypesMapping.TDomainEventHandler;
+  busIdentifier = 'domainEventBus';
+  busGetterFunction = 'Container.getEventBus()';
+  componentClassType = ClassTypes.DomainEvent;
+
   getDIForComponentHandler(component: TDomainEventHandler): TDependencyInjection | undefined {
     return this.dependencyInjections.find(
       (di) =>

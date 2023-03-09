@@ -1,5 +1,5 @@
 DomainEvent MoneyWithdrawnFromAccountDomainEvent<AccountEntity>;
-
+DomainEvent MoneyDepositedToAccountDomainEvent<AccountEntity>;
 DomainEvent AccountCreatedDomainEvent<AccountEntity>;
 
 Struct IntegrationSchemaV1 {
@@ -12,6 +12,24 @@ Struct IntegrationSchemaV2 {
 }
 
 IntegrationEvent MoneyWithdrawnIntegrationEvent(event: MoneyWithdrawnFromAccountDomainEvent) {  
+    'v1' : IntegrationSchemaV1 {
+      const moneyWithdrawn = IntegrationSchemaV1({
+        accountId: event.account.id.toString(),
+        amount: event.account.balance.amount,
+      });
+      return moneyWithdrawn;
+    }
+  
+    'v2.0.1' : IntegrationSchemaV2 {
+      const moneyWithdrawn = IntegrationSchemaV2({
+        accountId: event.account.id.toString(),
+      });
+      return moneyWithdrawn;
+    }
+  
+  }
+
+IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {  
     'v1' : IntegrationSchemaV1 {
       const moneyWithdrawn = IntegrationSchemaV1({
         accountId: event.account.id.toString(),

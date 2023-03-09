@@ -1,0 +1,6 @@
+DomainEventHandler SendEmailAfterMoneyDepositedDomainEventHandler() {
+
+    handle(event: MoneyDepositedToAccountDomainEvent) {
+      console.log(event);
+    }
+}

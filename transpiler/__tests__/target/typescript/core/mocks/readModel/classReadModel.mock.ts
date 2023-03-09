@@ -8,7 +8,7 @@ export class ClassReadModel {
   public name: string;
   public numOfTeachers?: number;
   public title: Title;
-  constructor(public props: TClassReadModelSnapshot) {
+  constructor(props: TClassReadModelSnapshot) {
     this.name = props.name;
     this.numOfTeachers = props.numOfTeachers;
     this.title = props.title;

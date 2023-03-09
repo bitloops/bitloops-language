@@ -1,9 +1,10 @@
-Command WithdrawMoneyCommand {
+Command IncrementDepositsCommand {
     string accountId;
 }
 
 CommandHandler IncrementDepositsCounterCommandHandler (accountRepo: AccountWriteRepoPort) {
-    execute(command: WithdrawMoneyCommand): (OK(void), Errors(
+
+    execute(command: IncrementDepositsCommand): (OK(void), Errors(
         DomainErrors.InvalidNumberOfTransactionsError
     //    | Domain.StandardVO.Currency.ErrorTypes
        )) {

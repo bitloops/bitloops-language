@@ -27,4 +27,15 @@ Root Entity AccountEntity {
         this.addDomainEvent(MoneyWithdrawnFromAccountDomainEvent);
     }
 
+    public depositAmount(amount: int32): (OK(void), Errors(DomainErrors.InvalidMonetaryValueError)) {
+        const amountToBeAdded = MoneyVO.create({ amount: amount, currency: this.balance.currency });
+        const finalAmount = this.balance.amount + amountToBeAdded.amount;
+        const balanceVO = MoneyVO.create({
+            amount: finalAmount,
+            currency: this.balance.currency,
+        });
+        this.balance = balanceVO;
+        this.addDomainEvent(MoneyDepositedToAccountDomainEvent);
+    }
+
 }

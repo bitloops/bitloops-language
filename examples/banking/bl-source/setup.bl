@@ -8,6 +8,13 @@ const mongoConnection = RepoConnections.Mongo({
   database: Env(MONGO_DB_DATABASE,'banking'),
 });
 
+const marketingMongoConnection = RepoConnections.Mongo({
+  host: 'localhost',
+  port: 27017,
+  database: Env(MONGO_DB_DATABASE,'marketing'),
+});
+
+
 // REPOSITORIES
 
 const accountWriteRepo = RepoAdapters.Mongo({
@@ -21,16 +28,18 @@ const accountReadRepo = RepoAdapters.Mongo({
 }) concretes [Banking][Banking]AccountReadRepoPort;
 
 const marketingAccountWriteRepo = RepoAdapters.Mongo({
-  connection: mongoConnection,
-  collection: Env(MONGO_DB_MARKETING_ACCOUNTS_COLLECTION, 'marketing_accounts'),
+  connection: marketingMongoConnection,
+  collection: Env(MONGO_DB_MARKETING_ACCOUNTS_COLLECTION, 'accounts'),
 }) concretes [Marketing][Marketing]AccountWriteRepoPort;
 
 // COMMAND & QUERY HANDLERS, DOMAIN & INTEGRATION EVENT HANDLERS
 DI {
   [Banking][Banking]WithdrawMoneyCommandHandler(accountWriteRepo);
+  [Banking][Banking]DepositMoneyCommandHandler(accountWriteRepo);
   [Banking][Banking]GetAccountQueryHandler(accountReadRepo);
-  [Banking][Banking]MoneyWithdrawnFromAccountDomainEventHandler();
+  [Banking][Banking]SendEmailAfterMoneyDepositedDomainEventHandler();
   [Marketing][Marketing]IncrementDepositsCounterCommandHandler(marketingAccountWriteRepo);
+  [Marketing][Marketing]MoneyDepositedIntegrationEventHandler();
 }
 
 Config.setBuses({
@@ -42,9 +51,9 @@ Config.setBuses({
 // REST ROUTERS
 
 const bankingRouter = RESTRouter(REST.Fastify) {
-  Get('/account/:id'): [Banking][Banking]GetAccountByIdController();
+  Get('/accounts/:accountId'): [Banking][Banking]GetAccountByIdController();
   Post('/withdrawMoney'): [Banking][Banking]WithdrawMoneyRESTController();
-  // Post('/depositMoney'): [Todo][Todo]DepositMoneyRESTController();
+  Post('/depositMoney'): [Banking][Banking]DepositMoneyRESTController();
 }
 
 // SERVERS

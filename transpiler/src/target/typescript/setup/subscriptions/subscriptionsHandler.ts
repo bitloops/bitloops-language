@@ -17,18 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-//import path from 'path';
 import { kebabCase } from '../../../../utils/caseStyles.js';
-import { TDependencyInjection } from '../../../../types.js';
+import { TContextData, TDependencyInjection } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
 import { getFilePathRelativeToModule } from '../../helpers/getTargetFileDestination.js';
 import { TSetupOutput } from '../index.js';
-import {
-  BitloopsTypesMapping,
-  ClassTypes,
-  TClassTypesValues,
-} from '../../../../helpers/mappings.js';
+import { ClassTypes, TClassTypesValues } from '../../../../helpers/mappings.js';
 import { TSetupElementsPerModule } from '../definitions.js';
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { TSetupTypeMapper } from '../fileDestinations.js';
@@ -48,16 +43,24 @@ interface ISubscriptionsHandler {
 
 const esmEnabled = false;
 
-export type TComponentSubscriptionDependencies = Array<{
+export type TComponentSubscriptionDependency = {
   type: 'di' | TClassTypesValues;
   identifier: string;
-}>;
+  contextInfo?: TContextData;
+};
+export type TComponentSubscriptionDependencies = TComponentSubscriptionDependency[];
 export type ComponentSubscriptionsResult = {
   output: string;
   dependencies: TComponentSubscriptionDependencies;
 };
 
 export class SubscriptionsHandler implements ISubscriptionsHandler {
+  private readonly subscriptionComponentHandlers = [
+    CommandHandlerSubscriptions,
+    QueryHandlerSubscriptions,
+    DomainEventHandlerSubscriptions,
+    IntegrationEventHandlerSubscriptions,
+  ];
   generateSubscriptions(
     elementsPerBoundedContext: TSetupElementsPerModule,
     bitloopsModel: TBoundedContexts,
@@ -133,105 +136,20 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
     const methodName = `const ${setupSubscriptionsMethodName} = async () => {`;
 
     setupSubscriptionsMethodName += 'setUpSubscriptions();';
-    const commandHandlersSubscriptions = this.generateSubscriptionsForCommandHandlers(
-      moduleTree,
-      dependencyInjections,
-    );
+    let methodBody = '';
+    const allDependencies = [];
 
-    const queryHandlersSubscriptions = this.generateSubscriptionsForQueryHandlers(
-      moduleTree,
-      dependencyInjections,
-    );
-
-    const domainEventHandlersSubscriptions = this.generateSubscriptionsForDomainEventHandlers(
-      moduleTree,
-      dependencyInjections,
-    );
-
-    const integrationEventHandlersSubscriptions =
-      this.generateSubscriptionsForIntegrationEventHandlers(moduleTree, dependencyInjections);
-
-    const methodBody =
-      commandHandlersSubscriptions.output +
-      queryHandlersSubscriptions.output +
-      domainEventHandlersSubscriptions.output +
-      integrationEventHandlersSubscriptions.output;
-
-    const allDependencies = [
-      ...commandHandlersSubscriptions.dependencies,
-      ...queryHandlersSubscriptions.dependencies,
-      ...domainEventHandlersSubscriptions.dependencies,
-      ...integrationEventHandlersSubscriptions.dependencies,
-    ];
+    for (const Handler of this.subscriptionComponentHandlers) {
+      const handlerSubscriptions = new Handler(moduleTree, dependencyInjections);
+      const subscriptions = handlerSubscriptions.generateSubscriptions();
+      methodBody += subscriptions.output;
+      allDependencies.push(...subscriptions.dependencies);
+    }
 
     return {
       output: methodName + methodBody + '\n\n}\n',
       dependencies: allDependencies,
     };
-  }
-
-  private generateSubscriptionsForCommandHandlers(
-    moduleTree: IntermediateASTTree,
-    dependencyInjections: TDependencyInjection[],
-  ): ComponentSubscriptionsResult {
-    const commandHandlerSubscriptions = new CommandHandlerSubscriptions(
-      moduleTree,
-      dependencyInjections,
-    );
-    return commandHandlerSubscriptions.generateSubscriptions({
-      componentHandlerNodeType: BitloopsTypesMapping.TCommandHandler,
-      busIdentifier: 'commandBus',
-      busGetterFunction: 'Container.getCommandBus()',
-      componentClassType: ClassTypes.Command,
-    });
-  }
-
-  private generateSubscriptionsForQueryHandlers(
-    moduleTree: IntermediateASTTree,
-    dependencyInjections: TDependencyInjection[],
-  ): ComponentSubscriptionsResult {
-    const queryHandlerSubscriptions = new QueryHandlerSubscriptions(
-      moduleTree,
-      dependencyInjections,
-    );
-    return queryHandlerSubscriptions.generateSubscriptions({
-      componentHandlerNodeType: BitloopsTypesMapping.TQueryHandler,
-      busIdentifier: 'queryBus',
-      busGetterFunction: 'Container.getQueryBus()',
-      componentClassType: ClassTypes.Query,
-    });
-  }
-
-  private generateSubscriptionsForDomainEventHandlers(
-    moduleTree: IntermediateASTTree,
-    dependencyInjections: TDependencyInjection[],
-  ): ComponentSubscriptionsResult {
-    const domainEventHandlerSubscriptions = new DomainEventHandlerSubscriptions(
-      moduleTree,
-      dependencyInjections,
-    );
-    return domainEventHandlerSubscriptions.generateSubscriptions({
-      componentHandlerNodeType: BitloopsTypesMapping.TDomainEventHandler,
-      busIdentifier: 'domainEventBus',
-      busGetterFunction: 'Container.getEventBus()',
-      componentClassType: ClassTypes.DomainEvent,
-    });
-  }
-
-  private generateSubscriptionsForIntegrationEventHandlers(
-    moduleTree: IntermediateASTTree,
-    dependencyInjections: TDependencyInjection[],
-  ): ComponentSubscriptionsResult {
-    const integrationEventHandlerSubscriptions = new IntegrationEventHandlerSubscriptions(
-      moduleTree,
-      dependencyInjections,
-    );
-    return integrationEventHandlerSubscriptions.generateSubscriptions({
-      componentHandlerNodeType: BitloopsTypesMapping.TIntegrationEventHandler,
-      busIdentifier: 'integrationEventBus',
-      busGetterFunction: 'Container.getIntegrationEventBus()',
-      componentClassType: ClassTypes.IntegrationEvent,
-    });
   }
 
   private generateImports(dependencies: TComponentSubscriptionDependencies): string {
@@ -242,12 +160,28 @@ export class SubscriptionsHandler implements ISubscriptionsHandler {
         result += `import { ${identifier} } from '../DI';\n`;
         continue;
       }
+
+      if (type === ClassTypes.IntegrationEvent) {
+        result += this.generateCrossModuleImport(type, dependency);
+        continue;
+      }
       const childPathObj = getFilePathRelativeToModule(type, identifier);
       const childPath = childPathObj.path;
       const filename = childPathObj.filename + (esmEnabled ? '.js' : '');
       result += `import { ${identifier} } from '../${childPath}${filename}';\n`;
     }
     return result;
+  }
+
+  private generateCrossModuleImport(
+    type: TClassTypesValues,
+    dependency: TComponentSubscriptionDependency,
+  ): string {
+    const { identifier, contextInfo } = dependency;
+    const childPathObj = getFilePathRelativeToModule(type, identifier, contextInfo);
+    const childPath = childPathObj.path;
+    const filename = childPathObj.filename + (esmEnabled ? '.js' : '');
+    return `import { ${identifier} } from '../../../${childPath}${filename}';\n`;
   }
 
   private removeDuplicateDependencies(

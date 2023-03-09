@@ -1,4 +1,8 @@
-import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import {
+  BitloopsTypesMapping,
+  ClassTypes,
+  TClassTypesValues,
+} from '../../../../helpers/mappings.js';
 import {
   TBitloopsPrimaryTypeValues,
   TDependencyInjection,
@@ -8,8 +12,14 @@ import {
 } from '../../../../types.js';
 import { modelToTargetLanguage } from '../../core/modelToTargetLanguage.js';
 import { ComponentSubscription } from './subscriptionComponent.js';
+import { TComponentSubscriptionDependency } from './subscriptionsHandler.js';
 
 export class IntegrationEventHandlerSubscriptions extends ComponentSubscription<TIntegrationEventHandler> {
+  componentHandlerNodeType = BitloopsTypesMapping.TIntegrationEventHandler;
+  busIdentifier = 'integrationEventBus';
+  busGetterFunction = 'Container.getIntegrationEventBus()';
+  componentClassType = ClassTypes.IntegrationEvent;
+
   getDIForComponentHandler(component: TIntegrationEventHandler): TDependencyInjection | undefined {
     return this.dependencyInjections.find(
       (di) =>
@@ -44,5 +54,23 @@ export class IntegrationEventHandlerSubscriptions extends ComponentSubscription<
         ${handler}.handle.bind(${handler}),
       );
       `;
+  }
+
+  override generateComponentDependency(
+    classType: TClassTypesValues,
+    identifier: string,
+    component: TIntegrationEventHandler,
+  ): TComponentSubscriptionDependency {
+    const { boundedContextModule } =
+      component.integrationEventHandler.integrationEventHandlerHandleMethod
+        .integrationEventParameter;
+    return {
+      type: classType,
+      identifier,
+      contextInfo: {
+        boundedContext: boundedContextModule.boundedContextName.wordsWithSpaces,
+        module: boundedContextModule.moduleName.wordsWithSpaces,
+      },
+    };
   }
 }

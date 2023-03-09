@@ -15,8 +15,7 @@ import {
 export type DepositMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFound
-  | DomainErrors.PINIsNotPositiveNumber
-  | DomainErrors.InvalidCustomerPIN
+  | DomainErrors.InvalidMonetaryValue
   | DomainErrors.InsufficientBalance
   | Domain.StandardVO.Currency.ErrorTypes
 >;

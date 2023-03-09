@@ -1,0 +1,24 @@
+Command DepositMoneyCommand {
+    string accountId;
+    int32 amount;
+}
+
+CommandHandler DepositMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
+    execute(command: DepositMoneyCommand): (OK(void), Errors(
+       ApplicationErrors.AccountNotFoundError
+       | DomainErrors.InvalidMonetaryValueError
+       | DomainErrors.InsufficientBalanceError
+    //    | Domain.StandardVO.Currency.ErrorTypes
+       )) {
+       
+       const accountId = UUIDv4(command.accountId);
+       const accountEntity = this.accountRepo.getById(accountId);
+
+       if(NOT accountEntity) {
+           return ApplicationErrors.AccountNotFoundError(command.accountId);
+       }
+
+       accountEntity.depositAmount(command.amount);
+       this.accountRepo.update(accountEntity);
+   } 
+ }

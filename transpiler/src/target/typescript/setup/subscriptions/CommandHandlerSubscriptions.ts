@@ -1,3 +1,4 @@
+import { BitloopsTypesMapping, ClassTypes } from '../../../../helpers/mappings.js';
 import {
   TBitloopsPrimaryTypeValues,
   TCommandHandler,
@@ -9,6 +10,11 @@ import {
 import { ComponentSubscription } from './subscriptionComponent.js';
 
 export class CommandHandlerSubscriptions extends ComponentSubscription<TCommandHandler> {
+  componentHandlerNodeType = BitloopsTypesMapping.TCommandHandler;
+  busIdentifier = 'commandBus';
+  busGetterFunction = 'Container.getCommandBus()';
+  componentClassType = ClassTypes.Command;
+
   getDIForComponentHandler(component): TDependencyInjection | undefined {
     return this.dependencyInjections.find(
       (di) => di.dependencyInjection.identifier === component[commandHandlerKey][identifierKey],

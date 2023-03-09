@@ -14,9 +14,14 @@ import { DependencyInjectionsGenerator } from '../dependency-injections/diHandle
 import {
   ComponentSubscriptionsResult,
   TComponentSubscriptionDependencies,
+  TComponentSubscriptionDependency,
 } from './subscriptionsHandler.js';
 
 export abstract class ComponentSubscription<T> {
+  abstract componentHandlerNodeType: TBitloopsTypesValues;
+  abstract busIdentifier: string;
+  abstract busGetterFunction: string;
+  abstract componentClassType: TClassTypesValues;
   constructor(
     protected readonly moduleTree: IntermediateASTTree,
     protected readonly dependencyInjections: TDependencyInjection[],
@@ -31,22 +36,12 @@ export abstract class ComponentSubscription<T> {
     componentHandler?: T,
   ): string;
 
-  public generateSubscriptions(params: {
-    componentHandlerNodeType: TBitloopsTypesValues;
-    busIdentifier: string;
-    busGetterFunction: string;
-    componentClassType: TClassTypesValues;
-  }): ComponentSubscriptionsResult {
-    const {
-      componentHandlerNodeType,
-      busIdentifier,
-      busGetterFunction,
-      componentClassType: classType,
-    } = params;
-    const componentHandlers =
-      this.moduleTree.getRootChildrenNodesValueByType<T>(componentHandlerNodeType);
+  public generateSubscriptions(): ComponentSubscriptionsResult {
+    const componentHandlers = this.moduleTree.getRootChildrenNodesValueByType<T>(
+      this.componentHandlerNodeType,
+    );
     const dependencies: TComponentSubscriptionDependencies = [];
-    let result = `const ${busIdentifier} = ${busGetterFunction};`;
+    let result = `const ${this.busIdentifier} = ${this.busGetterFunction};`;
     for (const componentHandler of componentHandlers) {
       const di = this.getDIForComponentHandler(componentHandler);
       if (!di) {
@@ -65,7 +60,7 @@ export abstract class ComponentSubscription<T> {
         type: BitloopsTypesMapping.TBitloopsPrimaryType,
       });
       result += this.subscriptionStatement(
-        busIdentifier,
+        this.busIdentifier,
         component.output,
         handlerInstance,
         componentHandler,
@@ -75,14 +70,28 @@ export abstract class ComponentSubscription<T> {
         type: 'di',
         identifier: handlerInstance,
       });
-      dependencies.push({
-        type: classType,
-        identifier: component.output,
-      });
+      dependencies.push(
+        this.generateComponentDependency(
+          this.componentClassType,
+          component.output,
+          componentHandler,
+        ),
+      );
     }
     if (dependencies.length === 0) {
       return { output: '', dependencies };
     }
     return { output: result, dependencies };
+  }
+
+  protected generateComponentDependency(
+    classType: TClassTypesValues,
+    identifier,
+    _component: any,
+  ): TComponentSubscriptionDependency {
+    return {
+      type: classType,
+      identifier,
+    };
   }
 }
