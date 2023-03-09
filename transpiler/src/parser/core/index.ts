@@ -22,8 +22,6 @@ export class BitloopsParser implements IOriginalParser {
     const errors: ParserSyntacticError[] = [];
     const parseResult: OriginalAST = {};
 
-    // eslint-disable-next-line no-debugger
-    // debugger;
     if (inputData.core) {
       const ASTCore = this.parseCore(inputData.core);
       if (isParserErrors(ASTCore)) {

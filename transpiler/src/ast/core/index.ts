@@ -1,5 +1,6 @@
 import { OriginalASTApi, OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
+import { isUndefined } from '../../utils/typeGuards.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
 import {
@@ -43,8 +44,8 @@ export class IntermediateASTParser implements IIntermediateASTParser {
   }
 
   private originalASTSetupToIntermediateASTTree(astSetup?: OriginalASTSetup): IntermediateASTSetup {
+    if (isUndefined(astSetup)) return astSetup;
     const setupAST: IntermediateASTSetup = {};
-    if (!astSetup) return setupAST;
     for (const [fileId, ASTData] of Object.entries(astSetup)) {
       const bitloopsVisitor = new BitloopsVisitor(fileId);
       bitloopsVisitor.visit(ASTData.ASTContext);
@@ -56,8 +57,8 @@ export class IntermediateASTParser implements IIntermediateASTParser {
   }
 
   private originalASTApiToIntermediateASTTree(astApi?: OriginalASTApi): TIntermediateASTApi {
+    if (isUndefined(astApi)) return astApi;
     const apis: TIntermediateASTApi = {};
-    if (!astApi) return apis;
     for (const [apiName, api] of Object.entries(astApi)) {
       for (const [fileId, ASTData] of Object.entries(api)) {
         const bitloopsVisitor = new BitloopsVisitor(fileId);
@@ -77,8 +78,8 @@ export class IntermediateASTParser implements IIntermediateASTParser {
   }
 
   private originalASTCoreToIntermediateASTTree(astCore?: OriginalASTCore): TBoundedContexts {
+    if (isUndefined(astCore)) return astCore;
     const boundedContexts: TBoundedContexts = {};
-    if (!astCore) return boundedContexts;
     for (const [boundedContextName, boundedContext] of Object.entries(astCore)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
         for (const [fileId, ASTData] of Object.entries(module)) {

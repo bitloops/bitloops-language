@@ -309,11 +309,15 @@ export class SetupTypeScript implements ISetup {
               httpMethodVerb: method,
               stringLiteral: path,
               controllerInstanceName,
-              boundedContextModule,
+              // apiDeclaration
             } = routerController;
-            const { boundedContextName, moduleName } = boundedContextModule;
-            const { wordsWithSpaces: boundedContext } = boundedContextName;
-            const { wordsWithSpaces: module } = moduleName;
+
+            // TODO check this
+            // const { boundedContextName, moduleName } = boundedContextModule;
+            // const { wordsWithSpaces: boundedContext } = boundedContextName;
+            // const { wordsWithSpaces: module } = moduleName;
+            const boundedContext = 'bounded-contexts';
+            const module = 'module';
 
             fastifyControllerImports.push(
               `import { ${controllerInstanceName} } from '../../../../../bounded-contexts/${kebabCase(

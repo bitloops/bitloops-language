@@ -17,7 +17,7 @@ export const VALID_ROUTER_DEFINITION_CASES = [
         constIdentifier: 'helloWorldRESTRouter',
         controllerIdentifier: 'HelloWorldController',
         controllerIntanceName: 'helloWorldController1',
-        apiName: 'ApiTest',
+        apiName: 'Hello World App',
         method: 'Get',
         path: '/hello1',
       }),
@@ -34,7 +34,9 @@ export const VALID_ROUTER_DEFINITION_CASES = [
         controllers: [
           new RouterControllerBuilder()
             .withArguments(new ArgumentListBuilderDirector().buildEmptyArgumentList())
-            .withApiDeclaration(new ApiDeclarationBuilderDirector().buildApiDeclaration('ApiTest'))
+            .withApiDeclaration(
+              new ApiDeclarationBuilderDirector().buildApiDeclaration('HelloWorld'),
+            )
             .withControllerIdentifier('HelloWorldController')
             .withControllerInstanceName('helloWorldController1')
             .withMethod('Get')
@@ -42,7 +44,9 @@ export const VALID_ROUTER_DEFINITION_CASES = [
             .build(),
           new RouterControllerBuilder()
             .withArguments(new ArgumentListBuilderDirector().buildArgumentList(['myUseCase']))
-            .withApiDeclaration(new ApiDeclarationBuilderDirector().buildApiDeclaration('ApiTest'))
+            .withApiDeclaration(
+              new ApiDeclarationBuilderDirector().buildApiDeclaration('HelloWorld2'),
+            )
             .withControllerIdentifier('HelloWorldController')
             .withControllerInstanceName('helloWorldController2')
             .withMethod('Post')

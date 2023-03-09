@@ -26,10 +26,14 @@ export class ControllerHelpers {
       const { routerControllers } = routerExpression;
       for (const controller of routerControllers) {
         const { routerController } = controller;
-        const { boundedContextModule } = routerController;
-        const { boundedContextName, moduleName } = boundedContextModule;
-        const { wordsWithSpaces: boundedContext } = boundedContextName;
-        const { wordsWithSpaces: module } = moduleName;
+        // const { boundedContextModule } = routerController;
+        // const { boundedContextName, moduleName } = boundedContextModule;
+        // const { wordsWithSpaces: boundedContext } = boundedContextName;
+        // const { wordsWithSpaces: module } = moduleName;
+
+        // TODO check this
+        const boundedContext = 'bounded-contexts';
+        const module = 'module';
 
         if (!controllers[boundedContext]) {
           controllers[boundedContext] = {

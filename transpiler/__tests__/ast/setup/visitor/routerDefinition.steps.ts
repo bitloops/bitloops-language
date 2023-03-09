@@ -28,7 +28,7 @@ import { VALID_ROUTER_DEFINITION_CASES } from '../mocks/routerDefinition/index.j
 const BOUNDED_CONTEXT = 'Hello world';
 const MODULE = 'Demo';
 
-describe('Use case definition is valid', () => {
+describe('Router definition is valid', () => {
   let setupResult: IntermediateASTSetup;
 
   const parser = new BitloopsParser();

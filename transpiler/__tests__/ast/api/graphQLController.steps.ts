@@ -25,8 +25,7 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { validGraphQLControllerDeclarationCases } from './mocks/controllers/graphQLController.js';
 
-const BOUNDED_CONTEXT = 'Hello World';
-const MODULE = 'core';
+const API = 'Hello World App';
 
 describe('GraphQL controller declaration is valid', () => {
   let resultTree: IntermediateASTTree;
@@ -37,22 +36,24 @@ describe('GraphQL controller declaration is valid', () => {
   validGraphQLControllerDeclarationCases.forEach((testGraphQLController) => {
     test(`${testGraphQLController.description}`, () => {
       const initialModelOutput = parser.parse({
-        core: [
+        api: [
           {
-            boundedContext: BOUNDED_CONTEXT,
-            module: MODULE,
+            api: API,
             fileId: testGraphQLController.fileId,
             fileContents: testGraphQLController.inputBLString,
           },
         ],
       });
 
-      if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTValidationErrors(result)) {
-          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
-        }
+      if (isParserErrors(initialModelOutput)) {
+        throw initialModelOutput;
       }
+      const parseResult = intermediateParser.parse(initialModelOutput);
+      if (!isIntermediateASTValidationErrors(parseResult)) {
+        const result = intermediateParser.complete(parseResult);
+        resultTree = result.api[API];
+      }
+
       const graphQLControllerNodes = resultTree.getRootChildrenNodesByType(
         BitloopsTypesMapping.TGraphQLController,
       );

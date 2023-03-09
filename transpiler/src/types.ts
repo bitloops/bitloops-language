@@ -860,11 +860,7 @@ export type TRouterController = {
 };
 
 export type TApiDeclaration = {
-  apiDeclaration: TApiIdentifier;
-};
-
-export type TApiIdentifier = {
-  apiIdentifier: string;
+  apiDeclaration: TWordsWithSpaces;
 };
 
 export type TRouterControllers = {

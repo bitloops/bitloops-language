@@ -1,6 +1,6 @@
 import { TApiDeclaration } from '../../../../src/types.js';
 import { ApiDeclarationBuilder } from './apiDeclarationBuilder.js';
-import { ApiIdentifierBuilder } from './apiIdentifierBuilder.js';
+import { WordsWithSpacesBuilder } from './wordsWithSpacesBuilder.js';
 
 export class ApiDeclarationBuilderDirector {
   private builder: ApiDeclarationBuilder;
@@ -10,7 +10,7 @@ export class ApiDeclarationBuilderDirector {
   }
 
   buildApiDeclaration(apiName: string): TApiDeclaration {
-    const apiIdentifier = new ApiIdentifierBuilder().withName(apiName).build();
+    const apiIdentifier = new WordsWithSpacesBuilder().withName(apiName).build();
 
     return this.builder.withApiIdentifier(apiIdentifier).build();
   }
