@@ -7,6 +7,7 @@ import {
   OriginalASTSetup,
   OriginalAST,
   ASTSetupContext,
+  OriginalASTApi,
 } from '../types.js';
 
 const isParserErrors = (
@@ -15,6 +16,7 @@ const isParserErrors = (
     | TTranspileError[]
     | OriginalAST
     | OriginalASTCore
+    | OriginalASTApi
     | ASTContext
     | OriginalASTSetup
     | ParserSyntacticError[]

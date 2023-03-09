@@ -32,6 +32,7 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     }
     return {
       core: boundedContexts,
+      api: intermediateAST.api,
       setup: intermediateASTSetup,
     };
   }

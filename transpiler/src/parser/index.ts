@@ -24,6 +24,14 @@ import {
   OriginalAST,
   OriginalParserError,
   TParserInputData,
+  TApiName,
 } from './core/types.js';
 
-export { BitloopsParser, IOriginalParser, OriginalAST, OriginalParserError, TParserInputData };
+export {
+  BitloopsParser,
+  IOriginalParser,
+  OriginalAST,
+  OriginalParserError,
+  TParserInputData,
+  TApiName,
+};

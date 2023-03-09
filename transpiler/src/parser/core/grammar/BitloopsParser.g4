@@ -200,16 +200,20 @@ setupProgram
     // | EOF?           // # eof
     ;
 
+apiProgram
+    : apiElement*
+    ;
+
 program
     : setupProgram
     | coreProgram
+    | apiProgram
     ;
 
 sourceElement
     : dtoDeclaration
     | domainErrorDeclaration
     | applicationErrorDeclaration
-    | controllerDeclaration
     | jestTestDeclaration
     | propsDeclaration
     | structDeclaration
@@ -1176,4 +1180,8 @@ setupStatement
     | repoAdapterDefinition # repoAdapterDefinitionStatement
     | dependencyInjections # dependencyInjectionsStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
+    ;
+
+apiElement
+    : controllerDeclaration
     ;

@@ -11,7 +11,16 @@ export class ASTSetupContext extends Parser.SetupProgramContext {}
 
 export type OriginalAST = {
   core: OriginalASTCore;
+  api: OriginalASTApi;
   setup?: OriginalASTSetup;
+};
+
+export type OriginalASTApi = {
+  [api: TApiName]: {
+    [fileId: string]: {
+      ASTContext: ASTContext;
+    };
+  };
 };
 
 export type OriginalASTSetup = {
@@ -35,6 +44,7 @@ type TFileContents = string;
 
 export type TParserInputData = {
   core: TParserCoreInputData;
+  api: TParserApiInputData;
   setup?: TParserSetupInputData;
 };
 
@@ -46,6 +56,13 @@ export type TParserSetupInputData = {
 export type TParserCoreInputData = {
   boundedContext: TBoundedContextName;
   module: TModuleName;
+  fileId: TFileId;
+  fileContents: TFileContents;
+}[];
+
+export type TApiName = string;
+export type TParserApiInputData = {
+  api: TApiName;
   fileId: TFileId;
   fileContents: TFileContents;
 }[];

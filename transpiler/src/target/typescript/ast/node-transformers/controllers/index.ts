@@ -2,8 +2,6 @@ import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/In
 import { ControllerNode } from '../../../../../ast/core/intermediate-ast/nodes/controllers/ControllerNode.js';
 import { GraphQLControllerNode } from '../../../../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
 import { RESTControllerNode } from '../../../../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
-// import { ExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
-// import { MethodCallExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 import { PrependAwaitNodeTSTransformer } from '../generic/prependAwait.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
 
@@ -17,7 +15,6 @@ class BaseControllerNodeTSTransformer<
     this.prependAwaitTransformer = new PrependAwaitNodeTSTransformer(node, tree);
   }
   run(): void {
-    // this.transformAwait();
     this.prependAwaitToAllDependencyCalls();
     this.transformDotValue();
   }

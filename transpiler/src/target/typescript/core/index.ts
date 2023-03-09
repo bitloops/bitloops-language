@@ -28,6 +28,7 @@ import {
   TTargetCoreFinalContent,
 } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
+import { generateFinalContentWithImports } from '../helpers/importGeneration.js';
 
 export class IntermediateASTToTarget implements IIntermediateASTToTarget {
   ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
@@ -69,13 +70,11 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
       const { output } = fileContent;
       const parentDependecies = fileContent.dependencies as TDependencyParentTypescript[];
 
-      let finalContent;
-      if (classType) {
-        const importsResult = this.generateDepndenciesString(parentDependecies, false);
-        finalContent = importsResult + output;
-      } else {
-        finalContent = output;
-      }
+      const finalContent = generateFinalContentWithImports({
+        output,
+        classType,
+        parentDependecies,
+      });
 
       formattedCode.push({
         boundedContext,
@@ -102,24 +101,5 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
       });
     }
     return formattedCode;
-  }
-
-  private generateDepndenciesString(
-    dependencies: TDependencyParentTypescript[],
-    esm = false,
-  ): string {
-    let result = '';
-    for (const dependency of dependencies) {
-      const { type, value, default: dependencyDefault, from } = dependency;
-
-      result += `import ${dependencyDefault ? value : '{' + value + '}'} from`;
-      if (type === 'absolute') {
-        result += `'${from}'`;
-      } else {
-        result += esm ? `'${from}.js'` : `'${from}'`;
-      }
-      result += ';';
-    }
-    return result;
   }
 }

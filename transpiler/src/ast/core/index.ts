@@ -1,4 +1,4 @@
-import { OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
+import { OriginalASTApi, OriginalASTCore, OriginalASTSetup } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
 import BitloopsVisitor from './BitloopsVisitor/BitloopsVisitor.js';
 import { IntermediateASTToCompletedIntermediateASTTransformer } from './intermediate-ast/IntermediateASTToAST.js';
@@ -7,6 +7,7 @@ import {
   IntermediateAST,
   IntermediateASTSetup,
   TBoundedContexts,
+  TIntermediateASTApi,
 } from './types.js';
 
 export class IntermediateASTParser implements IIntermediateASTParser {
@@ -29,14 +30,18 @@ export class IntermediateASTParser implements IIntermediateASTParser {
 
   private originalASTToIntermediateASTTree(ast: OriginalAST): IntermediateAST {
     const intermediateASTCoreTree = this.originalASTCoreToIntermediateASTTree(ast.core);
+
+    const intermediateASTApiTree = this.originalASTApiToIntermediateASTTree(ast.api);
     if (!ast.setup) {
       return {
         core: intermediateASTCoreTree,
+        api: intermediateASTApiTree,
       };
     }
     const intermediateASTSetupTree = this.originalASTSetupToIntermediateASTTree(ast.setup);
     return {
       core: intermediateASTCoreTree,
+      api: intermediateASTApiTree,
       setup: intermediateASTSetupTree,
     };
   }
@@ -51,6 +56,26 @@ export class IntermediateASTParser implements IIntermediateASTParser {
       setupAST[fileId] = intermediateASTTree;
     }
     return setupAST;
+  }
+
+  private originalASTApiToIntermediateASTTree(astApi: OriginalASTApi): TIntermediateASTApi {
+    const apis: TIntermediateASTApi = {};
+    for (const [apiName, api] of Object.entries(astApi)) {
+      for (const [fileId, ASTData] of Object.entries(api)) {
+        const bitloopsVisitor = new BitloopsVisitor(fileId);
+        bitloopsVisitor.visit(ASTData.ASTContext);
+        const { intermediateASTTree } = bitloopsVisitor;
+
+        if (apis[apiName] === undefined) {
+          apis[apiName] = intermediateASTTree;
+        } else {
+          // merge trees
+          const existingTree = apis[apiName];
+          apis[apiName] = existingTree.mergeWithTree(intermediateASTTree);
+        }
+      }
+    }
+    return apis;
   }
 
   private originalASTCoreToIntermediateASTTree(astCore: OriginalASTCore): TBoundedContexts {

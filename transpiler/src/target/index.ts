@@ -25,10 +25,13 @@ import {
   TTargetSetupContent,
   TTargetCoreFinalContent,
   TargetCoreGeneratorError,
+  TTargetApiFinalContent,
+  TargetApiGeneratorError,
 } from './types.js';
 import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
 import {
+  isTargetApiGeneratorError,
   isTargetCoreGeneratorError,
   isTargetSetupGeneratorError,
 } from './typescript/guards/index.js';
@@ -37,6 +40,7 @@ import { IntermediateAST } from '../ast/core/types.js';
 import { TTranspileOptions } from '../transpilerTypes.js';
 import { TargetCoreGeneratorCreator } from './targetCoreCreator.js';
 import { TargetSetupGeneratorCreator } from './targetSetupCreator.js';
+import { TargetApiGeneratorCreator } from './targetApiCreator.js';
 
 export class TargetGenerator implements ITargetGenerator {
   generate(
@@ -46,15 +50,25 @@ export class TargetGenerator implements ITargetGenerator {
     const errors: TargetGeneratorError[] = [];
     const generateResult: Partial<TOutputTargetContent> = {};
 
-    const coreTargetOutput = this.generateCore(intermediateAST, options);
+    const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
+    const transformedIntermediateAST = modelToTargetASTTransformer.transform(intermediateAST);
+
+    const coreTargetOutput = this.generateCore(transformedIntermediateAST, options);
     if (isTargetCoreGeneratorError(coreTargetOutput)) {
       errors.push(coreTargetOutput);
     } else {
       generateResult.core = coreTargetOutput;
     }
 
-    if (intermediateAST.setup) {
-      const setupTargetOutput = this.generateSetup(intermediateAST, options);
+    const apiTargetOutput = this.generateApi(transformedIntermediateAST, options);
+    if (isTargetApiGeneratorError(apiTargetOutput)) {
+      errors.push(apiTargetOutput);
+    } else {
+      generateResult.api = apiTargetOutput;
+    }
+
+    if (transformedIntermediateAST.setup) {
+      const setupTargetOutput = this.generateSetup(transformedIntermediateAST, options);
       if (isTargetSetupGeneratorError(setupTargetOutput)) {
         errors.push(setupTargetOutput);
       } else {
@@ -69,14 +83,11 @@ export class TargetGenerator implements ITargetGenerator {
   }
 
   private generateCore(
-    params: IntermediateAST,
+    intermediateAST: IntermediateAST,
     options: TTranspileOptions,
   ): TTargetCoreFinalContent[] | TargetCoreGeneratorError {
-    const modelToTargetASTTransformer = new IntermediateModelToASTTargetTransformer();
-    const transformedIntermediateAST = modelToTargetASTTransformer.transform(params);
-
     const bitloopsTargetGenerator = TargetCoreGeneratorCreator.create(options.targetLanguage);
-    const targetContent = bitloopsTargetGenerator.ASTToTarget(transformedIntermediateAST);
+    const targetContent = bitloopsTargetGenerator.ASTToTarget(intermediateAST);
 
     if (isTargetCoreGeneratorError(targetContent)) return targetContent;
     const targetContentWithImports = bitloopsTargetGenerator.generateImports(targetContent);
@@ -87,12 +98,20 @@ export class TargetGenerator implements ITargetGenerator {
     return formattedTargetContent;
   }
 
+  private generateApi(
+    intermediateAST: IntermediateAST,
+    options: TTranspileOptions,
+  ): TTargetApiFinalContent[] | TargetApiGeneratorError {
+    const bitloopsTargetGenerator = TargetApiGeneratorCreator.create(options.targetLanguage);
+    return bitloopsTargetGenerator.generateApiFiles(intermediateAST, options);
+  }
+
   private generateSetup(
-    params: IntermediateAST,
+    intermediateAST: IntermediateAST,
     options: TTranspileOptions,
   ): TTargetSetupContent[] | TargetSetupGeneratorError {
     const setupTargetGenerator = TargetSetupGeneratorCreator.create(options.targetLanguage);
-    return setupTargetGenerator.generateSetupFiles(params, options);
+    return setupTargetGenerator.generateSetupFiles(intermediateAST, options);
   }
 
   getTargetFileDestination(

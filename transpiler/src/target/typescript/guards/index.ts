@@ -7,6 +7,9 @@ import {
   TTargetCoreFinalContent,
   TTargetSetupContent,
   TOutputTargetContent,
+  TargetApiGeneratorError,
+  TTargetApiContent,
+  TTargetApiFinalContent,
 } from '../../types.js';
 
 const isTargetGeneratorError = (
@@ -46,4 +49,18 @@ const isTargetSetupGeneratorError = (
   return false;
 };
 
-export { isTargetCoreGeneratorError, isTargetSetupGeneratorError, isTargetGeneratorError };
+const isTargetApiGeneratorError = (
+  value: TTargetApiFinalContent[] | TTargetApiContent[] | TargetApiGeneratorError | TTranspileError,
+): value is TargetApiGeneratorError => {
+  if (value instanceof TargetApiGeneratorError) {
+    return true;
+  }
+  return false;
+};
+
+export {
+  isTargetCoreGeneratorError,
+  isTargetSetupGeneratorError,
+  isTargetGeneratorError,
+  isTargetApiGeneratorError,
+};

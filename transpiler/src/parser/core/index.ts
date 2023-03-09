@@ -9,6 +9,8 @@ import {
   OriginalASTSetup,
   OriginalASTCore,
   IOriginalParser,
+  TParserApiInputData,
+  OriginalASTApi,
 } from './types.js';
 import BitloopsLexer from './grammar/BitloopsLexer.js';
 import Parser from './grammar/BitloopsParser.js';
@@ -18,13 +20,20 @@ import { VerboseErrorListener } from './VerboseErrorListener.js';
 export class BitloopsParser implements IOriginalParser {
   parse(inputData: TParserInputData): OriginalAST | ParserSyntacticError[] {
     const errors: ParserSyntacticError[] = [];
-    const parseResult: OriginalAST = { core: {} };
+    const parseResult: OriginalAST = { core: {}, api: {} };
 
     const ASTCore = this.parseCore(inputData.core);
     if (isParserErrors(ASTCore)) {
       errors.push(...ASTCore);
     } else {
       parseResult.core = ASTCore;
+    }
+
+    const ASTApi = this.parseApi(inputData.api);
+    if (isParserErrors(ASTApi)) {
+      errors.push(...ASTApi);
+    } else {
+      parseResult.api = ASTApi;
     }
 
     if (inputData.setup) {
@@ -100,6 +109,33 @@ export class BitloopsParser implements IOriginalParser {
       return errors;
     }
     return setupContext;
+  }
+
+  private parseApi(inputData: TParserApiInputData): OriginalASTApi | ParserSyntacticError[] {
+    const apis: OriginalASTApi = {};
+    const errors: ParserSyntacticError[] = [];
+    for (const data of inputData) {
+      const { api, fileId, fileContents } = data;
+      const ASTContextOrError = BitloopsParser.getInitialAST(fileContents, fileId);
+      if (isParserErrors(ASTContextOrError)) {
+        errors.push(...ASTContextOrError);
+      } else {
+        const ASTContext = ASTContextOrError as ASTContext;
+
+        if (apis[api] === null || apis[api] === undefined) {
+          // first time we come across this api
+          apis[api] = {
+            [fileId]: { ASTContext },
+          };
+        } else {
+          apis[api][fileId] = { ASTContext };
+        }
+      }
+    }
+    if (errors.length > 0) {
+      return errors;
+    }
+    return apis;
   }
 
   /**

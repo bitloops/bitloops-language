@@ -15,9 +15,16 @@ export interface IIntermediateSetupASTToTarget {
     options: TTranspileOptions,
   ) => TTargetSetupContent[] | TargetSetupGeneratorError;
 }
+export interface IIntermediateApiASTToTarget {
+  generateApiFiles(
+    params: IntermediateAST,
+    options: TTranspileOptions,
+  ): TTargetApiFinalContent[] | TargetApiGeneratorError;
+}
 
 export type TOutputTargetContent = {
   core: TTargetCoreFinalContent[];
+  api: TTargetApiFinalContent[];
   setup?: TTargetSetupContent[];
 };
 
@@ -37,6 +44,20 @@ export type TTargetCoreFinalContent = {
   fileContent: string;
 };
 
+export type TTargetApiContent = {
+  api: string;
+  classType: TClassTypesValues;
+  className: TClassName;
+  fileContent: TTargetDependenciesTypeScript;
+};
+
+export type TTargetApiFinalContent = {
+  api: string;
+  classType: TClassTypesValues;
+  className: TClassName;
+  fileContent: string;
+};
+
 export type TTargetSetupContent = {
   fileId: string;
   fileType: string;
@@ -46,6 +67,8 @@ export type TTargetSetupContent = {
 export type TargetGeneratorError = TargetCoreGeneratorError | TargetSetupGeneratorError;
 
 export class TargetCoreGeneratorError extends Error {}
+
+export class TargetApiGeneratorError extends Error {}
 
 export class TargetSetupGeneratorError extends Error {}
 

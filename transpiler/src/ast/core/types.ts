@@ -1,4 +1,4 @@
-import { OriginalAST } from '../../parser/index.js';
+import { OriginalAST, TApiName } from '../../parser/index.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { ExpressionNode } from './intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
@@ -7,6 +7,7 @@ import { VariableDeclarationNode } from './intermediate-ast/nodes/variableDeclar
 
 export type IntermediateAST = {
   core: TBoundedContexts;
+  api: TIntermediateASTApi;
   setup?: IntermediateASTSetup;
 };
 
@@ -18,6 +19,10 @@ export type TBoundedContexts = Record<TBoundedContextName, TBoundedContext>;
 
 export type IntermediateASTSetup = {
   [fileId: string]: IntermediateASTTree;
+};
+
+export type TIntermediateASTApi = {
+  [api: TApiName]: IntermediateASTTree;
 };
 
 export type IntermediateASTError = IntermediateASTValidationError[];

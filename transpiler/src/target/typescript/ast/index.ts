@@ -41,6 +41,7 @@ import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 export class IntermediateModelToASTTargetTransformer
   implements IIntermediateModelToASTTargetLanguageTransformer
 {
+  // TODO here split to transformCore and transformApi
   transform(intermediateModel: IntermediateAST): IntermediateAST {
     for (const boundedContext of Object.values(intermediateModel.core)) {
       for (const intermediateASTTree of Object.values(boundedContext)) {
