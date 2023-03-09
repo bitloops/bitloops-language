@@ -21,7 +21,7 @@ import { TPublicMethod, TTargetDependenciesTypeScript } from '../../../../../typ
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
-const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeScript => {
+const domainServicePublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeScript => {
   const { publicMethod } = methodInfo;
   const { statements, parameters, returnType } = publicMethod;
   const statementsString = modelToTargetLanguage({
@@ -39,7 +39,7 @@ const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeS
     value: { returnType },
   });
   const methodName = publicMethod.identifier;
-  const returnTypeOutput = mappedReturnType.output;
+  const returnTypeOutput = `Promise<${mappedReturnType.output}>`;
   const parametersOutput = parametersString.output;
   const methodStatements = statementsString.output;
 
@@ -47,7 +47,7 @@ const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeS
   const staticKeyWord = isStatic ? 'static ' : '';
 
   return {
-    output: `public ${staticKeyWord} ${methodName}${parametersOutput}: ${returnTypeOutput} { ${methodStatements} }`,
+    output: `public async ${staticKeyWord} ${methodName}${parametersOutput}: ${returnTypeOutput} { ${methodStatements} }`,
     dependencies: [
       ...statementsString.dependencies,
       ...parametersString.dependencies,
@@ -55,4 +55,4 @@ const domainPublicMethod = (methodInfo: TPublicMethod): TTargetDependenciesTypeS
     ],
   };
 };
-export { domainPublicMethod };
+export { domainServicePublicMethod };

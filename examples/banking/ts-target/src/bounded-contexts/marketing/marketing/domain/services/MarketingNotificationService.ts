@@ -1,6 +1,8 @@
 import { Either, ok } from '@bitloops/bl-boilerplate-core';
 import { INotificationTemplateReadRepo } from '../../repos/interfaces/INotificationTemplateReadRepo.js';
-import { AccountEntity } from '../AccountEntity.js';
+import { AccountEntity } from '../AccountEntity.js
+
+';
 import { NotificationTemplateReadModel } from '../read-models/NotificationTemplateReadModel.js';
 
 export class MarketingNotificationService {

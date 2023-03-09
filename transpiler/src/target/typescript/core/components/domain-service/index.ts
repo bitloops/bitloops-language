@@ -29,7 +29,7 @@ import {
 } from '../../../../../types.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { domainMethods } from '../domain/domainMethods.js';
+import { domainServiceMethods } from './domainServiceMethods.js';
 
 const DOMAIN_SERVICE_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -55,12 +55,14 @@ export const domainServiceToTargetLanguage = (
     parameters: constructorParameters,
   } = domainService;
 
-  const entityMethodsModel = domainMethods(publicMethods, privateMethods);
-  dependencies = [...dependencies, ...entityMethodsModel.dependencies];
+  const domainServiceMethodsModel = domainServiceMethods(publicMethods, privateMethods);
+  dependencies = [...dependencies, ...domainServiceMethodsModel.dependencies];
+  const constructorModel = generateConstructor(constructorParameters);
+  dependencies = [...dependencies, ...constructorModel.dependencies];
 
   result += `export class ${domainServiceName} { `;
-  result += generateConstructor(constructorParameters);
-  result += entityMethodsModel.output;
+  result += constructorModel.output;
+  result += domainServiceMethodsModel.output;
   result += '}';
 
   const finalDependencies = getParentDependencies(dependencies, {
@@ -71,8 +73,11 @@ export const domainServiceToTargetLanguage = (
   return { output: result, dependencies: finalDependencies };
 };
 
-const generateConstructor = (constructorParameters: TParameter[]): string => {
+const generateConstructor = (
+  constructorParameters: TParameter[],
+): TTargetDependenciesTypeScript => {
   let constructorParametersString = '';
+  const dependencies: TDependenciesTypeScript = [];
   for (const constructorParameter of constructorParameters) {
     const parameter = constructorParameter.parameter;
     const parameterName = parameter.value;
@@ -81,9 +86,10 @@ const generateConstructor = (constructorParameters: TParameter[]): string => {
       value: { type: parameter[bitloopsPrimaryTypeKey] },
     });
     const parameterType = parameterTypeRes.output;
-
+    const parameterDependencies = parameterTypeRes.dependencies;
+    dependencies.push(...parameterDependencies);
     constructorParametersString += `private ${parameterName}: ${parameterType}, `;
   }
 
-  return `constructor(${constructorParametersString}) {}`;
+  return { output: `constructor(${constructorParametersString}) {}`, dependencies };
 };

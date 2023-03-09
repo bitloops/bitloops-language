@@ -1,14 +1,12 @@
 import { Either, ok } from '@bitloops/bl-boilerplate-core';
-import { INotificationTemplateReadRepo } from '../../repos/interfaces/INotificationTemplateReadRepo.js';
 import { AccountEntity } from '../AccountEntity';
 import { NotificationResponse } from '../../structs/NotificationResponse';
-
+import { NotificationTemplateReadRepoPort } from '../../ports/NotificationTemplateReadRepoPort';
 export class MarketingNotificationService {
-  constructor(private notificationTemplateRepo: INotificationTemplateReadRepo) {}
-
+  constructor(private notificationTemplateRepoPort: NotificationTemplateReadRepoPort) {}
   public async getNotificationTemplateToBeSent(
     account: AccountEntity,
-  ): Promise<Either<NotificationResponse, void>> {
+  ): Promise<Either<NotificationResponse, never>> {
     return ok(account);
   }
 }

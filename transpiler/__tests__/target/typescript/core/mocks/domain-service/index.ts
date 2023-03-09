@@ -24,8 +24,8 @@ export const VALID_DOMAIN_SERVICE_TEST_CASES: Array<TDomainServiceHandlerTestCas
       'MarketingNotificationService',
       [
         new ParameterBuilderDirector().buildIdentifierParameter(
-          'notificationTemplateRepo',
-          'INotificationTemplateReadRepo',
+          'notificationTemplateRepoPort',
+          'NotificationTemplateReadRepoPort',
         ),
       ],
       [
