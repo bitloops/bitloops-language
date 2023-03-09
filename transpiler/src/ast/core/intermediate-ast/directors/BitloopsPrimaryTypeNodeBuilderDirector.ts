@@ -38,4 +38,11 @@ export class BitloopsPrimaryTypeNodeBuilderDirector {
       .build();
     return this.builder.withPrimaryType(bitloopsIdentifierTypeNode).build();
   }
+
+  buildPrimitivePrimaryType(primitive: string): BitloopsPrimaryTypeNode {
+    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder(this.metadata)
+      .withType(primitive)
+      .build();
+    return this.builder.withPrimaryType(bitloopsIdentifierTypeNode).build();
+  }
 }

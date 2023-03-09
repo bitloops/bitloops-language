@@ -5,6 +5,8 @@ import { ParameterBuilderDirector } from '../../../../../ast/core/builders/Param
 import { PublicMethodBuilder } from '../../../../../ast/core/builders/methods/PublicMethodBuilder.js';
 import { ParameterListBuilderDirector } from '../../../../../ast/core/builders/parameterListBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../../../../ast/core/builders/returnOkErrorTypeBuilderDirector.js';
+import { PrivateMethodBuilder } from '../../../../../ast/core/builders/methods/PrivateMethodBuilder.js';
+import { BitloopsPrimaryTypeDirector } from '../../../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
 type TDomainServiceHandlerTestCase = {
   description: string;
@@ -46,6 +48,46 @@ export const VALID_DOMAIN_SERVICE_TEST_CASES: Array<TDomainServiceHandlerTestCas
     ),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/domain-service/domainService.mock.ts',
+    ),
+  },
+  {
+    description: 'Simple Domain Service with public and private methods',
+    domainService:
+      new DomainServiceNodeBuilderDirector().buildDomainServiceWithPublicPrivateMethods(
+        'MarketingNotificationService',
+        [
+          new ParameterBuilderDirector().buildIdentifierParameter(
+            'notificationTemplateRepoPort',
+            'NotificationTemplateReadRepoPort',
+          ),
+        ],
+        [
+          new PublicMethodBuilder()
+            .withIdentifier('getNotificationTemplateToBeSent')
+            .withParameters(
+              new ParameterListBuilderDirector().buildParams([
+                new ParameterBuilderDirector().buildIdentifierParameter('account', 'AccountEntity'),
+              ]),
+            )
+            .withReturnType(
+              new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
+                'NotificationResponse',
+              ),
+            )
+            .build(),
+        ],
+        [
+          new PrivateMethodBuilder()
+            .withIdentifier('isTemplateCorrect')
+            .withParameters(new ParameterListBuilderDirector().buildParams([]))
+            .withPrimaryReturnType(
+              new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
+            )
+            .build(),
+        ],
+      ),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain-service/domainServiceWithPrivateMethod.mock.ts',
     ),
   },
 ];

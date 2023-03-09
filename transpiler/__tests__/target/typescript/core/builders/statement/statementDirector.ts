@@ -12,6 +12,8 @@ import { BreakStatementNode } from '../../../../../../src/ast/core/intermediate-
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { ReturnErrorStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
 import { ReturnErrorStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
+import { ReturnStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnStatementNode.js';
+import { ReturnStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnStatementBuilder.js';
 
 export class StatementBuilderDirector {
   /**
@@ -49,6 +51,10 @@ export class StatementBuilderDirector {
 
   buildReturnErrorStatement(expression: ExpressionNode): ReturnErrorStatementNode {
     return new ReturnErrorStatementNodeBuilder().withExpression(expression).build();
+  }
+
+  buildReturnStatement(expression: ExpressionNode): ReturnStatementNode {
+    return new ReturnStatementNodeBuilder().withExpression(expression).build();
   }
 
   buildExpressionEntityEvaluationWithIdentifier(
