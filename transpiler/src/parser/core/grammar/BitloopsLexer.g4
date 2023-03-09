@@ -189,6 +189,7 @@ IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
 StandardVO:                     'StandardVO';
 IntegrationEvent:               'IntegrationEvent';
+DomainService:                  'DomainService';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
@@ -323,6 +324,8 @@ QueryHandlerIdentifier:         UpperCaseStart IdentifierPart* QueryHandler;
 IntegrationEventIdentifier:     UpperCaseStart IdentifierPart* IntegrationEvent;
 DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandler;
 IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
+DomainServiceIdentifier:        UpperCaseStart IdentifierPart* DomainService;
+SetLanguage:                    'setLanguage';
 SetBuses:                       'setBuses';
 TypeScript:                     'TypeScript';
 Java:                           'Java';
@@ -334,7 +337,6 @@ GraphQLServer:                  'GraphQLServer';
 RESTServer:                     'RESTServer';
 
 // Buses
-SetLanguage:                    'setLanguage';
 CommandBus:                     'COMMAND_BUS';
 EventBus:                       'EVENT_BUS';
 IntegrationEventBus:            'INTEGRATION_EVENT_BUS';

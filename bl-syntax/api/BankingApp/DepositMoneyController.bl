@@ -14,7 +14,7 @@ RESTController DepositMoneyController () { // The command bus will be set from t
           accountId: accountId,
       });
       
-      const result = this.commandBus.request(command) // Does request sound good?(instead of sendAndGetResponse)
+      const result = this.commandBus.request(command); // Does request sound good?(instead of sendAndGetResponse)
   
       if (result is Error) {
         switch (result.getClass()) {

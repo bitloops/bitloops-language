@@ -31,7 +31,7 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
     return this.props.title;
   }
   private isValidName(name: string, title: TitleVO): boolean {
-    this.props.title = title.value;
+    this.props.title = title;
     return true;
   }
   public complete(): Either<TodoEntity, never> {

@@ -19,16 +19,16 @@
  */
 import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 import {
-  TDomainMethodValuesOkErrorReturnType,
-  TDomainMethodValuesPrimaryReturnType,
-  TDomainPrivateMethod,
+  TPrivateMethod,
+  TPrivateMethodValuesOkErrorReturnType,
+  TPrivateMethodValuesPrimaryReturnType,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export const getDomainMethodReturnTypeTarget = (
-  methodValues: TDomainMethodValuesPrimaryReturnType | TDomainMethodValuesOkErrorReturnType,
+  methodValues: TPrivateMethodValuesPrimaryReturnType | TPrivateMethodValuesOkErrorReturnType,
 ): TTargetDependenciesTypeScript => {
   if (hasOkErrorReturnType(methodValues)) {
     return modelToTargetLanguage({
@@ -43,7 +43,7 @@ export const getDomainMethodReturnTypeTarget = (
   }
 };
 
-const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenciesTypeScript => {
+const domainPrivateMethod = (methodInfo: TPrivateMethod): TTargetDependenciesTypeScript => {
   const { privateMethod } = methodInfo;
   if (!privateMethod) return { output: '', dependencies: [] };
   const { statements } = privateMethod;
@@ -76,4 +76,5 @@ const domainPrivateMethod = (methodInfo: TDomainPrivateMethod): TTargetDependenc
     ],
   };
 };
+
 export { domainPrivateMethod };

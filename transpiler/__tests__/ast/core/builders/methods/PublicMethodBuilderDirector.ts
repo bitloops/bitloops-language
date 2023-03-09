@@ -1,4 +1,4 @@
-import { TDomainPublicMethod, TEvaluationField } from '../../../../../src/types.js';
+import { TPublicMethod, TEvaluationField } from '../../../../../src/types.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { IdentifierBuilder } from '../identifier.js';
 import { ParameterListBuilderDirector } from '../parameterListBuilderDirector.js';
@@ -22,7 +22,7 @@ export class PublicMethodBuilderDirector {
     methodName: string;
     entityName: string;
     entityFields: TEvaluationField[];
-  }): TDomainPublicMethod {
+  }): TPublicMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildParams([]))
@@ -50,7 +50,7 @@ export class PublicMethodBuilderDirector {
     entityName: string;
     entityFields: TEvaluationField[];
     identifierName: string;
-  }): TDomainPublicMethod {
+  }): TPublicMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildParams([]))

@@ -231,6 +231,7 @@ sourceElement
     | domainEventHandlerDeclaration
     | integrationEventHandlerDeclaration
     | servicePortDeclaration
+    | domainServiceDeclaration
     ;
 
 // TODO fix JestTestReturnOkErrorType
@@ -572,7 +573,14 @@ eventHandlerHandleIdentifier
 domainEventHandlerHandleParameter
     : parameterIdentifier Colon eventHandlerHandleIdentifier
     ;
-//
+
+domainServiceIdentifier
+    : DomainServiceIdentifier
+    ;
+
+domainServiceDeclaration
+    : DomainService domainServiceIdentifier parameterList OpenBrace publicMethodDeclarationList? privateMethodDeclarationList? CloseBrace SemiColon?
+    ;
 
 integrationEventHandlerIdentifier
     : IntegrationEventHandlerIdentifier

@@ -19,8 +19,8 @@
  */
 import {
   TContextData,
-  TDomainPrivateMethods,
-  TDomainPublicMethods,
+  TPrivateMethods,
+  TPublicMethods,
   TEntityValues,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
@@ -33,8 +33,8 @@ import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/
 import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 
 const entityMethods = (
-  privateMethods: TDomainPrivateMethods,
-  publicMethods: TDomainPublicMethods,
+  privateMethods: TPrivateMethods,
+  publicMethods: TPublicMethods,
 ): TTargetDependenciesTypeScript => {
   const result = domainMethods(publicMethods, privateMethods);
 

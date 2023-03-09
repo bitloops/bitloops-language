@@ -1,12 +1,10 @@
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IdentifierExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { ParameterNode } from '../../../../../ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { StatementNode } from '../../../../../ast/core/intermediate-ast/nodes/statements/Statement.js';
 
 interface NodeWithDependencies extends IntermediateASTNode {
   getStatements(): StatementNode[];
-  getMethodParameters(): ParameterNode[];
 }
 
 export class AppendDotValueNodeTSTransformer {
@@ -19,11 +17,8 @@ export class AppendDotValueNodeTSTransformer {
    * and append .value to them
    */
   public transformDotValueOfDomainEvaluations(): void {
-    const parameters = this.node.getMethodParameters();
     const statements = this.node.getStatements();
-    const identifiersOfDomainEvaluations = this.tree.getIdentifiersOfDomainEvaluations(statements);
-    const identifiersOfDomainTypes = this.tree.getIdentifiersOfDomainTypes(parameters);
-    const identifiersToBeUpdated = [...identifiersOfDomainEvaluations, ...identifiersOfDomainTypes];
+    const identifiersToBeUpdated = this.tree.getIdentifiersOfDomainEvaluations(statements);
     const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(
       statements,
       identifiersToBeUpdated,

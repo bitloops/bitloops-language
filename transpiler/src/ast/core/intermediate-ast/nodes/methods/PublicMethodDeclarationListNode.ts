@@ -6,7 +6,7 @@ export class PublicMethodDeclarationListNode extends IntermediateASTNode {
 
   constructor(metadata?: TNodeMetadata) {
     super(
-      BitloopsTypesMapping.TDomainPublicMethods,
+      BitloopsTypesMapping.TPublicMethods,
       metadata,
       PublicMethodDeclarationListNode.classNodeName,
     );

@@ -2,7 +2,7 @@ import {
   TBitloopsIdentifier,
   TBitloopsPrimaryType,
   TBitloopsPrimitives,
-  TDomainPrivateMethod,
+  TPrivateMethod,
   TStatements,
 } from '../../../../../src/types.js';
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
@@ -28,7 +28,7 @@ export class PrivateMethodBuilderDirector {
     booleanValue: boolean;
     methodName: string;
     paramName: string;
-  }): TDomainPrivateMethod {
+  }): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))
@@ -47,7 +47,7 @@ export class PrivateMethodBuilderDirector {
     methodName: string;
     returnType: TBitloopsPrimitives;
     statements: TStatements;
-  }): TDomainPrivateMethod {
+  }): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(
@@ -64,7 +64,7 @@ export class PrivateMethodBuilderDirector {
       .build();
   }
 
-  buildMethodOkErrorReturnTypeWithNoStatements(methodName: string): TDomainPrivateMethod {
+  buildMethodOkErrorReturnTypeWithNoStatements(methodName: string): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters({ parameters: [] })
@@ -85,7 +85,7 @@ export class PrivateMethodBuilderDirector {
     paramName: string;
     statements: TStatements;
     primaryReturnType: TBitloopsPrimaryType;
-  }): TDomainPrivateMethod {
+  }): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))

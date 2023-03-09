@@ -535,30 +535,35 @@ export type TConstantVariable = {
   name: string;
 };
 
-export type TDomainPrivateMethods = TDomainPrivateMethod[];
+export type TPrivateMethods = TPrivateMethod[];
 
 type TStatic = {
   static: boolean;
 };
 
-export type TDomainMethodValues = {
+export type TPrivateMethodValues = {
   identifier: TIdentifier;
   statements: TStatements;
 } & TParameterList &
   TStatic;
 
-export type TDomainMethodValuesPrimaryReturnType = TDomainMethodValues & TBitloopsPrimaryType;
+export type TPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType & TPrivateMethodValues;
 
-export type TDomainMethodValuesOkErrorReturnType = TDomainMethodValues & TOkErrorReturnType;
+export type TPrivateMethodValuesOkErrorReturnType = TPrivateMethodValues & TOkErrorReturnType;
 
-export type TDomainPrivateMethod = {
-  privateMethod: TDomainMethodValuesPrimaryReturnType | TDomainMethodValuesOkErrorReturnType;
+export type TPrivateMethod = {
+  privateMethod: TPrivateMethodValuesPrimaryReturnType | TPrivateMethodValuesOkErrorReturnType;
 };
 
-export type TDomainPublicMethods = TDomainPublicMethod[];
+export type TPublicMethods = TPublicMethod[];
 
-export type TDomainPublicMethod = {
-  publicMethod: TDomainMethodValuesPrimaryReturnType | TDomainMethodValuesOkErrorReturnType;
+export type TPublicMethod = {
+  publicMethod: {
+    identifier: TIdentifier;
+    statements: TStatements;
+  } & TOkErrorReturnType &
+    TParameterList &
+    TStatic;
 };
 
 export type TReturnOkType = {
@@ -594,7 +599,7 @@ export type TValueObject = {
   ValueObject: {
     valueObjectIdentifier: TValueObjectIdentifier;
     constants?: TConstDeclaration[]; //TConstantVariable[];
-    privateMethods?: TDomainPrivateMethods;
+    privateMethods?: TPrivateMethods;
   } & TValueObjectCreate;
 };
 
@@ -608,8 +613,8 @@ export type TEntity = {
 
 export type TEntityValues = {
   constants?: TConstDeclaration[]; // TConstantVariable[];
-  publicMethods?: TDomainPublicMethods;
-  privateMethods?: TDomainPrivateMethods;
+  publicMethods?: TPublicMethods;
+  privateMethods?: TPrivateMethods;
 } & TEntityCreate;
 
 export type TEntityCreate = TDomainCreateMethod;
@@ -1278,3 +1283,13 @@ export type TIntegrationEventHandler = {
 export enum IntegrationEventHandlerOptions {
   eventVersion = 'eventVersion',
 }
+
+export const domainServiceKey = 'domainService';
+export type TDomainService = {
+  [domainServiceKey]: {
+    identifier: TIdentifier;
+    constants?: TConstDeclaration[];
+    publicMethods: TPublicMethods;
+    privateMethods?: TPrivateMethods;
+  } & TParameterList;
+};
