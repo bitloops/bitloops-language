@@ -48,7 +48,7 @@
     "tsutils": "~3.21",
     "ttypescript": "^1.5.13",
     "typescript": "^4.7.4",
-    "webpack": "^5.74.0",
+    "webpack": "^5.76.1",
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
