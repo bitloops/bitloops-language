@@ -1,6 +1,6 @@
 ---
 sidebar_label: DTO
-title: Bitloops Language - DTO - Basic Syntax 
+title: Data Transfer Object (DTO) - Basic Syntax 
 description: DTO syntax on Bitloops Language - DTOs are data transfer objects, meaning their sole responsibility is to transfer objects from one service to another, and correct configuration of these DTOs reduces communication costs considerably.  
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, dto]
 ---
@@ -89,7 +89,7 @@ HelloWorldResponseDTO({
 
 If a parameter is missing and it is not optional, appropriate errors will be thrown in the controllers.
 
-Finally, a DTO can have nested [Structs](https://bitloops.com/docs/bitloops-language/components/mapper) in it as follows:
+Finally, a DTO can have nested [Structs](./mapper.md) in it as follows:
 
 ```typescript
 

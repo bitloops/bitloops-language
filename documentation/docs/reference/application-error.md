@@ -1,6 +1,6 @@
 ---
 sidebar_label: ApplicationError
-title: Bitloops Language - ApplicationError - Basic Syntax 
+title: ApplicationError - Basic Syntax 
 description: ApplicationError syntax on Bitloops Language - Application Erros occur when there is an error in the application layer where interaction with external parts is initiated 
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
 ---

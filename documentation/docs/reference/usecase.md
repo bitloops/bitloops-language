@@ -1,6 +1,6 @@
 ---
 sidebar_label: UseCase
-title: Bitloops Language - UseCase - Basic Syntax 
+title: Use Case - Basic Syntax 
 description: UseCase syntax on Bitloops Language - Use Cases define the main features of an application and coordinate the execution of tasks by entities, domain services and any other code in the system.  
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
 ---
@@ -9,9 +9,9 @@ keywords: [bitloops, bitloops language, basic syntax, programming language, vari
 
 ### Definition
 
-**_UseCases_** (also known as Application Services) are the main features of the application. They coordinate among [Entities](https://bitloops.com/docs/bitloops-language/components/entity), Domain Services, handle database commands/queries and can issue out [Integration Events](https://bitloops.com/docs/bitloops-language/components/integration-event). They perform either a COMMAND(like _createTodo_) or a QUERY(like _getTodoById_) against the system.
+**_UseCases_** (also known as Application Services) are the main features of the application. They coordinate among [Entities](./entity.md), Domain Services, handle database commands/queries and can issue out [Integration Events](./integration-event.md). They perform either a COMMAND(like _createTodo_) or a QUERY(like _getTodoById_) against the system.
 
-We should strive to push all business domain logic into the domain model, whether that be in [Aggregates](https://bitloops.com/docs/bitloops-language/components/entity), [ValueObjects](https://bitloops.com/docs/bitloops-language/components/value-object) or
+We should strive to push all business domain logic into the domain model, whether that be in [Aggregates](./entity.md), [ValueObjects](./value-object.md) or
 Domain Services. Keep Application Services thin, using them only to coordinate tasks on the model. [^vaughnvernon2013]
 
 ### Examples
@@ -64,7 +64,7 @@ const result = this.updateTodoUseCase.execute(dto);
 
 References for the above:
 
-- [DTO](https://bitloops.com/docs/bitloops-language/components/dto)
+- [DTO](./dto.md)
 
 ### Further reading
 

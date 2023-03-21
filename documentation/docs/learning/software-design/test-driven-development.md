@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 sidebar_label: Test Driven Development
 title: Test Driven Development - What is Test Driven Development (TDD)? 
 description: Test-driven development (TDD) is a software development process the encourages developers to build test cases that represent the exepcted outcomes before the development of the actual code. 

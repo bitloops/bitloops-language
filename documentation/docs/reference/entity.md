@@ -1,6 +1,6 @@
 ---
 sidebar_label: Entity
-title: Bitloops Language - Entity - Basic Syntax 
+title: Entity - Basic Syntax 
 description: Entity syntax on Bitloops Language - An entity is a representation of an object that has an identity. It is unique!
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, entity]
 ---
@@ -10,12 +10,12 @@ keywords: [bitloops, bitloops language, basic syntax, programming language, vari
 An *entity* is an object defined primarily by its idenity. [^Evans2004]
 
 The above definition requires all ***Entities*** to have some sort of identifier attached to them.
-This is unlike a [ValueObject](https://bitloops.com/docs/bitloops-language/components/value-object) that holds attributes with specific qualities but no identifier to distinguish
+This is unlike a [ValueObject](./value-object.md) that holds attributes with specific qualities but no identifier to distinguish
 between different values.
 
 An example of an ***Entity*** could be an *Address* that has a unique identifier through
-which it can be referenced by other ***Entities*** using its Id without needing to directly store the values of the ***Entity*** in that object. On the other hand, an *Address* could alternatively be represented by a [ValueObject](https://bitloops.com/docs/bitloops-language/components/value-object) under different circumstances. In a software printing out envelopes, an *Address* could simply be a
-[ValueObject](https://bitloops.com/docs/bitloops-language/components/value-object) because it would represent just
+which it can be referenced by other ***Entities*** using its Id without needing to directly store the values of the ***Entity*** in that object. On the other hand, an *Address* could alternatively be represented by a [ValueObject](./value-object.md) under different circumstances. In a software printing out envelopes, an *Address* could simply be a
+[ValueObject](./value-object.md) because it would represent just
 a value being printed on an envelope. Nonetheless, for a postal service an
 address's history might need to be tracked e.g. to forward mail sent to the old address, to the new address, in which case an ***Entity*** would be more appropriate.
 

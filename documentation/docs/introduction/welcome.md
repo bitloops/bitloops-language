@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 sidebar_label: Welcome!
-title: Welcome to Bitloops! Software Engineering Superpowers! 
+title: Bitloops gives you Software Engineering Superpowers! 
 description: Introduction to Bitloops, how it works and how it can help you build better software. Bitloops incorporates industry best-practices and design principles into your software development process. 
 keywords: [bitloops, bitloops tutorial, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
@@ -45,4 +45,4 @@ As a next step, we recommend one of 2 choices:
 
 💡 Get an idea of what Bitloops has to offer through this [Bitloops @ a Glance](https://bitloops.com/docs/bitloops-language/introduction/Bitloops_at_a_glance)
 
-🛠️ Run the [Quick Start example](https://bitloops.com/docs/bitloops-language/category/getting-started) to learn how Bitloops works in practice
+🛠️ Run the [Quick Start example](https://bitloops.com/docs/bitloops-language/getting-started/quick-start) to learn how Bitloops works in practice

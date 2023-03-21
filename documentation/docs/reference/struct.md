@@ -1,6 +1,6 @@
 ---
 sidebar_label: Struct
-title: Bitloops Language - Struct - Basic Syntax 
+title: Struct - Basic Syntax 
 description: Struct syntax on Bitloops Language - Structs are used to store items in key/value pairs to then be accessed with the use of an index. Structs are similar to objects in Javascript. 
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, struct]
 ---

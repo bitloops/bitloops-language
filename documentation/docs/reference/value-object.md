@@ -1,6 +1,6 @@
 ---
 sidebar_label: ValueObject
-title: Bitloops Language - ValueObject - Basic Syntax 
+title: Value Object - Basic Syntax 
 description: ValueObject syntax on Bitloops Language - Value objects are objects that do not have an identidy. There are objects that represent a characteristic and do not identify an variable or object.   
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
 ---
@@ -61,8 +61,8 @@ ValueObject <identifier name with a VO suffix> {
 ```
 
 References for the above:
-* [props](https://bitloops.com/docs/bitloops-language/components/props)
+* [props](./props.md)
 
 
 ### Further reading
-- [Value Objects-Martin Fowler](https://martinfowler.com/bliki/ValueObject.html)
+- [Value Objects - Martin Fowler](https://martinfowler.com/bliki/ValueObject.html)

@@ -1,6 +1,6 @@
 ---
 sidebar_label: RepoPort
-title: Bitloops Language - RepoPort - Basic Syntax 
+title: Repository Port - Basic Syntax 
 description: RepoPort syntax on Bitloops Language - Repository Ports allows developers to declare an interface to connect different databases easily using a Repository Adapter.
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, repoport, repository port]
 ---
@@ -14,17 +14,17 @@ It acts as an interface, in order to declare methods which will be later be impl
 More information not available yet!
 ```
 
-## Syntax
+### Syntax
 
 ```
 Not available yet!
 ```
 
-# CRUDRepoPort
+## CRUDRepoPort
 
 The CRUDRepoPort is a RepoPort which could be used in order to get out of the box [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations functionality ready to utilize, for a specific **Aggregate**.
 
-## Syntax
+### Syntax
 
 ```typescript
  RepoPort MyHelloRepoPort<MyAggregate> extends CRUDRepoPort;
@@ -100,7 +100,7 @@ More custom methods can be added to a **RepoPort** which extends the **CRUDRepoP
 
 ---
 
-Finally in order to be able to connect a specific database to the specific RepoPort, a declaration of the specific concretion for this port via a ready to use adapter should be added at the setup. The syntax for using a mongo database could be as follows (for more information check the [RepoAdapters section](https://bitloops.com/docs/bitloops-language/components/repository-adapter)):
+Finally in order to be able to connect a specific database to the specific RepoPort, a declaration of the specific concretion for this port via a ready to use adapter should be added at the setup. The syntax for using a mongo database could be as follows (for more information check the [RepoAdapters section](./repository-adapter.md)):
 
 ```typescript
  RepoAdapters.Mongo concretes [Demo][Hello World]MyHelloRepoPort;

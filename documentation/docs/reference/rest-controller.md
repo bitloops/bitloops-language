@@ -1,6 +1,6 @@
 ---
 sidebar_label: RESTController
-title: Bitloops Language - RESTController - Basic Syntax 
+title: RESTController - Basic Syntax 
 description: RESTController syntax on Bitloops Language - RESTController is used to make restful web services and handle requests made by clients. More specifically, it can handle REST APIs such as GET, POST, DELETE, PUT and PATCH.   
 keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, restcontroller]
 ---
@@ -10,7 +10,7 @@ keywords: [bitloops, bitloops language, basic syntax, programming language, vari
 ### Definition
 
 **_RESTController_** is used for making restful web services and handle the requests made by the client. It allows to handle all REST APIs such as GET, POST, DELETE, PUT, PATCH requests.
-**_RestController_** creates the request [DTO](https://bitloops.com/docs/bitloops-language/components/dto) and executes the [UseCase](https://bitloops.com/docs/bitloops-language/components/usecase) with this DTO created. Then, it just handles the result to present with the appropriate format and status code, the data to the client.
+**_RestController_** creates the request [DTO](./dto.md) and executes the [UseCase](./usecase.md) with this DTO created. Then, it just handles the result to present with the appropriate format and status code, the data to the client.
 
 ### Examples
 
@@ -58,7 +58,8 @@ keywords: [bitloops, bitloops language, basic syntax, programming language, vari
 
 References for the above:
 
-- [UseCase](https://bitloops.com/docs/bitloops-language/components/usecase)
+- [UseCase](./usecase.md)
+- [DTO](./dto.md)
 
 ### Further reading
 

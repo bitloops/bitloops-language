@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 sidebar_label: Bitloops @ a Glance!
-title: Bitloops Summary - Concise explanation of what is Bitloops
+title: What is Bitloops? A modern development platform
 description: Want to learn more about Bitloops? This article provides a concise description of what Bitloops is, our vision and how it can help you build better software, faster!
 keywords: [bitloops, bitloops tutorial, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
 ---
@@ -57,6 +57,6 @@ Yes, BL is different. But at the same time, BL is the same. That's the beauty of
 
 ## What's next?
 
-💡 Read more about [Bitloops’ vision and “Big Idea”](https://bitloops.com/docs/bitloops-language/intro/big_idea)
+💡 Read more about [Bitloops’ vision and “Big Idea”](https://bitloops.com/docs/bitloops-language/introduction/bigidea)
 
-🛠️ [Run the Quick Start example](https://bitloops.com/docs/bitloops-language/category/getting-started) to get an idea of Bitloops’ potential
+🛠️ [Run the Quick Start example](https://bitloops.com/docs/bitloops-language/getting-started/quick-start) to get an idea of Bitloops’ potential
