@@ -1,8 +1,25 @@
 ---
 sidebar_label: GraphQLController
-title: Bitloops Language - GraphQLController - Basic Syntax 
-description: GraphQLController syntax on Bitloops Language - GraphQLController is a controller specifically for GraphQL which Bitloops has defined up-front. 
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, GraphQLController]
+title: GraphQLController - Basic Syntax
+description: GraphQLController syntax on Bitloops Language - GraphQLController is a controller specifically for GraphQL which Bitloops has defined up-front.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    GraphQLController,
+  ]
 ---
 
 # GraphQLController

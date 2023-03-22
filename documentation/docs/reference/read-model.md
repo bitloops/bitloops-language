@@ -1,8 +1,24 @@
 ---
 sidebar_label: ReadModel
-title: Bitloops Language - ReadModel - Basic Syntax 
-description: ReadModel syntax on Bitloops Language - Read Model is simply a model that is built specifically for queries and reading the data. This improves performance and reduces communication costs.  
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
+title: ReadModel - Basic Syntax
+description: ReadModel syntax on Bitloops Language - Read Model is simply a model that is built specifically for queries and reading the data. This improves performance and reduces communication costs.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+  ]
 ---
 
 # ReadModel

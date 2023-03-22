@@ -1,24 +1,41 @@
 ---
 sidebar_label: DTO
-title: Bitloops Language - DTO - Basic Syntax 
-description: DTO syntax on Bitloops Language - DTOs are data transfer objects, meaning their sole responsibility is to transfer objects from one service to another, and correct configuration of these DTOs reduces communication costs considerably.  
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, dto]
+title: Data Transfer Object (DTO) - Basic Syntax
+description: DTO syntax on Bitloops Language - DTOs are data transfer objects, meaning their sole responsibility is to transfer objects from one service to another, and correct configuration of these DTOs reduces communication costs considerably.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    dto,
+  ]
 ---
 
 # Data Transfer Object (DTO)
 
-
 ### Definition
 
-A Data Transfer Object (DTO) is an object that is used to encapsulate data and carry data between independent parts of the system or even between different systems (for example between Controllers adn client applications). DTOs are simple objects that do not contain any business logic or behaviour and are only used for storage, retrieval, serialization and deserialization of its own data. DTOs can reduce the number of method calls required between processes.   
+A Data Transfer Object (DTO) is an object that is used to encapsulate data and carry data between independent parts of the system or even between different systems (for example between Controllers adn client applications). DTOs are simple objects that do not contain any business logic or behaviour and are only used for storage, retrieval, serialization and deserialization of its own data. DTOs can reduce the number of method calls required between processes.
 
 DTOs are very common in other programming languages:
-* TypeScript ->  represented as a type
-* Go -> represented as a type struct
-* Java -> represented as a JavaBean or POJO  
 
+- TypeScript -> represented as a type
+- Go -> represented as a type struct
+- Java -> represented as a JavaBean or POJO
 
 ### Syntax
+
 ##### Declaring a DTO
 
 Declaring a DTO is fairly simple:
@@ -66,8 +83,8 @@ For `HelloWorldRequestDTO`:
 
 ```typescript
 HelloWorldRequestDTO({
-  name: 'John Doe',
-  email: 'johndoe@somewhere.com',
+  name: "John Doe",
+  email: "johndoe@somewhere.com",
 });
 ```
 
@@ -75,7 +92,7 @@ As the parameter `email` is optional, it could also be:
 
 ```typescript
 HelloWorldRequestDTO({
-  name: 'John Doe',
+  name: "John Doe",
 });
 ```
 
@@ -83,13 +100,13 @@ For `HelloWorldResponseDTO`:
 
 ```typescript
 HelloWorldResponseDTO({
-  message: 'OK',
+  message: "OK",
 });
 ```
 
 If a parameter is missing and it is not optional, appropriate errors will be thrown in the controllers.
 
-Finally, a DTO can have nested [Structs](https://bitloops.com/docs/bitloops-language/components/mapper) in it as follows:
+Finally, a DTO can have nested [Structs](./mapper.md) in it as follows:
 
 ```typescript
 
@@ -108,7 +125,7 @@ PersonDTO ({
 
 ### Further reading
 
-* [Wikipedia - Data Transfor Object](https://en.wikipedia.org/wiki/Data_transfer_object)
-* [StackOverflow - What is a Data Transfer Object (DTO)?](https://stackoverflow.com/questions/1051182/what-is-a-data-transfer-object-dto)
-* [Martin Fowler - Data Transfer Object](https://martinfowler.com/eaaCatalog/dataTransferObject.html)
-* [Baeldung - The DTO Pattern (Data Transfer Object)](https://www.baeldung.com/java-dto-pattern)
+- [Wikipedia - Data Transfor Object](https://en.wikipedia.org/wiki/Data_transfer_object)
+- [StackOverflow - What is a Data Transfer Object (DTO)?](https://stackoverflow.com/questions/1051182/what-is-a-data-transfer-object-dto)
+- [Martin Fowler - Data Transfer Object](https://martinfowler.com/eaaCatalog/dataTransferObject.html)
+- [Baeldung - The DTO Pattern (Data Transfer Object)](https://www.baeldung.com/java-dto-pattern)

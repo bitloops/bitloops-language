@@ -1,29 +1,46 @@
 ---
 sidebar_label: Entity
-title: Bitloops Language - Entity - Basic Syntax 
+title: Entity - Basic Syntax
 description: Entity syntax on Bitloops Language - An entity is a representation of an object that has an identity. It is unique!
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, entity]
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    entity,
+  ]
 ---
 
 # Entity
 
-An *entity* is an object defined primarily by its idenity. [^Evans2004]
+An _entity_ is an object defined primarily by its idenity. [^evans2004]
 
-The above definition requires all ***Entities*** to have some sort of identifier attached to them.
-This is unlike a [ValueObject](https://bitloops.com/docs/bitloops-language/components/value-object) that holds attributes with specific qualities but no identifier to distinguish
+The above definition requires all **_Entities_** to have some sort of identifier attached to them.
+This is unlike a [ValueObject](./value-object.md) that holds attributes with specific qualities but no identifier to distinguish
 between different values.
 
-An example of an ***Entity*** could be an *Address* that has a unique identifier through
-which it can be referenced by other ***Entities*** using its Id without needing to directly store the values of the ***Entity*** in that object. On the other hand, an *Address* could alternatively be represented by a [ValueObject](https://bitloops.com/docs/bitloops-language/components/value-object) under different circumstances. In a software printing out envelopes, an *Address* could simply be a
-[ValueObject](https://bitloops.com/docs/bitloops-language/components/value-object) because it would represent just
+An example of an **_Entity_** could be an _Address_ that has a unique identifier through
+which it can be referenced by other **_Entities_** using its Id without needing to directly store the values of the **_Entity_** in that object. On the other hand, an _Address_ could alternatively be represented by a [ValueObject](./value-object.md) under different circumstances. In a software printing out envelopes, an _Address_ could simply be a
+[ValueObject](./value-object.md) because it would represent just
 a value being printed on an envelope. Nonetheless, for a postal service an
-address's history might need to be tracked e.g. to forward mail sent to the old address, to the new address, in which case an ***Entity*** would be more appropriate.
+address's history might need to be tracked e.g. to forward mail sent to the old address, to the new address, in which case an **_Entity_** would be more appropriate.
 
-A very special type of ***Entity*** is the ***Root Entity***. You can think of a ***Root Entity*** as an entity that can be directly looked up using just its Id without relying on a different ***Entity***. For example, in the context of a purchase order, you could have several lines of items (Item 1, Item 2, Item 3 etc.) within that purchase order. Item 1 on its own doesn't mean much, and so a request to a URL such as https://myexamplemarketplace.com/items/1 would make no sense because the Id 1 only makes sense within a specific purchase order such as this https://myexamplemarketplace.com/purchase-order/123/items/1. In this example, the purchase order would have to be a ***Root Entity*** and not a "simple" Entity whereas the item would be just an ***Entity***. If you need help with these concepts don't hesitate to reach out on our Discord.  
+A very special type of **_Entity_** is the **_Root Entity_**. You can think of a **_Root Entity_** as an entity that can be directly looked up using just its Id without relying on a different **_Entity_**. For example, in the context of a purchase order, you could have several lines of items (Item 1, Item 2, Item 3 etc.) within that purchase order. Item 1 on its own doesn't mean much, and so a request to a URL such as https://myexamplemarketplace.com/items/1 would make no sense because the Id 1 only makes sense within a specific purchase order such as this https://myexamplemarketplace.com/purchase-order/123/items/1. In this example, the purchase order would have to be a **_Root Entity_** and not a "simple" Entity whereas the item would be just an **_Entity_**. If you need help with these concepts don't hesitate to reach out on our Discord.
 
-In the literature, you will see a lot of time the words *Aggregate* and *Aggregate Root*. An *Aggregate* is the conceptual combination of a Root Entity and the boundary of all other ***Entities*** placed inside the ***Root Entity*** whereas, an *Aggragate Root* is the ***Root Entity*** of the *Aggregate*. 
+In the literature, you will see a lot of time the words _Aggregate_ and _Aggregate Root_. An _Aggregate_ is the conceptual combination of a Root Entity and the boundary of all other **_Entities_** placed inside the **_Root Entity_** whereas, an _Aggragate Root_ is the **_Root Entity_** of the _Aggregate_.
 
-***Important***: An ***Entity*** can be included in only a single ***Root Entity*** but could be referenced using its Id in several. Other ***Root Entities*** can also be referenced by their Ids in another ***Root Entity*** but cannot be included into another directly.  
+**_Important_**: An **_Entity_** can be included in only a single **_Root Entity_** but could be referenced using its Id in several. Other **_Root Entities_** can also be referenced by their Ids in another **_Root Entity_** but cannot be included into another directly.
 
 ## Example
 
@@ -35,7 +52,7 @@ Root Entity TodoEntity {
   // e.g. private title Title;
   // In such a case, no getter / setter methods are going to be created and you will only be able to access
   // the variable from within class methods.
-  // To access a class variable you use "this." infront of the name of the variable e.g. this.title 
+  // To access a class variable you use "this." infront of the name of the variable e.g. this.title
   constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {}
 
   // methods that return OK/Errors are automatically public, if you need a private one that returns OK/Errors
@@ -77,4 +94,4 @@ DomainError InvalidTitleError(title: string) {
 }
 ```
 
-[^Evans2004]: Eric Evans, Domain Driven Design, 2004
+[^evans2004]: Eric Evans, Domain Driven Design, 2004

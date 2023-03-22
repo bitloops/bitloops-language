@@ -1,8 +1,24 @@
 ---
 sidebar_label: DomainError
-title: Bitloops Language - DomainError - Basic Syntax 
-description: DomainError syntax on Bitloops Language - Domain Erros occur when there is an error in the domain layer of your application and its important to have a predefined template to better manage these errors when they occur.  
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
+title: DomainError - Basic Syntax
+description: DomainError syntax on Bitloops Language - Domain Erros occur when there is an error in the domain layer of your application and its important to have a predefined template to better manage these errors when they occur.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+  ]
 ---
 
 # DomainError
