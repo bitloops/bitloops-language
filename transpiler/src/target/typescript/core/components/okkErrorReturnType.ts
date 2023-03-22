@@ -26,29 +26,26 @@ const okErrorReturnTypeToTargetLanguage = (
   variable: TOkErrorReturnType,
 ): TTargetDependenciesTypeScript => {
   const dependencies = [];
-  if (!variable.ok) {
-    throw new Error('Return okError type must have ok property');
-  }
-  const { errors, ok } = variable;
+  const { errors, ok } = variable.returnType;
 
   const returnOkType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: ok,
+    value: { type: ok.type },
   });
 
   const xor = (ok: string, errors: string[]): string => {
-    if (errors && errors.length != 0) {
+    if (errors && errors.length > 0) {
       return `Either<${ok}, ${errors.join(' | ')}>`;
     } else {
       return `Either<${ok}, never>`;
     }
   };
   dependencies.push(...returnOkType.dependencies);
-  if (errors) {
-    dependencies.push(...getChildDependencies(errors));
-  }
 
-  return { output: xor(returnOkType.output, errors), dependencies };
+  const errorStrings = errors.map((err) => err.error);
+  dependencies.push(...getChildDependencies(errorStrings));
+
+  return { output: xor(returnOkType.output, errorStrings), dependencies };
 };
 
 export { okErrorReturnTypeToTargetLanguage };

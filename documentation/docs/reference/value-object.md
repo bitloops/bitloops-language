@@ -1,16 +1,32 @@
 ---
 sidebar_label: ValueObject
-title: Value Object - Basic Syntax 
-description: ValueObject syntax on Bitloops Language - Value objects are objects that do not have an identidy. There are objects that represent a characteristic and do not identify an variable or object.   
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services]
+title: Value Object - Basic Syntax
+description: ValueObject syntax on Bitloops Language - Value objects are objects that do not have an identidy. There are objects that represent a characteristic and do not identify an variable or object.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+  ]
 ---
 
 # ValueObject
 
 ### Definition
-Value Objects are objects that have no conceptual identity and describe some characteristics of a thing.
-They are defined only by their properties and their equality is not based on identity. 
 
+Value Objects are objects that have no conceptual identity and describe some characteristics of a thing.
+They are defined only by their properties and their equality is not based on identity.
 
 ### Examples
 
@@ -25,6 +41,7 @@ ValueObject TitleVO {
 ```
 
 ##### Using a ValueObject
+
 ```
 const title = TitleVO({ title: requestDTO.title });
 ```
@@ -34,35 +51,35 @@ const title = TitleVO({ title: requestDTO.title });
 ##### Declaring a Value Object
 
 ```typescript
-ValueObject <identifier name with a VO suffix> { 
+ValueObject <identifier name with a VO suffix> {
 
   //constant variable declarations
   const <identifier> : <type> = <expression>;
-  
-  // constructor declaration, here we define whatever needs specific handling during the creation of the value object and 
+
+  // constructor declaration, here we define whatever needs specific handling during the creation of the value object and
   //we use applyRules to ensure its validation. By default automatic getters are generated.
   constructor(<props of the ValueObject>) : (OK(<type>), Errors(<DomainErrorIdentifier> '|' <DomainErrorIdentifier>...)) {
     <statements>
   }
-  
+
   // private method declaration
   <[optional] private> <method identifier> (<arg, arg...>): <type> {
     <statements>
   }
-  
+
 }
 ```
 
 ##### Creating a Value Object
-
 
 ```typescript
 <name of Value Object>(<props>);
 ```
 
 References for the above:
-* [props](./props.md)
 
+- [props](./props.md)
 
 ### Further reading
+
 - [Value Objects - Martin Fowler](https://martinfowler.com/bliki/ValueObject.html)

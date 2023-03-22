@@ -20,23 +20,50 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { ArrayBitloopsPrimType, TBitloopsPrimitives } from '../../../../types.js';
+import { ArrayPrimaryTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
+import { ArrayPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/ArrayPrimaryTypeNode.js';
+import { PrimitiveTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
+import { PrimitiveTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/PrimitiveTypeNode.js';
+import { BitloopsPrimaryTypeBuilder } from '../../intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { produceMetadata } from '../metadata.js';
+
+export const bitloopsPrimaryTypeVisitor = (
+  _thisVisitor: BitloopsVisitor,
+  ctx: BitloopsParser.BitloopsPrimaryTypeContext,
+): BitloopsPrimaryTypeNode => {
+  const metadata = produceMetadata(ctx, _thisVisitor);
+  const [primaryTypeNode] = _thisVisitor.visitChildren(ctx);
+  const bitloopsPrimaryTypeNode = new BitloopsPrimaryTypeBuilder(metadata)
+    .withPrimaryType(primaryTypeNode)
+    .build();
+  return bitloopsPrimaryTypeNode;
+};
 
 export const primitivePrimTypeVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PrimitivePrimTypeContext,
-): TBitloopsPrimitives => {
-  return ctx.primitives().getText();
+): PrimitiveTypeNode => {
+  const metadata = produceMetadata(ctx, _thisVisitor);
+  const primitiveType = ctx.primitives().getText();
+  const primitiveTypeNode = new PrimitiveTypeBuilder(metadata).withType(primitiveType).build();
+  return primitiveTypeNode;
 };
 
 export const arrayBitloopsPrimTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrayBitloopsPrimTypeContext,
-): ArrayBitloopsPrimType => {
-  const value = thisVisitor.visit(ctx.bitloopsPrimaryType());
-  return {
-    arrayType: {
-      value,
-    },
-  };
+): ArrayPrimaryTypeNode => {
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const value = thisVisitor.visit(ctx.bitloopsPrimaryTypeValues());
+  const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder(metadata)
+    .withPrimaryType(value)
+    .build();
+
+  return arrayBitloopsPrimaryTypeNode;
+  // return {
+  //   arrayType: {
+  //     value,
+  //   },
+  // };
 };

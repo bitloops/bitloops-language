@@ -17,41 +17,33 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { v4 as uuid } from 'uuid';
 import { CommandMetadata, ICommand } from './ICommand';
-import { config } from '../../config';
-import { getTopic } from '../../helpers';
+import { config, TOPIC_PREFIXES } from '../../config';
+import { createUUIDv4, getTopic } from '../../helpers';
 
-const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
+const { TOPIC_DELIMITER } = config;
 
 export abstract class Command implements ICommand {
-  private static prefix: string = TOPIC_PREFIXES.Command;
+  private static prefix: TOPIC_PREFIXES.Command = TOPIC_PREFIXES.Command;
 
   public readonly uuid: string;
   private createdTimestamp: number;
   public readonly metadata?: CommandMetadata;
   public readonly commandTopic: string;
-  public readonly toContextId: string;
 
-  constructor(commandName: string, toContextId: string, orchestrated?: boolean) {
-    this.uuid = uuid();
-    this.createdTimestamp = Date.now();
+  constructor(commandName: string, toContextId: string, createdTimestamp?: number) {
+    this.uuid = createUUIDv4();
+    this.createdTimestamp = createdTimestamp || Date.now();
     this.commandTopic = Command.getCommandTopic(commandName, toContextId); //`${toContextId}${TOPIC_DELIMITER}${commandName}`;
-    this.toContextId = toContextId;
     this.metadata = {
       responseTopic: `${commandName}${TOPIC_DELIMITER}${this.uuid}`,
       toContextId,
-      orchestrated: orchestrated ?? false,
+      createdTimestamp: this.createdTimestamp,
     };
   }
 
   // TODO somehow avoid implementing this method in every child command
   static getCommandTopic(commandName: string, toContextId: string): string {
-    return getTopic({
-      topicPrefix: Command.prefix,
-      name: commandName,
-      contextId: toContextId,
-      topicDelimiter: TOPIC_DELIMITER,
-    });
+    return getTopic(Command.prefix, commandName, toContextId);
   }
 }

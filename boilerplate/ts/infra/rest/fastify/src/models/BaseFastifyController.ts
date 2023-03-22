@@ -18,12 +18,11 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { Application } from '@bitloops/bl-boilerplate-core';
+import { Infra } from '@bitloops/bl-boilerplate-core';
 
 // TODO change all errors to be consistent with ErrorMessage
-
 export abstract class BaseFastifyController
-  implements Application.REST.IBaseController<FastifyRequest, FastifyReply>
+  implements Infra.REST.IBaseController<FastifyRequest, FastifyReply>
 {
   protected abstract executeImpl(req: FastifyRequest, res: FastifyReply): Promise<void | any>;
 
@@ -40,7 +39,7 @@ export abstract class BaseFastifyController
   public static jsonResponse(
     res: FastifyReply,
     code: number,
-    message: string | Application.REST.ErrorMessage,
+    message: string | Infra.REST.ErrorMessage,
   ) {
     return res.status(code).send({ error: message });
   }
@@ -58,39 +57,52 @@ export abstract class BaseFastifyController
     return res.status(201).send();
   }
 
-  public clientError(res: FastifyReply, message?: string) {
-    return BaseFastifyController.jsonResponse(res, 400, message ? message : 'Unauthorized');
+  public badRequest(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 400, message ?? 'Bad Request');
   }
 
-  public unauthorized(res: FastifyReply, message?: string) {
-    return BaseFastifyController.jsonResponse(res, 401, message ? message : 'Unauthorized');
+  public unauthorized(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 401, message ?? 'Unauthorized');
   }
 
-  public paymentRequired(res: FastifyReply, message?: string) {
-    return BaseFastifyController.jsonResponse(res, 402, message ? message : 'Payment required');
+  public paymentRequired(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 402, message ?? 'Payment required');
   }
 
-  // public forbidden(res: FastifyReply, message?: ErrorMessage) {
-  //   return BaseFastifyController.jsonResponse(res, 403, message ? message : 'Forbidden');
-  // }
-  public forbidden(res: FastifyReply, message?: Application.REST.ErrorMessage | string) {
-    return BaseFastifyController.jsonResponse(res, 403, message ? message : 'Forbidden');
+  public forbidden(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 403, message ?? 'Forbidden');
   }
 
-  public notFound(res: FastifyReply, message?: Application.REST.ErrorMessage | string) {
-    return BaseFastifyController.jsonResponse(res, 404, message ? message : 'Not found');
+  public notFound(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 404, message ?? 'Not found');
   }
 
-  public conflict(res: FastifyReply, message?: string) {
-    return BaseFastifyController.jsonResponse(res, 409, message ? message : 'Conflict');
+  public methodNotAllowed(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 405, message ?? 'Method not allowed');
   }
 
-  public tooMany(res: FastifyReply, message?: string) {
-    return BaseFastifyController.jsonResponse(res, 429, message ? message : 'Too many requests');
+  public requestTimeout(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 408, message ?? 'Request timeout');
   }
 
-  public todo(res: FastifyReply) {
-    return BaseFastifyController.jsonResponse(res, 400, 'TODO');
+  public conflict(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 409, message ?? 'Conflict');
+  }
+
+  public payloadTooLarge(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 413, message ?? 'Payload too large');
+  }
+
+  public unsupportedMediaType(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 415, message ?? 'Unsupported media type');
+  }
+
+  public unprocessableEntity(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 422, message ?? 'Unprocessable entity');
+  }
+
+  public tooMany(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 429, message ?? 'Too many requests');
   }
 
   //TODO match with error in
@@ -99,5 +111,13 @@ export abstract class BaseFastifyController
     return res.status(500).send({
       error: error.toString(),
     });
+  }
+
+  public badGateway(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 502, message ?? 'Bad gateway');
+  }
+
+  public serverUnavailable(res: FastifyReply, message?: Infra.REST.ErrorMessage) {
+    return BaseFastifyController.jsonResponse(res, 503, message ?? 'Server unavailable');
   }
 }

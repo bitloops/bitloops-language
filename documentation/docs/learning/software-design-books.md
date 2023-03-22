@@ -1,23 +1,29 @@
 ---
 sidebar_position: 8
 sidebar_label: Other learning resources
-title: Best Resources to learn about Software Development 
-description: Comprehensive list of resources every Software Engineer should consume to become a better software engineer. Books, articles, videos and blogs that will transform your understanding of software 
-keywords: [software development, software engineering books, learning software engineering, software architecture, software design patterns]
+title: Best Resources to learn about Software Development
+description: Comprehensive list of resources every Software Engineer should consume to become a better software engineer. Books, articles, videos and blogs that will transform your understanding of software
+keywords:
+  [
+    software development,
+    software engineering books,
+    learning software engineering,
+    software architecture,
+    software design patterns,
+  ]
 ---
 
 # Other learning resources
 
-Creating software is a craft. It requires creativity, ingenuity, critical thinking and problem solving skills. And, like most crafts, the more experience you have, the better crafst-person you become. 
+Creating software is a craft. It requires creativity, ingenuity, critical thinking and problem solving skills. And, like most crafts, the more experience you have, the better crafst-person you become.
 
-Another key aspect about software development is that it requires constant learning. There are so many concepts and ideas from which to draw inspiration, as well as a continuous innovation in technology, patterns and methodologies, that the only way to continue improving your craftsmanship is through continuos learning. 
+Another key aspect about software development is that it requires constant learning. There are so many concepts and ideas from which to draw inspiration, as well as a continuous innovation in technology, patterns and methodologies, that the only way to continue improving your craftsmanship is through continuos learning.
 
 Therefore, we have compiled a list of resources we believe are invaluable, and will help any software engineer become a better developer, designer, lead and manager
 
-
 ## **Books**
 
-Below is a comprehensive list of books that are highly regarding in the software engineering world. Several of these books were published over 10 years ago, but remain as valid today as they were 10 years ago. Those books in particular deserve even more credit and attention. 
+Below is a comprehensive list of books that are highly regarding in the software engineering world. Several of these books were published over 10 years ago, but remain as valid today as they were 10 years ago. Those books in particular deserve even more credit and attention.
 
 Please email us if you believe we've missed a book from this list!
 
@@ -63,10 +69,11 @@ Please email us if you believe we've missed a book from this list!
 
 - [Systems Analysis and Design](https://www.amazon.com/Systems-Analysis-Design-Alan-Dennis/dp/1118897846) – Alan Dennis, Barbara Haley Wixom, Roberta M. Roth
 
+- [Working Effectively with Legacy Code](https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052) - Michael Feathers
 
 ## Videos, Tutorials & Presentations
 
-The internet (in particularly YouTube and TED) has provided the world with access to knowledge and information that is unparalled. One of the most interesting ways to learn (and be entertained) is with the many interesting and engaging videos about software development. 
+The internet (in particularly YouTube and TED) has provided the world with access to knowledge and information that is unparalled. One of the most interesting ways to learn (and be entertained) is with the many interesting and engaging videos about software development.
 
 - ["Uncle Bob": Why are Programmers so slow :)](https://www.youtube.com/watch?v=G6HyEeEcB-w&t=3s)
 
@@ -152,7 +159,7 @@ There are several interesting blogs and newsletters that software engineers can 
 
 - [Alok Mishra](https://alok-mishra.com/) - Alok Mishra
 
-- [Mr. Picky](https://mrpicky.dev/) - 
+- [Mr. Picky](https://mrpicky.dev/) -
 
 - [Nicolò Pignatelli](https://medium.com/@nicolopigna) - Nicolò Pignatelli
 
@@ -168,9 +175,7 @@ There are several interesting blogs and newsletters that software engineers can 
 
 - [FullStackMarket.com](https://fullstackmark.com/blog) - Mark Macneil
 
-
-
-## Special Mention Articles 
+## Special Mention Articles
 
 Below is a list of specific articles (many from the list of blogs mentioned above) that are particularly insightful and worth of a read. Add these to your favorites today and aim to read 1 every 2 days!
 
@@ -228,11 +233,10 @@ Below is a list of specific articles (many from the list of blogs mentioned abov
 
 - [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/) - herbertograca.com
 
-
 ## Never Stop Learning
 
-Software engineering is a craft that requires constant learning and experience. Moreover, there is simply so much being developed and improved on a daily basis, that continuous learning is becoming a key necessity, not simply a nice to have. 
+Software engineering is a craft that requires constant learning and experience. Moreover, there is simply so much being developed and improved on a daily basis, that continuous learning is becoming a key necessity, not simply a nice to have.
 
-The Bitloops team was fortunate to have spent several months devouring many of these resources, then creating mental and actual frameworks of how they all work together. 
+The Bitloops team was fortunate to have spent several months devouring many of these resources, then creating mental and actual frameworks of how they all work together.
 
 The output is Bitloops, which we hope will inspire and enable many more developers to write clean, well-structured code and design high-quality software that can stand the test of time and complexity!

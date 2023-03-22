@@ -18,13 +18,12 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { IQuery } from './IQuery';
-import { IMessage } from '../messages/IMessage';
 import { GenericMessageHandler } from '../messages/IMessageBus';
 
-export type RegisterHandler = GenericMessageHandler<IQuery>;
+export type RegisterHandler<T extends IQuery> = GenericMessageHandler<T>;
 
 export interface IQueryBus {
-  register(queryName: string, registerHandler: RegisterHandler): Promise<void>;
+  register<T extends IQuery>(queryName: string, registerHandler: RegisterHandler<T>): Promise<void>;
   unregister(queryName: string): Promise<void>;
-  query(query: IQuery): Promise<IMessage>;
+  query<T>(query: IQuery): Promise<T>;
 }

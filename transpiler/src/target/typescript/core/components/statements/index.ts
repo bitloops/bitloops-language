@@ -39,7 +39,8 @@ export const keysToTypeMapping = {
   expression: BitloopsTypesMapping.TExpression,
   thisDeclaration: BitloopsTypesMapping.TThisDeclaration,
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
-  buildInFunction: BitloopsTypesMapping.TBuildInFunction,
+  builtInFunction: BitloopsTypesMapping.TBuiltInFunction,
+  breakStatement: BitloopsTypesMapping.TBreakStatement,
 };
 
 const FAIL_DEPENDENCY: TDependenciesTypeScript = [
@@ -52,18 +53,12 @@ const FAIL_DEPENDENCY: TDependenciesTypeScript = [
 ];
 
 const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTypeScript => {
-  if (variable === 'break') {
-    // TODO break statement object-type like other statements?
-    return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBreakStatement,
-      value: variable,
-    });
-  }
   const variableKeys = Object.keys(variable);
   const type = variableKeys[0];
 
   if (!keysToTypeMapping[type]) {
-    throw new Error('Unsupported statement:' + variable);
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    throw new Error(`Unsupported statement:${variable}`);
   }
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable });
 };
@@ -84,8 +79,8 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
               type: BitloopsTypesMapping.TStatement,
               value: statement,
             });
-            const ifAdded = `if (!${constDeclaration.name}.isFail()) {`;
-            elseAdded.push(`} else { return fail(${constDeclaration.name}.value) }`);
+            const ifAdded = `if (!${constDeclaration.identifier}.isFail()) {`;
+            elseAdded.push(`} else { return fail(${constDeclaration.identifier}.value) }`);
             const dependencies = [...evaluationRes.dependencies, ...FAIL_DEPENDENCY];
             return {
               output: `${evaluationRes.output}${ifAdded}`,

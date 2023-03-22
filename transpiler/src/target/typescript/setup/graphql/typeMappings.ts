@@ -1,3 +1,5 @@
+import { TBitloopsPrimitives } from '../../../../types.js';
+
 /**
  *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
@@ -17,7 +19,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-const mapBitloopsPrimitiveToGraphQL = (type: string, optional?: boolean): string => {
+const mapBitloopsPrimitiveToGraphQL = (type: TBitloopsPrimitives, optional?: boolean): string => {
   // TODO how we define arrays and objects
   let result = '';
 

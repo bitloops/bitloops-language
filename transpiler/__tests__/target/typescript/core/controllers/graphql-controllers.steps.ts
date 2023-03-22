@@ -17,41 +17,46 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { decode } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
-const feature = loadFeature(
-  './__tests__/target/typescript/core/controllers/graphql-controllers.feature',
-);
+import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../../src/target/index.js';
+import { formatString } from '../../../../../src/target/typescript/core/codeFormatting.js';
+import { VALID_GRAPHQL_CONTROLLER_TEST_CASES } from '../mocks/controllers/graphqlController.js';
 
-defineFeature(feature, (test) => {
-  let propsType;
-  let result;
-  let value;
+describe('Statements test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-  test('GraphQL Controllers success to Typescript', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      propsType = type;
-    });
+  VALID_GRAPHQL_CONTROLLER_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const input = testCase.controller;
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      tree.insertChild(input);
 
-    given(/^I have some graphQL controllers (.*)$/, (controllers) => {
-      value = decode(controllers);
-    });
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
 
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
+      const targetGenerator = new TargetGenerator();
 
-      result = modelToTargetLanguage({
-        type: propsType,
-        value: propsValue,
+      // when
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(decode(output));
+      //then
+      const formattedOutput = formatString(testCase.output, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(result['core'][0].fileContent).toEqual(formattedOutput);
     });
   });
 });

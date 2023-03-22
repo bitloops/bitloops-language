@@ -22,30 +22,36 @@ export { functionBodyVisitor } from './functionBody.js';
 export { jestTestDeclarationVisitor } from './jestTestDeclaration.js';
 export { argumentListVisitor } from './argumentList.js';
 export { argumentVisitor } from './argument.js';
-export { regularVariableEvaluationORliteralORexpressionVisitor } from './regularVariableEvaluationORliteralORexpression.js';
-// export { thisVariableMethodEvaluationVisitor } from './thisVariableMethodEvaluation.js';
-// export { regularVariableMethodEvaluationVisitor } from './regularVariableMethodEvaluation.js';
 export { methodArgumentsVisitor } from './methodArguments.js';
 export { structEvaluationVisitor } from './structEvaluation.js';
 export { evaluationFieldListVisitor } from './evaluationFieldList.js';
 export { evaluationFieldVisitor } from './evaluationField.js';
 export { regularStructEvaluationVisitor } from './regularStructEvaluation.js';
-export { stringEvaluation } from './stringEvaluation.js';
-export { booleanEvaluation } from './booleanEvaluation.js';
-export { decimalEvaluation } from './decimalEvaluation.js';
-export { integerEvaluation } from './integerEvaluation.js';
+export { stringEvaluation } from './expression/literal/stringLiteral.js';
+export { booleanLiteralVisitor as booleanEvaluation } from './expression/literal/booleanLiteral.js';
 export { dtoEvaluationVisitor } from './dtoEvaluation.js';
 export { evaluationVisitor } from './evaluation.js';
 export { propsEvaluationVisitor } from './propsEvaluation.js';
-export { valueObjectEvaluationVisitor } from './valueObjectEvaluation.js';
-export { formalParameterListVisitor } from './formalParameterList.js';
+export { valueObjectEvaluationVisitor } from './expression/evaluation/valueObjectEvaluation.js';
+export {
+  parameterListVisitor,
+  parameterVisitor,
+  parameterArgIdentifierVisitor,
+} from './parameterList.js';
 export { entityEvaluationVisitor } from './entityEvaluation.js';
 export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
 export { restControllerExecuteDeclarationVisitor } from './restControllerExecuteDeclaration.js';
 export { restControllerDeclarationVisitor } from './restControllerDeclaration.js';
-export { graphQLControllerDeclarationVisitor } from './graphQLControllerDeclaration.js';
-export { graphQLResolverOptionsVisitor } from './graphQLResolverOptions.js';
-export { graphQLControllerExecuteVisitor } from './graphQLControllerExecute.js';
+export { graphQLControllerDeclarationVisitor } from './controllers/graphql/graphQLControllerDeclaration.js';
+export {
+  graphQLResolverOptionsVisitor,
+  graphQLOperationTypeVisitor,
+  graphQLOperationInputTypeVisitor,
+} from './controllers/graphql/graphQLResolverOptions.js';
+export {
+  graphQLControllerExecuteVisitor,
+  graphQLExecuteDependenciesVisitor,
+} from './controllers/graphql/graphQLControllerExecute.js';
 export { methodDefinitionVisitor } from './methodDefinition.js';
 export { methodDefinitionListVisitor } from './methodDefinitionList.js';
 export { errorIdentifiersVisitor } from './errorIdentifiers.js';
@@ -66,11 +72,15 @@ export { entityDeclarationVisitor } from './entityDeclaration.js';
 export { aggregateDeclarationVisitor } from './aggregateDeclarationVisitor.js';
 export { publicMethodDeclarationVisitor } from './publicMethodDeclaration.js';
 export { publicMethodDeclarationListVisitor } from './publicMethodDeclarationList.js';
-export { domainRuleDeclarationVisitor, domainRuleBodyVisitor } from './domainRuleDeclaration.js';
+export {
+  domainRuleDeclarationVisitor,
+  domainRuleBodyVisitor,
+  isBrokenConditionVisitor,
+} from './domainRuleDeclaration.js';
 export {
   applyRulesStatementVisitor,
   applyRuleStatementRulesListVisitor,
-  applyRulesRuleVisitor,
+  appliedRuleVisitor as applyRulesRuleVisitor,
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 // export { getClassEvaluationVisitor } from './getClassEvaluation.js';
@@ -93,15 +103,17 @@ export { ifStatementVisitor } from './ifStatement.js';
 export { statementListVisitor } from './statementList.js';
 export { constDeclarationVisitor } from './constDeclaration.js';
 export { variableDeclarationVisitor } from './variableDeclaration.js';
-// export { thisDeclarationVisitor } from './thisDeclaration.js';
 export {
   switchStatementVisitor,
-  caseBlockVisitor,
+  caseClausesVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
 } from './switchStatement.js';
 export { structDeclarationVisitor } from './structDeclaration.js';
-export { packagePortDeclarationVisitor } from './packagePortDeclaration.js';
+export {
+  packagePortDeclarationVisitor,
+  packagePortIdentifierVisitor,
+} from './packagePortDeclaration.js';
 export {
   repoPortDeclarationVisitor,
   repoPortExtendableIdentifierVisitor,
@@ -119,3 +131,9 @@ export {
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
 } from './expression/index.js';
+
+export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
+export { integerEvaluation } from './expression/literal/integerLiteral.js';
+export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
+export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
+export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';

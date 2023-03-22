@@ -22,7 +22,7 @@ import { IMessage } from '../messages/IMessage';
 export type QueryMetadata = {
   responseTopic: string;
   toContextId: string;
-  orchestrated: boolean;
+  createdTimestamp: number;
 };
 
 export interface IQuery extends IMessage {

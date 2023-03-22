@@ -1,0 +1,5 @@
+ReadModel TodoReadModel {
+    string id;
+    string title;
+    bool completed;
+  }

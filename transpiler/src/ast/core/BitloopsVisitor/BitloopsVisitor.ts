@@ -20,54 +20,37 @@
 
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
-import {
-  TEvaluationFields,
-  TParameterDependency,
-  TRegularEvaluation,
-  TRESTControllerDependencies,
-  TRESTControllerExecute,
-  TGraphQLControllerExecute,
-  TGraphQLOperation,
-  TDefinitionMethods,
-  TOkErrorReturnType,
-  TVariables,
-  TVariable,
-  TDTO,
-  TEntityCreate,
-  TValueObjectValues,
-  TValueObjectMethods,
-  TReturnType,
-  TDomainPrivateMethod,
-  TConstDeclaration,
-  TConstDeclarationValue,
-  TReturnStatement,
-  TEntities,
-  TDomainPublicMethod,
-  TRules,
-  TBuildInFunction,
-  TEntityValues,
-  TModule,
-  TUseCase,
-  TStructs,
-  TReadModels,
-  TBuiltInClassEvaluation,
-  TExpression,
-  TThisDeclaration,
-} from '../../../types.js';
+import { BitloopsIdentifierTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
+import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
+import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
+import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
+import { IntermediateASTTree } from '../intermediate-ast/IntermediateASTTree.js';
+import { FieldListNode } from '../intermediate-ast/nodes/FieldList/FieldListNode.js';
+import { FieldNode } from '../intermediate-ast/nodes/FieldList/FieldNode.js';
+import { IntermediateASTRootNode } from '../intermediate-ast/nodes/RootNode.js';
+import { TConstDeclaration } from '../../../types.js';
+import { NumericLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NumericLiteral/NumericLiteralBuilder.js';
 
+import { BreakStatementNode } from './../intermediate-ast/nodes/statements/BreakStatementNode.js';
+import { PropsIdentifierNode } from './../intermediate-ast/nodes/Props/PropsIdentifierNode.js';
+import { PropsIdentifierNodeBuilder } from './../intermediate-ast/builders/Props/PropsIdentifierNodeBuilder.js';
 import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisitor.js';
+import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
+import {
+  enviromentVariableVisitor,
+  envVarWithDefaultValueExpressionVisitor,
+  LiteralExpressionVisitor,
+} from './helpers/expressions.js';
 
 import {
   functionBodyVisitor,
   jestTestDeclarationVisitor,
   argumentListVisitor,
   argumentVisitor,
-  regularVariableEvaluationORliteralORexpressionVisitor,
   structEvaluationVisitor,
   evaluationFieldListVisitor,
-  // thisVariableMethodEvaluationVisitor,
-  // regularVariableMethodEvaluationVisitor,
   methodArgumentsVisitor,
   evaluationFieldVisitor,
   regularStructEvaluationVisitor,
@@ -79,7 +62,6 @@ import {
   evaluationVisitor,
   propsEvaluationVisitor,
   valueObjectEvaluationVisitor,
-  formalParameterListVisitor,
   entityEvaluationVisitor,
   restControllerMethodDeclarationVisitor,
   restControllerExecuteDeclarationVisitor,
@@ -111,7 +93,6 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
-  // getClassEvaluationVisitor,
   useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
@@ -126,9 +107,7 @@ import {
   statementListVisitor,
   constDeclarationVisitor,
   variableDeclarationVisitor,
-  // thisDeclarationVisitor,
   switchStatementVisitor,
-  caseBlockVisitor,
   caseClauseVisitor,
   defaultClauseVisitor,
   useCaseExecuteDeclarationVisitor,
@@ -149,47 +128,228 @@ import {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  domainEvaluationInputRegularVisitor,
+  domainEvaluationInputFieldListVisitor,
+  errorEvaluationVisitor,
+  caseClausesVisitor,
+  parameterListVisitor,
+  parameterVisitor,
+  parameterArgIdentifierVisitor,
+  isBrokenConditionVisitor,
+  graphQLOperationTypeVisitor,
+  graphQLOperationInputTypeVisitor,
+  graphQLExecuteDependenciesVisitor,
+  packagePortIdentifierVisitor,
 } from './helpers/index.js';
+import { optionalVisitor } from './helpers/optional.js';
+import { produceMetadata } from './metadata.js';
+import { ConditionNodeBuilder } from '../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
+import { BreakStatementNodeBuilder } from '../intermediate-ast/builders/statements/BreakStatement.js';
+import { ReturnStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnStatementBuilder.js';
+import { ReturnStatementNode } from '../intermediate-ast/nodes/statements/ReturnStatementNode.js';
+import { EntityValuesNode } from '../intermediate-ast/nodes/Entity/EntityValuesNode.js';
+import { ConstDeclarationListNode } from '../intermediate-ast/nodes/ConstDeclarationListNode.js';
+import { DomainCreateNode } from '../intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { DomainRuleIdentifierBuilder } from '../intermediate-ast/builders/DomainRule/DomainRuleIdentifierBuilder.js';
+import { ParameterIdentifierNode } from '../intermediate-ast/nodes/ParameterList/ParameterIdentifierNode.js';
+import { ParameterListNode } from '../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { ParameterNode } from '../intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { IdentifierNode } from '../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { StructIdentifierNodeBuilder } from '../intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
+import { ErrorIdentifierNodeBuilder } from '../intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
+import { ErrorIdentifierNode } from '../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { ErrorIdentifiersNode } from '../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifiersNode.js';
+import { ReturnOkErrorTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { ReturnOkTypeNodeBuilder } from '../intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
+import { ReturnOkTypeNode } from '../intermediate-ast/nodes/returnOkErrorType/ReturnOkTypeNode.js';
+import { PublicMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationListNode.js';
+import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
+import { BitloopsPrimaryTypeNode } from '../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { RESTControllerExecuteDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
+import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
+import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
+import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
+import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
+import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
+import { RepoPortIdentifierNodeBuilder } from '../intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
+import { MethodDefinitionListNode } from '../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
+import { ReadModelIdentifierNodeBuilder } from '../intermediate-ast/builders/readModel/ReadModelIdentifierNodeBuilder.js';
+import { ReadModelIdentifierNode } from '../intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
+import { ExtendsRepoPortsNodeBuilder } from '../intermediate-ast/builders/ExtendsRepoPortNodeBuilder.js';
+import { ExtendsRepoPortsNode } from '../intermediate-ast/nodes/extendsRepoPortNode.js';
+import { ValueObjectIdentifierNode } from '../intermediate-ast/nodes/valueObject/ValueObjectIdentifierNode.js';
+import { valueObjectIdentifierVisitor } from './helpers/valueObjectIdentifier.js';
+import { EntityIdentifierNode } from '../intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
+import { EntityIdentifierNodeBuilder } from '../intermediate-ast/builders/Entity/EntityIdentifierBuilder.js';
+import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { DomainCreateParameterNode } from '../intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
+import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
+import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
+import {
+  bindServerRoutesVisitor,
+  bindServerRouteVisitor,
+  restServerDeclarationVisitor,
+  serverInstantiationOptionsVisitor,
+} from './helpers/setup/restServerDeclaration.js';
+import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
+import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
+import { UseCaseExpressionNode } from '../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
+import { useCaseDefinitionVisitor } from './helpers/setup/useCaseDefinition.js';
+import { useCaseExpressionVisitor } from './helpers/setup/useCaseExpressionVisitor.js';
+import { BoundedContextModuleNode } from '../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { boundedContextModuleVisitor } from './helpers/setup/boundedContextModuleVisitor.js';
+import { boundedContextVisitor } from './helpers/setup/boundedContextDeclarationVisitor.js';
+import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
+import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
+import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
+import { repoConnectionDefinitionVisitor } from './helpers/setup/repoConnectionDefinitionVisitor.js';
+import { repoConnectionTypeVisitor } from './helpers/setup/repoConnectionTypeVisitor.js';
+import { repoConnectionExpressionVisitor } from './helpers/setup/repoConnectionExpressionVisitor.js';
+import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
+import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
+import { repoConnectionOptionsVisitor } from './helpers/setup/repoConnectionOptionsVisitor.js';
+import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
+import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
+import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
+import { RestRouterNode } from '../intermediate-ast/nodes/setup/RestRouterNode.js';
+import { restRouterVisitor } from './helpers/setup/restRouterVisitor.js';
+import { RouterArgumentsNode } from '../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
+import { RouterControllersNode } from '../intermediate-ast/nodes/setup/RouterControllersNode.js';
+import { routerArgumentsVisitor } from './helpers/setup/routerArgumentsVisitor.js';
+import { routerControllersVisitor } from './helpers/setup/routerControllersVisitor.js';
+import { routerControllerVisitor } from './helpers/setup/routerControllerVisitor.js';
+import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterControllerNode.js';
+import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
+import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
+import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
+import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
+import { configInvocationVisitor } from './helpers/setup/configInvocation.js';
+import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
+import { LanguageNode } from '../intermediate-ast/nodes/setup/LanguageNode.js';
+import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
+import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
+import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
+import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
+import { corsOptionsEvaluationVisitor } from './helpers/expression/evaluation/corsOptionEvaluation.js';
+import { RepoAdapterClassNameNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
+import { repoAdapterClassNameVisitor } from './helpers/setup/repoAdapterClassName.js';
+import { RepoAdapterOptionsNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { repoAdapterOptionsVisitor } from './helpers/setup/repoAdapterOptions.js';
+import { ConcretedRepoPortNode } from '../intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
+import { concretedRepoPortVisitor } from './helpers/setup/concretedRepoPort.js';
+import { RepoAdapterExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
+import { repoAdapterExpressionVisitor } from './helpers/setup/repoAdapterExpression.js';
+import { repoAdapterDefinitionVisitor } from './helpers/setup/repoAdapterDefinition.js';
+import { BoundedContextNameNode } from '../intermediate-ast/nodes/setup/BoundedContextNameNode.js';
+import { ModuleNameNode } from '../intermediate-ast/nodes/setup/ModuleNameNode.js';
+import { ControllerResolverNode } from '../intermediate-ast/nodes/setup/ControllerResolverNode.js';
+import {
+  bindControllerResolversVisitor,
+  controllerResolverBindVisitor,
+  graphQLServerDeclarationVisitor,
+  graphQLServerInstantiationOptionsVisitor,
+} from './helpers/setup/graphQLServerDeclaration.js';
+import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
+import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
+import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
+import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 
 export default class BitloopsVisitor extends BitloopsParserVisitor {
   [x: string]: any;
 
-  constructor() {
+  private _intermediateASTTree: IntermediateASTTree;
+  private _currentFile: string;
+
+  constructor(currentFile: string) {
     super();
+    this._currentFile = currentFile;
+    this._intermediateASTTree = new IntermediateASTTree(new IntermediateASTRootNode());
+  }
+
+  get intermediateASTTree(): IntermediateASTTree {
+    return this._intermediateASTTree;
+  }
+
+  public get currentFile(): string {
+    return this._currentFile;
   }
 
   visitProgram(ctx: BitloopsParser.ProgramContext): any {
-    const children = this.visitChildren(ctx);
-    const result = this.mergeSourceElements(children);
-    return result;
+    this.visitChildren(ctx);
   }
 
-  private mergeSourceElements(children: any): TModule {
-    const sourceElementsResult = children.map((c) => c[0]);
-    return sourceElementsResult.reduce((acc, sourceElement) => {
-      const classType = Object.keys(sourceElement)[0];
-      if (acc[classType]) {
-        acc[classType] = {
-          ...acc[classType],
-          ...sourceElement[classType],
-        };
-      } else {
-        acc[classType] = sourceElement[classType];
-      }
-      return acc;
-    }, {});
+  visitCoreProgram(ctx: BitloopsParser.CoreProgramContext): any {
+    this.visitChildren(ctx);
   }
 
-  visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext) {
+  visitSetupProgram(ctx: BitloopsParser.SetupProgramContext): any {
+    this.visitChildren(ctx);
+  }
+
+  visitEqualityExpression(ctx: BitloopsParser.EqualityExpressionContext): ExpressionNode {
     return equalityExpressionVisitor(this, ctx);
   }
 
-  visitIdentifierName(ctx: BitloopsParser.IdentifierNameContext) {
-    return ctx.Identifier().getText();
+  visitDtoIdentifier(ctx: BitloopsParser.DtoIdentifierContext): DTOIdentifierNode {
+    const identifierName = ctx.DTOIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const dtoIdentifierNode = new DTOIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return dtoIdentifierNode;
   }
 
-  visitIdentifier(ctx: BitloopsParser.IdentifierContext) {
-    return ctx.Identifier().getText();
+  visitPropsIdentifier(ctx: BitloopsParser.PropsIdentifierContext): PropsIdentifierNode {
+    const identifierName = ctx.PropsIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const propsIdentifierNode = new PropsIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return propsIdentifierNode;
+  }
+
+  visitStructIdentifier(ctx: BitloopsParser.StructIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UpperCaseIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const structIdentifierNode = new StructIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return structIdentifierNode;
+  }
+
+  visitUseCaseIdentifier(ctx: BitloopsParser.UseCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UseCaseIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const useCaseIdentifierNode = new UseCaseIdentifierNodeBuilder(metadata)
+      .withName(identifierName)
+      .build();
+    return useCaseIdentifierNode;
+  }
+
+  visitRepoPortIdentifier(ctx: BitloopsParser.RepoPortIdentifierContext) {
+    const repoPortIdentifierName = ctx.RepoPortIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const repoPortIdentifierNode = new RepoPortIdentifierNodeBuilder(metadata)
+      .withName(repoPortIdentifierName)
+      .build();
+    return repoPortIdentifierNode;
+  }
+
+  visitIdentifier(ctx: BitloopsParser.IdentifierContext): IdentifierNode {
+    const identifierName = ctx.Identifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
+    return identifierNode;
+  }
+
+  visitUpperCaseIdentifier(ctx: BitloopsParser.UpperCaseIdentifierContext): IdentifierNode {
+    const identifierName = ctx.UpperCaseIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
+    return identifierNode;
   }
 
   visitRelationalExpression(ctx: BitloopsParser.RelationalExpressionContext) {
@@ -226,44 +386,32 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitEvaluationExpression(ctx: BitloopsParser.EvaluationExpressionContext) {
     const evaluation = this.visit(ctx.evaluation());
-    return {
-      expression: {
-        ...evaluation,
-      },
-    };
+    return new ExpressionBuilder().withExpression(evaluation).build();
   }
 
-  visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext): TExpression {
+  visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext) {
     return memberDotExpressionVisitor(this, ctx);
   }
 
-  visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext): TExpression {
+  visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {
     return methodCallExpressionVisitor(this, ctx);
   }
 
-  visitGetClassExpression(ctx: BitloopsParser.GetClassExpressionContext): TExpression {
+  visitGetClassExpression(ctx: BitloopsParser.GetClassExpressionContext): any {
     return getClassExpressionVisitor(this, ctx);
   }
 
-  visitToStringExpression(ctx: BitloopsParser.ToStringExpressionContext): TExpression {
+  visitToStringExpression(ctx: BitloopsParser.ToStringExpressionContext): any {
     return toStringExpressionVisitor(this, ctx);
   }
 
-  visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext): TThisDeclaration {
+  visitAssignmentExpression(ctx: BitloopsParser.AssignmentExpressionContext) {
     return assignmentExpressionVisitor(this, ctx);
   }
 
-  visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext): TExpression {
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation: {
-            type: 'variable',
-            value: 'this',
-          },
-        },
-      },
-    };
+  visitThisExpression(_ctx: BitloopsParser.ThisExpressionContext) {
+    const thisExprNode = new ThisExpressionNodeBuilder().build();
+    return new ExpressionBuilder().withExpression(thisExprNode).build();
   }
 
   visitIdentifierExpression(ctx: BitloopsParser.IdentifierExpressionContext) {
@@ -281,16 +429,15 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitRegularDTOEvaluationString(ctx: BitloopsParser.RegularDTOEvaluationStringContext) {
-    return this.visit(ctx.regularDTOEvaluation());
+    return { value: this.visit(ctx.regularDTOEvaluation()) };
+  }
+  visitRegularDTOEvaluation(ctx: BitloopsParser.RegularDTOEvaluationContext) {
+    return ctx.DTOIdentifier().getText();
   }
 
   visitArrayLiteralExpression(ctx: BitloopsParser.ArrayLiteralExpressionContext) {
-    const arrayLiteral = this.visit(ctx.arrayLiteral());
-    return {
-      expression: {
-        ...arrayLiteral,
-      },
-    };
+    const arrayLiteralExpressionNode = this.visit(ctx.arrayLiteral());
+    return new ExpressionBuilder().withExpression(arrayLiteralExpressionNode).build();
   }
 
   visitArrayLiteral(ctx: BitloopsParser.ArrayLiteralContext) {
@@ -300,22 +447,11 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitTemplateStringLiteral(ctx: BitloopsParser.TemplateStringLiteralContext) {
     const stringChars: any = ctx.templateStringAtom(null);
     const value = stringChars.map((sc) => sc.getText()).join('');
-    return {
-      type: 'backTickString',
-      value: value,
-    };
+    return templateStringEvaluation(value);
   }
 
   visitErrorEvaluation(ctx: BitloopsParser.ErrorEvaluationContext) {
-    const identifier = ctx.ErrorIdentifier().getText();
-    const argumentDependencies = this.visit(ctx.methodArguments()) || [];
-
-    return {
-      errorEvaluation: {
-        name: identifier,
-        argumentDependencies,
-      },
-    };
+    return errorEvaluationVisitor(this, ctx);
   }
 
   visitRegularErrorTypeEvaluation(ctx: BitloopsParser.RegularErrorTypeEvaluationContext) {
@@ -345,28 +481,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'delete',
     };
   }
-
-  visitRegularIntegerEvaluation(ctx: BitloopsParser.RegularIntegerEvaluationContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText())[0];
-  }
-
-  visitRegularDecimalEvaluation(ctx: BitloopsParser.RegularDecimalEvaluationContext) {
-    return decimalEvaluation(ctx.DecimalLiteral().getText());
-  }
-
-  visitRegularBooleanEvaluation(ctx: BitloopsParser.RegularBooleanEvaluationContext) {
-    return booleanEvaluation(ctx.BooleanLiteral().getText());
-  }
-
-  visitRegularStringEvaluation(ctx: BitloopsParser.RegularStringEvaluationContext) {
-    return stringEvaluation(ctx.StringLiteral().getText());
+  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
+    // TODO Find why all these return this weird object and fix it
+    return {
+      type: 'variable',
+      value: (ctx as any).getText(),
+    };
   }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
-    const condition = this.visit(ctx.expression());
-    return {
-      condition,
-    };
+    const expression = this.visit(ctx.expression());
+    const metadata = produceMetadata(ctx, this);
+    const conditionNode = new ConditionNodeBuilder(metadata).withExpression(expression).build();
+    return conditionNode;
   }
 
   visitIfStatement(ctx: BitloopsParser.IfStatementContext) {
@@ -381,9 +508,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return statementListVisitor(this, ctx);
   }
 
-  visitBlock(ctx: BitloopsParser.BlockContext) {
-    return this.visit(ctx.statementList());
-  }
   visitConstDeclaration(ctx: BitloopsParser.ConstDeclarationContext) {
     return constDeclarationVisitor(this, ctx);
   }
@@ -396,20 +520,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return this.visit(ctx.bitloopsPrimaryType());
   }
 
-  // visitThisDeclaration(ctx: BitloopsParser.ThisDeclarationContext) {
-  //   return thisDeclarationVisitor(this, ctx);
-  // }
-
   visitSwitchStatement(ctx: BitloopsParser.SwitchStatementContext) {
     return switchStatementVisitor(this, ctx);
   }
 
-  visitCaseBlock(ctx: BitloopsParser.CaseBlockContext) {
-    return caseBlockVisitor(this, ctx);
-  }
-
   visitCaseClauses(ctx: BitloopsParser.CaseClausesContext) {
-    return this.visitChildren(ctx);
+    return caseClausesVisitor(this, ctx);
   }
 
   visitCaseClause(ctx: BitloopsParser.CaseClauseContext) {
@@ -420,8 +536,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return defaultClauseVisitor(this, ctx);
   }
 
-  visitBreakStatement(ctx: BitloopsParser.BreakStatementContext) {
-    return ctx.Break().getText();
+  visitBreakStatement(): BreakStatementNode {
+    return new BreakStatementNodeBuilder().build();
   }
 
   visitFunctionBody(ctx: BitloopsParser.FunctionBodyContext) {
@@ -432,14 +548,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return jestTestDeclarationVisitor(this, ctx);
   }
 
-  visitArgumentList(ctx: BitloopsParser.ArgumentListContext) {
-    return argumentListVisitor(this, ctx);
+  visitjestTestSetupDeclarationStatement(
+    ctx: BitloopsParser.JestTestSetupDeclarationStatementContext,
+  ) {
+    return jestTestSetupDeclarationVisitor(this, ctx);
   }
 
-  visitRegularVariableEvaluationORliteralORexpression(
-    ctx: BitloopsParser.RegularVariableEvaluationORliteralORexpressionContext,
-  ) {
-    return regularVariableEvaluationORliteralORexpressionVisitor(this, ctx);
+  visitArgumentList(ctx: BitloopsParser.ArgumentListContext) {
+    return argumentListVisitor(this, ctx);
   }
 
   visitArgument(ctx: BitloopsParser.ArgumentContext): any {
@@ -450,6 +566,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return structEvaluationVisitor(this, ctx);
   }
 
+  visitCorsOptionsEvaluation(ctx: BitloopsParser.CorsOptionsEvaluationContext): any {
+    return corsOptionsEvaluationVisitor(this, ctx);
+  }
+
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
     return methodArgumentsVisitor(this, ctx);
   }
@@ -458,7 +578,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return evaluationFieldVisitor(this, ctx);
   }
 
-  visitEvaluationFieldList(ctx: BitloopsParser.EvaluationFieldListContext): any {
+  visitEvaluationFieldList(
+    ctx: BitloopsParser.EvaluationFieldListContext,
+  ): EvaluationFieldListNode {
     return evaluationFieldListVisitor(this, ctx);
   }
 
@@ -481,25 +603,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return booleanEvaluation(ctx.BooleanLiteral().getText());
   }
 
-  visitRegularExpressionLiteral(ctx: BitloopsParser.RegularExpressionLiteralContext) {
-    return {
-      type: 'regex',
-      value: ctx.RegularExpressionLiteral().getText(),
-    };
-  }
-
   visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
-    const literalRes = this.visit(ctx.literal());
-    return {
-      expression: {
-        evaluation: {
-          regularEvaluation: literalRes,
-        },
-      },
-    };
+    return LiteralExpressionVisitor(this, ctx);
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
-    return this.visitChildren(ctx)[0];
+    const actualNumericLiteral = this.visitChildren(ctx)[0];
+    const metadata = produceMetadata(ctx, this);
+    return new NumericLiteralBuilder(metadata).withNumericLiteral(actualNumericLiteral).build();
   }
 
   visitTemplateStringLiteralLabel(ctx: BitloopsParser.TemplateStringLiteralLabelContext) {
@@ -507,7 +617,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitIntegerLiteral(ctx: BitloopsParser.IntegerLiteralContext) {
-    return integerEvaluation(ctx.IntegerLiteral().getText());
+    const node = integerEvaluation(ctx.IntegerLiteral().getText());
+    return node;
   }
 
   visitDecimalLiteral(ctx: BitloopsParser.DecimalLiteralContext) {
@@ -532,49 +643,55 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return entityEvaluationVisitor(this, ctx);
   }
 
-  visitDomainEvaluationInputFieldList(
-    ctx: BitloopsParser.DomainEvaluationInputFieldListContext,
-  ): TEvaluationFields {
-    return this.visit(ctx.evaluationFieldList());
+  visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {
+    return domainEvaluationInputFieldListVisitor(this, ctx);
   }
 
-  visitDomainEvaluationInputRegular(
-    ctx: BitloopsParser.DomainEvaluationInputRegularContext,
-  ): TRegularEvaluation {
-    // TODO fix model to have expression/ not assume that expression is always regular evaluation
-    const expressionResult = this.visit(ctx.expression());
-    const { expression } = expressionResult;
-    const value = expression.evaluation;
-    return value;
+  visitDomainEvaluationInputRegular(ctx: BitloopsParser.DomainEvaluationInputRegularContext) {
+    return domainEvaluationInputRegularVisitor(this, ctx);
   }
 
-  visitFormalParameterArg(ctx: BitloopsParser.FormalParameterArgContext): TParameterDependency {
-    return {
-      value: ctx.identifierOrKeyWord().getText(),
-      type: this.visit(ctx.typeAnnotation()),
-    } as TParameterDependency;
+  visitParameter(ctx: BitloopsParser.ParameterContext): ParameterNode {
+    return parameterVisitor(this, ctx);
   }
 
-  visitFormalParameterList(ctx: BitloopsParser.FormalParameterListContext): TParameterDependency[] {
-    return formalParameterListVisitor(this, ctx);
+  visitParameterList(ctx: BitloopsParser.ParameterListContext): ParameterListNode {
+    return parameterListVisitor(this, ctx);
+  }
+  visitParameterIdentifier(
+    ctx: BitloopsParser.ParameterIdentifierContext,
+  ): ParameterIdentifierNode {
+    return parameterArgIdentifierVisitor(this, ctx);
   }
 
   visitRestControllerExecuteDeclaration(
     ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-  ): { execute: TRESTControllerExecute } {
+  ): any {
     return restControllerExecuteDeclarationVisitor(this, ctx);
   }
 
   visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
     return restControllerMethodDeclarationVisitor(this, ctx);
   }
+  visitRestControllerIdentifier(ctx: BitloopsParser.RestControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
 
-  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): {
-    dependencies: TRESTControllerDependencies;
-  } {
-    return {
-      dependencies: [ctx.Identifier(0).getText(), ctx.Identifier(1).getText()],
-    };
+  visitGraphQLControllerIdentifier(ctx: BitloopsParser.GraphQLControllerIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new GraphQLControllerIdentifierNodeBuilder(metadata)
+      .withName(ctx.ControllerIdentifier().getText())
+      .build();
+  }
+
+  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
+    const metadata = produceMetadata(ctx, this);
+    return new RESTControllerExecuteDependenciesNodeBuilder(metadata)
+      .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
+      .build();
   }
 
   // GraphQLControllerDeclaration
@@ -582,8 +699,8 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return graphQLControllerDeclarationVisitor(this, ctx);
   }
 
-  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): any {
-    return restControllerDeclarationVisitor(this, ctx);
+  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): void {
+    restControllerDeclarationVisitor(this, ctx);
   }
 
   visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {
@@ -592,25 +709,31 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitGraphQLControllerExecuteDeclaration(
     ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
-  ): TGraphQLControllerExecute {
+  ) {
     return graphQLControllerExecuteVisitor(this, ctx);
   }
 
-  visitGraphQLOperationTypeAssignment(
-    ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext,
-  ): TGraphQLOperation {
-    return ctx.graphQLOperation().getText();
+  visitGraphQLControllerParameters(ctx: BitloopsParser.GraphQLControllerParametersContext): any {
+    return graphQLExecuteDependenciesVisitor(this, ctx);
+  }
+
+  visitGraphQLOperationTypeAssignment(ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext) {
+    return graphQLOperationTypeVisitor(this, ctx);
   }
 
   visitGraphQLOperationInputTypeAssignment(
     ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
-  ): string {
-    return ctx.graphQLResolverInputType().getText();
+  ) {
+    return graphQLOperationInputTypeVisitor(this, ctx);
   }
 
-  visitMethodDefinitionList(ctx: BitloopsParser.MethodDefinitionListContext): {
-    definitionMethods: TDefinitionMethods;
-  } {
+  visitGraphQLControllerReturnType(ctx: BitloopsParser.GraphQLControllerReturnTypeContext) {
+    return graphQLControllerReturnTypeVisitor(this, ctx);
+  }
+
+  visitMethodDefinitionList(
+    ctx: BitloopsParser.MethodDefinitionListContext,
+  ): MethodDefinitionListNode {
     return methodDefinitionListVisitor(this, ctx);
   }
 
@@ -618,42 +741,50 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return methodDefinitionVisitor(this, ctx);
   }
 
-  visitErrorIdentifier(ctx: BitloopsParser.ErrorIdentifierContext) {
-    return ctx.ErrorIdentifier().getText();
+  visitErrorIdentifier(ctx: BitloopsParser.ErrorIdentifierContext): ErrorIdentifierNode {
+    const errorIdentifierName = ctx.ErrorIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const errorIdentifierNode = new ErrorIdentifierNodeBuilder(metadata)
+      .withName(errorIdentifierName)
+      .build();
+    return errorIdentifierNode;
   }
 
-  visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): string {
-    return this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
+  visitReturnOkType(ctx: BitloopsParser.ReturnOkTypeContext): ReturnOkTypeNode {
+    const primaryTypeNode = this.visit(ctx.bitloopsPrimaryType()); // ctx.type_().getText();
+    const metadata = produceMetadata(ctx, this);
+    const returnOkTypeNode = new ReturnOkTypeNodeBuilder(metadata)
+      .withType(primaryTypeNode)
+      .build();
+    return returnOkTypeNode;
   }
 
-  visitBuiltInClassEvaluation(
-    ctx: BitloopsParser.BuiltInClassEvaluationContext,
-  ): TBuiltInClassEvaluation {
+  visitBuiltInClassEvaluation(ctx: BitloopsParser.BuiltInClassEvaluationContext) {
     return builtInClassEvaluationVisitor(this, ctx);
   }
 
-  visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): string[] {
+  visitErrorIdentifiers(ctx: BitloopsParser.ErrorIdentifiersContext): ErrorIdentifiersNode {
     return errorIdentifiersVisitor(this, ctx);
   }
 
-  visitReturnErrorsType(ctx: BitloopsParser.ReturnErrorsTypeContext): string[] {
+  visitReturnErrorsType(ctx: BitloopsParser.ReturnErrorsTypeContext): ErrorIdentifiersNode {
     return returnErrorsTypeVisitor(this, ctx);
   }
 
-  visitReturnOkErrorType(ctx: BitloopsParser.ReturnOkErrorTypeContext): TOkErrorReturnType {
+  visitReturnOkErrorType(ctx: BitloopsParser.ReturnOkErrorTypeContext): ReturnOkErrorTypeNode {
     return returnOkErrorTypeVisitor(this, ctx);
   }
 
-  visitFieldList(ctx: BitloopsParser.FieldListContext): TVariables {
+  visitFieldList(ctx: BitloopsParser.FieldListContext): FieldListNode {
     return fieldListVisitor(this, ctx);
   }
 
-  visitField(ctx: BitloopsParser.FieldContext): TVariable {
+  visitField(ctx: BitloopsParser.FieldContext): FieldNode {
     return fieldVisitor(this, ctx);
   }
 
-  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): { DTOs: TDTO } {
-    return dtoDeclarationVisitor(this, ctx);
+  visitDtoDeclaration(ctx: BitloopsParser.DtoDeclarationContext): void {
+    dtoDeclarationVisitor(this, ctx);
   }
   visitPropsDeclaration(ctx: BitloopsParser.PropsDeclarationContext): any {
     return propsDeclarationVisitor(this, ctx);
@@ -661,29 +792,52 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDomainConstructorDeclaration(
     ctx: BitloopsParser.DomainConstructorDeclarationContext,
-  ): TEntityCreate {
+  ): DomainCreateNode {
     return domainConstructorDeclarationVisitor(this, ctx);
   }
 
-  visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): {
-    ValueObjects: { [id: string]: TValueObjectValues };
-  } {
-    return valueObjectDeclarationVisitor(this, ctx);
+  visitDomainConstructorParam(
+    ctx: BitloopsParser.DomainConstructorParamContext,
+  ): DomainCreateParameterNode {
+    return domainCreateParameterVisitor(this, ctx);
   }
 
-  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): { Entities: TEntities } {
-    return entityDeclarationVisitor(this, ctx);
+  visitValueObjectDeclaration(ctx: BitloopsParser.ValueObjectDeclarationContext): void {
+    valueObjectDeclarationVisitor(this, ctx);
   }
+
+  visitValueObjectIdentifier(
+    ctx: BitloopsParser.ValueObjectIdentifierContext,
+  ): ValueObjectIdentifierNode {
+    return valueObjectIdentifierVisitor(this, ctx);
+  }
+
+  visitEntityIdentifier(ctx: BitloopsParser.EntityIdentifierContext): EntityIdentifierNode {
+    const metadata = produceMetadata(ctx, this);
+
+    const entityIdentifier = ctx.EntityIdentifier().getText();
+    const entityIdentifierNode = new EntityIdentifierNodeBuilder(metadata)
+      .withName(entityIdentifier)
+      .build();
+
+    return entityIdentifierNode;
+  }
+
+  visitEntityDeclaration(ctx: BitloopsParser.EntityDeclarationContext): void {
+    entityDeclarationVisitor(this, ctx);
+  }
+
   visitAggregateDeclaration(ctx: BitloopsParser.AggregateDeclarationContext) {
     return aggregateDeclarationVisitor(this, ctx);
   }
-  visitEntityBody(ctx: BitloopsParser.EntityBodyContext): TEntityValues {
+
+  visitEntityBody(ctx: BitloopsParser.EntityBodyContext): EntityValuesNode {
     return entityBodyVisitor(this, ctx);
   }
 
   visitDomainConstDeclarationList(
     ctx: BitloopsParser.DomainConstDeclarationListContext,
-  ): TConstDeclarationValue[] {
+  ): ConstDeclarationListNode {
     return domainConstDeclarationListVisitor(this, ctx);
   }
 
@@ -696,14 +850,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   // Public method declaration
   visitPublicMethodDeclarationList(
     ctx: BitloopsParser.PublicMethodDeclarationListContext,
-  ): Record<string, TDomainPublicMethod> {
+  ): PublicMethodDeclarationListNode {
     return publicMethodDeclarationListVisitor(this, ctx);
   }
 
-  visitPublicMethodDeclaration(ctx: BitloopsParser.PublicMethodDeclarationContext): {
-    methodName: string;
-    methodInfo: TDomainPublicMethod;
-  } {
+  visitPublicMethodDeclaration(
+    ctx: BitloopsParser.PublicMethodDeclarationContext,
+  ): PublicMethodDeclarationNode {
     return publicMethodDeclarationVisitor(this, ctx);
   }
 
@@ -711,28 +864,31 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitPrivateMethodDeclarationList(
     ctx: BitloopsParser.PrivateMethodDeclarationListContext,
-  ): TValueObjectMethods {
+  ): PrivateMethodDeclarationListNode {
     return privateMethodDeclarationListVisitor(this, ctx);
   }
 
-  visitPrivateMethodDeclaration(ctx: BitloopsParser.PrivateMethodDeclarationContext): {
-    methodName: string;
-    methodInfo: TDomainPrivateMethod;
-  } {
+  visitPrivateMethodDeclaration(
+    ctx: BitloopsParser.PrivateMethodDeclarationContext,
+  ): PrivateMethodDeclarationNode {
     return privateMethodDeclarationVisitor(this, ctx);
   }
 
   visitReturnPrivateMethodType(
     ctx: BitloopsParser.ReturnPrivateMethodTypeContext,
-  ): TReturnType | TOkErrorReturnType {
+  ): BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 
-  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): TReturnStatement {
-    const expression = this.visit(ctx.expression());
-    return {
-      return: expression,
-    };
+  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): ReturnStatementNode {
+    const expressionNode = this.visit(ctx.expression());
+
+    const metadata = produceMetadata(ctx, this);
+
+    const returnStatementNode = new ReturnStatementNodeBuilder(metadata)
+      .withExpression(expressionNode)
+      .build();
+    return returnStatementNode;
   }
   /**
    * Errors
@@ -748,16 +904,27 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Domain Rule
    */
-  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): { Rules: TRules } {
-    return domainRuleDeclarationVisitor(this, ctx);
+  visitDomainRuleDeclaration(ctx: BitloopsParser.DomainRuleDeclarationContext): void {
+    domainRuleDeclarationVisitor(this, ctx);
   }
 
   visitDomainRuleBody(ctx: BitloopsParser.DomainRuleBodyContext): any {
     return domainRuleBodyVisitor(this, ctx);
   }
 
-  visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext): TBuildInFunction {
+  visitIsBrokenStatement(ctx: BitloopsParser.IsBrokenStatementContext): any {
+    return isBrokenConditionVisitor(this, ctx);
+  }
+
+  visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {
     return applyRulesStatementVisitor(this, ctx);
+  }
+
+  visitDomainRuleIdentifier(ctx: BitloopsParser.DomainRuleIdentifierContext) {
+    const metadata = produceMetadata(ctx, this);
+    return new DomainRuleIdentifierBuilder(metadata)
+      .withName(ctx.RuleIdentifier().getText())
+      .build();
   }
 
   visitApplyRuleStatementRulesList(ctx: BitloopsParser.ApplyRuleStatementRulesListContext): any {
@@ -767,7 +934,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return applyRulesRuleVisitor(this, ctx);
   }
 
-  visitIsInstanceOf(ctx: BitloopsParser.IsInstanceOfContext): any {
+  visitIsInstanceOfExpression(ctx: BitloopsParser.IsInstanceOfExpressionContext): any {
     return isInstanceOfVisitor(this, ctx);
   }
 
@@ -775,40 +942,47 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.ErrorClass().getText();
   }
 
-  // visitGetClassEvaluation(ctx: BitloopsParser.GetClassEvaluationContext): any {
-  //   return getClassEvaluationVisitor(this, ctx);
-  // }
-
   /**
    * UseCase Declaration
    */
-  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): { UseCases: TUseCase } {
-    return useCaseDeclarationVisitor(this, ctx);
+  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
+    useCaseDeclarationVisitor(this, ctx);
   }
   visitUseCaseExecuteDeclaration(ctx: BitloopsParser.UseCaseExecuteDeclarationContext): any {
     return useCaseExecuteDeclarationVisitor(this, ctx);
   }
 
-  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): { Structs: TStructs } {
-    return structDeclarationVisitor(this, ctx);
+  visitStructDeclaration(ctx: BitloopsParser.StructDeclarationContext): void {
+    structDeclarationVisitor(this, ctx);
   }
 
-  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext) {
-    return packagePortDeclarationVisitor(this, ctx);
+  visitPackagePortDeclaration(ctx: BitloopsParser.PackagePortDeclarationContext): void {
+    packagePortDeclarationVisitor(this, ctx);
   }
 
-  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext) {
+  visitPackagePortIdentifier(ctx: BitloopsParser.PackagePortIdentifierContext) {
+    return packagePortIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoPortDeclaration(ctx: BitloopsParser.RepoPortDeclarationContext): void {
     return repoPortDeclarationVisitor(this, ctx);
   }
 
-  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext) {
-    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined);
+  visitRepoExtendsList(ctx: BitloopsParser.RepoExtendsListContext): ExtendsRepoPortsNode {
+    return this.visitChildren(ctx).filter((listItem) => listItem !== undefined)[0];
   }
 
   visitRepoPortExtendableIdentifierList(
     ctx: BitloopsParser.RepoPortExtendableIdentifierListContext,
-  ) {
-    return this.visitChildren(ctx)[0];
+  ): ExtendsRepoPortsNode {
+    const identifierList: IdentifierNode[] = this.visitChildren(ctx).filter(
+      (child) => child !== undefined,
+    );
+
+    const identifierListNode = new ExtendsRepoPortsNodeBuilder()
+      .withIdentifierList(identifierList)
+      .build();
+    return identifierListNode;
   }
 
   visitRepoPortExtendableIdentifier(ctx: BitloopsParser.RepoPortExtendableIdentifierContext) {
@@ -821,10 +995,20 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   /**
    * Read model
    */
-  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): {
-    ReadModels: TReadModels;
-  } {
-    return readModelDeclarationVisitor(this, ctx);
+  visitReadModelDeclaration(ctx: BitloopsParser.ReadModelDeclarationContext): void {
+    readModelDeclarationVisitor(this, ctx);
+  }
+
+  visitReadModelIdentifier(
+    ctx: BitloopsParser.ReadModelIdentifierContext,
+  ): ReadModelIdentifierNode {
+    return new ReadModelIdentifierNodeBuilder(produceMetadata(ctx, this))
+      .withName(ctx.ReadModelIdentifier().getText())
+      .build();
+  }
+
+  visitBitloopsPrimaryType(ctx: BitloopsParser.BitloopsPrimaryTypeContext) {
+    return bitloopsPrimaryTypeVisitor(this, ctx);
   }
 
   visitPrimitivePrimType(ctx: BitloopsParser.PrimitivePrimTypeContext) {
@@ -836,9 +1020,231 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitBitloopsBuiltInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
-    return ctx.bitloopsBuiltInClass().getText();
+    const buildInClassType = ctx.bitloopsBuiltInClass().getText();
+    const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
+    return buildInClassTypeNode;
   }
+
   visitBitloopsIdentifierPrimType(ctx: BitloopsParser.BitloopsIdentifierPrimTypeContext) {
-    return ctx.bitloopsIdentifiers().getText();
+    const metadata = produceMetadata(ctx, this);
+    const bitloopsIdentifierType = ctx.bitloopsIdentifiers().getText();
+    const bitloopsIdentifierTypeNode = new BitloopsIdentifierTypeBuilder(metadata)
+      .withType(bitloopsIdentifierType)
+      .build();
+    return bitloopsIdentifierTypeNode;
+  }
+
+  visitOptional(ctx: BitloopsParser.OptionalContext) {
+    return optionalVisitor(ctx);
+  }
+
+  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): void {
+    restServerDeclarationVisitor(this, ctx);
+  }
+
+  visitServerInstantiationOptions(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
+    return serverInstantiationOptionsVisitor(this, ctx);
+  }
+
+  visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
+    const routesNode = bindServerRoutesVisitor(this, ctx);
+    return routesNode;
+  }
+
+  visitRouteBind(ctx: BitloopsParser.RouteBindContext): ServerRouteNode {
+    const routeNode = bindServerRouteVisitor(this, ctx);
+    return routeNode;
+  }
+
+  visitEnvVarWithDefaultValueExpression(
+    ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
+  ): ExpressionNode {
+    const envVar = envVarWithDefaultValueExpressionVisitor(this, ctx);
+    return envVar;
+  }
+
+  visitEnvironmentVariableExpression(
+    ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+  ): ExpressionNode {
+    const envVar = enviromentVariableVisitor(this, ctx);
+    return envVar;
+  }
+  visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {
+    this.visit(ctx.useCaseDefinition());
+  }
+
+  visitUseCaseDefinition(ctx: BitloopsParser.UseCaseDefinitionContext): void {
+    useCaseDefinitionVisitor(this, ctx);
+  }
+
+  visitUseCaseExpression(ctx: BitloopsParser.UseCaseExpressionContext): UseCaseExpressionNode {
+    return useCaseExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionDefinition(ctx: BitloopsParser.RepoConnectionDefinitionContext): void {
+    repoConnectionDefinitionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionExpression(
+    ctx: BitloopsParser.RepoConnectionExpressionContext,
+  ): RepoConnectionExpressionNode {
+    return repoConnectionExpressionVisitor(this, ctx);
+  }
+
+  visitRepoConnectionType(ctx: BitloopsParser.RepoConnectionTypeContext): DatabaseTypeNode {
+    return repoConnectionTypeVisitor(this, ctx);
+  }
+
+  visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
+    return repoConnectionOptionsVisitor(this, ctx);
+  }
+
+  visitBoundedContextModuleDeclaration(
+    ctx: BitloopsParser.BoundedContextModuleDeclarationContext,
+  ): BoundedContextModuleNode {
+    return boundedContextModuleVisitor(this, ctx);
+  }
+
+  visitBoundedContextDeclaration(
+    ctx: BitloopsParser.BoundedContextDeclarationContext,
+  ): BoundedContextNameNode {
+    return boundedContextVisitor(this, ctx);
+  }
+
+  visitModuleDeclaration(ctx: BitloopsParser.BoundedContextDeclarationContext): ModuleNameNode {
+    return moduleVisitor(this, ctx);
+  }
+
+  visitWordsWithSpaces(ctx: BitloopsParser.WordsWithSpacesContext): WordsWithSpacesNode {
+    return wordsWithSpacesVisitor(this, ctx);
+  }
+
+  visitAlpha_numeric_ws(ctx: BitloopsParser.Alpha_numeric_wsContext): string {
+    if (ctx.Identifier()) {
+      return ctx.Identifier().getText();
+    } else if (ctx.UpperCaseIdentifier()) {
+      return ctx.UpperCaseIdentifier().getText();
+    } else if (ctx.IntegerLiteral()) {
+      return ctx.IntegerLiteral().getText();
+    } else {
+      return '';
+    }
+  }
+
+  visitRouterDefinitionStatement(ctx: BitloopsParser.RouterDefinitionStatementContext): void {
+    this.visit(ctx.routerDefinition());
+  }
+
+  visitRouterDefinition(ctx: BitloopsParser.RouterDefinitionContext): void {
+    routerDefinitionVisitor(this, ctx);
+  }
+
+  visitRouterExpression(ctx: BitloopsParser.RouterExpressionContext): RouterExpressionNode {
+    return routerExpressionVisitor(this, ctx);
+  }
+
+  visitRestRouter(ctx: BitloopsParser.RestRouterContext): RestRouterNode {
+    return restRouterVisitor(this, ctx);
+  }
+
+  visitRouterArguments(ctx: BitloopsParser.RouterArgumentsContext): RouterArgumentsNode {
+    return routerArgumentsVisitor(this, ctx);
+  }
+
+  visitRouterControllers(ctx: BitloopsParser.RouterControllersContext): RouterControllersNode {
+    return routerControllersVisitor(this, ctx);
+  }
+
+  visitRouterController(ctx: BitloopsParser.RouterControllerContext): RouterControllerNode {
+    return routerControllerVisitor(this, ctx);
+  }
+
+  visitHttpMethodVerb(ctx: BitloopsParser.HttpMethodVerbContext): HTTPMethodVerbNode {
+    return httpMethodVerbVisitor(this, ctx);
+  }
+
+  visitServerType(ctx: BitloopsParser.ServerTypeContext): ServerTypeIdentifierNode {
+    let serverType = '';
+    if (ctx.expressServer()) {
+      serverType = ctx.expressServer().getText();
+    }
+    if (ctx.fastifyServer()) {
+      serverType = ctx.fastifyServer().getText();
+    }
+    if (ctx.graphQLServerType()) {
+      serverType = ctx.graphQLServerType().getText();
+    }
+    const metadata = produceMetadata(ctx, this);
+    return new ServerTypeIdentifierNodeBuilder(metadata)
+      .withServerTypeIdentifier(serverType)
+      .build();
+  }
+
+  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
+    return stringEvaluation(ctx.StringLiteral().getText());
+  }
+
+  visitConfigInvocation(ctx: BitloopsParser.ConfigInvocationContext): void {
+    configInvocationVisitor(this, ctx);
+  }
+
+  visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
+    return languageSetterMethodVisitor(this, ctx);
+  }
+
+  visitPackageConcretion(ctx: BitloopsParser.PackageConcretionContext): void {
+    packageConcretionVisitor(this, ctx);
+  }
+
+  visitPackageAdapterIdentifier(
+    ctx: BitloopsParser.PackageAdapterIdentifierContext,
+  ): PackageAdapterIdentifierNode {
+    return packageAdapterIdentifierVisitor(this, ctx);
+  }
+
+  visitRepoAdapterClassName(
+    ctx: BitloopsParser.RepoAdapterClassNameContext,
+  ): RepoAdapterClassNameNode {
+    return repoAdapterClassNameVisitor(this, ctx);
+  }
+
+  visitRepoAdapterOptions(ctx: BitloopsParser.RepoAdapterOptionsContext): RepoAdapterOptionsNode {
+    return repoAdapterOptionsVisitor(this, ctx);
+  }
+
+  visitConcretedRepoPort(ctx: BitloopsParser.ConcretedRepoPortContext): ConcretedRepoPortNode {
+    return concretedRepoPortVisitor(this, ctx);
+  }
+
+  visitRepoAdapterExpression(
+    ctx: BitloopsParser.RepoAdapterExpressionContext,
+  ): RepoAdapterExpressionNode {
+    return repoAdapterExpressionVisitor(this, ctx);
+  }
+
+  visitRepoAdapterDefinition(ctx: BitloopsParser.RepoAdapterDefinitionContext): void {
+    repoAdapterDefinitionVisitor(this, ctx);
+  }
+
+  visitControllerResolverBind(
+    ctx: BitloopsParser.ControllerResolverBindContext,
+  ): ControllerResolverNode {
+    return controllerResolverBindVisitor(this, ctx);
+  }
+
+  visitBindControllerResolvers(
+    ctx: BitloopsParser.BindControllerResolversContext,
+  ): ControllerResolversNode {
+    return bindControllerResolversVisitor(this, ctx);
+  }
+
+  visitGraphQLServerInstantiationOptions(
+    ctx: BitloopsParser.GraphQLServerInstantiationOptionsContext,
+  ): GraphQLServerOptionsNode {
+    return graphQLServerInstantiationOptionsVisitor(this, ctx);
+  }
+
+  visitGraphQLServerDeclaration(ctx: BitloopsParser.GraphQLServerDeclarationContext): void {
+    return graphQLServerDeclarationVisitor(this, ctx);
   }
 }

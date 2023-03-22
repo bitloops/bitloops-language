@@ -18,21 +18,62 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TArrayLiteralExpression, TExpression, TExpressionValues, TEvaluation } from './../../../../types.js';
+import { INDICATORS } from '../components/statements/expression/expressionValues.js';
+import {
+  TArrayLiteralExpression,
+  TExpressionValues,
+  TEvaluation,
+  TIdentifierExpression,
+  TLiteral,
+  TAssignmentExpression,
+  TThisExpression,
+  TInstanceOf,
+  TParenthesizedExpression,
+  TMemberDotExpression,
+  TMethodCallExpression,
+  TToStringExpression,
+  TGetClass,
+  TEnvironmentVariableExpression,
+} from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
-  static isMethodCallExpression(expressionStatement: TExpression): boolean {
-    const { expression } = expressionStatement;
-    if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
+  static isMethodCallExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TMethodCallExpression {
+    if ('methodCallExpression' in expressionValue) {
       return true;
     }
     return false;
   }
 
-  static isGetClassExpression(expressionStatement: TExpression): boolean {
-    const { expression } = expressionStatement;
+  static isAssignmentExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TAssignmentExpression {
+    if ('assignmentExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+  static isIdentifierExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TIdentifierExpression => {
+    if ('identifier' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
 
-    if (expression?.['evaluation']?.getClass) {
+  // static isGetClassExpression(expressionStatement: TExpression): boolean {
+  //   const { expression } = expressionStatement;
+
+  //   if (expression?.['evaluation']?.getClass) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  static isLiteralExpression(expressionValue: TExpressionValues): expressionValue is TLiteral {
+    if ('literal' in expressionValue) {
       return true;
     }
     return false;
@@ -55,4 +96,65 @@ export class ExpressionTypeIdentifiers {
     }
     return false;
   };
+
+  static isThisExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TThisExpression => {
+    if ('thisExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isInstanceOfExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TInstanceOf => {
+    if ('isInstanceOf' in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isParenthesizedExpression = (
+    expressionValue: TExpressionValues,
+  ): expressionValue is TParenthesizedExpression => {
+    if (INDICATORS.PARENTHESIZED_EXPRESSION in expressionValue) {
+      return true;
+    }
+    return false;
+  };
+
+  static isMemberDotExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TMemberDotExpression {
+    if ('memberDotExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isToStringExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TToStringExpression {
+    if ('toStringMethod' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isGetClassExpression(expressionValue: TExpressionValues): expressionValue is TGetClass {
+    if ('getClass' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+
+  static isEnvironmentVariableExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TEnvironmentVariableExpression {
+    if ('environmentVariable' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
 }

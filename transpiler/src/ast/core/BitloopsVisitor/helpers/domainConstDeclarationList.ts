@@ -20,16 +20,17 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TConstDeclarationValue, TConstDeclaration } from '../../../../types.js';
+import { ConstDeclarationListNode } from '../../intermediate-ast/nodes/ConstDeclarationListNode.js';
+import { ConstDeclarationNode } from '../../intermediate-ast/nodes/statements/ConstDeclarationNode.js';
+import { ConstDeclarationListNodeBuilder } from '../../intermediate-ast/builders/ConstDeclarationListBuilder.js';
 
 export const domainConstDeclarationListVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DomainConstDeclarationListContext,
-): TConstDeclarationValue[] => {
-  const children: TConstDeclaration[] = thisVisitor.visitChildren(ctx);
-  if (!children) {
-    return [];
-  }
-  const result: TConstDeclarationValue[] = children.map((el) => el.constDeclaration);
-  return result;
+): ConstDeclarationListNode => {
+  const children: ConstDeclarationNode[] = thisVisitor.visitChildren(ctx);
+
+  const constantListNode = new ConstDeclarationListNodeBuilder().withConstants(children).build();
+
+  return constantListNode;
 };

@@ -18,20 +18,23 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { DTOIdentifierNode } from '../../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
+import { DTOEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/DTOEvaluation.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TDTOEvaluation } from '../../../../types.js';
+import { DTOEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DTOEvaluationBuilder.js';
 
 export const dtoEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.DtoEvaluationContext,
-): TDTOEvaluation => {
-  const identifier = ctx.dtoEvaluationIdentifier().getText();
+): DTOEvaluationNode => {
+  const dtoIdentifierNode: DTOIdentifierNode = thisVisitor.visit(ctx.dtoIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
-  return {
-    dto: {
-      fields: fieldList,
-      name: identifier,
-    },
-  };
+
+  const dtoEvaluationNode = new DTOEvaluationNodeBuilder()
+    .withIdentifier(dtoIdentifierNode)
+    .withEvaluationFieldList(fieldList)
+    .build();
+
+  return dtoEvaluationNode;
 };

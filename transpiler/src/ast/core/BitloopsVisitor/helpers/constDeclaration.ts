@@ -20,23 +20,36 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TConstDeclaration } from '../../../../types.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
+import { ConstDeclarationNode } from '../../intermediate-ast/nodes/statements/ConstDeclarationNode.js';
+import { ConstDeclarationNodeBuilder } from '../../intermediate-ast/builders/statements/constDeclaration.js';
+import { produceMetadata } from '../metadata.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const constDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ConstDeclarationContext,
-): TConstDeclaration => {
-  const left = thisVisitor.visit(ctx.identifier());
-  const right = thisVisitor.visit(ctx.expression());
-  const returnObject = {
-    constDeclaration: {
-      name: left,
-      expression: right.expression,
-    },
-  };
+): ConstDeclarationNode => {
+  const identifierNode: IdentifierNode = thisVisitor.visit(ctx.identifier());
+
+  const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
+
+  let constDeclarationNode: ConstDeclarationNode;
+  const metadata = produceMetadata(ctx, thisVisitor);
   if (ctx.typeAnnotation()) {
-    const typeAnnotation = thisVisitor.visit(ctx.typeAnnotation());
-    returnObject.constDeclaration['type'] = typeAnnotation;
+    const typeAnnotationNode: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+    constDeclarationNode = new ConstDeclarationNodeBuilder(metadata)
+      .withIdentifier(identifierNode)
+      .withExpression(expressionNode)
+      .withTypeAnnotation(typeAnnotationNode)
+      .build();
+  } else {
+    constDeclarationNode = new ConstDeclarationNodeBuilder(metadata)
+      .withIdentifier(identifierNode)
+      .withExpression(expressionNode)
+      .build();
   }
-  return returnObject;
+
+  return constDeclarationNode;
 };

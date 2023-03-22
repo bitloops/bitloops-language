@@ -17,40 +17,28 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { v4 as uuidv4 } from 'uuid';
-import { IEvent } from './IEvent';
-import { config } from '../../config';
-import { getTopic } from '../../helpers';
-import { CommandMetadata } from '../commands/ICommand';
+import { IEvent, TEventMetadata } from './IEvent';
+import { TOPIC_PREFIXES } from '../../config';
+import { createUUIDv4 } from '../../helpers';
 
-const { TOPIC_DELIMITER, TOPIC_PREFIXES } = config;
+export type TEventInputMetadata = {
+  id?: string;
+  fromContextId: string;
+};
 
 export abstract class Event implements IEvent {
-  public static readonly prefix: string = TOPIC_PREFIXES.Event;
+  public static readonly prefix: TOPIC_PREFIXES.Event = TOPIC_PREFIXES.Event;
+  public metadata: Readonly<TEventMetadata>;
 
-  public readonly uuid: string;
-  protected createdTimestamp: number;
-  private metadata?: CommandMetadata;
-  public eventTopic: string;
-  public readonly fromContextId: string;
-
-  constructor(eventName: string, fromContextId: string, uuid?: string) {
-    this.uuid = uuid || uuidv4();
-    this.createdTimestamp = Date.now();
-    this.eventTopic = Event.getEventTopic(eventName, fromContextId);
-    this.fromContextId = fromContextId;
-  }
-
-  setMetadata(metadata: CommandMetadata) {
-    this.metadata = metadata;
-  }
-
-  static getEventTopic(eventName: string, fromContextId: string) {
-    return getTopic({
-      topicPrefix: Event.prefix,
-      name: eventName,
-      contextId: fromContextId,
-      topicDelimiter: TOPIC_DELIMITER,
-    });
+  constructor(
+    public readonly eventTopic: string,
+    public readonly data: any,
+    metadata: TEventInputMetadata,
+  ) {
+    this.metadata = {
+      id: metadata.id || createUUIDv4(),
+      createdAtTimestamp: Date.now(),
+      fromContextId: metadata.fromContextId,
+    };
   }
 }

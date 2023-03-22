@@ -18,27 +18,29 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { TEvaluationFields, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
+import { TEvaluationField, TTargetDependenciesTypeScript } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 export const evaluationFieldsToTargetLanguage = (
-  properties: TEvaluationFields,
+  properties: TEvaluationField[],
 ): TTargetDependenciesTypeScript => {
   let langFields = {};
 
-  const addToFieldsLangMapping = (fieldsObject, key, value: TTargetDependenciesTypeScript) => ({
+  const addToFields = (fieldsObject, key, value: TTargetDependenciesTypeScript) => ({
     ...fieldsObject,
     [key]: value.output,
   });
 
   let dependencies = [];
-  for (const { name, expression } of properties) {
+  for (const property of properties) {
+    const { identifier, expression } = property.evaluationField;
+
     const expressionModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpression,
       value: { expression },
     });
-    langFields = addToFieldsLangMapping(langFields, name, expressionModel);
+    langFields = addToFields(langFields, identifier, expressionModel);
     dependencies = [...dependencies, ...expressionModel.dependencies];
   }
 

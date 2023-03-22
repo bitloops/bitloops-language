@@ -17,72 +17,48 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import {
-  TParameterDependency,
-  TParameterDependencies,
-  TTargetDependenciesTypeScript,
-} from '../../../../../types.js';
+import { TParameter, TParameterList, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 // TODO fix parameter dependency to take private, public etc.
-const parameterDependencyToTypescript = (
-  variable: TParameterDependency,
+const parameterDependencyToTargetLanguage = (
+  variable: TParameter,
 ): TTargetDependenciesTypeScript => {
+  const { parameter } = variable;
   const mappedType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
-    value: variable.type,
+    value: { type: parameter.type },
   });
   return {
-    output: `${variable.value}:${mappedType.output}`,
+    output: `${parameter.value}:${mappedType.output}`,
     dependencies: mappedType.dependencies,
   };
 };
 
-const parameterDependencyToTargetLanguage = (
-  variable: TParameterDependency,
+const parameterDependenciesToTargetLanguage = (
+  variable: TParameterList,
 ): TTargetDependenciesTypeScript => {
-  const { output, dependencies } = parameterDependencyToTypescript(variable);
-  return { output, dependencies };
-};
-
-const parameterDependenciesToTypescript = (
-  variable: TParameterDependencies,
-): TTargetDependenciesTypeScript => {
+  const { parameters } = variable;
   let res = '(';
-  let finalDependencies = [];
-  for (let i = 0; i < variable.length; i += 1) {
-    const arg = variable[i];
-    const { output, dependencies } = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TParameterDependency,
-      value: arg,
-    });
-    res += output;
-    finalDependencies = [...finalDependencies, ...dependencies];
-    if (i !== variable.length - 1) {
-      res += ',';
+  const finalDependencies = [];
+  if (parameters) {
+    for (let i = 0; i < parameters.length; i += 1) {
+      const arg = parameters[i];
+      const { output, dependencies } = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TParameter,
+        value: arg,
+      });
+      res += output;
+      finalDependencies.push(...dependencies);
+      if (i !== parameters.length - 1) {
+        res += ',';
+      }
     }
   }
+
   res += ')';
   return { output: res, dependencies: finalDependencies };
 };
 
-const parameterDependenciesToTargetLanguage = (
-  variable: TParameterDependencies,
-): TTargetDependenciesTypeScript => {
-  return parameterDependenciesToTypescript(variable);
-};
-
 export { parameterDependencyToTargetLanguage, parameterDependenciesToTargetLanguage };
-
-// const res = parameterDependenciesToTargetLanguage(
-//   [
-//     { value: 'arg1', type: 'string' },
-//     { value: 'arg2', type: 'WhateverType' },
-//   ],
-//   'TypeScript',
-// );
-// console.log('res', res);
-
-// const res2 = parameterDependencyToTargetLanguage({ value: 'arg1', type: 'string' }, 'TypeScript');
-// console.log('res2', res2);

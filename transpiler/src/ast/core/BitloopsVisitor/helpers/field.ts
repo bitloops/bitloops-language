@@ -19,21 +19,27 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { FieldNodeBuilder } from '../../intermediate-ast/builders/FieldList/FieldNodeBuilder.js';
+import { OptionalBuilder } from '../../intermediate-ast/builders/OptionalBuilder.js';
+import { FieldNode } from '../../intermediate-ast/nodes/FieldList/FieldNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { TVariable } from '../../../../types.js';
 
 export const fieldVisitor = (
   _thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.FieldContext,
-): TVariable => {
-  const type = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-  const identifier = ctx.identifier().getText();
-  const result: TVariable = {
-    type,
-    name: identifier,
-  };
-  if (ctx.Optional()) {
-    result.optional = true;
-  }
-  return result;
+): FieldNode => {
+  const identifierNode = _thisVisitor.visit(ctx.identifier());
+
+  const typeNode = _thisVisitor.visit(ctx.bitloopsPrimaryType());
+
+  const optionalValue = ctx.optional() ? true : false;
+  const optionalNode = new OptionalBuilder().withOptional(optionalValue).build();
+
+  const fieldNode = new FieldNodeBuilder()
+    .withType(typeNode)
+    .withName(identifierNode)
+    .withOptional(optionalNode)
+    .build();
+
+  return fieldNode;
 };

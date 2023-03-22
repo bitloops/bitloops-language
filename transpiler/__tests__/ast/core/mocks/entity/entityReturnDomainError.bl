@@ -1,0 +1,13 @@
+Entity TodoEntity {    
+    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
+        return TodoEntity(props);   
+    } 
+
+    public greet(): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {
+        return DomainErrors.InvalidTitleError();    
+    } 
+
+    uncomplete(completed: bool): (OK(void), Errors()) {     
+        this.completed = completed;
+    } 
+}

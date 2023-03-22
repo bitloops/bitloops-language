@@ -83,9 +83,9 @@ export const equalityOperatorToTargetLanguage = (
   const langMapping: any = (operator: TEqualityOperator): string | Error => {
     switch (operator) {
       case OPERATORS.EQUAL:
-        return '==';
+        return '===';
       case OPERATORS.NOT_EQUAL:
-        return '!=';
+        return '!==';
       default:
         throw new Error(`Equality operator: ${operator} is not supported`);
     }

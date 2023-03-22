@@ -17,58 +17,50 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
- import { d } from 'bitloops-gherkin';
- import { defineFeature, loadFeature } from 'jest-cucumber';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { validDomainConstructorDeclarationCases } from './mocks/domainConstructorDeclaration.js';
 
- import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
- 
- const feature = loadFeature(
-   './__tests__/ast/core/domainConstructorDeclaration.feature',
- );
- 
- defineFeature(feature, (test) => {
-   test.skip('Domain constructor declaration is valid', ({ given, when, then }) => {
-     let boundedContext: string;
-     let module: string;
-     let blString: string;
-     let modelOutput: string;
-     let result: any;
-     given(
-       /^A Valid bounded context (.*), module (.*), constructor declaration (.*) string$/,
-       (arg0, arg1, arg2) => {
-         boundedContext = d(arg0);
-         module = d(arg1);
-         blString = d(arg2);
-       },
-     );
- 
-     when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext,
-          module,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
+
+describe('Domain constructor declaration is valid', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  validDomainConstructorDeclarationCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const parseResult = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(parseResult)) {
+          const result = intermediateParser.complete(parseResult);
+          resultTree = result.core[BOUNDED_CONTEXT].core;
+        }
       }
-     });
- 
-     then(/^I should get (.*)$/, (arg0) => {
-       modelOutput = d(arg0);
-       expect(result).toMatchObject(JSON.parse(modelOutput));
-     });
-   });
- });
- 
+      const domainConstructorNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TDomainCreateMethod,
+      );
+      const value = domainConstructorNodes[0].getValue();
+
+      expect(value).toMatchObject(testCase.expected);
+      expect(domainConstructorNodes.length).toBe(1);
+    });
+  });
+});

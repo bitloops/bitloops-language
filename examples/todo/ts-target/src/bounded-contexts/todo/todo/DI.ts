@@ -21,7 +21,7 @@ import { MongoTodoWriteRepo } from './repos/concretions/MongoToDoWriteRepo';
 import { MongoTodoReadRepo } from './repos/concretions/MongoToDoReadRepo';
 
 import { CreateTodoUseCase } from './application/CreateTodoUseCase';
-import { GetAllTodoUseCase } from './application/GetAllTodoUseCase';
+import { GetAllTodosUseCase } from './application/GetAllTodoUseCase';
 
 import { CreateTodoRESTController } from './driving-adapters/CreateTodoRESTController';
 import { GetAllTodoRESTController } from './driving-adapters/GetAllTodoRESTController';
@@ -39,13 +39,13 @@ const createTodoRESTController = new CreateTodoRESTController(
   new CreateTodoUseCase(new MongoTodoWriteRepo(client)),
 );
 const todoGetAllController = new GetAllTodoRESTController(
-  new GetAllTodoUseCase(new MongoTodoReadRepo(client)),
+  new GetAllTodosUseCase(new MongoTodoReadRepo(client)),
 );
 const todoGetByIdRESTController = new GetByIdTodoRESTController(
   new GetByIdTodoUseCase(new MongoTodoReadRepo(client)),
 );
 const todoGetAllGQLController = new GetAllTodoGQLController(
-  new GetAllTodoUseCase(new MongoTodoReadRepo(client)),
+  new GetAllTodosUseCase(new MongoTodoReadRepo(client)),
 );
 
 const updateTodoController = new UpdateTodoRESTController(

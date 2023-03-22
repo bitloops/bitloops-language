@@ -17,35 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
+import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { VALID_PRIMARY_TYPE_TEST_CASES } from './mocks/bitloopsPrimaryType.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/bitloopsPrimaryType.feature');
+describe('Valid bitloops primary type test cases', () => {
+  VALID_PRIMARY_TYPE_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      // given
+      const input = testCase.bitloopsPrimaryType;
 
-defineFeature(feature, (test) => {
-  let inputType;
-  let result;
-  let value;
-
-  test('BitloopsPrimaryType success to Typescript object', ({ given, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      inputType = type;
-    });
-
-    given(/^I have a BitloopsPrimaryType (.*)$/, (intermediateModel) => {
-      value = intermediateModel;
-    });
-
-    when('I generate the code', () => {
-      const inputValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: inputType,
-        value: inputValue,
+      // when
+      const result = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: input.getValue(),
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      //then
+      expect(result.output).toEqual(testCase.output);
     });
   });
 });

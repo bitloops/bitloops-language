@@ -23,12 +23,22 @@ import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 
 const DTOEvaluationToTargetLanguage = (variable: TDTOEvaluation): TTargetDependenciesTypeScript => {
-  const dtoProperties = variable.dto.fields;
+  const { fields: dtoProperties } = variable.dto;
 
-  return modelToTargetLanguage({
+  const fields = modelToTargetLanguage({
     type: BitloopsTypesMapping.TEvaluationFields,
     value: dtoProperties,
   });
+
+  // const DTOName = modelToTargetLanguage({
+  //   type: BitloopsTypesMapping.TDTOIdentifier,
+  //   value: name,
+  // });
+
+  return {
+    output: fields.output,
+    dependencies: fields.dependencies,
+  };
 };
 
 export { DTOEvaluationToTargetLanguage };

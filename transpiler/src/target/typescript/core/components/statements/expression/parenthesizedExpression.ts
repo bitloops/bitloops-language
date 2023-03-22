@@ -30,7 +30,7 @@ export const parenthesizedExpressionToTargetLanguage = (
   const langMapping = (value: TParenthesizedExpression): TTargetDependenciesTypeScript => {
     const { parenthesizedExpression } = value;
     const expression = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TExpressionValues,
+      type: BitloopsTypesMapping.TExpression,
       value: parenthesizedExpression,
     });
     return { output: `(${expression.output})`, dependencies: expression.dependencies };

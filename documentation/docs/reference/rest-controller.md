@@ -1,8 +1,25 @@
 ---
 sidebar_label: RESTController
-title: RESTController - Basic Syntax 
-description: RESTController syntax on Bitloops Language - RESTController is used to make restful web services and handle requests made by clients. More specifically, it can handle REST APIs such as GET, POST, DELETE, PUT and PATCH.   
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, restcontroller]
+title: RESTController - Basic Syntax
+description: RESTController syntax on Bitloops Language - RESTController is used to make restful web services and handle requests made by clients. More specifically, it can handle REST APIs such as GET, POST, DELETE, PUT and PATCH.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    restcontroller,
+  ]
 ---
 
 # RESTController

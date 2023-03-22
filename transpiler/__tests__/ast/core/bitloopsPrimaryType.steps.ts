@@ -17,49 +17,48 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import {
-  BitloopsIntermediateASTParser,
-  BitloopsLanguageASTContext,
-  BitloopsParser,
-  BitloopsParserError,
-} from '../../../src/index.js';
 
-const feature = loadFeature('__tests__/ast/core/bitloopsPrimaryType.feature');
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { validBitloopsPrimaryTypeTestCases } from './mocks/bitloopsPrimaryType.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 
-defineFeature(feature, (test) => {
-  test('Bitloops Primary Type is Valid', ({ given, when, then }) => {
-    const BOUNDED_CONTEXT = 'Hello World';
-    const MODULE = 'core';
-    let blString;
-    let modelOutput;
-    let result;
+const BOUNDED_CONTEXT = 'Hello World';
+const MODULE = 'core';
 
-    given(/^A valid primType (.*) string$/, (arg0) => {
-      blString = arg0;
-    });
+describe('Valid bitloops primary type', () => {
+  let resultTree: IntermediateASTTree;
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        result = intermediateParser.parse(
-          initialModelOutput as unknown as BitloopsLanguageASTContext,
-        );
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  validBitloopsPrimaryTypeTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
+        }
       }
-    });
+      const expectedNodeValues = testCase.type;
+      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
 
-    then(/^I should get (.*)$/, (arg0) => {
-      modelOutput = arg0;
-      expect(result).toEqual(JSON.parse(modelOutput));
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });

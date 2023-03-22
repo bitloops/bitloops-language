@@ -1,8 +1,26 @@
 ---
 sidebar_label: PackageAdapter
-title: Package Adapter - Basic Syntax 
-description: PackageAdapter syntax on Bitloops Language - Package Adapter is the concrete implementation of the Package Port to enable the use of external libraries.  
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, package adapter, package port]
+title: Package Adapter - Basic Syntax
+description: PackageAdapter syntax on Bitloops Language - Package Adapter is the concrete implementation of the Package Port to enable the use of external libraries.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    package adapter,
+    package port,
+  ]
 ---
 
 # PackageAdapter
@@ -30,11 +48,13 @@ The concretion of the adapter(**It must end with PackageAdapter in the file**):
 #### **`GherkinPackageAdapter.ts`**
 
 ```typescript
-import { e } from 'bitloops-gherkin';
+import { e } from "bitloops-gherkin";
 
-import { GherkinPackagePort } from './GherkinPackagePort';
+import { GherkinPackagePort } from "./GherkinPackagePort";
 
-export default class BitloopsGherkinPackageAdapter implements GherkinPackagePort {
+export default class BitloopsGherkinPackageAdapter
+  implements GherkinPackagePort
+{
   encode(value: string): Uint8Array {
     return e(value);
   }

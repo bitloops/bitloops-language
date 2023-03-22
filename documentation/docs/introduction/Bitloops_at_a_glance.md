@@ -3,16 +3,28 @@ sidebar_position: 2
 sidebar_label: Bitloops @ a Glance!
 title: What is Bitloops? A modern development platform
 description: Want to learn more about Bitloops? This article provides a concise description of what Bitloops is, our vision and how it can help you build better software, faster!
-keywords: [bitloops, bitloops tutorial, software engingeering, software architecture, clean code, learning programming, learning coding, software development, better programming]
+keywords:
+  [
+    bitloops,
+    bitloops tutorial,
+    software engingeering,
+    software architecture,
+    clean code,
+    learning programming,
+    learning coding,
+    software development,
+    better programming,
+  ]
 ---
 
 # 👀 Bitloops @ a Glance
 
 Bitloops Language (BL) is a high-productivity, fourth generation (4GL), [DDD](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design) / [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language that guide developers to build high-quality software faster!
 
-At its core, Bitloops Language has been designed and built by incorporating software development best practices and methodologies such as clean code, clean / [layered / hexagonal](https://alistair.cockburn.us/hexagonal-architecture/) architecture, and [SOLID](https://www.pentalog.com/blog/it-development-technology/solid-principles-object-oriented-programming/) principles that empower developers to build high-quality software that is maintainable, flexible and reliable much faster when compared to traditional programming tools and languages. 
+At its core, Bitloops Language has been designed and built by incorporating software development best practices and methodologies such as clean code, clean / [layered / hexagonal](https://alistair.cockburn.us/hexagonal-architecture/) architecture, and [SOLID](https://www.pentalog.com/blog/it-development-technology/solid-principles-object-oriented-programming/) principles that empower developers to build high-quality software that is maintainable, flexible and reliable much faster when compared to traditional programming tools and languages.
 
 ---
+
 ⚠️ Please keep in mind that the Bitloops Language is in its early stages
 and under very active development. Expect bugs and limitations.
 Full backward compatibility is not guaranteed before reaching v1.0.0.
@@ -27,15 +39,15 @@ Full backward compatibility is not guaranteed before reaching v1.0.0.
 - Separate the busienss logic from the technical aspects which leads to more robust and flexible systems
 - Focus on the core domain or problem, and not worry about boilerplate code
 
-What we love the most about Bitloops is that developers can focus on what they do best: solving problems! 
+What we love the most about Bitloops is that developers can focus on what they do best: solving problems!
 
 Software written with Bitloops Language is easier to read, understand and maintain, which means other developers (and even you in 6 months) can quickly start building on top of existing code.
 
 ## Benefits of using Bitloops Language
 
-You're probably thinking: should I really learn a new language? 
+You're probably thinking: should I really learn a new language?
 
-We've highlight below several benefits of the Bitloops Language, but probably the most important is that it will make you a better software engineer. You will better understand how to build high-quality software, why certain principles or patterns make software easier to maintain and manage, and this knowledge can be applied to any language. 
+We've highlight below several benefits of the Bitloops Language, but probably the most important is that it will make you a better software engineer. You will better understand how to build high-quality software, why certain principles or patterns make software easier to maintain and manage, and this knowledge can be applied to any language.
 
 Its also really easy to learn... 😀
 
@@ -53,7 +65,6 @@ If you're still not convinced, here's the full list of benefits:
 - Ability to **transpiles to widely used programming languages** for maximum compatibility with existing code (currently TypeScript support, Go, Java, C#, C++ or maybe even Rust or Carbon to follow in the near future)
 
 Yes, BL is different. But at the same time, BL is the same. That's the beauty of it. What Bitloops has done is to empower you to quickly and accurate build code exactly how you would like to build it!
-
 
 ## What's next?
 

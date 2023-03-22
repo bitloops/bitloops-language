@@ -25,6 +25,7 @@ import {
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
 import { TDependencyChildTypescript, TDependencyParentTypescript } from '../../../types.js';
+import { deepClone } from '../../../utils/deepClone.js';
 import { getFilePathRelativeToModule } from '../helpers/getTargetFileDestination.js';
 import { findRelativeDiffForImport } from '../utils/findRelativeDiff.js';
 
@@ -34,24 +35,25 @@ export const getParentDependencies = (
 ): TDependencyParentTypescript[] => {
   const parentPathObj = getFilePathRelativeToModule(classType, className);
   const parentPath = parentPathObj.path;
-  const parentDependecies: TDependencyParentTypescript[] = [];
-  for (const dependency of dependencies) {
+  const parentDependencies: TDependencyParentTypescript[] = [];
+  const clonedDependencies = deepClone(dependencies);
+  for (const dependency of clonedDependencies) {
     const { type, value, classType, className } = dependency;
     if (type === 'absolute') {
-      parentDependecies.push(dependency as TDependencyParentTypescript);
+      parentDependencies.push(dependency as TDependencyParentTypescript);
       continue;
     }
     const childPathObj = getFilePathRelativeToModule(classType, className);
     const childPath = childPathObj.path;
     const importString = findRelativeDiffForImport(parentPath, childPath, className);
-    parentDependecies.push({
+    parentDependencies.push({
       type,
       default: dependency.default,
       value,
       from: importString,
     });
   }
-  let finalParentDependencies = removeParentDuplicates(parentDependecies, className);
+  let finalParentDependencies = removeParentDuplicates(parentDependencies, className);
   finalParentDependencies = mergeDependencies(finalParentDependencies);
   return finalParentDependencies;
 };
@@ -98,7 +100,6 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
   }
   const result: TDependencyChildTypescript[] = [];
   for (const dependencyString of dependencyStrings) {
-    // for void etc
     if (isBitloopsPrimitive(dependencyString)) {
       continue;
     }
@@ -129,26 +130,27 @@ export const getChildDependencies = (args: string | string[]): TDependencyChildT
 
 /**
  * Gets the file name from [class name/=/dependency String]
+ * Value dictates name of import
  */
 export const getValueAndFileNameOfImport = (
   dependencyString: string,
   classType?: TClassTypesValues,
 ): { value: string; fileName: string } => {
-  if (classType === ClassTypes.DomainErrors) {
+  if (classType === ClassTypes.DomainError) {
     return {
       value: 'DomainErrors',
       fileName: 'index',
     };
   }
-  if (classType === ClassTypes.ApplicationErrors) {
+  if (classType === ClassTypes.ApplicationError) {
     return {
       value: 'ApplicationErrors',
       fileName: 'index',
     };
   }
-  if (classType === ClassTypes.Rules) {
+  if (classType === ClassTypes.DomainRule) {
     return {
-      value: 'Rules',
+      value: 'DomainRules',
       fileName: 'index',
     };
   }
@@ -165,15 +167,15 @@ const getClassTypeFromIdentifier = (
 } => {
   if (dependencyName.endsWith('DTO')) {
     return {
-      classType: ClassTypes.DTOs,
+      classType: ClassTypes.DTO,
     };
   } else if (dependencyName.endsWith('Entity')) {
     return {
-      classType: ClassTypes.Entities,
+      classType: ClassTypes.Entity,
     };
   } else if (dependencyName.endsWith('VO')) {
     return {
-      classType: ClassTypes.ValueObjects,
+      classType: ClassTypes.ValueObject,
     };
   } else if (dependencyName.endsWith('Props')) {
     return {
@@ -181,39 +183,39 @@ const getClassTypeFromIdentifier = (
     };
   } else if (dependencyName.endsWith('Controller')) {
     return {
-      classType: ClassTypes.Controllers,
+      classType: ClassTypes.Controller,
     };
   } else if (dependencyName.endsWith('UseCase')) {
     return {
-      classType: ClassTypes.UseCases,
+      classType: ClassTypes.UseCase,
     };
   } else if (dependencyName.endsWith('Error')) {
     if (dependencyName.startsWith('DomainErrors'))
       return {
-        classType: ClassTypes.DomainErrors,
+        classType: ClassTypes.DomainError,
       };
     else if (dependencyName.startsWith('ApplicationErrors')) {
       return {
-        classType: ClassTypes.ApplicationErrors,
+        classType: ClassTypes.ApplicationError,
       };
     }
     throw new Error('Error class must start with DomainErrors or ApplicationErrors');
   } // TODO check Repo Adapter?
   else if (dependencyName.endsWith('PackagePort')) {
     return {
-      classType: ClassTypes.Packages,
+      classType: ClassTypes.Package,
     };
   } else if (dependencyName.endsWith('RepoPort')) {
     return {
-      classType: ClassTypes.RepoPorts,
+      classType: ClassTypes.RepoPort,
     };
   } else if (dependencyName.endsWith('Rule')) {
     return {
-      classType: ClassTypes.Rules,
+      classType: ClassTypes.DomainRule,
     };
   } else if (dependencyName.endsWith('ReadModel')) {
     return {
-      classType: ClassTypes.ReadModels,
+      classType: ClassTypes.ReadModel,
     };
   }
   //  else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {

@@ -17,37 +17,51 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
+import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_INSTANCE_OF_TEST_CASES } from './mocks/expression/instanceOf.js';
 
-const feature = loadFeature('__tests__/target/typescript/core/instanceOf.feature');
+describe('Valid instance of test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  const formatterConfig = null;
+  const language = 'TypeScript';
 
-defineFeature(feature, (test) => {
-  let instanceOfType;
-  let result;
-  let value;
+  VALID_INSTANCE_OF_TEST_CASES.forEach((testCase) => {
+    it(`${testCase.description}`, () => {
+      let resultCore: TTargetCoreFinalContent[];
 
-  test('InstanceOf with declared class', ({ given, and, when, then }) => {
-    given(/^type is "(.*)"$/, (type) => {
-      instanceOfType = type;
-    });
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const expressionNode = testCase.expression;
+      tree.insertChild(expressionNode);
 
-    and(/^language is "(.*)"$/, (_lang) => {});
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
+      };
 
-    given(/^I have an instanceOf (.*)$/, (instanceOf) => {
-      value = instanceOf;
-    });
-
-    when('I generate the code', () => {
-      const instanceOfValue = JSON.parse(value);
-      result = modelToTargetLanguage({
-        type: instanceOfType,
-        value: instanceOfValue,
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
+        formatterConfig,
+        targetLanguage: language,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      expect(result.output).toEqual(output);
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
+
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

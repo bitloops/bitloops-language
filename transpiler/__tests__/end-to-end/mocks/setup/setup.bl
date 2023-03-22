@@ -1,0 +1,14 @@
+Config.setLanguage(TypeScript);  
+const myUseCase = [Demo][Hello World]HelloWorldUseCase();  
+const helloWorldRESTRouter = RESTRouter(REST.Fastify) {   
+    Get('/hello'): [Demo][Hello World]GetHelloWorldRESTController(myUseCase); 
+}  
+
+// [Demo][Hello World]BitloopsGherkinPackageAdapter concretes GherkinPackagePort; 
+RESTServer({   
+    server: REST.Fastify,   
+    port: env.FASTIFY_PORT OR 5001,   
+    apiPrefix: '/api', 
+}) {   
+    '/say': helloWorldRESTRouter; 
+}  

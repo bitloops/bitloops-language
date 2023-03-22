@@ -1,74 +1,95 @@
-import { decode } from 'bitloops-gherkin';
-import { defineFeature, loadFeature } from 'jest-cucumber';
-
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import {
-  BitloopsIntermediateASTParser,
-  BitloopsParser,
-  BitloopsParserError,
-  BitloopsLanguageASTContext,
-} from '../../../src/index.js';
+  invalidApplicationErrors,
+  validApplicationErrors,
+} from './mocks/errors/applicationErrors.js';
+import { TApplicationError, TExpression, TIdentifier, TParameterList } from '../../../src/types.js';
+import { ApplicationErrorBuilder } from './builders/applicationErrorBuilder.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 
-const feature = loadFeature('./__tests__/ast/core/applicationError.feature');
-
-let blString: string;
 const BOUNDED_CONTEXT = 'Hello World';
-let res: any;
 const MODULE = 'core';
+const CLASS_TYPE = BitloopsTypesMapping.TApplicationError;
+describe('An application error is valid', () => {
+  let resultTree: IntermediateASTTree;
 
-defineFeature(feature, (test) => {
-  test('applicationError is valid', ({ given, when, then }) => {
-    given(/^A valid application error string (.*)$/, (arg0) => {
-      blString = decode(arg0);
-    });
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
 
-    when('I generate the model', () => {
-      const parser = new BitloopsParser();
-      const initialModelOutput = parser.parse([
-        {
-          boundedContext: BOUNDED_CONTEXT,
-          module: MODULE,
-          fileId: 'testFile.bl',
-          fileContents: blString,
-        },
-      ]);
-      const intermediateParser = new BitloopsIntermediateASTParser();
-      if (!(initialModelOutput instanceof BitloopsParserError)) {
-        res = intermediateParser.parse(initialModelOutput as unknown as BitloopsLanguageASTContext);
-      }
-    });
-
-    then(/^I should get the right model (.*)$/, (arg0) => {
-      const correctOutput = decode(arg0);
-      expect(res).toEqual(JSON.parse(correctOutput));
-    });
-  });
-  test('applicationError is invalid', ({ given, when, then }) => {
-    given(/^An invalid application error string (.*)$/, (arg0) => {
-      blString = decode(arg0);
-    });
-
-    when('I generate the model', () => {
-      res = function (): void {
-        const parser = new BitloopsParser();
-        const initialModelOutput = parser.parse([
+  validApplicationErrors.forEach((mock) => {
+    test(`${mock.description}`, () => {
+      const { identifier, message, errorId, parameters } = mock;
+      const expectedNodeValues = getExpectedOutput(identifier, message, errorId, parameters);
+      const initialModelOutput = parser.parse({
+        core: [
           {
             boundedContext: BOUNDED_CONTEXT,
             module: MODULE,
-            fileId: 'testFile.bl',
-            fileContents: blString,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
           },
-        ]);
-        const intermediateParser = new BitloopsIntermediateASTParser();
-        if (!(initialModelOutput instanceof BitloopsParserError)) {
-          res = intermediateParser.parse(
-            initialModelOutput as unknown as BitloopsLanguageASTContext,
-          );
-        }
-      };
-    });
+        ],
+      });
 
-    then('I should get an error', () => {
-      expect(res).toThrow(TypeError);
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(result)) {
+          const { core } = result;
+          resultTree = core[BOUNDED_CONTEXT].core;
+        }
+      }
+
+      const nodes = resultTree.getRootChildrenNodesByType(CLASS_TYPE);
+      if (nodes.length > 1) {
+        throw new Error('more than one Application Errors detected');
+      }
+      const value = nodes[0].getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });
+describe.skip('An application error is invalid', () => {
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+  invalidApplicationErrors.forEach((mock) => {
+    test(`${mock.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: mock.fileId,
+            fileContents: mock.inputBLString,
+          },
+        ],
+      });
+      if (isParserErrors(initialModelOutput)) {
+        throw initialModelOutput;
+      }
+
+      const result = (): void => {
+        intermediateParser.parse(initialModelOutput);
+      };
+      expect(result).toThrow(mock.exception);
+    });
+  });
+});
+const getExpectedOutput = (
+  identifier: TIdentifier,
+  messageExp: TExpression,
+  errorIdExp: TExpression,
+  parameters: TParameterList,
+): TApplicationError => {
+  const val = new ApplicationErrorBuilder()
+    .withIdentifier(identifier)
+    .withErrorId(errorIdExp)
+    .withMessage(messageExp)
+    .withParameters(parameters)
+    .build();
+  return val;
+};

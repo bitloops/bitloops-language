@@ -18,35 +18,19 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { readFromFile } from '../helpers/fileOperations.js';
-import { ISetupData } from '../types.js';
-import {
-  BitloopsIntermediateSetupASTParser,
-  BitloopsLanguageSetupAST,
-  BitloopsSetupParser,
-  BitloopsSetupParserError,
-} from '@bitloops/bl-transpiler';
+import { TParserInputData } from '@bitloops/bl-transpiler';
 import path from 'path';
 const SETUP_FILE_NAME = 'setup.bl';
 
-const generateSetupDataModel = (sourceDirPath: string): ISetupData => {
+const readSetupData = (sourceDirPath: string): TParserInputData['setup'] => {
   // TODO handle possibly multiple setup files
   const setupFilePath = path.join(sourceDirPath, SETUP_FILE_NAME);
   const content = readFromFile(setupFilePath);
-  // const setupData = main(content);
-  const parser = new BitloopsSetupParser();
-  const initialModelOutput = parser.parse(content);
-
-  const intermediateParser = new BitloopsIntermediateSetupASTParser();
-  if (!(initialModelOutput instanceof BitloopsSetupParserError)) {
-    const result = intermediateParser.parse(
-      initialModelOutput as unknown as BitloopsLanguageSetupAST,
-    );
-    if (result instanceof BitloopsSetupParserError) {
-      console.log(result);
-      throw new Error('Error parsing setup file');
-    }
-    return result as ISetupData;
-  }
-  throw new Error('Error parsing setup file');
+  return [
+    {
+      fileId: SETUP_FILE_NAME,
+      fileContents: content,
+    },
+  ];
 };
-export { generateSetupDataModel };
+export { readSetupData };

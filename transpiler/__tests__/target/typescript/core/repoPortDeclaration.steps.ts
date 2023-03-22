@@ -17,69 +17,64 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { defineFeature, loadFeature } from 'jest-cucumber';
-import { d } from 'bitloops-gherkin';
-// import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
-import { ClassTypes } from '../../../../src/helpers/mappings.js';
-import { BitloopsTargetGenerator } from '../../../../src/target/index.js';
-import { TBitloopsOutputTargetContent } from '../../../../src/types.js';
+
+import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
+import { TargetGenerator } from '../../../../src/target/index.js';
+import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
 import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { VALID_REPO_PORT_TEST_CASES } from './mocks/repoPort/index.js';
 
-import { TBoundedContexts, TContextData } from './../../../../src/types.js';
-const feature = loadFeature('./__tests__/target/typescript/core/repoPortDeclaration.feature');
-
-defineFeature(feature, (test) => {
-  let result: TBitloopsOutputTargetContent;
-  let value;
-  let bitloopsModel: TBoundedContexts;
-  let contextData: TContextData;
-  let intermediateAST;
-  const repoPortsClassType = ClassTypes.RepoPorts;
+describe('Valid repo port declaration test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
   const formatterConfig = null;
-  let language;
+  const language = 'TypeScript';
 
-  test('Repo ports success to Typescript', ({ given, when, then }) => {
-    // given(/^type
-    //   propsType = type;
-    // });
+  VALID_REPO_PORT_TEST_CASES.forEach((testCase) => {
+    let resultCore: TTargetCoreFinalContent[];
 
-    given(/^language is "(.*)"$/, (_lang) => {
-      language = _lang;
-    });
+    it(`${testCase.description}`, () => {
+      // given
+      const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+      const repoPortNode = testCase.repoPort;
+      const rootEntityNode = testCase.rootEntity;
+      const propsNode = testCase.props;
+      const readModelNode = testCase.readModel;
 
-    given(/^I have some repo ports (.*), (.*), (.*)$/, (arg0, arg1, arg2) => {
-      value = d(arg0);
-      bitloopsModel = JSON.parse(d(arg1));
-      contextData = JSON.parse(d(arg2));
-    });
+      tree.insertChild(repoPortNode);
+      if (rootEntityNode) {
+        tree.insertSibling(rootEntityNode);
+      } else if (readModelNode) {
+        tree.insertSibling(readModelNode);
+      } else {
+        throw new Error('ReadModel or RootEntity is missing from repoPOrt test');
+      }
+      tree.insertSibling(propsNode);
 
-    when('I generate the code', () => {
-      const propsValue = JSON.parse(value);
-      const boundedContext = contextData.boundedContext;
-      const module = contextData.module;
-
-      const extraInfo = bitloopsModel[boundedContext][module];
-      intermediateAST = {
-        [boundedContext]: {
-          [module]: {
-            [repoPortsClassType]: propsValue,
-            ...extraInfo,
-          },
-        },
+      const intermediateAST = {
+        core: { [boundedContext]: { [module]: tree } },
       };
-      const targetGenerator = new BitloopsTargetGenerator();
-      result = targetGenerator.generate({
-        intermediateAST,
+
+      // when
+      const targetGenerator = new TargetGenerator();
+      const result = targetGenerator.generate(intermediateAST, {
         formatterConfig,
         targetLanguage: language,
-        setupData: null,
+        // setupData: null,
       });
-    });
 
-    then(/^I should see the (.*) code$/, (output) => {
-      output = formatString(d(output), formatterConfig);
+      if (!isTargetGeneratorError(result)) {
+        resultCore = result.core;
+      }
 
-      expect(result[0].fileContent).toEqual(output);
+      //then
+      const formattedOutput = formatString(testCase.output as string, formatterConfig);
+      if (result instanceof Error) {
+        throw result;
+      }
+      expect(resultCore[0].fileContent).toEqual(formattedOutput);
     });
   });
 });

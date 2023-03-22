@@ -19,13 +19,17 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { ErrorIdentifiersNodeBuilder } from '../../intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
+import { ErrorIdentifiersNode } from '../../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifiersNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 
 export const returnErrorsTypeVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ReturnErrorsTypeContext,
-): string[] => {
+): ErrorIdentifiersNode => {
   if (ctx.errorIdentifiers()) {
     return thisVisitor.visit(ctx.errorIdentifiers());
-  } else return [];
+  } else {
+    return new ErrorIdentifiersNodeBuilder().withErrors([]).build();
+  }
 };

@@ -1,23 +1,12 @@
 import {
-  TConstDeclaration,
-  TDomainMethod,
-  TDomainPrivateMethod,
-  TDomainPublicMethod,
-  TThisDeclaration,
   TExpression,
-  TReturnStatement,
   TStatement,
-  TSwitchStatement,
-  TVariableDeclaration,
-  TGraphQLControllerInstances,
-  TGraphQLControllerValues,
-  TGraphQLServerInstance,
-  TRestControllerDefinitions,
-  TRESTControllerValues,
-  TRESTServerInstance,
-  ControllerTypeOfDefinition,
-  TOkErrorReturnType,
-  TIfStatement,
+  TDomainPrivateMethodValuesOkErrorReturnType,
+  TDomainPrivateMethodValuesPrimaryReturnType,
+  TAssignmentExpression,
+  expressionKey,
+  TMemberDotExpression,
+  TThisExpression,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -30,81 +19,38 @@ const isArray = (list) => {
   else return false;
 };
 
-const isRestServerInstance = (
-  serverInstance: TRESTServerInstance | TGraphQLServerInstance,
-): serverInstance is TRESTServerInstance => {
-  if ('routers' in serverInstance) return true;
+export const isObject = (value: any): boolean => {
+  return typeof value === 'object' && !Array.isArray(value) && value !== null;
+};
+
+export const isPrimitive = (value: any): boolean => {
+  return value !== Object(value);
+};
+
+const hasOkErrorReturnType = (
+  privateMethodValues:
+    | TDomainPrivateMethodValuesPrimaryReturnType
+    | TDomainPrivateMethodValuesOkErrorReturnType,
+): privateMethodValues is TDomainPrivateMethodValuesOkErrorReturnType => {
+  if ('returnType' in privateMethodValues) return true;
   else return false;
 };
 
-const isGraphQLServerInstance = (
-  serverInstance: TRESTServerInstance | TGraphQLServerInstance,
-): serverInstance is TGraphQLServerInstance => {
-  if ('resolvers' in serverInstance) return true;
-  else return false;
-};
-
-const isGraphQLController = (
-  controller: TRESTControllerValues | TGraphQLControllerValues,
-): controller is TGraphQLControllerValues => {
-  if (controller['type'] === 'graphql') return true;
-  else return false;
-};
-
-const controllerDefinitionIsRest = (
-  controller: TRestControllerDefinitions | TGraphQLControllerInstances,
-): controller is TRestControllerDefinitions => {
-  if (controller['type'] === ControllerTypeOfDefinition.REST) return true;
-  else return false;
-};
-
-const controllerDefinitionIsGraphQL = (
-  controller: TRestControllerDefinitions | TGraphQLControllerInstances,
-): controller is TGraphQLControllerInstances => {
-  if (controller['type'] === ControllerTypeOfDefinition.GRAPHQL) return true;
-  else return false;
-};
-
-// returnType: string | TOkErrorReturnType,
-const isOkErrorReturnType = (
-  returnType: string | TOkErrorReturnType,
-): returnType is TOkErrorReturnType => {
-  if (typeof returnType !== 'string' && 'ok' in returnType) return true;
-  else return false;
-};
-
-const isIfStatement = (value: TStatement): value is TIfStatement => {
-  if (typeof value === 'string') return false;
-  if ('ifStatement' in value) return true;
+const isThisDeclaration = (
+  value: TStatement,
+): value is { [expressionKey]: TAssignmentExpression } => {
+  if (!isExpression(value) || !isAssignmentExpression(value)) {
+    return false;
+  }
+  const leftExpression = value[expressionKey].assignmentExpression.left;
+  if (!isMemberDotExpression(leftExpression)) {
+    return false;
+  }
+  const leftMost = getMemberDotExpressionLeftMostExpression(leftExpression);
+  if (isThisExpression(leftMost)) {
+    return true;
+  }
   return false;
-};
-
-const isConstDeclaration = (value: TStatement): value is TConstDeclaration => {
-  if (typeof value === 'string') return false;
-  if ('constDeclaration' in value) return true;
-  return false;
-};
-
-const isVariableDeclaration = (value: TStatement): value is TVariableDeclaration => {
-  if (typeof value === 'string') return false;
-  if ('variableDeclaration' in value) return true;
-  return false;
-};
-
-const isDomainPublicMethod = (value: TDomainMethod): value is TDomainPublicMethod => {
-  if ('publicMethod' in value) return true;
-  else return false;
-};
-
-const isDomainPrivateMethod = (value: TDomainMethod): value is TDomainPrivateMethod => {
-  if ('privateMethod' in value) return true;
-  else return false;
-};
-
-const isThisDeclaration = (value: TStatement): value is TThisDeclaration => {
-  if (typeof value === 'string') return false;
-  if ('thisDeclaration' in value) return true;
-  else return false;
 };
 
 const isExpression = (value: TStatement): value is TExpression => {
@@ -112,79 +58,48 @@ const isExpression = (value: TStatement): value is TExpression => {
   if ('expression' in value) return true;
   return false;
 };
-
-const isSwitchStatement = (value: TStatement): value is TSwitchStatement => {
-  if (typeof value === 'string') return false;
-  if ('switchStatement' in value) return true;
+const isAssignmentExpression = (
+  value: TExpression,
+): value is { [expressionKey]: TAssignmentExpression } => {
+  if ('assignmentExpression' in value[expressionKey]) return true;
   return false;
 };
 
-const isReturnStatement = (value: TStatement): value is TReturnStatement => {
-  if (typeof value === 'string') return false;
-  if ('return' in value) return true;
+const isMemberDotExpression = (
+  value: TExpression,
+): value is { [expressionKey]: TMemberDotExpression } => {
+  if ('memberDotExpression' in value[expressionKey]) return true;
+  return false;
+};
+const getMemberDotExpressionLeftMostExpression = (value: {
+  [expressionKey]: TMemberDotExpression;
+}): TExpression => {
+  const { expression } = value[expressionKey].memberDotExpression;
+  const leftExpression = { expression };
+  if (isMemberDotExpression(leftExpression)) {
+    return getMemberDotExpressionLeftMostExpression(leftExpression);
+  }
+  return leftExpression;
+};
+const isThisExpression = (value: TExpression): value is { [expressionKey]: TThisExpression } => {
+  if ('thisExpression' in value[expressionKey]) return true;
   return false;
 };
 
-const isVO = (name): name is string => {
+const isVO = (name: string): boolean => {
   return name.endsWith('VO');
 };
 
-const isExpressionAValueObjectEvaluation = (expressionStatement: TExpression): boolean => {
-  const { expression } = expressionStatement;
-  if (expression?.['evaluation']?.valueObject) {
-    return true;
-  }
-
-  return false;
-};
-
-const isExpressionAnEntityEvaluation = (expressionStatement: TExpression): boolean => {
-  const { expression } = expressionStatement;
-  if (expression?.['evaluation']?.entity) {
-    return true;
-  }
-
-  return false;
-};
-const isExpressionAVariableRegularEvaluation = (expressionStatement: TExpression): boolean => {
-  const { expression } = expressionStatement;
-  if (expression?.['evaluation']?.regularEvaluation?.type === 'variable') {
-    return true;
-  }
-
-  return false;
-};
-
-const isExpressionAMethodRegularEvaluation = (expressionStatement: TExpression): boolean => {
-  const { expression } = expressionStatement;
-  if (expression?.['evaluation']?.regularEvaluation?.type === 'method') {
-    return true;
-  }
-
-  return false;
+const isProps = (name: string): boolean => {
+  return name.endsWith('Props');
 };
 
 export {
   isUndefined,
   isArray,
-  isRestServerInstance,
-  isGraphQLServerInstance,
-  isGraphQLController,
-  controllerDefinitionIsRest,
-  controllerDefinitionIsGraphQL,
-  isOkErrorReturnType,
-  isIfStatement,
-  isConstDeclaration,
-  isDomainPublicMethod,
-  isDomainPrivateMethod,
-  isThisDeclaration,
+  hasOkErrorReturnType,
   isExpression,
-  isSwitchStatement,
-  isReturnStatement,
   isVO,
-  isVariableDeclaration,
-  isExpressionAValueObjectEvaluation,
-  isExpressionAnEntityEvaluation,
-  isExpressionAVariableRegularEvaluation,
-  isExpressionAMethodRegularEvaluation,
+  isThisDeclaration,
+  isProps,
 };

@@ -1,0 +1,20 @@
+GraphQLController GetTodosdGQLController (getAllTodosUseCase: GetAllTodosUseCase) {
+    operation: GraphQL.Operations.Query;
+  
+    execute (request): GetAllTodosResponseDTO {
+      const result = this.getAllTodosUseCase.execute();
+      const dto = GetAllTodosResponseDTO({ todos: result });
+  
+      return this.ok(dto);
+    }
+  }
+  
+  DTO GetAllTodosResponseDTO {
+    TodoReadModel[] todos;
+  }
+
+  ReadModel TodoReadModel {
+    string id;
+    string title;
+    bool completed;
+  }
