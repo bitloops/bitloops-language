@@ -26,6 +26,7 @@ import { EntityIdentifierNodeBuilder } from '../../../../../src/ast/core/interme
 import { EntityConstructorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EntityConstructorEvaluationNodeBuilder.js';
 import { StandardVOEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/StandardVOEvaluationNodeBuilder.js';
 import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { DomainServiceEvaluationBuilderDirector } from './domainServiceEvaluationBuilderDirector.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -218,6 +219,21 @@ export class EvaluationBuilderDirector {
       );
     const evaluationNode = new EvaluationBuilder()
       .withEvaluation(valueObjectEvaluationNode)
+      .build();
+    return evaluationNode;
+  }
+
+  buildDomainServiceEvaluation(
+    domainServiceName: string,
+    argumentList: ArgumentListNode,
+  ): EvaluationNode {
+    const domainServiceEvaluationNode =
+      new DomainServiceEvaluationBuilderDirector().buildDomainServiceEvaluationWithArgumentList(
+        domainServiceName,
+        argumentList,
+      );
+    const evaluationNode = new EvaluationBuilder()
+      .withEvaluation(domainServiceEvaluationNode)
       .build();
     return evaluationNode;
   }

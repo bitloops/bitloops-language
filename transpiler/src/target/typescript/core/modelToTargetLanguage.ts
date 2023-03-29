@@ -145,6 +145,7 @@ import { addDomainEventToTargetLanguage } from './components/statements/buildInF
 import { domainServiceToTargetLanguage } from './components/domain-service/index.js';
 import { integrationEventHandlerHandleMethod } from './components/integration-event/integrationEventHandlerHandleMethod.js';
 import { integrationEventParameterToTargetLanguage } from './components/integration-event/integrationEventParameter.js';
+import { domainServiceEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainServiceEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -334,6 +335,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TStandardVOEvaluation: {
       res = standardVOEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TDomainServiceEvaluation: {
+      res = domainServiceEvaluationToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDefinitionMethodInfo: {
