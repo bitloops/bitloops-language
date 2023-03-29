@@ -2,5 +2,7 @@ import { IEvent } from '../domain/events/IEvent';
 
 // TODO Add generic to IHandle
 export interface IHandle {
-  handle(event: IEvent): Promise<void>;
+  get event(): any;
+  get boundedContext(): string;
+  handle(event: IEvent<any>): Promise<void>;
 }

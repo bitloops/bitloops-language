@@ -22,7 +22,10 @@ export interface IMQ<Connection> {
   getConnection(): Promise<Connection>;
   closeConnection(): Promise<void>;
   gracefullyCloseConnection(): Promise<void>;
-  publish(topic: string, message: Record<string, unknown> | string): Promise<void>;
+  publish(
+    topic: string,
+    message: Record<string, unknown> | string,
+  ): Promise<void>;
   request<T>(topic: string, body: any): Promise<T>;
   subscribe(
     topic: string,

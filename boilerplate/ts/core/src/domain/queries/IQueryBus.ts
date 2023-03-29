@@ -19,11 +19,20 @@
  */
 import { IQuery } from './IQuery';
 import { GenericMessageHandler } from '../messages/IMessageBus';
+import { Application } from '../..';
 
 export type RegisterHandler<T extends IQuery> = GenericMessageHandler<T>;
 
 export interface IQueryBus {
-  register<T extends IQuery>(queryName: string, registerHandler: RegisterHandler<T>): Promise<void>;
-  unregister(queryName: string): Promise<void>;
-  query<T = any>(query: IQuery): Promise<T>;
+  request(query: any): Promise<any>;
+  pubSubSubscribe(
+    subject: string,
+    handler: Application.IQueryHandler<any, any>,
+  ): Promise<void>;
+  // register<T extends IQuery>(
+  //   queryName: string,
+  //   registerHandler: RegisterHandler<T>,
+  // ): Promise<void>;
+  // unregister(queryName: string): Promise<void>;
+  // query<T = any>(query: IQuery): Promise<T>;
 }

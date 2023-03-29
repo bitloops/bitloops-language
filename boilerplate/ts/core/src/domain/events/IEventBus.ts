@@ -19,12 +19,15 @@
  */
 import { IEvent } from './IEvent';
 import { GenericMessageHandler } from '../messages/IMessageBus';
+import { Application } from '../..';
 
-export type EventHandler<T extends IEvent> = GenericMessageHandler<T>;
+export type EventHandler<T extends IEvent<any>> = GenericMessageHandler<T>;
 
 export interface IEventBus {
-  subscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void>;
-  unsubscribe<T extends IEvent>(topic: string, eventHandler: EventHandler<T>): Promise<void>;
-  publish(topic: string, message: IEvent): Promise<void>;
-  publishMany(params: Array<IEvent>): Promise<void>;
+  subscribe(topic: string, eventHandler: Application.IHandle): Promise<void>;
+  unsubscribe<T extends IEvent<any>>(
+    topic: string,
+    eventHandler: EventHandler<T>,
+  ): Promise<void>;
+  publish(event: IEvent<any> | IEvent<any>[]): Promise<void>;
 }

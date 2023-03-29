@@ -17,19 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-export interface IBaseGraphQLController<TRequest, TResponseData> {
-  execute(req: TRequest): Promise<TResponseData>;
 
-  ok(dto?: TResponseData): TResponseData;
+import { IEvent, TEventMetadata } from './IEvent';
 
-  // Should act as a custom error
-  fail(error: Error | string, errorId: string): any;
+interface IIntegrationEventInputMetadata extends TEventMetadata {
+  version: string;
+}
 
-  // GraphQL-specific error messages
-  badUserInput(message: string, errorId: string): any;
-  badRequest(message: string, errorId: string): any;
-  forbidden(message: string, errorId: string): any;
-  notFound(message: string, errorId: string): any;
-  unauthorized(message: string, errorId: string): any;
-  internalError(message: string, errorId: string): any;
+export interface IIntegrationEvent<T> extends IEvent<T> {
+  metadata: IIntegrationEventInputMetadata;
 }

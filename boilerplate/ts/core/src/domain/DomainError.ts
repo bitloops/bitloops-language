@@ -27,5 +27,8 @@ export interface IDomainError extends ICoreError {
 export abstract class DomainError implements IDomainError {
   public static readonly errorId: string;
 
-  constructor(public readonly message: string, public readonly errorId: string) {}
+  constructor(
+    public readonly message: string,
+    public readonly errorId: string,
+  ) {}
 }

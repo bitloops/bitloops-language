@@ -19,15 +19,15 @@
  */
 import { IMessage } from '../messages/IMessage';
 
-export type TEventMetadata = {
+export interface TEventMetadata {
   id: string;
   createdAtTimestamp: number;
-  version?: string;
   fromContextId: string;
-};
+  messageId?: string;
+  correlationId?: string;
+}
 
-export interface IEvent extends IMessage {
-  eventTopic: string;
-  data: any;
+export interface IEvent<T> extends IMessage {
+  data: T;
   metadata: TEventMetadata;
 }

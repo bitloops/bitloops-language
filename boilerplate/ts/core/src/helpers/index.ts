@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { randomUUID } from 'crypto';
 import { config, TOPIC_PREFIXES } from '../config';
 
 type GetTopicTypeParams = {
@@ -26,11 +27,20 @@ type GetTopicTypeParams = {
   topicDelimiter: string;
 };
 
-const getTopicString = ({ topicPrefix, name, contextId, topicDelimiter }: GetTopicTypeParams) => {
+const getTopicString = ({
+  topicPrefix,
+  name,
+  contextId,
+  topicDelimiter,
+}: GetTopicTypeParams) => {
   return `${topicPrefix}${topicDelimiter}${contextId}${topicDelimiter}${name}`;
 };
 
-export const getTopic = (topicPrefix: TOPIC_PREFIXES, name: string, contextId: string) => {
+export const getTopic = (
+  topicPrefix: TOPIC_PREFIXES,
+  name: string,
+  contextId: string,
+) => {
   return getTopicString({
     topicPrefix,
     name,
@@ -73,5 +83,5 @@ export const getProcessManagerTopic = (integrationEventTopic: string) => {
 };
 
 export const createUUIDv4 = () => {
-  return crypto.randomUUID();
+  return randomUUID();
 };

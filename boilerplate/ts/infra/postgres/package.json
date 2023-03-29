@@ -1,11 +1,11 @@
 {
-  "name": "@bitloops/bl-boilerplate-infra-mongo",
+  "name": "@bitloops/bl-boilerplate-infra-postgres",
   "version": "0.1.0",
-  "description": "TypeScript mongo code for Bitloops Language generated projects",
+  "description": "TypeScript postgres package for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
   },
-  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/mongo",
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/postgres",
   "repository": {
     "type": "git",
     "url": "https://github.com/bitloops/bitloops-language"
@@ -22,7 +22,8 @@
     "ports & adapters",
     "behavior driven development",
     "boilerplate",
-    "core"
+    "postgres",
+    "infra"
   ],
   "scripts": {
     "clean": "rm -rf ./lib",
@@ -38,11 +39,11 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.2.0",
     "@nestjs/common": "^9.0.0",
-    "mongodb": "^4.10.0"
+    "pg": "^8.10.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.6.6",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",

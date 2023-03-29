@@ -17,18 +17,31 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICommand } from './ICommand';
 import { GenericMessageHandler } from '../messages/IMessageBus';
-import { TErrors } from '../../infra/command-bus/externalCommandBus';
+// import { TErrors } from '../../infra/command-bus/externalCommandBus';
+import { CommandHandler } from '../../application/UseCase';
 
-export type RegisterHandler<T extends ICommand> = GenericMessageHandler<T>;
+// export interface IPubSubCommandBus {
+//   register<T extends ICommand>(
+//     commandName: string,
+//     registerHandler: RegisterHandler<T>,
+//   ): Promise<void>;
+//   unregister(commandName: string): Promise<void>;
+//   send(command: ICommand): Promise<void>;
+//   request<T = any>(command: ICommand, errorTypes?: TErrors): Promise<T>;
+// }
+import { Command } from './Command';
 
-export interface ICommandBus {
-  register<T extends ICommand>(
-    commandName: string,
-    registerHandler: RegisterHandler<T>,
+export interface IPubSubCommandBus {
+  publish(command: any): Promise<void>;
+  request(command: any): Promise<any>;
+  pubSubSubscribe(
+    subject: string,
+    handler: CommandHandler<any, any>,
   ): Promise<void>;
-  unregister(commandName: string): Promise<void>;
-  send(command: ICommand): Promise<void>;
-  request<T = any>(command: ICommand, errorTypes?: TErrors): Promise<T>;
+}
+
+export interface IStreamCommandBus {
+  publish(command: Command): Promise<void>;
+  subscribe(subject: string, handler: CommandHandler<any, any>): Promise<void>;
 }

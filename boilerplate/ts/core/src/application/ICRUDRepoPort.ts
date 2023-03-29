@@ -15,21 +15,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 export interface CRUDRepoPort<Aggregate, AggregateId> {
-  getAll(): Promise<Aggregate[]>;
-  getById(aggregateRootId: AggregateId): Promise<Aggregate | null>;
-  save(aggregate: Aggregate): Promise<void>;
-  update(aggregate: Aggregate): Promise<void>;
-  delete(aggregateRootId: AggregateId): Promise<void>;
+  getAll(ctx?: any): Promise<Aggregate[]>;
+  getById(aggregateRootId: AggregateId, ctx?: any): Promise<Aggregate | null>;
+  save(aggregate: Aggregate, ctx?: any): Promise<void>;
+  update(aggregate: Aggregate, ctx?: any): Promise<void>;
+  delete(aggregateRootId: AggregateId, ctx?: any): Promise<void>;
 }
 
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
-  getById(aggregateRootId: AggregateId): Promise<Aggregate | null>;
-  save(aggregate: Aggregate): Promise<void>;
-  update(aggregate: Aggregate): Promise<void>;
-  delete(aggregateRootId: AggregateId): Promise<void>;
+  getById(aggregateRootId: AggregateId, ctx?: any): Promise<Aggregate | null>;
+  save(aggregate: Aggregate, ctx?: any): Promise<void>;
+  update(aggregate: Aggregate, ctx?: any): Promise<void>;
+  delete(aggregateRootId: AggregateId, ctx?: any): Promise<void>;
 }
 
 export interface CRUDReadRepoPort<ReadModel> {
-  getAll(): Promise<ReadModel[] | null>;
-  getById(id: string): Promise<ReadModel | null>;
+  getAll(ctx?: any): Promise<ReadModel[] | null>;
+  getById(id: string, ctx?: any): Promise<ReadModel | null>;
 }
