@@ -37,12 +37,7 @@ import {
 } from './domain/queries/IQuery';
 
 import { IHandle as IHandleImport } from './application/IHandle';
-import {
-  ApplicationConfig as ApplicationConfigImport,
-  CONTEXT_TYPES as CONTEXT_TYPES_IMPORT,
-  MESSAGE_BUS as MESSAGE_BUS_IMPORT,
-  TOPIC_PREFIXES as TOPIC_PREFIXES_IMPORT,
-} from './config';
+
 import { IQueryBus as IQueryBusImport } from './domain/queries/IQueryBus';
 import { NotFoundError } from './errors/repository/NotFoundError';
 import { ConcurrencyError } from './errors/repository/ConcurrencyError';
@@ -125,7 +120,7 @@ namespace Infra {
     export type IntegrationEvent<T> = IIntegrationEventImport<T>;
     export type TIntegrationEventMetadata = IIntegrationEventInputMetadata;
     export type IEventBus = IEventBusImport;
-    // export type IEvent<T> = IEventImport<T>;
+    export type IEvent<T> = IEventImport<T>;
   }
   export namespace CommandBus {
     export type IPubSubCommandBus = IPubSubCommandBusImport;
@@ -142,12 +137,5 @@ namespace Infra {
     export type SubscriberHandler<T extends IMessage> = SubscribeHandlerImport<T>;
   }
 }
-
-// namespace Constants {
-// export const TOPIC_PREFIXES = TOPIC_PREFIXES_IMPORT;
-// export const CONTEXT_TYPES = CONTEXT_TYPES_IMPORT;
-// export const MESSAGE_BUS = MESSAGE_BUS_IMPORT;
-// export type ApplicationConfig = ApplicationConfigImport;
-// }
 
 export { Application, Domain, Either, Infra, fail, ok, asyncLocalStorage, AsyncLocalStorageStore };
