@@ -20,7 +20,7 @@
 
 import { IEvent, TEventMetadata } from './IEvent';
 
-interface IIntegrationEventInputMetadata extends TEventMetadata {
+export interface IIntegrationEventInputMetadata extends TEventMetadata {
   version: string;
 }
 

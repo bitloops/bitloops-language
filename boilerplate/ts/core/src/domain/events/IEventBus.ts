@@ -18,16 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { IEvent } from './IEvent';
-import { GenericMessageHandler } from '../messages/IMessageBus';
-import { Application } from '../..';
-
-export type EventHandler<T extends IEvent<any>> = GenericMessageHandler<T>;
+import { IHandle } from '../../application/IHandle';
 
 export interface IEventBus {
-  subscribe(topic: string, eventHandler: Application.IHandle): Promise<void>;
-  unsubscribe<T extends IEvent<any>>(
-    topic: string,
-    eventHandler: EventHandler<T>,
-  ): Promise<void>;
+  subscribe(topic: string, eventHandler: IHandle): Promise<void>;
+  unsubscribe(topic: string, eventHandler: IHandle): Promise<void>;
   publish(event: IEvent<any> | IEvent<any>[]): Promise<void>;
 }

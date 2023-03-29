@@ -30,5 +30,6 @@ export abstract class DomainError implements IDomainError {
   constructor(
     public readonly message: string,
     public readonly errorId: string,
+    public readonly nakable?: boolean,
   ) {}
 }

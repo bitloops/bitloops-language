@@ -1,3 +1,6 @@
+import { Either } from '../Either';
+import { ICoreError } from '../ICoreError';
+
 /**
  * ISC License
  * Copyright (c) 2019, [Khalil Stemmler](https://khalilstemmler.com)
@@ -20,14 +23,14 @@ export interface UseCase<IRequest, IResponse> {
   execute(request?: IRequest): Promise<IResponse> | IResponse;
 }
 
-export interface CommandHandler<IRequest, IResponse> {
+export interface CommandHandler<IRequest, IOkResponse> {
   get command(): any;
   get boundedContext(): string;
-  execute(request?: IRequest): Promise<IResponse> | IResponse;
+  execute(request?: IRequest): Promise<Either<IOkResponse, ICoreError>>;
 }
 
-export interface QueryHandler<IRequest, IResponse> {
+export interface QueryHandler<IRequest, IOkResponse> {
   get query(): any;
   get boundedContext(): string;
-  execute(request?: IRequest): Promise<IResponse> | IResponse;
+  execute(request?: IRequest): Promise<Either<IOkResponse, ICoreError>>;
 }

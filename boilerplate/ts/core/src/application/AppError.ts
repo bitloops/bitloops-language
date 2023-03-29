@@ -32,5 +32,6 @@ export abstract class AppError implements IAppError {
   constructor(
     public readonly message: string,
     public readonly errorId: string,
+    public readonly nakable?: boolean,
   ) {}
 }

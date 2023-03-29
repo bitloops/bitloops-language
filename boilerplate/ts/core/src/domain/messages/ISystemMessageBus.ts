@@ -19,10 +19,9 @@
  */
 import { IMessage } from './IMessage';
 
-export type GenericMessageHandler<T extends IMessage> = (message: T) => void;
-export type SubscriberHandler<T extends IMessage> = GenericMessageHandler<T>;
+export type SubscriberHandler<T extends IMessage> = (message: T) => void;
 
-export interface IMessageBus {
+export interface ISystemMessageBus {
   subscribe<T extends IMessage>(
     topic: string,
     subscriberHandler: SubscriberHandler<T>,

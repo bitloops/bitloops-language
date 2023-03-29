@@ -17,18 +17,22 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { TContext } from '../context';
 import { IMessage } from '../messages/IMessage';
 
 export type QueryMetadata = {
-  responseTopic?: string;
-  toContextId: string;
+  boundedContextId: string;
   createdTimestamp: number;
-  // messageId?: string;
-  correlationId?: string;
+  messageId: string;
+  correlationId: string;
+  context: TContext | Record<string, never>; // type of empty object
 };
 
 export interface IQuery extends IMessage {
-  uuid?: string;
-  // queryTopic: string;
   metadata: QueryMetadata;
+}
+
+export abstract class Query implements IQuery {
+  [x: string]: any;
+  abstract metadata: QueryMetadata;
 }

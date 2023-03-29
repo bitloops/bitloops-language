@@ -18,6 +18,4 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IMessage {
-  // TODO remove this or add methods
-}
+export interface IMessage {}
