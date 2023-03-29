@@ -185,17 +185,14 @@ export class EvaluationBuilderDirector {
     };
   }
 
-  // private buildDomainEvaluation(
-  //   domainIdentifier: string,
-  //   propsParam: PropsParam,
-  // ): TDomainEvaluation {
-  //   const { fields, expression } = propsParam;
-  //   const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
-  //   return {
-  //     domainEvaluation: {
-  //       name: domainIdentifier,
-  //       props,
-  //     },
-  //   };
-  // }
+  buildDomainServiceEvaluation(domainServiceIdentifier: string, args?: TArgumentList): TEvaluation {
+    return {
+      evaluation: {
+        domainService: {
+          identifier: domainServiceIdentifier,
+          ...args,
+        },
+      },
+    };
+  }
 }

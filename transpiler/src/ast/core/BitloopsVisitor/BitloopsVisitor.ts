@@ -321,6 +321,7 @@ import {
   queryHandlerDependencyInjectionVisitor,
 } from './helpers/setup/dependencyInjections.js';
 import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
+import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -509,7 +510,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   visitRegularDTOEvaluationString(ctx: BitloopsParser.RegularDTOEvaluationStringContext) {
     return { value: this.visit(ctx.regularDTOEvaluation()) };
   }
-  visitRegularDTOEvaluation(ctx: BitloopsParser.RegularDTOEvaluationContext) {
+  visitRegularDTOEvaluation(ctx: BitloopsParser.RegularDTOEvaluationContext): string {
     return ctx.DTOIdentifier().getText();
   }
 
@@ -1620,5 +1621,9 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDomainServiceIdentifier(ctx: BitloopsParser.DomainServiceIdentifierContext): IdentifierNode {
     return domainServiceIdentifierVisitor(this, ctx);
+  }
+
+  visitDomainServiceEvaluation(ctx: BitloopsParser.DomainServiceEvaluationContext): any {
+    return domainServiceEvaluationVisitor(this, ctx);
   }
 }
