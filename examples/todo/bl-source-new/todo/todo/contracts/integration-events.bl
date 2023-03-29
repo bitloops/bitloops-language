@@ -1,0 +1,9 @@
+IntegrationEvent TodoCompletedIntegrationEvent(event: TodoCompletedDomainEvent) {  
+    'v1' : IntegrationSchemaV1 {
+        const todoCompleted = IntegrationSchemaV1({
+            todoId: event.todo.id.toString(),
+            userId: event.todo.userId.toString(),
+        });
+        return todoCompleted;
+    }
+}

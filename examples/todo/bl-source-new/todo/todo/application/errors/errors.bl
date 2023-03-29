@@ -2,3 +2,8 @@
     message: `Todo ${id} was not found`,
     errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b403',
   }
+
+  ApplicationError UserEmailNotFoundError(userId: string)  {
+    message: `Email for user ${userId} not found`,
+    errorId: 'dedb1f53-6e89-429d-bc63-8f3adfc4b407',
+  }

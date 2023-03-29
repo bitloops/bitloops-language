@@ -1,0 +1,26 @@
+Props UserProps {
+    optional UUIDv4 id;
+    UserIdVO userId;
+    CompletedTodosVO completedTodos;
+}
+
+
+Root Entity UserEntity {
+    static create(props: UserProps): (OK(UserEntity), Errors())  {
+        const userEntity = UserEntity(props);
+        return userEntity;
+    }
+
+    public incrementCompletedTodos(): (OK(void), Errors(DomainErrors.InvalidTodosCounterError)) {
+        const incrementedCompletedTodos = this.completedTodos.counter + 1;
+        const completedTodos = CompletedTodosVO.create({
+            counter: incrementedCompletedTodos,
+        });
+        this.completedTodos = completedTodos;
+        this.addDomainEvent(TodoCompletionsIncrementedDomainEvent);
+    }
+
+    public isFirstTodo(): bool {
+        return this.completedTodos.counter == 1;
+    }
+}

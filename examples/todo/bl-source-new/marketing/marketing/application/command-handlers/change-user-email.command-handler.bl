@@ -1,0 +1,17 @@
+Command ChangeUserEmailCommand {
+    string email;
+    string userId;
+}
+
+CommandHandler ChangeUserEmailCommandHandler (userRepo: UserEmailReadRepoPort){
+    execute (command: UpdateUserEmailCommand): (OK(void),Errors())
+    {
+        const userIdEmail = UserReadModel.create({
+            userId: command.userId,
+            email: command.email,
+        });
+
+        this.userEmailRepo.save(userIdEmail);
+    }
+  }
+
