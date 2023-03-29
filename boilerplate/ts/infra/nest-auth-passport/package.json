@@ -1,11 +1,11 @@
 {
-  "name": "@bitloops/bl-boilerplate-infra-mongo",
-  "version": "0.1.1",
-  "description": "TypeScript mongo code for Bitloops Language generated projects",
+  "name": "@bitloops/bl-boilerplate-infra-nest-auth-passport",
+  "version": "0.1.0",
+  "description": "TypeScript postgres package for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
   },
-  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/mongo",
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/postgres",
   "repository": {
     "type": "git",
     "url": "https://github.com/bitloops/bitloops-language"
@@ -22,7 +22,8 @@
     "ports & adapters",
     "behavior driven development",
     "boilerplate",
-    "core"
+    "postgres",
+    "infra"
   ],
   "scripts": {
     "clean": "rm -rf ./lib",
@@ -39,10 +40,21 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@bitloops/bl-boilerplate-core": "^0.3.0",
+    "@bitloops/bl-boilerplate-infra-postgres": "^0.1.0",
     "@nestjs/common": "^9.0.0",
-    "mongodb": "^4.10.0"
+    "@nestjs/jwt": "^10.0.2",
+    "@nestjs/microservices": "^9.3.10",
+    "@nestjs/passport": "^9.0.3",
+    "bcrypt": "^5.1.0",
+    "class-validator": "^0.14.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/passport-jwt": "^3.0.8",
+    "@types/passport-local": "^1.0.35",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",
