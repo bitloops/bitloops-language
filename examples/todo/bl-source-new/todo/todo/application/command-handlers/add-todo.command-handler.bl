@@ -1,0 +1,16 @@
+Command AddTodoCommand {
+    string title;
+  }
+
+
+CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
+    execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
+    {
+      const title = TitleVO({ title: command.title });
+      const userId = UserIdVO({ id: command.metadata.context.userId });
+      const todo = TodoEntity({ title: title, completed: false, userId: userId });
+      this.todoRepo.save(todo);
+
+      return todo.id.toString();
+    }
+  }

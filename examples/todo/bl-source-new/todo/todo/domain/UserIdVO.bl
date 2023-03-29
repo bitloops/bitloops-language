@@ -1,0 +1,7 @@
+Props UserIdProps {
+    UUIDv4 id;
+}
+
+ValueObUserject UserIdVO {
+    static create(props: UserIdProps): (OK(UserIdVO), Errors()) {}
+}
