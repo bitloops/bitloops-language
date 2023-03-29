@@ -11,13 +11,28 @@ type TestCase = {
 
 export const validDomainServiceEvaluationTestCases: Array<TestCase> = [
   {
-    description: 'Valid entity evaluation',
+    description: 'Valid domain service evaluation with one argument',
     fileId: 'testFile.bl',
     inputBLString: 'JestTestEvaluation { MarketingDomainService.create(this.repo)}',
     evaluation: new EvaluationBuilderDirector().buildDomainServiceEvaluation(
       'MarketingDomainService',
       {
         argumentList: [new ArgumentBuilderDirector().buildThisMemberDotArgument(['repo'])],
+      },
+    ),
+  },
+  {
+    description: 'Valid domain service evaluation with 2 arguments',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'JestTestEvaluation { MarketingDomainService.create(this.repo, this.externalAPI)}',
+    evaluation: new EvaluationBuilderDirector().buildDomainServiceEvaluation(
+      'MarketingDomainService',
+      {
+        argumentList: [
+          new ArgumentBuilderDirector().buildThisMemberDotArgument(['repo']),
+          new ArgumentBuilderDirector().buildThisMemberDotArgument(['externalAPI']),
+        ],
       },
     ),
   },
