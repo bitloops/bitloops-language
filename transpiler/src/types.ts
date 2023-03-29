@@ -239,6 +239,12 @@ export type TBuiltInClassEvaluation = {
   } & TArgumentList;
 };
 
+export type TDomainServiceEvaluation = {
+  domainService: {
+    identifier: string;
+  } & TArgumentList;
+};
+
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;
@@ -257,7 +263,8 @@ export type TEvaluationValues =
   | TBuiltInFunctionValues
   | TCommandEvaluation
   | TQueryEvaluation
-  | TStandardVOEvaluation;
+  | TStandardVOEvaluation
+  | TDomainServiceEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;

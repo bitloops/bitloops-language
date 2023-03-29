@@ -92,4 +92,11 @@ export class EvaluationTypeIdentifiers {
     }
     return false;
   }
+
+  static isDomainServiceEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {
+    if ('domainService' in evaluation) {
+      return true;
+    }
+    return false;
+  }
 }

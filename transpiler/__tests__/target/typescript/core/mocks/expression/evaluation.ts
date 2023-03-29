@@ -314,3 +314,18 @@ export const VALID_STANDARD_VO_EVALUATION_TEST_CASES = [
     output: "Domain.StandardVO.Currency.Value.create({ currencyCode: 'EUR' })",
   },
 ];
+
+export const VALID_DOMAIN_SERVICE_EVALUATION_TEST_CASES = [
+  {
+    description: 'Valid domain service evaluation',
+    evaluation: new EvaluationBuilderDirector().buildDomainServiceEvaluation(
+      'MarketingNotificationDomainService',
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(new ExpressionBuilderDirector().buildThisMemberDotExpression('repo'))
+          .build(),
+      ]),
+    ),
+    output: 'new MarketingNotificationDomainService(this.repo)',
+  },
+];

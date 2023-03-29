@@ -283,6 +283,11 @@ evaluation
     | queryEvaluation
     | standardVOEvaluation
     | integrationEventEvaluation
+    | domainServiceEvaluation
+    ;
+
+domainServiceEvaluation
+    : domainServiceIdentifier Dot Create methodArguments SemiColon?
     ;
 
 corsOptionsEvaluation
