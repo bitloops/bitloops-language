@@ -39,7 +39,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.0",
+    "@bitloops/bl-boilerplate-core": "^0.3.1",
     "@bitloops/bl-boilerplate-infra-postgres": "^0.1.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/jwt": "^10.0.2",
