@@ -24,10 +24,12 @@ import {
   TCommandHandler,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
+  TParameter,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { createHandlerConstructor } from '../handler-constructor/index.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
 
 const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
@@ -95,6 +97,7 @@ export const commandHandlerToTargetLanguage = (
     commandHandlerInputName,
     commandName,
     commandHandlerName,
+    parameters,
   );
 
   const executeResult = executeToTargetLanguage(
@@ -122,6 +125,7 @@ const initialCommandHandler = (
   inputType: string,
   dependencies: string,
   commandHandlerName: string,
+  parameters: TParameter[],
 ): string => {
   const commandHandlerResponseType = `export type ${responseTypeName} = ${commandHandlerResponse};`;
   let result = commandHandlerResponseType;
@@ -129,8 +133,12 @@ const initialCommandHandler = (
   result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
-  if (!isDependenciesEmpty(dependencies))
-    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
+  if (isDependenciesEmpty(dependencies)) {
+    return result;
+  }
+
+  result += createHandlerConstructor(parameters);
+  result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
   return result;
 };
 

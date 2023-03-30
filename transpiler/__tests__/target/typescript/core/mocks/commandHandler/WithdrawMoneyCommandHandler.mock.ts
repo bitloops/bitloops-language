@@ -6,10 +6,12 @@ import {
   fail,
   ok,
 } from '@bitloops/bl-boilerplate-core';
+import { Inject } from '@nestjs/common';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
 import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
 import { WithdrawMoneyCommand } from '../commands/WithdrawMoneyCommand';
+import { AccountWriteRepoPortToken } from '../../constants';
 export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFoundError
@@ -19,7 +21,10 @@ export type WithdrawMoneyCommandHandlerResponse = Either<
 export class WithdrawMoneyCommandHandler
   implements Application.ICommandHandler<WithdrawMoneyCommand, void>
 {
-  constructor(private accountRepo: AccountWriteRepoPort) {}
+  constructor(
+    @Inject(AccountWriteRepoPortToken)
+    private readonly accountRepo: AccountWriteRepoPort,
+  ) {}
   @RespondWithPublish()
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
