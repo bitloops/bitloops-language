@@ -8,8 +8,7 @@ export type GetCustomerByIdQueryHandlerResponse = Either<
   ApplicationErrors.CustomerNotFoundError
 >;
 export class GetCustomerByIdQueryHandler
-  implements
-    Application.IUseCase<GetCustomerByIdQuery, Promise<GetCustomerByIdQueryHandlerResponse>>
+  implements Application.IQueryHandler<GetCustomerByIdQuery, Promise<CustomerReadModel>>
 {
   constructor(private customerRepo: CustomerReadRepoPort) {}
   @RespondWithPublish()
