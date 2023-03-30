@@ -6,6 +6,7 @@ import {
   fail,
   ok,
 } from '@bitloops/bl-boilerplate-core';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
 import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
@@ -26,7 +27,13 @@ export class WithdrawMoneyCommandHandler
   get boundedContext(): string {
     return 'Hello world';
   }
-  @RespondWithPublish()
+  @Traceable({
+    operation: 'WithdrawMoneyCommandHandler',
+    metrics: {
+      name: 'WithdrawMoneyCommandHandler',
+      category: 'commandHandler',
+    },
+  })
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
     const accountEntity = await this.accountRepo.getById(accountId);

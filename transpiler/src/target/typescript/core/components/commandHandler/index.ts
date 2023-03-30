@@ -50,6 +50,12 @@ const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     value: 'RespondWithPublish',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
+  },
 ];
 
 export const commandHandlerToTargetLanguage = (
@@ -107,6 +113,8 @@ export const commandHandlerToTargetLanguage = (
   });
   result += getters;
 
+  const traceableDecorator = addTraceableDecorator(commandHandlerName, 'commandHandler');
+  result += traceableDecorator;
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
     commandHandlerResponseTypeName,
@@ -179,4 +187,17 @@ const generateGetters = ({
     return '${boundedContextName}';
   }`;
   return result;
+};
+
+const addTraceableDecorator = (name: string, type: string): string => {
+  console.log('addTraceableDecorator', name, type);
+  return `
+  @Traceable({
+    operation: '${name}',
+    metrics: {
+      name: '${name}',
+      category: '${type}',
+    },
+  })
+  `;
 };
