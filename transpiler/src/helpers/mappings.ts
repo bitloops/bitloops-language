@@ -278,6 +278,7 @@ const BitloopsTypesMapping = {
   TIntegrationEventHandlerHandleMethod: 'TIntegrationEventHandlerHandleMethod',
   TIntegrationEventParameter: 'TIntegrationEventParameter',
   TDomainServiceEvaluation: 'TDomainServiceEvaluation',
+  TPortToken: 'TPortToken',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
