@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-postgres",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript postgres package for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
