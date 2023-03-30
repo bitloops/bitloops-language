@@ -11,6 +11,12 @@ export class GetCustomerByIdQueryHandler
   implements Application.IQueryHandler<GetCustomerByIdQuery, CustomerReadModel>
 {
   constructor(private customerRepo: CustomerReadRepoPort) {}
+  get query() {
+    return GetCustomerByIdQuery;
+  }
+  get boundedContext(): string {
+    return 'Hello world';
+  }
   @RespondWithPublish()
   async execute(query: GetCustomerByIdQuery): Promise<GetCustomerByIdQueryHandlerResponse> {
     const requestId = query.id;

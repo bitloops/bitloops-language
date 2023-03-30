@@ -25,6 +25,7 @@ import {
   TDependencyChildTypescript,
   TTargetDependenciesTypeScript,
   bitloopsPrimaryTypeKey,
+  TContextData,
 } from '../../../../../types.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -53,7 +54,9 @@ const QUERY_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
 
 export const queryHandlerToTargetLanguage = (
   queryHandler: TQueryHandler,
+  contextData: TContextData,
 ): TTargetDependenciesTypeScript => {
+  const { boundedContext } = contextData;
   const { execute, parameters, identifier: queryHandlerName } = queryHandler[queryHandlerKey];
   const { returnType } = execute;
   const queryHandlerInputType = execute.parameter ? execute.parameter.type : null;
@@ -72,21 +75,20 @@ export const queryHandlerToTargetLanguage = (
 
   dependencies = [...dependencies, ...queryHandlerReturnTypesResult.dependencies];
 
-  const { output: queryName, dependencies: queryHandlerDependenciesResult } = modelToTargetLanguage(
-    {
+  const { output: queryDependenciesOutput, dependencies: queryHandlerDependenciesResult } =
+    modelToTargetLanguage({
       type: BitloopsTypesMapping.TParameterList,
       value: { parameters },
-    },
-  );
+    });
   dependencies = [...dependencies, ...queryHandlerDependenciesResult];
 
-  let queryHandlerInputName = null;
+  let queryName = null;
   if (queryHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: { type: queryHandlerInputType },
     });
-    queryHandlerInputName = inputTypeOutput.output;
+    queryName = inputTypeOutput.output;
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
@@ -94,10 +96,15 @@ export const queryHandlerToTargetLanguage = (
     queryHandlerReturnTypesResult.output,
     okType.output,
     queryHandlerResponseTypeName,
-    queryHandlerInputName,
     queryName,
+    queryDependenciesOutput,
     queryHandlerName,
   );
+
+  result += generateGetters({
+    queryName,
+    boundedContextName: boundedContext,
+  });
 
   const executeResult = executeToTargetLanguage(
     queryHandler[queryHandlerKey].execute,
@@ -154,4 +161,21 @@ const addPrivateToConstructorDependencies = (dependencies: string): string => {
     return `private ${dependencyName}: ${dependencyType}`;
   });
   return `(${result.join(',')})`;
+};
+
+const generateGetters = ({
+  queryName,
+  boundedContextName,
+}: {
+  queryName: string;
+  boundedContextName: string;
+}): string => {
+  const result = `
+  get query() {
+    return ${queryName};
+  }
+  get boundedContext(): string {
+    return '${boundedContextName}';
+  }`;
+  return result;
 };

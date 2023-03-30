@@ -20,6 +20,12 @@ export class WithdrawMoneyCommandHandler
   implements Application.ICommandHandler<WithdrawMoneyCommand, void>
 {
   constructor(private accountRepo: AccountWriteRepoPort) {}
+  get command() {
+    return WithdrawMoneyCommand;
+  }
+  get boundedContext(): string {
+    return 'Hello world';
+  }
   @RespondWithPublish()
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
