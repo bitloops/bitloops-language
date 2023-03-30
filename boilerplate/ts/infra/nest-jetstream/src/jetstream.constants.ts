@@ -7,6 +7,7 @@ export const HANDLERS_TOKENS = {
   STREAMING_INTEGRATION_EVENT_HANDLERS: 'StreamingIntegrationEventHandlers',
   PUBSUB_COMMAND_HANDLERS: 'PubSubCommandHandlers',
   PUBSUB_QUERY_HANDLERS: 'PubSubQueryHandlers',
+  PUBSUB_INTEGRATION_EVENT_HANDLERS: 'PubSubIntegrationEventHandlers',
 };
 
 export const ASYNC_LOCAL_STORAGE = Symbol('ASYNC_LOCAL_STORAGE');
