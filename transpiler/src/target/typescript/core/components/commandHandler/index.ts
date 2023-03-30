@@ -27,6 +27,7 @@ import {
   TDependencyChildTypescript,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
@@ -47,16 +48,12 @@ const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
-    value: 'RespondWithPublish',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
     value: 'Traceable',
     from: '@bitloops/bl-boilerplate-infra-telemetry',
   },
 ];
+
+const COMMAND_HANDLER = 'commandHandler';
 
 export const commandHandlerToTargetLanguage = (
   commandHandler: TCommandHandler,
@@ -113,7 +110,7 @@ export const commandHandlerToTargetLanguage = (
   });
   result += getters;
 
-  const traceableDecorator = addTraceableDecorator(commandHandlerName, 'commandHandler');
+  const traceableDecorator = getTraceableDecorator(commandHandlerName, COMMAND_HANDLER);
   result += traceableDecorator;
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
@@ -187,17 +184,4 @@ const generateGetters = ({
     return '${boundedContextName}';
   }`;
   return result;
-};
-
-const addTraceableDecorator = (name: string, type: string): string => {
-  console.log('addTraceableDecorator', name, type);
-  return `
-  @Traceable({
-    operation: '${name}',
-    metrics: {
-      name: '${name}',
-      category: '${type}',
-    },
-  })
-  `;
 };

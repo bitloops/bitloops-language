@@ -1,4 +1,5 @@
-import { Application, Either, RespondWithPublish, ok } from '@bitloops/bl-boilerplate-core';
+import { Application, Either, ok } from '@bitloops/bl-boilerplate-core';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { CustomerReadModel } from '../../domain/CustomerReadModel';
 import { ApplicationErrors } from '../errors/index';
 import { CustomerReadRepoPort } from '../../ports/CustomerReadRepoPort';
@@ -17,7 +18,13 @@ export class GetCustomerByIdQueryHandler
   get boundedContext(): string {
     return 'Hello world';
   }
-  @RespondWithPublish()
+  @Traceable({
+    operation: 'GetCustomerByIdQueryHandler',
+    metrics: {
+      name: 'GetCustomerByIdQueryHandler',
+      category: 'queryHandler',
+    },
+  })
   async execute(query: GetCustomerByIdQuery): Promise<GetCustomerByIdQueryHandlerResponse> {
     const requestId = query.id;
     const customer = await this.customerRepo.getById(requestId);

@@ -27,6 +27,7 @@ import {
   bitloopsPrimaryTypeKey,
   TContextData,
 } from '../../../../../types.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
@@ -47,10 +48,12 @@ const QUERY_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
-    value: 'RespondWithPublish',
-    from: '@bitloops/bl-boilerplate-core',
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
   },
 ];
+
+const QUERY_HANDLER = 'queryHandler';
 
 export const queryHandlerToTargetLanguage = (
   queryHandler: TQueryHandler,
@@ -105,6 +108,8 @@ export const queryHandlerToTargetLanguage = (
     queryName,
     boundedContextName: boundedContext,
   });
+
+  result += getTraceableDecorator(queryHandlerName, QUERY_HANDLER);
 
   const executeResult = executeToTargetLanguage(
     queryHandler[queryHandlerKey].execute,
