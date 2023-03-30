@@ -8,28 +8,12 @@ Props UserProps {
 
 Root Entity UserEntity {
     static create(props: UserProps): (OK(UserProps), Errors())  {
-        const todo = TodoEntity(props);
-        const isNew = props.id != null;
-        if (isNew) {
-            todo.addDomainEvent(TodoCreatedDomainEvent);
-        }
-        return todo;
+        const user = UserEntity(props);
+        return user;
     }
 
-    public complete(): (OK(void), Errors(DomainErrors.TodoAlreadyCompletedError)) {
-        applyRules(TodoAlreadyCompletedRule(this.completed, this.id.toString()))
-        this.completed = true;
-        this.addDomainEvent(TodoCompletedDomainEvent);
+    public changeEmail(email: EmailVO): void {
+        this.email = email;
+        this.addDomainEvent(UserChangedEmailDomainEvent);
     }
-
-    public uncomplete(): (OK(void), Errors(DomainErrors.TodoAlreadyUncompletedError)) {
-        applyRules(TodoAlreadyUncompletedRule(this.completed, this.id.toString()))
-        this.completed = false;
-        this.addDomainEvent(TodoUncompletedDomainEvent);
-    }
-
-    public modifyTitle(title: TitleVO): (OK(void), Errors()) {
-        this.title = title;
-        this.addDomainEvent(TodoTitleModifiedDomainEvent);
-    }   
 }

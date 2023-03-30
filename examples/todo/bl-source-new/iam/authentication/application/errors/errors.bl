@@ -1,0 +1,4 @@
+ApplicationError UserNotFoundError(id: string)  {
+    message: `User with id ${id} was not found`,
+    errorId: 'f1cd80d2-4055-47b1-8769-7dd5c5d7d1d5',
+}

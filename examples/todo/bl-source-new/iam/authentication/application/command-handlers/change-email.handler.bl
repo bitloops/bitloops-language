@@ -1,0 +1,20 @@
+Command ChangeEmailCommand {
+    string email;
+    string userId;
+}
+
+CommandHandler ChangeEmailCommandHandler (userRepo: UserWriteRepoPort){
+    execute (command: ChangeUserEmailCommand): (OK(void),Errors(ApplicationErrors.UserNotFoundError))
+    {   
+        const userId = UUIDv4(command.userId);
+        const email = EmailVO.create({ email: command.email });
+
+        const userFound = this.userRepo.getById(userId);
+        if (NOT userFound) {
+            return ApplicationErrors.UserNotFoundError(command.userId);
+        }
+
+        userFound.changeEmail(email);
+        this.userEmailRepo.update(userFound);
+    }
+}
