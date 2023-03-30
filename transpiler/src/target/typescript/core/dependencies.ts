@@ -17,8 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { ArchitectureLayers } from '../../../helpers/architectureLayers.js';
 import { isBitloopsBuiltInClass } from '../../../helpers/isBitloopsBuiltInClass.js';
 import { isBitloopsPrimitive } from '../../../helpers/isBitloopsPrimitive.js';
+import { isBitloopsStandardApplicationError } from '../../../helpers/isBitloopsStandardApplicationError.js';
 import {
   ClassTypes,
   mappingBitloopsBuiltInClassToLayer,
@@ -122,6 +124,15 @@ export const getChildDependencies = (
         type: 'absolute',
         default: false,
         value: mappingBitloopsBuiltInClassToLayer[dependencyString],
+        from: '@bitloops/bl-boilerplate-core',
+      });
+      continue;
+    }
+    if (isBitloopsStandardApplicationError(dependencyString)) {
+      result.push({
+        type: 'absolute',
+        default: false,
+        value: ArchitectureLayers.Application,
         from: '@bitloops/bl-boilerplate-core',
       });
       continue;

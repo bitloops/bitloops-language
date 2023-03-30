@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TServicePort, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import { TPortToken, TServicePort, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
@@ -38,7 +38,17 @@ export const servicePortToTargetLanguage = (
   res += model.output;
   res += '}';
 
-  const finalDependencies = getParentDependencies(model.dependencies, {
+  const value: TPortToken = {
+    portIdentifier: ServicePortIdentifier,
+  };
+  const portToken = modelToTargetLanguage({
+    value,
+    type: BitloopsTypesMapping.TPortToken,
+  });
+  res += portToken.output;
+  const dependencies = [...model.dependencies, ...portToken.dependencies];
+
+  const finalDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.ServicePort,
     className: ServicePortIdentifier,
   });

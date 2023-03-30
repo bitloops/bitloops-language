@@ -4,3 +4,4 @@ export interface TodoRepoPort
   extends Application.Repo.ICRUDWritePort<TodoRootEntity, Domain.UUIDv4> {
   getByCompleted(completed: boolean): Promise<TodoRootEntity | null>;
 }
+export const TodoRepoPortToken = Symbol('TodoRepoPort');
