@@ -21,4 +21,5 @@
 export interface ICoreError {
   message: string;
   errorId: string;
+  nakable?: boolean;
 }

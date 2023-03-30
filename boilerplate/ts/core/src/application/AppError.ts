@@ -29,5 +29,9 @@ export abstract class AppError implements IAppError {
   // and is used for reading
   public static readonly errorId: string;
 
-  constructor(public readonly message: string, public readonly errorId: string) {}
+  constructor(
+    public readonly message: string,
+    public readonly errorId: string,
+    public readonly nakable?: boolean,
+  ) {}
 }

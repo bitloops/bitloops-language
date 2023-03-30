@@ -17,33 +17,21 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { CommandMetadata, ICommand } from './ICommand';
-import { config, TOPIC_PREFIXES } from '../../config';
-import { createUUIDv4, getTopic } from '../../helpers';
+import { TContext } from '../context';
 
-const { TOPIC_DELIMITER } = config;
+export type CommandMetadata = {
+  boundedContextId: string;
+  createdTimestamp: number;
+  messageId: string;
+  correlationId: string;
+  context: TContext | Record<string, never>; // type of empty object
+};
+
+export interface ICommand {
+  metadata: CommandMetadata;
+}
 
 export abstract class Command implements ICommand {
-  private static prefix: TOPIC_PREFIXES.Command = TOPIC_PREFIXES.Command;
-
-  public readonly uuid: string;
-  private createdTimestamp: number;
-  public readonly metadata?: CommandMetadata;
-  public readonly commandTopic: string;
-
-  constructor(commandName: string, toContextId: string, createdTimestamp?: number) {
-    this.uuid = createUUIDv4();
-    this.createdTimestamp = createdTimestamp || Date.now();
-    this.commandTopic = Command.getCommandTopic(commandName, toContextId); //`${toContextId}${TOPIC_DELIMITER}${commandName}`;
-    this.metadata = {
-      responseTopic: `${commandName}${TOPIC_DELIMITER}${this.uuid}`,
-      toContextId,
-      createdTimestamp: this.createdTimestamp,
-    };
-  }
-
-  // TODO somehow avoid implementing this method in every child command
-  static getCommandTopic(commandName: string, toContextId: string): string {
-    return getTopic(Command.prefix, commandName, toContextId);
-  }
+  [x: string]: any;
+  abstract metadata: CommandMetadata;
 }

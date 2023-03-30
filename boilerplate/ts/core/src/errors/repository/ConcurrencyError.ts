@@ -1,4 +1,4 @@
-import { RepoError } from '../../application/RepoError.js';
+import { RepoError } from '../../application/RepoError';
 
 export class ConcurrencyError extends RepoError {
   static errorId = '5d2c22ee-86d4-4d20-8c87-3761be2eba0c';

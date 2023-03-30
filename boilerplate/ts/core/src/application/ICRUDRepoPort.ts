@@ -14,22 +14,30 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-export interface CRUDRepoPort<Aggregate, AggregateId> {
-  getAll(): Promise<Aggregate[]>;
-  getById(aggregateRootId: AggregateId): Promise<Aggregate | null>;
-  save(aggregate: Aggregate): Promise<void>;
-  update(aggregate: Aggregate): Promise<void>;
-  delete(aggregateRootId: AggregateId): Promise<void>;
-}
+
+import { Either } from '../Either';
+import { UnexpectedError } from '../errors/repository/UnexpectedError';
 
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
-  getById(aggregateRootId: AggregateId): Promise<Aggregate | null>;
-  save(aggregate: Aggregate): Promise<void>;
-  update(aggregate: Aggregate): Promise<void>;
-  delete(aggregateRootId: AggregateId): Promise<void>;
+  getById(
+    aggregateRootId: AggregateId,
+    ctx?: any,
+  ): Promise<Either<Aggregate | null, UnexpectedError>>;
+  save(aggregate: Aggregate, ctx?: any): Promise<Either<void, UnexpectedError>>;
+  update(
+    aggregate: Aggregate,
+    ctx?: any,
+  ): Promise<Either<void, UnexpectedError>>;
+  delete(
+    aggregateRootId: AggregateId,
+    ctx?: any,
+  ): Promise<Either<void, UnexpectedError>>;
 }
 
 export interface CRUDReadRepoPort<ReadModel> {
-  getAll(): Promise<ReadModel[] | null>;
-  getById(id: string): Promise<ReadModel | null>;
+  getAll(ctx?: any): Promise<Either<ReadModel[] | null, UnexpectedError>>;
+  getById(
+    id: string,
+    ctx?: any,
+  ): Promise<Either<ReadModel | null, UnexpectedError>>;
 }

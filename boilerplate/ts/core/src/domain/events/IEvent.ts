@@ -17,17 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { TContext } from '../context';
 import { IMessage } from '../messages/IMessage';
 
-export type TEventMetadata = {
-  id: string;
+export interface TEventMetadata {
   createdAtTimestamp: number;
-  version?: string;
-  fromContextId: string;
-};
+  boundedContextId: string;
+  messageId: string;
+  correlationId: string;
+  context: TContext | Record<string, never>;
+}
 
-export interface IEvent extends IMessage {
-  eventTopic: string;
-  data: any;
+export interface IEvent<T> extends IMessage {
+  data: T;
   metadata: TEventMetadata;
 }

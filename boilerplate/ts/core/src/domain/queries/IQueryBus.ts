@@ -17,13 +17,12 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IQuery } from './IQuery';
-import { GenericMessageHandler } from '../messages/IMessageBus';
-
-export type RegisterHandler<T extends IQuery> = GenericMessageHandler<T>;
+import { Application } from '../..';
 
 export interface IQueryBus {
-  register<T extends IQuery>(queryName: string, registerHandler: RegisterHandler<T>): Promise<void>;
-  unregister(queryName: string): Promise<void>;
-  query<T = any>(query: IQuery): Promise<T>;
+  request(query: any): Promise<any>;
+  pubSubSubscribe(
+    subject: string,
+    handler: Application.IQueryHandler<any, any>,
+  ): Promise<void>;
 }

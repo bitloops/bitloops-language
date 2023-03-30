@@ -1,6 +1,9 @@
 import { IEvent } from '../domain/events/IEvent';
+import { Either } from '../Either';
+import { ICoreError } from '../ICoreError';
 
-// TODO Add generic to IHandle
 export interface IHandle {
-  handle(event: IEvent): Promise<void>;
+  get event(): any;
+  get boundedContext(): string;
+  handle(event: IEvent<any>): Promise<Either<any, ICoreError>>;
 }

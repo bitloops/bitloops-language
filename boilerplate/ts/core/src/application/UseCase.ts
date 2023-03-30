@@ -1,3 +1,6 @@
+import { Either } from '../Either';
+import { ICoreError } from '../ICoreError';
+
 /**
  * ISC License
  * Copyright (c) 2019, [Khalil Stemmler](https://khalilstemmler.com)
@@ -15,5 +18,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 export interface UseCase<IRequest, IResponse> {
+  get command(): any;
+  get boundedContext(): string;
   execute(request?: IRequest): Promise<IResponse> | IResponse;
+}
+
+export interface CommandHandler<IRequest, IOkResponse> {
+  get command(): any;
+  get boundedContext(): string;
+  execute(request?: IRequest): Promise<Either<IOkResponse, ICoreError>>;
+}
+
+export interface QueryHandler<IRequest, IOkResponse> {
+  get query(): any;
+  get boundedContext(): string;
+  execute(request?: IRequest): Promise<Either<IOkResponse, ICoreError>>;
 }
