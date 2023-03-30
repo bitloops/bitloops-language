@@ -82,7 +82,7 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     }
   }
 
-  private generateHeaders(query: Application.IQuery): MsgHdrs {
+  private generateHeaders(query: Application.Query): MsgHdrs {
     const h = headers();
     for (const [key, value] of Object.entries(query.metadata)) {
       if (key === 'context' && value) {
@@ -103,7 +103,7 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     return `${this.queryPrefix}${boundedContext}.${query.name}`;
   }
 
-  static getTopicFromQueryInstance(query: Application.IQuery): string {
+  static getTopicFromQueryInstance(query: Application.Query): string {
     const boundedContext = query.metadata.boundedContextId;
     const topic = `${this.queryPrefix}${boundedContext}.${query.constructor.name}`;
     return topic;
