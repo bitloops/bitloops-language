@@ -17,17 +17,33 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TMetadata, TTargetDependenciesTypeScript } from '../../../../../types.js';
+import {
+  MetadataTypeNames,
+  TMetadata,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 
 const getMetadataToTargetLanguage = (variable: TMetadata): TTargetDependenciesTypeScript => {
   const { contextId, metadataType } = variable;
-  const metadataRes = `public readonly metadata: ${metadataType} = {
+  let metadataRes = '';
+  const commonFields = `
     boundedContextId: ${contextId},
     createdTimestamp: Date.now(),
     messageId: new Domain.UUIDv4().toString(),
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
-    context: asyncLocalStorage.getStore()?.get('context'),
-  };`;
+    context: asyncLocalStorage.getStore()?.get('context')
+  `;
+
+  if (metadataType === MetadataTypeNames.IntegrationEvent) {
+    metadataRes = `this.metadata = {
+      ${commonFields},
+      version,
+    };`;
+  } else {
+    metadataRes = `public readonly metadata: ${metadataType} = {
+      ${commonFields}
+    };`;
+  }
 
   return {
     output: metadataRes,

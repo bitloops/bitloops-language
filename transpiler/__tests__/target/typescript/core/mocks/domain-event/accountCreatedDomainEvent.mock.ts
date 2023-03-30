@@ -3,7 +3,7 @@ import { AccountEntity } from '../AccountEntity';
 export class AccountCreatedDomainEvent implements Domain.IDomainEvent<AccountEntity> {
   public aggregateId: string;
   public readonly metadata: Domain.TDomainEventMetadata = {
-    boundedContextId: 'Todo',
+    boundedContextId: 'Banking',
     createdTimestamp: Date.now(),
     messageId: new Domain.UUIDv4().toString(),
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
