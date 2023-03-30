@@ -28,7 +28,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { generateEventGetters } from '../domain-event-handler/domainEventHandler.js';
 import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
-// import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 
 const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
