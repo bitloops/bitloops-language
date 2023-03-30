@@ -26,6 +26,7 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 
 const DOMAIN_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -46,7 +47,15 @@ const DOMAIN_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     value: 'Container',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
+  },
 ];
+
+const DOMAIN_EVENT_HANDLER = 'domainEventHandler';
 
 export const domainEventHandlerToTargetLanguage = (
   domainEventModel: TDomainEventHandler,
@@ -82,6 +91,11 @@ export const domainEventHandlerToTargetLanguage = (
     boundedContextName: contextData.boundedContext,
   });
 
+  const traceableDecorator = getTraceableDecorator(
+    domainEventHandlerIdentifier,
+    DOMAIN_EVENT_HANDLER,
+  );
+
   const handleMethod = modelToTargetLanguage({
     value: handle,
     type: BitloopsTypesMapping.THandle,
@@ -90,6 +104,7 @@ export const domainEventHandlerToTargetLanguage = (
   result += `export class ${domainEventHandlerIdentifier} implements Application.IHandle { `;
   result += constructor.output;
   result += getters;
+  result += traceableDecorator;
   result += handleMethod.output;
   result += '}';
 

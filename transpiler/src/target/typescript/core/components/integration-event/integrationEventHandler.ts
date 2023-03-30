@@ -27,6 +27,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { generateEventGetters } from '../domain-event-handler/domainEventHandler.js';
+// import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 
 const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -48,6 +49,8 @@ const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = ()
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
+
+// const INTEGRATION_EVENT_HANDLER = 'integrationEventHandler';
 
 export const integrationEventHandlerToTargetLanguage = (
   integrationEventHandlerModel: TIntegrationEventHandler,
@@ -91,9 +94,15 @@ export const integrationEventHandlerToTargetLanguage = (
     boundedContextName: contextData.boundedContext,
   });
 
+  // const traceableDecorator = getTraceableDecorator(
+  //   integrationEventHandlerIdentifier,
+  //   INTEGRATION_EVENT_HANDLER,
+  // );
+
   result += `export class ${integrationEventHandlerIdentifier} implements Application.IHandle { `;
   result += constructor.output;
   result += getters;
+  // result += traceableDecorator;
   result += handleMethod.output;
   result += '}';
 
