@@ -11,10 +11,10 @@
     nats "^2.10.2"
     reflect-metadata "^0.1.13"
 
-"@bitloops/bl-boilerplate-infra-postgres@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-postgres/-/bl-boilerplate-infra-postgres-0.1.0.tgz#a0766e9732b8e9728866d79e499086ab078a4389"
-  integrity sha512-7FZLdUcQF4t5CtMC6IhIfU+qyZ0yQu7Df45/I9WP7w5LwwoIpFHjgjNszZIwMRI8wd/aQyoNMMhs9MX2eqIU5w==
+"@bitloops/bl-boilerplate-infra-postgres@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-postgres/-/bl-boilerplate-infra-postgres-0.1.1.tgz#195bc43cc366c05f502164a4c95c2248ceb4b8ed"
+  integrity sha512-4+iUhQdgTVguKxBg4NKOfozDXZ1B+OzSKLCTISsfSpnFGV/SQP2K+kDH8TXM47kzKMDeF13vrBCh+2CQ5VW9CA==
   dependencies:
     "@nestjs/common" "^9.0.0"
     pg "^8.10.0"

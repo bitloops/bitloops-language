@@ -4,7 +4,6 @@ export * from './jwt/jwt.module';
 export * from './jwt/jwt-auth.guard';
 export * from './jwt/jwt-grpc-auth.guard';
 export * from './jwt/authdata.decorator';
-export * from './jwt/async-local-storage.interceptor';
 
 export * from './auth.module';
 export * from './auth.service';

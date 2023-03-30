@@ -1,5 +1,8 @@
 {
   "extends": "./tsconfig.base.json",
+  "experimentalDecorators": true,
+  "emitDecoratorMetadata": true,
+  "strictPropertyInitialization": false,
   "compilerOptions": {
     "lib": ["ES2022", "DOM"],
     "target": "ES2022",

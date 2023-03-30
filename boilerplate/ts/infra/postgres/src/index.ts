@@ -1,2 +1,2 @@
-export { PostgresModule } from './postgres.module';
+export { PostgresModule, PostgresModuleAsyncOptions } from './postgres.module';
 export { constants } from './postgres.constants';
