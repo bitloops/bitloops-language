@@ -72,6 +72,16 @@ export const domainEventHandlerToTargetLanguage = (
     contextData,
   });
 
+  const eventName = modelToTargetLanguage({
+    value: handle.parameter,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+  });
+
+  const getters = generateEventGetters({
+    eventName: eventName.output,
+    boundedContextName: contextData.boundedContext,
+  });
+
   const handleMethod = modelToTargetLanguage({
     value: handle,
     type: BitloopsTypesMapping.THandle,
@@ -79,6 +89,7 @@ export const domainEventHandlerToTargetLanguage = (
 
   result += `export class ${domainEventHandlerIdentifier} implements Application.IHandle { `;
   result += constructor.output;
+  result += getters;
   result += handleMethod.output;
   result += '}';
 
@@ -90,4 +101,21 @@ export const domainEventHandlerToTargetLanguage = (
   });
 
   return { output: result, dependencies: finalDependencies };
+};
+
+export const generateEventGetters = ({
+  eventName,
+  boundedContextName,
+}: {
+  eventName: string;
+  boundedContextName: string;
+}): string => {
+  const result = `
+  get event() {
+    return ${eventName};
+  }
+  get boundedContext(): string {
+    return '${boundedContextName}';
+  }`;
+  return result;
 };
