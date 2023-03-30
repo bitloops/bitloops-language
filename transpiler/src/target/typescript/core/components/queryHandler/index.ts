@@ -24,6 +24,7 @@ import {
   TDependenciesTypeScript,
   TDependencyChildTypescript,
   TTargetDependenciesTypeScript,
+  bitloopsPrimaryTypeKey,
 } from '../../../../../types.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -63,6 +64,12 @@ export const queryHandlerToTargetLanguage = (
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
   });
+
+  const okType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: returnType.ok[bitloopsPrimaryTypeKey] },
+  });
+
   dependencies = [...dependencies, ...queryHandlerReturnTypesResult.dependencies];
 
   const { output: queryName, dependencies: queryHandlerDependenciesResult } = modelToTargetLanguage(
@@ -85,6 +92,7 @@ export const queryHandlerToTargetLanguage = (
 
   let result = initialQueryHandler(
     queryHandlerReturnTypesResult.output,
+    okType.output,
     queryHandlerResponseTypeName,
     queryHandlerInputName,
     queryName,
@@ -111,6 +119,7 @@ export const queryHandlerToTargetLanguage = (
 
 const initialQueryHandler = (
   returnTypesResult: string,
+  okType: string,
   responseTypeName: string,
   inputType: string,
   dependencies: string,
@@ -118,8 +127,8 @@ const initialQueryHandler = (
 ): string => {
   const queryHandlerResponseType = `export type ${responseTypeName} = ${returnTypesResult};`;
   let result = queryHandlerResponseType;
-  const responseType = `Promise<${responseTypeName}>`;
-  result += `export class ${queryHandlerName} implements Application.IUseCase<${
+  const responseType = okType;
+  result += `export class ${queryHandlerName} implements Application.IQueryHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
   if (!isDependenciesEmpty(dependencies))

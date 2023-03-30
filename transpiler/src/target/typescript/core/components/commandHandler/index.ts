@@ -19,6 +19,7 @@
  */
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import {
+  bitloopsPrimaryTypeKey,
   commandHandlerKey,
   TCommandHandler,
   TDependenciesTypeScript,
@@ -63,6 +64,11 @@ export const commandHandlerToTargetLanguage = (
     type: BitloopsTypesMapping.TOkErrorReturnType,
     value: { returnType },
   });
+
+  const okType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: { type: returnType.ok[bitloopsPrimaryTypeKey] },
+  });
   dependencies = [...dependencies, ...commandHandlerReturnTypesResult.dependencies];
 
   const { output: commandName, dependencies: commandHandlerDependenciesResult } =
@@ -84,6 +90,7 @@ export const commandHandlerToTargetLanguage = (
 
   let result = initialCommandHandler(
     commandHandlerReturnTypesResult.output,
+    okType.output,
     commandHandlerResponseTypeName,
     commandHandlerInputName,
     commandName,
@@ -109,16 +116,17 @@ export const commandHandlerToTargetLanguage = (
 };
 
 const initialCommandHandler = (
-  returnTypesResult: string,
+  commandHandlerResponse: string,
+  commandHandlerOkType: string,
   responseTypeName: string,
   inputType: string,
   dependencies: string,
   commandHandlerName: string,
 ): string => {
-  const commandHandlerResponseType = `export type ${responseTypeName} = ${returnTypesResult};`;
+  const commandHandlerResponseType = `export type ${responseTypeName} = ${commandHandlerResponse};`;
   let result = commandHandlerResponseType;
-  const responseType = `Promise<${responseTypeName}>`;
-  result += `export class ${commandHandlerName} implements Application.IUseCase<${
+  const responseType = commandHandlerOkType;
+  result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
   if (!isDependenciesEmpty(dependencies))

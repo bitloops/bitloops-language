@@ -17,8 +17,7 @@ export type WithdrawMoneyCommandHandlerResponse = Either<
   | DomainErrors.InvalidCustomerPINError
 >;
 export class WithdrawMoneyCommandHandler
-  implements
-    Application.IUseCase<WithdrawMoneyCommand, Promise<WithdrawMoneyCommandHandlerResponse>>
+  implements Application.ICommandHandler<WithdrawMoneyCommand, void>
 {
   constructor(private accountRepo: AccountWriteRepoPort) {}
   @RespondWithPublish()
