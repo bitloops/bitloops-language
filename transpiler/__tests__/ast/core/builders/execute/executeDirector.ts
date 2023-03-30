@@ -1,3 +1,4 @@
+import { ErrorIdentifiersNodeBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/ErrorIdentifiersNodeBuilderDirector.js';
 import { TExecute } from '../../../../../src/types.js';
 import { ArgumentBuilderDirector } from '../argumentDirector.js';
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
@@ -23,7 +24,7 @@ export class ExecuteBuilderDirector {
           .withOk(
             new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('HelloWorldResponseDTO'),
           )
-          .withErrors([])
+          .withErrors([{ error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName }])
           .build(),
       )
       .withStatements([
@@ -55,7 +56,7 @@ export class ExecuteBuilderDirector {
               executeReturnTypes.identifierOK,
             ),
           )
-          .withErrors([])
+          .withErrors([{ error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName }])
           .build(),
       )
       .withStatements([
@@ -107,7 +108,10 @@ export class ExecuteBuilderDirector {
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
-          .withErrors([{ error: errorIdentifier }])
+          .withErrors([
+            { error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName },
+            { error: errorIdentifier },
+          ])
           .build(),
       )
       .withStatements([
@@ -186,7 +190,10 @@ export class ExecuteBuilderDirector {
               executeReturnTypes.identifierOK,
             ),
           )
-          .withErrors([{ error: executeReturnTypes.identifierError }])
+          .withErrors([
+            { error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName },
+            { error: executeReturnTypes.identifierError },
+          ])
           .build(),
       )
       .withStatements([
@@ -239,7 +246,7 @@ export class ExecuteBuilderDirector {
       .withReturnType(
         new ReturnOkErrorTypeBuilder()
           .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
-          .withErrors([])
+          .withErrors([{ error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName }])
           .build(),
       )
       .withStatements([

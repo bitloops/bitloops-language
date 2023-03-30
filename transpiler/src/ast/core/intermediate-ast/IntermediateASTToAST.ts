@@ -17,6 +17,8 @@ import { IntegrationEventNodeTransformer } from './ node-transformers/Integratio
 import { ControllerNode } from './nodes/controllers/ControllerNode.js';
 import { ControllerNodeTransformer } from './ node-transformers/ControllerNodeTransformer.js';
 import { AddDIsForAutoDomainEventHandlersTransformer } from './ node-transformers/setup/AddDIForAutoEventHandlers.js';
+import { ExecuteNode } from './nodes/ExecuteNode.js';
+import { ExecuteNodeTransformer } from './ node-transformers/ExecuteNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -169,6 +171,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TRESTController: {
         const controllerNode = intermediateASTNode as ControllerNode;
         return new ControllerNodeTransformer(intermediateASTTree, controllerNode);
+      }
+      case BitloopsTypesMapping.TExecute: {
+        const executeNode = intermediateASTNode as ExecuteNode;
+        return new ExecuteNodeTransformer(intermediateASTTree, executeNode);
       }
       default:
         return null;
