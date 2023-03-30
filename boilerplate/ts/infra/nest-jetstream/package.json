@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-nest-jetsream",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript nats jetstream code for Bitloops Language generated projects using NestJS",
   "engines": {
     "node": ">= 13"
@@ -40,7 +40,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.0",
+    "@bitloops/bl-boilerplate-core": "^0.3.1",
     "@nestjs/common": "^9.3.12",
     "async-mutex": "^0.4.0",
     "nats": "^2.13.1"
