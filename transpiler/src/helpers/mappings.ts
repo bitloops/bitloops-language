@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsBuiltInClassNames } from '../types.js';
+import { ArchitectureLayers } from './architectureLayers.js';
 
 const BitloopsTypesMapping = {
   TClassName: 'TClassName',
@@ -314,10 +315,6 @@ const ClassTypes = {
 type TClassTypesKeys = keyof typeof ClassTypes;
 
 export type TClassTypesValues = typeof ClassTypes[TClassTypesKeys];
-
-const ArchitectureLayers = {
-  Domain: 'Domain',
-};
 
 export const mappingBitloopsBuiltInClassToLayer = {
   [BitloopsBuiltInClassNames.UUIDv4]: ArchitectureLayers.Domain,
