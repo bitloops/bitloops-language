@@ -38,9 +38,10 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-boilerplate-core": "0.3.0",
+    "@bitloops/bl-boilerplate-core": "0.3.1",
     "@nestjs/common": "^9.0.0",
-    "fastify": "^4.15.0"
+    "fastify": "^4.15.0",
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
