@@ -35,6 +35,12 @@ const DOMAIN_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     value: 'Domain',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'asyncLocalStorage',
+    from: '@bitloops/bl-boilerplate-core',
+  },
 ];
 
 export const domainEventToTargetLanguage = (
@@ -65,7 +71,6 @@ export const domainEventToTargetLanguage = (
   result += `public static readonly eventName = ${eventName.output};`;
   result += `public static readonly fromContextId = '${contextData.boundedContext}';`;
   result += generateConstructor(domainEventName, entityName);
-  result += `static getEventTopic() { return ${domainEventName}.eventName; }`;
   result += '}';
 
   const finalDependencies = getParentDependencies(dependencies, {

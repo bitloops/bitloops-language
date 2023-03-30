@@ -243,6 +243,25 @@ export type TPortToken = {
   portIdentifier: string;
 };
 
+export const MetadataTypeNames = {
+  Command: 'Application.TCommandMetadata',
+  Query: 'Application.TQueryMetadata',
+  DomainEvent: 'Domain.TDomainEventMetadata',
+  IntegrationEvent: 'Infra.EventBus.TIntegrationEventMetadata',
+} as const;
+export const metadataTypes = [
+  MetadataTypeNames.Command,
+  MetadataTypeNames.Query,
+  MetadataTypeNames.DomainEvent,
+  MetadataTypeNames.IntegrationEvent,
+] as const;
+export type TMetadataType = typeof metadataTypes[number];
+
+export type TMetadata = {
+  contextId: string;
+  metadataType: TMetadataType;
+};
+
 export type TDomainServiceEvaluation = {
   domainService: {
     identifier: string;
