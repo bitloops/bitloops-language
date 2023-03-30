@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ErrorIdentifiersNode } from '../ErrorIdentifiers/ErrorIdentifiersNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementListNode } from '../statements/StatementList.js';
 import { ReturnOkTypeNode } from './ReturnOkTypeNode.js';
@@ -23,6 +24,10 @@ export class ReturnOkErrorTypeNode extends IntermediateASTNode {
 
   getReturnOkType(): ReturnOkTypeNode {
     return this.getChildNodeByType<ReturnOkTypeNode>(BitloopsTypesMapping.TReturnOkType);
+  }
+
+  getReturnErrorsType(): ErrorIdentifiersNode {
+    return this.getChildNodeByType<ErrorIdentifiersNode>(BitloopsTypesMapping.TErrorIdentifiers);
   }
 
   isReturnTypeVoid(): boolean {
