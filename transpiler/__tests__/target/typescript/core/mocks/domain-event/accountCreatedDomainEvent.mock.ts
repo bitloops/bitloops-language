@@ -1,10 +1,15 @@
-import { Domain } from '@bitloops/bl-boilerplate-core';
+import { Domain, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
 import { AccountEntity } from '../AccountEntity';
-export class AccountCreatedDomainEvent extends Domain.Event<AccountEntity> {
-  constructor(public readonly account: AccountEntity, uuid?: string) {
-    super();
-  }
-  static getEventTopic() {
-    return AccountCreatedDomainEvent.eventName;
+export class AccountCreatedDomainEvent implements Domain.IDomainEvent<AccountEntity> {
+  public aggregateId: string;
+  public readonly metadata: Domain.TDomainEventMetadata = {
+    boundedContextId: 'Todo',
+    createdTimestamp: Date.now(),
+    messageId: new Domain.UUIDv4().toString(),
+    correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
+    context: asyncLocalStorage.getStore()?.get('context'),
+  };
+  constructor(public readonly data: AccountEntity) {
+    this.aggregateId = data.id.toString();
   }
 }
