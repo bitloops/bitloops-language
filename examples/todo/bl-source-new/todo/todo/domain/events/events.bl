@@ -2,8 +2,3 @@ DomainEvent TodoAddedDomainEvent<TodoEntity>;
 DomainEvent TodoCompletedDomainEvent<TodoEntity>;
 DomainEvent TodoTitleModifiedDomainEvent<TodoEntity>;
 DomainEvent TodoUncompletedDomainEvent<TodoEntity>;
-
-Struct IntegrationSchemaV1 {
-    string todoId;
-    string userId;
-  }

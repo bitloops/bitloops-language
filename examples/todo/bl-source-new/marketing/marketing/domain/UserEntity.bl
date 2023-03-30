@@ -1,6 +1,5 @@
 Props UserProps {
     optional UUIDv4 id;
-    UserIdVO userId;
     CompletedTodosVO completedTodos;
 }
 

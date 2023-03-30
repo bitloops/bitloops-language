@@ -1,9 +1,31 @@
+Struct IntegrationTodoCompletedSchemaV1 {
+    string todoId;
+    string userId;
+}
+
 IntegrationEvent TodoCompletedIntegrationEvent(event: TodoCompletedDomainEvent) {  
-    'v1' : IntegrationSchemaV1 {
-        const todoCompleted = IntegrationSchemaV1({
+    'v1' : IntegrationTodoCompletedSchemaV1 {
+        const todoCompleted = IntegrationTodoCompletedSchemaV1({
             todoId: event.todo.id.toString(),
             userId: event.todo.userId.toString(),
         });
         return todoCompleted;
+    }
+}
+
+Struct IntegrationTodoCreatedSchemaV1 {
+    string todoId;
+    string userId;
+    string title;
+}
+
+IntegrationEvent TodoCreatedIntegrationEvent(event: TodoCompletedDomainEvent) {  
+    'v1' : IntegrationTodoCreatedSchemaV1 {
+        const todoCreated = IntegrationTodoCreatedSchemaV1({
+            todoId: event.todo.id.toString(),
+            userId: event.todo.userId.toString(),
+            title: event.todo.title,
+        });
+        return todoCreated;
     }
 }
