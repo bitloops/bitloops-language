@@ -11,7 +11,7 @@ import {
 } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
-import { ASYNC_LOCAL_STORAGE, METADATA_HEADERS, ProvidersConstants } from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();
@@ -71,8 +71,9 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
           const reply = await this.asyncLocalStorage.run(contextData, async () => {
             return handler.execute(command);
           });
-          if (reply.isOk && reply.isOk()) m.ack();
-          else m.nak();
+          if (reply.isFail && reply.isFail() && reply.value.nakable) {
+            m.nak();
+          } else m.ack();
 
           console.log(
             `[Command ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,

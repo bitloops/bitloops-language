@@ -11,6 +11,8 @@ import { randomUUID } from 'crypto';
 import { Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
 import { ProvidersConstants } from '../jetstream.constants';
+// import { IMessage } from '@src/bitloops/bl-boilerplate-core/domain/messages/IMessage';
+// import { SubscriberHandler } from '@src/bitloops/bl-boilerplate-core/domain/messages/ISystemMessageBus';
 
 const jsonCodec = JSONCodec();
 
@@ -52,9 +54,6 @@ export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageB
     opts.deliverTo(createInbox());
 
     try {
-      // this.logger.log(`
-      //   Subscribing ${subject}!
-      // `);
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {

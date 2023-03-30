@@ -46,6 +46,7 @@
     "nats": "^2.13.1"
   },
   "devDependencies": {
+    "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
-import { ASYNC_LOCAL_STORAGE, METADATA_HEADERS, ProvidersConstants } from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { ContextPropagation } from './utils/context-propagation';
 
@@ -55,12 +55,20 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
           const reply = await this.asyncLocalStorage.run(contextData, () => {
             return handler.execute(query);
           });
-          if (reply.isOk && m.reply) {
-            this.nc.publish(
+          if (reply.isOk && reply.isOk() && m.reply) {
+            return this.nc.publish(
               m.reply,
               jsonCodec.encode({
                 isOk: true,
                 data: reply.value,
+              }),
+            );
+          } else if (reply.isFail && reply.isFail() && m.reply) {
+            return this.nc.publish(
+              m.reply,
+              jsonCodec.encode({
+                isOk: false,
+                error: reply.value,
               }),
             );
           }

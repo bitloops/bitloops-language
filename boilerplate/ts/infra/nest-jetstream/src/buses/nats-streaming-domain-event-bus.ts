@@ -11,7 +11,7 @@ import {
 } from 'nats';
 import { Application, Domain, Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
-import { ASYNC_LOCAL_STORAGE, METADATA_HEADERS, ProvidersConstants } from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();

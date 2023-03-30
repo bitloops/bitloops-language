@@ -11,7 +11,8 @@ import {
 } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
-import { ASYNC_LOCAL_STORAGE, METADATA_HEADERS, ProvidersConstants } from '../jetstream.constants';
+import { Domain } from '@bitloops/bl-boilerplate-core';
+import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();
@@ -93,8 +94,10 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
           const reply = await this.asyncLocalStorage.run(contextData, async () => {
             return handler.handle(integrationEvent);
           });
-          if (reply.isOk && reply.isOk()) m.ack();
-          else m.nak();
+
+          if (reply.isFail && reply.isFail() && reply.value.nakable) {
+            m.nak();
+          } else m.ack();
 
           console.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
         }
@@ -104,7 +107,7 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
     }
   }
 
-  unsubscribe<T extends Infra.EventBus.IEvent<any>>(
+  unsubscribe<T extends Domain.IDomainEvent<any>>(
     topic: string,
     eventHandler: Application.IHandleIntegrationEvent,
   ): Promise<void> {
