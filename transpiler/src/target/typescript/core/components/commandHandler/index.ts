@@ -125,7 +125,7 @@ const initialCommandHandler = (
 ): string => {
   const commandHandlerResponseType = `export type ${responseTypeName} = ${commandHandlerResponse};`;
   let result = commandHandlerResponseType;
-  const responseType = `Promise<${commandHandlerOkType}>`;
+  const responseType = commandHandlerOkType;
   result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;

@@ -127,7 +127,7 @@ const initialQueryHandler = (
 ): string => {
   const queryHandlerResponseType = `export type ${responseTypeName} = ${returnTypesResult};`;
   let result = queryHandlerResponseType;
-  const responseType = `Promise<${okType}>`;
+  const responseType = okType;
   result += `export class ${queryHandlerName} implements Application.IQueryHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
