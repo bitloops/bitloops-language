@@ -1,0 +1,14 @@
+Query GetAllTodosQuery {
+    TodoReadModel[] todos;
+}
+
+QueryHandler GetAllTodosQueryHandler (todoRepo: TodoReadRepoPort) {
+    execute (): (OK(TodoReadModel[]), Errors()) {
+      const todos = this.todoRepo.getAll();
+  
+      if (NOT todos) {
+        return [];
+      }
+      return todos;
+    }
+}

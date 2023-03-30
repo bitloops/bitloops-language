@@ -1,0 +1,28 @@
+DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(emailRepoPort: UserEmailReadRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+    handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors()) {
+      const user = event.data;
+
+      const marketingNotificationService = MarketingNotificationService.create(this.notificationTemplateRepo);
+
+      const emailToBeSentInfo = marketingNotificationService.getNotificationTemplateToBeSent(user);
+      
+      if (NOT emailToBeSentInfo OR NOT emailToBeSentInfo.notificationTemplate) {
+        return;
+      }
+
+       // TODO check if we want to handle the unexpected error here and return a new nakable error
+      const userEmail = this.emailRepoPort.getUserEmail(user.id);
+      
+      if (NOT userEmail) {
+        return ApplicationErrors.UserEmailNotFoundError(user.id.toString());
+      }
+
+      const command = SendEmailCommand.create({
+        origin: emailToBeSentInfo.emailOrigin,
+        destination: userEmail.email,
+        content: emailToBeSentInfo.notificationTemplate.template,
+      });
+      this.commandBus.send(command);
+    }
+}

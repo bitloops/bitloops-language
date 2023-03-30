@@ -1,0 +1,1 @@
+RepoPort UserWriteRepoPort<UserEntity> extends CRUDWriteRepoPort;

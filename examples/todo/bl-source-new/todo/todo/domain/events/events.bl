@@ -1,0 +1,4 @@
+DomainEvent TodoAddedDomainEvent<TodoEntity>;
+DomainEvent TodoCompletedDomainEvent<TodoEntity>;
+DomainEvent TodoTitleModifiedDomainEvent<TodoEntity>;
+DomainEvent TodoUncompletedDomainEvent<TodoEntity>;

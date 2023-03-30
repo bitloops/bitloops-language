@@ -1,0 +1,26 @@
+Command IncrementTodosCommand {
+    string id;
+  }
+
+
+CommandHandler IncrementTodosCommandHandler (userRepo: UserWriteRepoPort){
+    execute (command: IncrementTodosCommand): (OK(void),Errors(DomainErrors.InvalidTodosCounterError))
+    {
+        const userId = UUIDv4(command.id);
+        const userFound = this.userRepo.getById(userId);
+        if(NOT userFound) {
+            const completedTodosVO = CompletedTodosVO.create({ counter: 0 });
+            const newUser = UserEntity.create({
+                completedTodos: completedTodosVO,
+                id: userId,
+            });
+            newUser.incrementCompletedTodos();
+            this.userRepo.save(newUser);
+            return;
+        } else {
+            const incrementedCompleted = userFound.incrementCompletedTodos();
+            this.userRepo.update(userFound);
+            return;
+        }
+    }
+  }

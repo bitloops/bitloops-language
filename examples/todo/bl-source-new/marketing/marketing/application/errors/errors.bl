@@ -1,0 +1,11 @@
+
+ApplicationError UserEmailNotFoundError(userId: string)  {
+    message: `Email for user ${userId} not found`,
+    errorId: 'dedb1f53-6e89-429d-bc63-8f3adfc4b407',
+}
+
+// TODO Shall tgis be deleted?
+ApplicationError EmptyNotificationTemplateError(userId: string)  {
+    message: `Notification template for user ${userId} not found`,
+    errorId: 'd0c45078-33ca-4b99-9b94-a2778c42f8b1',
+  }

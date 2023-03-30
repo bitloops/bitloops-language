@@ -1,0 +1,4 @@
+DomainError InvalidTodosCounterError() { 
+    message: 'Completed Todos counter is invalid',
+    errorId: 'eb4c48f1-1af1-4178-8c95-383cbb03527d'
+}

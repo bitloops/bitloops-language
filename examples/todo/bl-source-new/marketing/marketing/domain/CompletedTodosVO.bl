@@ -1,0 +1,9 @@
+Props CompletedTodosProps {
+    int32 counter;
+}
+
+ValueObject CompletedTodosVO {
+    static create(props: CompletedTodosProps): (OK(CompletedTodosVO), Errors(DomainErrors.InvalidTodosCounterError)) {
+        applyRules(CompletedTodosIsPositiveNumberRule(props.counter));
+    }
+}

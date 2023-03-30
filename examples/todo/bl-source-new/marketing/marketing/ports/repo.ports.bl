@@ -1,0 +1,11 @@
+RepoPort UserWriteRepoPort<UserEntity> extends CRUDWriteRepoPort;
+
+RepoPort UserEmailReadRepoPort<UserEmailReadModel> extends CRUDReadRepoPort {
+    getUserEmail(userid: UUIDv4): UserEmailReadModel; 
+    // TODO is this in use?
+    save(userReadModel: UserEmailReadModel): void;
+};
+
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+    getByType(type: string): NotificationTemplateReadModel | null; // TODO change to ok,error
+};

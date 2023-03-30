@@ -1,0 +1,4 @@
+ReadModel UserEmailReadModel {
+    string userId;
+    string email;
+}

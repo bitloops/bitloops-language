@@ -1,0 +1,21 @@
+Command CompleteTodoCommand {
+    string todoId;
+}
+
+CommandHandler CompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
+    execute(command: CompleteTodoCommand): (OK(void), Errors(
+       ApplicationErrors.TodoNotFoundError
+       | DomainErrors.TodoAlreadyCompletedError
+       )) {
+       
+       const todoId = UUIDv4(command.todoId);
+       const todoEntity = this.todoRepo.getById(todoId);
+
+       if(NOT todoEntity) {
+           return ApplicationErrors.TodoNotFoundError(command.todoId);
+       }
+
+       todoEntity.complete();
+       this.todoRepo.update(todoEntity);
+   } 
+}

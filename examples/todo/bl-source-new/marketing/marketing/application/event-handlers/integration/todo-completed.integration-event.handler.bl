@@ -1,0 +1,13 @@
+IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
+    
+    eventVersion: 'v1';
+    
+    handle(event: [todo][todo]TodoCompletedIntegrationEvent) {
+      const userId = event.data.userId;
+
+      const command = IncrementTodosCommand.create({
+        id: userId,
+      })
+      this.commandBus.send(command);
+    }
+}

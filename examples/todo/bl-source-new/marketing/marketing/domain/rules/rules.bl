@@ -1,0 +1,3 @@
+Rule CompletedTodosIsPositiveNumberRule(counter: int32) throws DomainErrors.InvalidTodosCounterError { 
+    isBrokenIf(counter < 0);
+}
