@@ -23,6 +23,7 @@ import {
   TTargetDependenciesTypeScript,
   TRepoPort,
   repoPortKey,
+  TPortToken,
 } from '../../../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
@@ -67,6 +68,16 @@ export const buildRepoPortWithGettersAndMethods = (
     output += methodsModel.output;
   }
   output += '}';
+
+  const value: TPortToken = {
+    portIdentifier: repoPortName,
+  };
+  const portToken = modelToTargetLanguage({
+    value,
+    type: BitloopsTypesMapping.TPortToken,
+  });
+  output += portToken.output;
+  dependencies = [...dependencies, ...portToken.dependencies];
 
   const parentDependencies = getParentDependencies(dependencies, {
     classType: ClassTypes.RepoPort,

@@ -239,6 +239,10 @@ export type TBuiltInClassEvaluation = {
   } & TArgumentList;
 };
 
+export type TPortToken = {
+  portIdentifier: string;
+};
+
 export type TDomainServiceEvaluation = {
   domainService: {
     identifier: string;
