@@ -4,18 +4,24 @@ Command UncompleteTodoCommand {
 
 CommandHandler UncompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
     execute(command: UncompleteTodoCommand): (OK(void), Errors(
-       ApplicationErrors.TodoNotFoundError
+       ApplicationErrors.TodoNotFoundApplicationError
        | DomainErrors.TodoAlreadyUncompletedError
        )) {
        
        const todoId = UUIDv4(command.todoId);
        const todoEntity = this.todoRepo.getById(todoId);
+       if(todoEntity is Error){
+        return Error(todoEntity);
+        }
 
        if(NOT todoEntity) {
-           return ApplicationErrors.TodoNotFoundError(command.todoId);
+           return ApplicationErrors.TodoNotFoundApplicationError(command.todoId);
        }
 
        todoEntity.uncomplete();
-       this.todoRepo.update(todoEntity);
+       const updateResult = this.todoRepo.update(todoEntity);
+       if(updateResult is Error){
+        return Error(updateResult);
+      }
    } 
 }
