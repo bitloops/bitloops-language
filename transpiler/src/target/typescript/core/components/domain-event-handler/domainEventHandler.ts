@@ -88,7 +88,6 @@ export const domainEventHandlerToTargetLanguage = (
 
   const getters = generateEventGetters({
     eventName: eventName.output,
-    boundedContextName: contextData.boundedContext,
   });
 
   const traceableDecorator = getTraceableDecorator(
@@ -118,19 +117,13 @@ export const domainEventHandlerToTargetLanguage = (
   return { output: result, dependencies: finalDependencies };
 };
 
-export const generateEventGetters = ({
-  eventName,
-  boundedContextName,
-}: {
-  eventName: string;
-  boundedContextName: string;
-}): string => {
+export const generateEventGetters = ({ eventName }: { eventName: string }): string => {
   const result = `
   get event() {
     return ${eventName};
   }
   get boundedContext(): string {
-    return '${boundedContextName}';
+    return ${eventName}.boundedContext;
   }`;
   return result;
 };

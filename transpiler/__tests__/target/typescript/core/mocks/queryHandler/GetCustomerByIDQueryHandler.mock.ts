@@ -16,7 +16,7 @@ export class GetCustomerByIdQueryHandler
     return GetCustomerByIdQuery;
   }
   get boundedContext(): string {
-    return 'Hello world';
+    return GetCustomerByIdQuery.boundedContext;
   }
   @Traceable({
     operation: 'GetCustomerByIdQueryHandler',

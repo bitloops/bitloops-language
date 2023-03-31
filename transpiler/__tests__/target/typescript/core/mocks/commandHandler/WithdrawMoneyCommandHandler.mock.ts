@@ -1,11 +1,4 @@
-import {
-  Application,
-  Either,
-  RespondWithPublish,
-  Domain,
-  fail,
-  ok,
-} from '@bitloops/bl-boilerplate-core';
+import { Application, Either, Domain, fail, ok } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
@@ -25,7 +18,7 @@ export class WithdrawMoneyCommandHandler
     return WithdrawMoneyCommand;
   }
   get boundedContext(): string {
-    return 'Hello world';
+    return WithdrawMoneyCommand.boundedContext;
   }
   @Traceable({
     operation: 'WithdrawMoneyCommandHandler',

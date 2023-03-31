@@ -95,7 +95,6 @@ export const integrationEventHandlerToTargetLanguage = (
 
   const getters = generateEventGetters({
     eventName,
-    boundedContextName: contextData.boundedContext,
   });
 
   const traceableDecorator = getTraceableDecorator(

@@ -11,7 +11,7 @@ export class MoneyDepositedIntegrationHandler implements Application.IHandle {
     return MoneyDepositedIntegrationEvent;
   }
   get boundedContext(): string {
-    return 'marketing';
+    return MoneyDepositedIntegrationEvent.boundedContext;
   }
   @Traceable({
     operation: 'MoneyDepositedIntegrationHandler',
