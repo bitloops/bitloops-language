@@ -2,7 +2,6 @@ import { Application, Infra, Container } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { IEmailRepoPort } from '../../../ports/IEmailRepoPort';
 import { UserRegisteredIntegrationEvent } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
-
 export class MoneyDepositedIntegrationHandler implements Application.IHandle {
   private commandBus: Infra.CommandBus.ICommandBus;
   constructor(private emailRepo: IEmailRepoPort) {
