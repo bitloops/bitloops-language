@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import * as grpcWeb from 'grpc-web';
 
 import './App.css';
 import { TodoServiceClient } from './bitloops/proto/TodoServiceClientPb';
-import { AddTodoRequest, CompleteTodoRequest, DeleteTodoRequest, GetAllTodosRequest, ModifyTitleTodoRequest, Todo, UncompleteTodoRequest } from './bitloops/proto/todo_pb';
+import { AddTodoRequest, CompleteTodoRequest, DeleteTodoRequest, GetAllTodosRequest, ModifyTitleTodoRequest, OnAddedTodoRequest, Todo, UncompleteTodoRequest } from './bitloops/proto/todo_pb';
 import TodoPanel from './components/TodoPanel';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
@@ -71,6 +72,27 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
     if (user) {
       getAllTodos();
       localStorage.setItem('user', JSON.stringify(user));
+      const request = new OnAddedTodoRequest();
+      const onAddedStream = service.onAdded(request, {authorization: `Bearer ${user?.access_token}`});
+      console.log('onAddedStream', onAddedStream);
+      onAddedStream.on('data', (todo) => {
+        console.log('onAdded', todo);
+        if (todo) {
+          setTodos([...todos, todo.toObject()]);
+        }
+      });
+      onAddedStream.on('status', (status: grpcWeb.Status) => {
+        console.log('status', status);
+      });
+      onAddedStream.on('end', () => {
+        console.log('end');
+      });
+      onAddedStream.on('metadata', (metadata: grpcWeb.Metadata) => {
+        console.log('metadata', metadata);
+      });
+      // onAddedStream.on('error', (error: any) => {
+      //   console.error(error);
+      // });
     } else {
       localStorage.removeItem('user');
     }

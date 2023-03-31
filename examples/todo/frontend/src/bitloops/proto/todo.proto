@@ -9,10 +9,10 @@ service TodoService {
   rpc ModifyTitle (ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
   rpc Delete (DeleteTodoRequest) returns (DeleteTodoResponse);
 	rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
-  rpc OnAdded (OnAddedRequest) returns (stream Todo);
-  rpc OnCompleted (OnCompletedRequest) returns (stream Todo);
-  rpc OnUncompleted (OnUncompletedRequest) returns (stream Todo);
-  rpc OnModifiedTitle (OnModifiedTitleRequest) returns (stream Todo);
+  rpc OnAdded (OnAddedTodoRequest) returns (stream Todo);
+  rpc OnCompleted (OnCompletedTodoRequest) returns (stream Todo);
+  rpc OnUncompleted (OnUncompletedTodoRequest) returns (stream Todo);
+  rpc OnModifiedTitle (OnModifiedTitleTodoRequest) returns (stream Todo);
 }
 
 message ErrorResponse {
@@ -155,7 +155,8 @@ message Todo {
   bool completed = 3;
 }
 
-message OnAddedRequest {}
-message OnCompletedRequest {}
-message OnUncompletedRequest {}
-message OnModifiedTitleRequest {}
+message OnAddedTodoRequest {}
+message OnCompletedTodoRequest {}
+message OnUncompletedTodoRequest {}
+message OnModifiedTitleTodoRequest {}
+message OnDeletedTodoRequest {}

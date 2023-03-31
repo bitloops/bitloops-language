@@ -300,16 +300,16 @@ export class TodoServiceClient {
   methodDescriptorOnAdded = new grpcWeb.MethodDescriptor(
     '/todo.TodoService/OnAdded',
     grpcWeb.MethodType.SERVER_STREAMING,
-    src_bitloops_proto_todo_pb.OnAddedRequest,
+    src_bitloops_proto_todo_pb.OnAddedTodoRequest,
     src_bitloops_proto_todo_pb.Todo,
-    (request: src_bitloops_proto_todo_pb.OnAddedRequest) => {
+    (request: src_bitloops_proto_todo_pb.OnAddedTodoRequest) => {
       return request.serializeBinary();
     },
     src_bitloops_proto_todo_pb.Todo.deserializeBinary
   );
 
   onAdded(
-    request: src_bitloops_proto_todo_pb.OnAddedRequest,
+    request: src_bitloops_proto_todo_pb.OnAddedTodoRequest,
     metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.Todo> {
     return this.client_.serverStreaming(
       this.hostname_ +
@@ -322,16 +322,16 @@ export class TodoServiceClient {
   methodDescriptorOnCompleted = new grpcWeb.MethodDescriptor(
     '/todo.TodoService/OnCompleted',
     grpcWeb.MethodType.SERVER_STREAMING,
-    src_bitloops_proto_todo_pb.OnCompletedRequest,
+    src_bitloops_proto_todo_pb.OnCompletedTodoRequest,
     src_bitloops_proto_todo_pb.Todo,
-    (request: src_bitloops_proto_todo_pb.OnCompletedRequest) => {
+    (request: src_bitloops_proto_todo_pb.OnCompletedTodoRequest) => {
       return request.serializeBinary();
     },
     src_bitloops_proto_todo_pb.Todo.deserializeBinary
   );
 
   onCompleted(
-    request: src_bitloops_proto_todo_pb.OnCompletedRequest,
+    request: src_bitloops_proto_todo_pb.OnCompletedTodoRequest,
     metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.Todo> {
     return this.client_.serverStreaming(
       this.hostname_ +
@@ -344,16 +344,16 @@ export class TodoServiceClient {
   methodDescriptorOnUncompleted = new grpcWeb.MethodDescriptor(
     '/todo.TodoService/OnUncompleted',
     grpcWeb.MethodType.SERVER_STREAMING,
-    src_bitloops_proto_todo_pb.OnUncompletedRequest,
+    src_bitloops_proto_todo_pb.OnUncompletedTodoRequest,
     src_bitloops_proto_todo_pb.Todo,
-    (request: src_bitloops_proto_todo_pb.OnUncompletedRequest) => {
+    (request: src_bitloops_proto_todo_pb.OnUncompletedTodoRequest) => {
       return request.serializeBinary();
     },
     src_bitloops_proto_todo_pb.Todo.deserializeBinary
   );
 
   onUncompleted(
-    request: src_bitloops_proto_todo_pb.OnUncompletedRequest,
+    request: src_bitloops_proto_todo_pb.OnUncompletedTodoRequest,
     metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.Todo> {
     return this.client_.serverStreaming(
       this.hostname_ +
@@ -366,16 +366,16 @@ export class TodoServiceClient {
   methodDescriptorOnModifiedTitle = new grpcWeb.MethodDescriptor(
     '/todo.TodoService/OnModifiedTitle',
     grpcWeb.MethodType.SERVER_STREAMING,
-    src_bitloops_proto_todo_pb.OnModifiedTitleRequest,
+    src_bitloops_proto_todo_pb.OnModifiedTitleTodoRequest,
     src_bitloops_proto_todo_pb.Todo,
-    (request: src_bitloops_proto_todo_pb.OnModifiedTitleRequest) => {
+    (request: src_bitloops_proto_todo_pb.OnModifiedTitleTodoRequest) => {
       return request.serializeBinary();
     },
     src_bitloops_proto_todo_pb.Todo.deserializeBinary
   );
 
   onModifiedTitle(
-    request: src_bitloops_proto_todo_pb.OnModifiedTitleRequest,
+    request: src_bitloops_proto_todo_pb.OnModifiedTitleTodoRequest,
     metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.Todo> {
     return this.client_.serverStreaming(
       this.hostname_ +

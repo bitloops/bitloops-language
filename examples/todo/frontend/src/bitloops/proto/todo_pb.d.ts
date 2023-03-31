@@ -702,58 +702,72 @@ export namespace Todo {
   }
 }
 
-export class OnAddedRequest extends jspb.Message {
+export class OnAddedTodoRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnAddedRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnAddedRequest): OnAddedRequest.AsObject;
-  static serializeBinaryToWriter(message: OnAddedRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnAddedRequest;
-  static deserializeBinaryFromReader(message: OnAddedRequest, reader: jspb.BinaryReader): OnAddedRequest;
+  toObject(includeInstance?: boolean): OnAddedTodoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: OnAddedTodoRequest): OnAddedTodoRequest.AsObject;
+  static serializeBinaryToWriter(message: OnAddedTodoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnAddedTodoRequest;
+  static deserializeBinaryFromReader(message: OnAddedTodoRequest, reader: jspb.BinaryReader): OnAddedTodoRequest;
 }
 
-export namespace OnAddedRequest {
+export namespace OnAddedTodoRequest {
   export type AsObject = {
   }
 }
 
-export class OnCompletedRequest extends jspb.Message {
+export class OnCompletedTodoRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnCompletedRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnCompletedRequest): OnCompletedRequest.AsObject;
-  static serializeBinaryToWriter(message: OnCompletedRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnCompletedRequest;
-  static deserializeBinaryFromReader(message: OnCompletedRequest, reader: jspb.BinaryReader): OnCompletedRequest;
+  toObject(includeInstance?: boolean): OnCompletedTodoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: OnCompletedTodoRequest): OnCompletedTodoRequest.AsObject;
+  static serializeBinaryToWriter(message: OnCompletedTodoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnCompletedTodoRequest;
+  static deserializeBinaryFromReader(message: OnCompletedTodoRequest, reader: jspb.BinaryReader): OnCompletedTodoRequest;
 }
 
-export namespace OnCompletedRequest {
+export namespace OnCompletedTodoRequest {
   export type AsObject = {
   }
 }
 
-export class OnUncompletedRequest extends jspb.Message {
+export class OnUncompletedTodoRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnUncompletedRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnUncompletedRequest): OnUncompletedRequest.AsObject;
-  static serializeBinaryToWriter(message: OnUncompletedRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnUncompletedRequest;
-  static deserializeBinaryFromReader(message: OnUncompletedRequest, reader: jspb.BinaryReader): OnUncompletedRequest;
+  toObject(includeInstance?: boolean): OnUncompletedTodoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: OnUncompletedTodoRequest): OnUncompletedTodoRequest.AsObject;
+  static serializeBinaryToWriter(message: OnUncompletedTodoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnUncompletedTodoRequest;
+  static deserializeBinaryFromReader(message: OnUncompletedTodoRequest, reader: jspb.BinaryReader): OnUncompletedTodoRequest;
 }
 
-export namespace OnUncompletedRequest {
+export namespace OnUncompletedTodoRequest {
   export type AsObject = {
   }
 }
 
-export class OnModifiedTitleRequest extends jspb.Message {
+export class OnModifiedTitleTodoRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnModifiedTitleRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnModifiedTitleRequest): OnModifiedTitleRequest.AsObject;
-  static serializeBinaryToWriter(message: OnModifiedTitleRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnModifiedTitleRequest;
-  static deserializeBinaryFromReader(message: OnModifiedTitleRequest, reader: jspb.BinaryReader): OnModifiedTitleRequest;
+  toObject(includeInstance?: boolean): OnModifiedTitleTodoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: OnModifiedTitleTodoRequest): OnModifiedTitleTodoRequest.AsObject;
+  static serializeBinaryToWriter(message: OnModifiedTitleTodoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnModifiedTitleTodoRequest;
+  static deserializeBinaryFromReader(message: OnModifiedTitleTodoRequest, reader: jspb.BinaryReader): OnModifiedTitleTodoRequest;
 }
 
-export namespace OnModifiedTitleRequest {
+export namespace OnModifiedTitleTodoRequest {
+  export type AsObject = {
+  }
+}
+
+export class OnDeletedTodoRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): OnDeletedTodoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: OnDeletedTodoRequest): OnDeletedTodoRequest.AsObject;
+  static serializeBinaryToWriter(message: OnDeletedTodoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnDeletedTodoRequest;
+  static deserializeBinaryFromReader(message: OnDeletedTodoRequest, reader: jspb.BinaryReader): OnDeletedTodoRequest;
+}
+
+export namespace OnDeletedTodoRequest {
   export type AsObject = {
   }
 }
