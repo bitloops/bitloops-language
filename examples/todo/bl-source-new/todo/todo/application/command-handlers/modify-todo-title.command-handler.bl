@@ -4,16 +4,22 @@ Command ModifyTodoTitleCommand {
   }
   
 CommandHandler ModifyTodoTitleCommandHandler (todoRepo: TodoWriteRepoPort) {
-    execute (command: ModifyTodoTitleCommand): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    execute (command: ModifyTodoTitleCommand): (OK(void), Errors(ApplicationErrors.TodoNotFoundApplicationError)) {
       const requestId = UUIDv4(command.id);
       const todoFound = this.todoRepo.getById(requestId);
+      if(todoFound is Error){
+        return Error(todoFound);
+      }
       if(NOT todoFound) {
         const requestIdString = requestId.toString(); 
-        return ApplicationErrors.ToDoNotFoundError(requestIdString);
+        return ApplicationErrors.TodoNotFoundApplicationError(requestIdString);
       }
   
       const title = TitleVO({ title: command.title });
       todo.modifyTitle(title);
-      this.todoRepo.update(todo);
+      const updateResult = this.todoRepo.update(todo);
+      if (updateResult is Error) {
+        return Error(updateResult);
+      }
     }
   }
