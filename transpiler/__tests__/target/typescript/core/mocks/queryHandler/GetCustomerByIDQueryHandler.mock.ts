@@ -28,6 +28,6 @@ export class GetCustomerByIdQueryHandler
   async execute(query: GetCustomerByIdQuery): Promise<GetCustomerByIdQueryHandlerResponse> {
     const requestId = query.id;
     const customer = await this.customerRepo.getById(requestId);
-    return ok(customer);
+    return ok(customer.value);
   }
 }

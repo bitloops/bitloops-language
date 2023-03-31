@@ -372,6 +372,37 @@ export class IntermediateASTTree {
     return identifiers;
   }
 
+  getIdentifiersOfThisMethodCallExpressionsWithTwoMemberDots(
+    statements: StatementNode[],
+  ): string[] {
+    const identifiers: string[] = [];
+
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isThisMethodCallExpressionWithTwoMemberDots()) {
+        return true;
+      }
+      return false;
+    };
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
   getIdentifiersOfDomainTypes(parameters: ParameterNode[]): string[] {
     const identifiers: string[] = [];
 

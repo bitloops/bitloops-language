@@ -16,14 +16,15 @@ export class CommandHandlerNodeTSTransformer extends NodeModelToTargetASTTransfo
 
   run(): void {
     this.prependAwaitToAllDependencyCalls();
-    this.transformDotValueOfDomainEvaluations();
+    this.transformDotValue();
   }
 
   private prependAwaitToAllDependencyCalls(): void {
     this.prependAwaitTransformer.prependAwaitToAllDependencyCalls();
   }
 
-  private transformDotValueOfDomainEvaluations(): void {
+  private transformDotValue(): void {
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
+    this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
   }
 }
