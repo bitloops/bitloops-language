@@ -19,9 +19,11 @@
  */
 import {
   DomainEventIdentifierKey,
+  MetadataTypeNames,
   TContextData,
   TDependenciesTypeScript,
   TDomainEvent,
+  TMetadata,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
@@ -33,6 +35,12 @@ const DOMAIN_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     type: 'absolute',
     default: false,
     value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'asyncLocalStorage',
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
@@ -55,17 +63,16 @@ export const domainEventToTargetLanguage = (
   const entityDependency = getChildDependencies(entityName);
   dependencies.push(...entityDependency);
 
+  const contextId = `'${contextData.boundedContext}'`;
   const { topic } = domainEvent;
   const eventName = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: topic,
   });
   dependencies.push(...eventName.dependencies);
-  result += `export class ${domainEventName} extends Domain.Event<${entityName}> { `;
-  result += `public static readonly eventName = ${eventName.output};`;
-  result += `public static readonly fromContextId = '${contextData.boundedContext}';`;
-  result += generateConstructor(domainEventName, entityName);
-  result += `static getEventTopic() { return ${domainEventName}.eventName; }`;
+  result += `export class ${domainEventName} implements Domain.IDomainEvent<${entityName}> { `;
+  result += getClassProperties(contextId);
+  result += generateConstructor(entityName);
   result += '}';
 
   const finalDependencies = getParentDependencies(dependencies, {
@@ -76,18 +83,25 @@ export const domainEventToTargetLanguage = (
   return { output: result, dependencies: finalDependencies };
 };
 
-const generateConstructor = (domainEventIdentifier: string, entityIdentifier: string): string => {
-  // entity identifier will be same as Entity Class name, but with first letter in lower case and without Entity suffix
-  // e.g. AccountEntity => account
-  const entityIdentifierAttribute =
-    entityIdentifier.charAt(0).toLowerCase() + entityIdentifier.slice(1, -6);
+const generateConstructor = (entityIdentifier: string): string => {
   return (
-    `constructor(public readonly ${entityIdentifierAttribute}: ${entityIdentifier}, uuid?: string) {` +
-    '   const metadata = {' +
-    `   fromContextId: ${domainEventIdentifier}.fromContextId,` +
-    '   id: uuid,' +
-    ' };' +
-    ` super(${domainEventIdentifier}.getEventTopic(), ${entityIdentifierAttribute}, metadata, ${entityIdentifierAttribute}.id);` +
+    `constructor(public readonly data: ${entityIdentifier}) {` +
+    ' this.aggregateId = data.id.toString();' +
     '}'
   );
+};
+
+const getClassProperties = (contextId: string): string => {
+  let classProperties = 'public aggregateId: string;';
+
+  const metadata: TMetadata = {
+    contextId,
+    metadataType: MetadataTypeNames.DomainEvent,
+  };
+  const metadataProperty = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TMetadata,
+    value: metadata,
+  });
+  classProperties += metadataProperty.output;
+  return classProperties;
 };
