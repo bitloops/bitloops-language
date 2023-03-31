@@ -54,6 +54,16 @@ export class AuthModule {
       imports: [
         JwtAuthModule.registerAsync(jwtOptions),
         PostgresModule.forRootAsync(postgresOptions),
+        PostgresModule.forFeature(
+          `-- DROP TABLE users;
+          CREATE TABLE IF NOT EXISTS users (
+            "id" UUID,
+            "email" VARCHAR(100) NOT NULL,
+            "password" VARCHAR(100) NOT NULL,
+            "last_login" TIMESTAMP,
+            PRIMARY KEY ("id")
+          );`,
+        ),
       ],
       providers: [jwtSecretProvider, integrationEventBusProvider],
       exports: [jwtSecretProvider],

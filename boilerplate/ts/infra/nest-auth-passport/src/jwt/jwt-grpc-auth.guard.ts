@@ -14,7 +14,7 @@ export class JwtGrpcAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const call = context.switchToRpc().getContext();
     const metadata = call.internalRepr;
-    const bearerToken = metadata.get('authorization')[0].replace('Bearer ', '');
+    const bearerToken = metadata.get('authorization')?.[0].replace('Bearer ', '');
 
     if (!bearerToken) {
       throw new RpcException({
@@ -33,11 +33,7 @@ export class JwtGrpcAuthGuard implements CanActivate {
           message: 'JWT token is missing',
         });
       }
-      if (
-        payload === undefined ||
-        typeof payload !== 'object' ||
-        !payload.hasOwnProperty('exp')
-      ) {
+      if (payload === undefined || typeof payload !== 'object' || !payload.hasOwnProperty('exp')) {
         throw new RpcException({
           code: 3,
           message: 'JWT token is invalid',

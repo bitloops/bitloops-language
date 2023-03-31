@@ -27,6 +27,24 @@ export class AppendDotValueNodeTSTransformer {
     this.updateIdentifierNodes(identifierExpressionNodes);
   }
 
+  /*
+   * Search for all this method call expressions with two member dot expressions nested, gather their identifiers
+   * either from const declaration or var declaration
+   * then search for all identifier expressions that use these identifiers
+   * and append .value to them
+   */
+  public transformDotValueOfThisMethodCallExpressions(): void {
+    const statements = this.node.getStatements();
+    const identifiersToBeUpdated =
+      this.tree.getIdentifiersOfThisMethodCallExpressionsWithTwoMemberDots(statements);
+    const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(
+      statements,
+      identifiersToBeUpdated,
+    );
+
+    this.updateIdentifierNodes(identifierExpressionNodes);
+  }
+
   // In the case of member dot expressions, we only want to append .value to the left most part
   private updateIdentifierNodes(identifierExpressionNodes: IdentifierExpressionNode[]): void {
     identifierExpressionNodes.forEach((node) => {

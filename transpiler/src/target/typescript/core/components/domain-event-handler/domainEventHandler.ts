@@ -27,6 +27,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { createHandlerConstructor } from '../handler-constructor/index.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 
 const DOMAIN_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -41,7 +42,15 @@ const DOMAIN_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     value: 'Application',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
+  },
 ];
+
+const DOMAIN_EVENT_HANDLER = 'domainEventHandler';
 
 export const domainEventHandlerToTargetLanguage = (
   domainEventModel: TDomainEventHandler,
@@ -60,6 +69,20 @@ export const domainEventHandlerToTargetLanguage = (
   const { parameters, eventHandlerBusDependencies, handle } = domainEventHandler;
   const constructor = createHandlerConstructor(parameters, { eventHandlerBusDependencies });
 
+  const eventName = modelToTargetLanguage({
+    value: handle.parameter,
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+  });
+
+  const getters = generateEventGetters({
+    eventName: eventName.output,
+  });
+
+  const traceableDecorator = getTraceableDecorator(
+    domainEventHandlerIdentifier,
+    DOMAIN_EVENT_HANDLER,
+  );
+
   const handleMethod = modelToTargetLanguage({
     value: handle,
     type: BitloopsTypesMapping.THandle,
@@ -67,6 +90,8 @@ export const domainEventHandlerToTargetLanguage = (
 
   result += `export class ${domainEventHandlerIdentifier} implements Application.IHandle { `;
   result += constructor.output;
+  result += getters;
+  result += traceableDecorator;
   result += handleMethod.output;
   result += '}';
 
@@ -78,4 +103,15 @@ export const domainEventHandlerToTargetLanguage = (
   });
 
   return { output: result, dependencies: finalDependencies };
+};
+
+export const generateEventGetters = ({ eventName }: { eventName: string }): string => {
+  const result = `
+  get event() {
+    return ${eventName};
+  }
+  get boundedContext(): string {
+    return ${eventName}.boundedContext;
+  }`;
+  return result;
 };

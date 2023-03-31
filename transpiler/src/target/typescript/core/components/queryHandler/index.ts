@@ -27,6 +27,7 @@ import {
   bitloopsPrimaryTypeKey,
   TParameter,
 } from '../../../../../types.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { createHandlerConstructor } from '../handler-constructor/index.js';
@@ -48,10 +49,12 @@ const QUERY_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
-    value: 'RespondWithPublish',
-    from: '@bitloops/bl-boilerplate-core',
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
   },
 ];
+
+const QUERY_HANDLER = 'queryHandler';
 
 export const queryHandlerToTargetLanguage = (
   queryHandler: TQueryHandler,
@@ -74,13 +77,13 @@ export const queryHandlerToTargetLanguage = (
 
   dependencies = [...dependencies, ...queryHandlerReturnTypesResult.dependencies];
 
-  let queryHandlerInputName = null;
+  let queryName = null;
   if (queryHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: { type: queryHandlerInputType },
     });
-    queryHandlerInputName = inputTypeOutput.output;
+    queryName = inputTypeOutput.output;
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
@@ -88,12 +91,18 @@ export const queryHandlerToTargetLanguage = (
     queryHandlerReturnTypesResult.output,
     okType.output,
     queryHandlerResponseTypeName,
-    queryHandlerInputName,
+    queryName,
     queryHandlerName,
     parameters,
   );
   let result = queryHeaderAndConstructor.output;
   dependencies.push(...queryHeaderAndConstructor.dependencies);
+
+  result += generateGetters({
+    queryName,
+  });
+
+  result += getTraceableDecorator(queryHandlerName, QUERY_HANDLER);
 
   const executeResult = executeToTargetLanguage(
     queryHandler[queryHandlerKey].execute,
@@ -139,4 +148,15 @@ const initialQueryHandler = (
 
 const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
   return parameters.length === 0;
+};
+
+const generateGetters = ({ queryName }: { queryName: string }): string => {
+  const result = `
+  get query() {
+    return ${queryName};
+  }
+  get boundedContext(): string {
+    return ${queryName}.boundedContext;
+  }`;
+  return result;
 };

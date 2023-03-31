@@ -19,25 +19,13 @@ import { Either } from '../Either';
 import { UnexpectedError } from '../errors/repository/UnexpectedError';
 
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
-  getById(
-    aggregateRootId: AggregateId,
-    ctx?: any,
-  ): Promise<Either<Aggregate | null, UnexpectedError>>;
-  save(aggregate: Aggregate, ctx?: any): Promise<Either<void, UnexpectedError>>;
-  update(
-    aggregate: Aggregate,
-    ctx?: any,
-  ): Promise<Either<void, UnexpectedError>>;
-  delete(
-    aggregateRootId: AggregateId,
-    ctx?: any,
-  ): Promise<Either<void, UnexpectedError>>;
+  getById(aggregateRootId: AggregateId): Promise<Either<Aggregate | null, UnexpectedError>>;
+  save(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
+  update(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
+  delete(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
 }
 
 export interface CRUDReadRepoPort<ReadModel> {
-  getAll(ctx?: any): Promise<Either<ReadModel[] | null, UnexpectedError>>;
-  getById(
-    id: string,
-    ctx?: any,
-  ): Promise<Either<ReadModel | null, UnexpectedError>>;
+  getAll(): Promise<Either<ReadModel[] | null, UnexpectedError>>;
+  getById(id: string): Promise<Either<ReadModel | null, UnexpectedError>>;
 }

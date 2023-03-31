@@ -1,11 +1,5 @@
-import {
-  Application,
-  Either,
-  RespondWithPublish,
-  Domain,
-  fail,
-  ok,
-} from '@bitloops/bl-boilerplate-core';
+import { Application, Either, Domain, fail, ok } from '@bitloops/bl-boilerplate-core';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
 import { WithdrawMoneyCommand } from '../commands/WithdrawMoneyCommand';
@@ -25,15 +19,27 @@ export class WithdrawMoneyCommandHandler
     @Inject(AccountWriteRepoPortToken)
     private readonly accountRepo: AccountWriteRepoPort,
   ) {}
-  @RespondWithPublish()
+  get command() {
+    return WithdrawMoneyCommand;
+  }
+  get boundedContext(): string {
+    return WithdrawMoneyCommand.boundedContext;
+  }
+  @Traceable({
+    operation: 'WithdrawMoneyCommandHandler',
+    metrics: {
+      name: 'WithdrawMoneyCommandHandler',
+      category: 'commandHandler',
+    },
+  })
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
     const accountEntity = await this.accountRepo.getById(accountId);
-    if (!accountEntity) {
+    if (!accountEntity.value) {
       return fail(new ApplicationErrors.AccountNotFoundError(command.accountId));
     }
-    accountEntity.withdrawAmount(command.amount);
-    await this.accountRepo.update(accountEntity);
+    accountEntity.value.withdrawAmount(command.amount);
+    await this.accountRepo.update(accountEntity.value);
     return ok();
   }
 }

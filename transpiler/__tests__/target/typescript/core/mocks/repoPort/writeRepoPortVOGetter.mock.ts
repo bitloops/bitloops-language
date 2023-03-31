@@ -5,3 +5,4 @@ export interface TodoRepoPort
   getByCompleted(completed: boolean): Promise<TodoRootEntity | null>;
   getByEmail(email: string): Promise<TodoRootEntity | null>;
 }
+export const TodoRepoPortToken = Symbol('TodoRepoPort');

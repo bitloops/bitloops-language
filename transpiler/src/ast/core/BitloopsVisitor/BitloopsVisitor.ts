@@ -1008,13 +1008,16 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): ReturnStatementNode {
-    const expressionNode = this.visit(ctx.expression());
-
     const metadata = produceMetadata(ctx, this);
 
-    const returnStatementNode = new ReturnStatementNodeBuilder(metadata)
-      .withExpression(expressionNode)
-      .build();
+    const returnStatementNodeBuilder = new ReturnStatementNodeBuilder(metadata);
+
+    if (ctx.expression()) {
+      const expressionNode = this.visit(ctx.expression());
+      returnStatementNodeBuilder.withExpression(expressionNode);
+    }
+    const returnStatementNode = returnStatementNodeBuilder.build();
+
     return returnStatementNode;
   }
   /**

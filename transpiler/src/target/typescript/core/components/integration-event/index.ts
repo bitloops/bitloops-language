@@ -19,10 +19,12 @@
  */
 import {
   bitloopsPrimaryTypeKey,
+  MetadataTypeNames,
   TContextData,
   TDependenciesTypeScript,
   TIntegrationEvent,
   TIntegrationVersionMapper,
+  TMetadata,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
@@ -37,13 +39,25 @@ const INTEGRATION_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     value: 'Infra',
     from: '@bitloops/bl-boilerplate-core',
   },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Domain',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'asyncLocalStorage',
+    from: '@bitloops/bl-boilerplate-core',
+  },
 ];
 const INTEGRATION_EVENT_CONSTANTS = {
   integrationSchemasTypeName: 'TIntegrationSchemas',
   integrationDataMapperTypeName: 'ToIntegrationDataMapper',
   versionMappersFieldName: 'versionMappers',
   versionsFieldName: 'versions',
-  fromContextIdFieldName: 'fromContextId',
+  boundedContextIdFieldName: 'boundedContextId',
 };
 
 export const integrationEventToTargetLanguage = (
@@ -82,14 +96,14 @@ export const integrationEventToTargetLanguage = (
 
   result += `type ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName} = ${integrationSchemas};`;
   result += `type ${INTEGRATION_EVENT_CONSTANTS.integrationDataMapperTypeName} = (${eventInputParameterValue}: ${eventInputParameterType}) => ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName};`;
-  result += `export class ${integrationEventIdentifier} extends Infra.EventBus.IntegrationEvent<${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}> { `;
-  result += `public static readonly ${INTEGRATION_EVENT_CONSTANTS.fromContextIdFieldName} = '${contextData.boundedContext}';`;
+  result += `export class ${integrationEventIdentifier} implements Infra.EventBus.IntegrationEvent<${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}> { `;
+  result += `public static readonly ${INTEGRATION_EVENT_CONSTANTS.boundedContextIdFieldName} = '${contextData.boundedContext}';`;
   result += `static ${INTEGRATION_EVENT_CONSTANTS.versionsFieldName} = ${versions};`;
   result += `static ${INTEGRATION_EVENT_CONSTANTS.versionMappersFieldName}: Record<string, ${INTEGRATION_EVENT_CONSTANTS.integrationDataMapperTypeName}> = ${versionMappers};`;
+  result += `public metadata: ${MetadataTypeNames.IntegrationEvent};`;
   result += generateConstructor(integrationEventIdentifier);
   result += generateCreate(eventInputParameterType, integrationEventIdentifier);
   result += versionMapperMethods.output;
-  result += generateEventTopicMethod(integrationEventIdentifier);
   result += '}';
 
   const finalDependencies = getParentDependencies(dependencies, {
@@ -101,14 +115,18 @@ export const integrationEventToTargetLanguage = (
 };
 
 const generateConstructor = (integrationEventIdentifier: string): string => {
+  const contextId = `${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.boundedContextIdFieldName}`;
+  const metadata: TMetadata = {
+    contextId,
+    metadataType: MetadataTypeNames.IntegrationEvent,
+  };
+  const metadataProperty = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TMetadata,
+    value: metadata,
+  });
   return (
-    `constructor(data: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string, uuid?: string) {` +
-    '   const metadata = {' +
-    `   fromContextId: ${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.fromContextIdFieldName},` +
-    '   id: uuid,' +
-    '   version,' +
-    ' };' +
-    ` super(${integrationEventIdentifier}.getEventTopic(version), data, metadata);` +
+    `constructor(public data: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string) {` +
+    metadataProperty.output +
     '}'
   );
 };
@@ -191,16 +209,4 @@ const getVersionMappersInfo = (
 const getVersionMapperMethodName = (versionName: string): string => {
   const versionNameWithoutDots = versionName.replaceAll('.', '');
   return `toIntegrationData${versionNameWithoutDots}`;
-};
-
-const generateEventTopicMethod = (integrationEventIdentifier: string): string => {
-  return (
-    'static getEventTopic(version?: string) {' +
-    '   const topic = `integration.${' +
-    integrationEventIdentifier +
-    '.name}`;' +
-    '   const eventTopic = version === undefined ? topic : `${topic}.${version}`;' +
-    '   return eventTopic' +
-    '}'
-  );
 };

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   NatsConnection,
   JSONCodec,
@@ -8,16 +8,15 @@ import {
   createInbox,
 } from 'nats';
 import { randomUUID } from 'crypto';
-import { Infra } from '@bitloops/bl-boilerplate-core';
+import { Infra, Domain } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
 import { ProvidersConstants } from '../jetstream.constants';
-// import { IMessage } from '@src/bitloops/bl-boilerplate-core/domain/messages/IMessage';
-// import { SubscriberHandler } from '@src/bitloops/bl-boilerplate-core/domain/messages/ISystemMessageBus';
 
 const jsonCodec = JSONCodec();
 
 @Injectable()
 export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageBus {
+  private readonly logger = new Logger(NatsStreamingMessageBus.name);
   private nc: NatsConnection;
   private js: JetStreamClient;
   constructor(
@@ -37,7 +36,7 @@ export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageB
       await this.js.publish(topic, messageEncoded, options);
     } catch (err) {
       // NatsError: 503
-      console.error('Error publishing integration event to:', topic, err);
+      this.logger.error('Error publishing message to topic: ' + topic, err);
     }
   }
 
@@ -54,6 +53,9 @@ export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageB
     opts.deliverTo(createInbox());
 
     try {
+      // this.logger.log(`
+      //   Subscribing ${subject}!
+      // `);
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
@@ -64,7 +66,7 @@ export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageB
         }
       })();
     } catch (err) {
-      console.error('Error subscribing to topic:', subject, err);
+      this.logger.error('Error subscribing to topic:', subject, err);
     }
   }
   unsubscribe<T extends Infra.MessageBus.IMessage>(

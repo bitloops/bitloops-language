@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   NatsConnection,
   JSONCodec,
@@ -18,6 +18,7 @@ const jsonCodec = JSONCodec();
 
 @Injectable()
 export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
+  private readonly logger = new Logger(NatsStreamingDomainEventBus.name);
   private nc: NatsConnection;
   private js: JetStreamClient;
   constructor(
@@ -49,11 +50,15 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
       };
       // const pubAck =
       domainEvent.data = domainEvent.data.toPrimitives();
-      // console.log('serializedDomainEvent', domainEvent);
       const message = jsonCodec.encode(domainEvent);
-      console.log('publishing domain event to:', subject);
+      this.logger.log('publishing domain event to:' + subject);
 
-      await this.js.publish(subject, message, options);
+      try {
+        await this.js.publish(subject, message, options);
+      } catch (err) {
+        // NatsError: 503
+        this.logger.error('Error publishing domain event to:' + subject, err);
+      }
 
       // the jetstream returns an acknowledgement with the
       // stream that captured the message, it's assigned sequence
@@ -76,15 +81,13 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
     await this.jetStreamProvider.createStreamIfNotExists(stream, subject);
 
     try {
-      console.log('---Subscribing domain event to:', { subject, durableName });
+      this.logger.log('Subscribing domain event to: ' + subject);
       // this.logger.log(`
       //   Subscribing ${subject}!
       // `);
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
-        // console.log('Starting domain event loop...');
         for await (const m of sub) {
-          console.log('Received domainEvent::');
           const domainEvent = jsonCodec.decode(m.data) as any;
           // domainEvent.data = Domain.EventData.fromPrimitives(domainEvent.data);
 
@@ -97,14 +100,14 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
             m.nak();
           } else m.ack();
 
-          console.log(
+          this.logger.log(
             `[Domain Event ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
           );
         }
-        console.log('Exiting domain event loop...');
       })();
     } catch (err) {
-      console.log('Error subscribing to domain event:', { subject, durableName }, err);
+      this.logger.log(JSON.stringify({ subject, durableName }));
+      this.logger.error('Error subscribing to domain event:', err);
     }
   }
 

@@ -27,6 +27,7 @@ import {
   TParameter,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { createHandlerConstructor } from '../handler-constructor/index.js';
@@ -48,10 +49,12 @@ const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
-    value: 'RespondWithPublish',
-    from: '@bitloops/bl-boilerplate-core',
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
   },
 ];
+
+const COMMAND_HANDLER = 'commandHandler';
 
 export const commandHandlerToTargetLanguage = (
   commandHandler: TCommandHandler,
@@ -73,13 +76,13 @@ export const commandHandlerToTargetLanguage = (
   });
   dependencies = [...dependencies, ...commandHandlerReturnTypesResult.dependencies];
 
-  let commandHandlerInputName = null;
+  let commandName = null;
   if (commandHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: { type: commandHandlerInputType },
     });
-    commandHandlerInputName = inputTypeOutput.output;
+    commandName = inputTypeOutput.output;
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
@@ -87,13 +90,20 @@ export const commandHandlerToTargetLanguage = (
     commandHandlerReturnTypesResult.output,
     okType.output,
     commandHandlerResponseTypeName,
-    commandHandlerInputName,
+    commandName,
     commandHandlerName,
     parameters,
   );
   let result = initialCommandHandlerResult.output;
   dependencies.push(...initialCommandHandlerResult.dependencies);
 
+  const getters = generateGetters({
+    commandName,
+  });
+  result += getters;
+
+  const traceableDecorator = getTraceableDecorator(commandHandlerName, COMMAND_HANDLER);
+  result += traceableDecorator;
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
     commandHandlerResponseTypeName,
@@ -116,7 +126,7 @@ const initialCommandHandler = (
   commandHandlerResponse: string,
   commandHandlerOkType: string,
   responseTypeName: string,
-  inputType: string,
+  commandName: string,
   commandHandlerName: string,
   parameters: TParameter[],
 ): TTargetDependenciesTypeScript => {
@@ -124,7 +134,7 @@ const initialCommandHandler = (
   let result = commandHandlerResponseType;
   const responseType = commandHandlerOkType;
   result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
-    inputType ? inputType : 'void'
+    commandName ? commandName : 'void'
   }, ${responseType}> {`;
   if (isDependenciesEmpty(parameters)) {
     return { output: result, dependencies: [] };
@@ -138,4 +148,15 @@ const initialCommandHandler = (
 
 const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
   return parameters.length === 0;
+};
+
+const generateGetters = ({ commandName }: { commandName: string }): string => {
+  const result = `
+  get command() {
+    return ${commandName};
+  }
+  get boundedContext(): string {
+    return ${commandName}.boundedContext;
+  }`;
+  return result;
 };

@@ -17,18 +17,16 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TContext } from '../context';
-import { IMessage } from '../messages/IMessage';
+import { TPortToken, TTargetDependenciesTypeScript } from '../../../../../types.js';
 
-export interface TEventMetadata {
-  createdTimestamp: number;
-  boundedContextId: string;
-  messageId: string;
-  correlationId: string;
-  context: TContext | Record<string, never>;
-}
+const getPortTokenToTargetLanguage = (variable: TPortToken): TTargetDependenciesTypeScript => {
+  const { portIdentifier } = variable;
+  const portTokenRes = `export const ${portIdentifier}Token = Symbol('${portIdentifier}');`;
 
-export interface IEvent<T> extends IMessage {
-  data: T;
-  metadata: TEventMetadata;
-}
+  return {
+    output: portTokenRes,
+    dependencies: [],
+  };
+};
+
+export { getPortTokenToTargetLanguage };

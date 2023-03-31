@@ -10,3 +10,4 @@ export * from './auth.service';
 export * from './local-auth.guard';
 
 export * from './users/user-registered.integration-event';
+export * from './jwt/async-local-storage.interceptor';
