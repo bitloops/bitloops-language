@@ -262,7 +262,7 @@ jestTestDeclaration
     | JestTestEntityEvaluation OpenBrace entityEvaluation CloseBrace SemiColon?
     | JestTestBuiltInFunction OpenBrace builtInFunction CloseBrace SemiColon?
     | JestTestBitloopsPrimaryType OpenBrace bitloopsPrimaryType CloseBrace SemiColon?
-    | JestTestReturnStatement OpenBrace returnStatement CloseBrace SemiColon?  
+    | JestTestReturnStatement OpenBrace returnStatement SemiColon? CloseBrace SemiColon?  
     ;
 
 errorEvaluation
@@ -299,7 +299,7 @@ condition
     ;
 
 returnStatement
-    : Return expression
+    : Return expression?
     ;
 
 constDeclaration

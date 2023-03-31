@@ -42,6 +42,11 @@ export const VALID_RETURN_STATEMENT_TEST_CASES: TestCase[] = [
     output: 'return frog',
   },
   {
+    description: 'return empty',
+    return: new ReturnStatementBuilderDirector().buildEmptyReturn(),
+    output: 'return',
+  },
+  {
     description: 'return a function call',
     return: new ReturnStatementBuilderDirector().buildReturn(
       new ExpressionBuilderDirector().buildMethodCallExpression(
