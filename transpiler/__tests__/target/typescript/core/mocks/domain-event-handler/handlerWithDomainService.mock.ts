@@ -1,17 +1,19 @@
-import { Application, Infra, Container } from '@bitloops/bl-boilerplate-core';
+import { Application, Infra } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { Inject } from '@nestjs/common';
+import { StreamingCommandBusToken } from '../../../constants';
 import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/MoneyDepositedToAccountDomainEvent';
 import { MarketingNotificationDomainService } from '../../../structs/MarketingNotificationDomainService';
 export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle {
-  private commandBus: Infra.CommandBus.ICommandBus;
-  constructor() {
-    this.commandBus = Container.getCommandBus();
-  }
+  constructor(
+    @Inject(StreamingCommandBusToken)
+    private readonly commandBus: Infra.CommandBus.ICommandBus,
+  ) {}
   get event() {
     return MoneyDepositedToAccountDomainEvent;
   }
   get boundedContext(): string {
-    return MoneyDepositedToAccountDomainEvent.boundedContext;
+    return MoneyDepositedToAccountDomainEvent.boundedContextId;
   }
   @Traceable({
     operation: 'SendEmailAfterMoneyDepositedHandler',

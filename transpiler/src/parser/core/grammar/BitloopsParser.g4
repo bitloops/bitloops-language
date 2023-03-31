@@ -71,6 +71,7 @@ bitloopsIdentifiers
     | structIdentifier
     | commandIdentifier
     | queryIdentifier
+    | domainServiceIdentifier
     ;
 
 primitives

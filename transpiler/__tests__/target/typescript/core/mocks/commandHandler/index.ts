@@ -126,7 +126,10 @@ export const VALID_COMMAND_HANDLER_TEST_CASES = [
     commandHandler: new CommandHandlerBuilderDirector().buildCommand({
       identifier: 'SendEmailCommandHandler',
       parameters: [
-        new ParameterBuilderDirector().buildIdentifierParameter('emailService', 'EmailService'),
+        new ParameterBuilderDirector().buildIdentifierParameter(
+          'emailService',
+          'EmailDomainService',
+        ),
       ],
       returnType: new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorTypePrimitiveType(
         'void',
