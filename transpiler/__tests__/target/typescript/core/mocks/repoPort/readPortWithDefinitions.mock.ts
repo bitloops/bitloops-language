@@ -4,4 +4,3 @@ export interface TodoReadRepoPort extends Application.Repo.ICRUDReadPort<TodoRea
   getByName(name: string): Promise<TodoReadModel | null>;
   getTodo(): TodoReadModel;
 }
-export const TodoReadRepoPortToken = Symbol('TodoReadRepoPort');

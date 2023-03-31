@@ -5,4 +5,3 @@ export interface TodoRepoPort
   getByCompleted(completed: boolean): Promise<TodoRootEntity | null>;
   updateTodoTitle(id: string, title: string): void;
 }
-export const TodoRepoPortToken = Symbol('TodoRepoPort');
