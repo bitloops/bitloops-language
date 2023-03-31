@@ -43,23 +43,19 @@ export const variableDeclarationToTargetLanguage = (
   const declareResult = variableDeclarationLangMapping(variable);
 
   let expressionModel = {
-    output: '',
+    output: 'null',
     dependencies: [],
   };
-  let output = '';
   if (variable.variableDeclaration.expression) {
     const { expression } = variable.variableDeclaration;
     expressionModel = modelToTargetLanguage({
       type: BitloopsTypesMapping.TExpression,
       value: { expression },
     });
-    output = `${declareResult.output} = ${expressionModel.output}`;
-  } else {
-    output = declareResult.output;
   }
 
   return {
-    output,
+    output: `${declareResult.output} = ${expressionModel.output}`,
     dependencies: [...declareResult.dependencies, ...expressionModel.dependencies],
   };
 };

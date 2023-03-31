@@ -55,6 +55,6 @@ export const VALID_STATEMENT_TEST_CASES: TestCase[] = [
       new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'),
     ),
 
-    output: 'let noExpression: boolean',
+    output: 'let noExpression: boolean = null',
   },
 ];
