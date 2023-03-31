@@ -48,4 +48,13 @@ export const VALID_STATEMENT_TEST_CASES: TestCase[] = [
 
     output: 'let c: boolean = true',
   },
+  {
+    description: 'a variable declaration without expression',
+    statement: new VariableDeclarationBuilderDirector().buildVariableDeclarationWithoutExpression(
+      'noExpression',
+      new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'),
+    ),
+
+    output: 'let noExpression: boolean = null',
+  },
 ];

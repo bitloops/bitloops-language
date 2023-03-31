@@ -372,6 +372,20 @@ export class VariableDeclarationBuilderDirector {
     return variableDeclaration;
   }
 
+  buildPrimitivesVariableDeclarationWithoutExpression({
+    name,
+    type,
+  }: {
+    name: string;
+    type: TBitloopsPrimitives;
+  }): TVariableDeclaration {
+    const variableDeclaration = this.variableDeclarationBuilder
+      .withIdentifier(name)
+      .withPrimitivesType(type)
+      .build();
+    return variableDeclaration;
+  }
+
   buildVariableDeclarationWithFloatLiteralExpression({
     name,
     numberExpression,

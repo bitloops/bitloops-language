@@ -3,7 +3,7 @@ import { PrivateMethodBuilderDirector } from '../../builders/methods/PrivateMeth
 import { ValueObjectDeclarationBuilder } from '../../builders/valueObject/ValueObjectBuilder.js';
 import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { StatementListDirector } from '../../builders/statement/statementListDirector.js';
-import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclarationDirector.js';
+import { ConstDeclarationBuilderDirector } from '../../builders/statement/variableDeclarationDirector.js';
 import { FileUtil } from '../../../../../src/utils/file.js';
 
 export const validValueObjectTestCases = [
