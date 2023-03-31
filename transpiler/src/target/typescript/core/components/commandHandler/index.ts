@@ -156,7 +156,7 @@ const generateGetters = ({ commandName }: { commandName: string }): string => {
     return ${commandName};
   }
   get boundedContext(): string {
-    return ${commandName}.boundedContext;
+    return ${commandName}.boundedContextId;
   }`;
   return result;
 };

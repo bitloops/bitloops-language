@@ -12,7 +12,10 @@ export class MoneyDepositedIntegrationHandler implements Application.IHandle {
     return MoneyDepositedIntegrationEvent;
   }
   get boundedContext(): string {
-    return MoneyDepositedIntegrationEvent.boundedContext;
+    return MoneyDepositedIntegrationEvent.boundedContextId;
+  }
+  get version() {
+    return 'v1';
   }
   @Traceable({
     operation: 'MoneyDepositedIntegrationHandler',

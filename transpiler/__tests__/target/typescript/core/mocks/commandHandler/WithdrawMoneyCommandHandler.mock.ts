@@ -23,7 +23,7 @@ export class WithdrawMoneyCommandHandler
     return WithdrawMoneyCommand;
   }
   get boundedContext(): string {
-    return WithdrawMoneyCommand.boundedContext;
+    return WithdrawMoneyCommand.boundedContextId;
   }
   @Traceable({
     operation: 'WithdrawMoneyCommandHandler',
