@@ -21,6 +21,7 @@ export class QueryHandlerNodeTSTransformer extends NodeModelToTargetASTTransform
 
   private prependAwaitToAllDependencyCalls(): void {
     this.prependAwaitTransformer.prependAwaitToAllDependencyCalls();
+    this.prependAwaitTransformer.prependAwaitToDomainServiceEvaluationNode();
   }
 
   private transformDotValue(): void {
