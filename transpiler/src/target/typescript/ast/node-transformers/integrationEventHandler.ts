@@ -16,6 +16,7 @@ export class IntegrationEventHandlerNodeTSTransformer extends NodeModelToTargetA
 
   run(): void {
     this.prependAwaitToAllDependencyCalls();
+    this.prependAwaitTransformer.prependAwaitToDomainServiceEvaluationNode();
   }
 
   private prependAwaitToAllDependencyCalls(): void {

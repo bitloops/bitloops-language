@@ -34,11 +34,11 @@ export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarat
 
   public build(): VariableDeclarationNode {
     this.variableDeclarationNode.addChild(this.identifierNode);
-    this.variableDeclarationNode.addChild(this.expressionNode);
-
-    if (this.typeAnnotationNode) {
-      this.variableDeclarationNode.addChild(this.typeAnnotationNode);
+    if (this.expressionNode) {
+      this.variableDeclarationNode.addChild(this.expressionNode);
     }
+
+    this.variableDeclarationNode.addChild(this.typeAnnotationNode);
 
     this.variableDeclarationNode.buildObjectValue();
 

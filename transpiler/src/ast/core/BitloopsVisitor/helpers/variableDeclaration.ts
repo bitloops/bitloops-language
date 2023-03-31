@@ -33,12 +33,11 @@ export const variableDeclarationVisitor = (
 ): VariableDeclarationNode => {
   const identifierNode: IdentifierNode = thisVisitor.visit(ctx.identifier());
 
-  const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
-
   let variableDeclarationNode: VariableDeclarationNode;
   const metadata = produceMetadata(ctx, thisVisitor);
-  if (ctx.typeAnnotation()) {
-    const typeAnnotationNode: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+  const typeAnnotationNode: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+  if (ctx.expression()) {
+    const expressionNode: ExpressionNode = thisVisitor.visit(ctx.expression());
     variableDeclarationNode = new VariableDeclarationNodeBuilder(metadata)
       .withIdentifier(identifierNode)
       .withExpression(expressionNode)
@@ -47,7 +46,7 @@ export const variableDeclarationVisitor = (
   } else {
     variableDeclarationNode = new VariableDeclarationNodeBuilder(metadata)
       .withIdentifier(identifierNode)
-      .withExpression(expressionNode)
+      .withTypeAnnotation(typeAnnotationNode)
       .build();
   }
 

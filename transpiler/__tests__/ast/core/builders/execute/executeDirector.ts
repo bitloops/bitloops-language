@@ -7,7 +7,7 @@ import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { ReturnOkErrorTypeBuilder } from '../returnOkErrorType.js';
-import { ConstDeclarationBuilderDirector } from '../statement/constDeclarationDirector.js';
+import { ConstDeclarationBuilderDirector } from '../statement/variableDeclarationDirector.js';
 import { StatementDirector } from '../statement/statementDirector.js';
 import { ExecuteBuilder } from './executeBuilder.js';
 
