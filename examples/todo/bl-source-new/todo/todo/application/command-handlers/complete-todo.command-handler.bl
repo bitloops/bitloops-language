@@ -10,12 +10,18 @@ CommandHandler CompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
        
        const todoId = UUIDv4(command.todoId);
        const todoEntity = this.todoRepo.getById(todoId);
+        if(todoEntity is Error){
+            return Error(todoEntity);
+        }
 
        if(NOT todoEntity) {
            return ApplicationErrors.TodoNotFoundError(command.todoId);
        }
 
        todoEntity.complete();
-       this.todoRepo.update(todoEntity);
+       const updateResult = this.todoRepo.update(todoEntity);
+       if(updateResult is Error){
+        return Error(updateResult);
+      }
    } 
 }

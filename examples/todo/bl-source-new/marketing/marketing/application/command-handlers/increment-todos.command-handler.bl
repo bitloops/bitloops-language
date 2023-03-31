@@ -8,6 +8,9 @@ CommandHandler IncrementTodosCommandHandler (userRepo: UserWriteRepoPort){
     {
         const userId = UUIDv4(command.id);
         const userFound = this.userRepo.getById(userId);
+        if(userFound is Error){
+            return Error(userFound);
+        }
         if(NOT userFound) {
             const completedTodosVO = CompletedTodosVO.create({ counter: 0 });
             const newUser = UserEntity.create({
@@ -15,11 +18,17 @@ CommandHandler IncrementTodosCommandHandler (userRepo: UserWriteRepoPort){
                 id: userId,
             });
             newUser.incrementCompletedTodos();
-            this.userRepo.save(newUser);
+            const saveResult = this.userRepo.save(newUser);
+            if(saveResult is Error){
+                return Error(saveResult);
+            }
             return;
         } else {
             const incrementedCompleted = userFound.incrementCompletedTodos();
-            this.userRepo.update(userFound);
+            const updateResult = this.userRepo.update(userFound);
+            if(updateResult is Error){
+                return Error(updateResult);
+            }
             return;
         }
     }
