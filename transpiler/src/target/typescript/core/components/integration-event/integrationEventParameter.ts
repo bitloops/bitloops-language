@@ -23,6 +23,7 @@ import {
   TIntegrationEventParameter,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
+import { packagesEventsMappping } from '../../../helpers/packagesEventMapping.js';
 import { getChildDependencies } from '../../dependencies.js';
 
 export const BITLOOPS_BOUNDED_CONTEXT = 'bitloops';
@@ -67,10 +68,4 @@ export const integrationEventParameterToTargetLanguage = (
     output: `${value}:${integrationEventIdentifier}`,
     dependencies,
   };
-};
-
-const packagesEventsMappping = {
-  authNestPassport: '@bitloops/bl-boilerplate-infra-nest-auth-passport',
-  nestJetsream: '@bitloops/bl-boilerplate-infra-nest-jetsream',
-  telemetry: '@bitloops/bl-boilerplate-infra-telemetry',
 };
