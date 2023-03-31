@@ -24,11 +24,13 @@ import {
   TCommandHandler,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
+  TParameter,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { createHandlerConstructor } from '../handler-constructor/index.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
 
 const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
@@ -74,14 +76,6 @@ export const commandHandlerToTargetLanguage = (
   });
   dependencies = [...dependencies, ...commandHandlerReturnTypesResult.dependencies];
 
-  const { output: commandDependencies, dependencies: commandHandlerDependenciesResult } =
-    modelToTargetLanguage({
-      type: BitloopsTypesMapping.TParameterList,
-      value: { parameters },
-    });
-
-  dependencies = [...dependencies, ...commandHandlerDependenciesResult];
-
   let commandName = null;
   if (commandHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
@@ -92,14 +86,16 @@ export const commandHandlerToTargetLanguage = (
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
-  let result = initialCommandHandler(
+  const initialCommandHandlerResult = initialCommandHandler(
     commandHandlerReturnTypesResult.output,
     okType.output,
     commandHandlerResponseTypeName,
     commandName,
-    commandDependencies,
     commandHandlerName,
+    parameters,
   );
+  let result = initialCommandHandlerResult.output;
+  dependencies.push(...initialCommandHandlerResult.dependencies);
 
   const getters = generateGetters({
     commandName,
@@ -131,38 +127,27 @@ const initialCommandHandler = (
   commandHandlerOkType: string,
   responseTypeName: string,
   commandName: string,
-  dependencies: string,
   commandHandlerName: string,
-): string => {
+  parameters: TParameter[],
+): TTargetDependenciesTypeScript => {
   const commandHandlerResponseType = `export type ${responseTypeName} = ${commandHandlerResponse};`;
   let result = commandHandlerResponseType;
   const responseType = commandHandlerOkType;
   result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
     commandName ? commandName : 'void'
   }, ${responseType}> {`;
-  if (!isDependenciesEmpty(dependencies))
-    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
-  return result;
+  if (isDependenciesEmpty(parameters)) {
+    return { output: result, dependencies: [] };
+  }
+
+  const constructor = createHandlerConstructor(parameters);
+  result += constructor.output;
+  // result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
+  return { output: result, dependencies: constructor.dependencies };
 };
 
-const isDependenciesEmpty = (dependencies: string): boolean => {
-  const strippedDependencies = dependencies.replace(/\s/g, '');
-  if (strippedDependencies === '()') return true;
-  return false;
-};
-
-const addPrivateToConstructorDependencies = (dependencies: string): string => {
-  const strippedDependencies = dependencies.replace(/\s/g, '');
-  if (strippedDependencies === '()') return dependencies;
-  const strippedDependenciesWithoutParenthesis = strippedDependencies.replace(/\(|\)/g, '');
-  const dependenciesArray = strippedDependenciesWithoutParenthesis.split(',');
-  const result = dependenciesArray.map((dependency) => {
-    const dependencyArray = dependency.split(':');
-    const dependencyName = dependencyArray[0];
-    const dependencyType = dependencyArray[1];
-    return `private ${dependencyName}: ${dependencyType}`;
-  });
-  return `(${result.join(',')})`;
+const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
+  return parameters.length === 0;
 };
 
 const generateGetters = ({ commandName }: { commandName: string }): string => {
@@ -171,7 +156,7 @@ const generateGetters = ({ commandName }: { commandName: string }): string => {
     return ${commandName};
   }
   get boundedContext(): string {
-    return ${commandName}.boundedContext;
+    return ${commandName}.boundedContextId;
   }`;
   return result;
 };

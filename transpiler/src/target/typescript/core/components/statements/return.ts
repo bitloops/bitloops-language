@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import {
   TReturnStatement,
   TReturnOKStatement,
@@ -43,12 +44,20 @@ const OK_DEPENDENCY: TDependencyChildTypescript = {
 };
 
 const returnToTargetLanguage = (variable: TReturnStatement): TTargetDependenciesTypeScript => {
-  if (!variable.return) {
-    throw new Error('Return statement must have a return value');
+  let expressionValue: TTargetDependenciesTypeScript;
+  if (variable.return !== null) {
+    expressionValue = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpression,
+      value: variable.return,
+    });
+  } else {
+    expressionValue = {
+      output: '',
+      dependencies: [],
+    };
   }
-
-  const expressionValue = modelToTargetLanguage({ type: 'TExpression', value: variable.return });
   const propsVariableLangMapping = (expressionValue: string): string => `return ${expressionValue}`;
+
   return {
     output: propsVariableLangMapping(expressionValue.output),
     dependencies: expressionValue.dependencies,
@@ -67,7 +76,7 @@ const returnOkToTargetLanguage = (variable: TReturnOKStatement): TTargetDependen
     output = 'return ok()';
   } else {
     const expressionValue = modelToTargetLanguage({
-      type: 'TExpression',
+      type: BitloopsTypesMapping.TExpression,
       value: variable.returnOK,
     });
     output = `return ok(${expressionValue.output})`;

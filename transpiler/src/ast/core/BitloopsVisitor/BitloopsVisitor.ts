@@ -322,6 +322,8 @@ import {
 } from './helpers/setup/dependencyInjections.js';
 import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
 import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
+import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
+import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1007,16 +1009,38 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 
-  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): ReturnStatementNode {
-    const expressionNode = this.visit(ctx.expression());
-
+  visitReturnSimpleStatement(
+    ctx: BitloopsParser.ReturnSimpleStatementContext,
+  ): ReturnStatementNode {
     const metadata = produceMetadata(ctx, this);
 
-    const returnStatementNode = new ReturnStatementNodeBuilder(metadata)
-      .withExpression(expressionNode)
-      .build();
+    const returnStatementNodeBuilder = new ReturnStatementNodeBuilder(metadata);
+
+    if (ctx.expression()) {
+      const expressionNode = this.visit(ctx.expression());
+      returnStatementNodeBuilder.withExpression(expressionNode);
+    }
+    const returnStatementNode = returnStatementNodeBuilder.build();
+
     return returnStatementNode;
   }
+
+  visitReturnErrorStatement(
+    ctx: BitloopsParser.ReturnErrorStatementContext,
+  ): ReturnErrorStatementNode {
+    const metadata = produceMetadata(ctx, this);
+
+    const returnErrorStatementNodeBuilder = new ReturnErrorStatementNodeBuilder(metadata);
+
+    if (ctx.expression()) {
+      const expressionNode = this.visit(ctx.expression());
+      returnErrorStatementNodeBuilder.withExpression(expressionNode);
+    }
+    const returnErrorStatementNode = returnErrorStatementNodeBuilder.build();
+
+    return returnErrorStatementNode;
+  }
+
   /**
    * Errors
    */

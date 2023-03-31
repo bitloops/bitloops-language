@@ -2,8 +2,10 @@ import { Application, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { CustomerReadModel } from '../../domain/CustomerReadModel';
 import { ApplicationErrors } from '../errors/index';
-import { CustomerReadRepoPort } from '../../ports/CustomerReadRepoPort';
 import { GetCustomerByIdQuery } from '../queries/GetCustomerByIdQuery';
+import { Inject } from '@nestjs/common';
+import { CustomerReadRepoPortToken } from '../../constants';
+import { CustomerReadRepoPort } from '../../ports/CustomerReadRepoPort';
 export type GetCustomerByIdQueryHandlerResponse = Either<
   CustomerReadModel,
   ApplicationErrors.CustomerNotFoundError
@@ -11,12 +13,15 @@ export type GetCustomerByIdQueryHandlerResponse = Either<
 export class GetCustomerByIdQueryHandler
   implements Application.IQueryHandler<GetCustomerByIdQuery, CustomerReadModel>
 {
-  constructor(private customerRepo: CustomerReadRepoPort) {}
+  constructor(
+    @Inject(CustomerReadRepoPortToken)
+    private readonly customerRepo: CustomerReadRepoPort,
+  ) {}
   get query() {
     return GetCustomerByIdQuery;
   }
   get boundedContext(): string {
-    return GetCustomerByIdQuery.boundedContext;
+    return GetCustomerByIdQuery.boundedContextId;
   }
   @Traceable({
     operation: 'GetCustomerByIdQueryHandler',

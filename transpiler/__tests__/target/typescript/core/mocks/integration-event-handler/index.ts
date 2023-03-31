@@ -81,4 +81,36 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
       'transpiler/__tests__/target/typescript/core/mocks/integration-event-handler/handlerWithDependency.mock.ts',
     ),
   },
+  {
+    description: 'event handler with integration event from package dependency',
+    integrationEventHandler:
+      new IntegrationEventHandlerBuilderDirector().buildIntegrationEventHandler({
+        identifier: 'MoneyDepositedIntegrationHandler',
+        versionName: 'v1',
+        parameters: [
+          new ParameterBuilderDirector().buildIdentifierParameter('emailRepo', 'IEmailRepoPort'),
+        ],
+        executeParameter:
+          new IntegrationEventParameterNodeBuilderDirector().buildIntegrationEventParameter({
+            parameterName: 'event',
+            integrationTypeIdentifier: 'UserRegisteredIntegrationEvent',
+            boundedContextName: 'bitloops',
+            moduleName: 'authNestPassport',
+          }),
+        statements: [
+          new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
+            'email',
+            'example@email.com',
+          ),
+          new ExpressionBuilderDirector().buildThisDependencyMethodCall(
+            'commandBus',
+            'send',
+            new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
+          ),
+        ],
+      }),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/integration-event-handler/handlerWithEventFromPackage.mock.ts',
+    ),
+  },
 ];

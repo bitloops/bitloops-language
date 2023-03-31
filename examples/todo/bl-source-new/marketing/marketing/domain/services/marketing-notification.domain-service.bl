@@ -12,6 +12,9 @@ DomainService MarketingNotificationService (notificationTemplateRepo: Notificati
           const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
               NotificationTemplateReadModel.firstTodo,
             );
+          if(notificationTemplateResponse is Error){
+            return Error(notificationTemplateResponse);
+          }
           notificationTemplate = notificationTemplateResponse;
         } else {
           notificationTemplate = null;

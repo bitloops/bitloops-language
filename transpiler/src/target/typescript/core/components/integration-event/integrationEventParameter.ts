@@ -19,11 +19,26 @@
  */
 import {
   TContextData,
+  TDependenciesTypeScript,
   TIntegrationEventParameter,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
+import { packagesEventsMappping } from '../../../helpers/packagesEventMapping.js';
 import { getChildDependencies } from '../../dependencies.js';
 
+export const BITLOOPS_BOUNDED_CONTEXT = 'bitloops';
+
+const INTEGRATION_EVENT_PARAMETER_DEPENDENCIES: (
+  eventName: string,
+  packageOfEvent: string,
+) => TDependenciesTypeScript = (eventName: string, packageOfEvent: string) => [
+  {
+    type: 'absolute',
+    default: false,
+    value: eventName,
+    from: packageOfEvent,
+  },
+];
 export const integrationEventParameterToTargetLanguage = (
   variable: TIntegrationEventParameter,
 ): TTargetDependenciesTypeScript => {
@@ -34,7 +49,20 @@ export const integrationEventParameterToTargetLanguage = (
     boundedContext: boundedContextModule.boundedContextName.wordsWithSpaces,
     module: boundedContextModule.moduleName.wordsWithSpaces,
   };
-  const dependencies = getChildDependencies(integrationEventIdentifier, contextData);
+  let dependencies = [];
+  if (contextData.boundedContext === BITLOOPS_BOUNDED_CONTEXT) {
+    const packageForModule = packagesEventsMappping[contextData.module];
+    if (!packageForModule) {
+      throw new Error(`Package ${contextData.module} not found`);
+    }
+
+    dependencies = INTEGRATION_EVENT_PARAMETER_DEPENDENCIES(
+      integrationEventIdentifier,
+      packageForModule,
+    );
+  } else {
+    dependencies = getChildDependencies(integrationEventIdentifier, contextData);
+  }
 
   return {
     output: `${value}:${integrationEventIdentifier}`,

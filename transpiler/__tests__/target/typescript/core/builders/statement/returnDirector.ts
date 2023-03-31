@@ -14,6 +14,10 @@ export class ReturnStatementBuilderDirector {
     return new ReturnStatementNodeBuilder().withExpression(expr).build();
   }
 
+  buildEmptyReturn(): ReturnStatementNode {
+    return new ReturnStatementNodeBuilder().build();
+  }
+
   buildReturnOKEmpty(): ReturnOKStatementNode {
     return new ReturnOKStatementNodeBuilder().build();
   }
