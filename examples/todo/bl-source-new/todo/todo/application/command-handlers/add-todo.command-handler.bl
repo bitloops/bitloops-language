@@ -9,7 +9,10 @@ CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
       const title = TitleVO.create({ title: command.title });
       const userId = UserIdVO.create({ id: command.metadata.context.userId });
       const todo = TodoEntity.create({ title: title, completed: false, userId: userId });
-      this.todoRepo.save(todo);
+      const saveResult = this.todoRepo.save(todo);
+      if(saveResult is Error){
+        return Error(saveResult);
+      }
 
       return todo.id.toString();
     }

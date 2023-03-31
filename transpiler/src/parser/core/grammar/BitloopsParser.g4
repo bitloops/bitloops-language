@@ -299,7 +299,8 @@ condition
     ;
 
 returnStatement
-    : Return expression?
+    : Return expression?                                   # ReturnSimpleStatement
+    | Return ErrorClass OpenParen expression? CloseParen   # ReturnErrorStatement
     ;
 
 constDeclaration
