@@ -1,4 +1,4 @@
-import { VariableDeclarationBuilderDirector } from '../../builders/statement/constDeclarationDirector.js';
+import { VariableDeclarationBuilderDirector } from '../../builders/statement/variableDeclarationDirector.js';
 
 export const validVariableDeclarationCases = [
   {
@@ -46,5 +46,15 @@ export const validVariableDeclarationCases = [
           name: 'c',
         },
       ),
+  },
+  {
+    description: 'variable declaration without expression',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestVariableDeclaration { c: bool; }',
+    expected:
+      new VariableDeclarationBuilderDirector().buildPrimitivesVariableDeclarationWithoutExpression({
+        name: 'c',
+        type: 'bool',
+      }),
   },
 ];

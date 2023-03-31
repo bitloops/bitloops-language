@@ -35,21 +35,31 @@ export const variableDeclarationToTargetLanguage = (
       value: { type },
     });
     return {
-      output: `let ${identifier}: ${mappedType.output} = `,
+      output: `let ${identifier}: ${mappedType.output}`,
       dependencies: mappedType.dependencies,
     };
   };
 
   const declareResult = variableDeclarationLangMapping(variable);
 
-  const { expression } = variable.variableDeclaration;
-  const expressionModel = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: { expression },
-  });
+  let expressionModel = {
+    output: '',
+    dependencies: [],
+  };
+  let output = '';
+  if (variable.variableDeclaration.expression) {
+    const { expression } = variable.variableDeclaration;
+    expressionModel = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TExpression,
+      value: { expression },
+    });
+    output = `${declareResult.output} = ${expressionModel.output}`;
+  } else {
+    output = declareResult.output;
+  }
 
   return {
-    output: `${declareResult.output}${expressionModel.output}`,
+    output,
     dependencies: [...declareResult.dependencies, ...expressionModel.dependencies],
   };
 };

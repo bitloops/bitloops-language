@@ -21,7 +21,7 @@ import { TDomainRule } from '../../../../src/types.js';
 import { DomainRuleBuilder } from '../builders/domainRuleBuilder.js';
 import { ParameterListBuilderDirector } from '../builders/parameterListBuilderDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
-import { ConstDeclarationBuilderDirector } from '../builders/statement/constDeclarationDirector.js';
+import { ConstDeclarationBuilderDirector } from '../builders/statement/variableDeclarationDirector.js';
 
 type DomainRuleDeclarationTestCase = {
   description: string;
