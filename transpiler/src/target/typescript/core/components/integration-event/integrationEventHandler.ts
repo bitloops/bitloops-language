@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  expressionKey,
   TContextData,
   TDependenciesTypeScript,
   TIntegrationEventHandler,
@@ -26,7 +27,6 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
-import { generateEventGetters } from '../domain-event-handler/domainEventHandler.js';
 import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 
 const INTEGRATION_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
@@ -75,6 +75,7 @@ export const integrationEventHandlerToTargetLanguage = (
     eventHandlerBusDependencies,
     integrationEventHandlerHandleMethod,
     integrationEventHandlerIdentifier,
+    evaluationField,
   } = integrationEventHandler;
   const constructor = modelToTargetLanguage({
     value: {
@@ -93,8 +94,14 @@ export const integrationEventHandlerToTargetLanguage = (
   const eventName =
     integrationEventHandlerHandleMethod.integrationEventParameter.integrationEventIdentifier;
 
-  const getters = generateEventGetters({
+  const eventVersion = modelToTargetLanguage({
+    value: { expression: evaluationField[expressionKey] },
+    type: BitloopsTypesMapping.TExpression,
+  });
+
+  const getters = generateIntegrationEventGetters({
     eventName,
+    eventVersion: eventVersion.output,
   });
 
   const traceableDecorator = getTraceableDecorator(
@@ -118,4 +125,24 @@ export const integrationEventHandlerToTargetLanguage = (
   });
 
   return { output: result, dependencies: finalDependencies };
+};
+
+export const generateIntegrationEventGetters = ({
+  eventName,
+  eventVersion,
+}: {
+  eventName: string;
+  eventVersion: string;
+}): string => {
+  const result = `
+  get event() {
+    return ${eventName};
+  }
+  get boundedContext(): string {
+    return ${eventName}.boundedContextId;
+  }
+  get version() {
+    return ${eventVersion};
+  }`;
+  return result;
 };

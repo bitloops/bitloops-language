@@ -170,7 +170,7 @@ const generateGetters = ({ queryName }: { queryName: string }): string => {
     return ${queryName};
   }
   get boundedContext(): string {
-    return ${queryName}.boundedContext;
+    return ${queryName}.boundedContextId;
   }`;
   return result;
 };

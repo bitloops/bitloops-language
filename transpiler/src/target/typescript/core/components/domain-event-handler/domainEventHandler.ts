@@ -123,7 +123,7 @@ export const generateEventGetters = ({ eventName }: { eventName: string }): stri
     return ${eventName};
   }
   get boundedContext(): string {
-    return ${eventName}.boundedContext;
+    return ${eventName}.boundedContextId;
   }`;
   return result;
 };

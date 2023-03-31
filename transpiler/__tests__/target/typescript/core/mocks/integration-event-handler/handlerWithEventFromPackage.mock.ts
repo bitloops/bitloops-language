@@ -1,26 +1,30 @@
 import { Application, Infra, Container } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { IEmailRepoPort } from '../../../ports/IEmailRepoPort';
-import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/MoneyDepositedToAccountDomainEvent';
-export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle {
+import { UserRegisteredIntegrationEvent } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
+
+export class MoneyDepositedIntegrationHandler implements Application.IHandle {
   private commandBus: Infra.CommandBus.ICommandBus;
   constructor(private emailRepo: IEmailRepoPort) {
     this.commandBus = Container.getCommandBus();
   }
   get event() {
-    return MoneyDepositedToAccountDomainEvent;
+    return UserRegisteredIntegrationEvent;
   }
   get boundedContext(): string {
-    return MoneyDepositedToAccountDomainEvent.boundedContextId;
+    return UserRegisteredIntegrationEvent.boundedContextId;
+  }
+  get version() {
+    return 'v1';
   }
   @Traceable({
-    operation: 'SendEmailAfterMoneyDepositedHandler',
+    operation: 'MoneyDepositedIntegrationHandler',
     metrics: {
-      name: 'SendEmailAfterMoneyDepositedHandler',
-      category: 'domainEventHandler',
+      name: 'MoneyDepositedIntegrationHandler',
+      category: 'integrationEventHandler',
     },
   })
-  public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<void> {
+  public async handle(event: UserRegisteredIntegrationEvent): Promise<void> {
     const email = 'example@email.com';
     await this.commandBus.send(email);
   }
