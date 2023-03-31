@@ -22,8 +22,8 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { DomainEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/DomainEvaluation/DomainEvaluationNodeBuilder.js';
 import { produceMetadata } from '../metadata.js';
-import { ReadModelEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/ReadModelEvaluationBuilder.js';
-import { ReadModelEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/ReadModelEvaluation.js';
+import { ReadModelEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/ReadModelEvaluationNodeBuilder.js';
+import { ReadModelEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/ReadModelEvaluationNode.js';
 
 export const readModelEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,

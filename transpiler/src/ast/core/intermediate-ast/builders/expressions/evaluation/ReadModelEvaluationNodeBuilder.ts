@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { DomainEvaluationNode } from '../../../nodes/Expression/Evaluation/DomainEvaluation/DomainEvaluation.js';
-import { ReadModelEvaluationNode } from '../../../nodes/Expression/Evaluation/ReadModelEvaluation.js';
+import { ReadModelEvaluationNode } from '../../../nodes/Expression/Evaluation/ReadModelEvaluationNode.js';
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../../IBuilder.js';
 
