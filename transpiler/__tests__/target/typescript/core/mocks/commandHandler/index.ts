@@ -10,6 +10,8 @@ import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
 import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 
 export const VALID_COMMAND_HANDLER_TEST_CASES = [
   {
@@ -117,6 +119,70 @@ export const VALID_COMMAND_HANDLER_TEST_CASES = [
     }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/commandHandler/WithdrawMoneyCommandHandler.mock.ts',
+    ),
+  },
+  {
+    description: 'Send email command handler',
+    commandHandler: new CommandHandlerBuilderDirector().buildCommand({
+      identifier: 'SendEmailCommandHandler',
+      parameters: [
+        new ParameterBuilderDirector().buildIdentifierParameter(
+          'emailService',
+          'EmailDomainService',
+        ),
+      ],
+      returnType: new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorTypePrimitiveType(
+        'void',
+        ['void'],
+      ),
+      executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
+        'command',
+        'SendEmailCommand',
+      ),
+      statements: [
+        new ConstDeclarationBuilderDirector().buildStructEvaluationConstDeclaration(
+          'emailToSend',
+          'EmailToSend',
+          [
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'origin',
+              new ExpressionBuilderDirector().buildMemberDotExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('command'),
+                'origin',
+              ),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'destination',
+              new ExpressionBuilderDirector().buildMemberDotExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('command'),
+                'destination',
+              ),
+            ),
+            new EvaluationFieldBuilderDirector().buildEvaluationField(
+              'content',
+              new ExpressionBuilderDirector().buildMemberDotExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('command'),
+                'content',
+              ),
+            ),
+          ],
+          new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('EmailToSend'),
+        ),
+        new ExpressionBuilderDirector().buildMethodCallExpression(
+          new ExpressionBuilderDirector().buildMemberDotExpression(
+            new ExpressionBuilderDirector().buildMemberDotExpression(
+              new ExpressionBuilderDirector().buildThisExpression(),
+              'emailService',
+            ),
+            'send',
+          ),
+          new ArgumentListDirector().buildArgumentListWithIdentifierExpression('emailToSend'),
+        ),
+        new ReturnStatementBuilderDirector().buildReturnOKEmpty(),
+      ],
+    }),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/commandHandler/SendEmailCommandHandler.mock.ts',
     ),
   },
 ];

@@ -5,6 +5,8 @@ import { ConstDeclarationBuilderDirector } from '../../builders/statement/constD
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { DomainEventHandlerBuilderDirector } from '../../builders/domainEventHandler.js';
 import { DomainEventHandlerDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
+import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 
 type TDomainEventHandlerTestCase = {
   description: string;
@@ -68,6 +70,60 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
     }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/domain-event-handler/handlerWithDependency.mock.ts',
+    ),
+  },
+  {
+    description: 'sendEmail DomainEventHandler with domain service',
+    domainEventHandler: new DomainEventHandlerBuilderDirector().buildDomainEventHandler({
+      identifier: 'SendEmailAfterMoneyDepositedHandler',
+      parameters: [],
+      executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
+        'event',
+        'MoneyDepositedToAccountDomainEvent',
+      ),
+      statements: [
+        new ConstDeclarationBuilderDirector().buildConstDeclaration(
+          'marketingNotificationService',
+          new ExpressionBuilderDirector().buildEvaluationExpression(
+            new EvaluationBuilderDirector().buildDomainServiceEvaluation(
+              'MarketingNotificationDomainService',
+              new ArgumentListDirector().buildArgumentListWithArgs([
+                new ArgumentNodeBuilder()
+                  .withExpression(
+                    new ExpressionBuilderDirector().buildThisMemberDotExpression('repo'),
+                  )
+                  .build(),
+              ]),
+            ),
+          ),
+        ),
+        new ConstDeclarationBuilderDirector().buildConstDeclaration(
+          'emailToBeSentInfoResponse',
+          new ExpressionBuilderDirector().buildMethodCallExpression(
+            new ExpressionBuilderDirector().buildMemberDotExpression(
+              new ExpressionBuilderDirector().buildIdentifierExpression(
+                'marketingNotificationService',
+              ),
+              'getNotificationTemplateToBeSent',
+            ),
+            new ArgumentListDirector().buildArgumentListWithArgs([
+              new ArgumentNodeBuilder()
+                .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('user'))
+                .build(),
+            ]),
+          ),
+        ),
+        new ExpressionBuilderDirector().buildThisDependencyMethodCall(
+          'commandBus',
+          'send',
+          new ArgumentListDirector().buildArgumentListWithIdentifierExpression(
+            'emailToBeSentInfoResponse',
+          ),
+        ),
+      ],
+    }),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain-event-handler/handlerWithDomainService.mock.ts',
     ),
   },
 ];
