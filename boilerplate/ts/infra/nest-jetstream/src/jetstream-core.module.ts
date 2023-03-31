@@ -10,6 +10,7 @@ import { BUSES_TOKENS } from './buses/constants';
 import { NatsStreamingIntegrationEventBus, NatsStreamingCommandBus } from './buses';
 import { SubscriptionsService } from './jetstream.subscriptions.service';
 import { ASYNC_LOCAL_STORAGE, HANDLERS_TOKENS, ProvidersConstants } from './jetstream.constants';
+import { NatsPubSubIntegrationEventsBus } from './buses/nats-pubsub-integration-events-bus';
 
 const pubSubCommandBus = {
   provide: BUSES_TOKENS.PUBSUB_COMMAND_BUS,
@@ -39,6 +40,10 @@ const streamingMessageBus = {
   provide: BUSES_TOKENS.STREAMING_MESSAGE_BUS,
   useClass: NatsStreamingCommandBus,
 };
+const pubSubIntegrationEventBus = {
+  provide: BUSES_TOKENS.PUBSUB_INTEGRATION_EVENT_BUS,
+  useClass: NatsPubSubIntegrationEventsBus,
+};
 
 @Global()
 @Module({})
@@ -66,6 +71,7 @@ export class JetstreamCoreModule {
         streamingIntegrationEventBus,
         streamingCommandBus,
         streamingMessageBus,
+        pubSubIntegrationEventBus,
         asyncLocalStorageProvider,
       ],
       exports: [
@@ -76,6 +82,7 @@ export class JetstreamCoreModule {
         streamingIntegrationEventBus,
         streamingCommandBus,
         streamingMessageBus,
+        pubSubIntegrationEventBus,
         asyncLocalStorageProvider,
       ],
     };
@@ -92,12 +99,14 @@ export class JetstreamCoreModule {
       streamingDomainEventHandlers,
       streamingIntegrationEventHandlers,
       streamingCommandHandlers,
+      pubSubIntegrationEventHandlers,
     } = config;
     if (!pubSubCommandHandlers) pubSubCommandHandlers = [];
     if (!pubSubQueryHandlers) pubSubQueryHandlers = [];
     if (!streamingDomainEventHandlers) streamingDomainEventHandlers = [];
     if (!streamingIntegrationEventHandlers) streamingIntegrationEventHandlers = [];
     if (!streamingCommandHandlers) streamingCommandHandlers = [];
+    if (!pubSubIntegrationEventHandlers) pubSubIntegrationEventHandlers = [];
 
     const handlers: Provider<any>[] = [
       {
@@ -136,6 +145,13 @@ export class JetstreamCoreModule {
           return commandHandlers;
         },
         inject: [...streamingCommandHandlers],
+      },
+      {
+        provide: HANDLERS_TOKENS.PUBSUB_INTEGRATION_EVENT_HANDLERS,
+        useFactory: (...integrationEventHandlers: Application.IHandleIntegrationEvent[]) => {
+          return integrationEventHandlers;
+        },
+        inject: [...pubSubIntegrationEventHandlers],
       },
     ];
 

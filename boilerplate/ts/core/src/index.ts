@@ -32,7 +32,7 @@ import { TContext as TContextImport } from './domain/context';
 import { IDomainEvent as IDomainEventImport } from './domain/events/IDomainEvent';
 import { IEvent as IEventImport } from './domain/events/IEvent';
 import {
-  IQuery as IQueryImport,
+  Query as QueryImport,
   QueryMetadata as TQueryMetadataImport,
 } from './domain/queries/IQuery';
 
@@ -86,7 +86,7 @@ namespace Application {
   export type TCommandMetadata = CommandMetadataImport;
   export type TContext = TContextImport;
 
-  export type IQuery = IQueryImport;
+  export abstract class Query extends QueryImport {}
   export type TQueryMetadata = TQueryMetadataImport;
 
   export namespace Repo {

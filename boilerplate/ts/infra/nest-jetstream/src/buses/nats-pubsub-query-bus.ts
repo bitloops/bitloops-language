@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
 import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
@@ -9,6 +9,7 @@ const jsonCodec = JSONCodec();
 
 @Injectable()
 export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
+  private readonly logger = new Logger(NatsPubSubQueryBus.name);
   private nc: NatsConnection;
   private static queryPrefix = 'Query_';
   constructor(
@@ -22,7 +23,7 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
 
   async request(query: any): Promise<any> {
     const topic = NatsPubSubQueryBus.getTopicFromQueryInstance(query);
-    console.log('Requesting query:', topic);
+    this.logger.log('Requesting query:' + topic);
 
     const headers = this.generateHeaders(query);
 
@@ -33,16 +34,16 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
       });
 
       const data = jsonCodec.decode(response.data);
-      console.log('Response in query request:', data);
+      this.logger.log('Response in query request:' + data);
       return data;
     } catch (err) {
-      console.log('Error in query request:', err);
+      this.logger.error('Error in query request for:' + topic, err);
     }
   }
 
   async pubSubSubscribe(subject: string, handler: Application.IQueryHandler<any, any>) {
     try {
-      console.log('Subscribing query to:', subject);
+      this.logger.log('Subscribing query to: ' + subject);
       // this.logger.log(`
       //   Subscribing ${subject}!
       // `);
@@ -56,7 +57,7 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
             return handler.execute(query);
           });
           if (reply.isOk && reply.isOk() && m.reply) {
-            return this.nc.publish(
+            this.nc.publish(
               m.reply,
               jsonCodec.encode({
                 isOk: true,
@@ -64,7 +65,7 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
               }),
             );
           } else if (reply.isFail && reply.isFail() && m.reply) {
-            return this.nc.publish(
+            this.nc.publish(
               m.reply,
               jsonCodec.encode({
                 isOk: false,
@@ -73,16 +74,15 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
             );
           }
 
-          console.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+          this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
         }
-        console.log('subscription closed');
       })();
     } catch (err) {
-      console.log('Error in query subscription:', err);
+      this.logger.error('Error in query subscription:', err);
     }
   }
 
-  private generateHeaders(query: Application.IQuery): MsgHdrs {
+  private generateHeaders(query: Application.Query): MsgHdrs {
     const h = headers();
     for (const [key, value] of Object.entries(query.metadata)) {
       if (key === 'context' && value) {
@@ -103,7 +103,7 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     return `${this.queryPrefix}${boundedContext}.${query.name}`;
   }
 
-  static getTopicFromQueryInstance(query: Application.IQuery): string {
+  static getTopicFromQueryInstance(query: Application.Query): string {
     const boundedContext = query.metadata.boundedContextId;
     const topic = `${this.queryPrefix}${boundedContext}.${query.constructor.name}`;
     return topic;

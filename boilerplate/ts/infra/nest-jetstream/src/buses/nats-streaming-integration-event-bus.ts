@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   NatsConnection,
   JSONCodec,
@@ -9,16 +9,16 @@ import {
   MsgHdrs,
   headers,
 } from 'nats';
-import { Application, Infra } from '@bitloops/bl-boilerplate-core';
+import { Application, Domain, Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
-import { Domain } from '@bitloops/bl-boilerplate-core';
-import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, METADATA_HEADERS, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();
 
 @Injectable()
 export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBus {
+  private readonly logger = new Logger(NatsStreamingIntegrationEventBus.name);
   private nc: NatsConnection;
   private js: JetStreamClient;
   constructor(
@@ -48,13 +48,13 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
       const message = jsonCodec.encode(integrationEvent);
       const subject =
         NatsStreamingIntegrationEventBus.getSubjectFromEventInstance(integrationEvent);
-      console.log('publishing integration event to:', subject);
+      this.logger.log('publishing integration event to:', subject);
 
       try {
         await this.js.publish(subject, message, options);
       } catch (err) {
         // NatsError: 503
-        console.error('Error publishing integration event to:', subject, err);
+        this.logger.error('Error publishing integration event to:' + subject, err);
       }
 
       // the jetstream returns an acknowledgement with the
@@ -78,10 +78,7 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
     opts.deliverTo(createInbox());
 
     try {
-      console.log('---Subscribing integration event to:', {
-        subject,
-        durableName,
-      });
+      this.logger.log('Subscribing integration event to: ', subject);
       // this.logger.log(`
       //   Subscribing ${subject}!
       // `);
@@ -99,11 +96,11 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
             m.nak();
           } else m.ack();
 
-          console.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+          this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
         }
       })();
     } catch (err) {
-      console.error('Error subscribing to integration event:', err);
+      this.logger.error('Error subscribing to integration event:', err);
     }
   }
 
