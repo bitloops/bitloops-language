@@ -22,10 +22,12 @@ import {
   bitloopsPrimaryTypeKey,
   commandHandlerKey,
   TCommandHandler,
+  TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
+import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
@@ -46,14 +48,18 @@ const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
     type: 'absolute',
     default: false,
-    value: 'RespondWithPublish',
-    from: '@bitloops/bl-boilerplate-core',
+    value: 'Traceable',
+    from: '@bitloops/bl-boilerplate-infra-telemetry',
   },
 ];
 
+const COMMAND_HANDLER = 'commandHandler';
+
 export const commandHandlerToTargetLanguage = (
   commandHandler: TCommandHandler,
+  contextData: TContextData,
 ): TTargetDependenciesTypeScript => {
+  const { boundedContext } = contextData;
   const { execute, parameters, identifier: commandHandlerName } = commandHandler[commandHandlerKey];
   const { returnType } = execute;
   const commandHandlerInputType = execute.parameter ? execute.parameter.type : null;
@@ -71,20 +77,21 @@ export const commandHandlerToTargetLanguage = (
   });
   dependencies = [...dependencies, ...commandHandlerReturnTypesResult.dependencies];
 
-  const { output: commandName, dependencies: commandHandlerDependenciesResult } =
+  const { output: commandDependencies, dependencies: commandHandlerDependenciesResult } =
     modelToTargetLanguage({
       type: BitloopsTypesMapping.TParameterList,
       value: { parameters },
     });
+
   dependencies = [...dependencies, ...commandHandlerDependenciesResult];
 
-  let commandHandlerInputName = null;
+  let commandName = null;
   if (commandHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
       value: { type: commandHandlerInputType },
     });
-    commandHandlerInputName = inputTypeOutput.output;
+    commandName = inputTypeOutput.output;
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
@@ -92,11 +99,19 @@ export const commandHandlerToTargetLanguage = (
     commandHandlerReturnTypesResult.output,
     okType.output,
     commandHandlerResponseTypeName,
-    commandHandlerInputName,
     commandName,
+    commandDependencies,
     commandHandlerName,
   );
 
+  const getters = generateGetters({
+    commandName,
+    boundedContextName: boundedContext,
+  });
+  result += getters;
+
+  const traceableDecorator = getTraceableDecorator(commandHandlerName, COMMAND_HANDLER);
+  result += traceableDecorator;
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
     commandHandlerResponseTypeName,
@@ -119,7 +134,7 @@ const initialCommandHandler = (
   commandHandlerResponse: string,
   commandHandlerOkType: string,
   responseTypeName: string,
-  inputType: string,
+  commandName: string,
   dependencies: string,
   commandHandlerName: string,
 ): string => {
@@ -127,7 +142,7 @@ const initialCommandHandler = (
   let result = commandHandlerResponseType;
   const responseType = commandHandlerOkType;
   result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
-    inputType ? inputType : 'void'
+    commandName ? commandName : 'void'
   }, ${responseType}> {`;
   if (!isDependenciesEmpty(dependencies))
     result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
@@ -152,4 +167,21 @@ const addPrivateToConstructorDependencies = (dependencies: string): string => {
     return `private ${dependencyName}: ${dependencyType}`;
   });
   return `(${result.join(',')})`;
+};
+
+const generateGetters = ({
+  commandName,
+  boundedContextName,
+}: {
+  commandName: string;
+  boundedContextName: string;
+}): string => {
+  const result = `
+  get command() {
+    return ${commandName};
+  }
+  get boundedContext(): string {
+    return '${boundedContextName}';
+  }`;
+  return result;
 };

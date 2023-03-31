@@ -59,7 +59,7 @@ const ExecuteWithRespondPublishString = (
   statements: string,
   responseTypeName: string,
 ): string => {
-  let result = '\n@RespondWithPublish()\nasync execute';
+  let result = '\nasync execute';
   result += `${parameterOutput}`;
   result += `: Promise<${responseTypeName}> {`;
   result += statements;

@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-nest-jetsream",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "TypeScript nats jetstream code for Bitloops Language generated projects using NestJS",
   "engines": {
     "node": ">= 13"

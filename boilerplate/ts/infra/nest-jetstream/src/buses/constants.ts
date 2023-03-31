@@ -5,4 +5,5 @@ export const BUSES_TOKENS = {
   STREAMING_INTEGRATION_EVENT_BUS: Symbol('StreamingIntegrationEventBusToken'),
   STREAMING_COMMAND_BUS: Symbol('StreamingCommandBusToken'),
   STREAMING_MESSAGE_BUS: Symbol('StreamingMessageBusToken'),
+  PUBSUB_INTEGRATION_EVENT_BUS: Symbol('PubSubIntegrationEventBusToken'),
 };

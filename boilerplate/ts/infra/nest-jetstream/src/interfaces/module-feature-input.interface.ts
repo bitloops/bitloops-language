@@ -5,4 +5,5 @@ export interface JetstreamModuleFeatureConfig {
   streamingDomainEventHandlers?: any[];
   streamingIntegrationEventHandlers?: any[];
   streamingCommandHandlers?: any[];
+  pubSubIntegrationEventHandlers?: any[];
 }
