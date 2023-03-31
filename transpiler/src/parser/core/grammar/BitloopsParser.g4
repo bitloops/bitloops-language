@@ -309,7 +309,7 @@ constDeclaration
     ;
 
 variableDeclaration
-    : identifier typeAnnotation '=' expression  SemiColon?
+    : identifier typeAnnotation ('=' expression )? SemiColon?
     ;
 
 statement                       
