@@ -18,28 +18,63 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TBitloopsPrimaryType, TParameter } from '../../../../../types.js';
+import {
+  TBitloopsPrimaryType,
+  TEventHandlerBusDependencies,
+  TParameter,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
 import { getChildDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { INJECT_TOKEN_NEST_DEPENDENCY, getTokenName } from '../token-injections/index.js';
+import { getDefaultBusConstructorStatements } from './buses.js';
 
-const getTokenName = (dependency: string) => `${dependency}Token`;
-
-export const createHandlerConstructor = (parameters: TParameter[]): string => {
+export const createHandlerConstructor = (
+  parameters: TParameter[],
+  eventHandlerStandardDependencies?: TEventHandlerBusDependencies,
+): TTargetDependenciesTypeScript => {
   let constructorParameters = '';
-  const dependencies = [];
+  const allDependencies = [];
   for (const parameter of parameters) {
-    const { value: identifier, type } = parameter.parameter;
-    const primaryType: TBitloopsPrimaryType = { type };
-
-    const mappedType = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: type,
-    });
-    const token = getTokenName(identifier);
-    const tokenDepndency = getChildDependencies(token);
-    constructorParameters += `@Inject(${token})\n${identifier}: ${mappedType.output}, `;
-    dependencies.push(...tokenDepndency, ...mappedType.dependencies);
+    const { output, dependencies } = addRegularConstructorParameterStatement(parameter);
+    constructorParameters += output;
+    allDependencies.push(...dependencies);
   }
-  result += ` constructor${dependencies} {} `;
-  return result;
+
+  if (eventHandlerStandardDependencies) {
+    const busConstructorStatements = getDefaultBusConstructorStatements(
+      eventHandlerStandardDependencies,
+    );
+    constructorParameters += busConstructorStatements.output;
+    allDependencies.push(...busConstructorStatements.dependencies);
+  }
+
+  return {
+    output: `constructor(${constructorParameters}) {}`,
+    dependencies: allDependencies,
+  };
+};
+
+const addRegularConstructorParameterStatement = (
+  parameter: TParameter,
+): TTargetDependenciesTypeScript => {
+  const { value: identifier, type } = parameter.parameter;
+  const primaryType: TBitloopsPrimaryType = { type };
+
+  const mappedType = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: primaryType,
+  });
+  const token = getTokenName(mappedType.output);
+  const tokenDependency = getChildDependencies(token);
+  const decorator = `@Inject(${token})`;
+  const parameterDeclaration = `private readonly ${identifier}: ${mappedType.output}`;
+  return {
+    output: `${decorator}\n${parameterDeclaration}, `,
+    dependencies: [
+      ...INJECT_TOKEN_NEST_DEPENDENCY(),
+      ...tokenDependency,
+      ...mappedType.dependencies,
+    ],
+  };
 };

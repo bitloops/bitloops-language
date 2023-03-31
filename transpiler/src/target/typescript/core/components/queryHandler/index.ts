@@ -25,9 +25,11 @@ import {
   TDependencyChildTypescript,
   TTargetDependenciesTypeScript,
   bitloopsPrimaryTypeKey,
+  TParameter,
 } from '../../../../../types.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { createHandlerConstructor } from '../handler-constructor/index.js';
 import { executeToTargetLanguage } from '../use-case/execute.js';
 
 const QUERY_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
@@ -72,14 +74,6 @@ export const queryHandlerToTargetLanguage = (
 
   dependencies = [...dependencies, ...queryHandlerReturnTypesResult.dependencies];
 
-  const { output: queryName, dependencies: queryHandlerDependenciesResult } = modelToTargetLanguage(
-    {
-      type: BitloopsTypesMapping.TParameterList,
-      value: { parameters },
-    },
-  );
-  dependencies = [...dependencies, ...queryHandlerDependenciesResult];
-
   let queryHandlerInputName = null;
   if (queryHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
@@ -90,14 +84,16 @@ export const queryHandlerToTargetLanguage = (
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
-  let result = initialQueryHandler(
+  const queryHeaderAndConstructor = initialQueryHandler(
     queryHandlerReturnTypesResult.output,
     okType.output,
     queryHandlerResponseTypeName,
     queryHandlerInputName,
-    queryName,
     queryHandlerName,
+    parameters,
   );
+  let result = queryHeaderAndConstructor.output;
+  dependencies.push(...queryHeaderAndConstructor.dependencies);
 
   const executeResult = executeToTargetLanguage(
     queryHandler[queryHandlerKey].execute,
@@ -122,36 +118,25 @@ const initialQueryHandler = (
   okType: string,
   responseTypeName: string,
   inputType: string,
-  dependencies: string,
   queryHandlerName: string,
-): string => {
+  parameters: TParameter[],
+): TTargetDependenciesTypeScript => {
   const queryHandlerResponseType = `export type ${responseTypeName} = ${returnTypesResult};`;
   let result = queryHandlerResponseType;
   const responseType = okType;
   result += `export class ${queryHandlerName} implements Application.IQueryHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
-  if (!isDependenciesEmpty(dependencies))
-    result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
-  return result;
+  if (isDependenciesEmpty(parameters)) {
+    return { output: result, dependencies: [] };
+  }
+
+  const constructor = createHandlerConstructor(parameters);
+  result += constructor.output;
+  // result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
+  return { output: result, dependencies: constructor.dependencies };
 };
 
-const isDependenciesEmpty = (dependencies: string): boolean => {
-  const strippedDependencies = dependencies.replace(/\s/g, '');
-  if (strippedDependencies === '()') return true;
-  return false;
-};
-
-const addPrivateToConstructorDependencies = (dependencies: string): string => {
-  const strippedDependencies = dependencies.replace(/\s/g, '');
-  if (strippedDependencies === '()') return dependencies;
-  const strippedDependenciesWithoutParenthesis = strippedDependencies.replace(/\(|\)/g, '');
-  const dependenciesArray = strippedDependenciesWithoutParenthesis.split(',');
-  const result = dependenciesArray.map((dependency) => {
-    const dependencyArray = dependency.split(':');
-    const dependencyName = dependencyArray[0];
-    const dependencyType = dependencyArray[1];
-    return `private ${dependencyName}: ${dependencyType}`;
-  });
-  return `(${result.join(',')})`;
+const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
+  return parameters.length === 0;
 };

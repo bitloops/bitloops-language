@@ -73,13 +73,6 @@ export const commandHandlerToTargetLanguage = (
   });
   dependencies = [...dependencies, ...commandHandlerReturnTypesResult.dependencies];
 
-  const { output: commandName, dependencies: commandHandlerDependenciesResult } =
-    modelToTargetLanguage({
-      type: BitloopsTypesMapping.TParameterList,
-      value: { parameters },
-    });
-  dependencies = [...dependencies, ...commandHandlerDependenciesResult];
-
   let commandHandlerInputName = null;
   if (commandHandlerInputType) {
     const inputTypeOutput = modelToTargetLanguage({
@@ -90,15 +83,16 @@ export const commandHandlerToTargetLanguage = (
     dependencies = [...dependencies, ...inputTypeOutput.dependencies];
   }
 
-  let result = initialCommandHandler(
+  const initialCommandHandlerResult = initialCommandHandler(
     commandHandlerReturnTypesResult.output,
     okType.output,
     commandHandlerResponseTypeName,
     commandHandlerInputName,
-    commandName,
     commandHandlerName,
     parameters,
   );
+  let result = initialCommandHandlerResult.output;
+  dependencies.push(...initialCommandHandlerResult.dependencies);
 
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
@@ -123,41 +117,25 @@ const initialCommandHandler = (
   commandHandlerOkType: string,
   responseTypeName: string,
   inputType: string,
-  dependencies: string,
   commandHandlerName: string,
   parameters: TParameter[],
-): string => {
+): TTargetDependenciesTypeScript => {
   const commandHandlerResponseType = `export type ${responseTypeName} = ${commandHandlerResponse};`;
   let result = commandHandlerResponseType;
   const responseType = commandHandlerOkType;
   result += `export class ${commandHandlerName} implements Application.ICommandHandler<${
     inputType ? inputType : 'void'
   }, ${responseType}> {`;
-  if (isDependenciesEmpty(dependencies)) {
-    return result;
+  if (isDependenciesEmpty(parameters)) {
+    return { output: result, dependencies: [] };
   }
 
-  result += createHandlerConstructor(parameters);
-  result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
-  return result;
+  const constructor = createHandlerConstructor(parameters);
+  result += constructor.output;
+  // result += ` constructor${addPrivateToConstructorDependencies(dependencies)} {} `;
+  return { output: result, dependencies: constructor.dependencies };
 };
 
-const isDependenciesEmpty = (dependencies: string): boolean => {
-  const strippedDependencies = dependencies.replace(/\s/g, '');
-  if (strippedDependencies === '()') return true;
-  return false;
-};
-
-const addPrivateToConstructorDependencies = (dependencies: string): string => {
-  const strippedDependencies = dependencies.replace(/\s/g, '');
-  if (strippedDependencies === '()') return dependencies;
-  const strippedDependenciesWithoutParenthesis = strippedDependencies.replace(/\(|\)/g, '');
-  const dependenciesArray = strippedDependenciesWithoutParenthesis.split(',');
-  const result = dependenciesArray.map((dependency) => {
-    const dependencyArray = dependency.split(':');
-    const dependencyName = dependencyArray[0];
-    const dependencyType = dependencyArray[1];
-    return `private ${dependencyName}: ${dependencyType}`;
-  });
-  return `(${result.join(',')})`;
+const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
+  return parameters.length === 0;
 };

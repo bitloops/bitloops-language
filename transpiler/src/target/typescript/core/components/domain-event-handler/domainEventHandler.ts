@@ -26,6 +26,7 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
+import { createHandlerConstructor } from '../handler-constructor/index.js';
 
 const DOMAIN_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -38,12 +39,6 @@ const DOMAIN_EVENT_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     type: 'absolute',
     default: false,
     value: 'Application',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'Container',
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
@@ -63,14 +58,15 @@ export const domainEventHandlerToTargetLanguage = (
   const { domainEventHandlerIdentifier } = domainEventHandler;
 
   const { parameters, eventHandlerBusDependencies, handle } = domainEventHandler;
-  const constructor = modelToTargetLanguage({
-    value: {
-      parameterList: { parameters },
-      busDependencies: { eventHandlerBusDependencies },
-    },
-    type: BitloopsTypesMapping.THandlerAttributesAndConstructor,
-    contextData,
-  });
+  const constructor = createHandlerConstructor(parameters, { eventHandlerBusDependencies });
+  //  modelToTargetLanguage({
+  //   value: {
+  //     parameterList: { parameters },
+  //     busDependencies: { eventHandlerBusDependencies },
+  //   },
+  //   type: BitloopsTypesMapping.THandlerAttributesAndConstructor,
+  //   contextData,
+  // });
 
   const handleMethod = modelToTargetLanguage({
     value: handle,

@@ -6,12 +6,12 @@ import {
   fail,
   ok,
 } from '@bitloops/bl-boilerplate-core';
-import { Inject } from '@nestjs/common';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
-import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
 import { WithdrawMoneyCommand } from '../commands/WithdrawMoneyCommand';
+import { Inject } from '@nestjs/common';
 import { AccountWriteRepoPortToken } from '../../constants';
+import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
 export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFoundError
