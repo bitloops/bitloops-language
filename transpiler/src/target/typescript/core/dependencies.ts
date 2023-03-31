@@ -180,6 +180,12 @@ export const getValueAndFileNameOfImport = (
       fileName: 'index',
     };
   }
+  if (classType === ClassTypes.InjectionToken) {
+    return {
+      value: dependencyString,
+      fileName: 'constants',
+    };
+  }
   return {
     value: dependencyString,
     fileName: dependencyString,
@@ -270,6 +276,10 @@ const getClassTypeFromIdentifier = (
   } else if (dependencyName.endsWith('ServicePort')) {
     return {
       classType: ClassTypes.ServicePort,
+    };
+  } else if (dependencyName.endsWith('Token')) {
+    return {
+      classType: ClassTypes.InjectionToken,
     };
   } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
     return {
