@@ -42,6 +42,22 @@ export class ExpressionNode extends StatementNode {
     return this.getNodeType() === BitloopsTypesMapping.TMethodCallExpression;
   }
 
+  isThisMethodCallExpressionWithTwoMemberDots(): boolean {
+    if (this.isMethodCallExpression()) {
+      const methodCallExpressionValues = this.getExpressionValues();
+      if (methodCallExpressionValues.isMemberDotExpression()) {
+        const memberDotExpressionValues = methodCallExpressionValues.getExpressionValues();
+        if (memberDotExpressionValues.isMemberDotExpression()) {
+          const secondMemberDotExpressionValues = memberDotExpressionValues.getExpressionValues();
+          if (secondMemberDotExpressionValues.isThisExpression()) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   isMemberDotExpression(): this is MemberDotExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
   }
