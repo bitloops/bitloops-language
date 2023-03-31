@@ -49,6 +49,7 @@ enum PROJECT_RELATIVE_PATHS {
   INTEGRATION_EVENTS = 'contracts/integration-events/',
   INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
   DOMAIN_SERVICE = 'domain/services/',
+  INJECTION_TOKENS = '',
 }
 
 const ClassTypesPaths: Record<TClassTypesValues, string> = {
@@ -77,6 +78,7 @@ const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.IntegrationEventHandler]: PROJECT_RELATIVE_PATHS.INTEGRATION_EVENT_HANDLERS,
   [ClassTypes.ServicePort]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.DomainService]: PROJECT_RELATIVE_PATHS.DOMAIN_SERVICE,
+  [ClassTypes.InjectionToken]: PROJECT_RELATIVE_PATHS.INJECTION_TOKENS,
 };
 
 const getTargetFileDestination = (
@@ -205,6 +207,10 @@ const getFilePathRelativeToModule = (
         }`;
       }
       result.filename = className;
+      break;
+    case ClassTypes.InjectionToken:
+      result.path = ClassTypesPaths[classType];
+      result.filename = 'constants';
       break;
     default:
       throw new Error(`Class type ${classType} is not supported`);

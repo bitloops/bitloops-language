@@ -51,6 +51,9 @@ export class AppendDotValueNodeTSTransformer {
       if (this.isMiddleOrRightPartOfMemberDotExpression(node)) {
         return;
       }
+      if (node.isUsedByIsInstanceOfExpression()) {
+        return;
+      }
       node.identifierName = this.appendDotValue(node.identifierName);
     });
   }

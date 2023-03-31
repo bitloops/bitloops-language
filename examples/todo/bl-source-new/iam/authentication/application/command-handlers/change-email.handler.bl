@@ -10,11 +10,17 @@ CommandHandler ChangeEmailCommandHandler (userRepo: UserWriteRepoPort){
         const email = EmailVO.create({ email: command.email });
 
         const userFound = this.userRepo.getById(userId);
+        if(userFound is Error){
+            return Error(userFound);
+        }
         if (NOT userFound) {
             return ApplicationErrors.UserNotFoundError(command.userId);
         }
 
         userFound.changeEmail(email);
-        this.userEmailRepo.update(userFound);
+        const updateResult = this.userEmailRepo.update(userFound);
+        if(updateResult is Error){
+            return Error(updateResult);
+        }
     }
 }
