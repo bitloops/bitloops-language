@@ -94,3 +94,8 @@ body {
 .checkbox {
   width: 20px;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+}

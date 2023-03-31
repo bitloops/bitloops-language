@@ -7,7 +7,7 @@ import { AddTodoRequest, CompleteTodoRequest, DeleteTodoRequest, GetAllTodosRequ
 import TodoPanel from './components/TodoPanel';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
-import { AUTH_URL } from './config';
+import { AUTH_URL, REGISTRATION_URL } from './config';
 
 async function sha256Hash(message: string) {
   // Convert the message to a Uint8Array
@@ -28,12 +28,26 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
   const [user, setUser] = useState<{access_token: string} | null>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '') : null);
   const [newValue, setNewValue] = useState('');
   const [editable, setEditable] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const loginWithEmailPassword = async (email: string, password: string) => {
-    const response = await axios.post(AUTH_URL, { email, password });
-    if (response.data) {
-      setUser(response.data);
+    try {
+      const response = await axios.post(AUTH_URL, { email, password });
+      if (response.data) {
+        setUser(response.data);
+      }
+    } catch (error: any) {
+      if (error?.response?.data?.message === 'Unauthorized') setErrorMessage('Invalid credentials!');
     }
+  };
+
+  const registerWithEmailPassword = async (email: string, password: string) => {
+    try {
+      await axios.post(REGISTRATION_URL, { email, password });
+    } catch (error: any) {
+      setErrorMessage(error?.response?.data?.message);
+    }
+    
   };
 
   const clearAuth = () => {
@@ -44,6 +58,14 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 5000);
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     if (user) {
@@ -179,7 +201,7 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
   return (
     <div className="App">
       {user && <Header user={user} logout={clearAuth} />}
-      {!user && <LoginForm loginWithEmailPassword={loginWithEmailPassword} registerWithEmailPassword={getAllTodos} />}
+      {!user && <LoginForm loginWithEmailPassword={loginWithEmailPassword} registerWithEmailPassword={registerWithEmailPassword} />}
       {user && <TodoPanel
         newValue={newValue}
         setNewValue={setNewValue}
@@ -192,6 +214,7 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
         handleCheckbox={handleCheckbox}
         data={todos}
       />}
+      <div className="error-message">{errorMessage}</div>
     </div>
   );
 }
