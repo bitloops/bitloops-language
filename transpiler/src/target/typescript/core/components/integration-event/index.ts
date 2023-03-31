@@ -51,12 +51,6 @@ const INTEGRATION_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     value: 'asyncLocalStorage',
     from: '@bitloops/bl-boilerplate-core',
   },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'Traceable',
-    from: '@bitloops/bl-boilerplate-infra-telemetry',
-  },
 ];
 const INTEGRATION_EVENT_CONSTANTS = {
   integrationSchemasTypeName: 'TIntegrationSchemas',
