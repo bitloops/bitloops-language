@@ -285,6 +285,7 @@ evaluation
     | standardVOEvaluation
     | integrationEventEvaluation
     | domainServiceEvaluation
+    | readModelEvaluation
     ;
 
 domainServiceEvaluation
@@ -664,6 +665,10 @@ builtInClassEvaluation
 
 propsEvaluation
     : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseParen CloseBrace
+    ;
+
+readModelEvaluation
+    : readModelIdentifier Dot Create domainEvaluationInput 
     ;
 
 domainErrorDeclaration

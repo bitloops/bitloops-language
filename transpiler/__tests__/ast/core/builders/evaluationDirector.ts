@@ -154,6 +154,21 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildReadModelEvaluation(readModelIdentifier: string, propsParam: PropsParam): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      evaluation: {
+        readModel: {
+          domainEvaluation: {
+            readModelIdentifier,
+            props,
+          },
+        },
+      },
+    };
+  }
+
   buildIntegrationEventEvaluation(
     integrationEventIdentifier: string,
     propsParam: PropsParam,
