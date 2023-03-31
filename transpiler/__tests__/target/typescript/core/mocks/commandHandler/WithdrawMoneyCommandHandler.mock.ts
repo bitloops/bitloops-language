@@ -30,11 +30,11 @@ export class WithdrawMoneyCommandHandler
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
     const accountEntity = await this.accountRepo.getById(accountId);
-    if (!accountEntity) {
+    if (!accountEntity.value) {
       return fail(new ApplicationErrors.AccountNotFoundError(command.accountId));
     }
-    accountEntity.withdrawAmount(command.amount);
-    await this.accountRepo.update(accountEntity);
+    accountEntity.value.withdrawAmount(command.amount);
+    await this.accountRepo.update(accountEntity.value);
     return ok();
   }
 }

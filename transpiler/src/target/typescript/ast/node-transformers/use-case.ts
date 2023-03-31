@@ -6,7 +6,7 @@ import { NodeModelToTargetASTTransformer } from './index.js';
 export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<UseCaseNode> {
   run(): void {
     this.prependAwaitToAllDependencyCalls();
-    this.transformDotValueOfDomainEvaluations();
+    this.transformDotValue();
   }
 
   private prependAwaitToAllDependencyCalls(): void {
@@ -14,8 +14,9 @@ export class UseCaseNodeTSTransformer extends NodeModelToTargetASTTransformer<Us
     awaitTransformer.prependAwaitToAllDependencyCalls();
   }
 
-  private transformDotValueOfDomainEvaluations(): void {
+  private transformDotValue(): void {
     const appendDotValueTransformer = new AppendDotValueNodeTSTransformer(this.node, this.tree);
     appendDotValueTransformer.transformDotValueOfDomainEvaluations();
+    appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
   }
 }
