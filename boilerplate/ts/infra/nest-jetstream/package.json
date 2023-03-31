@@ -40,8 +40,6 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.1",
-    "@nestjs/common": "^9.3.12",
     "async-mutex": "^0.4.0",
     "nats": "^2.13.1"
   },
@@ -53,7 +51,9 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "@bitloops/bl-boilerplate-core": "^0.3.1",
+    "@nestjs/common": "^9.0.0"
   },
   "exports": {
     ".": {
@@ -66,5 +66,9 @@
         "default": "./lib/cjs/index.js"
       }
     }
+  },
+  "peerDependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.3.1",
+    "@nestjs/common": "^9.0.0"
   }
 }
