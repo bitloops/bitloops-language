@@ -59,14 +59,6 @@ export const domainEventHandlerToTargetLanguage = (
 
   const { parameters, eventHandlerBusDependencies, handle } = domainEventHandler;
   const constructor = createHandlerConstructor(parameters, { eventHandlerBusDependencies });
-  //  modelToTargetLanguage({
-  //   value: {
-  //     parameterList: { parameters },
-  //     busDependencies: { eventHandlerBusDependencies },
-  //   },
-  //   type: BitloopsTypesMapping.THandlerAttributesAndConstructor,
-  //   contextData,
-  // });
 
   const handleMethod = modelToTargetLanguage({
     value: handle,
