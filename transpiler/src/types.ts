@@ -485,7 +485,7 @@ export type TArrayLiteralExpression = {
 };
 
 export type TReturnStatement = {
-  return: TExpression;
+  return: TExpression | null;
 };
 
 export const returnOKKey = 'returnOK';

@@ -17,9 +17,12 @@ export class ReturnStatementNodeBuilder implements IBuilder<ReturnStatementNode>
   }
 
   public build(): ReturnStatementNode {
-    this.returnStatementNode.addChild(this.expressionNode);
-
-    this.returnStatementNode.buildObjectValue();
+    if (this.expressionNode) {
+      this.returnStatementNode.addChild(this.expressionNode);
+      this.returnStatementNode.buildObjectValue();
+    } else {
+      this.returnStatementNode.buildLeafValue(null);
+    }
 
     return this.returnStatementNode;
   }

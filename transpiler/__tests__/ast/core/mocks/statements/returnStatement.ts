@@ -18,4 +18,10 @@ export const validReturnStatementCases = [
       .withExpression(new ExpressionBuilderDirector().buildIdentifierExpression('testVariable'))
       .build(),
   },
+  {
+    description: 'empty return statement',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestReturnStatement { return; }',
+    expected: new ReturnStatementBuilder().build(),
+  },
 ];

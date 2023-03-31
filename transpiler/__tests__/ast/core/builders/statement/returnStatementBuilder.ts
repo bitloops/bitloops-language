@@ -10,10 +10,10 @@ export class ReturnStatementBuilder implements IBuilder<TReturnStatement> {
   }
 
   public build(): TReturnStatement {
-    const retunStatement = {
-      return: this.expression,
+    const returnStatement = {
+      return: this.expression || null,
     };
 
-    return retunStatement;
+    return returnStatement;
   }
 }
