@@ -14,6 +14,11 @@ The gRPC implementation requires the JWT token to be sent in the authorization h
 
 The grpc-web SSE implementation has significant limitation for long running connections and it cannot track if a client has disconnected or not. For this reason, the client sends a ping about every minute to notify the backend that the connection is alive. If the ping is not sent, the backend assumes the frontend has disconnected and clears the subscriptions to save resources. In the near future, we will release [Bitloops Ermis](https://bitloops.com/ermis) which will a) allow for scaling of the gateway to multiple instances and b) is connection aware and doesn't require explicit pings.
 
+## Launch the app using the Dockerfile
+
+`docker build -t todo-frontend .`
+`docker run -dp 3000:3000 todo-frontend`
+
 ## Available Scripts
 
 In the project directory, you can run:
