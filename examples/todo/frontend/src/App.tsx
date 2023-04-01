@@ -4,11 +4,16 @@ import * as grpcWeb from 'grpc-web';
 
 import './App.css';
 import { TodoServiceClient } from './bitloops/proto/TodoServiceClientPb';
-import { AddTodoRequest, CompleteTodoRequest, DeleteTodoRequest, GetAllTodosRequest, ModifyTitleTodoRequest, OnAddedTodoRequest, Todo, UncompleteTodoRequest } from './bitloops/proto/todo_pb';
+import { AddTodoRequest, CompleteTodoRequest, DeleteTodoRequest, GetAllTodosRequest, InitializeConnectionRequest, KeepSubscriptionAliveRequest, ModifyTitleTodoRequest, OnTodoRequest, Todo, TODO_EVENTS, UncompleteTodoRequest } from './bitloops/proto/todo_pb';
 import TodoPanel from './components/TodoPanel';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
 import { AUTH_URL, REGISTRATION_URL } from './config';
+
+function isEmailValid(email: string): boolean {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 
 async function sha256Hash(message: string) {
   // Convert the message to a Uint8Array
@@ -26,12 +31,19 @@ async function sha256Hash(message: string) {
 function App(props: {service: TodoServiceClient}): JSX.Element {
   const { service } = props;
   const [todos, setTodos] = useState<Todo.AsObject[]>(localStorage.getItem('todos') ? JSON.parse(localStorage.getItem('todos') || '') : []);
-  const [user, setUser] = useState<{access_token: string} | null>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '') : null);
+  const [user, setUser] = useState<{access_token: string} | null>(null);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [subscriptionInterval, setSubscriptionInterval] = useState<NodeJS.Timer | null>(null);
+  const [subscriptionStream, setSubscriptionStream] = useState<grpcWeb.ClientReadableStream<any> | null>(null);
+  const [intervalTimestamp, setIntervalTimestamp] = useState<number>(0);
+  const [event, setEvent] = useState<{eventName: string, payload: Todo.AsObject | undefined} | null>(null);
   const [newValue, setNewValue] = useState('');
-  const [editable, setEditable] = useState('');
+  const [editable, setEditable] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
   const loginWithEmailPassword = async (email: string, password: string) => {
+    if (!isEmailValid(email)) return setErrorMessage('Please enter a valid email address!');
+    if (password.length < 1) return setErrorMessage('Please fill your password');
     try {
       const response = await axios.post(AUTH_URL, { email, password });
       if (response.data) {
@@ -43,6 +55,8 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
   };
 
   const registerWithEmailPassword = async (email: string, password: string) => {
+    if (!isEmailValid(email)) return setErrorMessage('Please enter a valid email address!');
+    if (password.length < 8) return setErrorMessage('Password must be at least 8 characters long!');
     try {
       await axios.post(REGISTRATION_URL, { email, password });
     } catch (error: any) {
@@ -53,8 +67,51 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
 
   const clearAuth = () => {
     setUser(null);
+    setSubscriptionId(null);
+    subscriptionStream?.cancel();
+    if (subscriptionInterval) clearInterval(subscriptionInterval);
     setTodos([]);
   };
+
+  const initializeSubscriptionConnection = async () => {
+    // console.log('Initializing Subscription Connection', subscriptionId, !!subscriptionInterval);
+    const request = new InitializeConnectionRequest();
+    service.initializeSubscriptionConnection(request, {authorization: `Bearer ${user?.access_token}`}, (error, response) => {
+      if (error) {
+        console.error(error);
+      } else {
+        setSubscriptionId(response?.getSubscriberid());
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (subscriptionId) {
+      const request = new KeepSubscriptionAliveRequest();
+      request.setSubscriberid(subscriptionId);
+        service.keepSubscriptionAlive(request, {authorization: `Bearer ${user?.access_token}`}, (error, response) => {
+        if (error) {
+          console.log('(error as any).message', (error as any).message);
+          if ((error as any).message === 'Invalid subscription') {
+            initializeSubscriptionConnection();
+          } else {
+            console.error(error);
+          }
+        } else {
+          if (response.getRenewedauthtoken()) {
+            setUser({...user, access_token: response.getRenewedauthtoken()});
+          }
+        }
+      });
+    } else if (user) {
+      initializeSubscriptionConnection();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intervalTimestamp]);
+
+  useEffect(() => {
+    if (localStorage.getItem('user')) setUser(JSON.parse(localStorage.getItem('user') || ''));
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -72,32 +129,105 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
     if (user) {
       getAllTodos();
       localStorage.setItem('user', JSON.stringify(user));
-      const request = new OnAddedTodoRequest();
-      const onAddedStream = service.onAdded(request, {authorization: `Bearer ${user?.access_token}`});
-      console.log('onAddedStream', onAddedStream);
-      onAddedStream.on('data', (todo) => {
-        console.log('onAdded', todo);
-        if (todo) {
-          setTodos([...todos, todo.toObject()]);
-        }
-      });
-      onAddedStream.on('status', (status: grpcWeb.Status) => {
-        console.log('status', status);
-      });
-      onAddedStream.on('end', () => {
-        console.log('end');
-      });
-      onAddedStream.on('metadata', (metadata: grpcWeb.Metadata) => {
-        console.log('metadata', metadata);
-      });
-      // onAddedStream.on('error', (error: any) => {
-      //   console.error(error);
-      // });
+      if (!subscriptionId) initializeSubscriptionConnection();
     } else {
       localStorage.removeItem('user');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  useEffect(() => {
+    if (event) {
+      const { eventName, payload } = event;
+      if (payload) switch (eventName) {
+        case 'onadded':
+          setTodos([...todos, payload]);
+          break;
+        case 'ondeleted':
+          const remainingTodos = todos.filter((todo) => todo.id !== payload.id);
+          setTodos(remainingTodos);
+          break;
+        case 'onmodifiedtitle':
+          setTodos(todos.map((todo) => {
+            if (todo.id === payload.id) {
+              const changedTodo = {...todo, title: payload.title};
+              return changedTodo;
+            }
+            return todo;
+          }));
+          break;
+        case 'oncompleted':
+          setTodos(todos.map((todo) => {
+            if (todo.id === payload.id) {
+              const changedTodo = {...todo, completed: true};
+              return changedTodo;
+            }
+            return todo;
+          }));
+          break;
+        case 'onuncompleted':
+          setTodos(todos.map((todo) => {
+            if (todo.id === payload.id) {
+              const changedTodo = {...todo, completed: false};
+              return changedTodo;
+            }
+            return todo;
+          }));
+          break;
+        default:
+          break;
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event]);
+
+  useEffect(() => {
+    if (subscriptionId) {
+      if (!subscriptionInterval) {
+        const interval = setInterval(() => {
+          setIntervalTimestamp(Date.now());
+        }, 10000);
+        setSubscriptionInterval(interval);
+      }
+      const request = new OnTodoRequest();
+      request.setEventsList([
+        TODO_EVENTS.ADDED,
+        TODO_EVENTS.DELETED,
+        TODO_EVENTS.MODIFIED_TITLE,
+        TODO_EVENTS.COMPLETED,
+        TODO_EVENTS.UNCOMPLETED,
+      ]);
+      request.setSubscriberid(subscriptionId);
+      const onStream = service.on(request, {authorization: `Bearer ${user?.access_token}`});
+      onStream.on('end', () => {
+        console.log('Connection was ended');
+        if (subscriptionInterval) clearInterval(subscriptionInterval);
+        setSubscriptionId(null);
+      });
+      onStream.on('data', (event) => {
+        const eventObject: {[key: string]: any} = event.toObject();
+        const filteredValues = Object.keys(eventObject).filter((key) => eventObject[key] !== undefined);
+        const eventName = filteredValues[0];
+        const payload = eventObject.onadded || eventObject.ondeleted || eventObject.onmodifiedtitle || eventObject.oncompleted || eventObject.onuncompleted;
+        setEvent({eventName, payload});
+      });
+      onStream.on('status', (status: grpcWeb.Status) => {
+        console.log('Received connection status update:', status);
+      });
+      // onStream.on('metadata', (metadata: grpcWeb.Metadata) => {
+      //   console.log('metadata', metadata);
+      // });
+      onStream.on('error', (error: any) => {
+        console.log('Server disconnected, trying to reconnect...');
+        // console.error(error);
+        // if (subscriptionInterval) clearInterval(subscriptionInterval);
+        setSubscriptionId(null);
+      });
+      setSubscriptionStream(onStream);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscriptionId]);
+
 
 
   async function getAllTodos() {
@@ -129,7 +259,12 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
       const response = await service.add(request, {authorization: `Bearer ${user?.access_token}`});
       if (response.hasError()) {
         const error = response.getError();
-        console.error(error);
+        if (error?.getInvalidtitlelengtherror()) {
+          const message = error?.getInvalidtitlelengtherror()?.getMessage();
+          if (message) setErrorMessage(message);
+        } else {
+          console.error(error);
+        }
         return;
       } else {
         setNewValue('');

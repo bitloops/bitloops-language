@@ -2,6 +2,160 @@ import * as jspb from 'google-protobuf'
 
 
 
+export class InitializeConnectionRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InitializeConnectionRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: InitializeConnectionRequest): InitializeConnectionRequest.AsObject;
+  static serializeBinaryToWriter(message: InitializeConnectionRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InitializeConnectionRequest;
+  static deserializeBinaryFromReader(message: InitializeConnectionRequest, reader: jspb.BinaryReader): InitializeConnectionRequest;
+}
+
+export namespace InitializeConnectionRequest {
+  export type AsObject = {
+  }
+}
+
+export class InitializeConnectionResponse extends jspb.Message {
+  getSubscriberid(): string;
+  setSubscriberid(value: string): InitializeConnectionResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InitializeConnectionResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: InitializeConnectionResponse): InitializeConnectionResponse.AsObject;
+  static serializeBinaryToWriter(message: InitializeConnectionResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InitializeConnectionResponse;
+  static deserializeBinaryFromReader(message: InitializeConnectionResponse, reader: jspb.BinaryReader): InitializeConnectionResponse;
+}
+
+export namespace InitializeConnectionResponse {
+  export type AsObject = {
+    subscriberid: string,
+  }
+}
+
+export class KeepSubscriptionAliveRequest extends jspb.Message {
+  getSubscriberid(): string;
+  setSubscriberid(value: string): KeepSubscriptionAliveRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): KeepSubscriptionAliveRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: KeepSubscriptionAliveRequest): KeepSubscriptionAliveRequest.AsObject;
+  static serializeBinaryToWriter(message: KeepSubscriptionAliveRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): KeepSubscriptionAliveRequest;
+  static deserializeBinaryFromReader(message: KeepSubscriptionAliveRequest, reader: jspb.BinaryReader): KeepSubscriptionAliveRequest;
+}
+
+export namespace KeepSubscriptionAliveRequest {
+  export type AsObject = {
+    subscriberid: string,
+  }
+}
+
+export class KeepSubscriptionAliveResponse extends jspb.Message {
+  getRenewedauthtoken(): string;
+  setRenewedauthtoken(value: string): KeepSubscriptionAliveResponse;
+  hasRenewedauthtoken(): boolean;
+  clearRenewedauthtoken(): KeepSubscriptionAliveResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): KeepSubscriptionAliveResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: KeepSubscriptionAliveResponse): KeepSubscriptionAliveResponse.AsObject;
+  static serializeBinaryToWriter(message: KeepSubscriptionAliveResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): KeepSubscriptionAliveResponse;
+  static deserializeBinaryFromReader(message: KeepSubscriptionAliveResponse, reader: jspb.BinaryReader): KeepSubscriptionAliveResponse;
+}
+
+export namespace KeepSubscriptionAliveResponse {
+  export type AsObject = {
+    renewedauthtoken?: string,
+  }
+
+  export enum RenewedauthtokenCase { 
+    _RENEWEDAUTHTOKEN_NOT_SET = 0,
+    RENEWEDAUTHTOKEN = 1,
+  }
+}
+
+export class OnTodoRequest extends jspb.Message {
+  getSubscriberid(): string;
+  setSubscriberid(value: string): OnTodoRequest;
+
+  getEventsList(): Array<TODO_EVENTS>;
+  setEventsList(value: Array<TODO_EVENTS>): OnTodoRequest;
+  clearEventsList(): OnTodoRequest;
+  addEvents(value: TODO_EVENTS, index?: number): OnTodoRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): OnTodoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: OnTodoRequest): OnTodoRequest.AsObject;
+  static serializeBinaryToWriter(message: OnTodoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnTodoRequest;
+  static deserializeBinaryFromReader(message: OnTodoRequest, reader: jspb.BinaryReader): OnTodoRequest;
+}
+
+export namespace OnTodoRequest {
+  export type AsObject = {
+    subscriberid: string,
+    eventsList: Array<TODO_EVENTS>,
+  }
+}
+
+export class OnEvent extends jspb.Message {
+  getOnadded(): Todo | undefined;
+  setOnadded(value?: Todo): OnEvent;
+  hasOnadded(): boolean;
+  clearOnadded(): OnEvent;
+
+  getOncompleted(): Todo | undefined;
+  setOncompleted(value?: Todo): OnEvent;
+  hasOncompleted(): boolean;
+  clearOncompleted(): OnEvent;
+
+  getOnuncompleted(): Todo | undefined;
+  setOnuncompleted(value?: Todo): OnEvent;
+  hasOnuncompleted(): boolean;
+  clearOnuncompleted(): OnEvent;
+
+  getOnmodifiedtitle(): Todo | undefined;
+  setOnmodifiedtitle(value?: Todo): OnEvent;
+  hasOnmodifiedtitle(): boolean;
+  clearOnmodifiedtitle(): OnEvent;
+
+  getOndeleted(): Todo | undefined;
+  setOndeleted(value?: Todo): OnEvent;
+  hasOndeleted(): boolean;
+  clearOndeleted(): OnEvent;
+
+  getEventCase(): OnEvent.EventCase;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): OnEvent.AsObject;
+  static toObject(includeInstance: boolean, msg: OnEvent): OnEvent.AsObject;
+  static serializeBinaryToWriter(message: OnEvent, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): OnEvent;
+  static deserializeBinaryFromReader(message: OnEvent, reader: jspb.BinaryReader): OnEvent;
+}
+
+export namespace OnEvent {
+  export type AsObject = {
+    onadded?: Todo.AsObject,
+    oncompleted?: Todo.AsObject,
+    onuncompleted?: Todo.AsObject,
+    onmodifiedtitle?: Todo.AsObject,
+    ondeleted?: Todo.AsObject,
+  }
+
+  export enum EventCase { 
+    EVENT_NOT_SET = 0,
+    ONADDED = 1,
+    ONCOMPLETED = 2,
+    ONUNCOMPLETED = 3,
+    ONMODIFIEDTITLE = 4,
+    ONDELETED = 5,
+  }
+}
+
 export class ErrorResponse extends jspb.Message {
   getCode(): string;
   setCode(value: string): ErrorResponse;
@@ -686,6 +840,9 @@ export class Todo extends jspb.Message {
   getCompleted(): boolean;
   setCompleted(value: boolean): Todo;
 
+  getUserid(): string;
+  setUserid(value: string): Todo;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Todo.AsObject;
   static toObject(includeInstance: boolean, msg: Todo): Todo.AsObject;
@@ -699,76 +856,14 @@ export namespace Todo {
     id: string,
     title: string,
     completed: boolean,
+    userid: string,
   }
 }
 
-export class OnAddedTodoRequest extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnAddedTodoRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnAddedTodoRequest): OnAddedTodoRequest.AsObject;
-  static serializeBinaryToWriter(message: OnAddedTodoRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnAddedTodoRequest;
-  static deserializeBinaryFromReader(message: OnAddedTodoRequest, reader: jspb.BinaryReader): OnAddedTodoRequest;
+export enum TODO_EVENTS { 
+  ADDED = 0,
+  COMPLETED = 1,
+  UNCOMPLETED = 2,
+  MODIFIED_TITLE = 3,
+  DELETED = 4,
 }
-
-export namespace OnAddedTodoRequest {
-  export type AsObject = {
-  }
-}
-
-export class OnCompletedTodoRequest extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnCompletedTodoRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnCompletedTodoRequest): OnCompletedTodoRequest.AsObject;
-  static serializeBinaryToWriter(message: OnCompletedTodoRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnCompletedTodoRequest;
-  static deserializeBinaryFromReader(message: OnCompletedTodoRequest, reader: jspb.BinaryReader): OnCompletedTodoRequest;
-}
-
-export namespace OnCompletedTodoRequest {
-  export type AsObject = {
-  }
-}
-
-export class OnUncompletedTodoRequest extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnUncompletedTodoRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnUncompletedTodoRequest): OnUncompletedTodoRequest.AsObject;
-  static serializeBinaryToWriter(message: OnUncompletedTodoRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnUncompletedTodoRequest;
-  static deserializeBinaryFromReader(message: OnUncompletedTodoRequest, reader: jspb.BinaryReader): OnUncompletedTodoRequest;
-}
-
-export namespace OnUncompletedTodoRequest {
-  export type AsObject = {
-  }
-}
-
-export class OnModifiedTitleTodoRequest extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnModifiedTitleTodoRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnModifiedTitleTodoRequest): OnModifiedTitleTodoRequest.AsObject;
-  static serializeBinaryToWriter(message: OnModifiedTitleTodoRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnModifiedTitleTodoRequest;
-  static deserializeBinaryFromReader(message: OnModifiedTitleTodoRequest, reader: jspb.BinaryReader): OnModifiedTitleTodoRequest;
-}
-
-export namespace OnModifiedTitleTodoRequest {
-  export type AsObject = {
-  }
-}
-
-export class OnDeletedTodoRequest extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OnDeletedTodoRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: OnDeletedTodoRequest): OnDeletedTodoRequest.AsObject;
-  static serializeBinaryToWriter(message: OnDeletedTodoRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OnDeletedTodoRequest;
-  static deserializeBinaryFromReader(message: OnDeletedTodoRequest, reader: jspb.BinaryReader): OnDeletedTodoRequest;
-}
-
-export namespace OnDeletedTodoRequest {
-  export type AsObject = {
-  }
-}
-

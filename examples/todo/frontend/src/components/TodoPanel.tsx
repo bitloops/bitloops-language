@@ -1,22 +1,14 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 
 import logo from '../assets/bitloops_175x40_transparent.png';
 import { Todo } from '../bitloops/proto/todo_pb';
 
-// const ViewStates = {
-//   ALL: 'All',
-//   ACTIVE: 'Active',
-//   COMPLETED: 'Completed',
-// };
-
 interface TodoProps {
-  editable: string,
+  editable: string | null,
   newValue: string,
   setNewValue: React.Dispatch<React.SetStateAction<string>>,
-  setEditable: React.Dispatch<React.SetStateAction<string>>,
+  setEditable: React.Dispatch<React.SetStateAction<string | null>>,
   data: Todo.AsObject[] | [],
   addItem: (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => void,
   updateLocalItem: (d: any) => void,
@@ -55,9 +47,7 @@ function TodoPanel(props: TodoProps): JSX.Element {
         value={newValue}
         className="todo-list-input"
         onChange={(e) => { setNewValue(e.target.value); }}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') addItem(e);
-        }}
+        onKeyDown={(e) => (e.key === 'Enter') && addItem(e)}
       />
       <button onClick={addItem} type="button">Add</button>
 
@@ -75,7 +65,12 @@ function TodoPanel(props: TodoProps): JSX.Element {
                   id={id}
                   className="todo-list-input"
                   onChange={updateLocalItem}
-                  onKeyPress={(event) => event.key === 'Enter' && modifyTitle(event)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') { 
+                      setEditable(null);
+                      modifyTitle(e); 
+                    }
+                  }}
                   onBlur={modifyTitle}
                 />
               ) : (

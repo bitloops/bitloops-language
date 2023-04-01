@@ -9,10 +9,44 @@ service TodoService {
   rpc ModifyTitle (ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
   rpc Delete (DeleteTodoRequest) returns (DeleteTodoResponse);
 	rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
-  rpc OnAdded (OnAddedTodoRequest) returns (stream Todo);
-  rpc OnCompleted (OnCompletedTodoRequest) returns (stream Todo);
-  rpc OnUncompleted (OnUncompletedTodoRequest) returns (stream Todo);
-  rpc OnModifiedTitle (OnModifiedTitleTodoRequest) returns (stream Todo);
+  rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
+  rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
+  rpc On(OnTodoRequest) returns (stream OnEvent);
+}
+
+message InitializeConnectionRequest {}
+message InitializeConnectionResponse {
+  string subscriberId = 1;
+}
+
+message KeepSubscriptionAliveRequest {
+  string subscriberId = 1;
+}
+message KeepSubscriptionAliveResponse {
+  optional string renewedAuthToken = 1;
+}
+
+enum TODO_EVENTS {
+  ADDED = 0;
+  COMPLETED = 1;
+  UNCOMPLETED = 2;
+  MODIFIED_TITLE = 3;
+  DELETED = 4;
+}
+
+message OnTodoRequest {
+  string subscriberId = 1;
+  repeated TODO_EVENTS events = 2;
+}
+
+message OnEvent {
+  oneof event {
+    Todo onAdded = 1;
+    Todo onCompleted = 2;
+    Todo onUncompleted = 3;
+    Todo onModifiedTitle = 4;
+    Todo onDeleted = 5;
+  }
 }
 
 message ErrorResponse {
@@ -153,10 +187,5 @@ message Todo {
   string id = 1;
   string title = 2;
   bool completed = 3;
+  string userId = 4;
 }
-
-message OnAddedTodoRequest {}
-message OnCompletedTodoRequest {}
-message OnUncompletedTodoRequest {}
-message OnModifiedTitleTodoRequest {}
-message OnDeletedTodoRequest {}

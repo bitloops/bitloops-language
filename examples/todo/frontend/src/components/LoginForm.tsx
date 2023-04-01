@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-interface GoogleButtonProps {
+interface LoginFormProps {
   loginWithEmailPassword: (email: string, password: string) => void;
   registerWithEmailPassword: (email: string, password: string) => void;
 }
 
-function LoginForm(props: GoogleButtonProps) {
+function LoginForm(props: LoginFormProps) {
   const { loginWithEmailPassword, registerWithEmailPassword } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,6 +55,11 @@ function LoginForm(props: GoogleButtonProps) {
         type="password"
         placeholder="Password"
         value={password}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            loginWithEmailPassword(email, password);
+          }
+        }}
         onChange={(e) => setPassword(e.target.value)}
         style={{
           width: '250px',
