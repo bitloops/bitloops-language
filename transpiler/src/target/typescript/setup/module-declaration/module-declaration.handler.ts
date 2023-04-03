@@ -44,9 +44,11 @@ export class NestModuleDeclaration implements IHandlersAggregator {
       for (const moduleName of Object.keys(boundedContext)) {
         const moduleFileContent = this.generateModuleFileContent(moduleName);
 
-        const fileName = `./src/${this.setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
-          boundedContextName,
-        )}/${kebabCase(moduleName)}/${NestModuleDeclaration.FILE_NAME(moduleName)}`;
+        const fileName = `./${this.setupTypeMapper.ROOT_FOLDER}/${
+          this.setupTypeMapper.BOUNDED_CONTEXTS
+        }/${kebabCase(boundedContextName)}/${kebabCase(
+          moduleName,
+        )}/${NestModuleDeclaration.FILE_NAME(moduleName)}`;
 
         result.push({
           fileId: fileName,

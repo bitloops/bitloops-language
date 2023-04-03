@@ -11,47 +11,47 @@ type TestCase = {
 
 const setupFilePaths = {
   'di-constants.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/constants.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/constants.ts',
     fileType: 'DI.Tokens',
     formatterParser: 'typescript',
   },
   'domainError.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/domain/errors/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/domain/errors/index.ts',
     fileType: 'DomainError',
     formatterParser: 'typescript',
   },
   'applicationError.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/application/errors/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/errors/index.ts',
     fileType: 'ApplicationError',
     formatterParser: 'typescript',
   },
   'domainRule.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/domain/rules/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/domain/rules/index.ts',
     fileType: 'DomainRule',
     formatterParser: 'typescript',
   },
   'index.command-handlers.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/application/commandHandlers/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/commandHandlers/index.ts',
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },
   'index.query-handlers.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/application/queryHandlers/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/queryHandlers/index.ts',
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },
   'index.domain-event-handlers.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/application/handlers/domain/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/handlers/domain/index.ts',
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },
   'index.integration-event-handlers.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/application/handlers/integration/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/handlers/integration/index.ts',
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },
   'nest.module.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/hello-world.module.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/hello-world.module.ts',
     fileType: 'nest.module.ts',
     formatterParser: 'typescript',
   },

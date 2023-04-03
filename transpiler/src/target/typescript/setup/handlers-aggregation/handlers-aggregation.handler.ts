@@ -254,9 +254,9 @@ export class HandlersAggregator implements IHandlersAggregator {
     classType: TClassTypesValues,
     setupTypeMapper: TSetupTypeMapper,
   ): { filePath: string; fileExtension: string } {
-    const modulePath = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
-      boundedContextName,
-    )}/${kebabCase(moduleName)}`;
+    const modulePath = `./${setupTypeMapper.ROOT_FOLDER}/${
+      setupTypeMapper.BOUNDED_CONTEXTS
+    }/${kebabCase(boundedContextName)}/${kebabCase(moduleName)}`;
     const indexFilePathFromModuleRoot = this.getIndexFilePathFromModuleRoot(classType);
     const fileName = `${modulePath}/${indexFilePathFromModuleRoot.filePath}`;
 

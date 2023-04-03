@@ -28,7 +28,7 @@ import { TContextData } from '../../../types.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
-export const ROOT_FOLDER = 'src';
+export const ROOT_FOLDER = 'lib';
 
 enum PROJECT_RELATIVE_PATHS {
   DOMAIN = 'domain/',

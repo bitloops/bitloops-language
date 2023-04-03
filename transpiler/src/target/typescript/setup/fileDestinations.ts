@@ -34,7 +34,7 @@ export type TSetupFileType =
 export type TSetupTypeMapper = Record<TSetupFileType, string>;
 
 export const setupTypeMapper: TSetupTypeMapper = {
-  ROOT_FOLDER: `/${ROOT_FOLDER}/`,
+  ROOT_FOLDER: ROOT_FOLDER,
   BOUNDED_CONTEXTS: 'bounded-contexts',
   'DI.Tokens': '',
   'index.ts': '',
