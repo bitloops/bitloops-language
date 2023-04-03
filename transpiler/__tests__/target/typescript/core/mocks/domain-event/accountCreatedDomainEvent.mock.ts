@@ -9,6 +9,7 @@ type AccountCreatedDomainEventProps = {
 export class AccountCreatedDomainEvent
   implements Domain.IDomainEvent<AccountCreatedDomainEventProps>
 {
+  public readonly aggregateId: string;
   public readonly metadata: Domain.TDomainEventMetadata = {
     boundedContextId: 'Banking',
     createdTimestamp: Date.now(),
@@ -16,5 +17,7 @@ export class AccountCreatedDomainEvent
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     context: asyncLocalStorage.getStore()?.get('context'),
   };
-  constructor(public readonly data: AccountCreatedDomainEventProps) {}
+  constructor(public readonly data: AccountCreatedDomainEventProps) {
+    this.aggregateId = data.aggregateId;
+  }
 }

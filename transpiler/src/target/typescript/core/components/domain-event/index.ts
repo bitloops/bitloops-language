@@ -91,12 +91,15 @@ export const domainEventToTargetLanguage = (
 
 const generateConstructor = (entityIdentifier: string): string => {
   // TODO rename data to payload(here and core-library)
-  return `constructor(public readonly data: ${entityIdentifier}) {}`;
-  //  + ' this.aggregateId = data.aggregateId;' + '}'
+  return (
+    `constructor(public readonly data: ${entityIdentifier}) {` +
+    ' this.aggregateId = data.aggregateId;' +
+    '}'
+  );
 };
 
 const getClassProperties = (contextId: string): string => {
-  let classProperties = ''; // 'public aggregateId: string;';
+  let classProperties = 'public readonly aggregateId: string;';
 
   const metadata: TMetadata = {
     contextId,

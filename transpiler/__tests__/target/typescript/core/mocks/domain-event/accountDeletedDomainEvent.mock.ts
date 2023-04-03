@@ -5,6 +5,7 @@ type AccountDeletedDomainEventProps = {
 export class AccountDeletedDomainEvent
   implements Domain.IDomainEvent<AccountDeletedDomainEventProps>
 {
+  public readonly aggregateId: string;
   public readonly metadata: Domain.TDomainEventMetadata = {
     boundedContextId: 'Banking',
     createdTimestamp: Date.now(),
@@ -12,5 +13,7 @@ export class AccountDeletedDomainEvent
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     context: asyncLocalStorage.getStore()?.get('context'),
   };
-  constructor(public readonly data: AccountDeletedDomainEventProps) {}
+  constructor(public readonly data: AccountDeletedDomainEventProps) {
+    this.aggregateId = data.aggregateId;
+  }
 }
