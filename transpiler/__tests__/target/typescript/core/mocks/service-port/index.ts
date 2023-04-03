@@ -3,6 +3,7 @@ import { MethodDefinitionNodeBuilderDirector } from '../../builders/methodDefini
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ServicePortNodeBuilderDirector } from '../../builders/servicePortNodeBuilderDirector.js';
+import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
 
 export const VALID_SERVICE_PORT_TEST_CASES = [
   {
@@ -22,6 +23,13 @@ export const VALID_SERVICE_PORT_TEST_CASES = [
             new ParameterBuilderDirector().buildPrimitiveParameter('value2', 'string'),
           ],
           type: new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'),
+        }),
+        new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
+          methodName: 'sendTestDataEither',
+          parameters: [
+            new ParameterBuilderDirector().buildIdentifierParameter('value', 'TestDataSchema'),
+          ],
+          type: new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'),
         }),
       ],
     }),

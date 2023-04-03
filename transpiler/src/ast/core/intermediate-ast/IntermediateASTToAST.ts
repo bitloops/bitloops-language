@@ -19,6 +19,10 @@ import { ControllerNodeTransformer } from './ node-transformers/ControllerNodeTr
 import { AddDIsForAutoDomainEventHandlersTransformer } from './ node-transformers/setup/AddDIForAutoEventHandlers.js';
 import { ExecuteNode } from './nodes/ExecuteNode.js';
 import { ExecuteNodeTransformer } from './ node-transformers/ExecuteNodeTransformer.js';
+import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
+import { RepoPortNodeTransformer } from './ node-transformers/RepoPortNodeTransformer.js';
+import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
+import { ServicePortNodeTransformer } from './ node-transformers/ServicePortNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -175,6 +179,14 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TExecute: {
         const executeNode = intermediateASTNode as ExecuteNode;
         return new ExecuteNodeTransformer(intermediateASTTree, executeNode);
+      }
+      case BitloopsTypesMapping.TRepoPort: {
+        const repoPortNode = intermediateASTNode as RepoPortNode;
+        return new RepoPortNodeTransformer(intermediateASTTree, repoPortNode);
+      }
+      case BitloopsTypesMapping.TServicePort: {
+        const servicePortNode = intermediateASTNode as ServicePortNode;
+        return new ServicePortNodeTransformer(intermediateASTTree, servicePortNode);
       }
       default:
         return null;

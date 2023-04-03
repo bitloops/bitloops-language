@@ -24,10 +24,10 @@ export class ExecuteNode extends IntermediateASTNode {
     return parameterNode;
   }
 
-  getReturnOkErrorTypeNode(): ReturnOkErrorTypeNode {
+  getReturnOkErrorTypeNodes(): ReturnOkErrorTypeNode[] {
     const returnOkErrorTypeNode = this.getChildNodeByType<ReturnOkErrorTypeNode>(
       BitloopsTypesMapping.TOkErrorReturnType,
     );
-    return returnOkErrorTypeNode;
+    return [returnOkErrorTypeNode];
   }
 }
