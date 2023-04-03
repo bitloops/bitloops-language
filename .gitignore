@@ -102,5 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
-lib/
+/lib
 documentation/package-lock.json
+examples/todo/ts-target/telemetry-consumer/Dockerfile
