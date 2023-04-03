@@ -224,7 +224,6 @@ sourceElement
     | readModelDeclaration
     | commandDeclaration
     | queryDeclaration
-    | domainEventDeclaration
     | commandHandler
     | queryHandler
     | integrationEventDeclaration
@@ -284,6 +283,7 @@ evaluation
     | queryEvaluation
     | standardVOEvaluation
     | integrationEventEvaluation
+    | domainEventEvaluation
     | domainServiceEvaluation
     | readModelEvaluation
     ;
@@ -555,7 +555,7 @@ repoPortExtendableIdentifier
 
 
 domainEventDeclaration
-    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' SemiColon?
+    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' OpenBrace fieldList? CloseBrace
     ;
 
 domainEventIdentifier
@@ -645,6 +645,10 @@ commandEvaluation
 
 queryEvaluation
     : queryIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+
+domainEventEvaluation
+    : domainEventIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
     ;
     
 integrationEventEvaluation

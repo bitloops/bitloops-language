@@ -29,6 +29,6 @@ export interface TEventMetadata {
 }
 
 export interface IEvent<T> extends IMessage {
-  data: T;
+  payload: T;
   metadata: TEventMetadata;
 }

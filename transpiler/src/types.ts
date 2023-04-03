@@ -286,6 +286,7 @@ export type TEvaluationValues =
   | TBuiltInFunctionValues
   | TCommandEvaluation
   | TQueryEvaluation
+  | TDomainEventEvaluation
   | TStandardVOEvaluation
   | TDomainServiceEvaluation
   | TReadModelEvaluation;
@@ -342,6 +343,12 @@ export type TCommandEvaluation = {
 export type TQueryEvaluation = {
   query: {
     [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
+};
+
+export type TDomainEventEvaluation = {
+  domainEvent: {
+    [DomainEventIdentifierKey]: TIdentifier;
   } & Partial<TEvaluationFields>;
 };
 
@@ -1278,7 +1285,7 @@ export type TDomainEvent = {
   domainEvent: {
     [DomainEventIdentifierKey]: TDomainEventIdentifier;
     entityIdentifier: TEntityIdentifier;
-  };
+  } & Partial<TVariables>;
 };
 
 type TDomainEventHandlerIdentifier = string;

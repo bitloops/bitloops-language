@@ -10,6 +10,7 @@ import {
   identifierKey,
   TQueryEvaluation,
   TCommandEvaluation,
+  DomainEventIdentifierKey,
 } from '../../../../src/types.js';
 
 type PropsParam =
@@ -81,6 +82,19 @@ export class EvaluationBuilderDirector {
     }
     return {
       evaluation,
+    };
+  }
+  buildDomainEventEvaluation(
+    domainEventIdentifier: string,
+    fields: TEvaluationField[],
+  ): TEvaluation {
+    return {
+      evaluation: {
+        domainEvent: {
+          [DomainEventIdentifierKey]: domainEventIdentifier,
+          [evaluationFieldsKey]: fields,
+        },
+      },
     };
   }
   /**

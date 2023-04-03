@@ -153,6 +153,7 @@ import {
   domainCreateDeclarationVisitor,
   regexLiteralEvaluation,
   readModelEvaluationVisitor,
+  domainEventEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -762,6 +763,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitCommandEvaluation(ctx: BitloopsParser.CommandEvaluationContext): any {
     return commandEvaluationVisitor(this, ctx);
+  }
+
+  visitDomainEventEvaluation(ctx: BitloopsParser.DomainEventEvaluationContext): any {
+    return domainEventEvaluationVisitor(this, ctx);
   }
 
   visitQueryEvaluation(ctx: BitloopsParser.QueryEvaluationContext): any {

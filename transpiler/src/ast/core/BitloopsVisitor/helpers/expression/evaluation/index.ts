@@ -23,3 +23,4 @@ export { queryEvaluationVisitor } from './queryEvaluation.js';
 export { errorEvaluationVisitor } from './errorEvaluation.js';
 export { entityConstructorEvaluationVisitor } from './entityConstructorEvaluation.js';
 export { standardVOEvaluationVisitor } from './standardVOEvaluation.js';
+export { domainEventEvaluationVisitor } from './domainEventEvaluation.js';

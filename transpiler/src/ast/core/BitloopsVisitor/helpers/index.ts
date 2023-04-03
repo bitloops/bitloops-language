@@ -134,7 +134,11 @@ export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
 export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
-export { commandEvaluationVisitor, queryEvaluationVisitor } from './expression/evaluation/index.js';
+export {
+  commandEvaluationVisitor,
+  queryEvaluationVisitor,
+  domainEventEvaluationVisitor,
+} from './expression/evaluation/index.js';
 export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';
 export {
   domainEventDeclarationVisitor,

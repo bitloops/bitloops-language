@@ -10,6 +10,7 @@ import { ValueObjectEvaluationBuilderDirector } from '../../builders/domainEvalu
 import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { ReadModelEvaluationBuilderDirector } from '../../builders/domainEvaluation/readModelEvaluation.js';
+import { DomainEventIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DomainEvent/DomainEventIdentifierNodeBuilder.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -132,6 +133,18 @@ export const VALID_EVALUATION_TEST_CASES = [
         .build(),
     ),
     output: "UserEmailReadModel.fromPrimitives({ email: 'user@bitloops.com', userId: '123' })",
+  },
+  {
+    description: 'Valid DomainEvent Evaluation',
+    evaluation: new EvaluationBuilderDirector().buildDomainEventEvaluation(
+      new DomainEventIdentifierNodeBuilder().withName('TodoCreatedDomainEvent').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
+        ])
+        .build(),
+    ),
+    output: "new TodoCreatedDomainEvent({course: 'Math'})",
   },
 ];
 

@@ -14,7 +14,7 @@ export class MoneyDepositedIntegrationEvent
     'v2.0.1': MoneyDepositedIntegrationEvent.toIntegrationDatav201,
   };
   public metadata: Infra.EventBus.TIntegrationEventMetadata;
-  constructor(public data: TIntegrationSchemas, version: string) {
+  constructor(public payload: TIntegrationSchemas, version: string) {
     this.metadata = {
       boundedContextId: MoneyDepositedIntegrationEvent.boundedContextId,
       createdTimestamp: Date.now(),
@@ -27,8 +27,8 @@ export class MoneyDepositedIntegrationEvent
   static create(event: MoneyDepositedToAccountDomainEvent): MoneyDepositedIntegrationEvent[] {
     return MoneyDepositedIntegrationEvent.versions.map((version) => {
       const mapper = MoneyDepositedIntegrationEvent.versionMappers[version];
-      const data = mapper(event);
-      return new MoneyDepositedIntegrationEvent(data, version);
+      const payload = mapper(event);
+      return new MoneyDepositedIntegrationEvent(payload, version);
     });
   }
   static toIntegrationDatav1(event: MoneyDepositedToAccountDomainEvent): IntegrationSchemaV1 {

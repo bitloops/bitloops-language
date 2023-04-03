@@ -31,7 +31,5 @@ export interface ISystemMessageBus {
     subscriberHandler: SubscriberHandler<T>,
   ): Promise<void>;
   publish(topic: string, message: IMessage): Promise<void>;
-  getSubscriberHandlers<T extends IMessage>(
-    topic: string,
-  ): SubscriberHandler<T>[];
+  getSubscriberHandlers<T extends IMessage>(topic: string): SubscriberHandler<T>[];
 }

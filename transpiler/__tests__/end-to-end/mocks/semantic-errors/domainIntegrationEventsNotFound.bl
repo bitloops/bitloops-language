@@ -39,7 +39,9 @@ Root Entity TodoEntity {
       }
 }
 
-DomainEvent MoneyDepositedToAccountDomainEvent<TodoEntity>
+DomainEvent MoneyDepositedToAccountDomainEvent<TodoEntity> {
+  // string email;
+}
 
 // IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {
 //     // Maybe have disable list of versions?
