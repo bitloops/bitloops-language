@@ -175,6 +175,16 @@ Each module structure contains the following folders:
 * ports
 * tests
 
+</br>
+</br>
+
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/module-structure.png" alt="Project Structure" align="center">
+</p>
+
+<p align="center">
+Module Structure Example
+</p>
 
 #### Application Folder
 Represents the **application layer** use cases of the specific module.
@@ -231,17 +241,6 @@ The tests use **mock repositories** and **mock services** as adapters (concretio
 This folder contains the proto ([protobuf](https://protobuf.dev/) - protocol buffers) files which are mandatory for defining the [gRPC](https://grpc.io/) interface necessary to setup the **todo** api controllers located at the `src/api` folder. 
 
 Communication via **Protocol Buffers** have many advantages than communicating via JSON since the message sent via the wire is in binary form thus slimmer and they also communicate the data type in a **programming language agnostic way**. To read more  You can read more about them [here](https://en.wikipedia.org/wiki/Protocol_Buffers). 
-
-</br>
-</br>
-
-<p align="center" style="margin-bottom: 0px !important;">
-  <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/module-structure.png" alt="Project Structure" align="center">
-</p>
-
-<p align="center">
-Module Structure Example
-</p>
 
 
 # III. Todo App Event Storming
