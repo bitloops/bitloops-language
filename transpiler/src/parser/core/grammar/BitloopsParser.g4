@@ -176,7 +176,7 @@ methodDefinitionList
     ;
 
 methodDefinition
-    : identifier parameterList? typeAnnotation SemiColon
+    : identifier parameterList? returnMethodType SemiColon
     ;
 
 typeAnnotation
@@ -285,6 +285,7 @@ evaluation
     | standardVOEvaluation
     | integrationEventEvaluation
     | domainServiceEvaluation
+    | readModelEvaluation
     ;
 
 domainServiceEvaluation
@@ -664,6 +665,10 @@ builtInClassEvaluation
 
 propsEvaluation
     : OpenBrace OpenParen propsIdentifier (evaluationFieldList) CloseParen CloseBrace
+    ;
+
+readModelEvaluation
+    : readModelIdentifier Dot Create domainEvaluationInput  //TODO: here could be a another element, syntax wise the same with domainEvaluationInput
     ;
 
 domainErrorDeclaration

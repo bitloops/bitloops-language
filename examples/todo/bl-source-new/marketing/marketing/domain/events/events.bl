@@ -1,1 +1,1 @@
-DomainEvent TodoCompletionsIncrementedDomainEvent<TodoEntity>;
+DomainEvent TodoCompletionsIncrementedDomainEvent<UserEntity>;

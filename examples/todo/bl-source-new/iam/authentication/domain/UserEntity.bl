@@ -1,6 +1,6 @@
 Props UserProps {
     optional UUIDv4 id;
-    EmailVOVO email;
+    EmailVO email;
     string password;
     optional string lastLogin;
 }

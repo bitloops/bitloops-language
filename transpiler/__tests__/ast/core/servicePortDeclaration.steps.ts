@@ -48,8 +48,9 @@ describe('Service port declaration is valid', () => {
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const result = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTValidationErrors(result)) {
+        const parseResult = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(parseResult)) {
+          const result = intermediateParser.complete(parseResult);
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }

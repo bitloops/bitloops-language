@@ -287,7 +287,8 @@ export type TEvaluationValues =
   | TCommandEvaluation
   | TQueryEvaluation
   | TStandardVOEvaluation
-  | TDomainServiceEvaluation;
+  | TDomainServiceEvaluation
+  | TReadModelEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -378,7 +379,12 @@ type TDomainEvaluationName =
   | {
       entityIdentifier: TEntityIdentifier;
     }
-  | { valueObjectIdentifier: TValueObjectIdentifier };
+  | { valueObjectIdentifier: TValueObjectIdentifier }
+  | { readModelIdentifier: TReadModelIdentifier };
+
+export type TReadModelEvaluation = {
+  readModelEvaluation: TDomainEvaluation;
+};
 
 export type TDomainEvaluationExpression = TEvaluationFields | TExpression;
 
@@ -1002,11 +1008,16 @@ export type TPackagePort = {
   [PackagePortIdentifierKey]: TPackagePortIdentifier;
 } & TDefinitionMethods;
 
+export type TDefinitionMethodValues = {
+  identifier: TIdentifier;
+} & TParameterList;
+
+export type TDefinitionMethodPrimaryReturnType = TDefinitionMethodValues & TBitloopsPrimaryType;
+
+export type TDefinitionMethodOkErrorReturnType = TDefinitionMethodValues & TOkErrorReturnType;
+
 export type TDefinitionMethodInfo = {
-  methodDefinition: {
-    identifier: TIdentifier;
-  } & TBitloopsPrimaryType &
-    TParameterList;
+  methodDefinition: TDefinitionMethodPrimaryReturnType | TDefinitionMethodOkErrorReturnType;
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';

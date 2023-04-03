@@ -17,24 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
-import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
-import { validRepoPortCases } from './mocks/repoPort.js';
+import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
+import { validReadModelEvaluationTestCases } from './mocks/evaluation/readModelEvaluation.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Repo Port declaration is valid', () => {
+describe('Read model evaluation is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  validRepoPortCases.forEach((testCase) => {
+  validReadModelEvaluationTestCases.forEach((testCase) => {
     test(`${testCase.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
@@ -48,17 +48,15 @@ describe('Repo Port declaration is valid', () => {
       });
 
       if (!isParserErrors(initialModelOutput)) {
-        const parseResult = intermediateParser.parse(initialModelOutput);
-        if (!isIntermediateASTValidationErrors(parseResult)) {
-          const result = intermediateParser.complete(parseResult);
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(result)) {
           resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const repoPortNodes = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TRepoPort);
-      expect(repoPortNodes.length).toBe(1);
-      const value = repoPortNodes[0].getValue();
+      const expectedNodeValues = testCase.evaluation;
+      const value = resultTree.getCurrentNode().getValue();
 
-      expect(value).toMatchObject(testCase.expected);
+      expect(value).toMatchObject(expectedNodeValues);
     });
   });
 });

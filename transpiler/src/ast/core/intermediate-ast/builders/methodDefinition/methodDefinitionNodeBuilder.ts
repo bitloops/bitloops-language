@@ -3,12 +3,13 @@ import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { MethodDefinitionNode } from '../../nodes/method-definitions/MethodDefinitionNode.js';
 import { ParameterListNode } from '../../nodes/ParameterList/ParameterListNode.js';
+import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class MethodDefinitionNodeBuilder implements IBuilder<MethodDefinitionNode> {
   private methodDefinitionNode: MethodDefinitionNode;
   private identifier: IdentifierNode;
-  private type: BitloopsPrimaryTypeNode;
+  private type: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode;
   private parameterList: ParameterListNode;
 
   constructor(metadata?: TNodeMetadata) {
@@ -20,7 +21,7 @@ export class MethodDefinitionNodeBuilder implements IBuilder<MethodDefinitionNod
     return this;
   }
 
-  withType(type: BitloopsPrimaryTypeNode): MethodDefinitionNodeBuilder {
+  withType(type: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode): MethodDefinitionNodeBuilder {
     this.type = type;
     return this;
   }

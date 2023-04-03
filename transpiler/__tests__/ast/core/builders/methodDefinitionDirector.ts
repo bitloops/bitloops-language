@@ -3,6 +3,7 @@ import {
   TBitloopsPrimitives,
   TBitloopsPrimaryType,
   TBitloopsIdentifier,
+  TOkErrorReturnType,
 } from '../../../../src/types.js';
 import { ParameterBuilderDirector } from './ParameterBuilderDirector.js';
 
@@ -57,6 +58,26 @@ export class MethodDefinitionBuilderDirector {
     methodName: string;
     params: Array<{ name: string; type: TBitloopsPrimitives }>;
     returnType: TBitloopsPrimaryType;
+  }): TDefinitionMethodInfo {
+    return {
+      methodDefinition: {
+        identifier: methodName,
+        parameters: params.map((param) =>
+          new ParameterBuilderDirector().buildPrimitiveParameter(param.name, param.type),
+        ),
+        ...returnType,
+      },
+    };
+  }
+
+  buildMethodWithPrimitiveParamsAndOkErrorReturnType({
+    methodName,
+    params,
+    returnType,
+  }: {
+    methodName: string;
+    params: Array<{ name: string; type: TBitloopsPrimitives }>;
+    returnType: TOkErrorReturnType;
   }): TDefinitionMethodInfo {
     return {
       methodDefinition: {

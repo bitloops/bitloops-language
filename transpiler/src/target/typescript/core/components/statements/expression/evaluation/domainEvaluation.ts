@@ -43,7 +43,14 @@ export const domainEvaluationToTargetLanguage = (
 
   const domainName = getDomainName(evaluation);
   const dependencies = [...resultDomainProps.dependencies, ...getChildDependencies(domainName)];
-
+  //TODO: the following if will be removed when we change the element
+  //of domainEvaluationInput in the the readModelEvaluation in parser
+  if (isReadModelEvaluation(evaluation)) {
+    return {
+      output: `${domainName}.fromPrimitives(${resultDomainProps.output});`,
+      dependencies,
+    };
+  }
   return {
     output: `${domainName}.create(${resultDomainProps.output});`,
     dependencies,
@@ -56,5 +63,10 @@ const getDomainName = (evaluation: TDomainEvaluation): string => {
   if ('entityIdentifier' in domainEvaluation) domainName = domainEvaluation.entityIdentifier;
   if ('valueObjectIdentifier' in domainEvaluation)
     domainName = domainEvaluation.valueObjectIdentifier;
+  if ('readModelIdentifier' in domainEvaluation) domainName = domainEvaluation.readModelIdentifier;
   return domainName;
+};
+
+const isReadModelEvaluation = (evaluation: TDomainEvaluation): boolean => {
+  return 'readModelIdentifier' in evaluation.domainEvaluation;
 };

@@ -4,7 +4,7 @@ Command UncompleteTodoCommand {
 
 CommandHandler UncompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
     execute(command: UncompleteTodoCommand): (OK(void), Errors(
-       ApplicationErrors.TodoNotFoundApplicationError
+       ApplicationErrors.TodoNotFoundError
        | DomainErrors.TodoAlreadyUncompletedError
        )) {
        
@@ -15,7 +15,7 @@ CommandHandler UncompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
         }
 
        if(NOT todoEntity) {
-           return ApplicationErrors.TodoNotFoundApplicationError(command.todoId);
+           return ApplicationErrors.TodoNotFoundError(command.todoId);
        }
 
        todoEntity.uncomplete();

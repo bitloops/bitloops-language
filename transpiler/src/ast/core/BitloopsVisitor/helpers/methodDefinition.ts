@@ -26,13 +26,16 @@ import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/Pa
 import { MethodDefinitionNodeBuilder } from '../../intermediate-ast/builders/methodDefinition/methodDefinitionNodeBuilder.js';
 import { MethodDefinitionNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionNode.js';
 import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 
 export const methodDefinitionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.MethodDefinitionContext,
 ): MethodDefinitionNode => {
   const identifier: IdentifierNode = thisVisitor.visit(ctx.identifier());
-  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+  const type: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode = thisVisitor.visit(
+    ctx.returnMethodType(),
+  );
   let parameterDependencies: ParameterListNode;
   if (ctx.parameterList()) {
     parameterDependencies = thisVisitor.visit(ctx.parameterList());

@@ -151,3 +151,4 @@ export {
   standardVOEvaluationVisitor,
 } from './expression/evaluation/index.js';
 export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';
+export { readModelEvaluationVisitor } from './readModelEvaluation.js';

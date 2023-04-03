@@ -2,6 +2,8 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { MethodDefinitionListNode } from '../method-definitions/MethodDefinitionListNode.js';
+import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { RepoPortIdentifierNode } from './RepoPortIdentifierNode.js';
 
 export class RepoPortNode extends ClassTypeNode {
@@ -21,5 +23,24 @@ export class RepoPortNode extends ClassTypeNode {
     return this.getChildNodeByType<RepoPortIdentifierNode>(
       BitloopsTypesMapping.TRepoPortIdentifier,
     );
+  }
+
+  public getReturnOkErrorTypeNodes(): ReturnOkErrorTypeNode[] {
+    const methodDefinitionListNode = this.getChildNodeByType<MethodDefinitionListNode>(
+      BitloopsTypesMapping.TDefinitionMethods,
+    );
+    if (!methodDefinitionListNode) {
+      return [];
+    }
+    const returnOkErrorTypeNodes: ReturnOkErrorTypeNode[] = [];
+    const methodDefinitionNodes = methodDefinitionListNode.getMethodDefinitionNodes();
+    for (const methodDefinitionNode of methodDefinitionNodes) {
+      const returnOkErrorTypeNode = methodDefinitionNode.getReturnOkErrorTypeNode();
+      if (!returnOkErrorTypeNode) {
+        continue;
+      }
+      returnOkErrorTypeNodes.push(returnOkErrorTypeNode);
+    }
+    return returnOkErrorTypeNodes;
   }
 }
