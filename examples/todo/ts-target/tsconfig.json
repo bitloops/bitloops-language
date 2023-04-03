@@ -1,28 +1,31 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "target": "es2017",
+    "strict": true,
     "module": "commonjs",
-    "moduleResolution": "node",
-    "pretty": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "target": "es2019",
     "sourceMap": true,
     "outDir": "./dist",
-    "lib": ["es6"],
+    "incremental": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": ["node", "jest"],
-    "typeRoots": ["./node_modules/@types", "./src/@types"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "plugins": [
-      {
-        "transform": "ts-auto-mock/transformer",
-        "cacheBetweenTests": false
-      }
-    ]
-  },
-  "include": ["src/*.ts", "src/**/*.ts", "src/**/*.js", "global.d.ts"],
-  "exclude": ["node_modules", "src/**/*.spec.ts", "src/**/*.spec.js"]
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@modules/*": ["src/modules/*"],
+      "@config/*": ["src/configs/*"],
+      "@bitloops/*": ["src/bitloops/*"],
+      "@lib": ["src/lib/*"],
+      "@tests/*": ["tests/*"]
+    }
+  }
 }
