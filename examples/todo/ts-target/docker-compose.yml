@@ -149,7 +149,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
     ports:
-      - '3003:9090'
+      - '3003:3000'
     networks:
       - bitloops
     labels:
