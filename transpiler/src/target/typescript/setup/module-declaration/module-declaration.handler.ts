@@ -26,11 +26,11 @@ import { ClassTypes } from '../../../../helpers/mappings.js';
 import { TSetupTypeMapper } from '../fileDestinations.js';
 import { HandlersAggregator } from '../handlers-aggregation/handlers-aggregation.handler.js';
 
-interface IHandlersAggregator {
+interface INestModuleGenerator {
   handle(): TSetupOutput[];
 }
 
-export class NestModuleDeclaration implements IHandlersAggregator {
+export class NestModuleDeclaration implements INestModuleGenerator {
   static readonly FILE_NAME = (moduleName: string): string => `${kebabCase(moduleName)}.module.ts`;
   constructor(
     private readonly bitloopsModel: TBoundedContexts,
