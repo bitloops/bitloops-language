@@ -5,7 +5,7 @@ import {
   ok,
   Domain,
 } from '@bitloops/bl-boilerplate-core';
-import { DeleteTodoCommand } from '../../commands/Delete-todo.command';
+import { DeleteTodoCommand } from '../../commands/delete-todo.command';
 import { Inject } from '@nestjs/common';
 import { ApplicationErrors } from '../errors';
 import {
