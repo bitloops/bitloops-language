@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	jaegerAgent   = "jaeger:14268/api/traces"
-	prometheusURL = "prometheus:9090"
+	jaegerAgent   = "http://jaeger:14268/api/traces"
+	prometheusURL = "http://prometheus:9090"
 	subject       = "trace_events"
 	StreamName    = "trace_events"
 )

@@ -162,14 +162,14 @@ services:
       - '8080:8080'
     networks:
       - bitloops
-      
+
   telemetry-consumer:
     container_name: bl-telemetry-consumer
     build: 
       context: ./telemetry-consumer
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      # - "8080:8081"
     networks:
       - bitloops
 

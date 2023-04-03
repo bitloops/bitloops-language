@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	prometheusPushGateway = "http://localhost:9091"
+	prometheusPushGateway = "http://pushgateway:9091"
 )
 
 var commandCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
