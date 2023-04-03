@@ -12,6 +12,7 @@ import {
   UserWriteRepoPort,
 } from '../../ports/UserWriteRepoPort';
 import { ApplicationErrors } from '../errors';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 type LogInUseCaseResponse = Either<
   void,
