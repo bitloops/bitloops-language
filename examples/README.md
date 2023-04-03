@@ -7,7 +7,7 @@ There is plenty of information out there on how to build resilient and maintaina
 Our team has put a lot of effort into creating a clean, and modular code-base that comes as close as possible to production ready code, aiming to provide valuable insights into advanced software architecture concepts. 
  
 ### Overview
-The objective of this project is to provide you a recommendation on how to design and create maintainable and flexible software applications.
+The objective of this project is to provide you a reference implementation on how to design and create maintainable and flexible software applications.
 
 The code is written using Typescript and NodeJS, using the NEST framework, however, the concepts and patterns used are not bound to any specific technologies.
 
@@ -22,78 +22,29 @@ In addition, you will learn a great deal about software design and architecture 
 - Eventual consistency
 - Event Storming
 
-There are many ways to implement these, so we're eager to get your feedback and open to answer any questions you may have. Join our [Discord](https://discord.com/invite/vj8EdZx8gK) channel if you'd like to exchange some ideas on software design & development. 
+There are many ways to implement these, so we're eager to get your feedback and open to answer any questions you may have. Join our [Discord](https://discord.com/invite/vj8EdZx8gK) channel if you'd like to exchange some ideas on software design & development or if you have any questions. 
 
-# II. Todo Application Example Description
+### Todo application business requirements
 
-The todo application in this case, is basically a simple todo application, with some tweaks.
+The todo application, is basically a simple todo application, with some tweaks.
 
-## A. General Description
-The user should be able to register to the todo app. After he registers, he should be able to login. 
-After logging in, he should be able to add todos, complete a todo, uncomplete a todo (in case he made it complete accidentally), as well as modify the todo title. In the whole process he should be able to view his todos.
+The users should be able to register to the todo app. After they register, they should be able to login. 
+After logging in, they should be able to add todos, to complete a todo, to uncomplete a todo (in case they made it complete accidentally), as well as modify the todo title. In the whole process they should be able to view his todos.
 
-When a todo is completed, if this is the first completed todo, an email should be sent to the user to congratulate him for completing his first todo.
+When a todo is completed, if this is the first completed todo, an email should be sent to the user to congratulate him for completing his first todo. This operation has to do mostly with the needs marketing team.
 
-## B. Event Storming in a nutshell
-
-[Event storming](https://www.eventstorming.com/) is a collaborating modelling technique used to model complex domains, aligned perfectly with [Domain Driven Design (DDD)](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) as well as [Event Driven Architecture (EDA)](https://bitloops.com/docs/bitloops-language/learning/software-architecture/event-driven-architecture). 
-
-The main idea is to gather people from all parts of the business (business - domain experts and engineering) to collaborate in order to be able to align the final software system produced with the actual business processes. This way all stakeholders can communicate effectively utilizing the ubiquitous language, and the software would be a reflection with the actual business processes (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)). 
-
-The Event Storming Process, in a nutshell is a process which could be separated in 3 parts:
-
-* **Big Picture Event Storming** (BPES)
-* **Process Level Event Storming** (PLES)
-* **Design Level Event Storming** (DLES)
-
-### Big Picture Event Storming
-This is the first phase of Event Storming for which all the participants are gathered and start to add **orange stickies** initially in a wall (or in a collaborative tool), which **represent the events** that can happen in the system and processes, written in past tense. 
-
-Then the events are grouped together and put in chronologically order.
-
-In this part of the event storming some close related events can be spotted. So basically based on those events we can start modularize the system based on the bounded contexts ([DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)) we are discovering in the **BPES**. Moreover via this initial stage we can discover some events which belong to the same process - thus **discovering  the system's processes**. Then the most important parts/processes of the system can be spotted, in order to be prioritized as the most important to be developed.
-
-Except the domain events (orange stickies), in this part of the process dome more stickies could be introduced like: 
-* **Hot spots (purple stickies)**: things to be discussed/clarified later
-* **Actors (yellow stickies)**: people/systems who are responsible for the production of the domain event.
-* **Systems (pink stickies)**: External systems which can create domain events in our system.
-
-### Process Level Event Storming
-In this second part of the Event Storming process, after the domain events of the system have been grouped, and most important processes have been spotted, a more thorough modelling will take place, introducing some more concepts (and stickies):
-
-* **Commands (blue stickies)**: Represents decisions, actions or intent.
-* **Query Model/Read Model (green stickies)**: The necessary information needed for an actor to make a decision.
-* **Policy (Lilac stickies)**: Reactive Logic ("whenever X happens, we do Y" ).
-
-In this part of the event storming process, the business process being modelled will be really close to the software output.
-
-### Design Level Event Storming
-This is the final part of the event storming process. 
-
-During the previous parts, some consistent business **rules/constraints** would have arisen during the discussions. These could usually being represented via another flavour of yellow stickies (distinct from the one used for the actors). 
-
-The **Aggregates** (Aggregate Roots) (see [DDD]((https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design))), would be the sum of all closely related business rules (yellow stickies).
-
-After including the constraints(aggregates) the Event Storming Session is finally over, and then the development can start for this specific business process.
-
-### Event Storming Syntax
-
-The general syntax of event storming is the following:
-
-* A **command** can be issued by an **actor** or a **policy**
-* An **event** can be triggered by an **external system** or an **aggregate**.
-* An **event** can **activate a policy** and/or **update a read model**.
-* A **read model** provides information to an **actor**.
-
-<p align="center" style="margin-bottom: 0px !important;">
-  <img width="900" src="https://storage.googleapis.com/bitloops-github-assets/Event%20Stroming%20Syntax.png" alt="Event storming syntax" align="center">
-</p>
-
-### More on Event Storming
-
-For more on event storming you could check [this repository](https://github.com/ddd-crew/eventstorming-glossary-cheat-sheet) from DDD crew as well as read the original [book](https://leanpub.com/introducing_eventstorming) from Alberto Brandolini.
-
-
+# II. Technologies Used - Overview
+Here are listed some of the specific technologies used for the implementation of the project:
+* **Authentication**: [JSON Web Tokens - JWT](https://jwt.io/)
+* **Databases - Persistence**: [MongoDB](https://www.mongodb.com/), [PostgeSQL](https://www.postgresql.org/)
+* **Testing**: [JEST](https://jestjs.io/)
+* **External Communication Protocols**: [REST](https://en.wikipedia.org/wiki/Representational_state_transfer), [gRPC](https://grpc.io/)
+* **Frameworks**: [ΝestJS](https://nestjs.com/)
+* **PubSub technology**: [NATS](https://nats.io/)
+* **Message Streaming Technology**: [JetStream](https://docs.nats.io/nats-concepts/jetstream) *by NATS*
+* **Container Technology**: [Docker](https://www.docker.com/)
+* **Tracing**: [Jaeger](https://www.jaegertracing.io/)
+* **Metrics**: [Prometheus](https://prometheus.io/)
 
 
 # III. Quick start - running the ToDo App
@@ -146,8 +97,6 @@ To just test the app is app and running you can just invoke `http://localhost:80
 The server should respond with the message shown in the picture
 </p>
 
-</br>
-</br>
 
 #### cURL (only for initial testing) 
 
@@ -294,21 +243,45 @@ Communication via **Protocol Buffers** have many advantages than communicating v
 Module Structure Example
 </p>
 
-</br>
-</br>
 
-# III. Technologies Used - Overview
-Here are listed some of the specific technologies used for the implementation of the project:
-* **Authentication**: [JSON Web Tokens - JWT](https://jwt.io/)
-* **Databases - Persistence**: [MongoDB](https://www.mongodb.com/), [PostgeSQL](https://www.postgresql.org/)
-* **Testing**: [JEST](https://jestjs.io/)
-* **External Communication Protocols**: [REST](https://en.wikipedia.org/wiki/Representational_state_transfer), [gRPC](https://grpc.io/)
-* **Frameworks**: [ΝestJS](https://nestjs.com/)
-* **PubSub technology**: [NATS](https://nats.io/)
-* **Message Streaming Technology**: [JetStream](https://docs.nats.io/nats-concepts/jetstream) *by NATS*
-* **Container Technology**: [Docker](https://www.docker.com/)
-* **Tracing**: [Jaeger](https://www.jaegertracing.io/)
-* **Metrics**: [Prometheus](https://prometheus.io/)
+# III. Todo App Event Storming
+
+Below you may find the event storming of the todo app project. 
+
+In general, [Event storming](https://www.eventstorming.com/) is a **collaborating modelling technique** used to model complex domains, in order to align the software produced with the actual business logic. It matches perfectly with [Domain Driven Design (DDD)](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) as well as [Event Driven Architecture (EDA)](https://bitloops.com/docs/bitloops-language/learning/software-architecture/event-driven-architecture). 
+
+If you want to know more for this technique, you can check the **Theoretical Review** at the end.
+
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="900" src="https://storage.googleapis.com/bitloops-github-assets/Todo%20event%20stroming.png" alt="Todo Event Storming" align="center">
+</p>
+
+As you can see after the collaborative discovery, we have identified the following **bounded contexts**:
+
+* **IAM**: Has todo with the user registration and log in.
+*  **Todo**: This is the **core subdomain** of our application (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design))
+*  **Marketing**: This is a **supporting subdomain** (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)) of our Todo application. 
+
+In the process we have further split some bounded contexts (linguistic boundary), to more fine grained modules.
+
+The processes of the system as were discovered are the following:
+
+* **User Log In process** (IAM Bounded Context)
+* **User registration process** (IAM Bounded Context)
+* **Todo process** (Todo Bounded Context)
+* **Onboarding process** (Marketing Bounded Context)
+
+## Todo App Event Storming Observations
+
+Some parts of the system need to have information which is located in other parts of the system. 
+
+More specifically, the Marketing bounded context, **needs to know when a todo is completed** and run its business logic to send an email when the first todo is completed.
+
+Moreover the Marketing Bounded contexts **needs to have information concerning the email** of each specific user, in order to be able to send an email.
+
+The problem in this case is that the email information belongs to the IAM bounded context. So in order for the marketing bounded context to have the knowledge of the specific users's email, either it can make a sync request to the IAM bounded context, or it can listen to integration events from the IAM bounded context, in order to hold a local email information (via [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency)).
+
+In this project the decision was to keep a local repository in the Marketing bounded context, of the users and their emails, updated by listening to integration events from the IAM bounded contexts (**user registered** and **user email changed**). 
 
 # IV. Conclusion
 
@@ -753,6 +726,65 @@ The overarching idea is the following:
 With this approach, the domain layer cannot be corrupted with other code, there is clear separation of concerns and each component follows a single-responsibility principle. 
 
 This is a general overview and each project needs to be tailored accordingly, with more or less layers/components. Moreover, it is always possible to refactor and improve on these layers at a later stage if required. What is important is to create the foundation for that future refactoring work. 
+
+## Event Storming in a nutshell
+
+[Event storming](https://www.eventstorming.com/) is a collaborating modelling technique used to model complex domains, aligned perfectly with [Domain Driven Design (DDD)](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) as well as [Event Driven Architecture (EDA)](https://bitloops.com/docs/bitloops-language/learning/software-architecture/event-driven-architecture). 
+
+The main idea is to gather people from all parts of the business (business - domain experts and engineering) to collaborate in order to be able to align the final software system produced with the actual business processes. This way all stakeholders can communicate effectively utilizing the ubiquitous language, and the software would be a reflection with the actual business processes (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)). 
+
+The Event Storming Process, in a nutshell is a process which could be separated in 3 parts:
+
+* **Big Picture Event Storming** (BPES)
+* **Process Level Event Storming** (PLES)
+* **Design Level Event Storming** (DLES)
+
+### Big Picture Event Storming
+This is the first phase of Event Storming for which all the participants are gathered and start to add **orange stickies** initially in a wall (or in a collaborative tool), which **represent the events** that can happen in the system and processes, written in past tense. 
+
+Then the events are grouped together and put in chronologically order.
+
+In this part of the event storming some close related events can be spotted. So basically based on those events we can start modularize the system based on the bounded contexts ([DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)) we are discovering in the **BPES**. Moreover via this initial stage we can discover some events which belong to the same process - thus **discovering  the system's processes**. Then the most important parts/processes of the system can be spotted, in order to be prioritized as the most important to be developed.
+
+Except the domain events (orange stickies), in this part of the process dome more stickies could be introduced like: 
+* **Hot spots (purple stickies)**: things to be discussed/clarified later
+* **Actors (yellow stickies)**: people/systems who are responsible for the production of the domain event.
+* **Systems (pink stickies)**: External systems which can create domain events in our system.
+
+### Process Level Event Storming
+In this second part of the Event Storming process, after the domain events of the system have been grouped, and most important processes have been spotted, a more thorough modelling will take place, introducing some more concepts (and stickies):
+
+* **Commands (blue stickies)**: Represents decisions, actions or intent.
+* **Query Model/Read Model (green stickies)**: The necessary information needed for an actor to make a decision.
+* **Policy (Lilac stickies)**: Reactive Logic ("whenever X happens, we do Y" ).
+
+In this part of the event storming process, the business process being modelled will be really close to the software output.
+
+### Design Level Event Storming
+This is the final part of the event storming process. 
+
+During the previous parts, some consistent business **rules/constraints** would have arisen during the discussions. These could usually being represented via another flavour of yellow stickies (distinct from the one used for the actors). 
+
+The **Aggregates** (Aggregate Roots) (see [DDD]((https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design))), would be the sum of all closely related business rules (yellow stickies).
+
+After including the constraints(aggregates) the Event Storming Session is finally over, and then the development can start for this specific business process.
+
+### Event Storming Syntax
+
+The general syntax of event storming is the following:
+
+* A **command** can be issued by an **actor** or a **policy**
+* An **event** can be triggered by an **external system** or an **aggregate**.
+* An **event** can **activate a policy** and/or **update a read model**.
+* A **read model** provides information to an **actor**.
+
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="900" src="https://storage.googleapis.com/bitloops-github-assets/Event%20Stroming%20Syntax.png" alt="Event storming syntax" align="center">
+</p>
+
+### More on Event Storming
+
+For more on event storming you could check [this repository](https://github.com/ddd-crew/eventstorming-glossary-cheat-sheet) from DDD crew as well as read the original [book](https://leanpub.com/introducing_eventstorming) from Alberto Brandolini.
 
 ## 🙌 Contributing
 
