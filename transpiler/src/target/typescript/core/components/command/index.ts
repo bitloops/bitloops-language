@@ -63,14 +63,6 @@ const commandToTargetLanguage = (
   const commandValues = command.command;
   const commandName = commandValues[identifierKey];
 
-  const commandTopicExpression = commandValues.commandTopic;
-  const commandTopicResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: commandTopicExpression,
-  });
-
-  dependencies = [...dependencies, ...commandTopicResult.dependencies];
-
   const fields = commandValues[fieldsKey];
 
   const variablesResult = modelToTargetLanguage({

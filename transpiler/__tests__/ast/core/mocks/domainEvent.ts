@@ -22,7 +22,7 @@ const testCases = [
     description: 'Basic domain event with default topic',
     fileId: 'testFile.bl',
     inputBLString: 'DomainEvent AccountCreatedDomainEvent<AccountEntity>;',
-    expected: new DomainEventBuilder(contextInfo)
+    expected: new DomainEventBuilder()
       .withIdentifier('AccountCreatedDomainEvent')
       .withAggregateRootName('AccountEntity')
       .build(),

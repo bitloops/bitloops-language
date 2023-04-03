@@ -39,7 +39,6 @@ export const domainEventDeclarationVisitor = (
   )
     .withIdentifier(domainEventName)
     .withEntityIdentifier(entityIdentifier)
-    .withContextInfo(thisVisitor.contextInfo)
     .build();
 };
 

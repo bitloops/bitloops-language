@@ -64,12 +64,7 @@ export const domainEventToTargetLanguage = (
   dependencies.push(...entityDependency);
 
   const contextId = `'${contextData.boundedContext}'`;
-  const { topic } = domainEvent;
-  const eventName = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: topic,
-  });
-  dependencies.push(...eventName.dependencies);
+
   result += `export class ${domainEventName} implements Domain.IDomainEvent<${entityName}> { `;
   result += getClassProperties(contextId);
   result += generateConstructor(entityName);

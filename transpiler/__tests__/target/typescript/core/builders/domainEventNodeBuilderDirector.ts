@@ -16,7 +16,6 @@ export class domainEventDeclarationNodeBuilderDirector {
   buildDomainEvent(
     domainEventIdentifier: string,
     rootEntityIdentifier: string,
-    contextInfo: { boundedContextName: string; moduleName: string },
   ): DomainEventDeclarationNode {
     const identifierNode = new DomainEventIdentifierNodeBuilder()
       .withName(domainEventIdentifier)
@@ -28,7 +27,6 @@ export class domainEventDeclarationNodeBuilderDirector {
     return this.builder
       .withIdentifier(identifierNode)
       .withEntityIdentifier(rootEntityIdentifierNode)
-      .withContextInfo(contextInfo)
       .build();
   }
 }

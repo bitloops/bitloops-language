@@ -42,7 +42,6 @@ describe('Valid Command with fields to Typescript', () => {
       const commandNode = new CommandNodeBuilder(tree)
         .withIdentifier(testCase.commandIdentifierNode)
         .withFieldList(testCase.fieldListNode)
-        .withContextInfo({ boundedContextName: boundedContext, moduleName: module })
         .build();
       tree.insertChild(commandNode);
 

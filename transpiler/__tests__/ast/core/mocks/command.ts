@@ -1,5 +1,4 @@
 import { CommandDeclarationBuilder } from '../builders/command/commandDeclarationBuilder.js';
-import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 import { FieldBuilderDirector } from '../builders/fieldDirector.js';
 
 export const validCommandTestCases = [
@@ -22,11 +21,6 @@ export const validCommandTestCases = [
           }),
         ],
       })
-      .withCommandTopic(
-        new ExpressionBuilderDirector().buildStringLiteralExpression(
-          'Hello World.core.COMMAND.INSERT_PIN',
-        ),
-      )
       .withIdentifier('InsertPINCommand')
       .build(),
   },
