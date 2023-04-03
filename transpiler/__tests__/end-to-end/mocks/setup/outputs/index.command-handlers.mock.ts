@@ -17,16 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { Container } from '@bitloops/bl-boilerplate-core';
-import { withdrawMoneyCommandHandler } from '../DI';
-import { WithdrawMoneyCommand } from '../application/commands/WithdrawMoneyCommand';
-
-const setUpSubscriptions = async () => {
-  const commandBus = Container.getCommandBus();
-  await commandBus.register(
-    WithdrawMoneyCommand.getCommandTopic(),
-    withdrawMoneyCommandHandler.execute.bind(withdrawMoneyCommandHandler),
-  );
-};
-
-setUpSubscriptions();
+import { WithdrawMoneyCommandHandler } from './WithdrawMoneyCommandHandler';
+export const PubSubCommandHandlers = [WithdrawMoneyCommandHandler];
+export const StreamingCommandHandlers = [WithdrawMoneyCommandHandler];

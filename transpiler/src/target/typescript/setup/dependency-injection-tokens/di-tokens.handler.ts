@@ -27,11 +27,12 @@ import {
 } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
-import { TSetupOutput } from '../index.js';
+import { TSetupOutput } from '../setup-typescript.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { getTokenName } from '../../core/components/token-injections/index.js';
 import { BUSES_TOKENS } from '../../core/components/handler-constructor/buses.js';
+import { TSetupTypeMapper } from '../fileDestinations.js';
 
 interface IDependencyInjectionsGenerator {
   handle(): TSetupOutput[];
@@ -41,8 +42,7 @@ export class DITokensGenerator implements IDependencyInjectionsGenerator {
   private readonly FILE_NAME = 'constants.ts';
   constructor(
     private readonly bitloopsModel: TBoundedContexts,
-    private readonly setupTypeMapper: Record<string, string>,
-    private readonly license?: string,
+    private readonly setupTypeMapper: TSetupTypeMapper,
   ) {}
   handle(): TSetupOutput[] {
     const result: TSetupOutput[] = [];
@@ -51,9 +51,9 @@ export class DITokensGenerator implements IDependencyInjectionsGenerator {
 
     for (const [boundedContextName, boundedContext] of Object.entries(this.bitloopsModel)) {
       for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
-        const diFileName = `./src/${this.setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
-          boundedContextName,
-        )}/${kebabCase(moduleName)}/${this.FILE_NAME}`;
+        const diFileName = `./${this.setupTypeMapper.ROOT_FOLDER}/${
+          this.setupTypeMapper.BOUNDED_CONTEXTS
+        }/${kebabCase(boundedContextName)}/${kebabCase(moduleName)}/${this.FILE_NAME}`;
         // Gather all imports
 
         const diContent = this.generateDIFileBody(moduleTree);
@@ -61,7 +61,7 @@ export class DITokensGenerator implements IDependencyInjectionsGenerator {
         result.push({
           fileId: diFileName,
           fileType: 'DI.Tokens',
-          content: (this.license || '') + diContent,
+          content: diContent,
           context: {
             boundedContextName,
             moduleName,
