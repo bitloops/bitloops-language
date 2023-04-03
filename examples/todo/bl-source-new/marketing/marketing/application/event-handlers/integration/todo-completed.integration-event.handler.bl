@@ -2,6 +2,7 @@ IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
+    // TODO add return type
     handle(event: [todo][todo]TodoCompletedIntegrationEvent) {
       const userId = event.data.userId;
 

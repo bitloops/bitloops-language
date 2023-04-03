@@ -225,7 +225,7 @@ Bytes: 'bytes';
 Timestamp: 'timestamp';
 Struct: 'Struct';
 
-TypeAlias : 'type';
+// TypeAlias : 'type';
 
 Get: 'get';
 Set: 'set';

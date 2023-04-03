@@ -1,16 +1,16 @@
 Struct NotificationTemplateInput {
     string emailOrigin;
-    NotificationTemplateReadModel notificationTemplate; // TODO this must be | null
+    NotificationTemplateReadModel notificationTemplate;
 }
 
-DomainService MarketingNotificationService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
 
-    public getNotificationTemplateToBeSent(user: UserEntity)): (OK(NotificationTemplateInput), Errors()) {
+    public getNotificationTemplateToBeSent(user: UserEntity): (OK(NotificationTemplateInput), Errors()) {
         const emailOrigin = 'marketing@bitloops.com';
-        let notificationTemplate: NotificationTemplateReadModel | null; // TODO variable declaration is missing from bl syntax
+        notificationTemplate: NotificationTemplateReadModel;
         if (user.isFirstTodo()) {
           const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
-              NotificationTemplateReadModel.firstTodo,
+              'firstTodo'
             );
           if(notificationTemplateResponse is Error){
             return Error(notificationTemplateResponse);

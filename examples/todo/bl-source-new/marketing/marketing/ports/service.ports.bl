@@ -5,6 +5,5 @@ Struct Email {
 }
 
 ServicePort EmailServicePort {
-    // TODO change response to be OK, error
-    send(email: Email): void;
+    send(email: Email): (OK(void),Errors());
 }
