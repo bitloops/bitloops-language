@@ -1281,7 +1281,7 @@ export type TDomainEvent = {
     [DomainEventIdentifierKey]: TDomainEventIdentifier;
     entityIdentifier: TEntityIdentifier;
     topic: TExpression;
-  };
+  } & Partial<TVariables>;
 };
 
 type TDomainEventHandlerIdentifier = string;

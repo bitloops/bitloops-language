@@ -25,10 +25,12 @@ import {
   TDomainEvent,
   TMetadata,
   TTargetDependenciesTypeScript,
+  TVariable,
+  fieldsKey,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { getChildDependencies, getParentDependencies } from '../../dependencies.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 const DOMAIN_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -58,10 +60,11 @@ export const domainEventToTargetLanguage = (
   const dependencies = DOMAIN_EVENT_DEPENDENCIES();
 
   const domainEventName = domainEvent[DomainEventIdentifierKey];
-  const entityName = domainEvent.entityIdentifier;
+  // const entityName = domainEvent.entityIdentifier;
 
-  const entityDependency = getChildDependencies(entityName);
-  dependencies.push(...entityDependency);
+  const fields = domainEvent[fieldsKey];
+  // const entityDependency = getChildDependencies(entityName);
+  // dependencies.push(...entityDependency);
 
   const contextId = `'${contextData.boundedContext}'`;
   const { topic } = domainEvent;
@@ -69,10 +72,13 @@ export const domainEventToTargetLanguage = (
     type: BitloopsTypesMapping.TExpression,
     value: topic,
   });
-  dependencies.push(...eventName.dependencies);
-  result += `export class ${domainEventName} implements Domain.IDomainEvent<${entityName}> { `;
+  const domainEventPropsIdentifier = `${domainEventName}Props`;
+  const domainEventProps = getDomainEventPropsType(domainEventPropsIdentifier, fields);
+  dependencies.push(...domainEventProps.dependencies, ...eventName.dependencies);
+  result += domainEventProps.output + '\n';
+  result += `export class ${domainEventName} implements Domain.IDomainEvent<${domainEventPropsIdentifier}> { `;
   result += getClassProperties(contextId);
-  result += generateConstructor(entityName);
+  result += generateConstructor(domainEventPropsIdentifier);
   result += '}';
 
   const finalDependencies = getParentDependencies(dependencies, {
@@ -84,15 +90,13 @@ export const domainEventToTargetLanguage = (
 };
 
 const generateConstructor = (entityIdentifier: string): string => {
-  return (
-    `constructor(public readonly data: ${entityIdentifier}) {` +
-    ' this.aggregateId = data.id.toString();' +
-    '}'
-  );
+  // TODO rename data to payload(here and core-library)
+  return `constructor(public readonly data: ${entityIdentifier}) {}`;
+  //  + ' this.aggregateId = data.aggregateId;' + '}'
 };
 
 const getClassProperties = (contextId: string): string => {
-  let classProperties = 'public aggregateId: string;';
+  let classProperties = ''; // 'public aggregateId: string;';
 
   const metadata: TMetadata = {
     contextId,
@@ -104,4 +108,29 @@ const getClassProperties = (contextId: string): string => {
   });
   classProperties += metadataProperty.output;
   return classProperties;
+};
+
+const getDomainEventPropsType = (
+  propsIdentifier: string,
+  variables: TVariable[] | undefined,
+): TTargetDependenciesTypeScript => {
+  if (variables === undefined) {
+    return {
+      output: `type ${propsIdentifier} = {
+        aggregateId: string;
+      }`,
+      dependencies: [],
+    };
+  }
+  const variablesResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TVariables,
+    value: variables,
+  });
+  const type = `type ${propsIdentifier} = {
+    ${variablesResult.output}
+  } & {
+    aggregateId: string;
+  }
+  `;
+  return { output: type, dependencies: variablesResult.dependencies };
 };

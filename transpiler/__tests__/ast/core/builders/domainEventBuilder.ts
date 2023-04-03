@@ -1,11 +1,17 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import { DomainEventIdentifierKey, TDomainEvent, TExpression } from '../../../../src/types.js';
+import {
+  DomainEventIdentifierKey,
+  TDomainEvent,
+  TExpression,
+  TVariables,
+} from '../../../../src/types.js';
 import { TopicUtils } from '../../../../src/utils/topic.js';
 import { ExpressionBuilderDirector } from './expressionDirector.js';
 
 export class DomainEventBuilder implements IBuilder<TDomainEvent> {
   private identifierName: string;
   private entityIdentifier: string;
+  private fields?: TVariables;
   constructor(private contextInfo: { boundedContextName: string; moduleName: string }) {}
 
   public withIdentifier(identifierName: string): DomainEventBuilder {
@@ -15,6 +21,11 @@ export class DomainEventBuilder implements IBuilder<TDomainEvent> {
 
   public withAggregateRootName(entityIdentifier: string): DomainEventBuilder {
     this.entityIdentifier = entityIdentifier;
+    return this;
+  }
+
+  public withVariables(fields: TVariables): DomainEventBuilder {
+    this.fields = fields;
     return this;
   }
 
@@ -35,6 +46,7 @@ export class DomainEventBuilder implements IBuilder<TDomainEvent> {
         [DomainEventIdentifierKey]: this.identifierName,
         entityIdentifier: this.entityIdentifier,
         topic: this.generateTopic(),
+        ...(this.fields ?? {}),
       },
     };
   }

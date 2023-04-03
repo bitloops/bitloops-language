@@ -22,6 +22,7 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import { DomainEventDeclarationNodeBuilder } from '../../intermediate-ast/builders/DomainEvent/DomainEventDeclarationNodeBuilder.js';
 import { DomainEventIdentifierNodeBuilder } from '../../intermediate-ast/builders/DomainEvent/DomainEventIdentifierNodeBuilder.js';
 import { DomainEventIdentifierNode } from '../../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
+import { FieldListNode } from '../../intermediate-ast/nodes/FieldList/FieldListNode.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
 
@@ -32,15 +33,24 @@ export const domainEventDeclarationVisitor = (
   const domainEventName: DomainEventIdentifierNode = thisVisitor.visit(ctx.domainEventIdentifier());
 
   const entityIdentifier = thisVisitor.visit(ctx.entityIdentifier());
+  let fieldListNode: FieldListNode;
+  if (ctx.fieldList()) {
+    fieldListNode = thisVisitor.visit(ctx.fieldList());
+  }
 
-  new DomainEventDeclarationNodeBuilder(
+  const domainEvent = new DomainEventDeclarationNodeBuilder(
     thisVisitor.intermediateASTTree,
     produceMetadata(ctx, thisVisitor),
   )
     .withIdentifier(domainEventName)
     .withEntityIdentifier(entityIdentifier)
-    .withContextInfo(thisVisitor.contextInfo)
-    .build();
+    .withContextInfo(thisVisitor.contextInfo);
+
+  if (fieldListNode) {
+    domainEvent.withFieldList(fieldListNode);
+  }
+
+  domainEvent.build();
 };
 
 export const domainEventIdentifierVisitor = (

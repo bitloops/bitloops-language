@@ -1,13 +1,9 @@
 import { Domain, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
-type AccountCreatedDomainEventProps = {
-  email: string;
-  code: string;
-} & {
+type AccountDeletedDomainEventProps = {
   aggregateId: string;
 };
-
-export class AccountCreatedDomainEvent
-  implements Domain.IDomainEvent<AccountCreatedDomainEventProps>
+export class AccountDeletedDomainEvent
+  implements Domain.IDomainEvent<AccountDeletedDomainEventProps>
 {
   public readonly metadata: Domain.TDomainEventMetadata = {
     boundedContextId: 'Banking',
@@ -16,5 +12,5 @@ export class AccountCreatedDomainEvent
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     context: asyncLocalStorage.getStore()?.get('context'),
   };
-  constructor(public readonly data: AccountCreatedDomainEventProps) {}
+  constructor(public readonly data: AccountDeletedDomainEventProps) {}
 }

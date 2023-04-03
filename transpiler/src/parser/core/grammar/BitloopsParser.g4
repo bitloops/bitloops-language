@@ -224,7 +224,6 @@ sourceElement
     | readModelDeclaration
     | commandDeclaration
     | queryDeclaration
-    | domainEventDeclaration
     | commandHandler
     | queryHandler
     | integrationEventDeclaration
@@ -555,7 +554,7 @@ repoPortExtendableIdentifier
 
 
 domainEventDeclaration
-    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' SemiColon?
+    : DomainEvent domainEventIdentifier '<' entityIdentifier '>' OpenBrace fieldList? CloseBrace
     ;
 
 domainEventIdentifier

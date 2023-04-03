@@ -125,7 +125,7 @@ const generateConstructor = (integrationEventIdentifier: string): string => {
     value: metadata,
   });
   return (
-    `constructor(public data: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string) {` +
+    `constructor(public payload: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string) {` +
     metadataProperty.output +
     '}'
   );
@@ -139,8 +139,8 @@ const generateCreate = (
     `static create(event: ${eventInputParameterType}): ${integrationEventIdentifier}[] {` +
     `   return ${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.versionsFieldName}.map((version) => {` +
     `       const mapper = ${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.versionMappersFieldName}[version];` +
-    '       const data = mapper(event);' +
-    `       return new ${integrationEventIdentifier}(data, version)` +
+    '       const payload = mapper(event);' +
+    `       return new ${integrationEventIdentifier}(payload, version)` +
     '   });' +
     '}'
   );
