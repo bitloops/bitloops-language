@@ -104,3 +104,4 @@ dist
 .tern-port
 /lib
 documentation/package-lock.json
+examples/todo/ts-target/telemetry-consumer/Dockerfile

@@ -45,6 +45,7 @@ services:
 
   nats:
     image: nats:latest
+    container_name: nats
     ports:
       - '4222:4222'
       - '8222:8222'
@@ -73,10 +74,6 @@ services:
 
   prometheus-nats-exporter:
     image: natsio/prometheus-nats-exporter:latest
-    # environment:
-    # POSTGRES_PASSWORD: postgres
-    # POSTGRES_DB: yourdbname
-    # POSTGRES_USER: yourusername
     ports:
       - '7777:7777'
     command:
@@ -86,9 +83,8 @@ services:
 
   jaeger:
     image: jaegertracing/all-in-one:latest
+    container_name: jaeger
     ports:
-      # - "16686:16686"
-      # - "14268:14268"
       - '6831:6831'
       - '6832:6832'
       - '5778:5778'
@@ -105,21 +101,6 @@ services:
     networks:
       - bitloops
 
-  # hotrod:
-  #   image: jaegertracing/example-hotrod:latest
-  #   # To run the latest trunk build, find the tag at Docker Hub and use the line below
-  #   # https://hub.docker.com/r/jaegertracing/example-hotrod-snapshot/tags
-  #   #image: jaegertracing/example-hotrod-snapshot:0ab8f2fcb12ff0d10830c1ee3bb52b745522db6c
-  #   ports:
-  #     - "8080:8082"
-  #   command: ["all"]
-  #   environment:
-  #     - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
-  #   networks:
-  #     - bitloops
-  #   depends_on:
-  #     - jaeger
-
   pushgateway:
     image: prom/pushgateway
     container_name: pushgateway
@@ -132,6 +113,7 @@ services:
       - bitloops
     labels:
       org.label-schema.group: 'monitoring'
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -178,6 +160,16 @@ services:
       context: ./envoy
     ports:
       - '8080:8080'
+    networks:
+      - bitloops
+      
+  telemetry-consumer:
+    container_name: bl-telemetry-consumer
+    build: 
+      context: ./telemetry-consumer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
     networks:
       - bitloops
 
