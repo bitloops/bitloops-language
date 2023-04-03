@@ -27,6 +27,7 @@ import { EntityConstructorEvaluationNodeBuilder } from '../../../../../src/ast/c
 import { StandardVOEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/StandardVOEvaluationNodeBuilder.js';
 import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { DomainServiceEvaluationBuilderDirector } from './domainServiceEvaluationBuilderDirector.js';
+import { ReadModelEvaluationBuilderDirector } from './domainEvaluation/readModelEvaluation.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -67,6 +68,20 @@ export class EvaluationBuilderDirector {
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
     return evaluationNode;
   }
+
+  buildReadModelEvaluation(
+    readModelName: string,
+    fieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const readModelEvaluationNode =
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+        readModelName,
+        fieldListNode,
+      );
+    const evaluationNode = new EvaluationBuilder().withEvaluation(readModelEvaluationNode).build();
+    return evaluationNode;
+  }
+
   buildIntegrationEventEvaluation(
     integrationEventName: string,
     fieldListNode: EvaluationFieldListNode,

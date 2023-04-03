@@ -287,7 +287,8 @@ export type TEvaluationValues =
   | TCommandEvaluation
   | TQueryEvaluation
   | TStandardVOEvaluation
-  | TDomainServiceEvaluation;
+  | TDomainServiceEvaluation
+  | TReadModelEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -378,7 +379,12 @@ type TDomainEvaluationName =
   | {
       entityIdentifier: TEntityIdentifier;
     }
-  | { valueObjectIdentifier: TValueObjectIdentifier };
+  | { valueObjectIdentifier: TValueObjectIdentifier }
+  | { readModelIdentifier: TReadModelIdentifier };
+
+export type TReadModelEvaluation = {
+  readModelEvaluation: TDomainEvaluation;
+};
 
 export type TDomainEvaluationExpression = TEvaluationFields | TExpression;
 

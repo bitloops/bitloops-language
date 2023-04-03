@@ -9,6 +9,7 @@ import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { ValueObjectEvaluationBuilderDirector } from '../../builders/domainEvaluation/valueObjectEvaluation.js';
 import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { ReadModelEvaluationBuilderDirector } from '../../builders/domainEvaluation/readModelEvaluation.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -115,6 +116,22 @@ export const VALID_EVALUATION_TEST_CASES = [
       new ExpressionBuilderDirector().buildIdentifierExpression('todoProps'),
     ),
     output: 'new TodoEntity(todoProps)',
+  },
+  {
+    description: 'Read model evaluation',
+    evaluation: new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+      'UserEmailReadModel',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'email',
+            'user@bitloops.com',
+          ),
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('userId', '123'),
+        ])
+        .build(),
+    ),
+    output: "UserEmailReadModel.fromPrimitives({ email: 'user@bitloops.com', userId: '123' })",
   },
 ];
 
@@ -327,5 +344,51 @@ export const VALID_DOMAIN_SERVICE_EVALUATION_TEST_CASES = [
       ]),
     ),
     output: 'new MarketingNotificationDomainService(this.repo)',
+  },
+];
+
+export const VALID_READ_MODEL_EVALUATION_TEST_CASES = [
+  {
+    description: 'Valid read model evaluation',
+    readModelEvaluation:
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+        'UserEmailReadModel',
+        new EvaluationFieldListNodeBuilder()
+          .withEvaluationFields([
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+              'email',
+              'user@bitloops.com',
+            ),
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('userId', '123'),
+          ])
+          .build(),
+      ),
+    output: "UserEmailReadModel.fromPrimitives({ email: 'user@bitloops.com', userId: '123' })",
+  },
+  {
+    description: 'Valid read model evaluation with identifiers',
+    readModelEvaluation:
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+        'UserEmailReadModel',
+        new EvaluationFieldListNodeBuilder()
+          .withEvaluationFields([
+            new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField(
+              'email',
+              'emailFromRepo',
+            ),
+            new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField('userId', 'id'),
+          ])
+          .build(),
+      ),
+    output: 'UserEmailReadModel.fromPrimitives({ email: emailFromRepo, userId: id })',
+  },
+  {
+    description: 'Valid read model evaluation with identifier expression',
+    readModelEvaluation:
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithExpression(
+        'UserEmailReadModel',
+        new ExpressionBuilderDirector().buildIdentifierExpression('userEmail'),
+      ),
+    output: 'UserEmailReadModel.fromPrimitives(userEmail)',
   },
 ];
