@@ -70,10 +70,12 @@ export const domainEventHandlerHandleMethodVisitor = (
 ): EventHandleNode => {
   const parameter = thisVisitor.visit(ctx.domainEventHandlerHandleParameter());
   const statementList: StatementListNode = thisVisitor.visit(ctx.functionBody());
+  const returnOkErrorType = thisVisitor.visit(ctx.returnOkErrorType());
 
   return new EventHandlerHandleMethodNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withParameter(parameter)
     .withStatementList(statementList)
+    .withReturnType(returnOkErrorType)
     .build();
 };
 

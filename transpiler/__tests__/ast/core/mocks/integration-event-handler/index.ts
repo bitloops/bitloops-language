@@ -5,6 +5,7 @@ import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderD
 import { IntegrationEventHandlerBuilder } from '../../builders/integration-event/IntegrationEventHandlerBuilder.js';
 import { IntegrationEventParameterBuilder } from '../../builders/IntegrationEventParameterBuilder.js';
 import { BoundedContextModuleBuilderDirector } from '../../../setup/builders/boundedContextModuleBuilderDirector.js';
+import { StatementDirector } from '../../builders/statement/statementDirector.js';
 
 export const validIntegrationEventHandlersTestCases = [
   {
@@ -30,6 +31,7 @@ export const validIntegrationEventHandlersTestCases = [
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
+          new StatementDirector().buildEmptyReturnOK(),
         ],
         parameter: new IntegrationEventParameterBuilder()
           .withValue('event')
@@ -63,6 +65,7 @@ export const validIntegrationEventHandlersTestCases = [
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
+          new StatementDirector().buildEmptyReturnOK(),
         ],
         parameter: new IntegrationEventParameterBuilder()
           .withValue('event')

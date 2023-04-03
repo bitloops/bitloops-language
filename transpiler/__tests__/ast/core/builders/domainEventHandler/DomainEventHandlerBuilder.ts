@@ -3,6 +3,7 @@ import {
   TDomainEventHandler,
   TEventHandlerBusDependencies,
   THandle,
+  TOkErrorReturnType,
   TParameter,
   TParameterList,
   TStatements,
@@ -27,13 +28,16 @@ export class DomainEventHandlerBuilder implements IBuilder<TDomainEventHandler> 
   public withHandleMethod({
     statements,
     parameter,
+    returnType,
   }: {
     statements: TStatements;
     parameter: TParameter;
+    returnType: TOkErrorReturnType;
   }): DomainEventHandlerBuilder {
     this.handle = {
       statements,
       ...parameter,
+      returnType: returnType.returnType,
     };
     return this;
   }

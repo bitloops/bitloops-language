@@ -7,6 +7,7 @@ import { IntegrationEventDeclarationBuilder } from '../../builders/integration-e
 import { IntegrationVersionMapperBuilderDirector } from '../../builders/integration-event/IntegrationVersionMapperBuilderDirector.js';
 import { IntegrationVersionMapperListBuilder } from '../../builders/integration-event/IntegrationVersionMapperListBuilder.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
+import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/variableDeclarationDirector.js';
 
 export const validIntegrationEventTestCases = [
@@ -73,6 +74,10 @@ export const validIntegrationEventTestCases = [
             },
           },
         },
+        returnType:
+          new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors(
+            'void',
+          ),
       })
       .withIntegrationEventBusDependency()
       .build(),
@@ -153,6 +158,10 @@ export const validIntegrationEventTestCases = [
             },
           },
         },
+        returnType:
+          new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors(
+            'void',
+          ),
       })
       .withIntegrationEventBusDependency()
       .build(),

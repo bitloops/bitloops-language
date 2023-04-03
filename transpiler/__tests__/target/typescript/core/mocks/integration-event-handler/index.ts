@@ -22,7 +22,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
   {
     description: 'money deposited IntegrationEventHandler',
     integrationEventHandler:
-      new IntegrationEventHandlerBuilderDirector().buildIntegrationEventHandler({
+      new IntegrationEventHandlerBuilderDirector().buildIntegrationEventHandlerNoError({
         identifier: 'MoneyDepositedIntegrationHandler',
         versionName: 'v1',
         parameters: [],
@@ -44,6 +44,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],
+        returnOkType: 'void',
       }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/integration-event-handler/moneyDepositedIntegrationHandler.mock.ts',
@@ -52,7 +53,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
   {
     description: 'event handler with injected dependency',
     integrationEventHandler:
-      new IntegrationEventHandlerBuilderDirector().buildIntegrationEventHandler({
+      new IntegrationEventHandlerBuilderDirector().buildIntegrationEventHandlerNoError({
         identifier: 'MoneyDepositedIntegrationHandler',
         versionName: 'v1',
         parameters: [
@@ -76,6 +77,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],
+        returnOkType: 'void',
       }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/integration-event-handler/handlerWithDependency.mock.ts',
@@ -108,6 +110,8 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],
+        returnOkType: 'void',
+        returnErrorType: 'ApplicationErrors.InvalidMoneyError',
       }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/integration-event-handler/handlerWithEventFromPackage.mock.ts',

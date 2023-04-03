@@ -3,6 +3,7 @@ import { IntegrationEventHandlerDeclarationNodeBuilder } from '../../../../../sr
 import { IntegrationEventHandlerHandleMethodNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventHandlerHandleMethodNodeBuilder.js';
 import { IntegrationEventHandlerIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/integration-event/IntegrationEventHandlerIdentifierNodeBuilder.js';
 import { ParameterListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterListNodeBuilder.js';
+import { ReturnOkErrorTypeNodeDirector } from '../../../../../src/ast/core/intermediate-ast/builders/returnOkErrorType/ReturnOkTypeNodeBuilderDirector.js';
 import { StatementListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntegrationEventHandlerDeclarationNode } from '../../../../../src/ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
@@ -20,17 +21,73 @@ export class IntegrationEventHandlerBuilderDirector {
     executeParameter,
     statements,
     versionName,
+    returnOkType,
+    returnErrorType,
   }: {
     identifier: string;
     parameters: ParameterNode[];
     executeParameter?: IntegrationEventParameterNode;
     statements: StatementNode[];
     versionName: string;
+    returnOkType: string;
+    returnErrorType: string;
   }): IntegrationEventHandlerDeclarationNode {
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
     const handleNode = new IntegrationEventHandlerHandleMethodNodeBuilder()
       .withParameter(executeParameter)
       .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
+      .withReturnType(
+        new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithIdentifierOk(
+          returnOkType,
+          returnErrorType,
+        ),
+      )
+      .build();
+
+    const defaultEventBusDependencies = new EventHandlerBusDependenciesNodeBuilder()
+      .withCommandBus()
+      .build();
+
+    const eventVersion = new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+      IntegrationEventHandlerOptions.eventVersion,
+      versionName,
+    );
+
+    return new IntegrationEventHandlerDeclarationNodeBuilder(tree)
+      .withIdentifier(
+        new IntegrationEventHandlerIdentifierNodeBuilder(null).withName(identifier).build(),
+      )
+      .withParameterList(new ParameterListNodeBuilder(null).withParameters(parameters).build())
+      .withHandleMethod(handleNode)
+      .withEventBusDependencies(defaultEventBusDependencies)
+      .withEventVersion(eventVersion)
+      .build();
+  }
+
+  buildIntegrationEventHandlerNoError({
+    identifier,
+    parameters,
+    executeParameter,
+    statements,
+    versionName,
+    returnOkType,
+  }: {
+    identifier: string;
+    parameters: ParameterNode[];
+    executeParameter?: IntegrationEventParameterNode;
+    statements: StatementNode[];
+    versionName: string;
+    returnOkType: string;
+  }): IntegrationEventHandlerDeclarationNode {
+    const tree = new IntermediateASTTree(new IntermediateASTRootNode());
+    const handleNode = new IntegrationEventHandlerHandleMethodNodeBuilder()
+      .withParameter(executeParameter)
+      .withStatementList(new StatementListNodeBuilder(null).withStatements(statements).build())
+      .withReturnType(
+        new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors(
+          returnOkType,
+        ),
+      )
       .build();
 
     const defaultEventBusDependencies = new EventHandlerBusDependenciesNodeBuilder()

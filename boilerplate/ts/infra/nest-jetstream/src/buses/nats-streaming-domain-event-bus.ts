@@ -49,7 +49,7 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
         headers,
       };
       // const pubAck =
-      domainEvent.data = domainEvent.data.toPrimitives();
+      // domainEvent.data = domainEvent.data.toPrimitives();
       const message = jsonCodec.encode(domainEvent);
       this.logger.log('publishing domain event to:' + subject);
 

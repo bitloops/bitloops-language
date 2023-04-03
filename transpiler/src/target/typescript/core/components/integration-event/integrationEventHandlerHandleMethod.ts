@@ -18,17 +18,28 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  TDependenciesTypeScript,
   TIntegrationEventHandlerHandleMethod,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
+const INTEGRATION_EVENT_HANDLER_HANDLE_DEPENDENCIES: () => TDependenciesTypeScript = () => [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 export const integrationEventHandlerHandleMethod = (
   handle: TIntegrationEventHandlerHandleMethod,
 ): TTargetDependenciesTypeScript => {
+  const dependencies = INTEGRATION_EVENT_HANDLER_HANDLE_DEPENDENCIES();
+
   const { integrationEventHandlerHandleMethod } = handle;
-  const { statements, integrationEventParameter } = integrationEventHandlerHandleMethod;
+  const { statements, integrationEventParameter, returnType } = integrationEventHandlerHandleMethod;
   const parameterTarget = modelToTargetLanguage({
     value: { integrationEventParameter },
     type: BitloopsTypesMapping.TIntegrationEventParameter,
@@ -39,10 +50,19 @@ export const integrationEventHandlerHandleMethod = (
     type: BitloopsTypesMapping.TStatements,
   });
 
-  const dependencies = [...parameterTarget.dependencies, ...statementsTarget.dependencies];
+  const returnTypeTarget = modelToTargetLanguage({
+    value: { returnType },
+    type: BitloopsTypesMapping.TOkErrorReturnType,
+  });
+
+  dependencies.push(
+    ...parameterTarget.dependencies,
+    ...statementsTarget.dependencies,
+    ...returnTypeTarget.dependencies,
+  );
 
   const result = `
-  public async handle(${parameterTarget.output}): Promise<void> {
+  public async handle(${parameterTarget.output}): Promise<${returnTypeTarget.output}> {
     ${statementsTarget.output}
   }
   `;

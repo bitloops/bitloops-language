@@ -1,5 +1,6 @@
-DomainEventHandler SendEmailAfterMoneyDepositedDomainEventHandler() {
-
+DomainEventHandler SendEmailAfterMoneyDepositedDomainEventHandler(): (OK(void), Errors(
+  ApplicationErrors.AccountNotFound
+)) {
     handle(event: MoneyDepositedToAccountDomainEvent) {
       console.log(event);
     }
