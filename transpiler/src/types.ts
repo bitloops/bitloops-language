@@ -1289,7 +1289,8 @@ export type THandle = TExecute;
 export type TIntegrationEventHandlerHandleMethod = {
   integrationEventHandlerHandleMethod: {
     statements: TStatements;
-  } & TIntegrationEventParameter;
+  } & TOkErrorReturnType &
+    TIntegrationEventParameter;
 };
 
 export type TIntegrationEventParameter = {
