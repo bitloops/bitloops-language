@@ -168,7 +168,7 @@ services:
     build: 
       context: ./telemetry-consumer
     restart: unless-stopped
-    ports:
+    # ports:
       # - "8080:8081"
     networks:
       - bitloops
