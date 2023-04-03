@@ -1,1 +1,5 @@
-DomainEvent UserChangedEmailDomainEvent<UserEntity>;
+DomainEvent UserChangedEmailDomainEvent<UserEntity> {
+    string email;
+    string password;
+    string lastLogin;
+}

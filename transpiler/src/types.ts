@@ -526,7 +526,7 @@ export type TVariableDeclaration = {
   [variableDeclarationKey]: {
     identifier: string;
   } & TBitloopsPrimaryType &
-    TExpression;
+    Partial<TExpression>;
 };
 
 export type TBreakStatement = {

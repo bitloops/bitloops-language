@@ -346,7 +346,7 @@ export class IntermediateASTTree {
         return false;
       }
       const expression = node.getExpressionValues();
-      if (!expression.isEvaluation()) {
+      if (!expression || !expression.isEvaluation()) {
         return false;
       }
       const evaluation = expression.getEvaluationChild();
