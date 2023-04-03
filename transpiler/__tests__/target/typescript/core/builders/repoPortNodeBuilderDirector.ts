@@ -13,7 +13,6 @@ import { IntermediateASTTree } from '../../../../../src/ast/core/intermediate-as
 import { RepoPortNode } from '../../../../../src/ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
-import { ReturnOkErrorTypeBuilderDirector } from './returnOkErrorTypeBuilderDirector.js';
 
 export class RepoPortNodeBuilderDirector {
   private builder: RepoPortBuilder;

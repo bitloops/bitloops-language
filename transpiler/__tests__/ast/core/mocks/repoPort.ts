@@ -1,3 +1,4 @@
+import { ErrorIdentifiersNodeBuilderDirector } from '../../../../src/ast/core/intermediate-ast/directors/ErrorIdentifiersNodeBuilderDirector.js';
 import { TRepoPort } from '../../../../src/types.js';
 import { BitloopsPrimaryTypeDirector } from '../builders/bitloopsPrimaryTypeDirector.js';
 import { ExtendsRepoPortBuilder } from '../builders/extendedRepoBuilder.js';
@@ -53,7 +54,9 @@ export const validRepoPortCases: TestCase[] = [
                 ],
                 returnType: new ReturnOkErrorTypeBuilder()
                   .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
-                  .withErrors([])
+                  .withErrors([
+                    { error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName },
+                  ])
                   .build(),
               },
             ),
