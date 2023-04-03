@@ -35,7 +35,12 @@ When a todo is completed, if this is the first completed todo, an email should b
 
 # II. Technologies and Technical Features 
 
+
 ## Technical Features 
+<p align="left" style="margin-bottom: 0px !important;">
+  <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/jaeger_small.png" alt="Jaeger" align="center">
+</p>
+
 * **Observability**
 * **Realtime client events**
 * **Logging**
@@ -70,16 +75,19 @@ In order to run the application the following should have been installed on your
 * **docker-compose** should be installed, if your docker installation does not install it automatically ([link](https://docs.docker.com/compose/install/))
 
 ## Running the app
-Run `docker-compose up` from the terminal inside the project **in order to download and run the necessary containers**.
+In order to run the application you need to follow the steps below:
+* Run `git clone git@github.com:bitloops/bitloops-language.git`
+* Navigate  to the folder `cd bitloops-language/examples/todo/ts-target`
+* Run `docker-compose up` from the terminal inside the project **in order to download and run the necessary containers**.
 
 Then the ReactJS front-end application will be visible at: `http://localhost:3000`.
 
 <p align="center" style="margin-bottom: 0px !important;">
-  <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/todo-frontend.png" alt="Fronte end application" align="center">
+  <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/todo-frontend.png" alt="Frontend application" align="center">
 </p>
 
 <p align="center">
-Front end React JS application
+Frontend React JS application
 </p>
 
 # IV. Todo App Event Storming
@@ -135,6 +143,8 @@ In order to run the application the following should have been installed on your
 
 After all the necessary have been installed on your local machine, you should follow the **steps** mentioned below to run the application:
 
+* Run `git clone git@github.com:bitloops/bitloops-language.git`
+* Navigate  to the folder `cd bitloops-language/examples/todo/ts-target`
 * Run `yarn install` (if you are using yarn) or `npm install`, from the terminal inside the project **to install the necessary packages**.
 * **Start docker on your machine**.
 * Run `docker-compose up` from the terminal inside the project **in order to download and run the necessary containers**.
