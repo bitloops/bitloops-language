@@ -10,74 +10,49 @@ type TestCase = {
 };
 
 const setupFilePaths = {
-  'fastifyIndex.mock.ts': {
-    fileId: 'src/shared/infra/rest/fastify/routers/index.ts',
-    fileType: 'REST.Fastify.Router',
-    formatterParser: 'typescript',
-  },
-  'index.mock.ts': {
-    fileId: 'src/index.ts',
-    fileType: 'startup',
-    formatterParser: 'typescript',
-  },
-  'packageMock.json': {
-    fileId: 'package.json',
-    fileType: 'Config',
-    formatterParser: 'json',
-  },
-  'tsconfigMock.json': {
-    fileId: 'tsconfig.json',
-    fileType: 'Config',
-    formatterParser: 'json',
-  },
-  'nodemonMock.json': {
-    fileId: 'nodemon.json',
-    fileType: 'Config',
-    formatterParser: 'json',
-  },
-  'app0.mock.ts': {
-    fileId: 'src/shared/infra/rest/fastify/app0.ts',
-    fileType: 'REST.Fastify.Server',
-    formatterParser: 'typescript',
-  },
-  'api.index.mock.ts': {
-    fileId: 'src/shared/infra/rest/fastify/api/index.ts',
-    fileType: 'REST.Fastify.API',
-    formatterParser: 'typescript',
-  },
-  'di.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/DI.ts',
-    fileType: 'DI',
-    formatterParser: 'typescript',
-  },
   'di-constants.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/constants.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/constants.ts',
     fileType: 'DI.Tokens',
     formatterParser: 'typescript',
   },
   'domainError.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/domain/errors/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/domain/errors/index.ts',
     fileType: 'DomainError',
     formatterParser: 'typescript',
   },
   'applicationError.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/application/errors/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/errors/index.ts',
     fileType: 'ApplicationError',
     formatterParser: 'typescript',
   },
   'domainRule.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/domain/rules/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/domain/rules/index.ts',
     fileType: 'DomainRule',
     formatterParser: 'typescript',
   },
-  'appConfig.mock.ts': {
-    fileId: 'src/config/index.ts',
-    fileType: 'config',
+  'index.command-handlers.mock.ts': {
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/commandHandlers/index.ts',
+    fileType: 'index.ts',
     formatterParser: 'typescript',
   },
-  'subscriptions.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/subscriptions/index.ts',
-    fileType: 'subscriptions',
+  'index.query-handlers.mock.ts': {
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/queryHandlers/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
+  'index.domain-event-handlers.mock.ts': {
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/handlers/domain/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
+  'index.integration-event-handlers.mock.ts': {
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/handlers/integration/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
+  'nest.module.mock.ts': {
+    fileId: 'lib/bounded-contexts/demo/hello-world/hello-world.module.ts',
+    fileType: 'nest.module.ts',
     formatterParser: 'typescript',
   },
 };

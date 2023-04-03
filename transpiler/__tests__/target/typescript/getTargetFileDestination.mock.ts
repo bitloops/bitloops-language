@@ -5,7 +5,7 @@ export const MissingBoundedContext = {
     classType: 'Props',
     className: 'NameProps',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/core/domain/',
+    path: './lib/bounded-contexts/hello-world/core/domain/',
     filename: 'NameProps.ts',
   },
 };
@@ -17,7 +17,7 @@ export const MissingModule = {
     classType: 'Props',
     className: 'NameProps',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/core/domain/',
+    path: './lib/bounded-contexts/hello-world/core/domain/',
     filename: 'NameProps.ts',
   },
 };
@@ -72,7 +72,7 @@ export const SupportedTargetLanguageAndClassType = [
     classType: 'Props',
     className: 'NameProps',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/core/domain/',
+    path: './lib/bounded-contexts/hello-world/core/domain/',
     filename: 'NameProps.ts',
   },
   {
@@ -81,7 +81,7 @@ export const SupportedTargetLanguageAndClassType = [
     classType: 'Props',
     className: 'NameProps',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/iam/domain/',
+    path: './lib/bounded-contexts/hello-world/iam/domain/',
     filename: 'NameProps.ts',
   },
   {
@@ -90,7 +90,7 @@ export const SupportedTargetLanguageAndClassType = [
     classType: 'ValueObject',
     className: 'Name',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/async-notifications/domain/',
+    path: './lib/bounded-contexts/hello-world/async-notifications/domain/',
     filename: 'Name.ts',
   },
   {
@@ -99,7 +99,7 @@ export const SupportedTargetLanguageAndClassType = [
     classType: 'RootEntity',
     className: 'Member',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/invoices/domain/',
+    path: './lib/bounded-contexts/hello-world/invoices/domain/',
     filename: 'Member.ts',
   },
   {
@@ -108,7 +108,7 @@ export const SupportedTargetLanguageAndClassType = [
     classType: 'Controller',
     className: 'HelloWorldController',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/core/driving-adapters/',
+    path: './lib/bounded-contexts/hello-world/core/driving-adapters/',
     filename: 'HelloWorldController.ts',
   },
   {
@@ -117,7 +117,7 @@ export const SupportedTargetLanguageAndClassType = [
     classType: 'UseCase',
     className: 'HelloWorldUseCase',
     targetLanguage: 'TypeScript',
-    path: './src/bounded-contexts/hello-world/core/application/',
+    path: './lib/bounded-contexts/hello-world/core/application/',
     filename: 'HelloWorldUseCase.ts',
   },
 ];

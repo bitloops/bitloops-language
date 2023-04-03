@@ -17,11 +17,4 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
-import { helloWorldRESTRouter } from '../routers/index';
-
-const routers = async (serverInstance: Fastify.Instance, _opts: any) => {
-  serverInstance.register(helloWorldRESTRouter, { prefix: '/say' });
-};
-
-export { routers };
+export const StreamingDomainEventHandlers = [];
