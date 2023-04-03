@@ -61,13 +61,9 @@ export class HandlersAggregator implements IHandlersAggregator {
   };
   handle(): TSetupOutput[] {
     const result: TSetupOutput[] = [];
-    // For each module in each bounded context generate 1 DI file that contains all
-    // the use cases and controllers of that module that are concreted in the setup.bl
 
     for (const [boundedContextName, boundedContext] of Object.entries(this.bitloopsModel)) {
       for (const [moduleName, moduleTree] of Object.entries(boundedContext)) {
-        // Gather all imports
-
         result.push(
           this.generateCommandHandlerIndexFile(moduleTree, boundedContextName, moduleName),
         );
@@ -262,10 +258,21 @@ export class HandlersAggregator implements IHandlersAggregator {
     const modulePath = `./src/${setupTypeMapper.BOUNDED_CONTEXTS}/${kebabCase(
       boundedContextName,
     )}/${kebabCase(moduleName)}`;
-    const fileName = `${modulePath}/${ClassTypesPaths[classType] + this.FILE_NAME}`;
+    const indexFilePathFromModuleRoot = this.getIndexFilePathFromModuleRoot(classType);
+    const fileName = `${modulePath}/${indexFilePathFromModuleRoot.filePath}`;
 
     return {
       filePath: fileName,
+      fileExtension: indexFilePathFromModuleRoot.fileExtension,
+    };
+  }
+
+  static getIndexFilePathFromModuleRoot(classType: TClassTypesValues): {
+    filePath: string;
+    fileExtension: string;
+  } {
+    return {
+      filePath: `${ClassTypesPaths[classType] + this.FILE_NAME}`,
       fileExtension: 'ts',
     };
   }

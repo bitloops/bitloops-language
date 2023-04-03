@@ -53,7 +53,8 @@ export type TSetupFileType =
   | typeof ClassTypes.DomainError
   | typeof ClassTypes.DomainRule
   | 'DI.Tokens'
-  | 'index.ts';
+  | 'index.ts'
+  | 'nest.module.ts';
 
 export type TSetupTypeMapper = Record<TSetupFileType, string>;
 
@@ -65,6 +66,7 @@ export const setupTypeMapper: TSetupTypeMapper = {
   DI: '',
   'DI.Tokens': '',
   'index.ts': '',
+  'nest.module.ts': '',
   subscriptions: '',
   'package.json': '/./',
   Config: '/./',

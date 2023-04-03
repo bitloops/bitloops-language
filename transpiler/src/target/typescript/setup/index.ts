@@ -45,6 +45,7 @@ import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
 import { setupTypeMapper, TSetupFileType } from './fileDestinations.js';
 import { DITokensGenerator } from './dependency-injection-tokens/di-tokens.handler.js';
 import { HandlersAggregator } from './handlers-aggregation/handlers-aggregation.handler.js';
+import { NestModuleDeclaration } from './module-declaration/module-declaration.handler.js';
 
 export type TSetupOutput = {
   fileId: string;
@@ -149,6 +150,10 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
         license,
       );
       pathsAndContents.push(...indexHandlerAggregator.handle());
+
+      // Step 3.3 Generate nestjs module
+      const nestjsModule = new NestModuleDeclaration(bitloopsModel, setupTypeMapper, license);
+      pathsAndContents.push(...nestjsModule.handle());
 
       // Step 4. Setup server file
       const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);

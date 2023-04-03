@@ -100,6 +100,11 @@ const setupFilePaths = {
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },
+  'nest.module.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/hello-world.module.ts',
+    fileType: 'nest.module.ts',
+    formatterParser: 'typescript',
+  },
 };
 
 const getExpectedSetupOutputs = (
