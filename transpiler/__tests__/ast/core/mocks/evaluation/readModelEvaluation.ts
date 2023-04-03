@@ -14,20 +14,13 @@ export const validReadModelEvaluationTestCases: Array<TestCase> = [
     description: 'Valid read model evaluation',
     fileId: 'testFile.bl',
     inputBLString:
-      "JestTestEvaluation { UserReadModel.create({ destination: 'user@bitloops.com', origin: 'marketing@bitloops.com',content: 'Congratulation for completing your first todo!' })}",
-    evaluation: new EvaluationBuilderDirector().buildReadModelEvaluation('UserReadModel', {
+      "JestTestEvaluation { UserEmailReadModel.create({ userId: '123', destination: 'user@bitloops.com' })}",
+    evaluation: new EvaluationBuilderDirector().buildReadModelEvaluation('UserEmailReadModel', {
       fields: [
+        new EvaluationFieldBuilderDirector().buildStringEvaluationField('userId', '123'),
         new EvaluationFieldBuilderDirector().buildStringEvaluationField(
           'destination',
           'user@bitloops.com',
-        ),
-        new EvaluationFieldBuilderDirector().buildStringEvaluationField(
-          'origin',
-          'marketing@bitloops.com',
-        ),
-        new EvaluationFieldBuilderDirector().buildStringEvaluationField(
-          'content',
-          'Congratulation for completing your first todo!',
         ),
       ],
     }),
