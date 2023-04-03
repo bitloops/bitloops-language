@@ -26,7 +26,7 @@ export class TodoAddedPubSubIntegrationEventHandler
     event: TodoAddedIntegrationEvent,
   ): Promise<Either<void, never>> {
     console.log(
-      `[TodoCompletedIntegrationEvent]: Successfully received TodoAdded PubSub IntegrationEvent`,
+      `[TodoAddedIntegrationEvent]: Successfully received TodoAdded PubSub IntegrationEvent`,
     );
     const { data } = event;
 
