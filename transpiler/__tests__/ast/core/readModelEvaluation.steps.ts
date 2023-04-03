@@ -56,7 +56,6 @@ describe('Read model evaluation is valid', () => {
       const expectedNodeValues = testCase.evaluation;
       const value = resultTree.getCurrentNode().getValue();
 
-      console.log(value.evaluation.readModel.domainEvaluation);
       expect(value).toMatchObject(expectedNodeValues);
     });
   });

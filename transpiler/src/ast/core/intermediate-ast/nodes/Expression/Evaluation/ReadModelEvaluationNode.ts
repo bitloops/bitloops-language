@@ -3,11 +3,11 @@ import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { EvaluationNode } from './EvaluationNode.js';
 
 export class ReadModelEvaluationNode extends EvaluationNode {
-  private static readModelNodeName = 'readModel';
+  private static readModelEvaluationNodeName = 'readModelEvaluation';
 
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
     this.nodeType = BitloopsTypesMapping.TReadModelEvaluation;
-    this.classNodeName = ReadModelEvaluationNode.readModelNodeName;
+    this.classNodeName = ReadModelEvaluationNode.readModelEvaluationNodeName;
   }
 }

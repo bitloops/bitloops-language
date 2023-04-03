@@ -159,7 +159,7 @@ export class EvaluationBuilderDirector {
     const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
     return {
       evaluation: {
-        readModel: {
+        readModelEvaluation: {
           domainEvaluation: {
             readModelIdentifier,
             props,

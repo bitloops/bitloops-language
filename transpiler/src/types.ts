@@ -383,7 +383,7 @@ type TDomainEvaluationName =
   | { readModelIdentifier: TReadModelIdentifier };
 
 export type TReadModelEvaluation = {
-  readModel: TDomainEvaluation;
+  readModelEvaluation: TDomainEvaluation;
 };
 
 export type TDomainEvaluationExpression = TEvaluationFields | TExpression;
