@@ -569,7 +569,7 @@ domainEventHandlerDeclaration
     ;
 
 domainEventHandlerHandleDeclaration
-    : Handle OpenParen domainEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    : Handle OpenParen domainEventHandlerHandleParameter CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 eventHandlerHandleIdentifier
@@ -597,7 +597,7 @@ integrationEventHandlerDeclaration
     ;
 
 integrationEventHandlerHandleDeclaration
-    : Handle OpenParen integrationEventHandlerHandleParameter CloseParen OpenBrace functionBody CloseBrace
+    : Handle OpenParen integrationEventHandlerHandleParameter CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
 integrationEventHandlerHandleParameter

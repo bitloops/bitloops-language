@@ -1283,9 +1283,8 @@ export type TDomainEventHandler = {
     TEventHandlerBusDependencies;
 };
 
-export type THandle = {
-  statements: TStatements;
-} & TParameter;
+//TODO see if we can merge them
+export type THandle = TExecute;
 
 export type TIntegrationEventHandlerHandleMethod = {
   integrationEventHandlerHandleMethod: {

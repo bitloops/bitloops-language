@@ -3,6 +3,7 @@ import { DomainEventHandlerBuilder } from '../../builders/domainEventHandler/Dom
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
+import { StatementDirector } from '../../builders/statement/statementDirector.js';
 
 export const validDomainEventHandlersTestCases = [
   {
@@ -28,6 +29,7 @@ export const validDomainEventHandlersTestCases = [
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
+          new StatementDirector().buildEmptyReturnOK(),
         ],
         parameter: {
           parameter: {
@@ -59,6 +61,7 @@ export const validDomainEventHandlersTestCases = [
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
+          new StatementDirector().buildEmptyReturnOK(),
         ],
         parameter: {
           parameter: {
