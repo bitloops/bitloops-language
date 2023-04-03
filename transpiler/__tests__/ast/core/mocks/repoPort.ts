@@ -5,6 +5,7 @@ import { IdentifierBuilder } from '../builders/identifier.js';
 import { MethodDefinitionBuilderDirector } from '../builders/methodDefinitionDirector.js';
 import { MethodDefinitionListBuilder } from '../builders/methodDefinitionListBuilder.js';
 import { RepoPortBuilder } from '../builders/repoPortBuilder.js';
+import { ReturnOkErrorTypeBuilder } from '../builders/returnOkErrorType.js';
 
 type TestCase = {
   description: string;
@@ -31,7 +32,7 @@ export const validRepoPortCases: TestCase[] = [
     description: 'Write Repo port declaration with method definitions',
     fileId: 'testFile.bl',
     inputBLString:
-      'RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort  { updateTodoTitle(id:string, title: string): void; }',
+      'RepoPort TodoRepoPort<TodoEntity> extends CRUDRepoPort  { updateTodoTitle(id:string, title: string): (OK(void),Errors()); }',
     expected: new RepoPortBuilder()
       .withIdentifier('TodoRepoPort')
       .withAggregateRootName('TodoEntity')
@@ -43,14 +44,17 @@ export const validRepoPortCases: TestCase[] = [
       .withDefinitionMethods(
         new MethodDefinitionListBuilder()
           .withMethodDefinitions([
-            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndBitloopsPrimaryTypeReturn(
+            new MethodDefinitionBuilderDirector().buildMethodWithPrimitiveParamsAndOkErrorReturnType(
               {
                 methodName: 'updateTodoTitle',
                 params: [
                   { name: 'id', type: 'string' },
                   { name: 'title', type: 'string' },
                 ],
-                returnType: new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
+                returnType: new ReturnOkErrorTypeBuilder()
+                  .withOk(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withErrors([])
+                  .build(),
               },
             ),
           ])

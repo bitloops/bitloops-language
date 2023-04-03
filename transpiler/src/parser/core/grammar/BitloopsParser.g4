@@ -175,7 +175,7 @@ methodDefinitionList
     ;
 
 methodDefinition
-    : identifier parameterList? typeAnnotation SemiColon
+    : identifier parameterList? returnMethodType SemiColon
     ;
 
 typeAnnotation
