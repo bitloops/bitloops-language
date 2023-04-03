@@ -27,7 +27,7 @@ import {
 } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
-import { TSetupOutput } from '../index.js';
+import { TSetupOutput } from '../setup-typescript.js';
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { getTokenName } from '../../core/components/token-injections/index.js';
@@ -42,7 +42,6 @@ export class DITokensGenerator implements IDependencyInjectionsGenerator {
   constructor(
     private readonly bitloopsModel: TBoundedContexts,
     private readonly setupTypeMapper: Record<string, string>,
-    private readonly license?: string,
   ) {}
   handle(): TSetupOutput[] {
     const result: TSetupOutput[] = [];
@@ -61,7 +60,7 @@ export class DITokensGenerator implements IDependencyInjectionsGenerator {
         result.push({
           fileId: diFileName,
           fileType: 'DI.Tokens',
-          content: (this.license || '') + diContent,
+          content: diContent,
           context: {
             boundedContextName,
             moduleName,

@@ -19,7 +19,7 @@
  */
 import prettier from 'prettier';
 import path from 'path';
-import { SetupTypeScript } from './SetupTypeScript.js';
+import { AppAndDomainErrorsAggregator } from './app-domain-errors/index.js';
 
 import {
   IIntermediateSetupASTToTarget,
@@ -32,6 +32,7 @@ import { setupTypeMapper, TSetupFileType } from './fileDestinations.js';
 import { DITokensGenerator } from './dependency-injection-tokens/di-tokens.handler.js';
 import { HandlersAggregator } from './handlers-aggregation/handlers-aggregation.handler.js';
 import { NestModuleDeclaration } from './module-declaration/module-declaration.handler.js';
+import { RulesAggregator } from './rules-aggregation/index.js';
 
 export type TSetupOutput = {
   fileId: string;
@@ -67,7 +68,6 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
     options: TTranspileOptions,
   ): TTargetSetupContent[] | TargetSetupGeneratorError => {
     const { setup: _setup, core } = params;
-    const bitloopsModel = core;
 
     const formatterConfig = options.formatterConfig ?? {
       semi: true,
@@ -77,35 +77,29 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
 
     const result: TTargetSetupContent[] = [];
     // console.log('Generating system files...');
-    const setupGenerator = new SetupTypeScript();
     const pathsAndContents: TSetupOutput[] = [];
 
     // Step 1 Generate DI Tokens
-    const diTokensGenerator = new DITokensGenerator(bitloopsModel, setupTypeMapper, license);
+    const diTokensGenerator = new DITokensGenerator(core, setupTypeMapper);
     pathsAndContents.push(...diTokensGenerator.handle());
-    // console.log('--------------------------------');
 
     // Step 2 Generate index files for every handler type
-    const indexHandlerAggregator = new HandlersAggregator(bitloopsModel, setupTypeMapper, license);
+    const indexHandlerAggregator = new HandlersAggregator(core, setupTypeMapper);
     pathsAndContents.push(...indexHandlerAggregator.handle());
 
     // Step 3 Generate nestjs module
-    const nestjsModule = new NestModuleDeclaration(bitloopsModel, setupTypeMapper, license);
+    const nestjsModule = new NestModuleDeclaration(core, setupTypeMapper);
     pathsAndContents.push(...nestjsModule.handle());
 
     // Step 4. Generate domain and application errors
+    const setupGenerator = new AppAndDomainErrorsAggregator();
     const appDomainErrors = setupGenerator.generateAppDomainErrors(core);
-    appDomainErrors.forEach((appDomainError) => {
-      // console.log('appDomainError:', appDomainError);
-      pathsAndContents.push(appDomainError);
-    });
+    pathsAndContents.push(...appDomainErrors);
 
     // Step 5. Generate rules
-    const rules = setupGenerator.generateRules(core);
-    rules.forEach((rule) => {
-      // console.log('rule:', rule);
-      pathsAndContents.push(rule);
-    });
+    const rulesAggregator = new RulesAggregator(core);
+    const rules = rulesAggregator.generateRules();
+    pathsAndContents.push(...rules);
 
     // Step 6. Write files
     pathsAndContents.forEach((pathAndContent) => {
@@ -115,7 +109,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       result.push({
         fileId: path.normalize(`./${setupTypeMapper[fileType]}${fileId}`),
         fileType: fileType,
-        fileContent: prettier.format(content, formatterConfig),
+        fileContent: prettier.format(license + content, formatterConfig),
       });
     });
 

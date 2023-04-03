@@ -28,6 +28,8 @@ import { TContextData } from '../../../types.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
+export const ROOT_FOLDER = 'src';
+
 enum PROJECT_RELATIVE_PATHS {
   DOMAIN = 'domain/',
   DOMAIN_ERRORS = 'domain/errors/',
@@ -146,7 +148,7 @@ const getTargetFileDestination = (
     case ClassTypes.Struct:
     case ClassTypes.ServicePort:
     case ClassTypes.DomainService:
-      result.path = `./src/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
+      result.path = `./${ROOT_FOLDER}/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
       result.filename = className + getLanguageFileExtension(targetLanguage);
       break;
     default:

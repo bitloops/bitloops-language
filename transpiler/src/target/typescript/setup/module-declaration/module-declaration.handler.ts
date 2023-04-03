@@ -21,7 +21,7 @@
 import { kebabCase, pascalCase } from '../../../../utils/caseStyles.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
-import { TSetupOutput } from '../index.js';
+import { TSetupOutput } from '../setup-typescript.js';
 import { ClassTypes } from '../../../../helpers/mappings.js';
 import { TSetupTypeMapper } from '../fileDestinations.js';
 import { HandlersAggregator } from '../handlers-aggregation/handlers-aggregation.handler.js';
@@ -35,7 +35,6 @@ export class NestModuleDeclaration implements IHandlersAggregator {
   constructor(
     private readonly bitloopsModel: TBoundedContexts,
     private readonly setupTypeMapper: TSetupTypeMapper,
-    private readonly license?: string,
   ) {}
 
   handle(): TSetupOutput[] {
@@ -52,7 +51,7 @@ export class NestModuleDeclaration implements IHandlersAggregator {
         result.push({
           fileId: fileName,
           fileType: 'nest.module.ts',
-          content: (this.license || '') + moduleFileContent,
+          content: moduleFileContent,
           context: {
             boundedContextName,
             moduleName,

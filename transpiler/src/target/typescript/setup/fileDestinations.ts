@@ -19,18 +19,11 @@
  */
 
 import { ClassTypes } from '../../../helpers/mappings.js';
-
-const setupMapper = {
-  OUTPUT_SRC_FOLDER: 'src/',
-  OUTPUT_CONFIG_FOLDER: 'src/config/',
-}; // TODO optionally get this from the config
+import { ROOT_FOLDER } from '../helpers/getTargetFileDestination.js';
 
 export type TSetupFileType =
-  | 'SRC_FOLDER'
+  | 'ROOT_FOLDER'
   | 'BOUNDED_CONTEXTS'
-  | 'startup'
-  | 'config'
-  | 'Config'
   | typeof ClassTypes.ApplicationError
   | typeof ClassTypes.DomainError
   | typeof ClassTypes.DomainRule
@@ -41,14 +34,11 @@ export type TSetupFileType =
 export type TSetupTypeMapper = Record<TSetupFileType, string>;
 
 export const setupTypeMapper: TSetupTypeMapper = {
-  SRC_FOLDER: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
+  ROOT_FOLDER: `/${ROOT_FOLDER}/`,
   BOUNDED_CONTEXTS: 'bounded-contexts',
-  startup: `/${setupMapper.OUTPUT_SRC_FOLDER}`,
-  config: `/${setupMapper.OUTPUT_CONFIG_FOLDER}`,
   'DI.Tokens': '',
   'index.ts': '',
   'nest.module.ts': '',
-  Config: '/./',
   [ClassTypes.ApplicationError]: '',
   [ClassTypes.DomainError]: '',
   [ClassTypes.DomainRule]: '',

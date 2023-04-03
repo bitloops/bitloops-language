@@ -1,6 +1,6 @@
 import { SupportedLanguages } from './supportedLanguages.js';
 import { IIntermediateSetupASTToTarget } from './types.js';
-import { IntermediateSetupASTToTarget } from './typescript/setup/index.js';
+import { IntermediateSetupASTToTarget } from './typescript/setup/setup-typescript.js';
 
 export class TargetSetupGeneratorCreator {
   static create(language: string = SupportedLanguages.TypeScript): IIntermediateSetupASTToTarget {

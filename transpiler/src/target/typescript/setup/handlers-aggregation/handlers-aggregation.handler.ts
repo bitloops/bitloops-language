@@ -30,7 +30,7 @@ import {
 } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
-import { TSetupOutput } from '../index.js';
+import { TSetupOutput } from '../setup-typescript.js';
 import {
   BitloopsTypesMapping,
   ClassTypes,
@@ -49,7 +49,6 @@ export class HandlersAggregator implements IHandlersAggregator {
   constructor(
     private readonly bitloopsModel: TBoundedContexts,
     private readonly setupTypeMapper: TSetupTypeMapper,
-    private readonly license?: string,
   ) {}
   static IDENTIFIERS = {
     PUB_SUB_COMMAND_HANDLERS: 'PubSubCommandHandlers',
@@ -119,7 +118,7 @@ export class HandlersAggregator implements IHandlersAggregator {
     return {
       fileId: filePath + '.' + fileExtension,
       fileType: 'index.ts',
-      content: (this.license || '') + imports + result,
+      content: imports + result,
       context: {
         boundedContextName,
         moduleName,
@@ -159,7 +158,7 @@ export class HandlersAggregator implements IHandlersAggregator {
     return {
       fileId: filePath + '.' + fileExtension,
       fileType: 'index.ts',
-      content: (this.license || '') + imports + result,
+      content: imports + result,
       context: {
         boundedContextName,
         moduleName,
@@ -199,7 +198,7 @@ export class HandlersAggregator implements IHandlersAggregator {
     return {
       fileId: filePath + '.' + fileExtension,
       fileType: 'index.ts',
-      content: (this.license || '') + imports + result,
+      content: imports + result,
       context: {
         boundedContextName,
         moduleName,
@@ -241,7 +240,7 @@ export class HandlersAggregator implements IHandlersAggregator {
     return {
       fileId: filePath + '.' + fileExtension,
       fileType: 'index.ts',
-      content: (this.license || '') + imports + result,
+      content: imports + result,
       context: {
         boundedContextName,
         moduleName,

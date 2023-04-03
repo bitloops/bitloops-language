@@ -27,35 +27,21 @@ import {
   ApplicationErrorIdentifier,
   TDomainErrorValue,
   TApplicationErrorValue,
-  TDomainRule,
-} from '../../../types.js';
+} from '../../../../types.js';
 
-import { TBoundedContexts } from '../../../ast/core/types.js';
+import { TBoundedContexts } from '../../../../ast/core/types.js';
 
-import { getTargetFileDestination } from '../helpers/getTargetFileDestination.js';
-import { TSetupOutput } from './index.js';
-import { BitloopsTypesMapping, ClassTypes } from '../../../helpers/mappings.js';
+import { getTargetFileDestination } from '../../helpers/getTargetFileDestination.js';
+import { TSetupOutput } from '../setup-typescript.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../helpers/mappings.js';
 
-interface ISetup {
+interface IAppAndDomainErrorsAggregator {
   generateAppDomainErrors(model: TBoundedContexts): TSetupOutput[];
 }
 
-type TNodePackages = Record<string, string>;
-
 // const esmEnabled = false;
 
-export class SetupTypeScript implements ISetup {
-  private nodeDependencies: TNodePackages;
-  private nodeDevDependencies: TNodePackages;
-
-  getNodeDependencies(): TNodePackages {
-    return this.nodeDependencies;
-  }
-
-  getNodeDevDependencies(): TNodePackages {
-    return this.nodeDevDependencies;
-  }
-
+export class AppAndDomainErrorsAggregator implements IAppAndDomainErrorsAggregator {
   generateAppDomainErrors(model: TBoundedContexts): TSetupOutput[] {
     const output = [];
     for (const [boundedContextName, boundedContext] of Object.entries(model)) {
@@ -138,43 +124,5 @@ export class SetupTypeScript implements ISetup {
       const error = errorModel[ApplicationErrorKey] as TApplicationErrorValue;
       return error[ApplicationErrorIdentifier];
     }
-  }
-
-  generateRules(model: TBoundedContexts): TSetupOutput[] {
-    const classTypeName = ClassTypes.DomainRule;
-    const namespaceName = `${classTypeName}s`;
-    const output = [];
-    for (const [boundedContextName, boundedContext] of Object.entries(model)) {
-      for (const [moduleName, module] of Object.entries(boundedContext)) {
-        // Gather all domain rules of the module
-        const domainRules = module.getRootChildrenNodesValueByType<TDomainRule>(
-          BitloopsTypesMapping.TDomainRule,
-        );
-
-        let imports = '';
-        let content = `export namespace ${namespaceName} {`;
-        const filePathObj = getTargetFileDestination(
-          boundedContextName,
-          moduleName,
-          classTypeName,
-          namespaceName,
-        );
-
-        for (const domainRule of domainRules) {
-          const className = domainRule.DomainRule.domainRuleIdentifier;
-          const classNameWithoutRule = className.split('Rule')[0];
-          imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
-          content += `export class ${className} extends ${classNameWithoutRule} {}`;
-        }
-        content += '}';
-        const finalContent = imports + content;
-        output.push({
-          fileType: classTypeName,
-          fileId: `${filePathObj.path}index.ts`,
-          content: finalContent,
-        });
-      }
-    }
-    return output;
   }
 }
