@@ -19,6 +19,7 @@ import {
 import { MarketingNotificationService } from '../../../domain/services/marketing-notification.service';
 import { StreamingCommandBusToken } from '../../../constants';
 import { ApplicationErrors } from '../../errors';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export class TodoCompletionsIncrementedHandler
   implements Application.IHandleDomainEvent
@@ -40,6 +41,13 @@ export class TodoCompletionsIncrementedHandler
     return 'Marketing';
   }
 
+  @Traceable({
+    operation: 'TodoCompletionIncrementedDomainEventHandler',
+    metrics: {
+      name: 'TodoCompletionIncrementedDomainEventHandler',
+      category: 'domainEventHandler',
+    },
+  })
   public async handle(
     event: TodoCompletionsIncrementedDomainEvent,
   ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {

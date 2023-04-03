@@ -3,6 +3,7 @@ import { Inject } from '@nestjs/common';
 import { TodoUncompletedDomainEvent } from '../../../domain/events/todo-uncompleted.event';
 import { PubSubIntegrationEventBusToken } from '../../../constants';
 import { TodoUncompletedIntegrationEvent } from '../../../contracts/integration-events/todo-uncompleted.integration-event';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export class TodoUncompletedDomainToPubSubIntegrationEventHandler
   implements Application.IHandleDomainEvent
@@ -19,6 +20,13 @@ export class TodoUncompletedDomainToPubSubIntegrationEventHandler
     return 'Todo';
   }
 
+  @Traceable({
+    operation: 'TodoUncompletedPubSubDomainEventHandler',
+    metrics: {
+      name: 'TodoUncompletedPubSubDomainEventHandler',
+      category: 'domainEventHandler',
+    },
+  })
   public async handle(
     event: TodoUncompletedDomainEvent,
   ): Promise<Either<void, never>> {

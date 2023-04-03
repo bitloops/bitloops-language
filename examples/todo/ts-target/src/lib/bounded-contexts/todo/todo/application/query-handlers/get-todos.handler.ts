@@ -7,6 +7,7 @@ import {
   TodoReadRepoPort,
 } from '../../ports/TodoReadRepoPort';
 import { GetTodosQuery } from '../../queries/get-todos.query';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export type GetTodosQueryHandlerResponse = Either<
   TTodoReadModelSnapshot[],
@@ -29,6 +30,13 @@ export class GetTodosHandler
     return 'Todo';
   }
 
+  @Traceable({
+    operation: 'GetTodosQueryHandler',
+    metrics: {
+      name: 'GetTodosQueryHandler',
+      category: 'queryHandler',
+    },
+  })
   async execute(command: GetTodosQuery): Promise<GetTodosQueryHandlerResponse> {
     console.log('GetTodosQuery handler...');
 

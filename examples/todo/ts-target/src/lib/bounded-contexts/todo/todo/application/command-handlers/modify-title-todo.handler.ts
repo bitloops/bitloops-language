@@ -14,6 +14,7 @@ import {
   TodoWriteRepoPortToken,
 } from '../../ports/TodoWriteRepoPort';
 import { ApplicationErrors } from '../errors';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 type ModifyTodoTitleResponse = Either<
   void,
@@ -40,6 +41,13 @@ export class ModifyTodoTitleHandler
     return 'Todo';
   }
 
+  @Traceable({
+    operation: 'ModifyTitleCommandHandler',
+    metrics: {
+      name: 'ModifyTitleCommandHandler',
+      category: 'commandHandler',
+    },
+  })
   async execute(
     command: ModifyTodoTitleCommand,
   ): Promise<ModifyTodoTitleResponse> {
