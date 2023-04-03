@@ -5,6 +5,8 @@ import {
   TPrivateMethodValuesPrimaryReturnType,
   expressionKey,
   TMemberDotExpression,
+  TDefinitionMethodOkErrorReturnType,
+  TDefinitionMethodPrimaryReturnType,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -31,6 +33,13 @@ const hasOkErrorReturnType = (
     | TPrivateMethodValuesOkErrorReturnType,
 ): privateMethodValues is TPrivateMethodValuesOkErrorReturnType => {
   if ('returnType' in privateMethodValues) return true;
+  else return false;
+};
+
+const hasDefinitionMethodOkErrorReturnType = (
+  methodDefinitionValues: TDefinitionMethodPrimaryReturnType | TDefinitionMethodOkErrorReturnType,
+): methodDefinitionValues is TDefinitionMethodOkErrorReturnType => {
+  if ('returnType' in methodDefinitionValues) return true;
   else return false;
 };
 
@@ -69,4 +78,13 @@ const isProps = (name: string): boolean => {
   return name.endsWith('Props');
 };
 
-export { isUndefined, isArray, hasOkErrorReturnType, isExpression, isVO, isProps, isEntity };
+export {
+  isUndefined,
+  isArray,
+  hasOkErrorReturnType,
+  hasDefinitionMethodOkErrorReturnType,
+  isExpression,
+  isVO,
+  isProps,
+  isEntity,
+};

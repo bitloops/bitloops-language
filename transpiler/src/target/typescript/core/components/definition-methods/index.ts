@@ -21,6 +21,7 @@
 import { TDefinitionMethodInfo, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { hasDefinitionMethodOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
 
 export const definitionMethodInfoToTargetLanguage = (
   value: TDefinitionMethodInfo,
@@ -41,10 +42,18 @@ export const definitionMethodsToTargetLanguage = (
     const { methodDefinition } = method;
     const definitionMethodInfo = definitionMethodInfoToTargetLanguage(method);
     res += `${methodDefinition.identifier}${definitionMethodInfo.output}`;
-    const returnType = modelToTargetLanguage({
-      type: BitloopsTypesMapping.TBitloopsPrimaryType,
-      value: { type: methodDefinition.type },
-    });
+    let returnType;
+    if (hasDefinitionMethodOkErrorReturnType(methodDefinition)) {
+      returnType = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TOkErrorReturnType,
+        value: { returnType: methodDefinition.returnType },
+      });
+    } else {
+      returnType = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: { type: methodDefinition.type },
+      });
+    }
     res += ':';
     res += returnType.output;
     dependencies = [

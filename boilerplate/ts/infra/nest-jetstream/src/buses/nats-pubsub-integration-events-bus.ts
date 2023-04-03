@@ -41,7 +41,7 @@ export class NatsPubSubIntegrationEventsBus implements Infra.EventBus.IEventBus 
 
   async subscribe(subject: string, handler: Application.IHandleIntegrationEvent) {
     try {
-      this.logger.log('Subscribing to:' + subject);
+      this.logger.log('Subscribing to pubsub-integration-event:' + subject);
       const sub = this.nc.subscribe(subject);
       (async () => {
         for await (const m of sub) {

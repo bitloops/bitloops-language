@@ -1008,11 +1008,16 @@ export type TPackagePort = {
   [PackagePortIdentifierKey]: TPackagePortIdentifier;
 } & TDefinitionMethods;
 
+export type TDefinitionMethodValues = {
+  identifier: TIdentifier;
+} & TParameterList;
+
+export type TDefinitionMethodPrimaryReturnType = TDefinitionMethodValues & TBitloopsPrimaryType;
+
+export type TDefinitionMethodOkErrorReturnType = TDefinitionMethodValues & TOkErrorReturnType;
+
 export type TDefinitionMethodInfo = {
-  methodDefinition: {
-    identifier: TIdentifier;
-  } & TBitloopsPrimaryType &
-    TParameterList;
+  methodDefinition: TDefinitionMethodPrimaryReturnType | TDefinitionMethodOkErrorReturnType;
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';

@@ -31,7 +31,7 @@ const INFRA_DEPENDENCY: TDependencyChildTypescript = {
   value: 'Infra',
   from: '@bitloops/bl-boilerplate-core',
 };
-const BUSES_TOKENS = {
+export const BUSES_TOKENS = {
   commandBus: 'StreamingCommandBus',
   queryBus: 'PubSubQueryBus',
   integrationEventBus: 'StreamingIntegrationEventBus',

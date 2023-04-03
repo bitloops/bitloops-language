@@ -50,6 +50,11 @@ const setupFilePaths = {
     fileType: 'DI',
     formatterParser: 'typescript',
   },
+  'di-constants.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/constants.ts',
+    fileType: 'DI.Tokens',
+    formatterParser: 'typescript',
+  },
   'domainError.mock.ts': {
     fileId: 'src/bounded-contexts/demo/hello-world/domain/errors/index.ts',
     fileType: 'DomainError',
