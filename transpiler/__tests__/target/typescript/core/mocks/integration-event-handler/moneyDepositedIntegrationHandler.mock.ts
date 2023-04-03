@@ -1,4 +1,4 @@
-import { Application, Infra } from '@bitloops/bl-boilerplate-core';
+import { Application, Infra, Either } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { StreamingCommandBusToken } from '../../../constants';
@@ -24,7 +24,7 @@ export class MoneyDepositedIntegrationHandler implements Application.IHandle {
       category: 'integrationEventHandler',
     },
   })
-  public async handle(event: MoneyDepositedIntegrationEvent): Promise<void> {
+  public async handle(event: MoneyDepositedIntegrationEvent): Promise<Either<void, never>> {
     const email = 'example@email.com';
     await this.commandBus.send(email);
   }
