@@ -1,0 +1,71 @@
+import {
+  Application,
+  Domain,
+  Either,
+  fail,
+  ok,
+} from '@bitloops/bl-boilerplate-core';
+import { ModifyTodoTitleCommand } from '../../commands/modify-title-todo.command';
+import { Inject } from '@nestjs/common';
+import { DomainErrors } from '../../domain/errors';
+import { TitleVO } from '../../domain/TitleVO';
+import {
+  TodoWriteRepoPort,
+  TodoWriteRepoPortToken,
+} from '../../ports/TodoWriteRepoPort';
+import { ApplicationErrors } from '../errors';
+
+type ModifyTodoTitleResponse = Either<
+  void,
+  DomainErrors.TitleOutOfBoundsError | Application.Repo.Errors.Unexpected
+>;
+
+export class ModifyTodoTitleHandler
+  implements
+    Application.IUseCase<
+      ModifyTodoTitleCommand,
+      Promise<ModifyTodoTitleResponse>
+    >
+{
+  constructor(
+    @Inject(TodoWriteRepoPortToken)
+    private readonly todoRepo: TodoWriteRepoPort,
+  ) {}
+
+  get command() {
+    return ModifyTodoTitleCommand;
+  }
+
+  get boundedContext() {
+    return 'Todo';
+  }
+
+  async execute(
+    command: ModifyTodoTitleCommand,
+  ): Promise<ModifyTodoTitleResponse> {
+    const requestId = new Domain.UUIDv4(command.id);
+    const todoFound = await this.todoRepo.getById(requestId);
+    if (todoFound.isFail()) {
+      return fail(todoFound.value);
+    }
+
+    if (!todoFound.value) {
+      return fail(
+        new ApplicationErrors.TodoNotFoundError(command.id.toString()),
+      );
+    }
+
+    const titleToUpdate = TitleVO.create({ title: command.title });
+    if (titleToUpdate.isFail()) {
+      return fail(titleToUpdate.value);
+    }
+
+    todoFound.value.modifyTitle(titleToUpdate.value);
+    const updateResult = await this.todoRepo.update(todoFound.value);
+    if (updateResult.isFail()) {
+      return fail(updateResult.value);
+    }
+
+    return ok();
+  }
+}
