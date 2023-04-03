@@ -18,14 +18,27 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
-import { TOkErrorReturnType, TTargetDependenciesTypeScript } from '../../../../types.js';
+import {
+  TDependenciesTypeScript,
+  TOkErrorReturnType,
+  TTargetDependenciesTypeScript,
+} from '../../../../types.js';
 import { getChildDependencies } from '../dependencies.js';
 import { modelToTargetLanguage } from '../modelToTargetLanguage.js';
+
+const RETURN_OK_ERROR_DEPENDENCIES: () => TDependenciesTypeScript = () => [
+  {
+    type: 'absolute',
+    default: false,
+    value: 'Either',
+    from: '@bitloops/bl-boilerplate-core',
+  },
+];
 
 const okErrorReturnTypeToTargetLanguage = (
   variable: TOkErrorReturnType,
 ): TTargetDependenciesTypeScript => {
-  const dependencies = [];
+  const dependencies = RETURN_OK_ERROR_DEPENDENCIES();
   const { errors, ok } = variable.returnType;
 
   const returnOkType = modelToTargetLanguage({
