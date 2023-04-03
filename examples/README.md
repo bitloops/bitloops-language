@@ -2,18 +2,18 @@
 
 Building complex software is really hard, and we learnt the hard way how important it is to design your software correctly from the beginning! 
 
-There is pleny of information out there on how to build resilient and maintainable software, but the difficulty is actually implementing it. So we went ahead and built a domain-layer framework we wish we had when we started learning these concepts and technologies. 
+There is plenty of information out there on how to build resilient and maintainable software, but the difficulty is actually implementing it. So we went ahead and built a domain-layer framework we wish we had when we started learning these concepts and technologies. 
 
 Our team has put a lot of effort into creating a clean, and modular code-base that comes as close as possible to production ready code, aiming to provide valuable insights into advanced software architecture concepts. 
  
 ### Overview
 The objective of this project is to provide you a recommendation on how to design and create maintainable and flexible software applications.
 
-The code is written using Typescript and NodeJS, using the NEST framework, however, the concepts and patterns used are not binded to any specific technologies.
+The code is written using Typescript and NodeJS, using the NEST framework, however, the concepts and patterns used are not bound to any specific technologies.
 
 The project includes an over-engineered ToDo app that includes the patterns and principles that are necessary if you want your code to be easy to change, resilient and easy to maintain. Below we provide detailed instructions on how to run it
 
-In addition, you will learn a great deal about software design and architecture patterns and princiles such as: 
+In addition, you will learn a great deal about software design and architecture patterns and principles such as: 
 - Hexagonal Architecture (or Ports and adapters)
 - Domain Driven Design (DDD) and its tactical patterns
 - Behaviour Driven Development (BDD)
@@ -188,7 +188,7 @@ This is being achieved via **integration events** ([link](https://codeopinion.co
 
 Utilising integration events is the way for a module to communicate to other parts of the system (modules) that something has happened. 
 
-Since those integration events could beak the operation of some other modules if their contract change (the data inside the integration event), it is **necessary to also include a version**. Each time a change is made to an integration event, a new version is triggered without breaking parts (mostly modules) of the system which listens to the old contracts. 
+Since those integration events could break the operation of some other modules if their contract change (the data inside the integration event), it is **necessary to also include a version**. Each time a change is made to an integration event, a new version is triggered without breaking parts (mostly modules) of the system which listens to the old contracts. 
 
 A common way to emit integration events is via **transforming the domain events of the domain layer into integration events**, via event handlers.
 
@@ -241,7 +241,7 @@ Here are listed some of the specific technologies used for the implementation of
 
 # IV. Conclusion
 
-Our team is priviledged to have had the opportunity to work with such powerful software design patterns and cutting-edge technologies. We've learned a lot over the past few months, and we're excited to share our knowledge with other developers who are passionate about building great software. 
+Our team is privileged to have had the opportunity to work with such powerful software design patterns and cutting-edge technologies. We've learned a lot over the past few months, and we're excited to share our knowledge with other developers who are passionate about building great software. 
 
 We would love to keep in touch with people that are interested in this subject and have some ideas to share. Catch us on [Discord](https://discord.com/invite/vj8EdZx8gK) if you have any questions or suggestions. 
 
@@ -385,7 +385,7 @@ In order to achieve this whilst maintaining the essence of separation of concern
 
 💡 There could be many adapters for a specific port, which is the reason why you're able to switch or add infrastructure very quickly if your code is setup this way. 
 
-> **Example:** if we have a port for an email service (Data Access layer), and we have already implemented an adapter utilising a specific mail server at the moment (e.g. SendGrid adapter) we could easily create another adapter (e.g. Twilio adapter) which implements the same port utilising a totally different service provider. This requires ZERO changes to the Domain or Applicaiton Layer.
+> **Example:** if we have a port for an email service (Data Access layer), and we have already implemented an adapter utilising a specific mail server at the moment (e.g. SendGrid adapter) we could easily create another adapter (e.g. Twilio adapter) which implements the same port utilising a totally different service provider. This requires ZERO changes to the Domain or Application Layer.
 
 With this concept, it is easy to see how we can change database technologies, via creating different adapters for the same database port, or any other external system for that matter. 
 
@@ -416,7 +416,7 @@ In fact, DDD is not about coding, but its more a philosophy about how to build s
 
 ### Key advantages of using DDD
 - **Common Language** – DDD promotes the creation of terminology and definitions that everyone understands and uses, and are specific to a project - this is commonly referred to as the **ubiquitous Language**. This may seem trivial, but the improvement in communication between developers and domain experts, as well as between developers themselves, has a huge productivity boost
-- **Reliable code** - Applying the DDD concpets leads to cleaner, more reliable code that is easy to test
+- **Reliable code** - Applying the DDD concepts leads to cleaner, more reliable code that is easy to test
 - **Maintainable code** - Software built with a DDD mindset is easier to understand and change since the code and the business processes are aligned
 - **Faster development** - Well structured and organized code allows developers to develop new features, extensions and improvements / iterations much faster
 
@@ -454,8 +454,8 @@ Explaining 4 key components of DDD is necessary:
 -- **Generic Domain:** These domains can easily be outsourced or provided by a standard market solution. There is no special feature or uniqueness
 
 - **Ubiquitous Language:** This encompasses all the terms and words used to define the domain model, and is generally created through collaboration with domain experts. This language is then used by all team members when discussing activities related to the team’s application.
-- **Bounded Contexts:** This is a conceptual boundary that contains parts of an application that fit into a specific model. Its typically a subsystem or the work of a specific team and revolves aournd a specific business domain.
-- **Context Mapping:** This basically defines how bounded contexts interact and communicate with each other. Having clarity on the boundaries as well as the collaboration expecations will improve greatly the quality and speed of product development.
+- **Bounded Contexts:** This is a conceptual boundary that contains parts of an application that fit into a specific model. Its typically a subsystem or the work of a specific team and revolves around a specific business domain.
+- **Context Mapping:** This basically defines how bounded contexts interact and communicate with each other. Having clarity on the boundaries as well as the collaboration expectations will improve greatly the quality and speed of product development.
 
 &nbsp;
 
@@ -473,10 +473,10 @@ The tactical patterns deal with the actual implementation once a domain model ha
 - **Domain Error:** Errors will occur and a well-defined domain layer makes it much easier to detect errors and return an explicit error types, rather than throwing the session and not returning an error.
 - **Domain Service:** A Domain Service is used to encapsulate domain logic and represent business concepts when multiple entities or value objects have a shared responsibility. THey basically orchestrate entities and value objects.
 - **Data Transfer Object (DTO):** A DTO is a special type of class that represents data that comes from external applications, carries data between processes & defines contracts between them. 
-- **Application Service:** In order to orchestrate the necessary steps to complete an operation by a user, Applicaiton Services (also known as workflow services, use cases or interactors) as used to manage the communication across the entire application. 
+- **Application Service:** In order to orchestrate the necessary steps to complete an operation by a user, Application Services (also known as workflow services, use cases or interactors) as used to manage the communication across the entire application. 
 - **Command:** A Command will change data within a system and indicates an intention by a user. 
-- **Queries:** A Query only retrives data from a system without making any changes. Understanding these two concepts is important to understand CQRS explained further below. 
-- **Repository:** All the code that handles opeartions over aggregates (entities and value objects) is placed in a repository. It provides an intermediary between the domain model and the data mapping. 
+- **Queries:** A Query only retrieves data from a system without making any changes. Understanding these two concepts is important to understand CQRS explained further below. 
+- **Repository:** All the code that handles operations over aggregates (entities and value objects) is placed in a repository. It provides an intermediary between the domain model and the data mapping. 
 
 The above is a summary of DDD and its benefits, however, there are many detailed posts, articles and videos about Domain Driven Design. This [reference document](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design) has a comprehensive overview.
 
@@ -488,7 +488,7 @@ The goal of DDD is to build software systems that are closely aligned with the b
 
 The goal of hexagonal architecture is to ensure the entire application works well and serves its users in the best way possible, using (and changing) technologies when necessary. The focus is on building systems that are modular, testable, and maintainable
 
-Combining DDD and hexagonal architecture is not easy (we beleive the above domain framework makes it much easier), and there are many advantanges: 
+Combining DDD and hexagonal architecture is not easy (we believe the above domain framework makes it much easier), and there are many advantages: 
 
 </br>
 </br>
@@ -515,7 +515,7 @@ Behavior Driven Development (BDD). Source: <a href="https://brainhub.eu/library/
 
 Like DDD, BDD emphasizes collaboration between developers and business stakeholders, reducing the risk of errors and issues in production. In fact, BDD and DDD are often combined during development processes to test the behaviour of the application layer (use cases), as well as unit tests that focus on specific domain elements but change a lot faster.
 
-In addition, BDD is commonly used with Test-Driven Development (TDD), which is essentially a software development process, similar to BDD, that encourages developers to build test cases that represent the exepcted outcomes before the development of the actual code.
+In addition, BDD is commonly used with Test-Driven Development (TDD), which is essentially a software development process, similar to BDD, that encourages developers to build test cases that represent the expected outcomes before the development of the actual code.
 
 If you're interested in learning more about BDD, you can find a detailed description [here](https://bitloops.com/docs/bitloops-language/learning/behavior-driven-development).  
 
@@ -531,7 +531,7 @@ In EDA, event producers generate events and publish them to event channels, whic
 Overall, EDA is viewed as an effective way to design and build software systems that are flexible, resilient, scalable and efficient:
 - **Scalability:** through decoupling its possible to scale each component independently. Key for distributed systems. 
 - **Resilience:** the failure of one component does not impact the entire system. There are always dependencies, but many components can continue running if a single component is unable to process the events it receives.
-- **Flexibility:** given this decoupling, each component can be maintained independently as well, making it easier to replace components as the system eveolves. 
+- **Flexibility:** given this decoupling, each component can be maintained independently as well, making it easier to replace components as the system evolves. 
 - **Efficiency:** event driven systems are normally faster at processing requests as they're less resource-intensive than other forms of communication
 
 </br>
@@ -566,10 +566,10 @@ If you would like to learn more about EDA, we have a more complete overview [her
 </br>
 
 ---
-## Command and Query Responsibility Segreagation (CQRS)
-CQRS is a software architecture pattern (note: it is not a software architecture sytle like Hexagonal Architecture) that separates the command and query responsibilities of an application. This pattern has gained popularity as it improves scalability and performance as it provides a way to handle complex data models by separating read and write operations. 
+## Command and Query Responsibility Segregation (CQRS)
+CQRS is a software architecture pattern (note: it is not a software architecture style like Hexagonal Architecture) that separates the command and query responsibilities of an application. This pattern has gained popularity as it improves scalability and performance as it provides a way to handle complex data models by separating read and write operations. 
 
-- **Command:** A method that modifies or mutates the state unerneath the interface, but does not provide any answer with regards to that state
+- **Command:** A method that modifies or mutates the state underneath the interface, but does not provide any answer with regards to that state
 - **Query:** A method that answers teh current state beneath the interface but does not modify that state before answering it
 
 </br>
@@ -586,7 +586,7 @@ Command-Query Responsibility Segregation (CQRS). Source: <a href="https://kalele
 </br>
 </br>
 
-By following this pattern, you're able to optimize the processes for data retrival, as well as the processes for data processing. This enables much easier horizontal scaling, better performance and improved user experience. 
+By following this pattern, you're able to optimize the processes for data retrieval, as well as the processes for data processing. This enables much easier horizontal scaling, better performance and improved user experience. 
 
 Maybe most importantly, CQRS improves data consistency by ensuring that write operations are always handled in a consistent and reliable manner. This can lead to fewer errors and a more reliable application overall.
 
@@ -607,8 +607,8 @@ One of the key ES principles is to guarantee that all changes to the domain obje
 
 With this, you're able to do:
 - **Complete rebuilds:** Ultimately, you could rebuild your entire application by re-running the events
-- **Temporal Query:** It is possible to understand the state at any point in time in history by simply running the event log until the point in time we want to analyse 
-- **Event Replay:** It's also possible to correct passt events and compute the state after reversing or correcting a particular event. 
+- **Temporal Query:** It is possible to understand the state at any point in time in history by simply running the event log until the point in time we want to analyze 
+- **Event Replay:** It's also possible to correct passed events and compute the state after reversing or correcting a particular event. 
 - **Testing:** If you're keen on running a comprehensive test on a major product addition or enhancement, its possible to run all of the events and understand the implications to the application state
 
 Event sourcing most definitely sounds like an interesting pattern to implement, however, there are many aspects to consider. If you're looking for more details, the [Marting Fowler](https://martinfowler.com/eaaDev/EventSourcing.html) has a great essay on the topic. 
@@ -618,7 +618,7 @@ Event sourcing most definitely sounds like an interesting pattern to implement, 
 
 ---
 ## Eventual Consistency 
-Software systems, particularly enterprise applications, are built to have high availability and fault tolerence, as well as great performance and scalability. 
+Software systems, particularly enterprise applications, are built to have high availability and fault tolerance, as well as great performance and scalability. 
 
 Achieving all of this is very difficult, especially if we want to ensure data consistency, whilst operating these distributed systems which are running across multiple servers. There are network delays, message loss or server failures that need to be taken into considering. 
 
@@ -628,7 +628,7 @@ In an eventually consistent system, updates may be applied asynchronously and ma
 
 To achieve eventual consistency, systems may use a variety of techniques, such as:
 - **Conflict resolution:** resolving conflicts when they arise
-- **Versioning:** assigning unique identifies to each update, alloing the system to track the history of changes
+- **Versioning:** assigning unique identifies to each update, along the system to track the history of changes
 - **Reconciliation:** periodically comparing different views of the data to detect and correct any inconsistencies. 
 
 By using these techniques, eventually consistent systems are able to provide high availability and scalability while still ensuring data consistency over time.
@@ -638,20 +638,20 @@ By using these techniques, eventually consistent systems are able to provide hig
 
 ---
 ## 🚀 Bringing this all together!
-To summarize, we have reveiwed the following:
+To summarize, we have reviewed the following:
 - Hexagonal architecture is a software architecture the places the Domain Layer at the center with no dependencies on any other layer. The Application Layer around the Domain Layer orchestrates the services, and combined the form the Application Core. On the outer layer we have the Infrastructure Layer that comprises the User Interface, Database, etc. The key consideration is that we must use Ports and Adapters to connect the Application Core with the Infrastructure Layer - this ensures clear separation of concerns, improving the modularity, testability and maintainability of a software system.
 
 - Domain-driven design is a software design pattern that helps you build well-defined, easy to understand domain models, more specifically the Application Core (Domain and Application Layers of the Hexagonal Architecture). By applying these principles, the domain is more representative of the business itself and the business logic is easier to change. Moreover, it works particularly well with Ports and Adaptors to maintain the separation we desire between Application Core and the Infrastructure Layer.
 
-- Behavior-driven development is a software develompent approach that allows you to better understand the expected behaviors of the application, the expected outcomes, and ultimately generates a common understanding between all stakeholders. BDD is particularly important to increase cohesion between modules and components.
+- Behavior-driven development is a software development approach that allows you to better understand the expected behaviors of the application, the expected outcomes, and ultimately generates a common understanding between all stakeholders. BDD is particularly important to increase cohesion between modules and components.
 
-- Event-driven architecture is all about setting up your different services and modules in such a way that they produce or consume events. This increases the resilience and flexiblity as the components are decoupled from one another, improving scalability and performance. 
+- Event-driven architecture is all about setting up your different services and modules in such a way that they produce or consume events. This increases the resilience and flexibility as the components are decoupled from one another, improving scalability and performance. 
 
 - CQRS is all about separating your methods into commands and queries, and never mixing the two. This ensures separation of concerns from a business logic perspective, keeping the code clean, easy to understand and easy to change.
 
 - Event Sourcing is a software design pattern that ensures all changes to objects (database) happens through an event, and that event is stored sequentially in order to have a complete log of all state changes to the application, and be able to rebuild, test or correct states using that log. 
 
-Hopefully its clear that implementing these software architecture and design patterns will undoubetbly produce high-quality software, that is flexible, resilient and easy to maintain. It will be very easy to onboard new developers to the project, create a new feature, or change a particular technology or infrastructure. 
+Hopefully its clear that implementing these software architecture and design patterns will undoubtedly produce high-quality software, that is flexible, resilient and easy to maintain. It will be very easy to onboard new developers to the project, create a new feature, or change a particular technology or infrastructure. 
 
 It's probably also overwhelming as its not easy to implement all this as it requires experience and quite a bit of additional overhead. However, the domain framework above has been created to provide you will all the necessary boilerplate, scaffolding, pipeline and even infrastructure code necessary to build an application that follows these design principles. 
 
