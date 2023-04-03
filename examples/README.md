@@ -33,7 +33,21 @@ After logging in, they should be able to add todos, to complete a todo, to uncom
 
 When a todo is completed, if this is the first completed todo, an email should be sent to the user to congratulate him for completing his first todo. This operation has to do mostly with the needs marketing team.
 
-# II. Technologies Used - Overview
+# II. Technologies and Technical Features 
+
+## Technical Features 
+* **Observability**
+* **Realtime client events**
+* **Logging**
+* **Tracing**: Tracks requests that span through multiple modules/microservices
+* **Easy switching between modular monolith and microservices**
+* **Authentication**
+* **Authorization** (Even at the repository level)
+* **Automatic JWT renewal**
+* **gRPC query caching**
+* **Automatic client code generation using gRPC**
+
+## Technologies Used - Overview
 Here are listed some of the specific technologies used for the implementation of the project:
 * **Authentication**: [JSON Web Tokens - JWT](https://jwt.io/)
 * **Databases - Persistence**: [MongoDB](https://www.mongodb.com/), [PostgeSQL](https://www.postgresql.org/)
@@ -43,7 +57,7 @@ Here are listed some of the specific technologies used for the implementation of
 * **PubSub technology**: [NATS](https://nats.io/)
 * **Message Streaming Technology**: [JetStream](https://docs.nats.io/nats-concepts/jetstream) *by NATS*
 * **Container Technology**: [Docker](https://www.docker.com/)
-* **Tracing**: [Jaeger](https://www.jaegertracing.io/)
+* **Tracing-Observability**: [Jaeger](https://www.jaegertracing.io/), [Grafana](https://grafana.com/)
 * **Metrics**: [Prometheus](https://prometheus.io/)
 
 
