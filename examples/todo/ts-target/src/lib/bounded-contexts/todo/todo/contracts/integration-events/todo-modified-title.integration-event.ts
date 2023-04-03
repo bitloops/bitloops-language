@@ -4,6 +4,7 @@ import {
   asyncLocalStorage,
 } from '@bitloops/bl-boilerplate-core';
 import { TodoModifiedTitleDomainEvent } from '../../domain/events/todo-modified-title.event';
+import { TodoEntity } from '../../domain/TodoEntity';
 
 export type IntegrationSchemaV1 = {
   todoId: string;
@@ -50,10 +51,13 @@ export class TodoModifiedTitleIntegrationEvent
   static toIntegrationDataV1(
     event: TodoModifiedTitleDomainEvent,
   ): IntegrationSchemaV1 {
+    // This is one way to handle (toPrimitives call from when publishing the domainEvent), we are the receiver
+    const data: any = event.data;
+    const todoEntity = TodoEntity.fromPrimitives(data);
     return {
       todoId: event.data.id.toString(),
+      title: todoEntity.title.title, //event.data.title.title,
       userId: event.data.userId.toString(),
-      title: event.data.title.title,
     };
   }
 }

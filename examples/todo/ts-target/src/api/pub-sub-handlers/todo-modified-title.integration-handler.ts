@@ -48,6 +48,7 @@ export class TodoModifiedTitlePubSubIntegrationEventHandler
           const todoObject = new todo.Todo({
             id: data.todoId,
             userId: userId,
+            title: data.title,
           });
           // console.log({ todoObject });
           const message = new todo.OnEvent({
