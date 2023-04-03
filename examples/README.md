@@ -243,7 +243,7 @@ This folder contains the proto ([protobuf](https://protobuf.dev/) - protocol buf
 Communication via **Protocol Buffers** have many advantages than communicating via JSON since the message sent via the wire is in binary form thus slimmer and they also communicate the data type in a **programming language agnostic way**. To read more  You can read more about them [here](https://en.wikipedia.org/wiki/Protocol_Buffers). 
 
 
-# III. Todo App Event Storming
+# IV. Todo App Event Storming
 
 Below you may find the event storming of the todo app project. 
 
@@ -282,7 +282,7 @@ The problem in this case is that the email information belongs to the IAM bounde
 
 In this project the decision was to keep a local repository in the Marketing bounded context, of the users and their emails, updated by listening to integration events from the IAM bounded contexts (**user registered** and **user email changed**). 
 
-# IV. Conclusion
+# V. Conclusion
 
 Our team is privileged to have had the opportunity to work with such powerful software design patterns and cutting-edge technologies. We've learned a lot over the past few months, and we're excited to share our knowledge with other developers who are passionate about building great software. 
 
