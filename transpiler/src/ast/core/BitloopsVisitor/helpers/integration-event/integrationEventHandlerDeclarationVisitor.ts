@@ -79,10 +79,12 @@ export const integrationEventHandlerHandleMethodVisitor = (
     ctx.integrationEventHandlerHandleParameter(),
   );
   const statementList: StatementListNode = thisVisitor.visit(ctx.functionBody());
+  const returnOkErrorType = thisVisitor.visit(ctx.returnOkErrorType());
 
   return new IntegrationEventHandlerHandleMethodNodeBuilder(produceMetadata(ctx, thisVisitor))
     .withParameter(parameter)
     .withStatementList(statementList)
+    .withReturnType(returnOkErrorType)
     .build();
 };
 

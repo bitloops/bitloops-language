@@ -10,13 +10,13 @@ export class VariableDeclarationNode extends StatementNode {
     super(BitloopsTypesMapping.TVariableDeclaration, metadata, NAME);
   }
 
-  getExpressionValues(): ExpressionNode {
+  getExpressionValues(): ExpressionNode | null {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
     );
     if (!expression || !expression.getChildren().length) {
-      throw new Error('Expression not found');
+      return null;
     }
     return expression.getChildren()[0] as ExpressionNode;
   }

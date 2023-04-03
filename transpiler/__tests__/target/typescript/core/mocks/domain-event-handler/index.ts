@@ -40,6 +40,8 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
           new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
         ),
       ],
+      returnOkType: 'void',
+      returnErrorType: 'DomainErrors.SendEmailError',
     }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/domain-event-handler/sendEmailHandler.mock.ts',
@@ -47,27 +49,29 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
   },
   {
     description: 'event handler with injected dependency',
-    domainEventHandler: new DomainEventHandlerBuilderDirector().buildDomainEventHandler({
-      identifier: 'SendEmailAfterMoneyDepositedHandler',
-      parameters: [
-        new ParameterBuilderDirector().buildIdentifierParameter('emailRepo', 'IEmailRepoPort'),
-      ],
-      executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
-        'event',
-        'MoneyDepositedToAccountDomainEvent',
-      ),
-      statements: [
-        new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
-          'email',
-          'example@email.com',
+    domainEventHandler:
+      new DomainEventHandlerBuilderDirector().buildDomainEventHandlerWithoutErrors({
+        identifier: 'SendEmailAfterMoneyDepositedHandler',
+        parameters: [
+          new ParameterBuilderDirector().buildIdentifierParameter('emailRepo', 'IEmailRepoPort'),
+        ],
+        executeParameter: new ParameterBuilderDirector().buildIdentifierParameter(
+          'event',
+          'MoneyDepositedToAccountDomainEvent',
         ),
-        new ExpressionBuilderDirector().buildThisDependencyMethodCall(
-          'commandBus',
-          'send',
-          new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
-        ),
-      ],
-    }),
+        statements: [
+          new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
+            'email',
+            'example@email.com',
+          ),
+          new ExpressionBuilderDirector().buildThisDependencyMethodCall(
+            'commandBus',
+            'send',
+            new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
+          ),
+        ],
+        returnOkType: 'void',
+      }),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/domain-event-handler/handlerWithDependency.mock.ts',
     ),

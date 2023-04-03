@@ -8,7 +8,7 @@ import { IBuilder } from '../IBuilder.js';
 export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarationNode> {
   private variableDeclarationNode: VariableDeclarationNode;
   private identifierNode: IdentifierNode;
-  private expressionNode: ExpressionNode;
+  private expressionNode?: ExpressionNode;
   private typeAnnotationNode: BitloopsPrimaryTypeNode;
 
   constructor(metadata?: TNodeMetadata) {

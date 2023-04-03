@@ -14,4 +14,12 @@ export const VALID_QUERY_TEST_CASES = [
       'transpiler/__tests__/target/typescript/core/mocks/query/getCustomerByIdQuery.mock.ts',
     ),
   },
+  {
+    description: 'Query with no fields',
+    fieldListNode: null,
+    queryIdentifierNode: new IdentifierNodeBuilder().withName('GetAllQuery').build(),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/query/getAll.mock.ts',
+    ),
+  },
 ];

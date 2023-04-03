@@ -266,7 +266,6 @@ const BitloopsTypesMapping = {
   TEventHandlerBusDependencies: 'TEventHandlerBusDependencies',
   TControllerBusDependencies: 'TControllerBusDependencies',
   THandlerAttributesAndConstructor: 'THandlerAttributesAndConstructor',
-  THandle: 'THandle',
   TIntegrationEventHandlerIdentifier: 'TIntegrationEventHandlerIdentifier',
   TIntegrationEventHandler: 'TIntegrationEventHandler',
   TServicePortIdentifier: 'TServicePortIdentifier',
@@ -283,6 +282,7 @@ const BitloopsTypesMapping = {
   TInjectionToken: 'TInjectionToken',
   TPortToken: 'TPortToken',
   TMetadata: 'TMetadata',
+  THandle: 'THandle',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

@@ -32,6 +32,8 @@ import {
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../dependencies.js';
+import { StringUtils } from '../../../../../utils/StringUtils.js';
+import { ArrayUtils } from '../../../../../utils/ArrayUtils.js';
 
 const QUERY_DEPENDENCIES: TDependenciesTypeScript = [
   {
@@ -63,7 +65,7 @@ const queryToTargetLanguage = (
   const queryValues = query.query;
   const queryName = queryValues[identifierKey];
 
-  const fields = queryValues[fieldsKey];
+  const fields = queryValues[fieldsKey] ?? [];
 
   const variablesResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TVariables,
@@ -101,6 +103,9 @@ const getQueryTypeName = (dtoTypeName: string): string => {
 };
 
 const getQueryType = (queryTypeName: string, variablesString: string): string => {
+  if (StringUtils.isEmpty(variablesString)) {
+    return '';
+  }
   const type = `type ${queryTypeName} = {
       ${variablesString}
     }
@@ -109,6 +114,11 @@ const getQueryType = (queryTypeName: string, variablesString: string): string =>
 };
 
 const getConstructor = (dtoTypeName: string, queryName: string, fields: TVariable[]): string => {
+  if (ArrayUtils.isEmpty(fields)) {
+    return `constructor() {
+      super();
+    }`;
+  }
   const queryNameWithoutSuffix = queryName.replace('Query', '');
   const queryWithLowerCaseStartLetter =
     queryNameWithoutSuffix.charAt(0).toLowerCase() + queryNameWithoutSuffix.slice(1);

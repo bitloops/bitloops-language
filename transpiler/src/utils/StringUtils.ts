@@ -67,4 +67,8 @@ export class StringUtils {
   static upperCaseFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  static isEmpty(str: string): boolean {
+    return str.length === 0;
+  }
 }
