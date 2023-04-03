@@ -21,6 +21,7 @@ export class CommandHandlerNodeTSTransformer extends NodeModelToTargetASTTransfo
 
   private prependAwaitToAllDependencyCalls(): void {
     this.prependAwaitTransformer.prependAwaitToAllDependencyCalls();
+    this.prependAwaitTransformer.prependAwaitToDomainServiceEvaluationNode();
   }
 
   private transformDotValue(): void {

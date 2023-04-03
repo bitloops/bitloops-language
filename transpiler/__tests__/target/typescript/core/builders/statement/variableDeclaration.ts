@@ -16,4 +16,14 @@ export class VariableDeclarationBuilderDirector {
       .withTypeAnnotation(typeAnnotation);
     return node.build();
   }
+
+  buildVariableDeclarationWithoutExpression(
+    identifier: string,
+    typeAnnotation: BitloopsPrimaryTypeNode,
+  ): ConstDeclarationNode {
+    const node = new VariableDeclarationNodeBuilder(null)
+      .withIdentifier(new IdentifierNodeBuilder().withName(identifier).build())
+      .withTypeAnnotation(typeAnnotation);
+    return node.build();
+  }
 }

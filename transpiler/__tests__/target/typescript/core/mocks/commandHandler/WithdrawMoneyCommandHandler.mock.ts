@@ -2,8 +2,10 @@ import { Application, Either, Domain, fail, ok } from '@bitloops/bl-boilerplate-
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
-import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
 import { WithdrawMoneyCommand } from '../commands/WithdrawMoneyCommand';
+import { Inject } from '@nestjs/common';
+import { AccountWriteRepoPortToken } from '../../constants';
+import { AccountWriteRepoPort } from '../../ports/AccountWriteRepoPort';
 export type WithdrawMoneyCommandHandlerResponse = Either<
   void,
   | ApplicationErrors.AccountNotFoundError
@@ -13,12 +15,15 @@ export type WithdrawMoneyCommandHandlerResponse = Either<
 export class WithdrawMoneyCommandHandler
   implements Application.ICommandHandler<WithdrawMoneyCommand, void>
 {
-  constructor(private accountRepo: AccountWriteRepoPort) {}
+  constructor(
+    @Inject(AccountWriteRepoPortToken)
+    private readonly accountRepo: AccountWriteRepoPort,
+  ) {}
   get command() {
     return WithdrawMoneyCommand;
   }
   get boundedContext(): string {
-    return WithdrawMoneyCommand.boundedContext;
+    return WithdrawMoneyCommand.boundedContextId;
   }
   @Traceable({
     operation: 'WithdrawMoneyCommandHandler',

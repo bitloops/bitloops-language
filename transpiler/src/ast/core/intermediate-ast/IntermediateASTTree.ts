@@ -23,6 +23,7 @@ import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDecla
 import { FieldListNode } from './nodes/FieldList/FieldListNode.js';
 import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
+import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -612,5 +613,40 @@ export class IntermediateASTTree {
       }
     });
     return resultNode ?? null;
+  }
+
+  getIdentifiersOfDomainServiceEvaluations(statements: StatementNode[]): string[] {
+    const identifiers: string[] = [];
+
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression.isEvaluation()) {
+        return false;
+      }
+      const evaluation = expression.getEvaluationChild();
+
+      const evaluationIsDomainServiceEvaluation = evaluation instanceof DomainServiceEvaluationNode;
+      if (!evaluationIsDomainServiceEvaluation) {
+        return false;
+      }
+      return true;
+    };
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
   }
 }

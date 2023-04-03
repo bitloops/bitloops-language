@@ -1,16 +1,21 @@
-import { Application, Infra, Container } from '@bitloops/bl-boilerplate-core';
+import { Application, Infra } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { Inject } from '@nestjs/common';
+import { StreamingCommandBusToken } from '../../../constants';
 import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts/integration-events/MoneyDepositedIntegrationEvent';
 export class MoneyDepositedIntegrationHandler implements Application.IHandle {
-  private commandBus: Infra.CommandBus.ICommandBus;
-  constructor() {
-    this.commandBus = Container.getCommandBus();
-  }
+  constructor(
+    @Inject(StreamingCommandBusToken)
+    private readonly commandBus: Infra.CommandBus.ICommandBus,
+  ) {}
   get event() {
     return MoneyDepositedIntegrationEvent;
   }
   get boundedContext(): string {
-    return MoneyDepositedIntegrationEvent.boundedContext;
+    return MoneyDepositedIntegrationEvent.boundedContextId;
+  }
+  get version() {
+    return 'v1';
   }
   @Traceable({
     operation: 'MoneyDepositedIntegrationHandler',

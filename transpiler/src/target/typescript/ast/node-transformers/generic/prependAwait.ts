@@ -33,4 +33,20 @@ export class PrependAwaitNodeTSTransformer {
     const thisNode = node.getThisNode();
     thisNode.updateValue('await this');
   }
+
+  public prependAwaitToDomainServiceEvaluationNode(): void {
+    const statements = this.node.getStatements();
+    const identifiersToBeUpdated = this.tree.getIdentifiersOfDomainServiceEvaluations(statements);
+    const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(
+      statements,
+      identifiersToBeUpdated,
+    );
+    identifierExpressionNodes.forEach((node) => {
+      node.identifierName = this.prependAwait(node.identifierName);
+    });
+  }
+
+  private prependAwait(str: string): string {
+    return `await ${str}`;
+  }
 }

@@ -8,7 +8,6 @@
       "problemMatcher": ["$tsc-watch"],
       "group": {
         "kind": "build"
-        // "isDefault": true
       },
       "label": "tsc: watch - tsconfig.json"
     },
@@ -34,7 +33,8 @@
       "group": {
         "kind": "build",
         "isDefault": true
-      }
+      },
+      "problemMatcher": []
     }
   ]
 }

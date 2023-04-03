@@ -71,6 +71,7 @@ bitloopsIdentifiers
     | structIdentifier
     | commandIdentifier
     | queryIdentifier
+    | domainServiceIdentifier
     ;
 
 primitives
@@ -308,7 +309,7 @@ constDeclaration
     ;
 
 variableDeclaration
-    : identifier typeAnnotation '=' expression  SemiColon?
+    : identifier typeAnnotation ('=' expression )? SemiColon?
     ;
 
 statement                       

@@ -33,7 +33,7 @@ import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
 import { BuiltInFunctionStatementDirector } from './builtInFunctionDirector.js';
-import { ConstDeclarationBuilderDirector } from './constDeclarationDirector.js';
+import { ConstDeclarationBuilderDirector } from './variableDeclarationDirector.js';
 import { IfStatementBuilder } from './IfStatement.js';
 import { ReturnErrorStatementBuilder } from './returnErrorStatementBuilder.js';
 import { ReturnOKStatementBuilder } from './returnOKStatementBuilder.js';
