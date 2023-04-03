@@ -12,7 +12,7 @@ export class UserRegisteredIntegrationEvent
   static boundedContextId = 'Bitloops_IAM';
   static versions = ['v1'];
 
-  constructor(public data: UserRegisteredIntegrationSchemaV1) {
+  constructor(public payload: UserRegisteredIntegrationSchemaV1) {
     this.metadata = {
       boundedContextId: UserRegisteredIntegrationEvent.boundedContextId,
       version: UserRegisteredIntegrationEvent.versions[0],
