@@ -36,9 +36,9 @@ export class CreateUserCommandHandler
   }
 
   @Traceable({
-    operation: 'CreateUserCommandHandler',
+    operation: '[Marketing] CreateUserCommandHandler',
     metrics: {
-      name: 'CreateUserCommandHandler',
+      name: '[Marketing] CreateUserCommandHandler',
       category: 'commandHandler',
     },
   })

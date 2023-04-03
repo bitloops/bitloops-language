@@ -27,9 +27,9 @@ export class SendEmailCommandHandler
   }
 
   @Traceable({
-    operation: 'SendEmailCommandHandler',
+    operation: '[Marketing] SendEmailCommandHandler',
     metrics: {
-      name: 'SendEmailCommandHandler',
+      name: '[Marketing] SendEmailCommandHandler',
       category: 'commandHandler',
     },
   })

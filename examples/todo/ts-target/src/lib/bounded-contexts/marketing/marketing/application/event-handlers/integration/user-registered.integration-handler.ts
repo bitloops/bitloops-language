@@ -3,6 +3,7 @@ import { Infra, Application, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { UserRegisteredIntegrationEvent } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
 import { CreateUserCommand } from '../../../commands/create-user.command';
 import { StreamingCommandBusToken } from '../../../constants';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export class UserRegisteredIntegrationEventHandler
   implements Application.IHandleIntegrationEvent
@@ -24,6 +25,13 @@ export class UserRegisteredIntegrationEventHandler
     return UserRegisteredIntegrationEvent.versions[0]; // here output will be 'v1'
   }
 
+  @Traceable({
+    operation: '[Marketing] UserRegisteredIntegrationEventHandler',
+    metrics: {
+      name: '[Marketing] UserRegisteredIntegrationEventHandler',
+      category: 'integrationEventHandler',
+    },
+  })
   public async handle(
     event: UserRegisteredIntegrationEvent,
   ): Promise<Either<void, never>> {

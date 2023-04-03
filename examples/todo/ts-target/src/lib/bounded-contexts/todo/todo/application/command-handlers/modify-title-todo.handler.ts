@@ -42,9 +42,9 @@ export class ModifyTodoTitleHandler
   }
 
   @Traceable({
-    operation: 'ModifyTitleCommandHandler',
+    operation: '[Todo] ModifyTitleCommandHandler',
     metrics: {
-      name: 'ModifyTitleCommandHandler',
+      name: '[Todo] ModifyTitleCommandHandler',
       category: 'commandHandler',
     },
   })

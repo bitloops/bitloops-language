@@ -45,9 +45,9 @@ export class TodoCompletionsIncrementedHandler
   }
 
   @Traceable({
-    operation: 'TodoCompletionIncrementedDomainEventHandler',
+    operation: '[Marketing] TodoCompletionIncrementedDomainEventHandler',
     metrics: {
-      name: 'TodoCompletionIncrementedDomainEventHandler',
+      name: '[Marketing] TodoCompletionIncrementedDomainEventHandler',
       category: 'domainEventHandler',
     },
   })

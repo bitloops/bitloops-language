@@ -1,6 +1,7 @@
 import { Infra, Application, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { UserEmailChangedIntegrationEvent } from '@src/lib/bounded-contexts/iam/authentication/contracts/integration-events/user-email-changed.integration-event';
 import { ChangeUserEmailCommand } from '../../../commands/change-user-email.command';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export class UserEmailChangedIntegrationEventHandler
   implements Application.IHandleIntegrationEvent
@@ -19,6 +20,13 @@ export class UserEmailChangedIntegrationEventHandler
     return UserEmailChangedIntegrationEvent.versions[0]; // here output will be 'v1'
   }
 
+  @Traceable({
+    operation: '[Marketing] UserEmailChangedIntegrationEventHandler',
+    metrics: {
+      name: '[Marketing] UserEmailChangedIntegrationEventHandler',
+      category: 'integrationEventHandler',
+    },
+  })
   public async handle(
     event: UserEmailChangedIntegrationEvent,
   ): Promise<Either<void, never>> {

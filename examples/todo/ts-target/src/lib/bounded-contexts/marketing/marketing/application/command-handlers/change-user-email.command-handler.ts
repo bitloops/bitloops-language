@@ -36,9 +36,9 @@ export class ChangeUserEmailCommandHandler
   }
 
   @Traceable({
-    operation: 'ChangeUserEmailCommandHandler',
+    operation: '[Marketing] ChangeUserEmailCommandHandler',
     metrics: {
-      name: 'ChangeUserEmailCommandHandler',
+      name: '[Marketing] ChangeUserEmailCommandHandler',
       category: 'commandHandler',
     },
   })

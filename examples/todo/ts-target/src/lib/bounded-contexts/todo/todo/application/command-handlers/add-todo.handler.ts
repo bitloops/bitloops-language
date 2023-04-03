@@ -39,9 +39,9 @@ export class AddTodoCommandHandler
   }
 
   @Traceable({
-    operation: 'AddTodoCommandHandler',
+    operation: '[Todo] AddTodoCommandHandler',
     metrics: {
-      name: 'AddTodoCommandHandler',
+      name: '[Todo]AddTodoCommandHandler',
       category: 'commandHandler',
     },
   })
