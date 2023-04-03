@@ -14,7 +14,6 @@ export class DomainEventHandlerBuilder implements IBuilder<TDomainEventHandler> 
   private parameters: TParameterList;
   private handle: THandle;
   private busDependencies: TEventHandlerBusDependencies;
-  private returnType: TOkErrorReturnType;
 
   public withIdentifier(identifierName: string): DomainEventHandlerBuilder {
     this.identifierName = identifierName;
@@ -38,7 +37,7 @@ export class DomainEventHandlerBuilder implements IBuilder<TDomainEventHandler> 
     this.handle = {
       statements,
       ...parameter,
-      returnType,
+      returnType: returnType.returnType,
     };
     return this;
   }

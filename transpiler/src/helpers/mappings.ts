@@ -280,6 +280,7 @@ const BitloopsTypesMapping = {
   TInjectionToken: 'TInjectionToken',
   TPortToken: 'TPortToken',
   TMetadata: 'TMetadata',
+  THandle: 'THandle',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
