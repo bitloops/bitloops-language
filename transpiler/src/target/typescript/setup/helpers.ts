@@ -1,21 +1,23 @@
-import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import {
-  expressionKey,
-  TDependencyInjections,
-  TEvaluationField,
-  TEvaluationFields,
-  TExpression,
-  TGraphQLServerInstance,
-  TRouterDefinition,
-  TSetupRepoAdapterDefinition,
-  TUseCaseDefinition,
-} from '../../../types.js';
-import { ControllerHelpers } from './controller/index.js';
-import { TSetupElementsPerModule } from './definitions.js';
-import { DependencyInjectionHelpers } from './dependency-injections/helpers.js';
-import { SetupTypeScriptRepos } from './repos/index.js';
-import { UseCaseDefinitionHelpers } from './useCaseDefinition/index.js';
+/**
+ *  Bitloops Language
+ *  Copyright (C) 2022 Bitloops S.A.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  For further information you can contact legal(at)bitloops.com.
+ */
+import { expressionKey, TEvaluationField, TEvaluationFields, TExpression } from '../../../types.js';
 
 export class NodeValueHelpers {
   static findKeyOfEvaluationFieldList(list: TEvaluationFields, key: string): TExpression {
@@ -32,37 +34,3 @@ export class NodeValueHelpers {
     return { expression };
   }
 }
-
-export const groupSetupElementsPerModule = (
-  setupTree: IntermediateASTTree,
-): TSetupElementsPerModule => {
-  const routerDefinitions = setupTree.getRootChildrenNodesValueByType<TRouterDefinition>(
-    BitloopsTypesMapping.TRouterDefinition,
-  );
-  const graphQLServerInstances = setupTree.getRootChildrenNodesValueByType<TGraphQLServerInstance>(
-    BitloopsTypesMapping.TGraphQLServerInstance,
-  );
-  const useCaseDefinitions = setupTree.getRootChildrenNodesValueByType<TUseCaseDefinition>(
-    BitloopsTypesMapping.TUseCaseDefinition,
-  );
-  const repoAdapterDefinitions =
-    setupTree.getRootChildrenNodesValueByType<TSetupRepoAdapterDefinition>(
-      BitloopsTypesMapping.TSetupRepoAdapterDefinition,
-    );
-  const dependencyInjections = setupTree.getRootChildrenNodesValueByType<TDependencyInjections>(
-    BitloopsTypesMapping.TDependencyInjections,
-  );
-
-  const elementsPerBoundedContext: TSetupElementsPerModule = {
-    useCases: UseCaseDefinitionHelpers.getUseCasesForEachBoundedContextModule(useCaseDefinitions),
-    restControllers:
-      ControllerHelpers.getRESTControllersForEachBoundedContextModule(routerDefinitions),
-    graphQLControllers:
-      ControllerHelpers.getGraphQLControllersForEachBoundedContextModule(graphQLServerInstances),
-    repoAdapters:
-      SetupTypeScriptRepos.getRepoAdaptersForEachBoundedContextModule(repoAdapterDefinitions),
-    dependencyInjections:
-      DependencyInjectionHelpers.getDependencyInjectionsForEachModule(dependencyInjections),
-  };
-  return elementsPerBoundedContext;
-};

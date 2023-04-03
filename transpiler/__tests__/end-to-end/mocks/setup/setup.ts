@@ -10,46 +10,6 @@ type TestCase = {
 };
 
 const setupFilePaths = {
-  'fastifyIndex.mock.ts': {
-    fileId: 'src/shared/infra/rest/fastify/routers/index.ts',
-    fileType: 'REST.Fastify.Router',
-    formatterParser: 'typescript',
-  },
-  'index.mock.ts': {
-    fileId: 'src/index.ts',
-    fileType: 'startup',
-    formatterParser: 'typescript',
-  },
-  'packageMock.json': {
-    fileId: 'package.json',
-    fileType: 'Config',
-    formatterParser: 'json',
-  },
-  'tsconfigMock.json': {
-    fileId: 'tsconfig.json',
-    fileType: 'Config',
-    formatterParser: 'json',
-  },
-  'nodemonMock.json': {
-    fileId: 'nodemon.json',
-    fileType: 'Config',
-    formatterParser: 'json',
-  },
-  'app0.mock.ts': {
-    fileId: 'src/shared/infra/rest/fastify/app0.ts',
-    fileType: 'REST.Fastify.Server',
-    formatterParser: 'typescript',
-  },
-  'api.index.mock.ts': {
-    fileId: 'src/shared/infra/rest/fastify/api/index.ts',
-    fileType: 'REST.Fastify.API',
-    formatterParser: 'typescript',
-  },
-  'di.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/DI.ts',
-    fileType: 'DI',
-    formatterParser: 'typescript',
-  },
   'di-constants.mock.ts': {
     fileId: 'src/bounded-contexts/demo/hello-world/constants.ts',
     fileType: 'DI.Tokens',
@@ -68,16 +28,6 @@ const setupFilePaths = {
   'domainRule.mock.ts': {
     fileId: 'src/bounded-contexts/demo/hello-world/domain/rules/index.ts',
     fileType: 'DomainRule',
-    formatterParser: 'typescript',
-  },
-  'appConfig.mock.ts': {
-    fileId: 'src/config/index.ts',
-    fileType: 'config',
-    formatterParser: 'typescript',
-  },
-  'subscriptions.mock.ts': {
-    fileId: 'src/bounded-contexts/demo/hello-world/subscriptions/index.ts',
-    fileType: 'subscriptions',
     formatterParser: 'typescript',
   },
   'index.command-handlers.mock.ts': {
