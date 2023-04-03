@@ -43,6 +43,8 @@ export const domainEvaluationToTargetLanguage = (
 
   const domainName = getDomainName(evaluation);
   const dependencies = [...resultDomainProps.dependencies, ...getChildDependencies(domainName)];
+  //TODO: the following if will be removed when we change the element
+  //of domainEvaluationInput in the the readModelEvaluation in parser
   if (isReadModelEvaluation(evaluation)) {
     return {
       output: `${domainName}.fromPrimitives(${resultDomainProps.output});`,

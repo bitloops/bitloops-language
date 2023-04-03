@@ -668,7 +668,7 @@ propsEvaluation
     ;
 
 readModelEvaluation
-    : readModelIdentifier Dot Create domainEvaluationInput 
+    : readModelIdentifier Dot Create domainEvaluationInput  //TODO: here could be a another element, syntax wise the same with domainEvaluationInput
     ;
 
 domainErrorDeclaration
