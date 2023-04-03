@@ -52,7 +52,7 @@ enum PROJECT_RELATIVE_PATHS {
   INJECTION_TOKENS = '',
 }
 
-const ClassTypesPaths: Record<TClassTypesValues, string> = {
+export const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.Props]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.ReadModel]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.RootEntity]: PROJECT_RELATIVE_PATHS.DOMAIN,

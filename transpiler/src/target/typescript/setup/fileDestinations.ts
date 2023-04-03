@@ -52,7 +52,8 @@ export type TSetupFileType =
   | typeof ClassTypes.ApplicationError
   | typeof ClassTypes.DomainError
   | typeof ClassTypes.DomainRule
-  | 'DI.Tokens';
+  | 'DI.Tokens'
+  | 'index.ts';
 
 export type TSetupTypeMapper = Record<TSetupFileType, string>;
 
@@ -63,6 +64,7 @@ export const setupTypeMapper: TSetupTypeMapper = {
   config: `/${setupMapper.OUTPUT_CONFIG_FOLDER}`,
   DI: '',
   'DI.Tokens': '',
+  'index.ts': '',
   subscriptions: '',
   'package.json': '/./',
   Config: '/./',

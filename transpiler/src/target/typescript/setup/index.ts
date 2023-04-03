@@ -44,6 +44,7 @@ import { groupSetupElementsPerModule } from './helpers.js';
 import { SubscriptionsHandler } from './subscriptions/subscriptionsHandler.js';
 import { setupTypeMapper, TSetupFileType } from './fileDestinations.js';
 import { DITokensGenerator } from './dependency-injection-tokens/di-tokens.handler.js';
+import { HandlersAggregator } from './handlers-aggregation/handlers-aggregation.handler.js';
 
 export type TSetupOutput = {
   fileId: string;
@@ -140,6 +141,14 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
       const diTokensGenerator = new DITokensGenerator(bitloopsModel, setupTypeMapper, license);
       pathsAndContents.push(...diTokensGenerator.handle());
       // console.log('--------------------------------');
+
+      // Step 3.2 Generate index files for every handler type
+      const indexHandlerAggregator = new HandlersAggregator(
+        bitloopsModel,
+        setupTypeMapper,
+        license,
+      );
+      pathsAndContents.push(...indexHandlerAggregator.handle());
 
       // Step 4. Setup server file
       const serverSetup = setupGenerator.generateServers(allServers, bitloopsModel);

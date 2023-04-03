@@ -80,6 +80,26 @@ const setupFilePaths = {
     fileType: 'subscriptions',
     formatterParser: 'typescript',
   },
+  'index.command-handlers.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/application/commandHandlers/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
+  'index.query-handlers.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/application/queryHandlers/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
+  'index.domain-event-handlers.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/application/handlers/domain/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
+  'index.integration-event-handlers.mock.ts': {
+    fileId: 'src/bounded-contexts/demo/hello-world/application/handlers/integration/index.ts',
+    fileType: 'index.ts',
+    formatterParser: 'typescript',
+  },
 };
 
 const getExpectedSetupOutputs = (
