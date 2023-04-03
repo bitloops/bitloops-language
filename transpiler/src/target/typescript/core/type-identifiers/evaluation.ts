@@ -27,6 +27,7 @@ import {
   TEvaluationValues,
   TStandardVOEvaluation,
   TStructEvaluation,
+  TDomainEventEvaluation,
 } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
@@ -80,10 +81,13 @@ export class EvaluationTypeIdentifiers {
   static isStandardVOEvaluation(
     evaluation: TEvaluationValues,
   ): evaluation is TStandardVOEvaluation {
-    if ('standardVO' in evaluation) {
-      return true;
-    }
-    return false;
+    return 'standardVO' in evaluation;
+  }
+
+  static isDomainEventEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TDomainEventEvaluation {
+    return 'domainEvent' in evaluation;
   }
 
   static isCorsOptionsEvaluation(evaluation: TEvaluationValues): evaluation is TErrorEvaluation {

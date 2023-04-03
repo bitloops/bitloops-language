@@ -283,6 +283,7 @@ evaluation
     | queryEvaluation
     | standardVOEvaluation
     | integrationEventEvaluation
+    | domainEventEvaluation
     | domainServiceEvaluation
     | readModelEvaluation
     ;
@@ -644,6 +645,10 @@ commandEvaluation
 
 queryEvaluation
     : queryIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
+    ;
+
+domainEventEvaluation
+    : domainEventIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
     ;
     
 integrationEventEvaluation

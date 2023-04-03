@@ -106,6 +106,15 @@ export const validEvaluationTestCases: Array<TestCase> = [
       ],
     }),
   },
+  {
+    description: 'valid Domain Event Evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestEvaluation { UserCreatedDomainEvent.create({ email: 'john@doe.com' })}",
+    evaluation: new EvaluationBuilderDirector().buildDomainEventEvaluation(
+      'UserCreatedDomainEvent',
+      [new EvaluationFieldBuilderDirector().buildStringEvaluationField('email', 'john@doe.com')],
+    ),
+  },
 ];
 
 export const validStandardVOEvaluationTestCases: Array<TestCase> = [

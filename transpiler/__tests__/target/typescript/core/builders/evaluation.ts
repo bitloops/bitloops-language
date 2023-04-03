@@ -28,6 +28,8 @@ import { StandardVOEvaluationNodeBuilder } from '../../../../../src/ast/core/int
 import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { DomainServiceEvaluationBuilderDirector } from './domainServiceEvaluationBuilderDirector.js';
 import { ReadModelEvaluationBuilderDirector } from './domainEvaluation/readModelEvaluation.js';
+import { DomainEventIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
+import { DomainEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEventEvaluationNodeBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -180,6 +182,17 @@ export class EvaluationBuilderDirector {
     }
 
     return new EvaluationBuilder().withEvaluation(evaluationNode.build()).build();
+  }
+
+  buildDomainEventEvaluation(
+    identifierNode: DomainEventIdentifierNode,
+    evaluationFieldListNode: EvaluationFieldListNode,
+  ): EvaluationNode {
+    const evaluationNode = new DomainEventEvaluationNodeBuilder()
+      .withIdentifier(identifierNode)
+      .withEvaluationFieldList(evaluationFieldListNode)
+      .build();
+    return new EvaluationBuilder().withEvaluation(evaluationNode).build();
   }
 
   buildStandardVOEvaluation(
