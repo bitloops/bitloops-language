@@ -59,6 +59,7 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
     if (password.length < 8) return setErrorMessage('Password must be at least 8 characters long!');
     try {
       await axios.post(REGISTRATION_URL, { email, password });
+      loginWithEmailPassword(email, password);
     } catch (error: any) {
       setErrorMessage(error?.response?.data?.message);
     }
@@ -138,6 +139,7 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
 
   useEffect(() => {
     if (event) {
+      console.log('event', event);
       const { eventName, payload } = event;
       if (payload) switch (eventName) {
         case 'onadded':
