@@ -2,7 +2,7 @@
 
 Building complex software is really hard, and we learnt the hard way how important it is to design your software correctly from the beginning! 
 
-There is plenty of information out there on how to build resilient and maintainable software, but the difficulty is actually implementing it. So we went ahead and built a domain-layer framework we wish we had when we started learning these concepts and technologies. 
+There is plenty of information out there on how to build resilient and maintainable software, but the difficulty is actually implementing it. So we went ahead and built a comprehensive example we wish we had when we started learning these concepts and technologies. 
 
 Our team has put a lot of effort into creating a clean, and modular code-base that comes as close as possible to production ready code, aiming to provide valuable insights into advanced software architecture concepts. 
  
@@ -49,7 +49,65 @@ Here are listed some of the specific technologies used for the implementation of
 
 # III. Quick start - running the ToDo App
 
-## A. Quick start in development mode
+## Prerequisites
+In order to run the application the following should have been installed on your local machine:
+
+* **Docker** should be installed ([link](https://docs.docker.com/engine/install/))
+* **docker-compose** should be installed, if your docker installation does not install it automatically ([link](https://docs.docker.com/compose/install/))
+
+## Running the app
+Run `docker-compose up` from the terminal inside the project **in order to download and run the necessary containers**.
+
+Then the ReactJS front-end application will be visible at: `http://localhost:3000`.
+
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/todo-frontend.png" alt="Fronte end application" align="center">
+</p>
+
+<p align="center">
+Front end React JS application
+</p>
+
+# IV. Todo App Event Storming
+
+We have chosen the [Event storming](https://www.eventstorming.com/) technique to document the functionality and business logic of the todo application.
+
+In general, [Event storming](https://www.eventstorming.com/) is a **collaborating modelling technique** used to model complex domains, in order to align the software produced with the actual business logic. It matches perfectly with [Domain Driven Design (DDD)](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) as well as [Event Driven Architecture (EDA)](https://bitloops.com/docs/bitloops-language/learning/software-architecture/event-driven-architecture). 
+
+If you want to know more for this technique, you can check the **Theoretical Review** at the end.
+
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="900" src="https://storage.googleapis.com/bitloops-github-assets/Todo%20event%20stroming.png" alt="Todo Event Storming" align="center">
+</p>
+
+As you can see after the collaborative discovery, we have identified the following **bounded contexts**:
+
+* **IAM**: Has todo with the user registration and log in.
+*  **Todo**: This is the **core subdomain** of our application (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design))
+*  **Marketing**: This is a **supporting subdomain** (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)) of our Todo application. 
+
+In the process we have further split some bounded contexts (linguistic boundary), to more fine grained modules.
+
+The processes of the system as were discovered are the following:
+
+* **User Log In process** (IAM Bounded Context)
+* **User registration process** (IAM Bounded Context)
+* **Todo process** (Todo Bounded Context)
+* **Onboarding process** (Marketing Bounded Context)
+
+## Todo App Event Storming Observations
+
+Some parts of the system need to have information which is located in other parts of the system. 
+
+More specifically, the Marketing bounded context, **needs to know when a todo is completed** and run its business logic to send an email when the first todo is completed.
+
+Moreover the Marketing Bounded contexts **needs to have information concerning the email** of each specific user, in order to be able to send an email.
+
+The problem in this case is that the email information belongs to the IAM bounded context. So in order for the marketing bounded context to have the knowledge of the specific users's email, either it can make a sync request to the IAM bounded context, or it can listen to integration events from the IAM bounded context, in order to hold a local email information (via [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency)).
+
+In this project the decision was to keep a local repository in the Marketing bounded context, of the users and their emails, updated by listening to integration events from the IAM bounded contexts (**user registered** and **user email changed**). 
+
+# V. Running in development mode
 
 ### Prerequisites
 In order to run the application the following should have been installed on your local machine:
@@ -78,7 +136,7 @@ Those tools could be helpful in the development process as well.
 
 #### Postman
 
-So we recomend to test the application with a client tool that supports both. Such tool could be [Postman](https://www.postman.com/product/what-is-postman/).
+So we recommend to test the application with a client tool that supports both. Such tool could be [Postman](https://www.postman.com/product/what-is-postman/).
 
 You may find tutorials on how to use **Postman** for REST and gRPC requests below:
 
@@ -175,9 +233,6 @@ Each module structure contains the following folders:
 * ports
 * tests
 
-</br>
-</br>
-
 <p align="center" style="margin-bottom: 0px !important;">
   <img width="400" src="https://storage.googleapis.com/bitloops-github-assets/module-structure.png" alt="Project Structure" align="center">
 </p>
@@ -242,47 +297,7 @@ This folder contains the proto ([protobuf](https://protobuf.dev/) - protocol buf
 
 Communication via **Protocol Buffers** have many advantages than communicating via JSON since the message sent via the wire is in binary form thus slimmer and they also communicate the data type in a **programming language agnostic way**. To read more  You can read more about them [here](https://en.wikipedia.org/wiki/Protocol_Buffers). 
 
-
-# IV. Todo App Event Storming
-
-Below you may find the event storming of the todo app project. 
-
-In general, [Event storming](https://www.eventstorming.com/) is a **collaborating modelling technique** used to model complex domains, in order to align the software produced with the actual business logic. It matches perfectly with [Domain Driven Design (DDD)](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) as well as [Event Driven Architecture (EDA)](https://bitloops.com/docs/bitloops-language/learning/software-architecture/event-driven-architecture). 
-
-If you want to know more for this technique, you can check the **Theoretical Review** at the end.
-
-<p align="center" style="margin-bottom: 0px !important;">
-  <img width="900" src="https://storage.googleapis.com/bitloops-github-assets/Todo%20event%20stroming.png" alt="Todo Event Storming" align="center">
-</p>
-
-As you can see after the collaborative discovery, we have identified the following **bounded contexts**:
-
-* **IAM**: Has todo with the user registration and log in.
-*  **Todo**: This is the **core subdomain** of our application (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design))
-*  **Marketing**: This is a **supporting subdomain** (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design)) of our Todo application. 
-
-In the process we have further split some bounded contexts (linguistic boundary), to more fine grained modules.
-
-The processes of the system as were discovered are the following:
-
-* **User Log In process** (IAM Bounded Context)
-* **User registration process** (IAM Bounded Context)
-* **Todo process** (Todo Bounded Context)
-* **Onboarding process** (Marketing Bounded Context)
-
-## Todo App Event Storming Observations
-
-Some parts of the system need to have information which is located in other parts of the system. 
-
-More specifically, the Marketing bounded context, **needs to know when a todo is completed** and run its business logic to send an email when the first todo is completed.
-
-Moreover the Marketing Bounded contexts **needs to have information concerning the email** of each specific user, in order to be able to send an email.
-
-The problem in this case is that the email information belongs to the IAM bounded context. So in order for the marketing bounded context to have the knowledge of the specific users's email, either it can make a sync request to the IAM bounded context, or it can listen to integration events from the IAM bounded context, in order to hold a local email information (via [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency)).
-
-In this project the decision was to keep a local repository in the Marketing bounded context, of the users and their emails, updated by listening to integration events from the IAM bounded contexts (**user registered** and **user email changed**). 
-
-# V. Conclusion
+# VI. Conclusion
 
 Our team is privileged to have had the opportunity to work with such powerful software design patterns and cutting-edge technologies. We've learned a lot over the past few months, and we're excited to share our knowledge with other developers who are passionate about building great software. 
 
