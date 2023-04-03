@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - '3000:3000'
+    networks:
+      - bitloops
+
   mongo:
     image: mongo:latest
     ports:
@@ -152,6 +161,14 @@ services:
       - bitloops
     labels:
       org.label-schema.group: 'monitoring'
+  
+  envoy:
+    build:
+      context: ./envoy
+    ports:
+      - '8080:8080'
+    networks:
+      - bitloops
 
 volumes:
   mongo_data:
