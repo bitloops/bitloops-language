@@ -143,7 +143,8 @@ function App(props: {service: TodoServiceClient}): JSX.Element {
       const { eventName, payload } = event;
       if (payload) switch (eventName) {
         case 'onadded':
-          setTodos([...todos, payload]);
+          todos.filter((todo) => todo.id === payload.id).length === 0 &&  
+            setTodos([...todos, payload]);
           break;
         case 'ondeleted':
           const remainingTodos = todos.filter((todo) => todo.id !== payload.id);
