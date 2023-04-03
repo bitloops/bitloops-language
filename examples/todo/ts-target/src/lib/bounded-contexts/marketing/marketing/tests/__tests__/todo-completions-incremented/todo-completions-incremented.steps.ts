@@ -33,7 +33,10 @@ describe('Todo completions incremented feature test', () => {
       .withCompletedTodos(completedTodos)
       .build();
     const todoCompletionsDomainEvent =
-      new TodoCompletionsIncrementedDomainEvent(user);
+      new TodoCompletionsIncrementedDomainEvent({
+        completedTodos,
+        aggregateId: userId,
+      });
 
     // when
     const todoCompletionsIncrementedEventHandler =
@@ -76,7 +79,10 @@ describe('Todo completions incremented feature test', () => {
       .withCompletedTodos(completedTodos)
       .build();
     const todoCompletionsDomainEvent =
-      new TodoCompletionsIncrementedDomainEvent(user);
+      new TodoCompletionsIncrementedDomainEvent({
+        completedTodos,
+        aggregateId: userId,
+      });
 
     // when
     const todoCompletionsIncrementedEventHandler =
@@ -109,7 +115,10 @@ describe('Todo completions incremented feature test', () => {
       .withCompletedTodos(completedTodos)
       .build();
     const todoCompletionsDomainEvent =
-      new TodoCompletionsIncrementedDomainEvent(user);
+      new TodoCompletionsIncrementedDomainEvent({
+        completedTodos,
+        aggregateId: userId,
+      });
 
     // when
     const todoCompletionsIncrementedEventHandler =
@@ -140,7 +149,10 @@ describe('Todo completions incremented feature test', () => {
       .withCompletedTodos(completedTodos)
       .build();
     const todoCompletionsDomainEvent =
-      new TodoCompletionsIncrementedDomainEvent(user);
+      new TodoCompletionsIncrementedDomainEvent({
+        completedTodos,
+        aggregateId: userId,
+      });
 
     // when
     const todoCompletionsIncrementedEventHandler =
@@ -178,7 +190,10 @@ describe('Todo completions incremented feature test', () => {
       .withCompletedTodos(completedTodos)
       .build();
     const todoCompletionsDomainEvent =
-      new TodoCompletionsIncrementedDomainEvent(user);
+      new TodoCompletionsIncrementedDomainEvent({
+        completedTodos,
+        aggregateId: userId,
+      });
 
     // when
     const todoCompletionsIncrementedEventHandler =

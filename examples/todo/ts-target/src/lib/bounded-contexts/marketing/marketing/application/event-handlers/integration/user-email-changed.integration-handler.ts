@@ -22,10 +22,10 @@ export class UserEmailChangedIntegrationEventHandler
   public async handle(
     event: UserEmailChangedIntegrationEvent,
   ): Promise<Either<void, never>> {
-    const { data } = event;
+    const { payload } = event;
     const command = new ChangeUserEmailCommand({
-      userId: data.userId,
-      email: data.email,
+      userId: payload.userId,
+      email: payload.email,
     });
     await this.commandBus.publish(command);
 

@@ -35,8 +35,8 @@ export class TodoCompletedIntegrationEventHandler
   public async handle(
     event: TodoCompletedIntegrationEvent,
   ): Promise<Either<void, never>> {
-    const { data } = event;
-    const command = new IncrementTodosCommand({ id: data.userId });
+    const { payload } = event;
+    const command = new IncrementTodosCommand({ id: payload.userId });
     await this.commandBus.publish(command);
 
     console.log(
