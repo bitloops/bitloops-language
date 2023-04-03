@@ -13,6 +13,7 @@ import {
   UserWriteRepoPort,
 } from '../../ports/UserWriteRepoPort';
 import { ApplicationErrors } from '../errors';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 type ChangeEmailResponse = Either<
   void,
@@ -35,6 +36,13 @@ export class ChangeEmailHandler
     return 'IAM';
   }
 
+  @Traceable({
+    operation: '[IAM] ChangeEmailCommandHandler',
+    metrics: {
+      name: '[IAM] ChangeEmailCommandHandler',
+      category: 'commandHandler',
+    },
+  })
   async execute(command: ChangeEmailCommand): Promise<ChangeEmailResponse> {
     console.log('ChangeEmail command');
     const userId = new Domain.UUIDv4(command.userId);

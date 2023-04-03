@@ -3,6 +3,7 @@ import { Inject } from '@nestjs/common';
 import { StreamingIntegrationEventBusToken } from '../../constants';
 import { UserEmailChangedIntegrationEvent } from '../../contracts/integration-events/user-email-changed.integration-event';
 import { UserUpdatedEmailDomainEvent } from '../../domain/events/user-updated-email.event';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export class UserUpdatedEmailPublishIntegrationEventHandler
   implements Application.IHandleDomainEvent
@@ -20,6 +21,13 @@ export class UserUpdatedEmailPublishIntegrationEventHandler
     return 'IAM';
   }
 
+  @Traceable({
+    operation: '[IAM] UpdatedEmailDomainEventHandler',
+    metrics: {
+      name: '[IAM] UpdatedEmailDomainEventHandler',
+      category: 'domainEventHandler',
+    },
+  })
   public async handle(
     event: UserUpdatedEmailDomainEvent,
   ): Promise<Either<void, never>> {

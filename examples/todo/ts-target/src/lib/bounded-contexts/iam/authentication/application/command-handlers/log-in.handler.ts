@@ -34,6 +34,13 @@ export class LogInHandler
     return 'IAM';
   }
 
+  @Traceable({
+    operation: '[IAM] LogInCommandHandler',
+    metrics: {
+      name: '[IAM] LogInCommandHandler',
+      category: 'commandHandler',
+    },
+  })
   async execute(command: LogInCommand): Promise<LogInUseCaseResponse> {
     console.log('Login command');
     const userId = new Domain.UUIDv4(command.userId);

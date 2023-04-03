@@ -40,9 +40,9 @@ export class UncompleteTodoHandler
   ) {}
 
   @Traceable({
-    operation: 'UncompleteTodoCommandHandler',
+    operation: '[Todo] UncompleteTodoCommandHandler',
     metrics: {
-      name: 'UncompleteTodoCommandHandler',
+      name: '[Todo] UncompleteTodoCommandHandler',
       category: 'commandHandler',
     },
   })

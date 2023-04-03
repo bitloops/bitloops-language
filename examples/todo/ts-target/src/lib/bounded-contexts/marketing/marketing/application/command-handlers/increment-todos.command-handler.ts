@@ -41,9 +41,9 @@ export class IncrementTodosCommandHandler
   }
 
   @Traceable({
-    operation: 'IncrementTodosCommandHandler',
+    operation: '[Marketing] IncrementTodosCommandHandler',
     metrics: {
-      name: 'IncrementTodosCommandHandler',
+      name: '[Marketing] IncrementTodosCommandHandler',
       category: 'commandHandler',
     },
   })
