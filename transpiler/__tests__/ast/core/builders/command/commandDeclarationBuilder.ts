@@ -4,14 +4,12 @@ import {
   identifierKey,
   TCommand,
   TCommandIdentifier,
-  TExpression,
   TVariables,
 } from '../../../../../src/types.js';
 
 export class CommandDeclarationBuilder implements IBuilder<TCommand> {
   private identifierName: TCommandIdentifier;
   private fields: TVariables;
-  private commandTopic: TExpression;
 
   public withIdentifier(identifierName: TCommandIdentifier): CommandDeclarationBuilder {
     this.identifierName = identifierName;
@@ -23,16 +21,10 @@ export class CommandDeclarationBuilder implements IBuilder<TCommand> {
     return this;
   }
 
-  public withCommandTopic(commandTopic: TExpression): CommandDeclarationBuilder {
-    this.commandTopic = commandTopic;
-    return this;
-  }
-
   public build(): TCommand {
     const command: TCommand = {
       [commandKey]: {
         [identifierKey]: this.identifierName,
-        commandTopic: this.commandTopic,
         ...this.fields,
       },
     };

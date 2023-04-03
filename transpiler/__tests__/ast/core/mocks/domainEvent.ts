@@ -26,7 +26,7 @@ const testCases = [
       string email;
       string pin;
     }`,
-    expected: new DomainEventBuilder(contextInfo)
+    expected: new DomainEventBuilder()
       .withIdentifier('AccountCreatedDomainEvent')
       .withAggregateRootName('AccountEntity')
       .withVariables({
@@ -49,7 +49,7 @@ const testCases = [
     description: 'Empty domain event',
     fileId: 'testFile.bl',
     inputBLString: 'DomainEvent AccountCreatedDomainEvent<AccountEntity> {}',
-    expected: new DomainEventBuilder(contextInfo)
+    expected: new DomainEventBuilder()
       .withIdentifier('AccountCreatedDomainEvent')
       .withAggregateRootName('AccountEntity')
       .build(),

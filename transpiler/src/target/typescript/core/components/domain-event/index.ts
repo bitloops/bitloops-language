@@ -60,21 +60,13 @@ export const domainEventToTargetLanguage = (
   const dependencies = DOMAIN_EVENT_DEPENDENCIES();
 
   const domainEventName = domainEvent[DomainEventIdentifierKey];
-  // const entityName = domainEvent.entityIdentifier;
 
   const fields = domainEvent[fieldsKey];
-  // const entityDependency = getChildDependencies(entityName);
-  // dependencies.push(...entityDependency);
 
   const contextId = `'${contextData.boundedContext}'`;
-  const { topic } = domainEvent;
-  const eventName = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: topic,
-  });
   const domainEventPropsIdentifier = `${domainEventName}Props`;
   const domainEventProps = getDomainEventPropsType(domainEventPropsIdentifier, fields);
-  dependencies.push(...domainEventProps.dependencies, ...eventName.dependencies);
+  dependencies.push(...domainEventProps.dependencies);
   result += domainEventProps.output + '\n';
   result += `export class ${domainEventName} implements Domain.IDomainEvent<${domainEventPropsIdentifier}> { `;
   result += getClassProperties(contextId);

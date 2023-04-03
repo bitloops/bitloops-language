@@ -1,4 +1,3 @@
-import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 import { FieldBuilderDirector } from '../builders/fieldDirector.js';
 import { QueryDeclarationBuilder } from '../builders/query/queryDeclarationBuilder.js';
 
@@ -17,12 +16,13 @@ export const validQueryTestCases = [
           }),
         ],
       })
-      .withCommandTopic(
-        new ExpressionBuilderDirector().buildStringLiteralExpression(
-          'Hello World.core.QUERY.GET_CUSTOMER_BY_ID',
-        ),
-      )
       .withIdentifier('GetCustomerByIdQuery')
       .build(),
+  },
+  {
+    description: 'Query with no fields',
+    fileId: 'testFile.bl',
+    inputBLString: 'Query GetCustomerByIdQuery { }',
+    expected: new QueryDeclarationBuilder().withIdentifier('GetCustomerByIdQuery').build(),
   },
 ];

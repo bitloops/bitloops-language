@@ -42,7 +42,6 @@ describe('Valid Query with fields to Typescript', () => {
       const queryNode = new QueryNodeBuilder(tree)
         .withIdentifier(testCase.queryIdentifierNode)
         .withFieldList(testCase.fieldListNode)
-        .withContextInfo({ boundedContextName: boundedContext, moduleName: module })
         .build();
       tree.insertChild(queryNode);
 

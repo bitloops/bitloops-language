@@ -21,7 +21,6 @@ export const VALID_DOMAIN_EVENT_TEST_CASES: TestCase[] = [
     domainEvent: new domainEventDeclarationNodeBuilderDirector().buildDomainEvent(
       'AccountCreatedDomainEvent',
       'AccountEntity',
-      contextInfo,
       new FieldListBuilderDirector().withFields([
         new FieldBuilderDirector().buildRequiredPrimitiveField('email', 'string'),
         new FieldBuilderDirector().buildRequiredPrimitiveField('code', 'string'),
@@ -36,7 +35,6 @@ export const VALID_DOMAIN_EVENT_TEST_CASES: TestCase[] = [
     domainEvent: new domainEventDeclarationNodeBuilderDirector().buildDomainEvent(
       'AccountDeletedDomainEvent',
       'AccountEntity',
-      contextInfo,
     ),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/domain-event/accountDeletedDomainEvent.mock.ts',

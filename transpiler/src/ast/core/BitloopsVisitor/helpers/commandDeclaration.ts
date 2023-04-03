@@ -30,11 +30,9 @@ export const commandDeclarationVisitor = (
   const metadata = produceMetadata(ctx, thisVisitor);
   const commandIdentifierNode = thisVisitor.visit(ctx.commandIdentifier());
   const fieldListNode: FieldListNode = thisVisitor.visit(ctx.fieldList());
-  const contextInfo = thisVisitor.contextInfo;
 
   new CommandNodeBuilder(thisVisitor.intermediateASTTree, metadata)
     .withIdentifier(commandIdentifierNode)
     .withFieldList(fieldListNode)
-    .withContextInfo(contextInfo)
     .build();
 };

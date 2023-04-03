@@ -2,6 +2,7 @@ import { ExpressionBuilder } from '../builders/expressions/ExpressionBuilder.js'
 import { ReturnErrorStatementNodeBuilder } from '../builders/statements/ReturnErrorStatementNodeBuilder.js';
 import { ReturnOKStatementNodeBuilder } from '../builders/statements/ReturnOkStatamentNodeBuilder.js';
 import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { ReturnOKStatementNode } from '../nodes/statements/ReturnOKStatementNode.js';
 import { NodeModelToTargetASTTransformer } from './index.js';
 
 export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransformer<ReturnOkErrorTypeNode> {
@@ -16,11 +17,11 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
     for (const returnStatementNode of returnStatementNodes) {
       const parentStatementListNode = returnStatementNode.getParentStatementList();
       const expressionOfReturnStatement = returnStatementNode.getExpressionValues();
-      const newExpression = new ExpressionBuilder()
-        .withExpression(expressionOfReturnStatement)
-        .build();
       const metadataOfReturnStatement = returnStatementNode.getMetadata();
       if (returnStatementNode.isReturnErrorStatement(parentStatementListNode)) {
+        const newExpression = new ExpressionBuilder()
+          .withExpression(expressionOfReturnStatement)
+          .build();
         const returnErrorStatementNode = new ReturnErrorStatementNodeBuilder(
           metadataOfReturnStatement,
         )
@@ -28,9 +29,19 @@ export class ReturnOKErrorNodeTransformer extends NodeModelToTargetASTTransforme
           .build();
         parentStatementListNode.replaceChild(returnStatementNode, returnErrorStatementNode);
       } else {
-        const returnOkStatementNode = new ReturnOKStatementNodeBuilder(metadataOfReturnStatement)
-          .withExpression(newExpression)
-          .build();
+        let returnOkStatementNode: ReturnOKStatementNode;
+        if (!expressionOfReturnStatement) {
+          returnOkStatementNode = new ReturnOKStatementNodeBuilder(
+            metadataOfReturnStatement,
+          ).build();
+        } else {
+          const newExpression = new ExpressionBuilder()
+            .withExpression(expressionOfReturnStatement)
+            .build();
+          returnOkStatementNode = new ReturnOKStatementNodeBuilder(metadataOfReturnStatement)
+            .withExpression(newExpression)
+            .build();
+        }
         parentStatementListNode.replaceChild(returnStatementNode, returnOkStatementNode);
       }
     }

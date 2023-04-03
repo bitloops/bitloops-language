@@ -1213,7 +1213,6 @@ export const commandKey = 'command';
 export type TCommand = {
   [commandKey]: {
     [identifierKey]: TCommandIdentifier;
-    commandTopic: TExpression;
   } & TVariables;
 };
 
@@ -1222,8 +1221,7 @@ export type TQueryIdentifier = TIdentifier;
 export type TQuery = {
   [queryKey]: {
     [identifierKey]: TQueryIdentifier;
-    queryTopic: TExpression;
-  } & TVariables;
+  } & Partial<TVariables>;
 };
 
 export const commandHandlerKey = 'commandHandler';
@@ -1287,7 +1285,6 @@ export type TDomainEvent = {
   domainEvent: {
     [DomainEventIdentifierKey]: TDomainEventIdentifier;
     entityIdentifier: TEntityIdentifier;
-    topic: TExpression;
   } & Partial<TVariables>;
 };
 

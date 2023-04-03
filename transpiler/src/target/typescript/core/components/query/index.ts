@@ -63,14 +63,6 @@ const queryToTargetLanguage = (
   const queryValues = query.query;
   const queryName = queryValues[identifierKey];
 
-  const queryTopicExpression = queryValues.queryTopic;
-  const queryTopicResult = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TExpression,
-    value: queryTopicExpression,
-  });
-
-  dependencies = [...dependencies, ...queryTopicResult.dependencies];
-
   const fields = queryValues[fieldsKey];
 
   const variablesResult = modelToTargetLanguage({

@@ -17,7 +17,6 @@ export class domainEventDeclarationNodeBuilderDirector {
   buildDomainEvent(
     domainEventIdentifier: string,
     rootEntityIdentifier: string,
-    contextInfo: { boundedContextName: string; moduleName: string },
     fieldListNode?: FieldListNode,
   ): DomainEventDeclarationNode {
     const identifierNode = new DomainEventIdentifierNodeBuilder()
@@ -29,8 +28,7 @@ export class domainEventDeclarationNodeBuilderDirector {
       .build();
     const node = this.builder
       .withIdentifier(identifierNode)
-      .withEntityIdentifier(rootEntityIdentifierNode)
-      .withContextInfo(contextInfo);
+      .withEntityIdentifier(rootEntityIdentifierNode);
     if (fieldListNode) {
       node.withFieldList(fieldListNode);
     }

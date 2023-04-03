@@ -43,8 +43,7 @@ export const domainEventDeclarationVisitor = (
     produceMetadata(ctx, thisVisitor),
   )
     .withIdentifier(domainEventName)
-    .withEntityIdentifier(entityIdentifier)
-    .withContextInfo(thisVisitor.contextInfo);
+    .withEntityIdentifier(entityIdentifier);
 
   if (fieldListNode) {
     domainEvent.withFieldList(fieldListNode);

@@ -457,7 +457,7 @@ queryIdentifier
     ;
 
 queryDeclaration
-    : Query queryIdentifier OpenBrace fieldList CloseBrace
+    : Query queryIdentifier OpenBrace fieldList? CloseBrace
     ;
 
 commandHandler
