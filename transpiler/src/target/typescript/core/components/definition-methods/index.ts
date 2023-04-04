@@ -43,22 +43,19 @@ export const definitionMethodsToTargetLanguage = (
     const definitionMethodInfo = definitionMethodInfoToTargetLanguage(method);
     res += `${methodDefinition.identifier}${definitionMethodInfo.output}`;
     let returnType;
-    let returnTypeOutput;
     if (hasDefinitionMethodOkErrorReturnType(methodDefinition)) {
       returnType = modelToTargetLanguage({
         type: BitloopsTypesMapping.TOkErrorReturnType,
         value: { returnType: methodDefinition.returnType },
       });
-      returnTypeOutput = `Promise<${returnType.output}>`;
     } else {
       returnType = modelToTargetLanguage({
         type: BitloopsTypesMapping.TBitloopsPrimaryType,
         value: { type: methodDefinition.type },
       });
-      returnTypeOutput = returnType.output;
     }
     res += ':';
-    res += returnTypeOutput;
+    res += `Promise<${returnType.output}>`;
     dependencies = [
       ...dependencies,
       ...returnType.dependencies,

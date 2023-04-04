@@ -1,9 +1,9 @@
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { MethodDefinitionNodeBuilderDirector } from '../../builders/methodDefinitionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ServicePortNodeBuilderDirector } from '../../builders/servicePortNodeBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
+import { ErrorIdentifiersNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/ErrorIdentifiersNodeBuilderDirector.js';
 
 export const VALID_SERVICE_PORT_TEST_CASES = [
   {
@@ -14,7 +14,10 @@ export const VALID_SERVICE_PORT_TEST_CASES = [
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'getTestData',
           parameters: [new ParameterBuilderDirector().buildPrimitiveParameter('value', 'string')],
-          type: new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('TestDataSchema'),
+          type: new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorTypeBitloopsIdentifier(
+            'TestDataSchema',
+            [ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName],
+          ),
         }),
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'sendTestData',
@@ -22,14 +25,18 @@ export const VALID_SERVICE_PORT_TEST_CASES = [
             new ParameterBuilderDirector().buildIdentifierParameter('value', 'TestDataSchema'),
             new ParameterBuilderDirector().buildPrimitiveParameter('value2', 'string'),
           ],
-          type: new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'),
+          type: new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorTypePrimitiveType('void', [
+            ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName,
+          ]),
         }),
         new MethodDefinitionNodeBuilderDirector().buildMethodDefinitionNode({
           methodName: 'sendTestDataEither',
           parameters: [
             new ParameterBuilderDirector().buildIdentifierParameter('value', 'TestDataSchema'),
           ],
-          type: new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'),
+          type: new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorTypePrimitiveType('void', [
+            ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName,
+          ]),
         }),
       ],
     }),
