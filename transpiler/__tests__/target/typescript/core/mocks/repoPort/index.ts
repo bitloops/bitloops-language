@@ -450,15 +450,6 @@ export const VALID_READ_REPO_PORT_TEST_CASES: ReadRepoPortTestCase[] = [
           .build(),
       ],
     }),
-    // props: new PropsDeclarationBuilderDirector().buildProps(
-    //   'TodoProps',
-    //   new FieldListNodeBuilder()
-    //     .withFields([
-    //       new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
-    //       new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
-    //     ])
-    //     .build(),
-    // ),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/repoPort/readPortWithDefinitions.mock.ts',
     ),
