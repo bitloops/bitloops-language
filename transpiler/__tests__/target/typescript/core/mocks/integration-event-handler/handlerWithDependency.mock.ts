@@ -9,7 +9,7 @@ export class MoneyDepositedIntegrationHandler implements Application.IHandleInte
     @Inject(IEmailRepoPortToken)
     private readonly emailRepo: IEmailRepoPort,
     @Inject(StreamingCommandBusToken)
-    private readonly commandBus: Infra.CommandBus.ICommandBus,
+    private readonly commandBus: Infra.CommandBus.IStreamCommandBus,
   ) {}
   get event() {
     return MoneyDepositedIntegrationEvent;

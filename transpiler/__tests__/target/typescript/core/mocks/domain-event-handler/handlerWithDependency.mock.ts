@@ -9,7 +9,7 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleD
     @Inject(IEmailRepoPortToken)
     private readonly emailRepo: IEmailRepoPort,
     @Inject(StreamingCommandBusToken)
-    private readonly commandBus: Infra.CommandBus.ICommandBus,
+    private readonly commandBus: Infra.CommandBus.IStreamCommandBus,
   ) {}
   get event() {
     return MoneyDepositedToAccountDomainEvent;

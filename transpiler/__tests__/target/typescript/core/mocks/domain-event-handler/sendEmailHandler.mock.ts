@@ -7,7 +7,7 @@ import { DomainErrors } from '../../../domain/errors/index';
 export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleDomainEvent {
   constructor(
     @Inject(StreamingCommandBusToken)
-    private readonly commandBus: Infra.CommandBus.ICommandBus,
+    private readonly commandBus: Infra.CommandBus.IStreamCommandBus,
   ) {}
   get event() {
     return MoneyDepositedToAccountDomainEvent;

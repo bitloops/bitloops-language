@@ -1,3 +1,4 @@
+// https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/consistent-type-imports.md
 export default {
   moduleFileExtensions: ['ts', 'js'],
   transformIgnorePatterns: [],

@@ -40,7 +40,8 @@ export const BUSES_TOKENS = {
 };
 
 const BUSES_TYPES = {
-  commandBus: 'Infra.CommandBus.ICommandBus',
+  pubSubCommandBus: 'Infra.CommandBus.IPubSubCommandBus',
+  streamCommandBus: 'Infra.CommandBus.IStreamCommandBus',
   queryBus: 'Infra.QueryBus.IQueryBus',
   integrationEventBus: 'Infra.EventBus.IEventBus',
   domainEventBus: 'Infra.EventBus.IEventBus',
@@ -55,7 +56,7 @@ export const getDefaultBusConstructorStatements = (
   if (commandBus) {
     const token = getTokenName(BUSES_TOKENS.commandBus);
     const decorator = `@Inject(${token})`;
-    const parameterDeclaration = `private readonly commandBus: ${BUSES_TYPES.commandBus}`;
+    const parameterDeclaration = `private readonly commandBus: ${BUSES_TYPES.streamCommandBus}`;
     const tokenDependency = getChildDependencies(token);
     res += `${decorator}\n${parameterDeclaration},`;
     dependencies.push(...INJECT_TOKEN_NEST_DEPENDENCY(), ...tokenDependency, INFRA_DEPENDENCY);

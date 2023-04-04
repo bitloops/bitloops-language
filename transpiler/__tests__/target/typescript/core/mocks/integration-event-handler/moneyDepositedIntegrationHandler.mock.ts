@@ -6,7 +6,7 @@ import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/c
 export class MoneyDepositedIntegrationHandler implements Application.IHandleIntegrationEvent {
   constructor(
     @Inject(StreamingCommandBusToken)
-    private readonly commandBus: Infra.CommandBus.ICommandBus,
+    private readonly commandBus: Infra.CommandBus.IStreamCommandBus,
   ) {}
   get event() {
     return MoneyDepositedIntegrationEvent;
