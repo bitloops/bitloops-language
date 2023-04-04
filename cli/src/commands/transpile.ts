@@ -111,7 +111,7 @@ const transpile = async (source: ICollection): Promise<void> => {
 
     throbber = ora(purpleColor('🔨 Transpiling... ')).start();
 
-    const transpiledCode = transpileCode(boundedContextModules, sourceDirPath);
+    const transpiledCode = await transpileCode(boundedContextModules, sourceDirPath);
 
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 

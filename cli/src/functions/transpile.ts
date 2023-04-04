@@ -33,12 +33,12 @@ const DEFAULT_OPTIONS = {
   targetLanguage: 'TypeScript',
 };
 
-const transpileCode = (
+const transpileCode = async (
   boundedContextModules: BoundedContextModules,
   sourceDirPath: string,
   options: TTranspileOptions = DEFAULT_OPTIONS,
-): TTranspileOutput => {
-  const core = getBitloopsFilesAndContents(boundedContextModules, sourceDirPath);
+): Promise<TTranspileOutput> => {
+  const core = await getBitloopsFilesAndContents(boundedContextModules, sourceDirPath);
   const setup = readSetupData(sourceDirPath);
 
   const input = {

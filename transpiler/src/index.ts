@@ -1,7 +1,11 @@
 import { isIntermediateASTValidationErrors } from './ast/core/guards/index.js';
 import { IntermediateASTParser, IntermediateASTValidator } from './ast/core/index.js';
 import { isParserErrors } from './parser/core/guards/index.js';
-import { OriginalValidatorError } from './parser/core/types.js';
+import {
+  OriginalValidatorError,
+  TParserCoreInputData,
+  TParserSetupInputData,
+} from './parser/core/types.js';
 import { BitloopsParser, OriginalParserError, TParserInputData } from './parser/index.js';
 import { TargetGenerator } from './target/index.js';
 import { getTargetFileDestination } from './target/typescript/helpers/getTargetFileDestination.js';
@@ -23,6 +27,8 @@ const transpiler = new Transpiler(
 export {
   transpiler,
   TParserInputData,
+  TParserCoreInputData,
+  TParserSetupInputData,
   TTranspileOptions,
   Transpiler,
   TTranspileOutput,

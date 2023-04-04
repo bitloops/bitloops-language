@@ -17,42 +17,39 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 
 import { getRecursivelyFileInDirectory } from './getRecursivelyFileInDirectory.js';
+import { TParserCoreInputData } from '@bitloops/bl-transpiler';
 
 const BL_SUFFIX = 'bl';
 
 type BoundedContextModules = Record<string, string[]>;
 
-type InputFileInfo = {
-  boundedContext: string;
-  module: string;
-  fileId: string;
-  fileContents: string;
-};
-
-const getBitloopsFilesAndContents = (
+const getBitloopsFilesAndContents = async (
   boundedContextModules: BoundedContextModules,
   sourceDirPath: string,
-): InputFileInfo[] => {
-  const result: InputFileInfo[] = [];
+): Promise<TParserCoreInputData> => {
+  const result: TParserCoreInputData = [];
   for (const [boundedContextName, modules] of Object.entries(boundedContextModules)) {
     for (const moduleName of modules) {
       const modulePath = path.join(sourceDirPath, boundedContextName, moduleName);
       const contextFilePaths = getRecursivelyFileInDirectory(modulePath, BL_SUFFIX);
-      // TODO async read file with Promise.all
-      for (const contextFilePath of contextFilePaths) {
-        const fileContents = fs.readFileSync(contextFilePath, 'utf-8');
-        const fileId = contextFilePath.split('/').pop();
-        result.push({
-          boundedContext: boundedContextName,
-          module: moduleName,
-          fileId,
-          fileContents,
-        });
-      }
+      const moduleInput = await Promise.all(
+        contextFilePaths.map(async (contextFilePath) => {
+          const fileContents = await fs.readFile(contextFilePath, 'utf-8');
+          const fileName = contextFilePath.split('/').pop();
+          return {
+            boundedContext: boundedContextName,
+            module: moduleName,
+            fileId: contextFilePath,
+            fileName,
+            fileContents,
+          };
+        }),
+      );
+      result.push(...moduleInput);
     }
   }
   return result;

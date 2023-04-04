@@ -31,6 +31,7 @@ export type OriginalASTCore = {
 };
 
 export type TFileId = string;
+export type TFileName = string;
 type TFileContents = string;
 
 export type TParserInputData = {
@@ -40,6 +41,7 @@ export type TParserInputData = {
 
 export type TParserSetupInputData = {
   fileId: TFileId;
+  fileName?: TFileName;
   fileContents: TFileContents;
 }[];
 
@@ -47,6 +49,7 @@ export type TParserCoreInputData = {
   boundedContext: TBoundedContextName;
   module: TModuleName;
   fileId: TFileId;
+  fileName?: TFileName;
   fileContents: TFileContents;
 }[];
 
