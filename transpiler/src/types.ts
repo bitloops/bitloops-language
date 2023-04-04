@@ -547,10 +547,9 @@ export type TThisIdentifier = string;
 
 export type TAddDomainEvent = {
   addDomainEvent: {
-    [DomainEventIdentifierKey]: TDomainEventIdentifier;
     identifier?: TIdentifier;
     thisIdentifier?: TThisIdentifier;
-  };
+  } & TExpression;
 };
 
 export type TBuiltInFunction = {

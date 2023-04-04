@@ -1,4 +1,3 @@
-import { DomainEventIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DomainEvent/DomainEventIdentifierNodeBuilder.js';
 import { DomainRuleIdentifierBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DomainRule/DomainRuleIdentifierBuilder.js';
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { AddDomainEventNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/builtInFunction/AddDomainEventNodeBuilder.js';
@@ -7,9 +6,10 @@ import { ApplyRulesNodeBuilder } from '../../../../../../src/ast/core/intermedia
 import { BuiltInFunctionNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/builtInFunction/BuiltInFunction.js';
 import { ThisIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ThisIdentifier/ThisIdentifierNodeBuilder.js';
 import { ArgumentListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
+import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { AppliedRuleNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/builtinFunction/AppliedRuleNode.js';
 import { BuiltInFunctionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
-import { TDomainEventIdentifier, TIdentifier } from '../../../../../../src/types.js';
+import { TIdentifier } from '../../../../../../src/types.js';
 
 type TAppliedRules = Array<{
   ruleIdentifier: string;
@@ -24,29 +24,23 @@ export class BuiltinFunctionStatementBuilderDirector {
   };
 
   public buildAddDomainEventWithThisIdentifier = (
-    domainEventIdentifier: TDomainEventIdentifier,
+    expression: ExpressionNode,
   ): BuiltInFunctionNode => {
-    const domainEventIdentifierNode = new DomainEventIdentifierNodeBuilder()
-      .withName(domainEventIdentifier)
-      .build();
     const thisIdentifierNode = new ThisIdentifierNodeBuilder().withName('this').build();
     const addDomainEventNode = new AddDomainEventNodeBuilder(null)
-      .withDomainEventIdentifier(domainEventIdentifierNode)
+      .withExpression(expression)
       .withThisIdentifier(thisIdentifierNode)
       .build();
     return new BuiltInFunctionNodeBuilder(null).withBuiltInFunction(addDomainEventNode).build();
   };
 
   public buildAddDomainEventWithIdentifier = (
-    domainEventIdentifier: TDomainEventIdentifier,
+    expression: ExpressionNode,
     identifier: TIdentifier,
   ): BuiltInFunctionNode => {
-    const domainEventIdentifierNode = new DomainEventIdentifierNodeBuilder()
-      .withName(domainEventIdentifier)
-      .build();
     const identifierNode = new IdentifierNodeBuilder().withName(identifier).build();
     const addDomainEventNode = new AddDomainEventNodeBuilder(null)
-      .withDomainEventIdentifier(domainEventIdentifierNode)
+      .withExpression(expression)
       .withIdentifier(identifierNode)
       .build();
     return new BuiltInFunctionNodeBuilder(null).withBuiltInFunction(addDomainEventNode).build();

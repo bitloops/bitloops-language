@@ -1,6 +1,10 @@
+import { DomainEventIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DomainEvent/DomainEventIdentifierNodeBuilder.js';
+import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { BuiltInFunctionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
 import { ArgumentDirector } from '../../builders/argument.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statement/builtinFunctionDirector.js';
 
@@ -33,17 +37,29 @@ export const VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES: TestCase[] = [
     description: 'valid add domain event with this identifier',
     builtinFunction:
       new BuiltinFunctionStatementBuilderDirector().buildAddDomainEventWithThisIdentifier(
-        'AccountCreatedDomainEvent',
+        new ExpressionBuilderDirector().buildEvaluationExpression(
+          new EvaluationBuilderDirector().buildDomainEventEvaluation(
+            new DomainEventIdentifierNodeBuilder().withName('AccountCreatedDomainEvent').build(),
+            new EvaluationFieldListNodeBuilder()
+              .withEvaluationFields([
+                new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+                  'name',
+                  'John Doe',
+                ),
+              ])
+              .build(),
+          ),
+        ),
       ),
-    output: 'this.addDomainEventClass(AccountCreatedDomainEvent);',
+    output: "this.addDomainEventClass(new AccountCreatedDomainEvent({name: 'John Doe'}));",
   },
   {
     description: 'valid add domain event with identifier',
     builtinFunction:
       new BuiltinFunctionStatementBuilderDirector().buildAddDomainEventWithIdentifier(
-        'AccountCreatedDomainEvent',
+        new ExpressionBuilderDirector().buildIdentifierExpression('accountEvent'),
         'account',
       ),
-    output: 'account.addDomainEventClass(AccountCreatedDomainEvent);',
+    output: 'account.addDomainEventClass(accountEvent);',
   },
 ];

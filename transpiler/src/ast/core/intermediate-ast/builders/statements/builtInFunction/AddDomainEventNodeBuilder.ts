@@ -2,24 +2,22 @@ import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { ApplyRulesNode } from '../../../nodes/statements/builtinFunction/ApplyRulesStatementNode.js';
 import { IBuilder } from '../../IBuilder.js';
 import { AddDomainEventNode } from '../../../nodes/statements/builtinFunction/AddDomainEventNode.js';
-import { DomainEventIdentifierNode } from '../../../nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { IdentifierNode } from '../../../nodes/identifier/IdentifierNode.js';
 import { ThisIdentifierNode } from '../../../nodes/ThisIdentifier/ThisIdentifierNode.js';
+import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
 
 export class AddDomainEventNodeBuilder implements IBuilder<AddDomainEventNode> {
   private addDomainEventNode: AddDomainEventNode;
-  private domainEventIdentifierNode: DomainEventIdentifierNode;
   private identifierNode?: IdentifierNode;
   private thisIdentifierNode?: ThisIdentifierNode;
+  private expressionNode: ExpressionNode;
 
   constructor(metadata: TNodeMetadata) {
     this.addDomainEventNode = new AddDomainEventNode(metadata);
   }
 
-  public withDomainEventIdentifier(
-    domainEventIdentifierNode: DomainEventIdentifierNode,
-  ): AddDomainEventNodeBuilder {
-    this.domainEventIdentifierNode = domainEventIdentifierNode;
+  public withExpression(expressionNode: ExpressionNode): AddDomainEventNodeBuilder {
+    this.expressionNode = expressionNode;
     return this;
   }
 
@@ -34,7 +32,7 @@ export class AddDomainEventNodeBuilder implements IBuilder<AddDomainEventNode> {
   }
 
   public build(): ApplyRulesNode {
-    this.addDomainEventNode.addChild(this.domainEventIdentifierNode);
+    this.addDomainEventNode.addChild(this.expressionNode);
     this.identifierNode ? this.addDomainEventNode.addChild(this.identifierNode) : null;
     this.thisIdentifierNode ? this.addDomainEventNode.addChild(this.thisIdentifierNode) : null;
 

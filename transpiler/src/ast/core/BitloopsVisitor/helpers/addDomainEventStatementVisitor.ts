@@ -23,21 +23,19 @@ import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
 import { BuiltInFunctionNodeBuilder } from '../../intermediate-ast/builders/statements/builtInFunction/BuiltInFunction.js';
 import { BuiltInFunctionNode } from '../../intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
-import { DomainEventIdentifierNode } from '../../intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { AddDomainEventNode } from '../../intermediate-ast/nodes/statements/builtinFunction/AddDomainEventNode.js';
 import { AddDomainEventNodeBuilder } from '../../intermediate-ast/builders/statements/builtInFunction/AddDomainEventNodeBuilder.js';
+import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const addDomainEventStatementVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.AddDomainEventStatementContext,
 ): BuiltInFunctionNode => {
   const metadata = produceMetadata(ctx, thisVisitor);
-  const domainEventIdentifier: DomainEventIdentifierNode = thisVisitor.visit(
-    ctx.domainEventIdentifier(),
+  const expression: ExpressionNode = thisVisitor.visit(ctx.expression());
+  const addDomainEventNodeBuilder = new AddDomainEventNodeBuilder(metadata).withExpression(
+    expression,
   );
-  const addDomainEventNodeBuilder = new AddDomainEventNodeBuilder(
-    metadata,
-  ).withDomainEventIdentifier(domainEventIdentifier);
 
   ctx.identifier()
     ? addDomainEventNodeBuilder.withIdentifier(thisVisitor.visit(ctx.identifier()))

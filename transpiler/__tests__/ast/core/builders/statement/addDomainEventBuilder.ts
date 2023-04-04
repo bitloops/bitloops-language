@@ -19,22 +19,19 @@
  */
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
-  DomainEventIdentifierKey,
   TAddDomainEvent,
-  TDomainEventIdentifier,
+  TExpression,
   TIdentifier,
   TThisIdentifier,
 } from '../../../../../src/types.js';
 
 export class AddDomainEventBuilder implements IBuilder<TAddDomainEvent> {
-  private domainEventIdentifier: TDomainEventIdentifier;
+  private expression: TExpression;
   private identifier?: TIdentifier;
   private thisIdentifier?: TThisIdentifier;
 
-  public withDomainEventIdentifier(
-    domainEventIdentifier: TDomainEventIdentifier,
-  ): AddDomainEventBuilder {
-    this.domainEventIdentifier = domainEventIdentifier;
+  public withExpression(expression: TExpression): AddDomainEventBuilder {
+    this.expression = expression;
     return this;
   }
 
@@ -51,7 +48,7 @@ export class AddDomainEventBuilder implements IBuilder<TAddDomainEvent> {
   public build(): TAddDomainEvent {
     const addDomainEvent: TAddDomainEvent = {
       addDomainEvent: {
-        [DomainEventIdentifierKey]: this.domainEventIdentifier,
+        ...this.expression,
       },
     };
 

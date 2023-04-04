@@ -17,14 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { TAddDomainEvent, TTargetDependenciesTypeScript } from '../../../../../../types.js';
-import { getChildDependencies } from '../../../dependencies.js';
+import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
 
 export const addDomainEventToTargetLanguage = (
   variable: TAddDomainEvent,
 ): TTargetDependenciesTypeScript => {
   const { addDomainEvent } = variable;
-  const { DomainEventIdentifier, identifier, thisIdentifier } = addDomainEvent;
+  const { expression, identifier, thisIdentifier } = addDomainEvent;
 
   let memberIdentifier;
   if (identifier) {
@@ -32,8 +33,14 @@ export const addDomainEventToTargetLanguage = (
   } else if (thisIdentifier) {
     memberIdentifier = thisIdentifier;
   }
-  const result = `${memberIdentifier}.addDomainEventClass(${DomainEventIdentifier})`;
+  const expressionResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TExpressionValues,
+    value: expression,
+  });
+  const result = `${memberIdentifier}.addDomainEventClass(${expressionResult.output})`;
 
-  const domainEventDependencies = getChildDependencies(DomainEventIdentifier);
-  return { output: result, dependencies: domainEventDependencies };
+  return {
+    output: result,
+    dependencies: [...expressionResult.dependencies],
+  };
 };
