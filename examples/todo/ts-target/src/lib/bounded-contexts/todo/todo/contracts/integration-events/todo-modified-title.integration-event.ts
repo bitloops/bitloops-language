@@ -27,7 +27,7 @@ export class TodoModifiedTitleIntegrationEvent
   };
   public metadata: Infra.EventBus.TIntegrationEventMetadata;
 
-  constructor(public data: IntegrationSchemas, version: string) {
+  constructor(public payload: IntegrationSchemas, version: string) {
     this.metadata = {
       createdTimestamp: Date.now(),
       boundedContextId: TodoModifiedTitleIntegrationEvent.boundedContextId,
@@ -51,13 +51,10 @@ export class TodoModifiedTitleIntegrationEvent
   static toIntegrationDataV1(
     event: TodoModifiedTitleDomainEvent,
   ): IntegrationSchemaV1 {
-    // This is one way to handle (toPrimitives call from when publishing the domainEvent), we are the receiver
-    const data: any = event.data;
-    const todoEntity = TodoEntity.fromPrimitives(data);
     return {
-      todoId: event.data.id.toString(),
-      title: todoEntity.title.title, //event.data.title.title,
-      userId: event.data.userId.toString(),
+      todoId: event.payload.aggregateId,
+      title: event.payload.title,
+      userId: event.payload.userId,
     };
   }
 }

@@ -35,10 +35,10 @@ export class UserRegisteredIntegrationEventHandler
   public async handle(
     event: UserRegisteredIntegrationEvent,
   ): Promise<Either<void, never>> {
-    const { data } = event;
+    const { payload } = event;
     const command = new CreateUserCommand({
-      userId: data.userId,
-      email: data.email,
+      userId: payload.userId,
+      email: payload.email,
     });
     await this.commandBus.publish(command);
 

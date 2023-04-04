@@ -1061,10 +1061,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitloops/bl-boilerplate-core@^0.3.2":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-core/-/bl-boilerplate-core-0.3.3.tgz#27cde051626c758eca7638036abcbc61d553a634"
-  integrity sha512-tkj8VRilaM2LZCFjjvjEOCQPkqtGoJiVrxaOU7hcumF0gdYh7eDoZydO6eXHRJMCNYP+NvFc5/8NnkdzO+aETw==
+"@bitloops/bl-boilerplate-core@^0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-core/-/bl-boilerplate-core-0.3.4.tgz#84f4e77114e9ac2fc6218c2729b0a5fd0da6bcc2"
+  integrity sha512-XnGqab4/k98GmkVKRctR2mzwhEl7S5f7eStRfLeIPRS44x+YDBNcbUWWVGUDJh/Jd6Ooj/+Io806N6Uhkc4m2g==
   dependencies:
     class-transformer "^0.5.1"
     nats "^2.10.2"
@@ -1078,10 +1078,10 @@
     "@nestjs/common" "^9.0.0"
     mongodb "^4.10.0"
 
-"@bitloops/bl-boilerplate-infra-nest-auth-passport@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-auth-passport/-/bl-boilerplate-infra-nest-auth-passport-0.1.3.tgz#bd423d30e3229e10b6eac5a68788939103505d24"
-  integrity sha512-Rq8MthJC+T0fL2hmySt47nQIuhidkwwN59PLaROKbpN8/gHQNx6TYimcUCnP4AzTe+k01vz6Dcr+4k6ASpfT7A==
+"@bitloops/bl-boilerplate-infra-nest-auth-passport@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-auth-passport/-/bl-boilerplate-infra-nest-auth-passport-0.1.4.tgz#41bf4e80c4e949224d70713df3910b1065c0d28f"
+  integrity sha512-QEt49TpX4Z27DPDBdxnR7f7cJOUlYdIfDzVR4wsZY/53IA6kqdWjMjGXnJGqsIO4Bm24nCHpg3mHD3oW2WcdvQ==
   dependencies:
     "@bitloops/bl-boilerplate-infra-postgres" "^0.1.1"
     "@nestjs/jwt" "^10.0.2"
@@ -1092,10 +1092,10 @@
     passport-local "^1.0.0"
     rxjs "^7.8.0"
 
-"@bitloops/bl-boilerplate-infra-nest-jetstream@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-jetstream/-/bl-boilerplate-infra-nest-jetstream-0.0.1.tgz#cba90621099658d2481dc6c6b3a23dad386bb437"
-  integrity sha512-MLIS26d8CXcDcopJ/urUkpMUibacRTa443k8CE2LU46GL8LRsGDOaRQi/5bFyuVru96eMD4eqJlDNcVOIKlpbg==
+"@bitloops/bl-boilerplate-infra-nest-jetstream@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-jetstream/-/bl-boilerplate-infra-nest-jetstream-0.0.2.tgz#0766ca828c9269e03afbcb244165f365e6ac157c"
+  integrity sha512-6qGuRfk7NYDMu+tw+meoZyFb/su8LnVxHZ3KtxzZ8O73w+/4wq8r+QllturQjQazKKk9w2ulBZ9qekdQD4QDBA==
   dependencies:
     async-mutex "^0.4.0"
     nats "^2.13.1"

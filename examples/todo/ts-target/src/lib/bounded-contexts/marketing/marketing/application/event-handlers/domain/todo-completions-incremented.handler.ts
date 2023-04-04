@@ -4,6 +4,7 @@ import {
   Either,
   fail,
   ok,
+  Domain,
 } from '@bitloops/bl-boilerplate-core';
 import { TodoCompletionsIncrementedDomainEvent } from '../../../domain/events/todo-completions-incremented.event';
 import { SendEmailCommand } from '../../../commands/send-email.command';
@@ -20,6 +21,8 @@ import { MarketingNotificationService } from '../../../domain/services/marketing
 import { StreamingCommandBusToken } from '../../../constants';
 import { ApplicationErrors } from '../../errors';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { UserEntity } from '../../../domain/user.entity';
+import { CompletedTodosVO } from '../../../domain/completed-todos.vo';
 
 export class TodoCompletionsIncrementedHandler
   implements Application.IHandleDomainEvent
@@ -51,13 +54,28 @@ export class TodoCompletionsIncrementedHandler
   public async handle(
     event: TodoCompletionsIncrementedDomainEvent,
   ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-    const { data: user } = event;
+    const { payload } = event;
 
     const marketingNotificationService = new MarketingNotificationService(
       this.notificationTemplateRepo,
     );
+    const completedTodos = CompletedTodosVO.create({
+      counter: payload.completedTodos,
+    });
+    if (completedTodos.isFail()) {
+      return fail(completedTodos.value);
+    }
+    const user = UserEntity.create({
+      id: new Domain.UUIDv4(payload.aggregateId),
+      completedTodos: completedTodos.value,
+    });
+    if (user.isFail()) {
+      return fail(user.value);
+    }
     const emailToBeSentInfoResponse =
-      await marketingNotificationService.getNotificationTemplateToBeSent(user);
+      await marketingNotificationService.getNotificationTemplateToBeSent(
+        user.value,
+      );
     if (emailToBeSentInfoResponse.isFail()) {
       return fail(emailToBeSentInfoResponse.value);
     }
@@ -69,8 +87,8 @@ export class TodoCompletionsIncrementedHandler
       return ok();
     }
 
-    const userid = user.id;
-    const userEmail = await this.emailRepoPort.getUserEmail(userid);
+    const userId = user.value.id;
+    const userEmail = await this.emailRepoPort.getUserEmail(userId);
     if (userEmail.isFail()) {
       //TODO: nakable error for Unexpected Error
       return fail(userEmail.value);
@@ -79,7 +97,7 @@ export class TodoCompletionsIncrementedHandler
     if (!userEmail.value) {
       // TODO Error bus
       return fail(
-        new ApplicationErrors.UserEmailNotFoundError(user.id.toString()),
+        new ApplicationErrors.UserEmailNotFoundError(user.value.id.toString()),
       );
     }
 

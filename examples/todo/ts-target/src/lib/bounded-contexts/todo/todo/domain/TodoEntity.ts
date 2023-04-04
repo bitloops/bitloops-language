@@ -33,7 +33,13 @@ export class TodoEntity extends Domain.Aggregate<TodoProps> {
 
     const isNew = !props.id;
     if (isNew) {
-      todo.addDomainEvent(new TodoAddedDomainEvent(todo));
+      const todoAddedDomainEvent = new TodoAddedDomainEvent({
+        title: todo.title.title,
+        userId: todo.userId.id.toString(),
+        completed: todo.completed,
+        aggregateId: todo.id.toString(),
+      });
+      todo.addDomainEvent(todoAddedDomainEvent);
     }
     // add domain event todo created
     return ok(todo);
@@ -62,7 +68,13 @@ export class TodoEntity extends Domain.Aggregate<TodoProps> {
     if (res) return fail(res);
 
     this.props.completed = true;
-    this.addDomainEvent(new TodoCompletedDomainEvent(this));
+    const todoCompletedDomainEvent = new TodoCompletedDomainEvent({
+      title: this.title.title,
+      userId: this.userId.id.toString(),
+      completed: this.completed,
+      aggregateId: this.id.toString(),
+    });
+    this.addDomainEvent(todoCompletedDomainEvent);
     return ok();
   }
 
@@ -75,18 +87,38 @@ export class TodoEntity extends Domain.Aggregate<TodoProps> {
     ]);
     if (res) return fail(res);
     this.props.completed = false;
-    this.addDomainEvent(new TodoUncompletedDomainEvent(this));
+    const todoUncompletedDomainEvent = new TodoUncompletedDomainEvent({
+      title: this.title.title,
+      userId: this.userId.id.toString(),
+      completed: this.completed,
+      aggregateId: this.id.toString(),
+    });
+    this.addDomainEvent(todoUncompletedDomainEvent);
     return ok();
   }
 
   public delete(): Either<void, void> {
-    this.addDomainEvent(new TodoDeletedDomainEvent(this));
+    this.addDomainEvent(
+      new TodoDeletedDomainEvent({
+        title: this.title.title,
+        userId: this.userId.id.toString(),
+        completed: this.completed,
+        aggregateId: this.id.toString(),
+      }),
+    );
     return ok();
   }
 
   public modifyTitle(title: TitleVO): Either<void, never> {
     this.props.title = title;
-    this.addDomainEvent(new TodoModifiedTitleDomainEvent(this));
+
+    const titleModifiedDomainEvent = new TodoModifiedTitleDomainEvent({
+      title: this.title.title,
+      userId: this.userId.id.toString(),
+      completed: this.completed,
+      aggregateId: this.id.toString(),
+    });
+    this.addDomainEvent(titleModifiedDomainEvent);
     return ok();
   }
 

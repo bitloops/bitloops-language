@@ -44,7 +44,12 @@ export class UserEntity extends Domain.Aggregate<UserProps> {
     }
 
     this.props.completedTodos = completedTodos.value;
-    this.addDomainEvent(new TodoCompletionsIncrementedDomainEvent(this));
+    this.addDomainEvent(
+      new TodoCompletionsIncrementedDomainEvent({
+        aggregateId: this.id.toString(),
+        completedTodos: this.props.completedTodos.counter,
+      }),
+    );
     return ok();
   }
 

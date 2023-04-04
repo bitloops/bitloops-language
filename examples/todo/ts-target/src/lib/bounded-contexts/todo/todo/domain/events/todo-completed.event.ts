@@ -1,13 +1,18 @@
 import { Domain, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
-import { TodoEntity } from '../TodoEntity';
+
+type TodoCompletedDomainEventProps = {
+  userId: string;
+  title: string;
+  completed: boolean;
+} & { aggregateId: string };
 
 export class TodoCompletedDomainEvent
-  implements Domain.IDomainEvent<TodoEntity>
+  implements Domain.IDomainEvent<TodoCompletedDomainEventProps>
 {
   public aggregateId: string;
   public metadata: Domain.TDomainEventMetadata;
 
-  constructor(public readonly data: TodoEntity) {
+  constructor(public readonly payload: TodoCompletedDomainEventProps) {
     const uuid = new Domain.UUIDv4();
     this.metadata = {
       boundedContextId: 'Todo',
@@ -16,6 +21,6 @@ export class TodoCompletedDomainEvent
       context: asyncLocalStorage.getStore()?.get('context'),
       correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     };
-    this.aggregateId = data.id.toString();
+    this.aggregateId = payload.aggregateId;
   }
 }

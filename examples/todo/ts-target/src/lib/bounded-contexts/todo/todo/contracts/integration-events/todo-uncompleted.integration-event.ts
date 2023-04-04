@@ -25,7 +25,7 @@ export class TodoUncompletedIntegrationEvent
   };
   public metadata: Infra.EventBus.TIntegrationEventMetadata;
 
-  constructor(public data: IntegrationSchemas, version: string) {
+  constructor(public payload: IntegrationSchemas, version: string) {
     this.metadata = {
       createdTimestamp: Date.now(),
       boundedContextId: TodoUncompletedIntegrationEvent.boundedContextId,
@@ -50,8 +50,8 @@ export class TodoUncompletedIntegrationEvent
     event: TodoUncompletedDomainEvent,
   ): IntegrationSchemaV1 {
     return {
-      todoId: event.data.id.toString(),
-      userId: event.data.userId.toString(),
+      todoId: event.payload.aggregateId,
+      userId: event.payload.userId,
     };
   }
 }

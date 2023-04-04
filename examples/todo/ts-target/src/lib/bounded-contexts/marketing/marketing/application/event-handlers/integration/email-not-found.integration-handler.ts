@@ -26,10 +26,10 @@ export class EmailNotFoundIntegrationErrorEventHandler
   public async handle(
     event: EmailNotFoundIntegrationErrorEvent,
   ): Promise<Either<void, never>> {
-    const { data } = event;
+    const { payload } = event;
     console.log(
       'data received from EmailNotFoundIntegrationErrorEventHandler',
-      data,
+      payload,
     );
 
     console.log(

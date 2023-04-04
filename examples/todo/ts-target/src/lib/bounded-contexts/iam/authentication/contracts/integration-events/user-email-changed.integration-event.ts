@@ -26,7 +26,7 @@ export class UserEmailChangedIntegrationEvent
   };
   public metadata: Infra.EventBus.TIntegrationEventMetadata;
 
-  constructor(public data: IntegrationSchemas, version: string) {
+  constructor(public payload: IntegrationSchemas, version: string) {
     this.metadata = {
       messageId: new Domain.UUIDv4().toString(),
       boundedContextId: UserEmailChangedIntegrationEvent.boundedContextId,
@@ -51,8 +51,8 @@ export class UserEmailChangedIntegrationEvent
     event: UserUpdatedEmailDomainEvent,
   ): IntegrationSchemaV1 {
     return {
-      userId: event.data.id.toString(),
-      email: event.data.email.email,
+      userId: event.payload.aggregateId,
+      email: event.payload.email,
     };
   }
 

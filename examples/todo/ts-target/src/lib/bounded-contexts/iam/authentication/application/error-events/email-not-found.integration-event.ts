@@ -5,7 +5,7 @@ export class EmailNotFoundIntegrationErrorEvent
 {
   constructor(
     public readonly metadata: Application.IErrorEvent['metadata'],
-    public data: any,
+    public payload: any,
     public message: string,
     public errorCode: string,
   ) {}

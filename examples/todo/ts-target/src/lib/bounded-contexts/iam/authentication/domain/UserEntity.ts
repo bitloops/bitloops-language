@@ -52,13 +52,23 @@ export class UserEntity extends Domain.Aggregate<UserProps> {
 
   public login(): Either<void, never> {
     // this.props.lastLogin = timestampVO; // update last login
-    this.addDomainEvent(new UserLoggedInDomainEvent(this));
+    this.addDomainEvent(
+      new UserLoggedInDomainEvent({
+        email: this.email.email,
+        aggregateId: this.id.toString(),
+      }),
+    );
     return ok();
   }
 
   public updateEmail(email: EmailVO): void {
     this.props.email = email;
-    this.addDomainEvent(new UserUpdatedEmailDomainEvent(this));
+    this.addDomainEvent(
+      new UserUpdatedEmailDomainEvent({
+        email: this.email.email,
+        aggregateId: this.id.toString(),
+      }),
+    );
   }
 
   public static fromPrimitives(data: TUserEntityPrimitives): UserEntity {
