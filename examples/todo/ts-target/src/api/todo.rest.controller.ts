@@ -20,10 +20,8 @@ import { GetTodosQuery } from '../lib/bounded-contexts/todo/todo/queries/get-tod
 import { BUSES_TOKENS } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
 import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
 import { JwtAuthGuard } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
-import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Infra } from '@bitloops/bl-boilerplate-core';
 import { CompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/complete-todo.command';
-// import { CompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/complete-todo.command';
 
 @Injectable()
 @Controller('todo')
@@ -47,9 +45,6 @@ export class TodoController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @Traceable({
-    operation: 'TodoController',
-  })
   async addTodo(@Request() req, @Body() dto: AddTodoDto) {
     // const jwt = jwtwebtoken.sign({ userId: dto.userId }, this.JWT_SECRET);
     const command = new AddTodoCommand({ title: dto.title });

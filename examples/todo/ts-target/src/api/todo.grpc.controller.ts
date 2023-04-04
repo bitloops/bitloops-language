@@ -34,6 +34,7 @@ import { TodoDeletedPubSubIntegrationEventHandler } from './pub-sub-handlers/tod
 import { TodoCompletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-completed.integration-handler';
 import { TodoUncompletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-uncompleted.integration-handler';
 import { TodoModifiedTitlePubSubIntegrationEventHandler } from './pub-sub-handlers/todo-modified-title.integration-handler';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
 export type Subscribers = {
   [subscriberId: string]: {
@@ -218,6 +219,9 @@ export class TodoGrpcController {
   }
 
   @GrpcMethod('TodoService', 'Add')
+  @Traceable({
+    operation: 'AddTodoController',
+  })
   async addTodo(
     data: todo.AddTodoRequest,
     // metadata: Metadata,
@@ -245,6 +249,9 @@ export class TodoGrpcController {
   }
 
   @GrpcMethod('TodoService', 'GetAll')
+  @Traceable({
+    operation: 'GetAllTodosController',
+  })
   async getAll(
     data: todo.GetAllTodosRequest,
     metadata: Metadata,
@@ -282,6 +289,9 @@ export class TodoGrpcController {
   }
 
   @GrpcMethod('TodoService', 'Complete')
+  @Traceable({
+    operation: 'CompleteTodoController',
+  })
   async completeTodo(
     data: todo.CompleteTodoRequest,
     // metadata: Metadata,
@@ -307,6 +317,9 @@ export class TodoGrpcController {
   }
 
   @GrpcMethod('TodoService', 'Uncomplete')
+  @Traceable({
+    operation: 'UncompleteTodoController',
+  })
   async uncompleteTodo(
     data: todo.CompleteTodoRequest,
   ): Promise<todo.UncompleteTodoResponse> {
@@ -331,6 +344,9 @@ export class TodoGrpcController {
   }
 
   @GrpcMethod('TodoService', 'Delete')
+  @Traceable({
+    operation: 'DeleteTodoController',
+  })
   async deleteTodo(
     data: todo.DeleteTodoRequest,
   ): Promise<todo.DeleteTodoResponse> {
@@ -355,6 +371,9 @@ export class TodoGrpcController {
   }
 
   @GrpcMethod('TodoService', 'ModifyTitle')
+  @Traceable({
+    operation: 'ModifyTitleController',
+  })
   async modifyTitle(
     data: todo.ModifyTitleTodoRequest,
   ): Promise<todo.ModifyTitleTodoResponse> {
