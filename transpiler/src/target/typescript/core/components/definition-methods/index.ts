@@ -55,7 +55,7 @@ export const definitionMethodsToTargetLanguage = (
       });
     }
     res += ':';
-    res += returnType.output;
+    res += `Promise<${returnType.output}>`;
     dependencies = [
       ...dependencies,
       ...returnType.dependencies,

@@ -28,14 +28,12 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../../../helpers/m
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { getParentDependencies } from '../../../../dependencies.js';
 import { mapExtendedRepoPorts } from './mappers.js';
-import { FieldWithGetter, FieldsWithGetters } from './fieldsWithGetters.js';
 
 export const buildRepoPortWithGettersAndMethods = (
   repoPortName: string,
   repoDependencyName: string,
   repoPortInfo: TRepoPort,
   domainIdValue: TTargetDependenciesTypeScript,
-  fieldsWithGetters: FieldWithGetter[],
 ): TTargetDependenciesTypeScript => {
   let dependencies = [];
   const { methodDefinitionList, extendsRepoPorts } = repoPortInfo[repoPortKey];
@@ -49,14 +47,6 @@ export const buildRepoPortWithGettersAndMethods = (
   dependencies = [...dependencies, ...extendedRepoPortsRes.flatMap((x) => x.dependencies)];
 
   let output = `export interface ${repoPortName} extends ${extendedRepoPortsString} {`;
-  if (fieldsWithGetters.length > 0) {
-    const gettersResult = FieldsWithGetters.generateGettersInterfacesTarget(
-      repoDependencyName,
-      fieldsWithGetters,
-    );
-    output += gettersResult.output;
-    dependencies.push(...gettersResult.dependencies);
-  }
 
   if (methodDefinitionList && Object.keys(methodDefinitionList).length > 0) {
     const methodsModel = modelToTargetLanguage({

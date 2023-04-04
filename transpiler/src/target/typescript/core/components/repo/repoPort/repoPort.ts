@@ -23,12 +23,10 @@ import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast
 import {
   TRepoPort,
   TTargetDependenciesTypeScript,
-  // TContextData,
   repoPortKey,
   repoPortIdentifierKey,
 } from '../../../../../../types.js';
 import { findIdOfRepoDomainObject } from './helpers/domainIDofRepoPort.js';
-import { FieldsWithGetters } from './helpers/fieldsWithGetters.js';
 import { findIfWriteOrReadRepoPort } from './helpers/mappers.js';
 import { noMethodsRepoPort } from './helpers/noMethodsPort.js';
 import { buildRepoPortWithGettersAndMethods } from './helpers/withMethodsPort.js';
@@ -49,13 +47,8 @@ export const repoPortToTargetLanguage = (
     output: '',
     dependencies: [],
   };
-  const fieldWithGetters = new FieldsWithGetters(bitloopsModel);
-  const fieldsThatNeedGetters = fieldWithGetters.findFields(repoDependencyName, type);
 
-  if (
-    (!methodDefinitionList || Object.keys(methodDefinitionList).length === 0) &&
-    fieldsThatNeedGetters.length === 0
-  ) {
+  if (!methodDefinitionList || Object.keys(methodDefinitionList).length === 0) {
     return noMethodsRepoPort(repoPortName, repoDependencyName, repoPort, domainObjectIdType);
   }
   return buildRepoPortWithGettersAndMethods(
@@ -63,6 +56,5 @@ export const repoPortToTargetLanguage = (
     repoDependencyName,
     repoPort,
     domainObjectIdType,
-    fieldsThatNeedGetters,
   );
 };
