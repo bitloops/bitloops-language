@@ -89,7 +89,7 @@ export const domainEventHandlerToTargetLanguage = (
     type: BitloopsTypesMapping.THandle,
   });
 
-  result += `export class ${domainEventHandlerIdentifier} implements Application.IHandle { `;
+  result += `export class ${domainEventHandlerIdentifier} implements Application.IHandleDomainEvent { `;
   result += constructor.output;
   result += getters;
   result += traceableDecorator;

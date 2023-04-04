@@ -98,7 +98,7 @@ export const integrationEventHandlerToTargetLanguage = (
     INTEGRATION_EVENT_HANDLER,
   );
 
-  result += `export class ${integrationEventHandlerIdentifier} implements Application.IHandle { `;
+  result += `export class ${integrationEventHandlerIdentifier} implements Application.IHandleIntegrationEvent { `;
   result += constructor.output;
   result += getters;
   result += traceableDecorator;

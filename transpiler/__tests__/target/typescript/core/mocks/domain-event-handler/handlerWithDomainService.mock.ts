@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import { StreamingCommandBusToken } from '../../../constants';
 import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/MoneyDepositedToAccountDomainEvent';
 import { MarketingNotificationDomainService } from '../../../structs/MarketingNotificationDomainService';
-export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle {
+export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleDomainEvent {
   constructor(
     @Inject(StreamingCommandBusToken)
     private readonly commandBus: Infra.CommandBus.ICommandBus,

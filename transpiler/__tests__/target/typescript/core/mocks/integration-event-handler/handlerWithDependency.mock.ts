@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import { IEmailRepoPortToken, StreamingCommandBusToken } from '../../../constants';
 import { IEmailRepoPort } from '../../../ports/IEmailRepoPort';
 import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts/integration-events/MoneyDepositedIntegrationEvent';
-export class MoneyDepositedIntegrationHandler implements Application.IHandle {
+export class MoneyDepositedIntegrationHandler implements Application.IHandleIntegrationEvent {
   constructor(
     @Inject(IEmailRepoPortToken)
     private readonly emailRepo: IEmailRepoPort,
