@@ -3,6 +3,7 @@ import { IdentifierExpressionBuilder } from '../../../../../ast/core/intermediat
 import { MemberDotExpressionNodeBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
 import { DomainCreateNode } from '../../../../../ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { DomainServiceNode } from '../../../../../ast/core/intermediate-ast/nodes/domain-service/DomainServiceNode.js';
 import { PrivateMethodDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { PublicMethodDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { AppendDotValueNodeTSTransformer } from '../generic/appendDotValue.js';
@@ -12,8 +13,14 @@ class BaseDomainMethodNodeTSTransformer<
   T extends DomainCreateNode | PublicMethodDeclarationNode | PrivateMethodDeclarationNode,
 > extends NodeModelToTargetASTTransformer<T> {
   run(): void {
-    this.addPropsToMemberThisExpression();
+    if (!this.isChildOfDomainService()) {
+      this.addPropsToMemberThisExpression();
+    }
     this.transformDotValueOfDomainEvaluations();
+  }
+
+  private isChildOfDomainService(): boolean {
+    return this.node.getParent()?.getParent() instanceof DomainServiceNode;
   }
 
   private addPropsToMemberThisExpression(): void {

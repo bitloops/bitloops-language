@@ -77,10 +77,12 @@ export class IntermediateModelToASTTargetTransformer
         return new GraphQLControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TDomainCreateMethod:
         return new DomainCreateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
-      case BitloopsTypesMapping.TPublicMethod:
+      case BitloopsTypesMapping.TPublicMethod: {
         return new DomainPublicMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
-      case BitloopsTypesMapping.TPrivateMethod:
+      }
+      case BitloopsTypesMapping.TPrivateMethod: {
         return new DomainPrivateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
+      }
       case BitloopsTypesMapping.TUseCase:
         return new UseCaseNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TDomainEventHandler:
