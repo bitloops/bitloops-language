@@ -13,7 +13,7 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle 
     return MoneyDepositedToAccountDomainEvent;
   }
   get boundedContext(): string {
-    return MoneyDepositedToAccountDomainEvent.boundedContextId;
+    return 'Banking';
   }
   @Traceable({
     operation: 'SendEmailAfterMoneyDepositedHandler',

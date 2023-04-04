@@ -1,6 +1,9 @@
+import { ErrorIdentifiersNodeBuilder } from '../builders/ErrorIdentifiers/ErrorIdentifiersBuilder.js';
 import { EventHandlerHandleMethodNodeBuilder } from '../builders/HandleMethodNodeBuilder.js';
 import { ParameterIdentifierNodeBuilder } from '../builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 import { ParameterNodeBuilder } from '../builders/ParameterList/ParameterNodeBuilder.js';
+import { ReturnOkErrorTypeNodeBuilder } from '../builders/returnOkErrorType/ReturnOkErrorTypeBuilder.js';
+import { ReturnOkTypeNodeBuilder } from '../builders/returnOkErrorType/ReturnOkTypeNodeBuilder.js';
 import { StatementListNodeBuilder } from '../builders/statements/StatementListNodeBuilder.js';
 import { EventHandleNode } from '../nodes/EventHandleNode.js';
 import { BitloopsPrimaryTypeNodeBuilderDirector } from './BitloopsPrimaryTypeNodeBuilderDirector.js';
@@ -57,6 +60,19 @@ export class EventHandlerHandleMethodNodeBuilderDirector {
       .withStatements([constDeclarationNode, methodCallExprNode])
       .build();
 
-    return this.builder.withParameter(parameterNode).withStatementList(statementListNode).build();
+    const returnOkTypeNode = new ReturnOkErrorTypeNodeBuilder()
+      .withOk(
+        new ReturnOkTypeNodeBuilder()
+          .withType(new BitloopsPrimaryTypeNodeBuilderDirector().buildPrimitivePrimaryType('void'))
+          .build(),
+      )
+      .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+      .build();
+
+    return this.builder
+      .withParameter(parameterNode)
+      .withStatementList(statementListNode)
+      .withReturnType(returnOkTypeNode)
+      .build();
   }
 }

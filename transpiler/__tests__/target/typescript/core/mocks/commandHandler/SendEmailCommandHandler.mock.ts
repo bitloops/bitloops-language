@@ -17,7 +17,7 @@ export class SendEmailCommandHandler
     return SendEmailCommand;
   }
   get boundedContext(): string {
-    return SendEmailCommand.boundedContextId;
+    return 'Hello world';
   }
   @Traceable({
     operation: 'SendEmailCommandHandler',

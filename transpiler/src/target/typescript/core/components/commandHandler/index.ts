@@ -22,6 +22,7 @@ import {
   bitloopsPrimaryTypeKey,
   commandHandlerKey,
   TCommandHandler,
+  TContextData,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
   TParameter,
@@ -58,6 +59,7 @@ const COMMAND_HANDLER = 'commandHandler';
 
 export const commandHandlerToTargetLanguage = (
   commandHandler: TCommandHandler,
+  contextData: TContextData,
 ): TTargetDependenciesTypeScript => {
   const { execute, parameters, identifier: commandHandlerName } = commandHandler[commandHandlerKey];
   const { returnType } = execute;
@@ -99,6 +101,7 @@ export const commandHandlerToTargetLanguage = (
 
   const getters = generateGetters({
     commandName,
+    boundedContext: contextData.boundedContext,
   });
   result += getters;
 
@@ -150,13 +153,19 @@ const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
   return parameters.length === 0;
 };
 
-const generateGetters = ({ commandName }: { commandName: string }): string => {
+const generateGetters = ({
+  commandName,
+  boundedContext,
+}: {
+  commandName: string;
+  boundedContext: string;
+}): string => {
   const result = `
   get command() {
     return ${commandName};
   }
   get boundedContext(): string {
-    return ${commandName}.boundedContextId;
+    return '${boundedContext}';
   }`;
   return result;
 };

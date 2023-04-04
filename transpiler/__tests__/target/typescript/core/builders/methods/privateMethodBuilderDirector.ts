@@ -72,7 +72,7 @@ export class PrivateMethodBuilderDirector {
       .withIdentifier(new IdentifierNodeBuilder().withName(methodName).build())
       .withParameters(new ParameterListNodeBuilder().withParameters([]).build())
       .withReturnType(
-        new BitloopsPrimaryTypeNodeBuilderDirector().buildPrimitivePrimaryType('boolean'),
+        new BitloopsPrimaryTypeNodeBuilderDirector().buildPrimitivePrimaryType('bool'),
       )
       .withStatements(
         new StatementListNodeBuilder()

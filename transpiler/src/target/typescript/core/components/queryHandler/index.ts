@@ -26,6 +26,7 @@ import {
   TTargetDependenciesTypeScript,
   bitloopsPrimaryTypeKey,
   TParameter,
+  TContextData,
 } from '../../../../../types.js';
 import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
@@ -58,6 +59,7 @@ const QUERY_HANDLER = 'queryHandler';
 
 export const queryHandlerToTargetLanguage = (
   queryHandler: TQueryHandler,
+  contextData: TContextData,
 ): TTargetDependenciesTypeScript => {
   const { execute, parameters, identifier: queryHandlerName } = queryHandler[queryHandlerKey];
   const { returnType } = execute;
@@ -100,6 +102,7 @@ export const queryHandlerToTargetLanguage = (
 
   result += generateGetters({
     queryName,
+    boundedContext: contextData.boundedContext,
   });
 
   result += getTraceableDecorator(queryHandlerName, QUERY_HANDLER);
@@ -150,13 +153,19 @@ const isDependenciesEmpty = (parameters: TParameter[]): boolean => {
   return parameters.length === 0;
 };
 
-const generateGetters = ({ queryName }: { queryName: string }): string => {
+const generateGetters = ({
+  queryName,
+  boundedContext,
+}: {
+  queryName: string;
+  boundedContext: string;
+}): string => {
   const result = `
   get query() {
     return ${queryName};
   }
   get boundedContext(): string {
-    return ${queryName}.boundedContextId;
+    return '${boundedContext}';
   }`;
   return result;
 };

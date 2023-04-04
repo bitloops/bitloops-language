@@ -8,6 +8,7 @@ import { IntegrationVersionMapperBuilderDirector } from '../../builders/integrat
 import { IntegrationVersionMapperListBuilder } from '../../builders/integration-event/IntegrationVersionMapperListBuilder.js';
 import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
+import { StatementDirector } from '../../builders/statement/statementDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/variableDeclarationDirector.js';
 
 export const validIntegrationEventTestCases = [
@@ -65,6 +66,7 @@ export const validIntegrationEventTestCases = [
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['events']),
           ),
+          new StatementDirector().buildEmptyReturnOK(),
         ],
         parameter: {
           parameter: {
@@ -149,6 +151,7 @@ export const validIntegrationEventTestCases = [
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['events']),
           ),
+          new StatementDirector().buildEmptyReturnOK(),
         ],
         parameter: {
           parameter: {
