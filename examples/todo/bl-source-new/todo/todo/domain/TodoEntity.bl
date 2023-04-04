@@ -12,10 +12,10 @@ Root Entity TodoEntity {
         const isNew = props.id != null;
         if (isNew) {
             const event = TodoAddedDomainEvent.create({ 
-                aggregateId: this.id.toString(),
-                userId: this.userId.id.toString(),
-                title: this.title.title,
-                completed: this.completed
+                aggregateId: todo.id.toString(),
+                userId: todo.userId.id.toString(),
+                title: todo.title.title,
+                completed: todo.completed
             });
             todo.addDomainEvent(event);
         }

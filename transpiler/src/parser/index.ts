@@ -18,12 +18,10 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { BitloopsParser } from './core/index.js';
-import {
+export { BitloopsParser } from './core/index.js';
+export {
   IOriginalParser,
   OriginalAST,
   OriginalParserError,
   TParserInputData,
 } from './core/types.js';
-
-export { BitloopsParser, IOriginalParser, OriginalAST, OriginalParserError, TParserInputData };

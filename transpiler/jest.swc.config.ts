@@ -1,6 +1,8 @@
 export default {
+  moduleFileExtensions: ['ts', 'js'],
+  transformIgnorePatterns: [],
   transform: {
-    '^.+\\.tsx?$': [
+    '^.+\\.(t|j)s$': [
       '@swc/jest',
       {
         // SWC options
@@ -8,7 +10,7 @@ export default {
           parser: {
             syntax: 'typescript',
           },
-          target: 'es2021',
+          target: 'es2022',
         },
       },
     ],
