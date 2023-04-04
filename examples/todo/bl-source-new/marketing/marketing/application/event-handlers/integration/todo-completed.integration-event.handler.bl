@@ -2,9 +2,8 @@ IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
-    // TODO add return type
-    handle(event: [todo][todo]TodoCompletedIntegrationEvent) {
-      const userId = event.data.userId;
+    handle(event: [todo][todo]TodoCompletedIntegrationEvent): (OK(void),Errors()) {
+      const userId = event.payload.userId;
 
       const command = IncrementTodosCommand.create({
         id: userId,

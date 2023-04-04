@@ -16,8 +16,8 @@ CommandHandler ModifyTodoTitleCommandHandler (todoRepo: TodoWriteRepoPort) {
       }
   
       const title = TitleVO.create({ title: command.title });
-      todo.modifyTitle(title);
-      const updateResult = this.todoRepo.update(todo);
+      todoFound.modifyTitle(title);
+      const updateResult = this.todoRepo.update(todoFound);
       if (updateResult is Error) {
         return Error(updateResult);
       }

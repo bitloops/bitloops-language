@@ -2,11 +2,11 @@ IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
-    handle(event: [bitloops][authNestPassport]UserRegisteredIntegrationEvent) {
+    handle(event: [bitloops][authNestPassport]UserRegisteredIntegrationEvent): (OK(void),Errors()) {
 
       const command = IncrementTodosCommand.create({
-        userId: event.data.userId,
-        email: event.data.email,
+        userId: event.payload.userId,
+        email: event.payload.email,
       })
       this.commandBus.send(command);
     }

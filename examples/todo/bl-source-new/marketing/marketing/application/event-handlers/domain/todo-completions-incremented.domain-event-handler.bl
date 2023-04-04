@@ -1,8 +1,7 @@
 DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(emailRepoPort: UserEmailReadRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
 
-    // TODO change to (OK(void),Errors())
-    handle(event: TodoCompletionsIncrementedDomainEvent) {
-      const user = event.data;
+    handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors(ApplicationErrors.UserEmailNotFoundError)) {
+      const user = event.payload;
 
       const marketingNotificationService = MarketingNotificationDomainService.create(this.notificationTemplateRepo);
 
@@ -15,13 +14,13 @@ DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(emailRepoPort: U
         return;
       }
 
-      const userEmail = this.emailRepoPort.getUserEmail(user.id);
+      const userEmail = this.emailRepoPort.getUserEmail(user.aggregateId);
       if(userEmail is Error){
         return Error(userEmail);
       }
       
       if (NOT userEmail) {
-        return ApplicationErrors.UserEmailNotFoundError(user.id.toString());
+        return ApplicationErrors.UserEmailNotFoundError(user.aggregateId.toString());
       }
 
       const command = SendEmailCommand.create({

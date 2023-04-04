@@ -11,7 +11,7 @@ CommandHandler ChangeUserEmailCommandHandler (userRepo: UserEmailReadRepoPort){
             email: command.email,
         });
 
-        const updateResult = this.userEmailRepo.update(userIdEmail);
+        const updateResult = this.userRepo.update(userIdEmail);
         if(updateResult is Error){
             return Error(updateResult);
         }

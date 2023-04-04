@@ -13,7 +13,7 @@ export class AccountDeletedDomainEvent
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     context: asyncLocalStorage.getStore()?.get('context'),
   };
-  constructor(public readonly data: AccountDeletedDomainEventProps) {
-    this.aggregateId = data.aggregateId;
+  constructor(public readonly payload: AccountDeletedDomainEventProps) {
+    this.aggregateId = payload.aggregateId;
   }
 }

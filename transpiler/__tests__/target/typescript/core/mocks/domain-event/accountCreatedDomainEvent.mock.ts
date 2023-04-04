@@ -17,7 +17,7 @@ export class AccountCreatedDomainEvent
     correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     context: asyncLocalStorage.getStore()?.get('context'),
   };
-  constructor(public readonly data: AccountCreatedDomainEventProps) {
-    this.aggregateId = data.aggregateId;
+  constructor(public readonly payload: AccountCreatedDomainEventProps) {
+    this.aggregateId = payload.aggregateId;
   }
 }

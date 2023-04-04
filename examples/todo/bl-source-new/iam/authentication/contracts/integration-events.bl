@@ -3,12 +3,12 @@ Struct IntegrationUserChangedEmailSchemaV1 {
     string userId;
 }
 
-IntegrationEvent UserChangedEmailIntegrationEvent(event: UserChangedEmailDomainEvent) {  
-    'v1' : IntegrationUserChangedEmailSchemaV1 {
-        const userChangedEmail = IntegrationUserChangedEmailSchemaV1({
-            todoId: event.data.id.toString(),
-            userId: event.data.email.email,
-        });
-        return userChangedEmail;
-    }
-}
+// IntegrationEvent UserChangedEmailIntegrationEvent(event: UserChangedEmailDomainEvent) {  
+//     'v1' : IntegrationUserChangedEmailSchemaV1 {
+//         const userChangedEmail = IntegrationUserChangedEmailSchemaV1({
+//             todoId: event.data.id.toString(),
+//             userId: event.data.email.email,
+//         });
+//         return userChangedEmail;
+//     }
+// }

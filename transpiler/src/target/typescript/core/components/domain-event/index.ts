@@ -82,10 +82,9 @@ export const domainEventToTargetLanguage = (
 };
 
 const generateConstructor = (entityIdentifier: string): string => {
-  // TODO rename data to payload(here and core-library)
   return (
-    `constructor(public readonly data: ${entityIdentifier}) {` +
-    ' this.aggregateId = data.aggregateId;' +
+    `constructor(public readonly payload: ${entityIdentifier}) {` +
+    ' this.aggregateId = payload.aggregateId;' +
     '}'
   );
 };
