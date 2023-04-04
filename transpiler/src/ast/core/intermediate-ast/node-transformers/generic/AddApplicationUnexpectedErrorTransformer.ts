@@ -1,4 +1,4 @@
-import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { IntermediateASTNode } from '../../nodes/IntermediateASTNode.js';
 import { ErrorIdentifiersNodeBuilderDirector } from '../../directors/ErrorIdentifiersNodeBuilderDirector.js';
 import { ReturnOkErrorTypeNode } from '../../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 

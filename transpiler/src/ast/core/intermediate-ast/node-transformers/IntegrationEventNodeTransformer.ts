@@ -29,7 +29,7 @@ export class IntegrationEventNodeTransformer extends NodeModelToTargetASTTransfo
           integrationEventIdentifier,
           integrationEventEvaluationInputName: 'event',
           constIdentifierName: 'events',
-          eventBusMethodCallName: 'publishMany',
+          eventBusMethodCallName: 'publish',
           eventBusMemberDotName: 'integrationEventBus',
         });
 

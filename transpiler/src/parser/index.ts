@@ -19,7 +19,7 @@
  */
 
 export { BitloopsParser } from './core/index.js';
-export {
+export type {
   IOriginalParser,
   OriginalAST,
   OriginalParserError,
