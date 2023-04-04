@@ -5,6 +5,7 @@ import {
   TIntegrationEventHandler,
   TIntegrationEventHandlerHandleMethod,
   TIntegrationEventParameter,
+  TOkErrorReturnType,
   TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
@@ -34,12 +35,18 @@ export class IntegrationEventHandlerBuilder implements IBuilder<TIntegrationEven
   public withHandleMethod({
     statements,
     parameter,
+    returnType,
   }: {
     statements: TStatements;
     parameter: TIntegrationEventParameter;
+    returnType: TOkErrorReturnType;
   }): IntegrationEventHandlerBuilder {
     this.handle = {
-      integrationEventHandlerHandleMethod: { statements, ...parameter },
+      integrationEventHandlerHandleMethod: {
+        statements,
+        ...parameter,
+        returnType: returnType.returnType,
+      },
     };
     return this;
   }

@@ -1,4 +1,4 @@
-import { Application, Infra } from '@bitloops/bl-boilerplate-core';
+import { Application, Infra, Either } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { StreamingCommandBusToken } from '../../../constants';
@@ -22,7 +22,7 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandle 
       category: 'domainEventHandler',
     },
   })
-  public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<void> {
+  public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<Either<void, never>> {
     const marketingNotificationService = new MarketingNotificationDomainService(this.repo);
     const emailToBeSentInfoResponse =
       await marketingNotificationService.getNotificationTemplateToBeSent(user);

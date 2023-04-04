@@ -6,6 +6,7 @@ import { IntegrationEventHandlerBuilder } from '../../builders/integration-event
 import { IntegrationEventParameterBuilder } from '../../builders/IntegrationEventParameterBuilder.js';
 import { BoundedContextModuleBuilderDirector } from '../../../setup/builders/boundedContextModuleBuilderDirector.js';
 import { StatementDirector } from '../../builders/statement/statementDirector.js';
+import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
 
 export const validIntegrationEventHandlersTestCases = [
   {
@@ -43,6 +44,10 @@ export const validIntegrationEventHandlersTestCases = [
             }),
           )
           .build(),
+        returnType:
+          new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors(
+            'void',
+          ),
       })
       .withDefaultBusDependencies()
       .build(),
@@ -77,6 +82,10 @@ export const validIntegrationEventHandlersTestCases = [
             }),
           )
           .build(),
+        returnType:
+          new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithPrimitiveOkAndNoErrors(
+            'void',
+          ),
       })
       .withDefaultBusDependencies()
       .build(),
