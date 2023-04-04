@@ -16,12 +16,11 @@ Root Entity UserEntity {
             counter: incrementedCompletedTodos,
         });
         this.completedTodos = completedTodos;
-        // const event = TodoCompletionsIncrementedDomainEvent.create({ 
-        //     completedTodos: this.completedTodos.counter,
-        //     aggregateId: this.id.toString(),
-        // });
-        // this.addDomainEvent(event);
-        this.addDomainEvent(TodoCompletionsIncrementedDomainEvent);
+        const event = TodoCompletionsIncrementedDomainEvent.create({ 
+            completedTodos: this.completedTodos.counter,
+            aggregateId: this.id.toString(),
+        });
+        this.addDomainEvent(event);
     }
 
     public isFirstTodo(): bool {

@@ -25,6 +25,9 @@ CommandHandler IncrementTodosCommandHandler (userRepo: UserWriteRepoPort){
             return;
         } else {
             const incrementedCompleted = userFound.incrementCompletedTodos();
+            if(incrementedCompleted is Error){
+                return Error(incrementedCompleted);
+            }
             const updateResult = this.userRepo.update(userFound);
             if(updateResult is Error){
                 return Error(updateResult);

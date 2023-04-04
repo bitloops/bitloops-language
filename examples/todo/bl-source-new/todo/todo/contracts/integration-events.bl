@@ -3,12 +3,12 @@ Struct IntegrationTodoCompletedSchemaV1 {
     string userId;
 }
 
-// IntegrationEvent TodoCompletedIntegrationEvent(event: TodoCompletedDomainEvent) {  
-//     'v1' : IntegrationTodoCompletedSchemaV1 {
-//         const todoCompleted = IntegrationTodoCompletedSchemaV1({
-//             todoId: event.todo.id.toString(),
-//             userId: event.todo.userId.toString(),
-//         });
-//         return todoCompleted;
-//     }
-// }
+IntegrationEvent TodoCompletedIntegrationEvent(event: TodoCompletedDomainEvent) {  
+    'v1' : IntegrationTodoCompletedSchemaV1 {
+        const todoCompleted = IntegrationTodoCompletedSchemaV1({
+            todoId: event.todo.id.toString(),
+            userId: event.todo.userId.toString(),
+        });
+        return todoCompleted;
+    }
+}

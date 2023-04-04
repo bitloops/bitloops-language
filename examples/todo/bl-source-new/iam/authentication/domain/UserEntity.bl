@@ -14,13 +14,12 @@ Root Entity UserEntity {
 
     public changeEmail(email: EmailVO): void {
         this.email = email;
-        // const event = UserChangedEmailDomainEvent.create({ 
-        //     email: this.email.email,
-        //     password: this.password,
-        //     aggregateId: this.id.toString(),
-        //     lastLogin: this.lastLogin
-        // });
-        // this.addDomainEvent(event);
-        this.addDomainEvent(UserChangedEmailDomainEvent);
+        const event = UserChangedEmailDomainEvent.create({ 
+            email: this.email.email,
+            password: this.password,
+            aggregateId: this.id.toString(),
+            lastLogin: this.lastLogin
+        });
+        this.addDomainEvent(event);
     }
 }
