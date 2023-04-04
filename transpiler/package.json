@@ -26,6 +26,8 @@
     "core"
   ],
   "devDependencies": {
+    "@swc/core": "^1.3.45",
+    "@swc/jest": "^0.2.24",
     "@types/antlr4": "4.7.3",
     "@types/eslint": "^8.4.6",
     "@types/jest": "^29.1.2",
@@ -56,6 +58,7 @@
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build:full",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:swc": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.swc.config.ts",
     "test-silent": "node --experimental-vm-modules node_modules/jest/bin/jest.js --silent",
     "test:watch": "jest --watch",
     "ts-node-esm": "node --loader ts-node/esm",

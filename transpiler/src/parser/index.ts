@@ -17,8 +17,8 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsParser } from './core/index.js';
 
+import { BitloopsParser } from './core/index.js';
 import {
   IOriginalParser,
   OriginalAST,
