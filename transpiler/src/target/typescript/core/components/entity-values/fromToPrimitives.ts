@@ -69,6 +69,10 @@ const buildToPrimitives = (
       if (TypeUtils.hasObjectType(primitivesValue)) {
         result += `${primitivesKey}: {\n`;
         for (const key in primitivesValue) {
+          if (key === 'id') {
+            result += 'id: this.id.toString(),';
+            continue;
+          }
           const voProperty = primitivesValue[key].primitiveValue;
           if (TypeUtils.hasObjectType(voProperty)) {
             const updatedKey = `${primitivesKey}.${key}`;
@@ -182,6 +186,11 @@ const buildFromPrimitives = (
 
         let voString = `${nestedTypeName}.create({\n`;
         for (const key in primitivesValue) {
+          //if key is id we override the behaviour
+          if (key === 'id') {
+            voString += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
+            continue;
+          }
           const voPropertyToBuild = primitivesValue[key].primitiveValue;
           if (TypeUtils.hasObjectType(voPropertyToBuild)) {
             const updatedKey = `${primitivesKey}.${key}`;
