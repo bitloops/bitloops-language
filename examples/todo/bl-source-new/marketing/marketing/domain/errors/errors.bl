@@ -2,3 +2,8 @@ DomainError InvalidTodosCounterError() {
     message: 'Completed Todos counter is invalid',
     errorId: 'eb4c48f1-1af1-4178-8c95-383cbb03527d'
 }
+
+DomainError InvalidEmailDomainError() { 
+    message: `Email ${email} is invalid`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-ac84abe9464f'
+}
