@@ -1,4 +1,4 @@
-IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
+IntegrationEventHandler UserRegisteredIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
