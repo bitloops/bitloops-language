@@ -8,6 +8,6 @@ IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
         userId: event.payload.userId,
         email: event.payload.email,
       })
-      this.commandBus.send(command);
+      this.commandBus.publish(command);
     }
 }

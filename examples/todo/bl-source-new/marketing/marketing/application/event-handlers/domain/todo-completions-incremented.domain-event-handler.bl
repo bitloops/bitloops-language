@@ -28,6 +28,6 @@ DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(emailRepoPort: U
         destination: userEmail.email,
         content: emailToBeSentInfo.notificationTemplate.template,
       });
-      this.commandBus.send(command);
+      this.commandBus.publish(command);
     }
 }
