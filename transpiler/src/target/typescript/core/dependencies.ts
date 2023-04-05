@@ -277,6 +277,10 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.ServicePort,
     };
+  } else if (dependencyName.endsWith('DomainService')) {
+    return {
+      classType: ClassTypes.DomainService,
+    };
   } else if (dependencyName.endsWith('Token')) {
     return {
       classType: ClassTypes.InjectionToken,

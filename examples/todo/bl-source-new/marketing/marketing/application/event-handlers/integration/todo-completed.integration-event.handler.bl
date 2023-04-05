@@ -8,6 +8,6 @@ IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
       const command = IncrementTodosCommand.create({
         id: userId,
       })
-      this.commandBus.send(command);
+      this.commandBus.publish(command);
     }
 }

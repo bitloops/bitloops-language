@@ -6,8 +6,8 @@ Struct IntegrationTodoCompletedSchemaV1 {
 IntegrationEvent TodoCompletedIntegrationEvent(event: TodoCompletedDomainEvent) {  
     'v1' : IntegrationTodoCompletedSchemaV1 {
         const todoCompleted = IntegrationTodoCompletedSchemaV1({
-            todoId: event.todo.id.toString(),
-            userId: event.todo.userId.toString(),
+            todoId: event.payload.aggregateId,
+            userId: event.payload.userId
         });
         return todoCompleted;
     }
