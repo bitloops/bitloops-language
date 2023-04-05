@@ -27,5 +27,6 @@ export class QueryHandlerNodeTSTransformer extends NodeModelToTargetASTTransform
   private transformDotValue(): void {
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
+    this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();
   }
 }

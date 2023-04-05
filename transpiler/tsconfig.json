@@ -25,18 +25,9 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": false,
+    "strictNullChecks": false
   },
-  "files": [
-    "./src/index.ts"
-  ],
-  "include": [
-    "src/**/*",
-    "__tests__/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib",
-    "__tests__/**/*.mock.ts"
-  ]
+  "files": ["./src/index.ts"],
+  "include": ["src/**/*", "__tests__/**/*"],
+  "exclude": ["node_modules", "lib", "__tests__/**/*.mock.ts"]
 }

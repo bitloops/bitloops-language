@@ -45,6 +45,26 @@ export class AppendDotValueNodeTSTransformer {
     this.updateIdentifierNodes(identifierExpressionNodes);
   }
 
+  /**
+   * Domain services return Either, we need to find the identifier that is used by the domain service
+   * and append .value to it
+   */
+  public transformDotValueOfDomainServiceResults(): void {
+    const statements = this.node.getStatements();
+    const domainServiceIdentifiers = this.tree.getIdentifiersOfDomainServiceResults(statements);
+    const identifiersToBeUpdated = this.tree.getResultsOfDomainServiceMethods(
+      statements,
+      domainServiceIdentifiers,
+    );
+
+    const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(
+      statements,
+      identifiersToBeUpdated,
+    );
+
+    this.updateIdentifierNodes(identifierExpressionNodes);
+  }
+
   // In the case of member dot expressions, we only want to append .value to the left most part
   private updateIdentifierNodes(identifierExpressionNodes: IdentifierExpressionNode[]): void {
     identifierExpressionNodes.forEach((node) => {

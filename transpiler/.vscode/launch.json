@@ -49,5 +49,8 @@
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }
     }
-  ]
+  ],
+  "debug.javascript.terminalOptions": {
+    "runtimeArgs": ["--preserve-symlinks"]
+  }
 }

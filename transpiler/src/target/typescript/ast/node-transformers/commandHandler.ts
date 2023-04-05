@@ -27,5 +27,6 @@ export class CommandHandlerNodeTSTransformer extends NodeModelToTargetASTTransfo
   private transformDotValue(): void {
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
+    this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();
   }
 }
