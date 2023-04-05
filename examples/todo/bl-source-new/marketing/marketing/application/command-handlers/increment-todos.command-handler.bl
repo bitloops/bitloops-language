@@ -12,27 +12,15 @@ CommandHandler IncrementTodosCommandHandler (userRepo: UserWriteRepoPort){
             return Error(userFound);
         }
         if(NOT userFound) {
-            const completedTodosVO = CompletedTodosVO.create({ counter: 0 });
-            const newUser = UserEntity.create({
-                completedTodos: completedTodosVO,
-                id: userId,
-            });
-            newUser.incrementCompletedTodos();
-            const saveResult = this.userRepo.save(newUser);
-            if(saveResult is Error){
-                return Error(saveResult);
-            }
-            return;
-        } else {
-            const incrementedCompleted = userFound.incrementCompletedTodos();
-            if(incrementedCompleted is Error){
-                return Error(incrementedCompleted);
-            }
-            const updateResult = this.userRepo.update(userFound);
-            if(updateResult is Error){
-                return Error(updateResult);
-            }
-            return;
+            return ApplicationErrors.UserNotFoundError(command.id);
+        } 
+        const incrementedCompleted = userFound.incrementCompletedTodos();
+        if(incrementedCompleted is Error){
+            return Error(incrementedCompleted);
+        }
+        const updateResult = this.userRepo.update(userFound);
+        if(updateResult is Error){
+            return Error(updateResult);
         }
     }
   }

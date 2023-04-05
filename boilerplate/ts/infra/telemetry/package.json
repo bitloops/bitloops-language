@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-telemetry",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TypeScript telemetry package for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"

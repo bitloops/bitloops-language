@@ -1,5 +1,5 @@
 
-ApplicationError UserEmailNotFoundError(userId: string)  {
-    message: `Email for user ${userId} not found`,
+ApplicationError UserNotFoundError(userId: string)  {
+    message: `User ${userId} not found`,
     errorId: 'dedb1f53-6e89-429d-bc63-8f3adfc4b407',
 }
