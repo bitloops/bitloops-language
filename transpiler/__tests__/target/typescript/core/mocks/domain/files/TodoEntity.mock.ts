@@ -52,7 +52,7 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
         title: data.title.title,
         language: LanguageVO.create({
           code: data.title.language.code,
-          id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
+          id: new Domain.UUIDv4(data.title.language.id) as Domain.UUIDv4,
         }).value as LanguageVO,
       }).value as TitleVO,
     };
@@ -66,7 +66,7 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
         title: this.props.title.title,
         language: {
           code: this.props.title.language.code,
-          id: this.id.toString(),
+          id: this.props.title.language.id.toString(),
         },
       },
     };

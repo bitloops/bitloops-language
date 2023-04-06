@@ -1,3 +1,5 @@
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { FieldNode } from '../../../../../ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { TypeUtils } from '../../../../../utils/TypeUtils.js';
 
 const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: string): string => {
@@ -45,11 +47,12 @@ const buildPrimitivesTypeValue = (
 const generateToPrimitives = (
   primitivesObject: Record<string, any>,
   entityName: string,
+  ast: IntermediateASTTree,
 ): string => {
   const typeName = `T${entityName}Primitives`;
   let result = `public toPrimitives(): ${typeName} {`;
   result += 'return {\n';
-  result += buildToPrimitives(primitivesObject);
+  result += buildToPrimitives(primitivesObject, ast);
   result += '};\n}';
 
   return result;
@@ -57,6 +60,7 @@ const generateToPrimitives = (
 
 const buildToPrimitives = (
   primitivesObject: Record<string, any>,
+  ast: IntermediateASTTree,
   keyToAppend = '',
   isStandardVO = false,
 ): string => {
@@ -69,21 +73,22 @@ const buildToPrimitives = (
       if (TypeUtils.hasObjectType(primitivesValue)) {
         result += `${primitivesKey}: {\n`;
         for (const key in primitivesValue) {
-          if (key === 'id') {
-            result += 'id: this.id.toString(),';
-            continue;
-          }
           const voProperty = primitivesValue[key].primitiveValue;
           if (TypeUtils.hasObjectType(voProperty)) {
             const updatedKey = `${primitivesKey}.${key}`;
             const isStandardVO = voProperty.isStandardVO === true;
             const primitivesObject = { [key]: voProperty };
-            result += buildToPrimitives(primitivesObject, updatedKey, isStandardVO);
+            result += buildToPrimitives(primitivesObject, ast, updatedKey, isStandardVO);
           } else {
             if (isStandardVO) {
               return buildStandardVOFieldValue({ key, primitivesKey, keyToAppend });
             } else {
-              result += buildToPrimitivesFieldValue({ keyToAppend, key, primitivesKey });
+              const valueObjectNode = ast.getValueObjectByIdentifier(
+                primitivesValue[key].identifier,
+              );
+              const propsOfVo = ast.getPropsNodeOfValueObject(valueObjectNode);
+              const fields = propsOfVo.getFieldListNode().getFieldNodes();
+              result += buildToPrimitivesFieldValue({ keyToAppend, key, primitivesKey, fields });
             }
           }
         }
@@ -116,11 +121,24 @@ const buildToPrimitivesFieldValue = (data: {
   keyToAppend: string;
   key: string;
   primitivesKey: string;
+  fields: FieldNode[];
 }): string => {
-  const { keyToAppend, key, primitivesKey } = data;
+  const { keyToAppend, key, primitivesKey, fields } = data;
   let result = '';
   if (keyToAppend.length > 0) {
-    result += `${key}: this.props.${keyToAppend}.${key},`;
+    let builtInClassVariableFound = false;
+    for (const fieldNode of fields) {
+      if (fieldNode.getIdentifierNode().getValue().identifier === key) {
+        if (fieldNode.getTypeNode().getValue().type.buildInClassType === 'UUIDv4') {
+          result += `${key}: this.props.${keyToAppend}.${key}.toString(),`;
+          builtInClassVariableFound = true;
+          continue;
+        }
+      }
+    }
+    if (!builtInClassVariableFound) {
+      result += `${key}: this.props.${keyToAppend}.${key},`;
+    }
   } else {
     result += `${key}: this.props.${primitivesKey}.${key},`;
   }
@@ -145,12 +163,13 @@ const buildStandardVOFieldValue = (data: {
 const generateFromPrimitives = (
   primitivesObject: Record<string, any>,
   entityName: string,
+  ast: IntermediateASTTree,
 ): string => {
   const typeName = `T${entityName}Primitives`;
   const propsName = `${entityName}Props`;
   let result = `public static fromPrimitives(data: ${typeName}): ${entityName} {`;
   result += `const ${propsName} = {`;
-  result += buildFromPrimitives(primitivesObject);
+  result += buildFromPrimitives(primitivesObject, ast);
   result += '};\n';
   result += `return new ${entityName}(${propsName});\n`;
   result += '}';
@@ -165,6 +184,7 @@ const getIdentifierFromNestedType = (key: Record<string, any>): string => {
 
 const buildFromPrimitives = (
   primitivesObject: Record<string, any>,
+  ast: IntermediateASTTree,
   keyToAppend = '',
   isStandardValueType = false,
 ): string => {
@@ -177,30 +197,35 @@ const buildFromPrimitives = (
       let nestedTypeName = '';
       const isStandardVO = isStandardValueType === true || value.isStandardVO === true;
       if (TypeUtils.hasObjectType(primitivesValue)) {
+        let fields: FieldNode[] = [];
         if (isStandardVO) {
           primitivesValue = value.primitiveValue;
           nestedTypeName = value.identifier;
         } else {
           nestedTypeName = getIdentifierFromNestedType(primitivesValue);
+          const valueObjectNode = ast.getValueObjectByIdentifier(nestedTypeName);
+          const propsOfVo = ast.getPropsNodeOfValueObject(valueObjectNode);
+          fields = propsOfVo.getFieldListNode().getFieldNodes();
         }
 
         let voString = `${nestedTypeName}.create({\n`;
         for (const key in primitivesValue) {
-          //if key is id we override the behaviour
-          if (key === 'id') {
-            voString += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
-            continue;
-          }
           const voPropertyToBuild = primitivesValue[key].primitiveValue;
           if (TypeUtils.hasObjectType(voPropertyToBuild)) {
             const updatedKey = `${primitivesKey}.${key}`;
-            voString += buildFromPrimitives({ [key]: voPropertyToBuild }, updatedKey, isStandardVO);
+            voString += buildFromPrimitives(
+              { [key]: voPropertyToBuild },
+              ast,
+              updatedKey,
+              isStandardVO,
+            );
           } else {
             const leafValue = buildFromPrimitivesLeafValue({
               isStandardVO,
               keyToAppend,
               key,
               primitivesKey,
+              fields,
             });
             voString += `${leafValue},`;
           }
@@ -221,14 +246,28 @@ const buildFromPrimitivesLeafValue = (data: {
   keyToAppend: string;
   key: string;
   primitivesKey: string;
+  fields: FieldNode[];
 }): string => {
-  const { isStandardVO, keyToAppend, key, primitivesKey } = data;
+  const { isStandardVO, keyToAppend, key, primitivesKey, fields } = data;
   let res = '';
   if (keyToAppend.length > 0) {
     if (isStandardVO) {
       res += `${key}: data.${keyToAppend}`;
     } else {
-      res += `${key}: data.${keyToAppend}.${key}`;
+      let builtInClassVariableFound = false;
+      for (const fieldNode of fields) {
+        if (fieldNode.getIdentifierNode().getValue().identifier === key) {
+          if (fieldNode.getTypeNode().getValue().type.buildInClassType === 'UUIDv4') {
+            // res += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
+            res += `${key}: new Domain.UUIDv4(data.${keyToAppend}.${key}) as Domain.UUIDv4`;
+            builtInClassVariableFound = true;
+            continue;
+          }
+        }
+      }
+      if (!builtInClassVariableFound) {
+        res += `${key}: data.${keyToAppend}.${key}`;
+      }
     }
   } else {
     if (isStandardVO) {
