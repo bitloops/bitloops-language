@@ -1,10 +1,12 @@
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IdentifierExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { ParameterNode } from '../../../../../ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { StatementNode } from '../../../../../ast/core/intermediate-ast/nodes/statements/Statement.js';
 
 interface NodeWithDependencies extends IntermediateASTNode {
   getStatements(): StatementNode[];
+  getParameters?: () => ParameterNode[];
 }
 
 export class AppendDotValueNodeTSTransformer {
@@ -55,6 +57,32 @@ export class AppendDotValueNodeTSTransformer {
     const identifiersToBeUpdated = this.tree.getResultsOfDomainServiceMethods(
       statements,
       domainServiceIdentifiers,
+    );
+
+    const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(
+      statements,
+      identifiersToBeUpdated,
+    );
+
+    this.updateIdentifierNodes(identifierExpressionNodes);
+  }
+
+  /**
+   * 1. Find all domain identifiers, only interested in aggregates, so aggregate identifiers
+   * 2. find the result of aggregate method calls, only when the methods return Either(OK, Error)
+   * 3. then transform these results
+   */
+  public transformDotValueOfDomainMethodResults(): void {
+    // This is also used by domainMethods, not only handlers, so we need to check if the node has parameters
+    if (!this.node.getParameters) {
+      return;
+    }
+    const statements = this.node.getStatements();
+    const parameters = this.node.getParameters();
+    const aggregateIdentifiers = this.tree.getIdentifiersOfAggregates(statements, parameters);
+    const identifiersToBeUpdated = this.tree.getResultOfAggregateMethodsThatReturnOkError(
+      statements,
+      aggregateIdentifiers,
     );
 
     const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(

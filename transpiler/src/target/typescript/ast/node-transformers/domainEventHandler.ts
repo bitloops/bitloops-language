@@ -29,6 +29,7 @@ export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTra
   }
 
   private transformDotValue(): void {
+    this.appendDotValueTransformer.transformDotValueOfDomainMethodResults();
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
     this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();

@@ -14,17 +14,30 @@ export class CommandHandlerNodeTSTransformer extends NodeModelToTargetASTTransfo
     this.appendDotValueTransformer = new AppendDotValueNodeTSTransformer(node, tree);
   }
 
+  /**
+   * prependAwait should run after transformDotValue, since it alters the value of some identifiers by prepending 'await '
+   * and that would prevent transformDotValue from finding the identifiers
+   */
   run(): void {
-    this.prependAwaitToAllDependencyCalls();
     this.transformDotValue();
+    this.prependAwaitToAllDependencyCalls();
   }
 
+  /**
+   * finds allDependency calls and alters thisNode's value by prepending 'await '
+   */
   private prependAwaitToAllDependencyCalls(): void {
     this.prependAwaitTransformer.prependAwaitToAllDependencyCalls();
     this.prependAwaitTransformer.prependAwaitToDomainServiceEvaluationNode();
   }
 
+  /**
+   * transform of domain method results should be first,
+   * before the alteration of domain entity identifiers(which would alter the entity identifier by appending '.value')
+   * and therefore we couldn't find the entity identifier when looking for its methods
+   */
   private transformDotValue(): void {
+    this.appendDotValueTransformer.transformDotValueOfDomainMethodResults();
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
     this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();

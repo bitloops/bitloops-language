@@ -24,6 +24,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ExecuteNode } from '../ExecuteNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
 
 export class QueryHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.QueryHandler;
@@ -48,5 +49,12 @@ export class QueryHandlerNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterList.getIdentifiers();
+  }
+
+  getParameters(): ParameterNode[] {
+    const parameterListNode = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterListNode.getParameters();
   }
 }

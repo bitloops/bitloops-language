@@ -23,4 +23,9 @@ export class ParameterNode extends IntermediateASTNode {
     );
     return parameterType;
   }
+
+  hasRepoPortType(): boolean {
+    const parameterType = this.getType();
+    return parameterType.isRepoPort();
+  }
 }

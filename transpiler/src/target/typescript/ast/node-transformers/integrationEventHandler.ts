@@ -29,6 +29,7 @@ export class IntegrationEventHandlerNodeTSTransformer extends NodeModelToTargetA
   }
 
   private transformDotValue(): void {
+    this.appendDotValueTransformer.transformDotValueOfDomainMethodResults();
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
     this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();

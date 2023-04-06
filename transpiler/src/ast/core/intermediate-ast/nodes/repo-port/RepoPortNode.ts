@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
+import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
 import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { MethodDefinitionListNode } from '../method-definitions/MethodDefinitionListNode.js';
@@ -42,5 +43,12 @@ export class RepoPortNode extends ClassTypeNode {
       returnOkErrorTypeNodes.push(returnOkErrorTypeNode);
     }
     return returnOkErrorTypeNodes;
+  }
+
+  public getEntityIdentifier(): EntityIdentifierNode | null {
+    const entityIdentifierNode = this.getChildNodeByType<EntityIdentifierNode>(
+      BitloopsTypesMapping.TEntityIdentifier,
+    );
+    return entityIdentifierNode ?? null;
   }
 }

@@ -15,8 +15,8 @@ export class QueryHandlerNodeTSTransformer extends NodeModelToTargetASTTransform
   }
 
   run(): void {
-    this.prependAwaitToAllDependencyCalls();
     this.transformDotValue();
+    this.prependAwaitToAllDependencyCalls();
   }
 
   private prependAwaitToAllDependencyCalls(): void {
@@ -25,6 +25,7 @@ export class QueryHandlerNodeTSTransformer extends NodeModelToTargetASTTransform
   }
 
   private transformDotValue(): void {
+    this.appendDotValueTransformer.transformDotValueOfDomainMethodResults();
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
     this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();

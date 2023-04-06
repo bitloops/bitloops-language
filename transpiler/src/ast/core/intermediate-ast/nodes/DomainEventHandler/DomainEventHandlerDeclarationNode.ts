@@ -4,6 +4,7 @@ import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandleNode } from '../EventHandleNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { DomainEventHandlerIdentifierNode } from './DomainEventHandlerIdentifierNode.js';
 import { EventHandlerBusDependenciesNode } from './EventHandlerBusDependenciesNode.js';
@@ -68,5 +69,12 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TEventHandlerBusDependencies,
     );
     return eventBusDependencies;
+  }
+
+  getParameters(): ParameterNode[] {
+    const parameterListNode = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterListNode.getParameters();
   }
 }

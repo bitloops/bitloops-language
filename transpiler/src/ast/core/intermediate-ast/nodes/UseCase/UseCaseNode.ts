@@ -42,4 +42,10 @@ export class UseCaseNode extends ClassTypeNode {
     if (!parameter) return [];
     return [parameter];
   }
+  getParameters(): ParameterNode[] {
+    const parameterListNode = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterListNode.getParameters();
+  }
 }
