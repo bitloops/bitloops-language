@@ -34,6 +34,7 @@ import { GraphQLControllerIdentifierNode } from './nodes/controllers/graphql/Gra
 import { GraphQLControllerNode } from './nodes/controllers/graphql/GraphQLControllerNode.js';
 import { RESTControllerIdentifierNode } from './nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
+import { DomainServiceNode } from './nodes/domain-service/DomainServiceNode.js';
 import { DomainEventDeclarationNode } from './nodes/DomainEvent/DomainEventDeclarationNode.js';
 import { DomainRuleIdentifierNode } from './nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { DomainRuleNode } from './nodes/DomainRule/DomainRuleNode.js';
@@ -43,6 +44,7 @@ import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { ApplicationErrorNode } from './nodes/Error/ApplicationError.js';
 import { DomainErrorNode } from './nodes/Error/DomainErrorNode.js';
 import { ErrorIdentifierNode } from './nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
 import {
   IntermediateASTNodeValidationError,
@@ -86,6 +88,7 @@ import {
   graphQLControllerIdentifierError,
   readModelIdentifierError,
   boundedContextValidationError,
+  domainServiceEvaluationError,
 } from './validators/index.js';
 
 export class IntermediateASTValidator implements IIntermediateASTValidator {
@@ -217,6 +220,11 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
+            case BitloopsTypesMapping.TDomainService: {
+              const identifierNode = (node as DomainServiceNode).getIdentifier();
+              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
+              break;
+            }
           }
         });
       }
@@ -337,15 +345,6 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           );
           break;
 
-        // case BitloopsTypesMapping.TDomainCreateParameterType:
-        //   errors.push(
-        //     ...domainCreateParameterTypeError(
-        //       node as DomainCreateParameterTypeNode,
-        //       this.symbolTableCore[boundedContext],
-        //     ),
-        //   );
-        //   break;
-
         case BitloopsTypesMapping.TErrorIdentifier:
           errors.push(
             ...errorIdentifierError(
@@ -377,6 +376,15 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           errors.push(
             ...useCaseIdentifierCoreError(
               node as UseCaseIdentifierNode,
+              this.symbolTableCore[boundedContext],
+            ),
+          );
+          break;
+        }
+        case BitloopsTypesMapping.TDomainServiceEvaluation: {
+          errors.push(
+            ...domainServiceEvaluationError(
+              node as DomainServiceEvaluationNode,
               this.symbolTableCore[boundedContext],
             ),
           );

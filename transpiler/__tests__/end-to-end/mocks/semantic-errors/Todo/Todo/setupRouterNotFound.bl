@@ -1,8 +1,3 @@
-// const todoRESTRouter = RESTRouter(REST.Fastify) {
-//     Get('/'): [Todo][Todo]GetTodosRESTController(getAllTodoUseCase);
-//   }
-
-
 RESTServer({
     server: REST.Fastify,
     port: Env(FASTIFY_PORT, 5001),

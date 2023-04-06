@@ -1,0 +1,16 @@
+ServicePort TestServicePort { getTestData(value: string): TestDataSchema;}
+
+CommandHandler SendEmailCommandHandler (emailService: EmailServicePort){
+    execute (command: SendEmailCommand): (OK(void),Errors())
+    {   
+        const email = Email({
+            origin: command.origin,
+            destination: command.destination,
+            content: command.content,
+        });
+        const emailServiceResult = this.emailService.send(email);
+        if(emailServiceResult is Error){
+            return Error(emailServiceResult);
+        }
+    }
+}
