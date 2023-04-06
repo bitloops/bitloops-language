@@ -78,6 +78,10 @@ const isProps = (name: string): boolean => {
   return name.endsWith('Props');
 };
 
+const isRepoPort = (name: string): boolean => {
+  return name.endsWith('RepoPort');
+};
+
 export {
   isUndefined,
   isArray,
@@ -87,4 +91,5 @@ export {
   isVO,
   isProps,
   isEntity,
+  isRepoPort,
 };
