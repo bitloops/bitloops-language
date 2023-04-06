@@ -78,7 +78,6 @@ describe('Semantic core error End To End', () => {
       let i = 0;
       // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
       result.forEach((error) => {
-        console.log(error);
         expect(error).toBeInstanceOf(IntermediateASTValidationError);
         expect((error as IntermediateASTValidationError).message).toEqual(
           testCase.expectedErrorMessages[i],

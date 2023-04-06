@@ -1,0 +1,16 @@
+// Struct NotificationTemplateInput {
+//     string emailOrigin;
+// }
+// DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+//     public getNotificationTemplateToBeSent(): (OK(NotificationTemplateInput), Errors()) {
+//         return NotificationTemplateInput({ emailOrigin : 'test@bitloops.com'});
+//     }
+// }
+
+DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWriteRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+    handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors()) {
+    
+      const marketingNotificationService = MarketingNotificationDomainService.create(this.notificationTemplateRepo);
+    }
+}

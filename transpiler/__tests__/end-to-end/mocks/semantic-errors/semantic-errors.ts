@@ -180,17 +180,36 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
     ],
   },
   {
-    description: 'Service port',
+    description: 'Service port not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/servicePort.bl',
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/servicePortNotFound.bl',
     ),
-    fileIdCore: 'servicePort.bl',
+    fileIdCore: 'servicePortNotFound.bl',
     fileIdSetup: 'setup.bl',
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
     expectedErrorMessages: [
-      'Identifier TestDataSchema not found: from 1:59 to 1:73 of file servicePort.bl',
+      'Identifier TestDataSchema not found: from 1:59 to 1:73 of file servicePortNotFound.bl',
+      'Identifier SendEmailCommand not found: from 8:23 to 8:39 of file servicePortNotFound.bl',
+      'Identifier EmailServicePort not found: from 7:55 to 7:71 of file servicePortNotFound.bl',
+    ],
+  },
+  {
+    description: 'Domain Service not found',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/domainServiceNotFound.bl',
+    ),
+    fileIdCore: 'domainServiceNotFound.bl',
+    fileIdSetup: 'setup.bl',
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedErrorMessages: [
+      'Identifier MarketingNotificationDomainService not found: from 14:44 to 14:78 of file domainServiceNotFound.bl',
+      'Identifier TodoCompletionsIncrementedDomainEvent not found: from 12:19 to 12:56 of file domainServiceNotFound.bl',
+      'Identifier UserWriteRepoPort not found: from 10:75 to 10:92 of file domainServiceNotFound.bl',
+      'Identifier NotificationTemplateReadRepoPort not found: from 10:120 to 10:152 of file domainServiceNotFound.bl',
     ],
   },
 ];
