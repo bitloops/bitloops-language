@@ -385,6 +385,9 @@ export class IntermediateASTTree {
         return false;
       }
       const expression = node.getExpressionValues();
+      if (!expression) {
+        return false;
+      }
       if (expression.isThisMethodCallExpressionWithTwoMemberDots()) {
         return true;
       }
