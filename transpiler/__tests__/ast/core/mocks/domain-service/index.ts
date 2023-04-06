@@ -1,10 +1,12 @@
+import { ErrorIdentifiersNodeBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/ErrorIdentifiersNodeBuilderDirector.js';
+import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { DomainServiceBuilder } from '../../builders/domain-service/domainServiceBuilder.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { PublicMethodBuilder } from '../../builders/methods/PublicMethodBuilder.js';
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
-import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
+import { ReturnOkErrorTypeBuilder } from '../../builders/returnOkErrorType.js';
 import { StatementDirector } from '../../builders/statement/statementDirector.js';
 
 export const validDomainServiceTestCases = [
@@ -34,9 +36,14 @@ export const validDomainServiceTestCases = [
             }),
           )
           .withReturnType(
-            new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
-              'NotificationTemplateInput',
-            ),
+            new ReturnOkErrorTypeBuilder()
+              .withOk(
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                  'NotificationTemplateInput',
+                ),
+              )
+              .withErrors([{ error: ErrorIdentifiersNodeBuilderDirector.unexpectedRepoErrorName }])
+              .build(),
           )
           .withStatements([
             new StatementDirector().buildReturnOKStatement(

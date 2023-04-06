@@ -2,6 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
 
@@ -28,5 +29,9 @@ export class PrivateMethodDeclarationNode extends IntermediateASTNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterList.getParameters();
+  }
+
+  public getReturnOkErrorType(): ReturnOkErrorTypeNode | null {
+    return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
   }
 }

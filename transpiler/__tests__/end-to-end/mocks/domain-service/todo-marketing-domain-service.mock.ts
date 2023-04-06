@@ -1,4 +1,4 @@
-import { Either, fail, ok } from '@bitloops/bl-boilerplate-core';
+import { Application, Either, fail, ok } from '@bitloops/bl-boilerplate-core';
 import { NotificationTemplateReadModel } from '../NotificationTemplateReadModel';
 import { UserEntity } from '../UserEntity';
 import { NotificationTemplateInput } from '../../structs/NotificationTemplateInput';
@@ -7,7 +7,7 @@ export class MarketingNotificationDomainService {
   constructor(private notificationTemplateRepo: NotificationTemplateReadRepoPort) {}
   public async getNotificationTemplateToBeSent(
     user: UserEntity,
-  ): Promise<Either<NotificationTemplateInput, never>> {
+  ): Promise<Either<NotificationTemplateInput, Application.Repo.Errors.Unexpected>> {
     const emailOrigin = 'marketing@bitloops.com';
     let notificationTemplate: NotificationTemplateReadModel = null;
     if (user.isFirstTodo()) {

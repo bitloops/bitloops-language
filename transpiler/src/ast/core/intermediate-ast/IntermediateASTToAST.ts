@@ -23,6 +23,8 @@ import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
 import { RepoPortNodeTransformer } from './node-transformers/RepoPortNodeTransformer.js';
 import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
 import { ServicePortNodeTransformer } from './node-transformers/ServicePortNodeTransformer.js';
+import { DomainServiceNode } from './nodes/domain-service/DomainServiceNode.js';
+import { DomainServiceNodeTransformer } from './node-transformers/DomainServiceNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -187,6 +189,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TServicePort: {
         const servicePortNode = intermediateASTNode as ServicePortNode;
         return new ServicePortNodeTransformer(intermediateASTTree, servicePortNode);
+      }
+      case BitloopsTypesMapping.TDomainService: {
+        const servicePortNode = intermediateASTNode as DomainServiceNode;
+        return new DomainServiceNodeTransformer(intermediateASTTree, servicePortNode);
       }
       default:
         return null;

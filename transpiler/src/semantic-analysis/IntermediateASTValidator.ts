@@ -46,10 +46,7 @@ import { DomainErrorNode } from '../ast/core/intermediate-ast/nodes/Error/Domain
 import { ErrorIdentifierNode } from '../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { IntegrationEventNode } from '../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventNode.js';
-import {
-  IntermediateASTNodeValidationError,
-  IntermediateASTNode,
-} from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { IntermediateASTNode } from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { PackageConcretionNode } from '../ast/core/intermediate-ast/nodes/package/PackageConcretionNode.js';
 import { PackagePortIdentifierNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { PackagePortNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortNode.js';
