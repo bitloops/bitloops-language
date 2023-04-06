@@ -206,10 +206,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
     expectedErrorMessages: [
-      'Identifier MarketingNotificationDomainService not found: from 14:44 to 14:78 of file domainServiceNotFound.bl',
-      'Identifier TodoCompletionsIncrementedDomainEvent not found: from 12:19 to 12:56 of file domainServiceNotFound.bl',
-      'Identifier UserWriteRepoPort not found: from 10:75 to 10:92 of file domainServiceNotFound.bl',
-      'Identifier NotificationTemplateReadRepoPort not found: from 10:120 to 10:152 of file domainServiceNotFound.bl',
+      'Identifier MarketingNotificationDomainService not found: from 5:44 to 5:78 of file domainServiceNotFound.bl',
+      'Identifier TodoCompletionsIncrementedDomainEvent not found: from 3:19 to 3:56 of file domainServiceNotFound.bl',
+      'Identifier UserWriteRepoPort not found: from 1:75 to 1:92 of file domainServiceNotFound.bl',
+      'Identifier NotificationTemplateReadRepoPort not found: from 1:120 to 1:152 of file domainServiceNotFound.bl',
     ],
   },
 ];
