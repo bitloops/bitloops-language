@@ -17,8 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
 import { TContext } from '../context';
-import { IMessage } from '../messages/IMessage';
+import { IMessage, Message } from '../messages/IMessage';
 
 export type QueryMetadata = {
   boundedContextId: string;
@@ -32,7 +33,12 @@ export interface IQuery extends IMessage {
   metadata: QueryMetadata;
 }
 
-export abstract class Query implements IQuery {
+export abstract class Query extends Message implements IQuery {
   [x: string]: any;
-  abstract metadata: QueryMetadata;
+  public declare readonly metadata: QueryMetadata;
+  constructor(boundedContextId: string) {
+    super();
+    this.metadata.boundedContextId = boundedContextId;
+    this.metadata.context = asyncLocalStorage.getStore()?.get('context') || {};
+  }
 }

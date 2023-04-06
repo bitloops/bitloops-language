@@ -18,6 +18,8 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
+import { Message } from '../messages/IMessage.js';
 import { IEvent, TEventMetadata } from './IEvent';
 
 export interface IIntegrationEventInputMetadata extends TEventMetadata {
@@ -26,4 +28,18 @@ export interface IIntegrationEventInputMetadata extends TEventMetadata {
 
 export interface IIntegrationEvent<T> extends IEvent<T> {
   metadata: IIntegrationEventInputMetadata;
+}
+
+export abstract class IntegrationEvent<T> extends Message implements IIntegrationEvent<T> {
+  public aggregateId: any;
+  public readonly payload: T;
+  public declare readonly metadata: IIntegrationEventInputMetadata;
+  [x: string]: any;
+  constructor(boundedContextId: string, payload: T, version: string) {
+    super();
+    this.metadata.boundedContextId = boundedContextId;
+    this.metadata.context = asyncLocalStorage.getStore()?.get('context') || {};
+    this.metadata.version = version;
+    this.payload = payload;
+  }
 }
