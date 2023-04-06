@@ -1,5 +1,3 @@
-// DomainEvent TodoCreatedDomainEvent<TodoEntity>
-
 DomainEventHandler TodoCreatedDomainEventHandler() {
     handle(event: TodoCreatedDomainEvent): (OK(void), Errors()) {
       this.commandBus.send(command);
@@ -38,29 +36,6 @@ Root Entity TodoEntity {
         this.title = title;
       }
 }
-
-DomainEvent MoneyDepositedToAccountDomainEvent<TodoEntity> {
-  // string email;
-}
-
-// IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedToAccountDomainEvent) {
-//     // Maybe have disable list of versions?
-  
-//     'v1' : IntegrationSchemaV1 {
-//       const moneyDeposited = IntegrationSchemaV1({
-//         accountId: event.account.id.toString(),
-//         amount: event.account.balance.amount,
-//       });
-//       return moneyDeposited;
-//     }
-  
-//     'v2.0.1' : IntegrationSchemaV2 {
-//       const moneyDeposited = IntegrationSchemaV2({
-//         accountId: event.account.id.toString(),
-//       });
-//       return moneyDeposited;
-//     }
-// }
 
 IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
     

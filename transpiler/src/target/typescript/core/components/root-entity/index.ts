@@ -116,10 +116,10 @@ export const rootEntityToTargetLanguage = (params: {
   output += entityMethodsModel.output;
   dependencies.push(...entityMethodsModel.dependencies);
 
-  const fromPrimitives = generateFromPrimitives(primitivesObject, rootEntityName);
+  const fromPrimitives = generateFromPrimitives(primitivesObject, rootEntityName, model);
   output += fromPrimitives + '\n';
 
-  const toPrimitives = generateToPrimitives(primitivesObject, rootEntityName);
+  const toPrimitives = generateToPrimitives(primitivesObject, rootEntityName, model);
   output += toPrimitives + '\n';
 
   output += '}';

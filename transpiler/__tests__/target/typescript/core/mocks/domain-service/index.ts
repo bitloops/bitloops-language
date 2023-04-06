@@ -7,6 +7,8 @@ import { ParameterListBuilderDirector } from '../../../../../ast/core/builders/p
 import { ReturnOkErrorTypeBuilderDirector } from '../../../../../ast/core/builders/returnOkErrorTypeBuilderDirector.js';
 import { PrivateMethodBuilder } from '../../../../../ast/core/builders/methods/PrivateMethodBuilder.js';
 import { BitloopsPrimaryTypeDirector } from '../../../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
+import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
+import { PublicMethodBuilderDirector } from '../../builders/methods/publicMethodBuilderDirector.js';
 
 type TDomainServiceHandlerTestCase = {
   description: string;
@@ -88,6 +90,37 @@ export const VALID_DOMAIN_SERVICE_TEST_CASES: Array<TDomainServiceHandlerTestCas
       ),
     output: FileUtil.readFileString(
       'transpiler/__tests__/target/typescript/core/mocks/domain-service/domainServiceWithPrivateMethod.mock.ts',
+    ),
+  },
+  {
+    description: 'Domain Service with public method that calls repo',
+    domainService: new DomainServiceNodeBuilderDirector().buildDomainService(
+      'MarketingNotificationService',
+      [
+        new ParameterBuilderDirector().buildIdentifierParameter(
+          'notificationTemplateRepoPort',
+          'NotificationTemplateReadRepoPort',
+        ),
+      ],
+      [
+        new PublicMethodBuilderDirector().buildMethodWithStatementsAndVoidReturnType({
+          methodName: 'getNotificationTemplateToBeSent',
+          statements: [
+            new StatementBuilderDirector().buildConstDeclarationThisMethodCallExpression({
+              constDeclarationIdentifier: 'notificationTemplate',
+              thisIdentifier: 'notificationTemplateRepoPort',
+              methodCallIdentifier: 'get',
+            }),
+            new StatementBuilderDirector().buildConstDeclarationIdentifierExpression(
+              'newNotificationTemplate',
+              'notificationTemplate',
+            ),
+          ],
+        }),
+      ],
+    ),
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain-service/domainServiceWithRepoCall.mock.ts',
     ),
   },
 ];

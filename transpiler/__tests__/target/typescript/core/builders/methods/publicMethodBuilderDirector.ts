@@ -7,6 +7,7 @@ import { ParameterNodeBuilder } from '../../../../../../src/ast/core/intermediat
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { BitloopsPrimaryTypeNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
 import { PublicMethodDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import {
   bitloopsIdentifiersTypeKey,
   bitloopsPrimaryTypeKey,
@@ -75,6 +76,22 @@ export class PublicMethodBuilderDirector {
           identifierArgumentName,
         }),
       )
+      .withStatic(new StaticNodeBuilder().withValue(false).build())
+      .build();
+  }
+
+  buildMethodWithStatementsAndVoidReturnType({
+    methodName,
+    statements,
+  }: {
+    methodName: string;
+    statements: StatementNode[];
+  }): PublicMethodDeclarationNode {
+    return this.builder
+      .withIdentifier(new IdentifierNodeBuilder().withName(methodName).build())
+      .withParameters(new ParameterListNodeBuilder().withParameters([]).build())
+      .withReturnType(new ReturnOkErrorTypeBuilderDirector().buildReturnOkTypePrimitiveType('void'))
+      .withStatements(new StatementListNodeBuilder().withStatements(statements).build())
       .withStatic(new StaticNodeBuilder().withValue(false).build())
       .build();
   }

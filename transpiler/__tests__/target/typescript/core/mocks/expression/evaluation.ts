@@ -120,7 +120,7 @@ export const VALID_EVALUATION_TEST_CASES = [
   },
   {
     description: 'Read model evaluation',
-    evaluation: new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+    evaluation: new EvaluationBuilderDirector().buildReadModelEvaluation(
       'UserEmailReadModel',
       new EvaluationFieldListNodeBuilder()
         .withEvaluationFields([

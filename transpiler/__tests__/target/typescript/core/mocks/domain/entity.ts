@@ -186,7 +186,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
         'TodoProps',
         new FieldListNodeBuilder()
           .withFields([
-            new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+            new FieldBuilderDirector().buildOptionalBuiltInClassField('id', 'UUIDv4'),
             new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
             new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField('title', 'TitleVO'),
           ])
@@ -207,7 +207,10 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
       new PropsDeclarationBuilderDirector().buildProps(
         'LanguageProps',
         new FieldListNodeBuilder()
-          .withFields([new FieldBuilderDirector().buildRequiredPrimitiveField('code', 'string')])
+          .withFields([
+            new FieldBuilderDirector().buildRequiredPrimitiveField('code', 'string'),
+            new FieldBuilderDirector().buildOptionalBuiltInClassField('id', 'UUIDv4'),
+          ])
           .build(),
       ),
     ],

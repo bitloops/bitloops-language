@@ -17,6 +17,7 @@ import {
 
 import { readModelIdentifierError } from './readModelIdentifierError.js';
 import { boundedContextValidationError, identifierValidationError } from './validationErrors.js';
+import { domainServiceEvaluationError } from './domainServiceEvaluationError.js';
 
 export {
   bitloopsIdentifierError,
@@ -36,4 +37,5 @@ export {
   readModelIdentifierError,
   identifierValidationError,
   boundedContextValidationError,
+  domainServiceEvaluationError,
 };

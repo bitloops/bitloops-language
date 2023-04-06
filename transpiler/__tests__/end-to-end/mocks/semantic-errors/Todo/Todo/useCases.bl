@@ -1,11 +1,3 @@
-// UseCase GetAllTodosUseCase (todoRepo: TodoReadRepoPort) {
-//     execute (): (OK(TodoReadModel[]), Errors()) {
-//       const todos = this.todoRepo.getAll();
-  
-//       return todos;
-//     }
-//   }
-  
   RepoPort TodoReadRepoPort<TodoReadModel> extends CRUDReadRepoPort;
 
   ReadModel TodoReadModel {
