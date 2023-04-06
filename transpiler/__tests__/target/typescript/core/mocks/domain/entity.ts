@@ -218,175 +218,175 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
       'transpiler/__tests__/target/typescript/core/mocks/domain/files/TodoEntity.mock.ts',
     ),
   },
-  // {
-  //   description: 'Entity with 2 public methods and primitive props',
-  //   entity: new EntityBuilderDirector().buildEntitySimplified('TodoEntity', {
-  //     constantNodes: [],
-  //     constructorParameterNode: {
-  //       propIdentifier: 'props',
-  //       propClassName: 'TodoProps',
-  //     },
-  //     returnTypeParams: {
-  //       ok: 'TodoEntity',
-  //       errors: [],
-  //     },
-  //     statements: [
-  //       new ExpressionBuilderDirector().buildAssignmentExpression(
-  //         new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'completed'),
-  //         new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
-  //       ),
-  //     ],
-  //     publicMethods: [
-  //       new PublicMethodDeclarationNodeBuilder()
-  //         .withIdentifier(new IdentifierNodeBuilder().withName('uncomplete').build())
-  //         .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
-  //         .withReturnType(
-  //           new ReturnOkErrorTypeNodeBuilder()
-  //             .withOk(
-  //               new ReturnOkTypeNodeBuilder()
-  //                 .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
-  //                 .build(),
-  //             )
-  //             .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
-  //             .build(),
-  //         )
-  //         .withStatements(
-  //           new StatementListNodeBuilder()
-  //             .withStatements([
-  //               new ExpressionBuilderDirector().buildAssignmentExpression(
-  //                 new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
-  //                 new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
-  //               ),
-  //               new ReturnStatementBuilderDirector().buildEmptyReturnOK(),
-  //             ])
-  //             .build(),
-  //         )
-  //         .withStatic(new StaticNodeBuilder().withValue(false).build())
-  //         .build(),
-  //       new PublicMethodDeclarationNodeBuilder()
-  //         .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
-  //         .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
-  //         .withReturnType(
-  //           new ReturnOkErrorTypeNodeBuilder()
-  //             .withOk(
-  //               new ReturnOkTypeNodeBuilder()
-  //                 .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
-  //                 .build(),
-  //             )
-  //             .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
-  //             .build(),
-  //         )
-  //         .withStatements(
-  //           new StatementListNodeBuilder()
-  //             .withStatements([
-  //               new ReturnStatementBuilderDirector().buildReturnOK(
-  //                 new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
-  //               ),
-  //             ])
-  //             .build(),
-  //         )
-  //         .withStatic(new StaticNodeBuilder().withValue(false).build())
-  //         .build(),
-  //     ],
-  //     privateMethods: [],
-  //   }),
-  //   props: [
-  //     new PropsDeclarationBuilderDirector().buildProps(
-  //       'TodoProps',
-  //       new FieldListNodeBuilder()
-  //         .withFields([
-  //           new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
-  //           new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
-  //         ])
-  //         .build(),
-  //     ),
-  //   ],
-  //   output: FileUtil.readFileString(
-  //     'transpiler/__tests__/target/typescript/core/mocks/domain/files/TodoEntityWithPrimitives.mock.ts',
-  //   ),
-  // },
-  // {
-  //   description: 'Entity with public/private methods and standard value object in props',
-  //   valueObjects: [
-  //     new ValueObjectBuilderDirector().buildValueObject('TitleVO', {
-  //       constantNodes: [],
-  //       constructorParameterNode: {
-  //         propIdentifier: 'props',
-  //         propClassName: 'TitleProps',
-  //       },
-  //       returnTypeParams: {
-  //         ok: 'TitleVO',
-  //         errors: ['DomainErrors.InvalidTitleError'],
-  //       },
-  //       statements: [
-  //         new ExpressionBuilderDirector().buildAssignmentExpression(
-  //           new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
-  //           new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
-  //         ),
-  //         new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
-  //           {
-  //             ruleIdentifier: 'InvalidTitleRule',
-  //             argumentListNode: new ArgumentListNodeBuilder()
-  //               .withArguments([
-  //                 new ArgumentDirector().buildArgument(
-  //                   new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'title'),
-  //                 ),
-  //               ])
-  //               .build(),
-  //           },
-  //         ]),
-  //       ],
-  //     }),
-  //     new ValueObjectBuilderDirector().buildValueObject('MoneyVO', {
-  //       constantNodes: [],
-  //       constructorParameterNode: {
-  //         propIdentifier: 'props',
-  //         propClassName: 'MoneyProps',
-  //       },
-  //       returnTypeParams: {
-  //         ok: 'MoneyVO',
-  //         errors: ['DomainErrors.InvalidMonetaryValueError'],
-  //       },
-  //       statements: [],
-  //     }),
-  //   ],
-  //   entity: new EntityBuilderDirector().buildEntitySimplified('AccountEntity', {
-  //     constantNodes: [],
-  //     constructorParameterNode: {
-  //       propIdentifier: 'props',
-  //       propClassName: 'AccountProps',
-  //     },
-  //     returnTypeParams: {
-  //       ok: 'AccountEntity',
-  //       errors: ['DomainErrors.InvalidMonetaryValueError'],
-  //     },
-  //     statements: [],
-  //     publicMethods: [],
-  //     privateMethods: [],
-  //   }),
-  //   props: [
-  //     new PropsDeclarationBuilderDirector().buildProps(
-  //       'AccountProps',
-  //       new FieldListNodeBuilder()
-  //         .withFields([
-  //           new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
-  //           new FieldBuilderDirector().buildRequiredPrimitiveField('version', 'string'),
-  //           new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField('money', 'MoneyVO'),
-  //         ])
-  //         .build(),
-  //     ),
-  //     new PropsDeclarationBuilderDirector().buildProps(
-  //       'MoneyProps',
-  //       new FieldListNodeBuilder()
-  //         .withFields([
-  //           new FieldBuilderDirector().buildRequiredPrimitiveField('amount', 'int32'),
-  //           new FieldBuilderDirector().buildStandardVOField('currency', 'Currency', true),
-  //         ])
-  //         .build(),
-  //     ),
-  //   ],
-  //   output: FileUtil.readFileString(
-  //     'transpiler/__tests__/target/typescript/core/mocks/domain/files/TodoEntityWithStandardVO.mock.ts',
-  //   ),
-  // },
+  {
+    description: 'Entity with 2 public methods and primitive props',
+    entity: new EntityBuilderDirector().buildEntitySimplified('TodoEntity', {
+      constantNodes: [],
+      constructorParameterNode: {
+        propIdentifier: 'props',
+        propClassName: 'TodoProps',
+      },
+      returnTypeParams: {
+        ok: 'TodoEntity',
+        errors: [],
+      },
+      statements: [
+        new ExpressionBuilderDirector().buildAssignmentExpression(
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'completed'),
+          new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
+        ),
+      ],
+      publicMethods: [
+        new PublicMethodDeclarationNodeBuilder()
+          .withIdentifier(new IdentifierNodeBuilder().withName('uncomplete').build())
+          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
+          .withReturnType(
+            new ReturnOkErrorTypeNodeBuilder()
+              .withOk(
+                new ReturnOkTypeNodeBuilder()
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
+                  .build(),
+              )
+              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+              .build(),
+          )
+          .withStatements(
+            new StatementListNodeBuilder()
+              .withStatements([
+                new ExpressionBuilderDirector().buildAssignmentExpression(
+                  new ExpressionBuilderDirector().buildThisMemberDotExpression('completed'),
+                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(false),
+                ),
+                new ReturnStatementBuilderDirector().buildEmptyReturnOK(),
+              ])
+              .build(),
+          )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
+          .build(),
+        new PublicMethodDeclarationNodeBuilder()
+          .withIdentifier(new IdentifierNodeBuilder().withName('complete').build())
+          .withParameters(new ParameterListNodeBuilder(null).withParameters([]).build())
+          .withReturnType(
+            new ReturnOkErrorTypeNodeBuilder()
+              .withOk(
+                new ReturnOkTypeNodeBuilder()
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
+                  .build(),
+              )
+              .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
+              .build(),
+          )
+          .withStatements(
+            new StatementListNodeBuilder()
+              .withStatements([
+                new ReturnStatementBuilderDirector().buildReturnOK(
+                  new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
+                ),
+              ])
+              .build(),
+          )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
+          .build(),
+      ],
+      privateMethods: [],
+    }),
+    props: [
+      new PropsDeclarationBuilderDirector().buildProps(
+        'TodoProps',
+        new FieldListNodeBuilder()
+          .withFields([
+            new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+            new FieldBuilderDirector().buildRequiredPrimitiveField('completed', 'bool'),
+          ])
+          .build(),
+      ),
+    ],
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain/files/TodoEntityWithPrimitives.mock.ts',
+    ),
+  },
+  {
+    description: 'Entity with public/private methods and standard value object in props',
+    valueObjects: [
+      new ValueObjectBuilderDirector().buildValueObject('TitleVO', {
+        constantNodes: [],
+        constructorParameterNode: {
+          propIdentifier: 'props',
+          propClassName: 'TitleProps',
+        },
+        returnTypeParams: {
+          ok: 'TitleVO',
+          errors: ['DomainErrors.InvalidTitleError'],
+        },
+        statements: [
+          new ExpressionBuilderDirector().buildAssignmentExpression(
+            new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+            new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
+          ),
+          new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
+            {
+              ruleIdentifier: 'InvalidTitleRule',
+              argumentListNode: new ArgumentListNodeBuilder()
+                .withArguments([
+                  new ArgumentDirector().buildArgument(
+                    new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'title'),
+                  ),
+                ])
+                .build(),
+            },
+          ]),
+        ],
+      }),
+      new ValueObjectBuilderDirector().buildValueObject('MoneyVO', {
+        constantNodes: [],
+        constructorParameterNode: {
+          propIdentifier: 'props',
+          propClassName: 'MoneyProps',
+        },
+        returnTypeParams: {
+          ok: 'MoneyVO',
+          errors: ['DomainErrors.InvalidMonetaryValueError'],
+        },
+        statements: [],
+      }),
+    ],
+    entity: new EntityBuilderDirector().buildEntitySimplified('AccountEntity', {
+      constantNodes: [],
+      constructorParameterNode: {
+        propIdentifier: 'props',
+        propClassName: 'AccountProps',
+      },
+      returnTypeParams: {
+        ok: 'AccountEntity',
+        errors: ['DomainErrors.InvalidMonetaryValueError'],
+      },
+      statements: [],
+      publicMethods: [],
+      privateMethods: [],
+    }),
+    props: [
+      new PropsDeclarationBuilderDirector().buildProps(
+        'AccountProps',
+        new FieldListNodeBuilder()
+          .withFields([
+            new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4'),
+            new FieldBuilderDirector().buildRequiredPrimitiveField('version', 'string'),
+            new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField('money', 'MoneyVO'),
+          ])
+          .build(),
+      ),
+      new PropsDeclarationBuilderDirector().buildProps(
+        'MoneyProps',
+        new FieldListNodeBuilder()
+          .withFields([
+            new FieldBuilderDirector().buildRequiredPrimitiveField('amount', 'int32'),
+            new FieldBuilderDirector().buildStandardVOField('currency', 'Currency', true),
+          ])
+          .build(),
+      ),
+    ],
+    output: FileUtil.readFileString(
+      'transpiler/__tests__/target/typescript/core/mocks/domain/files/TodoEntityWithStandardVO.mock.ts',
+    ),
+  },
 ];

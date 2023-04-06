@@ -1,5 +1,6 @@
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { FieldNode } from '../../../../../ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
+import { BitloopsBuiltInClassNames } from '../../../../../types.js';
 import { TypeUtils } from '../../../../../utils/TypeUtils.js';
 
 const getPrimitivesType = (primitivesObject: Record<string, any>, entityName: string): string => {
@@ -325,7 +326,10 @@ const getBuiltInclassFromPrimitivesValue = (data: {
   let builtInClassVariableValue = '';
   for (const fieldNode of fields) {
     if (fieldNode.getIdentifierNode().getValue().identifier === key) {
-      if (fieldNode.getTypeNode().getValue().type.buildInClassType === 'UUIDv4') {
+      if (
+        fieldNode.getTypeNode().getValue().type.buildInClassType ===
+        BitloopsBuiltInClassNames.UUIDv4
+      ) {
         builtInClassVariableValue += `${key}: new Domain.UUIDv4(data.${keyToAppend}.${key}) as Domain.UUIDv4`;
         builtInClassVariableFound = true;
         continue;
