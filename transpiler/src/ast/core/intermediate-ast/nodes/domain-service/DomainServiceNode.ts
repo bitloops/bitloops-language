@@ -25,21 +25,21 @@ export class DomainServiceNode extends ClassTypeNode {
   }
 
   public getStatements(): StatementNode[] {
-    const publicMethods = this.getChildNodeByType<PublicMethodDeclarationListNode>(
+    const publicMethodListNode = this.getChildNodeByType<PublicMethodDeclarationListNode>(
       BitloopsTypesMapping.TPublicMethods,
     );
-    const privateMethods = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+    const privateMethodListNode = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
       BitloopsTypesMapping.TPrivateMethods,
     );
     const statements = [];
-    if (publicMethods !== null) {
-      publicMethods.getPublicMethodNodes().forEach((method) => {
+    if (publicMethodListNode !== null) {
+      publicMethodListNode.publicMethods.forEach((method) => {
         statements.push(...method.getStatements());
       });
     }
 
-    if (privateMethods !== null) {
-      privateMethods.getPrivateMethodNodes().forEach((method) => {
+    if (privateMethodListNode !== null) {
+      privateMethodListNode.getPrivateMethodNodes().forEach((method) => {
         statements.push(...method.getStatements());
       });
     }
