@@ -14,6 +14,8 @@ import { ReturnErrorStatementNode } from '../../../../../../src/ast/core/interme
 import { ReturnErrorStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 import { ReturnStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnStatementNode.js';
 import { ReturnStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnStatementBuilder.js';
+import { ArgumentNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
+import { BitloopsPrimaryTypeNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export class StatementBuilderDirector {
   /**
@@ -27,6 +29,40 @@ export class StatementBuilderDirector {
       identifier,
       options,
     );
+  }
+
+  buildConstDeclarationIdentifierExpression(
+    constDeclarationIdentifier: string,
+    value: string,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
+  ): ConstDeclarationNode {
+    return new ConstDeclarationBuilderDirector().buildIdentifierExpressionConstDeclaration(
+      constDeclarationIdentifier,
+      value,
+      typeAnnotation,
+    );
+  }
+
+  /**
+   *  e.g. const identifier = this.repoPort.get();
+   */
+  buildConstDeclarationThisMethodCallExpression({
+    constDeclarationIdentifier,
+    thisIdentifier,
+    methodCallIdentifier,
+    executeArgs,
+  }: {
+    constDeclarationIdentifier: string;
+    thisIdentifier: string;
+    methodCallIdentifier: string;
+    executeArgs?: ArgumentNode[];
+  }): ConstDeclarationNode {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationThisMethodCallExpression({
+      constDeclarationIdentifier,
+      thisIdentifier,
+      methodCallIdentifier,
+      executeArgs,
+    });
   }
 
   buildIfStatement(

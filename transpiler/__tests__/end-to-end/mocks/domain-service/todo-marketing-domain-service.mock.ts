@@ -13,9 +13,9 @@ export class MarketingNotificationDomainService {
     if (user.isFirstTodo()) {
       const notificationTemplateResponse = this.notificationTemplateRepo.getByType('firstTodo');
       if (notificationTemplateResponse.isFail()) {
-        return fail(notificationTemplateResponse);
+        return fail(notificationTemplateResponse.value);
       }
-      notificationTemplate = notificationTemplateResponse;
+      notificationTemplate = notificationTemplateResponse.value;
     } else {
       notificationTemplate = null;
     }

@@ -61,7 +61,6 @@ export const generateGetters = ({
       methodNames.push(method.privateMethod.identifier);
     }
   }
-
   let gettersResult = '';
   // TODO what about optional fields??
 
