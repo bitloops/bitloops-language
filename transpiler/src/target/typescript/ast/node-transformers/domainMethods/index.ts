@@ -23,8 +23,6 @@ class BaseDomainMethodNodeTSTransformer<
   run(): void {
     if (!this.isChildOfDomainService()) {
       this.addPropsToMemberThisExpression();
-    } else {
-      this.transformDotValueOfThisMethodCallExpressions();
     }
     this.transformDotValueOfDomainEvaluations();
   }
@@ -65,10 +63,6 @@ class BaseDomainMethodNodeTSTransformer<
 
   private transformDotValueOfDomainEvaluations(): void {
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
-  }
-
-  private transformDotValueOfThisMethodCallExpressions(): void {
-    this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
   }
 }
 

@@ -3,7 +3,7 @@ import { NotificationTemplateReadRepoPort } from '../../ports/NotificationTempla
 export class MarketingNotificationService {
   constructor(private notificationTemplateRepoPort: NotificationTemplateReadRepoPort) {}
   public async getNotificationTemplateToBeSent(): Promise<Either<void, never>> {
-    const notificationTemplate = this.notificationTemplateRepoPort.get();
+    const notificationTemplate = await this.notificationTemplateRepoPort.get();
     const newNotificationTemplate = notificationTemplate.value;
   }
 }

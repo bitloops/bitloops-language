@@ -3,12 +3,12 @@ import { IdentifierExpressionNode } from '../../../../../ast/core/intermediate-a
 import { IntermediateASTNode } from '../../../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { StatementNode } from '../../../../../ast/core/intermediate-ast/nodes/statements/Statement.js';
 
-interface NodeWithDependencies extends IntermediateASTNode {
+interface NodeWithStatements extends IntermediateASTNode {
   getStatements(): StatementNode[];
 }
 
 export class AppendDotValueNodeTSTransformer {
-  constructor(private node: NodeWithDependencies, private tree: IntermediateASTTree) {}
+  constructor(private node: NodeWithStatements, private tree: IntermediateASTTree) {}
 
   /*
    * Search for all domain evaluation statements, gather their identifiers

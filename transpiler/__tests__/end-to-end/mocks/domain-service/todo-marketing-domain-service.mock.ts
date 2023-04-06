@@ -11,7 +11,9 @@ export class MarketingNotificationDomainService {
     const emailOrigin = 'marketing@bitloops.com';
     let notificationTemplate: NotificationTemplateReadModel = null;
     if (user.isFirstTodo()) {
-      const notificationTemplateResponse = this.notificationTemplateRepo.getByType('firstTodo');
+      const notificationTemplateResponse = await this.notificationTemplateRepo.getByType(
+        'firstTodo',
+      );
       if (notificationTemplateResponse.isFail()) {
         return fail(notificationTemplateResponse.value);
       }
