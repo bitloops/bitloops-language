@@ -61,14 +61,13 @@ export const generateGetters = ({
       methodNames.push(method.privateMethod.identifier);
     }
   }
-  methodNames.push('id');
-
   let gettersResult = '';
   // TODO what about optional fields??
 
   //TODO in previous Step source to model tha params should be finalized
   // and here we shouldn't check if props are missing
   if (!isValueObject) {
+    methodNames.push('id');
     gettersResult = 'get id() { return this._id; }';
   }
   const dependencies = [];
