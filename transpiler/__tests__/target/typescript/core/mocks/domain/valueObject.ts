@@ -197,4 +197,37 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     }`,
     outputProps: 'export interface TitleProps { title: string; }',
   },
+  {
+    description: 'Value object with some with id UUIDv4',
+    valueObject: new ValueObjectBuilderDirector().buildValueObject('UserIdVO', {
+      constantNodes: [],
+      constructorParameterNode: { propIdentifier: 'props', propClassName: 'UserIdProps' },
+      returnTypeParams: {
+        ok: 'UserIdVO',
+        errors: [],
+      },
+      statements: [],
+      privateMethods: [],
+    }),
+    props: new PropsDeclarationBuilderDirector().buildProps(
+      'UserIdProps',
+      new FieldListNodeBuilder()
+        .withFields([new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4')])
+        .build(),
+    ),
+    output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
+    import { UserIdProps } from './UserIdProps';
+    export class UserIdVO extends Domain.ValueObject<UserIdProps> {
+      private constructor(props: UserIdProps) {
+        super(props);
+      }
+      public static create(props: UserIdProps): Either<UserIdVO, never> {
+        return ok(new UserIdVO(props));
+      }
+      get id(): Domain.UUIDv4 {
+        return this.props.id;
+      }
+    }`,
+    outputProps: 'export interface UserIdProps { id: Domain.UUIDv4; }',
+  },
 ];
