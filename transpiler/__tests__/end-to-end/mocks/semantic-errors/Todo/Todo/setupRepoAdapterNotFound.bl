@@ -9,9 +9,6 @@ const mongoConnection = RepoConnections.Mongo({
 });
 
 // REPOSITORIES
-// const todoReadRepo = RepoAdapters.Mongo({
-//     connection: mongoConnection,
-//     collection: Env(MONGO_DB_TODO_COLLECTION, 'todos'),
-//   }) concretes [Todo][Todo]TodoReadRepoPort;
+
 
 const getAllTodoUseCase = [Todo][Todo]GetAllTodosUseCase(todoReadRepo);
