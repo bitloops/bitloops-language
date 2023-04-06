@@ -1,18 +1,16 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { PackageConcretionNode } from '../nodes/package/PackageConcretionNode.js';
-import { PackagePortIdentifierNode } from '../nodes/package/packagePort/PackagePortIdentifierNode.js';
-import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { RESTControllerIdentifierNode } from '../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerIdentifierNode.js';
+import { BoundedContextModuleNode } from '../../ast/core/intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { RouterControllerNode } from '../../ast/core/intermediate-ast/nodes/setup/RouterControllerNode.js';
 import { boundedContextValidationError, identifierValidationError } from './index.js';
 
-export const packagePortIdentifierError = (
-  node: PackagePortIdentifierNode,
+export const restControllerIdentifierError = (
+  node: RESTControllerIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
   const boundedContextNode = (
-    (
-      node.getParent() as PackageConcretionNode
-    ).getBoundedContextModule() as BoundedContextModuleNode
+    (node.getParent() as RouterControllerNode).getBoundedContextModule() as BoundedContextModuleNode
   ).getBoundedContext();
   const boundedContext = boundedContextNode.getName();
   if (!(boundedContext in thisSymbolTableCore)) {

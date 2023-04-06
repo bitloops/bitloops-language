@@ -1,9 +1,9 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { BitloopsIdentifierTypeNode } from '../nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { EntityIdentifierNode } from '../../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { identifierValidationError } from './index.js';
 
-export const bitloopsIdentifierError = (
-  node: BitloopsIdentifierTypeNode,
+export const entityIdentifierError = (
+  node: EntityIdentifierNode,
   thisSymbolTable: Set<string>,
 ): IntermediateASTValidationError[] => {
   const errors = [];

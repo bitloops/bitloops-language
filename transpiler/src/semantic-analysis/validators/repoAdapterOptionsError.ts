@@ -1,6 +1,6 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { IdentifierExpressionNode } from '../nodes/Expression/IdentifierExpression.js';
-import { RepoAdapterOptionsNode } from '../nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { IdentifierExpressionNode } from '../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
+import { RepoAdapterOptionsNode } from '../../ast/core/intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
 import { identifierValidationError } from './validationErrors.js';
 
 export const repoAdapterOptionsError = (

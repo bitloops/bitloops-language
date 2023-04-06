@@ -1,16 +1,18 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { RESTControllerIdentifierNode } from '../nodes/controllers/restController/RESTControllerIdentifierNode.js';
-import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
-import { RouterControllerNode } from '../nodes/setup/RouterControllerNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { GraphQLControllerIdentifierNode } from '../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
+import { BoundedContextModuleNode } from '../../ast/core/intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { ControllerResolverNode } from '../../ast/core/intermediate-ast/nodes/setup/ControllerResolverNode.js';
 import { boundedContextValidationError, identifierValidationError } from './index.js';
 
-export const restControllerIdentifierError = (
-  node: RESTControllerIdentifierNode,
+export const graphQLControllerIdentifierError = (
+  node: GraphQLControllerIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
   const boundedContextNode = (
-    (node.getParent() as RouterControllerNode).getBoundedContextModule() as BoundedContextModuleNode
+    (
+      node.getParent() as ControllerResolverNode
+    ).getBoundedContextModule() as BoundedContextModuleNode
   ).getBoundedContext();
   const boundedContext = boundedContextNode.getName();
   if (!(boundedContext in thisSymbolTableCore)) {

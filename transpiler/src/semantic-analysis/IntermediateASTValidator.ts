@@ -17,60 +17,60 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
+import { BitloopsTypesMapping } from '../helpers/mappings.js';
 import {
   IIntermediateASTValidator,
   IntermediateAST,
   IntermediateASTSetup,
   IntermediateASTValidationError,
   TBoundedContexts,
-} from '../types.js';
-import { IntermediateASTTree } from './IntermediateASTTree.js';
-import { ArgumentNode } from './nodes/ArgumentList/ArgumentNode.js';
-import { BitloopsIdentifierTypeNode } from './nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
-import { CommandDeclarationNode } from './nodes/command/CommandDeclarationNode.js';
-import { GraphQLControllerExecuteReturnTypeNode } from './nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
-import { GraphQLControllerIdentifierNode } from './nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
-import { GraphQLControllerNode } from './nodes/controllers/graphql/GraphQLControllerNode.js';
-import { RESTControllerIdentifierNode } from './nodes/controllers/restController/RESTControllerIdentifierNode.js';
-import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
-import { DomainServiceNode } from './nodes/domain-service/DomainServiceNode.js';
-import { DomainEventDeclarationNode } from './nodes/DomainEvent/DomainEventDeclarationNode.js';
-import { DomainRuleIdentifierNode } from './nodes/DomainRule/DomainRuleIdentifierNode.js';
-import { DomainRuleNode } from './nodes/DomainRule/DomainRuleNode.js';
-import { DTONode } from './nodes/DTO/DTONode.js';
-import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
-import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
-import { ApplicationErrorNode } from './nodes/Error/ApplicationError.js';
-import { DomainErrorNode } from './nodes/Error/DomainErrorNode.js';
-import { ErrorIdentifierNode } from './nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
-import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
-import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
+} from '../ast/core/types.js';
+import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateASTTree.js';
+import { ArgumentNode } from '../ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
+import { BitloopsIdentifierTypeNode } from '../ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
+import { CommandDeclarationNode } from '../ast/core/intermediate-ast/nodes/command/CommandDeclarationNode.js';
+import { GraphQLControllerExecuteReturnTypeNode } from '../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
+import { GraphQLControllerIdentifierNode } from '../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
+import { GraphQLControllerNode } from '../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
+import { RESTControllerIdentifierNode } from '../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerIdentifierNode.js';
+import { RESTControllerNode } from '../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
+import { DomainServiceNode } from '../ast/core/intermediate-ast/nodes/domain-service/DomainServiceNode.js';
+import { DomainEventDeclarationNode } from '../ast/core/intermediate-ast/nodes/DomainEvent/DomainEventDeclarationNode.js';
+import { DomainRuleIdentifierNode } from '../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
+import { DomainRuleNode } from '../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleNode.js';
+import { DTONode } from '../ast/core/intermediate-ast/nodes/DTO/DTONode.js';
+import { EntityDeclarationNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
+import { EntityIdentifierNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
+import { ApplicationErrorNode } from '../ast/core/intermediate-ast/nodes/Error/ApplicationError.js';
+import { DomainErrorNode } from '../ast/core/intermediate-ast/nodes/Error/DomainErrorNode.js';
+import { ErrorIdentifierNode } from '../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
+import { IntegrationEventNode } from '../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventNode.js';
 import {
   IntermediateASTNodeValidationError,
   IntermediateASTNode,
-} from './nodes/IntermediateASTNode.js';
-import { PackageConcretionNode } from './nodes/package/PackageConcretionNode.js';
-import { PackagePortIdentifierNode } from './nodes/package/packagePort/PackagePortIdentifierNode.js';
-import { PackagePortNode } from './nodes/package/packagePort/PackagePortNode.js';
-import { PropsNode } from './nodes/Props/PropsNode.js';
-import { QueryDeclarationNode } from './nodes/query/QueryDeclarationNode.js';
-import { ReadModelIdentifierNode } from './nodes/readModel/ReadModelIdentifierNode.js';
-import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
-import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
-import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
-import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
-import { BoundedContextModuleNode } from './nodes/setup/BoundedContextModuleNode.js';
-import { ConcretedRepoPortNode } from './nodes/setup/repo/ConcretedRepoPortNode.js';
-import { RepoAdapterOptionsNode } from './nodes/setup/repo/RepoAdapterOptionsNode.js';
-import { RepoConnectionDefinitionNode } from './nodes/setup/repo/RepoConnectionDefinitionNode.js';
-import { SetupRepoAdapterDefinitionNode } from './nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
-import { RouterDefinitionNode } from './nodes/setup/RouterDefinitionNode.js';
-import { ServerRouteNode } from './nodes/setup/ServerRouteNode.js';
-import { UseCaseDefinitionNode } from './nodes/setup/UseCaseDefinitionNode.js';
-import { StructNode } from './nodes/struct/StructNode.js';
-import { UseCaseIdentifierNode } from './nodes/UseCase/UseCaseIdentifierNode.js';
-import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
+} from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+import { PackageConcretionNode } from '../ast/core/intermediate-ast/nodes/package/PackageConcretionNode.js';
+import { PackagePortIdentifierNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
+import { PackagePortNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortNode.js';
+import { PropsNode } from '../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
+import { QueryDeclarationNode } from '../ast/core/intermediate-ast/nodes/query/QueryDeclarationNode.js';
+import { ReadModelIdentifierNode } from '../ast/core/intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
+import { ReadModelNode } from '../ast/core/intermediate-ast/nodes/readModel/ReadModelNode.js';
+import { RepoPortNode } from '../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
+import { RootEntityDeclarationNode } from '../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
+import { ServicePortNode } from '../ast/core/intermediate-ast/nodes/service-port/ServicePortNode.js';
+import { BoundedContextModuleNode } from '../ast/core/intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { ConcretedRepoPortNode } from '../ast/core/intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
+import { RepoAdapterOptionsNode } from '../ast/core/intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
+import { RepoConnectionDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/repo/RepoConnectionDefinitionNode.js';
+import { SetupRepoAdapterDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
+import { RouterDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/RouterDefinitionNode.js';
+import { ServerRouteNode } from '../ast/core/intermediate-ast/nodes/setup/ServerRouteNode.js';
+import { UseCaseDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/UseCaseDefinitionNode.js';
+import { StructNode } from '../ast/core/intermediate-ast/nodes/struct/StructNode.js';
+import { UseCaseIdentifierNode } from '../ast/core/intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
+import { ValueObjectDeclarationNode } from '../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import {
   bitloopsIdentifierError,
   concretedRepoPortError,
@@ -91,9 +91,10 @@ import {
   domainServiceEvaluationError,
 } from './validators/index.js';
 
-export class IntermediateASTValidator implements IIntermediateASTValidator {
+export class SemanticAnalyzer implements IIntermediateASTValidator {
   private symbolTableCore: Record<string, Set<string>>;
   private symbolTableSetup: Record<string, Set<string>>;
+  private errors: IntermediateASTValidationError[] = [];
 
   constructor() {
     this.symbolTableCore = {};
@@ -102,12 +103,15 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
 
   validate(ast: IntermediateAST): void | IntermediateASTValidationError[] {
     this.createSymbolTablesCore(ast.core);
-    const errors: IntermediateASTValidationError[] = [];
-    errors.push(...this.validateCore(ast.core));
+    this.validateCore(ast.core);
     // if (errors.length > 0) return errors;
     this.createSymbolTablesSetup(ast.setup);
-    errors.push(...this.validateSetup(ast.setup));
-    if (errors.length > 0) return errors;
+    this.validateSetup(ast.setup);
+    if (this.errors.length > 0) return this.errors;
+  }
+
+  private addError(...errors: IntermediateASTValidationError[]): void {
+    this.errors.push(...errors);
   }
 
   private createSymbolTablesCore(core: TBoundedContexts): void {
@@ -277,49 +281,36 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
     }
   }
 
-  private validateCore(core: TBoundedContexts): IntermediateASTValidationError[] {
-    const coreErrors: IntermediateASTValidationError[] = [];
+  private validateCore(core: TBoundedContexts): void {
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const ASTTree of Object.values(boundedContext)) {
-        coreErrors.push(...this.validateNodes(ASTTree, boundedContextName));
+        this.validateNodes(ASTTree, boundedContextName);
 
-        coreErrors.push(...this.validateClassTypeNodesCore(ASTTree, boundedContextName));
+        this.validateClassTypeNodesCore(ASTTree, boundedContextName);
       }
     }
-    return coreErrors;
   }
 
-  private validateSetup(setup: IntermediateASTSetup): IntermediateASTValidationError[] {
-    const setupErrors: IntermediateASTValidationError[] = [];
+  private validateSetup(setup: IntermediateASTSetup): void {
     for (const [fileId, ASTTree] of Object.entries(setup)) {
-      setupErrors.push(...this.validateClassTypeNodesSetup(ASTTree, fileId));
+      this.validateClassTypeNodesSetup(ASTTree, fileId);
     }
-    return setupErrors;
   }
 
   //isn't being used right now
-  private validateNodes(
-    ASTTree: IntermediateASTTree,
-    boundedContextName: string,
-  ): IntermediateASTNodeValidationError[] {
-    const errors: IntermediateASTNodeValidationError[] = [];
+  private validateNodes(ASTTree: IntermediateASTTree, boundedContextName: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       const validationRes = node.validate(this.symbolTableCore[boundedContextName]);
       if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
-        errors.push(validationRes);
+        this.addError(validationRes);
     });
-    return errors;
   }
 
-  private validateClassTypeNodesCore(
-    ASTTree: IntermediateASTTree,
-    boundedContext: string,
-  ): IntermediateASTNodeValidationError[] {
-    const errors: IntermediateASTNodeValidationError[] = [];
+  private validateClassTypeNodesCore(ASTTree: IntermediateASTTree, boundedContext: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
         case BitloopsTypesMapping.TBitloopsIdentifier:
-          errors.push(
+          this.addError(
             ...bitloopsIdentifierError(
               node as BitloopsIdentifierTypeNode,
               this.symbolTableCore[boundedContext],
@@ -328,7 +319,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TEntityIdentifier:
-          errors.push(
+          this.addError(
             ...entityIdentifierError(
               node as EntityIdentifierNode,
               this.symbolTableCore[boundedContext],
@@ -337,7 +328,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TReadModelIdentifier:
-          errors.push(
+          this.addError(
             ...readModelIdentifierError(
               node as ReadModelIdentifierNode,
               this.symbolTableCore[boundedContext],
@@ -346,7 +337,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TErrorIdentifier:
-          errors.push(
+          this.addError(
             ...errorIdentifierError(
               node as ErrorIdentifierNode,
               this.symbolTableCore[boundedContext],
@@ -355,7 +346,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TGraphQLControllerExecuteReturnType:
-          errors.push(
+          this.addError(
             ...graphQLControllerExecuteReturnTypeError(
               node as GraphQLControllerExecuteReturnTypeNode,
               this.symbolTableCore[boundedContext],
@@ -364,7 +355,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TDomainRuleIdentifier:
-          errors.push(
+          this.addError(
             ...domainRuleIdentifierError(
               node as DomainRuleIdentifierNode,
               this.symbolTableCore[boundedContext],
@@ -373,7 +364,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TUseCaseIdentifier: {
-          errors.push(
+          this.addError(
             ...useCaseIdentifierCoreError(
               node as UseCaseIdentifierNode,
               this.symbolTableCore[boundedContext],
@@ -382,7 +373,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
         }
         case BitloopsTypesMapping.TDomainServiceEvaluation: {
-          errors.push(
+          this.addError(
             ...domainServiceEvaluationError(
               node as DomainServiceEvaluationNode,
               this.symbolTableCore[boundedContext],
@@ -392,24 +383,19 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         }
       }
     });
-    return errors;
   }
 
-  private validateClassTypeNodesSetup(
-    ASTTree: IntermediateASTTree,
-    fileId: string,
-  ): IntermediateASTNodeValidationError[] {
-    const errors: IntermediateASTNodeValidationError[] = [];
+  private validateClassTypeNodesSetup(ASTTree: IntermediateASTTree, fileId: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
         case BitloopsTypesMapping.TConcretedRepoPort:
-          errors.push(
+          this.addError(
             ...concretedRepoPortError(node as ConcretedRepoPortNode, this.symbolTableCore),
           );
           break;
 
         case BitloopsTypesMapping.TRepoAdapterOptions:
-          errors.push(
+          this.addError(
             ...repoAdapterOptionsError(
               node as RepoAdapterOptionsNode,
               this.symbolTableSetup[fileId],
@@ -418,13 +404,13 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
 
         case BitloopsTypesMapping.TUseCaseIdentifier: {
-          errors.push(
+          this.addError(
             ...useCaseIdentifierSetupError(node as UseCaseIdentifierNode, this.symbolTableCore),
           );
           break;
         }
         case BitloopsTypesMapping.TRESTControllerIdentifier: {
-          errors.push(
+          this.addError(
             ...restControllerIdentifierError(
               node as RESTControllerIdentifierNode,
               this.symbolTableCore,
@@ -433,7 +419,7 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
         }
         case BitloopsTypesMapping.TGraphQLControllerIdentifier: {
-          errors.push(
+          this.addError(
             ...graphQLControllerIdentifierError(
               node as GraphQLControllerIdentifierNode,
               this.symbolTableCore,
@@ -443,13 +429,13 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
         }
 
         case BitloopsTypesMapping.TPackagePortIdentifier: {
-          errors.push(
+          this.addError(
             ...packagePortIdentifierError(node as PackagePortIdentifierNode, this.symbolTableCore),
           );
           break;
         }
         case BitloopsTypesMapping.TRestServerInstanceRouter: {
-          errors.push(
+          this.addError(
             ...restServerInstanceRouterError(
               node as ServerRouteNode,
               this.symbolTableSetup[fileId],
@@ -458,10 +444,9 @@ export class IntermediateASTValidator implements IIntermediateASTValidator {
           break;
         }
         case BitloopsTypesMapping.TArgument:
-          errors.push(...argumentError(node as ArgumentNode, this.symbolTableSetup[fileId]));
+          this.addError(...argumentError(node as ArgumentNode, this.symbolTableSetup[fileId]));
           break;
       }
     });
-    return errors;
   }
 }

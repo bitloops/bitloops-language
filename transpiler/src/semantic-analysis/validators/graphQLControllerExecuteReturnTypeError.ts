@@ -1,5 +1,5 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { GraphQLControllerExecuteReturnTypeNode } from '../nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { GraphQLControllerExecuteReturnTypeNode } from '../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
 import { identifierValidationError } from './validationErrors.js';
 
 export const graphQLControllerExecuteReturnTypeError = (

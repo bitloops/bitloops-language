@@ -1,7 +1,7 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
-import { UseCaseExpressionNode } from '../nodes/setup/UseCaseExpressionNode.js';
-import { UseCaseIdentifierNode } from '../nodes/UseCase/UseCaseIdentifierNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { BoundedContextModuleNode } from '../../ast/core/intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
+import { UseCaseExpressionNode } from '../../ast/core/intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
+import { UseCaseIdentifierNode } from '../../ast/core/intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
 import { boundedContextValidationError, identifierValidationError } from './index.js';
 
 export const useCaseIdentifierCoreError = (

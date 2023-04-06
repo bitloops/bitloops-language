@@ -85,5 +85,3 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     return this.intermediateASTTransformer.complete(intermediateAST);
   }
 }
-
-export { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';

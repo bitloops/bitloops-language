@@ -1,9 +1,9 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { ReadModelIdentifierNode } from '../nodes/readModel/ReadModelIdentifierNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { DomainRuleIdentifierNode } from '../../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { identifierValidationError } from './validationErrors.js';
 
-export const readModelIdentifierError = (
-  node: ReadModelIdentifierNode,
+export const domainRuleIdentifierError = (
+  node: DomainRuleIdentifierNode,
   thisSymbolTable: Set<string>,
 ): IntermediateASTValidationError[] => {
   const errors = [];

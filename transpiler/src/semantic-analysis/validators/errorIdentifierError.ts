@@ -1,9 +1,10 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { EntityIdentifierNode } from '../nodes/Entity/EntityIdentifierNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+
+import { ErrorIdentifierNode } from '../../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 import { identifierValidationError } from './index.js';
 
-export const entityIdentifierError = (
-  node: EntityIdentifierNode,
+export const errorIdentifierError = (
+  node: ErrorIdentifierNode,
   thisSymbolTable: Set<string>,
 ): IntermediateASTValidationError[] => {
   const errors = [];

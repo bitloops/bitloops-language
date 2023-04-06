@@ -1,6 +1,6 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { IdentifierNode } from '../nodes/identifier/IdentifierNode.js';
-import { ServerRouteNode } from '../nodes/setup/ServerRouteNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { IdentifierNode } from '../../ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { ServerRouteNode } from '../../ast/core/intermediate-ast/nodes/setup/ServerRouteNode.js';
 import { identifierValidationError } from './validationErrors.js';
 
 export const restServerInstanceRouterError = (

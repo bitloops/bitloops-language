@@ -1,6 +1,6 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { ConcretedRepoPortNode } from '../nodes/setup/repo/ConcretedRepoPortNode.js';
-import { SetupRepoAdapterDefinitionNode } from '../nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { ConcretedRepoPortNode } from '../../ast/core/intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
+import { SetupRepoAdapterDefinitionNode } from '../../ast/core/intermediate-ast/nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
 import { boundedContextValidationError, identifierValidationError } from './index.js';
 
 export const concretedRepoPortError = (

@@ -1,17 +1,17 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { GraphQLControllerIdentifierNode } from '../nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
-import { BoundedContextModuleNode } from '../nodes/setup/BoundedContextModuleNode.js';
-import { ControllerResolverNode } from '../nodes/setup/ControllerResolverNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { PackageConcretionNode } from '../../ast/core/intermediate-ast/nodes/package/PackageConcretionNode.js';
+import { PackagePortIdentifierNode } from '../../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
+import { BoundedContextModuleNode } from '../../ast/core/intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
 import { boundedContextValidationError, identifierValidationError } from './index.js';
 
-export const graphQLControllerIdentifierError = (
-  node: GraphQLControllerIdentifierNode,
+export const packagePortIdentifierError = (
+  node: PackagePortIdentifierNode,
   thisSymbolTableCore: Record<string, Set<string>>,
 ): IntermediateASTValidationError[] => {
   const errors = [];
   const boundedContextNode = (
     (
-      node.getParent() as ControllerResolverNode
+      node.getParent() as PackageConcretionNode
     ).getBoundedContextModule() as BoundedContextModuleNode
   ).getBoundedContext();
   const boundedContext = boundedContextNode.getName();

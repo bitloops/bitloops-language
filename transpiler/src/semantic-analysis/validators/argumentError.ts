@@ -1,6 +1,6 @@
-import { IntermediateASTValidationError } from '../../types.js';
-import { ArgumentNode } from '../nodes/ArgumentList/ArgumentNode.js';
-import { IdentifierNode } from '../nodes/identifier/IdentifierNode.js';
+import { IntermediateASTValidationError } from '../../ast/core/types.js';
+import { ArgumentNode } from '../../ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
+import { IdentifierNode } from '../../ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { identifierValidationError } from './validationErrors.js';
 
 export const argumentError = (
