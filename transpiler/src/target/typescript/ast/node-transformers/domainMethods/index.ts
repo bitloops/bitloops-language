@@ -8,13 +8,23 @@ import { PrivateMethodDeclarationNode } from '../../../../../ast/core/intermedia
 import { PublicMethodDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { AppendDotValueNodeTSTransformer } from '../generic/appendDotValue.js';
 import { NodeModelToTargetASTTransformer } from '../index.js';
+import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 
 class BaseDomainMethodNodeTSTransformer<
   T extends DomainCreateNode | PublicMethodDeclarationNode | PrivateMethodDeclarationNode,
 > extends NodeModelToTargetASTTransformer<T> {
+  private appendDotValueTransformer: AppendDotValueNodeTSTransformer;
+
+  constructor(protected tree: IntermediateASTTree, protected node: T) {
+    super(tree, node);
+    this.appendDotValueTransformer = new AppendDotValueNodeTSTransformer(node, tree);
+  }
+
   run(): void {
     if (!this.isChildOfDomainService()) {
       this.addPropsToMemberThisExpression();
+    } else {
+      this.transformDotValueOfThisMethodCallExpressions();
     }
     this.transformDotValueOfDomainEvaluations();
   }
@@ -54,8 +64,11 @@ class BaseDomainMethodNodeTSTransformer<
   }
 
   private transformDotValueOfDomainEvaluations(): void {
-    const appendDotValueTransformer = new AppendDotValueNodeTSTransformer(this.node, this.tree);
-    appendDotValueTransformer.transformDotValueOfDomainEvaluations();
+    this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
+  }
+
+  private transformDotValueOfThisMethodCallExpressions(): void {
+    this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
   }
 }
 
