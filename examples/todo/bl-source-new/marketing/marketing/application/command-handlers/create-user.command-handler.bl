@@ -11,7 +11,7 @@ CommandHandler CreateUserCommandHandler (userRepo: UserWriteRepoPort){
         const email = EmailVO.create({ email: command.email });
         const user = UserEntity.create({ completedTodos: completedTodos, email: email, id: userId });
 
-        const saveResult = this.userRepo.save(todo);
+        const saveResult = this.userRepo.save(user);
         if(saveResult is Error){
           return Error(saveResult);
         }

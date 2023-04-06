@@ -2,11 +2,11 @@ IntegrationEventHandler UserEmailChangedIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
-    handle(event: [iam][authentication]UserEmailChangedIntegrationEvent): (OK(void),Errors()) {
+    handle(event: [iam][authentication]UserChangedEmailIntegrationEvent): (OK(void),Errors()) {
 
       const command = ChangeUserEmailCommand.create({
         userId: event.payload.userId,
-        email: event.payload.email,
+        email: event.payload.userEmail,
       })
       this.commandBus.publish(command);
   

@@ -4,9 +4,9 @@ Command ChangeUserEmailCommand {
 }
 
 CommandHandler ChangeUserEmailCommandHandler (userRepo: UserWriteRepoPort){
-    execute (command: ChangeUserEmailCommand): (OK(void),Errors(ApplicationErrors.UserNotFoundError))
+    execute (command: ChangeUserEmailCommand): (OK(void),Errors(ApplicationErrors.UserNotFoundError | DomainErrors.InvalidEmailDomainError))
     {
-        const userId = UUIDv4(command.userId);
+        const requestUserId = UUIDv4(command.userId);
         const userFound = this.userRepo.getById(requestUserId);
         if (userFound is Error) {
             return Error(userFound);
