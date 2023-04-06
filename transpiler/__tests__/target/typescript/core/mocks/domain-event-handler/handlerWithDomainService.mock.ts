@@ -3,7 +3,7 @@ import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { StreamingCommandBusToken } from '../../../constants';
 import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/MoneyDepositedToAccountDomainEvent';
-import { MarketingNotificationDomainService } from '../../../structs/MarketingNotificationDomainService';
+import { MarketingNotificationDomainService } from '../../../domain/services/MarketingNotificationDomainService';
 export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleDomainEvent {
   constructor(
     @Inject(StreamingCommandBusToken)
@@ -26,6 +26,6 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleD
     const marketingNotificationService = new MarketingNotificationDomainService(this.repo);
     const emailToBeSentInfoResponse =
       await marketingNotificationService.getNotificationTemplateToBeSent(user);
-    await this.commandBus.send(emailToBeSentInfoResponse);
+    await this.commandBus.send(emailToBeSentInfoResponse.value);
   }
 }

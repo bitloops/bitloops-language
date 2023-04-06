@@ -22,5 +22,8 @@
     ],
     "console": "integratedTerminal"
     }
-  ]
+  ],
+   "debug.javascript.terminalOptions": {
+    "runtimeArgs": ["--preserve-symlinks"]
+  } 
 }

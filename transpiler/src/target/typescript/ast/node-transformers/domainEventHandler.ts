@@ -18,8 +18,8 @@ export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTra
   }
 
   run(): void {
-    this.prependAwaitToAllDependencyCalls();
     this.transformDotValue();
+    this.prependAwaitToAllDependencyCalls();
   }
 
   private prependAwaitToAllDependencyCalls(): void {
@@ -31,5 +31,6 @@ export class DomainEventHandlerNodeTSTransformer extends NodeModelToTargetASTTra
   private transformDotValue(): void {
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
     this.appendDotValueTransformer.transformDotValueOfThisMethodCallExpressions();
+    this.appendDotValueTransformer.transformDotValueOfDomainServiceResults();
   }
 }

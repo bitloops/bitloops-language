@@ -3,15 +3,25 @@ Command ChangeUserEmailCommand {
     string userId;
 }
 
-CommandHandler ChangeUserEmailCommandHandler (userRepo: UserEmailReadRepoPort){
-    execute (command: ChangeUserEmailCommand): (OK(void),Errors())
+CommandHandler ChangeUserEmailCommandHandler (userRepo: UserWriteRepoPort){
+    execute (command: ChangeUserEmailCommand): (OK(void),Errors(ApplicationErrors.UserNotFoundError | DomainErrors.InvalidEmailDomainError))
     {
-        const userIdEmail = UserReadModel.create({
-            userId: command.userId,
-            email: command.email,
-        });
+        const requestUserId = UUIDv4(command.userId);
+        const userFound = this.userRepo.getById(requestUserId);
+        if (userFound is Error) {
+            return Error(userFound);
+        }
 
-        const updateResult = this.userRepo.update(userIdEmail);
+        if(NOT userFound) { 
+            return ApplicationErrors.UserNotFoundError(command.userId);
+        }
+
+        const changeEmailResult = userFound.changeEmail(command.email);
+        if (changeEmailResult is Error) {
+            return Error(changeEmailResult);
+        }
+
+        const updateResult = this.userRepo.update(userFound);
         if(updateResult is Error){
             return Error(updateResult);
         }

@@ -1,6 +1,7 @@
 Props UserProps {
     optional UUIDv4 id;
     CompletedTodosVO completedTodos;
+    EmailVO email;
 }
 
 
@@ -25,5 +26,10 @@ Root Entity UserEntity {
 
     public isFirstTodo(): bool {
         return this.completedTodos.counter == 1;
+    }
+    
+    public changeEmail(email: string): (OK(void), Errors(DomainErrors.InvalidEmailDomainError)) {
+        const newEmail = EmailVO.create({ email: email });
+        this.email = newEmail;
     }
 }

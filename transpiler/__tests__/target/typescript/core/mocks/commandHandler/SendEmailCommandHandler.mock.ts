@@ -3,7 +3,7 @@ import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { SendEmailCommand } from '../commands/SendEmailCommand';
 import { Inject } from '@nestjs/common';
 import { EmailDomainServiceToken } from '../../constants';
-import { EmailDomainService } from '../../structs/EmailDomainService';
+import { EmailDomainService } from '../../domain/services/EmailDomainService';
 import { EmailToSend } from '../../structs/EmailToSend';
 export type SendEmailCommandHandlerResponse = Either<void, void>;
 export class SendEmailCommandHandler

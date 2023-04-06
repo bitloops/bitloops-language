@@ -1,11 +1,3 @@
-// Command CreateTodoCommand {
-//     string title;
-//   }
-
-// Query GetByIdTodoQuery {
-//   string id;
-// }
-
 Props TitleProps {
   string title;
 }

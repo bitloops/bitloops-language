@@ -1,11 +1,21 @@
-DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(emailRepoPort: UserEmailReadRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWriteRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
 
-    handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors(ApplicationErrors.UserEmailNotFoundError)) {
+    handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors(ApplicationErrors.UserNotFoundError)) {
       const user = event.payload;
+
+      const userId = UUIDv4(user.aggregateId);
+      const userFound = this.userRepo.getById(userId);
+      if(userFound is Error){
+        return Error(userFound);
+      }
+
+      if (NOT userFound) {
+        return ApplicationErrors.UserNotFoundError(user.aggregateId);
+      }
 
       const marketingNotificationService = MarketingNotificationDomainService.create(this.notificationTemplateRepo);
 
-      const emailToBeSentInfo = marketingNotificationService.getNotificationTemplateToBeSent(user);
+      const emailToBeSentInfo = marketingNotificationService.getNotificationTemplateToBeSent(userFound);
       if(emailToBeSentInfo is Error){
         return Error(emailToBeSentInfo);
       }
@@ -14,18 +24,9 @@ DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(emailRepoPort: U
         return;
       }
 
-      const userEmail = this.emailRepoPort.getUserEmail(user.aggregateId);
-      if(userEmail is Error){
-        return Error(userEmail);
-      }
-      
-      if (NOT userEmail) {
-        return ApplicationErrors.UserEmailNotFoundError(user.aggregateId.toString());
-      }
-
       const command = SendEmailCommand.create({
         origin: emailToBeSentInfo.emailOrigin,
-        destination: userEmail.email,
+        destination: userFound.email.toString(),
         content: emailToBeSentInfo.notificationTemplate.template,
       });
       this.commandBus.publish(command);

@@ -57,6 +57,36 @@ export class ExpressionNode extends StatementNode {
     }
     return false;
   }
+  isDomainServiceEvaluationExpression(): boolean {
+    if (!this.isEvaluation()) {
+      return false;
+    }
+    if (!this.getEvaluation().isDomainServiceEvaluation()) {
+      return false;
+    }
+    return true;
+  }
+  isMethodCallOnIdentifier(identifiers: string[]): boolean {
+    if (!this.isMethodCallExpression()) {
+      return false;
+    }
+
+    const methodCallExpressionValues = this.getExpressionValues();
+    if (!methodCallExpressionValues.isMemberDotExpression()) {
+      return false;
+    }
+    // getExpression on memberDot returns the left
+    const leftExpressionOfMemberDot = methodCallExpressionValues.getExpressionValues();
+    // We only want to catch [identifier.methodCall()] cases
+    if (!leftExpressionOfMemberDot.isIdentifierExpression()) {
+      return false;
+    }
+    const identifierValue = leftExpressionOfMemberDot.identifierName;
+    if (!identifiers.includes(identifierValue)) {
+      return false;
+    }
+    return true;
+  }
 
   isMemberDotExpression(): this is MemberDotExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;

@@ -404,6 +404,67 @@ export class IntermediateASTTree {
     return identifiers;
   }
 
+  getIdentifiersOfDomainServiceResults(statements: StatementNode[]): string[] {
+    const identifiers: string[] = [];
+
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isDomainServiceEvaluationExpression()) {
+        return true;
+      }
+      return false;
+    };
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
+  getResultsOfDomainServiceMethods(
+    statements: StatementNode[],
+    domainServiceIdentifiers: string[],
+  ): string[] {
+    const identifiers: string[] = [];
+
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isMethodCallOnIdentifier(domainServiceIdentifiers)) {
+        return true;
+      }
+      return false;
+    };
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
   getIdentifiersOfDomainTypes(parameters: ParameterNode[]): string[] {
     const identifiers: string[] = [];
 
