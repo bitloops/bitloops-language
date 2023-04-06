@@ -28,11 +28,6 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
     return parameterList.getParameters();
   }
 
-  // private identifier: IdentifierNode;
-  // private parameters: ParameterListNode;
-  // private returnType: ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode;
-  // private statements: StatementListNode;
-  // private staticNode: StaticNode;
   public getMethodName(): string {
     const identifierNode = this.getChildNodeByType<IdentifierNode>(
       BitloopsTypesMapping.TIdentifier,
