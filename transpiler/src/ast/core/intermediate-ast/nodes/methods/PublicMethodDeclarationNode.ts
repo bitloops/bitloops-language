@@ -35,6 +35,10 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
     return identifierNode.getIdentifierName();
   }
 
+  public getReturnOkErrorType(): ReturnOkErrorTypeNode | null {
+    return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
+  }
+
   public returnsOkError(): boolean {
     return (
       this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType) !==

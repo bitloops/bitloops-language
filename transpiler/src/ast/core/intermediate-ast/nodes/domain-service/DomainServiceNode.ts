@@ -6,6 +6,7 @@ import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { PrivateMethodDeclarationListNode } from '../methods/PrivateMethodDeclarationListNode.js';
 import { PublicMethodDeclarationListNode } from '../methods/PublicMethodDeclarationListNode.js';
 import { StatementNode } from '../statements/Statement.js';
+import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 
 export class DomainServiceNode extends ClassTypeNode {
   private static classType = ClassTypes.DomainService;
@@ -51,5 +52,28 @@ export class DomainServiceNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterList.getIdentifiers();
+  }
+
+  public getReturnOkErrorTypeNodes(): ReturnOkErrorTypeNode[] {
+    const publicMethodListNode = this.getChildNodeByType(
+      BitloopsTypesMapping.TPublicMethods,
+    ) as PublicMethodDeclarationListNode;
+    const privateMethodListNode = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+
+    const returnOkErrorNodes: ReturnOkErrorTypeNode[] = [];
+    if (publicMethodListNode) {
+      publicMethodListNode.publicMethods.forEach((method) => {
+        const returnOkErrorType = method.getReturnOkErrorType();
+        if (returnOkErrorType) returnOkErrorNodes.push(returnOkErrorType);
+      });
+    }
+    if (privateMethodListNode) {
+      privateMethodListNode.getPrivateMethodNodes().forEach((method) => {
+        returnOkErrorNodes.push(method.getReturnOkErrorType());
+      });
+    }
+    return returnOkErrorNodes;
   }
 }
