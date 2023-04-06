@@ -4,6 +4,7 @@ import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandlerBusDependenciesNode } from '../DomainEventHandler/EventHandlerBusDependenciesNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { IntegrationEventHandlerHandleMethodNode } from './IntegrationEventHandlerHandleMethodNode.js';
 
@@ -44,5 +45,12 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
       (key) => nodeValue.eventHandlerBusDependencies[key] === true,
     );
     return extraDependencies;
+  }
+
+  getParameters(): ParameterNode[] {
+    const parameterListNode = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterListNode.getParameters();
   }
 }

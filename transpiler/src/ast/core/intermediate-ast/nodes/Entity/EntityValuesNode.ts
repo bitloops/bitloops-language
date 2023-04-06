@@ -1,6 +1,8 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { PublicMethodDeclarationListNode } from '../methods/PublicMethodDeclarationListNode.js';
+import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
 
 export class EntityValuesNode extends IntermediateASTNode {
   private static classNodeName = 'entityValues';
@@ -11,5 +13,19 @@ export class EntityValuesNode extends IntermediateASTNode {
 
   public getDomainCreateMethod(): DomainCreateNode {
     return this.getChildNodeByType<DomainCreateNode>(BitloopsTypesMapping.TDomainCreateMethod);
+  }
+
+  public findPublicMethodByName(methodName: string): PublicMethodDeclarationNode | null {
+    const publicMethods = this.getPublicMethods();
+    const method = publicMethods.find((method) => method.getMethodName() === methodName);
+    return method ?? null;
+  }
+
+  private getPublicMethods(): PublicMethodDeclarationNode[] {
+    const publicMethodsList = this.getChildNodeByType<PublicMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPublicMethods,
+    );
+    const publicMethods = publicMethodsList.publicMethods;
+    return publicMethods;
   }
 }

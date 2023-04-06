@@ -13,7 +13,15 @@ export class PublicMethodDeclarationListNode extends IntermediateASTNode {
     );
   }
 
-  public getPublicMethodNodes(): PublicMethodDeclarationNode[] {
-    return this.getChildren() as PublicMethodDeclarationNode[];
+  get publicMethods(): PublicMethodDeclarationNode[] {
+    return this.getChildrenNodesByType<PublicMethodDeclarationNode>(
+      BitloopsTypesMapping.TPublicMethod,
+    );
+  }
+
+  public findMethodByName(methodName: string): PublicMethodDeclarationNode | null {
+    const methods = this.publicMethods;
+    const method = methods.find((method) => method.getMethodName() === methodName);
+    return method ?? null;
   }
 }

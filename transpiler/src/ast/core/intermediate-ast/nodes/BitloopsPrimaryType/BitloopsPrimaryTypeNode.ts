@@ -63,4 +63,13 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
     }
     throw new Error('This is not a BitloopsIdentifier type node');
   }
+
+  public isRepoPort(): boolean {
+    try {
+      const bitloopsIdentifierTypeNode = this.getBitloopsIdentifierTypeNode();
+      return bitloopsIdentifierTypeNode.isRepoPortIdentifier();
+    } catch (error) {
+      return false;
+    }
+  }
 }

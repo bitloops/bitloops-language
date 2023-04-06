@@ -5,6 +5,7 @@ import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
+import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
 
 //fix this and entity to be extendable from a base class
 export class RootEntityDeclarationNode extends ClassTypeNode {
@@ -32,5 +33,12 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TEntityIdentifier,
     ) as EntityIdentifierNode;
     return identifier;
+  }
+
+  public findPublicMethodByName(methodName: string): PublicMethodDeclarationNode | null {
+    const entityValues = this.getChildNodeByType<EntityValuesNode>(
+      BitloopsTypesMapping.TEntityValues,
+    );
+    return entityValues.findPublicMethodByName(methodName);
   }
 }

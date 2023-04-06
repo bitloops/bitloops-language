@@ -24,6 +24,11 @@ import { FieldListNode } from './nodes/FieldList/FieldListNode.js';
 import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
 import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
+import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
+
+type Policy = (node: IntermediateASTNode) => boolean;
+
+type EntityVariableIdentifier = { identifier: string; entityIdentifier: string };
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -245,33 +250,25 @@ export class IntermediateASTTree {
       BitloopsTypesMapping.TRootEntity,
     ) as RootEntityDeclarationNode[];
 
-    let rootEntityFound: RootEntityDeclarationNode = null;
-    for (const rootEntityNode of rootEntityNodes) {
-      const entityIdentifier = rootEntityNode.getIdentifier();
-
-      if (identifier === entityIdentifier.getValue().entityIdentifier) {
-        rootEntityFound = rootEntityNode;
-      }
-    }
-
-    return rootEntityFound;
+    return (
+      rootEntityNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier) ??
+      null
+    );
   };
 
   public getValueObjectByIdentifier = (identifier: string): ValueObjectDeclarationNode => {
-    const valueObjectDeclarationNodes = this.getRootChildrenNodesByType(
+    const valueObjectDeclarationNodes = this.getRootChildrenNodesByType<ValueObjectDeclarationNode>(
       BitloopsTypesMapping.TValueObject,
-    ) as ValueObjectDeclarationNode[];
+    );
 
-    let valueObjectFound: ValueObjectDeclarationNode = null;
-    for (const valueObjectNode of valueObjectDeclarationNodes) {
-      const valueObjectIdentifier = valueObjectNode.getIdentifier();
+    return valueObjectDeclarationNodes.find((node) => node.getIdentifier() === identifier) ?? null;
+  };
 
-      if (identifier === valueObjectIdentifier) {
-        valueObjectFound = valueObjectNode;
-      }
-    }
-
-    return valueObjectFound;
+  public getRepoPortByIdentifier = (identifier: string): RepoPortNode => {
+    const repoPortNodes = this.getRootChildrenNodesByType<RepoPortNode>(
+      BitloopsTypesMapping.TRepoPort,
+    );
+    return repoPortNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
   };
 
   public getPropsFieldTypeOfDomainCreateByFieldIdentifier(
@@ -337,8 +334,6 @@ export class IntermediateASTTree {
   }
 
   getIdentifiersOfDomainEvaluations(statements: StatementNode[]): string[] {
-    const identifiers: string[] = [];
-
     const policy = (node: IntermediateASTNode): boolean => {
       const statementIsVariableDeclaration =
         node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
@@ -359,25 +354,12 @@ export class IntermediateASTTree {
       }
       return true;
     };
-    for (const statement of statements) {
-      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
-
-      for (const node of nodes) {
-        const identifier = node.getIdentifier()?.getIdentifierName();
-        if (identifier) {
-          identifiers.push(identifier);
-        }
-      }
-    }
-
-    return identifiers;
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
   }
 
   getIdentifiersOfThisMethodCallExpressionsWithTwoMemberDots(
     statements: StatementNode[],
   ): string[] {
-    const identifiers: string[] = [];
-
     const policy = (node: IntermediateASTNode): boolean => {
       const statementIsVariableDeclaration =
         node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
@@ -393,23 +375,10 @@ export class IntermediateASTTree {
       }
       return false;
     };
-    for (const statement of statements) {
-      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
-
-      for (const node of nodes) {
-        const identifier = node.getIdentifier()?.getIdentifierName();
-        if (identifier) {
-          identifiers.push(identifier);
-        }
-      }
-    }
-
-    return identifiers;
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
   }
 
   getIdentifiersOfDomainServiceResults(statements: StatementNode[]): string[] {
-    const identifiers: string[] = [];
-
     const policy = (node: IntermediateASTNode): boolean => {
       const statementIsVariableDeclaration =
         node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
@@ -422,26 +391,132 @@ export class IntermediateASTTree {
       }
       return false;
     };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifiersOfAggregates(
+    statements: StatementNode[],
+    parameters: ParameterNode[],
+  ): EntityVariableIdentifier[] {
+    return [
+      ...this.getIdentifiersOfAggregatesFromRepoGetById(statements, parameters),
+      ...this.getIdentifiersOfAggregatesFromEntityEvaluation(statements),
+    ];
+  }
+
+  private getIdentifiersOfAggregatesFromRepoGetById(
+    statements: StatementNode[],
+    parameters: ParameterNode[],
+  ): EntityVariableIdentifier[] {
+    const repoGetterMethod = 'getById';
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression.isThisMethodCallExpressionWithTwoMemberDots()) {
+        return false;
+      }
+      const { methodName } = expression.getIdentifierAndMethodNameOfThisMethodCall();
+      if (methodName !== repoGetterMethod) {
+        return false;
+      }
+      return true;
+    };
+    const result: EntityVariableIdentifier[] = [];
     for (const statement of statements) {
       const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
 
       for (const node of nodes) {
         const identifier = node.getIdentifier()?.getIdentifierName();
-        if (identifier) {
-          identifiers.push(identifier);
+        // Based on our policy, these should be variable declarations with getById method calls on some repos,
+        // By finding the repo, we can find the entity identifier
+        const expression = node.getExpressionValues();
+        const { identifier: dependencyIdentifier, methodName } =
+          expression.getIdentifierAndMethodNameOfThisMethodCall();
+
+        if (methodName !== repoGetterMethod) {
+          continue;
+        }
+
+        const dependency = parameters.find(
+          (parameter) => parameter.getIdentifier() === dependencyIdentifier,
+        );
+        if (!dependency) {
+          continue;
+        }
+        if (!dependency.hasRepoPortType()) {
+          continue;
+        }
+        const repoPortDependencyIdentifier = dependency
+          .getType()
+          .getBitloopsIdentifierTypeNode()
+          .getIdentifierName();
+        const reportNode = this.getRepoPortByIdentifier(repoPortDependencyIdentifier);
+        if (!reportNode) {
+          continue;
+        }
+        const entityIdentifierNode = reportNode.getEntityIdentifier();
+        const isEntityRepo = entityIdentifierNode !== null;
+        if (!isEntityRepo) {
+          continue;
+        }
+        const entityIdentifier = entityIdentifierNode.getIdentifierName();
+        if (identifier && entityIdentifier) {
+          result.push({ identifier, entityIdentifier });
         }
       }
     }
 
-    return identifiers;
+    return result;
+  }
+
+  private getIdentifiersOfAggregatesFromEntityEvaluation(
+    statements: StatementNode[],
+  ): EntityVariableIdentifier[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isAggregateEvaluationExpression()) {
+        return true;
+      }
+      return false;
+    };
+    const result: EntityVariableIdentifier[] = [];
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        // Based on our policy, these should be variable declarations with aggregate evaluation as expressions
+        const expression = node.getExpressionValues();
+        if (!expression.isAggregateEvaluationExpression()) {
+          throw new Error('This should not happen');
+        }
+        const evaluation = expression.getEvaluation();
+        if (!evaluation.isEntityEvaluation()) {
+          throw new Error('This should not happen');
+        }
+        const entityIdentifier = (evaluation as EntityEvaluationNode).getEntityIdentifier();
+        if (identifier && entityIdentifier) {
+          result.push({ identifier, entityIdentifier });
+        }
+      }
+    }
+
+    return result;
   }
 
   getResultsOfDomainServiceMethods(
     statements: StatementNode[],
     domainServiceIdentifiers: string[],
   ): string[] {
-    const identifiers: string[] = [];
-
     const policy = (node: IntermediateASTNode): boolean => {
       const statementIsVariableDeclaration =
         node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
@@ -454,6 +529,43 @@ export class IntermediateASTTree {
       }
       return false;
     };
+
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getResultOfAggregateMethodsThatReturnOkError(
+    statements: StatementNode[],
+    aggregateIdentifiers: EntityVariableIdentifier[],
+  ): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      const entityIdentifiers = aggregateIdentifiers.map((i) => i.identifier);
+      if (!expression.isMethodCallOnIdentifier(entityIdentifiers)) {
+        return false;
+      }
+      // Now we need to find whether the method returns an OK,Error
+      const { entityName, methodName } = expression.getEntityMethodCallInfo();
+      const entityType = aggregateIdentifiers.find((i) => i.identifier === entityName);
+      const rootEntity = this.getRootEntityByIdentifier(entityType.entityIdentifier);
+      if (!rootEntity) {
+        throw new Error(
+          `Could not find root entity with identifier ${entityType.entityIdentifier}`,
+        );
+      }
+      const publicMethod = rootEntity?.findPublicMethodByName(methodName);
+      return publicMethod?.returnsOkError();
+    };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifierOfVariableConstDeclaration(statements: StatementNode[], policy: Policy): string[] {
+    const identifiers: string[] = [];
+
     for (const statement of statements) {
       const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
 

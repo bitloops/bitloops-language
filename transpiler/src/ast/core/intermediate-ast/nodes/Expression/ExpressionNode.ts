@@ -57,6 +57,31 @@ export class ExpressionNode extends StatementNode {
     }
     return false;
   }
+
+  getIdentifierAndMethodNameOfThisMethodCall(): { identifier: string; methodName: string } {
+    if (!this.isThisMethodCallExpressionWithTwoMemberDots()) {
+      throw new Error('Not a this method call expression with two member dots');
+    }
+    if (!this.isMethodCallExpression()) {
+      throw new Error('Not a method call expression');
+    }
+    const methodCallExpressionValues = this.getExpressionValues();
+    if (!methodCallExpressionValues.isMemberDotExpression()) {
+      throw new Error('Not a member dot expression');
+    }
+    const methodName = methodCallExpressionValues.getIdentifierExpression().identifierName;
+    const memberDotExpressionValues = methodCallExpressionValues.getExpressionValues();
+    if (!memberDotExpressionValues.isMemberDotExpression()) {
+      throw new Error('Not a member dot expression');
+    }
+    const leftMostMemberDotExpressionValues = memberDotExpressionValues.getExpressionValues();
+    if (!leftMostMemberDotExpressionValues.isThisExpression()) {
+      throw new Error('Not a this expression');
+    }
+    const identifier = memberDotExpressionValues.getIdentifierExpression().identifierName;
+    return { identifier, methodName };
+  }
+
   isDomainServiceEvaluationExpression(): boolean {
     if (!this.isEvaluation()) {
       return false;
@@ -66,6 +91,20 @@ export class ExpressionNode extends StatementNode {
     }
     return true;
   }
+
+  /**
+   * Aggregates and entities have the same evaluations
+   */
+  isAggregateEvaluationExpression(): boolean {
+    if (!this.isEvaluation()) {
+      return false;
+    }
+    if (!this.getEvaluation().isEntityEvaluation()) {
+      return false;
+    }
+    return true;
+  }
+
   isMethodCallOnIdentifier(identifiers: string[]): boolean {
     if (!this.isMethodCallExpression()) {
       return false;
@@ -86,6 +125,31 @@ export class ExpressionNode extends StatementNode {
       return false;
     }
     return true;
+  }
+
+  getEntityMethodCallInfo(): { entityName: string; methodName: string } {
+    if (!this.isMethodCallExpression()) {
+      throw new Error('Not a method call expression');
+    }
+
+    const methodCallExpressionValues = this.getExpressionValues();
+    if (!methodCallExpressionValues.isMemberDotExpression()) {
+      throw new Error('Not a method call on identifier');
+    }
+
+    const leftExpressionOfMemberDot = methodCallExpressionValues.getExpressionValues();
+    if (!leftExpressionOfMemberDot.isIdentifierExpression()) {
+      throw new Error('Not a method call on identifier');
+    }
+    const methodName = methodCallExpressionValues.getIdentifierExpression().getIdentifierName();
+    return { entityName: leftExpressionOfMemberDot.identifierName, methodName };
+  }
+
+  getMethodCallName(): string {
+    if (!this.isMethodCallExpression()) {
+      throw new Error('Not a method call expression');
+    }
+    return this.getMethodName();
   }
 
   isMemberDotExpression(): this is MemberDotExpressionNode {
