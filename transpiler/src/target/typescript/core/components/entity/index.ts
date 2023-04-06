@@ -127,10 +127,10 @@ const entityToTargetLanguage = (params: {
   result += entityMethodsModel.output;
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
-  const fromPrimitives = generateFromPrimitives(primitivesObject, entityIdentifier);
+  const fromPrimitives = generateFromPrimitives(primitivesObject, entityIdentifier, model);
   result += fromPrimitives + '\n';
 
-  const toPrimitives = generateToPrimitives(primitivesObject, entityIdentifier);
+  const toPrimitives = generateToPrimitives(primitivesObject, entityIdentifier, model);
   result += toPrimitives + '\n';
   result += '}';
 
