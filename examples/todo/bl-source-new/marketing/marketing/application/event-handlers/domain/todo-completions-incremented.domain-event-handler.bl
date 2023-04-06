@@ -26,7 +26,7 @@ DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWr
 
       const command = SendEmailCommand.create({
         origin: emailToBeSentInfo.emailOrigin,
-        destination: userEmail.email,
+        destination: userFound.email.toString(),
         content: emailToBeSentInfo.notificationTemplate.template,
       });
       this.commandBus.publish(command);

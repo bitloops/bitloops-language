@@ -1,6 +1,7 @@
 Props UserProps {
     optional UUIDv4 id;
     CompletedTodosVO completedTodos;
+    EmailVO email;
 }
 
 

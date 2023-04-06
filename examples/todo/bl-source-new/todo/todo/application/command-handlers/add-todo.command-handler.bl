@@ -7,7 +7,8 @@ CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
     execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
     {
       const title = TitleVO.create({ title: command.title });
-      const userId = UserIdVO.create({ id: command.metadata.context.userId });
+      const requestUserId = UUIDv4(command.metadata.context.userId);
+      const userId = UserIdVO.create({ id: requestUserId });
       const todo = TodoEntity.create({ title: title, completed: false, userId: userId });
       const saveResult = this.todoRepo.save(todo);
       if(saveResult is Error){

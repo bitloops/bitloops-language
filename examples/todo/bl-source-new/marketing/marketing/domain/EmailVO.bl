@@ -1,0 +1,9 @@
+Props EmailProps {
+    string email;
+}
+
+ValueObject EmailVO {
+    static create(props: EmailProps): (OK(EmailVO), Errors(DomainErrors.InvalidEmailDomainError)) {
+        applyRules(ValidEmailRule(props.email));
+    }
+}
