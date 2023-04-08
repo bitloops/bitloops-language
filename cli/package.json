@@ -19,11 +19,11 @@
     "url": "https://github.com/bitloops/bitloops-language"
   },
   "devDependencies": {
-    "@types/eslint": "^8.4.6",
+    "@types/eslint": "^8.37.0",
     "@types/figlet": "^1.5.5",
-    "@types/inquirer": "^9.0.1",
+    "@types/inquirer": "^9.0.3",
     "@types/jest": "~27.5",
-    "@types/lodash": "^4.14.184",
+    "@types/lodash": "^4.14.192",
     "@types/node": "~16",
     "@typescript-eslint/eslint-plugin": "~5.26",
     "@typescript-eslint/parser": "~5.26",
@@ -37,18 +37,18 @@
     "googleapis": "^107.0.0",
     "jest": "~28.1",
     "jest-cucumber": "^3.0.1",
-    "jest-extended": "^3.0.2",
+    "jest-extended": "^3.2.4",
     "jest-ts-auto-mock": "^2.1.0",
-    "pkg": "^5.8.0",
-    "prettier": "^2.7.1",
+    "pkg": "^5.8.1",
+    "prettier": "^2.8.7",
     "rimraf": "~3.0",
-    "ts-auto-mock": "^3.6.2",
+    "ts-auto-mock": "^3.6.4",
     "ts-jest": "~28.0",
     "ts-node": "^10.9.1",
     "tsutils": "~3.21",
-    "ttypescript": "^1.5.13",
-    "typescript": "^4.7.4",
-    "webpack": "^5.74.0",
+    "ttypescript": "^1.5.15",
+    "typescript": "^4.9.5",
+    "webpack": "^5.78.0",
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
@@ -87,13 +87,13 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@bitloops/bl-transpiler": "^0.1.0",
-    "axios": "^1.1.3",
+    "axios": "^1.3.5",
     "chalk": "5.0.1",
-    "commander": "^9.4.0",
+    "commander": "^9.5.0",
     "figlet": "1.5.2",
     "inquirer": "9.1.1",
     "inquirer-path": "^1.0.0-beta5",
-    "ora": "^6.1.2"
+    "ora": "^6.3.0"
   },
   "volta": {
     "node": "16.13.0"
