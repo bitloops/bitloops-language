@@ -55,6 +55,8 @@ const BitloopsTypesMapping = {
   TRegularCase: 'TRegularCase',
   TSwitchStatement: 'TSwitchStatement',
   TBreakStatement: 'TBreakStatement',
+  TForStatement: 'TForStatement',
+  TForOfStatement: 'TForOfStatement',
   TStatement: 'TStatement',
   TStatements: 'TStatements',
   TStatementsWithoutThis: 'TStatementsWithoutThis',

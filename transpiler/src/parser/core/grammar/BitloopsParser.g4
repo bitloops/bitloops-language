@@ -324,6 +324,7 @@ statement
     | switchStatement
     | returnStatement
     | builtInFunction // Using semantic analysis, allow it only inside domain
+    | iterationStatement
     ;
 
 builtInFunction
@@ -862,9 +863,10 @@ elementList
     : expression (Comma expression)*
     ;
 
-// arguments
-//     : OpenParen (argumentList Comma?)? CloseParen
-//     ;
+iterationStatement
+    : For '(' (variableDeclaration) ';' expression ';' expression? ')' OpenBrace statementList CloseBrace   # ForStatement
+    | For '(' Const? identifier Of? identifier ')' OpenBrace statementList CloseBrace  # ForOfStatement
+    ;
 
 argumentList
     : argument (Comma argument)*

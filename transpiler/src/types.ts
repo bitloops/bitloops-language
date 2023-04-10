@@ -311,6 +311,15 @@ export type TIfStatement = {
   };
 };
 
+export type TForStatement = {
+  forStatement: {
+    variable: TVariableDeclaration;
+    increment: TExpression;
+    condition?: TExpression;
+    statements: TStatements;
+  };
+};
+
 export type TEvaluationField = {
   evaluationField: { identifier: string } & TExpression;
 };

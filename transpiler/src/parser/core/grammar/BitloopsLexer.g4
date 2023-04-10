@@ -118,6 +118,7 @@ Digits:                         [0-9]+;
 Optional:                       'optional';
 Break:                          'break';
 Do:                             'do';
+Of:                             'of';
 Instanceof:                     'instanceof';
 Typeof:                         'typeof';
 Case:                           'case';

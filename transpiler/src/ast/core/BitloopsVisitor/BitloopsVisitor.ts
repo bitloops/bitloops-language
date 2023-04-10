@@ -154,6 +154,8 @@ import {
   regexLiteralEvaluation,
   readModelEvaluationVisitor,
   domainEventEvaluationVisitor,
+  forStatetmentVisitor,
+  forOfStatetmentVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -326,6 +328,7 @@ import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/lit
 import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
 import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
 import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
+import { IterationStatementNode } from '../intermediate-ast/nodes/statements/iteration/forStatementNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -433,6 +436,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const metadata = produceMetadata(ctx, this);
     const identifierNode = new IdentifierNodeBuilder(metadata).withName(identifierName).build();
     return identifierNode;
+  }
+
+  visitForStatement(ctx: BitloopsParser.ForStatementContext): IterationStatementNode {
+    return forStatetmentVisitor(this, ctx);
+  }
+
+  visitForOfStatement(ctx: BitloopsParser.ForOfStatementContext): IterationStatementNode {
+    return forOfStatetmentVisitor(this, ctx);
   }
 
   visitRelationalExpression(ctx: BitloopsParser.RelationalExpressionContext) {
