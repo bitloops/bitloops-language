@@ -23,10 +23,7 @@ import { ICommand } from './Command';
 export interface IPubSubCommandBus {
   publish(command: ICommand): Promise<void>;
   request(command: ICommand): Promise<any>;
-  pubSubSubscribe(
-    subject: string,
-    handler: CommandHandler<any, any>,
-  ): Promise<void>;
+  pubSubSubscribe(subject: string, handler: CommandHandler<any, any>): Promise<void>;
 }
 
 export interface IStreamCommandBus {

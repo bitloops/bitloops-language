@@ -15,6 +15,7 @@ import { IEventBus as IEventBusImport } from './domain/events/IEventBus';
 import {
   IIntegrationEvent as IIntegrationEventImport,
   IIntegrationEventInputMetadata,
+  IntegrationEvent as IntegrationEventImport,
 } from './domain/events/IIntegrationEvent';
 import { IRule as IRuleImport } from './domain/IRule';
 import { ISystemMessageBus as ISystemMessageBusImport } from './domain/messages/ISystemMessageBus';
@@ -29,7 +30,11 @@ import {
   CommandMetadata as CommandMetadataImport,
 } from './domain/commands/Command';
 import { TContext as TContextImport } from './domain/context';
-import { IDomainEvent as IDomainEventImport } from './domain/events/IDomainEvent';
+import {
+  IDomainEvent as IDomainEventImport,
+  DomainEvent as DomainEventImport,
+  TDomainEventProps as DomainEventPropsImport,
+} from './domain/events/IDomainEvent';
 import { IEvent as IEventImport } from './domain/events/IEvent';
 import {
   Query as QueryImport,
@@ -63,6 +68,8 @@ namespace Domain {
   export const applyRules = applyRulesImport;
   export type IDomainEvent<T> = IDomainEventImport<T>;
   export type TDomainEventMetadata = TEventMetadata;
+  export abstract class DomainEvent<T> extends DomainEventImport<T> {}
+  export type TDomainEventProps<T> = DomainEventPropsImport<T>;
   export namespace StandardVO {
     export namespace Currency {
       export class Value extends CurrencyVOImport {}
@@ -117,8 +124,9 @@ namespace Infra {
   // }
 
   export namespace EventBus {
-    export type IntegrationEvent<T> = IIntegrationEventImport<T>;
+    export type IIntegrationEvent<T> = IIntegrationEventImport<T>;
     export type TIntegrationEventMetadata = IIntegrationEventInputMetadata;
+    export abstract class IntegrationEvent<T> extends IntegrationEventImport<T> {}
     export type IEventBus = IEventBusImport;
     export type IEvent<T> = IEventImport<T>;
   }
