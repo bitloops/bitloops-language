@@ -34,7 +34,6 @@ export abstract class IntegrationEvent<T> extends Message implements IIntegratio
   public aggregateId: any;
   public readonly payload: T;
   public declare readonly metadata: IIntegrationEventInputMetadata;
-  [x: string]: any;
   constructor(boundedContextId: string, payload: T, version: string) {
     super();
     this.metadata.boundedContextId = boundedContextId;

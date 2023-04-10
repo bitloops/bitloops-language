@@ -33,6 +33,7 @@ import { TContext as TContextImport } from './domain/context';
 import {
   IDomainEvent as IDomainEventImport,
   DomainEvent as DomainEventImport,
+  TDomainEventProps as DomainEventPropsImport,
 } from './domain/events/IDomainEvent';
 import { IEvent as IEventImport } from './domain/events/IEvent';
 import {
@@ -68,6 +69,7 @@ namespace Domain {
   export type IDomainEvent<T> = IDomainEventImport<T>;
   export type TDomainEventMetadata = TEventMetadata;
   export abstract class DomainEvent<T> extends DomainEventImport<T> {}
+  export type TDomainEventProps<T> = DomainEventPropsImport<T>;
   export namespace StandardVO {
     export namespace Currency {
       export class Value extends CurrencyVOImport {}

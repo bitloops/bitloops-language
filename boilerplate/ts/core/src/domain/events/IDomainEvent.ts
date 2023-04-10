@@ -22,11 +22,12 @@ export interface IDomainEvent<T> extends IEvent<T> {
   aggregateId: any;
 }
 
+export type TDomainEventProps<T> = T & { aggregateId: string };
+
 export abstract class DomainEvent<T> extends Message implements IDomainEvent<T> {
   public aggregateId: any;
   public readonly payload: T;
   declare metadata: TEventMetadata;
-  [x: string]: any;
   constructor(boundedContextId: string, payload: T) {
     super();
     this.metadata.boundedContextId = boundedContextId;
