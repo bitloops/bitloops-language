@@ -17,13 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
-import { TContext } from '../context';
 import { Message, TMessageMetadata } from '../messages/IMessage.js';
 
 export type CommandMetadata = TMessageMetadata & {
   boundedContextId: string;
-  context: TContext | Record<string, never>; // type of empty object
 };
 
 export interface ICommand {
@@ -36,6 +33,5 @@ export abstract class Command extends Message implements ICommand {
   constructor(boundedContextId: string, metadata?: Partial<CommandMetadata>) {
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
-    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
   }
 }

@@ -44,7 +44,7 @@
     "nats": "^2.13.1"
   },
   "devDependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.4",
+    "@bitloops/bl-boilerplate-core": "^0.3.6",
     "@nestjs/common": "^9.0.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
@@ -68,7 +68,7 @@
     }
   },
   "peerDependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.4",
+    "@bitloops/bl-boilerplate-core": "^0.3.6",
     "@nestjs/common": "^9.0.0"
   }
 }

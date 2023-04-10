@@ -14,7 +14,6 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
 import { Message } from '../messages/IMessage.js';
 import { IEvent, TEventMetadata } from './IEvent';
 
@@ -31,7 +30,6 @@ export abstract class DomainEvent<T> extends Message implements IDomainEvent<T> 
   constructor(boundedContextId: string, payload: T, metadata?: Partial<TEventMetadata>) {
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
-    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
     this.payload = payload;
   }
 }

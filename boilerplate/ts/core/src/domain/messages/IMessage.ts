@@ -28,7 +28,7 @@ export type TMessageMetadata = {
   createdTimestamp: number;
   messageId: string;
   correlationId?: string;
-  context: TContext | Record<string, never>;
+  context: TContext | Record<string, never>; // type of empty object
 };
 
 export abstract class Message implements IMessage {
