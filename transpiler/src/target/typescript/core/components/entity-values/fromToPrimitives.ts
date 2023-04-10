@@ -67,8 +67,8 @@ const buildToPrimitives = (
 ): string => {
   let result = '';
   for (const [primitivesKey, value] of Object.entries(primitivesObject)) {
-    if (primitivesKey === 'id') {
-      result += getToPrimitivesIdValue();
+    if (isIdPrimitivesKey(primitivesKey)) {
+      result += getToPrimitivesIdValue('id', 'id');
     } else {
       const primitivesValue = value.primitiveValue ?? value;
       if (TypeUtils.hasObjectType(primitivesValue)) {
@@ -100,8 +100,8 @@ const buildToPrimitives = (
   return result;
 };
 
-const getToPrimitivesIdValue = (): string => {
-  return 'id: this.id.toString(),';
+const getToPrimitivesIdValue = (key: string, fullPathKey: string): string => {
+  return `${key}: this.${fullPathKey}.toString(),`;
 };
 
 const getFieldNodesOfVOIdentifier = (ast: IntermediateASTTree, identifier: string): FieldNode[] => {
@@ -133,21 +133,23 @@ const buildToPrimitivesFieldValue = (data: {
 }): string => {
   const { keyToAppend, key, primitivesKey, fields } = data;
   let result = '';
-  if (isNestedKey(keyToAppend)) {
-    const { builtInClassVariableValue, builtInClassVariableFound } =
-      getBuiltInclassToPrimitivesValue({
-        keyToAppend,
-        key,
-        fields,
-      });
+  const { builtInClassVariableValue, builtInClassVariableFound } = getBuiltInclassToPrimitivesValue(
+    {
+      keyToAppend,
+      key,
+      fields,
+      primitivesKey,
+    },
+  );
 
-    if (!builtInClassVariableFound) {
+  if (!builtInClassVariableFound) {
+    if (keyToAppend) {
       result += `${key}: this.props.${keyToAppend}.${key},`;
     } else {
-      result += builtInClassVariableValue;
+      result += `${key}: this.props.${primitivesKey}.${key},`;
     }
   } else {
-    result += `${key}: this.props.${primitivesKey}.${key},`;
+    result += builtInClassVariableValue;
   }
   return result;
 };
@@ -156,17 +158,22 @@ const getBuiltInclassToPrimitivesValue = (data: {
   keyToAppend: string;
   key: string;
   fields: FieldNode[];
+  primitivesKey: string;
 }): {
   builtInClassVariableValue: string;
   builtInClassVariableFound: boolean;
 } => {
-  const { keyToAppend, key, fields } = data;
+  const { keyToAppend, key, fields, primitivesKey } = data;
   let builtInClassVariableValue = '';
   let builtInClassVariableFound = false;
   for (const fieldNode of fields) {
     if (fieldNode.getIdentifierNode().getValue().identifier === key) {
       if (fieldNode.getTypeNode().getValue().type.buildInClassType === 'UUIDv4') {
-        builtInClassVariableValue += `${key}: this.props.${keyToAppend}.${key}.toString(),`;
+        if (isNestedKey(keyToAppend)) {
+          builtInClassVariableValue += `${key}: this.props.${keyToAppend}.${key}.toString(),`;
+        } else {
+          builtInClassVariableValue += `${key}: this.props.${primitivesKey}.${key}.toString(),`;
+        }
         builtInClassVariableFound = true;
         continue;
       }
@@ -180,6 +187,10 @@ const getBuiltInclassToPrimitivesValue = (data: {
 
 const isNestedKey = (keyToAppend: string): boolean => {
   return keyToAppend.length > 0;
+};
+
+const isIdPrimitivesKey = (primitivesKey: string): boolean => {
+  return primitivesKey === 'id';
 };
 
 const buildStandardVOFieldValue = (data: {
@@ -227,7 +238,7 @@ const buildFromPrimitives = (
 ): string => {
   let result = '';
   for (const [primitivesKey, value] of Object.entries(primitivesObject)) {
-    if (primitivesKey === 'id') {
+    if (isIdPrimitivesKey(primitivesKey)) {
       result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
     } else {
       let primitivesValue = value.primitiveValue ?? value;
@@ -287,41 +298,43 @@ const buildFromPrimitivesLeafValue = (data: {
 }): string => {
   const { isStandardVO, keyToAppend, key, primitivesKey, fields } = data;
   let res = '';
-  if (isNestedKey(keyToAppend)) {
-    if (isStandardVO) {
+  if (isStandardVO) {
+    if (isNestedKey(keyToAppend)) {
       res += `${key}: data.${keyToAppend}`;
     } else {
-      const { builtInClassVariableValue, builtInClassVariableFound } =
-        getBuiltInclassFromPrimitivesValue({
-          keyToAppend,
-          key,
-          fields,
-        });
-      if (!builtInClassVariableFound) {
-        res += `${key}: data.${keyToAppend}.${key}`;
-      } else {
-        res += builtInClassVariableValue;
-      }
+      res += `${key}: data.${primitivesKey}`;
     }
   } else {
-    if (isStandardVO) {
-      res += `${key}: data.${primitivesKey}`;
+    const { builtInClassVariableValue, builtInClassVariableFound } =
+      getBuiltInClassFromPrimitivesValue({
+        keyToAppend,
+        key,
+        fields,
+        primitivesKey,
+      });
+    if (!builtInClassVariableFound) {
+      if (isNestedKey(keyToAppend)) {
+        res += `${key}: data.${keyToAppend}.${key}`;
+      } else {
+        res += `${key}: data.${primitivesKey}.${key}`;
+      }
     } else {
-      res += `${key}: data.${primitivesKey}.${key}`;
+      res += builtInClassVariableValue;
     }
   }
   return res;
 };
 
-const getBuiltInclassFromPrimitivesValue = (data: {
+const getBuiltInClassFromPrimitivesValue = (data: {
   keyToAppend: string;
   key: string;
   fields: FieldNode[];
+  primitivesKey: string;
 }): {
   builtInClassVariableValue: string;
   builtInClassVariableFound: boolean;
 } => {
-  const { keyToAppend, key, fields } = data;
+  const { keyToAppend, key, fields, primitivesKey } = data;
   let builtInClassVariableFound = false;
   let builtInClassVariableValue = '';
   for (const fieldNode of fields) {
@@ -330,7 +343,11 @@ const getBuiltInclassFromPrimitivesValue = (data: {
         fieldNode.getTypeNode().getValue().type.buildInClassType ===
         BitloopsBuiltInClassNames.UUIDv4
       ) {
-        builtInClassVariableValue += `${key}: new Domain.UUIDv4(data.${keyToAppend}.${key}) as Domain.UUIDv4`;
+        if (isNestedKey(keyToAppend)) {
+          builtInClassVariableValue += `${key}: new Domain.UUIDv4(data.${keyToAppend}.${key}) as Domain.UUIDv4`;
+        } else {
+          builtInClassVariableValue += `${key}: new Domain.UUIDv4(data.${primitivesKey}.${key}) as Domain.UUIDv4`;
+        }
         builtInClassVariableFound = true;
         continue;
       }

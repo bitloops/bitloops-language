@@ -13,6 +13,10 @@ type TTodoEntityPrimitives = {
       id: string;
     };
   };
+  todoLanguage: {
+    code: string;
+    id: string;
+  };
 };
 export class TodoEntity extends Domain.Entity<TodoProps> {
   private constructor(props: TodoProps) {
@@ -30,6 +34,9 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
   }
   get title(): TitleVO {
     return this.props.title;
+  }
+  get todoLanguage(): LanguageVO {
+    return this.props.todoLanguage;
   }
   private isValidName(name: string, title: TitleVO): boolean {
     this.props.title = title;
@@ -55,6 +62,10 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
           id: new Domain.UUIDv4(data.title.language.id) as Domain.UUIDv4,
         }).value as LanguageVO,
       }).value as TitleVO,
+      todoLanguage: LanguageVO.create({
+        code: data.todoLanguage.code,
+        id: new Domain.UUIDv4(data.todoLanguage.id) as Domain.UUIDv4,
+      }).value as LanguageVO,
     };
     return new TodoEntity(TodoEntityProps);
   }
@@ -68,6 +79,10 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
           code: this.props.title.language.code,
           id: this.props.title.language.id.toString(),
         },
+      },
+      todoLanguage: {
+        code: this.props.todoLanguage.code,
+        id: this.props.todoLanguage.id.toString(),
       },
     };
   }
