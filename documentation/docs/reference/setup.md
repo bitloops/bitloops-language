@@ -1,8 +1,27 @@
 ---
 sidebar_label: Setup
-title: Bitloops Language - Setup - Basic Syntax 
-description: Setup syntax on Bitloops Language - Setup is required to provide the server with the required information for initialization. This could be with GraphQL, Packages, RestControllers or Use Case.  
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, graphql, restcontroller, packages]
+title: Setup - Basic Syntax
+description: Setup syntax on Bitloops Language - Setup is required to provide the server with the required information for initialization. This could be with GraphQL, Packages, RestControllers or Use Case.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    graphql,
+    restcontroller,
+    packages,
+  ]
 ---
 
 # Setup
@@ -28,7 +47,7 @@ You are familiar with the **`[Demo][Hello World]`** syntax by now which indicate
 
 ## Package
 
-You've defined your [PackagePort](https://bitloops.com/docs/bitloops-language/components/package-port) and your concrete [PackageAdapter](https://bitloops.com/docs/bitloops-language/components/package-adapter) and now you want to instantiate it in the setup. So, when you use the package in your application it will use the adapter that you have specified in the setup.
+You've defined your [PackagePort](./package-port.md) and your concrete [PackageAdapter](./package-adapter.md) and now you want to instantiate it in the setup. So, when you use the package in your application it will use the adapter that you have specified in the setup.
 
 ### Example
 
@@ -46,7 +65,7 @@ const bytes = GherkinPackage.encode(value);
 
 ## UseCase
 
-You've defined your [UseCase](https://bitloops.com/docs/bitloops-language/components/usecase) and now you want to instantiate it in the setup. Bounded Context and Module must be placed in front `[Todo][Todo]` and the dependencies passed as arguments `todoWriteRepo`, as it seems below:
+You've defined your [UseCase](./usecase.md) and now you want to instantiate it in the setup. Bounded Context and Module must be placed in front `[Todo][Todo]` and the dependencies passed as arguments `todoWriteRepo`, as it seems below:
 
 _For multiple dependencies separate them by comma_
 
@@ -60,7 +79,7 @@ const updateTodoUseCase = [Todo][Todo]UpdateTodoUseCase(todoWriteRepo);
 
 ## RESTController
 
-You've defined your [RESTController](https://bitloops.com/docs/bitloops-language/components/rest-controller) and now you want to use it in the setup. You need to create a Rest Router that will link the REST API method and path with your controller. You then need to create a Rest Server that will use this Rest Router, in order to be able to run your server and make requests.
+You've defined your [RESTController](./rest-controller.md) and now you want to use it in the setup. You need to create a Rest Router that will link the REST API method and path with your controller. You then need to create a Rest Server that will use this Rest Router, in order to be able to run your server and make requests.
 
 ### Example
 

@@ -131,8 +131,8 @@ Bitloops has the potential to become a very powerful developer tool, one that ca
 
 It offers tremendous practical benefits, and allows individual developers to become much better software engineers, and teams of developers to become significantly more productive (a significant competitive advantage). 
 
-We are only at the beginning of the Bitloops journey, but we have learnt and achieved so much working through the various “bibles” of software development (see this list of books), learning about the best practices and methodologies, talking to hundreds of developers as well as viewing countless videos online from amazing developers
+We are only at the beginning of the Bitloops journey, but we have learnt and achieved so much working through the various “bibles” of software development (see [this list of books](https://bitloops.com/docs/bitloops-language/learning/software-design-books)), learning about the best practices and methodologies, talking to hundreds of developers as well as viewing countless videos online from amazing developers
 
 ## Where to next?
 
-⏭️ [Explore the Quick Start example](https://bitloops.com/docs/bitloops-language/category/getting-started) to get an idea of how Bitloops works and its potential in helping you build better software
+⏭️ [Explore the Quick Start example](https://bitloops.com/docs/bitloops-language/getting-started/quick-start) to get an idea of how Bitloops works and its potential in helping you build better software

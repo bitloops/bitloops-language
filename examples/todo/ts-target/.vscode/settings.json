@@ -1,0 +1,5 @@
+{
+  "cmake.configureOnOpen": false
+  // "editor.formatOnSave": true,
+  // "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+}

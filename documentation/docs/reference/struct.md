@@ -1,8 +1,25 @@
 ---
 sidebar_label: Struct
-title: Bitloops Language - Struct - Basic Syntax 
-description: Struct syntax on Bitloops Language - Structs are used to store items in key/value pairs to then be accessed with the use of an index. Structs are similar to objects in Javascript. 
-keywords: [bitloops, bitloops language, basic syntax, programming language, variables, types, objects, data types, classes, interfaces, modules, functions, loops, services, struct]
+title: Struct - Basic Syntax
+description: Struct syntax on Bitloops Language - Structs are used to store items in key/value pairs to then be accessed with the use of an index. Structs are similar to objects in Javascript.
+keywords:
+  [
+    bitloops,
+    bitloops language,
+    basic syntax,
+    programming language,
+    variables,
+    types,
+    objects,
+    data types,
+    classes,
+    interfaces,
+    modules,
+    functions,
+    loops,
+    services,
+    struct,
+  ]
 ---
 
 # Struct
@@ -64,14 +81,14 @@ parameterName: parameterValue;
 For example, for the Structs mentioned above, the expression could be:
 
 ```typescript
-const person = Person({ name: 'Jane Doe' });
+const person = Person({ name: "Jane Doe" });
 ```
 
 Or if you have declared a nested Struct:
 
 ```typescript
 const person = Person({
-  name: 'Jane Doe',
-  address: Address({ street: 'Main Street', number: 42 }),
+  name: "Jane Doe",
+  address: Address({ street: "Main Street", number: 42 }),
 });
 ```
