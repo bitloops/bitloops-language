@@ -28,10 +28,10 @@ export abstract class DomainEvent<T> extends Message implements IDomainEvent<T> 
   public aggregateId: any;
   public readonly payload: T;
   declare metadata: TEventMetadata;
-  constructor(boundedContextId: string, payload: T) {
-    super();
+  constructor(boundedContextId: string, payload: T, metadata?: Partial<TEventMetadata>) {
+    super(metadata);
     this.metadata.boundedContextId = boundedContextId;
-    this.metadata.context = asyncLocalStorage.getStore()?.get('context') || {};
+    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
     this.payload = payload;
   }
 }

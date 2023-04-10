@@ -32,11 +32,11 @@ export type TMessageMetadata = {
 
 export abstract class Message implements IMessage {
   metadata: TMessageMetadata;
-  constructor() {
+  constructor(metadata?: Partial<TMessageMetadata>) {
     this.metadata = {
       createdTimestamp: Date.now(),
       messageId: new UUIDv4().toString(),
-      correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
+      correlationId: metadata?.correlationId || asyncLocalStorage.getStore()?.get('correlationId'),
     };
   }
 }

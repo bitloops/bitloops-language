@@ -19,13 +19,10 @@
  */
 import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
 import { TContext } from '../context';
-import { Message } from '../messages/IMessage.js';
+import { Message, TMessageMetadata } from '../messages/IMessage.js';
 
-export type CommandMetadata = {
+export type CommandMetadata = TMessageMetadata & {
   boundedContextId: string;
-  createdTimestamp: number;
-  messageId: string;
-  correlationId: string;
   context: TContext | Record<string, never>; // type of empty object
 };
 
@@ -36,9 +33,9 @@ export interface ICommand {
 export abstract class Command extends Message implements ICommand {
   [x: string]: any;
   public declare readonly metadata: CommandMetadata;
-  constructor(boundedContextId: string) {
-    super();
+  constructor(boundedContextId: string, metadata?: Partial<CommandMetadata>) {
+    super(metadata);
     this.metadata.boundedContextId = boundedContextId;
-    this.metadata.context = asyncLocalStorage.getStore()?.get('context') || {};
+    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
   }
 }

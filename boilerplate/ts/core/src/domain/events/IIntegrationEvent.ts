@@ -34,10 +34,15 @@ export abstract class IntegrationEvent<T> extends Message implements IIntegratio
   public aggregateId: any;
   public readonly payload: T;
   public declare readonly metadata: IIntegrationEventInputMetadata;
-  constructor(boundedContextId: string, payload: T, version: string) {
-    super();
+  constructor(
+    boundedContextId: string,
+    payload: T,
+    version: string,
+    metadata?: Partial<IIntegrationEventInputMetadata>,
+  ) {
+    super(metadata);
     this.metadata.boundedContextId = boundedContextId;
-    this.metadata.context = asyncLocalStorage.getStore()?.get('context') || {};
+    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
     this.metadata.version = version;
     this.payload = payload;
   }
