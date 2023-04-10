@@ -18,8 +18,8 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
 import { UUIDv4 } from '../UUIDv4.js';
+import { TContext } from '../context.js';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IMessage {}
@@ -27,7 +27,8 @@ export interface IMessage {}
 export type TMessageMetadata = {
   createdTimestamp: number;
   messageId: string;
-  correlationId: string;
+  correlationId?: string;
+  context: TContext | Record<string, never>;
 };
 
 export abstract class Message implements IMessage {
@@ -36,7 +37,15 @@ export abstract class Message implements IMessage {
     this.metadata = {
       createdTimestamp: Date.now(),
       messageId: new UUIDv4().toString(),
-      correlationId: metadata?.correlationId || asyncLocalStorage.getStore()?.get('correlationId'),
+      correlationId: metadata?.correlationId,
+      context: metadata?.context || {},
     };
+  }
+
+  set correlationId(correlationId: string) {
+    this.metadata.correlationId = correlationId;
+  }
+  set context(context: TContext) {
+    this.metadata.context = context;
   }
 }
