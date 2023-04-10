@@ -1,7 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
-import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
+import {
+  ASYNC_LOCAL_STORAGE,
+  ProvidersConstants,
+} from '../jetstream.constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { ContextPropagation } from './utils/context-propagation';
 
@@ -21,10 +24,19 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     this.nc = this.nats.getConnection();
   }
 
-  async request(query: any): Promise<any> {
+  private getCorelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
+  }
+
+  async request(query: Application.Query): Promise<any> {
     const topic = NatsPubSubQueryBus.getTopicFromQueryInstance(query);
     this.logger.log('Requesting query:' + topic);
-
+    query.correlationId = this.getCorelationId();
+    query.context = this.getContext();
     const headers = this.generateHeaders(query);
 
     try {
@@ -41,7 +53,10 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     }
   }
 
-  async pubSubSubscribe(subject: string, handler: Application.IQueryHandler<any, any>) {
+  async pubSubSubscribe(
+    subject: string,
+    handler: Application.IQueryHandler<any, any>,
+  ) {
     try {
       this.logger.log('Subscribing query to: ' + subject);
       // this.logger.log(`
@@ -52,7 +67,9 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
         for await (const m of sub) {
           const query = jsonCodec.decode(m.data);
 
-          const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
+          const contextData = ContextPropagation.createStoreFromMessageHeaders(
+            m.headers,
+          );
           const reply = await this.asyncLocalStorage.run(contextData, () => {
             return handler.execute(query);
           });
@@ -74,7 +91,11 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
             );
           }
 
-          this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+          this.logger.log(
+            `[${sub.getProcessed()}]: ${JSON.stringify(
+              jsonCodec.decode(m.data),
+            )}`,
+          );
         }
       })();
     } catch (err) {
@@ -96,7 +117,9 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     return h;
   }
 
-  static getTopicFromHandler(handler: Application.IQueryHandler<any, any>): string {
+  static getTopicFromHandler(
+    handler: Application.IQueryHandler<any, any>,
+  ): string {
     const query = handler.query;
     const boundedContext = handler.boundedContext;
 
