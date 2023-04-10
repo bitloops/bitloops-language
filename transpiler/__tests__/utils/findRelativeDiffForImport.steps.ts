@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { findRelativeDiffForImport } from '../../src/target/typescript/utils/findRelativeDiff.js';
+import { findRelativeDiffForImport } from '../../src/target/typescript-nest/utils/findRelativeDiff.js';
 
 test("finds import string where dependency's starting folder resides in same folder with importer", () => {
   const importerDirPath = '/src/app/';

@@ -15,10 +15,20 @@ import { EntityEvaluationNode } from './nodes/Expression/Evaluation/EntityEvalua
 import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueObjectEvaluation.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
 import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
-import { DomainCreateParameterNode } from './nodes/Domain/DomainCreateParameterNode.js';
-import { TBitloopsPrimaryType } from '../../../types.js';
+import { TBitloopsPrimaryType, TBitloopsPrimitives } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
 import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
+import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
+import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
+import { FieldListNode } from './nodes/FieldList/FieldListNode.js';
+import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
+import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
+import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
+import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
+
+type Policy = (node: IntermediateASTNode) => boolean;
+
+type EntityVariableIdentifier = { identifier: string; entityIdentifier: string };
 
 export class IntermediateASTTree {
   private currentNode: IntermediateASTNode;
@@ -63,7 +73,9 @@ export class IntermediateASTTree {
     return this.rootNode;
   }
 
-  public getRootChildrenNodesByType(nodeType: TBitloopsTypesValues): IntermediateASTNode[] {
+  public getRootChildrenNodesByType<T extends IntermediateASTNode = IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T[] {
     const rootChildren = this.rootNode.getChildren();
     const classTypeNodes = [];
     for (const child of rootChildren) {
@@ -71,7 +83,7 @@ export class IntermediateASTTree {
         classTypeNodes.push(child);
       }
     }
-    return classTypeNodes;
+    return classTypeNodes as T[];
   }
 
   public getRootChildrenNodesValueByType<T = any>(nodeType: TBitloopsTypesValues): T[] {
@@ -190,6 +202,15 @@ export class IntermediateASTTree {
     return rootEntityFound;
   }
 
+  public getReadModelByIdentifier(identifier: string): ReadModelNode | null {
+    const readModelNodes = this.getRootChildrenNodesByType<ReadModelNode>(
+      BitloopsTypesMapping.TReadModel,
+    );
+    return (
+      readModelNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier) || null
+    );
+  }
+
   public getControllerByIdentifier = (identifier: string): RESTControllerNode => {
     const restControllerNodes = this.getRootChildrenNodesByType(
       BitloopsTypesMapping.TRESTController,
@@ -207,14 +228,58 @@ export class IntermediateASTTree {
     return restControllerFound;
   };
 
-  public getValueOfPropsWithIdentifierFromDomainCreate(
-    domainCreateParameterNode: DomainCreateParameterNode,
+  public getEntityByIdentifier = (identifier: string): EntityDeclarationNode => {
+    const entityNodes = this.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TEntity,
+    ) as EntityDeclarationNode[];
+
+    let entityFound: EntityDeclarationNode = null;
+    for (const entityNode of entityNodes) {
+      const entityIdentifier = entityNode.getIdentifier();
+
+      if (identifier === entityIdentifier.getValue().entityIdentifier) {
+        entityFound = entityNode;
+      }
+    }
+
+    return entityFound;
+  };
+
+  public getRootEntityByIdentifier = (identifier: string): RootEntityDeclarationNode => {
+    const rootEntityNodes = this.getRootChildrenNodesByType(
+      BitloopsTypesMapping.TRootEntity,
+    ) as RootEntityDeclarationNode[];
+
+    return (
+      rootEntityNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier) ??
+      null
+    );
+  };
+
+  public getValueObjectByIdentifier = (identifier: string): ValueObjectDeclarationNode => {
+    const valueObjectDeclarationNodes = this.getRootChildrenNodesByType<ValueObjectDeclarationNode>(
+      BitloopsTypesMapping.TValueObject,
+    );
+
+    return valueObjectDeclarationNodes.find((node) => node.getIdentifier() === identifier) ?? null;
+  };
+
+  public getRepoPortByIdentifier = (identifier: string): RepoPortNode => {
+    const repoPortNodes = this.getRootChildrenNodesByType<RepoPortNode>(
+      BitloopsTypesMapping.TRepoPort,
+    );
+    return repoPortNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getPropsFieldTypeOfDomainCreateByFieldIdentifier(
+    parameterNode: ParameterNode,
     identifier: string,
   ): TBitloopsPrimaryType | null {
     const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
 
-    const typeNode = domainCreateParameterNode.getTypeNode();
-    const propsTypeNodeValue = typeNode.getType();
+    const typeNode = parameterNode.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+    const propsTypeNodeValue = identifierTypeNode.getIdentifierName();
 
     const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
       node.getNodeType() === BitloopsTypesMapping.TProps;
@@ -269,8 +334,6 @@ export class IntermediateASTTree {
   }
 
   getIdentifiersOfDomainEvaluations(statements: StatementNode[]): string[] {
-    const identifiers: string[] = [];
-
     const policy = (node: IntermediateASTNode): boolean => {
       const statementIsVariableDeclaration =
         node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
@@ -278,7 +341,7 @@ export class IntermediateASTTree {
         return false;
       }
       const expression = node.getExpressionValues();
-      if (!expression.isEvaluation()) {
+      if (!expression || !expression.isEvaluation()) {
         return false;
       }
       const evaluation = expression.getEvaluationChild();
@@ -291,6 +354,218 @@ export class IntermediateASTTree {
       }
       return true;
     };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifiersOfThisMethodCallExpressionsWithTwoMemberDots(
+    statements: StatementNode[],
+  ): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression) {
+        return false;
+      }
+      if (expression.isThisMethodCallExpressionWithTwoMemberDots()) {
+        return true;
+      }
+      return false;
+    };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifiersOfDomainServiceResults(statements: StatementNode[]): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isDomainServiceEvaluationExpression()) {
+        return true;
+      }
+      return false;
+    };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifiersOfAggregates(
+    statements: StatementNode[],
+    parameters: ParameterNode[],
+  ): EntityVariableIdentifier[] {
+    return [
+      ...this.getIdentifiersOfAggregatesFromRepoGetById(statements, parameters),
+      ...this.getIdentifiersOfAggregatesFromEntityEvaluation(statements),
+    ];
+  }
+
+  private getIdentifiersOfAggregatesFromRepoGetById(
+    statements: StatementNode[],
+    parameters: ParameterNode[],
+  ): EntityVariableIdentifier[] {
+    const repoGetterMethod = 'getById';
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression.isThisMethodCallExpressionWithTwoMemberDots()) {
+        return false;
+      }
+      const { methodName } = expression.getIdentifierAndMethodNameOfThisMethodCall();
+      if (methodName !== repoGetterMethod) {
+        return false;
+      }
+      return true;
+    };
+    const result: EntityVariableIdentifier[] = [];
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        // Based on our policy, these should be variable declarations with getById method calls on some repos,
+        // By finding the repo, we can find the entity identifier
+        const expression = node.getExpressionValues();
+        const { identifier: dependencyIdentifier, methodName } =
+          expression.getIdentifierAndMethodNameOfThisMethodCall();
+
+        if (methodName !== repoGetterMethod) {
+          continue;
+        }
+
+        const dependency = parameters.find(
+          (parameter) => parameter.getIdentifier() === dependencyIdentifier,
+        );
+        if (!dependency) {
+          continue;
+        }
+        if (!dependency.hasRepoPortType()) {
+          continue;
+        }
+        const repoPortDependencyIdentifier = dependency
+          .getType()
+          .getBitloopsIdentifierTypeNode()
+          .getIdentifierName();
+        const reportNode = this.getRepoPortByIdentifier(repoPortDependencyIdentifier);
+        if (!reportNode) {
+          continue;
+        }
+        const entityIdentifierNode = reportNode.getEntityIdentifier();
+        const isEntityRepo = entityIdentifierNode !== null;
+        if (!isEntityRepo) {
+          continue;
+        }
+        const entityIdentifier = entityIdentifierNode.getIdentifierName();
+        if (identifier && entityIdentifier) {
+          result.push({ identifier, entityIdentifier });
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private getIdentifiersOfAggregatesFromEntityEvaluation(
+    statements: StatementNode[],
+  ): EntityVariableIdentifier[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isAggregateEvaluationExpression()) {
+        return true;
+      }
+      return false;
+    };
+    const result: EntityVariableIdentifier[] = [];
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        // Based on our policy, these should be variable declarations with aggregate evaluation as expressions
+        const expression = node.getExpressionValues();
+        if (!expression.isAggregateEvaluationExpression()) {
+          throw new Error('This should not happen');
+        }
+        const evaluation = expression.getEvaluation();
+        if (!evaluation.isEntityEvaluation()) {
+          throw new Error('This should not happen');
+        }
+        const entityIdentifier = (evaluation as EntityEvaluationNode).getEntityIdentifier();
+        if (identifier && entityIdentifier) {
+          result.push({ identifier, entityIdentifier });
+        }
+      }
+    }
+
+    return result;
+  }
+
+  getResultsOfDomainServiceMethods(
+    statements: StatementNode[],
+    domainServiceIdentifiers: string[],
+  ): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (expression.isMethodCallOnIdentifier(domainServiceIdentifiers)) {
+        return true;
+      }
+      return false;
+    };
+
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getResultOfAggregateMethodsThatReturnOkError(
+    statements: StatementNode[],
+    aggregateIdentifiers: EntityVariableIdentifier[],
+  ): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      const entityIdentifiers = aggregateIdentifiers.map((i) => i.identifier);
+      if (!expression.isMethodCallOnIdentifier(entityIdentifiers)) {
+        return false;
+      }
+      // Now we need to find whether the method returns an OK,Error
+      const { entityName, methodName } = expression.getEntityMethodCallInfo();
+      const entityType = aggregateIdentifiers.find((i) => i.identifier === entityName);
+      const rootEntity = this.getRootEntityByIdentifier(entityType.entityIdentifier);
+      if (!rootEntity) {
+        throw new Error(
+          `Could not find root entity with identifier ${entityType.entityIdentifier}`,
+        );
+      }
+      const publicMethod = rootEntity?.findPublicMethodByName(methodName);
+      return publicMethod?.returnsOkError();
+    };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifierOfVariableConstDeclaration(statements: StatementNode[], policy: Policy): string[] {
+    const identifiers: string[] = [];
+
     for (const statement of statements) {
       const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
 
@@ -298,6 +573,28 @@ export class IntermediateASTTree {
         const identifier = node.getIdentifier()?.getIdentifierName();
         if (identifier) {
           identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
+  }
+
+  getIdentifiersOfDomainTypes(parameters: ParameterNode[]): string[] {
+    const identifiers: string[] = [];
+
+    for (const parameter of parameters) {
+      const typeNode = parameter.getType();
+      if (
+        typeNode.isBitloopsIdentifierType() ||
+        typeNode.isPrimaryWithBitloopsIdentifierTypeChild()
+      ) {
+        const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+        if (
+          identifierTypeNode.isValueObjectIdentifier() ||
+          identifierTypeNode.isEntityIdentifier()
+        ) {
+          identifiers.push(parameter.getIdentifier());
         }
       }
     }
@@ -367,10 +664,103 @@ export class IntermediateASTTree {
     return result;
   }
 
-  public getPropsFromEntity(rootEntityNode: RootEntityDeclarationNode): DomainCreateParameterNode {
-    const domainCreate = rootEntityNode.getDomainCreateNode();
+  public getDomainCreateOfEntity(
+    entityNode: RootEntityDeclarationNode | EntityDeclarationNode,
+  ): ParameterNode {
+    const domainCreate = entityNode.getDomainCreateNode();
     const propsNode = domainCreate.getParameterNode();
     return propsNode;
+  }
+
+  public getDomainCreateOfValueObject(
+    valueObjectDeclarationNode: ValueObjectDeclarationNode,
+  ): ParameterNode {
+    const domainCreate = valueObjectDeclarationNode.getCreateNode();
+    const propsNode = domainCreate.getParameterNode();
+    return propsNode;
+  }
+
+  public getPropsNodeOfEntity(
+    entityNode: EntityDeclarationNode | RootEntityDeclarationNode,
+  ): PropsNode | null {
+    const domainCreate = this.getDomainCreateOfEntity(entityNode);
+    const typeNode = domainCreate.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+    const propsIdentifier = identifierTypeNode.getIdentifierName();
+
+    const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
+
+    const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
+      node.getNodeType() === BitloopsTypesMapping.TProps;
+
+    for (const propsNode of propsNodes) {
+      if (isPropsNode(propsNode) && propsNode.getIdentifierValue() === propsIdentifier) {
+        return propsNode;
+      }
+    }
+    return null;
+  }
+
+  public getPropsNodeOfValueObject(valueObjectNode: ValueObjectDeclarationNode): PropsNode | null {
+    const domainCreate = this.getDomainCreateOfValueObject(valueObjectNode);
+    const typeNode = domainCreate.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+    const propsIdentifier = identifierTypeNode.getIdentifierName();
+
+    const propsNodes = this.getRootChildrenNodesByType(BitloopsTypesMapping.TProps);
+
+    const isPropsNode = (node: IntermediateASTNode): node is PropsNode =>
+      node.getNodeType() === BitloopsTypesMapping.TProps;
+
+    for (const propsNode of propsNodes) {
+      if (isPropsNode(propsNode) && propsNode.getIdentifierValue() === propsIdentifier) {
+        return propsNode;
+      }
+    }
+    return null;
+  }
+
+  public getValueObjectFieldsWithOnePrimitiveProperty(
+    fieldListNode: FieldListNode,
+  ): Array<{ fieldValue: string; fieldType: TBitloopsPrimitives }> {
+    const valueObjectFieldsOfProp = fieldListNode.getValueObjectFields();
+
+    const valueObjectNodes = this.getRootChildrenNodesByType<ValueObjectDeclarationNode>(
+      BitloopsTypesMapping.TValueObject,
+    );
+    const result: Array<{ fieldValue: string; fieldType: TBitloopsPrimitives }> = [];
+    const propsNodes = this.getRootChildrenNodesByType<PropsNode>(BitloopsTypesMapping.TProps);
+    const fieldsWithOnePrimitiveProperty = valueObjectFieldsOfProp.reduce((acc, field) => {
+      const valueObjectIdentifier = field.fieldType;
+      const valueObjectNode = this.findValueObject(valueObjectNodes, valueObjectIdentifier);
+      if (!valueObjectNode) {
+        throw new Error(`ValueObject ${field.fieldType} not found`);
+      }
+      const propsIdentifier = valueObjectNode.getPropsIdentifier();
+      const valueObjectPropsNode = this.findProps(propsNodes, propsIdentifier);
+      if (!valueObjectPropsNode) {
+        throw new Error(`Props ${propsIdentifier} not found`);
+      }
+      const hasOnlyOnePrimField = valueObjectPropsNode.hasOnlyOnePrimitiveField();
+      if (hasOnlyOnePrimField.result === false) {
+        return acc;
+      }
+      const initialPropIdentifier = field.fieldValue;
+
+      return [...acc, { fieldValue: initialPropIdentifier, fieldType: hasOnlyOnePrimField.type }];
+    }, result);
+    return fieldsWithOnePrimitiveProperty;
+  }
+
+  private findValueObject(
+    valueObjectNodes: ValueObjectDeclarationNode[],
+    identifier: string,
+  ): ValueObjectDeclarationNode {
+    return valueObjectNodes.find((node) => node.getIdentifier() === identifier);
+  }
+
+  private findProps(propsNodes: PropsNode[], identifier: string): PropsNode {
+    return propsNodes.find((node) => node.getIdentifierValue() === identifier);
   }
 
   private getNodesWithPolicy(
@@ -399,5 +789,40 @@ export class IntermediateASTTree {
       }
     });
     return resultNode ?? null;
+  }
+
+  getIdentifiersOfDomainServiceEvaluations(statements: StatementNode[]): string[] {
+    const identifiers: string[] = [];
+
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression.isEvaluation()) {
+        return false;
+      }
+      const evaluation = expression.getEvaluationChild();
+
+      const evaluationIsDomainServiceEvaluation = evaluation instanceof DomainServiceEvaluationNode;
+      if (!evaluationIsDomainServiceEvaluation) {
+        return false;
+      }
+      return true;
+    };
+    for (const statement of statements) {
+      const nodes = this.getNodesWithPolicy(statement, policy) as TVariableDeclarationStatement[];
+
+      for (const node of nodes) {
+        const identifier = node.getIdentifier()?.getIdentifierName();
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
   }
 }

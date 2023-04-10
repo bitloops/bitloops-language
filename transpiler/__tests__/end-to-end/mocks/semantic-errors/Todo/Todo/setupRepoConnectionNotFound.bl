@@ -1,12 +1,6 @@
-Config.setLanguage(TypeScript);
+Config.setLanguage(TypeScript-Nest);
 
 // DB CONNECTIONS
-
-// const mongoConnection = RepoConnections.Mongo({
-//   host: 'localhost',
-//   port: 27017,
-//   database: Env(MONGO_DB_DATABASE,'todo'),
-// });
 
 // REPOSITORIES
 const todoReadRepo = RepoAdapters.Mongo({

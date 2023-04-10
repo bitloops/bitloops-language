@@ -43,7 +43,12 @@ export const getRecursivelyFileInDirectory = (directoryPath: string, suffix: str
     }
   });
 
-  const blFiles = resultFiles.filter((filePath) => filePath.split('.')[1] === suffix);
+  // bl files where last part of split. is bl
+  const blFiles = resultFiles.filter((filePath) => {
+    const split = filePath.split('.');
+    const lastPart = split[split.length - 1];
+    return lastPart === suffix;
+  });
   return blFiles;
 };
 

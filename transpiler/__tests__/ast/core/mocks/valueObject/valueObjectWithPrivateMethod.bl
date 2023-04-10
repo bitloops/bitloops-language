@@ -1,9 +1,9 @@
 ValueObject NameVO {   
     const nameOrigin: string = "Greece";
 
-    constructor(props: NameProps): (OK(NameVO), Errors(DomainErrors.InvalidName)) { }         
+    static create(props: NameProps): (OK(NameVO), Errors(DomainErrors.InvalidName)) { }         
     
-    isValidName(name: string): bool { 
+    private isValidName(name: string): bool { 
         return regName.test(name); 
     }         
 }

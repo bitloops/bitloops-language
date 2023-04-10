@@ -1,5 +1,5 @@
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
 import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
@@ -43,9 +43,18 @@ export const VALID_STATEMENT_TEST_CASES: TestCase[] = [
     statement: new VariableDeclarationBuilderDirector().buildVarDeclaration(
       'c',
       new ExpressionBuilderDirector().buildBooleanLiteralExpression(true),
-      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
+      new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'),
     ),
 
     output: 'let c: boolean = true',
+  },
+  {
+    description: 'a variable declaration without expression',
+    statement: new VariableDeclarationBuilderDirector().buildVariableDeclarationWithoutExpression(
+      'noExpression',
+      new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'),
+    ),
+
+    output: 'let noExpression: boolean = null',
   },
 ];

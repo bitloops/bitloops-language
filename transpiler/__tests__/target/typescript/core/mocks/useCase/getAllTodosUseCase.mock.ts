@@ -8,6 +8,6 @@ export class GetAllTodosUseCase
   constructor(private todoRepo: TodoReadRepoPort) {}
   async execute(): Promise<GetAllTodosUseCaseResponse> {
     const todos = await this.todoRepo.getAll();
-    return ok(todos);
+    return ok(todos.value);
   }
 }

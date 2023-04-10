@@ -1,17 +1,18 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
-  TDomainPublicMethod,
+  TPublicMethod,
   TIdentifier,
   TOkErrorReturnType,
   TParameterList,
   TStatements,
 } from '../../../../../src/types.js';
 
-export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
+export class PublicMethodBuilder implements IBuilder<TPublicMethod> {
   private identifier: TIdentifier;
   private parameters: TParameterList;
   private returnType: TOkErrorReturnType;
   private statements: TStatements;
+  private staticBoolean?: boolean;
 
   public withIdentifier(identifier: TIdentifier): PublicMethodBuilder {
     this.identifier = identifier;
@@ -33,13 +34,19 @@ export class PublicMethodBuilder implements IBuilder<TDomainPublicMethod> {
     return this;
   }
 
-  public build(): TDomainPublicMethod {
+  public withStatic(staticBoolean: boolean): PublicMethodBuilder {
+    this.staticBoolean = staticBoolean;
+    return this;
+  }
+
+  public build(): TPublicMethod {
     const publicMethod = {
       publicMethod: {
         identifier: this.identifier,
         ...this.parameters,
         ...this.returnType,
         statements: this.statements,
+        static: this.staticBoolean ?? false,
       },
     };
 

@@ -1,13 +1,18 @@
 Root Entity TodoEntity {    
-    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
+    static create(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {
+        TodoEntity.changeProps(props);           
         return TodoEntity(props);   
     }  
     
     complete(): (OK(TodoEntity), Errors()) {     
-        return TodoEntity({id: 7, title: 'Super important'});   
+        return TodoEntity.create({id: 7, title: 'Super important'});   
+    }
+
+    private static changeProps(props: TodoProps): void {
+        props.title = 'Super important';
     }
     
-    isValidName(name: string): bool { 
+    private isValidName(name: string): bool { 
         return true;
     }    
 }

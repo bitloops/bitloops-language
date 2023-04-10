@@ -1,0 +1,7 @@
+DomainEventHandler SendEmailAfterDepositsIncrementedDomainEventHandler() {
+  handle(event: DepositsIncrementedDomainEvent): (OK(void), Errors(
+    ApplicationErrors.AccountNotFound
+  )){
+    this.commandBus.send(command);
+  }
+}

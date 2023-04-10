@@ -11,11 +11,10 @@ export class ApplicationErrorNode extends ClassTypeNode {
   constructor(metadata?: TNodeMetadata) {
     super({
       classType: ApplicationErrorNode.classType,
-      nodeType: BitloopsTypesMapping.TDomainError,
+      nodeType: BitloopsTypesMapping.TApplicationError,
       metadata,
       classNodeName: ApplicationErrorNode.classNodeName,
     });
-    this.nodeType = BitloopsTypesMapping.TApplicationError;
   }
   public getIdentifier(): IdentifierNode {
     const identifier = this.getChildNodeByType(BitloopsTypesMapping.TIdentifier) as IdentifierNode;

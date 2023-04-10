@@ -1,0 +1,73 @@
+{
+  "name": "@bitloops/bl-boilerplate-infra-telemetry",
+  "version": "0.1.3",
+  "description": "TypeScript telemetry package for Bitloops Language generated projects",
+  "engines": {
+    "node": ">= 13"
+  },
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/telemetry",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitloops/bitloops-language"
+  },
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "keywords": [
+    "bitloops language",
+    "bl",
+    "typescript",
+    "ddd",
+    "boilerplate",
+    "infra",
+    "observability",
+    "opentelemetry",
+    "jaeger",
+    "prometheus"
+  ],
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build",
+    "lint": "eslint . --ext .ts --ext .mts --ext .cts"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Bitloops S.A.",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "fastify": "^4.15.0"
+  },
+  "devDependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.3.2",
+    "@nestjs/common": "^9.0.0",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "rxjs": "^7.8.0",
+    "typescript": "^4.8.4"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  },
+  "peerDependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.3.2",
+    "@nestjs/common": "^9.0.0",
+    "rxjs": "^7.8.0"
+  }
+}

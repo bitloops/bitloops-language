@@ -1,0 +1,35 @@
+Props UserProps {
+    optional UUIDv4 id;
+    CompletedTodosVO completedTodos;
+    EmailVO email;
+}
+
+
+Root Entity UserEntity {
+    static create(props: UserProps): (OK(UserEntity), Errors())  {
+        const userEntity = UserEntity(props);
+        return userEntity;
+    }
+
+    public incrementCompletedTodos(): (OK(void), Errors(DomainErrors.InvalidTodosCounterError)) {
+        const incrementedCompletedTodos = this.completedTodos.counter + 1;
+        const completedTodos = CompletedTodosVO.create({
+            counter: incrementedCompletedTodos,
+        });
+        this.completedTodos = completedTodos;
+        const event = TodoCompletionsIncrementedDomainEvent.create({ 
+            completedTodos: this.completedTodos.counter,
+            aggregateId: this.id.toString(),
+        });
+        this.addDomainEvent(event);
+    }
+
+    public isFirstTodo(): bool {
+        return this.completedTodos.counter == 1;
+    }
+    
+    public changeEmail(email: string): (OK(void), Errors(DomainErrors.InvalidEmailDomainError)) {
+        const newEmail = EmailVO.create({ email: email });
+        this.email = newEmail;
+    }
+}

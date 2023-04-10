@@ -1,0 +1,25 @@
+Props UserProps {
+    optional UUIDv4 id;
+    EmailVO email;
+    string password;
+    optional string lastLogin;
+}
+
+
+Root Entity UserEntity {
+    static create(props: UserProps): (OK(UserProps), Errors())  {
+        const user = UserEntity(props);
+        return user;
+    }
+
+    public changeEmail(email: EmailVO): void {
+        this.email = email;
+        const event = UserChangedEmailDomainEvent.create({ 
+            email: this.email.email,
+            password: this.password,
+            aggregateId: this.id.toString(),
+            lastLogin: this.lastLogin
+        });
+        this.addDomainEvent(event);
+    }
+}

@@ -19,7 +19,7 @@ import { ReturnStatementBuilderDirector } from '../statement/returnDirector.js';
 import { StatementBuilderDirector } from '../statement/statementDirector.js';
 import { ParameterBuilderDirector } from '../parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from '../statement/constDeclaration.js';
-import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../bitloopsPrimaryTypeDirector.js';
 import { ArgumentDirector } from '../argument.js';
 import { EvaluationFieldBuilderDirector } from '../evaluationFIeld.js';
 import { IfStatementBuilderDirector } from '../statement/ifStatementDirector.js';
@@ -32,9 +32,12 @@ export class RestControllerBuilderDirector {
     identifier: string,
     options?: { await: boolean },
   ): RESTControllerNode {
-    return this.controllerWithNoParams(identifier, 'GET', [
-      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
-    ]);
+    return this.controllerWithParams(
+      identifier,
+      'GET',
+      [new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options)],
+      [new ParameterBuilderDirector().buildIdentifierParameter('useCase', 'TodoCreateUseCase')],
+    );
   }
 
   buildControllerThatExecutesAndReturnsResult(
@@ -65,11 +68,16 @@ export class RestControllerBuilderDirector {
     options?: { await: boolean; dotValue: boolean },
   ): RESTControllerNode {
     const identifierVal = options?.dotValue ? 'result.value' : 'result';
-    return this.controllerWithNoParams(identifier, 'POST', [
-      new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
-      this.buildBasicIfTrueReturnStatement('ok', identifierVal),
-      this.buildBasicIfTrueReturnStatement('ok', identifierVal),
-    ]);
+    return this.controllerWithParams(
+      identifier,
+      'POST',
+      [
+        new StatementBuilderDirector().buildConstDeclarationThisUseCaseExecute('result', options),
+        this.buildBasicIfTrueReturnStatement('ok', identifierVal),
+        this.buildBasicIfTrueReturnStatement('ok', identifierVal),
+      ],
+      [new ParameterBuilderDirector().buildIdentifierParameter('useCase', 'TodoCreateUseCase')],
+    );
   }
 
   buildControllerWithSwitchStatement(identifier: string): RESTControllerNode {
@@ -89,7 +97,7 @@ export class RestControllerBuilderDirector {
               'name',
             ),
           ],
-          new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('HelloWorldRequestDTO'),
+          new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType('HelloWorldRequestDTO'),
         ),
         new ConstDeclarationBuilderDirector().buildConstDeclarationThisUseCaseExecute(
           'result',

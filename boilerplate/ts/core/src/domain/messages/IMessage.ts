@@ -17,7 +17,26 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+
+import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
+import { UUIDv4 } from '../UUIDv4.js';
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IMessage {
-  // TODO remove this or add methods
+export interface IMessage {}
+
+export type TMessageMetadata = {
+  createdTimestamp: number;
+  messageId: string;
+  correlationId: string;
+};
+
+export abstract class Message implements IMessage {
+  metadata: TMessageMetadata;
+  constructor(metadata?: Partial<TMessageMetadata>) {
+    this.metadata = {
+      createdTimestamp: Date.now(),
+      messageId: new UUIDv4().toString(),
+      correlationId: metadata?.correlationId || asyncLocalStorage.getStore()?.get('correlationId'),
+    };
+  }
 }

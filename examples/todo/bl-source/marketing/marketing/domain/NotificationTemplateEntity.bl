@@ -1,0 +1,13 @@
+Props NotificationTemplateProps {
+    optional UUIDv4 id;
+    string template;
+    string type;
+}
+
+
+Root Entity NotificationTemplateEntity {
+    static create(props: NotificationTemplateProps): (OK(NotificationTemplateEntity), Errors())  {
+        const notificationTemplate = NotificationTemplateEntity(props);
+        return notificationTemplate;
+    }
+}

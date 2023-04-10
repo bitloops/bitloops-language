@@ -80,14 +80,6 @@ export type TParameter = {
   } & TParameterType;
 };
 
-// props, TodoProps
-export type TDomainCreateParameter = {
-  domainCreateParameter: {
-    [identifierKey]: TIdentifier;
-    parameterType: TPropsIdentifier;
-  };
-};
-
 export type TParameterList = {
   parameters: TParameter[];
 };
@@ -150,6 +142,17 @@ export type TBitloopsBuiltInClassesObject = {
   [buildInClassTypeKey]: TBitloopsBuiltInClasses;
 };
 
+export type TStandardValueType = {
+  standardValueType: StandardVOType;
+};
+
+export type TStandardValueTypeValues = StandardVOType; // | StandardRuleType | StandardEnumType; etc(extendable)
+
+export type TStandardVO = string;
+export type StandardVOType = {
+  standardVOType: TStandardVO;
+};
+
 export const bitloopsIdentifiersTypeKey = 'bitloopsIdentifierType';
 export type TBitloopsIdentifierObject = {
   [bitloopsIdentifiersTypeKey]: TBitloopsIdentifier;
@@ -165,7 +168,8 @@ export type TBitloopsPrimaryTypeValues =
   | TBitloopsPrimitivesObject
   | TBitloopsBuiltInClassesObject
   | TBitloopsIdentifierObject
-  | ArrayBitloopsPrimTypeObject;
+  | ArrayBitloopsPrimTypeObject
+  | TStandardValueType;
 
 export type TBitloopsPrimaryType = {
   [bitloopsPrimaryTypeKey]: TBitloopsPrimaryTypeValues;
@@ -235,6 +239,35 @@ export type TBuiltInClassEvaluation = {
   } & TArgumentList;
 };
 
+export type TPortToken = {
+  portIdentifier: string;
+};
+
+export const MetadataTypeNames = {
+  Command: 'Application.TCommandMetadata',
+  Query: 'Application.TQueryMetadata',
+  DomainEvent: 'Domain.TDomainEventMetadata',
+  IntegrationEvent: 'Infra.EventBus.TIntegrationEventMetadata',
+} as const;
+export const metadataTypes = [
+  MetadataTypeNames.Command,
+  MetadataTypeNames.Query,
+  MetadataTypeNames.DomainEvent,
+  MetadataTypeNames.IntegrationEvent,
+] as const;
+export type TMetadataType = typeof metadataTypes[number];
+
+export type TMetadata = {
+  contextId: string;
+  metadataType: TMetadataType;
+};
+
+export type TDomainServiceEvaluation = {
+  domainService: {
+    identifier: string;
+  } & TArgumentList;
+};
+
 // export type TCondition = {
 //   evaluateTrue?: TEvaluation;
 //   evaluateFalse?: TEvaluation;
@@ -246,9 +279,17 @@ export type TEvaluationValues =
   | TValueObjectEvaluation
   | TPropsEvaluation
   | TEntityEvaluation
+  | TIntegrationEventEvaluation
+  | TEntityConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
-  | TBuiltInFunctionValues;
+  | TBuiltInFunctionValues
+  | TCommandEvaluation
+  | TQueryEvaluation
+  | TDomainEventEvaluation
+  | TStandardVOEvaluation
+  | TDomainServiceEvaluation
+  | TReadModelEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -293,12 +334,46 @@ export type TDTOEvaluation = {
   } & TEvaluationFields;
 };
 
+export type TCommandEvaluation = {
+  command: {
+    [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
+};
+
+export type TQueryEvaluation = {
+  query: {
+    [identifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
+};
+
+export type TDomainEventEvaluation = {
+  domainEvent: {
+    [DomainEventIdentifierKey]: TIdentifier;
+  } & Partial<TEvaluationFields>;
+};
+
+export type TStandardVOEvaluation = {
+  standardVO: {
+    [identifierKey]: TIdentifier;
+  } & TEvaluationFields;
+};
+
 export type TValueObjectEvaluation = {
   valueObject: TDomainEvaluation;
 };
 
 export type TEntityEvaluation = {
   entity: TDomainEvaluation;
+};
+export type TEntityConstructorEvaluation = {
+  entityConstructor: TDomainEvaluation;
+};
+
+export type TIntegrationEventEvaluation = {
+  integrationEvent: {
+    props: TDomainEvaluationExpression;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  };
 };
 
 export type TDomainEvaluation = {
@@ -311,7 +386,12 @@ type TDomainEvaluationName =
   | {
       entityIdentifier: TEntityIdentifier;
     }
-  | { valueObjectIdentifier: TValueObjectIdentifier };
+  | { valueObjectIdentifier: TValueObjectIdentifier }
+  | { readModelIdentifier: TReadModelIdentifier };
+
+export type TReadModelEvaluation = {
+  readModelEvaluation: TDomainEvaluation;
+};
 
 export type TDomainEvaluationExpression = TEvaluationFields | TExpression;
 
@@ -369,10 +449,15 @@ export type TLiteralValues =
   | BooleanLiteral
   | TNumericLiteral
   | NullLiteral
-  | TemplateStringLiteral;
+  | TemplateStringLiteral
+  | TRegexLiteral;
 
 export type StringLiteral = {
   stringLiteral: string;
+};
+
+export type TRegexLiteral = {
+  regexLiteral: string;
 };
 export type TemplateStringLiteral = {
   templateStringLiteral: string;
@@ -413,7 +498,7 @@ export type TArrayLiteralExpression = {
 };
 
 export type TReturnStatement = {
-  return: TExpression;
+  return: TExpression | null;
 };
 
 export const returnOKKey = 'returnOK';
@@ -441,7 +526,7 @@ export type TVariableDeclaration = {
   [variableDeclarationKey]: {
     identifier: string;
   } & TBitloopsPrimaryType &
-    TExpression;
+    Partial<TExpression>;
 };
 
 export type TBreakStatement = {
@@ -458,10 +543,19 @@ export type TApplyRules = {
   applyRules: TAppliedRule[];
 };
 
+export type TThisIdentifier = string;
+
+export type TAddDomainEvent = {
+  addDomainEvent: {
+    identifier?: TIdentifier;
+    thisIdentifier?: TThisIdentifier;
+  } & TExpression;
+};
+
 export type TBuiltInFunction = {
   builtInFunction: TBuiltInFunctionValues;
 };
-export type TBuiltInFunctionValues = TApplyRules;
+export type TBuiltInFunctionValues = TApplyRules | TAddDomainEvent;
 
 export type TStatement =
   | TBreakStatement
@@ -483,33 +577,35 @@ export type TConstantVariable = {
   name: string;
 };
 
-export type TDomainPrivateMethods = TDomainPrivateMethod[];
+export type TPrivateMethods = TPrivateMethod[];
 
-type TDomainPrivateMethodValues = {
-  identifier: TIdentifier;
-  statements: TStatements;
-} & TParameterList;
-
-export type TDomainPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType &
-  TDomainPrivateMethodValues;
-
-export type TDomainPrivateMethodValuesOkErrorReturnType = TDomainPrivateMethodValues &
-  TOkErrorReturnType;
-
-export type TDomainPrivateMethod = {
-  privateMethod:
-    | TDomainPrivateMethodValuesPrimaryReturnType
-    | TDomainPrivateMethodValuesOkErrorReturnType;
+type TStatic = {
+  static: boolean;
 };
 
-export type TDomainPublicMethods = TDomainPublicMethod[];
+export type TPrivateMethodValues = {
+  identifier: TIdentifier;
+  statements: TStatements;
+} & TParameterList &
+  TStatic;
 
-export type TDomainPublicMethod = {
+export type TPrivateMethodValuesPrimaryReturnType = TBitloopsPrimaryType & TPrivateMethodValues;
+
+export type TPrivateMethodValuesOkErrorReturnType = TPrivateMethodValues & TOkErrorReturnType;
+
+export type TPrivateMethod = {
+  privateMethod: TPrivateMethodValuesPrimaryReturnType | TPrivateMethodValuesOkErrorReturnType;
+};
+
+export type TPublicMethods = TPublicMethod[];
+
+export type TPublicMethod = {
   publicMethod: {
     identifier: TIdentifier;
     statements: TStatements;
   } & TOkErrorReturnType &
-    TParameterList;
+    TParameterList &
+    TStatic;
 };
 
 export type TReturnOkType = {
@@ -534,7 +630,7 @@ export type TDomainCreateMethod = {
   create: {
     statements: TStatements;
   } & TOkErrorReturnType &
-    TDomainCreateParameter;
+    TParameter;
 };
 
 export type TValueObjectCreate = TDomainCreateMethod;
@@ -545,7 +641,7 @@ export type TValueObject = {
   ValueObject: {
     valueObjectIdentifier: TValueObjectIdentifier;
     constants?: TConstDeclaration[]; //TConstantVariable[];
-    privateMethods?: TDomainPrivateMethods;
+    privateMethods?: TPrivateMethods;
   } & TValueObjectCreate;
 };
 
@@ -559,8 +655,8 @@ export type TEntity = {
 
 export type TEntityValues = {
   constants?: TConstDeclaration[]; // TConstantVariable[];
-  publicMethods?: TDomainPublicMethods;
-  privateMethods?: TDomainPrivateMethods;
+  publicMethods?: TPublicMethods;
+  privateMethods?: TPrivateMethods;
 } & TEntityCreate;
 
 export type TEntityCreate = TDomainCreateMethod;
@@ -612,13 +708,42 @@ export type TUseCase = {
 };
 
 export const languageKey = 'language';
-export type TLanguage = 'TypeScript' | 'Java'; //TODO add for unknown languages
+export type TLanguage = 'TypeScript-Nest' | 'TypeScript';
 
 export const configInvocationKey = 'configInvocation';
 export type TConfigInvocation = {
   [configInvocationKey]: {
     [languageKey]: TLanguage;
   };
+};
+
+export type TBusType = 'InProcess' | 'External';
+export const configBusesInvocationKey = 'busesConfig';
+export type TConfigBusesInvocation = {
+  [configBusesInvocationKey]: {
+    eventBus: TBusType;
+    integrationEventBus: TBusType;
+    commandBus: TBusType;
+    queryBus: TBusType;
+  };
+};
+
+export const dependencyInjectionKey = 'dependencyInjections';
+export type TDependencyInjections = {
+  [dependencyInjectionKey]: TDependencyInjection[];
+};
+
+export type TDependencyInjectionType =
+  | 'CommandHandler'
+  | 'QueryHandler'
+  | 'EventHandler'
+  | 'IntegrationEventHandler';
+export type TDependencyInjection = {
+  dependencyInjection: {
+    type: TDependencyInjectionType;
+    identifier: TIdentifier;
+  } & TArgumentList &
+    TBoundedContextModule;
 };
 
 export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
@@ -686,7 +811,7 @@ export type TRESTController = {
     RESTControllerIdentifier: TRESTControllerIdentifier;
     method: TRestMethods;
     execute: TRESTControllerExecute;
-  };
+  } & Partial<TControllerBusDependencies>;
 };
 
 export type TRESTControllerExecute = {
@@ -707,7 +832,7 @@ export type TGraphQLController = {
     operationType: TGraphQLOperation;
     operationName: string;
     execute: TGraphQLControllerExecute;
-  };
+  } & Partial<TControllerBusDependencies>;
 };
 
 export type TGraphQLControllerExecute = {
@@ -889,11 +1014,16 @@ export type TPackagePort = {
   [PackagePortIdentifierKey]: TPackagePortIdentifier;
 } & TDefinitionMethods;
 
+export type TDefinitionMethodValues = {
+  identifier: TIdentifier;
+} & TParameterList;
+
+export type TDefinitionMethodPrimaryReturnType = TDefinitionMethodValues & TBitloopsPrimaryType;
+
+export type TDefinitionMethodOkErrorReturnType = TDefinitionMethodValues & TOkErrorReturnType;
+
 export type TDefinitionMethodInfo = {
-  methodDefinition: {
-    identifier: TIdentifier;
-  } & TBitloopsPrimaryType &
-    TParameterList;
+  methodDefinition: TDefinitionMethodPrimaryReturnType | TDefinitionMethodOkErrorReturnType;
 };
 
 export const PackageIdentifierKey = 'PackageIdentifier';
@@ -904,6 +1034,14 @@ export type TPackage = {
     port: TPackagePort;
     adapters: TPackageAdapterNames;
   };
+};
+
+export const ServicePortIdentifierKey = 'ServicePortIdentifier';
+export type TServicePortIdentifier = string;
+export type TServicePort = {
+  ServicePort: {
+    [ServicePortIdentifierKey]: TServicePortIdentifier;
+  } & TDefinitionMethods;
 };
 
 export const repoPortKey = 'RepoPort';
@@ -1037,6 +1175,7 @@ export type TDependencyChildTypescript = TDependencyTypescript & {
   // when type is relative
   classType?: TClassTypesValues;
   className?: string;
+  contextInfo?: TContextData;
 };
 
 export type TDependencyParentTypescript = TDependencyTypescript & {
@@ -1065,3 +1204,136 @@ export enum RestServerOptions {
   apiPrefix = 'apiPrefix',
   port = 'port',
 }
+
+export type TCommandIdentifier = TIdentifier;
+export type TCommandTopicIdentifier = TIdentifier;
+export const commandKey = 'command';
+
+export type TCommand = {
+  [commandKey]: {
+    [identifierKey]: TCommandIdentifier;
+  } & TVariables;
+};
+
+export const queryKey = 'query';
+export type TQueryIdentifier = TIdentifier;
+export type TQuery = {
+  [queryKey]: {
+    [identifierKey]: TQueryIdentifier;
+  } & Partial<TVariables>;
+};
+
+export const commandHandlerKey = 'commandHandler';
+export type TCommandHandlerIdentifier = TIdentifier;
+export type TCommandHandler = {
+  [commandHandlerKey]: {
+    [identifierKey]: TCommandHandlerIdentifier;
+    execute: TExecute;
+  } & TParameterList;
+};
+
+export const queryHandlerKey = 'queryHandler';
+export type TQueryHandlerIdentifier = TIdentifier;
+
+export type TQueryHandler = {
+  [queryHandlerKey]: {
+    [identifierKey]: TQueryHandlerIdentifier;
+    execute: TExecute;
+  } & TParameterList;
+};
+
+// DomainEventHandler & IntegrationEventHandler
+export type TEventHandlerBusDependencies = {
+  eventHandlerBusDependencies: {
+    commandBus: boolean;
+    queryBus: boolean;
+    integrationEventBus: boolean;
+  };
+};
+
+export type TControllerBusDependencies = {
+  controllerBusDependencies: {
+    commandBus: boolean;
+    queryBus: boolean;
+  };
+};
+
+export type TIntegrationVersionMappers = {
+  integrationVersionMappers: TIntegrationVersionMapper[];
+};
+
+export type TIntegrationVersionMapper = {
+  integrationVersionMapper: {
+    statements: TStatements;
+    [structIdentifierKey]: TStructIdentifier;
+  } & StringLiteral;
+};
+
+export type TIntegrationEventIdentifier = string;
+export type TIntegrationEvent = {
+  IntegrationEvent: {
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TIntegrationVersionMappers &
+    TParameter;
+};
+export const DomainEventIdentifierKey = 'DomainEventIdentifier';
+
+export type TDomainEventIdentifier = string;
+
+export type TDomainEvent = {
+  domainEvent: {
+    [DomainEventIdentifierKey]: TDomainEventIdentifier;
+    entityIdentifier: TEntityIdentifier;
+  } & Partial<TVariables>;
+};
+
+type TDomainEventHandlerIdentifier = string;
+
+export type TDomainEventHandler = {
+  domainEventHandler: {
+    domainEventHandlerIdentifier: TDomainEventHandlerIdentifier;
+    handle: THandle;
+  } & TParameterList &
+    TEventHandlerBusDependencies;
+};
+
+//TODO see if we can merge them
+export type THandle = TExecute;
+
+export type TIntegrationEventHandlerHandleMethod = {
+  integrationEventHandlerHandleMethod: {
+    statements: TStatements;
+  } & TOkErrorReturnType &
+    TIntegrationEventParameter;
+};
+
+export type TIntegrationEventParameter = {
+  integrationEventParameter: {
+    value: TParameterIdentifier;
+    integrationEventIdentifier: TIntegrationEventIdentifier;
+  } & TBoundedContextModule;
+};
+
+type TIntegrationEventHandlerIdentifier = string;
+export type TIntegrationEventHandler = {
+  integrationEventHandler: {
+    integrationEventHandlerIdentifier: TIntegrationEventHandlerIdentifier;
+  } & TParameterList &
+    TEventHandlerBusDependencies &
+    TEvaluationField &
+    TIntegrationEventHandlerHandleMethod;
+};
+
+export enum IntegrationEventHandlerOptions {
+  eventVersion = 'eventVersion',
+}
+
+export const domainServiceKey = 'domainService';
+export type TDomainService = {
+  [domainServiceKey]: {
+    identifier: TIdentifier;
+    constants?: TConstDeclaration[];
+    publicMethods: TPublicMethods;
+    privateMethods?: TPrivateMethods;
+  } & TParameterList;
+};

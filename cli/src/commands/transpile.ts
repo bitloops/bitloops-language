@@ -23,7 +23,7 @@ import ora, { Ora } from 'ora';
 
 import { copyrightSnippet } from './copyright.js';
 import { TBoundedContextName, TModuleName } from '../types.js';
-import { getBoundedContextModules } from '../functions/index.js';
+import { deleteFolderContent, getBoundedContextModules } from '../functions/index.js';
 import { clearFolder } from '../helpers/fileOperations.js';
 import { purpleColor, stopSpinner, greenColor, TAB, redColor } from '../utils/oraUtils.js';
 import {
@@ -70,12 +70,15 @@ const transpile = async (source: ICollection): Promise<void> => {
   if (!fs.existsSync(targetDirPath)) {
     fs.mkdirSync(targetDirPath);
   } else {
-    const ans = await inquirerSimpleConfirm(
+    const overwriteAccepted = await inquirerSimpleConfirm(
       'Overwrite',
       '⚠️  Target directory already exists. Overwrite?',
       'n',
     );
-    if (!ans) return;
+    if (!overwriteAccepted) {
+      return;
+    }
+    await deleteFolderContent(targetDirPath);
   }
   let throbber: Ora;
 
@@ -108,7 +111,7 @@ const transpile = async (source: ICollection): Promise<void> => {
 
     throbber = ora(purpleColor('🔨 Transpiling... ')).start();
 
-    const transpiledCode = transpileCode(boundedContextModules, sourceDirPath);
+    const transpiledCode = await transpileCode(boundedContextModules, sourceDirPath);
 
     stopSpinner(throbber, greenColor('Transpiled'), '🔨');
 

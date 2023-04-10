@@ -4,9 +4,12 @@ import {
   TArgumentList,
   TBuiltInFunction,
   TBuiltInFunctionValues,
+  TExpression,
+  TIdentifier,
 } from './../../../../../src/types.js';
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
+import { AddDomainEventBuilder } from './addDomainEventBuilder.js';
 
 export class BuiltInFunctionStatementDirector {
   private builtInFunctionStatementBuilder: BuiltInFunctionStatementBuilder;
@@ -110,6 +113,36 @@ export class BuiltInFunctionStatementDirector {
     }
 
     return applyRules;
+  }
+
+  buildAddDomainEventWithIdentifier({
+    argumentExpression,
+    identifier,
+  }: {
+    argumentExpression: TExpression;
+    identifier: TIdentifier;
+  }): TBuiltInFunction {
+    const addDomainEvent = new AddDomainEventBuilder()
+      .withExpression(argumentExpression)
+      .withIdentifier(identifier)
+      .build();
+
+    const builtInFunction = this.builtInFunctionStatementBuilder
+      .withBuiltInFunctionValues(addDomainEvent)
+      .build();
+    return builtInFunction;
+  }
+
+  buildAddDomainEventWithThisIdentifier(argumentExpression: TExpression): TBuiltInFunction {
+    const addDomainEvent = new AddDomainEventBuilder()
+      .withExpression(argumentExpression)
+      .withThisIdentifier('this')
+      .build();
+
+    const builtInFunction = this.builtInFunctionStatementBuilder
+      .withBuiltInFunctionValues(addDomainEvent)
+      .build();
+    return builtInFunction;
   }
 }
 

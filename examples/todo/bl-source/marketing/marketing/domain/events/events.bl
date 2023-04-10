@@ -1,0 +1,3 @@
+DomainEvent TodoCompletionsIncrementedDomainEvent<UserEntity> {
+    int32 completedTodos;
+}

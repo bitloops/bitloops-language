@@ -1,5 +1,5 @@
 Root Entity TodoEntity {    
-    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
+    static create(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidTitleError)) {           
         return TodoEntity(props);   
     } 
 

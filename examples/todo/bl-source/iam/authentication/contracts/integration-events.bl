@@ -1,0 +1,14 @@
+Struct IntegrationUserChangedEmailSchemaV1 {
+    string userEmail;
+    string userId;
+}
+
+IntegrationEvent UserChangedEmailIntegrationEvent(event: UserChangedEmailDomainEvent) {  
+    'v1' : IntegrationUserChangedEmailSchemaV1 {
+        const userChangedEmail = IntegrationUserChangedEmailSchemaV1({
+            userId: event.payload.aggregateId,
+            userEmail: event.payload.email,
+        });
+        return userChangedEmail;
+    }
+}

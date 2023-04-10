@@ -35,5 +35,5 @@ To use the CLI run `bitloops-language transpile` or `bl transpile` and follow th
 If the g4 lexer or grammar files are changed `yarn ant` should be run. This
 command generates the JavaScript antlr4 files and also triggers the generation
 of the d.ts files required to run the antlr4 files in TypeScript and finally
-runs rettier on the d.ts files generated to fix breaking formatting issues during
+runs prettier on the d.ts files generated to fix breaking formatting issues during
 `yarn build`.

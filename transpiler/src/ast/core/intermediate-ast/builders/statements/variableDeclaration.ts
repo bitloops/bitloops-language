@@ -8,7 +8,7 @@ import { IBuilder } from '../IBuilder.js';
 export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarationNode> {
   private variableDeclarationNode: VariableDeclarationNode;
   private identifierNode: IdentifierNode;
-  private expressionNode: ExpressionNode;
+  private expressionNode?: ExpressionNode;
   private typeAnnotationNode: BitloopsPrimaryTypeNode;
 
   constructor(metadata?: TNodeMetadata) {
@@ -34,11 +34,11 @@ export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarat
 
   public build(): VariableDeclarationNode {
     this.variableDeclarationNode.addChild(this.identifierNode);
-    this.variableDeclarationNode.addChild(this.expressionNode);
-
-    if (this.typeAnnotationNode) {
-      this.variableDeclarationNode.addChild(this.typeAnnotationNode);
+    if (this.expressionNode) {
+      this.variableDeclarationNode.addChild(this.expressionNode);
     }
+
+    this.variableDeclarationNode.addChild(this.typeAnnotationNode);
 
     this.variableDeclarationNode.buildObjectValue();
 

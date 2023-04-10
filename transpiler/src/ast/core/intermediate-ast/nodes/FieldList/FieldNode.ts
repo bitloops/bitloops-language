@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TBitloopsPrimaryTypeValues } from '../../../../../types.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
@@ -16,5 +17,25 @@ export class FieldNode extends IntermediateASTNode {
 
   getTypeNode(): BitloopsPrimaryTypeNode {
     return this.getChildNodeByType(BitloopsTypesMapping.TBitloopsPrimaryType);
+  }
+
+  getIdentifierValue(): string {
+    return this.getIdentifierNode().getValue().identifier;
+  }
+
+  getTypeValue(): TBitloopsPrimaryTypeValues {
+    return this.getTypeNode().getValue().type;
+  }
+
+  isPrimitiveField(): boolean {
+    const typeNode = this.getTypeNode();
+    return typeNode.isPrimitiveType() || typeNode.isPrimaryWithPrimitiveTypeChild();
+  }
+
+  isBitloopsIdentifierField(): boolean {
+    const typeNode = this.getTypeNode();
+    return (
+      typeNode.isBitloopsIdentifierType() || typeNode.isPrimaryWithBitloopsIdentifierTypeChild()
+    );
   }
 }

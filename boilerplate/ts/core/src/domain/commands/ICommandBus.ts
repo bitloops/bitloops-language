@@ -17,18 +17,16 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { ICommand } from './ICommand';
-import { GenericMessageHandler } from '../messages/IMessageBus';
-import { TErrors } from '../../infra/command-bus/externalCommandBus';
+import { CommandHandler } from '../../application/UseCase';
+import { ICommand } from './Command';
 
-export type RegisterHandler<T extends ICommand> = GenericMessageHandler<T>;
+export interface IPubSubCommandBus {
+  publish(command: ICommand): Promise<void>;
+  request(command: ICommand): Promise<any>;
+  pubSubSubscribe(subject: string, handler: CommandHandler<any, any>): Promise<void>;
+}
 
-export interface ICommandBus {
-  register<T extends ICommand>(
-    commandName: string,
-    registerHandler: RegisterHandler<T>,
-  ): Promise<void>;
-  unregister(commandName: string): Promise<void>;
-  send(command: ICommand): Promise<void>;
-  sendAndGetResponse<T>(command: ICommand, errorTypes?: TErrors): Promise<T>;
+export interface IStreamCommandBus {
+  publish(command: ICommand): Promise<void>;
+  subscribe(subject: string, handler: CommandHandler<any, any>): Promise<void>;
 }

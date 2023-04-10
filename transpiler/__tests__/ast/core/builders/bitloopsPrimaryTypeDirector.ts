@@ -66,4 +66,13 @@ export class BitloopsPrimaryTypeDirector {
       .build();
     return primaryType;
   }
+
+  buildStandardValueObjectPrimaryType(standardVOIdentifier: string): TBitloopsPrimaryType {
+    const primaryType = this.builder
+      .withType({
+        [bitloopsPrimaryTypeKey]: { standardValueType: { standardVOType: standardVOIdentifier } },
+      })
+      .build();
+    return primaryType;
+  }
 }

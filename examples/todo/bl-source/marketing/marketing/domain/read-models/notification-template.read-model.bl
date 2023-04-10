@@ -1,0 +1,5 @@
+ReadModel NotificationTemplateReadModel {
+    string id;
+    string type;
+    string template;
+}

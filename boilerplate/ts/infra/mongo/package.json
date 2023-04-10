@@ -1,7 +1,7 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-mongo",
-  "version": "0.0.3",
-  "description": "TypeScript boilerplate code for Bitloops Language generated projects",
+  "version": "0.1.2",
+  "description": "TypeScript mongo code for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
   },
@@ -38,6 +38,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
+    "@nestjs/common": "^9.0.0",
     "mongodb": "^4.10.0"
   },
   "devDependencies": {

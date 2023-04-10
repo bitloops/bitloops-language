@@ -22,6 +22,7 @@ We would also welcome any new issues you may find. We do suggest searching for t
 ### Create a Pull Request
 After making your changes, open a pull request (PR). Submit your PR and other Bitloopers will review the PR with you. 
 If you come across an issue, such as a merge conflict, or don't know how to open a pull request, then we suggest reading [GitHub's pull request tutorial](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests) on how to resolve merge conflicts and other issues. Finally, once your PR is merged, you will be proudly listed as a contributor in the contributor chart.
+For an example of how to add a new bl-element check this [guide](https://github.com/bitloops/bitloops-language/blob/main/HOW_TO_ADD_BL_ELEMENT.md).
  
 ### Contributor License Agreement (CLA)
 As an open-source programming language, Bitloops needs to obtain a contributor license agreement (CLA) from its contributors to ensure all users have access to the open source code. This process only needs to be conducted once as we will cross-check your GitHub username before accepting any PR. To complete the CLA please email us at contributor@bitloops.com and we’ll provide you with the necessary forms for online signature.  

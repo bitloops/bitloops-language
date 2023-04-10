@@ -1,2 +1,1 @@
-// RepoPort TodoReadRepoPort<TodoReadModel> extends CRUDReadRepoPort;
 RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;

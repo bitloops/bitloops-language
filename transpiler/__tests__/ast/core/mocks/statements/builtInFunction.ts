@@ -18,15 +18,23 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TBuiltInFunction } from '../../../../../src/types.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluationDirector.js';
+import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFieldDirector.js';
+import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
 import { BuiltInFunctionStatementDirector } from '../../builders/statement/builtInFunctionDirector.js';
-// import { FieldBuilderDirector } from '../builders/fieldDirector.js';
-// import { IdentifierBuilder } from '../builders/identifier.js';
 
 type ApplyRulesTestCase = {
   description: string;
   fileId: string;
   inputBLString: string;
   applyRules: TBuiltInFunction;
+};
+
+type AddDomainEventTestCase = {
+  description: string;
+  fileId: string;
+  inputBLString: string;
+  addDomainEvent: TBuiltInFunction;
 };
 
 export const validApplyRulesStatementTestCases: ApplyRulesTestCase[] = [
@@ -71,6 +79,33 @@ export const validApplyRulesStatementTestCases: ApplyRulesTestCase[] = [
         name: 'IsLongNameRule',
         args: [['props', 'name']],
       },
+    ),
+  },
+];
+
+export const validAddDomainEventStatementTestCases: AddDomainEventTestCase[] = [
+  {
+    description: 'addDomainEvent with identifier',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestBuiltInFunction { account.addDomainEvent(accountCreatedDomainEvent) }',
+    addDomainEvent: new BuiltInFunctionStatementDirector().buildAddDomainEventWithIdentifier({
+      identifier: 'account',
+      argumentExpression: new ExpressionBuilderDirector().buildIdentifierExpression(
+        'accountCreatedDomainEvent',
+      ),
+    }),
+  },
+  {
+    description: 'addDomainEvent with this identifier',
+    fileId: 'testFile.bl',
+    inputBLString:
+      "JestTestBuiltInFunction { this.addDomainEvent(AccountCreatedDomainEvent.create({name: 'John Doe'})) }",
+    addDomainEvent: new BuiltInFunctionStatementDirector().buildAddDomainEventWithThisIdentifier(
+      new ExpressionBuilderDirector().buildEvaluation(
+        new EvaluationBuilderDirector().buildDomainEventEvaluation('AccountCreatedDomainEvent', [
+          new EvaluationFieldBuilderDirector().buildStringEvaluationField('name', 'John Doe'),
+        ]),
+      ),
     ),
   },
 ];

@@ -1,0 +1,24 @@
+Struct NotificationTemplateInput {
+    string emailOrigin;
+    NotificationTemplateReadModel notificationTemplate;
+}
+
+DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+    public getNotificationTemplateToBeSent(user: UserEntity): (OK(NotificationTemplateInput), Errors()) {
+        const emailOrigin = 'marketing@bitloops.com';
+        notificationTemplate: NotificationTemplateReadModel;
+        if (user.isFirstTodo()) {
+          const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
+              'firstTodo'
+            );
+          if(notificationTemplateResponse is Error){
+            return Error(notificationTemplateResponse);
+          }
+          notificationTemplate = notificationTemplateResponse;
+        } else {
+          notificationTemplate = null;
+        }
+        return NotificationTemplateInput({ emailOrigin : emailOrigin, notificationTemplate : notificationTemplate });
+    }
+}

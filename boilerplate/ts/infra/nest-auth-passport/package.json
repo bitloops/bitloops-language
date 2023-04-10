@@ -1,0 +1,83 @@
+{
+  "name": "@bitloops/bl-boilerplate-infra-nest-auth-passport",
+  "version": "0.1.4",
+  "description": "TypeScript postgres package for Bitloops Language generated projects",
+  "engines": {
+    "node": ">= 13"
+  },
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/infra/postgres",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitloops/bitloops-language"
+  },
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "keywords": [
+    "bitloops language",
+    "bl",
+    "typescript",
+    "bdd",
+    "ddd",
+    "hexagonal architecture",
+    "ports & adapters",
+    "behavior driven development",
+    "boilerplate",
+    "postgres",
+    "infra"
+  ],
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build",
+    "lint": "eslint . --ext .ts --ext .mts --ext .cts"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Bitloops S.A.",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@bitloops/bl-boilerplate-infra-postgres": "^0.1.1",
+    "@nestjs/jwt": "^10.0.2",
+    "@nestjs/passport": "^9.0.3",
+    "bcrypt": "^5.1.0",
+    "class-validator": "^0.14.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.3.4",
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/microservices": "^9.3.10",
+    "@types/bcrypt": "^5.0.0",
+    "@types/passport-jwt": "^3.0.8",
+    "@types/passport-local": "^1.0.35",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  },
+  "peerDependencies": {
+    "@bitloops/bl-boilerplate-core": "^0.3.4",
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/microservices": "^9.3.10"
+  }
+}

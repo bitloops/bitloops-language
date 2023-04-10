@@ -18,19 +18,20 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { VALID_DOMAIN_RULES } from './mocks/domain/rule.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { DomainRuleBuilderDirector } from './builders/domain/rule.js';
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
-import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { SupportedLanguages } from '../../../../src/target/supportedLanguages.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript-nest/guards/index.js';
+import { formatString } from '../../../../src/target/typescript-nest/core/codeFormatting.js';
 
 describe('domain rule tests', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
 
   VALID_DOMAIN_RULES.forEach((testCase) => {
     it(`${testCase.description}`, () => {

@@ -20,9 +20,10 @@
 import { ClassTypes } from '../../src/helpers/mappings.js';
 import Transpiler from '../../src/Transpiler.js';
 import { TOutputTargetContent } from '../../src/target/types.js';
-import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
 import { DTO_END_TO_END_TEST_CASES } from './mocks/dto.js';
 import { transpiler } from '../../src/index.js';
+import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
+import { formatString } from '../../src/target/typescript-nest/core/codeFormatting.js';
 
 describe('Valid DTO End To End', () => {
   const boundedContext = 'Hello world';
@@ -31,7 +32,7 @@ describe('Valid DTO End To End', () => {
   const classType = ClassTypes.DTO;
   const options = {
     formatterConfig: null,
-    targetLanguage: 'TypeScript',
+    targetLanguage: SupportedLanguages.TypeScriptNest,
   };
   let targetCode: TOutputTargetContent;
 

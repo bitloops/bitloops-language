@@ -1,0 +1,5 @@
+RepoPort UserWriteRepoPort<UserEntity> extends CRUDWriteRepoPort;
+
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+    getByType(type: string): (OK(NotificationTemplateReadModel),Errors());
+};

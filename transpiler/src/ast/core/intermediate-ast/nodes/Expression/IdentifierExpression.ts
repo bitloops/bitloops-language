@@ -2,6 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 import { InstanceOfExpressionNode } from './InstanceOfExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 
 export class IdentifierExpressionNode extends ExpressionNode {
   private static identifierExpressionNodeName = 'identifier';
@@ -43,5 +44,33 @@ export class IdentifierExpressionNode extends ExpressionNode {
       return true;
     }
     return false;
+  }
+
+  /**
+   * if its the right part of a member dot expression, then its parent is a member dot expression
+   *  If its the left part of a member dot expression, then its grandParent is a member dot expression
+   * ... and so on
+   */
+  public isUsedByMemberDotExpression(): boolean {
+    let parent = this.getParent();
+    while (parent) {
+      if (parent instanceof MemberDotExpressionNode) {
+        return true;
+      }
+      parent = parent.getParent();
+    }
+    return false;
+  }
+
+  // MemberDotExpressions can be nested, so i could have title.props.name
+  public isLeftMostPartOfMemberDotExpression(): boolean {
+    const parent = this.getParent();
+    if (!parent) {
+      return false;
+    }
+    if (parent instanceof MemberDotExpressionNode && !parent.isUsedByMemberDotExpression()) {
+      return false;
+    }
+    return true;
   }
 }

@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { modelToTargetLanguage } from '../../../../src/target/typescript-nest/core/modelToTargetLanguage.js';
 import { EvaluationBuilderDirector } from './builders/evaluation.js';
 import { VALID_CORS_EVALUATION_TEST_CASES } from './mocks/statements/evaluation/corsEvaluation.js';
 

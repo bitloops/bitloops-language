@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { getTargetFileDestination } from '../../../src/target/typescript/helpers/getTargetFileDestination.js';
+import { getTargetFileDestination } from '../../../src/target/typescript-nest/helpers/getTargetFileDestination.js';
 import {
   MissingBoundedContext,
   MissingModule,

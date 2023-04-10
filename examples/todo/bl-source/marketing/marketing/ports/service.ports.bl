@@ -1,0 +1,9 @@
+Struct Email {
+    string origin;
+    string destination;
+    string content;
+}
+
+ServicePort EmailServicePort {
+    send(email: Email): (OK(void),Errors());
+}

@@ -1,0 +1,23 @@
+DomainEvent TodoAddedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+    bool completed;
+}
+
+DomainEvent TodoCompletedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+    bool completed;
+}
+
+DomainEvent TodoTitleModifiedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+    bool completed;
+}
+
+DomainEvent TodoUncompletedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+    bool completed;
+}

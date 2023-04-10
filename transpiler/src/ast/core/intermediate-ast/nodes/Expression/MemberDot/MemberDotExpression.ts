@@ -68,4 +68,15 @@ export class MemberDotExpressionNode extends ExpressionNode {
     }
     return false;
   }
+
+  isUsedByMemberDotExpression(): boolean {
+    const parent = this.getParent();
+    if (!parent) {
+      return false;
+    }
+    if (parent instanceof MemberDotExpressionNode) {
+      return true;
+    }
+    return false;
+  }
 }

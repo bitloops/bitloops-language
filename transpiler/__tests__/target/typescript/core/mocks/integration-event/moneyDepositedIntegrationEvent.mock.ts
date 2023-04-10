@@ -1,0 +1,36 @@
+import { Domain, Infra, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
+import { MoneyDepositedToAccountDomainEvent } from '../../domain/events/MoneyDepositedToAccountDomainEvent';
+import { IntegrationSchemaV1 } from '../../structs/IntegrationSchemaV1';
+type TIntegrationSchemas = IntegrationSchemaV1;
+type ToIntegrationDataMapper = (event: MoneyDepositedToAccountDomainEvent) => TIntegrationSchemas;
+export class MoneyDepositedIntegrationEvent
+  implements Infra.EventBus.IntegrationEvent<TIntegrationSchemas>
+{
+  public static readonly boundedContextId = 'Banking';
+  static versions = ['v1'];
+  static versionMappers: Record<string, ToIntegrationDataMapper> = {
+    v1: MoneyDepositedIntegrationEvent.toIntegrationDatav1,
+  };
+  public metadata: Infra.EventBus.TIntegrationEventMetadata;
+  constructor(public payload: TIntegrationSchemas, version: string) {
+    this.metadata = {
+      boundedContextId: MoneyDepositedIntegrationEvent.boundedContextId,
+      createdTimestamp: Date.now(),
+      messageId: new Domain.UUIDv4().toString(),
+      correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
+      context: asyncLocalStorage.getStore()?.get('context'),
+      version,
+    };
+  }
+  static create(event: MoneyDepositedToAccountDomainEvent): MoneyDepositedIntegrationEvent[] {
+    return MoneyDepositedIntegrationEvent.versions.map((version) => {
+      const mapper = MoneyDepositedIntegrationEvent.versionMappers[version];
+      const payload = mapper(event);
+      return new MoneyDepositedIntegrationEvent(payload, version);
+    });
+  }
+  static toIntegrationDatav1(event: MoneyDepositedToAccountDomainEvent): IntegrationSchemaV1 {
+    const moneyDeposited = { accountId: 'testAccount', amount: 'testAmount' };
+    return moneyDeposited;
+  }
+}

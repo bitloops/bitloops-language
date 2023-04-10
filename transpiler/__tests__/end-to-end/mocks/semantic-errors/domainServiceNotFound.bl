@@ -1,0 +1,7 @@
+DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWriteRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+    handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors()) {
+    
+      const marketingNotificationService = MarketingNotificationDomainService.create(this.notificationTemplateRepo);
+    }
+}

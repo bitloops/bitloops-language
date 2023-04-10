@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -26,6 +26,8 @@
     "core"
   ],
   "devDependencies": {
+    "@swc/core": "^1.3.45",
+    "@swc/jest": "^0.2.24",
     "@types/antlr4": "4.7.3",
     "@types/eslint": "^8.4.6",
     "@types/jest": "^29.1.2",
@@ -45,7 +47,6 @@
     "ts-jest": "~28.0",
     "ts-node": "^10.9.1",
     "tsutils": "~3.21",
-    "ttypescript": "^1.5.13",
     "typescript": "^4.8.4"
   },
   "scripts": {
@@ -57,6 +58,7 @@
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build:full",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:swc": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.swc.config.ts",
     "test-silent": "node --experimental-vm-modules node_modules/jest/bin/jest.js --silent",
     "test:watch": "jest --watch",
     "ts-node-esm": "node --loader ts-node/esm",
@@ -73,7 +75,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "antlr4": "^4.11.0",
+    "antlr4": "4.11.0",
     "lodash": "^4.17.21",
     "prettier": "^2.7.1"
   },

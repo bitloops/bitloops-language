@@ -1,0 +1,49 @@
+DomainEventHandler TodoCreatedDomainEventHandler() {
+    handle(event: TodoCreatedDomainEvent): (OK(void), Errors()) {
+      this.commandBus.send(command);
+    }
+  }
+
+Props TitleProps {
+    string title;
+  }
+
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
+  isBrokenIf(title.length > 150 OR title.length < 4);
+}
+
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+      applyRules(TitleOutOfBoundsRule(props.title));
+    }
+  }
+
+  DomainError TitleOutOfBoundsError(title: string)  {
+    message: 'Title is out of range',
+    errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+  }
+
+Props TodoProps {
+    optional UUIDv4 id;
+    TitleVO title;
+    bool completed;
+  }
+
+Root Entity TodoEntity {    
+    static create(props: TodoProps): (OK(TodoEntity), Errors()) {} 
+    
+    check(title: TitleVO):  (OK(void), Errors()) {
+        this.title = title;
+      }
+}
+
+IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
+    
+    eventVersion: 'v1';
+    
+    handle(event: [banking][banking]MoneyDepositedIntegrationEvent): (OK(void), Errors()) {
+  
+      this.commandBus.send(command);
+    }
+}
+

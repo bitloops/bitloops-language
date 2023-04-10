@@ -27,6 +27,7 @@ options {
 
 MultiLineComment:               '/*' .*? '*/'             -> channel(HIDDEN);
 SingleLineComment:              '//' ~[\r\n\u2028\u2029]* -> channel(HIDDEN);
+RegularExpressionLiteral:       '/' RegularExpressionFirstChar RegularExpressionChar* {this.IsRegexPossible()}? '/' IdentifierPart*;
 
 OpenBracket:                    '[';
 CloseBracket:                   ']';
@@ -147,6 +148,7 @@ ReadOnly:                       'readonly';
 Async:                          'async';
 Throws:                         'throws';
 ApplyRules:                     'applyRules';
+AddDomainEvent:                 'addDomainEvent';
 CorsOptions:                    'corsOptions';
 
 Extends:                        'extends';
@@ -159,9 +161,15 @@ RESTController:                 'RESTController';
 GraphQLController:              'GraphQLController';
 GRPCController:                 'GRPCController';
 UseCase:                        'UseCase';
+Command:                        'Command';
+Query:                          'Query';
+CommandHandler:                 'CommandHandler';
+QueryHandler:                   'QueryHandler';
 ValueObject:                    'ValueObject';
 AggregateRoot:                  'AggregateRoot';
 Entity:                         'Entity';
+DomainEventHandler:             'DomainEventHandler';
+IntegrationEventHandler:        'IntegrationEventHandler';
 DomainEvent:                    'DomainEvent';
 Service:                        'Service';
 Repository:                     'Repository';
@@ -174,11 +182,14 @@ OK:                             'OK';
 Errors:                         'Errors';
 Config:                         'Config';
 PackagePort:                    'PackagePort';
+ServicePort:                    'ServicePort';
 VO:                             'VO';
 Rule:                           'Rule';
 IsBrokenIf:                     'isBrokenIf';
 Root:                           'Root';
-Constructor:                    'constructor';
+StandardVO:                     'StandardVO';
+IntegrationEvent:               'IntegrationEvent';
+DomainService:                  'DomainService';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
@@ -214,13 +225,14 @@ Bytes: 'bytes';
 Timestamp: 'timestamp';
 Struct: 'Struct';
 
-TypeAlias : 'type';
+// TypeAlias : 'type';
 
 Get: 'get';
 Set: 'set';
 
 // Constructor: 'constructor';
 Execute: 'execute';
+Handle: 'handle';
 Create:  'create';
 Namespace: 'namespace';
 // Require: 'require';
@@ -246,7 +258,6 @@ JestTestValueObjectDeclaration: 'JestTestValueObjectDeclaration';
 JestTestEntityDeclaration: 'JestTestEntityDeclaration';
 JestTestCondition: 'JestTestCondition';
 JestTestVariableDeclaration: 'JestTestVariableDeclaration';
-JestTestThisDeclaration: 'JestTestThisDeclaration';
 JestTestIsInstanceOf: 'JestTestIsInstanceOf';
 JestTestValueObjectEvaluation: 'JestTestValueObjectEvaluation';
 JestTestEntityEvaluation: 'JestTestEntityEvaluation';
@@ -298,14 +309,26 @@ ControllerIdentifier:           UpperCaseStart IdentifierPart* 'Controller';
 UseCaseIdentifier:              UpperCaseStart IdentifierPart* UseCase;
 PackagePortIdentifier:          UpperCaseStart IdentifierPart* PackagePort;
 PackageAdapterIdentifier:        [A-Z] [0-9a-zA-Z]* 'PackageAdapter';
+ServicePortIdentifier:          UpperCaseStart IdentifierPart* ServicePort;
 PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
 ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
 RuleIdentifier:                 UpperCaseStart IdentifierPart* Rule;
 RepoPortIdentifier:             UpperCaseStart IdentifierPart* RepoPort;
 DomainErrorIdentifier:          UpperCaseStart IdentifierPart* 'Error';
 ValueObjectEvaluationIdentifier:   UpperCaseStart IdentifierPart* VO;
+CommandIdentifier:              UpperCaseStart IdentifierPart* Command;
+QueryIdentifier:                UpperCaseStart IdentifierPart* Query;
+DomainEventIdentifier:          UpperCaseStart IdentifierPart* DomainEvent;
+CommandHandlerIdentifier:       UpperCaseStart IdentifierPart* CommandHandler;
+QueryHandlerIdentifier:         UpperCaseStart IdentifierPart* QueryHandler;
+IntegrationEventIdentifier:     UpperCaseStart IdentifierPart* IntegrationEvent;
+DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandler;
+IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
+DomainServiceIdentifier:        UpperCaseStart IdentifierPart* DomainService;
 SetLanguage:                    'setLanguage';
+SetBuses:                       'setBuses';
 TypeScript:                     'TypeScript';
+TypeScriptNest:                 'TypeScript-Nest';
 Java:                           'Java';
 FastifyServer:                  'REST.Fastify';
 ExpressServer:                  'REST.Express';
@@ -313,6 +336,17 @@ GraphQLServerType:              'GraphQL';
 RESTRouter:                     'RESTRouter';
 GraphQLServer:                  'GraphQLServer';
 RESTServer:                     'RESTServer';
+
+// Buses
+CommandBus:                     'COMMAND_BUS';
+EventBus:                       'EVENT_BUS';
+IntegrationEventBus:            'INTEGRATION_EVENT_BUS';
+QueryBus:                       'QUERY_BUS';
+MessageBus:                     'MessageBus';
+External:                       'External';
+InProcess:                      'InProcess';
+
+DI:                             'DI';
 
 EnvPrefix:                      'Env';
 EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;

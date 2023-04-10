@@ -173,4 +173,42 @@ export class ConstDeclarationBuilderDirector {
       typeAnnotation,
     );
   }
+
+  buildIdentifierExpressionConstDeclaration(
+    constDeclarationIdentifier: string,
+    value: string,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
+  ): ConstDeclarationNode {
+    return this.buildConstDeclaration(
+      constDeclarationIdentifier,
+      new ExpressionBuilderDirector().buildIdentifierExpression(value),
+      typeAnnotation,
+    );
+  }
+
+  /**
+   *  e.g. const identifier = this.repoPort.get();
+   */
+  buildConstDeclarationThisMethodCallExpression({
+    constDeclarationIdentifier,
+    thisIdentifier,
+    methodCallIdentifier,
+    executeArgs,
+  }: {
+    constDeclarationIdentifier: string;
+    thisIdentifier: string;
+    methodCallIdentifier: string;
+    executeArgs?: ArgumentNode[];
+  }): ConstDeclarationNode {
+    const thisNode = new ExpressionBuilderDirector().buildThisExpression();
+
+    const expression = new ExpressionBuilderDirector().buildMethodCallExpression(
+      new ExpressionBuilderDirector().buildMemberDotExpression(
+        new ExpressionBuilderDirector().buildMemberDotExpression(thisNode, thisIdentifier),
+        methodCallIdentifier,
+      ),
+      new ArgumentListDirector().buildArgumentListWithArgs(executeArgs ?? []),
+    );
+    return this.buildConstDeclaration(constDeclarationIdentifier, expression);
+  }
 }

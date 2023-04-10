@@ -1,12 +1,12 @@
 import {
   TExpression,
   TStatement,
-  TDomainPrivateMethodValuesOkErrorReturnType,
-  TDomainPrivateMethodValuesPrimaryReturnType,
-  TAssignmentExpression,
+  TPrivateMethodValuesOkErrorReturnType,
+  TPrivateMethodValuesPrimaryReturnType,
   expressionKey,
   TMemberDotExpression,
-  TThisExpression,
+  TDefinitionMethodOkErrorReturnType,
+  TDefinitionMethodPrimaryReturnType,
 } from '../types.js';
 
 const isUndefined = (variable) => {
@@ -29,39 +29,23 @@ export const isPrimitive = (value: any): boolean => {
 
 const hasOkErrorReturnType = (
   privateMethodValues:
-    | TDomainPrivateMethodValuesPrimaryReturnType
-    | TDomainPrivateMethodValuesOkErrorReturnType,
-): privateMethodValues is TDomainPrivateMethodValuesOkErrorReturnType => {
+    | TPrivateMethodValuesPrimaryReturnType
+    | TPrivateMethodValuesOkErrorReturnType,
+): privateMethodValues is TPrivateMethodValuesOkErrorReturnType => {
   if ('returnType' in privateMethodValues) return true;
   else return false;
 };
 
-const isThisDeclaration = (
-  value: TStatement,
-): value is { [expressionKey]: TAssignmentExpression } => {
-  if (!isExpression(value) || !isAssignmentExpression(value)) {
-    return false;
-  }
-  const leftExpression = value[expressionKey].assignmentExpression.left;
-  if (!isMemberDotExpression(leftExpression)) {
-    return false;
-  }
-  const leftMost = getMemberDotExpressionLeftMostExpression(leftExpression);
-  if (isThisExpression(leftMost)) {
-    return true;
-  }
-  return false;
+const hasDefinitionMethodOkErrorReturnType = (
+  methodDefinitionValues: TDefinitionMethodPrimaryReturnType | TDefinitionMethodOkErrorReturnType,
+): methodDefinitionValues is TDefinitionMethodOkErrorReturnType => {
+  if ('returnType' in methodDefinitionValues) return true;
+  else return false;
 };
 
 const isExpression = (value: TStatement): value is TExpression => {
   if (typeof value === 'string') return false;
   if ('expression' in value) return true;
-  return false;
-};
-const isAssignmentExpression = (
-  value: TExpression,
-): value is { [expressionKey]: TAssignmentExpression } => {
-  if ('assignmentExpression' in value[expressionKey]) return true;
   return false;
 };
 
@@ -81,25 +65,31 @@ const getMemberDotExpressionLeftMostExpression = (value: {
   }
   return leftExpression;
 };
-const isThisExpression = (value: TExpression): value is { [expressionKey]: TThisExpression } => {
-  if ('thisExpression' in value[expressionKey]) return true;
-  return false;
-};
 
 const isVO = (name: string): boolean => {
   return name.endsWith('VO');
+};
+
+const isEntity = (name: string): boolean => {
+  return name.endsWith('Entity');
 };
 
 const isProps = (name: string): boolean => {
   return name.endsWith('Props');
 };
 
+const isRepoPort = (name: string): boolean => {
+  return name.endsWith('RepoPort');
+};
+
 export {
   isUndefined,
   isArray,
   hasOkErrorReturnType,
+  hasDefinitionMethodOkErrorReturnType,
   isExpression,
   isVO,
-  isThisDeclaration,
   isProps,
+  isEntity,
+  isRepoPort,
 };

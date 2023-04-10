@@ -2,12 +2,29 @@ import { BitloopsTypesMapping } from '../../../helpers/mappings.js';
 import { IntermediateASTTree } from './IntermediateASTTree.js';
 import { IntermediateASTNode, TNodeType } from './nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
-import { ReturnOKErrorNodeTransformer } from './ node-transformers/ReturnOkErrorNodeTransformer.js';
-import { IASTToCompletedASTTransformer } from './ node-transformers/index.js';
+import { ReturnOKErrorNodeTransformer } from './node-transformers/ReturnOkErrorNodeTransformer.js';
+import { IASTToCompletedASTTransformer } from './node-transformers/index.js';
 import { IntermediateAST, IntermediateASTSetup, TBoundedContexts } from '../types.js';
-import { RouterControllerNodesTransformer } from './ node-transformers/RouterControllerNodesTransformer.js';
-import { RestControllerTypeTransformer } from './ node-transformers/RestControllerTypeTransformer.js';
-import { RepoAdapterNodesTransformer } from './ node-transformers/RepoAdapterNodesTransformer.js';
+import { RouterControllerNodesTransformer } from './node-transformers/RouterControllerNodesTransformer.js';
+import { RestControllerTypeTransformer } from './node-transformers/RestControllerTypeTransformer.js';
+import { RepoAdapterNodesTransformer } from './node-transformers/RepoAdapterNodesTransformer.js';
+import { DomainEventHandlerNodeTransformer } from './node-transformers/DomainEventHandlerNodeTransformer.js';
+import { DomainEventHandlerDeclarationNode } from './nodes/DomainEventHandler/DomainEventHandlerDeclarationNode.js';
+import { IntegrationEventHandlerDeclarationNode } from './nodes/integration-event/IntegrationEventHandlerDeclarationNode.js';
+import { IntegrationEventHandlerNodeTransformer } from './node-transformers/IntegrationEventHandlerNodeTransformer.js';
+import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
+import { IntegrationEventNodeTransformer } from './node-transformers/IntegrationEventNodeTransformer.js';
+import { ControllerNode } from './nodes/controllers/ControllerNode.js';
+import { ControllerNodeTransformer } from './node-transformers/ControllerNodeTransformer.js';
+import { AddDIsForAutoDomainEventHandlersTransformer } from './node-transformers/setup/AddDIForAutoEventHandlers.js';
+import { ExecuteNode } from './nodes/ExecuteNode.js';
+import { ExecuteNodeTransformer } from './node-transformers/ExecuteNodeTransformer.js';
+import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
+import { RepoPortNodeTransformer } from './node-transformers/RepoPortNodeTransformer.js';
+import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
+import { ServicePortNodeTransformer } from './node-transformers/ServicePortNodeTransformer.js';
+import { DomainServiceNode } from './nodes/domain-service/DomainServiceNode.js';
+import { DomainServiceNodeTransformer } from './node-transformers/DomainServiceNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -17,6 +34,9 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       : intermediateAST.setup;
     if (intermediateAST.setup) {
       this.completeCoreFromSetup(intermediateAST);
+    }
+    if (intermediateAST.setup && intermediateAST.core) {
+      this.completeSetupFromCores(intermediateAST.setup, intermediateAST.core);
     }
     return {
       core: boundedContexts,
@@ -99,6 +119,31 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     }
   }
 
+  // It mutates intermediateAST setup
+  private completeSetupFromCores(setup: IntermediateASTSetup, core: TBoundedContexts): void {
+    let intermediateASTSetup: IntermediateASTSetup;
+    for (const [fileId, setupTree] of Object.entries(setup)) {
+      const treeUpdated = setupTree.copy(); // TODO implement copy method
+      const rootNode = treeUpdated.getRootNode();
+
+      const routerControllerNodesTransformer = new AddDIsForAutoDomainEventHandlersTransformer(
+        treeUpdated,
+        core,
+      );
+      routerControllerNodesTransformer.run();
+
+      treeUpdated.buildValueRecursiveBottomUp(rootNode);
+
+      if (!intermediateASTSetup) {
+        intermediateASTSetup = {
+          [fileId]: treeUpdated,
+        };
+      } else if (!intermediateASTSetup[fileId]) {
+        intermediateASTSetup[fileId] = treeUpdated;
+      }
+    }
+  }
+
   private getNodeTransformer(factoryParams: {
     intermediateASTNode: IntermediateASTNode;
     intermediateASTTree: IntermediateASTTree;
@@ -111,6 +156,43 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TOkErrorReturnType: {
         const returnOkErrorNode = intermediateASTNode as ReturnOkErrorTypeNode;
         return new ReturnOKErrorNodeTransformer(intermediateASTTree, returnOkErrorNode);
+      }
+      case BitloopsTypesMapping.TDomainEventHandler: {
+        const domainEventHandlerNode = intermediateASTNode as DomainEventHandlerDeclarationNode;
+        return new DomainEventHandlerNodeTransformer(intermediateASTTree, domainEventHandlerNode);
+      }
+      case BitloopsTypesMapping.TIntegrationEventHandler: {
+        const integrationEventHandlerNode =
+          intermediateASTNode as IntegrationEventHandlerDeclarationNode;
+        return new IntegrationEventHandlerNodeTransformer(
+          intermediateASTTree,
+          integrationEventHandlerNode,
+        );
+      }
+      case BitloopsTypesMapping.TIntegrationEvent: {
+        const integrationEventNode = intermediateASTNode as IntegrationEventNode;
+        return new IntegrationEventNodeTransformer(intermediateASTTree, integrationEventNode);
+      }
+      case BitloopsTypesMapping.TGraphQLController:
+      case BitloopsTypesMapping.TRESTController: {
+        const controllerNode = intermediateASTNode as ControllerNode;
+        return new ControllerNodeTransformer(intermediateASTTree, controllerNode);
+      }
+      case BitloopsTypesMapping.TExecute: {
+        const executeNode = intermediateASTNode as ExecuteNode;
+        return new ExecuteNodeTransformer(intermediateASTTree, executeNode);
+      }
+      case BitloopsTypesMapping.TRepoPort: {
+        const repoPortNode = intermediateASTNode as RepoPortNode;
+        return new RepoPortNodeTransformer(intermediateASTTree, repoPortNode);
+      }
+      case BitloopsTypesMapping.TServicePort: {
+        const servicePortNode = intermediateASTNode as ServicePortNode;
+        return new ServicePortNodeTransformer(intermediateASTTree, servicePortNode);
+      }
+      case BitloopsTypesMapping.TDomainService: {
+        const servicePortNode = intermediateASTNode as DomainServiceNode;
+        return new DomainServiceNodeTransformer(intermediateASTTree, servicePortNode);
       }
       default:
         return null;

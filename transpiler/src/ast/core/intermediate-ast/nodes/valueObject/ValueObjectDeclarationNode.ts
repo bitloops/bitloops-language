@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { TPropsIdentifier } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -35,5 +36,14 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
       throw new Error('Domain create not found');
     }
     return createNode;
+  }
+
+  public getPropsIdentifier(): TPropsIdentifier {
+    const createNode = this.getCreateNode();
+    const parameterNode = createNode.getParameterNode();
+    const typeNode = parameterNode.getType();
+    const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
+
+    return identifierTypeNode.getIdentifierName();
   }
 }

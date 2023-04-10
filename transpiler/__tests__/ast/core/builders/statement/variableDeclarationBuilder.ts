@@ -21,6 +21,7 @@ import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/
 import {
   ArrayBitloopsPrimTypeObject,
   bitloopsPrimaryTypeKey,
+  expressionKey,
   primitivesTypeKey,
   TBitloopsBuiltInClassesObject,
   TBitloopsIdentifierObject,
@@ -35,7 +36,7 @@ import {
 export class VariableDeclarationBuilder implements IBuilder<TVariableDeclaration> {
   private type: TBitloopsPrimaryType;
   private identifier: TIdentifier;
-  private expression: TExpression;
+  private expression?: TExpression;
 
   public withPrimitivesType(primitiveType: TBitloopsPrimitives): VariableDeclarationBuilder {
     this.type = { [bitloopsPrimaryTypeKey]: { [primitivesTypeKey]: primitiveType } };
@@ -72,13 +73,16 @@ export class VariableDeclarationBuilder implements IBuilder<TVariableDeclaration
       [variableDeclarationKey]: {
         ...this.type,
         identifier: this.identifier,
-        ...this.expression,
       },
     };
 
     if (this.type) {
       variableDeclaration[variableDeclarationKey][bitloopsPrimaryTypeKey] =
         this.type[bitloopsPrimaryTypeKey];
+    }
+
+    if (this.expression) {
+      variableDeclaration[variableDeclarationKey][expressionKey] = this.expression[expressionKey];
     }
 
     return variableDeclaration;

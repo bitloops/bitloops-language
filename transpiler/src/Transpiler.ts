@@ -13,12 +13,12 @@ import { isParserErrors } from './parser/core/guards/index.js';
 import {
   IOriginalParser,
   OriginalAST,
-  OriginalParserError,
+  type OriginalParserError,
   TParserInputData,
 } from './parser/index.js';
 import { ITargetGenerator, TargetGeneratorError, TOutputTargetContent } from './target/types.js';
-import { isTargetGeneratorError } from './target/typescript/guards/index.js';
-import { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
+import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
+import type { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
 
 export default class Transpiler {
   constructor(

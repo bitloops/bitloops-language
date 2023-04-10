@@ -21,9 +21,10 @@
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
+import { SupportedLanguages } from '../../../../src/target/supportedLanguages.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { formatString } from '../../../../src/target/typescript-nest/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript-nest/guards/index.js';
 import { VALID_EVALUATION_TEST_CASES } from './mocks/expression/evaluation.js';
 // import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
 
@@ -31,7 +32,7 @@ describe('Valid evaluation test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
 
   VALID_EVALUATION_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
@@ -67,58 +68,3 @@ describe('Valid evaluation test cases', () => {
     });
   });
 });
-
-// defineFeature(feature, (test) => {
-//   let evaluationType;
-//   let result;
-//   let value;
-
-//   test('Evaluation with all possible evaluation types', ({ given, and, when, then }) => {
-//     given(/^type is "(.*)"$/, (type) => {
-//       evaluationType = type;
-//     });
-
-//     and(/^language is "(.*)"$/, (_lang) => {});
-
-//     given(/^I have an evaluation (.*)$/, (evaluation) => {
-//       value = evaluation;
-//     });
-
-//     when('I generate the code', () => {
-//       const evaluationValue = JSON.parse(value);
-//       result = modelToTargetLanguage({
-//         type: evaluationType,
-//         value: evaluationValue,
-//       });
-//     });
-
-//     then(/^I should see the (.*) code$/, (output) => {
-//       expect(result.output).toEqual(output);
-//     });
-//   });
-
-//   test('Unsupported evaluation type', ({ given, and, when, then }) => {
-//     given(/^type is "(.*)"$/, (type) => {
-//       evaluationType = type;
-//     });
-
-//     and(/^language is "(.*)"$/, (_lang) => {});
-
-//     given(/^I have an invalid (.*) with unsupported (.*)$/, (evaluation) => {
-//       value = evaluation;
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-empty-function
-//     when('I generate the code', () => {});
-
-//     then(/^I should get an error saying that (.*) is unsupported$/, (evaluation) => {
-//       const evaluationValue = JSON.parse(evaluation);
-//       expect(() =>
-//         modelToTargetLanguage({
-//           type: evaluationType,
-//           value: evaluationValue,
-//         }),
-//       ).toThrowError(`Unsupported evaluation: ${JSON.stringify(evaluationValue)}`);
-//     });
-//   });
-// });

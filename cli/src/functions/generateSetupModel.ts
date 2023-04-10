@@ -28,8 +28,9 @@ const readSetupData = (sourceDirPath: string): TParserInputData['setup'] => {
   const content = readFromFile(setupFilePath);
   return [
     {
-      fileId: SETUP_FILE_NAME,
+      fileId: setupFilePath,
       fileContents: content,
+      fileName: SETUP_FILE_NAME,
     },
   ];
 };

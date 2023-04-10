@@ -10,10 +10,11 @@ export const VALID_READ_MODEL_TEST_CASES = [
       fields: [
         new FieldBuilderDirector().buildRequiredPrimitiveField('name', 'string'),
         new FieldBuilderDirector().buildOptionalPrimitiveField('numOfTeachers', 'int32'),
+        new FieldBuilderDirector().buildRequiredBitloopsIdentifierTypeField('title', 'Title'),
       ],
     }),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/readModel/classReadModel.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/readModel/classReadModel.mock.ts',
     ),
   },
   {
@@ -23,7 +24,7 @@ export const VALID_READ_MODEL_TEST_CASES = [
       fields: [new FieldBuilderDirector().buildRequiredPrimitiveField('name', 'string')],
     }),
     output: FileUtil.readFileString(
-      'transpiler/__tests__/target/typescript/core/mocks/readModel/nameReadModel.ts',
+      'transpiler/__tests__/target/typescript/core/mocks/readModel/nameReadModel.mock.ts',
     ),
   },
 ];

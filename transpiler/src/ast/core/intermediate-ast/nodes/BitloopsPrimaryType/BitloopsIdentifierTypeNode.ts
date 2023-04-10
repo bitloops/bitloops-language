@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { isEntity, isRepoPort, isVO } from '../../../../../helpers/typeGuards.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { BitloopsPrimaryTypeNode } from './BitloopsPrimaryTypeNode.js';
 
@@ -15,5 +16,28 @@ export class BitloopsIdentifierTypeNode extends BitloopsPrimaryTypeNode {
     const identifierValue = this.getValue();
     const identifierName: string = identifierValue[identifierClassNodeName];
     return identifierName;
+  }
+
+  public isDomainEventIdentifier(): boolean {
+    const identifierName = this.getIdentifierName();
+    if (identifierName.endsWith('DomainEvent')) {
+      return true;
+    }
+    return false;
+  }
+
+  public isValueObjectIdentifier(): boolean {
+    const identifierName = this.getIdentifierName();
+    return isVO(identifierName);
+  }
+
+  public isEntityIdentifier(): boolean {
+    const identifierName = this.getIdentifierName();
+    return isEntity(identifierName);
+  }
+
+  public isRepoPortIdentifier(): boolean {
+    const identifierName = this.getIdentifierName();
+    return isRepoPort(identifierName);
   }
 }

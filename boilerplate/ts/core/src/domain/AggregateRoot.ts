@@ -17,26 +17,26 @@
 import { Entity } from './Entity';
 import { IDomainEvent } from './events/IDomainEvent';
 import { UniqueEntityID } from './UniqueEntityID';
-import { Container } from '../Container';
 
 export abstract class AggregateRoot<T> extends Entity<T> {
-  private _domainEvents: IDomainEvent[] = [];
+  private _domainEvents: IDomainEvent<any>[] = [];
 
   get id(): UniqueEntityID {
     return this._id;
   }
 
-  get domainEvents(): IDomainEvent[] {
+  get domainEvents(): IDomainEvent<any>[] {
     return this._domainEvents;
   }
 
-  protected addDomainEvent(domainEvent: IDomainEvent): void {
+  protected addDomainEventClass(domainEventClass: any): void {
+    const domainEvent = new domainEventClass(this);
+    this.addDomainEvent(domainEvent);
+  }
+
+  protected addDomainEvent(domainEvent: IDomainEvent<any>): void {
     // Add the domain event to this aggregate's list of domain events
-    const { events } = Container.getServices();
     this._domainEvents.push(domainEvent);
-    // Add this aggregate instance to the domain event's list of aggregates who's
-    // events it eventually needs to dispatch.
-    events.markAggregateForDispatch(this);
     // Log the domain event
     this.logDomainEventAdded(domainEvent);
   }
@@ -45,7 +45,7 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     this._domainEvents.splice(0, this._domainEvents.length);
   }
 
-  private logDomainEventAdded(domainEvent: IDomainEvent): void {
+  private logDomainEventAdded(domainEvent: IDomainEvent<any>): void {
     const thisClass = Reflect.getPrototypeOf(this);
     const domainEventClass = Reflect.getPrototypeOf(domainEvent);
     console.info(

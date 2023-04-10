@@ -1,0 +1,13 @@
+IntegrationEventHandler UserRegisteredIntegrationEventHandler() {
+    
+    eventVersion: 'v1';
+    
+    handle(event: [bitloops][authNestPassport]UserRegisteredIntegrationEvent): (OK(void),Errors()) {
+
+      const command = CreateUserCommand.create({
+        userId: event.payload.userId,
+        email: event.payload.email,
+      });
+      this.commandBus.publish(command);
+    }
+}

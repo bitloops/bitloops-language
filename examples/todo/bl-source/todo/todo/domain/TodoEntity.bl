@@ -1,0 +1,59 @@
+Props TodoProps {
+    optional UUIDv4 id;
+    UserIdVO userId;
+    TitleVO title;
+    bool completed;
+}
+
+
+Root Entity TodoEntity {
+    static create(props: TodoProps): (OK(TodoEntity), Errors())  {
+        const todo = TodoEntity(props);
+        const isNew = props.id != null;
+        if (isNew) {
+            const event = TodoAddedDomainEvent.create({ 
+                aggregateId: todo.id.toString(),
+                userId: todo.userId.id.toString(),
+                title: todo.title.title,
+                completed: todo.completed
+            });
+            todo.addDomainEvent(event);
+        }
+        return todo;
+    }
+
+    public complete(): (OK(void), Errors(DomainErrors.TodoAlreadyCompletedError)) {
+        applyRules(TodoAlreadyCompletedRule(this.completed, this.id.toString()))
+        this.completed = true;
+        const event = TodoCompletedDomainEvent.create({ 
+            aggregateId: this.id.toString(),
+            userId: this.userId.id.toString(),
+            title: this.title.title,
+            completed: this.completed
+        });
+        this.addDomainEvent(event);
+    }
+
+    public uncomplete(): (OK(void), Errors(DomainErrors.TodoAlreadyUncompletedError)) {
+        applyRules(TodoAlreadyUncompletedRule(this.completed, this.id.toString()))
+        this.completed = false;
+        const event = TodoUncompletedDomainEvent.create({ 
+            aggregateId: this.id.toString(),
+            userId: this.userId.id.toString(),
+            title: this.title.title,
+            completed: this.completed
+        });
+        this.addDomainEvent(event);
+    }
+
+    public modifyTitle(title: TitleVO): (OK(void), Errors()) {
+        this.title = title;
+        const event = TodoTitleModifiedDomainEvent.create({ 
+            aggregateId: this.id.toString(),
+            userId: this.userId.id.toString(),
+            title: this.title.title,
+            completed: this.completed
+        });
+        this.addDomainEvent(event);
+    }   
+}

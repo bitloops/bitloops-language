@@ -55,8 +55,7 @@ const config: Config = {
 };
 
 type ApplicationConfig = {
-  CONTEXT_IDs_MAPPINGS: Record<string, Record<MESSAGE_BUS, CONTEXT_TYPES>>;
-  CONTEXT_IDs: Record<string, string>;
+  BUSES: Record<MESSAGE_BUS, CONTEXT_TYPES>;
 };
 
 export { Config, config, ApplicationConfig };

@@ -14,9 +14,24 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { UUIDv4 } from '../UUIDv4';
-import { IEvent } from './IEvent';
+import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
+import { Message } from '../messages/IMessage.js';
+import { IEvent, TEventMetadata } from './IEvent';
 
-export interface IDomainEvent extends IEvent {
-  getAggregateId(): UUIDv4;
+export interface IDomainEvent<T> extends IEvent<T> {
+  aggregateId: any;
+}
+
+export type TDomainEventProps<T> = T & { aggregateId: string };
+
+export abstract class DomainEvent<T> extends Message implements IDomainEvent<T> {
+  public aggregateId: any;
+  public readonly payload: T;
+  declare metadata: TEventMetadata;
+  constructor(boundedContextId: string, payload: T, metadata?: Partial<TEventMetadata>) {
+    super(metadata);
+    this.metadata.boundedContextId = boundedContextId;
+    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
+    this.payload = payload;
+  }
 }

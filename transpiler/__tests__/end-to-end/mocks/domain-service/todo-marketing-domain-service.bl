@@ -1,0 +1,43 @@
+Props UserProps {
+    optional UUIDv4 id;
+}
+
+Root Entity UserEntity {
+    static create(props: UserProps): (OK(UserEntity), Errors())  {
+        const userEntity = UserEntity(props);
+        return userEntity;
+    }
+}
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+  getByType(typ: string): (OK(NotificationTemplateReadModel),Errors());
+};
+
+ReadModel NotificationTemplateReadModel {
+  string id;
+  string template;
+}
+
+Struct NotificationTemplateInput {
+  string emailOrigin;
+  NotificationTemplateReadModel notificationTemplate;
+}
+
+DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+  public getNotificationTemplateToBeSent(user: UserEntity): (OK(NotificationTemplateInput), Errors()) {
+      const emailOrigin = 'marketing@bitloops.com';
+      notificationTemplate: NotificationTemplateReadModel;
+      if (user.isFirstTodo()) {
+        const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
+            'firstTodo'
+          );
+        if(notificationTemplateResponse is Error){
+          return Error(notificationTemplateResponse);
+        }
+        notificationTemplate = notificationTemplateResponse;
+      } else {
+        notificationTemplate = null;
+      }
+      return NotificationTemplateInput({ emailOrigin: emailOrigin, notificationTemplate: notificationTemplate });
+  }
+}

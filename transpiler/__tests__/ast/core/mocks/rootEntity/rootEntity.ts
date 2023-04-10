@@ -12,6 +12,9 @@ import { ParameterBuilderDirector } from '../../builders/ParameterBuilderDirecto
 import { RootEntityDeclarationBuilder } from '../../builders/rootEntity/RootEntityBuilder.js';
 import { ParameterListBuilderDirector } from '../../builders/parameterListBuilderDirector.js';
 import { FileUtil } from '../../../../../src/utils/file.js';
+import { EvaluationBuilderDirector } from '../../builders/evaluationDirector.js';
+import { ExpressionBuilderDirector } from '../../builders/expressionDirector.js';
+import { ArgumentListBuilderDirector } from '../../builders/argumentListBuilderDirector.js';
 
 const blFiles = {
   publicPrivateMethod:
@@ -30,14 +33,45 @@ export const validRootEntityTestCases = [
       .withValues(
         new EntityValuesBuilder()
           .withCreate(
-            new DomainCreateBuilderDirector().buildCreateEntityWithError({
+            new DomainCreateBuilderDirector().buildCreateEntityWithStatements({
               entityName: 'TodoEntity',
               entityPropsName: 'TodoProps',
               entityPropsIdentifier: 'props',
               errorName: 'DomainErrors.InvalidTitleError',
+              statements: [
+                new ExpressionBuilderDirector().buildMemberDotMethodCallExpression(
+                  ['TodoEntity', 'changeProps'],
+                  new ArgumentListBuilderDirector().buildArgumentList(['props']),
+                ),
+                new StatementDirector().buildReturnOKStatement(
+                  new ExpressionBuilderDirector().buildEvaluation(
+                    new EvaluationBuilderDirector().buildEntityConstructorEvaluation('TodoEntity', {
+                      expression: new ExpressionBuilderDirector().buildIdentifierExpression(
+                        'props',
+                      ),
+                    }),
+                  ),
+                ),
+              ],
             }),
           )
           .withPrivateMethods([
+            new PrivateMethodBuilderDirector().buildStaticMethodWithInputPropsAndPrimitiveReturnType(
+              {
+                methodName: 'changeProps',
+                returnType: 'void',
+                propsType: 'TodoProps',
+                statements: [
+                  new ExpressionBuilderDirector().buildAssignmentExpression(
+                    new ExpressionBuilderDirector().buildMemberExpression(
+                      new ExpressionBuilderDirector().buildIdentifierExpression('props'),
+                      'title',
+                    ),
+                    new ExpressionBuilderDirector().buildStringLiteralExpression('Super important'),
+                  ),
+                ],
+              },
+            ),
             new PrivateMethodBuilderDirector().buildMethodWithStringParamsAndBooleanReturnType({
               methodName: 'isValidName',
               booleanValue: true,

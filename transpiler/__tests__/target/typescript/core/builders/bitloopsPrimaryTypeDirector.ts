@@ -3,6 +3,8 @@ import { BitloopsIdentifierTypeBuilder } from '../../../../../src/ast/core/inter
 import { BitloopsPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
 import { BuildInClassTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
 import { PrimitiveTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
+import { StandardVOTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/StandardVOTypeNodeBuilder.js';
+import { StandardValueTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/StandardValueTypeNodeBuilder.js';
 import { BitloopsPrimaryTypeNode } from '../../../../../src/ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import {
   TBitloopsBuiltInClasses,
@@ -10,7 +12,7 @@ import {
   TBitloopsPrimitives,
 } from '../../../../../src/types.js';
 
-export class BitloopsPrimaryTypeDirector {
+export class BitloopsPrimaryTypeNodeDirector {
   buildDoubleArrayPrimitiveType(type: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
     const primitiveTypeNode = new PrimitiveTypeBuilder().withType(type).build();
     const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder()
@@ -58,5 +60,15 @@ export class BitloopsPrimaryTypeDirector {
   buildBuiltinClassPrimaryType(type: TBitloopsBuiltInClasses): BitloopsPrimaryTypeNode {
     const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(type).build();
     return new BitloopsPrimaryTypeBuilder().withPrimaryType(buildInClassTypeNode).build();
+  }
+
+  buildStandardValueObjectPrimaryType(standardVOIdentifier: string): BitloopsPrimaryTypeNode {
+    const standardVOTypeNode = new StandardVOTypeNodeBuilder()
+      .withValue(standardVOIdentifier)
+      .build();
+    const standardValueTypeNode = new StandardValueTypeNodeBuilder()
+      .withValue(standardVOTypeNode)
+      .build();
+    return new BitloopsPrimaryTypeBuilder().withPrimaryType(standardValueTypeNode).build();
   }
 }

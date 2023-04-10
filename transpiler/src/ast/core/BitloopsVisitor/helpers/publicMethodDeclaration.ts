@@ -26,6 +26,9 @@ import { StatementListNode } from '../../intermediate-ast/nodes/statements/State
 import { produceMetadata } from '../metadata.js';
 import { PublicMethodDeclarationNodeBuilder } from '../../intermediate-ast/builders/methods/PublicMethodDeclarationNodeBuilder.js';
 import { PublicMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
+import { StaticNode } from '../../intermediate-ast/nodes/methods/StaticNode.js';
+import { StaticNodeBuilder } from '../../intermediate-ast/builders/methods/StaticNodeBuilder.js';
+import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export const publicMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -33,8 +36,15 @@ export const publicMethodDeclarationVisitor = (
 ): PublicMethodDeclarationNode => {
   const methodNameNode = thisVisitor.visit(ctx.identifier());
   const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
-  const returnType: ReturnOkErrorTypeNode = thisVisitor.visit(ctx.returnPublicMethodType())[1];
+
+  const returnType: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode = thisVisitor.visit(
+    ctx.returnMethodType(),
+  );
+
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
+  const staticNode: StaticNode = ctx.staticKeyword()
+    ? thisVisitor.visit(ctx.staticKeyword())
+    : new StaticNodeBuilder().withValue(false).build();
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const methodNode = new PublicMethodDeclarationNodeBuilder(metadata)
@@ -42,6 +52,7 @@ export const publicMethodDeclarationVisitor = (
     .withParameters(parameterDependencies)
     .withReturnType(returnType)
     .withStatements(statements)
+    .withStatic(staticNode)
     .build();
   return methodNode;
 };

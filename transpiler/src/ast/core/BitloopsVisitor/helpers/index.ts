@@ -28,6 +28,7 @@ export { evaluationFieldListVisitor } from './evaluationFieldList.js';
 export { evaluationFieldVisitor } from './evaluationField.js';
 export { regularStructEvaluationVisitor } from './regularStructEvaluation.js';
 export { stringEvaluation } from './expression/literal/stringLiteral.js';
+export { regexLiteralEvaluation } from './expression/literal/regexLiteral.js';
 export { booleanLiteralVisitor as booleanEvaluation } from './expression/literal/booleanLiteral.js';
 export { dtoEvaluationVisitor } from './dtoEvaluation.js';
 export { evaluationVisitor } from './evaluation.js';
@@ -62,11 +63,11 @@ export { fieldListVisitor } from './fieldList.js';
 export { fieldVisitor } from './field.js';
 export { dtoDeclarationVisitor } from './dtoDeclaration.js';
 export { propsDeclarationVisitor } from './propsDeclaration.js';
-export { domainConstructorDeclarationVisitor } from './domainConstructorDeclaration.js';
+export { domainCreateDeclarationVisitor } from './domainCreateDeclaration.js';
 export { valueObjectDeclarationVisitor } from './valueObjectDeclaration.js';
 export { privateMethodDeclarationVisitor } from './privateMethodDeclaration.js';
 export { privateMethodDeclarationListVisitor } from './privateMethodDeclarationList.js';
-export { returnPrivateMethodTypeVisitor } from './returnPrivateMethodType.js';
+export { returnMethodTypeVisitor as returnPrivateMethodTypeVisitor } from './returnMethodType.js';
 export { domainConstDeclarationListVisitor } from './domainConstDeclarationList.js';
 export { entityDeclarationVisitor } from './entityDeclaration.js';
 export { aggregateDeclarationVisitor } from './aggregateDeclarationVisitor.js';
@@ -84,10 +85,7 @@ export {
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 // export { getClassEvaluationVisitor } from './getClassEvaluation.js';
-export {
-  useCaseDeclarationVisitor,
-  useCaseExecuteDeclarationVisitor,
-} from './useCaseDeclaration.js';
+export { useCaseDeclarationVisitor, executeDeclarationVisitor } from './useCaseDeclaration.js';
 export {
   equalityExpressionVisitor,
   relationalExpressionVisitor,
@@ -136,4 +134,25 @@ export { decimalEvaluation } from './expression/literal/decimalLiteral.js';
 export { integerEvaluation } from './expression/literal/integerLiteral.js';
 export { domainEvaluationInputRegularVisitor } from './expression/evaluation/domainEvaluationExpression.js';
 export { domainEvaluationInputFieldListVisitor } from './expression/evaluation/domainEvaluationEvalFieldList.js';
+export {
+  commandEvaluationVisitor,
+  queryEvaluationVisitor,
+  domainEventEvaluationVisitor,
+} from './expression/evaluation/index.js';
 export { errorEvaluationVisitor } from './expression/evaluation/errorEvaluation.js';
+export {
+  domainEventDeclarationVisitor,
+  domainEventIdentifierVisitor,
+} from './domainEventDeclaration.js';
+export {
+  domainEventHandlerDeclarationVisitor,
+  domainEventHandlerIdentifierVisitor,
+  domainEventHandlerHandleMethodParameterVisitor,
+  domainEventHandlerHandleMethodVisitor,
+} from './domainEventHandlerDeclaration.js';
+export {
+  entityConstructorEvaluationVisitor,
+  standardVOEvaluationVisitor,
+} from './expression/evaluation/index.js';
+export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';
+export { readModelEvaluationVisitor } from './readModelEvaluation.js';

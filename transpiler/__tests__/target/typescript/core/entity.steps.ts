@@ -20,16 +20,17 @@
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
+import { SupportedLanguages } from '../../../../src/target/supportedLanguages.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { formatString } from '../../../../src/target/typescript-nest/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript-nest/guards/index.js';
 import { VALID_ENTITY_TEST_CASES } from './mocks/domain/entity.js';
 
 describe('Entity test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
 
   VALID_ENTITY_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
@@ -39,9 +40,17 @@ describe('Entity test cases', () => {
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
       const entity = testCase.entity;
       const props = testCase.props;
+      const valueObjects = testCase.valueObjects;
 
       tree.insertChild(entity);
-      tree.insertSibling(props);
+      for (const prop of props) {
+        tree.insertSibling(prop);
+      }
+      if (valueObjects && valueObjects.length > 0) {
+        for (const vo of valueObjects) {
+          tree.insertSibling(vo);
+        }
+      }
 
       const intermediateAST = {
         core: { [boundedContext]: { [module]: tree } },

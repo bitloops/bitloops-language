@@ -58,7 +58,8 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     for (const [boundedContextName, boundedContext] of Object.entries(astCore)) {
       for (const [moduleName, module] of Object.entries(boundedContext)) {
         for (const [fileId, ASTData] of Object.entries(module)) {
-          const bitloopsVisitor = new BitloopsVisitor(fileId);
+          const contextInfo = { boundedContextName, moduleName };
+          const bitloopsVisitor = new BitloopsVisitor(fileId, contextInfo);
           bitloopsVisitor.visit(ASTData.ASTContext);
           const { intermediateASTTree } = bitloopsVisitor;
 
@@ -84,5 +85,3 @@ export class IntermediateASTParser implements IIntermediateASTParser {
     return this.intermediateASTTransformer.complete(intermediateAST);
   }
 }
-
-export { IntermediateASTValidator } from './intermediate-ast/IntermediateASTValidator.js';

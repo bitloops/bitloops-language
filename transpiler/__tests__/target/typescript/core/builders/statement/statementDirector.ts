@@ -10,6 +10,12 @@ import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
 import { IfStatementBuilderDirector } from './ifStatementDirector.js';
 import { BreakStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/BreakStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
+import { ReturnErrorStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
+import { ReturnErrorStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
+import { ReturnStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnStatementNode.js';
+import { ReturnStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ReturnStatementBuilder.js';
+import { ArgumentNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
+import { BitloopsPrimaryTypeNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export class StatementBuilderDirector {
   /**
@@ -23,6 +29,40 @@ export class StatementBuilderDirector {
       identifier,
       options,
     );
+  }
+
+  buildConstDeclarationIdentifierExpression(
+    constDeclarationIdentifier: string,
+    value: string,
+    typeAnnotation?: BitloopsPrimaryTypeNode,
+  ): ConstDeclarationNode {
+    return new ConstDeclarationBuilderDirector().buildIdentifierExpressionConstDeclaration(
+      constDeclarationIdentifier,
+      value,
+      typeAnnotation,
+    );
+  }
+
+  /**
+   *  e.g. const identifier = this.repoPort.get();
+   */
+  buildConstDeclarationThisMethodCallExpression({
+    constDeclarationIdentifier,
+    thisIdentifier,
+    methodCallIdentifier,
+    executeArgs,
+  }: {
+    constDeclarationIdentifier: string;
+    thisIdentifier: string;
+    methodCallIdentifier: string;
+    executeArgs?: ArgumentNode[];
+  }): ConstDeclarationNode {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationThisMethodCallExpression({
+      constDeclarationIdentifier,
+      thisIdentifier,
+      methodCallIdentifier,
+      executeArgs,
+    });
   }
 
   buildIfStatement(
@@ -45,6 +85,14 @@ export class StatementBuilderDirector {
     return new ReturnOKStatementNodeBuilder().withExpression(expression).build();
   }
 
+  buildReturnErrorStatement(expression: ExpressionNode): ReturnErrorStatementNode {
+    return new ReturnErrorStatementNodeBuilder().withExpression(expression).build();
+  }
+
+  buildReturnStatement(expression: ExpressionNode): ReturnStatementNode {
+    return new ReturnStatementNodeBuilder().withExpression(expression).build();
+  }
+
   buildExpressionEntityEvaluationWithIdentifier(
     entityName: string,
     identifierName: string,
@@ -57,6 +105,22 @@ export class StatementBuilderDirector {
         entityName,
         expressionProps,
       ),
+    );
+  }
+
+  /**
+   * e.g. this.name = name
+   */
+  buildThisAssignmentExpression(identifierName: string): ExpressionNode {
+    const memberDotExpression = new ExpressionBuilderDirector().buildThisMemberDotExpression(
+      identifierName,
+    );
+    const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(
+      identifierName,
+    );
+    return new ExpressionBuilderDirector().buildAssignmentExpression(
+      memberDotExpression,
+      identifierExpression,
     );
   }
 }

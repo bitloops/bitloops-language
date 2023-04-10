@@ -18,7 +18,7 @@ export class StructNodeBuilder implements IBuilder<StructNode> {
 
   public withIdentifier(structIdentifierNode: IdentifierNode): StructNodeBuilder {
     this.identifierNode = structIdentifierNode;
-    const structName = structIdentifierNode.getValue();
+    const structName = structIdentifierNode.getIdentifierName();
     this.structNode.setClassName(structName);
     return this;
   }

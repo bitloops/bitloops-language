@@ -27,6 +27,8 @@ import { StatementListNode } from '../../intermediate-ast/nodes/statements/State
 import { BitloopsPrimaryTypeNode } from '../../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { PrivateMethodDeclarationNodeBuilder } from '../../intermediate-ast/builders/methods/PrivateMethodDeclarationNodeBuilder.js';
 import { PrivateMethodDeclarationNode } from '../../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { StaticNodeBuilder } from '../../intermediate-ast/builders/methods/StaticNodeBuilder.js';
+import { StaticNode } from '../../intermediate-ast/nodes/methods/StaticNode.js';
 
 export const privateMethodDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -35,9 +37,12 @@ export const privateMethodDeclarationVisitor = (
   const methodNameNode = thisVisitor.visit(ctx.identifier());
   const parameterDependencies: ParameterListNode = thisVisitor.visit(ctx.parameterList());
   const returnType: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode = thisVisitor.visit(
-    ctx.returnPrivateMethodType(),
+    ctx.returnMethodType(),
   );
   const statements: StatementListNode = thisVisitor.visit(ctx.functionBody());
+  const staticNode: StaticNode = ctx.staticKeyword()
+    ? thisVisitor.visit(ctx.staticKeyword())
+    : new StaticNodeBuilder().withValue(false).build();
 
   const metadata = produceMetadata(ctx, thisVisitor);
   const methodNode = new PrivateMethodDeclarationNodeBuilder(metadata)
@@ -45,6 +50,7 @@ export const privateMethodDeclarationVisitor = (
     .withParameters(parameterDependencies)
     .withReturnType(returnType)
     .withStatements(statements)
+    .withStatic(staticNode)
     .build();
   return methodNode;
 };

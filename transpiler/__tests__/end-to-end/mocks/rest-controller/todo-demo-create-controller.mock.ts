@@ -1,11 +1,14 @@
 import { Fastify } from '@bitloops/bl-boilerplate-infra-rest-fastify';
 import { CreateTodoUseCase } from '../application/CreateTodoUseCase';
+import { Container, Infra } from '@bitloops/bl-boilerplate-core';
 import { DomainErrors } from '../domain/errors/index';
 export class CreateTodoRESTController extends Fastify.BaseController {
-  private createTodoUseCase: CreateTodoUseCase;
-  constructor(createTodoUseCase: CreateTodoUseCase) {
+  private commandBus: Infra.CommandBus.ICommandBus;
+  private queryBus: Infra.QueryBus.IQueryBus;
+  constructor(private createTodoUseCase: CreateTodoUseCase) {
     super();
-    this.createTodoUseCase = createTodoUseCase;
+    this.commandBus = Container.getCommandBus();
+    this.queryBus = Container.getQueryBus();
   }
   async executeImpl(request: Fastify.Request, response: Fastify.Reply): Promise<void> {
     const dto = { title: request.body.title };

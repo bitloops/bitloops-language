@@ -11,19 +11,22 @@ export class ReturnStatementNode extends StatementNode {
     super(BitloopsTypesMapping.TReturnStatement, metadata, ReturnStatementNode.classNodeName);
   }
 
-  getExpressionValues(): ExpressionNode {
+  getExpressionValues(): ExpressionNode | null {
     const children = this.getChildren();
     const expression = children.find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
     );
     if (!expression || !expression.getChildren().length) {
-      throw new Error('Expression not found');
+      return null;
     }
     return expression.getChildren()[0] as ExpressionNode;
   }
 
   isReturnErrorStatement(parentStatementList: StatementListNode): boolean {
     const expression = this.getExpressionValues();
+    if (!expression) {
+      return false;
+    }
     if (expression.isEvaluation()) {
       const evaluation = expression.getEvaluation();
       if (evaluation.isErrorEvaluation()) {

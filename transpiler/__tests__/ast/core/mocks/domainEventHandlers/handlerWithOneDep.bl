@@ -1,0 +1,5 @@
+DomainEventHandler SendEmailAfterDepositsIncrementedDomainEventHandler(customerService: CustomerServicePort) {
+  handle(event: DepositsIncrementedDomainEvent): (OK(void), Errors()){
+    this.commandBus.send(command);
+  }
+}

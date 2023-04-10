@@ -11,7 +11,7 @@ import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes
 import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { ArgumentDirector } from '../../builders/argument.js';
 import { ArgumentListDirector } from '../../builders/argumentList.js';
-import { BitloopsPrimaryTypeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ValueObjectBuilderDirector } from '../../builders/domain/valueObjectDirector.js';
 import { ExpressionBuilderDirector } from '../../builders/expression.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
@@ -20,6 +20,7 @@ import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclaration
 import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statement/builtinFunctionDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 
 type TestCase = {
   description: string;
@@ -44,7 +45,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       },
       statements: [
         new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'name'),
           new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
         ),
         new BuiltinFunctionStatementBuilderDirector().buildApplyRules([
@@ -74,9 +75,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     export class TitleVO extends Domain.ValueObject<TitleProps> {
       private constructor(props: TitleProps) {
         super(props);
-        this.props.name = 'newName';
       }
       public static create(props: TitleProps): Either<TitleVO, DomainErrors.InvalidTitleError> {
+        props.name = 'newName';
         const res = Domain.applyRules([new DomainRules.InvalidTitleRule(props.title)]);
         if (res) return fail(res);
         return ok(new TitleVO(props));
@@ -94,7 +95,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
         new ConstDeclarationBuilderDirector().buildStringExpressionConstDeclaration(
           'vName',
           'Kostas',
-          new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+          new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('string'),
         ),
       ],
       constructorParameterNode: { propIdentifier: 'props', propClassName: 'NameProps' },
@@ -104,7 +105,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       },
       statements: [
         new ExpressionBuilderDirector().buildAssignmentExpression(
-          new ExpressionBuilderDirector().buildThisMemberDotExpression('name'),
+          new ExpressionBuilderDirector().buildMemberDotOutOfVariables('props', 'name'),
           new ExpressionBuilderDirector().buildStringLiteralExpression('newName'),
         ),
       ],
@@ -116,7 +117,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
             new ReturnOkErrorTypeNodeBuilder()
               .withOk(
                 new ReturnOkTypeNodeBuilder()
-                  .withType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'))
+                  .withType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('void'))
                   .build(),
               )
               .withErrors(new ErrorIdentifiersNodeBuilder().withErrors([]).build())
@@ -133,6 +134,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
         new PrivateMethodDeclarationNodeBuilder()
           .withIdentifier(new IdentifierNodeBuilder().withName('isInvalidName').build())
@@ -143,7 +145,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
-          .withReturnType(new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'))
+          .withReturnType(new BitloopsPrimaryTypeNodeDirector().buildPrimitivePrimaryType('bool'))
           .withStatements(
             new StatementListNodeBuilder()
               .withStatements([
@@ -160,6 +162,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
               ])
               .build(),
           )
+          .withStatic(new StaticNodeBuilder().withValue(false).build())
           .build(),
       ],
     }),
@@ -176,9 +179,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     export class NameVO extends Domain.ValueObject<NameProps> {
       private constructor(props: NameProps) {
         super(props);
-        this.props.name = 'newName';
       }
       public static create(props: NameProps): Either<NameVO, DomainErrors.InvalidNameError> {
+        props.name = 'newName';
         return ok(new NameVO(props));
       }
       get name(): string {
@@ -193,5 +196,38 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       }
     }`,
     outputProps: 'export interface TitleProps { title: string; }',
+  },
+  {
+    description: 'Value object with some with id UUIDv4',
+    valueObject: new ValueObjectBuilderDirector().buildValueObject('UserIdVO', {
+      constantNodes: [],
+      constructorParameterNode: { propIdentifier: 'props', propClassName: 'UserIdProps' },
+      returnTypeParams: {
+        ok: 'UserIdVO',
+        errors: [],
+      },
+      statements: [],
+      privateMethods: [],
+    }),
+    props: new PropsDeclarationBuilderDirector().buildProps(
+      'UserIdProps',
+      new FieldListNodeBuilder()
+        .withFields([new FieldBuilderDirector().buildRequiredBuiltInClassField('id', 'UUIDv4')])
+        .build(),
+    ),
+    output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
+    import { UserIdProps } from './UserIdProps';
+    export class UserIdVO extends Domain.ValueObject<UserIdProps> {
+      private constructor(props: UserIdProps) {
+        super(props);
+      }
+      public static create(props: UserIdProps): Either<UserIdVO, never> {
+        return ok(new UserIdVO(props));
+      }
+      get id(): Domain.UUIDv4 {
+        return this.props.id;
+      }
+    }`,
+    outputProps: 'export interface UserIdProps { id: Domain.UUIDv4; }',
   },
 ];

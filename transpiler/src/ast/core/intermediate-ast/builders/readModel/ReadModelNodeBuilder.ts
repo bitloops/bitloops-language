@@ -1,7 +1,7 @@
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { FieldListNode } from '../../nodes/FieldList/FieldListNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { ReadModelNode } from '../../nodes/readModel/ReadModel.js';
+import { ReadModelNode } from '../../nodes/readModel/ReadModelNode.js';
 import { ReadModelIdentifierNode } from '../../nodes/readModel/ReadModelIdentifierNode.js';
 import { IBuilder } from '../IBuilder.js';
 

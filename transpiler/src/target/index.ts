@@ -26,15 +26,15 @@ import {
   TTargetCoreFinalContent,
   TargetCoreGeneratorError,
 } from './types.js';
-import { getTargetFileDestination } from './typescript/helpers/getTargetFileDestination.js';
+import { getTargetFileDestination } from './typescript-nest/helpers/getTargetFileDestination.js';
 import { SupportedLanguages } from './supportedLanguages.js';
 import {
   isTargetCoreGeneratorError,
   isTargetSetupGeneratorError,
-} from './typescript/guards/index.js';
-import { IntermediateModelToASTTargetTransformer } from './typescript/ast/index.js';
+} from './typescript-nest/guards/index.js';
+import { IntermediateModelToASTTargetTransformer } from './typescript-nest/ast/index.js';
 import { IntermediateAST } from '../ast/core/types.js';
-import { TTranspileOptions } from '../transpilerTypes.js';
+import { type TTranspileOptions } from '../transpilerTypes.js';
 import { TargetCoreGeneratorCreator } from './targetCoreCreator.js';
 import { TargetSetupGeneratorCreator } from './targetSetupCreator.js';
 

@@ -1,5 +1,5 @@
 Entity TodoEntity {    
-    constructor(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidDayError)) {           
+    static create(props: TodoProps): (OK(TodoEntity), Errors(DomainErrors.InvalidDayError)) {           
         return TodoEntity(props);   
     } 
 

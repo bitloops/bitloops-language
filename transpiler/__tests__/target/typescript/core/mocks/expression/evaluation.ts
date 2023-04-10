@@ -8,6 +8,9 @@ import { EntityEvaluationBuilderDirector } from '../../builders/domainEvaluation
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { ValueObjectEvaluationBuilderDirector } from '../../builders/domainEvaluation/valueObjectEvaluation.js';
 import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { ReadModelEvaluationBuilderDirector } from '../../builders/domainEvaluation/readModelEvaluation.js';
+import { DomainEventIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/DomainEvent/DomainEventIdentifierNodeBuilder.js';
 
 export const VALID_EVALUATION_TEST_CASES = [
   {
@@ -60,6 +63,88 @@ export const VALID_EVALUATION_TEST_CASES = [
       new ExpressionBuilderDirector().buildIdentifierExpression('addressProps'),
     ),
     output: 'AddressVO.create(addressProps)',
+  },
+  {
+    description: 'Command evaluation',
+    evaluation: new EvaluationBuilderDirector().buildCommandEvaluation(
+      new IdentifierNodeBuilder().withName('AddCourseCommand').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
+        ])
+        .build(),
+    ),
+    output: "new AddCourseCommand({course: 'Math'})",
+  },
+  {
+    description: 'Query evaluation with args',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation(
+      new IdentifierNodeBuilder().withName('GetTodoQuery').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('type', 'task'),
+        ])
+        .build(),
+    ),
+    output: "new GetTodoQuery({type: 'task'})",
+  },
+  {
+    description: 'Query evaluation without args',
+    evaluation: new EvaluationBuilderDirector().buildQueryEvaluation(
+      new IdentifierNodeBuilder().withName('GetTodoQuery').build(),
+    ),
+    output: 'new GetTodoQuery()',
+  },
+  {
+    description: 'Integration event evaluation with one argument',
+    evaluation: new EvaluationBuilderDirector().buildIntegrationEventEvaluation(
+      'TodoCreatedIntegrationEvent',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'name',
+            'superMarketList',
+          ),
+        ])
+        .build(),
+    ),
+    output: "TodoCreatedIntegrationEvent.create({name: 'superMarketList'})",
+  },
+  {
+    description: 'Entity constructor evaluation with identifier expression',
+    evaluation: new EvaluationBuilderDirector().buildEntityConstructorEvaluationWithExpression(
+      'TodoEntity',
+      new ExpressionBuilderDirector().buildIdentifierExpression('todoProps'),
+    ),
+    output: 'new TodoEntity(todoProps)',
+  },
+  {
+    description: 'Read model evaluation',
+    evaluation: new EvaluationBuilderDirector().buildReadModelEvaluation(
+      'UserEmailReadModel',
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'email',
+            'user@bitloops.com',
+          ),
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('userId', '123'),
+        ])
+        .build(),
+    ),
+    output: "UserEmailReadModel.fromPrimitives({ email: 'user@bitloops.com', userId: '123' })",
+  },
+  {
+    description: 'Valid DomainEvent Evaluation',
+    evaluation: new EvaluationBuilderDirector().buildDomainEventEvaluation(
+      new DomainEventIdentifierNodeBuilder().withName('TodoCreatedDomainEvent').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('course', 'Math'),
+        ])
+        .build(),
+    ),
+    output: "new TodoCreatedDomainEvent({course: 'Math'})",
   },
 ];
 
@@ -239,5 +324,84 @@ export const VALID_VALUE_OBJECT_EVALUATION_TEST_CASES = [
         new ExpressionBuilderDirector().buildIdentifierExpression('addressProps'),
       ),
     output: 'AddressVO.create(addressProps)',
+  },
+];
+
+export const VALID_STANDARD_VO_EVALUATION_TEST_CASES = [
+  {
+    description: 'Currency Standard Value Object evaluation',
+    evaluation: new EvaluationBuilderDirector().buildStandardVOEvaluation(
+      new IdentifierNodeBuilder().withName('Currency').build(),
+      new EvaluationFieldListNodeBuilder()
+        .withEvaluationFields([
+          new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+            'currencyCode',
+            'EUR',
+          ),
+        ])
+        .build(),
+    ),
+    output: "Domain.StandardVO.Currency.Value.create({ currencyCode: 'EUR' })",
+  },
+];
+
+export const VALID_DOMAIN_SERVICE_EVALUATION_TEST_CASES = [
+  {
+    description: 'Valid domain service evaluation',
+    evaluation: new EvaluationBuilderDirector().buildDomainServiceEvaluation(
+      'MarketingNotificationDomainService',
+      new ArgumentListDirector().buildArgumentListWithArgs([
+        new ArgumentNodeBuilder()
+          .withExpression(new ExpressionBuilderDirector().buildThisMemberDotExpression('repo'))
+          .build(),
+      ]),
+    ),
+    output: 'new MarketingNotificationDomainService(this.repo)',
+  },
+];
+
+export const VALID_READ_MODEL_EVALUATION_TEST_CASES = [
+  {
+    description: 'Valid read model evaluation',
+    readModelEvaluation:
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+        'UserEmailReadModel',
+        new EvaluationFieldListNodeBuilder()
+          .withEvaluationFields([
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField(
+              'email',
+              'user@bitloops.com',
+            ),
+            new EvaluationFieldBuilderDirector().buildStringLiteralEvaluationField('userId', '123'),
+          ])
+          .build(),
+      ),
+    output: "UserEmailReadModel.fromPrimitives({ email: 'user@bitloops.com', userId: '123' })",
+  },
+  {
+    description: 'Valid read model evaluation with identifiers',
+    readModelEvaluation:
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithFieldList(
+        'UserEmailReadModel',
+        new EvaluationFieldListNodeBuilder()
+          .withEvaluationFields([
+            new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField(
+              'email',
+              'emailFromRepo',
+            ),
+            new EvaluationFieldBuilderDirector().buildIdentifierEvaluationField('userId', 'id'),
+          ])
+          .build(),
+      ),
+    output: 'UserEmailReadModel.fromPrimitives({ email: emailFromRepo, userId: id })',
+  },
+  {
+    description: 'Valid read model evaluation with identifier expression',
+    readModelEvaluation:
+      new ReadModelEvaluationBuilderDirector().buildReadModelEvaluationWithExpression(
+        'UserEmailReadModel',
+        new ExpressionBuilderDirector().buildIdentifierExpression('userEmail'),
+      ),
+    output: 'UserEmailReadModel.fromPrimitives(userEmail)',
   },
 ];

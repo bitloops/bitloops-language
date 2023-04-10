@@ -22,11 +22,10 @@ import { PublicMethodDeclarationNode } from '../../../../../../src/ast/core/inte
 import { ReturnOkErrorTypeNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
-import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
-import { DomainCreateParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Domain/DomainCreateParameterNode.js';
-import { DomainCreateParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterNodeBuilder.js';
-import { DomainCreateParameterTypeNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/Domain/DomainCreateParameterTypeNodeBuilder.js';
-import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { BitloopsPrimaryTypeNodeDirector } from '../bitloopsPrimaryTypeDirector.js';
+import { ParameterNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
+import { ParameterNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterNodeBuilder.js';
+import { ParameterIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ParameterList/ParameterIdentifierNodeBuilder.js';
 
 type TReturnType = {
   ok: string;
@@ -84,13 +83,15 @@ export class EntityBuilderDirector {
     } = params;
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
 
-    const domainCreateParameterNode = new DomainCreateParameterNodeBuilder()
-      .withIdentifierNode(
-        new IdentifierNodeBuilder(null).withName(constructorParameterNode.propIdentifier).build(),
+    const parameterNode = new ParameterNodeBuilder()
+      .withType(
+        new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(
+          constructorParameterNode.propClassName,
+        ),
       )
-      .withTypeNode(
-        new DomainCreateParameterTypeNodeBuilder()
-          .withValue(constructorParameterNode.propClassName)
+      .withIdentifier(
+        new ParameterIdentifierNodeBuilder(null)
+          .withIdentifier(constructorParameterNode.propIdentifier)
           .build(),
       )
       .build();
@@ -100,7 +101,7 @@ export class EntityBuilderDirector {
       .withValues(
         new EntityValuesNodeBuilder()
           .withConstants(this.buildConstants(constantNodes))
-          .withCreate(this.buildCreate(domainCreateParameterNode, returnTypeParams, statements))
+          .withCreate(this.buildCreate(parameterNode, returnTypeParams, statements))
           .withPublicMethods(
             new PublicMethodDeclarationListNodeBuilder().withMethods(publicMethods).build(),
           )
@@ -115,7 +116,7 @@ export class EntityBuilderDirector {
   }
 
   private buildCreate(
-    parameterNode: DomainCreateParameterNode,
+    parameterNode: ParameterNode,
     returnTypeParams: TReturnType,
     statements: StatementNode[],
   ): DomainCreateNode {
@@ -131,7 +132,7 @@ export class EntityBuilderDirector {
     return new ReturnOkErrorTypeNodeBuilder()
       .withOk(
         new ReturnOkTypeNodeBuilder()
-          .withType(new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(ok))
+          .withType(new BitloopsPrimaryTypeNodeDirector().buildIdentifierPrimaryType(ok))
           .build(),
       )
       .withErrors(

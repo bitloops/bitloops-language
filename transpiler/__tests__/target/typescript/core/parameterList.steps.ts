@@ -19,7 +19,7 @@
  */
 
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { modelToTargetLanguage } from '../../../../src/target/typescript-nest/core/modelToTargetLanguage.js';
 import { VALID_PARAMETER_LIST_TEST_CASES } from './mocks/parameterList.js';
 
 describe('Valid parameter list test cases', () => {

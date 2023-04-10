@@ -1,6 +1,8 @@
 import {
+  TBitloopsIdentifier,
   TBitloopsPrimaryType,
-  TDomainPrivateMethod,
+  TBitloopsPrimitives,
+  TPrivateMethod,
   TStatements,
 } from '../../../../../src/types.js';
 import { BitloopsPrimaryTypeDirector } from '../bitloopsPrimaryTypeDirector.js';
@@ -26,7 +28,7 @@ export class PrivateMethodBuilderDirector {
     booleanValue: boolean;
     methodName: string;
     paramName: string;
-  }): TDomainPrivateMethod {
+  }): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))
@@ -35,7 +37,34 @@ export class PrivateMethodBuilderDirector {
       .build();
   }
 
-  buildMethodOkErrorReturnTypeWithNoStatements(methodName: string): TDomainPrivateMethod {
+  buildStaticMethodWithInputPropsAndPrimitiveReturnType({
+    propsType,
+    methodName,
+    returnType,
+    statements,
+  }: {
+    propsType: TBitloopsIdentifier;
+    methodName: string;
+    returnType: TBitloopsPrimitives;
+    statements: TStatements;
+  }): TPrivateMethod {
+    return this.builder
+      .withIdentifier(new IdentifierBuilder().withName(methodName).build())
+      .withParameters(
+        new ParameterListBuilderDirector().buildParameterListWithOneParameter({
+          parameterIdentifier: 'props',
+          parameterType: propsType,
+        }),
+      )
+      .withPrimaryReturnType(
+        new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(returnType),
+      )
+      .withStatements(statements)
+      .withStatic(true)
+      .build();
+  }
+
+  buildMethodOkErrorReturnTypeWithNoStatements(methodName: string): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters({ parameters: [] })
@@ -56,7 +85,7 @@ export class PrivateMethodBuilderDirector {
     paramName: string;
     statements: TStatements;
     primaryReturnType: TBitloopsPrimaryType;
-  }): TDomainPrivateMethod {
+  }): TPrivateMethod {
     return this.builder
       .withIdentifier(new IdentifierBuilder().withName(methodName).build())
       .withParameters(new ParameterListBuilderDirector().buildStringParams(paramName))
