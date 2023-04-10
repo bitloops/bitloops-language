@@ -28,13 +28,14 @@ import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
 import { SemanticAnalyzer } from '../../src/semantic-analysis/IntermediateASTValidator.js';
+import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
 
 describe('Semantic core error End To End', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const options = {
     formatterConfig: null,
-    targetLanguage: 'TypeScript',
+    targetLanguage: SupportedLanguages.TypeScriptNest,
   };
 
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
@@ -95,7 +96,7 @@ describe('Semantic setup error End To End', () => {
   const module = 'Todo';
   const options = {
     formatterConfig: null,
-    targetLanguage: 'TypeScript',
+    targetLanguage: SupportedLanguages.TypeScriptNest,
   };
 
   SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
@@ -153,7 +154,7 @@ describe('Semantic setup error End To End', () => {
 describe('Semantic bounded context errors End To End', () => {
   const options = {
     formatterConfig: null,
-    targetLanguage: 'TypeScript',
+    targetLanguage: SupportedLanguages.TypeScriptNest,
   };
 
   SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {

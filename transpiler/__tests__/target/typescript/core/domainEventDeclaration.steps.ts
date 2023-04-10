@@ -21,14 +21,15 @@
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
+import { SupportedLanguages } from '../../../../src/target/supportedLanguages.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
-import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { formatString } from '../../../../src/target/typescript-nest/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript-nest/guards/index.js';
 import { VALID_DOMAIN_EVENT_TEST_CASES, contextInfo } from './mocks/domain-event/index.js';
 
 describe('Valid domain event declaration test cases', () => {
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
   const { boundedContextName, moduleName } = contextInfo;
 
   VALID_DOMAIN_EVENT_TEST_CASES.forEach((testCase) => {

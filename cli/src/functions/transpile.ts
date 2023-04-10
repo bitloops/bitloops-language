@@ -23,6 +23,7 @@ import {
   TTranspileOutput,
   TTranspileOptions,
 } from '@bitloops/bl-transpiler';
+import { SupportedLanguages } from '../helpers/supportedLanguages.js';
 import { BoundedContextModules } from '../types.js';
 import { readSetupData } from './generateSetupModel.js';
 
@@ -30,7 +31,7 @@ import { getBitloopsFilesAndContents } from './readFilesContents.js';
 
 const DEFAULT_OPTIONS = {
   formatterConfig: null,
-  targetLanguage: 'TypeScript',
+  targetLanguage: SupportedLanguages.TypeScriptNest,
 };
 
 const transpileCode = async (

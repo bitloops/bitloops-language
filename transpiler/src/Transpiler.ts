@@ -17,7 +17,7 @@ import {
   TParserInputData,
 } from './parser/index.js';
 import { ITargetGenerator, TargetGeneratorError, TOutputTargetContent } from './target/types.js';
-import { isTargetGeneratorError } from './target/typescript/guards/index.js';
+import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
 import type { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
 
 export default class Transpiler {

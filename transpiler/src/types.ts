@@ -708,7 +708,7 @@ export type TUseCase = {
 };
 
 export const languageKey = 'language';
-export type TLanguage = 'TypeScript' | 'Java'; //TODO add for unknown languages
+export type TLanguage = 'Typescript-Nest' | 'Typescript';
 
 export const configInvocationKey = 'configInvocation';
 export type TConfigInvocation = {

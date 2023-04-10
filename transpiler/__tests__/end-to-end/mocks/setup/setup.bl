@@ -1,4 +1,4 @@
-Config.setLanguage(TypeScript);  
+Config.setLanguage(Typescript-Nest);  
 const myUseCase = [Demo][Hello World]HelloWorldUseCase();  
 const helloWorldRESTRouter = RESTRouter(REST.Fastify) {   
     Get('/hello'): [Demo][Hello World]GetHelloWorldRESTController(myUseCase); 

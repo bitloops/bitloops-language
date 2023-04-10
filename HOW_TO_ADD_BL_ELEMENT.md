@@ -89,18 +89,19 @@ visitTestIdentifier(ctx: BitloopsParser.TestIdentifierContext): TestIdentifierNo
 ### Nodes
 
 All the nodes are classes that have a name, a type and some metadata(includes the start/end lines of the element).
+We have an abstract class called `IntermediateASTNode` that every other node extends from it and also the class `IntermediateASTTree` that has all the nodes. Below are some basic methods of the two classes that are useful.
 
 #### IntermediateASTNode
 
-`addChild`:
+`addChild`: It adds the child to the node that is applied.
 
-`addSibling`:
+`addSibling`: It adds the sibling to the node that is applied.
 
-`buildObjectValue`:
+`buildObjectValue`: It builds the value of the node(its children with their values) as an object.
 
-`buildArrayValue`:
+`buildArrayValue`: It builds the value of the node as an array with objects(children values).
 
-`buildLeafValue`:
+`buildLeafValue`: It builds the value of the node, by creating an object with key the name of the node and value its actual value.
 
 #### IntermediateASTTree
 

@@ -20,17 +20,18 @@
 import { ClassTypes } from '../../src/helpers/mappings.js';
 import Transpiler from '../../src/Transpiler.js';
 import { TOutputTargetContent } from '../../src/target/types.js';
-import { formatString } from '../../src/target/typescript/core/codeFormatting.js';
+import { formatString } from '../../src/target/typescript-nest/core/codeFormatting.js';
 import { transpiler } from '../../src/index.js';
 import { REST_CONTROLLER_END_TO_END_TEST_CASES } from './mocks/rest-controller/rest-controller.js';
 import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
+import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
 
 describe('Valid Rest controller End To End', () => {
   const fileId = 'fileName';
   const classType = ClassTypes.Controller;
   const options = {
     formatterConfig: null,
-    targetLanguage: 'TypeScript',
+    targetLanguage: SupportedLanguages.TypeScriptNest,
   };
   let targetCode: TOutputTargetContent;
 

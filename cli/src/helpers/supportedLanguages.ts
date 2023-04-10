@@ -19,17 +19,17 @@
  */
 const SupportedLanguages = {
   TypeScript: 'TypeScript',
-  // Java = 'Java',
+  TypeScriptNest: 'TypeScript-Nest',
 };
 
 const languageExtensions: Record<string, string> = {
   TypeScript: '.ts',
-  // Java: '.java',
+  TypeScriptNest: '.ts',
 };
 
 const languageSuffixExtensions: Record<string, string> = {
   TypeScript: 'ts',
-  // Java: 'java',
+  TypeScriptNest: '.ts',
 };
 
 const isLanguageSupported = (language: string): boolean => {

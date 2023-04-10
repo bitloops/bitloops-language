@@ -934,8 +934,7 @@ eos
 
 language
     : TypeScript
-    | Java
-    // | unknownLanguage
+    | TypescriptNest
     ;
 
 unknownLanguage

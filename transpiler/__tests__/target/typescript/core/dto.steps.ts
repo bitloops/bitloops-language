@@ -22,17 +22,18 @@ import { DTONodeBuilder } from '../../../../src/ast/core/intermediate-ast/builde
 import { IntermediateASTTree } from '../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTRootNode } from '../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { TargetGenerator } from '../../../../src/target/index.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
 import { VALID_DTO_TEST_CASES, VALID_TWO_DTOS_TEST_CASES } from './mocks/dto.js';
 import { TTargetCoreFinalContent } from '../../../../src/target/types.js';
-import { isTargetGeneratorError } from '../../../../src/target/typescript/guards/index.js';
+import { SupportedLanguages } from '../../../../src/target/supportedLanguages.js';
+import { formatString } from '../../../../src/target/typescript-nest/core/codeFormatting.js';
+import { isTargetGeneratorError } from '../../../../src/target/typescript-nest/guards/index.js';
 
 describe('Valid DTO with fields to Typescript', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const classType = ClassTypes.DTO;
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
 
   VALID_DTO_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {
@@ -84,7 +85,7 @@ describe('Valid two DTOs with fields to Typescript', () => {
   const module = 'demo';
   const classType = ClassTypes.DTO;
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
 
   VALID_TWO_DTOS_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {

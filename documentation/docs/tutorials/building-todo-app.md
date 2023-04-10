@@ -33,11 +33,11 @@ Setup file must be located in the root directory of the input folder.
 
 ##### Language configuration (optional)  
 Configure which language the bl will be transpiled to.
-Fow now, only Typescript is supported and it is selected by default.  
+Fow now, only Typescript-Nest is supported and it is selected by default.  
 More languages to follow.
 
 ```typescript
-Config.setLanguage(TypeScript);
+Config.setLanguage(Typescript-Nest);
 ```
 
 ##### Router definition (REST)
