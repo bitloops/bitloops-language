@@ -1,6 +1,6 @@
 import { TTargetSetupContent } from '../../../../src/target/types.js';
 import { FileUtil } from '../../../../src/utils/file.js';
-import { formatString } from '../../../../src/target/typescript/core/codeFormatting.js';
+import { formatString } from '../../../../src/target/typescript-nest/core/codeFormatting.js';
 
 type TestCase = {
   description: string;

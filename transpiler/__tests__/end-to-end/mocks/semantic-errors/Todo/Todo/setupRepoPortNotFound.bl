@@ -1,4 +1,4 @@
-Config.setLanguage(TypeScript);
+Config.setLanguage(TypeScript-Nest);
 
 // DB CONNECTIONS
 

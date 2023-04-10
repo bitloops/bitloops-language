@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../src/helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../src/target/typescript/core/modelToTargetLanguage.js';
+import { modelToTargetLanguage } from '../../../../src/target/typescript-nest/core/modelToTargetLanguage.js';
 import { VALID_PRIMARY_TYPE_TEST_CASES } from './mocks/bitloopsPrimaryType.js';
 
 describe('Valid bitloops primary type test cases', () => {

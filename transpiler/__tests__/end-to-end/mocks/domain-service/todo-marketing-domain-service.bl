@@ -2,7 +2,6 @@ Props UserProps {
     optional UUIDv4 id;
 }
 
-
 Root Entity UserEntity {
     static create(props: UserProps): (OK(UserEntity), Errors())  {
         const userEntity = UserEntity(props);

@@ -1,5 +1,0 @@
-// The Setting will be on setup.bl
-// 1. We need to add the decorator in mutation methods in repo
-// 2. Add version to props, constructor(instead of create)
-// 3. Add getter(version) and incrementVersion methods
-// 4. Add version toPrimitives, fromPrimitives   
