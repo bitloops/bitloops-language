@@ -9,7 +9,7 @@ import type {
 import { BitloopsParser, type OriginalParserError, type TParserInputData } from './parser/index.js';
 import { SemanticAnalyzer } from './semantic-analysis/IntermediateASTValidator.js';
 import { TargetGenerator } from './target/index.js';
-import { getTargetFileDestination } from './target/typescript/helpers/getTargetFileDestination.js';
+import { getTargetFileDestination } from './target/typescript-nest/helpers/getTargetFileDestination.js';
 import Transpiler from './Transpiler.js';
 import type { TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
 

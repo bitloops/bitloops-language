@@ -1,4 +1,4 @@
-Config.setLanguage(Typescript-Nest);
+Config.setLanguage(TypeScript-Nest);
 
 const mongoConnection = RepoConnections.Mongo({
     host: 'localhost',

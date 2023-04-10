@@ -1,4 +1,4 @@
-Config.setLanguage(Typescript-Nest);
+Config.setLanguage(TypeScript-Nest);
 
 
 const todoRESTRouter = RESTRouter(REST.Fastify) {

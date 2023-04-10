@@ -708,7 +708,7 @@ export type TUseCase = {
 };
 
 export const languageKey = 'language';
-export type TLanguage = 'Typescript-Nest' | 'Typescript';
+export type TLanguage = 'TypeScript-Nest' | 'TypeScript';
 
 export const configInvocationKey = 'configInvocation';
 export type TConfigInvocation = {

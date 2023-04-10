@@ -74,7 +74,7 @@ describe('Valid literal expression test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
   const formatterConfig = null;
-  const language = 'TypeScript';
+  const language = SupportedLanguages.TypeScriptNest;
 
   VALID_LITERAL_TEST_CASES.forEach((testCase) => {
     it(`${testCase.description}`, () => {

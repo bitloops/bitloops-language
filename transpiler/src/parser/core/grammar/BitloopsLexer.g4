@@ -328,7 +328,7 @@ DomainServiceIdentifier:        UpperCaseStart IdentifierPart* DomainService;
 SetLanguage:                    'setLanguage';
 SetBuses:                       'setBuses';
 TypeScript:                     'TypeScript';
-TypescriptNest:                 'Typescript-Nest';
+TypeScriptNest:                 'TypeScript-Nest';
 Java:                           'Java';
 FastifyServer:                  'REST.Fastify';
 ExpressServer:                  'REST.Express';

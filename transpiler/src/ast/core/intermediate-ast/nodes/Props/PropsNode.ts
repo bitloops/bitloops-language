@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../../target/typescript/core/modelToTargetLanguage.js';
-import { BitloopsPrimTypeIdentifiers } from '../../../../../target/typescript/core/type-identifiers/bitloopsPrimType.js';
+import { modelToTargetLanguage } from '../../../../../target/typescript-nest/core/modelToTargetLanguage.js';
+import { BitloopsPrimTypeIdentifiers } from '../../../../../target/typescript-nest/core/type-identifiers/bitloopsPrimType.js';
 import { bitloopsIdentifiersTypeKey } from '../../../../../types.js';
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { TBitloopsPrimitives, TValueObjectIdentifier } from '../../../../../types.js';
