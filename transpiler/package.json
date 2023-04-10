@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-transpiler",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The one and only Bitloops Language transpiler",
   "engines": {
     "node": ">= 13"
@@ -75,7 +75,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "antlr4": "^4.11.0",
+    "antlr4": "4.11.0",
     "lodash": "^4.17.21",
     "prettier": "^2.7.1"
   },
