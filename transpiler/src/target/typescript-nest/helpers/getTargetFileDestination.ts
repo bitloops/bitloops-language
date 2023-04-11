@@ -63,7 +63,7 @@ export const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.DomainError]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
   [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
   [ClassTypes.DTO]: PROJECT_RELATIVE_PATHS.DTOs,
-  [ClassTypes.Package]: PROJECT_RELATIVE_PATHS.PACKAGES,
+  [ClassTypes.PackagePort]: PROJECT_RELATIVE_PATHS.PACKAGES,
   [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
@@ -123,7 +123,7 @@ const getTargetFileDestination = (
     case ClassTypes.ApplicationError:
     case ClassTypes.Props:
     case ClassTypes.DTO:
-    case ClassTypes.Package:
+    case ClassTypes.PackagePort:
     case ClassTypes.RepoPort:
     case ClassTypes.DomainRule:
     case ClassTypes.DomainEvent:
@@ -165,7 +165,7 @@ const getFilePathRelativeToModule = (
     case ClassTypes.Entity:
     case ClassTypes.ValueObject:
     case ClassTypes.DTO:
-    case ClassTypes.Package:
+    case ClassTypes.PackagePort:
     case ClassTypes.RepoPort:
     case ClassTypes.Command:
     case ClassTypes.Query:

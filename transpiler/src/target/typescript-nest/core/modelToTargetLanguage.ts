@@ -68,7 +68,6 @@ import {
   definitionMethodsToTargetLanguage,
 } from './components/definition-methods/index.js';
 import { packagePortToTargetLanguage } from './components/package-port/index.js';
-import { packageToTargetLanguage } from './components/packages/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
 import { valueObjectEvaluationToTargetLanguage } from './components/statements/expression/evaluation/valueObjectEvaluation.js';
 import { evaluationFieldsToTargetLanguage } from './components/statements/expression/evaluation/evaluationFields.js';
@@ -334,10 +333,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TPackagePort: {
       res = packagePortToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TPackage: {
-      res = packageToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainCreateMethod: {

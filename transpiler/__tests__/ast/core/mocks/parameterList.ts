@@ -31,12 +31,12 @@ export const validParameterListTestCases: Array<TestCase> = [
   {
     description: 'valid 1 command handler Parameter',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTest { (helloWorldCommandHandler: HelloWorldCommandHandler) }',
+    inputBLString: 'JestTest { (helloWorldCommand: HelloWorldCommand) }',
     parameterList: {
       parameters: [
         new ParameterBuilderDirector().buildIdentifierParameter(
-          'helloWorldCommandHandler',
-          'HelloWorldCommandHandler',
+          'helloWorldCommand',
+          'HelloWorldCommand',
         ),
       ],
     },

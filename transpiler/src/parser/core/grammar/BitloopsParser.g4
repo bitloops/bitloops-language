@@ -69,6 +69,8 @@ bitloopsIdentifiers
     | commandIdentifier
     | queryIdentifier
     | domainServiceIdentifier
+    | commandHandlerIdentifier
+    | queryHandlerIdentifier
     ;
 
 primitives

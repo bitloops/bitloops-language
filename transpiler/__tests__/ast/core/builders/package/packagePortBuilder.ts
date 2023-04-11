@@ -1,6 +1,7 @@
 import { IBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
 import {
   methodDefinitionListKey,
+  PackagePortKey,
   TDefinitionMethodInfo,
   TDefinitionMethods,
   TPackagePort,
@@ -33,8 +34,10 @@ export class PackagePortBuilder implements IBuilder<TPackagePort> {
 
   public build(): TPackagePort {
     return {
-      PackagePortIdentifier: this.packagePortIdentifier,
-      ...this.definitionMethods,
+      [PackagePortKey]: {
+        PackagePortIdentifier: this.packagePortIdentifier,
+        ...this.definitionMethods,
+      },
     };
   }
 }

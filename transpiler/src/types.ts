@@ -743,9 +743,12 @@ export type TDefinitionMethods = { [methodDefinitionListKey]: TDefinitionMethodI
 
 export const PackagePortIdentifierKey = 'PackagePortIdentifier';
 export type TPackagePortIdentifier = string;
+export const PackagePortKey = 'PackagePort';
 export type TPackagePort = {
-  [PackagePortIdentifierKey]: TPackagePortIdentifier;
-} & TDefinitionMethods;
+  [PackagePortKey]: {
+    [PackagePortIdentifierKey]: TPackagePortIdentifier;
+  } & TDefinitionMethods;
+};
 
 export type TDefinitionMethodValues = {
   identifier: TIdentifier;
@@ -757,15 +760,6 @@ export type TDefinitionMethodOkErrorReturnType = TDefinitionMethodValues & TOkEr
 
 export type TDefinitionMethodInfo = {
   methodDefinition: TDefinitionMethodPrimaryReturnType | TDefinitionMethodOkErrorReturnType;
-};
-
-export const PackageIdentifierKey = 'PackageIdentifier';
-export type TPackageIdentifier = string;
-export type TPackage = {
-  Package: {
-    [PackageIdentifierKey]: TPackageIdentifier;
-    port: TPackagePort;
-  };
 };
 
 export const ServicePortIdentifierKey = 'ServicePortIdentifier';

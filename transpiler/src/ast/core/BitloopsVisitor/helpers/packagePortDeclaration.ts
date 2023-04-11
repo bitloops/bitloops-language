@@ -44,7 +44,7 @@ export const packagePortDeclarationVisitor = (
   );
   const methodDefinitions: MethodDefinitionListNode = thisVisitor.visit(ctx.methodDefinitionList());
 
-  new PackagePortNodeBuilder(produceMetadata(ctx, thisVisitor))
+  new PackagePortNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
     .withIdentifier(packagePortIdentifierNode)
     .withMethodDefinitions(methodDefinitions)
     .build();
