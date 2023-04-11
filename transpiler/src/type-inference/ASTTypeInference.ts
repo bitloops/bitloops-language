@@ -18,39 +18,88 @@
 //  *  For further information you can contact legal(at)bitloops.com.
 //  */
 
-// // Type inference algorithm based on Algorithm W
-// type Type = string | [string, Type] | [Type, Type];
-// type Constraint = [Type, Type];
+// import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateASTTree.js';
+// import { ExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
+// import { IntermediateASTNode } from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
+// import { SymbolTable } from './SymbolTable.js';
 
-// function inferType(expression: string, typeEnvironment: { [key: string]: Type }): Type {
-//   const ast = parse(expression);
-//   const [type, constraints] = walk(ast, typeEnvironment);
-//   const substitution = unify(constraints);
-//   return applySubstitution(type, substitution);
+// type Type =
+//   | number
+//   | boolean
+//   | string
+//   | { [key: string]: Type }
+//   | ((...args: Type[]) => Type)
+//   | null;
+
+// type Constraint = {
+//   left: Type;
+//   right: Type;
+// };
+
+// // Type inference algorithm based on Algorithm W
+// export class ASTTypeInference {
+//   private symbolTable: SymbolTable;
+//   private intermediateASTTree: IntermediateASTTree;
+
+//   constructor(intermediateASTTree: IntermediateASTTree) {
+//     this.intermediateASTTree = intermediateASTTree;
+//     this.symbolTable = new SymbolTable();
+//   }
+
+//   inferType(): void {
+//     this.intermediateASTTree.traverse(this.intermediateASTTree.getRootNode(), (node) => {
+//       // TODO if node is applicable
+//       const { expression, variableName } = this.getExpression(node);
+//       const [type, constraints] = walk(expression, this.symbolTable);
+//       const nodeSymbolTable = unify(constraints, variableName);
+//       //TODO rename
+//       applySubstitution(type, nodeSymbolTable);
+//     });
+//   }
+
+//   private getExpression(node: IntermediateASTNode): {
+//     expression: ExpressionNode;
+//     variableName: string;
+//   } {
+//     let expression: ExpressionNode;
+//     let variableName: string;
+//     if (node.isConstDeclarationExpression()) {
+//       expression = node.getExpression();
+//       variableName = node.getVariableName();
+//     } else if (node.isVariableDeclarationExpression()) {
+//       expression = node.getExpression();
+//       variableName = node.getVariableName();
+//     } else if (node.isParameter()) {
+//       expression = node.getExpression();
+//       variableName = node.getVariableName();
+//     }
+//     return { expression, variableName };
+//   }
 // }
 
-// function walk(ast: ASTNode, typeEnvironment: { [key: string]: Type }): [Type, Constraint[]] {
-//   if (ast.type === 'literal') {
-//     if (typeof ast.value === 'number') {
+// //Nodes are const declaration expressions/variable declaration expressions/parameter
+// function walk(expressionNode: ExpressionNode, symbolTable: SymbolTable): [Type, Constraint[]] {
+//   if (expressionNode.type === 'literal') {
+//     if (typeof expressionNode.value === 'number') {
 //       return ['number', []];
-//     } else if (typeof ast.value === 'string') {
+//     } else if (typeof expressionNode.value === 'string') {
 //       return ['string', []];
-//     } else if (typeof ast.value === 'boolean') {
+//     } else if (typeof expressionNode.value === 'boolean') {
 //       return ['boolean', []];
 //     }
-//   } else if (ast.type === 'variable') {
-//     if (ast.name in typeEnvironment) {
-//       const type = typeEnvironment[ast.name];
+//   } else if (expressionNode.type === 'variable') {
+//     if (expressionNode.name in symbolTable) {
+//       const type = symbolTable[expressionNode.name];
 //       return [type, []];
 //     } else {
 //       const type = freshTypeVariable();
-//       typeEnvironment[ast.name] = type;
+//       symbolTable[expressionNode.name] = type;
 //       return [type, []];
 //     }
-//   } else if (ast.type === 'binary_expression') {
-//     const [leftType, leftConstraints] = walk(ast.left, typeEnvironment);
-//     const [rightType, rightConstraints] = walk(ast.right, typeEnvironment);
-//     const operator = ast.operator;
+//   } else if (expressionNode.type === 'binary_expression') {
+//     const [leftType, leftConstraints] = walk(expressionNode.left, symbolTable);
+//     const [rightType, rightConstraints] = walk(expressionNode.right, symbolTable);
+//     const operator = expressionNode.operator;
 
 //     const operatorConstraints = {
 //       '+': { left: 'number', right: 'number', result: 'number' },
@@ -68,24 +117,45 @@
 //     ];
 
 //     return [operatorConstraints.result, constraints];
+//   } else if (expressionNode.type === 'method_call') {
+//     //TODO args??
+//     // const [rightType, rightConstraints] = walk(expressionNode.getArguments(), symbolTable);
+//     // this.repoPort.getRepoById(repoId)
+//     // symbolTable[this.repoPort.getRepoById]
+//     // symbolTable[this.repoPort]
+//     if (expressionNode.name in symbolTable) {
+//       const type = symbolTable[expressionNode.name];
+//       return [type, []];
+//     }
+//   } else if (expressionNode.type === 'not_expression') {
+//     const [notExpressionType, notConstraints] = walk(expressionNode.getExpression(), symbolTable);
+
+//     const notExpressionTypeConstraints = {
+//       boolean: { result: 'boolean' },
+//       number: { result: 'boolean' },
+//     }[notExpressionType];
+
+//     const constraints = [
+//       ...notConstraints,
+//       [notExpressionTypeConstraints.result, freshTypeVariable()],
+//     ];
+//     return ['boolean', constraints];
+//   } else if (expressionNode.type === 'member_dot') {
 //   }
-//   throw new Error('Unknown AST node type: ' + ast.type);
+//   throw new Error('Unknown AST node type: ' + expressionNode.type);
 // }
 
-// function unify(constraints: Constraint[]): { [key: string]: Type } {
-//   const substitution: { [key: string]: Type } = {};
-//   for (const [t1, t2] of constraints) {
-//     const s = unifyTypes(t1, t2, substitution);
-//     composeSubstitution(substitution, s);
+// function unify(constraints: Constraint[], variableName: string): SymbolTable {
+//   const symbolTable = new SymbolTable();
+//   for (const constraint of constraints) {
+//     const { left, right } = constraint;
+//     const s = unifyTypes(left, right, symbolTable);
+//     composeSubstitution(symbolTable, s);
 //   }
-//   return substitution;
+//   return symbolTable;
 // }
 
-// function unifyTypes(
-//   t1: Type,
-//   t2: Type,
-//   substitution: { [key: string]: Type },
-// ): { [key: string]: Type } {
+// function unifyTypes(t1: Type, t2: Type, substitution: SymbolTable): { [key: string]: Type } {
 //   if (t1 === t2) {
 //     return {};
 //   } else if (typeof t1 === 'string') {
@@ -121,7 +191,7 @@
 //   }
 // }
 
-// function applySubstitution(type: Type, substitution: Substitution): Type {
+// function applySubstitution(type: Type, substitution: SymbolTable): Type {
 //   if (Array.isArray(type)) {
 //     return [applySubstitution(type[0], substitution), applySubstitution(type[1], substitution)];
 //   } else if (type in substitution) {
@@ -137,8 +207,8 @@
 //   return typeVariable;
 // }
 
-// function composeSubstitution(subst1: Substitution, subst2: Substitution): Substitution {
-//   const result: Substitution = {};
+// function composeSubstitution(subst1: SymbolTable, subst2: SymbolTable): SymbolTable {
+//   const result: SymbolTable = {};
 //   for (const [typeVar, type] of Object.entries(subst2)) {
 //     result[typeVar] = applySubstitution(type, subst1);
 //   }
