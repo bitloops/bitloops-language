@@ -1,6 +1,5 @@
 import { OriginalAST } from '../../parser/index.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
-import { ExpressionNode } from './intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
 import { VariableDeclarationNode } from './intermediate-ast/nodes/variableDeclaration.js';
@@ -47,10 +46,5 @@ export class IntermediateASTValidationError extends Error {
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | IntermediateASTValidationError[];
 }
-
-export type TControllerUseCaseExecuteNodeType =
-  | ConstDeclarationNode
-  | VariableDeclarationNode
-  | ExpressionNode;
 
 export type TVariableDeclarationStatement = ConstDeclarationNode | VariableDeclarationNode;

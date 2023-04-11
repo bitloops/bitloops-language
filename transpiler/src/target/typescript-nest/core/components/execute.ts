@@ -1,6 +1,6 @@
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TExecute, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { TExecute, TTargetDependenciesTypeScript } from '../../../../types.js';
+import { modelToTargetLanguage } from '../modelToTargetLanguage.js';
 
 export const executeToTargetLanguage = (
   variable: TExecute,

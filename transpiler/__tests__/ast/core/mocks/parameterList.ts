@@ -29,14 +29,14 @@ export const validParameterListTestCases: Array<TestCase> = [
     },
   },
   {
-    description: 'valid 1 UseCase Parameter',
+    description: 'valid 1 command handler Parameter',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTest { (helloWorldUseCase: HelloWorldUseCase) }',
+    inputBLString: 'JestTest { (helloWorldCommandHandler: HelloWorldCommandHandler) }',
     parameterList: {
       parameters: [
         new ParameterBuilderDirector().buildIdentifierParameter(
-          'helloWorldUseCase',
-          'HelloWorldUseCase',
+          'helloWorldCommandHandler',
+          'HelloWorldCommandHandler',
         ),
       ],
     },

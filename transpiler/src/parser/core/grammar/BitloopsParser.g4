@@ -57,10 +57,7 @@ propsIdentifier
 ;
 
 bitloopsIdentifiers
-    : 
-    UseCaseIdentifier
-    | dtoIdentifier
-    | ControllerIdentifier
+    : dtoIdentifier
     | ErrorIdentifier
     | propsIdentifier
     | ValueObjectIdentifier
@@ -128,13 +125,9 @@ regularIdentifier
     // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
     | Execute                                                   # ExecuteExpression
     | Delete                                                    # DeleteKeyword
-    | serverType                                                # ServerTypeExpression
     | Handle                                                    # HandleKeywordIdentifier
     | EntityIdentifier                                          # EntityIdentifierString
     | ValueObjectIdentifier                                     # ValueObjectIdentifierString
-    | Method                                                    # MethodKeywordIdentifier
-    | GraphQLOperation                                          # OperationKeywordIdentifier
-    | Input                                                     # InputKeywordIdentifier
     ;
 
 regularStructEvaluation
@@ -210,11 +203,9 @@ sourceElement
     : dtoDeclaration
     | domainErrorDeclaration
     | applicationErrorDeclaration
-    | controllerDeclaration
     | jestTestDeclaration
     | propsDeclaration
     | structDeclaration
-    | useCaseDeclaration
     | packagePortDeclaration
     | valueObjectDeclaration
     | domainRuleDeclaration
@@ -242,10 +233,7 @@ jestTestDeclaration
     | JestTestStructEvaluation OpenBrace structEvaluation SemiColon? CloseBrace  SemiColon?  
     | JestTestDTOEvaluation OpenBrace dtoEvaluation SemiColon? CloseBrace  SemiColon?    
     | JestTestEvaluation OpenBrace evaluation SemiColon? CloseBrace  SemiColon?  
-    | JestTest OpenBrace parameterList CloseBrace SemiColon?   
-    | JestTest OpenBrace restControllerParameters CloseBrace     
-    | JestTest OpenBrace restControllerExecuteDeclaration CloseBrace    
-    | JestTest OpenBrace restControllerMethodDeclaration CloseBrace  
+    | JestTest OpenBrace parameterList CloseBrace SemiColon?      
     | JestTestBuiltInClass OpenBrace builtInClassEvaluation CloseBrace 
     | JestTestReturnOkErrorType OpenBrace returnOkErrorType CloseBrace SemiColon?    
     | JestTestConstDeclaration OpenBrace constDeclaration CloseBrace SemiColon?  
@@ -271,7 +259,6 @@ errorEvaluation
 
 evaluation
     : builtInClassEvaluation
-    | corsOptionsEvaluation
     | errorEvaluation
     | dtoEvaluation
     | valueObjectEvaluation
@@ -290,10 +277,6 @@ evaluation
 
 domainServiceEvaluation
     : domainServiceIdentifier Dot Create methodArguments SemiColon?
-    ;
-
-corsOptionsEvaluation
-    : CorsOptions OpenParen OpenBrace evaluationFieldList CloseBrace CloseParen 
     ;
 
 condition
@@ -434,14 +417,6 @@ domainCreateParam
 
 domainCreateDeclaration
     : Static Create OpenParen domainCreateParam CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
-    ;
-
-useCaseIdentifier
-    : UseCaseIdentifier
-    ;
-
-useCaseDeclaration
-    : UseCase useCaseIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 commandIdentifier
@@ -693,68 +668,6 @@ executeDeclaration
     : Execute OpenParen parameter? CloseParen Colon returnOkErrorType OpenBrace functionBody CloseBrace
     ;
 
-restControllerParameters
-    : Identifier Comma Identifier
-    ;
-
-restControllerExecuteDeclaration
-    : Execute OpenParen restControllerParameters CloseParen OpenBrace functionBody CloseBrace
-    ;
-
-restControllerMethodDeclaration
-    : Method Colon httpMethod SemiColon?
-    ;
-    
-httpMethod
-    : MethodGet | MethodPut | MethodPost | MethodDelete | MethodPatch | MethodOptions
-    ;
-
-
-controllerDeclaration
-    : RESTController restControllerIdentifier parameterList OpenBrace restControllerMethodDeclaration restControllerExecuteDeclaration CloseBrace SemiColon?   # RESTControllerDeclaration
-    | GraphQLController graphQLControllerIdentifier parameterList OpenBrace graphQLResolverOptions graphQLControllerExecuteDeclaration CloseBrace SemiColon?      # GraphQLControllerDeclaration
-    ;
-
-restControllerIdentifier
-    : ControllerIdentifier
-    ;
-
-graphQLControllerIdentifier
-    : ControllerIdentifier
-    ;
-
-graphQLResolverOptions
-    : graphQLOperationTypeAssignment graphQLOperationInputTypeAssignment?
-    ;
-
-graphQLOperationTypeAssignment
-    : GraphQLOperation Colon graphQLOperation SemiColon
-    ;
-graphQLOperationInputTypeAssignment
-    : Input Colon graphQLResolverInputType SemiColon
-    ;
-
-graphQLResolverInputType
-    : DTOIdentifier;
-
-graphQLOperation
-    : OperationMutation
-    | OperationQuery
-    | OperationSubscription
-    ;
-
-graphQLControllerExecuteDeclaration
-    : Execute OpenParen graphQLControllerParameters CloseParen Colon graphQLControllerReturnType OpenBrace functionBody CloseBrace
-    ;
-
-graphQLControllerParameters
-    : Identifier
-    ;
-
-graphQLControllerReturnType
-    : DTOIdentifier
-    ;
-
 dtoIdentifier
     : DTOIdentifier
     ;
@@ -937,209 +850,18 @@ language
     | TypeScriptNest
     ;
 
-unknownLanguage
-    : identifier
-    ;
-
 languageSetterMethod
     : SetLanguage OpenParen language CloseParen SemiColon?
     ;
 
 configInvocation
-    : Config Dot languageSetterMethod                                                       # SetLanguageConfig 
-    | Config Dot SetBuses OpenParen OpenBrace busesConfig CloseBrace CloseParen SemiColon?  # SetBusesConfig
-    ;
-
-busesConfig
-    : busConfig (Comma busConfig)* Comma?
-    ;
-
-busConfig
-    : busIdentifier Colon MessageBus Dot busType
-    ;
-
-busIdentifier
-    : CommandBus
-    | EventBus
-    | IntegrationEventBus
-    | QueryBus
-    ;
-
-busType
-    : InProcess
-    | External
-    ;
-
-// Config.setBuses({
-//     COMMAND_BUS: MessageBus.External,//Here it should be Kafka, Nats etc MessageBus.External.Nats
-//     EVENT_BUS: MessageBus.InProcess,
-//     INTEGRATION_EVENT_BUS: MessageBus.InProcess,
-//     QUERY_BUS: MessageBus.InProcess,
-// })
-
-restRouter
-    : RESTRouter
-    ;
-
-pathString
-    : StringLiteral
-    ;
-
-httpMethodVerb
-    : GET
-    | POST
-    | PUT
-    | DELETE
-    | PATCH
-    | OPTIONS
-    ;
-
-routerControllers
-    : routerController*
-    ;
-
-routerArguments
-    : OpenParen serverType CloseParen
-    ;
-
-useCaseExpression
-    : boundedContextModuleDeclaration useCaseIdentifier methodArguments
-    ;
-
-routerExpression
-    : restRouter routerArguments OpenBrace routerControllers CloseBrace
-    ;
-
-packageAdapterClassName
-    : packageAdapterIdentifier
-    ;
-
-packageAdapterIdentifier
-    : PackageAdapterIdentifier
-    ;
-
-packageConcretion
-    : boundedContextModuleDeclaration adapter=packageAdapterIdentifier Concretes port=packagePortIdentifier SemiColon?
-    ;
-
-useCaseDefinition
-    : Const identifier Assign useCaseExpression SemiColon?
-    ;
-
-dependencyInjections
-    : DI OpenBrace dependencyInjectionList CloseBrace
-    ;
-
-dependencyInjectionList
-    : dependencyInjection (SemiColon dependencyInjection)* SemiColon?
-    ;
-
-dependencyInjection
-    : boundedContextModuleDeclaration commandHandlerIdentifier methodArguments              # CommandHandlerDependencyInjection
-    | boundedContextModuleDeclaration queryHandlerIdentifier methodArguments                # QueryHandlerDependencyInjection
-    | boundedContextModuleDeclaration domainEventHandlerIdentifier methodArguments          # DomainEventHandlerDependencyInjection
-    | boundedContextModuleDeclaration integrationEventHandlerIdentifier methodArguments     # IntegrationEventHandlerDependencyInjection
-    ;
-
-routerDefinition
-    : Const identifier Assign routerExpression SemiColon?
-    ;
-
-serverDeclaration
-    : RESTServer OpenParen serverInstantiationOptions CloseParen  bindServerRoutes SemiColon?                   # RestServerDeclaration
-    | GraphQLServer OpenParen graphQLServerInstantiationOptions CloseParen  bindControllerResolvers SemiColon?  # GraphQLServerDeclaration
-    ;
-
-serverInstantiationOptions
-    : OpenBrace evaluationFieldList CloseBrace
-    ;
-
-repoConnectionDefinition
-    : Const identifier Assign repoConnectionExpression
-    ;
-
-// constmongoConnection=Mongo.Connection({host:'localhost',port:env.MONGO_PORT || 27017,database:'todo',});",
-repoConnectionExpression
-    : RepoConnections Dot repoConnectionType OpenParen OpenBrace repoConnectionOptions? CloseBrace CloseParen SemiColon?
-    ;
-repoConnectionType
-    : Mongo
-    ;
-
-repoConnectionOptions
-    : evaluationFieldList
-    ;
-
-repoAdapterDefinition
-    : Const identifier '=' repoAdapterExpression
-    ;
-
-repoAdapterExpression
-    : repoAdapterClassName OpenParen OpenBrace repoAdapterOptions CloseBrace CloseParen Concretes boundedContextModuleDeclaration concretedRepoPort  SemiColon?
-    ;
-
-repoAdapterOptions
-    : evaluationFieldList
-    ;
-
-repoAdapterClassName
-    : RepoAdapters Dot repoConnectionType
-    ;
-
-concretedRepoPort
-    : RepoPortIdentifier
-    ;
-
-// serverTypeOption
-//     : ServerTypeOption Colon serverType Comma
-//     ;
-
-// serverApiPrefixOption
-//     : ServerApiPrefix Colon pathString Comma
-//     ;
-
-// customServerOption
-//     : Identifier Colon expression Comma
-//     ;
-
-// Cover any user defined options
-
-graphQLServerInstantiationOptions
-    : OpenBrace evaluationFieldList CloseBrace
-    ;
-
-// graphQLServerInstantiationOption
-//     : customServerOption
-//     ;
-
-envVariable
-    : EnvVariable
-    ;
-
-bindServerRoutes
-    : OpenBrace routeBind (SemiColon routeBind)* SemiColon CloseBrace
-    ;
-
-routeBind
-    : pathString Colon identifier
-    ;
-
-bindControllerResolvers
-    : OpenBrace controllerResolverBind (SemiColon controllerResolverBind)* SemiColon CloseBrace
-    ;
-
-controllerResolverBind
-    : boundedContextModuleDeclaration graphQLControllerIdentifier methodArguments
+    : Config Dot languageSetterMethod    # SetLanguageConfig 
     ;
 
 alpha_numeric_ws: IntegerLiteral | WS | UpperCaseIdentifier | Identifier;
 
 wordsWithSpaces
     : alpha_numeric_ws+
-    ;
-
-routerController
-    : httpMethodVerb OpenParen pathString CloseParen Colon boundedContextModuleDeclaration restControllerIdentifier methodArguments SemiColon?
     ;
 
 boundedContextDeclaration
@@ -1154,38 +876,15 @@ boundedContextModuleDeclaration
     : OpenBracket boundedContextDeclaration CloseBracket OpenBracket moduleDeclaration CloseBracket
     ;
 
-serverType
-    : fastifyServer
-    | expressServer
-    | graphQLServerType
-    ;
-
-fastifyServer
-    : FastifyServer
-    ;
-
-expressServer
-    : ExpressServer
-    ;
-
-graphQLServerType
-    : GraphQLServerType
+envVariable
+    : EnvVariable
     ;
 
 jestTestSetupDeclaration
     : OpenParen wordsWithSpaces CloseParen SemiColon? # TestExpression
-    // | JestTestSingleExpression '{' setupExpression '}' # TestSingleExpression
-    // | EnvPrefix OpenParen Identifier Comma literal CloseParen # EnvPrefixExpression
     ;
 
 setupStatement
     : configInvocation  # configInvocationStatement
-    | packageConcretion # packageConcretionStatement
-    | useCaseDefinition # useCaseDefinitionStatement
-    | routerDefinition  # routerDefinitionStatement
-    | serverDeclaration  # serverDeclarationStatement
-    | repoConnectionDefinition # repoConnectionDefinitionStatement
-    | repoAdapterDefinition # repoAdapterDefinitionStatement
-    | dependencyInjections # dependencyInjectionsStatement
     | jestTestSetupDeclaration # jestTestSetupDeclarationStatement
     ;

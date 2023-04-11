@@ -71,7 +71,7 @@ Root Entity TodoEntity {
   }
 }
 
-// Props are used to define the required (or optional) properties of a class (such as ValueObject, Entity, UseCase etc.)
+// Props are used to define the required (or optional) properties of a class (such as ValueObject, Entity etc.)
 Props TitleProps {
   Title title;
 }

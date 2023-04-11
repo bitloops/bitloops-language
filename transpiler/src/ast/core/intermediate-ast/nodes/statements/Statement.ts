@@ -13,7 +13,7 @@ export abstract class StatementNode extends IntermediateASTNode {
     return this.getNodeType() === BitloopsTypesMapping.TVariableDeclaration;
   }
 
-  isUseCaseExecuteStatementNode = (): this is ConstDeclarationNode => {
+  isExecuteStatementNode = (): this is ConstDeclarationNode => {
     if (!this.isConstDeclarationNode()) {
       return false;
     }

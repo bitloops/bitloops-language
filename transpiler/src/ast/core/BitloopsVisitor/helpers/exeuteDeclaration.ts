@@ -20,33 +20,12 @@
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { UseCaseIdentifierNode } from '../../intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
 import { ExecuteNode } from '../../intermediate-ast/nodes/ExecuteNode.js';
 import { produceMetadata } from '../metadata.js';
-import { UseCaseNodeBuilder } from '../../intermediate-ast/builders/UseCase/UseCaseNodeBuilder.js';
-import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
 import { ExecuteNodeBuilder } from '../../intermediate-ast/builders/ExecuteNodeBuilder.js';
 import { ReturnOkErrorTypeNode } from '../../intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { ParameterNode } from '../../intermediate-ast/nodes/ParameterList/ParameterNode.js';
-
-export const useCaseDeclarationVisitor = (
-  thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.UseCaseDeclarationContext,
-): void => {
-  const useCaseIdentifierNode: UseCaseIdentifierNode = thisVisitor.visit(ctx.useCaseIdentifier());
-
-  const useCaseExecuteNode: ExecuteNode = thisVisitor.visit(ctx.executeDeclaration());
-
-  const parameterListNode: ParameterListNode = thisVisitor.visit(ctx.parameterList());
-
-  const metadata = produceMetadata(ctx, thisVisitor);
-  new UseCaseNodeBuilder(thisVisitor.intermediateASTTree, metadata)
-    .withExecute(useCaseExecuteNode)
-    .withIdentifier(useCaseIdentifierNode)
-    .withParameterList(parameterListNode)
-    .build();
-};
 
 export const executeDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,

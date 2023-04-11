@@ -1,4 +1,0 @@
-
-  DTO HelloWorldResponseDTO {
-    string dto;
-  }

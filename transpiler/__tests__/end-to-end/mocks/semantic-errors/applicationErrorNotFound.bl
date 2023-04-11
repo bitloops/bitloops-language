@@ -36,8 +36,8 @@ DTO DeleteTodoRequestDTO {
 }
 RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
 
-UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
-  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+CommandHandler DeleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
+  execute (deleteTodoCommand: DeleteTodoCommand): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
     const requestId = UUIDv4(requestDTO.id);
 
     const todoFound = this.todoRepo.getById(requestId);

@@ -1,6 +1,0 @@
-GraphQLServer({
-    port: env.APOLLO_SERVER OR 5001,
-  }) {
-    [Demo][Hello World]HelloWorldController(useCase1Dependency);
-    [Demo][Bye World]HelloWorld2Controller(useCase2Dependency, usersRepo);
-  }

@@ -65,12 +65,6 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       value: evaluation,
     });
   }
-  if (EvaluationTypeIdentifiers.isCorsOptionsEvaluation(evaluation)) {
-    return modelToTargetLanguage({
-      type: BitloopsTypesMapping.TCorsOptionsEvaluation,
-      value: evaluation,
-    });
-  }
   if (EvaluationTypeIdentifiers.isCommandEvaluation(evaluation)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TCommandEvaluation,

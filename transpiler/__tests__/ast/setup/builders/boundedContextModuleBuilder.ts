@@ -16,13 +16,13 @@ export class BoundedContextModuleBuilder implements IBuilder<TBoundedContextModu
   }
 
   public build(): TBoundedContextModule {
-    const useCaseExpression = {
+    const boundedContextModule = {
       boundedContextModule: {
         boundedContextName: this.boundedContext,
         moduleName: this.module,
       },
     };
 
-    return useCaseExpression;
+    return boundedContextModule;
   }
 }

@@ -1,2 +1,0 @@
-const myUseCase = [Bounded Context 1][Module 2]HelloWorldUseCase(myRepo);
-const myUseCaseTodo = [other BC][other module]CreateTodoUseCase();

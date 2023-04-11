@@ -8,7 +8,6 @@ CommandHandler DepositMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
        ApplicationErrors.AccountNotFoundError
        | DomainErrors.InvalidMonetaryValueError
        | DomainErrors.InsufficientBalanceError
-    //    | Domain.StandardVO.Currency.ErrorTypes
        )) {
        
        const accountId = UUIDv4(command.accountId);

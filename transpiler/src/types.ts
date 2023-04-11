@@ -274,7 +274,6 @@ export type TDomainServiceEvaluation = {
 // };
 export type TEvaluationValues =
   | TStructEvaluation
-  | TCorsOptionsEvaluation
   | TDTOEvaluation
   | TValueObjectEvaluation
   | TPropsEvaluation
@@ -316,10 +315,6 @@ export type TEvaluationField = {
 };
 export type TEvaluationFields = {
   [evaluationFieldsKey]: TEvaluationField[];
-};
-
-export type TCorsOptionsEvaluation = {
-  corsOptions: TEvaluationFields;
 };
 
 export type TStructEvaluation = {
@@ -696,17 +691,6 @@ export type TDTO = {
 
 export type TStruct = Record<string, TStructDeclaration>;
 
-export const UseCaseKey = 'UseCase';
-export type TUseCaseIdentifier = string;
-export const UseCaseIdentifierKey = 'UseCaseIdentifier';
-
-export type TUseCase = {
-  [UseCaseKey]: {
-    [UseCaseIdentifierKey]: TUseCaseIdentifier;
-    execute: TExecute;
-  } & TParameterList;
-};
-
 export const languageKey = 'language';
 export type TLanguage = 'TypeScript-Nest' | 'TypeScript';
 
@@ -716,131 +700,6 @@ export type TConfigInvocation = {
     [languageKey]: TLanguage;
   };
 };
-
-export type TBusType = 'InProcess' | 'External';
-export const configBusesInvocationKey = 'busesConfig';
-export type TConfigBusesInvocation = {
-  [configBusesInvocationKey]: {
-    eventBus: TBusType;
-    integrationEventBus: TBusType;
-    commandBus: TBusType;
-    queryBus: TBusType;
-  };
-};
-
-export const dependencyInjectionKey = 'dependencyInjections';
-export type TDependencyInjections = {
-  [dependencyInjectionKey]: TDependencyInjection[];
-};
-
-export type TDependencyInjectionType =
-  | 'CommandHandler'
-  | 'QueryHandler'
-  | 'EventHandler'
-  | 'IntegrationEventHandler';
-export type TDependencyInjection = {
-  dependencyInjection: {
-    type: TDependencyInjectionType;
-    identifier: TIdentifier;
-  } & TArgumentList &
-    TBoundedContextModule;
-};
-
-export const packageAdapterIdentifierKey = 'packageAdapterIdentifier';
-export type TPackageAdapterIdentifier = string;
-
-export const packageConcretionKey = 'packageConcretion';
-export type TPackageConcretion = {
-  [packageConcretionKey]: {
-    [PackagePortIdentifierKey]: TPackagePortIdentifier;
-    [packageAdapterIdentifierKey]: TPackageAdapterIdentifier;
-  } & TBoundedContextModule;
-};
-
-export const repoAdapterClassNameKey = 'repoAdapterClassName';
-export type TRepoAdapterClassName = {
-  [repoAdapterClassNameKey]: string;
-};
-
-export type TRepoDatabaseType = {
-  dbType: TRepoSupportedTypes;
-};
-
-export const repoAdapterOptionsKey = 'repoAdapterOptions';
-export type TRepoAdapterOptions = {
-  [repoAdapterOptionsKey]: TEvaluationFields;
-};
-
-export const concretedRepoPortKey = 'concretedRepoPort';
-export type TConcretedRepoPort = string;
-
-export type TRepoAdapterConnectionInfo = TRepoConnectionExpression;
-export const repoAdapterExpressionKey = 'repoAdapterExpression';
-export type TRepoAdapterExpression = {
-  [repoAdapterExpressionKey]: {
-    [concretedRepoPortKey]: TConcretedRepoPort;
-  } & TRepoAdapterClassName &
-    TRepoDatabaseType &
-    TRepoAdapterOptions &
-    TBoundedContextModule &
-    TRepoAdapterConnectionInfo;
-};
-
-export const repoAdapterKey = 'repoAdapter';
-export type TRepoAdapter = {
-  [repoAdapterKey]: {
-    [identifierKey]: TIdentifier;
-  } & TRepoAdapterExpression;
-};
-
-export const setupRepoAdapterDefinitionKey = 'setupRepoAdapterDefinition';
-export type TSetupRepoAdapterDefinition = {
-  [setupRepoAdapterDefinitionKey]: {
-    [identifierKey]: TIdentifier;
-  } & TRepoAdapterExpression;
-};
-
-export type TBaseControllerValues = TParameterList;
-
-export type TRestMethods = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
-
-export type TRESTControllerIdentifier = string;
-export type TRESTController = {
-  RESTController: TBaseControllerValues & {
-    serverType?: TServerType;
-    RESTControllerIdentifier: TRESTControllerIdentifier;
-    method: TRestMethods;
-    execute: TRESTControllerExecute;
-  } & Partial<TControllerBusDependencies>;
-};
-
-export type TRESTControllerExecute = {
-  dependencies: TRESTControllerDependencies;
-  statements: TStatements;
-};
-
-export type TRESTControllerDependencies = [string, string]; // e.g. (request, reply)
-
-export type GraphQLControllerIdentifier = string;
-
-export type TGraphQLOperation = 'query' | 'mutation' | 'subscription';
-
-export type TGraphQLController = {
-  GraphQLController: TBaseControllerValues & {
-    graphQLControllerIdentifier: GraphQLControllerIdentifier;
-    inputType: null | string;
-    operationType: TGraphQLOperation;
-    operationName: string;
-    execute: TGraphQLControllerExecute;
-  } & Partial<TControllerBusDependencies>;
-};
-
-export type TGraphQLControllerExecute = {
-  dependencies: TGraphQLControllerDependencies;
-  returnType: string; // The DTO Returned by the controller's execute
-  statements: TStatements;
-};
-export type TGraphQLControllerDependencies = [string]; // e.g. (request)
 
 export type TDefaultCase = {
   statements: TStatements;
@@ -864,82 +723,6 @@ export type TEvaluatePrimitive = {
   type: TBitloopsPrimitives;
 };
 
-export type TRouterName = string;
-
-export interface IRouterRoute {
-  path: string;
-  method: string;
-  controller: string;
-  useCaseName: string;
-}
-
-export type TRouterDefinition = {
-  routerDefinition: {
-    identifier: TIdentifier;
-  } & TRouterExpression;
-};
-
-export type TRestRouter = 'RESTRouter';
-export type TRouterArguments = {
-  routerArguments: { serverType: TServerType };
-};
-export type THTTPMethodVerb = 'Get' | 'Put' | 'Post' | 'Delete' | 'Patch' | 'Options';
-
-export type TControllerInstanceName = string;
-
-export type TRouterController = {
-  routerController: {
-    httpMethodVerb: THTTPMethodVerb;
-    RESTControllerIdentifier: TRESTControllerIdentifier;
-    controllerInstanceName: TControllerInstanceName;
-  } & StringLiteral &
-    TBoundedContextModule &
-    TArgumentList;
-};
-
-export type TRouterControllers = {
-  routerControllers: TRouterController[];
-};
-
-export type TRouterExpression = {
-  routerExpression: {
-    restRouter: TRestRouter;
-  } & TRouterArguments &
-    TRouterControllers;
-};
-
-export type TUseCaseDefinition = {
-  useCaseDefinition: {
-    identifier: TIdentifier;
-  } & TUseCaseExpression;
-};
-
-export type TUseCaseExpression = {
-  useCaseExpression: {
-    [UseCaseIdentifierKey]: TUseCaseIdentifier;
-  } & TArgumentList &
-    TBoundedContextModule;
-};
-
-export const RepoConnectionDefinitionKey = 'RepoConnectionDefinition';
-export type TRepoConnectionDefinition = {
-  [RepoConnectionDefinitionKey]: {
-    identifier: TIdentifier;
-  } & TRepoConnectionExpression;
-};
-
-export const RepoConnectionExpressionKey = 'RepoConnectionExpression';
-export type TRepoConnectionExpression = {
-  [RepoConnectionExpressionKey]: {
-    dbType: TRepoSupportedTypes;
-  } & TRepoConnectionOptions;
-};
-
-export const RepoConnectionOptionsKey = 'options';
-export type TRepoConnectionOptions = {
-  [RepoConnectionOptionsKey]: TEvaluationFields;
-};
-
 export type TBoundedContextModule = {
   boundedContextModule: {
     boundedContextName: TBoundedContextName;
@@ -953,56 +736,6 @@ export type TModuleName = TWordsWithSpaces;
 
 export type TWordsWithSpaces = {
   wordsWithSpaces: string;
-};
-
-export const repoSupportedTypes = ['DB.Postgres', 'DB.MySQL', 'DB.SQLite', 'DB.Mongo'] as const;
-export type TRepoSupportedTypes = typeof repoSupportedTypes[number];
-
-export type TServerType = 'REST.Fastify' | 'REST.Express' | 'GraphQL';
-export type TRouterInstanceName = string;
-
-export type TRouterPrefix = StringLiteral;
-export type TRestServerInstanceRouters = TRestServerInstanceRouter[];
-export type TRestServerInstanceRouter = {
-  serverRoute: {
-    identifier: TRouterInstanceName;
-    routerPrefix: TRouterPrefix;
-  };
-};
-
-export type TRestServerPort = TExpression;
-
-export type TAPIPrefix = StringLiteral;
-
-export type TRESTServerInstance = {
-  restServer: {
-    serverOptions: TEvaluationFields;
-    serverRoutes: TRestServerInstanceRouters;
-  };
-};
-
-export const GraphQLServerInstanceKey = 'graphQLServer';
-export type TGraphQLServerInstance = {
-  [GraphQLServerInstanceKey]: {
-    [ControllerResolversKey]: TControllerResolvers;
-  } & TGraphQLServerOptions;
-};
-
-export const ControllerResolverKey = 'controllerResolver';
-export type TControllerResolver = {
-  [ControllerResolverKey]: {
-    graphQLControllerIdentifier: GraphQLControllerIdentifier;
-    controllerInstanceName: TControllerInstanceName;
-  } & TBoundedContextModule &
-    TArgumentList;
-};
-
-export const ControllerResolversKey = 'controllerResolvers';
-export type TControllerResolvers = TControllerResolver[];
-
-export const GraphQLServerOptionsKey = 'graphQLServerOptions';
-export type TGraphQLServerOptions = {
-  [GraphQLServerOptionsKey]: TEvaluationFields;
 };
 
 export const methodDefinitionListKey = 'methodDefinitionList';
@@ -1032,7 +765,6 @@ export type TPackage = {
   Package: {
     [PackageIdentifierKey]: TPackageIdentifier;
     port: TPackagePort;
-    adapters: TPackageAdapterNames;
   };
 };
 
@@ -1068,8 +800,6 @@ export type TReadModelRepoPort = {
 };
 
 export type TRepoPort = TAggregateRepoPort | TReadModelRepoPort;
-
-export type TPackageAdapterNames = string[];
 
 export type TObjectLiteral = {
   objectLiteral: {
@@ -1188,23 +918,6 @@ export type TTargetDependenciesTypeScript = {
   dependencies: TDependenciesTypeScript;
 };
 
-export enum RepoConnectionOptions {
-  host = 'host',
-  port = 'port',
-  database = 'database',
-}
-
-export enum RepoAdapterOptions {
-  connection = 'connection',
-  collection = 'collection',
-}
-
-export enum RestServerOptions {
-  server = 'server',
-  apiPrefix = 'apiPrefix',
-  port = 'port',
-}
-
 export type TCommandIdentifier = TIdentifier;
 export type TCommandTopicIdentifier = TIdentifier;
 export const commandKey = 'command';
@@ -1248,13 +961,6 @@ export type TEventHandlerBusDependencies = {
     commandBus: boolean;
     queryBus: boolean;
     integrationEventBus: boolean;
-  };
-};
-
-export type TControllerBusDependencies = {
-  controllerBusDependencies: {
-    commandBus: boolean;
-    queryBus: boolean;
   };
 };
 
