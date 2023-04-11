@@ -26,8 +26,6 @@ import {
   TDependenciesTypeScript,
   TTargetDependenciesTypeScript,
   TVariable,
-  MetadataTypeNames,
-  TMetadata,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -40,18 +38,6 @@ const QUERY_DEPENDENCIES: TDependenciesTypeScript = [
     type: 'absolute',
     default: false,
     value: 'Application',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'Domain',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'asyncLocalStorage',
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
@@ -80,8 +66,8 @@ const queryToTargetLanguage = (
   const queryTypeName = getQueryTypeName(dtoTypeName);
   const queryType = getQueryType(queryTypeName, variablesResult.output);
 
-  const constructorProduced = getConstructor(queryTypeName, queryName, fields);
-  const classProperties = variablesToClassProperties(variablesResult.output, contextId);
+  const constructorProduced = getConstructor(queryTypeName, queryName, fields, contextId);
+  const classProperties = variablesToClassProperties(variablesResult.output);
 
   result += queryType;
   result += `export class ${queryName} extends ${QueryInterface} {`;
@@ -113,10 +99,15 @@ const getQueryType = (queryTypeName: string, variablesString: string): string =>
   return type;
 };
 
-const getConstructor = (dtoTypeName: string, queryName: string, fields: TVariable[]): string => {
+const getConstructor = (
+  dtoTypeName: string,
+  queryName: string,
+  fields: TVariable[],
+  contextId: string,
+): string => {
   if (ArrayUtils.isEmpty(fields)) {
     return `constructor() {
-      super();
+      super(${contextId});
     }`;
   }
   const queryNameWithoutSuffix = queryName.replace('Query', '');
@@ -125,7 +116,7 @@ const getConstructor = (dtoTypeName: string, queryName: string, fields: TVariabl
 
   const dtoName = `${queryWithLowerCaseStartLetter}RequestDTO`;
   let constructorValue = `constructor(${dtoName}: ${dtoTypeName}) {
-      super();
+      super(${contextId});
     `;
 
   for (const field of fields) {
@@ -136,7 +127,7 @@ const getConstructor = (dtoTypeName: string, queryName: string, fields: TVariabl
   return constructorValue;
 };
 
-const variablesToClassProperties = (variableString: string, contextId: string): string => {
+const variablesToClassProperties = (variableString: string): string => {
   const variablesSplitted = variableString.split(';', -1);
 
   let classProperties = '';
@@ -145,15 +136,6 @@ const variablesToClassProperties = (variableString: string, contextId: string): 
       classProperties += `public readonly ${variable}; `;
     }
   }
-  const metadata: TMetadata = {
-    contextId: contextId,
-    metadataType: MetadataTypeNames.Query,
-  };
-  const metadataProperty = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TMetadata,
-    value: metadata,
-  });
-  classProperties += metadataProperty.output;
   return classProperties;
 };
 

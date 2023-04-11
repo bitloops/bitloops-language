@@ -21,11 +21,9 @@ import {
   fieldKey,
   fieldsKey,
   identifierKey,
-  MetadataTypeNames,
   TCommand,
   TContextData,
   TDependenciesTypeScript,
-  TMetadata,
   TTargetDependenciesTypeScript,
   TVariable,
 } from '../../../../../types.js';
@@ -38,18 +36,6 @@ const COMMAND_DEPENDENCIES: TDependenciesTypeScript = [
     type: 'absolute',
     default: false,
     value: 'Application',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'Domain',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'asyncLocalStorage',
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
@@ -78,8 +64,8 @@ const commandToTargetLanguage = (
   const commandTypeName = getCommandTypeName(dtoTypeName);
   const commandType = getCommandType(commandTypeName, variablesResult.output);
 
-  const constructorProduced = getConstructor(commandTypeName, commandName, fields);
-  const classProperties = variablesToClassProperties(variablesResult.output, contextId);
+  const constructorProduced = getConstructor(commandTypeName, commandName, fields, contextId);
+  const classProperties = variablesToClassProperties(variablesResult.output);
 
   result += commandType;
   result += `export class ${commandName} extends ${CommandInterface} {`;
@@ -108,14 +94,19 @@ const getCommandType = (commandTypeName: string, variablesString: string): strin
   return type;
 };
 
-const getConstructor = (dtoTypeName: string, commandName: string, fields: TVariable[]): string => {
+const getConstructor = (
+  dtoTypeName: string,
+  commandName: string,
+  fields: TVariable[],
+  boundedContextId: string,
+): string => {
   const commandNameWithoutSuffix = commandName.replace('Command', '');
   const commandWithLowerCaseStartLetter =
     commandNameWithoutSuffix.charAt(0).toLowerCase() + commandNameWithoutSuffix.slice(1);
 
   const dtoName = `${commandWithLowerCaseStartLetter}RequestDTO`;
   let constructorValue = `constructor(${dtoName}: ${dtoTypeName}) {
-    super();
+    super(${boundedContextId});
   `;
 
   for (const field of fields) {
@@ -126,7 +117,7 @@ const getConstructor = (dtoTypeName: string, commandName: string, fields: TVaria
   return constructorValue;
 };
 
-const variablesToClassProperties = (variableString: string, contextId: string): string => {
+const variablesToClassProperties = (variableString: string): string => {
   const variablesSplitted = variableString.split(';', -1);
 
   let classProperties = '';
@@ -135,15 +126,6 @@ const variablesToClassProperties = (variableString: string, contextId: string): 
       classProperties += `public readonly ${variable}; `;
     }
   }
-  const metadata: TMetadata = {
-    contextId,
-    metadataType: MetadataTypeNames.Command,
-  };
-  const metadataProperty = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TMetadata,
-    value: metadata,
-  });
-  classProperties += metadataProperty.output;
   return classProperties;
 };
 
