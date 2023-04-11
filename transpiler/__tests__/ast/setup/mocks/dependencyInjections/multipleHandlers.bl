@@ -1,6 +1,0 @@
-DI {
-  [Banking][Banking]CreateBankingCommandHandler(bankingWriteRepo, emailService);
-  [Banking][Banking]GetAllBankingsQueryHandler(bankingReadRepo);
-  [Marketing][Marketing]UserCreatedDomainEventHandler();
-  [Marketing][Marketing]UserCreatedIntegrationEventHandler();
-}

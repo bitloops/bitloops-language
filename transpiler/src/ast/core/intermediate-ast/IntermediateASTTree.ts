@@ -1,5 +1,4 @@
 import { TBitloopsTypesValues, BitloopsTypesMapping } from '../../../helpers/mappings.js';
-import { ExpressionNode } from './nodes/Expression/ExpressionNode.js';
 import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
@@ -7,7 +6,7 @@ import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 import { isArray, isObject } from '../../../helpers/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpression.js';
-import { TControllerUseCaseExecuteNodeType, TVariableDeclarationStatement } from '../types.js';
+import { TVariableDeclarationStatement } from '../types.js';
 import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
 import { VariableDeclarationNode } from './nodes/variableDeclaration.js';
@@ -17,7 +16,6 @@ import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarat
 import { EntityIdentifierNode } from './nodes/Entity/EntityIdentifierNode.js';
 import { TBitloopsPrimaryType, TBitloopsPrimitives } from '../../../types.js';
 import { PropsNode } from './nodes/Props/PropsNode.js';
-import { RESTControllerNode } from './nodes/controllers/restController/RESTControllerNode.js';
 import { EntityDeclarationNode } from './nodes/Entity/EntityDeclarationNode.js';
 import { ValueObjectDeclarationNode } from './nodes/valueObject/ValueObjectDeclarationNode.js';
 import { FieldListNode } from './nodes/FieldList/FieldListNode.js';
@@ -211,23 +209,6 @@ export class IntermediateASTTree {
     );
   }
 
-  public getControllerByIdentifier = (identifier: string): RESTControllerNode => {
-    const restControllerNodes = this.getRootChildrenNodesByType(
-      BitloopsTypesMapping.TRESTController,
-    ) as RESTControllerNode[];
-
-    let restControllerFound: RESTControllerNode = null;
-    for (const restController of restControllerNodes) {
-      const restControllerIdentifier = restController.getIdentifier();
-
-      if (identifier === restControllerIdentifier.getValue().RESTControllerIdentifier) {
-        restControllerFound = restController;
-      }
-    }
-
-    return restControllerFound;
-  };
-
   public getEntityByIdentifier = (identifier: string): EntityDeclarationNode => {
     const entityNodes = this.getRootChildrenNodesByType(
       BitloopsTypesMapping.TEntity,
@@ -297,34 +278,6 @@ export class IntermediateASTTree {
       }
     }
     return null;
-  }
-
-  public getAllExpressionsOfUseCase(): ExpressionNode[] {
-    // Set root Node as current, or pass it to getClassTypeNodes
-    const useCases = this.getRootChildrenNodesByType(BitloopsTypesMapping.TUseCase);
-
-    // TODO typeGuard
-    const isExpressionNode = (node: IntermediateASTNode): node is ExpressionNode =>
-      node.getNodeType() === BitloopsTypesMapping.TExpression;
-
-    const expressions: ExpressionNode[] = [];
-    for (const useCaseNode of useCases) {
-      this.traverse(useCaseNode, (node) => isExpressionNode(node) && expressions.push(node));
-    }
-    return expressions;
-  }
-
-  getUseCaseExecuteStatementOf(
-    rootNode: IntermediateASTNode,
-  ): TControllerUseCaseExecuteNodeType | null {
-    const policy = (node: IntermediateASTNode): boolean =>
-      node instanceof StatementNode && node.isUseCaseExecuteStatementNode();
-
-    const nodeResult = this.getNodeWithPolicy(rootNode, policy);
-    if (!nodeResult) {
-      return null;
-    }
-    return nodeResult as TControllerUseCaseExecuteNodeType;
   }
 
   getMemberDotExpressions(intermediateASTNode: IntermediateASTNode): MemberDotExpressionNode[] {

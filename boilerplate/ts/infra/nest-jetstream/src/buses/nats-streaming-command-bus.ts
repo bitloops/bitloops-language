@@ -31,10 +31,20 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
     this.js = this.nc.jetstream();
   }
 
+  private getCorelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
+  }
+
   async publish(command: Application.Command): Promise<void> {
     const boundedContext = command.metadata.boundedContextId;
     const stream = NatsStreamingCommandBus.getStreamName(boundedContext);
     const subject = `${stream}.${command.constructor.name}`;
+    command.correlationId = this.getCorelationId();
+    command.context = this.getContext();
     const headers = this.generateHeaders(command);
     const options: Partial<JetStreamPublishOptions> = { msgID: '', headers };
     const message = jsonCodec.encode(command);

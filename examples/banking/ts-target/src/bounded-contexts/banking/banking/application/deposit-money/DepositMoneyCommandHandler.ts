@@ -3,14 +3,7 @@ import { IAccountWriteRepo } from '../../repos/interfaces/IAccountWriteRepo';
 import { ApplicationErrors } from '../errors/index';
 import { DepositMoneyCommand } from './DepositMoneyCommand';
 
-import {
-  Application,
-  Either,
-  Domain,
-  RespondWithPublish,
-  ok,
-  fail,
-} from '@bitloops/bl-boilerplate-core';
+import { Application, Either, Domain, ok, fail } from '@bitloops/bl-boilerplate-core';
 
 export type DepositMoneyCommandHandlerResponse = Either<
   void,
@@ -29,7 +22,6 @@ export class DepositMoneyCommandHandler
     this.accountRepo = accountRepo;
   }
 
-  @RespondWithPublish()
   async execute(command: DepositMoneyCommand): Promise<DepositMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
 

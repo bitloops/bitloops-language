@@ -63,12 +63,6 @@ import {
   propsEvaluationVisitor,
   valueObjectEvaluationVisitor,
   entityEvaluationVisitor,
-  restControllerMethodDeclarationVisitor,
-  restControllerExecuteDeclarationVisitor,
-  restControllerDeclarationVisitor,
-  graphQLControllerDeclarationVisitor,
-  graphQLResolverOptionsVisitor,
-  graphQLControllerExecuteVisitor,
   methodDefinitionVisitor,
   methodDefinitionListVisitor,
   returnErrorsTypeVisitor,
@@ -92,7 +86,6 @@ import {
   applyRuleStatementRulesListVisitor,
   applyRulesRuleVisitor,
   isInstanceOfVisitor,
-  useCaseDeclarationVisitor,
   equalityExpressionVisitor,
   relationalExpressionVisitor,
   logicalAndExpressionVisitor,
@@ -135,9 +128,6 @@ import {
   parameterVisitor,
   parameterArgIdentifierVisitor,
   isBrokenConditionVisitor,
-  graphQLOperationTypeVisitor,
-  graphQLOperationInputTypeVisitor,
-  graphQLExecuteDependenciesVisitor,
   packagePortIdentifierVisitor,
   commandEvaluationVisitor,
   queryEvaluationVisitor,
@@ -181,10 +171,6 @@ import { PublicMethodDeclarationNode } from '../intermediate-ast/nodes/methods/P
 import { PrivateMethodDeclarationNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { PrivateMethodDeclarationListNode } from '../intermediate-ast/nodes/methods/PrivateMethodDeclarationListNode.js';
 import { BitloopsPrimaryTypeNode } from '../intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
-import { RESTControllerExecuteDependenciesNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerDependenciesNodeBuilder.js';
-import { RESTControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/restController/RESTControllerIdentifierNodeBuilder.js';
-import { GraphQLControllerIdentifierNodeBuilder } from '../intermediate-ast/builders/controllers/graphQL/RESTControllerIdentifierNodeBuilder.js';
-import { UseCaseIdentifierNodeBuilder } from '../intermediate-ast/builders/UseCase/UseCaseIdentifierNodeBuilder.js';
 import { EvaluationFieldListNode } from '../intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldListNode.js';
 import { templateStringEvaluation } from './helpers/expression/literal/templateStringLiteral.js';
 import { RepoPortIdentifierNodeBuilder } from '../intermediate-ast/builders/repo-port/RepoPortIdentifierNodeBuilder.js';
@@ -201,76 +187,21 @@ import { IdentifierNodeBuilder } from '../intermediate-ast/builders/identifier/I
 import { DTOIdentifierNode } from '../intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ExpressionNode } from '../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { jestTestSetupDeclarationVisitor } from './helpers/jestTestSetupDeclaration.js';
-import {
-  bindServerRoutesVisitor,
-  bindServerRouteVisitor,
-  restServerDeclarationVisitor,
-  serverInstantiationOptionsVisitor,
-} from './helpers/setup/restServerDeclaration.js';
-import { ServerTypeIdentifierNode } from '../intermediate-ast/nodes/setup/ServerTypeIdentifierNode.js';
-import { ServerRoutesNode } from '../intermediate-ast/nodes/setup/ServerRoutesNode.js';
-import { UseCaseExpressionNode } from '../intermediate-ast/nodes/setup/UseCaseExpressionNode.js';
-import { useCaseDefinitionVisitor } from './helpers/setup/useCaseDefinition.js';
-import { useCaseExpressionVisitor } from './helpers/setup/useCaseExpressionVisitor.js';
 import { BoundedContextModuleNode } from '../intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
 import { boundedContextModuleVisitor } from './helpers/setup/boundedContextModuleVisitor.js';
 import { boundedContextVisitor } from './helpers/setup/boundedContextDeclarationVisitor.js';
 import { moduleVisitor } from './helpers/setup/moduleDeclarationVisitor.js';
 import { wordsWithSpacesVisitor } from './helpers/setup/wordsWithSpacesVisitor.js';
 import { WordsWithSpacesNode } from '../intermediate-ast/nodes/setup/WordsWithSpacesNode.js';
-import { repoConnectionDefinitionVisitor } from './helpers/setup/repoConnectionDefinitionVisitor.js';
-import { repoConnectionTypeVisitor } from './helpers/setup/repoConnectionTypeVisitor.js';
-import { repoConnectionExpressionVisitor } from './helpers/setup/repoConnectionExpressionVisitor.js';
-import { RepoConnectionExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoConnectionExpressionNode.js';
-import { DatabaseTypeNode } from '../intermediate-ast/nodes/setup/repo/DatabaseTypeNode.js';
-import { repoConnectionOptionsVisitor } from './helpers/setup/repoConnectionOptionsVisitor.js';
-import { routerDefinitionVisitor } from './helpers/setup/routerDefinition.js';
-import { RouterExpressionNode } from '../intermediate-ast/nodes/setup/RouterExpressionNode.js';
-import { routerExpressionVisitor } from './helpers/setup/routerExpressionVisitor.js';
-import { RestRouterNode } from '../intermediate-ast/nodes/setup/RestRouterNode.js';
-import { restRouterVisitor } from './helpers/setup/restRouterVisitor.js';
-import { RouterArgumentsNode } from '../intermediate-ast/nodes/setup/RouterArgumentsNode.js';
-import { RouterControllersNode } from '../intermediate-ast/nodes/setup/RouterControllersNode.js';
-import { routerArgumentsVisitor } from './helpers/setup/routerArgumentsVisitor.js';
-import { routerControllersVisitor } from './helpers/setup/routerControllersVisitor.js';
-import { routerControllerVisitor } from './helpers/setup/routerControllerVisitor.js';
-import { RouterControllerNode } from '../intermediate-ast/nodes/setup/RouterControllerNode.js';
-import { HTTPMethodVerbNode } from '../intermediate-ast/nodes/setup/HTTPMethodVerbNode.js';
-import { httpMethodVerbVisitor } from './helpers/setup/httpMethodVerbVisitor.js';
-import { ServerTypeIdentifierNodeBuilder } from '../intermediate-ast/builders/setup/ServerTypeIdentifierNodeBuilder.js';
 import { StringLiteralNode } from '../intermediate-ast/nodes/Expression/Literal/StringLiteralNode.js';
 import { configInvocationVisitor } from './helpers/setup/config/configInvocation.js';
 import { languageSetterMethodVisitor } from './helpers/setup/languageSetterMethod.js';
 import { LanguageNode } from '../intermediate-ast/nodes/setup/config/language/LanguageNode.js';
-import { packageConcretionVisitor } from './helpers/setup/packageConcretion.js';
-import { packageAdapterIdentifierVisitor } from './helpers/setup/packageAdapterIdentifier.js';
-import { PackageAdapterIdentifierNode } from '../intermediate-ast/nodes/package/packageAdapters/PackageAdapterIdentifierNode.js';
-import { ServerRouteNode } from '../intermediate-ast/nodes/setup/ServerRouteNode.js';
-import { corsOptionsEvaluationVisitor } from './helpers/expression/evaluation/corsOptionEvaluation.js';
-import { RepoAdapterClassNameNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterClassNameNode.js';
-import { repoAdapterClassNameVisitor } from './helpers/setup/repoAdapterClassName.js';
-import { RepoAdapterOptionsNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
-import { repoAdapterOptionsVisitor } from './helpers/setup/repoAdapterOptions.js';
-import { ConcretedRepoPortNode } from '../intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
-import { concretedRepoPortVisitor } from './helpers/setup/concretedRepoPort.js';
-import { RepoAdapterExpressionNode } from '../intermediate-ast/nodes/setup/repo/RepoAdapterExpressionNode.js';
-import { repoAdapterExpressionVisitor } from './helpers/setup/repoAdapterExpression.js';
-import { repoAdapterDefinitionVisitor } from './helpers/setup/repoAdapterDefinition.js';
 import { BoundedContextNameNode } from '../intermediate-ast/nodes/setup/BoundedContextNameNode.js';
 import { ModuleNameNode } from '../intermediate-ast/nodes/setup/ModuleNameNode.js';
-import { ControllerResolverNode } from '../intermediate-ast/nodes/setup/ControllerResolverNode.js';
-import {
-  bindControllerResolversVisitor,
-  controllerResolverBindVisitor,
-  graphQLServerDeclarationVisitor,
-  graphQLServerInstantiationOptionsVisitor,
-} from './helpers/setup/graphQLServerDeclaration.js';
-import { ControllerResolversNode } from '../intermediate-ast/nodes/setup/ControllerResolversNode.js';
-import { GraphQLServerOptionsNode } from '../intermediate-ast/nodes/setup/GraphQLServerOptionsNode.js';
 import { domainCreateParameterVisitor } from './helpers/domainCreateParameterVisitor.js';
 import { commandDeclarationVisitor } from './helpers/commandDeclaration.js';
 import { queryDeclarationVisitor } from './helpers/queryDeclaration.js';
-import { graphQLControllerReturnTypeVisitor } from './helpers/controllers/graphql/graphQLControllerExecute.js';
 import { commandHandlerVisitor } from './helpers/commandHandler.js';
 import { queryHandlerVisitor } from './helpers/queryHandlerVisitor.js';
 import { integrationEventDeclarationVisitor } from './helpers/integration-event/integrationEventVisitor.js';
@@ -309,19 +240,6 @@ import {
   domainServiceIdentifierVisitor,
 } from './helpers/domainService.js';
 import { IntegrationEventParameterNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
-import {
-  busConfigVisitor,
-  busesConfigInvocationVisitor,
-  busesConfigVisitor,
-} from './helpers/setup/config/busesConfigInvocation.js';
-import {
-  commandHandlerDependencyInjectionVisitor,
-  dependencyInjectionListVisitor,
-  dependencyInjectionsVisitor,
-  domainEventHandlerDependencyInjectionVisitor,
-  integrationEventHandlerDependencyInjectionVisitor,
-  queryHandlerDependencyInjectionVisitor,
-} from './helpers/setup/dependencyInjections.js';
 import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
 import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
 import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
@@ -401,15 +319,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       .withName(identifierName)
       .build();
     return structIdentifierNode;
-  }
-
-  visitUseCaseIdentifier(ctx: BitloopsParser.UseCaseIdentifierContext): IdentifierNode {
-    const identifierName = ctx.UseCaseIdentifier().getText();
-    const metadata = produceMetadata(ctx, this);
-    const useCaseIdentifierNode = new UseCaseIdentifierNodeBuilder(metadata)
-      .withName(identifierName)
-      .build();
-    return useCaseIdentifierNode;
   }
 
   visitRepoPortIdentifier(ctx: BitloopsParser.RepoPortIdentifierContext) {
@@ -578,28 +487,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'handle',
     };
   }
-  visitMethodKeywordIdentifier(ctx: BitloopsParser.MethodKeywordIdentifierContext) {
-    return {
-      value: ctx.Method().getText(),
-    };
-  }
-  visitOperationKeywordIdentifier(ctx: BitloopsParser.OperationKeywordIdentifierContext) {
-    return {
-      value: ctx.GraphQLOperation().getText(),
-    };
-  }
-
-  visitInputKeywordIdentifier(ctx: BitloopsParser.InputKeywordIdentifierContext) {
-    return {
-      value: ctx.Input().getText(),
-    };
-  }
-
-  visitServerTypeExpression(ctx: BitloopsParser.ServerTypeExpressionContext) {
-    return {
-      value: (ctx as any).getText(),
-    };
-  }
 
   visitCondition(ctx: BitloopsParser.ConditionContext) {
     const expression = this.visit(ctx.expression());
@@ -676,10 +563,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitStructEvaluation(ctx: BitloopsParser.StructEvaluationContext): any {
     return structEvaluationVisitor(this, ctx);
-  }
-
-  visitCorsOptionsEvaluation(ctx: BitloopsParser.CorsOptionsEvaluationContext): any {
-    return corsOptionsEvaluationVisitor(this, ctx);
   }
 
   visitMethodArguments(ctx: BitloopsParser.MethodArgumentsContext): any {
@@ -803,73 +686,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     ctx: BitloopsParser.ParameterIdentifierContext,
   ): ParameterIdentifierNode {
     return parameterArgIdentifierVisitor(this, ctx);
-  }
-
-  visitRestControllerExecuteDeclaration(
-    ctx: BitloopsParser.RestControllerExecuteDeclarationContext,
-  ): any {
-    return restControllerExecuteDeclarationVisitor(this, ctx);
-  }
-
-  visitRestControllerMethodDeclaration(ctx: BitloopsParser.RestControllerMethodDeclarationContext) {
-    return restControllerMethodDeclarationVisitor(this, ctx);
-  }
-  visitRestControllerIdentifier(ctx: BitloopsParser.RestControllerIdentifierContext) {
-    const metadata = produceMetadata(ctx, this);
-    return new RESTControllerIdentifierNodeBuilder(metadata)
-      .withName(ctx.ControllerIdentifier().getText())
-      .build();
-  }
-
-  visitGraphQLControllerIdentifier(ctx: BitloopsParser.GraphQLControllerIdentifierContext) {
-    const metadata = produceMetadata(ctx, this);
-    return new GraphQLControllerIdentifierNodeBuilder(metadata)
-      .withName(ctx.ControllerIdentifier().getText())
-      .build();
-  }
-
-  visitRestControllerParameters(ctx: BitloopsParser.RestControllerParametersContext): any {
-    const metadata = produceMetadata(ctx, this);
-    return new RESTControllerExecuteDependenciesNodeBuilder(metadata)
-      .withDependencies(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())
-      .build();
-  }
-
-  // GraphQLControllerDeclaration
-  visitGraphQLControllerDeclaration(ctx: BitloopsParser.GraphQLControllerDeclarationContext): any {
-    return graphQLControllerDeclarationVisitor(this, ctx);
-  }
-
-  visitRESTControllerDeclaration(ctx: BitloopsParser.RESTControllerDeclarationContext): void {
-    restControllerDeclarationVisitor(this, ctx);
-  }
-
-  visitGraphQLResolverOptions(ctx: BitloopsParser.GraphQLResolverOptionsContext): any {
-    return graphQLResolverOptionsVisitor(this, ctx);
-  }
-
-  visitGraphQLControllerExecuteDeclaration(
-    ctx: BitloopsParser.GraphQLControllerExecuteDeclarationContext,
-  ) {
-    return graphQLControllerExecuteVisitor(this, ctx);
-  }
-
-  visitGraphQLControllerParameters(ctx: BitloopsParser.GraphQLControllerParametersContext): any {
-    return graphQLExecuteDependenciesVisitor(this, ctx);
-  }
-
-  visitGraphQLOperationTypeAssignment(ctx: BitloopsParser.GraphQLOperationTypeAssignmentContext) {
-    return graphQLOperationTypeVisitor(this, ctx);
-  }
-
-  visitGraphQLOperationInputTypeAssignment(
-    ctx: BitloopsParser.GraphQLOperationInputTypeAssignmentContext,
-  ) {
-    return graphQLOperationInputTypeVisitor(this, ctx);
-  }
-
-  visitGraphQLControllerReturnType(ctx: BitloopsParser.GraphQLControllerReturnTypeContext) {
-    return graphQLControllerReturnTypeVisitor(this, ctx);
   }
 
   visitMethodDefinitionList(
@@ -1103,12 +919,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return ctx.ErrorClass().getText();
   }
 
-  /**
-   * UseCase Declaration
-   */
-  visitUseCaseDeclaration(ctx: BitloopsParser.UseCaseDeclarationContext): void {
-    useCaseDeclarationVisitor(this, ctx);
-  }
   visitExecuteDeclaration(ctx: BitloopsParser.ExecuteDeclarationContext): any {
     return executeDeclarationVisitor(this, ctx);
   }
@@ -1209,67 +1019,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return optionalVisitor(ctx);
   }
 
-  visitRestServerDeclaration(ctx: BitloopsParser.RestServerDeclarationContext): void {
-    restServerDeclarationVisitor(this, ctx);
-  }
-
-  visitServerInstantiationOptions(ctx: BitloopsParser.ServerInstantiationOptionsContext) {
-    return serverInstantiationOptionsVisitor(this, ctx);
-  }
-
-  visitBindServerRoutes(ctx: BitloopsParser.BindServerRoutesContext): ServerRoutesNode {
-    const routesNode = bindServerRoutesVisitor(this, ctx);
-    return routesNode;
-  }
-
-  visitRouteBind(ctx: BitloopsParser.RouteBindContext): ServerRouteNode {
-    const routeNode = bindServerRouteVisitor(this, ctx);
-    return routeNode;
-  }
-
-  visitEnvVarWithDefaultValueExpression(
-    ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
-  ): ExpressionNode {
-    const envVar = envVarWithDefaultValueExpressionVisitor(this, ctx);
-    return envVar;
-  }
-
-  visitEnvironmentVariableExpression(
-    ctx: BitloopsParser.EnvironmentVariableExpressionContext,
-  ): ExpressionNode {
-    const envVar = enviromentVariableVisitor(this, ctx);
-    return envVar;
-  }
-  visitUseCaseDefinitionStatement(ctx: BitloopsParser.UseCaseDefinitionStatementContext): void {
-    this.visit(ctx.useCaseDefinition());
-  }
-
-  visitUseCaseDefinition(ctx: BitloopsParser.UseCaseDefinitionContext): void {
-    useCaseDefinitionVisitor(this, ctx);
-  }
-
-  visitUseCaseExpression(ctx: BitloopsParser.UseCaseExpressionContext): UseCaseExpressionNode {
-    return useCaseExpressionVisitor(this, ctx);
-  }
-
-  visitRepoConnectionDefinition(ctx: BitloopsParser.RepoConnectionDefinitionContext): void {
-    repoConnectionDefinitionVisitor(this, ctx);
-  }
-
-  visitRepoConnectionExpression(
-    ctx: BitloopsParser.RepoConnectionExpressionContext,
-  ): RepoConnectionExpressionNode {
-    return repoConnectionExpressionVisitor(this, ctx);
-  }
-
-  visitRepoConnectionType(ctx: BitloopsParser.RepoConnectionTypeContext): DatabaseTypeNode {
-    return repoConnectionTypeVisitor(this, ctx);
-  }
-
-  visitRepoConnectionOptions(ctx: BitloopsParser.RepoConnectionOptionsContext): any {
-    return repoConnectionOptionsVisitor(this, ctx);
-  }
-
   visitBoundedContextModuleDeclaration(
     ctx: BitloopsParser.BoundedContextModuleDeclarationContext,
   ): BoundedContextModuleNode {
@@ -1302,164 +1051,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     }
   }
 
-  visitRouterDefinitionStatement(ctx: BitloopsParser.RouterDefinitionStatementContext): void {
-    this.visit(ctx.routerDefinition());
-  }
-
-  visitRouterDefinition(ctx: BitloopsParser.RouterDefinitionContext): void {
-    routerDefinitionVisitor(this, ctx);
-  }
-
-  visitRouterExpression(ctx: BitloopsParser.RouterExpressionContext): RouterExpressionNode {
-    return routerExpressionVisitor(this, ctx);
-  }
-
-  visitRestRouter(ctx: BitloopsParser.RestRouterContext): RestRouterNode {
-    return restRouterVisitor(this, ctx);
-  }
-
-  visitRouterArguments(ctx: BitloopsParser.RouterArgumentsContext): RouterArgumentsNode {
-    return routerArgumentsVisitor(this, ctx);
-  }
-
-  visitRouterControllers(ctx: BitloopsParser.RouterControllersContext): RouterControllersNode {
-    return routerControllersVisitor(this, ctx);
-  }
-
-  visitRouterController(ctx: BitloopsParser.RouterControllerContext): RouterControllerNode {
-    return routerControllerVisitor(this, ctx);
-  }
-
-  visitHttpMethodVerb(ctx: BitloopsParser.HttpMethodVerbContext): HTTPMethodVerbNode {
-    return httpMethodVerbVisitor(this, ctx);
-  }
-
-  visitServerType(ctx: BitloopsParser.ServerTypeContext): ServerTypeIdentifierNode {
-    let serverType = '';
-    if (ctx.expressServer()) {
-      serverType = ctx.expressServer().getText();
-    }
-    if (ctx.fastifyServer()) {
-      serverType = ctx.fastifyServer().getText();
-    }
-    if (ctx.graphQLServerType()) {
-      serverType = ctx.graphQLServerType().getText();
-    }
-    const metadata = produceMetadata(ctx, this);
-    return new ServerTypeIdentifierNodeBuilder(metadata)
-      .withServerTypeIdentifier(serverType)
-      .build();
-  }
-
-  visitPathString(ctx: BitloopsParser.PathStringContext): StringLiteralNode {
-    return stringEvaluation(ctx.StringLiteral().getText());
-  }
-
   visitSetLanguageConfig(ctx: BitloopsParser.SetLanguageConfigContext): void {
     configInvocationVisitor(this, ctx);
   }
 
-  visitSetBusesConfig(ctx: BitloopsParser.SetBusesConfigContext): void {
-    busesConfigInvocationVisitor(this, ctx);
-  }
-  visitBusesConfig(ctx: BitloopsParser.BusesConfigContext): any {
-    return busesConfigVisitor(this, ctx);
-  }
-
-  visitBusConfig(ctx: BitloopsParser.BusConfigContext): any {
-    return busConfigVisitor(this, ctx);
-  }
-
-  visitDependencyInjections(ctx: BitloopsParser.DependencyInjectionsContext): void {
-    dependencyInjectionsVisitor(this, ctx);
-  }
-
-  visitDependencyInjectionList(ctx: BitloopsParser.DependencyInjectionListContext): any {
-    return dependencyInjectionListVisitor(this, ctx);
-  }
-
-  visitCommandHandlerDependencyInjection(
-    ctx: BitloopsParser.CommandHandlerDependencyInjectionContext,
-  ): any {
-    return commandHandlerDependencyInjectionVisitor(this, ctx);
-  }
-
-  visitQueryHandlerDependencyInjection(
-    ctx: BitloopsParser.QueryHandlerDependencyInjectionContext,
-  ): any {
-    return queryHandlerDependencyInjectionVisitor(this, ctx);
-  }
-
-  visitDomainEventHandlerDependencyInjection(
-    ctx: BitloopsParser.DomainEventHandlerDependencyInjectionContext,
-  ): any {
-    return domainEventHandlerDependencyInjectionVisitor(this, ctx);
-  }
-
-  visitIntegrationEventHandlerDependencyInjection(
-    ctx: BitloopsParser.IntegrationEventHandlerDependencyInjectionContext,
-  ): any {
-    return integrationEventHandlerDependencyInjectionVisitor(this, ctx);
-  }
-
   visitLanguageSetterMethod(ctx: BitloopsParser.LanguageSetterMethodContext): LanguageNode {
     return languageSetterMethodVisitor(this, ctx);
-  }
-
-  visitPackageConcretion(ctx: BitloopsParser.PackageConcretionContext): void {
-    packageConcretionVisitor(this, ctx);
-  }
-
-  visitPackageAdapterIdentifier(
-    ctx: BitloopsParser.PackageAdapterIdentifierContext,
-  ): PackageAdapterIdentifierNode {
-    return packageAdapterIdentifierVisitor(this, ctx);
-  }
-
-  visitRepoAdapterClassName(
-    ctx: BitloopsParser.RepoAdapterClassNameContext,
-  ): RepoAdapterClassNameNode {
-    return repoAdapterClassNameVisitor(this, ctx);
-  }
-
-  visitRepoAdapterOptions(ctx: BitloopsParser.RepoAdapterOptionsContext): RepoAdapterOptionsNode {
-    return repoAdapterOptionsVisitor(this, ctx);
-  }
-
-  visitConcretedRepoPort(ctx: BitloopsParser.ConcretedRepoPortContext): ConcretedRepoPortNode {
-    return concretedRepoPortVisitor(this, ctx);
-  }
-
-  visitRepoAdapterExpression(
-    ctx: BitloopsParser.RepoAdapterExpressionContext,
-  ): RepoAdapterExpressionNode {
-    return repoAdapterExpressionVisitor(this, ctx);
-  }
-
-  visitRepoAdapterDefinition(ctx: BitloopsParser.RepoAdapterDefinitionContext): void {
-    repoAdapterDefinitionVisitor(this, ctx);
-  }
-
-  visitControllerResolverBind(
-    ctx: BitloopsParser.ControllerResolverBindContext,
-  ): ControllerResolverNode {
-    return controllerResolverBindVisitor(this, ctx);
-  }
-
-  visitBindControllerResolvers(
-    ctx: BitloopsParser.BindControllerResolversContext,
-  ): ControllerResolversNode {
-    return bindControllerResolversVisitor(this, ctx);
-  }
-
-  visitGraphQLServerInstantiationOptions(
-    ctx: BitloopsParser.GraphQLServerInstantiationOptionsContext,
-  ): GraphQLServerOptionsNode {
-    return graphQLServerInstantiationOptionsVisitor(this, ctx);
-  }
-
-  visitGraphQLServerDeclaration(ctx: BitloopsParser.GraphQLServerDeclarationContext): void {
-    return graphQLServerDeclarationVisitor(this, ctx);
   }
 
   visitCommandIdentifier(ctx: BitloopsParser.CommandIdentifierContext): IdentifierNode {
@@ -1659,5 +1256,19 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitDomainServiceEvaluation(ctx: BitloopsParser.DomainServiceEvaluationContext): any {
     return domainServiceEvaluationVisitor(this, ctx);
+  }
+
+  visitEnvVarWithDefaultValueExpression(
+    ctx: BitloopsParser.EnvVarWithDefaultValueExpressionContext,
+  ): ExpressionNode {
+    const envVar = envVarWithDefaultValueExpressionVisitor(this, ctx);
+    return envVar;
+  }
+
+  visitEnvironmentVariableExpression(
+    ctx: BitloopsParser.EnvironmentVariableExpressionContext,
+  ): ExpressionNode {
+    const envVar = enviromentVariableVisitor(this, ctx);
+    return envVar;
   }
 }

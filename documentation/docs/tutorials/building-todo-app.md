@@ -1,8 +1,8 @@
 ---
 sidebar_position: 1
-sidebar_label: Create a ToDo App
-title: Bitloops Tutorial - Create a ToDo App using Bitloops
-description: Learn how to build a ToDo app quickly and efficiently using Bitloops. You'll learn how to apply industry best practices and software design principles that lead to high-quality software
+sidebar_label: Create a Todo App
+title: Bitloops Tutorial - Create a Todo App using Bitloops
+description: Learn how to build a Todo app quickly and efficiently using Bitloops. You'll learn how to apply industry best practices and software design principles that lead to high-quality software
 keywords:
   [
     bitloops,
@@ -15,13 +15,13 @@ keywords:
   ]
 ---
 
-# Create a ToDo App
+# Create a Todo App
 
-Creating a To Do App as example
+Creating a Todo App as example
 
 ## Project structure
 
-BL needs an input folder with a setup.bl file and the essential controllers of the use cases which will be transpiled.
+BL needs an input folder with a setup.bl file and the essential bl files which will be transpiled.
 
 The structure of the input folder must be as the following:
 
@@ -29,10 +29,7 @@ The structure of the input folder must be as the following:
 📦 .
  ┣ 📂To Do App                # Bounded Context Name
  ┃ ┗ 📂To Do                  # Module Name
- ┃ ┃ ┗ 📂Use Cases            # Standard Name (Do not change!)
- ┃ ┃ ┃ ┗ 📂Add To Do          # Use Case
- ┃ ┃ ┃ ┃ ┗ 📜controller.bl
- ┃ ┃ ┃ ┗ 📂 ...	              # Another Use Case
+ ┃ ┃ ┗ 📂 ...                 # Folders and files with your bl syntax
  ┗ 📜setup.bl
 
 ```
@@ -43,58 +40,12 @@ Setup file must be located in the root directory of the input folder.
 
 #### Format
 
-##### Language configuration (optional)
+##### Language configuration
 
 Configure which language the bl will be transpiled to.
 Fow now, only TypeScript-Nest is supported and it is selected by default.  
 More languages to follow.
 
-```typescript
-Config.setLanguage(TypeScript - Nest);
 ```
-
-##### Router definition (REST)
-
-Declare your router and assign to it a router expression as the example:
-
-```typescript
-const toDoRESTRouter = RESTRouter(REST.Fastify) {
-  Get('/add'): [To Do App][To Do]AddToDoRESTController();
-// <Method>(<Path>): [<Bounded Context>][<Module>]<Controller>();
-};
-```
-
-In accordance with Domain-Driven-Development principles, due to the ubiquitous language, **use cases** and **controllers** must have **unique names**.
-
-##### Server expression (REST)
-
-Instantiate your server and bind routes as the example:
-
-```typescript
-RESTServer({
-  server: REST.Fastify,
-  port: env.FASTIFY_PORT || 5001,
-  apiPrefix: '/api',
-}) {
-  '/todo': toDoRESTRouter;
-};
-```
-
-### controller.bl file
-
-Controller file must be located in the directory of the Use Case it coordinates.
-
-#### Format
-
-##### Controller expression (REST)
-
-Declare and instantiate your controller as the example:
-
-```typescript
-RESTController HelloWorldController () {
-  method: REST.Methods.GET;
-  execute(request, response) {
-    this.ok(response, 'To Do added!');
-  }
-};
+Config.setLanguage(TypeScript-Nest);
 ```

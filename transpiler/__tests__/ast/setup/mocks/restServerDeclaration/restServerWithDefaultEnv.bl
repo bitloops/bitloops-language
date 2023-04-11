@@ -1,7 +1,0 @@
-RESTServer({   
-    server: REST.Fastify,   
-    apiPrefix: '/', 
-    port: Env(FASTIFY_PORT, 5001),  
-}) {   
-    '/hello': helloWorldRESTRouter; 
-};

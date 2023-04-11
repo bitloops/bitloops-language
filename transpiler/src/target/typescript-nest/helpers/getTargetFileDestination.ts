@@ -62,13 +62,10 @@ export const ClassTypesPaths: Record<TClassTypesValues, string> = {
   [ClassTypes.ValueObject]: PROJECT_RELATIVE_PATHS.DOMAIN,
   [ClassTypes.DomainError]: PROJECT_RELATIVE_PATHS.DOMAIN_ERRORS,
   [ClassTypes.DomainRule]: PROJECT_RELATIVE_PATHS.DOMAIN_RULES,
-  [ClassTypes.Controller]: PROJECT_RELATIVE_PATHS.DRIVING_ADAPTERS,
-  [ClassTypes.UseCase]: PROJECT_RELATIVE_PATHS.APPLICATION,
   [ClassTypes.DTO]: PROJECT_RELATIVE_PATHS.DTOs,
-  [ClassTypes.Package]: PROJECT_RELATIVE_PATHS.PACKAGES,
+  [ClassTypes.PackagePort]: PROJECT_RELATIVE_PATHS.PACKAGES,
   [ClassTypes.RepoPort]: PROJECT_RELATIVE_PATHS.PORTS,
   [ClassTypes.ApplicationError]: PROJECT_RELATIVE_PATHS.APPLICATION_ERRORS,
-  [ClassTypes.RepoAdapter]: PROJECT_RELATIVE_PATHS.REPO_ADAPTERS,
   [ClassTypes.Struct]: PROJECT_RELATIVE_PATHS.STRUCTS,
   [ClassTypes.Command]: PROJECT_RELATIVE_PATHS.COMMANDS,
   [ClassTypes.Query]: PROJECT_RELATIVE_PATHS.QUERIES,
@@ -111,17 +108,11 @@ const getTargetFileDestination = (
     camelCase: camelCase(moduleName),
     kebabCase: kebabCase(moduleName),
   };
-  // const USE_CASE = {
-  //   name: useCase,
-  //   pascalCase: useCase ? pascalCase(useCase) : undefined,
-  //   camelCase: useCase ? camelCase(useCase) : undefined,
-  //   kebabCase: useCase ? kebabCase(useCase) : undefined,
-  // };
+
   const result = {
     path: '',
     filename: '',
   };
-  // console.log('Checking classType', classType);
   switch (classType) {
     case ClassTypes.RootEntity:
     case ClassTypes.Entity:
@@ -130,12 +121,9 @@ const getTargetFileDestination = (
     case ClassTypes.DomainError:
     case ClassTypes.ApplicationError:
     case ClassTypes.Props:
-    case ClassTypes.Controller:
-    case ClassTypes.UseCase:
     case ClassTypes.DTO:
-    case ClassTypes.Package:
+    case ClassTypes.PackagePort:
     case ClassTypes.RepoPort:
-    case ClassTypes.RepoAdapter:
     case ClassTypes.DomainRule:
     case ClassTypes.DomainEvent:
     case ClassTypes.DomainEventHandler:
@@ -175,11 +163,8 @@ const getFilePathRelativeToModule = (
     case ClassTypes.RootEntity:
     case ClassTypes.Entity:
     case ClassTypes.ValueObject:
-    case ClassTypes.Controller:
-    case ClassTypes.UseCase:
     case ClassTypes.DTO:
-    case ClassTypes.Package:
-    case ClassTypes.RepoAdapter:
+    case ClassTypes.PackagePort:
     case ClassTypes.RepoPort:
     case ClassTypes.Command:
     case ClassTypes.Query:

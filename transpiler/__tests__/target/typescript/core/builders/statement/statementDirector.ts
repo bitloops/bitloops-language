@@ -18,19 +18,6 @@ import { ArgumentNode } from '../../../../../../src/ast/core/intermediate-ast/no
 import { BitloopsPrimaryTypeNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export class StatementBuilderDirector {
-  /**
-   *  const {identifier} = [await]? this.useCase.execute();
-   */
-  buildConstDeclarationThisUseCaseExecute(
-    identifier: string,
-    options?: { await: boolean },
-  ): ConstDeclarationNode {
-    return new ConstDeclarationBuilderDirector().buildConstDeclarationThisUseCaseExecute(
-      identifier,
-      options,
-    );
-  }
-
   buildConstDeclarationIdentifierExpression(
     constDeclarationIdentifier: string,
     value: string,

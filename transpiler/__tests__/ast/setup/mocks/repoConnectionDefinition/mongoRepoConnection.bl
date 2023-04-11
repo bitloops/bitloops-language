@@ -1,5 +1,0 @@
-const mongoConnection = RepoConnections.Mongo({
-  host: 'localhost',
-  port: 27017,
-  database: 'todo',
-});

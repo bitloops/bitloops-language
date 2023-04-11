@@ -30,7 +30,6 @@ import {
   TDomainEventEvaluation,
   TReadModelEvaluation,
   TDomainServiceEvaluation,
-  TCorsOptionsEvaluation,
 } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
@@ -91,15 +90,6 @@ export class EvaluationTypeIdentifiers {
     evaluation: TEvaluationValues,
   ): evaluation is TDomainEventEvaluation {
     return 'domainEvent' in evaluation;
-  }
-
-  static isCorsOptionsEvaluation(
-    evaluation: TEvaluationValues,
-  ): evaluation is TCorsOptionsEvaluation {
-    if ('corsOptions' in evaluation) {
-      return true;
-    }
-    return false;
   }
 
   static isDomainServiceEvaluation(

@@ -21,7 +21,6 @@ import Transpiler from '../../src/Transpiler.js';
 import {
   SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES,
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES,
-  SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES,
 } from './mocks/semantic-errors/semantic-errors.js';
 import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
 import { BitloopsParser } from '../../src/parser/index.js';
@@ -51,66 +50,6 @@ describe('Semantic core error End To End', () => {
       intermediateASTModelToTargetLanguageGenerator,
     );
 
-    it(`${testCase.description}`, async () => {
-      // given
-      const input = {
-        core: [
-          {
-            boundedContext,
-            module,
-            fileId: testCase.fileIdCore,
-            fileContents: testCase.inputCore,
-          },
-        ],
-        setup: [
-          {
-            boundedContext,
-            module,
-            fileId: testCase.fileIdSetup,
-            fileContents: testCase.inputSetup,
-          },
-        ],
-      };
-
-      // when
-      const result = transpiler.transpile(input, options);
-      if (!Transpiler.isTranspileError(result)) {
-        throw new Error('Transpiler should return error');
-      }
-      let i = 0;
-      // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
-      result.forEach((error) => {
-        expect(error).toBeInstanceOf(IntermediateASTValidationError);
-        expect((error as IntermediateASTValidationError).message).toEqual(
-          testCase.expectedErrorMessages[i],
-        );
-        // console.log((error as IntermediateASTValidationError).message);
-        i++;
-      });
-    });
-  });
-});
-
-describe('Semantic setup error End To End', () => {
-  const boundedContext = 'Todo';
-  const module = 'Todo';
-  const options = {
-    formatterConfig: null,
-    targetLanguage: SupportedLanguages.TypeScriptNest,
-  };
-
-  SEMANTIC_SETUP_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
-    const parser = new BitloopsParser();
-    const validator = new SemanticAnalyzer();
-    const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
-    const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
-
-    const transpiler = new Transpiler(
-      parser,
-      validator,
-      originalLanguageASTToIntermediateModelTransformer,
-      intermediateASTModelToTargetLanguageGenerator,
-    );
     it(`${testCase.description}`, async () => {
       // given
       const input = {

@@ -30,6 +30,8 @@ export class NatsPubSubIntegrationEventsBus implements Infra.EventBus.IEventBus 
       integrationEvents.map(async (integrationEvent) => {
         const topic = NatsPubSubIntegrationEventsBus.getTopicFromEventInstance(integrationEvent);
         this.logger.log('Publishing in pubsub-integration-event-bus :' + topic);
+        integrationEvent.correlationId = this.getCorelationId();
+        integrationEvent.context = this.getContext();
         const headers = this.generateHeaders(integrationEvent);
 
         return this.nc.publish(topic, jsonCodec.encode(integrationEvent), {
@@ -61,6 +63,14 @@ export class NatsPubSubIntegrationEventsBus implements Infra.EventBus.IEventBus 
 
   unsubscribe(topic: string, eventHandler: Application.IHandleIntegrationEvent): Promise<void> {
     throw new Error('Method not implemented.');
+  }
+
+  private getCorelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
   }
 
   private generateHeaders(integrationEvents: Infra.EventBus.IntegrationEvent<any>): MsgHdrs {

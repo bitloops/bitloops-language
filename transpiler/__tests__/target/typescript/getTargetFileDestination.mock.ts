@@ -102,22 +102,4 @@ export const SupportedTargetLanguageAndClassType = [
     path: './lib/bounded-contexts/hello-world/invoices/domain/',
     filename: 'Member.ts',
   },
-  {
-    boundedContext: 'Hello World',
-    module: 'Core',
-    classType: 'Controller',
-    className: 'HelloWorldController',
-    targetLanguage: 'TypeScript',
-    path: './lib/bounded-contexts/hello-world/core/driving-adapters/',
-    filename: 'HelloWorldController.ts',
-  },
-  {
-    boundedContext: 'Hello World',
-    module: 'core',
-    classType: 'UseCase',
-    className: 'HelloWorldUseCase',
-    targetLanguage: 'TypeScript',
-    path: './lib/bounded-contexts/hello-world/core/application/',
-    filename: 'HelloWorldUseCase.ts',
-  },
 ];

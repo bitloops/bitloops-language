@@ -39,6 +39,8 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
       ? (integrationEvents = eventsInput)
       : (integrationEvents = [eventsInput]);
     integrationEvents.forEach(async (integrationEvent) => {
+      integrationEvent.correlationId = this.getCorelationId();
+      integrationEvent.context = this.getContext();
       const headers = this.generateHeaders(integrationEvent);
       const options: Partial<JetStreamPublishOptions> = {
         msgID: integrationEvent.metadata.messageId,
@@ -109,6 +111,14 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
     eventHandler: Application.IHandleIntegrationEvent,
   ): Promise<void> {
     throw new Error('Method not implemented.');
+  }
+
+  private getCorelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
   }
 
   private generateHeaders(domainEvent: Infra.EventBus.IntegrationEvent<any>): MsgHdrs {

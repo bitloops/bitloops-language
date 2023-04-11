@@ -10,10 +10,10 @@ export class WordsWithSpacesBuilder implements IBuilder<TWordsWithSpaces> {
   }
 
   public build(): TWordsWithSpaces {
-    const useCaseExpression = {
+    const wordsWithSpaces = {
       wordsWithSpaces: this.name,
     };
 
-    return useCaseExpression;
+    return wordsWithSpaces;
   }
 }

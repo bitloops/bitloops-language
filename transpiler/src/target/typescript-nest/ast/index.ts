@@ -22,10 +22,6 @@ import { IntermediateASTTree } from '../../../ast/core/intermediate-ast/Intermed
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../helpers/mappings.js';
 import { CommandHandlerNodeTSTransformer } from './node-transformers/commandHandler.js';
-import {
-  GraphQLControllerNodeTSTransformer,
-  RestControllerNodeTSTransformer,
-} from './node-transformers/controllers/index.js';
 import { DomainEventHandlerNodeTSTransformer } from './node-transformers/domainEventHandler.js';
 import {
   DomainCreateMethodNodeTSTransformer,
@@ -36,7 +32,6 @@ import { DomainServiceTSTransformer } from './node-transformers/domainServiceTra
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { IntegrationEventHandlerNodeTSTransformer } from './node-transformers/integrationEventHandler.js';
 import { QueryHandlerNodeTSTransformer } from './node-transformers/queryHandler.js';
-import { UseCaseNodeTSTransformer } from './node-transformers/use-case.js';
 import { IIntermediateModelToASTTargetLanguageTransformer } from './types.js';
 
 export class IntermediateModelToASTTargetTransformer
@@ -72,10 +67,6 @@ export class IntermediateModelToASTTargetTransformer
     const type: TBitloopsTypesValues = intermediateASTNode.getNodeType();
 
     switch (type) {
-      case BitloopsTypesMapping.TRESTController:
-        return new RestControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
-      case BitloopsTypesMapping.TGraphQLController:
-        return new GraphQLControllerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TDomainCreateMethod:
         return new DomainCreateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TPublicMethod: {
@@ -84,8 +75,6 @@ export class IntermediateModelToASTTargetTransformer
       case BitloopsTypesMapping.TPrivateMethod: {
         return new DomainPrivateMethodNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       }
-      case BitloopsTypesMapping.TUseCase:
-        return new UseCaseNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TDomainEventHandler:
         return new DomainEventHandlerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TIntegrationEventHandler:

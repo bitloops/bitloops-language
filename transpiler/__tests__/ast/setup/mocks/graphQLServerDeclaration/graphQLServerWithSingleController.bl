@@ -1,6 +1,0 @@
-GraphQLServer({
-    port: env.APOLLO_SERVER OR 5001,
-  }) {
-    [Demo][Hello World]HelloWorldController();
-  }
-  
