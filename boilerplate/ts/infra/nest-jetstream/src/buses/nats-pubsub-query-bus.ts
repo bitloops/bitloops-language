@@ -21,10 +21,19 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     this.nc = this.nats.getConnection();
   }
 
-  async request(query: any): Promise<any> {
+  private getCorelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
+  }
+
+  async request(query: Application.Query): Promise<any> {
     const topic = NatsPubSubQueryBus.getTopicFromQueryInstance(query);
     this.logger.log('Requesting query:' + topic);
-
+    query.correlationId = this.getCorelationId();
+    query.context = this.getContext();
     const headers = this.generateHeaders(query);
 
     try {

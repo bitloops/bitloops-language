@@ -1,13 +1,18 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, Msg, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
-import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
+import {
+  ASYNC_LOCAL_STORAGE,
+  ProvidersConstants,
+} from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();
 
 @Injectable()
-export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus {
+export class NatsPubSubCommandBus
+  implements Infra.CommandBus.IPubSubCommandBus
+{
   private readonly logger = new Logger(NatsPubSubCommandBus.name);
   private nc: NatsConnection;
   private static commandPrefix = 'Commands_';
@@ -20,9 +25,20 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
     this.nc = this.nats.getConnection();
   }
 
+  private getCorelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
+  }
+
   async publish(command: Application.Command): Promise<void> {
     const topic = NatsPubSubCommandBus.getTopicFromCommandInstance(command);
     this.logger.log('Publishing in :' + topic);
+    // TODO get from context and add both to headers and message metadata
+    command.correlationId = this.getCorelationId();
+    command.context = this.getContext();
     const headers = this.generateHeaders(command);
 
     this.nc.publish(topic, jsonCodec.encode(command), { headers });
@@ -31,8 +47,14 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
   async request(command: Application.Command): Promise<any> {
     const topic = NatsPubSubCommandBus.getTopicFromCommandInstance(command);
 
-    this.logger.log('Requesting in :' + topic);
-
+    this.logger.log('Requesting in haha :' + topic);
+    console.log(
+      'this.asyncLocalStorage.getStore()',
+      this.asyncLocalStorage.getStore(),
+    );
+    command.correlationId = this.getCorelationId();
+    command.context = this.getContext();
+    // command
     const headers = this.generateHeaders(command);
 
     try {
@@ -47,7 +69,10 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
     }
   }
 
-  async pubSubSubscribe(subject: string, handler: Application.ICommandHandler<any, any>) {
+  async pubSubSubscribe(
+    subject: string,
+    handler: Application.ICommandHandler<any, any>,
+  ) {
     try {
       this.logger.log('Subscribing to:' + subject);
       const sub = this.nc.subscribe(subject);
@@ -55,7 +80,9 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
         for await (const m of sub) {
           const command = jsonCodec.decode(m.data);
 
-          const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
+          const contextData = ContextPropagation.createStoreFromMessageHeaders(
+            m.headers,
+          );
 
           await this.asyncLocalStorage.run(contextData, async () => {
             return this.handleReceivedCommand(handler, command, m);
@@ -82,7 +109,9 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
     return h;
   }
 
-  static getTopicFromHandler(handler: Application.ICommandHandler<any, any>): string {
+  static getTopicFromHandler(
+    handler: Application.ICommandHandler<any, any>,
+  ): string {
     const command = handler.command;
     const boundedContext = handler.boundedContext;
 

@@ -21,8 +21,5 @@ import { Application } from '../..';
 
 export interface IQueryBus {
   request(query: any): Promise<any>;
-  pubSubSubscribe(
-    subject: string,
-    handler: Application.IQueryHandler<any, any>,
-  ): Promise<void>;
+  pubSubSubscribe(subject: string, handler: Application.IQueryHandler<any, any>): Promise<void>;
 }
