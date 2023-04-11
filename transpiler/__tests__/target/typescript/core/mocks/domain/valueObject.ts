@@ -69,7 +69,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
         .build(),
     ),
     output: `import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
-    import { TitleProps } from './TitleProps';
+    import { TitleProps } from './title.props';
     import { DomainErrors } from './errors/index';
     import { DomainRules } from './rules/index';
     export class TitleVO extends Domain.ValueObject<TitleProps> {
@@ -173,7 +173,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
         .build(),
     ),
     output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-    import { NameProps } from './NameProps';
+    import { NameProps } from './name.props';
     import { DomainErrors } from './errors/index';
     const vName: string = 'Kostas';
     export class NameVO extends Domain.ValueObject<NameProps> {
@@ -216,7 +216,7 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
         .build(),
     ),
     output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-    import { UserIdProps } from './UserIdProps';
+    import { UserIdProps } from './user-id.props';
     export class UserIdVO extends Domain.ValueObject<UserIdProps> {
       private constructor(props: UserIdProps) {
         super(props);

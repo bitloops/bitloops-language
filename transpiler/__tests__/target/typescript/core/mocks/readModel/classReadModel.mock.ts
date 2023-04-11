@@ -1,4 +1,4 @@
-import { Title } from '../structs/Title';
+import { Title } from '../structs/title.struct';
 export type TClassReadModelSnapshot = {
   name: string;
   numOfTeachers?: number;

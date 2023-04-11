@@ -1,6 +1,6 @@
 import { Infra } from '@bitloops/bl-boilerplate-core';
-import { MoneyDepositedToAccountDomainEvent } from '../../domain/events/MoneyDepositedToAccountDomainEvent';
-import { IntegrationSchemaV1 } from '../../structs/IntegrationSchemaV1';
+import { MoneyDepositedToAccountDomainEvent } from '../../domain/events/money-deposited-to-account.domain-event';
+import { IntegrationSchemaV1 } from '../../structs/integration-schema-v-1.struct';
 type TIntegrationSchemas = IntegrationSchemaV1;
 type ToIntegrationDataMapper = (event: MoneyDepositedToAccountDomainEvent) => TIntegrationSchemas;
 export class MoneyDepositedIntegrationEvent extends Infra.EventBus

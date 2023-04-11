@@ -1,10 +1,10 @@
 import { Application, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
-import { SendEmailCommand } from '../commands/SendEmailCommand';
+import { SendEmailCommand } from '../commands/send-email.command';
 import { Inject } from '@nestjs/common';
 import { EmailDomainServiceToken } from '../../constants';
-import { EmailDomainService } from '../../domain/services/EmailDomainService';
-import { EmailToSend } from '../../structs/EmailToSend';
+import { EmailDomainService } from '../../domain/services/email.domain-service';
+import { EmailToSend } from '../../structs/email-to-send.struct';
 export type SendEmailCommandHandlerResponse = Either<void, void>;
 export class SendEmailCommandHandler
   implements Application.ICommandHandler<SendEmailCommand, void>

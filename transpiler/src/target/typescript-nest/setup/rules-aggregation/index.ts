@@ -22,7 +22,10 @@ import { TDomainRule } from '../../../../types.js';
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
 
-import { getTargetFileDestination } from '../../helpers/getTargetFileDestination.js';
+import {
+  getTargetFileDestination,
+  getTargetFileName,
+} from '../../helpers/getTargetFileDestination.js';
 import { TSetupOutput } from '../setup-typescript.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../helpers/mappings.js';
 
@@ -60,7 +63,8 @@ export class RulesAggregator implements IRulesAggregator {
         for (const domainRule of domainRules) {
           const className = domainRule.DomainRule.domainRuleIdentifier;
           const classNameWithoutRule = className.split('Rule')[0];
-          imports += `import { ${className} as ${classNameWithoutRule} } from './${className}';`;
+          const fileName = getTargetFileName(className, classTypeName);
+          imports += `import { ${className} as ${classNameWithoutRule} } from './${fileName}';`;
           content += `export class ${className} extends ${classNameWithoutRule} {}`;
         }
         content += '}';

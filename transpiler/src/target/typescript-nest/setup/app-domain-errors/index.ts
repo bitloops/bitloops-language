@@ -31,7 +31,10 @@ import {
 
 import { TBoundedContexts } from '../../../../ast/core/types.js';
 
-import { getTargetFileDestination } from '../../helpers/getTargetFileDestination.js';
+import {
+  getTargetFileDestination,
+  getTargetFileName,
+} from '../../helpers/getTargetFileDestination.js';
 import { TSetupOutput } from '../setup-typescript.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../helpers/mappings.js';
 
@@ -98,7 +101,9 @@ export class AppAndDomainErrorsAggregator implements IAppAndDomainErrorsAggregat
     for (const errorModel of errorModels) {
       const className = this.getErrorName(errorModel, classType);
       const classNameWithoutError = className.split('Error')[0];
-      imports += `import { ${className} as ${classNameWithoutError} } from './${className}';`;
+
+      const fileName = getTargetFileName(className, classType);
+      imports += `import { ${className} as ${classNameWithoutError} } from './${fileName}';`;
       content += `export class ${className} extends ${classNameWithoutError} {}`;
     }
     content += '}';

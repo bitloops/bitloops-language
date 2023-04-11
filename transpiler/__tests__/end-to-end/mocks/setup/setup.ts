@@ -31,12 +31,12 @@ const setupFilePaths = {
     formatterParser: 'typescript',
   },
   'index.command-handlers.mock.ts': {
-    fileId: 'lib/bounded-contexts/demo/hello-world/application/commandHandlers/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/command-handlers/index.ts',
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },
   'index.query-handlers.mock.ts': {
-    fileId: 'lib/bounded-contexts/demo/hello-world/application/queryHandlers/index.ts',
+    fileId: 'lib/bounded-contexts/demo/hello-world/application/query-handlers/index.ts',
     fileType: 'index.ts',
     formatterParser: 'typescript',
   },

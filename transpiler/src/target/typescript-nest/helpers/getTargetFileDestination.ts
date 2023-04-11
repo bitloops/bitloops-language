@@ -44,8 +44,8 @@ enum PROJECT_RELATIVE_PATHS {
   STRUCTS = 'structs/',
   COMMANDS = 'application/commands/',
   QUERIES = 'application/queries/',
-  QUERY_HANDLERS = 'application/queryHandlers/',
-  COMMAND_HANDLERS = 'application/commandHandlers/',
+  QUERY_HANDLERS = 'application/query-handlers/',
+  COMMAND_HANDLERS = 'application/command-handlers/',
   DOMAIN_EVENTS = 'domain/events/',
   DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
   INTEGRATION_EVENTS = 'contracts/integration-events/',
@@ -86,7 +86,7 @@ export const ClassTypesPaths: Record<TClassTypesValues, string> = {
 const getTargetFileDestination = (
   boundedContext: string,
   moduleName: string,
-  classType: string,
+  classType: TClassTypesValues,
   className: string,
   targetLanguage = SupportedLanguages.TypeScript as string,
 ): { path: string; filename: string } => {
@@ -147,14 +147,43 @@ const getTargetFileDestination = (
     case ClassTypes.QueryHandler:
     case ClassTypes.Struct:
     case ClassTypes.ServicePort:
-    case ClassTypes.DomainService:
+    case ClassTypes.DomainService: {
       result.path = `./${ROOT_FOLDER}/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
+      const fileName = getTargetFileName(className, classType);
+      result.filename = fileName + getLanguageFileExtension(targetLanguage);
       break;
+    }
     default:
       throw new Error(`Class type ${classType} is not supported`);
   }
   return result;
+};
+
+export const getTargetFileName = (className: string, classType: TClassTypesValues): string => {
+  // remove classtype from suffix
+  let classNameWithoutClassType: string;
+
+  switch (classType) {
+    case ClassTypes.ValueObject:
+      classNameWithoutClassType = className.replace('VO', '');
+      break;
+    case ClassTypes.DomainError:
+    case ClassTypes.ApplicationError:
+      classNameWithoutClassType = className.replace('Error', '');
+      break;
+    case ClassTypes.DomainRule:
+      classNameWithoutClassType = className.replace('Rule', '');
+      break;
+    case ClassTypes.RootEntity:
+      classNameWithoutClassType = className.replace(ClassTypes.Entity, '');
+      break;
+    default:
+      classNameWithoutClassType = className.replace(classType, '');
+  }
+  const classNameKebabCase = kebabCase(classNameWithoutClassType);
+  const classTypeKebabCase = kebabCase(classType);
+  return `${classNameKebabCase}.${classTypeKebabCase}`;
+  // return className;
 };
 
 // TODO maybe this should change name and remove integrationEvent case to other function

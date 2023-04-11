@@ -1,7 +1,7 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-import { AccountProps } from './AccountProps';
+import { AccountProps } from './account.props';
 import { DomainErrors } from './errors/index';
-import { MoneyVO } from './MoneyVO';
+import { MoneyVO } from './money.value-object';
 type TAccountEntityPrimitives = {
   id: string;
   version: string;

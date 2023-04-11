@@ -1,12 +1,14 @@
+import { ClassTypes, TClassTypesValues } from '../../../src/helpers/mappings.js';
+
 export const MissingBoundedContext = {
   boundedContexts: ['empty', 'null', 'undefined', 'space'],
   restInfo: {
     module: 'core',
-    classType: 'Props',
+    classType: ClassTypes.Props,
     className: 'NameProps',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/core/domain/',
-    filename: 'NameProps.ts',
+    filename: 'name.props.ts',
   },
 };
 
@@ -14,11 +16,11 @@ export const MissingModule = {
   modules: ['empty', 'null', 'undefined', 'space'],
   restInfo: {
     boundedContext: 'Hello World',
-    classType: 'Props',
+    classType: ClassTypes.Props,
     className: 'NameProps',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/core/domain/',
-    filename: 'NameProps.ts',
+    filename: 'name.props.ts',
   },
 };
 
@@ -65,7 +67,15 @@ export const UnsupportedClassType = {
   type: 'InvalidClassType',
 };
 
-export const SupportedTargetLanguageAndClassType = [
+export const SupportedTargetLanguageAndClassType: Array<{
+  boundedContext: string;
+  module: string;
+  classType: TClassTypesValues;
+  className: string;
+  targetLanguage: string;
+  path: string;
+  filename: string;
+}> = [
   {
     boundedContext: 'Hello World',
     module: 'core',
@@ -73,7 +83,7 @@ export const SupportedTargetLanguageAndClassType = [
     className: 'NameProps',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/core/domain/',
-    filename: 'NameProps.ts',
+    filename: 'name.props.ts',
   },
   {
     boundedContext: 'hello World',
@@ -82,7 +92,7 @@ export const SupportedTargetLanguageAndClassType = [
     className: 'NameProps',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/iam/domain/',
-    filename: 'NameProps.ts',
+    filename: 'name.props.ts',
   },
   {
     boundedContext: 'Hello World',
@@ -91,33 +101,15 @@ export const SupportedTargetLanguageAndClassType = [
     className: 'Name',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/async-notifications/domain/',
-    filename: 'Name.ts',
+    filename: 'name.value-object.ts',
   },
   {
     boundedContext: 'Hello World',
     module: 'Invoices',
-    classType: 'RootEntity',
+    classType: ClassTypes.RootEntity,
     className: 'Member',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/invoices/domain/',
-    filename: 'Member.ts',
-  },
-  {
-    boundedContext: 'Hello World',
-    module: 'Core',
-    classType: 'Controller',
-    className: 'HelloWorldController',
-    targetLanguage: 'TypeScript',
-    path: './lib/bounded-contexts/hello-world/core/driving-adapters/',
-    filename: 'HelloWorldController.ts',
-  },
-  {
-    boundedContext: 'Hello World',
-    module: 'core',
-    classType: 'UseCase',
-    className: 'HelloWorldUseCase',
-    targetLanguage: 'TypeScript',
-    path: './lib/bounded-contexts/hello-world/core/application/',
-    filename: 'HelloWorldUseCase.ts',
+    filename: 'member.root-entity.ts',
   },
 ];

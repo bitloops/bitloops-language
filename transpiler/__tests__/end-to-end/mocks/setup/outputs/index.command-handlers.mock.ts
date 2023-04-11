@@ -17,6 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { WithdrawMoneyCommandHandler } from './WithdrawMoneyCommandHandler';
+import { WithdrawMoneyCommandHandler } from './withdraw-money.command-handler';
 export const PubSubCommandHandlers = [WithdrawMoneyCommandHandler];
 export const StreamingCommandHandlers = [WithdrawMoneyCommandHandler];

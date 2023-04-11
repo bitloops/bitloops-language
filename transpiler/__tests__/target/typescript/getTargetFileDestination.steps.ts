@@ -102,7 +102,7 @@ UnsupportedTargetLanguage.targetLanguages.forEach((targetLanguage) => {
 });
 
 test('Invalid class type', () => {
-  const unacceptableType = 'InvalidClassType';
+  const unacceptableType: any = 'InvalidClassType';
 
   let result: IResult | Error;
   try {
