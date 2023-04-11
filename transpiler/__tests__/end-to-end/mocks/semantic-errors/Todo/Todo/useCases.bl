@@ -1,7 +1,0 @@
-  RepoPort TodoReadRepoPort<TodoReadModel> extends CRUDReadRepoPort;
-
-  ReadModel TodoReadModel {
-    string id;
-    string title;
-    bool completed;
-  }

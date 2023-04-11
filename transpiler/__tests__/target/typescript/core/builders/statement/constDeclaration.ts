@@ -25,30 +25,7 @@ export class ConstDeclarationBuilderDirector {
     }
     return node.build();
   }
-  /**
-   *  const {identifier} = [await]? this.useCase.execute();
-   */
-  buildConstDeclarationThisUseCaseExecute(
-    identifier: string,
-    options?: { await: boolean },
-    executeArgs?: ArgumentNode[],
-  ): ConstDeclarationNode {
-    let thisNode;
-    if (options?.await) {
-      thisNode = new ExpressionBuilderDirector().buildModifiedThisExpression('await this');
-    } else {
-      thisNode = new ExpressionBuilderDirector().buildThisExpression();
-    }
 
-    const expression = new ExpressionBuilderDirector().buildMethodCallExpression(
-      new ExpressionBuilderDirector().buildMemberDotExpression(
-        new ExpressionBuilderDirector().buildMemberDotExpression(thisNode, 'useCase'),
-        'execute',
-      ),
-      new ArgumentListDirector().buildArgumentListWithArgs(executeArgs ?? []),
-    );
-    return this.buildConstDeclaration(identifier, expression);
-  }
   /**
    * With expression(identifier of props)
    */

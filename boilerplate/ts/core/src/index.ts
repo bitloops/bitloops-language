@@ -113,16 +113,6 @@ namespace Application {
 }
 
 namespace Infra {
-  // export namespace REST {
-  //   export type IBaseController<Req, Res> = IBaseControllerImport<Req, Res>;
-  //   export type ErrorMessage = ErrorMessageImport;
-  // }
-
-  // export namespace GraphQL {
-  //   export type IBaseController<TRequest, TResponseData> =
-  //     IBaseGraphQLControllerImport<TRequest, TResponseData>;
-  // }
-
   export namespace EventBus {
     export type IIntegrationEvent<T> = IIntegrationEventImport<T>;
     export type TIntegrationEventMetadata = IIntegrationEventInputMetadata;

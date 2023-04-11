@@ -213,14 +213,6 @@ const getClassTypeFromIdentifier = (
     return {
       classType: ClassTypes.Props,
     };
-  } else if (dependencyName.endsWith('Controller')) {
-    return {
-      classType: ClassTypes.Controller,
-    };
-  } else if (dependencyName.endsWith('UseCase')) {
-    return {
-      classType: ClassTypes.UseCase,
-    };
   } else if (dependencyName.endsWith('Error')) {
     if (dependencyName.startsWith('DomainErrors'))
       return {
@@ -235,7 +227,7 @@ const getClassTypeFromIdentifier = (
   } // TODO check Repo Adapter?
   else if (dependencyName.endsWith('PackagePort')) {
     return {
-      classType: ClassTypes.Package,
+      classType: ClassTypes.PackagePort,
     };
   } else if (dependencyName.endsWith('RepoPort')) {
     return {

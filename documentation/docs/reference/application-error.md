@@ -50,19 +50,13 @@ separation between those main categories of errors.
 ## Usage Example
 
 ```typescript
-UseCase CreateBookingUseCase () {
-  execute(createBookingRequestDTO: CreateBookingRequestDTO):
-  (OK(CreateBookingResponseDTO), Errors(DomainErrors.InvalidBooking, ApplicationErrors.UndefinedName))
+CommandHandler CreateBookingCommandHandler () {
+  execute(command: CreateBookingCommand):
+  (OK(void), Errors(DomainErrors.InvalidBooking, ApplicationErrors.UndefinedName))
   {
     ...
-  let booking;
-  try {
-    // We don't own this code, so we'll wrap it in a try-catch
     booking = db.Booking.save({ name, date })
-  } catch (err) {
-    return new ApplicationError(new DatabaseError)
-  }
-  return success(new CreateBookingSuccess(booking.bookingId))
+    return ok();
   }
 }
 ```

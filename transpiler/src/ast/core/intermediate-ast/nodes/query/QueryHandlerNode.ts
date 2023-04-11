@@ -40,8 +40,8 @@ export class QueryHandlerNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const useCaseExecute = this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
-    return useCaseExecute.getStatements();
+    const executeNode = this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
+    return executeNode.getStatements();
   }
 
   getAllDependenciesIdentifiers(): string[] {

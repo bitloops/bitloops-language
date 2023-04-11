@@ -67,7 +67,7 @@ export class StatementDirector {
   }
 
   /**
-   * const result = useCase.execute();
+   * const result = commandHandler.execute();
    */
   buildConstDeclarationWithMemberDotMethodCall(params: {
     name: string;

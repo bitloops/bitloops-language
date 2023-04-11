@@ -19,7 +19,6 @@
  */
 import {
   TContextData,
-  TControllerBusDependencies,
   TDependenciesTypeScript,
   TDependencyChildTypescript,
   TEventHandlerBusDependencies,
@@ -31,7 +30,7 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 
 export type ConstructorWithEventBusesInput = {
   parameterList: TParameterList;
-  busDependencies: TEventHandlerBusDependencies | TControllerBusDependencies;
+  busDependencies: TEventHandlerBusDependencies;
   needsSuper?: boolean;
 };
 
@@ -90,19 +89,13 @@ export const generateHandlerAttributesAndConstructor = (
 };
 
 const isEventHandlerBusDependencies = (
-  busDependencies: TEventHandlerBusDependencies | TControllerBusDependencies,
+  busDependencies: TEventHandlerBusDependencies,
 ): busDependencies is TEventHandlerBusDependencies => {
   return 'eventHandlerBusDependencies' in busDependencies;
 };
 
-const isControllerBusDependencies = (
-  busDependencies: TEventHandlerBusDependencies | TControllerBusDependencies,
-): busDependencies is TControllerBusDependencies => {
-  return 'controllerBusDependencies' in busDependencies;
-};
-
 const getDefaultBusAttributes = (
-  busDependencies: TEventHandlerBusDependencies | TControllerBusDependencies,
+  busDependencies: TEventHandlerBusDependencies,
 ): TTargetDependenciesTypeScript => {
   if (isEventHandlerBusDependencies(busDependencies)) {
     const { commandBus, queryBus, integrationEventBus } =
@@ -119,24 +112,11 @@ const getDefaultBusAttributes = (
       dependencies: [],
     };
   }
-  if (isControllerBusDependencies(busDependencies)) {
-    const { commandBus, queryBus } = busDependencies.controllerBusDependencies;
-    let res = '';
-    if (commandBus) res += 'private commandBus: Infra.CommandBus.ICommandBus;';
-    if (queryBus) res += 'private queryBus: Infra.QueryBus.IQueryBus;';
-    if (res !== '') {
-      return { output: res, dependencies: [INFRA_DEPENDENCY] };
-    }
-    return {
-      output: res,
-      dependencies: [],
-    };
-  }
   throw new Error('Invalid bus dependencies');
 };
 
 const getDefaultBusConstructorStatements = (
-  busDependencies: TEventHandlerBusDependencies | TControllerBusDependencies,
+  busDependencies: TEventHandlerBusDependencies,
 ): TTargetDependenciesTypeScript => {
   if (isEventHandlerBusDependencies(busDependencies)) {
     const { commandBus, queryBus, integrationEventBus } =
@@ -146,18 +126,6 @@ const getDefaultBusConstructorStatements = (
     if (queryBus) res += 'this.queryBus = Container.getQueryBus();';
     if (integrationEventBus)
       res += 'this.integrationEventBus = Container.getIntegrationEventBus();';
-    if (res !== '') {
-      return { output: res, dependencies: [CONTAINER_DEPENDENCY] };
-    }
-    return {
-      output: res,
-      dependencies: [],
-    };
-  } else if (isControllerBusDependencies(busDependencies)) {
-    const { commandBus, queryBus } = busDependencies.controllerBusDependencies;
-    let res = '';
-    if (commandBus) res += 'this.commandBus = Container.getCommandBus();';
-    if (queryBus) res += 'this.queryBus = Container.getQueryBus();';
     if (res !== '') {
       return { output: res, dependencies: [CONTAINER_DEPENDENCY] };
     }

@@ -40,19 +40,6 @@ export {
   parameterArgIdentifierVisitor,
 } from './parameterList.js';
 export { entityEvaluationVisitor } from './entityEvaluation.js';
-export { restControllerMethodDeclarationVisitor } from './restControllerMethodDeclaration.js';
-export { restControllerExecuteDeclarationVisitor } from './restControllerExecuteDeclaration.js';
-export { restControllerDeclarationVisitor } from './restControllerDeclaration.js';
-export { graphQLControllerDeclarationVisitor } from './controllers/graphql/graphQLControllerDeclaration.js';
-export {
-  graphQLResolverOptionsVisitor,
-  graphQLOperationTypeVisitor,
-  graphQLOperationInputTypeVisitor,
-} from './controllers/graphql/graphQLResolverOptions.js';
-export {
-  graphQLControllerExecuteVisitor,
-  graphQLExecuteDependenciesVisitor,
-} from './controllers/graphql/graphQLControllerExecute.js';
 export { methodDefinitionVisitor } from './methodDefinition.js';
 export { methodDefinitionListVisitor } from './methodDefinitionList.js';
 export { errorIdentifiersVisitor } from './errorIdentifiers.js';
@@ -85,7 +72,7 @@ export {
 } from './applyRulesStatement.js';
 export { isInstanceOfVisitor } from './isInstanceOf.js';
 // export { getClassEvaluationVisitor } from './getClassEvaluation.js';
-export { useCaseDeclarationVisitor, executeDeclarationVisitor } from './useCaseDeclaration.js';
+export { executeDeclarationVisitor } from './exeuteDeclaration.js';
 export {
   equalityExpressionVisitor,
   relationalExpressionVisitor,

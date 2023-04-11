@@ -38,7 +38,7 @@ ApplicationError ToDoNotFoundError(id: string)  {
   
 RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
 
-UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
+CommandHandler DeleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
   execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
     const requestId = UUIDv4(requestDTO.id);
 
