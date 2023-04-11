@@ -42,14 +42,14 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
-  COMMANDS = 'application/commands/',
-  QUERIES = 'application/queries/',
+  COMMANDS = 'commands/',
+  QUERIES = 'queries/',
   QUERY_HANDLERS = 'application/query-handlers/',
   COMMAND_HANDLERS = 'application/command-handlers/',
   DOMAIN_EVENTS = 'domain/events/',
-  DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
+  DOMAIN_EVENT_HANDLERS = 'application/event-handlers/domain/',
   INTEGRATION_EVENTS = 'contracts/integration-events/',
-  INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
+  INTEGRATION_EVENT_HANDLERS = 'application/event-handlers/integration/',
   DOMAIN_SERVICE = 'domain/services/',
   INJECTION_TOKENS = '',
 }
@@ -160,8 +160,8 @@ const getTargetFileDestination = (
 };
 
 export const getTargetFileName = (className: string, classType: TClassTypesValues): string => {
-  // remove classtype from suffix
   let classNameWithoutClassType: string;
+  let classTypeFileSuffix: string;
 
   switch (classType) {
     case ClassTypes.ValueObject:
@@ -176,14 +176,14 @@ export const getTargetFileName = (className: string, classType: TClassTypesValue
       break;
     case ClassTypes.RootEntity:
       classNameWithoutClassType = className.replace(ClassTypes.Entity, '');
+      classTypeFileSuffix = kebabCase(ClassTypes.Entity);
       break;
     default:
       classNameWithoutClassType = className.replace(classType, '');
   }
   const classNameKebabCase = kebabCase(classNameWithoutClassType);
-  const classTypeKebabCase = kebabCase(classType);
+  const classTypeKebabCase = classTypeFileSuffix ?? kebabCase(classType);
   return `${classNameKebabCase}.${classTypeKebabCase}`;
-  // return className;
 };
 
 // TODO maybe this should change name and remove integrationEvent case to other function

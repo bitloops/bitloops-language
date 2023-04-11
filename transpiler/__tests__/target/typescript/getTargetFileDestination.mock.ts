@@ -110,6 +110,6 @@ export const SupportedTargetLanguageAndClassType: Array<{
     className: 'Member',
     targetLanguage: 'TypeScript',
     path: './lib/bounded-contexts/hello-world/invoices/domain/',
-    filename: 'member.root-entity.ts',
+    filename: 'member.entity.ts',
   },
 ];

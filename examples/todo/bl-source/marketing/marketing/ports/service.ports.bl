@@ -1,9 +1,9 @@
-Struct Email {
+Struct SendEmailRequest {
     string origin;
     string destination;
     string content;
 }
 
 ServicePort EmailServicePort {
-    send(email: Email): (OK(void),Errors());
+    send(email: SendEmailRequest): (OK(void),Errors());
 }

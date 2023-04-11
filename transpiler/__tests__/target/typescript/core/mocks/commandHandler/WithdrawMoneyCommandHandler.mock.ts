@@ -2,7 +2,7 @@ import { Application, Either, Domain, fail, ok } from '@bitloops/bl-boilerplate-
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
-import { WithdrawMoneyCommand } from '../commands/withdraw-money.command';
+import { WithdrawMoneyCommand } from '../../commands/withdraw-money.command';
 import { Inject } from '@nestjs/common';
 import { AccountWriteRepoPortToken } from '../../constants';
 import { AccountWriteRepoPort } from '../../ports/account-write.repo-port';

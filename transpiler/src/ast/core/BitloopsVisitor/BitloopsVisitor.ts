@@ -567,11 +567,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'execute',
     };
   }
-  visitDeleteKeyword(_ctx: BitloopsParser.DeleteKeywordContext) {
-    return {
-      value: 'delete',
-    };
-  }
 
   visitHandleKeywordIdentifier(_ctx: BitloopsParser.HandleKeywordIdentifierContext) {
     return {

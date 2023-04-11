@@ -127,7 +127,6 @@ regularIdentifier
     | regularErrorTypeEvaluation                                # RegularErrorTypeEvaluationString
     // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
     | Execute                                                   # ExecuteExpression
-    | Delete                                                    # DeleteKeyword
     | serverType                                                # ServerTypeExpression
     | Handle                                                    # HandleKeywordIdentifier
     | EntityIdentifier                                          # EntityIdentifierString
