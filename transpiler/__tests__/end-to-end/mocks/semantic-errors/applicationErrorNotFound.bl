@@ -34,6 +34,10 @@ Root Entity TodoEntity {
 DTO DeleteTodoRequestDTO {
   string id;
 }
+Command DeleteTodoCommand {
+  UUIDv4 id;
+}
+
 RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
 
 CommandHandler DeleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {

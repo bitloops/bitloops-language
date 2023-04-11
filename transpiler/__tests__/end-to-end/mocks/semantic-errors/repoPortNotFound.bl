@@ -39,10 +39,14 @@ ApplicationError ToDoNotFoundError(id: string)  {
   DTO DeleteTodoRequestDTO {
     string id;
   }
+
+Command DeleteTodoCommand {
+    UUIDv4 id;
+}
   
-UseCase DeleteTodoUseCase (todoRepo: TodoWriteRepoPort) {
-  execute (requestDTO: DeleteTodoRequestDTO): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
-    const requestId = UUIDv4(requestDTO.id);
+CommandHandler DeleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
+  execute (deleteCommand: DeleteTodoCommand): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
+    const requestId = UUIDv4(deleteCommand.id);
 
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {
