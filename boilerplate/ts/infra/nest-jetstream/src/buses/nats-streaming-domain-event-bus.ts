@@ -32,9 +32,9 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
   }
 
   async publish(
-    domainEventsInput: Domain.IDomainEvent<any> | Domain.IDomainEvent<any>[],
+    domainEventsInput: Domain.DomainEvent<any> | Domain.DomainEvent<any>[],
   ): Promise<void> {
-    let domainEvents: Domain.IDomainEvent<any>[];
+    let domainEvents: Domain.DomainEvent<any>[];
     Array.isArray(domainEventsInput)
       ? (domainEvents = domainEventsInput)
       : (domainEvents = [domainEventsInput]);
@@ -42,7 +42,8 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
       const boundedContext = domainEvent.metadata.boundedContextId;
       const stream = NatsStreamingDomainEventBus.getStreamName(boundedContext);
       const subject = `${stream}.${domainEvent.constructor.name}`;
-
+      domainEvent.correlationId = this.getCorrelationId();
+      domainEvent.context = this.getContext();
       const headers = this.generateHeaders(domainEvent);
       const options: Partial<JetStreamPublishOptions> = {
         msgID: domainEvent.metadata.messageId,
@@ -115,7 +116,15 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
     throw new Error('Method not implemented.');
   }
 
-  private generateHeaders(domainEvent: Domain.IDomainEvent<any>): MsgHdrs {
+  private getCorrelationId() {
+    return this.asyncLocalStorage.getStore()?.get('correlationId');
+  }
+
+  private getContext() {
+    return this.asyncLocalStorage.getStore()?.get('context') || {};
+  }
+
+  private generateHeaders(domainEvent: Domain.DomainEvent<any>): MsgHdrs {
     const h = headers();
     for (const [key, value] of Object.entries(domainEvent.metadata)) {
       if (key === 'context' && value) {
@@ -138,7 +147,7 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
     return subject;
   }
 
-  static getSubjectFromEventInstance(domainEvent: Domain.IDomainEvent<any>): string {
+  static getSubjectFromEventInstance(domainEvent: Domain.DomainEvent<any>): string {
     const boundedContext = domainEvent.metadata.boundedContextId;
     const stream = NatsStreamingDomainEventBus.getStreamName(boundedContext);
     const subject = `${stream}.${domainEvent.constructor.name}`;

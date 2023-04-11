@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-infra-nest-jetstream",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "TypeScript nats jetstream code for Bitloops Language generated projects using NestJS",
   "engines": {
     "node": ">= 13"
@@ -44,7 +44,7 @@
     "nats": "^2.13.1"
   },
   "devDependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.4",
+    "@bitloops/bl-boilerplate-core": "^0.3.6",
     "@nestjs/common": "^9.0.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
@@ -68,7 +68,7 @@
     }
   },
   "peerDependencies": {
-    "@bitloops/bl-boilerplate-core": "^0.3.4",
+    "@bitloops/bl-boilerplate-core": "^0.3.6",
     "@nestjs/common": "^9.0.0"
   }
 }

@@ -18,7 +18,6 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { asyncLocalStorage } from '../../helpers/asyncLocalStorage.js';
 import { Message } from '../messages/IMessage.js';
 import { IEvent, TEventMetadata } from './IEvent';
 
@@ -42,7 +41,6 @@ export abstract class IntegrationEvent<T> extends Message implements IIntegratio
   ) {
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
-    this.metadata.context = metadata?.context || asyncLocalStorage.getStore()?.get('context') || {};
     this.metadata.version = version;
     this.payload = payload;
   }
