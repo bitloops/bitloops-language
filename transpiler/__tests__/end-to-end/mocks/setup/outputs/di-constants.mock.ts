@@ -21,4 +21,5 @@ export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
 export const PubSubQueryBusToken = Symbol('PubSubQueryBusToken');
 export const StreamingIntegrationEventBusToken = Symbol('StreamingIntegrationEventBusToken');
 export const StreamingDomainEventBusToken = Symbol('StreamingDomainEventBusToken');
+export const PubSubIntegrationEventBusToken = Symbol('PubSubIntegrationEventBusToken');
 export const TodoReadRepoPortToken = Symbol('TodoReadRepoPortToken');

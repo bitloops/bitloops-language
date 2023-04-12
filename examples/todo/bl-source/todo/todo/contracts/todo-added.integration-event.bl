@@ -1,0 +1,16 @@
+Struct IntegrationTodoAddedSchemaV1 {
+    string todoId;
+    string title;
+    string userId;
+}
+
+IntegrationEvent TodoAddedIntegrationEvent(event: TodoAddedDomainEvent) {  
+    'v1' : IntegrationTodoAddedSchemaV1 {
+        const todoAdded = IntegrationTodoAddedSchemaV1({
+            todoId: event.payload.aggregateId,
+            title: event.payload.title,
+            userId: event.payload.userId
+        });
+        return todoAdded;
+    }
+}

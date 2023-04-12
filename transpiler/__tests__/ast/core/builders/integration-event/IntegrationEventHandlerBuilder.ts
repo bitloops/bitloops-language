@@ -57,6 +57,7 @@ export class IntegrationEventHandlerBuilder implements IBuilder<TIntegrationEven
         commandBus: true,
         integrationEventBus: false,
         queryBus: false,
+        pubSubIntegrationEventBus: false,
       },
     };
     return this;

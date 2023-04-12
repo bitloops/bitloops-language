@@ -38,7 +38,7 @@ import {
 } from '../../../../helpers/mappings.js';
 import { IntermediateASTTree } from '../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { TSetupTypeMapper } from '../fileDestinations.js';
-import { ClassTypesPaths } from '../../helpers/getTargetFileDestination.js';
+import { ClassTypesPaths, getTargetFileName } from '../../helpers/getTargetFileDestination.js';
 
 interface IHandlersAggregator {
   handle(): TSetupOutput[];
@@ -97,7 +97,8 @@ export class HandlersAggregator implements IHandlersAggregator {
     );
     const imports = commandHandlerIdentifiers
       .map((identifier) => {
-        return `import { ${identifier} } from './${identifier}';`;
+        const fileName = getTargetFileName(identifier, ClassTypes.CommandHandler);
+        return `import { ${identifier} } from './${fileName}';`;
       })
       .join('\n');
     result += `export const ${
@@ -141,7 +142,8 @@ export class HandlersAggregator implements IHandlersAggregator {
 
     const imports = queryHandlerIdentifiers
       .map((identifier) => {
-        return `import { ${identifier} } from './${identifier}';`;
+        const fileName = getTargetFileName(identifier, ClassTypes.QueryHandler);
+        return `import { ${identifier} } from './${fileName}';`;
       })
       .join('\n');
 
@@ -180,7 +182,8 @@ export class HandlersAggregator implements IHandlersAggregator {
     );
     const imports = domainEventHandlerIdentifiers
       .map((identifier) => {
-        return `import { ${identifier} } from './${identifier}';`;
+        const fileName = getTargetFileName(identifier, ClassTypes.DomainEventHandler);
+        return `import { ${identifier} } from './${fileName}';`;
       })
       .join('\n');
 
@@ -222,7 +225,8 @@ export class HandlersAggregator implements IHandlersAggregator {
     );
     const imports = integrationEventHandlerIdentifiers
       .map((identifier) => {
-        return `import { ${identifier} } from './${identifier}';`;
+        const fileName = getTargetFileName(identifier, ClassTypes.IntegrationEventHandler);
+        return `import { ${identifier} } from './${fileName}';`;
       })
       .join('\n');
 

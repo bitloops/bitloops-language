@@ -37,7 +37,7 @@ export const addDomainEventToTargetLanguage = (
     type: BitloopsTypesMapping.TExpressionValues,
     value: expression,
   });
-  const result = `${memberIdentifier}.addDomainEventClass(${expressionResult.output})`;
+  const result = `${memberIdentifier}.addDomainEvent(${expressionResult.output})`;
 
   return {
     output: result,

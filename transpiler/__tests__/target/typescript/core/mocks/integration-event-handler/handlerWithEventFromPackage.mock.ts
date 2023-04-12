@@ -2,7 +2,7 @@ import { Application, Infra, Either } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { IEmailRepoPortToken, StreamingCommandBusToken } from '../../../constants';
-import { IEmailRepoPort } from '../../../ports/IEmailRepoPort';
+import { IEmailRepoPort } from '../../../ports/i-email.repo-port';
 import { UserRegisteredIntegrationEvent } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
 import { ApplicationErrors } from '../../errors/index';
 export class MoneyDepositedIntegrationHandler implements Application.IHandleIntegrationEvent {

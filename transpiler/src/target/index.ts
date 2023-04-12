@@ -37,6 +37,7 @@ import { IntermediateAST } from '../ast/core/types.js';
 import { type TTranspileOptions } from '../transpilerTypes.js';
 import { TargetCoreGeneratorCreator } from './targetCoreCreator.js';
 import { TargetSetupGeneratorCreator } from './targetSetupCreator.js';
+import { TClassTypesValues } from '../helpers/mappings.js';
 
 export class TargetGenerator implements ITargetGenerator {
   generate(
@@ -98,7 +99,7 @@ export class TargetGenerator implements ITargetGenerator {
   getTargetFileDestination(
     boundedContext: string,
     moduleName: string,
-    classType: string,
+    classType: TClassTypesValues,
     className: string,
     targetLanguage = SupportedLanguages.TypeScript as string,
   ): { path: string; filename: string } {

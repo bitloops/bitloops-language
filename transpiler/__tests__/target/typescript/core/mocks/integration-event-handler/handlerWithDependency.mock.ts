@@ -2,8 +2,8 @@ import { Application, Infra, Either } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { IEmailRepoPortToken, StreamingCommandBusToken } from '../../../constants';
-import { IEmailRepoPort } from '../../../ports/IEmailRepoPort';
-import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts/integration-events/MoneyDepositedIntegrationEvent';
+import { IEmailRepoPort } from '../../../ports/i-email.repo-port';
+import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts/integration-events/money-deposited.integration-event';
 export class MoneyDepositedIntegrationHandler implements Application.IHandleIntegrationEvent {
   constructor(
     @Inject(IEmailRepoPortToken)

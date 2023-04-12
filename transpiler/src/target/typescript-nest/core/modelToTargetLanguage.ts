@@ -141,7 +141,6 @@ import { integrationEventHandlerHandleMethod } from './components/integration-ev
 import { integrationEventParameterToTargetLanguage } from './components/integration-event/integrationEventParameter.js';
 import { domainServiceEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainServiceEvaluation.js';
 import { getPortTokenToTargetLanguage } from './components/port-token/index.js';
-import { getMetadataToTargetLanguage } from './components/metadata/index.js';
 import { readModelEvaluationToTargetLanguage } from './components/statements/expression/evaluation/readModelEvaluation.js';
 import { domainEventEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEventEvaluation.js';
 
@@ -572,10 +571,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TReadModelEvaluation: {
       res = readModelEvaluationToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TMetadata: {
-      res = getMetadataToTargetLanguage(value);
       break;
     }
     default: {

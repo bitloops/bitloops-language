@@ -1,5 +1,5 @@
 import { Application, Either } from '@bitloops/bl-boilerplate-core';
-import { TestDataSchema } from '../structs/TestDataSchema';
+import { TestDataSchema } from '../structs/test-data-schema.struct';
 export interface TestServicePort {
   getTestData(value: string): Promise<Either<TestDataSchema, Application.Repo.Errors.Unexpected>>;
   sendTestData(

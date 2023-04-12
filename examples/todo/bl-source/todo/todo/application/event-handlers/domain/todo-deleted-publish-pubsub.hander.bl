@@ -1,0 +1,7 @@
+DomainEventHandler TodoDeletedPublishPubSubIntegrationDomainEventHandler() {
+
+    handle(event: TodoDeletedDomainEvent): (OK(void),Errors()) {
+      const events = TodoDeletedIntegrationEvent.create(event)
+      this.pubSubIntegrationEventBus.publish(events)
+    }
+}

@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { normalize } from 'path';
 import {
   getLanguageFileExtension,
   isLanguageSupported,
@@ -28,7 +29,7 @@ import { TContextData } from '../../../types.js';
 
 const BOUNDED_CONTEXTS = 'bounded-contexts';
 
-export const ROOT_FOLDER = 'lib';
+export const ROOT_FOLDER = ''; //'lib';
 
 enum PROJECT_RELATIVE_PATHS {
   DOMAIN = 'domain/',
@@ -42,14 +43,14 @@ enum PROJECT_RELATIVE_PATHS {
   DOMAIN_RULES = 'domain/rules/',
   PORTS = 'ports/',
   STRUCTS = 'structs/',
-  COMMANDS = 'application/commands/',
-  QUERIES = 'application/queries/',
-  QUERY_HANDLERS = 'application/queryHandlers/',
-  COMMAND_HANDLERS = 'application/commandHandlers/',
+  COMMANDS = 'commands/',
+  QUERIES = 'queries/',
+  QUERY_HANDLERS = 'application/query-handlers/',
+  COMMAND_HANDLERS = 'application/command-handlers/',
   DOMAIN_EVENTS = 'domain/events/',
-  DOMAIN_EVENT_HANDLERS = 'application/handlers/domain/',
+  DOMAIN_EVENT_HANDLERS = 'application/event-handlers/domain/',
   INTEGRATION_EVENTS = 'contracts/integration-events/',
-  INTEGRATION_EVENT_HANDLERS = 'application/handlers/integration/',
+  INTEGRATION_EVENT_HANDLERS = 'application/event-handlers/integration/',
   DOMAIN_SERVICE = 'domain/services/',
   INJECTION_TOKENS = '',
 }
@@ -83,7 +84,7 @@ export const ClassTypesPaths: Record<TClassTypesValues, string> = {
 const getTargetFileDestination = (
   boundedContext: string,
   moduleName: string,
-  classType: string,
+  classType: TClassTypesValues,
   className: string,
   targetLanguage = SupportedLanguages.TypeScript as string,
 ): { path: string; filename: string } => {
@@ -135,14 +136,45 @@ const getTargetFileDestination = (
     case ClassTypes.QueryHandler:
     case ClassTypes.Struct:
     case ClassTypes.ServicePort:
-    case ClassTypes.DomainService:
-      result.path = `./${ROOT_FOLDER}/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
-      result.filename = className + getLanguageFileExtension(targetLanguage);
+    case ClassTypes.DomainService: {
+      result.path = normalize(
+        `./${ROOT_FOLDER}/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`,
+      );
+      const fileName = getTargetFileName(className, classType);
+      result.filename = fileName + getLanguageFileExtension(targetLanguage);
       break;
+    }
     default:
       throw new Error(`Class type ${classType} is not supported`);
   }
   return result;
+};
+
+export const getTargetFileName = (className: string, classType: TClassTypesValues): string => {
+  let classNameWithoutClassType: string;
+  let classTypeFileSuffix: string;
+
+  switch (classType) {
+    case ClassTypes.ValueObject:
+      classNameWithoutClassType = className.replace('VO', '');
+      break;
+    case ClassTypes.DomainError:
+    case ClassTypes.ApplicationError:
+      classNameWithoutClassType = className.replace('Error', '');
+      break;
+    case ClassTypes.DomainRule:
+      classNameWithoutClassType = className.replace('Rule', '');
+      break;
+    case ClassTypes.RootEntity:
+      classNameWithoutClassType = className.replace(ClassTypes.Entity, '');
+      classTypeFileSuffix = kebabCase(ClassTypes.Entity);
+      break;
+    default:
+      classNameWithoutClassType = className.replace(classType, '');
+  }
+  const classNameKebabCase = kebabCase(classNameWithoutClassType);
+  const classTypeKebabCase = classTypeFileSuffix ?? kebabCase(classType);
+  return `${classNameKebabCase}.${classTypeKebabCase}`;
 };
 
 // TODO maybe this should change name and remove integrationEvent case to other function

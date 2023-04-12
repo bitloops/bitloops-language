@@ -1,0 +1,7 @@
+DomainEventHandler TodoModifiedTitlePublishPubSubIntegrationDomainEventHandler() {
+
+    handle(event: TodoTitleModifiedDomainEvent): (OK(void),Errors()) {
+      const events = TodoModifiedTitleIntegrationEvent.create(event)
+      this.pubSubIntegrationEventBus.publish(events)
+    }
+}

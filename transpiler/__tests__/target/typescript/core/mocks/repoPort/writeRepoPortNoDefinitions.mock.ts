@@ -1,3 +1,3 @@
 import { Application, Domain } from '@bitloops/bl-boilerplate-core';
-import { TodoRootEntity } from '../domain/TodoRootEntity';
+import { TodoRootEntity } from '../domain/todo-root.entity';
 export type TodoRepoPort = Application.Repo.ICRUDWritePort<TodoRootEntity, Domain.UUIDv4>;

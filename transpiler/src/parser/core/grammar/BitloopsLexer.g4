@@ -139,7 +139,6 @@ With:                           'with';
 Default:                        'default';
 If:                             'if';
 Throw:                          'throw';
-Delete:                         'delete';
 In:                             'in';
 Try:                            'try';
 As:                             'as';

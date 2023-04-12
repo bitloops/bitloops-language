@@ -1,5 +1,5 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-import { TodoProps } from './TodoProps';
+import { TodoProps } from './todo.props';
 type TTodoEntityPrimitives = {
   id: string;
   completed: boolean;
