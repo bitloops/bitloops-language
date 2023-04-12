@@ -1,3 +1,4 @@
+import { IntermediateASTTree } from '../../../IntermediateASTTree.js';
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { MethodDefinitionListNode } from '../../../nodes/method-definitions/MethodDefinitionListNode.js';
 import { PackagePortIdentifierNode } from '../../../nodes/package/packagePort/PackagePortIdentifierNode.js';
@@ -8,8 +9,10 @@ export class PackagePortNodeBuilder implements IBuilder<PackagePortNode> {
   private packagePort: PackagePortNode;
   private packagePortIdentifier: PackagePortIdentifierNode;
   private methodDefinitionListNode: MethodDefinitionListNode;
+  private intermediateASTTree: IntermediateASTTree;
 
-  constructor(metadata: TNodeMetadata) {
+  constructor(intermediateASTTree: IntermediateASTTree, metadata?: TNodeMetadata) {
+    this.intermediateASTTree = intermediateASTTree;
     this.packagePort = new PackagePortNode(metadata);
   }
 
@@ -24,8 +27,12 @@ export class PackagePortNodeBuilder implements IBuilder<PackagePortNode> {
   }
 
   public build(): PackagePortNode {
-    this.packagePort.addChild(this.packagePortIdentifier);
-    this.packagePort.addChild(this.methodDefinitionListNode);
+    this.intermediateASTTree.insertChild(this.packagePort);
+
+    this.intermediateASTTree.insertChild(this.packagePortIdentifier);
+    this.intermediateASTTree.insertSibling(this.methodDefinitionListNode);
+
+    this.intermediateASTTree.setCurrentNodeToRoot();
 
     this.packagePort.buildObjectValue();
 

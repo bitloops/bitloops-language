@@ -59,10 +59,7 @@ import { switchStatementToTargetLanguage } from './components/statements/switch/
 import { breakStmtToTargetLanguage } from './components/statements/break.js';
 import { okErrorReturnTypeToTargetLanguage } from './components/okkErrorReturnType.js';
 import { valueObjectsToTargetLanguage } from './components/value-object/index.js';
-import { useCaseToTargetLanguage } from './components/use-case/index.js';
-import { restControllersToTargetLanguage } from './components/controllers/rest/index.js';
 import { domainErrorsToTargetLanguage } from './components/errors/domainErrors/index.js';
-import { graphQLControllersToTargetLanguage } from './components/controllers/graphql/index.js';
 import { applicationErrorsToTargetLanguage } from './components/errors/applicationErrors/index.js';
 import { structDeclarationToTargetLanguage } from './components/struct-declaration/index.js';
 import { DTOEvaluationToTargetLanguage } from './components/statements/expression/evaluation/dtoEvaluation.js';
@@ -71,7 +68,6 @@ import {
   definitionMethodsToTargetLanguage,
 } from './components/definition-methods/index.js';
 import { packagePortToTargetLanguage } from './components/package-port/index.js';
-import { packageToTargetLanguage } from './components/packages/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
 import { valueObjectEvaluationToTargetLanguage } from './components/statements/expression/evaluation/valueObjectEvaluation.js';
 import { evaluationFieldsToTargetLanguage } from './components/statements/expression/evaluation/evaluationFields.js';
@@ -98,7 +94,6 @@ import {
 } from './components/statements/expression/logicalExpressions.js';
 import { parenthesizedExpressionToTargetLanguage } from './components/statements/expression/parenthesizedExpression.js';
 import { variableDeclarationToTargetLanguage } from './components/statements/variableDeclaration.js';
-import { repoAdapterToTargetLanguage } from './components/repo/repoAdapter.js';
 import { TContextData, TTargetDependenciesTypeScript } from '../../../types.js';
 import { buildInFunctionToTargetLanguage } from './components/statements/buildInFunctions/index.js';
 import { applyRulesToTargetLanguage } from './components/statements/buildInFunctions/applyRules.js';
@@ -120,7 +115,6 @@ import { thisExpressionToTargetLanguage } from './components/statements/expressi
 import { memberDotExpressionToTargetLanguage } from './components/statements/expression/memberDotExpression.js';
 import { methodCallExpressionToTargetLanguage } from './components/statements/expression/methodCallExpression.js';
 import { TNodeType } from '../../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { corsOptionsToTargetLanguage } from './components/statements/expression/evaluation/corsOptions.js';
 import { literalExpressionToTargetLanguage } from './components/statements/expression/literalExpression.js';
 import { environmentVariableToTargetLanguage } from './components/statements/expression/environmentVariable.js';
 import { commandToTargetLanguage } from './components/command/index.js';
@@ -217,10 +211,6 @@ const modelToTargetLanguage = (props: {
       res = structToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TCorsOptionsEvaluation: {
-      res = corsOptionsToTargetLanguage(value);
-      break;
-    }
     case BitloopsTypesMapping.TStruct: {
       res = structDeclarationToTargetLanguage(value);
       break;
@@ -300,22 +290,6 @@ const modelToTargetLanguage = (props: {
       });
       break;
     }
-    case BitloopsTypesMapping.TUseCase: {
-      res = useCaseToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TRESTController: {
-      if (contextData) {
-        res = restControllersToTargetLanguage(value, contextData);
-      } else {
-        throw new Error('Missing context data and/or controllers');
-      }
-      break;
-    }
-    case BitloopsTypesMapping.TGraphQLController: {
-      res = graphQLControllersToTargetLanguage(value, contextData);
-      break;
-    }
     case BitloopsTypesMapping.TDomainError: {
       res = domainErrorsToTargetLanguage(value);
       break;
@@ -358,10 +332,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TPackagePort: {
       res = packagePortToTargetLanguage(value);
-      break;
-    }
-    case BitloopsTypesMapping.TPackage: {
-      res = packageToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TDomainCreateMethod: {
@@ -470,14 +440,6 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TVariableDeclaration: {
       res = variableDeclarationToTargetLanguage(value);
-      break;
-    }
-
-    case BitloopsTypesMapping.TRepoAdapter: {
-      if (contextData === undefined) {
-        throw new Error('Context data cannot be undefined for Repo adapters');
-      }
-      res = repoAdapterToTargetLanguage(value, model);
       break;
     }
     case BitloopsTypesMapping.TBuiltInFunction: {

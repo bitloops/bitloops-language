@@ -15,7 +15,6 @@ import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nod
 import { DTOIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/DTO/DTOIdentifierNode.js';
 import { ErrorIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { StructIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
-import { CorsOptionsEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CorsOptionsEvaluationBuilder.js';
 import { CommandEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/CommandEvaluationNodeBuilder.js';
 import { QueryEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/QueryEvaluationNodeBuilder.js';
 import { IntegrationEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/IntegrationEventEvaluationNodeBuilder.js';
@@ -44,18 +43,6 @@ export class EvaluationBuilderDirector {
       .build();
 
     return new EvaluationBuilder().withEvaluation(structEvaluationNode).build();
-  }
-
-  buildCorsOptionsEvaluation(evalFields: EvaluationFieldNode[]): EvaluationNode {
-    const evalFieldList = new EvaluationFieldListNodeBuilder()
-      .withEvaluationFields(evalFields)
-      .build();
-
-    const corsOptionsEvaluationNode = new CorsOptionsEvaluationNodeBuilder()
-      .withEvaluationFieldList(evalFieldList)
-      .build();
-
-    return new EvaluationBuilder().withEvaluation(corsOptionsEvaluationNode).build();
   }
 
   buildEntityEvaluation(

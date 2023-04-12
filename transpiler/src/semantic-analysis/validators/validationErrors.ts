@@ -1,7 +1,4 @@
 import { BitloopsIdentifierTypeNode } from '../../ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
-import { GraphQLControllerExecuteReturnTypeNode } from '../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
-import { GraphQLControllerIdentifierNode } from '../../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
-import { RESTControllerIdentifierNode } from '../../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerIdentifierNode.js';
 import { DomainRuleIdentifierNode } from '../../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
 import { EntityIdentifierNode } from '../../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { ErrorIdentifierNode } from '../../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
@@ -11,24 +8,16 @@ import { IntermediateASTNodeValidationError } from '../../ast/core/intermediate-
 import { PackagePortIdentifierNode } from '../../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { ReadModelIdentifierNode } from '../../ast/core/intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
 import { BoundedContextNameNode } from '../../ast/core/intermediate-ast/nodes/setup/BoundedContextNameNode.js';
-import { ConcretedRepoPortNode } from '../../ast/core/intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
-import { UseCaseIdentifierNode } from '../../ast/core/intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
 
 type identifierNode =
   | BitloopsIdentifierTypeNode
   | EntityIdentifierNode
   | ReadModelIdentifierNode
   | ErrorIdentifierNode
-  // | DomainCreateParameterTypeNode
-  | GraphQLControllerExecuteReturnTypeNode
   | DomainRuleIdentifierNode
-  | UseCaseIdentifierNode
-  | ConcretedRepoPortNode
   | IdentifierExpressionNode
-  | GraphQLControllerIdentifierNode
   | PackagePortIdentifierNode
-  | IdentifierNode
-  | RESTControllerIdentifierNode;
+  | IdentifierNode;
 
 export class identifierValidationError extends IntermediateASTNodeValidationError {
   constructor(name: string, node: identifierNode, bcName?: string) {

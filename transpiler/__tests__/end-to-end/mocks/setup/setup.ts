@@ -101,14 +101,6 @@ export const SETUP_END_TO_END_TEST_CASES: Array<TestCase> = [
       {
         boundedContext: 'Demo',
         module: 'Hello World',
-        fileId: 'controllers.bl',
-        fileContents: FileUtil.readFileString(
-          'transpiler/__tests__/end-to-end/mocks/setup/core/controllers.bl',
-        ),
-      },
-      {
-        boundedContext: 'Demo',
-        module: 'Hello World',
         fileId: 'repoPorts.bl',
         fileContents: FileUtil.readFileString(
           'transpiler/__tests__/end-to-end/mocks/setup/core/repoPorts.bl',

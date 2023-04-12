@@ -51,10 +51,10 @@ export const validMethodCallTestCases = [
   {
     description: 'Method call with 1 argument',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestExpression { helloWorldUseCase.execute (dto)  }',
+    inputBLString: 'JestTestExpression { helloWorldCommandHandler.execute (dto)  }',
     expression: new ExpressionBuilderDirector().buildMethodCallExpression(
       new ExpressionBuilderDirector().buildMemberExpression(
-        new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldUseCase'),
+        new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldCommandHandler'),
         'execute',
       ),
       { argumentList: [new ArgumentBuilderDirector().buildIdentifierArgument('dto')] },
@@ -63,10 +63,10 @@ export const validMethodCallTestCases = [
   {
     description: 'Method call with 2 arguments',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestExpression { helloWorldUseCase.execute (dto, tismas)  }',
+    inputBLString: 'JestTestExpression { helloWorldCommandHandler.execute (dto, tismas)  }',
     expression: new ExpressionBuilderDirector().buildMethodCallExpression(
       new ExpressionBuilderDirector().buildMemberExpression(
-        new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldUseCase'),
+        new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldCommandHandler'),
         'execute',
       ),
       {

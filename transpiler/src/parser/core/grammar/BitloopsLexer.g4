@@ -156,10 +156,6 @@ RepoPort:                       'RepoPort';
 Props:                          'Props';
 ReadModel:                      'ReadModel';
 DTO:                            'DTO';
-RESTController:                 'RESTController';
-GraphQLController:              'GraphQLController';
-GRPCController:                 'GRPCController';
-UseCase:                        'UseCase';
 Command:                        'Command';
 Query:                          'Query';
 CommandHandler:                 'CommandHandler';
@@ -281,22 +277,6 @@ ToString: 'toString';
 //
 At: '@';
 
-// Rest Controller
-Method: 'method';
-MethodGet: 'REST.Methods.GET';
-MethodPost: 'REST.Methods.POST';
-MethodPut: 'REST.Methods.PUT';
-MethodPatch: 'REST.Methods.PATCH';
-MethodDelete: 'REST.Methods.DELETE';
-MethodOptions: 'REST.Methods.OPTIONS';
-
-// GraphQL Controller
-GraphQLOperation:       'operation';
-Input:                  'input';
-OperationMutation:      'GraphQL.Operations.Mutation';
-OperationQuery:         'GraphQL.Operations.Query';
-OperationSubscription:  'GraphQL.Operations.Subscription';
-
 ErrorClass: 'Error';
 
 /// Identifier Names and Identifiers
@@ -304,10 +284,7 @@ DTOIdentifier:                  UpperCaseStart IdentifierPart* DTO;
 ValueObjectIdentifier:          UpperCaseStart IdentifierPart* VO;
 EntityIdentifier:               UpperCaseStart IdentifierPart* Entity;
 ErrorIdentifier:                (DomainErrors | ApplicationErrors) Dot UpperCaseStart IdentifierPart*;
-ControllerIdentifier:           UpperCaseStart IdentifierPart* 'Controller';
-UseCaseIdentifier:              UpperCaseStart IdentifierPart* UseCase;
 PackagePortIdentifier:          UpperCaseStart IdentifierPart* PackagePort;
-PackageAdapterIdentifier:        [A-Z] [0-9a-zA-Z]* 'PackageAdapter';
 ServicePortIdentifier:          UpperCaseStart IdentifierPart* ServicePort;
 PropsIdentifier:                UpperCaseStart IdentifierPart* Props;
 ReadModelIdentifier:            UpperCaseStart IdentifierPart* ReadModel;
@@ -325,43 +302,14 @@ DomainEventHandlerIdentifier:   UpperCaseStart IdentifierPart* DomainEventHandle
 IntegrationEventHandlerIdentifier: UpperCaseStart IdentifierPart* IntegrationEventHandler;
 DomainServiceIdentifier:        UpperCaseStart IdentifierPart* DomainService;
 SetLanguage:                    'setLanguage';
-SetBuses:                       'setBuses';
 TypeScript:                     'TypeScript';
 TypeScriptNest:                 'TypeScript-Nest';
 Java:                           'Java';
-FastifyServer:                  'REST.Fastify';
-ExpressServer:                  'REST.Express';
-GraphQLServerType:              'GraphQL';
-RESTRouter:                     'RESTRouter';
-GraphQLServer:                  'GraphQLServer';
-RESTServer:                     'RESTServer';
-
-// Buses
-CommandBus:                     'COMMAND_BUS';
-EventBus:                       'EVENT_BUS';
-IntegrationEventBus:            'INTEGRATION_EVENT_BUS';
-QueryBus:                       'QUERY_BUS';
-MessageBus:                     'MessageBus';
-External:                       'External';
-InProcess:                      'InProcess';
-
-DI:                             'DI';
 
 EnvPrefix:                      'Env';
 EnvVariable:                    'env.' [a-zA-Z_]+ [a-zA-Z0-9_]*;
 
 Concretes:                      'concretes';
-
-GET:                            'Get';
-POST:                           'Post';
-PUT:                            'Put';
-DELETE:                         'Delete';
-PATCH:                          'Patch';
-OPTIONS:                        'Options';
-
-RepoAdapters:                   'RepoAdapters';
-RepoConnections:                'RepoConnections';
-Mongo:                          'Mongo';
 
 UpperCaseIdentifier:            UpperCaseStart IdentifierPart*;
 Identifier:                     IdentifierStart IdentifierPart*;

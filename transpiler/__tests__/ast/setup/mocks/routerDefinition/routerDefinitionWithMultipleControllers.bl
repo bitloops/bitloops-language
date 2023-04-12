@@ -1,4 +1,0 @@
-const helloWorldRESTRouter = RESTRouter(REST.Express) {
-    Get('/hello1'): [Bounded Context][Module]HelloWorldController();
-    Post('/hello2'): [Hello World][My Module2]HelloWorldController(myUseCase);
-}

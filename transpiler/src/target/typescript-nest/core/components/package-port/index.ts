@@ -17,14 +17,19 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TPackagePort, TTargetDependenciesTypeScript } from '../../../../../types.js';
-import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import {
+  PackagePortKey,
+  TPackagePort,
+  TTargetDependenciesTypeScript,
+} from '../../../../../types.js';
+import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
+import { getParentDependencies } from '../../dependencies.js';
 
 export const packagePortToTargetLanguage = (
   variable: TPackagePort,
 ): TTargetDependenciesTypeScript => {
-  const { methodDefinitionList, PackagePortIdentifier } = variable;
+  const { methodDefinitionList, PackagePortIdentifier } = variable[PackagePortKey];
 
   let res = `export interface ${PackagePortIdentifier} `;
   res += '{';
@@ -35,5 +40,10 @@ export const packagePortToTargetLanguage = (
 
   res += model.output;
   res += '}';
-  return { output: res, dependencies: model.dependencies };
+
+  const parentDependencies = getParentDependencies(model.dependencies, {
+    classType: ClassTypes.PackagePort,
+    className: PackagePortIdentifier,
+  });
+  return { output: res, dependencies: parentDependencies };
 };

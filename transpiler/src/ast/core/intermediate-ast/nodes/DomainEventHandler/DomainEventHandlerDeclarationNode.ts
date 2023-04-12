@@ -46,10 +46,10 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const useCaseExecute = this.getChildNodeByType<EventHandleNode>(
+    const eventHandler = this.getChildNodeByType<EventHandleNode>(
       BitloopsTypesMapping.TEventHandlerHandleMethod,
     );
-    return useCaseExecute.getStatements();
+    return eventHandler.getStatements();
   }
 
   getExtraDependencies(): string[] {

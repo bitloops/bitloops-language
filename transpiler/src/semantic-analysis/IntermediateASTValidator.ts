@@ -29,11 +29,6 @@ import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateAS
 import { ArgumentNode } from '../ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
 import { BitloopsIdentifierTypeNode } from '../ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
 import { CommandDeclarationNode } from '../ast/core/intermediate-ast/nodes/command/CommandDeclarationNode.js';
-import { GraphQLControllerExecuteReturnTypeNode } from '../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerExecuteReturnTypeNode.js';
-import { GraphQLControllerIdentifierNode } from '../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerIdentifierNode.js';
-import { GraphQLControllerNode } from '../ast/core/intermediate-ast/nodes/controllers/graphql/GraphQLControllerNode.js';
-import { RESTControllerIdentifierNode } from '../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerIdentifierNode.js';
-import { RESTControllerNode } from '../ast/core/intermediate-ast/nodes/controllers/restController/RESTControllerNode.js';
 import { DomainServiceNode } from '../ast/core/intermediate-ast/nodes/domain-service/DomainServiceNode.js';
 import { DomainEventDeclarationNode } from '../ast/core/intermediate-ast/nodes/DomainEvent/DomainEventDeclarationNode.js';
 import { DomainRuleIdentifierNode } from '../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
@@ -47,8 +42,6 @@ import { ErrorIdentifierNode } from '../ast/core/intermediate-ast/nodes/ErrorIde
 import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { IntegrationEventNode } from '../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventNode.js';
 import { IntermediateASTNode } from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { PackageConcretionNode } from '../ast/core/intermediate-ast/nodes/package/PackageConcretionNode.js';
-import { PackagePortIdentifierNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortIdentifierNode.js';
 import { PackagePortNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortNode.js';
 import { PropsNode } from '../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { QueryDeclarationNode } from '../ast/core/intermediate-ast/nodes/query/QueryDeclarationNode.js';
@@ -57,35 +50,16 @@ import { ReadModelNode } from '../ast/core/intermediate-ast/nodes/readModel/Read
 import { RepoPortNode } from '../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
 import { RootEntityDeclarationNode } from '../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 import { ServicePortNode } from '../ast/core/intermediate-ast/nodes/service-port/ServicePortNode.js';
-import { BoundedContextModuleNode } from '../ast/core/intermediate-ast/nodes/setup/BoundedContextModuleNode.js';
-import { ConcretedRepoPortNode } from '../ast/core/intermediate-ast/nodes/setup/repo/ConcretedRepoPortNode.js';
-import { RepoAdapterOptionsNode } from '../ast/core/intermediate-ast/nodes/setup/repo/RepoAdapterOptionsNode.js';
-import { RepoConnectionDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/repo/RepoConnectionDefinitionNode.js';
-import { SetupRepoAdapterDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/repo/SetupRepoAdapterDefinitionNode.js';
-import { RouterDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/RouterDefinitionNode.js';
-import { ServerRouteNode } from '../ast/core/intermediate-ast/nodes/setup/ServerRouteNode.js';
-import { UseCaseDefinitionNode } from '../ast/core/intermediate-ast/nodes/setup/UseCaseDefinitionNode.js';
 import { StructNode } from '../ast/core/intermediate-ast/nodes/struct/StructNode.js';
-import { UseCaseIdentifierNode } from '../ast/core/intermediate-ast/nodes/UseCase/UseCaseIdentifierNode.js';
 import { ValueObjectDeclarationNode } from '../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import {
   bitloopsIdentifierError,
-  concretedRepoPortError,
   domainRuleIdentifierError,
-  entityIdentifierError,
   errorIdentifierError,
-  graphQLControllerExecuteReturnTypeError,
-  useCaseIdentifierCoreError,
-  repoAdapterOptionsError,
-  useCaseIdentifierSetupError,
   argumentError,
-  packagePortIdentifierError,
-  restControllerIdentifierError,
-  restServerInstanceRouterError,
-  graphQLControllerIdentifierError,
   readModelIdentifierError,
-  boundedContextValidationError,
   domainServiceEvaluationError,
+  entityIdentifierError,
 } from './validators/index.js';
 
 export class SemanticAnalyzer implements IIntermediateASTValidator {
@@ -102,7 +76,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     this.createSymbolTablesCore(ast.core);
     this.validateCore(ast.core);
     // if (errors.length > 0) return errors;
-    this.createSymbolTablesSetup(ast.setup);
     this.validateSetup(ast.setup);
     if (this.errors.length > 0) return this.errors;
   }
@@ -161,23 +134,8 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
-            case BitloopsTypesMapping.TUseCase: {
-              const identifierNode = (node as UseCaseDefinitionNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TRESTController: {
-              const identifierNode = (node as RESTControllerNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
             case BitloopsTypesMapping.TStruct: {
               const identifierNode = (node as StructNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TGraphQLController: {
-              const identifierNode = (node as GraphQLControllerNode).getIdentifier();
               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
@@ -229,52 +187,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           }
         });
       }
-    }
-  }
-
-  private createSymbolTablesSetup(
-    setup: IntermediateASTSetup,
-  ): void | IntermediateASTValidationError[] {
-    for (const [fileId, ASTTree] of Object.entries(setup)) {
-      this.symbolTableSetup[fileId] = new Set();
-      ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-        switch (node.getNodeType()) {
-          case BitloopsTypesMapping.TRepoConnectionDefinition: {
-            const identifierNode = (node as RepoConnectionDefinitionNode).getIdentifier();
-            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
-            break;
-          }
-          case BitloopsTypesMapping.TSetupRepoAdapterDefinition: {
-            const identifierNode = (node as SetupRepoAdapterDefinitionNode).getIdentifier();
-            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
-            break;
-          }
-          case BitloopsTypesMapping.TRouterDefinition: {
-            const identifierNode = (node as RouterDefinitionNode).getIdentifier();
-            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
-            break;
-          }
-          case BitloopsTypesMapping.TUseCaseDefinition: {
-            const identifierNode = (node as UseCaseDefinitionNode).getIdentifier();
-            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
-            break;
-          }
-          case BitloopsTypesMapping.TPackageConcretion: {
-            const boundedContextModule = (node as PackageConcretionNode).getBoundedContextModule();
-            const boundedContextNode = (
-              boundedContextModule as BoundedContextModuleNode
-            ).getBoundedContext();
-            const boundedContext = boundedContextNode.getName();
-            if (!(boundedContext in this.symbolTableCore)) {
-              new boundedContextValidationError(boundedContextNode);
-              break;
-            }
-            const identifierNode = (node as PackageConcretionNode).getPackageAdapterIdentifier();
-            this.symbolTableSetup[fileId].add(identifierNode.getIdentifierName());
-            break;
-          }
-        }
-      });
     }
   }
 
@@ -342,15 +254,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           );
           break;
 
-        case BitloopsTypesMapping.TGraphQLControllerExecuteReturnType:
-          this.addError(
-            ...graphQLControllerExecuteReturnTypeError(
-              node as GraphQLControllerExecuteReturnTypeNode,
-              this.symbolTableCore[boundedContext],
-            ),
-          );
-          break;
-
         case BitloopsTypesMapping.TDomainRuleIdentifier:
           this.addError(
             ...domainRuleIdentifierError(
@@ -359,16 +262,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             ),
           );
           break;
-
-        case BitloopsTypesMapping.TUseCaseIdentifier: {
-          this.addError(
-            ...useCaseIdentifierCoreError(
-              node as UseCaseIdentifierNode,
-              this.symbolTableCore[boundedContext],
-            ),
-          );
-          break;
-        }
         case BitloopsTypesMapping.TDomainServiceEvaluation: {
           this.addError(
             ...domainServiceEvaluationError(
@@ -385,61 +278,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   private validateClassTypeNodesSetup(ASTTree: IntermediateASTTree, fileId: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
       switch (node.getNodeType()) {
-        case BitloopsTypesMapping.TConcretedRepoPort:
-          this.addError(
-            ...concretedRepoPortError(node as ConcretedRepoPortNode, this.symbolTableCore),
-          );
-          break;
-
-        case BitloopsTypesMapping.TRepoAdapterOptions:
-          this.addError(
-            ...repoAdapterOptionsError(
-              node as RepoAdapterOptionsNode,
-              this.symbolTableSetup[fileId],
-            ),
-          );
-          break;
-
-        case BitloopsTypesMapping.TUseCaseIdentifier: {
-          this.addError(
-            ...useCaseIdentifierSetupError(node as UseCaseIdentifierNode, this.symbolTableCore),
-          );
-          break;
-        }
-        case BitloopsTypesMapping.TRESTControllerIdentifier: {
-          this.addError(
-            ...restControllerIdentifierError(
-              node as RESTControllerIdentifierNode,
-              this.symbolTableCore,
-            ),
-          );
-          break;
-        }
-        case BitloopsTypesMapping.TGraphQLControllerIdentifier: {
-          this.addError(
-            ...graphQLControllerIdentifierError(
-              node as GraphQLControllerIdentifierNode,
-              this.symbolTableCore,
-            ),
-          );
-          break;
-        }
-
-        case BitloopsTypesMapping.TPackagePortIdentifier: {
-          this.addError(
-            ...packagePortIdentifierError(node as PackagePortIdentifierNode, this.symbolTableCore),
-          );
-          break;
-        }
-        case BitloopsTypesMapping.TRestServerInstanceRouter: {
-          this.addError(
-            ...restServerInstanceRouterError(
-              node as ServerRouteNode,
-              this.symbolTableSetup[fileId],
-            ),
-          );
-          break;
-        }
         case BitloopsTypesMapping.TArgument:
           this.addError(...argumentError(node as ArgumentNode, this.symbolTableSetup[fileId]));
           break;

@@ -32,7 +32,7 @@ import { getTraceableDecorator } from '../../../helpers/tracingDecorator.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { createHandlerConstructor } from '../handler-constructor/index.js';
-import { executeToTargetLanguage } from '../use-case/execute.js';
+import { executeToTargetLanguage } from '../execute.js';
 
 const QUERY_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {

@@ -19,8 +19,6 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { PackageAdapterListNodeBuilder } from '../../intermediate-ast/builders/package/packageAdapters/PackageAdapterListNodeBuilder.js';
-import { PackageNodeBuilder } from '../../intermediate-ast/builders/package/PackageNodeBuilder.js';
 import { PackagePortIdentifierNodeBuilder } from '../../intermediate-ast/builders/package/packagePort/PackagePortIdentifierNodeBuilder.js';
 import { PackagePortNodeBuilder } from '../../intermediate-ast/builders/package/packagePort/PackagePortNodeBuilder.js';
 import { MethodDefinitionListNode } from '../../intermediate-ast/nodes/method-definitions/MethodDefinitionListNode.js';
@@ -46,15 +44,8 @@ export const packagePortDeclarationVisitor = (
   );
   const methodDefinitions: MethodDefinitionListNode = thisVisitor.visit(ctx.methodDefinitionList());
 
-  const portNode = new PackagePortNodeBuilder(produceMetadata(ctx, thisVisitor))
+  new PackagePortNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
     .withIdentifier(packagePortIdentifierNode)
     .withMethodDefinitions(methodDefinitions)
-    .build();
-
-  const emptyAdapterListNode = new PackageAdapterListNodeBuilder().withAdapters([]).build();
-
-  new PackageNodeBuilder(thisVisitor.intermediateASTTree, produceMetadata(ctx, thisVisitor))
-    .withPort(portNode)
-    .withAdapters(emptyAdapterListNode)
     .build();
 };

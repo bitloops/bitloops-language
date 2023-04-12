@@ -205,7 +205,7 @@ export class ConstDeclarationBuilderDirector {
     return constDeclaration;
   }
   /**
-   * const result = useCase.execute();
+   * const result = commandHandler.execute();
    */
   buildConstDeclarationWithMemberDotMethodCallExpression({
     name,

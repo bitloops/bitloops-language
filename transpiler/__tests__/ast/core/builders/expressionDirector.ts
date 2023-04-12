@@ -1,7 +1,6 @@
 import {
   TAdditiveOperator,
   TArgumentList,
-  TCorsOptionsEvaluation,
   TEnvironmentVariableExpression,
   TEqualityOperator,
   TEvaluation,
@@ -365,14 +364,6 @@ export class ExpressionBuilderDirector {
     return {
       expression: {
         parenthesizedExpression: expression,
-      },
-    };
-  }
-
-  buildCorsEvaluationField(corsOptions: TCorsOptionsEvaluation): TExpression {
-    return {
-      expression: {
-        evaluation: corsOptions,
       },
     };
   }
