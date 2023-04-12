@@ -1,0 +1,16 @@
+Struct IntegrationTodoModifiedTitleSchemaV1 {
+    string todoId;
+    string title;
+    string userId;
+}
+
+IntegrationEvent TodoModifiedTitleIntegrationEvent(event: TodoTitleModifiedDomainEvent) {  
+    'v1' : IntegrationTodoModifiedTitleSchemaV1 {
+        const todoTitleModified = IntegrationTodoModifiedTitleSchemaV1({
+            todoId: event.payload.aggregateId,
+            title: event.payload.title,
+            userId: event.payload.userId
+        });
+        return todoTitleModified;
+    }
+}

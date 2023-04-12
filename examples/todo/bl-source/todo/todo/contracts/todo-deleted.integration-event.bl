@@ -1,0 +1,14 @@
+Struct IntegrationTodoDeletedSchemaV1 {
+    string todoId;
+    string userId;
+}
+
+IntegrationEvent TodoDeletedIntegrationEvent(event: TodoDeletedDomainEvent) {  
+    'v1' : IntegrationTodoDeletedSchemaV1 {
+        const todoDeleted = IntegrationTodoDeletedSchemaV1({
+            todoId: event.payload.aggregateId,
+            userId: event.payload.userId
+        });
+        return todoDeleted;
+    }
+}

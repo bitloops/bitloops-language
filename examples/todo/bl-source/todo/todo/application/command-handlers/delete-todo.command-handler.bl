@@ -1,0 +1,24 @@
+Command DeleteTodoCommand {
+    string id;
+}
+
+CommandHandler DeleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
+    execute(command: DeleteTodoCommand): (OK(void), Errors(ApplicationErrors.TodoNotFoundError)) {
+       
+       const todoId = UUIDv4(command.id);
+       const todoEntity = this.todoRepo.getById(todoId);
+        if(todoEntity is Error){
+            return Error(todoEntity);
+        }
+
+       if(NOT todoEntity) {
+           return ApplicationErrors.TodoNotFoundError(command.id);
+       }
+
+       todoEntity.delete();
+       const deleteResult = this.todoRepo.delete(todoEntity);
+       if(deleteResult is Error){
+        return Error(deleteResult);
+      }
+   } 
+}
