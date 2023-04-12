@@ -12,6 +12,8 @@ export class DomainEventHandlerNodeTransformer extends NodeModelToTargetASTTrans
     if (!extraDependencies) {
       const eventBusDependenciesNode = new EventHandlerBusDependenciesNodeBuilder()
         .withCommandBus()
+        .withPubSubIntegrationEventBus()
+        .withIntegrationEventBus()
         .build();
       this.node.addChild(eventBusDependenciesNode);
     }

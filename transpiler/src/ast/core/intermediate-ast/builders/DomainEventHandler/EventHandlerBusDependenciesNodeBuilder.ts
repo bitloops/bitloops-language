@@ -10,6 +10,7 @@ export class EventHandlerBusDependenciesNodeBuilder
   private commandBus: boolean;
   private queryBus: boolean;
   private integrationEventBus: boolean;
+  private pubSubIntegrationEventBus: boolean;
 
   constructor(metadata?: TNodeMetadata) {
     this.domainEventHandlerIdentifierNode = new EventHandlerBusDependenciesNode(metadata);
@@ -30,11 +31,17 @@ export class EventHandlerBusDependenciesNodeBuilder
     return this;
   }
 
+  public withPubSubIntegrationEventBus(): EventHandlerBusDependenciesNodeBuilder {
+    this.pubSubIntegrationEventBus = true;
+    return this;
+  }
+
   public build(): EventHandlerBusDependenciesNode {
     const value = {
       commandBus: this.commandBus ?? false,
       queryBus: this.queryBus ?? false,
       integrationEventBus: this.integrationEventBus ?? false,
+      pubSubIntegrationEventBus: this.pubSubIntegrationEventBus ?? false,
     };
     this.domainEventHandlerIdentifierNode.buildLeafValue(value);
 

@@ -46,8 +46,9 @@ export class DomainEventHandlerBuilder implements IBuilder<TDomainEventHandler> 
     this.busDependencies = {
       eventHandlerBusDependencies: {
         commandBus: true,
-        integrationEventBus: false,
+        integrationEventBus: true,
         queryBus: false,
+        pubSubIntegrationEventBus: true,
       },
     };
     return this;
@@ -59,6 +60,7 @@ export class DomainEventHandlerBuilder implements IBuilder<TDomainEventHandler> 
         commandBus: false,
         integrationEventBus: true,
         queryBus: false,
+        pubSubIntegrationEventBus: false,
       },
     };
     return this;

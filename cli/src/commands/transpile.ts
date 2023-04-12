@@ -127,7 +127,7 @@ const transpile = async (source: ICollection): Promise<void> => {
   } catch (err) {
     console.log(err);
     console.error(redColor(TAB + '❌ ' + err));
-    throbber.stop();
+    throbber?.stop();
   }
 };
 

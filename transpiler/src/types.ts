@@ -1229,6 +1229,7 @@ export type TEventHandlerBusDependencies = {
     commandBus: boolean;
     queryBus: boolean;
     integrationEventBus: boolean;
+    pubSubIntegrationEventBus: boolean;
   };
 };
 

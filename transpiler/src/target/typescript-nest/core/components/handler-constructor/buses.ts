@@ -36,6 +36,7 @@ export const BUSES_TOKENS = {
   queryBus: 'PubSubQueryBus',
   integrationEventBus: 'StreamingIntegrationEventBus',
   domainEventBus: 'StreamingDomainEventBus',
+  pubSubIntegrationEventBus: 'PubSubIntegrationEventBus',
   // add support for pubsub integration events perhaps(for real-time updates)
 };
 
@@ -43,14 +44,16 @@ const BUSES_TYPES = {
   pubSubCommandBus: 'Infra.CommandBus.IPubSubCommandBus',
   streamCommandBus: 'Infra.CommandBus.IStreamCommandBus',
   queryBus: 'Infra.QueryBus.IQueryBus',
-  integrationEventBus: 'Infra.EventBus.IEventBus',
   domainEventBus: 'Infra.EventBus.IEventBus',
+  integrationEventBus: 'Infra.EventBus.IEventBus',
+  pubSubIntegrationEventBus: 'Infra.EventBus.IEventBus',
 };
 
 export const getDefaultBusConstructorStatements = (
   busDependencies: TEventHandlerBusDependencies,
 ): TTargetDependenciesTypeScript => {
-  const { commandBus, queryBus, integrationEventBus } = busDependencies.eventHandlerBusDependencies;
+  const { commandBus, queryBus, integrationEventBus, pubSubIntegrationEventBus } =
+    busDependencies.eventHandlerBusDependencies;
   const dependencies = [];
   let res = '';
   if (commandBus) {
@@ -73,6 +76,14 @@ export const getDefaultBusConstructorStatements = (
     const token = getTokenName(BUSES_TOKENS.integrationEventBus);
     const decorator = `@Inject(${token})`;
     const parameterDeclaration = `private readonly integrationEventBus: ${BUSES_TYPES.integrationEventBus}`;
+    const tokenDependency = getChildDependencies(token);
+    res += `${decorator}\n${parameterDeclaration},`;
+    dependencies.push(...INJECT_TOKEN_NEST_DEPENDENCY(), ...tokenDependency, INFRA_DEPENDENCY);
+  }
+  if (pubSubIntegrationEventBus) {
+    const token = getTokenName(BUSES_TOKENS.pubSubIntegrationEventBus);
+    const decorator = `@Inject(${token})`;
+    const parameterDeclaration = `private readonly pubSubIntegrationEventBus: ${BUSES_TYPES.pubSubIntegrationEventBus}`;
     const tokenDependency = getChildDependencies(token);
     res += `${decorator}\n${parameterDeclaration},`;
     dependencies.push(...INJECT_TOKEN_NEST_DEPENDENCY(), ...tokenDependency, INFRA_DEPENDENCY);
