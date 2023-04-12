@@ -1,0 +1,7 @@
+DomainEventHandler TodoUncompletedPublishPubSubIntegrationDomainEventHandler() {
+
+    handle(event: TodoUncompletedDomainEvent): (OK(void),Errors()) {
+      const events = TodoUncompletedIntegrationEvent.create(event)
+      this.pubSubIntegrationEventBus.publish(events)
+    }
+}
