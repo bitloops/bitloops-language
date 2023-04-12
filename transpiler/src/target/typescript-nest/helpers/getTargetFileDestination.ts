@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { normalize } from 'path';
 import {
   getLanguageFileExtension,
   isLanguageSupported,
@@ -136,7 +137,9 @@ const getTargetFileDestination = (
     case ClassTypes.Struct:
     case ClassTypes.ServicePort:
     case ClassTypes.DomainService: {
-      result.path = `./${ROOT_FOLDER}/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`;
+      result.path = normalize(
+        `./${ROOT_FOLDER}/${BOUNDED_CONTEXTS}/${BOUNDED_CONTEXT.kebabCase}/${MODULE.kebabCase}/${ClassTypesPaths[classType]}`,
+      );
       const fileName = getTargetFileName(className, classType);
       result.filename = fileName + getLanguageFileExtension(targetLanguage);
       break;
