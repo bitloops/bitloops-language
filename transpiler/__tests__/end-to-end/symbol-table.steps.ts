@@ -22,7 +22,10 @@ import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
 import { SemanticAnalyzer } from '../../src/semantic-analysis/IntermediateASTValidator.js';
-import { SYMBOL_TABLE_TEST_CASEES } from './mocks/symbol-table/symbol-table.js';
+import {
+  SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES,
+  SYMBOL_TABLE_TEST_CASEES,
+} from './mocks/symbol-table/symbol-table.js';
 
 describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
@@ -66,12 +69,55 @@ describe('Symbol table cases', () => {
       const result = transpiler.getSymbolTable(input);
       if (Transpiler.isTranspilerError(result)) {
         throw new Error('Transpiler should NOT return error');
-      } else {
-        console.log('result[boundedContext].getJsonValue()', result[boundedContext].getJsonValue());
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(result[boundedContext].getJsonValue()).toEqual(testCase.expectedSymbolTable);
       }
-      //   expect(result).toEqual(testCase.expectedSymbolTable);
+      // console.log(JSON.stringify(result[boundedContext].getJsonValue(), null, 2));
+      // console.log(JSON.stringify(testCase.expectedSymbolTable), null, 2);
+      expect(result[boundedContext].getJsonValue()).toEqual(testCase.expectedSymbolTable);
+    });
+  });
+
+  describe('Missing identifiers test cases', () => {
+    SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
+      const parser = new BitloopsParser();
+      const validator = new SemanticAnalyzer();
+      const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
+      const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
+
+      const transpiler = new Transpiler(
+        parser,
+        validator,
+        originalLanguageASTToIntermediateModelTransformer,
+        intermediateASTModelToTargetLanguageGenerator,
+      );
+
+      it(`${testCase.description}`, async () => {
+        // given
+        const input = {
+          core: [
+            {
+              boundedContext,
+              module,
+              fileId: 'fileId',
+              fileContents: testCase.inputCore,
+            },
+          ],
+          setup: [
+            {
+              boundedContext,
+              module,
+              fileId: 'fileId',
+              fileContents: testCase.inputSetup,
+            },
+          ],
+        };
+
+        // when
+        const result = transpiler.getSymbolTable(input);
+        if (!Transpiler.isTranspilerError(result)) {
+          throw new Error('Transpiler should return error');
+        }
+        expect(result.map((x) => x.message)).toEqual(testCase.errorMessages);
+      });
     });
   });
 });

@@ -1,11 +1,7 @@
 import { IntermediateASTNode } from '../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { InferredTypes } from './ASTTypeInference.js';
+import { SymbolEntry } from './SymbolEntry.js';
 
-class SymbolEntry {
-  constructor(public type: InferredTypes) {}
-}
-
-type PrimitiveSymbolTable = {
+export type PrimitiveSymbolTable = {
   locals: { [name: string]: SymbolEntry };
   children?: { [name: string]: PrimitiveSymbolTable };
 };
@@ -16,8 +12,8 @@ export class SymbolTable {
 
   constructor(private readonly parent?: SymbolTable, public node?: IntermediateASTNode) {}
 
-  public insert(name: string, type: InferredTypes): void {
-    this.localSymbols[name] = { type };
+  public insert(name: string, symbolEntry: SymbolEntry): void {
+    this.localSymbols[name] = symbolEntry;
   }
 
   public lookup(name: string): SymbolEntry | null {

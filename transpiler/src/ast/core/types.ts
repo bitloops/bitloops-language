@@ -45,9 +45,17 @@ export class ValidationError extends TranspilerError {
   }
 }
 
+export class MissingIdentifierError extends ValidationError {
+  constructor(identifier: string, metadata: TNodeMetadata) {
+    super(`The identifier ${identifier} is not defined.`, metadata);
+  }
+}
+
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | ValidationError[];
-  getSymbolTable: (ast: IntermediateAST) => Record<TBoundedContextName, SymbolTable>;
+  getSymbolTable: (
+    ast: IntermediateAST,
+  ) => Record<TBoundedContextName, SymbolTable> | ValidationError[];
 }
 
 export type TVariableDeclarationStatement = ConstDeclarationNode | VariableDeclarationNode;

@@ -17,26 +17,72 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
+import { InferredTypes } from '../../../../src/semantic-analysis/type-inference/ASTTypeInference.js';
+import {
+  ClassTypeParameterSymbolEntry,
+  ParameterSymbolEntry,
+} from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
+import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
 import { FileUtil } from '../../../../src/utils/file.js';
+import { SymbolTableBuilder } from '../../builder/SymbolTableBuilder.js';
 type SymbolTableTestCase = {
   description: string;
   inputCore: string;
   inputSetup: string;
-  expectedSymbolTable: SymbolTable;
+  expectedSymbolTable: PrimitiveSymbolTable;
 };
 export const SYMBOL_TABLE_TEST_CASEES: SymbolTableTestCase[] = [
   {
-    description: 'Entity not found',
+    description: 'Should create symbol table for command handler',
     inputCore: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-if.bl',
     ),
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    expectedSymbolTable: new SymbolTable(),
-    // .insert('a', 'number')
-    // .insert('b', 'number')
-    // .insert('c', 'number'),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('accountEntity', InferredTypes.Unknown, true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry(
+                  'result',
+                  InferredTypes.Unknown,
+                  true,
+                ),
+              )
+              .insertVariableSymbolEntry('result', InferredTypes.Unknown, true),
+          ),
+      )
+      .build(),
   },
 ];
+
+type SymbolTableMissingIdentifiersTestCase = {
+  description: string;
+  inputCore: string;
+  inputSetup: string;
+  errorMessages: string[];
+};
+
+export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIdentifiersTestCase[] =
+  [
+    {
+      description: 'Should return that identifier was in const declaration is not defined',
+      inputCore: FileUtil.readFileString(
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-const-identifier.bl',
+      ),
+      inputSetup: FileUtil.readFileString(
+        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      ),
+      errorMessages: ['The identifier person is not defined.'],
+    },
+  ];

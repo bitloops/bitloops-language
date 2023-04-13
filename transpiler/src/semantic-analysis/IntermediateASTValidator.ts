@@ -49,6 +49,11 @@ import { StatementNodeTypeGuards } from '../ast/core/intermediate-ast/type-guard
 import { ErrorIdentifierNode } from '../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
 import { EntityIdentifierNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
+import {
+  ClassTypeParameterSymbolEntry,
+  ParameterSymbolEntry,
+  VariableSymbolEntry,
+} from './type-inference/SymbolEntry.js';
 
 export class SemanticAnalyzer implements IIntermediateASTValidator {
   private symbolTableSetup: Record<string, Set<string>>;
@@ -72,8 +77,11 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     this.errors.push(...errors);
   }
 
-  public getSymbolTable(ast: IntermediateAST): Record<TBoundedContextName, SymbolTable> {
+  public getSymbolTable(
+    ast: IntermediateAST,
+  ): Record<TBoundedContextName, SymbolTable> | ValidationError[] {
     this.createSymbolTable(ast.core);
+    if (this.errors.length > 0) return this.errors;
     return this.symbolTable;
   }
 
@@ -93,7 +101,10 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const params = node.getParameters();
             params.forEach((paramNode) => {
               const paramName = paramNode.getIdentifier();
-              classTypeScope.insert(paramName, InferredTypes.Unknown);
+              classTypeScope.insert(
+                paramName,
+                new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+              );
             });
 
             const execute = node.getExecute();
@@ -101,7 +112,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const executeParams = node.getMethodParameters();
             executeParams.forEach((paramNode) => {
               const paramName = paramNode.getIdentifier();
-              executeScope.insert(paramName, InferredTypes.Unknown);
+              executeScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
             });
             const statements = node.getStatements();
             this.createStatementListScope(statements, executeScope);
@@ -119,39 +130,51 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     let elseCounter = 0;
     let switchCounter = 0;
     statements.forEach((statement) => {
-      if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
-        const identifier = statement.getIdentifier().getIdentifierName();
-        parentScope.insert(identifier, InferredTypes.Unknown);
-      }
-
-      if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
-        const identifier = statement.getIdentifier().getIdentifierName();
-        parentScope.insert(identifier, InferredTypes.Unknown);
-      }
-
-      if (StatementNodeTypeGuards.isIfStatement(statement)) {
-        const ifScope = parentScope.createChildScope('if' + ifCounter++, statement);
-        const thenStatements = statement.getThenStatements();
-        this.createStatementListScope(thenStatements, ifScope);
-        if (statement.hasElseBlock()) {
-          const elseStatements = statement.getElseStatements();
-          const elseScope = parentScope.createChildScope('else' + elseCounter++, statement);
-          this.createStatementListScope(elseStatements, elseScope);
+      // const result = variableValue;
+      try {
+        if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
+          const identifier = statement.getIdentifier().getIdentifierName();
+          parentScope.insert(identifier, new VariableSymbolEntry(InferredTypes.Unknown, false));
         }
-      }
 
-      if (StatementNodeTypeGuards.isSwitchStatement(statement)) {
-        const switchScope = parentScope.createChildScope('switch' + switchCounter++, statement);
-        const switchCases = statement.getCases();
-        switchCases.forEach((switchCase, index) => {
-          const caseScope = switchScope.createChildScope('case' + index, switchCase);
-          const caseStatements = switchCase.getStatements();
-          this.createStatementListScope(caseStatements, caseScope);
-        });
-        const defaultCase = statement.getDefaultCase();
-        const defaultScope = switchScope.createChildScope('default', defaultCase);
-        const defaultStatements = defaultCase.getStatements();
-        this.createStatementListScope(defaultStatements, defaultScope);
+        if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
+          const identifierExpression = statement.getExpressionValues();
+          identifierExpression.typeCheck(parentScope);
+          const identifier = statement.getIdentifier().getIdentifierName();
+          parentScope.insert(identifier, new VariableSymbolEntry(InferredTypes.Unknown, true));
+        }
+
+        if (StatementNodeTypeGuards.isIfStatement(statement)) {
+          const ifScope = parentScope.createChildScope('if' + ifCounter++, statement);
+          const thenStatements = statement.getThenStatements();
+          this.createStatementListScope(thenStatements, ifScope);
+          if (statement.hasElseBlock()) {
+            const elseStatements = statement.getElseStatements();
+            const elseScope = parentScope.createChildScope('else' + elseCounter++, statement);
+            this.createStatementListScope(elseStatements, elseScope);
+          }
+        }
+
+        if (StatementNodeTypeGuards.isSwitchStatement(statement)) {
+          const switchScope = parentScope.createChildScope('switch' + switchCounter++, statement);
+          const switchCases = statement.getCases();
+          switchCases.forEach((switchCase, index) => {
+            const caseScope = switchScope.createChildScope('case' + index, switchCase);
+            const caseStatements = switchCase.getStatements();
+            this.createStatementListScope(caseStatements, caseScope);
+          });
+          const defaultCase = statement.getDefaultCase();
+          const defaultScope = switchScope.createChildScope('default', defaultCase);
+          const defaultStatements = defaultCase.getStatements();
+          this.createStatementListScope(defaultStatements, defaultScope);
+        }
+      } catch (e) {
+        console.log(e);
+        if (e instanceof ValidationError) {
+          this.addError(e);
+        } else {
+          throw e;
+        }
       }
     });
     return parentScope;

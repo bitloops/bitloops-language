@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
@@ -74,5 +75,9 @@ export class MethodCallExpressionNode extends ExpressionNode {
       return false;
     }
     return true;
+  }
+
+  public override typeCheck(_symbolTable: SymbolTable): void {
+    // pass
   }
 }

@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
@@ -171,5 +172,14 @@ export class ExpressionNode extends StatementNode {
 
   getEvaluation(): EvaluationNode {
     return this.getChildren()[0] as EvaluationNode;
+  }
+
+  typeCheck(symbolTable: SymbolTable): void {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        child.typeCheck(symbolTable);
+      }
+    }
+    // pass
   }
 }
