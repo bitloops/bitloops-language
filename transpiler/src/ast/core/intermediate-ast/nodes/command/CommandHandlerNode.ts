@@ -39,10 +39,12 @@ export class CommandHandlerNode extends ClassTypeNode {
     });
   }
 
+  getExecute(): ExecuteNode {
+    return this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
+  }
+
   getStatements(): StatementNode[] {
-    const commandHandlerExecute = this.getChildNodeByType<ExecuteNode>(
-      BitloopsTypesMapping.TExecute,
-    );
+    const commandHandlerExecute = this.getExecute();
     return commandHandlerExecute.getStatements();
   }
 

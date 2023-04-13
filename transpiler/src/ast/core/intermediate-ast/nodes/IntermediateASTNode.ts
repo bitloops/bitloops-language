@@ -1,6 +1,10 @@
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../../helpers/mappings.js';
 import { IntermediateASTValidationError } from '../../types.js';
+import { ClassTypeNode } from './ClassTypeNode.js';
+import { ParameterNode } from './ParameterList/ParameterNode.js';
+import { ConstDeclarationNode } from './statements/ConstDeclarationNode.js';
 import { StatementListNode } from './statements/StatementList.js';
+import { VariableDeclarationNode } from './variableDeclaration.js';
 
 export type TNodeLineData = {
   line: number;
@@ -169,6 +173,10 @@ export abstract class IntermediateASTNode {
     return false;
   }
 
+  static isClassTypeNode(node: IntermediateASTNode): node is ClassTypeNode {
+    return node instanceof ClassTypeNode;
+  }
+
   getStatementListNode(): StatementListNode | null {
     return this.getChildNodeByType(BitloopsTypesMapping.TStatements) as StatementListNode;
   }
@@ -179,6 +187,18 @@ export abstract class IntermediateASTNode {
 
   IsEntityIdentifierNode(): boolean {
     return this.nodeType === BitloopsTypesMapping.TEntityIdentifier;
+  }
+
+  isConstDeclarationExpressionNode(): this is ConstDeclarationNode {
+    return this.nodeType === BitloopsTypesMapping.TConstDeclaration;
+  }
+
+  isVariabletDeclarationExpressionNode(): this is VariableDeclarationNode {
+    return this.nodeType === BitloopsTypesMapping.TVariableDeclaration;
+  }
+
+  isParameterNode(): this is ParameterNode {
+    return this.nodeType === BitloopsTypesMapping.TParameter;
   }
 
   protected getChildNodeByType<T extends IntermediateASTNode>(

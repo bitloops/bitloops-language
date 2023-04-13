@@ -23,6 +23,7 @@ import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
 import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
+import { ClassTypeNode } from './nodes/ClassTypeNode.js';
 
 type Policy = (node: IntermediateASTNode) => boolean;
 
@@ -164,6 +165,9 @@ export class IntermediateASTTree {
     return node.buildLeafValue(nodeValue);
   }
 
+  public getClassTypeNodes(): ClassTypeNode[] {
+    return this.getRootNode().getChildren() as ClassTypeNode[];
+  }
   public getAggregateIdentifier(identifier: string): EntityIdentifierNode | null {
     return this.getNodeWithPolicy(
       this.rootNode,

@@ -1,11 +1,3 @@
-import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { CommandHandlerNodeBuilder } from '../../intermediate-ast/builders/command/CommandHandlerNodeBuilder.js';
-import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
-import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
-import { ExecuteNode } from '../../intermediate-ast/nodes/ExecuteNode.js';
-import BitloopsVisitor from '../BitloopsVisitor.js';
-import { produceMetadata } from '../metadata.js';
-
 /**
  *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
@@ -25,6 +17,14 @@ import { produceMetadata } from '../metadata.js';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { CommandHandlerNodeBuilder } from '../../intermediate-ast/builders/command/CommandHandlerNodeBuilder.js';
+import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { ParameterListNode } from '../../intermediate-ast/nodes/ParameterList/ParameterListNode.js';
+import { ExecuteNode } from '../../intermediate-ast/nodes/ExecuteNode.js';
+import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
+
 export const commandHandlerVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.CommandHandlerContext,

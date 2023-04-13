@@ -32,4 +32,15 @@ export abstract class StatementNode extends IntermediateASTNode {
   isExpressionNode(): this is ExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TExpression;
   }
+
+  // getIdentifier(): IdentifierNode {
+  //   const children = this.getChildren();
+  //   const identifier = children.find(
+  //     (child) => child.getNodeType() === BitloopsTypesMapping.TIdentifier,
+  //   );
+  //   if (!identifier) {
+  //     throw new Error('Identifier not found');
+  //   }
+  //   return identifier as IdentifierNode;
+  // }
 }

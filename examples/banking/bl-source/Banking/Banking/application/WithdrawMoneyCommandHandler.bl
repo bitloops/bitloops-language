@@ -8,7 +8,6 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
        ApplicationErrors.AccountNotFoundError
        | DomainErrors.InsufficientBalanceError
        | DomainErrors.InvalidMonetaryValueError
-    //    | Domain.StandardVO.Currency.ErrorTypes
        )) {
        
        const accountId = UUIDv4(command.accountId);

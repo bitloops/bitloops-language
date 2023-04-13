@@ -21,14 +21,14 @@ export class VariableDeclarationNode extends StatementNode {
     return expression.getChildren()[0] as ExpressionNode;
   }
 
-  getIdentifier(): IdentifierNode {
-    const children = this.getChildren();
-    const identifier = children.find(
-      (child) => child.getNodeType() === BitloopsTypesMapping.TIdentifier,
-    );
-    if (!identifier) {
-      throw new Error('Identifier not found');
-    }
-    return identifier as IdentifierNode;
-  }
+  // getIdentifier(): IdentifierNode {
+  //   const children = this.getChildren();
+  //   const identifier = children.find(
+  //     (child) => child.getNodeType() === BitloopsTypesMapping.TIdentifier,
+  //   );
+  //   if (!identifier) {
+  //     throw new Error('Identifier not found');
+  //   }
+  //   return identifier as IdentifierNode;
+  // }
 }

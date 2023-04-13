@@ -3,6 +3,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
+import { StringLiteralNode } from './Literal/StringLiteralNode.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
@@ -158,6 +159,10 @@ export class ExpressionNode extends StatementNode {
 
   isThisExpression(): this is ThisExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
+  }
+
+  isStringLiteralExpression(): this is StringLiteralNode {
+    return this.getNodeType() === BitloopsTypesMapping.TStringLiteral;
   }
 
   isEvaluation(): this is EvaluationNode {

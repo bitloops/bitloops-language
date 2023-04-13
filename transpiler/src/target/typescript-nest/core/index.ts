@@ -40,7 +40,7 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
           module: moduleName,
         };
 
-        const classTypeNodes = intermediateASTTree.getRootNode().getChildren();
+        const classTypeNodes = intermediateASTTree.getClassTypeNodes();
         classTypeNodes.forEach((intermediateASTNode) => {
           const generatedString = modelToTargetLanguage({
             type: intermediateASTNode.getNodeType(),

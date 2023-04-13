@@ -1,4 +1,5 @@
 import { TBitloopsTypesValues, TClassTypesValues } from '../../../../helpers/mappings.js';
+import { IntermediateASTIdentifierNode } from './IntermediateASTIdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
 
 type TClassTypeNodeParams = {
@@ -26,5 +27,13 @@ export abstract class ClassTypeNode extends IntermediateASTNode {
 
   getClassName(): string {
     return this.className;
+  }
+
+  getIdentifier(): IntermediateASTIdentifierNode {
+    const identifierNode = this.getChildren().find(
+      (child) => child instanceof IntermediateASTIdentifierNode,
+    );
+    if (!identifierNode) throw new Error('Identifier node not found');
+    return identifierNode as IntermediateASTIdentifierNode;
   }
 }
