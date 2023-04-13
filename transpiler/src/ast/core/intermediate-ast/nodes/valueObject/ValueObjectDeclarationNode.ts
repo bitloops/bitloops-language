@@ -18,7 +18,7 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
     });
   }
 
-  public getIdentifier(): string {
+  public getIdentifierValue(): string {
     const identifierNode = this.getChildNodeByType<ValueObjectIdentifierNode>(
       BitloopsTypesMapping.TValueObjectIdentifier,
     );

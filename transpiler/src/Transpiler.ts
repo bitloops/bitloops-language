@@ -7,7 +7,8 @@ import {
   IIntermediateASTValidator,
   IntermediateAST,
   IntermediateASTError,
-  IntermediateASTValidationError,
+  ValidationError,
+  TBoundedContextName,
 } from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import {
@@ -19,6 +20,8 @@ import {
 import { ITargetGenerator, TargetGeneratorError, TOutputTargetContent } from './target/types.js';
 import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
 import type { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
+import { SymbolTable } from './semantic-analysis/type-inference/SymbolTable.js';
+import { TranspilerError } from './parser/core/types.js';
 
 export default class Transpiler {
   constructor(
@@ -64,6 +67,18 @@ export default class Transpiler {
     return validatedIntermediateModel;
   }
 
+  public getSymbolTable(
+    inputData: TParserInputData,
+  ): Record<TBoundedContextName, SymbolTable> | TranspilerError[] {
+    const originalAST = this.bitloopsCodeToOriginalAST(inputData);
+    if (isParserErrors(originalAST)) {
+      return originalAST;
+    }
+
+    const ast = this.originalASTToIntermediateModel(originalAST);
+    return this.validator.getSymbolTable(ast);
+  }
+
   private bitloopsCodeToOriginalAST(
     parseInputData: TParserInputData,
   ): OriginalAST | OriginalParserError {
@@ -83,7 +98,7 @@ export default class Transpiler {
 
   private validateIntermediateModel(
     intermediateModel: IntermediateAST,
-  ): IntermediateASTValidationError[] | IntermediateAST {
+  ): ValidationError[] | IntermediateAST {
     const validationResult = this.validator.validate(intermediateModel);
     if (isIntermediateASTValidationErrors(validationResult)) {
       return validationResult;

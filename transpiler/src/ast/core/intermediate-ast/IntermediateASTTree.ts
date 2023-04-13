@@ -246,7 +246,9 @@ export class IntermediateASTTree {
       BitloopsTypesMapping.TValueObject,
     );
 
-    return valueObjectDeclarationNodes.find((node) => node.getIdentifier() === identifier) ?? null;
+    return (
+      valueObjectDeclarationNodes.find((node) => node.getIdentifierValue() === identifier) ?? null
+    );
   };
 
   public getRepoPortByIdentifier = (identifier: string): RepoPortNode => {
@@ -713,7 +715,7 @@ export class IntermediateASTTree {
     valueObjectNodes: ValueObjectDeclarationNode[],
     identifier: string,
   ): ValueObjectDeclarationNode {
-    return valueObjectNodes.find((node) => node.getIdentifier() === identifier);
+    return valueObjectNodes.find((node) => node.getIdentifierValue() === identifier);
   }
 
   private findProps(propsNodes: PropsNode[], identifier: string): PropsNode {

@@ -1,4 +1,6 @@
+import { TranspilerError } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
+import { SymbolTable } from '../../semantic-analysis/type-inference/SymbolTable.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
@@ -19,13 +21,13 @@ export type IntermediateASTSetup = {
   [fileId: string]: IntermediateASTTree;
 };
 
-export type IntermediateASTError = IntermediateASTValidationError[];
+export type IntermediateASTError = ValidationError[];
 export interface IIntermediateASTParser {
   parse: (ast: OriginalAST) => IntermediateAST;
   complete: (ast: IntermediateAST) => IntermediateAST;
 }
 
-export class IntermediateASTValidationError extends Error {
+export class ValidationError extends TranspilerError {
   private _metadata: TNodeMetadata;
   private _message: string;
   constructor(message: string, metadata: TNodeMetadata) {
@@ -44,7 +46,8 @@ export class IntermediateASTValidationError extends Error {
 }
 
 export interface IIntermediateASTValidator {
-  validate: (ast: IntermediateAST) => void | IntermediateASTValidationError[];
+  validate: (ast: IntermediateAST) => void | ValidationError[];
+  getSymbolTable: (ast: IntermediateAST) => Record<TBoundedContextName, SymbolTable>;
 }
 
 export type TVariableDeclarationStatement = ConstDeclarationNode | VariableDeclarationNode;

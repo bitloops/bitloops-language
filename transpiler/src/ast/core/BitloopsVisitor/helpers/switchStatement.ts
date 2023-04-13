@@ -21,8 +21,7 @@
 import { DefaultSwitchCaseNodeBuilder } from './../../intermediate-ast/builders/statements/switchStatement/DefaultSwitchCaseBuilder.js';
 import { SwitchRegularCaseNode } from './../../intermediate-ast/nodes/statements/SwitchStatement/SwitchCase.js';
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { SwitchStatementNodeBuilder } from '../../intermediate-ast/builders/statements/switchStatement/SwitchStatementBuilder.js';
-import { SwitchCasesNode } from '../../intermediate-ast/nodes/statements/SwitchStatement/SwitchCases.js';
+import { SwitchCaseListNode } from '../../intermediate-ast/nodes/statements/SwitchStatement/SwitchCases.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
 import { ConditionNode } from './../../intermediate-ast/nodes/statements/ifStatement/ConditionNode.js';
@@ -30,6 +29,7 @@ import { DefaultSwitchCaseNode } from './../../intermediate-ast/nodes/statements
 import { SwitchStatementNode } from './../../intermediate-ast/nodes/statements/SwitchStatement/SwitchStatementNode.js';
 import { SwitchRegularCaseBuilder } from '../../intermediate-ast/builders/statements/switchStatement/SwitchRegularCaseBuilder.js';
 import { SwitchCasesBuilder } from '../../intermediate-ast/builders/statements/switchStatement/SwitchCasesBuilder.js';
+import { SwitchStatementNodeBuilder } from '../../intermediate-ast/builders/statements/switchStatement/SwitchStatementNodeBuilder.js';
 
 export const switchStatementVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -37,11 +37,11 @@ export const switchStatementVisitor = (
 ): SwitchStatementNode => {
   const conditionNode: ConditionNode = thisVisitor.visit(ctx.condition());
   const expression = conditionNode.expression;
-  let cases: SwitchCasesNode;
+  let cases: SwitchCaseListNode;
   if (ctx.caseClauses()) {
     cases = thisVisitor.visit(ctx.caseClauses());
   } else {
-    cases = new SwitchCasesNode();
+    cases = new SwitchCaseListNode();
   }
   const defaultCase: DefaultSwitchCaseNode = thisVisitor.visit(ctx.defaultClause());
   const metadata = produceMetadata(ctx, thisVisitor);
@@ -56,7 +56,7 @@ export const switchStatementVisitor = (
 export const caseClausesVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.CaseClausesContext,
-): SwitchRegularCaseNode => {
+): SwitchCaseListNode => {
   const caseCases = thisVisitor.visitChildren(ctx);
   const metadata = produceMetadata(ctx, thisVisitor);
   return new SwitchCasesBuilder(metadata).withRegularCases(caseCases).build();

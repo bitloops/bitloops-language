@@ -1,17 +1,17 @@
 import { IntermediateASTNode } from '../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-import { TInferenceType } from './ASTTypeInference.js';
+import { InferredTypes } from './ASTTypeInference.js';
 
 class SymbolEntry {
-  constructor(public type: TInferenceType) {}
+  constructor(public type: InferredTypes) {}
 }
 
 export class SymbolTable {
   private localSymbols: { [name: string]: SymbolEntry } = {};
   private childrenScopes: { [name: string]: SymbolTable } = {};
 
-  constructor(private readonly parent?: SymbolTable, private node?: IntermediateASTNode) {}
+  constructor(private readonly parent?: SymbolTable, public node?: IntermediateASTNode) {}
 
-  public insert(name: string, type: TInferenceType): void {
+  public insert(name: string, type: InferredTypes): void {
     this.localSymbols[name] = { type };
   }
 
@@ -38,5 +38,9 @@ export class SymbolTable {
 
   public getParentScope(): SymbolTable | null {
     return this.parent || null;
+  }
+
+  hasChildScope(name: string): boolean {
+    return !!this.childrenScopes[name];
   }
 }

@@ -1,44 +1,24 @@
-// /**
-//  *  Bitloops Language CLI
-//  *  Copyright (C) 2022 Bitloops S.A.
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//  *
-//  *  For further information you can contact legal(at)bitloops.com.
-//  */
+/**
+ *  Bitloops Language CLI
+ *  Copyright (C) 2022 Bitloops S.A.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  For further information you can contact legal(at)bitloops.com.
+ */
 
-// import { IntermediateASTTree } from '../../ast/core/intermediate-ast/IntermediateASTTree.js';
-// import { ExpressionNode } from '../../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
-// import { IntermediateASTNode } from '../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
-// import { BitloopsPrimaryTypeNode } from '../../ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
-
-// import {
-//   TExpressionValues,
-//   TDomainEvent,
-//   TIntegrationEvent,
-//   TCommand,
-//   TIntegrationEventHandler,
-//   TCommandHandler,
-//   TDomainEventHandler,
-//   TQuery,
-//   TQueryHandler,
-//   TRepoPort,
-//   TPackagePort,
-//   TServicePort,
-// } from '../../types.js';
-// import { SymbolTable } from './SymbolTable.js';
-
+// import { Intes
 // export type TInferenceType =
 //   | number
 //   | boolean
@@ -59,10 +39,10 @@
 //   | { [key: string]: TInferenceType }
 //   | ((...args: TInferenceType[]) => TInferenceType);
 
-// export enum InferredTypes {
-//   Unknown,
-//   Number,
-// }
+export enum InferredTypes {
+  Unknown,
+  Number,
+}
 
 // type Constraint = {
 //   left: TInferenceType;

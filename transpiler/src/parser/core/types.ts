@@ -1,8 +1,4 @@
-import {
-  IntermediateASTValidationError,
-  TBoundedContextName,
-  TModuleName,
-} from '../../ast/core/types.js';
+import { ValidationError, TBoundedContextName, TModuleName } from '../../ast/core/types.js';
 import Parser from './grammar/BitloopsParser.js';
 
 export class ASTContext extends Parser.ProgramContext {}
@@ -58,9 +54,11 @@ export interface IOriginalParser {
 }
 
 export type OriginalParserError = ParserSyntacticError[];
-export type OriginalValidatorError = IntermediateASTValidationError[];
+export type OriginalValidatorError = ValidationError[];
 
-export class ParserSyntacticError extends Error {
+export class TranspilerError extends Error {}
+
+export class ParserSyntacticError extends TranspilerError {
   private _offendingToken: any;
   private _line: number;
   private _column: number;

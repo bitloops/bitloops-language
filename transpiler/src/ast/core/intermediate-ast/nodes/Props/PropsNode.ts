@@ -72,7 +72,7 @@ export class PropsNode extends ClassTypeNode {
         const propsNode = tree.getPropsNodeOfValueObject(valueObject);
         const fieldPrimitives = propsNode.getFieldsPrimitives(tree);
         primitivesValues[identifier] = {};
-        const valueObjectIdentifier = valueObject.getIdentifier();
+        const valueObjectIdentifier = valueObject.getIdentifierValue();
         for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(fieldPrimitives)) {
           primitivesValues[identifier][fieldPrimitiveKey] = {
             primitiveValue: fieldPrimitiveValue,

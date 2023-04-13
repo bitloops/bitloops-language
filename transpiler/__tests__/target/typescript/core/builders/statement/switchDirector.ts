@@ -1,12 +1,12 @@
 import { DefaultSwitchCaseNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/switchStatement/DefaultSwitchCaseBuilder.js';
 import { SwitchCasesBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/switchStatement/SwitchCasesBuilder.js';
 import { SwitchRegularCaseBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/switchStatement/SwitchRegularCaseBuilder.js';
-import { SwitchStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/switchStatement/SwitchStatementBuilder.js';
+import { SwitchStatementNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/switchStatement/SwitchStatementNodeBuilder.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { StatementListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/StatementList.js';
 import { DefaultSwitchCaseNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/DefaultSwitchCase.js';
 import { SwitchRegularCaseNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/SwitchCase.js';
-import { SwitchCasesNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/SwitchCases.js';
+import { SwitchCaseListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/SwitchCases.js';
 import { SwitchStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/SwitchStatementNode.js';
 
 type TRegularCases = Array<{
@@ -29,7 +29,7 @@ export class SwitchStatementBuilderDirector {
     return switchCaseNode.build();
   }
 
-  buildCaseClausesVisitor = (regularCases: TRegularCases): SwitchCasesNode => {
+  buildCaseClausesVisitor = (regularCases: TRegularCases): SwitchCaseListNode => {
     const switchCases = regularCases.map(this.caseClauseVisitor);
     return new SwitchCasesBuilder(null).withRegularCases(switchCases).build();
   };
@@ -48,9 +48,4 @@ export class SwitchStatementBuilderDirector {
   defaultClauseVisitor = (statementList: StatementListNode): DefaultSwitchCaseNode => {
     return new DefaultSwitchCaseNodeBuilder(null).withStatements(statementList).build();
   };
-
-  // private buildCondition(expr: ExpressionNode): ConditionNode {
-  //   const conditionNode = new ConditionNodeBuilder(null).withExpression(expr).build();
-  //   return conditionNode;
-  // }
 }

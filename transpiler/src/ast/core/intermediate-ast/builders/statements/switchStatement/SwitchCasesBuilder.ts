@@ -1,14 +1,14 @@
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { SwitchRegularCaseNode } from '../../../nodes/statements/SwitchStatement/SwitchCase.js';
-import { SwitchCasesNode } from '../../../nodes/statements/SwitchStatement/SwitchCases.js';
+import { SwitchCaseListNode } from '../../../nodes/statements/SwitchStatement/SwitchCases.js';
 import { IBuilder } from '../../IBuilder.js';
 
-export class SwitchCasesBuilder implements IBuilder<SwitchCasesNode> {
-  private switchCasesNode: SwitchCasesNode;
+export class SwitchCasesBuilder implements IBuilder<SwitchCaseListNode> {
+  private switchCasesNode: SwitchCaseListNode;
   private regularCases: SwitchRegularCaseNode[];
 
   constructor(metadata: TNodeMetadata) {
-    this.switchCasesNode = new SwitchCasesNode(metadata);
+    this.switchCasesNode = new SwitchCaseListNode(metadata);
   }
 
   public withRegularCases(cases: SwitchRegularCaseNode[]): SwitchCasesBuilder {
@@ -16,7 +16,7 @@ export class SwitchCasesBuilder implements IBuilder<SwitchCasesNode> {
     return this;
   }
 
-  public build(): SwitchCasesNode {
+  public build(): SwitchCaseListNode {
     for (const switchCase of this.regularCases) {
       this.switchCasesNode.addChild(switchCase);
     }
