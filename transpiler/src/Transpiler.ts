@@ -110,6 +110,7 @@ export default class Transpiler {
     return this.originalLanguageASTToIntermediateModelTransformer.complete(intermediateModel);
   }
 
+  // TODO: remove duplication of transpile errors
   static isTranspileError(
     value: TOutputTargetContent | TTranspileError[],
   ): value is TTranspileError[] {
@@ -121,5 +122,9 @@ export default class Transpiler {
       return false;
     }
     return true;
+  }
+
+  static isTranspilerError(value: any): value is TTranspileError[] {
+    return Array.isArray(value) && value.every((v) => v instanceof TranspilerError);
   }
 }

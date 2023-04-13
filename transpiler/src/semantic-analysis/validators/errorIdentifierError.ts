@@ -9,8 +9,8 @@ export const errorIdentifierError = (
   thisSymbolTable: SymbolTable,
 ): ValidationError[] => {
   const errors = [];
-  const identifierValue = node.getIdentifierName().split('.')[1];
-  if (!thisSymbolTable.hasChildScope(identifierValue))
+  const identifierValueWithoutPrefix = node.getIdentifierName().split('.')[1];
+  if (!thisSymbolTable.hasChildScope(identifierValueWithoutPrefix))
     errors.push(new identifierValidationError(node.getIdentifierName(), node));
   return errors;
 };

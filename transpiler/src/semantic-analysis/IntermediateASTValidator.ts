@@ -30,8 +30,6 @@ import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateAS
 import { ArgumentNode } from '../ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
 import { BitloopsIdentifierTypeNode } from '../ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
 import { DomainRuleIdentifierNode } from '../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
-import { EntityIdentifierNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
-import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { IntermediateASTNode } from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { ReadModelIdentifierNode } from '../ast/core/intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
 import {
@@ -49,16 +47,16 @@ import { ClassTypeNodeTypeGuards } from '../ast/core/intermediate-ast/type-guard
 import { StatementNode } from '../ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { StatementNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/statementTypeGuards.js';
 import { ErrorIdentifierNode } from '../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { EntityIdentifierNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
+import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 
 export class SemanticAnalyzer implements IIntermediateASTValidator {
-  //   private symbolTableCore: Record<string, Set<string>>;
   private symbolTableSetup: Record<string, Set<string>>;
 
   private symbolTable: Record<TBoundedContextName, SymbolTable> = {};
   private errors: ValidationError[] = [];
 
   constructor() {
-    // this.symbolTableCore = {};
     this.symbolTableSetup = {};
   }
 
@@ -78,112 +76,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     this.createSymbolTable(ast.core);
     return this.symbolTable;
   }
-
-  //   public createSymbolTablesCore(core: TBoundedContexts): void {
-  //     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
-  //       this.symbolTableCore[boundedContextName] = new Set();
-  //       for (const ASTTree of Object.values(boundedContext)) {
-  //         ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-  //           switch (node.getNodeType()) {
-  //             case BitloopsTypesMapping.TRootEntity: {
-  //               const identifierNode = (node as RootEntityDeclarationNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TEntity: {
-  //               const identifierNode = (node as EntityDeclarationNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TProps: {
-  //               const identifierNode = (node as PropsNode).getPropsIdentifierNode();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TValueObject: {
-  //               const identifier = (node as ValueObjectDeclarationNode).getIdentifierValue();
-  //               this.symbolTableCore[boundedContextName].add(identifier);
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TDomainError: {
-  //               const identifierNode = (node as DomainErrorNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(
-  //                 'DomainErrors.' + identifierNode.getIdentifierName(),
-  //               );
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TApplicationError: {
-  //               const identifierNode = (node as ApplicationErrorNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(
-  //                 'ApplicationErrors.' + identifierNode.getIdentifierName(),
-  //               );
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TDTO: {
-  //               const identifierNode = (node as DTONode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TRepoPort: {
-  //               const identifierNode = (node as RepoPortNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TStruct: {
-  //               const identifierNode = (node as StructNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TReadModel: {
-  //               const identifierNode = (node as ReadModelNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TDomainRule: {
-  //               const identifierNode = (node as DomainRuleNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TPackagePort: {
-  //               const identifier = (node as PackagePortNode).identifier;
-  //               this.symbolTableCore[boundedContextName].add(identifier);
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TCommand: {
-  //               const identifierNode = (node as CommandDeclarationNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TQuery: {
-  //               const identifierNode = (node as QueryDeclarationNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TDomainEvent: {
-  //               const identifierNode = (node as DomainEventDeclarationNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TIntegrationEvent: {
-  //               const identifier = (node as IntegrationEventNode).getIntegrationEventIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifier);
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TServicePort: {
-  //               const identifierNode = (node as ServicePortNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //             case BitloopsTypesMapping.TDomainService: {
-  //               const identifierNode = (node as DomainServiceNode).getIdentifier();
-  //               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-  //               break;
-  //             }
-  //           }
-  //         });
-  //       }
-  //     }
-  //   }
 
   private createSymbolTable(core: TBoundedContexts): void {
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
@@ -268,7 +160,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   private validateCore(core: TBoundedContexts): void {
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const ASTTree of Object.values(boundedContext)) {
-        this.validateNodes(ASTTree, boundedContextName);
+        // this.validateNodes(ASTTree, boundedContextName);
 
         this.validateClassTypeNodesCore(ASTTree, boundedContextName);
       }
@@ -282,13 +174,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   }
 
   //isn't being used right now
-  private validateNodes(ASTTree: IntermediateASTTree, boundedContextName: string): void {
-    // ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-    //   const validationRes = node.validate(this.symbolTableCore[boundedContextName]);
-    //   if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
-    //     this.addError(validationRes);
-    // });
-  }
+  // private validateNodes(ASTTree: IntermediateASTTree, boundedContextName: string): void {
+  // ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
+  //   const validationRes = node.validate(this.symbolTableCore[boundedContextName]);
+  //   if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
+  //     this.addError(validationRes);
+  // });
+  // }
 
   private validateClassTypeNodesCore(ASTTree: IntermediateASTTree, boundedContext: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {

@@ -50,8 +50,6 @@ describe('Semantic core error End To End', () => {
       intermediateASTModelToTargetLanguageGenerator,
     );
 
-    if (index === 1) return;
-
     it(`${testCase.description}`, async () => {
       // given
       const input = {

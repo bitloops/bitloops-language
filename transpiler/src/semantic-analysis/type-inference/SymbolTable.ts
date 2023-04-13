@@ -5,6 +5,11 @@ class SymbolEntry {
   constructor(public type: InferredTypes) {}
 }
 
+type PrimitiveSymbolTable = {
+  locals: { [name: string]: SymbolEntry };
+  children?: { [name: string]: PrimitiveSymbolTable };
+};
+
 export class SymbolTable {
   private localSymbols: { [name: string]: SymbolEntry } = {};
   private childrenScopes: { [name: string]: SymbolTable } = {};
@@ -42,5 +47,16 @@ export class SymbolTable {
 
   hasChildScope(name: string): boolean {
     return !!this.childrenScopes[name];
+  }
+
+  public getJsonValue(): PrimitiveSymbolTable {
+    if (Object.keys(this.childrenScopes).length === 0) {
+      return { locals: this.localSymbols };
+    }
+    const childrenValues = Object.entries(this.childrenScopes).reduce(
+      (acc, [name, childSymbolTable]) => ({ ...acc, [name]: childSymbolTable.getJsonValue() }),
+      {},
+    );
+    return { locals: this.localSymbols, children: childrenValues };
   }
 }
