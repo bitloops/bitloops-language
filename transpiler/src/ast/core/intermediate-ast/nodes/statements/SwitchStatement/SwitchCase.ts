@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { ExpressionNode } from '../../Expression/ExpressionNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StatementNode } from '../Statement.js';
 import { StatementListNode } from '../StatementList.js';
@@ -14,5 +15,9 @@ export class SwitchRegularCaseNode extends IntermediateASTNode {
       BitloopsTypesMapping.TStatements,
     );
     return statementList.statements;
+  }
+
+  public getExpression(): ExpressionNode {
+    return this.getChildNodeByType<ExpressionNode>(BitloopsTypesMapping.TExpression);
   }
 }

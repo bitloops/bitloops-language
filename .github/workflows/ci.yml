@@ -3,6 +3,7 @@ name: CI Workflow
 on:
   pull_request:
     branches: [main]
+    types: [review_request, ready_for_review]
     paths:
       - transpiler/**
 

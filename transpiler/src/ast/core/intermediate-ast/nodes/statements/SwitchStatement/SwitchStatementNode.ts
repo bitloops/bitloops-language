@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { ExpressionNode } from '../../Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StatementNode } from '../Statement.js';
 import { DefaultSwitchCaseNode } from './DefaultSwitchCase.js';
@@ -10,6 +11,10 @@ export class SwitchStatementNode extends StatementNode {
 
   constructor(metadata: TNodeMetadata) {
     super(BitloopsTypesMapping.TSwitchStatement, metadata, SwitchStatementNode.classNodeName);
+  }
+
+  public getExpression(): ExpressionNode {
+    return this.getChildNodeByType<ExpressionNode>(BitloopsTypesMapping.TExpression);
   }
 
   public getCases(): SwitchRegularCaseNode[] {

@@ -129,7 +129,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     let ifCounter = 0;
     let elseCounter = 0;
     let switchCounter = 0;
-    statements.forEach((statement) => {
+    for (const statement of statements) {
       // const result = variableValue;
       try {
         if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
@@ -145,6 +145,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         }
 
         if (StatementNodeTypeGuards.isIfStatement(statement)) {
+          const conditionExpression = statement.getConditionExpression();
+          conditionExpression.typeCheck(parentScope);
+
           const ifScope = parentScope.createChildScope('if' + ifCounter++, statement);
           const thenStatements = statement.getThenStatements();
           this.createStatementListScope(thenStatements, ifScope);
@@ -156,9 +159,15 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         }
 
         if (StatementNodeTypeGuards.isSwitchStatement(statement)) {
+          const switchExpression = statement.getExpression();
+          switchExpression.typeCheck(parentScope);
+
           const switchScope = parentScope.createChildScope('switch' + switchCounter++, statement);
           const switchCases = statement.getCases();
           switchCases.forEach((switchCase, index) => {
+            const switchCaseExpression = switchCase.getExpression();
+            switchCaseExpression.typeCheck(switchScope);
+
             const caseScope = switchScope.createChildScope('case' + index, switchCase);
             const caseStatements = switchCase.getStatements();
             this.createStatementListScope(caseStatements, caseScope);
@@ -168,15 +177,21 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           const defaultStatements = defaultCase.getStatements();
           this.createStatementListScope(defaultStatements, defaultScope);
         }
+
+        if (StatementNodeTypeGuards.isReturnStatement(statement)) {
+          const expression = statement.getExpressionValues();
+          expression.typeCheck(parentScope);
+        }
       } catch (e) {
-        console.log(e);
+        // console.log(e);
         if (e instanceof ValidationError) {
           this.addError(e);
+          break;
         } else {
           throw e;
         }
       }
-    });
+    }
     return parentScope;
   }
 

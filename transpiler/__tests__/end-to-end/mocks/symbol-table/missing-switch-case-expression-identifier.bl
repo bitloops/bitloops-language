@@ -1,0 +1,28 @@
+
+CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
+    execute(command: WithdrawMoneyCommand): (OK(void), Errors(
+       ApplicationErrors.AccountNotFound
+       )) {
+       
+       const accountId = UUIDv4(command.accountId);
+       const accountEntity = this.accountRepo.getById(accountId);
+
+       if(NOT accountEntity) {
+           const result = "Account not found";
+           return ApplicationErrors.AccountNotFound(command.accountId);
+       }
+
+       const animal = "Account found"
+       switch(animal) {
+            case bird:
+                return "tweet"
+            case "cat":
+                return "meow";
+            default:
+                return "unknown";
+       }
+
+       accountEntity.withdrawAmount(command.amount);
+       return accountEntity;
+   }
+ }

@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { ExpressionNode } from '../../Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StatementNode } from '../Statement.js';
 import { ConditionNode } from './ConditionNode.js';
@@ -10,6 +11,10 @@ export class IfStatementNode extends StatementNode {
 
   constructor(metadata: TNodeMetadata) {
     super(BitloopsTypesMapping.TIfStatement, metadata, IfStatementNode.classNodeName);
+  }
+
+  getConditionExpression(): ExpressionNode {
+    return this.getConditionNode().expression;
   }
 
   getThenStatements(): StatementNode[] {
