@@ -170,6 +170,29 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       )
       .build(),
   },
+  {
+    description: 'Should create symbol table for value object',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObject.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'TitleVO',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'domainCreate',
+            new SymbolTableBuilder().insert(
+              'props',
+              new ParameterSymbolEntry(InferredTypes.Unknown),
+            ),
+          ),
+      )
+      .build(),
+  },
 ];
 
 type SymbolTableMissingIdentifiersTestCase = {

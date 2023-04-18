@@ -1,0 +1,5 @@
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+        applyRules(TitleOutOfBoundsRule(props.title));
+    }
+}

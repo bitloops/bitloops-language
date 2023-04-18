@@ -32,6 +32,7 @@ describe('Symbol table cases', () => {
   const module = 'demo';
 
   SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
+    // if (index !== 3) return; // TODO: remove this line to run all tests (it takes a long time
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -76,7 +77,7 @@ describe('Symbol table cases', () => {
     });
   });
 
-  describe.skip('Missing identifiers test cases', () => {
+  describe('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();

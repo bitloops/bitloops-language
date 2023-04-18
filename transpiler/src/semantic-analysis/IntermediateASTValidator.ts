@@ -179,6 +179,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               this.createStatementListScope(methodStatements, methodScope);
             });
           } else if (ClassTypeNodeTypeGuards.isValueObject(node)) {
+            classTypeScope.insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown));
             const constants = node.getConstants();
             constants.forEach((constant) => {
               const constantName = constant.getIdentifier().getValue().identifier;
@@ -295,6 +296,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           const expression = statement.getExpressionValues();
           expression.typeCheck(parentScope);
         }
+
+        //TODO check if expression
+        //we want to have this.a in symbol table when assignment expression
+        // if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
+        //   const expression = statement.getExpressionValues();
+        //   expression.typeCheck(parentScope);
+        // }
       } catch (e) {
         // console.log(e);
         if (e instanceof ValidationError) {
