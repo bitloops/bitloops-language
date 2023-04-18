@@ -45,6 +45,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'WithdrawMoneyCommandHandler',
         new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
           .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
           .insertChildScope(
             'execute',
@@ -77,6 +78,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'WithdrawMoneyCommandHandler',
         new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
           .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
           .insertChildScope(
             'execute',
@@ -117,6 +119,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'GetAccountQueryHandler',
         new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
           .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
           .insertChildScope(
             'execute',

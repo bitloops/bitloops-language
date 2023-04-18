@@ -31,8 +31,7 @@ describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  SYMBOL_TABLE_TEST_CASES.forEach((testCase, index) => {
-    if (index !== 3) return;
+  SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();

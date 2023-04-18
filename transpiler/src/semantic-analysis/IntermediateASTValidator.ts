@@ -104,6 +104,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             ClassTypeNodeTypeGuards.isCommandHandler(node) ||
             ClassTypeNodeTypeGuards.isQueryHandler(node)
           ) {
+            classTypeScope.insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown));
             const params = node.getParameters();
             params.forEach((paramNode) => {
               const paramName = paramNode.getIdentifier();
@@ -126,6 +127,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             ClassTypeNodeTypeGuards.isDomainEventHandler(node) ||
             ClassTypeNodeTypeGuards.isIntegrationEventHandler(node)
           ) {
+            classTypeScope.insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown));
             const params = node.getParameters();
             params.forEach((paramNode) => {
               const paramName = paramNode.getIdentifier();
@@ -145,6 +147,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const statements = node.getStatements();
             this.createStatementListScope(statements, handleScope);
           } else if (ClassTypeNodeTypeGuards.isDomainService(node)) {
+            classTypeScope.insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown));
             //
           } else if (
             ClassTypeNodeTypeGuards.isEntity(node) ||
