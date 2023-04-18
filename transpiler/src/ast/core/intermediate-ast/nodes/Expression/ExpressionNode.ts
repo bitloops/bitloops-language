@@ -180,6 +180,5 @@ export class ExpressionNode extends StatementNode {
         child.typeCheck(symbolTable);
       }
     }
-    // pass
   }
 }

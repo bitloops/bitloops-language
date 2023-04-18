@@ -16,6 +16,12 @@ export class ClassTypeParameterSymbolEntry extends SymbolEntry {
   }
 }
 
+export class ClassTypeThisSymbolEntry extends SymbolEntry {
+  constructor(type: InferredTypes) {
+    super(type);
+  }
+}
+
 export class VariableSymbolEntry extends SymbolEntry {
   constructor(type: InferredTypes, public isConst: boolean) {
     super(type);

@@ -20,6 +20,7 @@
 import { InferredTypes } from '../../../../src/semantic-analysis/type-inference/ASTTypeInference.js';
 import {
   ClassTypeParameterSymbolEntry,
+  ClassTypeThisSymbolEntry,
   ParameterSymbolEntry,
 } from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
 import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
@@ -125,6 +126,43 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insertVariableSymbolEntry('account', InferredTypes.Unknown, true)
               .insertChildScope('if0', new SymbolTableBuilder())
               .insertChildScope('else0', new SymbolTableBuilder()),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for entity',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/entity.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'TodoEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'domainCreate',
+            new SymbolTableBuilder()
+              .insert('props', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('todo', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('isNew', InferredTypes.Unknown, true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry(
+                  'event',
+                  InferredTypes.Unknown,
+                  true,
+                ),
+              ),
+          )
+          .insertChildScope(
+            'complete',
+            new SymbolTableBuilder()
+              // .insert('this.completed', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('event', InferredTypes.Unknown, true),
           ),
       )
       .build(),

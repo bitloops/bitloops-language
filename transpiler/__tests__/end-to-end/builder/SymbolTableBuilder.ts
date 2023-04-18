@@ -3,6 +3,7 @@
 
 import { InferredTypes } from '../../../src/semantic-analysis/type-inference/ASTTypeInference.js';
 import {
+  ClassTypeThisSymbolEntry,
   SymbolEntry,
   VariableSymbolEntry,
 } from '../../../src/semantic-analysis/type-inference/SymbolEntry.js';
@@ -22,6 +23,11 @@ export class SymbolTableBuilder {
     isConst: boolean,
   ): SymbolTableBuilder {
     this.value.locals[name] = new VariableSymbolEntry(type, isConst);
+    return this;
+  }
+
+  public insertThisClassTypeSymbolEntry(): SymbolTableBuilder {
+    this.value.locals['this'] = new ClassTypeThisSymbolEntry(InferredTypes.Unknown);
     return this;
   }
 

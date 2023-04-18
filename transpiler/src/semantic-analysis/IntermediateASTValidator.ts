@@ -51,6 +51,7 @@ import { EntityIdentifierNode } from '../ast/core/intermediate-ast/nodes/Entity/
 import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import {
   ClassTypeParameterSymbolEntry,
+  ClassTypeThisSymbolEntry,
   ParameterSymbolEntry,
   VariableSymbolEntry,
 } from './type-inference/SymbolEntry.js';
@@ -149,6 +150,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             ClassTypeNodeTypeGuards.isEntity(node) ||
             ClassTypeNodeTypeGuards.isRootEntity(node)
           ) {
+            classTypeScope.insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown));
             const entityValue = node.getEntityValues();
 
             //domain create
@@ -223,9 +225,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     const domainCreateScope = classTypeScope.createChildScope('domainCreate', domainCreate);
     const domainCreateParams = domainCreate.getParameterNode();
     const domainCreateParamName = domainCreateParams.getIdentifier();
-    classTypeScope.insert(
+    domainCreateScope.insert(
       domainCreateParamName,
-      new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+      new ParameterSymbolEntry(InferredTypes.Unknown),
     );
     const domainCreateStatements = domainCreate.getStatements();
     this.createStatementListScope(domainCreateStatements, domainCreateScope);
