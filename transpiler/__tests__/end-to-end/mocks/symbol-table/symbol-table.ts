@@ -31,7 +31,7 @@ type SymbolTableTestCase = {
   inputSetup: string;
   expectedSymbolTable: PrimitiveSymbolTable;
 };
-export const SYMBOL_TABLE_TEST_CASEES: SymbolTableTestCase[] = [
+export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for command handler',
     inputCore: FileUtil.readFileString(
@@ -64,6 +64,71 @@ export const SYMBOL_TABLE_TEST_CASEES: SymbolTableTestCase[] = [
       )
       .build(),
   },
+  {
+    description: 'Should create symbol table for command handler',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-two-if.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('accountEntity', InferredTypes.Unknown, true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry(
+                  'result',
+                  InferredTypes.Unknown,
+                  true,
+                ),
+              )
+              .insertChildScope(
+                'if1',
+                new SymbolTableBuilder().insertVariableSymbolEntry(
+                  'message',
+                  InferredTypes.Unknown,
+                  true,
+                ),
+              )
+              .insertVariableSymbolEntry('result', InferredTypes.Unknown, true),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for query handler with if/else',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/queryHandlerWithElse.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'GetAccountQueryHandler',
+        new SymbolTableBuilder()
+          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('query', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('requestId', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('account', InferredTypes.Unknown, true)
+              .insertChildScope('if0', new SymbolTableBuilder())
+              .insertChildScope('else0', new SymbolTableBuilder()),
+          ),
+      )
+      .build(),
+  },
 ];
 
 type SymbolTableMissingIdentifiersTestCase = {
@@ -78,7 +143,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
     {
       description: 'Should return error that identifier in const declaration is not defined',
       inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-const-identifier.bl',
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-const-identifier.bl',
       ),
       inputSetup: FileUtil.readFileString(
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
@@ -88,7 +153,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
     {
       description: 'Should return error that identifier returned from function is not defined',
       inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-return-identifier.bl',
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-return-identifier.bl',
       ),
       inputSetup: FileUtil.readFileString(
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
@@ -98,7 +163,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
     {
       description: 'Should return error that argument name in method is not defined',
       inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-method-argument-identifier.bl',
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-argument-identifier.bl',
       ),
       inputSetup: FileUtil.readFileString(
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
@@ -108,7 +173,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
     {
       description: 'Should return error that identifier in switch expression is not defined',
       inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-switch-expression-identifier.bl',
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-expression-identifier.bl',
       ),
       inputSetup: FileUtil.readFileString(
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
@@ -118,7 +183,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
     {
       description: 'Should return error identifier used inside if condition is not defined',
       inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-if-condition-identifier.bl',
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-if-condition-identifier.bl',
       ),
       inputSetup: FileUtil.readFileString(
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
@@ -128,7 +193,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
     {
       description: 'Should return error that identifier in switch case expression is not defined',
       inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-switch-case-expression-identifier.bl',
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-case-expression-identifier.bl',
       ),
       inputSetup: FileUtil.readFileString(
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',

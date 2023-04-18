@@ -19,9 +19,7 @@ export class EntityDeclarationNode extends ClassTypeNode {
   }
 
   public getDomainCreateNode(): DomainCreateNode {
-    const domainCreateValuesNode = this.getChildNodeByType<EntityValuesNode>(
-      BitloopsTypesMapping.TEntityValues,
-    );
+    const domainCreateValuesNode = this.getEntityValues();
     return domainCreateValuesNode.getDomainCreateMethod();
   }
 
@@ -30,5 +28,12 @@ export class EntityDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TEntityIdentifier,
     ) as EntityIdentifierNode;
     return identifier;
+  }
+
+  public getEntityValues(): EntityValuesNode {
+    const entityValues = this.getChildNodeByType(
+      BitloopsTypesMapping.TEntityValues,
+    ) as EntityValuesNode;
+    return entityValues;
   }
 }

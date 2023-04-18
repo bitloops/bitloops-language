@@ -24,14 +24,14 @@ import { TargetGenerator } from '../../src/target/index.js';
 import { SemanticAnalyzer } from '../../src/semantic-analysis/IntermediateASTValidator.js';
 import {
   SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES,
-  SYMBOL_TABLE_TEST_CASEES,
+  SYMBOL_TABLE_TEST_CASES,
 } from './mocks/symbol-table/symbol-table.js';
 
 describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  SYMBOL_TABLE_TEST_CASEES.forEach((testCase) => {
+  SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();

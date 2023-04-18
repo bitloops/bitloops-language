@@ -3,6 +3,9 @@ import { TPropsIdentifier } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
+import { PrivateMethodDeclarationListNode } from '../methods/PrivateMethodDeclarationListNode.js';
+import { PrivateMethodDeclarationNode } from '../methods/PrivateMethodDeclarationNode.js';
+import { ConstDeclarationNode } from '../statements/ConstDeclarationNode.js';
 import { ValueObjectIdentifierNode } from './ValueObjectIdentifierNode.js';
 
 export class ValueObjectDeclarationNode extends ClassTypeNode {
@@ -16,6 +19,16 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
       metadata,
       classNodeName: ValueObjectDeclarationNode.classNodeName,
     });
+  }
+
+  public getConstants(): ConstDeclarationNode[] {
+    const constants = this.getChildrenNodesByType<ConstDeclarationNode>(
+      BitloopsTypesMapping.TConstDeclaration,
+    );
+    if (!constants) {
+      return [];
+    }
+    return constants;
   }
 
   public getIdentifierValue(): string {
@@ -45,5 +58,13 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
     const identifierTypeNode = typeNode.getBitloopsIdentifierTypeNode();
 
     return identifierTypeNode.getIdentifierName();
+  }
+
+  getMethods(): PrivateMethodDeclarationNode[] {
+    const privateMethodsList = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+    const privatecMethods = privateMethodsList.getPrivateMethodNodes();
+    return privatecMethods;
   }
 }

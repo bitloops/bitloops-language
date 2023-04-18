@@ -46,9 +46,7 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
   }
 
   getStatements(): StatementNode[] {
-    const eventHandler = this.getChildNodeByType<EventHandleNode>(
-      BitloopsTypesMapping.TEventHandlerHandleMethod,
-    );
+    const eventHandler = this.getHandle();
     return eventHandler.getStatements();
   }
 
@@ -76,5 +74,20 @@ export class DomainEventHandlerDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterListNode.getParameters();
+  }
+
+  getHandle(): EventHandleNode {
+    const handle = this.getChildNodeByType<EventHandleNode>(
+      BitloopsTypesMapping.TEventHandlerHandleMethod,
+    );
+    return handle;
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const eventHandler = this.getHandle();
+
+    const parameters = eventHandler.getParameters();
+    if (!parameters) return [];
+    return parameters;
   }
 }

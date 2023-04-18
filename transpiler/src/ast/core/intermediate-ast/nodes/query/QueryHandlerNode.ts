@@ -57,4 +57,17 @@ export class QueryHandlerNode extends ClassTypeNode {
     );
     return parameterListNode.getParameters();
   }
+
+  getExecute(): ExecuteNode {
+    return this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const commandHandlerExecute = this.getChildNodeByType<ExecuteNode>(
+      BitloopsTypesMapping.TExecute,
+    );
+    const parameter = commandHandlerExecute.getParameter();
+    if (!parameter) return [];
+    return [parameter];
+  }
 }

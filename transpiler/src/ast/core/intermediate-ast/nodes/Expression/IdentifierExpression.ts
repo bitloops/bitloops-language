@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
-import { MissingIdentifierError, ValidationError } from '../../../types.js';
+import { MissingIdentifierError } from '../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 import { InstanceOfExpressionNode } from './InstanceOfExpression.js';

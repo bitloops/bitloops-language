@@ -54,7 +54,9 @@ import {
   ParameterSymbolEntry,
   VariableSymbolEntry,
 } from './type-inference/SymbolEntry.js';
+import { DomainCreateNode } from '../ast/core/intermediate-ast/nodes/Domain/DomainCreateNode.js';
 
+//TODO add magic strings to constant object
 export class SemanticAnalyzer implements IIntermediateASTValidator {
   private symbolTableSetup: Record<string, Set<string>>;
 
@@ -97,7 +99,10 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           const name = identifierNode.getIdentifierName();
           const classTypeScope = globalScope.createChildScope(name, node);
 
-          if (ClassTypeNodeTypeGuards.isCommandHandler(node)) {
+          if (
+            ClassTypeNodeTypeGuards.isCommandHandler(node) ||
+            ClassTypeNodeTypeGuards.isQueryHandler(node)
+          ) {
             const params = node.getParameters();
             params.forEach((paramNode) => {
               const paramName = paramNode.getIdentifier();
@@ -116,10 +121,114 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             });
             const statements = node.getStatements();
             this.createStatementListScope(statements, executeScope);
+          } else if (
+            ClassTypeNodeTypeGuards.isDomainEventHandler(node) ||
+            ClassTypeNodeTypeGuards.isIntegrationEventHandler(node)
+          ) {
+            const params = node.getParameters();
+            params.forEach((paramNode) => {
+              const paramName = paramNode.getIdentifier();
+              classTypeScope.insert(
+                paramName,
+                new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+              );
+            });
+
+            const handle = node.getHandle();
+            const handleScope = classTypeScope.createChildScope('handle', handle);
+            const handleParams = node.getMethodParameters();
+            handleParams.forEach((paramNode) => {
+              const paramName = paramNode.getIdentifier();
+              handleScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+            });
+            const statements = node.getStatements();
+            this.createStatementListScope(statements, handleScope);
+          } else if (ClassTypeNodeTypeGuards.isDomainService(node)) {
+            //
+          } else if (
+            ClassTypeNodeTypeGuards.isEntity(node) ||
+            ClassTypeNodeTypeGuards.isRootEntity(node)
+          ) {
+            const entityValue = node.getEntityValues();
+
+            //domain create
+            const domainCreate = entityValue.getDomainCreateMethod();
+
+            this.appendDomainCreateMethodToSymbolTable({
+              classTypeScope,
+              domainCreate,
+            });
+
+            //methods
+            //TODO private methods
+            const publicMethods = entityValue.getPublicMethods();
+            publicMethods.forEach((method) => {
+              const methodName = method.getMethodName();
+              const methodScope = classTypeScope.createChildScope(methodName, method);
+              const methodParams = method.getMethodParameters();
+              for (const param of methodParams) {
+                const paramName = param.getIdentifier();
+                methodScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+              }
+              const methodStatements = method.getStatements();
+              this.createStatementListScope(methodStatements, methodScope);
+            });
+          } else if (ClassTypeNodeTypeGuards.isValueObject(node)) {
+            const constants = node.getConstants();
+            constants.forEach((constant) => {
+              const constantName = constant.getIdentifier().getValue().identifier;
+              classTypeScope.insert(
+                constantName,
+                new VariableSymbolEntry(InferredTypes.Unknown, true),
+              );
+            });
+
+            const create = node.getCreateNode();
+            this.appendDomainCreateMethodToSymbolTable({ classTypeScope, domainCreate: create });
+
+            const methods = node.getMethods();
+            //TODO add to function
+            methods.forEach((method) => {
+              const methodName = method.getIdentifier();
+              const methodScope = classTypeScope.createChildScope(methodName, method);
+              const methodParams = method.getMethodParameters();
+              for (const param of methodParams) {
+                const paramName = param.getIdentifier();
+                methodScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+              }
+              const methodStatements = method.getStatements();
+              this.createStatementListScope(methodStatements, methodScope);
+            });
+          } else if (ClassTypeNodeTypeGuards.isReadModel(node)) {
+            const fieldNodes = node.getFieldListNode().getFieldNodes();
+            const readModelScope = classTypeScope.createChildScope('readModel', node);
+            fieldNodes.forEach((fieldNode) => {
+              const fieldName = fieldNode.getIdentifierValue();
+              // const fieldType = fieldNode.getTypeNode();
+              readModelScope.insert(fieldName, new ParameterSymbolEntry(InferredTypes.Unknown));
+            });
+          } else if (ClassTypeNodeTypeGuards.isDomainRule(node)) {
+            //   //TODO implement
           }
         });
       }
     }
+  }
+
+  private appendDomainCreateMethodToSymbolTable(params: {
+    classTypeScope: SymbolTable;
+    domainCreate: DomainCreateNode;
+  }): void {
+    const { classTypeScope, domainCreate } = params;
+    const domainCreateScope = classTypeScope.createChildScope('domainCreate', domainCreate);
+    const domainCreateParams = domainCreate.getParameterNode();
+    const domainCreateParamName = domainCreateParams.getIdentifier();
+    classTypeScope.insert(
+      domainCreateParamName,
+      new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+    );
+    const domainCreateStatements = domainCreate.getStatements();
+    this.createStatementListScope(domainCreateStatements, domainCreateScope);
   }
 
   private createStatementListScope(
@@ -130,7 +239,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     let elseCounter = 0;
     let switchCounter = 0;
     for (const statement of statements) {
-      // const result = variableValue;
       try {
         if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
           const identifier = statement.getIdentifier().getIdentifierName();

@@ -41,4 +41,11 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
     );
     return entityValues.findPublicMethodByName(methodName);
   }
+
+  public getEntityValues(): EntityValuesNode {
+    const entityValues = this.getChildNodeByType(
+      BitloopsTypesMapping.TEntityValues,
+    ) as EntityValuesNode;
+    return entityValues;
+  }
 }

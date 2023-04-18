@@ -21,7 +21,7 @@ export class EntityValuesNode extends IntermediateASTNode {
     return method ?? null;
   }
 
-  private getPublicMethods(): PublicMethodDeclarationNode[] {
+  getPublicMethods(): PublicMethodDeclarationNode[] {
     const publicMethodsList = this.getChildNodeByType<PublicMethodDeclarationListNode>(
       BitloopsTypesMapping.TPublicMethods,
     );

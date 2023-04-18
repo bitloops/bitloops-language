@@ -2,6 +2,7 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandlerBusDependenciesNode } from '../DomainEventHandler/EventHandlerBusDependenciesNode.js';
+import { EventHandleNode } from '../EventHandleNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
@@ -52,5 +53,20 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterListNode.getParameters();
+  }
+
+  getHandle(): EventHandleNode {
+    const handle = this.getChildNodeByType<EventHandleNode>(
+      BitloopsTypesMapping.TEventHandlerHandleMethod,
+    );
+    return handle;
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const eventHandler = this.getHandle();
+
+    const parameters = eventHandler.getParameters();
+    if (!parameters) return [];
+    return parameters;
   }
 }
