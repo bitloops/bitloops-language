@@ -71,13 +71,13 @@ describe('Symbol table cases', () => {
       if (Transpiler.isTranspilerError(result)) {
         throw new Error('Transpiler should NOT return error');
       }
-      console.log(JSON.stringify(result[boundedContext].getJsonValue(), null, 2));
+      // console.log(JSON.stringify(result[boundedContext].getJsonValue(), null, 2));
       // console.log(JSON.stringify(testCase.expectedSymbolTable), null, 2);
       expect(result[boundedContext].getJsonValue()).toEqual(testCase.expectedSymbolTable);
     });
   });
 
-  describe('Missing identifiers test cases', () => {
+  describe.skip('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();

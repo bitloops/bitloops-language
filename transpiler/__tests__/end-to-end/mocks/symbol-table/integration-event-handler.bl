@@ -1,0 +1,13 @@
+IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
+    
+    eventVersion: 'v1';
+    
+    handle(event: [Banking][Banking]MoneyDepositedIntegrationEvent): (OK(void), Errors()) {
+      const accountId = event.data.accountId;
+
+      const command = IncrementDepositsCommand.create({
+        accountId: accountId,
+      })
+      this.commandBus.send(command);
+    }
+}

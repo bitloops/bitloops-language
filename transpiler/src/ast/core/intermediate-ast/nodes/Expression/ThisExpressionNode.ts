@@ -15,4 +15,8 @@ export class ThisExpressionNode extends ExpressionNode {
     const newValue = { [this.getClassNodeName()]: value };
     this.setValue(newValue);
   }
+
+  getIdentifierName(): string {
+    return this.getValue()[ThisExpressionNode.nodeName];
+  }
 }

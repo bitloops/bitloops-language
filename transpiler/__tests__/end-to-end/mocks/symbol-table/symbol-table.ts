@@ -193,6 +193,116 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       )
       .build(),
   },
+  {
+    description: 'Should create symbol table for domain event handler',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-event-handler.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'SendEmailAfterMoneyDepositedDomainEventHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert('customerService', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'handle',
+            new SymbolTableBuilder()
+              .insert('event', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('command', InferredTypes.Unknown, true),
+            // .insert(
+            //   'this.commandBus.send',
+            //   new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+            // ),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for integration event handler',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/integration-event-handler.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'MoneyDepositedIntegrationEventHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert('eventVersion', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'handle',
+            new SymbolTableBuilder()
+              .insert('event', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('command', InferredTypes.Unknown, true),
+            // .insert(
+            //   'this.commandBus.send',
+            //   new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+            // ),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for domain service',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-service.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'MarketingNotificationDomainService',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'notificationTemplateRepo',
+            new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+          )
+          .insertChildScope(
+            'getNotificationTemplateToBeSent',
+            new SymbolTableBuilder()
+              .insert('user', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('emailOrigin', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('notificationTemplate', InferredTypes.Unknown, false)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder()
+                  .insertVariableSymbolEntry(
+                    'notificationTemplateResponse',
+                    InferredTypes.Unknown,
+                    true,
+                  )
+                  .insertChildScope('if0', new SymbolTableBuilder()),
+              )
+              .insertChildScope('else0', new SymbolTableBuilder()),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for domain rule',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/rule.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'ValidEmailRule',
+        new SymbolTableBuilder()
+          .insert('email', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertVariableSymbolEntry('re', InferredTypes.Unknown, true),
+      )
+      .build(),
+  },
 ];
 
 type SymbolTableMissingIdentifiersTestCase = {
@@ -263,5 +373,27 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIden
         'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
       ),
       errorMessages: ['The identifier bird is not defined.'],
+    },
+    {
+      description:
+        'Should return error that most left identifier in member expression is not defined',
+      inputCore: FileUtil.readFileString(
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-member-dot-identifier.bl',
+      ),
+      inputSetup: FileUtil.readFileString(
+        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      ),
+      errorMessages: ['The identifier account is not defined.'],
+    },
+    {
+      description:
+        'Should return error that most left identifier in method expression is not defined',
+      inputCore: FileUtil.readFileString(
+        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-left-identifier.bl',
+      ),
+      inputSetup: FileUtil.readFileString(
+        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      ),
+      errorMessages: ['The identifier hello is not defined.'],
     },
   ];

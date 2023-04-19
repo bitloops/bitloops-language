@@ -1,0 +1,6 @@
+DomainEventHandler SendEmailAfterMoneyDepositedDomainEventHandler(customerService: CustomerServicePort) {
+    handle(event: DepositsIncrementedDomainEvent): (OK(void), Errors()){
+        const command = event.command;
+        this.commandBus.send(command);
+    }
+  }

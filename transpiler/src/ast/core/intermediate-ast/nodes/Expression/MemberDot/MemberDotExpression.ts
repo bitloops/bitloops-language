@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { MissingIdentifierError } from '../../../../types.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ExpressionNode } from '../ExpressionNode.js';
 import { IdentifierExpressionNode } from '../IdentifierExpression.js';
@@ -81,7 +82,13 @@ export class MemberDotExpressionNode extends ExpressionNode {
     return false;
   }
 
-  public typeCheck(_symbolTable: SymbolTable): void {
+  public typeCheck(symbolTable: SymbolTable): void {
     // pass for now
+    const identifierLeftExpression = this.getLeftMostExpression() as IdentifierExpressionNode;
+    const identifierName = identifierLeftExpression.getIdentifierName();
+    const identifierType = symbolTable.lookup(identifierName);
+    if (!identifierType) {
+      throw new MissingIdentifierError(identifierName, this.getMetadata());
+    }
   }
 }

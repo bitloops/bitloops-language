@@ -7,6 +7,9 @@ import { PrivateMethodDeclarationListNode } from '../methods/PrivateMethodDeclar
 import { PublicMethodDeclarationListNode } from '../methods/PublicMethodDeclarationListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
+import { PrivateMethodDeclarationNode } from '../methods/PrivateMethodDeclarationNode.js';
 
 export class DomainServiceNode extends ClassTypeNode {
   private static classType = ClassTypes.DomainService;
@@ -75,5 +78,31 @@ export class DomainServiceNode extends ClassTypeNode {
       });
     }
     return returnOkErrorNodes;
+  }
+
+  public getParameters(): ParameterNode[] {
+    const parameterList = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+
+    return parameterList.getParameters();
+  }
+
+  public getPublicMethods(): PublicMethodDeclarationNode[] {
+    const publicMethodList = this.getChildNodeByType<PublicMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPublicMethods,
+    );
+
+    const publicMethods = publicMethodList.publicMethods;
+    return publicMethods;
+  }
+
+  public getPrivateMethods(): PrivateMethodDeclarationNode[] {
+    const privateMethodList = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+
+    const privateMethods = privateMethodList.getPrivateMethodNodes();
+    return privateMethods;
   }
 }

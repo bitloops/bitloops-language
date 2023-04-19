@@ -1,0 +1,13 @@
+
+CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
+    execute(command: WithdrawMoneyCommand): (OK(void), Errors(
+       ApplicationErrors.AccountNotFound
+       )) {
+       
+       const accountId = account.id;
+       const accountEntity = person;
+
+       accountEntity.withdrawAmount(command.amount);
+       return accountEntity;
+   }
+ }

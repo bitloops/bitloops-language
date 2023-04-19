@@ -225,7 +225,6 @@ import {
 } from './helpers/integration-event/integrationEventHandlerDeclarationVisitor.js';
 import { IntegrationEventHandlerIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
 import { BitloopsPrimaryTypeNodeBuilderDirector } from '../intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
-import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
 import { servicePortDeclarationVisitor } from './helpers/service-port/servicePortDeclarationVisitor.js';
 import { servicePortIdentifierVisitor } from './helpers/service-port/servicePortIdentifierVisitor.js';
 import { ServicePortIdentifierNode } from '../intermediate-ast/nodes/service-port/ServicePortIdentifierNode.js';
@@ -244,6 +243,7 @@ import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/lit
 import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
 import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
 import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
+import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -1202,7 +1202,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIntegrationEventHandlerHandleDeclaration(
     ctx: BitloopsParser.IntegrationEventHandlerHandleDeclarationContext,
-  ): EventHandleNode {
+  ): IntegrationEventHandlerHandleMethodNode {
     return integrationEventHandlerHandleMethodVisitor(this, ctx);
   }
 

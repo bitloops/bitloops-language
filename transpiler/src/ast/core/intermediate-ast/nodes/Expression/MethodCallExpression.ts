@@ -79,6 +79,9 @@ export class MethodCallExpressionNode extends ExpressionNode {
   }
 
   public override typeCheck(symbolTable: SymbolTable): void {
+    const expressionNode = this.getExpressionValues();
+    expressionNode.typeCheck(symbolTable);
+
     const argumentList = this.getChildNodeByType<ArgumentListNode>(
       BitloopsTypesMapping.TArgumentList,
     );

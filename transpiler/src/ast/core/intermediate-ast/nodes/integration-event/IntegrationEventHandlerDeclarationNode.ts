@@ -2,12 +2,13 @@ import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mapping
 import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandlerBusDependenciesNode } from '../DomainEventHandler/EventHandlerBusDependenciesNode.js';
-import { EventHandleNode } from '../EventHandleNode.js';
+import { EvaluationFieldNode } from '../Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { IntegrationEventHandlerHandleMethodNode } from './IntegrationEventHandlerHandleMethodNode.js';
+import { IntegrationEventParameterNode } from './IntegrationEventParameterNode.js';
 
 export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.IntegrationEventHandler;
@@ -55,18 +56,21 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
     return parameterListNode.getParameters();
   }
 
-  getHandle(): EventHandleNode {
-    const handle = this.getChildNodeByType<EventHandleNode>(
-      BitloopsTypesMapping.TEventHandlerHandleMethod,
+  getHandle(): IntegrationEventHandlerHandleMethodNode {
+    const handle = this.getChildNodeByType<IntegrationEventHandlerHandleMethodNode>(
+      BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod,
     );
     return handle;
   }
 
-  getMethodParameters(): ParameterNode[] {
+  getHandleParameter(): IntegrationEventParameterNode {
     const eventHandler = this.getHandle();
 
-    const parameters = eventHandler.getParameters();
-    if (!parameters) return [];
-    return parameters;
+    const parameter = eventHandler.getParameter();
+    return parameter;
+  }
+
+  getEventVersion(): EvaluationFieldNode {
+    return this.getChildNodeByType<EvaluationFieldNode>(BitloopsTypesMapping.TEvaluationField);
   }
 }
