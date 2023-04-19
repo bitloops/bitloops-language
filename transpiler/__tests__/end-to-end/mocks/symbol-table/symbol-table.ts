@@ -150,7 +150,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'domainCreate',
             new SymbolTableBuilder()
               .insert('props', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('todo', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('todo', InferredTypes.Unknown, false)
               .insertVariableSymbolEntry('isNew', InferredTypes.Unknown, true)
               .insertChildScope(
                 'if0',
@@ -166,6 +166,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               // .insert('this.completed', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
               .insertVariableSymbolEntry('event', InferredTypes.Unknown, true),
+          )
+          .insertChildScope(
+            'isCompleted',
+            new SymbolTableBuilder().insertVariableSymbolEntry('a', InferredTypes.Unknown, true),
           ),
       )
       .build(),
@@ -300,6 +304,30 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('email', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
           .insertVariableSymbolEntry('re', InferredTypes.Unknown, true),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for integration event',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/integration-event.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'TodoCompletedIntegrationEvent',
+        new SymbolTableBuilder()
+          .insert('event', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'v1',
+            new SymbolTableBuilder().insertVariableSymbolEntry(
+              'todoCompleted',
+              InferredTypes.Unknown,
+              true,
+            ),
+          ),
       )
       .build(),
   },

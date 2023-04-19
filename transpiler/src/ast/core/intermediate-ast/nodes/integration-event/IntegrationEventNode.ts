@@ -4,6 +4,8 @@ import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { IntegrationEventIdentifierNode } from './IntegrationEventIdentifierNode.js';
+import { IntegrationVersionMapperListNode } from './IntegrationVersionMapperListNode.js';
+import { IntegrationVersionMapperNode } from './IntegrationVersionMapperNode.js';
 
 export class IntegrationEventNode extends ClassTypeNode {
   private static classType = ClassTypes.IntegrationEvent;
@@ -42,5 +44,17 @@ export class IntegrationEventNode extends ClassTypeNode {
     }
 
     return integrationEventIdentifier.getIdentifierName();
+  }
+
+  public getParameter(): ParameterNode {
+    return this.getChildNodeByType<ParameterNode>(BitloopsTypesMapping.TParameter);
+  }
+
+  public getIntegrationEventMapperNodes(): IntegrationVersionMapperNode[] {
+    const integrationVersionMapperList = this.getChildNodeByType<IntegrationVersionMapperListNode>(
+      BitloopsTypesMapping.TIntegrationVersionMappers,
+    );
+
+    return integrationVersionMapperList.getIntegrationVersionMapperNodes();
   }
 }

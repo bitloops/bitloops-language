@@ -204,6 +204,21 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             this.createParamsScope(params, classTypeScope);
             const statements = node.getStatements();
             this.createStatementListScope(statements, classTypeScope);
+          } else if (ClassTypeNodeTypeGuards.isIntegrationEvent(node)) {
+            const param = node.getParameter();
+            const paramName = param.getIdentifier();
+            classTypeScope.insert(
+              paramName,
+              new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+            );
+
+            const integrationEventMapperNodes = node.getIntegrationEventMapperNodes();
+            integrationEventMapperNodes.forEach((mapperNode) => {
+              const mapperVersion = mapperNode.getVersionName();
+              const mapperScope = classTypeScope.createChildScope(mapperVersion, mapperNode);
+              const mapperStatements = mapperNode.getStatements();
+              this.createStatementListScope(mapperStatements, mapperScope);
+            });
           }
         });
       }

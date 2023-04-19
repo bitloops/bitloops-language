@@ -15,7 +15,7 @@ export class PrivateMethodDeclarationListNode extends IntermediateASTNode {
 
   public getPrivateMethodNodes(): PrivateMethodDeclarationNode[] {
     return this.getChildrenNodesByType<PrivateMethodDeclarationNode>(
-      BitloopsTypesMapping.TPublicMethod,
+      BitloopsTypesMapping.TPrivateMethod,
     );
   }
 }

@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { IntegrationVersionMapperNode } from './IntegrationVersionMapperNode.js';
 
 export class IntegrationVersionMapperListNode extends IntermediateASTNode {
   private static classNodeName = 'integrationVersionMappers';
@@ -9,6 +10,12 @@ export class IntegrationVersionMapperListNode extends IntermediateASTNode {
       BitloopsTypesMapping.TIntegrationVersionMappers,
       metadata,
       IntegrationVersionMapperListNode.classNodeName,
+    );
+  }
+
+  public getIntegrationVersionMapperNodes(): IntegrationVersionMapperNode[] {
+    return this.getChildrenNodesByType<IntegrationVersionMapperNode>(
+      BitloopsTypesMapping.TIntegrationVersionMapper,
     );
   }
 }

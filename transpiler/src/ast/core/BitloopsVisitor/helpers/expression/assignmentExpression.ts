@@ -35,20 +35,4 @@ export const assignmentExpressionVisitor = (
     .withRightExpression(rightExpression)
     .build();
   return new ExpressionBuilder().withExpression(assignmentNode).build();
-
-  // TODO Remove thisDeclaration completely
-  // const leftExpression = thisVisitor.visit(ctx.expression(0));
-  // const leftExpressionValue = leftExpression.expression.evaluation.regularEvaluation.value;
-  // const rightExpression = thisVisitor.visit(ctx.expression(1));
-  // // TODO Fix model so that thisDeclaration is not a statement, but an expression
-  // if (leftExpressionValue.startsWith('this.')) {
-  //   return {
-  //     thisDeclaration: {
-  //       name: leftExpressionValue,
-  //       expression: rightExpression.expression,
-  //     },
-  //   };
-  // }
-
-  throw new Error('Not implemented');
 };

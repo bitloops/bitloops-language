@@ -9,4 +9,8 @@ export class StringLiteralNode extends LiteralNode {
     this.nodeType = BitloopsTypesMapping.TStringLiteral;
     this.classNodeName = NAME;
   }
+
+  getStringValue(): string {
+    return this.getValue().stringLiteral;
+  }
 }

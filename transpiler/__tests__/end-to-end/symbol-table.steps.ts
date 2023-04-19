@@ -77,7 +77,7 @@ describe('Symbol table cases', () => {
     });
   });
 
-  describe.skip('Missing identifiers test cases', () => {
+  describe('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
