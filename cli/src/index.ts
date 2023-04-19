@@ -25,6 +25,7 @@ import axios from 'axios';
 
 import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
+import prompt from './commands/prompt.js';
 
 const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
 const CURRENT_VERSION = process.env.npm_package_version || '0.2.2';
@@ -78,6 +79,8 @@ const checkVersion = async (): Promise<void> => {
       .option('-s, --sourceDirPath <string>')
       .option('-t, --targetDirPath <string>')
       .action(transpile);
+
+    program.command('prompt').description('Prompt for openai completion').action(prompt);
 
     program.command('copyright').description('Print copyright information').action(copyright);
 
