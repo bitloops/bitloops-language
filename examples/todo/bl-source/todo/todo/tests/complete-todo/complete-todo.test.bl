@@ -1,0 +1,83 @@
+// TODO this is a copy from the props should be deleted
+Props TodoProps {
+    optional UUIDv4 id;
+    UserIdVO userId;
+    TitleVO title;
+    bool completed;
+}
+
+// This statement will create the MockTodoWriteRepo
+// TODO maybe concretes and not implements?
+MockRepo MockTodoWriteRepo implements TodoWriteRepoPort;
+// This mock repo will by default have a __bl__populateTestData method containing 
+// the method name to pupulate and the repsonse to return
+
+
+// if default then build() without default value or with will return an error will exist - else error
+PropsBuilder TodoPropsBuilder(props: TodoProps) {
+    
+    default: {  //TODO how will it know the actual type for it? - use builders for nested vos - entities
+        userId: '1234',
+        title: 'New todo title',
+        completed: false,
+        id: 'todo1',
+    },
+}
+// Gherkin basic syntax: https://cucumber.io/docs/gherkin/reference/#keywords
+Feature: Complete todo (
+    Scenario: Complete todo (
+        Given that a valid todo exists and it is not completed
+        When a complete todo command is issued
+        Then the todo should be persisted as completed 
+        And a todo completed domain event should be published 
+        And the result should be ok
+    ) {
+        // given
+        const initialTodoProps = TodoPropsBuilder.build(); // this will get the default values if they exist
+        
+        const todo = TodoEntity.create(initialTodoProps); // this will create the todo based on the props
+
+        const mockTodoWriteRepo = MockTodoWriteRepo();
+
+        // TODO maybe at this stage do not use __bl__populateTestData directly, rather provide 
+        // all methods to mock the output and just add the response
+        mockTodoWriteRepo.__bl__populateTestData('create', OK(todo));
+        mockTodoWriteRepo.__bl__populateTestData('update', OK());
+
+        // when
+
+        const completeTodoCommand = CompleteTodoCommand.create({
+            todoId: initialTodoProps.id,
+        });
+        // ,
+        // {   // TODO We are omitting context builder for now since it is not necessary for the tests
+        //     context: ContextBuilder
+        //                 .withJWT('jwt')
+        //                 .withUserId(initialTodoProps.userId)
+        //                 .build(),
+        // });
+
+        // TODO check this implementation - we need to review the old implementation of infra
+        const completeTodoHandler = CompleteTodoHandler.create(mockTodoWriteRepo);
+
+        const commandHandlerResult = completeTodoHandler.execute(completeTodoCommand);
+
+        // then
+
+        // TODO if the builder has default, then the default values will be invoked pror any other 
+        // which alter the props  
+        const mutatedTodoProps = TodoPropsBuilder
+                                            .withCompleted(true)
+                                            .build();
+
+        // TODO expect is tricky
+        // expect(todo.props).toEqual(mutatedTodoProps);
+        // expect(todo.events).toInclude()
+        expect(commandHandlerResult).toEqual(OK());
+
+        expect(todo).toHaveProps(mutatedTodoProps);
+        // expect(todo).propToEqual(TodoProps.getNames().completed, true); // At some point we could add specific prop checks!!
+        expect(todo).toHaveDomainEvents([TodoCompletedDomainEvent]); // TODO checks for uniqueness by default if more than once error
+        
+    }
+)
