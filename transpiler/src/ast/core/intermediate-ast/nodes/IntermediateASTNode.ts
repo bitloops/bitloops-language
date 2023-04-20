@@ -193,4 +193,11 @@ export abstract class IntermediateASTNode {
     const children = this.getChildren();
     return (children.filter((child) => child.getNodeType() === nodeType) as T[]) ?? null;
   }
+
+  protected getChildNodeByClassNodeName<T extends IntermediateASTNode>(
+    classNodeName: string,
+  ): T | null {
+    const children = this.getChildren();
+    return (children.find((child) => child.getClassNodeName() === classNodeName) as T) ?? null;
+  }
 }

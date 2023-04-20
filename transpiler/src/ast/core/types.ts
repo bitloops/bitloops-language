@@ -51,6 +51,18 @@ export class MissingIdentifierError extends ValidationError {
   }
 }
 
+export class AlreadyDefinedIdentifierError extends ValidationError {
+  constructor(identifier: string, metadata: TNodeMetadata) {
+    super(`The identifier ${identifier} is already defined.`, metadata);
+  }
+}
+
+export class ConstVariableReassingedError extends ValidationError {
+  constructor(identifier: string, metadata: TNodeMetadata) {
+    super(`Cannot reassign constant variable ${identifier}.`, metadata);
+  }
+}
+
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | ValidationError[];
   getSymbolTable: (

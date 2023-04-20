@@ -17,4 +17,8 @@ export class EvaluationFieldListNode extends IntermediateASTNode {
   public getFieldCount(): number {
     return this.getChildren().length;
   }
+
+  public getFields(): EvaluationFieldNode[] {
+    return this.getChildrenNodesByType<EvaluationFieldNode>(BitloopsTypesMapping.TEvaluationField);
+  }
 }

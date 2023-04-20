@@ -1,6 +1,5 @@
-// 1. if const declaration already declared error
-// 2. member dot check if this is allowed or if most left is declared
-// 3. never visited branch e.g.      
+// 1. member dot check if this is allowed
+// 2. never visited branch e.g.      
         //   if(accountId == UUIDv4('wrongAccountId')) {
         //     const message = "Wrong account id";
         //     return ApplicationErrors.AccountNotFound(message);

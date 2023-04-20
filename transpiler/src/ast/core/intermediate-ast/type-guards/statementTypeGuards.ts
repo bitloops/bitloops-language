@@ -5,6 +5,7 @@ import { IfStatementNode } from '../nodes/statements/ifStatement/IfStatementNode
 import { VariableDeclarationNode } from '../nodes/variableDeclaration.js';
 import { ConstDeclarationNode } from '../nodes/statements/ConstDeclarationNode.js';
 import { ReturnStatementNode } from '../nodes/statements/ReturnStatementNode.js';
+import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';
 
 export class StatementNodeTypeGuards {
   static isVariableDeclarationStatement(node: StatementNode): node is VariableDeclarationNode {
@@ -25,5 +26,9 @@ export class StatementNodeTypeGuards {
 
   static isReturnStatement(node: StatementNode): node is ReturnStatementNode {
     return node.getNodeType() === BitloopsTypesMapping.TReturnStatement;
+  }
+
+  static isExpressionStatement(node: StatementNode): node is ExpressionNode {
+    return node.getNodeType() === BitloopsTypesMapping.TExpression;
   }
 }

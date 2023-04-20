@@ -333,95 +333,142 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   },
 ];
 
-type SymbolTableMissingIdentifiersTestCase = {
+type SymbolTableErrorTestCase = {
   description: string;
   inputCore: string;
   inputSetup: string;
   errorMessages: string[];
 };
 
-export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableMissingIdentifiersTestCase[] =
-  [
-    {
-      description: 'Should return error that identifier in const declaration is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-const-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier person is not defined.'],
-    },
-    {
-      description: 'Should return error that identifier returned from function is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-return-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier person is not defined.'],
-    },
-    {
-      description: 'Should return error that argument name in method is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-argument-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier id is not defined.'],
-    },
-    {
-      description: 'Should return error that identifier in switch expression is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-expression-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier animal is not defined.'],
-    },
-    {
-      description: 'Should return error identifier used inside if condition is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-if-condition-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier res is not defined.'],
-    },
-    {
-      description: 'Should return error that identifier in switch case expression is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-case-expression-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier bird is not defined.'],
-    },
-    {
-      description:
-        'Should return error that most left identifier in member expression is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-member-dot-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier account is not defined.'],
-    },
-    {
-      description:
-        'Should return error that most left identifier in method expression is not defined',
-      inputCore: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-left-identifier.bl',
-      ),
-      inputSetup: FileUtil.readFileString(
-        'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-      ),
-      errorMessages: ['The identifier hello is not defined.'],
-    },
-  ];
+export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCase[] = [
+  {
+    description: 'Should return error that identifier in const declaration is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-const-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier person is not defined.'],
+  },
+  {
+    description: 'Should return error that identifier returned from function is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-return-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier person is not defined.'],
+  },
+  {
+    description: 'Should return error that argument name in method is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-argument-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier id is not defined.'],
+  },
+  {
+    description: 'Should return error that identifier in switch expression is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-expression-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier animal is not defined.'],
+  },
+  {
+    description: 'Should return error identifier used inside if condition is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-if-condition-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier res is not defined.'],
+  },
+  {
+    description: 'Should return error that identifier in switch case expression is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-case-expression-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier bird is not defined.'],
+  },
+  {
+    description:
+      'Should return error that most left identifier in member expression is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-member-dot-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier account is not defined.'],
+  },
+  {
+    description:
+      'Should return error that most left identifier in method expression is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-left-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier hello is not defined.'],
+  },
+  {
+    description: 'Should return error that this identifier in member dot expression is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-this-identifier.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier this is not defined.'],
+  },
+];
+
+export const SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES: SymbolTableErrorTestCase[] = [
+  {
+    description: 'Should return error that const declaration is already defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/already-declared/already-declared-const.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier accountId is already defined.'],
+  },
+  {
+    description: 'Should return error that variable declaration is already defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/already-declared/already-declared-variable.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['The identifier accountId is already defined.'],
+  },
+];
+
+export const SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES: SymbolTableErrorTestCase[] = [
+  {
+    description: 'Should return error that const declaration cannot be reassigned',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/constant-reassignment/const-reassignment.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Cannot reassign constant variable accountId.'],
+  },
+];
+
+export const SYMBOL_TABLE_UNREACHED_CODE_TEST_CASES: SymbolTableErrorTestCase[] = [];

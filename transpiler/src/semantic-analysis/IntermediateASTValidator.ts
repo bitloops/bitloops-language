@@ -77,7 +77,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   validate(ast: IntermediateAST): void | ValidationError[] {
     this.createSymbolTable(ast.core);
     this.validateCore(ast.core);
-    // if (errors.length > 0) return errors;
     this.validateSetup(ast.setup);
     if (this.errors.length > 0) return this.errors;
   }
@@ -166,7 +165,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             });
 
             //methods
-            //TODO private methods
             const publicMethods = entityValue.getPublicMethods();
             this.createPublicMethodScope(publicMethods, classTypeScope);
 
@@ -187,18 +185,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             this.appendDomainCreateMethodToSymbolTable({ classTypeScope, domainCreate: create });
 
             const methods = node.getMethods();
-            //TODO add to function
-            methods.forEach((method) => {
-              const methodName = method.getIdentifier();
-              const methodScope = classTypeScope.createChildScope(methodName, method);
-              const methodParams = method.getMethodParameters();
-              for (const param of methodParams) {
-                const paramName = param.getIdentifier();
-                methodScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
-              }
-              const methodStatements = method.getStatements();
-              this.createStatementListScope(methodStatements, methodScope);
-            });
+            this.createPrivateMethodScope(methods, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isDomainRule(node)) {
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
@@ -317,11 +304,14 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       try {
         if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
           const identifier = statement.getIdentifier().getIdentifierName();
+          statement.typeCheck(parentScope);
           parentScope.insert(identifier, new VariableSymbolEntry(InferredTypes.Unknown, false));
         }
 
+        //TODO here get all teh expressions of the statement and typecheck them
         if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
           const identifierExpression = statement.getExpressionValues();
+          statement.typeCheck(parentScope);
           identifierExpression.typeCheck(parentScope);
           const identifier = statement.getIdentifier().getIdentifierName();
           parentScope.insert(identifier, new VariableSymbolEntry(InferredTypes.Unknown, true));
@@ -364,6 +354,10 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         if (StatementNodeTypeGuards.isReturnStatement(statement)) {
           const expression = statement.getExpressionValues();
           expression.typeCheck(parentScope);
+        }
+
+        if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
+          statement.typeCheck(parentScope);
         }
 
         //TODO check if expression
@@ -445,7 +439,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             ...errorIdentifierError(node as ErrorIdentifierNode, this.symbolTable[boundedContext]),
           );
           break;
-        //TODO add to blIdentifiers
         case BitloopsTypesMapping.TDomainRuleIdentifier:
           this.addError(
             ...domainRuleIdentifierError(

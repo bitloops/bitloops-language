@@ -1,4 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { AlreadyDefinedIdentifierError } from '../../../types.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -30,5 +32,17 @@ export class ConstDeclarationNode extends StatementNode {
       throw new Error('Identifier not found');
     }
     return identifier as IdentifierNode;
+  }
+
+  public typeCheck(symbolTable: SymbolTable): void {
+    const identifierName = this.getIdentifier().getIdentifierName();
+    const identifierType = symbolTable.lookup(identifierName);
+    if (identifierType) {
+      throw new AlreadyDefinedIdentifierError(identifierName, this.getMetadata());
+    }
+
+    const expression = this.getExpressionValues();
+    expression.typeCheck(symbolTable);
+    // this.setType(identifierType.type);
   }
 }

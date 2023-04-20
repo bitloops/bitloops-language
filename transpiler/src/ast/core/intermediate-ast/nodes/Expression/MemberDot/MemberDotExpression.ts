@@ -84,6 +84,7 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
   public typeCheck(symbolTable: SymbolTable): void {
     // pass for now
+    //TODO fix this not as IdentifierExpressionNode
     const identifierLeftExpression = this.getLeftMostExpression() as IdentifierExpressionNode;
     const identifierName = identifierLeftExpression.getIdentifierName();
     const identifierType = symbolTable.lookup(identifierName);
