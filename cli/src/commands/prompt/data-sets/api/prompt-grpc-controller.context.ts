@@ -1,10 +1,9 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from '../common/system.message.js';
 
-const DEFAULT_DESCRIPTION = `some resource crud routes
-`;
+const DEFAULT_DESCRIPTION = 'todo crud operations';
 
-export const promptServiceMessages: (port?: string) => ChatCompletionRequestMessage[] = (
+export const promptApiGrpcController: (port?: string) => ChatCompletionRequestMessage[] = (
   description = DEFAULT_DESCRIPTION,
 ) => [
   promptContextMessage,
