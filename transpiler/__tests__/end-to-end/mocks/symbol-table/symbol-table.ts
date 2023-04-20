@@ -67,7 +67,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .build(),
   },
   {
-    description: 'Should create symbol table for command handler',
+    description: 'Should create symbol table for command handler with 2 ifs',
     inputCore: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-two-if.bl',
     ),
@@ -103,6 +103,45 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 ),
               )
               .insertVariableSymbolEntry('result', InferredTypes.Unknown, true),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for command handler with switch',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-switch.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry('accountEntity', InferredTypes.Unknown, true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry(
+                  'result',
+                  InferredTypes.Unknown,
+                  true,
+                ),
+              )
+              .insertVariableSymbolEntry('animal', InferredTypes.Unknown, true)
+              .insertChildScope(
+                'switch0',
+                new SymbolTableBuilder()
+                  .insertChildScope('case0', new SymbolTableBuilder())
+                  .insertChildScope('default', new SymbolTableBuilder()),
+              ),
           ),
       )
       .build(),
