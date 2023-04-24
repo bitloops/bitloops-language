@@ -6,6 +6,9 @@ import { inquirerFuzzy as inquirerPath } from '../../utils/inquirer.js';
 import { promptRepoMessages as promptRepoAdapter } from './data-sets/prompt-repo.context.js';
 import { Client } from './client.js';
 import { GENERATED_INFRA_KEYS } from './invoker.js';
+import { promptApiGrpcController } from './data-sets/api/prompt-grpc-controller.context.js';
+import { promptModuleMessages } from './data-sets/prompt-module.context.js';
+import { promptServiceMessages } from './data-sets/prompt-service.context.js';
 /**
  * TODO add a json or yaml config file, where the user can set settings for preferred repo adapters
  * for each port(file-name as a key), and e.g. MongoDB as value
@@ -50,15 +53,10 @@ const prompt = async (source: ICollection): Promise<void> => {
   // Example usage
   const client = new Client(apiKey);
 
-  client.makeOpenAIRequest(GENERATED_INFRA_KEYS.API, promptRepoAdapter());
+  client.makeOpenAIRequest(GENERATED_INFRA_KEYS.API, promptApiGrpcController());
   client.makeOpenAIRequest(
     GENERATED_INFRA_KEYS.MODULE_DEFINITION('todo', 'todo'),
-    promptRepoAdapter(),
-  );
-  client.makeOpenAIRequest(
-    GENERATED_INFRA_KEYS.REPOSITORIES('todo', 'todo'),
-    promptRepoAdapter(),
-    true,
+    promptModuleMessages(),
   );
   client.makeOpenAIRequest(
     GENERATED_INFRA_KEYS.REPOSITORIES('todo', 'todo'),
@@ -67,7 +65,7 @@ const prompt = async (source: ICollection): Promise<void> => {
   );
   client.makeOpenAIRequest(
     GENERATED_INFRA_KEYS.SERVICES('todo', 'todo'),
-    promptRepoAdapter(),
+    promptServiceMessages(),
     true,
   );
 
