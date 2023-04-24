@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-sidebar_label: Layered Architecture
+sidebar_label: Layered
 title: "Layered Architecture: Building Scalable & Maintainable Software Systems"
 description: Unlock the power of Layered Architecture with this comprehensive review. Learn how to design software systems with clear separation of concerns and modular components, making them easier to understand, maintain and scale. Whether you're a developer, architect, or project manager, this article will equip you with the knowledge and insights you need to create layered software architectures that meet your business needs and deliver an excellent user experience. 
 keywords: [hexagonal architecture, onion architecture, layered architecture, software design pattern, software architecture, software architecture paradigm]
