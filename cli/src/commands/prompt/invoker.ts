@@ -2,7 +2,8 @@ import { TBoundedContextName, TModuleName } from '../../types.js';
 import { Command } from './command.js';
 
 export const GENERATED_INFRA_KEYS = {
-  API: 'api',
+  API_GRPC_CONTROLLER: 'api.grpcController',
+  API_PROTO_BUFF: 'api.protobuff',
   MODULE_DEFINITION: (boundedContextName: TBoundedContextName, moduleName: TModuleName): string =>
     `boundedContexts.${boundedContextName}.${moduleName}.moduleDefinition`,
   REPOSITORIES: (boundedContextName: TBoundedContextName, moduleName: TModuleName): string =>
@@ -13,7 +14,7 @@ export const GENERATED_INFRA_KEYS = {
 
 type TGeneratedComponent = string;
 export type TGeneratedInfra = Partial<{
-  api: TGeneratedComponent;
+  api: { grpcController: TGeneratedComponent; protobuff: TGeneratedComponent };
   boundedContexts: {
     [key: TBoundedContextName]: {
       [key: TModuleName]: {

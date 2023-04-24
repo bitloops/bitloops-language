@@ -23,7 +23,7 @@ export class OpenAIRequestCommand implements Command {
 
   async execute(): Promise<ResultOrError<string>> {
     // const i = 0;
-    // if (i === 0) return 'test';
+    // if (i === 0) return (this.usedTokens = 1) && ['test', null];
 
     try {
       const completion = await this.client.createChatCompletion({

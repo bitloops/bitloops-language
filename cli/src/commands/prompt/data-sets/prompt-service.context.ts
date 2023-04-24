@@ -1,19 +1,40 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
+import { ContextInfo } from '../../../types.js';
+import { getNameFromPort } from './common/names.js';
+import { CONCRETIONS } from './common/concretions.js';
 
 const DEFAULT_PORT = `import { Application, Either } from '@bitloops/bl-boilerplate-core';
-import { SendEmailRequest } from '../structs/send-email-request.struct';
+import { SendSMSRequest } from '../structs/send-sms-request.struct';
 
-export interface EmailServicePort {
+export interface SMSServicePort {
   send(
-    data: SendEmailRequest,
+    data: SendSMSRequest,
   ): Promise<Either<void, Application.Repo.Errors.Unexpected>>;
 }
 `;
 
-export const promptServiceMessages: (port?: string) => ChatCompletionRequestMessage[] = (
-  port = DEFAULT_PORT,
-) => [
+const SERVICE_CONCRETION = {
+  [getNameFromPort('SMSServicePort')]: CONCRETIONS.MOCK,
+};
+
+const messageInstructions = (
+  contextInfo: ContextInfo,
+  concretions: Record<string, string>,
+): string => {
+  const [serviceName, serviceConcretionType] = Object.entries(concretions);
+
+  return ` The bounded context is ${contextInfo.boundedContext} and the module is ${contextInfo.module}. You use them as part of the import paths when necessary.
+The name of the service should be ${serviceName}.
+The service ${serviceName} should be of a ${serviceConcretionType} one.  
+`;
+};
+
+export const promptServiceMessages = (
+  port: string = DEFAULT_PORT,
+  contextInfo: ContextInfo,
+  concretions: Record<string, string> = SERVICE_CONCRETION,
+): ChatCompletionRequestMessage[] => [
   promptContextMessage,
   {
     role: 'user',
@@ -28,7 +49,15 @@ export interface EmailServicePort {
   ): Promise<Either<void, Application.Repo.Errors.Unexpected>>;
 }
 '''
-I want to use as as an email provider a mock one that just logs the email to the console.
+${messageInstructions(
+  {
+    boundedContext: 'marketing',
+    module: 'marketing',
+  },
+  {
+    EmailService: 'Mock',
+  },
+)}
 `,
   },
   {
@@ -37,8 +66,8 @@ I want to use as as an email provider a mock one that just logs the email to the
   '''typescript
 import { Application, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { Injectable } from '@nestjs/common';
-import { EmailServicePort } from '@src/lib/bounded-contexts/marketing/marketing/ports/email.service-port';
-import { SendEmailRequest } from '@src/lib/bounded-contexts/marketing/marketing/structs/send-email-request.struct';
+import { EmailServicePort } from '@lib/bounded-contexts/marketing/marketing/ports/email.service-port';
+import { SendEmailRequest } from '@lib/bounded-contexts/marketing/marketing/structs/send-email-request.struct';
 
 @Injectable()
 export class MockEmailService implements EmailServicePort {
@@ -59,6 +88,7 @@ export class MockEmailService implements EmailServicePort {
     '''typescript
     ${port}
     '''
+      ${messageInstructions(contextInfo, concretions)}
     `,
   },
 ];

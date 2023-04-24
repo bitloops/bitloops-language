@@ -1,26 +1,112 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
+import { ContextInfo } from '../../../types.js';
+import { getNameFromToken } from './common/names.js';
+import { CONCRETIONS } from './common/concretions.js';
+const MARKETING_CONSTANTS_FILE = `export const EmailServicePortToken = Symbol('EmailServicePort');
+export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
+export const StreamingDomainEventBusToken = Symbol('StreamingDomainEventBus');
+export const StreamingIntegrationEventBusToken = Symbol(
+  'StreamingIntegrationEventBusToken',
+);
+export const PubSubIntegrationEventBusToken = Symbol(
+  'PubSubIntegrationEventBusToken',
+);
+export const UserWriteRepoPortToken = Symbol('UserWriteRepoPort');
+export const NotificationTemplateReadRepoPortToken = Symbol(
+  'NotificationTemplateReadRepoPort',
+);`;
 
-export const promptModuleMessages: (moduleName?: string) => ChatCompletionRequestMessage[] = (
-  moduleName = 'MarketingModule',
-) => [
-  promptContextMessage,
-  {
-    role: 'user',
-    content: `I have a dynamic nestJS module called MarketingModule, generate an infra module that will register the MarketingModule
+const IAM_CONSTANTS_FILE = `export const StreamingIntegrationEventBusToken = Symbol(
+  'StreamingIntegrationEventBusToken',
+);
+export const StreamingDomainEventBusToken = Symbol(
+  'StreamingDomainEventBusToken',
+);
+export const UserWriteRepoPortToken = Symbol('UserWriteRepoPort');`;
+
+const TODO_CONSTANT_FILE = `export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
+export const StreamingIntegrationEventBusToken = Symbol(
+  'StreamingIntegrationEventBusToken',
+);
+export const PubSubIntegrationEventBusToken = Symbol(
+  'PubSubIntegrationEventBusToken',
+);
+export const StreamingDomainEventBusToken = Symbol('StreamingDomainEventBus');
+export const TodoWriteRepoPortToken = Symbol('TodoWriteRepoPort');
+export const TodoReadRepoPortToken = Symbol('TodoReadRepoPort');`;
+
+const TODO_CONCRETIONS = {
+  [getNameFromToken('TodoWriteRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
+  [getNameFromToken('TodoReadRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
+};
+
+const messageInstructions = (
+  contextInfo: ContextInfo,
+  moduleName: string,
+  constantsFile: string,
+  providerImplementations: Record<string, string>,
+): string => {
+  return `
+  The bounded context is ${contextInfo.boundedContext} and the module is ${
+    contextInfo.module
+  }. You use them as part of the import paths when necessary.
+    I have a dynamic nestJS module called ${moduleName}, generate an infra module that will register the ${moduleName}
     and provide all needed dependencies.
-    All dependency tokens are exported from the {module-name}/constants.ts file.
+    All dependency tokens are exported from the {@lib-module-path}/constants.ts file.
+    This is the constants file content.
+    '''typescript
+    ${constantsFile}
+    '''
     All buses-related concretions are imported from @bitloops/bl-boilerplate-infra-nest-jetstream.
-`,
-  },
-  {
-    role: 'assistant',
-    content: `
+
+    ${Object.entries(providerImplementations)
+      .map(([providerName, implType]) => `${providerName} has type ${implType}.`)
+      .join('\n')}
+  `;
+};
+export const promptModuleMessages = (
+  moduleName = 'TodoModule',
+  contextInfo: ContextInfo,
+  constantsFile: string = TODO_CONSTANT_FILE,
+  concretions: Record<string, string> = TODO_CONCRETIONS,
+): ChatCompletionRequestMessage[] => {
+  return [
+    promptContextMessage,
+    {
+      role: 'user',
+      content: `${messageInstructions(
+        {
+          boundedContext: 'marketing',
+          module: 'marketing',
+        },
+        'MarketingModule',
+        MARKETING_CONSTANTS_FILE,
+        {
+          [getNameFromToken('EmailServicePortToken')]: CONCRETIONS.MOCK,
+          [getNameFromToken('UserWriteRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
+          [getNameFromToken('NotificationTemplateReadRepoPortToken')]:
+            CONCRETIONS.REPOSITORIES.MONGO,
+        },
+      )}`,
+    },
+    {
+      role: 'assistant',
+      content: `
   '''typescript
 import { Module } from '@nestjs/common';
-import { MarketingModule as LibMarketingModule } from 'src/lib/bounded-contexts/marketing/marketing/marketing.module';
-import { UserWriteRepository } from './repository/user-write.repository';
-import { NotificationTemplateReadRepository } from './repository/notification-template.repository';
+import {
+  NatsStreamingCommandBus,
+  JetstreamModule,
+  NatsStreamingDomainEventBus,
+  NatsStreamingIntegrationEventBus,
+  NatsPubSubIntegrationEventsBus,
+} from '@bitloops/bl-boilerplate-infra-nest-jetstream';
+import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
+import { MarketingModule as LibMarketingModule } from '@lib/bounded-contexts/marketing/marketing/marketing.module';
+import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/integration';
+import { StreamingCommandHandlers } from '@lib/bounded-contexts/marketing/marketing/application/command-handlers';
+import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/domain';
 import {
   EmailServicePortToken,
   NotificationTemplateReadRepoPortToken,
@@ -29,21 +115,12 @@ import {
   StreamingDomainEventBusToken,
   StreamingIntegrationEventBusToken,
   UserWriteRepoPortToken,
-} from '@src/lib/bounded-contexts/marketing/marketing/constants';
+} from '@lib/bounded-contexts/marketing/marketing/constants';
+import { UserWriteRepository } from './repository/user-write.repository';
+import { NotificationTemplateReadRepository } from './repository/notification-template.repository';
 import { MockEmailService } from './service';
-import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
-import { StreamingIntegrationEventHandlers } from '@src/lib/bounded-contexts/marketing/marketing/application/event-handlers/integration';
-import { StreamingCommandHandlers } from '@src/lib/bounded-contexts/marketing/marketing/application/command-handlers';
-import {
-  NatsStreamingCommandBus,
-  JetstreamModule,
-  NatsStreamingDomainEventBus,
-  NatsStreamingIntegrationEventBus,
-  NatsPubSubIntegrationEventsBus,
-} from '@bitloops/bl-boilerplate-infra-nest-jetstream';
-import { StreamingDomainEventHandlers } from '@src/lib/bounded-contexts/marketing/marketing/application/event-handlers/domain';
 
-const RepoProviders = [
+const providers = [
   {
     provide: UserWriteRepoPortToken,
     useClass: UserWriteRepository,
@@ -76,7 +153,7 @@ const RepoProviders = [
 @Module({
   imports: [
     LibMarketingModule.register({
-      inject: [...RepoProviders],
+      inject: [...providers],
       imports: [MongoModule],
     }),
     JetstreamModule.forFeature({
@@ -86,19 +163,89 @@ const RepoProviders = [
       streamingCommandHandlers: [...StreamingCommandHandlers],
     }),
   ],
-  controllers: [],
   exports: [LibMarketingModule],
 })
 export class MarketingModule {}
 
 '''
   `,
-  },
-  {
-    role: 'user',
-    content: `
+    },
+    {
+      role: 'user',
+      content: `
+        ${messageInstructions(
+          { boundedContext: 'iam', module: 'authentication' },
+          'AuthenticationModule',
+          IAM_CONSTANTS_FILE,
+          {
+            [getNameFromToken('UserWriteRepoPortToken')]: CONCRETIONS.REPOSITORIES.PG,
+          },
+        )}
     Generate an infra module that will register the ${moduleName}
     and provide all needed dependencies
     `,
+    },
+    {
+      role: 'assistant',
+      content: `
+  '''typescript
+  import { Module } from '@nestjs/common';
+  import {
+    JetstreamModule,
+    NatsStreamingDomainEventBus,
+    NatsStreamingIntegrationEventBus,
+  } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
+  import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
+  import { PostgresModule } from '@bitloops/bl-boilerplate-infra-postgres';
+  import { AuthenticationModule as LibAuthenticationModule } from '@lib/bounded-contexts/iam/authentication/authentication.module';
+import { PubSubCommandHandlers } from '@lib/bounded-contexts/iam/authentication/application/command-handlers';
+import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/iam/authentication/application/event-handlers/domain';
+import {
+  StreamingDomainEventBusToken,
+  StreamingIntegrationEventBusToken,
+  UserWriteRepoPortToken,
+} from '@lib/bounded-contexts/iam/authentication/constants';
+import { UserWritePostgresRepository } from './repository/user-write.pg.repository';
+
+const providers = [
+  {
+    provide: UserWriteRepoPortToken,
+    useClass: UserWritePostgresRepository,
+  },
+  {
+    provide: StreamingIntegrationEventBusToken,
+    useClass: NatsStreamingIntegrationEventBus,
+  },
+  {
+    provide: StreamingDomainEventBusToken,
+    useClass: NatsStreamingDomainEventBus,
   },
 ];
+@Module({
+  imports: [
+    LibAuthenticationModule.register({
+      inject: [...providers],
+      imports: [MongoModule, PostgresModule],
+    }),
+    JetstreamModule.forFeature({
+      moduleOfHandlers: AuthenticationModule,
+      pubSubCommandHandlers: [...PubSubCommandHandlers],
+      streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
+    }),
+  ],
+  exports: [LibAuthenticationModule],
+})
+export class AuthenticationModule {}
+  '''
+      `,
+    },
+    {
+      role: 'user',
+      content: `
+        ${messageInstructions(contextInfo, moduleName, constantsFile, concretions)}
+    Generate an infra module that will register the ${moduleName}
+    and provide all needed dependencies
+    `,
+    },
+  ];
+};

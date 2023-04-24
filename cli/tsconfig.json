@@ -20,6 +20,7 @@
     "strictNullChecks": false,
     "allowJs": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*", "__tests__/**/*"],
 }
