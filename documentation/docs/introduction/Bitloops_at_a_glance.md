@@ -19,9 +19,9 @@ keywords:
 
 # 👀 Bitloops @ a Glance
 
-Bitloops Language (BL) is a high-productivity, fourth generation (4GL), [DDD](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design) / [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language that guide developers to build high-quality software faster!
+Bitloops Language (BL) is a high-productivity, fourth generation (4GL), [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) / [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) focused, transpiled programming language that guide developers to build high-quality software faster!
 
-At its core, Bitloops Language has been designed and built by incorporating software development best practices and methodologies such as clean code, clean / [layered / hexagonal](https://alistair.cockburn.us/hexagonal-architecture/) architecture, and [SOLID](https://www.pentalog.com/blog/it-development-technology/solid-principles-object-oriented-programming/) principles that empower developers to build high-quality software that is maintainable, flexible and reliable much faster when compared to traditional programming tools and languages.
+At its core, Bitloops Language has been designed and built by incorporating software development best practices and methodologies such as clean code, clean / [layered / hexagonal](https://bitloops.com/docs/bitloops-language/learning/software-architecture/hexagonal-architecture) architecture, and [SOLID](https://www.pentalog.com/blog/it-development-technology/solid-principles-object-oriented-programming/) principles that empower developers to build high-quality software that is maintainable, flexible and reliable much faster when compared to traditional programming tools and languages.
 
 ---
 

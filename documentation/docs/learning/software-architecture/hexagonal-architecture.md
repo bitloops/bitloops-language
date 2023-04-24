@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Hexagonal Architecture
+sidebar_label: Hexagonal
 title: "Hexagonal Architecture: Building Modular & Testable Software Systems"
 description: Learn how to create software systems that are modular, testable, and easy to maintain, by separating the application core from the external interfaces. Whether you're a developer, architect, or project manager, this comprehensive review will equip you with the knowledge and insights you need to design software that meets your business requirements and exceeds your users' expectations. 
 keywords: [hexagonal architecture, onion architecture, layered architecture, software design pattern, software architecture, software architecture paradigm]
@@ -76,7 +76,7 @@ Through the separation of components and modules, it becomes easier to test the 
 The architecture allows for the easy addition or removal of external components without affecting the core logic of the application, making it an excellent choice for complex software systems. This means that the system can be easily adapted to changing requirements or external systems, without requiring significant changes to the core logic. In essence, this allows for the implementation of the application to be easily swapped out or modified as needed, without affecting the core behavior of the system. For example, if a database needs to be changed, it is relatively easy to swap out the database adapter without changing any of the core interfaces or business logic. Similarly, if a new external system needs to be integrated, a new adapter layer can be added to implement the necessary interfaces.
 
 ### Reduced Coupling & increased Cohesion
-The use of well-defined interfaces between modules or bounded contexts (see [DDD](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design) for more info) ensures that services are loosely coupled and can be changed independently of each other. 
+The use of well-defined interfaces between modules or bounded contexts (see [DDD](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) for more info) ensures that services are loosely coupled and can be changed independently of each other. 
 
 This promotes cohesion between modules and business logic code, making the system easier to understand and modify. The result is a system that is more robust, easier to maintain, and better suited to complex software systems.
 
@@ -90,7 +90,7 @@ All of these advantages are particularly powerful because:
 
 
 ## Hexagonal Architecture & Domain-Driven Design (DDD)
-[Domain-Driven Design](https://bitloops.com/docs/bitloops-language/learning/domain-driven-design) (DDD) is an approach to software development that emphasizes the importance of the domain model in the design of software systems. 
+[Domain-Driven Design](https://bitloops.com/docs/bitloops-language/learning/software-design/domain-driven-design) (DDD) is an approach to software development that emphasizes the importance of the domain model in the design of software systems. 
 
 The core principles of DDD include:
 - **Separation of Concerns**

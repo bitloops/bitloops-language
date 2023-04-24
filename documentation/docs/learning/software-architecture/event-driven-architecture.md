@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-sidebar_label: Event-Driven Architecture
+sidebar_position: 5
+sidebar_label: Event-Driven
 title: "Event-Driven Architecture: Building Scalable & Responsive Software Systems"
 description: Learn how to create software systems that are scalable, responsive, and reliable by leveraging asynchronous communication and event-driven architecture. Whether you're a developer, architect, or project manager, this page will equip you with the knowledge and tools you need to design software that can handle complex business requirements and deliver real-time data processing. 
 keywords: [event-driven architecture, eda, microservices, software design pattern, software architecture, events, stream of events, event subscription, event posting, kafka, software architecture paradigm]

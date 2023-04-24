@@ -25,7 +25,7 @@ keywords:
 
 # PackagePort
 
-The PackagePort component is a tool which will help you utilize external libraries of the target transpilation language. It acts as an interface, in order to declare methods which will be later be implemented by the corresponding ServiceAdapter. Its name and functionality is inspired by the [Hexagonal Architecture](https://bitloops.com/docs/bitloops-language/learning/Software%20Architecture/hexagonal-architecture) (or Ports and Adapters architecture).
+The PackagePort component is a tool which will help you utilize external libraries of the target transpilation language. It acts as an interface, in order to declare methods which will be later be implemented by the corresponding ServiceAdapter. Its name and functionality is inspired by the [Hexagonal Architecture](https://bitloops.com/docs/bitloops-language/learning/software-architecture/hexagonal-architecture) (or Ports and Adapters architecture).
 
 ## Syntax
 

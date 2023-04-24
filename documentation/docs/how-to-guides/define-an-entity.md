@@ -18,7 +18,7 @@ Entity TitleEntity {
   }
 ```
 
-Now, in Bitloops Language specifically, to ensure good coding practice, there is the concept of [Root Entity](https://bitloops.com/docs/bitloops-language/components/entity). This is a special type of Entity as its the Entity that can be referenced by other objects in the application. 
+Now, in Bitloops Language specifically, to ensure good coding practice, there is the concept of [Root Entity](https://bitloops.com/docs/bitloops-language/reference/entity). This is a special type of Entity as its the Entity that can be referenced by other objects in the application. 
 
 To declare this type of Entity, you should simply add Root as a prefix: 
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 sidebar_label: Microservices
 title: "Microservices Reference Guide: Everything You Need to Know About Microservices Architecture" 
 description: Discover the benefits of microservices architecture for your software development needs. Our expert team can help you design and implement a decentralized, scalable, and technology-agnostic solution. 

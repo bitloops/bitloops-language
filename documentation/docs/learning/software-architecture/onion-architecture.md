@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Onion Architecture
+sidebar_label: Onion
 title: "Onion Architecture: Benefits of Layered and Modular Software Architecture"
 description: Learn how to create software systems that are modular, testable, and easy to maintain, by separating the application core from the external dependencies using the onion architecture design pattern. 
 keywords: [onion architecture, hexagonal architecture, layered architecture, software design pattern, software architecture, software architecture paradigm, software development, layers, maintainability, testing, loose coupling, separation of concerns, implementation, best practices, FAQs]
