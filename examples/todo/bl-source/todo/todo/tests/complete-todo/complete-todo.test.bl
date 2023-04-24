@@ -6,19 +6,35 @@ Props TodoProps {
     bool completed;
 }
 
+Props UserIdProps {
+    UUIDv4 id;
+}
+
 // This statement will create the MockTodoWriteRepo
 // TODO maybe concretes and not implements?
 MockRepo MockTodoWriteRepo implements TodoWriteRepoPort;
 // This mock repo will by default have a __bl__populateTestData method containing 
 // the method name to pupulate and the repsonse to return
 
+PropsBuilder UserIdPropsBuilder(props: UserIdProps) {
+    default: {
+        id: '1234',
+    },
+}
+
+PropsBuilder TitlePropsBuilder(props: TitleProps) {
+    default: {
+        title: 'New todo title',
+    },
+}
+
 
 // if default then build() without default value or with will return an error will exist - else error
 PropsBuilder TodoPropsBuilder(props: TodoProps) {
     
     default: {  //TODO how will it know the actual type for it? - use builders for nested vos - entities
-        userId: '1234',
-        title: 'New todo title',
+        userId: new UserIdPropsBuilder(),
+        title: new TitlePropsBuilder(),
         completed: false,
         id: 'todo1',
     },
@@ -33,7 +49,7 @@ Feature: Complete todo (
         And the result should be ok
     ) {
         // given
-        const initialTodoProps = TodoPropsBuilder.build(); // this will get the default values if they exist
+        const initialTodoProps = new TodoPropsBuilder.build(); // this will get the default values if they exist
         
         const todo = TodoEntity.create(initialTodoProps); // this will create the todo based on the props
 
@@ -41,8 +57,13 @@ Feature: Complete todo (
 
         // TODO maybe at this stage do not use __bl__populateTestData directly, rather provide 
         // all methods to mock the output and just add the response
-        mockTodoWriteRepo.__bl__populateTestData('create', OK(todo));
-        mockTodoWriteRepo.__bl__populateTestData('update', OK());
+        // mockTodoWriteRepo.__bl__populateTestData('create', OK(todo));
+        // mockTodoWriteRepo.__bl__populateTestData('update', OK());
+
+        mockTodoWriteRepo.__add__getById(OK(todo));
+        mockTodoWriteRepo.__add__update(OK());
+
+
 
         // when
 
@@ -58,11 +79,13 @@ Feature: Complete todo (
         // });
 
         // TODO check this implementation - we need to review the old implementation of infra
-        const completeTodoHandler = CompleteTodoHandler.create(mockTodoWriteRepo);
+        const completeTodoCommandHandler = CompleteTodoCommandHandler.create(mockTodoWriteRepo);
 
-        const commandHandlerResult = completeTodoHandler.execute(completeTodoCommand);
+        const commandHandlerResult = completeTodoCommandHandler.execute(completeTodoCommand);
 
         // then
+        // TODO get todo check other way? - maybe mockTodoWriteRepo.__get__spy__call__update()?
+        const todoAfter = mockTodoWriteRepo.__get__update();
 
         // TODO if the builder has default, then the default values will be invoked pror any other 
         // which alter the props  
@@ -75,9 +98,18 @@ Feature: Complete todo (
         // expect(todo.events).toInclude()
         expect(commandHandlerResult).toEqual(OK());
 
-        expect(todo).toHaveProps(mutatedTodoProps);
-        // expect(todo).propToEqual(TodoProps.getNames().completed, true); // At some point we could add specific prop checks!!
-        expect(todo).toHaveDomainEvents([TodoCompletedDomainEvent]); // TODO checks for uniqueness by default if more than once error
+        const todoCompletedEvent = TodoCompletedDomainEvent.create({ 
+            userId: mutatedTodoProps.userId.id.toString(),
+            title: mutatedTodoProps.title.title,
+            completed: mutatedTodoProps.completed,
+            aggregateId: mutatedTodoProps.id.toString(),
+        });
+
+
+
+        expect(todoAfter).toHaveProps(mutatedTodoProps);
+        // expect(todoAfter).propToEqual(TodoProps.getNames().completed, true); // At some point we could add specific prop checks!!
+        expect(todoAfter).toHaveDomainEvents([todoCompletedEvent]); // TODO checks for uniqueness by default if more than once error
         
     }
 )
