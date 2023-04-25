@@ -810,12 +810,22 @@ expression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
-    | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen                # EnvVarWithDefaultValueExpression
-    | envVariable                                                            # EnvironmentVariableExpression
+    | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen           # EnvVarWithDefaultValueExpression
+    | envVariable                                                # EnvironmentVariableExpression
+    | expression Dot IfError OpenParen anonymousFunction? CloseParen  # IfErrorExpression
     ;   
 
 //TODO rename this
 classTypes: ErrorClass;
+
+anonymousFunction
+    : OpenParen parameterList? CloseParen ARROW arrowFunctionBody
+    ;
+
+arrowFunctionBody
+    : returnStatement
+    | OpenBrace functionBody CloseBrace
+    ;
 
 literal
     : NullLiteral               # NullLiteral

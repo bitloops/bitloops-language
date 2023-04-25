@@ -29,7 +29,7 @@ export class AssignmentExpressionNode extends ExpressionNode {
     if (identifierExpressionNode) {
       const identifierName = identifierExpressionNode.getValue().identifier;
       const identifierType = symbolTable.lookup(identifierName) as VariableSymbolEntry;
-      if (identifierType && identifierType.isConst) {
+      if (identifierType && identifierType.isConstVariable()) {
         throw new ConstVariableReassingedError(identifierName, this.getMetadata());
       }
     }

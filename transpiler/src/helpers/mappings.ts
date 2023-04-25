@@ -135,7 +135,7 @@ const BitloopsTypesMapping = {
   TBitloopsPrimitives: 'TBitloopsPrimitives',
   ArrayBitloopsPrimType: 'ArrayBitloopsPrimType',
   TBitloopsIdentifier: 'TBitloopsIdentifier',
-  TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
+  TBitloopsBuiltInClasses: 'TBitloopsBuiltInClasses',
   TStandardValueType: 'TStandardValueType',
   TStandardVOType: 'TStandardVOType',
   TMethodCallExpression: 'TMethodCallExpression',
@@ -216,6 +216,7 @@ const BitloopsTypesMapping = {
   TPortToken: 'TPortToken',
   TMetadata: 'TMetadata',
   THandle: 'THandle',
+  TIfErrorExpression: 'TIfErrorExpression',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

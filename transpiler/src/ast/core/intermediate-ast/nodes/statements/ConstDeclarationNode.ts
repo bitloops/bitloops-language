@@ -36,7 +36,8 @@ export class ConstDeclarationNode extends StatementNode {
 
   public typeCheck(symbolTable: SymbolTable): void {
     const identifierName = this.getIdentifier().getIdentifierName();
-    const identifierType = symbolTable.lookup(identifierName);
+
+    const identifierType = symbolTable.lookupLocally(identifierName);
     if (identifierType) {
       throw new AlreadyDefinedIdentifierError(identifierName, this.getMetadata());
     }

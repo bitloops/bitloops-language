@@ -42,8 +42,8 @@ import {
   entityIdentifierError,
 } from './validators/index.js';
 import { SymbolTable } from './type-inference/SymbolTable.js';
-import { InferredTypes } from './type-inference/ASTTypeInference.js';
-import { ClassTypeNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/class-type.type-guard.js';
+import { TInferredTypes } from './type-inference/types.js';
+import { ClassTypeNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/classTypeGuards.js';
 import { StatementNode } from '../ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { StatementNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/statementTypeGuards.js';
 import { ErrorIdentifierNode } from '../ast/core/intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
@@ -61,6 +61,7 @@ import { EventHandleNode } from '../ast/core/intermediate-ast/nodes/EventHandleN
 import { IntegrationEventHandlerHandleMethodNode } from '../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { PublicMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { PrivateMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 
 const SCOPE_NAMES = {
   EXECUTE: 'execute',
@@ -73,6 +74,64 @@ const SCOPE_NAMES = {
   DOMAIN_CREATE: 'domainCreate',
   HANDLE: 'handle',
 };
+
+//TODO in member dot do we add them to symbol table part by part
+export const inferType = (node: IntermediateASTNode): TInferredTypes => {
+  if (IntermediateASTNodeTypeGuards.isBitloopsPrimaryType(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isExpression(node)) {
+    node.getInferredType();
+    // if (node.isLiteralExpression()) {
+    //   return inferType(node.getLiteral());
+    // } else if (node.isMemberDotExpression()) {
+    //   return inferType(node.getMemberDot());
+    // } else if (node.isEvaluationExpression()) {
+    //   return inferType(node.getEvaluation());
+    // } else if (node.isMethodCallExpression()) {
+    //   return inferType(node.getMethodCall());
+    // } else if (node.isParenthesizedExpression()) {
+    //   return inferType(node.getExpression());
+    // }
+  }
+  // case 'methodCall': {
+  //   const object = inferType(node.object, table);
+  //   const method = object.methods[node.methodName];
+  //   if (!method) {
+  //     throw new Error(`Method ${node.methodName} not found on object of type ${object.name}`);
+  //   }
+  //   if (node.arguments.length !== method.params.length) {
+  //     throw new Error(
+  //       `Method ${node.methodName} expects ${method.params.length} arguments, got ${node.arguments.length}`,
+  //     );
+  //   }
+  //   for (let i = 0; i < node.arguments.length; i++) {
+  //     const argType = inferType(node.arguments[i], table);
+  //     const paramType = method.params[i];
+  //     if (!isAssignable(paramType, argType)) {
+  //       throw new Error(
+  //         `Argument ${i} of method ${node.methodName} expects type ${paramType.name}, got ${argType.name}`,
+  //       );
+  //     }
+  //   }
+  //   return method.returnType;
+  // }
+  // case 'VariableDeclaration':
+  //   const variableType = this.infer(node.expression);
+  //   this.symbolTable.addVariable(node.name, variableType);
+  //   return variableType;
+  // case 'Identifier':
+  //   return this.symbolTable.getVariableType(node.name);
+  // case 'NumberLiteral':
+  //   return { name: 'number' };
+  // case 'StringLiteral':
+  //   return { name: 'string' };
+  // // Handle other node types here
+  else {
+    throw new Error('Unsupported node type: ');
+  }
+  throw new Error('');
+};
+
 //TODO should we create symbol table if empty??
 export class SemanticAnalyzer implements IIntermediateASTValidator {
   private symbolTableSetup: Record<string, Set<string>>;
@@ -115,71 +174,88 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           const name = identifierNode.getIdentifierName();
           const classTypeScope = globalScope.createChildScope(name, node);
 
-          if (
-            ClassTypeNodeTypeGuards.isCommandHandler(node) ||
-            ClassTypeNodeTypeGuards.isQueryHandler(node)
-          ) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
+          if (ClassTypeNodeTypeGuards.isCommandHandler(node)) {
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
-
+            //TODO move to method
             const execute = node.getExecute();
             const executeScope = classTypeScope.createChildScope(SCOPE_NAMES.EXECUTE, execute);
             const executeParams = node.getMethodParameters();
             executeParams.forEach((paramNode) => {
               const paramName = paramNode.getIdentifier();
-              executeScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+              executeScope.insert(
+                paramName,
+                new ParameterSymbolEntry(inferType(paramNode.getType())),
+              );
+            });
+            const statements = node.getStatements();
+            this.createStatementListScope(statements, executeScope);
+          } else if (ClassTypeNodeTypeGuards.isQueryHandler(node)) {
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
+            const params = node.getParameters();
+            this.createParamsScope(params, classTypeScope);
+            //TODO move to method
+            const execute = node.getExecute();
+            const executeScope = classTypeScope.createChildScope(SCOPE_NAMES.EXECUTE, execute);
+            const executeParams = node.getMethodParameters();
+            executeParams.forEach((paramNode) => {
+              const paramName = paramNode.getIdentifier();
+              executeScope.insert(
+                paramName,
+                new ParameterSymbolEntry(inferType(paramNode.getType())),
+              );
             });
             const statements = node.getStatements();
             this.createStatementListScope(statements, executeScope);
           } else if (ClassTypeNodeTypeGuards.isDomainEventHandler(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
 
             const handle = node.getHandle();
             this.createHandleScope(handle, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isIntegrationEventHandler(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
-            const eventVersion = node.getEventVersion();
-            const eventVersionIdentifier = eventVersion.getIdentifier().getIdentifierName();
-            classTypeScope.insert(
-              eventVersionIdentifier,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
+            //TODO do we need event version?
+            // const eventVersion = node.getEventVersion();
+            // const eventVersionIdentifier = eventVersion.getIdentifier().getIdentifierName();
+            // classTypeScope.insert(
+            //   eventVersionIdentifier,
+            //   new Parameter(InferredTypes.Unknown),
+            // );
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
 
             const handle = node.getHandle();
             this.createIntegrationEventHandleScope(handle, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isDomainService(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
             const publicMethods = node.getPublicMethods();
             this.createPublicMethodScope(publicMethods, classTypeScope);
             const privateMethods = node.getPrivateMethods();
             this.createPrivateMethodScope(privateMethods, classTypeScope);
-          } else if (
-            ClassTypeNodeTypeGuards.isEntity(node) ||
-            ClassTypeNodeTypeGuards.isRootEntity(node)
-          ) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
+          } else if (ClassTypeNodeTypeGuards.isRootEntity(node)) {
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
+            const entityValue = node.getEntityValues();
+
+            const domainCreate = entityValue.getDomainCreateMethod();
+
+            this.appendDomainCreateMethodToSymbolTable({
+              classTypeScope,
+              domainCreate,
+            });
+
+            //methods
+            const publicMethods = entityValue.getPublicMethods();
+            this.createPublicMethodScope(publicMethods, classTypeScope);
+
+            const privateMethods = entityValue.getPrivateMethods();
+            this.createPrivateMethodScope(privateMethods, classTypeScope);
+          } else if (ClassTypeNodeTypeGuards.isEntity(node)) {
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const entityValue = node.getEntityValues();
 
             const domainCreate = entityValue.getDomainCreateMethod();
@@ -196,16 +272,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const privateMethods = entityValue.getPrivateMethods();
             this.createPrivateMethodScope(privateMethods, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isValueObject(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(InferredTypes.Unknown),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const constants = node.getConstants();
             constants.forEach((constant) => {
               const constantName = constant.getIdentifier().getValue().identifier;
               classTypeScope.insert(
                 constantName,
-                new VariableSymbolEntry(InferredTypes.Unknown, true),
+                new VariableSymbolEntry(inferType(constant.getExpressionValues()), true),
               );
             });
 
@@ -224,7 +297,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const paramName = param.getIdentifier();
             classTypeScope.insert(
               paramName,
-              new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+              new ClassTypeParameterSymbolEntry(inferType(param.getType())),
             );
 
             const integrationEventMapperNodes = node.getIntegrationEventMapperNodes();
@@ -249,11 +322,11 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       SCOPE_NAMES.DOMAIN_CREATE,
       domainCreate,
     );
-    const domainCreateParams = domainCreate.getParameterNode();
-    const domainCreateParamName = domainCreateParams.getIdentifier();
+    const domainCreateParam = domainCreate.getParameterNode();
+    const domainCreateParamName = domainCreateParam.getIdentifier();
     domainCreateScope.insert(
       domainCreateParamName,
-      new ParameterSymbolEntry(InferredTypes.Unknown),
+      new ParameterSymbolEntry(inferType(domainCreateParam.getType())),
     );
     const domainCreateStatements = domainCreate.getStatements();
     this.createStatementListScope(domainCreateStatements, domainCreateScope);
@@ -269,7 +342,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       const methodParams = method.getMethodParameters();
       for (const param of methodParams) {
         const paramName = param.getIdentifier();
-        methodScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+        methodScope.insert(paramName, new ParameterSymbolEntry(inferType(param.getType())));
       }
       const methodStatements = method.getStatements();
       this.createStatementListScope(methodStatements, methodScope);
@@ -286,17 +359,21 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       const methodParams = method.getMethodParameters();
       for (const param of methodParams) {
         const paramName = param.getIdentifier();
-        methodScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+        methodScope.insert(paramName, new ParameterSymbolEntry(inferType(param.getType())));
       }
       const methodStatements = method.getStatements();
       this.createStatementListScope(methodStatements, methodScope);
     });
   }
 
+  //TODO check if it needs this
   private createParamsScope(params: ParameterNode[], classTypeScope: SymbolTable): void {
     params.forEach((paramNode) => {
       const paramName = paramNode.getIdentifier();
-      classTypeScope.insert(paramName, new ClassTypeParameterSymbolEntry(InferredTypes.Unknown));
+      classTypeScope.insert(
+        paramName,
+        new ClassTypeParameterSymbolEntry(inferType(paramNode.getType())),
+      );
     });
   }
 
@@ -305,7 +382,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     const handleParams = handle.getParameters();
     handleParams.forEach((paramNode) => {
       const paramName = paramNode.getIdentifier();
-      handleScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+      handleScope.insert(paramName, new ParameterSymbolEntry(inferType(paramNode.getType())));
     });
     const statements = handle.getStatements();
     this.createStatementListScope(statements, handleScope);
@@ -318,7 +395,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     const handleScope = classTypeScope.createChildScope(SCOPE_NAMES.HANDLE, handle);
     const handleParam = handle.getParameter();
     const paramName = handleParam.getIdentifier();
-    handleScope.insert(paramName, new ParameterSymbolEntry(InferredTypes.Unknown));
+    handleScope.insert(paramName, new ParameterSymbolEntry(inferType(handleParam.getType())));
 
     const statements = handle.getStatements();
     this.createStatementListScope(statements, handleScope);
@@ -333,18 +410,24 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     let switchCounter = 0;
     for (const statement of statements) {
       try {
+        //TODO get from type
         if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
           const identifier = statement.getIdentifier().getIdentifierName();
+          // const args = statement.getExpression().getArguments();
+          // args.forEach((arg) => {infertype(arg)}
           statement.typeCheck(parentScope);
-          parentScope.insert(identifier, new VariableSymbolEntry(InferredTypes.Unknown, false));
+          parentScope.insert(
+            identifier,
+            new VariableSymbolEntry(inferType(statement.getExpressionValues()), false),
+          );
         }
 
         if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
-          const identifierExpression = statement.getExpressionValues();
+          const expression = statement.getExpressionValues();
           statement.typeCheck(parentScope);
-          identifierExpression.typeCheck(parentScope);
+          expression.typeCheck(parentScope);
           const identifier = statement.getIdentifier().getIdentifierName();
-          parentScope.insert(identifier, new VariableSymbolEntry(InferredTypes.Unknown, true));
+          parentScope.insert(identifier, new VariableSymbolEntry(inferType(expression), true));
         }
 
         if (StatementNodeTypeGuards.isIfStatement(statement)) {
@@ -392,13 +475,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
           statement.typeCheck(parentScope);
         }
-
-        //TODO check if expression
-        //we want to have this.a in symbol table when assignment expression
-        // if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
-        //   const expression = statement.getExpressionValues();
-        //   expression.typeCheck(parentScope);
-        // }
       } catch (e) {
         // console.log(e);
         if (e instanceof ValidationError) {

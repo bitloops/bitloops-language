@@ -27,6 +27,10 @@ export class SymbolTable {
     return null;
   }
 
+  public lookupLocally(name: string): SymbolEntry | null {
+    return this.localSymbols[name] || null;
+  }
+
   public createChildScope(name: string, node?: IntermediateASTNode): SymbolTable {
     const childScope = new SymbolTable(this, node);
     this.childrenScopes[name] = childScope;

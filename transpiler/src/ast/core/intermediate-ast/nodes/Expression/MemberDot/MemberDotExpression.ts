@@ -46,6 +46,7 @@ export class MemberDotExpressionNode extends ExpressionNode {
     return identifier as IdentifierExpressionNode;
   }
 
+  // this.repo.getById
   getLeftMostExpression(): ExpressionNode {
     const expression = this.getExpressionValues();
     if (expression.isMemberDotExpression()) {
@@ -83,10 +84,15 @@ export class MemberDotExpressionNode extends ExpressionNode {
   }
 
   public typeCheck(symbolTable: SymbolTable): void {
-    // pass for now
-    //TODO fix this not as IdentifierExpressionNode
-    const identifierLeftExpression = this.getLeftMostExpression() as IdentifierExpressionNode;
-    const identifierName = identifierLeftExpression.getIdentifierName();
+    const leftMostExpression = this.getLeftMostExpression();
+    let identifierName: string;
+    if (leftMostExpression.isIdentifierExpression()) {
+      identifierName = leftMostExpression.getIdentifierName();
+    } else if (leftMostExpression.isThisExpression()) {
+      identifierName = leftMostExpression.getIdentifierName();
+    }
+
+    // const identifierName = identifierLeftExpression.getIdentifierName();
     const identifierType = symbolTable.lookup(identifierName);
     if (!identifierType) {
       throw new MissingIdentifierError(identifierName, this.getMetadata());

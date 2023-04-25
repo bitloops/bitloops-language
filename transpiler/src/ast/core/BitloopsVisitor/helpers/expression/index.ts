@@ -4,3 +4,4 @@ export { methodCallExpressionVisitor } from './methodCallExpression.js';
 export { getClassExpressionVisitor } from './getClassExpression.js';
 export { assignmentExpressionVisitor } from './assignmentExpression.js';
 export { identifierExpressionVisitor } from './identifierExpression.js';
+export { ifErrorExpressionVisitor } from './ifErrorExpressionVisitor.js';

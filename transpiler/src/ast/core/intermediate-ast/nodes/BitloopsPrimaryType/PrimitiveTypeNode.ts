@@ -12,7 +12,7 @@ export class PrimitiveTypeNode extends BitloopsPrimaryTypeNode {
     this.nodeType = BitloopsTypesMapping.TBitloopsPrimitives;
   }
 
-  getTypeValue(): TBitloopsPrimitives {
+  public getTypeValue(): TBitloopsPrimitives {
     const classNodeName = PrimitiveTypeNode.primitiveClassNodeName;
     const value = this.getValue();
     const typeValue = value[classNodeName];

@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language
+ *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,18 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-export class ArrayUtils {
-  static isEmpty<T>(arr: Array<T>): boolean {
-    return arr.length === 0;
-  }
 
-  static toObject<T extends string | number | symbol>(
-    arr: Array<T>,
-  ): {
-    [key in T]: T;
-  } {
-    const obj = arr.reduce(
-      (arr, value) => ({ ...arr, [value]: value }),
-      {} as {
-        [key in T]: T;
-      },
-    );
-    return obj;
-  }
-}
+// import { ClassTypes, TClassTypesValues } from '../../helpers/mappings.js';
+import { TOkErrorReturnType, TBitloopsPrimaryType } from '../../types.js';
+
+// export type TClassTypeInferenceType = {
+//   type: string;
+//   classType: TClassTypesValues;
+// };
+
+// export const InferredTypes = {
+//   ...ClassTypes,
+//   ...primitives,
+// };
+
+export type TInferredTypes = TBitloopsPrimaryType | TOkErrorReturnType;

@@ -1,7 +1,11 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { ArrayPrimaryTypeNode } from './ArrayPrimaryTypeNode.js';
 import { BitloopsIdentifierTypeNode } from './BitloopsIdentifierTypeNode.js';
+import { BuiltInClassTypeNode } from './BuildInClassTypeNode.js';
 import { PrimitiveTypeNode } from './PrimitiveTypeNode.js';
+import { StandardValueTypeNode } from './StandardValueTypeNode.js';
 
 export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
   private static classNodeName = 'type';
@@ -20,6 +24,18 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
 
   isBitloopsIdentifierType(): this is BitloopsIdentifierTypeNode {
     return this.getNodeType() === BitloopsTypesMapping.TBitloopsIdentifier;
+  }
+
+  isBuiltInClassType(): this is BuiltInClassTypeNode {
+    return this.getNodeType() === BitloopsTypesMapping.TBitloopsBuiltInClasses;
+  }
+
+  isArrayPrimaryType(): this is ArrayPrimaryTypeNode {
+    return this.getNodeType() === BitloopsTypesMapping.ArrayBitloopsPrimType;
+  }
+
+  isStandardValueType(): this is StandardValueTypeNode {
+    return this.getNodeType() === BitloopsTypesMapping.TStandardValueType;
   }
 
   isPrimaryWithPrimitiveTypeChild(): boolean {
@@ -71,5 +87,24 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
     } catch (error) {
       return false;
     }
+  }
+
+  public getInferredType(): TInferredTypes {
+    const primaryTypeNode = this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+    for (const child of primaryTypeNode.getChildren()) {
+      if (child instanceof BitloopsPrimaryTypeNode) {
+        if (this.isArrayPrimaryType()) {
+          const primaryTypeNode = this.getPrimaryTypeNode();
+          return primaryTypeNode.getInferredType();
+        } else {
+          return child.getValue();
+        }
+      } else {
+        throw new Error('Not instance of BitloopsPrimaryTypeNode');
+      }
+    }
+    throw new Error('No children found for primary type node');
   }
 }

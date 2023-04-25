@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TClassTypesValues } from './helpers/mappings.js';
+import { ArrayUtils } from './utils/ArrayUtils.js';
 
 export type TClassName = string;
 
@@ -120,6 +121,11 @@ export const bitloopsPrimitives = [
   'regex',
   'void',
 ] as const;
+
+export const bitloopsPrimitivesObj = ArrayUtils.toObject<TBitloopsPrimitives>([
+  ...bitloopsPrimitives,
+]);
+
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
 export const BitloopsBuiltInClassNames = {

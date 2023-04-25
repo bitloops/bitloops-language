@@ -17,14 +17,19 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { InferredTypes } from '../../../../src/semantic-analysis/type-inference/ASTTypeInference.js';
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
+  MemberDotSymbolEntry,
+  MethodCallSymbolEntry,
   ParameterSymbolEntry,
 } from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
 import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
+import { bitloopsPrimitivesObj } from '../../../../src/types.js';
 import { FileUtil } from '../../../../src/utils/file.js';
+import { BitloopsPrimaryTypeDirector } from '../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
+import { ReturnOkErrorTypeBuilder } from '../../../ast/core/builders/returnOkErrorType.js';
+import { ReturnOkErrorTypeBuilderDirector } from '../../../ast/core/builders/returnOkErrorTypeBuilderDirector.js';
 import { SymbolTableBuilder } from '../../builder/SymbolTableBuilder.js';
 type SymbolTableTestCase = {
   description: string;
@@ -45,23 +50,76 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'WithdrawMoneyCommandHandler',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'WithdrawMoneyCommandHandler',
+              ),
+            ),
+          )
+          .insert(
+            'accountRepo',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountWriteRepoPort'),
+            ),
+          )
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
-              .insert('command', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
-              .insertVariableSymbolEntry('accountEntity', InferredTypes.Unknown, true)
+              .insert(
+                'command',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'WithdrawMoneyCommand',
+                  ),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'accountId',
+                new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                true,
+              )
+              .insert(
+                'this.accountRepo',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'AccountWriteRepoPort',
+                  ),
+                ),
+              )
+              .insert(
+                'this.accountRepo.getById(accountId)',
+                new MethodCallSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountEntity'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'accountEntity',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountEntity'),
+                true,
+              )
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry(
                   'result',
-                  InferredTypes.Unknown,
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
                   true,
                 ),
               )
-              .insertVariableSymbolEntry('result', InferredTypes.Unknown, true),
+              .insertVariableSymbolEntry(
+                'result',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                true,
+              )
+              .insert(
+                'this.accountRepo.update(accountEntity)',
+                new MethodCallSymbolEntry(
+                  new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
+                    'void',
+                  ),
+                ),
+              ),
           ),
       )
       .build(),
@@ -78,19 +136,46 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'WithdrawMoneyCommandHandler',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'WithdrawMoneyCommandHandler',
+              ),
+            ),
+          )
+          .insert(
+            'accountRepo',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountWriteRepoPort'),
+            ),
+          )
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
-              .insert('command', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
-              .insertVariableSymbolEntry('accountEntity', InferredTypes.Unknown, true)
+              .insert(
+                'command',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'WithdrawMoneyCommand',
+                  ),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'accountId',
+                new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                true,
+              )
+              .insertVariableSymbolEntry(
+                'accountEntity',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountEntity'),
+                true,
+              )
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry(
                   'result',
-                  InferredTypes.Unknown,
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
                   true,
                 ),
               )
@@ -98,11 +183,32 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 'if1',
                 new SymbolTableBuilder().insertVariableSymbolEntry(
                   'message',
-                  InferredTypes.Unknown,
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
                   true,
                 ),
               )
-              .insertVariableSymbolEntry('result', InferredTypes.Unknown, true),
+              .insertVariableSymbolEntry(
+                'result',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                true,
+              )
+              .insert(
+                'accountEntity.withdrawAmount(command.amount)',
+                new MethodCallSymbolEntry(
+                  new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+                    'void',
+                    'DomainErrors.WithdrawMoneyError',
+                  ),
+                ),
+              )
+              .insert(
+                'this.accountRepo.update(accountEntity)',
+                new MethodCallSymbolEntry(
+                  new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
+                    'void',
+                  ),
+                ),
+              ),
           ),
       )
       .build(),
@@ -119,28 +225,82 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'WithdrawMoneyCommandHandler',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'WithdrawMoneyCommandHandler',
+              ),
+            ),
+          )
+          .insert(
+            'accountRepo',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountWriteRepoPort'),
+            ),
+          )
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
-              .insert('command', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
-              .insertVariableSymbolEntry('accountEntity', InferredTypes.Unknown, true)
+              .insert(
+                'command',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'WithdrawMoneyCommand',
+                  ),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'accountId',
+                new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                true,
+              )
+              .insert(
+                'this.accountRepo',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'AccountWriteRepoPort',
+                  ),
+                ),
+              )
+              .insert(
+                'this.accountRepo.getById(accountId)',
+                new MethodCallSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountEntity'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'accountEntity',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountEntity'),
+                true,
+              )
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry(
                   'result',
-                  InferredTypes.Unknown,
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
                   true,
                 ),
               )
-              .insertVariableSymbolEntry('animal', InferredTypes.Unknown, true)
+              .insertVariableSymbolEntry(
+                'animal',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                true,
+              )
               .insertChildScope(
                 'switch0',
                 new SymbolTableBuilder()
                   .insertChildScope('case0', new SymbolTableBuilder())
                   .insertChildScope('default', new SymbolTableBuilder()),
+              )
+              .insert(
+                'accountEntity.withdrawAmount(command.amount)',
+                new MethodCallSymbolEntry(
+                  new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOk(
+                    'void',
+                    'DomainErrors.WithdrawMoneyError',
+                  ),
+                ),
               ),
           ),
       )
@@ -158,14 +318,53 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'GetAccountQueryHandler',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'GetAccountQueryHandler',
+              ),
+            ),
+          )
+          .insert(
+            'accountRepo',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountWriteRepoPort'),
+            ),
+          )
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
-              .insert('query', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('requestId', InferredTypes.Unknown, true)
-              .insertVariableSymbolEntry('account', InferredTypes.Unknown, true)
+              .insert(
+                'query',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('GetAccountQuery'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'requestId',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                true,
+              )
+              .insert(
+                'this.accountRepo',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'AccountWriteRepoPort',
+                  ),
+                ),
+              )
+              .insert(
+                'this.accountRepo.getById(accountId)',
+                new MethodCallSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountEntity'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'account',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountReadModel'),
+                true,
+              )
               .insertChildScope('if0', new SymbolTableBuilder())
               .insertChildScope('else0', new SymbolTableBuilder()),
           ),
@@ -184,27 +383,69 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'TodoEntity',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoEntity'),
+            ),
+          )
           .insertChildScope(
             'domainCreate',
             new SymbolTableBuilder()
-              .insert('props', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('todo', InferredTypes.Unknown, false)
-              .insertVariableSymbolEntry('isNew', InferredTypes.Unknown, true)
+              .insert(
+                'props',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoProps'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'todo',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoEntity'),
+                false,
+              )
+              .insert(
+                'props.id',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'isNew',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
+                true,
+              )
               .insertChildScope(
                 'if0',
-                new SymbolTableBuilder().insertVariableSymbolEntry(
-                  'event',
-                  InferredTypes.Unknown,
-                  true,
-                ),
+                new SymbolTableBuilder()
+                  //TODO add todo.title
+                  .insert(
+                    'todo.id',
+                    new MemberDotSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                    ),
+                  )
+                  .insertVariableSymbolEntry(
+                    'event',
+                    new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                      'TodoAddedDomainEvent',
+                    ),
+                    true,
+                  )
+                  .insert(
+                    'todo.addDomainEvent(event)',
+                    new MethodCallSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                    ),
+                  ),
               ),
           )
           .insertChildScope(
             'complete',
-            new SymbolTableBuilder()
-              // .insert('this.completed', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('event', InferredTypes.Unknown, true),
+            new SymbolTableBuilder().insertVariableSymbolEntry(
+              'event',
+              InferredTypes.Unknown,
+              true,
+            ),
           )
           .insertChildScope(
             'isCompleted',
@@ -249,7 +490,12 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         'SendEmailAfterMoneyDepositedDomainEventHandler',
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
-          .insert('customerService', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'customerService',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('CustomerServicePort'),
+            ),
+          )
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
@@ -269,18 +515,31 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       'transpiler/__tests__/end-to-end/mocks/symbol-table/integration-event-handler.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
         'MoneyDepositedIntegrationEventHandler',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
-          .insert('eventVersion', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'MoneyDepositedIntegrationEventHandler',
+              ),
+            ),
+          )
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
-              .insert('event', new ParameterSymbolEntry(InferredTypes.Unknown))
+              .insert(
+                'event',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'MoneyDepositedIntegrationEvent',
+                  ),
+                ),
+              )
               .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
               .insertVariableSymbolEntry('command', InferredTypes.Unknown, true),
             // .insert(
@@ -297,29 +556,83 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-service.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
         'MarketingNotificationDomainService',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'MarketingNotificationDomainService',
+              ),
+            ),
+          )
           .insert(
             'notificationTemplateRepo',
-            new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'NotificationTemplateReadRepoPort',
+              ),
+            ),
           )
           .insertChildScope(
             'getNotificationTemplateToBeSent',
             new SymbolTableBuilder()
-              .insert('user', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('emailOrigin', InferredTypes.Unknown, true)
-              .insertVariableSymbolEntry('notificationTemplate', InferredTypes.Unknown, false)
+              .insert(
+                'user',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('UserEntity'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'emailOrigin',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(
+                  bitloopsPrimitivesObj.string,
+                ),
+                true,
+              )
+              .insertVariableSymbolEntry(
+                'notificationTemplate',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                  'NotificationTemplateReadModel',
+                ),
+                false,
+              )
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder()
+                  .insert(
+                    'user.isFirstTodo()',
+                    new MethodCallSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(
+                        bitloopsPrimitivesObj.bool,
+                      ),
+                    ),
+                  )
+                  .insert(
+                    "this.notificationTemplateRepo.getByType('firstTodo')",
+                    new MethodCallSymbolEntry(
+                      new ReturnOkErrorTypeBuilderDirector().buildReturnOkErrorWithIdentifierOkAndNoErrors(
+                        'NotificationTemplateReadModel',
+                      ),
+                    ),
+                  )
+                  .insert(
+                    "this.notificationTemplateRepo.getByType('firstTodo').ifError()",
+                    new MethodCallSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                        'NotificationTemplateReadModel',
+                      ),
+                    ),
+                  )
                   .insertVariableSymbolEntry(
                     'notificationTemplateResponse',
-                    InferredTypes.Unknown,
+                    new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                      'NotificationTemplateReadModel',
+                    ),
                     true,
                   )
                   .insertChildScope('if0', new SymbolTableBuilder()),
@@ -335,14 +648,35 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       'transpiler/__tests__/end-to-end/mocks/symbol-table/rule.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
         'ValidEmailRule',
         new SymbolTableBuilder()
-          .insert('email', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
-          .insertVariableSymbolEntry('re', InferredTypes.Unknown, true),
+          .insert(
+            'email',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(
+                bitloopsPrimitivesObj.string,
+              ),
+            ),
+          )
+          .insertVariableSymbolEntry(
+            're',
+            new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(
+              bitloopsPrimitivesObj.regex,
+            ),
+            true,
+          )
+          .insert(
+            're.test(email)',
+            new MethodCallSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType(
+                bitloopsPrimitivesObj.bool,
+              ),
+            ),
+          ),
       )
       .build(),
   },
@@ -352,18 +686,27 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       'transpiler/__tests__/end-to-end/mocks/symbol-table/integration-event.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
         'TodoCompletedIntegrationEvent',
         new SymbolTableBuilder()
-          .insert('event', new ClassTypeParameterSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'event',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'TodoCompletedDomainEvent',
+              ),
+            ),
+          )
           .insertChildScope(
             'v1',
             new SymbolTableBuilder().insertVariableSymbolEntry(
               'todoCompleted',
-              InferredTypes.Unknown,
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'IntegrationTodoCompletedSchemaV1',
+              ),
               true,
             ),
           ),
@@ -511,3 +854,5 @@ export const SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES: SymbolTableErrorTest
 ];
 
 export const SYMBOL_TABLE_UNREACHED_CODE_TEST_CASES: SymbolTableErrorTestCase[] = [];
+
+export const SYMBOL_TABLE_WRONG_ARGUMENTS_TEST_CASES: SymbolTableErrorTestCase[] = [];

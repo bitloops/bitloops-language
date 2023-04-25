@@ -1,10 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
-import { StringLiteralNode } from './Literal/StringLiteralNode.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
@@ -94,6 +94,18 @@ export class ExpressionNode extends StatementNode {
     return true;
   }
 
+  isMemberDotExpression(): this is MemberDotExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
+  }
+
+  isThisExpression(): this is ThisExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
+  }
+
+  isEvaluation(): this is EvaluationNode {
+    return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
+  }
+
   /**
    * Aggregates and entities have the same evaluations
    */
@@ -154,22 +166,6 @@ export class ExpressionNode extends StatementNode {
     return this.getMethodName();
   }
 
-  isMemberDotExpression(): this is MemberDotExpressionNode {
-    return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
-  }
-
-  isThisExpression(): this is ThisExpressionNode {
-    return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
-  }
-
-  isStringLiteralExpression(): this is StringLiteralNode {
-    return this.getNodeType() === BitloopsTypesMapping.TStringLiteral;
-  }
-
-  isEvaluation(): this is EvaluationNode {
-    return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
-  }
-
   getEvaluation(): EvaluationNode {
     return this.getChildren()[0] as EvaluationNode;
   }
@@ -180,5 +176,14 @@ export class ExpressionNode extends StatementNode {
         child.typeCheck(symbolTable);
       }
     }
+  }
+
+  public getInferredType(): TInferredTypes {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        return child.getInferredType();
+      }
+    }
+    throw new Error('');
   }
 }

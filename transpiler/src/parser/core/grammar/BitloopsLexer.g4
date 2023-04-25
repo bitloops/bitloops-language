@@ -150,6 +150,7 @@ Throws:                         'throws';
 ApplyRules:                     'applyRules';
 AddDomainEvent:                 'addDomainEvent';
 CorsOptions:                    'corsOptions';
+IfError:                        'ifError';
 
 Extends:                        'extends';
 Const:                          'const';

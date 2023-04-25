@@ -21,7 +21,7 @@
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
 import { BitloopsIdentifierTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
-import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
+import { BuiltInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BuiltInClassTypeBuilder.js';
 import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
@@ -115,6 +115,7 @@ import {
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
   memberDotExpressionVisitor,
+  ifErrorExpressionVisitor,
   methodCallExpressionVisitor,
   getClassExpressionVisitor,
   toStringExpressionVisitor,
@@ -383,6 +384,14 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext) {
     return memberDotExpressionVisitor(this, ctx);
+  }
+
+  visitIfErrorExpression(ctx: BitloopsParser.IfErrorExpressionContext) {
+    return ifErrorExpressionVisitor(this, ctx);
+  }
+
+  visitAnonymousFunction(ctx: BitloopsParser.AnonymousFunctionContext) {
+    return anonymousFunctionVisitor(this, ctx);
   }
 
   visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {
@@ -992,7 +1001,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitBitloopsBuiltInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
     const buildInClassType = ctx.bitloopsBuiltInClass().getText();
-    const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
+    const buildInClassTypeNode = new BuiltInClassTypeBuilder().withType(buildInClassType).build();
     return buildInClassTypeNode;
   }
 
