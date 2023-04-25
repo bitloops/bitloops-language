@@ -118,7 +118,7 @@ More custom methods can be added to a **RepoPort** which extends the **CRUDRepoP
 
 ---
 
-Finally in order to be able to connect a specific database to the specific RepoPort, a declaration of the specific concretion for this port via a ready to use adapter should be added at the setup. The syntax for using a mongo database could be as follows (for more information check the [RepoAdapters section](./repository-adapter.md)):
+Finally in order to be able to connect a specific database to the specific RepoPort, a declaration of the specific concretion for this port via a ready to use adapter should be added at the setup. The syntax for using a mongo database could be as follows:
 
 ```typescript
  RepoAdapters.Mongo concretes [Demo][Hello World]MyHelloRepoPort;
