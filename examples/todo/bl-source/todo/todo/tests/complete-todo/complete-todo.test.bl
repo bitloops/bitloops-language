@@ -85,7 +85,7 @@ Feature: Complete todo (
 
         // then
         // TODO get todo check other way? - maybe mockTodoWriteRepo.__get__spy__call__update()?
-        const todoAfter = mockTodoWriteRepo.__get__update();
+        const todoAfter = mockTodoWriteRepo.__get__update().aggregate;
 
         // TODO if the builder has default, then the default values will be invoked pror any other 
         // which alter the props  
