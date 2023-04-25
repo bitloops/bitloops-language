@@ -7,6 +7,25 @@ const homeDirectory = homedir();
 const configDirectory = join(homeDirectory, '.bitloops');
 const configFile = join(configDirectory, '.bitloopsrc');
 
+const bitloopsProjectConfigFileName = 'bitloops.config.json';
+
+type BitloopsProjectConfig = {
+  concretions: {
+    [boundedContext: string]: {
+      [module: string]: {
+        [fileName: string]: 'Mock' | 'Mongo';
+      };
+    };
+  };
+  'grpc-controllers': {
+    [boundedContext: string]: {
+      [module: string]: {
+        [handlerFileName: string]: 'string'; // Query/Command file type
+      };
+    };
+  };
+};
+
 export class ConfigUtils {
   static async readApiKey(): Promise<string | null> {
     try {
@@ -24,5 +43,18 @@ export class ConfigUtils {
     }
     const config = JSON.stringify({ api_key: apiKey });
     await writeFile(configFile, config, 'utf-8');
+  }
+
+  static async readBitloopsProjectConfigFile(): Promise<BitloopsProjectConfig> {
+    const cwd = process.cwd();
+    const filePath = join(cwd, bitloopsProjectConfigFileName);
+    try {
+      // Read file
+      const config = await readFile(filePath, 'utf-8');
+      // Parse file
+      return JSON.parse(config);
+    } catch (error) {
+      return null;
+    }
   }
 }

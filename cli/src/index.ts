@@ -83,6 +83,7 @@ const checkVersion = async (): Promise<void> => {
     program
       .command('prompt')
       .description('Prompt for ai infrastructure code completion')
+      .option('-s, --sourceDirPath <string>')
       .option('-t, --targetDirPath <string>')
       .action(prompt);
 

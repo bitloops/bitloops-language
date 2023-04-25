@@ -1,9 +1,10 @@
 import { TBoundedContextName, TModuleName } from '../../types.js';
-import { Command } from './command.js';
+import { Command } from './commands/command.js';
 
 export const GENERATED_INFRA_KEYS = {
-  API_GRPC_CONTROLLER: 'api.grpcController',
+  API_GRPC_CONTROLLER: 'api.grpcControllers',
   API_PROTO_BUFF: 'api.protobuff',
+  API_DTO: 'api.dtos',
   MODULE_DEFINITION: (boundedContextName: TBoundedContextName, moduleName: TModuleName): string =>
     `boundedContexts.${boundedContextName}.${moduleName}.moduleDefinition`,
   REPOSITORIES: (boundedContextName: TBoundedContextName, moduleName: TModuleName): string =>
@@ -14,7 +15,11 @@ export const GENERATED_INFRA_KEYS = {
 
 type TGeneratedComponent = string;
 export type TGeneratedInfra = Partial<{
-  api: { grpcController: TGeneratedComponent; protobuff: TGeneratedComponent };
+  api: {
+    grpcControllers: TGeneratedComponent[];
+    protobuff: TGeneratedComponent;
+    dtos: TGeneratedComponent;
+  };
   boundedContexts: {
     [key: TBoundedContextName]: {
       [key: TModuleName]: {
@@ -46,21 +51,18 @@ export class Invoker {
   }
 
   async executeCommands(): Promise<TGeneratedInfra> {
-    for (const { key, command } of this.commands) {
-      const [result, error] = await command.execute();
+    await Promise.all(
+      this.commands.map(async ({ key, command }) => {
+        const [result, error] = await command.execute();
 
-      if (error) {
-        console.error(error);
-        throw error;
-      }
+        if (error) {
+          console.error(error);
+          throw error;
+        }
 
-      this.setNestedProperty(this.results, key, result);
-      // if (Array.isArray(this.results[key])) {
-      //   this.results[key].push(result);
-      //   continue;
-      // }
-      // this.results[key] = result;
-    }
+        this.setNestedProperty(this.results, key, result);
+      }),
+    );
     return this.results;
   }
 

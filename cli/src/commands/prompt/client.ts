@@ -1,6 +1,7 @@
 import { OpenAIApi, Configuration, ChatCompletionRequestMessage } from 'openai';
-import { OpenAIRequestCommand } from './command.js';
+import { OpenAIRequestCommand } from './commands/command.js';
 import { Invoker } from './invoker.js';
+import { OpenAICodeDavinciCommand } from './commands/code-davinci-command.js';
 
 export class Client {
   private client: OpenAIApi;
@@ -13,6 +14,15 @@ export class Client {
 
   makeOpenAIRequest(key: string, params: ChatCompletionRequestMessage[], isArray = false): void {
     const command = new OpenAIRequestCommand(this.client, params);
+    this.invoker.addCommand(key, command, isArray);
+  }
+
+  makeOpenAICodeDavinciRequest(
+    key: string,
+    params: ChatCompletionRequestMessage[],
+    isArray = false,
+  ): void {
+    const command = new OpenAICodeDavinciCommand(this.client, params);
     this.invoker.addCommand(key, command, isArray);
   }
 
