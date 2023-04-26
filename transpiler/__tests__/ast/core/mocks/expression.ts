@@ -3,6 +3,7 @@ import { EvaluationBuilderDirector } from '../builders/evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 import { IfErrorExpressionBuilderDirector } from '../builders/ifErrorExpressionBuilderDirector.js';
+import { ArgumentListBuilderDirector } from '../builders/argumentListBuilderDirector.js';
 
 export const generalExpressionTestCases = [
   {
@@ -402,18 +403,20 @@ export const validIfErrorExpressionTestCases = [
     description: 'If error expression with arrow function statements',
     fileId: 'testFile.bl',
     inputBLString:
-      "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError((err) => { return err; } ) }",
+      'JestTestExpression { this.accountRepo.getById(id).ifError((err) => { return err; } ) }',
     expression: new ExpressionBuilderDirector().buildIfErrorExpression(
       new IfErrorExpressionBuilderDirector().buildIfErrorStatements(
-        new ExpressionBuilderDirector().buildEvaluation(
-          new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
-            fields: [
-              new EvaluationFieldBuilderDirector().buildStringEvaluationField(
-                'message',
-                'Hello, World!',
-              ),
-            ],
-          }),
+        new ExpressionBuilderDirector().buildMethodCallExpression(
+          new ExpressionBuilderDirector().buildMemberExpression(
+            new ExpressionBuilderDirector().buildMemberExpression(
+              new ExpressionBuilderDirector().buildThisExpression(),
+              'accountRepo',
+            ),
+            'getById',
+          ),
+          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+            new ArgumentBuilderDirector().buildIdentifierArgument('id'),
+          ]),
         ),
       ),
     ),
