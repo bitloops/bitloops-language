@@ -1,7 +1,9 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
 import { ContextInfo } from '../../../types.js';
-
+import { FileNameToClassName } from './common/names.js';
+import { FileNameAndConcretion } from './common/concretions.js';
+import { CodeSnippets } from './common/code-snippets.js';
 const DEFAULT_PORT = `import { Application, Domain, Either } from '@bitloops/bl-boilerplate-core';
 import { EmailVO } from '../domain/email.value-object.js';
 import { UserEntity } from '../domain/user.entity.js';
@@ -14,16 +16,19 @@ export interface UserWriteRepoPort
 }
 `;
 
-export const promptWriteRepoMessages: (
-  port: string,
+export const promptWriteRepoMessages = (
+  port = DEFAULT_PORT,
   contextInfo: ContextInfo,
-) => ChatCompletionRequestMessage[] = (port = DEFAULT_PORT, contextInfo) => {
+  concretion: FileNameAndConcretion,
+): ChatCompletionRequestMessage[] => {
+  const [fileName, concretionType] = concretion;
   const { boundedContext, module } = contextInfo;
 
   const messageInstructions = (bc: string, mod: string): string => {
     return `
     The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
-The repository should be a mongodb one.  You can assume the mongodb client should be injected.
+    The class name should be ${FileNameToClassName.repository(fileName, concretionType)}.
+The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
 The methods getById, update, save and delete should read the ctx(user context) from asyncLocalStorage,
 and verify that the jwt token is valid, and the userId is allowed to run the respective method.
 You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
@@ -35,7 +40,7 @@ You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
     {
       role: 'user',
       content: `Generate the repo adapter for the following write repo port
-    '''typescript
+    ${CodeSnippets.openTypescript()}
     import { Application, Domain } from '@bitloops/bl-boilerplate-core';
 import { TodoEntity } from '../domain/todo.entity.js';
 
@@ -43,23 +48,23 @@ export type TodoWriteRepoPort = Application.Repo.ICRUDWritePort<
   TodoEntity,
   Domain.UUIDv4
 >;
-'''
+${CodeSnippets.closeTypescript()}
 Where Application.Repo.ICRUDWritePort is
-'''typescript
+${CodeSnippets.openTypescript()}
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
   getById(aggregateRootId: AggregateId): Promise<Either<Aggregate | null, UnexpectedError>>;
   save(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
   update(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
   delete(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
 }
-'''
+${CodeSnippets.closeTypescript()}
 ${messageInstructions('todo', 'todo')}
 `,
     },
     {
       role: 'assistant',
       content: `
-  '''typescript
+  ${CodeSnippets.openTypescript()}
   import {
     Application,
     Domain,
@@ -215,7 +220,7 @@ ${messageInstructions('todo', 'todo')}
       return ok();
     }
   }
-  '''
+  ${CodeSnippets.closeTypescript()}
   The user token is validated before and after allowing certain database operations.
     `,
     },
@@ -223,7 +228,7 @@ ${messageInstructions('todo', 'todo')}
       role: 'user',
       content: `
     Generate a repo adapter for the following write repo port
-    '''typescript
+    ${CodeSnippets.openTypescript()}
     import { Application, Domain } from '@bitloops/bl-boilerplate-core';
 import { UserEntity } from '../domain/user.entity';
 
@@ -231,21 +236,23 @@ export type UserWriteRepoPort = Application.Repo.ICRUDWritePort<
   UserEntity,
   Domain.UUIDv4
 >;
+${CodeSnippets.closeTypescript()}
 Where Application.Repo.ICRUDWritePort is
-'''typescript
+${CodeSnippets.openTypescript()}
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
   getById(aggregateRootId: AggregateId): Promise<Either<Aggregate | null, UnexpectedError>>;
   save(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
   update(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
   delete(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
 }
-'''
+${CodeSnippets.closeTypescript()}
 ${messageInstructions('marketing', 'marketing')}
 `,
     },
     {
       role: 'assistant',
       content: `
+      ${CodeSnippets.openTypescript()}
       import {
         Application,
         Domain,
@@ -371,16 +378,16 @@ ${messageInstructions('marketing', 'marketing')}
           return ok();
         }
       }
-      
+      ${CodeSnippets.closeTypescript()}
       `,
     },
     {
       role: 'user',
       content: `
     Generate a repo adapter for the following write repo port
-    '''typescript
+    ${CodeSnippets.openTypescript()}
     ${port}
-    '''
+    ${CodeSnippets.closeTypescript()}
     ${messageInstructions(boundedContext, module)}
     `,
     },

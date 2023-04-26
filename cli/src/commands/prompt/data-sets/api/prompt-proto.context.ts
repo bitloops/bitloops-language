@@ -1,4 +1,5 @@
 import { ChatCompletionRequestMessage } from 'openai';
+import { CodeSnippets } from '../common/code-snippets.js';
 
 const HANDLERS = [
   `
@@ -363,40 +364,41 @@ const messageInstructions = (
   handlers: string[],
   commands: string[],
   queries: string[],
-  entity: string,
+  entities: string[],
 ): string => {
-  console.log('INSERTED MessageInstructions');
-  console.log(packageName);
-  console.log({
-    commandsLength: commands.length,
-    handlersLength: handlers.length,
-  });
-  const entityTruncationIndex = entity.indexOf('  extends Domain.Aggregate');
-  const truncatedEntity = entity.slice(0, entityTruncationIndex);
+  // console.log(packageName);
+  // console.log({
+  //   commandsLength: commands.length,
+  //   handlersLength: handlers.length,
+  // });
+  const truncatedEntities = [];
+  for (const entity of entities) {
+    const entityTruncationIndex = entity.indexOf('  extends Domain.Aggregate');
+    const truncatedEntity = entity.slice(0, entityTruncationIndex);
+    truncatedEntities.push(truncatedEntity);
+  }
 
   return ` 
   Create a protobuff file using the proto3 syntax. The name of the package is ${packageName}.
   The service name is ${serviceName}. 
   Below are the command and query handlers.
-  '''typescript
+  ${CodeSnippets.openTypescript()}
   ${handlers
     .map((h) => {
       const index = h.indexOf(' implements');
-      console.log('index', index);
       const res = h.slice(0, index);
-      console.log('res', res);
       return res;
     })
     .join('\n')}
-  '''
+  ${CodeSnippets.closeTypescript()}
   And their respective command and queries.
-  '''typescript
+  ${CodeSnippets.openTypescript()}
   ${commands.join('\n')}
   ${queries.join('\n')}
-  '''
+  ${CodeSnippets.closeTypescript()}
   Each command/query handler will have a defined rpc.
   The Either response will be represented as following
-  '''proto
+  ${CodeSnippets.openProto()}
   message <ResponseMessageName> {
     oneof result {
       <rpc-name>OKResponse ok = 1;
@@ -408,17 +410,20 @@ const messageInstructions = (
     string code = 1;
     string message = 2;
   }
-  '''
+  ${CodeSnippets.closeProto()}
   Create one rpc per handler(command or query)
   If there are any commands or queries not corresponding to a handler, do not implement their rpcs.
   
-  You can create the Entity Message and its props using the primitives of this Entity
-  '''typescript
-  ${truncatedEntity}
-  '''
+  You can create the Entity Message and its props using the primitives of these Entities
+  ${CodeSnippets.openTypescript()}
+  ${truncatedEntities.join('\n')}
+  ${CodeSnippets.closeTypescript()}
+
+  Add only the properties existing in the entities.
 `;
 };
-const TODO_ENTITY = `export interface TodoProps {
+const TODO_ENTITY = [
+  `export interface TodoProps {
   userId: UserIdVO;
   id?: Domain.UUIDv4;
   title: TitleVO;
@@ -435,29 +440,15 @@ type TTodoEntityPrimitives = {
   };
   completed: boolean;
 };
-`;
-const TEST_TODO_ENTITY = `export interface TestTodoProps {
-  userId: UserIdVO;
-  id?: Domain.UUIDv4;
-  title: TitleVO;
-  checked: boolean;
-}
-
-type TTestTodoEntityPrimitives = {
-  id: string;
-  userId: {
-    id: string;
-  };
-  title: {
-    title: string;
-  };
-  checked: boolean;
-};
-
-`;
+`,
+];
 export const promptProtoMessages = (
-  packageName = 'todo',
-  serviceName = 'TodoService',
+  packageName: string,
+  serviceName: string,
+  handlers: string[],
+  commands: string[],
+  queries: string[],
+  entities: string[],
 ): ChatCompletionRequestMessage[] => [
   {
     role: 'system',
@@ -636,13 +627,6 @@ message Todo {
   },
   {
     role: 'user',
-    content: messageInstructions(
-      'testTodo',
-      'TestTodoService',
-      HANDLERS.slice(0, -2),
-      COMMANDS.slice(0, -2),
-      [],
-      TEST_TODO_ENTITY,
-    ),
+    content: messageInstructions(packageName, serviceName, handlers, commands, queries, entities),
   },
 ];

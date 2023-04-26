@@ -18,7 +18,7 @@ export type TGeneratedInfra = Partial<{
   api: {
     grpcControllers: TGeneratedComponent[];
     protobuff: TGeneratedComponent;
-    dtos: TGeneratedComponent;
+    dtos: TGeneratedComponent[];
   };
   boundedContexts: {
     [key: TBoundedContextName]: {
@@ -39,6 +39,7 @@ export type TGeneratedInfra = Partial<{
 export class Invoker {
   private commands: Array<{ key: string; command: Command }> = [];
   private results: TGeneratedInfra = {};
+  private cost = 0;
 
   addCommand(key: string, command: Command, isArray = false): void {
     this.commands.push({ key, command });
@@ -56,13 +57,16 @@ export class Invoker {
         const [result, error] = await command.execute();
 
         if (error) {
-          console.error(error);
+          // console.error(error);
           throw error;
         }
 
         this.setNestedProperty(this.results, key, result);
       }),
     );
+    this.cost = this.commands.reduce((total, { command }) => total + command.totalCost, this.cost);
+    // empty commands array
+    this.commands = [];
     return this.results;
   }
 
@@ -74,7 +78,7 @@ export class Invoker {
    * Returns total cost of all commands in USD
    */
   getTotalCost(): number {
-    return this.commands.reduce((total, { command }) => total + command.totalCost, 0);
+    return this.cost;
   }
 
   private setNestedProperty(obj: any, keyString: string, value: any): void {

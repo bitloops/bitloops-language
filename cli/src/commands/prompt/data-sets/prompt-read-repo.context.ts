@@ -1,34 +1,31 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
 import { ContextInfo } from '../../../types.js';
+import { FileNameAndConcretion } from './common/concretions.js';
+import { FileNameToClassName } from './common/names.js';
+import { CodeSnippets } from './common/code-snippets.js';
 
-const _DEFAULT_PORT = `import { Application } from '@bitloops/bl-boilerplate-core';
-import { TTodoReadModelSnapshot } from '../domain/todo.read-model.js';
-
-export type TodoReadRepoPort =
-  Application.Repo.ICRUDReadPort<TTodoReadModelSnapshot>;
-`;
-
-const TEST_PORT = `import { Application } from '@bitloops/bl-boilerplate-core';
-import { TCarsReadModelSnapshot } from '../domain/cars.read-model.js';
-export type CarsReadRepoPort = Application.Repo.ICRUDReadPort<TCarsReadModelSnapshot>;
-`;
-
-const messageInstructions = (bc: string, mod: string): string => {
-  return `
-  The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
-The repository should be a mongodb one.  You can assume the mongodb client should be injected.
-The method getAll should read the ctx(user context) from asyncLocalStorage,
-and verify that the jwt token is valid, and the userId is allowed to run the respective method.
-You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
-`;
-};
-
-export const promptReadRepoMessages: (
+export const promptReadRepoMessages = (
   port: string,
   contextInfo: ContextInfo,
-) => ChatCompletionRequestMessage[] = (port = TEST_PORT, contextInfo) => {
+  concretion: FileNameAndConcretion,
+): ChatCompletionRequestMessage[] => {
+  const [fileName, concretionType] = concretion;
   const { boundedContext, module } = contextInfo;
+
+  const messageInstructions = (bc: string, mod: string): string => {
+    return `
+    The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
+    The class name should be ${FileNameToClassName.repository(fileName, concretionType)}.
+  The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
+
+  The method getAll returns empty array if nothing is found.
+
+  The method getAll should read the ctx(user context) from asyncLocalStorage 
+  and verify that the jwt token is valid, and the userId is allowed to run the respective method.
+  You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
+  `;
+  };
 
   return [
     promptContextMessage,
@@ -36,27 +33,27 @@ export const promptReadRepoMessages: (
       role: 'user',
       content: `
     Generate a repo adapter for the following read repo port
-'''typescript
+${CodeSnippets.openTypescript()}
     import { Application } from '@bitloops/bl-boilerplate-core';
 import { TTodoReadModelSnapshot } from '../domain/todo.read-model.js';
 
 export type TodoReadRepoPort =
   Application.Repo.ICRUDReadPort<TTodoReadModelSnapshot>;
-'''
+${CodeSnippets.closeTypescript()}
 Where the ICrudReadPort is
-'''typescript
+${CodeSnippets.openTypescript()}
 export interface CRUDReadRepoPort<ReadModel> {
-  getAll(): Promise<Either<ReadModel[] | null, UnexpectedError>>;
+  getAll(): Promise<Either<ReadModel[], UnexpectedError>>;
   getById(id: string): Promise<Either<ReadModel | null, UnexpectedError>>;
 }
-'''
+${CodeSnippets.closeTypescript()}
 ${messageInstructions('todo', 'todo')}
   `,
     },
     {
       role: 'assistant',
       content: `
-    '''typescript
+    ${CodeSnippets.openTypescript()}
 import { Inject, Injectable } from '@nestjs/common';
 import { Collection, MongoClient } from 'mongodb';
 import * as jwtwebtoken from 'jsonwebtoken';
@@ -134,14 +131,14 @@ export class TodoReadRepository implements TodoReadRepoPort {
     );
   }
 }
-'''
+${CodeSnippets.closeTypescript()}
 `,
     },
     {
       role: 'user',
       content: `
     Generate a repo adapter for the following read repo port
-'''typescript
+${CodeSnippets.openTypescript()}
 import { Application, Either } from '@bitloops/bl-boilerplate-core';
 import { NotificationTemplateReadModel } from '../domain/notification-template.read-model';
 
@@ -156,7 +153,7 @@ export interface NotificationTemplateReadRepoPort
     >
   >;
 }
-'''
+${CodeSnippets.closeTypescript()}
 ${messageInstructions('marketing', 'marketing')}
   `,
     },
@@ -164,7 +161,7 @@ ${messageInstructions('marketing', 'marketing')}
     {
       role: 'assistant',
       content: `
-    '''typescript
+    ${CodeSnippets.openTypescript()}
     import { Injectable, Inject } from '@nestjs/common';
 import { Collection, MongoClient } from 'mongodb';
 import * as jwtwebtoken from 'jsonwebtoken';
@@ -235,7 +232,7 @@ export class NotificationTemplateReadRepository
   @Application.Repo.Decorators.ReturnUnexpectedError()
   async getAll(): Promise<
     Either<
-      NotificationTemplateReadModel[] | null,
+      NotificationTemplateReadModel[] ,
       Application.Repo.Errors.Unexpected
     >
   > {
@@ -280,16 +277,16 @@ export class NotificationTemplateReadRepository
     );
   }
 }
-    '''
+    ${CodeSnippets.closeTypescript()}
     `,
     },
     {
       role: 'user',
       content: `
     Generate a repo adapter for the following read repo port
-    '''typescript
+    ${CodeSnippets.openTypescript()}
     ${port}
-    '''
+    ${CodeSnippets.closeTypescript()}
     ${messageInstructions(boundedContext, module)}
     `,
     },

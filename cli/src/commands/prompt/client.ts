@@ -12,8 +12,13 @@ export class Client {
     this.client = new OpenAIApi(configuration);
   }
 
-  makeOpenAIRequest(key: string, params: ChatCompletionRequestMessage[], isArray = false): void {
-    const command = new OpenAIRequestCommand(this.client, params);
+  makeOpenAIRequest(
+    key: string,
+    params: ChatCompletionRequestMessage[],
+    isArray = false,
+    metadata?: any,
+  ): void {
+    const command = new OpenAIRequestCommand(this.client, params, metadata);
     this.invoker.addCommand(key, command, isArray);
   }
 

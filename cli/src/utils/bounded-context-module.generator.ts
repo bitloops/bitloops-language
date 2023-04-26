@@ -27,3 +27,10 @@ export function* yieldModuleInfo<Info>(
     }
   }
 }
+
+// Define the iterable
+export const moduleInfoIterator = {
+  [Symbol.iterator]: function* <MyModuleInfo>(input: BoundedContextModulesInfo<MyModuleInfo>) {
+    yield* yieldModuleInfo(input);
+  },
+};

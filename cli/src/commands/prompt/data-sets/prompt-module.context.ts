@@ -3,6 +3,7 @@ import { promptContextMessage } from './common/system.message.js';
 import { ContextInfo } from '../../../types.js';
 import { getNameFromToken } from './common/names.js';
 import { CONCRETIONS } from './common/concretions.js';
+import { CodeSnippets } from './common/code-snippets.js';
 const MARKETING_CONSTANTS_FILE = `export const EmailServicePortToken = Symbol('EmailServicePort');
 export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
 export const StreamingDomainEventBusToken = Symbol('StreamingDomainEventBus');
@@ -55,9 +56,9 @@ const messageInstructions = (
     and provide all needed dependencies.
     All dependency tokens are exported from the {@lib-module-path}/constants.ts file.
     This is the constants file content.
-    '''typescript
+    ${CodeSnippets.openTypescript()}
     ${constantsFile}
-    '''
+    ${CodeSnippets.closeTypescript()}
     All buses-related concretions are imported from @bitloops/bl-boilerplate-infra-nest-jetstream.
 
     ${Object.entries(providerImplementations)
@@ -93,7 +94,7 @@ export const promptModuleMessages = (
     {
       role: 'assistant',
       content: `
-  '''typescript
+ ${CodeSnippets.openTypescript()}
 import { Module } from '@nestjs/common';
 import {
   NatsStreamingCommandBus,
@@ -167,7 +168,7 @@ const providers = [
 })
 export class MarketingModule {}
 
-'''
+${CodeSnippets.closeTypescript()}
   `,
     },
     {
@@ -188,7 +189,7 @@ export class MarketingModule {}
     {
       role: 'assistant',
       content: `
-  '''typescript
+  ${CodeSnippets.openTypescript()}
   import { Module } from '@nestjs/common';
   import {
     JetstreamModule,
@@ -236,7 +237,7 @@ const providers = [
   exports: [LibAuthenticationModule],
 })
 export class AuthenticationModule {}
-  '''
+${CodeSnippets.closeTypescript()}
       `,
     },
     {

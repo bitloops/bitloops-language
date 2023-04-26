@@ -9,18 +9,25 @@ const configFile = join(configDirectory, '.bitloopsrc');
 
 const bitloopsProjectConfigFileName = 'bitloops.config.json';
 
-type BitloopsProjectConfig = {
+export type BitloopsProjectConfig = {
   concretions: {
     [boundedContext: string]: {
       [module: string]: {
-        [fileName: string]: 'Mock' | 'Mongo';
+        [fileName: string]: 'Mock' | 'Mongo' | 'Postgres';
       };
     };
   };
-  'grpc-controllers': {
-    [boundedContext: string]: {
-      [module: string]: {
-        [handlerFileName: string]: 'string'; // Query/Command file type
+  grpc: {
+    package: string;
+    'service-name': string;
+    controllers: {
+      [boundedContext: string]: {
+        [module: string]: {
+          entities: string[];
+          handlers: {
+            [handlerFileName: string]: string; // Query/Command file type
+          };
+        };
       };
     };
   };

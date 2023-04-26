@@ -14,7 +14,11 @@ export class OpenAIRequestCommand implements Command {
   private model = 'gpt-3.5-turbo';
   public usedTokens?: number;
   private costPer1KDollars = 0.002;
-  constructor(private client: OpenAIApi, private params: ChatCompletionRequestMessage[]) {}
+  constructor(
+    private client: OpenAIApi,
+    private params: ChatCompletionRequestMessage[],
+    private metadata?: any,
+  ) {}
 
   get totalCost(): number {
     if (!this.usedTokens) throw new Error('Cannot calculate total cost before executing command');
@@ -29,6 +33,7 @@ export class OpenAIRequestCommand implements Command {
       const completion = await this.client.createChatCompletion({
         model: this.model,
         messages: this.params,
+        temperature: 0.2,
       });
       console.log('completion usage: ', completion.data.usage);
       // console.log(completion.data.choices[0].message.content);
@@ -50,6 +55,8 @@ export class OpenAIRequestCommand implements Command {
         console.log(error.message);
       }
       return [null, error];
+    } finally {
+      if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
     }
   }
 }

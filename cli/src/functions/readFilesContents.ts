@@ -57,12 +57,13 @@ const getBitloopsFilesAndContents = async (
   return result;
 };
 
-type TranspiledTypescriptFilesAndContents = BoundedContextModulesInfo<
-  Array<{
-    fileName: string;
-    fileContent: string;
-    filePath: string;
-  }>
+export type TranspiledTypescriptFileInfo = {
+  fileName: string;
+  fileContent: string;
+  filePath: string;
+};
+export type TranspiledTypescriptFilesAndContents = BoundedContextModulesInfo<
+  TranspiledTypescriptFileInfo[]
 >;
 
 const getTypescriptFilesAndContents = async (

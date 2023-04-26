@@ -1,4 +1,5 @@
 import { ChatCompletionRequestMessage } from 'openai';
+import { CodeSnippets } from '../common/code-snippets.js';
 
 /**
  * POSSIBLE IMPROVEMENTS
@@ -91,25 +92,24 @@ const QUERIES = [
 }`,
 ];
 const messageInstructions = (commands: string[], queries: string[]): string => {
-  console.log('INSERTED MessageInstructions');
-  console.log({
-    commandsLength: commands.length,
-  });
+  // console.log({
+  //   commandsLength: commands.length,
+  // });
 
   return ` 
   Create one dto for each command/query. Use relevant class validator decorators based on each property's type.
   Here are the commands and queries.
-  '''typescript
+  ${CodeSnippets.openTypescript()}
   ${commands.join('\n')}
   ${queries.join('\n')}
-  '''
+  ${CodeSnippets.closeTypescript()}
   Your response should contain all the result files, separated by ---
 `;
 };
 
 export const promptDtoMessages = (
-  commands: string[] = COMMANDS.slice(0, -1),
-  queries: string[] = QUERIES,
+  commands: string[],
+  queries: string[],
 ): ChatCompletionRequestMessage[] => [
   {
     role: 'system',
@@ -123,7 +123,7 @@ export const promptDtoMessages = (
   {
     role: 'assistant',
     content: `
-  '''typescript
+  ${CodeSnippets.openTypescript()}
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class AddTodoDto {
@@ -170,7 +170,7 @@ export class UncompleteTodoDto {
 ---
 export class GetTodosDto {}
 
-'''
+${CodeSnippets.closeTypescript()}
   `,
   },
   {

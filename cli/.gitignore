@@ -56,3 +56,4 @@ src/grammar/BitloopsSetupParserVisitor.js
 # ANTLR4
 
 bitloops.json
+bitloops.config.json

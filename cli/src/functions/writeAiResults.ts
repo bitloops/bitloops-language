@@ -1,3 +1,4 @@
+import { CodeSnippets } from '../commands/prompt/data-sets/common/code-snippets.js';
 import { TGeneratedInfra } from '../commands/prompt/invoker.js';
 import { yieldModuleInfo } from '../utils/bounded-context-module.generator.js';
 import { writeTargetFile } from './writeTargetFile.js';
@@ -6,29 +7,29 @@ export const writeAIResults = async (
   responses: TGeneratedInfra,
   targetDirPath: string,
 ): Promise<void> => {
-  for (const { boundedContextName, moduleInfo } of yieldModuleInfo(
-    responses.boundedContexts ?? {},
-  )) {
+  const boundedContexts = responses.boundedContexts ?? {};
+  for (const { boundedContextName, moduleName, moduleInfo } of yieldModuleInfo(boundedContexts)) {
+    const baseModulePath = `bounded-contexts/${boundedContextName}/${moduleName}`;
     const { moduleDefinition, repositories, services } = moduleInfo;
     let counter = 0;
     for (const repo of repositories ?? []) {
       writeTargetFile({
         projectPath: targetDirPath,
         filePathObj: {
-          path: boundedContextName,
-          filename: 'a' + counter++ + '.ts',
+          path: `${baseModulePath}/repositories`,
+          filename: 'repo' + counter++ + '.ts',
         },
-        fileContent: repo,
+        fileContent: CodeSnippets.sanitizeTypescript(repo),
       });
     }
     if (moduleDefinition) {
       writeTargetFile({
         projectPath: targetDirPath,
         filePathObj: {
-          path: boundedContextName,
-          filename: 'c' + counter++ + '.ts',
+          path: baseModulePath,
+          filename: 'moduleDef' + counter++ + '.ts',
         },
-        fileContent: moduleDefinition,
+        fileContent: CodeSnippets.sanitizeTypescript(moduleDefinition),
       });
     }
 
@@ -36,10 +37,10 @@ export const writeAIResults = async (
       writeTargetFile({
         projectPath: targetDirPath,
         filePathObj: {
-          path: boundedContextName,
-          filename: 's' + counter++ + '.ts',
+          path: `${baseModulePath}/services`,
+          filename: 'service' + counter++ + '.ts',
         },
-        fileContent: service,
+        fileContent: CodeSnippets.sanitizeTypescript(service),
       });
     }
   }
@@ -51,7 +52,7 @@ export const writeAIResults = async (
         path: 'api',
         filename: 'file.proto',
       },
-      fileContent: responses.api.protobuff,
+      fileContent: CodeSnippets.sanitizeProto(responses.api.protobuff),
     });
   }
   if (responses.api?.dtos) {
@@ -61,7 +62,7 @@ export const writeAIResults = async (
         path: 'api',
         filename: 'dtos.ts',
       },
-      fileContent: responses.api.dtos,
+      fileContent: responses.api.dtos.map((x) => CodeSnippets.sanitizeTypescript(x)).join('\n'),
     });
   }
   if (responses.api?.grpcControllers) {
