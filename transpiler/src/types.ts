@@ -424,17 +424,13 @@ export type TExpressionValues =
   | TIfErrorExpression;
 
 export type TIfErrorExpression = {
-  ifErrorExpression: {
-    expression: TExpression;
-    anonymousFunction?: TAnonymousFunction;
-  };
+  ifErrorExpression: TExpression & Partial<TAnonymousFunction>;
 };
 
 export type TAnonymousFunction = {
   anonymousFunction: {
-    parameters?: TParameterList;
     arrowFunctionBody: TReturnStatement | TStatements;
-  };
+  } & Partial<TParameterList>;
 };
 
 export type TAssignmentExpression = {

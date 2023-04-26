@@ -1,13 +1,7 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import {
-  TDTO,
-  DTOKey,
-  DTOIdentifierKey,
-  TExpression,
-  TAnonymousFunction,
-} from '../../../../src/types.js';
+import { TExpression, TAnonymousFunction, TIfErrorExpression } from '../../../../src/types.js';
 
-export class IfErrorExpressionBuilder implements IBuilder<TDTO> {
+export class IfErrorExpressionBuilder implements IBuilder<TIfErrorExpression> {
   private leftExpression: TExpression;
   private anonymousFunction: TAnonymousFunction;
 
@@ -21,14 +15,13 @@ export class IfErrorExpressionBuilder implements IBuilder<TDTO> {
     return this;
   }
 
-  public build(): TDTO {
-    const dto: TDTO = {
-      [DTOKey]: {
-        [DTOIdentifierKey]: this.identifierName,
-        ...this.fields,
+  public build(): TIfErrorExpression {
+    const ifErrorExpression: TIfErrorExpression = {
+      ifErrorExpression: {
+        expression: this.leftExpression,
       },
     };
 
-    return dto;
+    return ifErrorExpression;
   }
 }
