@@ -78,7 +78,7 @@ export type TParameterIdentifier = string;
 export type TParameter = {
   parameter: {
     value: TParameterIdentifier;
-  } & TParameterType;
+  } & Partial<TParameterType>;
 };
 
 export type TParameterList = {
@@ -430,7 +430,7 @@ export type TIfErrorExpression = {
 export type TAnonymousFunction = {
   anonymousFunction: {
     arrowFunctionBody: TReturnStatement | TStatements;
-  } & Partial<TParameterList>;
+  } & TParameterList;
 };
 
 export type TAssignmentExpression = {
