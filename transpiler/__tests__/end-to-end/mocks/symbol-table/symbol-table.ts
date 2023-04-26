@@ -28,7 +28,6 @@ import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inf
 import { bitloopsPrimitivesObj } from '../../../../src/types.js';
 import { FileUtil } from '../../../../src/utils/file.js';
 import { BitloopsPrimaryTypeDirector } from '../../../ast/core/builders/bitloopsPrimaryTypeDirector.js';
-import { ReturnOkErrorTypeBuilder } from '../../../ast/core/builders/returnOkErrorType.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../../ast/core/builders/returnOkErrorTypeBuilderDirector.js';
 import { SymbolTableBuilder } from '../../builder/SymbolTableBuilder.js';
 type SymbolTableTestCase = {
@@ -55,6 +54,14 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new ClassTypeThisSymbolEntry(
               new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
                 'WithdrawMoneyCommandHandler',
+              ),
+            ),
+          )
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'IntegrationEventBusPort',
               ),
             ),
           )
@@ -145,6 +152,14 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             ),
           )
           .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'IntegrationEventBusPort',
+              ),
+            ),
+          )
+          .insert(
             'accountRepo',
             new ClassTypeParameterSymbolEntry(
               new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountWriteRepoPort'),
@@ -230,6 +245,14 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new ClassTypeThisSymbolEntry(
               new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
                 'WithdrawMoneyCommandHandler',
+              ),
+            ),
+          )
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'IntegrationEventBusPort',
               ),
             ),
           )
@@ -327,6 +350,14 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             ),
           )
           .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'IntegrationEventBusPort',
+              ),
+            ),
+          )
+          .insert(
             'accountRepo',
             new ClassTypeParameterSymbolEntry(
               new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('AccountWriteRepoPort'),
@@ -417,11 +448,34 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder()
-                  //TODO add todo.title
                   .insert(
                     'todo.id',
                     new MemberDotSymbolEntry(
                       new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                    ),
+                  )
+                  .insert(
+                    'todo.id.toString()',
+                    new MemberDotSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                    ),
+                  )
+                  .insert(
+                    'todo.title',
+                    new MemberDotSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TitleVO'),
+                    ),
+                  )
+                  .insert(
+                    'todo.title.title',
+                    new MemberDotSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                    ),
+                  )
+                  .insert(
+                    'todo.completed',
+                    new MemberDotSymbolEntry(
+                      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
                     ),
                   )
                   .insertVariableSymbolEntry(
@@ -434,22 +488,72 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                   .insert(
                     'todo.addDomainEvent(event)',
                     new MethodCallSymbolEntry(
-                      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                      new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
                     ),
                   ),
               ),
           )
           .insertChildScope(
             'complete',
-            new SymbolTableBuilder().insertVariableSymbolEntry(
-              'event',
-              InferredTypes.Unknown,
-              true,
-            ),
+            new SymbolTableBuilder()
+              .insert(
+                'this.completed',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
+                ),
+              )
+              .insert(
+                'this.id',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildBuiltinClassPrimaryType('UUIDv4'),
+                ),
+              )
+              .insert(
+                'this.id.toString()',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                ),
+              )
+              .insert(
+                'this.title',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TitleVO'),
+                ),
+              )
+              .insert(
+                'this.title.title',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'event',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                  'TodoCompletedDomainEvent',
+                ),
+                true,
+              )
+              .insert(
+                'todo.addDomainEvent(event)',
+                new MethodCallSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
+                ),
+              ),
           )
           .insertChildScope(
             'isCompleted',
-            new SymbolTableBuilder().insertVariableSymbolEntry('a', InferredTypes.Unknown, true),
+            new SymbolTableBuilder()
+              .insert(
+                'this.completed',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'a',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('bool'),
+                true,
+              ),
           ),
       )
       .build(),
@@ -466,13 +570,27 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'TitleVO',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TitleVO'),
+            ),
+          )
           .insertChildScope(
             'domainCreate',
-            new SymbolTableBuilder().insert(
-              'props',
-              new ParameterSymbolEntry(InferredTypes.Unknown),
-            ),
+            new SymbolTableBuilder()
+              .insert(
+                'props.title',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                ),
+              )
+              .insert(
+                'props',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('TodoProps'),
+                ),
+              ),
           ),
       )
       .build(),
@@ -489,7 +607,26 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'SendEmailAfterMoneyDepositedDomainEventHandler',
         new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry(InferredTypes.Unknown))
+          .insert(
+            'this',
+            new ClassTypeThisSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                'SendEmailAfterMoneyDepositedDomainEventHandler',
+              ),
+            ),
+          )
+          .insert(
+            'commandBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('CommandBusPort'),
+            ),
+          )
+          .insert(
+            'queryBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('QueryBusPort'),
+            ),
+          )
           .insert(
             'customerService',
             new ClassTypeParameterSymbolEntry(
@@ -499,12 +636,37 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
-              .insert('event', new ParameterSymbolEntry(InferredTypes.Unknown))
-              .insertVariableSymbolEntry('command', InferredTypes.Unknown, true),
-            // .insert(
-            //   'this.commandBus.send',
-            //   new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
-            // ),
+              .insert(
+                'event',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                    'DepositsIncrementedDomainEvent',
+                  ),
+                ),
+              )
+              .insert(
+                'event.customerId',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                ),
+              )
+              .insert(
+                'event.amount',
+                new ParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('float'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'command',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('SendEmailCommand'),
+                true,
+              )
+              .insert(
+                'this.commandBus.send(command)',
+                new MethodCallSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
+                ),
+              ),
           ),
       )
       .build(),
@@ -529,6 +691,18 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               ),
             ),
           )
+          .insert(
+            'commandBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('CommandBusPort'),
+            ),
+          )
+          .insert(
+            'queryBus',
+            new ClassTypeParameterSymbolEntry(
+              new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('QueryBusPort'),
+            ),
+          )
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
@@ -540,12 +714,30 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                   ),
                 ),
               )
-              .insertVariableSymbolEntry('accountId', InferredTypes.Unknown, true)
-              .insertVariableSymbolEntry('command', InferredTypes.Unknown, true),
-            // .insert(
-            //   'this.commandBus.send',
-            //   new ClassTypeParameterSymbolEntry(InferredTypes.Unknown),
-            // ),
+              .insert(
+                'event.accountId',
+                new MemberDotSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                ),
+              )
+              .insertVariableSymbolEntry(
+                'accountId',
+                new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('string'),
+                true,
+              )
+              .insertVariableSymbolEntry(
+                'command',
+                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(
+                  'IncrementDepositsCommand',
+                ),
+                true,
+              )
+              .insert(
+                'this.commandBus.send(command)',
+                new ClassTypeParameterSymbolEntry(
+                  new BitloopsPrimaryTypeDirector().buildPrimitivePrimaryType('void'),
+                ),
+              ),
           ),
       )
       .build(),
