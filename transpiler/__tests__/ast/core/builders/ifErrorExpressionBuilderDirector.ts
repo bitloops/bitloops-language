@@ -4,6 +4,7 @@ import { ExpressionBuilderDirector } from './expressionDirector.js';
 import { IfErrorExpressionBuilder } from './ifErrorExpressionBuilder.js';
 import { ParameterBuilderDirector } from './ParameterBuilderDirector.js';
 import { ReturnStatementBuilder } from './statement/returnStatementBuilder.js';
+import { StatementListDirector } from './statement/statementListDirector.js';
 
 export class IfErrorExpressionBuilderDirector {
   private builder: IfErrorExpressionBuilder;
@@ -32,5 +33,21 @@ export class IfErrorExpressionBuilderDirector {
 
   buildEmptyIfError(leftExpression: TExpression): TIfErrorExpression {
     return this.builder.withExpression(leftExpression).build();
+  }
+
+  buildIfErrorStatements(leftExpression: TExpression): TIfErrorExpression {
+    return this.builder
+      .withExpression(leftExpression)
+      .withAnonymousFunction(
+        new AnonymousFunctionBuilder()
+          .withParameters({
+            parameters: [new ParameterBuilderDirector().buildParameterWithoutType('err')],
+          })
+          .withArrowFunctionBody({
+            statements: new StatementListDirector().buildOneReturnStatementIdentifier('err'),
+          })
+          .build(),
+      )
+      .build();
   }
 }

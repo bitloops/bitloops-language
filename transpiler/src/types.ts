@@ -427,9 +427,11 @@ export type TIfErrorExpression = {
   ifErrorExpression: TExpression & Partial<TAnonymousFunction>;
 };
 
+export type TStatementsObj = { statements: TStatements };
+
 export type TAnonymousFunction = {
   anonymousFunction: {
-    arrowFunctionBody: TReturnStatement | TStatements;
+    arrowFunctionBody: TReturnStatement | TStatementsObj;
   } & TParameterList;
 };
 

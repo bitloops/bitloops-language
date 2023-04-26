@@ -3,15 +3,15 @@ import {
   TAnonymousFunction,
   TParameterList,
   TReturnStatement,
-  TStatements,
+  TStatementsObj,
 } from '../../../../src/types.js';
 
 export class AnonymousFunctionBuilder implements IBuilder<TAnonymousFunction> {
   private parameters: TParameterList;
-  private arrowFunctionBody: TReturnStatement | TStatements;
+  private arrowFunctionBody: TReturnStatement | TStatementsObj;
 
   public withArrowFunctionBody(
-    arrowFunctionBody: TReturnStatement | TStatements,
+    arrowFunctionBody: TReturnStatement | TStatementsObj,
   ): AnonymousFunctionBuilder {
     this.arrowFunctionBody = arrowFunctionBody;
     return this;

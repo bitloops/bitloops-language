@@ -379,12 +379,32 @@ export const validIfErrorExpressionTestCases = [
     ),
   },
   {
-    description: 'If error expression with arrow function',
+    description: 'If error expression with default arrow function',
     fileId: 'testFile.bl',
     inputBLString:
       "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError((err) => return err; ) }",
     expression: new ExpressionBuilderDirector().buildIfErrorExpression(
       new IfErrorExpressionBuilderDirector().buildDefaultIfError(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
+            fields: [
+              new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+                'message',
+                'Hello, World!',
+              ),
+            ],
+          }),
+        ),
+      ),
+    ),
+  },
+  {
+    description: 'If error expression with arrow function statements',
+    fileId: 'testFile.bl',
+    inputBLString:
+      "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError((err) => { return err; } ) }",
+    expression: new ExpressionBuilderDirector().buildIfErrorExpression(
+      new IfErrorExpressionBuilderDirector().buildIfErrorStatements(
         new ExpressionBuilderDirector().buildEvaluation(
           new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
             fields: [

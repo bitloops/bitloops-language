@@ -64,6 +64,14 @@ export class StatementListDirector {
     ];
   }
 
+  buildOneReturnStatementIdentifier(identifierExpressionName: string): TStatements {
+    return [
+      new StatementDirector().buildReturnStatement(
+        new ExpressionBuilderDirector().buildIdentifierExpression(identifierExpressionName),
+      ),
+    ];
+  }
+
   buildOneReturnOKStatementWithMethodCallExpression({
     identifierExpressionName,
     methodName,
