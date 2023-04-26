@@ -34,6 +34,7 @@ import {
   validXorExpressionTestCases,
   generalExpressionTestCases,
   validMethodCallTestCases,
+  validIfErrorExpressionTestCases,
 } from './mocks/expression.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
@@ -509,6 +510,39 @@ describe('Logical XOR Expression', () => {
       }
       const expectedNodeValues = testCase.expression;
       // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
+      const value = resultTree.getCurrentNode().getValue();
+
+      expect(value).toMatchObject(expectedNodeValues);
+    });
+  });
+});
+
+describe('If error Expression', () => {
+  let resultTree: IntermediateASTTree;
+
+  const parser = new BitloopsParser();
+  const intermediateParser = new IntermediateASTParser();
+
+  validIfErrorExpressionTestCases.forEach((testCase) => {
+    test(`${testCase.description}`, () => {
+      const initialModelOutput = parser.parse({
+        core: [
+          {
+            boundedContext: BOUNDED_CONTEXT,
+            module: MODULE,
+            fileId: testCase.fileId,
+            fileContents: testCase.inputBLString,
+          },
+        ],
+      });
+
+      if (!isParserErrors(initialModelOutput)) {
+        const result = intermediateParser.parse(initialModelOutput);
+        if (!isIntermediateASTValidationErrors(result)) {
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
+        }
+      }
+      const expectedNodeValues = testCase.expression;
       const value = resultTree.getCurrentNode().getValue();
 
       expect(value).toMatchObject(expectedNodeValues);

@@ -19,25 +19,16 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
-import { AnonymousFunctionNodeBuilder } from '../../intermediate-ast/builders/AnonymousFunctionNodeBuilder.js';
-import { AnonymousFunctionNode } from '../../intermediate-ast/nodes/AnonymousFunctionNode.js';
+import { ReturnStatementNode } from '../../intermediate-ast/nodes/statements/ReturnStatementNode.js';
+import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
-import { produceMetadata } from '../metadata.js';
 
-export const anonymousFunctionVisitor = (
+export const arrowFunctionBodyVisitor = (
   thisVisitor: BitloopsVisitor,
-  ctx: BitloopsParser.AnonymousFunctionContext,
-): AnonymousFunctionNode => {
-  const arrowFunctionBody = thisVisitor.visit(ctx.arrowFunctionBody());
-
-  const anonymousFunctionNodeBuilder = new AnonymousFunctionNodeBuilder(
-    produceMetadata(ctx, thisVisitor),
-  ).withArrowFunctionBody(arrowFunctionBody);
-
-  if (ctx.parameterList()) {
-    const parameterList = thisVisitor.visit(ctx.parameterList());
-    anonymousFunctionNodeBuilder.withParameters(parameterList);
+  ctx: BitloopsParser.ArrowFunctionBodyContext,
+): ReturnStatementNode | StatementListNode => {
+  if (ctx.returnStatement()) {
+    return thisVisitor.visit(ctx.returnStatement());
   }
-
-  return anonymousFunctionNodeBuilder.build();
+  return thisVisitor.visit(ctx.functionBody());
 };

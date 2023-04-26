@@ -356,3 +356,21 @@ export const validXorExpressionTestCases = [
     ),
   },
 ];
+
+export const validIfErrorExpressionTestCases = [
+  {
+    description: 'If error expression with no arrow function',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError() }",
+    expression: new ExpressionBuilderDirector().buildEvaluation(
+      new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
+        fields: [
+          new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+            'message',
+            'Hello, World!',
+          ),
+        ],
+      }),
+    ),
+  },
+];

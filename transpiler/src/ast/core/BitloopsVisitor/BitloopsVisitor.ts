@@ -245,6 +245,7 @@ import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/
 import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
 import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
+import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
 
 export type TContextInfo = {
   boundedContextName: string;

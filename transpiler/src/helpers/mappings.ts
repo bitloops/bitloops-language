@@ -217,6 +217,7 @@ const BitloopsTypesMapping = {
   TMetadata: 'TMetadata',
   THandle: 'THandle',
   TIfErrorExpression: 'TIfErrorExpression',
+  TAnonymousFunction: 'TAnonymousFunction',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

@@ -5,6 +5,7 @@ import {
   TEqualityOperator,
   TEvaluation,
   TExpression,
+  TIfErrorExpression,
   TLiteralValues,
   TMultiplicativeOperator,
   TNumericLiteral,
@@ -356,6 +357,14 @@ export class ExpressionBuilderDirector {
     return {
       expression: {
         ...evaluation,
+      },
+    };
+  }
+
+  buildIfErrorExpression(ifError: TIfErrorExpression): TExpression {
+    return {
+      expression: {
+        ...ifError,
       },
     };
   }

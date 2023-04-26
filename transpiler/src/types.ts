@@ -420,7 +420,22 @@ export type TExpressionValues =
   | TInstanceOf
   | TGetClass
   | TEnvironmentVariableExpression
-  | TObjectLiteral;
+  | TObjectLiteral
+  | TIfErrorExpression;
+
+export type TIfErrorExpression = {
+  ifErrorExpression: {
+    expression: TExpression;
+    anonymousFunction?: TAnonymousFunction;
+  };
+};
+
+export type TAnonymousFunction = {
+  anonymousFunction: {
+    parameters?: TParameterList;
+    arrowFunctionBody: TReturnStatement | TStatements;
+  };
+};
 
 export type TAssignmentExpression = {
   assignmentExpression: {
