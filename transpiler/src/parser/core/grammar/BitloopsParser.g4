@@ -819,11 +819,11 @@ expression
 classTypes: ErrorClass;
 
 anonymousFunction
-    : OpenParen parameterList? CloseParen ARROW arrowFunctionBody
+    : parameterList ARROW arrowFunctionBody
     ;
 
 arrowFunctionBody
-    : returnStatement
+    : returnStatement SemiColon?
     | OpenBrace functionBody CloseBrace
     ;
 

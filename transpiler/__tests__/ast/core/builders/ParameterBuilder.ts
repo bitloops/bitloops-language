@@ -1,8 +1,13 @@
 import { IBuilder } from '../../../../src/ast/core/intermediate-ast/builders/IBuilder.js';
-import { TParameterType, TParameter, TParameterIdentifier } from '../../../../src/types.js';
+import {
+  TParameterType,
+  TParameter,
+  TParameterIdentifier,
+  bitloopsPrimaryTypeKey,
+} from '../../../../src/types.js';
 
 export class ParameterBuilder implements IBuilder<TParameter> {
-  private type: TParameterType;
+  private type?: TParameterType;
   private value: TParameterIdentifier;
 
   public withType(type: TParameterType): ParameterBuilder {
@@ -16,12 +21,15 @@ export class ParameterBuilder implements IBuilder<TParameter> {
   }
 
   public build(): TParameter {
-    const parameter = {
+    const parameter: TParameter = {
       parameter: {
-        ...this.type,
         value: this.value,
       },
     };
+
+    if (this.type) {
+      parameter.parameter.type = this.type[bitloopsPrimaryTypeKey];
+    }
 
     return parameter;
   }

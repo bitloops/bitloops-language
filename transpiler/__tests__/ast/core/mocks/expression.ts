@@ -2,6 +2,7 @@ import { ArgumentBuilderDirector } from './../builders/argumentDirector.js';
 import { EvaluationBuilderDirector } from '../builders/evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
+import { IfErrorExpressionBuilderDirector } from '../builders/ifErrorExpressionBuilderDirector.js';
 
 export const generalExpressionTestCases = [
   {
@@ -362,15 +363,45 @@ export const validIfErrorExpressionTestCases = [
     description: 'If error expression with no arrow function',
     fileId: 'testFile.bl',
     inputBLString: "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError() }",
-    expression: new ExpressionBuilderDirector().buildEvaluation(
-      new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
-        fields: [
-          new EvaluationFieldBuilderDirector().buildStringEvaluationField(
-            'message',
-            'Hello, World!',
-          ),
-        ],
-      }),
+    expression: new ExpressionBuilderDirector().buildIfErrorExpression(
+      new IfErrorExpressionBuilderDirector().buildEmptyIfError(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
+            fields: [
+              new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+                'message',
+                'Hello, World!',
+              ),
+            ],
+          }),
+        ),
+      ),
+    ),
+  },
+  {
+    description: 'If error expression with arrow function',
+    fileId: 'testFile.bl',
+    inputBLString:
+      "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError((err) => return err; ) }",
+    expression: new ExpressionBuilderDirector().buildIfErrorExpression(
+      new IfErrorExpressionBuilderDirector().buildDefaultIfError(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
+            fields: [
+              new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+                'message',
+                'Hello, World!',
+              ),
+            ],
+          }),
+        ),
+      ),
     ),
   },
 ];
+
+// const notificationTemplateResponse = this.notificationTemplateRepo
+//   .getByType('firstTodo')
+//   .ifError((err) => {
+//     return err;
+//   });

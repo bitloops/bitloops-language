@@ -246,6 +246,7 @@ import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/R
 import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
+import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -393,6 +394,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitAnonymousFunction(ctx: BitloopsParser.AnonymousFunctionContext) {
     return anonymousFunctionVisitor(this, ctx);
+  }
+
+  visitArrowFunctionBody(ctx: BitloopsParser.ArrowFunctionBodyContext) {
+    return arrowFunctionBodyVisitor(this, ctx);
   }
 
   visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {

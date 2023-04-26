@@ -3,7 +3,7 @@ import { TExpression, TAnonymousFunction, TIfErrorExpression } from '../../../..
 
 export class IfErrorExpressionBuilder implements IBuilder<TIfErrorExpression> {
   private leftExpression: TExpression;
-  private anonymousFunction: TAnonymousFunction;
+  private anonymousFunction?: TAnonymousFunction;
 
   public withExpression(expr: TExpression): IfErrorExpressionBuilder {
     this.leftExpression = expr;
@@ -18,9 +18,14 @@ export class IfErrorExpressionBuilder implements IBuilder<TIfErrorExpression> {
   public build(): TIfErrorExpression {
     const ifErrorExpression: TIfErrorExpression = {
       ifErrorExpression: {
-        expression: this.leftExpression,
+        ...this.leftExpression,
       },
     };
+
+    if (this.anonymousFunction) {
+      ifErrorExpression.ifErrorExpression.anonymousFunction =
+        this.anonymousFunction.anonymousFunction;
+    }
 
     return ifErrorExpression;
   }

@@ -29,15 +29,12 @@ export const anonymousFunctionVisitor = (
   ctx: BitloopsParser.AnonymousFunctionContext,
 ): AnonymousFunctionNode => {
   const arrowFunctionBody = thisVisitor.visit(ctx.arrowFunctionBody());
+  const parameterList = thisVisitor.visit(ctx.parameterList());
 
-  const anonymousFunctionNodeBuilder = new AnonymousFunctionNodeBuilder(
-    produceMetadata(ctx, thisVisitor),
-  ).withArrowFunctionBody(arrowFunctionBody);
+  const anonymousFunctionNode = new AnonymousFunctionNodeBuilder(produceMetadata(ctx, thisVisitor))
+    .withArrowFunctionBody(arrowFunctionBody)
+    .withParameters(parameterList)
+    .build();
 
-  if (ctx.parameterList()) {
-    const parameterList = thisVisitor.visit(ctx.parameterList());
-    anonymousFunctionNodeBuilder.withParameters(parameterList);
-  }
-
-  return anonymousFunctionNodeBuilder.build();
+  return anonymousFunctionNode;
 };

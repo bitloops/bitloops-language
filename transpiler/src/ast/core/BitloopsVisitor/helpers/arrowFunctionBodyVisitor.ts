@@ -19,16 +19,23 @@
  */
 
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
+import { ArrowFunctionBodyNodeBuilder } from '../../intermediate-ast/builders/ArrowFunctionBodyNodeBuilder.js';
+import { ArrowFunctionBodyNode } from '../../intermediate-ast/nodes/ArrowFunctionBodyNode.js';
 import { ReturnStatementNode } from '../../intermediate-ast/nodes/statements/ReturnStatementNode.js';
 import { StatementListNode } from '../../intermediate-ast/nodes/statements/StatementList.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
+import { produceMetadata } from '../metadata.js';
 
 export const arrowFunctionBodyVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ArrowFunctionBodyContext,
-): ReturnStatementNode | StatementListNode => {
+): ArrowFunctionBodyNode => {
+  let body: ReturnStatementNode | StatementListNode;
   if (ctx.returnStatement()) {
-    return thisVisitor.visit(ctx.returnStatement());
+    body = thisVisitor.visit(ctx.returnStatement());
+  } else {
+    body = thisVisitor.visit(ctx.functionBody());
   }
-  return thisVisitor.visit(ctx.functionBody());
+
+  return new ArrowFunctionBodyNodeBuilder(produceMetadata(ctx, thisVisitor)).withBody(body).build();
 };

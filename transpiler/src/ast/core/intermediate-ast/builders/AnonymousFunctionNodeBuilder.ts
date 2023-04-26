@@ -1,13 +1,12 @@
 import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
-import { StatementListNode } from '../nodes/statements/StatementList.js';
 import { IBuilder } from './IBuilder.js';
 import { AnonymousFunctionNode } from '../nodes/AnonymousFunctionNode.js';
 import { ParameterListNode } from '../nodes/ParameterList/ParameterListNode.js';
-import { ReturnStatementNode } from '../nodes/statements/ReturnStatementNode.js';
+import { ArrowFunctionBodyNode } from '../nodes/ArrowFunctionBodyNode.js';
 
 export class AnonymousFunctionNodeBuilder implements IBuilder<AnonymousFunctionNode> {
-  private parameters?: ParameterListNode;
-  private arrowFunctionBody: ReturnStatementNode | StatementListNode;
+  private parameters: ParameterListNode;
+  private arrowFunctionBody: ArrowFunctionBodyNode;
   private anonymousFunctionNode: AnonymousFunctionNode;
 
   constructor(metadata?: TNodeMetadata) {
@@ -15,7 +14,7 @@ export class AnonymousFunctionNodeBuilder implements IBuilder<AnonymousFunctionN
   }
 
   public withArrowFunctionBody(
-    arrowFunctionBody: ReturnStatementNode | StatementListNode,
+    arrowFunctionBody: ArrowFunctionBodyNode,
   ): AnonymousFunctionNodeBuilder {
     this.arrowFunctionBody = arrowFunctionBody;
     return this;
@@ -28,7 +27,7 @@ export class AnonymousFunctionNodeBuilder implements IBuilder<AnonymousFunctionN
 
   public build(): AnonymousFunctionNode {
     this.anonymousFunctionNode.addChild(this.arrowFunctionBody);
-    if (this.parameters) this.anonymousFunctionNode.addChild(this.parameters);
+    this.anonymousFunctionNode.addChild(this.parameters);
 
     this.anonymousFunctionNode.buildObjectValue();
 
