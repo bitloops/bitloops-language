@@ -1,0 +1,126 @@
+### uml: class diagram
+
+@startuml
+class Dummy {
+  String data
+  void methods()
+}
+
+class Flight {
+   flightNumber : Integer
+   departureTime : Date
+}
+@enduml
+
+@startuml
+interface IDocumentsService {
+    +addDocument: (filename: string, content: { [sheetName: string]: string[][]; }) => Promise<TDocumentDTO>
+    +detectDocumentCategory(dto: TDocumentDTO, sheetName: string): [TDocumentTypes, TBankStatementDTO | TLedgerDTO]
+}
+class Lexer {
+    -lexer: any
+    -tokens: Token[]
+    -alphanumeric: string[]
+    -categories: string[]
+    -compounds: string[]
+    -terms: string[]
+    -numbers: number[]
+    +getAlphanumeric(): string[]
+    +getCategories(categoriesOptions?: string[]): string[]
+    +getCompounds(): string[]
+    +getTerms(): string[]
+    +getNumbers(): number[]
+}
+enum OperationTypes {
+    Credit
+    Debit
+}
+enum TransactionTypes {
+    LedgerEntry
+    BankTransaction
+}
+enum OrderByTypes {
+    TermFrequency
+}
+enum TransactionStatuses {
+    Reconciled
+    Unreconciled
+    Suggestion
+    Conflicting
+    Reversed
+}
+class BankTransaction {
+    -id: number
+    -isReversal: boolean
+    -amount: number
+    -date: Date
+    -description: string
+    -reconciliationIds: number[]
+    -conflictInfo: ConflictInfoType[]
+    -reconciliationStep: string
+    +operationType: OperationTypes
+    -status: TransactionStatuses
+    -bankId: string
+    -balance: number
+    -reference: string
+    -alphanumeric: string[]
+    -categories: string[]
+    -terms: string[]
+    -numbers: number[]
+    -compounds: string[]
+    -tags: string[]
+    +getAlphanumerics(): string[]
+    +getCategories(): string[]
+    +getTags(): string[]
+    +getTerms(): string[]
+    +getNumbers(): number[]
+    +getCompounds(): string[]
+    +getId(): number
+    +getBalance(): number
+    +getConflictInfo(): ConflictInfoType[]
+    +getOperationType(): OperationTypes
+    +getStatus(): TransactionStatuses
+    +getDescription(): string
+    +getAmount(): number
+    +getDate(): Date
+    +getReference(): string
+    +getBankId(): string
+    +getIsReversal(): boolean
+    +getReconciliationIds(): number[]
+    +reconcile(ids: number[], step: string): void
+    +declareConflict(conflictInfo: ConflictInfoType[], step: string): void
+    +{static} create(props: BankTransactionProps): BankTransaction
+    +{static} createFromArray(headers: string[], rowData: string[], rowIndex: number): BankTransaction
+}
+class BankTransactionsStatement {
+    -id: string
+    -name: string
+    -transactions: BankTransaction[]
+    -headers: string[]
+    +getId(): string
+    +getName(): string
+    +getOpeningBalance(): number
+    +getClosingBalance(): number
+    +getReconciledTransactions(): BankTransaction[]
+    +getReconciledCreditTransactions(): BankTransaction[]
+    +getReconciledDebitTransactions(): BankTransaction[]
+    +getUnreconciledTransactions(orderBy?: OrderByType): BankTransaction[]
+    +getUnreconciledCreditTransactions(): BankTransaction[]
+    +getUnreconciledDebitTransactions(): BankTransaction[]
+    +getNonReconciledTransactions(): BankTransaction[]
+    +getNonReconciledCreditTransactions(): BankTransaction[]
+    +getNonReconciledDebitTransactions(): BankTransaction[]
+    +getReconciledTransactionsAmountSum(initAmount?: number): number
+    +getReconciledCreditTransactionsAmountSum(initAmount?: number): number
+    +getReconciledDebitTransactionsAmountSum(initAmount?: number): number
+    +getUnreconciledTransactionsAmountSum(initAmount?: number): number
+    +getUnreconciledCreditTransactionsAmountSum(initAmount?: number): number
+    +getUnreconciledDebitTransactionsAmountSum(initAmount?: number): number
+    +getTransactions(): BankTransaction[]
+    +getContentsArray(operationType: OperationTypes): string[][]
+}
+BankTransaction --> "1" OperationTypes
+BankTransaction --> "1" TransactionStatuses
+BankTransactionsStatement --> "*" BankTransaction
+BankTransactionsStatement --> "1" OperationTypes
+@enduml

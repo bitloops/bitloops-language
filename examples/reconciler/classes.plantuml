@@ -1,0 +1,127 @@
+@startuml
+
+class Lexer {
+    - str: string
+    - options: LexerOptions //Lexer options would be an struct with types to match and specific Regexes or Array of terms(tokens?)
+    + getTerms(): Terms[] // Terms would be an array of [{type,value},...]
+}
+
+class FinancialLexer {
+    - str: string
+    - options: LexerOptions //Lexer options would be an struct with types to match and specific Regexes or Array of terms(tokens?) 
+    - lexer: Lexer             // here we will configure the lexer with the options the otpions will leave here -getter methods might be needed for stopList as well
+    + getAlphanumerics(): string[] // 
+    + getCategories(): string[]
+    + getTags(): string[]
+    + getCompounds(): string[]
+    + getTerms(): string[]
+    + getNumbers(): number[]
+}
+
+class Amount {
+    // Value Object
+    - value: number
+    - type: TransferType
+    + getValue(): number
+    + getType(): TransferType
+}
+
+' Lexer could be a util static class or create one on demand
+' TODO review the methods to add etc... 
+abstract FinancialRecord {
+    - descriptionLexer: FinancialLexer // Here it might make sense to have only one Financial Lexer and use it for whatever field and add
+    - referenceLexer: FinancialLexer // a field to the FinancialLexer options to specify the field to match
+    - id: Id
+    - date: Date
+    - description: string
+    - reference: string
+    - amount: Amount
+    - balance: number
+    - transferType: TransferType // previously operationType
+    - status: string // "unreconciled" | "reconciled" etc...
+    - alphanumerics: string[]
+    - categories: string[]
+    - tags: string[]
+    // The initial methods will use the Lexer if needed and 
+    // will contain the logic previewsly inside the Lexer
+    + getAlphanumerics(): string[] 
+    + getCategories(): string[]
+    + getTags(): string[]
+    + getCompounds(): string
+    + getTerms(): string[]
+    + getNumbers(): number[]
+    + getId(): Id
+    + getDate(): Date
+    + getTransferType(): TransferType // previously getOperationType() this would be a enum with "debit" | "credit"
+    + getAmount(): Amount
+    + getReference(): string // mostly used for front end info display anf the final document representation
+    + getBalance(): number
+    + getReference(): string
+    + reconcile(ids: Id[], step: string): void // this might need to exist elsewhere maybe use something like a match Object
+    + registerConflict(conflictInfo: ConflictInfo[], step: string): void // conflict info will have a FinancialRecord Id and a type based on the specific class concretion Ledger Entry or Bank Tansaction
+
+}
+
+class LedgerEntry {
+    - ledgerId: string
+    + getLedgerId(): string
+    + reverse(id: Id): void // it is used to change the status of Ledger entry to reversed status
+}
+
+class BankTransaction {
+    - bankId: string
+    + getBankId(): string
+    + reverse(id: Id): void // it is used to change the status of Ledger entry to reversed status
+}
+
+abstract FinancialStatement {
+    - id: Id
+    + getId(): Id
+    + getOpeningBalance(): number
+    + getClosingBalance(): number
+}
+
+class Ledger {
+    // removed most attributes for now - to be defined
+    - ledgerEntries: LedgerEntry[]
+    - getReconciledEntries(): LedgerEntry[] // this should be private - public in original
+    - getReconciledCreditEntries: LedgerEntry[] // this should be private - public in original
+    - getReconciledDebitEntries: LedgerEntry[] // this should be private - public in original
+    - step2RemoveReversals(): void // this should be private - public in original
+    + getUnreconciledEntries(): LedgerEntry[]
+    + getUnreconciledCreditEntries(): LedgerEntry[]
+    + getUnreconciledDebitEntries(): LedgerEntry[]
+    + getUnreconciledCreditAmountSum(): number
+    + getUnreconciledDebitAmountSum(): number
+    + runPreReconciliationSteps(): void
+}
+
+class BankTransactionStatement {
+    - transactions: BankTransaction[]
+    + getReconciledTransactions(): BankTransaction[] 
+    + getReconciledCreditTransactions(): BankTransaction[] 
+    + getReconciledDebitTransactions(): BankTransaction[]
+    + getUnreconciledTransactions(): BankTransaction[]
+    + getUnreconciledCreditTransactions(): BankTransaction[]
+    + getUnreconciledDebitTransactions(): BankTransaction[]
+    + getReconciledTransactionsAmountSum(): number
+    + getReconciledCreditTransactionsAmountSum(): number
+    + getReconciledDebitTransactionsAmountSum(): number
+    + getUnreconciledCreditTransactionsAmountSum(): number
+    + getUnreconciledDebitTransactionsAmountSum(): number
+    + getTransactions(): BankTransaction[]
+}
+
+FinancialRecord <|-- LedgerEntry
+FinancialRecord <|-- BankTransaction
+FinancialRecord --> Amount
+' Here we favoured composition over inheritance - should read more about it but it makes more sense
+FinancialLexer --> Lexer 
+FinancialRecord --> FinancialLexer
+Ledger --> LedgerEntry
+BankTransactionStatement --> BankTransaction
+FinancialStatement <|-- Ledger
+FinancialStatement <|-- BankTransactionStatement
+
+
+@enduml

@@ -1,0 +1,238 @@
+@startuml
+class Lexer {
+    -lexer: any
+    -tokens: Token[]
+    -alphanumeric: string[]
+    -categories: string[]
+    -compounds: string[]
+    -terms: string[]
+    -numbers: number[]
+    +getAlphanumeric(): string[]
+    +getCategories(categoriesOptions?: string[]): string[]
+    +getCompounds(): string[]
+    +getTerms(): string[]
+    +getNumbers(): number[]
+}
+enum OperationTypes {
+    Credit
+    Debit
+}
+enum TransactionTypes {
+    LedgerEntry
+    BankTransaction
+}
+enum OrderByTypes {
+    TermFrequency
+}
+enum TransactionStatuses {
+    Reconciled
+    Unreconciled
+    Suggestion
+    Conflicting
+    Reversed
+}
+class BankTransaction {
+    -id: number
+    -isReversal: boolean
+    -amount: number
+    -date: Date
+    -description: string
+    -reconciliationIds: number[]
+    -conflictInfo: ConflictInfoType[]
+    -reconciliationStep: string
+    +operationType: OperationTypes
+    -status: TransactionStatuses
+    -bankId: string
+    -balance: number
+    -reference: string
+    -alphanumeric: string[]
+    -categories: string[]
+    -terms: string[]
+    -numbers: number[]
+    -compounds: string[]
+    -tags: string[]
+    +getAlphanumerics(): string[]
+    +getCategories(): string[]
+    +getTags(): string[]
+    +getTerms(): string[]
+    +getNumbers(): number[]
+    +getCompounds(): string[]
+    +getId(): number
+    +getBalance(): number
+    +getConflictInfo(): ConflictInfoType[]
+    +getOperationType(): OperationTypes
+    +getStatus(): TransactionStatuses
+    +getDescription(): string
+    +getAmount(): number
+    +getDate(): Date
+    +getReference(): string
+    +getBankId(): string
+    +getIsReversal(): boolean
+    +getReconciliationIds(): number[]
+    +reconcile(ids: number[], step: string): void
+    +declareConflict(conflictInfo: ConflictInfoType[], step: string): void
+    +{static} create(props: BankTransactionProps): BankTransaction
+    +{static} createFromArray(headers: string[], rowData: string[], rowIndex: number): BankTransaction
+}
+interface IDocumentsService {
+    +addDocument: (filename: string, content: { [sheetName: string]: string[][]; }) => Promise<TDocumentDTO>
+    +detectDocumentCategory(dto: TDocumentDTO, sheetName: string): [TDocumentTypes, TBankStatementDTO | TLedgerDTO]
+}
+class BankTransactionsStatement {
+    -id: string
+    -name: string
+    -transactions: BankTransaction[]
+    -headers: string[]
+    +getId(): string
+    +getName(): string
+    +getOpeningBalance(): number
+    +getClosingBalance(): number
+    +getReconciledTransactions(): BankTransaction[]
+    +getReconciledCreditTransactions(): BankTransaction[]
+    +getReconciledDebitTransactions(): BankTransaction[]
+    +getUnreconciledTransactions(orderBy?: OrderByType): BankTransaction[]
+    +getUnreconciledCreditTransactions(): BankTransaction[]
+    +getUnreconciledDebitTransactions(): BankTransaction[]
+    +getNonReconciledTransactions(): BankTransaction[]
+    +getNonReconciledCreditTransactions(): BankTransaction[]
+    +getNonReconciledDebitTransactions(): BankTransaction[]
+    +getReconciledTransactionsAmountSum(initAmount?: number): number
+    +getReconciledCreditTransactionsAmountSum(initAmount?: number): number
+    +getReconciledDebitTransactionsAmountSum(initAmount?: number): number
+    +getUnreconciledTransactionsAmountSum(initAmount?: number): number
+    +getUnreconciledCreditTransactionsAmountSum(initAmount?: number): number
+    +getUnreconciledDebitTransactionsAmountSum(initAmount?: number): number
+    +getTransactions(): BankTransaction[]
+    +getContentsArray(operationType: OperationTypes): string[][]
+}
+class LedgerEntry {
+    -id: number
+    -amount: number
+    -date: Date
+    -description: string
+    -ledgerId: string
+    +operationType: OperationTypes
+    -reference: string
+    -status: TransactionStatuses
+    -balance: number
+    -reconciliationIds: number[]
+    -reconciliationStep: string
+    -conflictInfo: ConflictInfo[]
+    -reversedBy: number
+    -categories: string[]
+    -terms: string[]
+    -numbers: number[]
+    -alphanumeric: string[]
+    -compounds: string[]
+    -tags: string[]
+    +getAlphanumerics(): string[]
+    +getCategories(): string[]
+    +getTags(): string[]
+    +getTerms(): string[]
+    +getNumbers(): number[]
+    +getCompounds(): string[]
+    +getId(): number
+    +getOperationType(): OperationTypes
+    +getStatus(): TransactionStatuses
+    +getDescription(): string
+    +getAmount(): number
+    +getConflictInfo(): ConflictInfo[]
+    +getDate(): Date
+    +getBalance(): number
+    +getReference(): string
+    +getLedgerId(): string
+    +reconcile(ids: number[], step: string): void
+    +declareConflict(conflictInfo: ConflictInfo[], step: string): void
+    +reverse(id: number): void
+    +{static} create(props: LedgerEntryProps): LedgerEntry
+    +{static} createFromArray(headers: string[], rowData: string[], rowIndex: number): LedgerEntry
+}
+class Ledger {
+    -id: string
+    -name: string
+    -ledgerEntries: LedgerEntry[]
+    -bankCharges: LedgerEntry[]
+    -headers: string[]
+    +getId(): string
+    +getName(): string
+    +getOpeningBalance(): number
+    +getClosingBalance(): number
+    +getEntries(): LedgerEntry[]
+    +getBankCharges(): LedgerEntry[]
+    +getReconciledEntries(): LedgerEntry[]
+    +getReconciledCreditEntries(): LedgerEntry[]
+    +getReconciledDebitEntries(): LedgerEntry[]
+    +getUnreconciledEntries(): LedgerEntry[]
+    +getUnreconciledCreditEntries(): LedgerEntry[]
+    +getUnreconciledDebitEntries(): LedgerEntry[]
+    +getReconciledAmountSum(initAmount?: number): number
+    +getUnreconciledAmountSum(initAmount?: number): number
+    +getReconciledCreditAmountSum(initAmount?: number): number
+    +getUnreconciledCreditAmountSum(initAmount?: number): number
+    +getReconciledDebitAmountSum(initAmount?: number): number
+    +getUnreconciledDebitAmountSum(initAmount?: number): number
+    +runPreReconciliationSteps(): void
+    +step2RemoveReversals(): void
+}
+enum RuleNames {
+    Rule3_1
+    Rule3_2
+    Rule3_3
+    Rule3_4
+    Rule3_5
+    Rule3_6
+}
+class Reconciliation {
+    -bankStatement: BankTransactionsStatement
+    -ledger: Ledger
+    +getBankStatement(): BankTransactionsStatement
+    +getLedger(): Ledger
+    -haveAtLeastOneCommonAlphanumericTag(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): boolean
+    -getCommonAlphanumericTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): string[]
+    -getCommonCompoundTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): string[]
+    -getCommonCategoryTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): string[]
+    -getCommonTermTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): string[]
+    -getCommonFuzzyMatchTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): string[]
+    -getCommonTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry, ruleName: RuleNames): string[]
+    -getTags(object: BankTransaction | LedgerEntry, ruleName: RuleNames): string[]
+    -getCommonNumericTags(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): string[]
+    -haveAtLeastOneCommonCategoryTag(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): boolean
+    -haveAtLeastOneCommonWordTag(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry): boolean
+    -haveAtLeastOneCommonTag(bankTransaction: BankTransaction, ledgerEntry: LedgerEntry, ruleName: RuleNames): string[]
+    +runPreReconciliationSteps(): void
+    +run(): void
+    -runRule(rule: Rule3NameType, bankStatementUniqueChecker: UniquenessChecker, ledgerUniqueChecker: UniquenessChecker, orderBy?: OrderByType): void
+    -rule3MainAlgorithm(bankStatementUniqueChecker: UniquenessChecker, ledgerUniqueChecker: UniquenessChecker, ruleName: Rule3NameType, pass: number, orderBy?: OrderByType): number
+    +runRule3_1(): void
+    +runRule3_2(): void
+    +runRule3_3(): void
+    +runRule3_4(): void
+    +runRule3_5(): void
+    +runRule3_6(): void
+}
+class UniquenessChecker {
+    -map: any
+    +checkIn(id: number, amount: number, tags: string[], operationType: OperationTypes): void
+    +checkOut(id: number, amount: number, tags: string[], operationType: OperationTypes): void
+    +isAmountUnique(id: number, amount: number, operationType: OperationTypes): boolean
+    +isTagUnique(id: number, tag: string, operationType: OperationTypes): boolean
+    +getAmountList(amount: number, operationType: OperationTypes): number[]
+    +getTagList(tag: string, operationType: OperationTypes): number[]
+    -getTagKey(tag: string, operationType: OperationTypes): string
+    -getAmountKey(amount: number, operationType: OperationTypes): string
+}
+BankTransaction --> "1" OperationTypes
+BankTransaction --> "1" TransactionStatuses
+BankTransactionsStatement --> "*" BankTransaction
+BankTransactionsStatement --> "1" OperationTypes
+LedgerEntry --> "1" OperationTypes
+LedgerEntry --> "1" TransactionStatuses
+Ledger --> "*" LedgerEntry
+Reconciliation --> "1" BankTransactionsStatement
+Reconciliation --> "1" Ledger
+Reconciliation --> "1" BankTransaction
+Reconciliation --> "1" LedgerEntry
+Reconciliation --> "1" RuleNames
+Reconciliation --> "1" UniquenessChecker
+UniquenessChecker --> "1" OperationTypes
+@enduml
