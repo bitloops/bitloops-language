@@ -29,6 +29,19 @@ export const getNameFromPort = (str: string): string => {
   // Remove port suffix
   return str.slice(0, -Suffixes.PORT.length);
 };
+export const getPubSubHandlerNameFromIntegrationEvent = (str: string): string => {
+  console.log('getPubSubHandlerNameFromIntegrationEvent');
+  const initialSuffix = 'IntegrationEvent';
+  const finalSuffix = 'PubSubIntegrationEventHandler';
+  if (!str.endsWith(initialSuffix)) throw new Error(str + ' is not an IntegrationEvent');
+
+  // Remove IntegrationEvent suffix
+  const stripped = str.slice(0, -initialSuffix.length);
+
+  // Add PubSubIntegrationEventHandler suffix
+
+  return stripped + finalSuffix;
+};
 
 export class FileNameToClassName {
   static service(name: string, type: ServiceConcretion): string {
@@ -51,5 +64,17 @@ export class FileNameToClassName {
 
     const nameInCamelCase = CasingUtils.kebabCaseToCamelCase(nameInKebabCase);
     return type + nameInCamelCase + 'Repository';
+  }
+
+  /**
+   * @param name: e.g. todo-modified-title.integration-event.ts
+   * @Returns TodoModifiedTitleIntegrationEvent
+   */
+  static integrationEvent(name: string): string {
+    const nameWithoutSuffix = name.replace('.integration-event.ts', '');
+    const nameInKebabCase = nameWithoutSuffix.replace('.', '-');
+
+    const nameInCamelCase = CasingUtils.kebabCaseToPascalCase(nameInKebabCase);
+    return nameInCamelCase + 'IntegrationEvent';
   }
 }

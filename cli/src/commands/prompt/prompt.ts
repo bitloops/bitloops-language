@@ -1,4 +1,5 @@
 import fs from 'fs';
+import ora, { Ora } from 'ora';
 import { copyrightSnippet } from '../copyright.js';
 import { ConfigUtils } from '../../utils/config.js';
 import inquirer, { Question } from 'inquirer';
@@ -11,10 +12,12 @@ import { getTypescriptFilesAndContents } from '../../functions/readFilesContents
 import { writeAIResults } from '../../functions/writeAiResults.js';
 import {
   extractComponentsFromFiles,
+  extractGrpcExposedComponents,
   promptAiResults,
   promptAiResultsSecondRound,
   promptAiResultsThirdRound,
 } from '../../functions/promptAiResults.js';
+import { greenColor, purpleColor, redColor, stopSpinner } from '../../utils/oraUtils.js';
 /**
  * TODO add a json or yaml config file, where the user can set settings for preferred repo adapters
  * for each port(file-name as a key), and e.g. MongoDB as value
@@ -77,24 +80,31 @@ const prompt = async (source: ICollection): Promise<void> => {
   );
 
   // Example usage
+  let throbber: Ora;
   const client = new Client(apiKey);
   try {
     const componentsInfo = extractComponentsFromFiles(transpiledFiles);
-    await promptAiResults(client, componentsInfo);
+    const exposedGrpcComponents = await extractGrpcExposedComponents(componentsInfo);
+
+    throbber = ora(purpleColor('🔨 Waiting for ai generation to complete... ')).start();
+
+    await promptAiResults(client, componentsInfo, exposedGrpcComponents);
     let responses = await client.getResponses();
-    console.log('Waiting for openai responses...');
-    // client.makeOpenAIRequest(GENERATED_INFRA_KEYS.API, promptApiGrpcController());
-    promptAiResultsSecondRound(client, responses);
+
+    promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
 
-    await promptAiResultsThirdRound(client, responses, componentsInfo);
+    await promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
 
-    console.log(responses);
+    // console.log(responses);
+    stopSpinner(throbber, greenColor('Generated.'), '🔨');
     // console.log(JSON.stringify(responses, null, 2));
     console.log(`Total cost: $${client.getTotalCost().toFixed(2)}`);
-    await writeAIResults(responses, targetDirPath);
+    await writeAIResults(responses, targetDirPath, exposedGrpcComponents);
   } catch (error) {
+    const TAB = '\t';
+    console.error(redColor(TAB + '❌ ' + error));
     // console.log(error);
   }
 

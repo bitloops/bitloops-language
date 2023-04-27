@@ -30,6 +30,11 @@ export type BitloopsProjectConfig = {
         };
       };
     };
+    'stream-events': {
+      [boundedContext: string]: {
+        [module: string]: string[]; // IntegrationEvents
+      };
+    };
   };
 };
 

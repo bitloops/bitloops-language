@@ -155,7 +155,7 @@ message Todo {
   string userId = 4;
 }`;
 
-const messageInstructions = (protobuf: string): string => {
+const messageInstructions = (protobuf: string, integrationEventNames: string[]): string => {
   return ` 
   You will add rpcs for real time events in the given protobuf file.
   Provided this Protobuf file:
@@ -170,18 +170,32 @@ const messageInstructions = (protobuf: string): string => {
     rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
     rpc On(OnTodoRequest) returns (stream OnEvent);
   ${CodeSnippets.closeProto()}
-  The OnEvent stream can be oneof many possible events.
-  Create one event only for every rpc based on commands of CQRS included in the service.
-  Don't create events for the rpcs that are based on queries of CQRS.
-  For example addTodo rpc would correspond to an onAdded event.
-  
+  The OnEvent stream can be oneof many possible events fields.
+  Create one event field per integrationEvent. These are the integrationEvents:
+  ${integrationEventNames.map((name) => `  ${name}`).join('\n')}
+  Use the integrationEvent for the fieldName, but use the same <message-type> across all events.
+
+  ${CodeSnippets.openProto()}
+  message OnEvent {
+    oneof event {
+      <message-type> <name-from-integration-event-1>
+      <message-type> <name-from-integration-event-2>
+      <message-type> <name-from-integration-event-3>
+    }
+  }
+  ${CodeSnippets.closeProto()}
   The OnTodoRequest will have the subscriberId, and an array of events the user wants to subscribe to.
   Define an enum of all possible events mentioned above.
   You should keep existing messages intact. 
 `;
+
+  // Create one event only for every rpc based on commands of CQRS included in the service.
+  // Don't create events for the rpcs that are based on queries of CQRS.
+  // For example addTodo rpc would correspond to an onAdded event.
 };
 export const promptProtoRealTimeStreamsMessages = (
   protobuf: string,
+  integrationEventNames: string[],
 ): ChatCompletionRequestMessage[] => [
   {
     role: 'system',
@@ -190,7 +204,10 @@ export const promptProtoRealTimeStreamsMessages = (
   },
   {
     role: 'user',
-    content: messageInstructions(PROTO),
+    content: messageInstructions(PROTO, [
+      'TodoAddedIntegrationEvent',
+      'TodoDeletedIntegrationEvent',
+    ]),
   },
   {
     role: 'assistant',
@@ -318,6 +335,6 @@ export const promptProtoRealTimeStreamsMessages = (
   },
   {
     role: 'user',
-    content: messageInstructions(protobuf),
+    content: messageInstructions(protobuf, integrationEventNames),
   },
 ];
