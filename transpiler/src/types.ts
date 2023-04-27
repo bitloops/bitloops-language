@@ -143,9 +143,9 @@ export type TBitloopsPrimitivesObject = {
   [primitivesTypeKey]: TBitloopsPrimitives;
 };
 
-export const buildInClassTypeKey = 'buildInClassType';
+export const builtInClassTypeKey = 'builtInClassType';
 export type TBitloopsBuiltInClassesObject = {
-  [buildInClassTypeKey]: TBitloopsBuiltInClasses;
+  [builtInClassTypeKey]: TBitloopsBuiltInClasses;
 };
 
 export type TStandardValueType = {

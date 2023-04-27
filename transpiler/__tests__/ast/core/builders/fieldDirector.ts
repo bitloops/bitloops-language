@@ -117,7 +117,7 @@ export class FieldBuilderDirector {
     isOptional: boolean;
   }): TVariable {
     const field = this.builder
-      .withBuiltInClassType({ buildInClassType: type })
+      .withBuiltInClassType({ builtInClassType: type })
       .withName(name)
       .withOptional(isOptional)
       .build();

@@ -27,7 +27,7 @@ import {
   TBitloopsIdentifierObject,
   primitivesTypeKey,
   TBitloopsPrimitivesObject,
-  buildInClassTypeKey,
+  builtInClassTypeKey,
   bitloopsIdentifiersTypeKey,
   TBitloopsBuiltInClassesObject,
   TStandardValueType,
@@ -50,8 +50,8 @@ export class BitloopsPrimTypeIdentifiers {
   static isBitloopsBuiltInClass = (
     type: TBitloopsPrimaryTypeValues,
   ): type is TBitloopsBuiltInClassesObject => {
-    if (buildInClassTypeKey in type) {
-      return bitloopsBuiltInClasses.includes(type[buildInClassTypeKey]);
+    if (builtInClassTypeKey in type) {
+      return bitloopsBuiltInClasses.includes(type[builtInClassTypeKey]);
     }
     return false;
   };
@@ -71,7 +71,7 @@ export class BitloopsPrimTypeIdentifiers {
   static builtInClassToPrimitiveType = (
     type: TBitloopsBuiltInClassesObject,
   ): TBitloopsPrimitives => {
-    const builtInClass = type[buildInClassTypeKey];
+    const builtInClass = type[builtInClassTypeKey];
     switch (builtInClass) {
       case 'UUIDv4':
         return 'string';
