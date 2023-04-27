@@ -19,6 +19,8 @@ import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
 import { ServicePortNodeTransformer } from './node-transformers/ServicePortNodeTransformer.js';
 import { DomainServiceNode } from './nodes/domain-service/DomainServiceNode.js';
 import { DomainServiceNodeTransformer } from './node-transformers/DomainServiceNodeTransformer.js';
+import { IfErrorExpressionNode } from './nodes/Expression/IfErrorExpressionNode.js';
+import { IfErrorExpressionNodeTransformer } from './node-transformers/IfErrorExpressionNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -110,6 +112,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TDomainService: {
         const servicePortNode = intermediateASTNode as DomainServiceNode;
         return new DomainServiceNodeTransformer(intermediateASTTree, servicePortNode);
+      }
+      case BitloopsTypesMapping.TIfErrorExpression: {
+        const ifErrorExpressionNode = intermediateASTNode as IfErrorExpressionNode;
+        return new IfErrorExpressionNodeTransformer(intermediateASTTree, ifErrorExpressionNode);
       }
       default:
         return null;

@@ -806,17 +806,14 @@ expression
     | expression '=' expression                                  # AssignmentExpression
     | literal                                                    # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
-    | expression Is classTypes                                   # IsInstanceOfExpression
+    | expression Is bitloopsPrimaryType                          # IsInstanceOfExpression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
     | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen           # EnvVarWithDefaultValueExpression
     | envVariable                                                # EnvironmentVariableExpression
     | expression Dot IfError OpenParen anonymousFunction? CloseParen  # IfErrorExpression
-    ;   
-
-//TODO rename this
-classTypes: ErrorClass;
+    ;
 
 anonymousFunction
     : parameterList ARROW arrowFunctionBody

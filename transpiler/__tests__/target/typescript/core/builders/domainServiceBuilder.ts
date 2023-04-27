@@ -19,7 +19,7 @@ import {
 import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { PrivateMethodBuilderDirector } from './methods/privateMethodBuilderDirector.js';
 import { PublicMethodBuilderDirector } from './methods/publicMethodBuilderDirector.js';
-import { ParameterListBuilderDirector } from './parameterListDirector.js';
+import { ParameterListBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/parameterListDirector.js';
 
 export class DomainServiceNodeBuilderDirector {
   private builder: DomainServiceNodeBuilder;

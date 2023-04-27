@@ -930,10 +930,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return isInstanceOfVisitor(this, ctx);
   }
 
-  visitClassTypes(ctx: BitloopsParser.ClassTypesContext): any {
-    return ctx.ErrorClass().getText();
-  }
-
   visitExecuteDeclaration(ctx: BitloopsParser.ExecuteDeclarationContext): any {
     return executeDeclarationVisitor(this, ctx);
   }

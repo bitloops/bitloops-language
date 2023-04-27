@@ -3,7 +3,7 @@ import { FieldListNodeBuilder } from '../../../../../../src/ast/core/intermediat
 import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { EntityBuilderDirector } from '../../builders/domain/entityDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
 import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
 
@@ -24,12 +24,12 @@ import { StatementListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
-import { AnonymousFunctionNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/builders/anonymousFunctionNodeBuilderDirector.js';
-import { ParameterListBuilderDirector } from '../../builders/parameterListDirector.js';
+import { AnonymousFunctionNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/anonymousFunctionNodeBuilderDirector.js';
+import { ParameterListNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/parameterListNodeBuilderDirector.js';
 
 type TestCase = {
   description: string;
@@ -147,7 +147,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
                     ],
                     ifErrorFunction:
                       new AnonymousFunctionNodeBuilderDirector().buildAnonymousFunctionNodeWithReturnStatement(
-                        new ParameterListBuilderDirector().buildParamWithoutType('error'),
+                        new ParameterListNodeBuilderDirector().buildParamWithoutType('error'),
                         new ReturnStatementBuilderDirector().buildReturn(
                           new ExpressionBuilderDirector().buildStringLiteralExpression('error'),
                         ),

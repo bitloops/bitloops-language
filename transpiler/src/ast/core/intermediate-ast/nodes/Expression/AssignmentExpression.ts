@@ -15,6 +15,12 @@ export class AssignmentExpressionNode extends ExpressionNode {
     this.classNodeName = NAME;
   }
 
+  public getLeftExpression(): LeftExpressionNode {
+    return this.getChildNodeByClassNodeName<LeftExpressionNode>(
+      new LeftExpressionNode().getClassNodeName(),
+    );
+  }
+
   public typeCheck(symbolTable: SymbolTable): void {
     const leftExpression = this.getChildNodeByClassNodeName<LeftExpressionNode>(
       new LeftExpressionNode().getClassNodeName(),

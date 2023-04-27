@@ -1,4 +1,5 @@
-//| JestTestExpression { result is Error } | { "expression": { "isInstanceOf": { "expression": { "identifier": "result" }, "class": "Error" } } } | @bitloops-auto-generated |
+//| JestTestExpression { result is Error } | { "expression": { "isInstanceOf": { "expression": { "identifier": "result" }, "class": "" } } } | @bitloops-auto-generated |
+import { BitloopsPrimaryTypeDirector } from '../builders/bitloopsPrimaryTypeDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 
 export const validIsInstanceOfExpressions = [
@@ -7,6 +8,6 @@ export const validIsInstanceOfExpressions = [
     fileId: 'testFile.bl',
     inputBLString: 'JestTestExpression { result is Error }',
     expression: new ExpressionBuilderDirector().buildIdentifierExpression('result'),
-    class: 'Error',
+    class: new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('Error'),
   },
 ];

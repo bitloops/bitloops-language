@@ -226,7 +226,7 @@ export type TApplicationErrorValue = {
   Partial<TParameterList>;
 
 export type TInstanceOf = {
-  isInstanceOf: TExpression & { class: string };
+  isInstanceOf: TExpression & { class: TBitloopsPrimaryType };
 };
 
 export type TPropsEvaluation = {

@@ -1,7 +1,7 @@
 import { EvaluationFieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { EvaluationFieldNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldNodeBuilder.js';
-import { ExpressionBuilderDirector } from './expression.js';
+import { ExpressionBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 
 export class EvaluationFieldBuilderDirector {

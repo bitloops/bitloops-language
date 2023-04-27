@@ -6,8 +6,8 @@ import { StatementListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
-import { ExpressionBuilderDirector } from '../expression.js';
-import { ReturnStatementBuilderDirector } from './returnDirector.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 
 export class IfStatementBuilderDirector {
   buildIfStatement(

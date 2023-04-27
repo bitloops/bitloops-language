@@ -2,10 +2,10 @@ import { DomainEventIdentifierNodeBuilder } from '../../../../../../src/ast/core
 import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { BuiltInFunctionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/builtinFunction/BuiltinFunctionNode.js';
 import { ArgumentDirector } from '../../builders/argument.js';
-import { ArgumentListDirector } from '../../builders/argumentList.js';
+import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { BuiltinFunctionStatementBuilderDirector } from '../../builders/statement/builtinFunctionDirector.js';
 
 type TestCase = {

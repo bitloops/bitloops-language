@@ -1,9 +1,9 @@
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ParameterListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterListNode.js';
 import { StatementListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/StatementList.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-import { ParameterListBuilderDirector } from '../../builders/parameterListDirector.js';
+import { ParameterListBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/parameterListDirector.js';
 import { StatementListBuilderDirector } from '../../builders/statement/statementListDirector.js';
 
 type TTestType = {

@@ -8,9 +8,9 @@ import { BitloopsPrimaryTypeNode } from '../../../../../../src/ast/core/intermed
 import { EvaluationFieldNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ConstDeclarationNode.js';
-import { ArgumentListDirector } from '../argumentList.js';
+import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { EvaluationBuilderDirector } from '../evaluation.js';
-import { ExpressionBuilderDirector } from '../expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 
 export class ConstDeclarationBuilderDirector {
   buildConstDeclaration(

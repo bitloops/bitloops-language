@@ -122,6 +122,12 @@ export abstract class IntermediateASTNode {
     this.nextSibling = siblingNode;
   }
 
+  public addSiblingBetween(siblingNode: IntermediateASTNode): void {
+    const nextSibling = this.nextSibling;
+    this.nextSibling = siblingNode;
+    siblingNode.nextSibling = nextSibling;
+  }
+
   public getFirstChild(): IntermediateASTNode {
     return this.children[0];
   }
@@ -172,7 +178,7 @@ export abstract class IntermediateASTNode {
     return this.getChildNodeByType(BitloopsTypesMapping.TStatements) as StatementListNode;
   }
 
-  IsStatementListNode(): boolean {
+  IsStatementListNode(): this is StatementListNode {
     return this.nodeType === BitloopsTypesMapping.TStatements;
   }
 

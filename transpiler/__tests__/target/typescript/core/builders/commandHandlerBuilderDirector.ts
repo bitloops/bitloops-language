@@ -10,13 +10,13 @@ import { ReturnOkErrorTypeNode } from '../../../../../src/ast/core/intermediate-
 import { IntermediateASTRootNode } from '../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
 import { StatementNode } from '../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { ArgumentDirector } from './argument.js';
-import { ArgumentListDirector } from './argumentList.js';
+import { ArgumentListDirector } from '../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { EvaluationBuilderDirector } from './evaluation.js';
-import { ExpressionBuilderDirector } from './expression.js';
+import { ExpressionBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from './parameterDirector.js';
 import { ConstDeclarationBuilderDirector } from './statement/constDeclaration.js';
 import { IfStatementBuilderDirector } from './statement/ifStatementDirector.js';
-import { ReturnStatementBuilderDirector } from './statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { CommandHandlerNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/command/CommandHandlerNodeBuilder.js';

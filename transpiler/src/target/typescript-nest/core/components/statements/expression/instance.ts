@@ -18,41 +18,52 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import {
+  bitloopsIdentifiersTypeKey,
+  bitloopsPrimaryTypeKey,
+  TBitloopsPrimaryType,
   TExpression,
   TInstanceOf,
   TTargetDependenciesTypeScript,
 } from '../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../modelToTargetLanguage.js';
-import { getChildDependencies } from '../../../dependencies.js';
-
-type InstanceType = {
-  class: string;
-};
+import { BitloopsPrimTypeIdentifiers } from '../../../type-identifiers/bitloopsPrimType.js';
 
 const classMappings = {
   Error: 'isFail()',
 };
 
-const instancesLangMapping = (instance: InstanceType): TTargetDependenciesTypeScript => {
-  if (classMappings[instance.class]) {
-    return { output: `.${classMappings[instance.class]}`, dependencies: [] };
-  } else {
-    const dependencies = getChildDependencies(instance.class);
-    return { output: ` instanceof ${instance.class}`, dependencies };
+const instancesLangMapping = (
+  classInstance: TBitloopsPrimaryType,
+): TTargetDependenciesTypeScript => {
+  const primaryTypeValue = classInstance[bitloopsPrimaryTypeKey];
+  if (BitloopsPrimTypeIdentifiers.isBitloopsIdentifierType(primaryTypeValue)) {
+    const mappedType = primaryTypeValue[bitloopsIdentifiersTypeKey];
+    if (classMappings[mappedType]) {
+      return { output: `.${classMappings[mappedType]}`, dependencies: [] };
+    }
   }
+
+  const bitloopsPrimaryTypeResult = modelToTargetLanguage({
+    type: BitloopsTypesMapping.TBitloopsPrimaryType,
+    value: classInstance,
+  });
+  return {
+    output: ` instanceof ${bitloopsPrimaryTypeResult.output}`,
+    dependencies: bitloopsPrimaryTypeResult.dependencies,
+  };
 };
 
 const getInstanceResult = (
   expression: TExpression,
-  instance: InstanceType,
+  classInstance: TBitloopsPrimaryType,
 ): TTargetDependenciesTypeScript => {
   const expressionResult = modelToTargetLanguage({
     type: BitloopsTypesMapping.TExpression,
     value: expression,
   });
 
-  const instanceResult = instancesLangMapping(instance);
+  const instanceResult = instancesLangMapping(classInstance);
 
   const dependencies = [...expressionResult.dependencies, ...instanceResult.dependencies];
   return {
@@ -64,7 +75,7 @@ const getInstanceResult = (
 const instanceOfToTargetLanguage = (variable: TInstanceOf): TTargetDependenciesTypeScript => {
   const { class: classInstance, expression } = variable.isInstanceOf;
 
-  return getInstanceResult({ expression }, { class: classInstance });
+  return getInstanceResult({ expression }, classInstance);
 };
 
 export { instanceOfToTargetLanguage };

@@ -21,7 +21,7 @@
 import { OriginalAST, ParserSyntacticError } from '../../../src/parser/core/types.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
-import { TExpression } from '../../../src/types.js';
+import { TBitloopsPrimaryType, TExpression } from '../../../src/types.js';
 import { ExpressionBuilderDirector } from './builders/expressionDirector.js';
 import { validIsInstanceOfExpressions } from './mocks/isInstanceOf.js';
 const boundedContext = 'Hello World';
@@ -53,5 +53,5 @@ describe('Valid isInstanceOf expressions', () => {
   });
 });
 
-const getExpected = (expression: TExpression, className: string): TExpression =>
+const getExpected = (expression: TExpression, className: TBitloopsPrimaryType): TExpression =>
   new ExpressionBuilderDirector().buildIsInstanceOfExpression(expression, className);

@@ -5,7 +5,7 @@ import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { IntermediateASTTree } from '../../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { DomainErrorNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Error/DomainErrorNode.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 
 type TestCase = {

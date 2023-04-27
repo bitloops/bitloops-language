@@ -5,7 +5,7 @@ import { ConstDeclarationNode } from '../../../../../../src/ast/core/intermediat
 import { IfStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ifStatement/IfStatementNode.js';
 import { ReturnOKStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnOKStatementNode.js';
 import { EvaluationBuilderDirector } from '../evaluation.js';
-import { ExpressionBuilderDirector } from '../expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
 import { IfStatementBuilderDirector } from './ifStatementDirector.js';
 import { BreakStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/BreakStatementNode.js';

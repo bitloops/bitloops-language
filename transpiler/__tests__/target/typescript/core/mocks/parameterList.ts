@@ -1,5 +1,5 @@
 import { ParameterBuilderDirector } from '../builders/parameterDirector.js';
-import { ParameterListBuilderDirector } from '../builders/parameterListDirector.js';
+import { ParameterListBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/parameterListDirector.js';
 
 export const VALID_PARAMETER_LIST_TEST_CASES = [
   {

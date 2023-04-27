@@ -4,9 +4,9 @@ import { StatementListNodeBuilder } from '../../../../../src/ast/core/intermedia
 import { StructIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/Struct/StructIdentifierNodeBuilder.js';
 import { EvaluationFieldNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { IntegrationVersionMapperNode } from '../../../../../src/ast/core/intermediate-ast/nodes/integration-event/IntegrationVersionMapperNode.js';
-import { ExpressionBuilderDirector } from './expression.js';
+import { ExpressionBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ConstDeclarationBuilderDirector } from './statement/constDeclaration.js';
-import { ReturnStatementBuilderDirector } from './statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 
 export class IntegrationVersionMapperNodeBuilderDirector {
   private builder: IntegrationVersionMapperNodeBuilder;

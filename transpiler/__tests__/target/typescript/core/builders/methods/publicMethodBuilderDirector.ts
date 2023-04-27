@@ -14,7 +14,7 @@ import {
   TOkErrorReturnType,
   TParameter,
 } from '../../../../../../src/types.js';
-import { ExpressionBuilderDirector } from '../expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../returnOkErrorTypeBuilderDirector.js';
 import { StatementBuilderDirector } from '../statement/statementDirector.js';
 import { StatementListBuilderDirector } from '../statement/statementListDirector.js';

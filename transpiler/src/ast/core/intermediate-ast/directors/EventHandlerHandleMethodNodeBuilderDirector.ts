@@ -8,7 +8,7 @@ import { StatementListNodeBuilder } from '../builders/statements/StatementListNo
 import { EventHandleNode } from '../nodes/EventHandleNode.js';
 import { BitloopsPrimaryTypeNodeBuilderDirector } from './BitloopsPrimaryTypeNodeBuilderDirector.js';
 import { ConstDeclarationNodeBuilderDirector } from './ConstDeclarationNodeBuilderDirector.js';
-import { ExpressionBuilderDirector } from './ExpressionDirector.js';
+import { ExpressionBuilderDirector } from './expressionNodeBuilderDirector.js';
 
 export class EventHandlerHandleMethodNodeBuilderDirector {
   private builder: EventHandlerHandleMethodNodeBuilder;
@@ -49,13 +49,12 @@ export class EventHandlerHandleMethodNodeBuilderDirector {
         parameterIdentifierName,
         integrationEventIdentifierName: integrationEventIdentifier,
       });
-    const methodCallExprNode = ExpressionBuilderDirector.buildThisMethodCallWithMemberDotExpression(
-      {
+    const methodCallExprNode =
+      new ExpressionBuilderDirector().buildThisMethodCallWithMemberDotExpression({
         argumentIdentifierName: constIdentifierName,
         methodCallName: eventBusMethodCallName,
         memberDotName: eventBusMemberDotName,
-      },
-    );
+      });
     const statementListNode = new StatementListNodeBuilder()
       .withStatements([constDeclarationNode, methodCallExprNode])
       .build();

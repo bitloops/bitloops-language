@@ -8,11 +8,11 @@ import { ReturnOkTypeNodeBuilder } from '../../../../../../src/ast/core/intermed
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { RootEntityBuilderDirector } from '../../builders/domain/rootEntityDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
 import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
 import { RepoPortNodeBuilderDirector } from '../../builders/repoPortNodeBuilderDirector.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { ReadModelBuilderDirector } from '../../builders/readModel.js';
 import { FieldNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/FieldList/FieldNodeBuilder.js';

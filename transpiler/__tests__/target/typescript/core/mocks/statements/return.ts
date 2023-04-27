@@ -2,9 +2,9 @@ import { ReturnErrorStatementNode } from '../../../../../../src/ast/core/interme
 import { ReturnOKStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnOKStatementNode.js';
 import { ReturnStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/ReturnStatementNode.js';
 import { ArgumentDirector } from '../../builders/argument.js';
-import { ArgumentListDirector } from '../../builders/argumentList.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 
 type TestCase = {
   description: string;

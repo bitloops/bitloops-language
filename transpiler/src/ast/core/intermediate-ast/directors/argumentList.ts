@@ -1,8 +1,8 @@
-import { ArgumentListNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
-import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
-import { ArgumentNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
-import { ArgumentDirector } from './argument.js';
-import { ExpressionBuilderDirector } from './expression.js';
+import { ArgumentListNodeBuilder } from '../builders/ArgumentList/ArgumentListNodeBuilder.js';
+import { ArgumentListNode } from '../nodes/ArgumentList/ArgumentListNode.js';
+import { ArgumentNode } from '../nodes/ArgumentList/ArgumentNode.js';
+import { ArgumentDirector } from '../../../../../__tests__/target/typescript/core/builders/argument.js';
+import { ExpressionBuilderDirector } from './expressionNodeBuilderDirector.js';
 
 export class ArgumentListDirector {
   buildArgumentListWithArgs(argumentNode: ArgumentNode[]): ArgumentListNode {

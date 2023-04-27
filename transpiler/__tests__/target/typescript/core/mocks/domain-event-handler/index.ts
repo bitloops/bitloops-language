@@ -1,6 +1,6 @@
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
-import { ArgumentListDirector } from '../../builders/argumentList.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
+import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { DomainEventHandlerBuilderDirector } from '../../builders/domainEventHandler.js';

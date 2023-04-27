@@ -1,13 +1,14 @@
 import { ArgumentListNode } from '../../nodes/ArgumentList/ArgumentListNode.js';
 import { ArgumentNode } from '../../nodes/ArgumentList/ArgumentNode.js';
+import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class ArgumentListNodeBuilder implements IBuilder<ArgumentListNode> {
   private argumentListNode: ArgumentListNode;
   private argumentNodes: ArgumentNode[];
 
-  constructor() {
-    this.argumentListNode = new ArgumentListNode();
+  constructor(metadata?: TNodeMetadata) {
+    this.argumentListNode = new ArgumentListNode(metadata);
   }
 
   public withArguments(arguments_: ArgumentNode[]): ArgumentListNodeBuilder {

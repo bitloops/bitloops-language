@@ -279,8 +279,6 @@ ToString: 'toString';
 //
 At: '@';
 
-ErrorClass: 'Error';
-
 /// Identifier Names and Identifiers
 DTOIdentifier:                  UpperCaseStart IdentifierPart* DTO;
 ValueObjectIdentifier:          UpperCaseStart IdentifierPart* VO;

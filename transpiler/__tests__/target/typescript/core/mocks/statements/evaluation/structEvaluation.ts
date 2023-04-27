@@ -2,7 +2,7 @@ import { IdentifierNodeBuilder } from '../../../../../../../src/ast/core/interme
 import { EvaluationFieldNode } from '../../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { IdentifierNode } from '../../../../../../../src/ast/core/intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { EvaluationFieldBuilderDirector } from '../../../builders/evaluationFIeld.js';
-import { ExpressionBuilderDirector } from '../../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 
 type TValidTestCases = {
   description: string;
