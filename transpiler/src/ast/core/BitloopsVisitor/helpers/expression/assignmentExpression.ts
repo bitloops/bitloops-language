@@ -19,15 +19,15 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { AssignmentExpressionNode } from '../../../intermediate-ast/nodes/Expression/AssignmentExpression.js';
 import { AssignmentExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/assignmentExprBuilder.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
+import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 
 export const assignmentExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.AssignmentExpressionContext,
-): AssignmentExpressionNode => {
+): ExpressionNode => {
   const leftExpression = thisVisitor.visit(ctx.expression(0));
   const rightExpression = thisVisitor.visit(ctx.expression(1));
   const assignmentNode = new AssignmentExpressionNodeBuilder()

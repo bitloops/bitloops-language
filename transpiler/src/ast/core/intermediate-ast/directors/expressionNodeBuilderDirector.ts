@@ -43,6 +43,7 @@ import { IfErrorExpressionNode } from '../nodes/Expression/IfErrorExpressionNode
 import { ArgumentNodeBuilder } from '../builders/ArgumentList/ArgumentNodeBuilder.js';
 import { ArgumentListNodeBuilder } from '../builders/ArgumentList/ArgumentListNodeBuilder.js';
 import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
+import { BitloopsPrimaryTypeNodeBuilderDirector } from './BitloopsPrimaryTypeNodeBuilderDirector.js';
 
 export class ExpressionBuilderDirector {
   private metadata: TNodeMetadata;
@@ -315,7 +316,11 @@ export class ExpressionBuilderDirector {
     identifier: string,
     classToCompare: string,
   ): ExpressionNode {
-    const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
+    const classNode = new ClassNodeBuilder()
+      .withClass(
+        new BitloopsPrimaryTypeNodeBuilderDirector().buildIdentifierPrimaryType(classToCompare),
+      )
+      .build();
     const expression = this.buildIdentifierExpression(identifier);
     const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
       .withClass(classNode)

@@ -62,7 +62,6 @@ import { IntegrationEventHandlerHandleMethodNode } from '../ast/core/intermediat
 import { PublicMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { PrivateMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
 import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
-import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
 const SCOPE_NAMES = {
   EXECUTE: 'execute',
@@ -176,12 +175,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           const classTypeScope = globalScope.createChildScope(name, node);
 
           if (ClassTypeNodeTypeGuards.isCommandHandler(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
             //TODO move to method
@@ -198,12 +192,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const statements = node.getStatements();
             this.createStatementListScope(statements, executeScope);
           } else if (ClassTypeNodeTypeGuards.isQueryHandler(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
             //TODO move to method
@@ -220,36 +209,21 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const statements = node.getStatements();
             this.createStatementListScope(statements, executeScope);
           } else if (ClassTypeNodeTypeGuards.isDomainEventHandler(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
 
             const handle = node.getHandle();
             this.createHandleScope(handle, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isIntegrationEventHandler(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
 
             const handle = node.getHandle();
             this.createIntegrationEventHandleScope(handle, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isDomainService(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const params = node.getParameters();
             this.createParamsScope(params, classTypeScope);
             const publicMethods = node.getPublicMethods();
@@ -257,12 +231,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const privateMethods = node.getPrivateMethods();
             this.createPrivateMethodScope(privateMethods, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isRootEntity(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const entityValue = node.getEntityValues();
 
             const domainCreate = entityValue.getDomainCreateMethod();
@@ -279,12 +248,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const privateMethods = entityValue.getPrivateMethods();
             this.createPrivateMethodScope(privateMethods, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isEntity(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const entityValue = node.getEntityValues();
 
             const domainCreate = entityValue.getDomainCreateMethod();
@@ -301,12 +265,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const privateMethods = entityValue.getPrivateMethods();
             this.createPrivateMethodScope(privateMethods, classTypeScope);
           } else if (ClassTypeNodeTypeGuards.isValueObject(node)) {
-            classTypeScope.insert(
-              SCOPE_NAMES.THIS,
-              new ClassTypeThisSymbolEntry(
-                new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType(name),
-              ),
-            );
+            classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
             const constants = node.getConstants();
             constants.forEach((constant) => {
               const constantName = constant.getIdentifier().getValue().identifier;
