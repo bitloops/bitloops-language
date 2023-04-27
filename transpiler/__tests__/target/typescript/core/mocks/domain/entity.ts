@@ -28,6 +28,8 @@ import { ReturnStatementBuilderDirector } from '../../builders/statement/returnD
 import { StaticNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/methods/StaticNodeBuilder.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
+import { AnonymousFunctionNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/builders/anonymousFunctionNodeBuilderDirector.js';
+import { ParameterListBuilderDirector } from '../../builders/parameterListDirector.js';
 
 type TestCase = {
   description: string;
@@ -132,7 +134,7 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
           .withStatements(
             new StatementListNodeBuilder()
               .withStatements([
-                new ConstDeclarationBuilderDirector().buildValueObjectConstDeclarationWithEvaluationFields(
+                new ConstDeclarationBuilderDirector().buildValueObjectConstDeclarationWithEvaluationFieldsAndIfError(
                   {
                     identifier: 'title',
                     valueObjectIdentifier: 'TitleVO',
@@ -143,6 +145,13 @@ export const VALID_ENTITY_TEST_CASES: TestCase[] = [
                         'title',
                       ),
                     ],
+                    ifErrorFunction:
+                      new AnonymousFunctionNodeBuilderDirector().buildAnonymousFunctionNodeWithReturnStatement(
+                        new ParameterListBuilderDirector().buildParamWithoutType('error'),
+                        new ReturnStatementBuilderDirector().buildReturn(
+                          new ExpressionBuilderDirector().buildStringLiteralExpression('error'),
+                        ),
+                      ),
                   },
                 ),
                 new StatementBuilderDirector().buildThisAssignmentExpression('title'),

@@ -157,4 +157,11 @@ export class ExpressionTypeIdentifiers {
     }
     return false;
   }
+
+  static isIfErrorExpression(expressionValue: TExpressionValues): boolean {
+    if ('ifErrorExpression' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
 }

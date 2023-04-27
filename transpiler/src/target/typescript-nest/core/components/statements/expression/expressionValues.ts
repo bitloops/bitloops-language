@@ -177,6 +177,13 @@ const expressionValuesToTargetLanguage = (
     });
   }
 
+  if (ExpressionTypeIdentifiers.isIfErrorExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TIfErrorExpression,
+      value: expressionValue,
+    });
+  }
+
   throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 

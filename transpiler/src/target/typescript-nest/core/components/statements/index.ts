@@ -64,7 +64,7 @@ const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTyp
 
 // TODO move if/else wrapping to second model
 const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesTypeScript => {
-  const elseAdded: string[] = [];
+  // const elseAdded: string[] = [];
   const mapping = (variable: TStatements): TTargetDependenciesTypeScript[] => {
     return variable.map((statement) => {
       // eslint-disable-next-line no-prototype-builtins
@@ -78,11 +78,11 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
               type: BitloopsTypesMapping.TStatement,
               value: statement,
             });
-            const ifAdded = `if (!${constDeclaration.identifier}.isFail()) {`;
-            elseAdded.push(`} else { return fail(${constDeclaration.identifier}.value) }`);
+            // const ifAdded = `if (!${constDeclaration.identifier}.isFail()) {`;
+            // elseAdded.push(`} else { return fail(${constDeclaration.identifier}.value) }`);
             const dependencies = [...evaluationRes.dependencies, ...FAIL_DEPENDENCY];
             return {
-              output: `${evaluationRes.output}${ifAdded}`,
+              output: `${evaluationRes.output}`,
               dependencies,
             };
           }
@@ -106,11 +106,12 @@ const statementsToTargetLanguage = (variable: TStatements): TTargetDependenciesT
     //   finalResult += elseAdded.join('');
     // }
   }
-  if (elseAdded.length > 0) {
-    for (let i = elseAdded.length - 1; i >= 0; i -= 1) {
-      finalResult += elseAdded[i];
-    }
-  }
+
+  // if (elseAdded.length > 0) {
+  //   for (let i = elseAdded.length - 1; i >= 0; i -= 1) {
+  //     finalResult += elseAdded[i];
+  //   }
+  // }
 
   return { output: finalResult, dependencies: finalDependencies };
 };

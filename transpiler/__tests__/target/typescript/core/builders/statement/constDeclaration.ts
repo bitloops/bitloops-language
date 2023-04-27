@@ -2,6 +2,7 @@ import { DTOIdentifierNodeBuilder } from '../../../../../../src/ast/core/interme
 import { EvaluationFieldListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/EvaluationFieldList/EvaluationFieldListNodeBuilder.js';
 import { IdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { ConstDeclarationNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/constDeclaration.js';
+import { AnonymousFunctionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/AnonymousFunctionNode.js';
 import { ArgumentNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
 import { BitloopsPrimaryTypeNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { EvaluationFieldNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
@@ -63,6 +64,29 @@ export class ConstDeclarationBuilderDirector {
         new EvaluationBuilderDirector().buildValueObjectEvaluationWithFieldList(
           valueObjectIdentifier,
           new EvaluationFieldListNodeBuilder().withEvaluationFields(evaluationFields).build(),
+        ),
+      ),
+    );
+  }
+
+  buildValueObjectConstDeclarationWithEvaluationFieldsAndIfError({
+    identifier,
+    valueObjectIdentifier,
+    evaluationFields,
+    ifErrorFunction,
+  }: {
+    identifier: string;
+    valueObjectIdentifier: string;
+    evaluationFields: EvaluationFieldNode[];
+    ifErrorFunction: AnonymousFunctionNode;
+  }): ConstDeclarationNode {
+    return this.buildConstDeclaration(
+      identifier,
+      new ExpressionBuilderDirector().buildIfErrorExpressionNode(
+        new EvaluationBuilderDirector().buildValueObjectEvaluationWithFieldListIfError(
+          valueObjectIdentifier,
+          new EvaluationFieldListNodeBuilder().withEvaluationFields(evaluationFields).build(),
+          ifErrorFunction,
         ),
       ),
     );

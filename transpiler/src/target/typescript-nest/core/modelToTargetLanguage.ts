@@ -144,6 +144,8 @@ import { getPortTokenToTargetLanguage } from './components/port-token/index.js';
 import { getMetadataToTargetLanguage } from './components/metadata/index.js';
 import { readModelEvaluationToTargetLanguage } from './components/statements/expression/evaluation/readModelEvaluation.js';
 import { domainEventEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEventEvaluation.js';
+import { ifErrorExpressionToTargetLanguage } from './components/statements/expression/ifErrorExpressionToTargetLanguage.js';
+import { anonymousFunctionToTargetLanguage } from './components/anonymousFunctionToTargetLanguage.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -363,6 +365,10 @@ const modelToTargetLanguage = (props: {
       res = entityConstructorEvaluationToTargetLanguage(value);
       break;
     }
+    case BitloopsTypesMapping.TIfErrorExpression: {
+      res = ifErrorExpressionToTargetLanguage(value);
+      break;
+    }
     case BitloopsTypesMapping.TEntityValues: {
       res = entityValuesToTargetLanguage({
         entityValues: value,
@@ -576,6 +582,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TMetadata: {
       res = getMetadataToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TAnonymousFunction: {
+      res = anonymousFunctionToTargetLanguage(value);
       break;
     }
     default: {

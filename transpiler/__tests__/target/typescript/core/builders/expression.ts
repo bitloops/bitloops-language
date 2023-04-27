@@ -43,6 +43,7 @@ import { IdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nod
 import { DefaultEnvVarValueNode } from '../../../../../src/ast/core/intermediate-ast/nodes/setup/DefaultEnvVarValueNode.js';
 import { EnvironmentalVariableNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/setup/EnvironmentalVariableNodeBuilder.js';
 import { RegexLiteralNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/literal/RegexLiteralNodeBuilder.js';
+import { IfErrorExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/IfErrorExpressionNode.js';
 
 export class ExpressionBuilderDirector {
   buildIdentifierExpression(name: string): ExpressionNode {
@@ -369,5 +370,10 @@ export class ExpressionBuilderDirector {
       )
       .build();
     return envExpression;
+  }
+
+  buildIfErrorExpressionNode(expression: IfErrorExpressionNode): ExpressionNode {
+    const expressionNode = new ExpressionBuilder().withExpression(expression).build();
+    return expressionNode;
   }
 }
