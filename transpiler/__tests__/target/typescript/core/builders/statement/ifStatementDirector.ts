@@ -40,4 +40,17 @@ export class IfStatementBuilderDirector {
       [new ReturnStatementBuilderDirector().buildReturn(expr)],
     );
   }
+
+  buildIfIsFailDefaultStatement(identifier: string): IfStatementNode {
+    const condition = new ExpressionBuilderDirector().buildInstanceOfWithIdentifierExpression(
+      identifier,
+      'Error',
+    );
+    const thenStatements = [
+      new ReturnStatementBuilderDirector().buildReturnError(
+        new ExpressionBuilderDirector().buildIdentifierExpression(identifier),
+      ),
+    ];
+    return this.buildIfStatement(condition, thenStatements);
+  }
 }

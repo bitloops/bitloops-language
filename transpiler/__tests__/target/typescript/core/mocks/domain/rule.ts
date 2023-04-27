@@ -3,7 +3,7 @@ import { ParameterListNode } from '../../../../../../src/ast/core/intermediate-a
 import { StatementListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/StatementList.js';
 import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
-import { ParameterListBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/parameterListDirector.js';
+import { ParameterListNodeBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/parameterListNodeBuilderDirector.js';
 import { StatementListBuilderDirector } from '../../builders/statement/statementListDirector.js';
 
 type TTestType = {
@@ -20,7 +20,7 @@ export const VALID_DOMAIN_RULES: TTestType[] = [
   {
     description: 'valid domain rule with statements',
     identifier: 'validDomainRule',
-    parameterList: new ParameterListBuilderDirector().buildParams(
+    parameterList: new ParameterListNodeBuilderDirector().buildParams(
       new ParameterBuilderDirector().buildPrimitiveParameter('param1', 'string'),
       new ParameterBuilderDirector().buildPrimitiveParameter('param2', 'string'),
     ),
@@ -43,7 +43,7 @@ export const VALID_DOMAIN_RULES: TTestType[] = [
   {
     description: 'valid domain rule without statements',
     identifier: 'validDomainRule',
-    parameterList: new ParameterListBuilderDirector().buildParams(
+    parameterList: new ParameterListNodeBuilderDirector().buildParams(
       new ParameterBuilderDirector().buildPrimitiveParameter('param1', 'string'),
       new ParameterBuilderDirector().buildPrimitiveParameter('param2', 'string'),
     ),

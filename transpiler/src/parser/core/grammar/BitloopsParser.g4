@@ -286,8 +286,7 @@ condition
     ;
 
 returnStatement
-    : Return expression?                                   # ReturnSimpleStatement
-    | Return ErrorClass OpenParen expression? CloseParen   # ReturnErrorStatement
+    : Return expression?
     ;
 
 constDeclaration

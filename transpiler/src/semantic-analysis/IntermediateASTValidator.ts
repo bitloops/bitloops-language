@@ -61,7 +61,7 @@ import { EventHandleNode } from '../ast/core/intermediate-ast/nodes/EventHandleN
 import { IntegrationEventHandlerHandleMethodNode } from '../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { PublicMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { PrivateMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
-import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
+// import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
 const SCOPE_NAMES = {
@@ -77,23 +77,25 @@ const SCOPE_NAMES = {
 };
 
 //TODO in member dot do we add them to symbol table part by part
-export const inferType = (node: IntermediateASTNode): TInferredTypes => {
-  if (IntermediateASTNodeTypeGuards.isBitloopsPrimaryType(node)) {
-    return node.getInferredType();
-  } else if (IntermediateASTNodeTypeGuards.isExpression(node)) {
-    node.getInferredType();
-    // if (node.isLiteralExpression()) {
-    //   return inferType(node.getLiteral());
-    // } else if (node.isMemberDotExpression()) {
-    //   return inferType(node.getMemberDot());
-    // } else if (node.isEvaluationExpression()) {
-    //   return inferType(node.getEvaluation());
-    // } else if (node.isMethodCallExpression()) {
-    //   return inferType(node.getMethodCall());
-    // } else if (node.isParenthesizedExpression()) {
-    //   return inferType(node.getExpression());
-    // }
-  }
+export const inferType = (_node: IntermediateASTNode): TInferredTypes => {
+  // UNCOMMENT THIS
+  // if (IntermediateASTNodeTypeGuards.isBitloopsPrimaryType(node)) {
+  //   return node.getInferredType();
+  // } else if (IntermediateASTNodeTypeGuards.isExpression(node)) {
+  //   node.getInferredType();
+  // if (node.isLiteralExpression()) {
+  //   return inferType(node.getLiteral());
+  // } else if (node.isMemberDotExpression()) {
+  //   return inferType(node.getMemberDot());
+  // } else if (node.isEvaluationExpression()) {
+  //   return inferType(node.getEvaluation());
+  // } else if (node.isMethodCallExpression()) {
+  //   return inferType(node.getMethodCall());
+  // } else if (node.isParenthesizedExpression()) {
+  //   return inferType(node.getExpression());
+  // }
+  // UNCOMMENT THIS
+  // }
   // case 'methodCall': {
   //   const object = inferType(node.object, table);
   //   const method = object.methods[node.methodName];
@@ -127,10 +129,12 @@ export const inferType = (node: IntermediateASTNode): TInferredTypes => {
   // case 'StringLiteral':
   //   return { name: 'string' };
   // // Handle other node types here
-  else {
-    throw new Error('Unsupported node type: ');
-  }
-  throw new Error('');
+  // UNCOMMENT THIS
+  // else {
+  //   throw new Error('Unsupported node type: ');
+  // }
+  // throw new Error('');
+  return null;
 };
 
 //TODO should we create symbol table if empty??

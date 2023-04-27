@@ -242,8 +242,6 @@ import {
 import { IntegrationEventParameterNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
 import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
 import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
-import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
-import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
 import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
 import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
@@ -850,9 +848,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 
-  visitReturnSimpleStatement(
-    ctx: BitloopsParser.ReturnSimpleStatementContext,
-  ): ReturnStatementNode {
+  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): ReturnStatementNode {
     const metadata = produceMetadata(ctx, this);
 
     const returnStatementNodeBuilder = new ReturnStatementNodeBuilder(metadata);
@@ -864,22 +860,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const returnStatementNode = returnStatementNodeBuilder.build();
 
     return returnStatementNode;
-  }
-
-  visitReturnErrorStatement(
-    ctx: BitloopsParser.ReturnErrorStatementContext,
-  ): ReturnErrorStatementNode {
-    const metadata = produceMetadata(ctx, this);
-
-    const returnErrorStatementNodeBuilder = new ReturnErrorStatementNodeBuilder(metadata);
-
-    if (ctx.expression()) {
-      const expressionNode = this.visit(ctx.expression());
-      returnErrorStatementNodeBuilder.withExpression(expressionNode);
-    }
-    const returnErrorStatementNode = returnErrorStatementNodeBuilder.build();
-
-    return returnErrorStatementNode;
   }
 
   /**

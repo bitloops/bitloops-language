@@ -39,10 +39,12 @@ import { IdentifierNode } from '../nodes/identifier/IdentifierNode.js';
 import { DefaultEnvVarValueNode } from '../nodes/setup/DefaultEnvVarValueNode.js';
 import { EnvironmentalVariableNodeBuilder } from '../builders/setup/EnvironmentalVariableNodeBuilder.js';
 import { RegexLiteralNodeBuilder } from '../builders/expressions/literal/RegexLiteralNodeBuilder.js';
-import { IfErrorExpressionNode } from '../nodes/Expression/IfErrorExpressionNode.js';
 import { ArgumentNodeBuilder } from '../builders/ArgumentList/ArgumentNodeBuilder.js';
 import { ArgumentListNodeBuilder } from '../builders/ArgumentList/ArgumentListNodeBuilder.js';
 import { TNodeMetadata } from '../nodes/IntermediateASTNode.js';
+import { BitloopsPrimaryTypeNodeBuilderDirector } from './BitloopsPrimaryTypeNodeBuilderDirector.js';
+import { IfErrorExpressionNodeBuilder } from '../builders/expressions/IfErrorExpressionNodeBuilder.js';
+import { AnonymousFunctionNodeBuilderDirector } from './anonymousFunctionNodeBuilderDirector.js';
 
 export class ExpressionBuilderDirector {
   private metadata: TNodeMetadata;
@@ -315,7 +317,11 @@ export class ExpressionBuilderDirector {
     identifier: string,
     classToCompare: string,
   ): ExpressionNode {
-    const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
+    const classNode = new ClassNodeBuilder()
+      .withClass(
+        new BitloopsPrimaryTypeNodeBuilderDirector().buildIdentifierPrimaryType(classToCompare),
+      )
+      .build();
     const expression = this.buildIdentifierExpression(identifier);
     const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
       .withClass(classNode)
@@ -393,8 +399,19 @@ export class ExpressionBuilderDirector {
     return envExpression;
   }
 
-  buildIfErrorExpressionNode(expression: IfErrorExpressionNode): ExpressionNode {
-    const expressionNode = new ExpressionBuilder(this.metadata).withExpression(expression).build();
+  /**
+   * deprecated
+   */
+  buildIfErrorDefaultExpressionNode(leftExpression: ExpressionNode): ExpressionNode {
+    const anonymousFunction =
+      new AnonymousFunctionNodeBuilderDirector().buildIfErrorDefaultAnonymousFunction();
+    const ifErrorExpressionNode = new IfErrorExpressionNodeBuilder(this.metadata)
+      .withExpression(leftExpression)
+      .withAnonymousFunction(anonymousFunction)
+      .build();
+    const expressionNode = new ExpressionBuilder(this.metadata)
+      .withExpression(ifErrorExpressionNode)
+      .build();
     return expressionNode;
   }
 

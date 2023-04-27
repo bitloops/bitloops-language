@@ -29,10 +29,6 @@ import { DomainServiceEvaluationBuilderDirector } from './domainServiceEvaluatio
 import { ReadModelEvaluationBuilderDirector } from './domainEvaluation/readModelEvaluation.js';
 import { DomainEventIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { DomainEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEventEvaluationNodeBuilder.js';
-import { IfErrorExpressionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/Expression/IfErrorExpressionNode.js';
-import { IfErrorExpressionNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/IfErrorExpressionNodeBuilder.js';
-import { AnonymousFunctionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/AnonymousFunctionNode.js';
-import { ExpressionBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/ExpressionBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -240,29 +236,6 @@ export class EvaluationBuilderDirector {
       .withEvaluation(valueObjectEvaluationNode)
       .build();
     return evaluationNode;
-  }
-
-  buildValueObjectEvaluationWithFieldListIfError(
-    valueObjectName: string,
-    fieldListNode: EvaluationFieldListNode,
-    ifErrorFunction: AnonymousFunctionNode,
-  ): IfErrorExpressionNode {
-    const valueObjectEvaluationNode =
-      new ValueObjectEvaluationBuilderDirector().buildValueObjectEvaluationWithFieldList(
-        valueObjectName,
-        fieldListNode,
-      );
-    const evaluationNode = new EvaluationBuilder()
-      .withEvaluation(valueObjectEvaluationNode)
-      .build();
-
-    const expression = new ExpressionBuilder().withExpression(evaluationNode).build();
-
-    const ifErrorExpression = new IfErrorExpressionNodeBuilder()
-      .withExpression(expression)
-      .withAnonymousFunction(ifErrorFunction)
-      .build();
-    return ifErrorExpression;
   }
 
   buildDomainServiceEvaluation(

@@ -5,7 +5,6 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
-import { LeftExpressionNode } from './leftExpressionNode.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
