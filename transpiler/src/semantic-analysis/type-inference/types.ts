@@ -18,17 +18,18 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-// import { ClassTypes, TClassTypesValues } from '../../helpers/mappings.js';
-import { TOkErrorReturnType, TBitloopsPrimaryType } from '../../types.js';
+import { mappingBitloopsBuiltInClassToLayer } from '../../helpers/mappings.js';
+import { TBitloopsIdentifier, TStandardVO, bitloopsPrimitivesObj } from '../../types.js';
 
-// export type TClassTypeInferenceType = {
-//   type: string;
-//   classType: TClassTypesValues;
-// };
+export const InferredTypes = {
+  ...mappingBitloopsBuiltInClassToLayer,
+  ...bitloopsPrimitivesObj,
+};
 
-// export const InferredTypes = {
-//   ...ClassTypes,
-//   ...primitives,
-// };
+type TArray = 'string';
 
-export type TInferredTypes = TBitloopsPrimaryType | TOkErrorReturnType;
+export type TInferredTypes =
+  | typeof InferredTypes[keyof typeof InferredTypes]
+  | TBitloopsIdentifier
+  | TStandardVO
+  | TArray;

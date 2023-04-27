@@ -90,21 +90,21 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
   }
 
   public getInferredType(): TInferredTypes {
-    const primaryTypeNode = this.getChildNodeByType<BitloopsPrimaryTypeNode>(
-      BitloopsTypesMapping.TBitloopsPrimaryType,
-    );
-    for (const child of primaryTypeNode.getChildren()) {
-      if (child instanceof BitloopsPrimaryTypeNode) {
-        if (this.isArrayPrimaryType()) {
-          const primaryTypeNode = this.getPrimaryTypeNode();
-          return primaryTypeNode.getInferredType();
-        } else {
-          return child.getValue();
-        }
-      } else {
-        throw new Error('Not instance of BitloopsPrimaryTypeNode');
-      }
+    // const primaryTypeNode = this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+    //   BitloopsTypesMapping.TBitloopsPrimaryType,
+    // );
+    // for (const child of primaryTypeNode.getChildren()) {
+    //   if (child instanceof BitloopsPrimaryTypeNode) {
+    if (this.isArrayPrimaryType()) {
+      const primaryTypeNode = this.getPrimaryTypeNode();
+      return primaryTypeNode.getInferredType();
+    } else {
+      return this.getValue();
     }
-    throw new Error('No children found for primary type node');
+    //   } else {
+    //     throw new Error('Not instance of BitloopsPrimaryTypeNode');
+    //   }
+    // }
+    // throw new Error('No children found for primary type node');
   }
 }
