@@ -57,3 +57,4 @@ src/grammar/BitloopsSetupParserVisitor.js
 
 bitloops.json
 bitloops.config.json
+.vsls.json

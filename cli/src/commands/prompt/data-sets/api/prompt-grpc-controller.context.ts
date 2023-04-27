@@ -1,6 +1,7 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from '../common/system.message.js';
 import { GrpcControllerBuilder } from '../../component-builders/api/grpc-controller.builder.js';
+import { CodeSnippets } from '../common/code-snippets.js';
 
 const COMMANDS = [
   `
@@ -36,42 +37,27 @@ const COMMANDS = [
   `,
 ];
 
-const messageInstructions = (commands: string[], queries: string[], protoFile: string): string => {
+const messageInstructions = (command: string, protoFile: string, packageName: string): string => {
+  if (!command) {
+    throw new Error('Should be called with either command');
+  }
   return ` 
   Create a grpc controller based on the proto file. 
   Here's the protobuff file where you can find all the defined rpcs.
-  '''proto
+  ${CodeSnippets.openProto()}
   ${protoFile}
-  '''
+  ${CodeSnippets.closeProto()}
 
-  Ignore any rpc whose command or query is not provided. 
+  Ignore any rpc whose command is not provided. 
 
-  Here are the commands and queries. 
-  '''typescript
-  ${commands.join('\n')}
-  ${queries.join('\n')}
-  '''
+  Here is the provided command. 
+  ${CodeSnippets.openTypescript()}
+  ${command}
+  ${CodeSnippets.closeTypescript()}
   From the protobuf file we generate typescript code which you can use.
   For Example you import
-  import { todo } from '../proto/generated/todo';
-  and then you should use each rpc's response to return the response like this.
+  import { ${packageName} } from '../proto/generated/${packageName}';
 
-  '''typescript
-    if (result.isOk) {
-      return new todo.AddTodoResponse({
-        ok: new todo.AddTodoOKResponse({ id: results.data }),
-      });
-    } else {
-      return new todo.AddTodoResponse({
-        error: new todo.AddTodoErrorResponse({
-          invalidTitleLengthError: new todo.ErrorResponse({
-            code: error?.code || 'INVALID_TITLE_LENGTH_ERROR',
-            message: error?.message || 'The title is too long.',
-          }),
-        }),
-      });
-    }
-  '''
   You can assume the necessary handlers are defined, and return a result.
   This result has an \`result.isOk\` boolean value so we don't need to try-catch.
   In case result.isOk === true -> The response data is under \`result.data\`,
@@ -79,30 +65,71 @@ const messageInstructions = (commands: string[], queries: string[], protoFile: s
   Each error object has code and message properties with string values.
 
   DONT forget to decorate each method with the following 2 Decorators.
-  '''typescript
+  ${CodeSnippets.openTypescript()}
   @GrpcMethod('<Service-Name>', '<rpc-name>')
   @Traceable({
     operation: '<rpc-name-with-controller-suffix>',
     serviceName: 'API'
   })
-  '''
+  ${CodeSnippets.closeTypescript()}
 
   You should generate only the methods, and any imports they many need, 
-  separated with ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
-  Create only the method for the provided commands/queries and ignore any remaining rpc.
+  separated with ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}, in the following format.
+  ${CodeSnippets.openTypescript()}
+  <Imports>
+  ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
+  <Method>
+  ${CodeSnippets.closeTypescript()}
+  
+  Create only the method for the provided commands and ignore any remaining rpcs.
 `;
 };
 
-const QUERIES = [];
-
 const PROTOBUF = `
+
 syntax = "proto3";
 
 package todo;
 
 service TodoService {
-	rpc Add(AddTodoRequest) returns (AddTodoResponse);
-  rpc Complete (CompleteTodoRequest) returns (CompleteTodoResponse);
+  rpc Add(AddTodoRequest) returns (AddTodoResponse);
+  rpc ModifyTitle(ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
+  rpc Complete(CompleteTodoRequest) returns (CompleteTodoResponse);
+  rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
+  rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
+  rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
+  rpc On(OnTodoRequest) returns (stream OnEvent);
+}
+
+message InitializeConnectionRequest {}
+message InitializeConnectionResponse {
+  string subscriberId = 1;
+}
+
+message KeepSubscriptionAliveRequest {
+  string subscriberId = 1;
+}
+message KeepSubscriptionAliveResponse {
+  optional string renewedAuthToken = 1;
+}
+
+enum TODO_EVENTS {
+  ADDED = 0;
+  TITLE_MODIFIED = 1;
+  COMPLETED = 2;
+}
+
+message OnTodoRequest {
+  string subscriberId = 1;
+  repeated TODO_EVENTS events = 2;
+}
+
+message OnEvent {
+  oneof event {
+    Todo onAdded = 1;
+    Todo onTitleModified = 2;
+    Todo onCompleted = 3;
+  }
 }
 
 message ErrorResponse {
@@ -111,7 +138,7 @@ message ErrorResponse {
 }
 
 message AddTodoRequest {
-	string title = 1;
+  string title = 1;
 }
 
 message AddTodoResponse {
@@ -123,15 +150,36 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse invalidTitleLengthError = 3;
+    ErrorResponse titleOutOfBoundsError = 1;
+    ErrorResponse unexpectedError = 2;
   }
 }
 
 message AddTodoOKResponse {
   string id = 1;
 }
+
+message ModifyTitleTodoRequest {
+  string id = 1;
+  string title = 2;
+}
+
+message ModifyTitleTodoResponse {
+  oneof result {
+    ModifyTitleTodoOKResponse ok = 1;
+    ModifyTitleTodoErrorResponse error = 2;
+  }
+}
+
+message ModifyTitleTodoErrorResponse {
+  oneof error {
+    ErrorResponse todoNotFoundError = 1;
+    ErrorResponse unexpectedError = 2;
+    ErrorResponse titleOutOfBoundsError = 3;
+  }
+}
+
+message ModifyTitleTodoOKResponse {}
 
 message CompleteTodoRequest {
   string id = 1;
@@ -146,20 +194,44 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse todoNotFoundError = 1;
+    ErrorResponse unexpectedError = 2;
+    ErrorResponse todoAlreadyCompletedError = 3;
   }
 }
 
 message CompleteTodoOKResponse {}
 
+message GetAllTodosRequest {}
+
+message GetAllTodosResponse {
+  oneof result {
+    GetAllTodosOKResponse ok = 1;
+    GetAllTodosErrorResponse error = 2;
+  }
+}
+
+message GetAllTodosErrorResponse {
+  oneof error {
+    ErrorResponse unexpectedError = 1;
+  }
+}
+
+message GetAllTodosOKResponse {
+  repeated Todo todos = 1;
+}
+
+message Todo {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+  string userId = 4;
+}
 `;
 export const promptApiGrpcController = (
-  // handlers: string[] = HANDLERS.slice(0, 1),
-  commands: string[] = [COMMANDS[0]],
-  queries: string[] = QUERIES,
-  protoBuf: string = PROTOBUF,
+  command: string,
+  protoBuf: string,
+  packageName: string,
 ): ChatCompletionRequestMessage[] => [
   promptContextMessage,
   {
@@ -170,16 +242,33 @@ export const promptApiGrpcController = (
   },
   {
     role: 'user',
-    content: messageInstructions(COMMANDS, QUERIES, PROTOBUF),
+    content:
+      messageInstructions(COMMANDS[0], PROTOBUF, 'todo') +
+      ` 
+  You should use each rpc's response to return the response like this.
+  ${CodeSnippets.openTypescript()}
+    if (result.isOk) {
+      return new ${packageName}.AddTodoResponse({
+        ok: new ${packageName}.AddTodoOKResponse({ id: results.data }),
+      });
+    } else {
+      return new ${packageName}.AddTodoResponse({
+        error: new ${packageName}.AddTodoErrorResponse({
+          invalidTitleLengthError: new ${packageName}.ErrorResponse({
+            code: error?.code || 'INVALID_TITLE_LENGTH_ERROR',
+            message: error?.message || 'The title is too long.',
+          }),
+        }),
+      });
+    }
+  ${CodeSnippets.closeTypescript()}
+  `,
   },
   {
     role: 'assistant',
     content: `
-  '''typescript
+    ${CodeSnippets.openTypescript()}
 import { AddTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/add-todo.command';
-import { CompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/complete-todo.command';
-import { todo } from '../proto/generated/todo';
-import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
   ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
   @GrpcMethod('TodoService', 'Add')
@@ -187,18 +276,18 @@ import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
     operation: 'AddTodoController',
     serviceName: 'API',
   })
-  async addTodo(data: todo.AddTodoRequest): Promise<todo.AddTodoResponse> {
+  async addTodo(data: ${packageName}.AddTodoRequest): Promise<${packageName}.AddTodoResponse> {
     const command = new AddTodoCommand({ title: data.title });
     const results = await this.commandBus.request(command);
     if (result.isOk) {
-      return new todo.AddTodoResponse({
-        ok: new todo.AddTodoOKResponse({ id: result.data }),
+      return new ${packageName}.AddTodoResponse({
+        ok: new ${packageName}.AddTodoOKResponse({ id: result.data }),
       });
     } else {
       const error = result.error;
-      return new todo.AddTodoResponse({
-        error: new todo.AddTodoErrorResponse({
-          invalidTitleLengthError: new todo.ErrorResponse({
+      return new ${packageName}.AddTodoResponse({
+        error: new ${packageName}.AddTodoErrorResponse({
+          invalidTitleLengthError: new ${packageName}.ErrorResponse({
             code: error?.code || 'INVALID_TITLE_LENGTH_ERROR',
             message: error?.message || 'The title is too long.',
           }),
@@ -207,36 +296,11 @@ import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
     }
   }
 
-  @GrpcMethod('TodoService', 'Complete')
-  @Traceable({
-    operation: 'CompleteTodoController',
-    serviceName: 'API',
-  })
-  async completeTodo(data: todo.CompleteTodoRequest): Promise<todo.CompleteTodoResponse> {
-    const command = new CompleteTodoCommand({ todoId: data.id });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.CompleteTodoResponse({
-        ok: new todo.CompleteTodoOKResponse(),
-      });
-    } else {
-      const error = result.error;
-      return new todo.CompleteTodoResponse({
-        error: new todo.CompleteTodoErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
-            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
-            message: error?.message || 'The system is unavailable.',
-          }),
-        }),
-      });
-    }
-  }
-
-'''
+  ${CodeSnippets.closeTypescript()}
   `,
   },
   {
     role: 'user',
-    content: messageInstructions(commands, queries, protoBuf),
+    content: messageInstructions(command, protoBuf, packageName),
   },
 ];

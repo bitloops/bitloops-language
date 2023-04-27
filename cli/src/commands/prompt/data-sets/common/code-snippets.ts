@@ -46,4 +46,13 @@ export class CodeSnippets {
 
     return code;
   }
+
+  static sanitizeTypescriptImports(code: string): string {
+    // Remove every line(or multiple lines) that starts with 'import' and ends with ';' and newLine
+
+    const regex = /import.+;(\r?\n|\r)/g;
+    const sanitizedCode = code.replace(regex, '');
+
+    return sanitizedCode;
+  }
 }

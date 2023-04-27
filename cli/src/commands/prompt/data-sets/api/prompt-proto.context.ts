@@ -373,8 +373,10 @@ const messageInstructions = (
   // });
   const truncatedEntities = [];
   for (const entity of entities) {
-    const entityTruncationIndex = entity.indexOf('  extends Domain.Aggregate');
-    const truncatedEntity = entity.slice(0, entityTruncationIndex);
+    const entityTruncationIndex = entity.indexOf('extends Domain');
+    const truncatedEntity = CodeSnippets.sanitizeTypescriptImports(
+      entity.slice(0, entityTruncationIndex),
+    );
     truncatedEntities.push(truncatedEntity);
   }
 
@@ -419,17 +421,11 @@ const messageInstructions = (
   ${truncatedEntities.join('\n')}
   ${CodeSnippets.closeTypescript()}
 
-  Add only the properties existing in the entities.
+  Remove the Entity suffix when naming the message.
 `;
 };
 const TODO_ENTITY = [
-  `export interface TodoProps {
-  userId: UserIdVO;
-  id?: Domain.UUIDv4;
-  title: TitleVO;
-  completed: boolean;
-}
-
+  `
 type TTodoEntityPrimitives = {
   id: string;
   userId: {
@@ -440,6 +436,10 @@ type TTodoEntityPrimitives = {
   };
   completed: boolean;
 };
+
+export class TodoEntity extends Domain.Aggregate<TodoProps> {
+
+}
 `,
 ];
 export const promptProtoMessages = (
@@ -616,6 +616,7 @@ message UncompleteTodoErrorResponse {
 }
 
 message UncompleteTodoOKResponse {}
+
 message Todo {
   string id = 1;
   string title = 2;

@@ -9,7 +9,12 @@ import { TBoundedContextName, TModuleName } from '../../types.js';
 import path from 'path';
 import { getTypescriptFilesAndContents } from '../../functions/readFilesContents.js';
 import { writeAIResults } from '../../functions/writeAiResults.js';
-import { promptAiResults, promptAiResultsSecondRound } from '../../functions/promptAiResults.js';
+import {
+  extractComponentsFromFiles,
+  promptAiResults,
+  promptAiResultsSecondRound,
+  promptAiResultsThirdRound,
+} from '../../functions/promptAiResults.js';
 /**
  * TODO add a json or yaml config file, where the user can set settings for preferred repo adapters
  * for each port(file-name as a key), and e.g. MongoDB as value
@@ -73,17 +78,26 @@ const prompt = async (source: ICollection): Promise<void> => {
 
   // Example usage
   const client = new Client(apiKey);
-  await promptAiResults(client, transpiledFiles);
-  let responses = await client.getResponses();
-  console.log('Waiting for openai responses...');
-  // client.makeOpenAIRequest(GENERATED_INFRA_KEYS.API, promptApiGrpcController());
-  promptAiResultsSecondRound(client, responses);
-  responses = await client.getResponses();
+  try {
+    const componentsInfo = extractComponentsFromFiles(transpiledFiles);
+    await promptAiResults(client, componentsInfo);
+    let responses = await client.getResponses();
+    console.log('Waiting for openai responses...');
+    // client.makeOpenAIRequest(GENERATED_INFRA_KEYS.API, promptApiGrpcController());
+    promptAiResultsSecondRound(client, responses);
+    responses = await client.getResponses();
 
-  console.log(responses);
-  // console.log(JSON.stringify(responses, null, 2));
-  console.log(`Total cost: $${client.getTotalCost().toFixed(2)}`);
-  await writeAIResults(responses, targetDirPath);
+    await promptAiResultsThirdRound(client, responses, componentsInfo);
+    responses = await client.getResponses();
+
+    console.log(responses);
+    // console.log(JSON.stringify(responses, null, 2));
+    console.log(`Total cost: $${client.getTotalCost().toFixed(2)}`);
+    await writeAIResults(responses, targetDirPath);
+  } catch (error) {
+    // console.log(error);
+  }
+
   console.log();
 };
 

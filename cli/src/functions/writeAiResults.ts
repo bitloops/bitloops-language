@@ -1,6 +1,8 @@
+import { GrpcControllerBuilder } from '../commands/prompt/component-builders/api/grpc-controller.builder.js';
 import { CodeSnippets } from '../commands/prompt/data-sets/common/code-snippets.js';
 import { TGeneratedInfra } from '../commands/prompt/invoker.js';
 import { yieldModuleInfo } from '../utils/bounded-context-module.generator.js';
+import { ConfigUtils } from '../utils/config.js';
 import { writeTargetFile } from './writeTargetFile.js';
 
 export const writeAIResults = async (
@@ -66,14 +68,14 @@ export const writeAIResults = async (
     });
   }
   if (responses.api?.grpcControllers) {
-    const fileContent = responses.api.grpcControllers.join('\n');
+    const { grpc } = await ConfigUtils.readBitloopsProjectConfigFile();
     writeTargetFile({
       projectPath: targetDirPath,
       filePathObj: {
         path: 'api',
         filename: 'controllers.ts',
       },
-      fileContent,
+      fileContent: GrpcControllerBuilder.assemble(responses.api.grpcControllers, grpc.package),
     });
   }
 };
