@@ -77,6 +77,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     const type: TNodeType = intermediateASTNode.getNodeType();
 
     switch (type) {
+      case BitloopsTypesMapping.TIfErrorExpression: {
+        const ifErrorExpressionNode = intermediateASTNode as IfErrorExpressionNode;
+        return new IfErrorExpressionNodeTransformer(intermediateASTTree, ifErrorExpressionNode);
+      }
       case BitloopsTypesMapping.TOkErrorReturnType: {
         const returnOkErrorNode = intermediateASTNode as ReturnOkErrorTypeNode;
         return new ReturnOKErrorNodeTransformer(intermediateASTTree, returnOkErrorNode);
@@ -112,10 +116,6 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
       case BitloopsTypesMapping.TDomainService: {
         const servicePortNode = intermediateASTNode as DomainServiceNode;
         return new DomainServiceNodeTransformer(intermediateASTTree, servicePortNode);
-      }
-      case BitloopsTypesMapping.TIfErrorExpression: {
-        const ifErrorExpressionNode = intermediateASTNode as IfErrorExpressionNode;
-        return new IfErrorExpressionNodeTransformer(intermediateASTTree, ifErrorExpressionNode);
       }
       default:
         return null;

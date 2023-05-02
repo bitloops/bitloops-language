@@ -313,6 +313,20 @@ export class ExpressionBuilderDirector {
     return expressionNode;
   }
 
+  buildInstanceOfErrorWithExpression(expression: ExpressionNode): ExpressionNode {
+    const classNode = new ClassNodeBuilder()
+      .withClass(new BitloopsPrimaryTypeNodeBuilderDirector().buildIdentifierPrimaryType('Error'))
+      .build();
+    const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
+      .withClass(classNode)
+      .withExpression(expression)
+      .build();
+    const expressionNode = new ExpressionBuilder(this.metadata)
+      .withExpression(isInstanceOfNode)
+      .build();
+    return expressionNode;
+  }
+
   buildInstanceOfWithIdentifierExpression(
     identifier: string,
     classToCompare: string,

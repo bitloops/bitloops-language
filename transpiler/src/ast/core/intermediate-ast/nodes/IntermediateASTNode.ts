@@ -124,8 +124,15 @@ export abstract class IntermediateASTNode {
 
   public addSiblingBetween(siblingNode: IntermediateASTNode): void {
     const nextSibling = this.nextSibling;
-    this.nextSibling = siblingNode;
-    siblingNode.nextSibling = nextSibling;
+    const parent = nextSibling.getParent();
+    siblingNode.setParent(parent);
+
+    this.addSibling(siblingNode);
+    siblingNode.addSibling(nextSibling);
+
+    const allSiblings = parent.children;
+    const index = allSiblings.indexOf(nextSibling);
+    allSiblings.splice(index, 0, siblingNode);
   }
 
   public getFirstChild(): IntermediateASTNode {
