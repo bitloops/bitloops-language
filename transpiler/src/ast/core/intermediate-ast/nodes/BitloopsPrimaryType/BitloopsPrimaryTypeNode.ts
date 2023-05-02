@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
+import { TBitloopsPrimaryType, bitloopsPrimaryTypeKey } from '../../../../../types.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ArrayPrimaryTypeNode } from './ArrayPrimaryTypeNode.js';
 import { BitloopsIdentifierTypeNode } from './BitloopsIdentifierTypeNode.js';
@@ -90,21 +91,13 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
   }
 
   public getInferredType(): TInferredTypes {
-    // const primaryTypeNode = this.getChildNodeByType<BitloopsPrimaryTypeNode>(
-    //   BitloopsTypesMapping.TBitloopsPrimaryType,
-    // );
-    // for (const child of primaryTypeNode.getChildren()) {
-    //   if (child instanceof BitloopsPrimaryTypeNode) {
     if (this.isArrayPrimaryType()) {
       const primaryTypeNode = this.getPrimaryTypeNode();
       return primaryTypeNode.getInferredType();
     } else {
-      return this.getValue();
+      const childType = (this.getValue() as TBitloopsPrimaryType)[bitloopsPrimaryTypeKey];
+      const childValue = Object.values(childType)[0];
+      return childValue;
     }
-    //   } else {
-    //     throw new Error('Not instance of BitloopsPrimaryTypeNode');
-    //   }
-    // }
-    // throw new Error('No children found for primary type node');
   }
 }

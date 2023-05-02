@@ -26,4 +26,8 @@ export class IntegrationEventParameterNode extends IntermediateASTNode {
       BitloopsTypesMapping.TIntegrationEventIdentifier,
     );
   }
+
+  getIntegrationEventIdentifier(): string {
+    return this.getType().getValue().integrationEventIdentifier;
+  }
 }

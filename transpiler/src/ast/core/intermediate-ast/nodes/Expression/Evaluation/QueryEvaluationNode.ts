@@ -10,4 +10,9 @@ export class QueryEvaluationNode extends EvaluationNode {
     this.nodeType = BitloopsTypesMapping.TQueryEvaluation;
     this.classNodeName = QueryEvaluationNode.queryNodeName;
   }
+
+  public getInferredType(): string {
+    const queryIdentifier = this.getIdentifierNode().getValue().identifier;
+    return queryIdentifier;
+  }
 }

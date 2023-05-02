@@ -29,4 +29,9 @@ export class StructEvaluationNode extends EvaluationNode {
       evaluationField.getExpression().typeCheck(symbolTable);
     });
   }
+
+  public getInferredType(): string {
+    const structIdentifier = this.getIdentifierNode().getValue().identifier;
+    return structIdentifier;
+  }
 }

@@ -61,6 +61,7 @@ import { EventHandleNode } from '../ast/core/intermediate-ast/nodes/EventHandleN
 import { IntegrationEventHandlerHandleMethodNode } from '../ast/core/intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { PublicMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PublicMethodDeclarationNode.js';
 import { PrivateMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes/methods/PrivateMethodDeclarationNode.js';
+import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -76,25 +77,32 @@ const SCOPE_NAMES = {
   HANDLE: 'handle',
 };
 
-//TODO in member dot do we add them to symbol table part by part
-export const inferType = (_node: IntermediateASTNode): TInferredTypes => {
-  // UNCOMMENT THIS
-  // if (IntermediateASTNodeTypeGuards.isBitloopsPrimaryType(node)) {
+export const inferType = (node: IntermediateASTNode): TInferredTypes => {
+  //For variables with no expressions return null type
+  if (!node) return null;
+
+  if (IntermediateASTNodeTypeGuards.isBitloopsPrimaryType(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isExpression(node)) {
+    return node.getInferredType();
+    // if (node.isLiteralExpression()) {
+    //   return inferType(node.getLiteral());
+    // } else if (node.isMemberDotExpression()) {
+    //   return inferType(node.getMemberDot());
+    // } else if (node.isEvaluationExpression()) {
+    //   return inferType(node.getEvaluation());
+    // } else if (node.isMethodCallExpression()) {
+    //   return inferType(node.getMethodCall());
+    // } else if (node.isParenthesizedExpression()) {
+    //   return inferType(node.getExpression());
+    // }
+  } else if (IntermediateASTNodeTypeGuards.isEvaluation(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isLiteral(node)) {
+    return node.getInferredType();
+  }
+  // else if (node.isIntegrationEventidentifier()) {
   //   return node.getInferredType();
-  // } else if (IntermediateASTNodeTypeGuards.isExpression(node)) {
-  //   node.getInferredType();
-  // if (node.isLiteralExpression()) {
-  //   return inferType(node.getLiteral());
-  // } else if (node.isMemberDotExpression()) {
-  //   return inferType(node.getMemberDot());
-  // } else if (node.isEvaluationExpression()) {
-  //   return inferType(node.getEvaluation());
-  // } else if (node.isMethodCallExpression()) {
-  //   return inferType(node.getMethodCall());
-  // } else if (node.isParenthesizedExpression()) {
-  //   return inferType(node.getExpression());
-  // }
-  // UNCOMMENT THIS
   // }
   // case 'methodCall': {
   //   const object = inferType(node.object, table);
@@ -364,7 +372,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     });
   }
 
-  //TODO check if it needs this
   private createParamsScope(params: ParameterNode[], classTypeScope: SymbolTable): void {
     params.forEach((paramNode) => {
       const paramName = paramNode.getIdentifier();
@@ -393,7 +400,10 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     const handleScope = classTypeScope.createChildScope(SCOPE_NAMES.HANDLE, handle);
     const handleParam = handle.getParameter();
     const paramName = handleParam.getIdentifier();
-    handleScope.insert(paramName, new ParameterSymbolEntry(inferType(handleParam.getType())));
+    handleScope.insert(
+      paramName,
+      new ParameterSymbolEntry(handleParam.getIntegrationEventIdentifier()),
+    );
 
     const statements = handle.getStatements();
     this.createStatementListScope(statements, handleScope);
@@ -414,10 +424,8 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           // const args = statement.getExpression().getArguments();
           // args.forEach((arg) => {infertype(arg)}
           statement.typeCheck(parentScope);
-          parentScope.insert(
-            identifier,
-            new VariableSymbolEntry(inferType(statement.getExpressionValues()), false),
-          );
+          const expression = statement.getExpressionValues();
+          parentScope.insert(identifier, new VariableSymbolEntry(inferType(expression), false));
         }
 
         if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {

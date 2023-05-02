@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { bitloopsPrimitivesObj } from '../../../../../../types.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { LiteralNode } from './LiteralNode.js';
 
@@ -12,5 +13,9 @@ export class StringLiteralNode extends LiteralNode {
 
   getStringValue(): string {
     return this.getValue().stringLiteral;
+  }
+
+  getInferredType(): string {
+    return bitloopsPrimitivesObj.string;
   }
 }

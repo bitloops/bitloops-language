@@ -2,6 +2,8 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { ExpressionNode } from '../ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ErrorEvaluationNode } from './ErrorEvaluation.js';
+import { TInferredTypes } from '../../../../../../semantic-analysis/type-inference/types.js';
+import { IdentifierNode } from '../../identifier/IdentifierNode.js';
 
 export class EvaluationNode extends ExpressionNode {
   private static evaluationNodeName = 'evaluation';
@@ -26,14 +28,16 @@ export class EvaluationNode extends ExpressionNode {
     return this.getChildren()[0] as EvaluationNode;
   }
 
-  // isErrorEvaluation(): this is  {
-  //   throw new Error('Not implemeneted');
-  // }
+  getIdentifierNode(): IdentifierNode {
+    return this.getChildNodeByType<IdentifierNode>(BitloopsTypesMapping.TIdentifier);
+  }
 
-  // isDTOEvaluation(): this is  {
-  //   throw new Error('Not implemeneted');
-  // }
-  // isValueObjectEvaluation(): this is {
-  //   throw new Error('Not implemeneted');
-  // }
+  public getInferredType(): TInferredTypes {
+    for (const child of this.getChildren()) {
+      if (child instanceof EvaluationNode) {
+        return child.getInferredType();
+      }
+    }
+    throw new Error('No evaluation found to infer type');
+  }
 }

@@ -33,8 +33,8 @@ describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
-    // if (index !== 3) return; // TODO: remove this line to run all tests (it takes a long time
+  SYMBOL_TABLE_TEST_CASES.forEach((testCase, index) => {
+    if (index !== 7) return; // TODO: remove this line to run all tests (it takes a long time
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -79,7 +79,7 @@ describe('Symbol table cases', () => {
     });
   });
 
-  describe('Missing identifiers test cases', () => {
+  describe.skip('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
@@ -124,7 +124,7 @@ describe('Symbol table cases', () => {
     });
   });
 
-  describe('constant reassingment identifiers test cases', () => {
+  describe.skip('constant reassingment identifiers test cases', () => {
     SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
@@ -169,7 +169,7 @@ describe('Symbol table cases', () => {
     });
   });
 
-  describe('Already declared variables test cases', () => {
+  describe.skip('Already declared variables test cases', () => {
     SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();

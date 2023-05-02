@@ -10,4 +10,8 @@ export class DomainEventEvaluationNode extends EvaluationNode {
     this.nodeType = BitloopsTypesMapping.TDomainEventEvaluation;
     this.classNodeName = DomainEventEvaluationNode.key;
   }
+  public getInferredType(): string {
+    const commandEvaluationIdentifier = this.getIdentifierNode().getValue().identifier;
+    return commandEvaluationIdentifier;
+  }
 }

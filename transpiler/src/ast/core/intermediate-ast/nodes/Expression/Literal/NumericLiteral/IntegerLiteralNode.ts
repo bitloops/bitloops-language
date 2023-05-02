@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
-import { TBitloopsPrimitives } from '../../../../../../../types.js';
+import { TBitloopsPrimitives, bitloopsPrimitivesObj } from '../../../../../../../types.js';
 import { TNodeMetadata } from '../../../IntermediateASTNode.js';
 import { NumericLiteralNode } from './NumericLiteral.js';
 
@@ -18,7 +18,8 @@ export class IntegerLiteralNode extends NumericLiteralNode {
     this.classNodeName = NAME;
     this.nodeType = BitloopsTypesMapping.TIntegerLiteral;
   }
-  public getType(): TBitloopsPrimitives {
-    return this.getChildren()[0].getValue();
+
+  public getInferredType(): string {
+    return bitloopsPrimitivesObj.int32;
   }
 }

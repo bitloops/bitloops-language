@@ -184,6 +184,6 @@ export class ExpressionNode extends StatementNode {
         return child.getInferredType();
       }
     }
-    throw new Error('');
+    throw new Error('No expression found to infer type');
   }
 }

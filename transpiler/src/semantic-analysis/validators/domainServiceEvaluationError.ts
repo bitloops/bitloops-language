@@ -10,7 +10,7 @@ export const domainServiceEvaluationError = (
   thisSymbolTable: SymbolTable,
 ): ValidationError[] => {
   const errors = [];
-  const identifier: IdentifierNode = node.getIdentifier();
+  const identifier: IdentifierNode = node.getIdentifierNode();
   if (!thisSymbolTable.hasChildScope(identifier.getIdentifierName()))
     errors.push(new identifierValidationError(identifier.getIdentifierName(), identifier));
   return errors;

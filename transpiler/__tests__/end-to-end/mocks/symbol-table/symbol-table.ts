@@ -270,7 +270,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'domainCreate',
             new SymbolTableBuilder()
               .insert('props.title', new MemberDotSymbolEntry('string'))
-              .insert('props', new ParameterSymbolEntry('TodoProps')),
+              .insert('props', new ParameterSymbolEntry('TitleProps')),
           ),
       )
       .build(),

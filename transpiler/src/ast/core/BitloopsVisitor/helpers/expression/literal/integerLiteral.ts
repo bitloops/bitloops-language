@@ -17,16 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// export const integerEvaluation = (value: any): any => {
-//   const numericValue = Number(value);
-//   if (numericValue >= -2147483648 && numericValue <= 2147483647) {
-//     return { type: 'int32', value: value };
-//   } else if (numericValue >= -9223372036854775808 && numericValue <= 9223372036854775807n) {
-//     return { type: 'int64', value: value };
-//   } else {
-//     throw new Error(`Integer out of range: ${value}`);
-//   }
-// };
 
 import { LiteralTypeBuilder } from '../../../../intermediate-ast/builders/expressions/literal/components/LiteralTypeBuilder.js';
 import { LiteralValueBuilder } from '../../../../intermediate-ast/builders/expressions/literal/components/LiteralValueBuilder.js';
@@ -49,22 +39,3 @@ export const integerEvaluation = (value: string): IntegerLiteralNode => {
   }
   throw new Error(`Integer out of range: ${value}`);
 };
-
-// export const fieldVisitor = (
-//   _thisVisitor: BitloopsVisitor,
-//   ctx: BitloopsParser.FieldContext,
-// ): FieldNode => {
-//   const identifierNode = _thisVisitor.visit(ctx.identifier());
-
-//   const typeNode = _thisVisitor.visit(ctx.bitloopsPrimaryType());
-
-//   const optionalNode = _thisVisitor.visit(ctx.optional());
-
-//   const fieldNode = new FieldNodeBuilder()
-//     .withType(typeNode)
-//     .withName(identifierNode)
-//     .withOptional(optionalNode)
-//     .build();
-
-//   return fieldNode;
-// };
