@@ -4,6 +4,7 @@ import { AnonymousFunctionNode } from '../AnonymousFunctionNode.js';
 import { ArrowFunctionBodyNode } from '../ArrowFunctionBodyNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { ReturnErrorStatementNode } from '../statements/ReturnErrorStatementNode.js';
 import { ReturnStatementNode } from '../statements/ReturnStatementNode.js';
 import { StatementListNode } from '../statements/StatementList.js';
 import { ExpressionNode } from './ExpressionNode.js';
@@ -43,14 +44,23 @@ export class IfErrorExpressionNode extends ExpressionNode {
     return arrowFunctionBody.getReturnStatement();
   }
 
+  getReturnErrorStatement(): ReturnErrorStatementNode | null {
+    const arrowFunctionBody = this.getArrowFunctionBody();
+    if (!arrowFunctionBody) return null;
+    return arrowFunctionBody.getReturnErrorStatement();
+  }
+
   getStatementListNode(): StatementListNode | null {
     const nodeStatementList = this.getStatements();
     const returnStatementNode = this.getReturnStatement();
+    const returnErrorStatementNode = this.getReturnErrorStatement();
 
     if (nodeStatementList) {
       return nodeStatementList;
     } else if (returnStatementNode) {
       return new StatementListNodeBuilder().withStatements([returnStatementNode]).build();
+    } else if (returnErrorStatementNode) {
+      return new StatementListNodeBuilder().withStatements([returnErrorStatementNode]).build();
     }
     return null;
   }

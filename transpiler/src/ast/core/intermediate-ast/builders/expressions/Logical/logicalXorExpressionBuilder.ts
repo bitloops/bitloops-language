@@ -1,4 +1,3 @@
-import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
 import { LeftExpressionNode } from '../../../nodes/Expression/leftExpressionNode.js';
 import { OperatorNode } from '../../../nodes/Expression/OperatorNode.js';
 import { RightExpressionNode } from '../../../nodes/Expression/rightExpression.js';
@@ -18,11 +17,11 @@ export class LogicalXorExpressionBuilder implements IBuilder<LogicalXorExpressio
     this.logicalXorExpressionNode = new LogicalXorExpressionNode(nodeMetadata);
   }
 
-  public withLeftExpression(expressionNode: ExpressionNode): LogicalXorExpressionBuilder {
+  public withLeftExpression(expressionNode: LeftExpressionNode): LogicalXorExpressionBuilder {
     this.leftExpressionNode = expressionNode;
     return this;
   }
-  public withRightExpression(expressionNode: ExpressionNode): LogicalXorExpressionBuilder {
+  public withRightExpression(expressionNode: RightExpressionNode): LogicalXorExpressionBuilder {
     this.rightExpressionNode = expressionNode;
     return this;
   }

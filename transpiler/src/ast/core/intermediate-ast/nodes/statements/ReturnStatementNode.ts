@@ -11,6 +11,10 @@ export class ReturnStatementNode extends StatementNode {
     super(BitloopsTypesMapping.TReturnStatement, metadata, ReturnStatementNode.classNodeName);
   }
 
+  getExpression(): ExpressionNode | null {
+    return this.getChildNodeByType<ExpressionNode>(BitloopsTypesMapping.TExpression);
+  }
+
   getExpressionValues(): ExpressionNode | null {
     const children = this.getChildren();
     const expression = children.find(

@@ -9,4 +9,8 @@ export class LeftExpressionNode extends ExpressionNode {
     this.classNodeName = LeftExpressionNode.NAME;
     this.nodeType = BitloopsTypesMapping.TExpression;
   }
+
+  public getExpression(): ExpressionNode {
+    return this.getChildNodeByType<ExpressionNode>(BitloopsTypesMapping.TExpression);
+  }
 }

@@ -123,16 +123,17 @@ export abstract class IntermediateASTNode {
   }
 
   public addSiblingBetween(siblingNode: IntermediateASTNode): void {
-    const nextSibling = this.nextSibling;
-    const parent = nextSibling.getParent();
+    const parent = this.getParent();
     siblingNode.setParent(parent);
 
+    const nextSibling = this.nextSibling;
     this.addSibling(siblingNode);
     siblingNode.addSibling(nextSibling);
 
     const allSiblings = parent.children;
-    const index = allSiblings.indexOf(nextSibling);
-    allSiblings.splice(index, 0, siblingNode);
+    const index = allSiblings.indexOf(this);
+    if (index === -1) throw new Error('Could not find child');
+    allSiblings.splice(index + 1, 0, siblingNode);
   }
 
   public getFirstChild(): IntermediateASTNode {

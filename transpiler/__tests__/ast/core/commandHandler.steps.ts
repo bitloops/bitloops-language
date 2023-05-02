@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+// import { jest } from '@jest/globals';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
@@ -27,6 +28,19 @@ import { validCommandHandlerCases } from './mocks/commandHandlerDeclaration/comm
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
+
+// beforeAll(() => {
+//   const mockUtils = jest.fn().mockImplementation(() => {
+//     return {
+//       getRandomIntWithNumberOfDigits: () => 123,
+//     };
+//   });
+//   jest.mock('../../../src/utils/RandomUtils', () => {
+//     return {
+//       RandomUtils: mockUtils,
+//     };
+//   });
+// });
 
 describe('CommandHandler declaration is valid', () => {
   let resultTree: IntermediateASTTree;

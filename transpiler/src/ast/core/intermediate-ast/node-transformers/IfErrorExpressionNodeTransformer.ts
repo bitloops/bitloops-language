@@ -1,6 +1,5 @@
 import { RandomUtils } from '../../../../utils/RandomUtils.js';
 import { AnonymousFunctionNodeBuilderDirector } from '../directors/anonymousFunctionNodeBuilderDirector.js';
-import { ExpressionBuilder } from '../builders/expressions/ExpressionBuilder.js';
 import { ConditionNodeBuilder } from '../builders/statements/ifStatement/ConditionBuilder.js';
 import { ThenStatementsNodeBuilder } from '../builders/statements/ifStatement/ThenStatements.js';
 import { ReturnErrorStatementNodeBuilder } from '../builders/statements/ReturnErrorStatementNodeBuilder.js';
@@ -25,15 +24,15 @@ export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransf
   }
 
   run(): void {
-    this.modifyReturnToReturnError();
-    this.addIfIsErrorStatement();
+    const { expressionNode, variableName } = this.getResultExpressionName();
+    this.modifyReturnToReturnError(expressionNode);
+    this.addIfIsErrorStatement(expressionNode, variableName);
   }
 
-  private modifyReturnToReturnError(): void {
+  private modifyReturnToReturnError(resultExpressionNameNode: ExpressionNode): void {
     const statementListNode = this.node.getStatements();
     const returnStatementNode = this.node.getReturnStatement();
 
-    const { expressionNode: resultExpressionNameNode } = this.getResultExpressionName();
     if (statementListNode) {
       const returnStatementNodes = this.tree.getReturnStatementsOfNode(statementListNode);
       for (const returnStatementNode of returnStatementNodes) {
@@ -59,25 +58,23 @@ export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransf
     }
   }
 
-  private addIfIsErrorStatement(): void {
+  private addIfIsErrorStatement(expression: ExpressionNode, variableName: string): void {
     const expressionNode = this.node.getParent();
     const parentNode = expressionNode.getParent();
 
-    const { expressionNode: expression, variableName } = this.getResultExpressionName();
     const ifIsErrorStatement = this.buildIfIsErrorStatement(expression);
+    const expressionOfIfError = this.node.getExpression();
 
     if (parentNode.IsStatementListNode()) {
       const constDeclarationNode =
-        new ConstDeclarationNodeBuilderDirector().buildConstDeclarationIfErrorExpression({
-          //with standard expression
+        new ConstDeclarationNodeBuilderDirector().buildConstDeclarationWithExpression({
           constIdentifierName: variableName,
-          ifErrorExpressionNode: this.node,
+          expressionNode: expressionOfIfError,
         });
+      parentNode.replaceChild(expressionNode, constDeclarationNode);
       constDeclarationNode.addSiblingBetween(ifIsErrorStatement);
-      parentNode.replaceChild(this.node, constDeclarationNode); //expressionNode
     } else {
       const parent = parentNode as StatementNode;
-      const expressionOfIfError = this.node.getExpression();
       parent.addSiblingBetween(ifIsErrorStatement);
       parent.replaceChild(expressionNode, expressionOfIfError);
     }
@@ -104,7 +101,8 @@ export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransf
         return { expressionNode: expression, variableName };
       } else if (StatementNodeTypeGuards.isExpressionStatement(parent)) {
         const leftExpression = (parent as AssignmentExpressionNode).getLeftExpression();
-        return { expressionNode: leftExpression };
+        const expression = leftExpression.getExpression();
+        return { expressionNode: expression };
       } else {
         throw new Error('Parent node is not a statement node');
       }
@@ -142,15 +140,13 @@ export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransf
       newExpressionOfReturn,
     );
     const metadataOfReturnStatement = returnStatementNode.getMetadata();
-    const newExpression = new ExpressionBuilder()
+    // const newExpression = new ExpressionBuilder()
+    //   .withExpression(expressionOfReturnStatement)
+    //   .build();
+    const returnErrorStatementNode = new ReturnErrorStatementNodeBuilder(metadataOfReturnStatement)
       .withExpression(expressionOfReturnStatement)
       .build();
-    const returnErrorStatementNode = new ReturnErrorStatementNodeBuilder(metadataOfReturnStatement)
-      .withExpression(newExpression)
-      .build();
     parentNode.replaceChild(returnStatementNode, returnErrorStatementNode);
-    // eslint-disable-next-line no-debugger
-    debugger;
   }
 
   private getExpressionOfReturnStatement(
@@ -165,6 +161,6 @@ export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransf
         return newExpressionOfReturn;
       }
     }
-    return expressionOfReturnStatement;
+    return returnStatementNode.getExpression();
   }
 }
