@@ -11,7 +11,9 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
            return ApplicationErrors.AccountNotFound(command.accountId);
        }
 
-       accountEntity.withdrawAmount(command.amount);
+       accountEntity.withdrawAmount(command.amount).ifError(() => {
+            return ApplicationErrors.AccountNotFound(command.accountId); 
+        });
        this.accountRepo.update(accountEntity).ifError();
    }
  }

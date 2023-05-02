@@ -163,13 +163,34 @@ export class ExecuteBuilderDirector {
             ),
           ],
         }),
-        new ExpressionBuilderDirector().buildMethodCallExpression(
-          new ExpressionBuilderDirector().buildMemberExpression(
-            new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
-            'withdrawAmount',
+        new ConstDeclarationBuilderDirector().buildConstDeclarationWithExpression({
+          name: 'result_123',
+          expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+            new ExpressionBuilderDirector().buildMemberExpression(
+              new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
+              'withdrawAmount',
+            ),
+            new ArgumentListBuilderDirector().buildMemberDotArguments([['command', 'amount']]),
           ),
-          new ArgumentListBuilderDirector().buildMemberDotArguments([['command', 'amount']]),
-        ),
+        }),
+        new StatementDirector().buildIfStatement({
+          condition: new ExpressionBuilderDirector().buildIsInstanceOfExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('result_123'),
+            new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('Error'),
+          ),
+          thenStatements: [
+            new StatementDirector().buildReturnErrorStatement(
+              new ExpressionBuilderDirector().buildEvaluation(
+                new EvaluationBuilderDirector().buildErrorEvaluation(
+                  'ApplicationErrors.AccountNotFound',
+                  new ArgumentListBuilderDirector().buildMemberDotArguments([
+                    ['command', 'accountId'],
+                  ]),
+                ),
+              ),
+            ),
+          ],
+        }),
         new ConstDeclarationBuilderDirector().buildConstDeclarationWithExpression({
           name: 'result_123',
           expression: new ExpressionBuilderDirector().buildMethodCallExpression(
