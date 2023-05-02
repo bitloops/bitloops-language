@@ -15,4 +15,12 @@ export class CasingUtils {
   static camelCaseToSnakeCase(str: string): string {
     return str.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
   }
+
+  static pascalCaseToCamelCase(str: string): string {
+    return str.charAt(0).toLowerCase() + str.slice(1);
+  }
+
+  static pascalCaseToKebabCase(str: string): string {
+    return CasingUtils.camelCaseToKebabCase(CasingUtils.pascalCaseToCamelCase(str));
+  }
 }

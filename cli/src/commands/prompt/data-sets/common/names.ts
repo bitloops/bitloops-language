@@ -30,7 +30,6 @@ export const getNameFromPort = (str: string): string => {
   return str.slice(0, -Suffixes.PORT.length);
 };
 export const getPubSubHandlerNameFromIntegrationEvent = (str: string): string => {
-  console.log('getPubSubHandlerNameFromIntegrationEvent');
   const initialSuffix = 'IntegrationEvent';
   const finalSuffix = 'PubSubIntegrationEventHandler';
   if (!str.endsWith(initialSuffix)) throw new Error(str + ' is not an IntegrationEvent');
@@ -48,21 +47,19 @@ export class FileNameToClassName {
     // the fileName will be something like 'user-email.service-port.ts
     // If type === "Mock", the target result should be MockUserEmailService
 
-    const nameWithoutPortSuffix = name.replace('-port.ts', '');
-    const nameInKebabCase = nameWithoutPortSuffix.replace('.', '-');
+    const nameWithoutPortSuffix = name.replace('.service-port.ts', '');
 
-    const nameInCamelCase = CasingUtils.kebabCaseToCamelCase(nameInKebabCase);
-    return type + nameInCamelCase;
+    const nameInCamelCase = CasingUtils.kebabCaseToPascalCase(nameWithoutPortSuffix);
+    return type + nameInCamelCase + 'Service';
   }
 
   static repository(name: string, type: RepoConcretion): string {
     // the fileName will be something like 'user-write.repo-port.ts
     // (For type=Mongo), The target result should be MongoUserWriteRepository
 
-    const nameWithoutPortSuffix = name.replace('repo-port.ts', '');
-    const nameInKebabCase = nameWithoutPortSuffix.replace('.', '-');
+    const nameWithoutPortSuffix = name.replace('.repo-port.ts', '');
 
-    const nameInCamelCase = CasingUtils.kebabCaseToCamelCase(nameInKebabCase);
+    const nameInCamelCase = CasingUtils.kebabCaseToPascalCase(nameWithoutPortSuffix);
     return type + nameInCamelCase + 'Repository';
   }
 
@@ -72,9 +69,47 @@ export class FileNameToClassName {
    */
   static integrationEvent(name: string): string {
     const nameWithoutSuffix = name.replace('.integration-event.ts', '');
-    const nameInKebabCase = nameWithoutSuffix.replace('.', '-');
 
-    const nameInCamelCase = CasingUtils.kebabCaseToPascalCase(nameInKebabCase);
+    const nameInCamelCase = CasingUtils.kebabCaseToPascalCase(nameWithoutSuffix);
     return nameInCamelCase + 'IntegrationEvent';
+  }
+}
+
+export class ClassNameToTargetFileName {
+  /**
+   * @name - e.g. UserAddedPubSubIntegrationEventHandler
+   */
+  static pubsubHandler(name: string): string {
+    const suffix = 'PubSubIntegrationEventHandler';
+
+    const nameWithoutSuffix = name.replace(suffix, '');
+
+    const nameInKebabCase = CasingUtils.pascalCaseToKebabCase(nameWithoutSuffix);
+    return `${nameInKebabCase}.integration-handler.ts`;
+  }
+
+  /**
+   * TBI
+   * @param name - e.g. MongoUserWriteRepository
+   */
+  static repository(name: string): string {
+    const suffix = 'Repository';
+
+    // Replace last occurrence of suffix
+    const lastIndex = name.lastIndexOf(suffix);
+    const nameWithoutSuffix = name.slice(0, lastIndex);
+
+    const nameInKebabCase = CasingUtils.pascalCaseToKebabCase(nameWithoutSuffix);
+    return `${nameInKebabCase}.repository.ts`;
+  }
+
+  static service(name: string): string {
+    const suffix = 'Service';
+
+    const lastIndex = name.lastIndexOf(suffix);
+    const nameWithoutSuffix = name.slice(0, lastIndex);
+
+    const nameInKebabCase = CasingUtils.pascalCaseToKebabCase(nameWithoutSuffix);
+    return `${nameInKebabCase}.service.ts`;
   }
 }

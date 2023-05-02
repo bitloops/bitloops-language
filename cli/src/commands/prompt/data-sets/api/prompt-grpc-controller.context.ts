@@ -67,6 +67,9 @@ const messageInstructionsCommand = (
   In case result.isOk === true -> The response data is under \`result.data\`,
   else the error object is under \`result.error\`.
   Each error object has code and message properties with string values.
+  Define only one key inside each ErrorResponse object, since we use oneof in the protobuf file.
+  Preferably something like unexpectedError or systemUnavailableError. Whichever you find in the protobuf file is the one you should use.
+
 
   DONT forget to decorate each method with the following 2 Decorators.
   ${CodeSnippets.openTypescript()}
@@ -128,6 +131,8 @@ const messageInstructionsQuery = (
   In case result.isOk === true -> The response data is under \`result.data\`,
   else the error object is under \`result.error\`.
   Each error object has code and message properties with string values.
+  Define only one key inside each ErrorResponse object, since we use oneof in the protobuf file.
+  Preferably something like unexpectedError or systemUnavailableError. Whichever you find in the protobuf file is the one you should use.
 
   DONT forget to decorate each method with the following 2 Decorators.
   ${CodeSnippets.openTypescript()}
@@ -314,14 +319,14 @@ export const promptApiGrpcControllerCommand = (
   ${CodeSnippets.openTypescript()}
     if (result.isOk) {
       return new ${packageName}.AddTodoResponse({
-        ok: new ${packageName}.AddTodoOKResponse({ id: results.data }),
+        ok: new ${packageName}.AddTodoOKResponse({ id: result.data }),
       });
     } else {
       return new ${packageName}.AddTodoResponse({
         error: new ${packageName}.AddTodoErrorResponse({
-          invalidTitleLengthError: new ${packageName}.ErrorResponse({
-            code: error?.code || 'INVALID_TITLE_LENGTH_ERROR',
-            message: error?.message || 'The title is too long.',
+          systemUnavailableError: new ${packageName}.ErrorResponse({
+            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
+            message: error?.message || 'The system is unavailable.',
           }),
         }),
       });
@@ -343,7 +348,7 @@ import { AddTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/add-tod
   })
   async addTodo(data: ${packageName}.AddTodoRequest): Promise<${packageName}.AddTodoResponse> {
     const command = new AddTodoCommand({ title: data.title });
-    const results = await this.commandBus.request(command);
+    const result = await this.commandBus.request(command);
     if (result.isOk) {
       return new ${packageName}.AddTodoResponse({
         ok: new ${packageName}.AddTodoOKResponse({ id: result.data }),
@@ -352,9 +357,9 @@ import { AddTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/add-tod
       const error = result.error;
       return new ${packageName}.AddTodoResponse({
         error: new ${packageName}.AddTodoErrorResponse({
-          invalidTitleLengthError: new ${packageName}.ErrorResponse({
-            code: error?.code || 'INVALID_TITLE_LENGTH_ERROR',
-            message: error?.message || 'The title is too long.',
+          systemUnavailableError: new ${packageName}.ErrorResponse({
+            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
+            message: error?.message || 'The system is unavailable.',
           }),
         }),
       });
@@ -397,7 +402,7 @@ export const promptApiGrpcControllerQuery = (
         }),
       });
     } else {
-      const error = results.error;
+      const error = result.error;
       console.error('Error while fetching todos:', error?.message);
       return new ${packageName}.GetAllTodosResponse({
         error: new ${packageName}.GetAllTodosErrorResponse({
@@ -427,9 +432,9 @@ export const promptApiGrpcControllerQuery = (
     data: todo.GetAllTodosRequest,
     metadata: Metadata,
   ): Promise<todo.GetAllTodosResponse> {
-    const results = await this.queryBus.request(new GetTodosQuery());
-    if (results.isOk) {
-      const mappedData = results.data.map((i) => ({
+    const result = await this.queryBus.request(new GetTodosQuery());
+    if (result.isOk) {
+      const mappedData = result.data.map((i) => ({
         id: i.id,
         title: i.title,
         completed: i.completed,
@@ -445,7 +450,7 @@ export const promptApiGrpcControllerQuery = (
         }),
       });
     } else {
-      const error = results.error;
+      const error = result.error;
       console.error('Error while fetching todos:', error?.message);
       return new todo.GetAllTodosResponse({
         error: new todo.GetAllTodosErrorResponse({

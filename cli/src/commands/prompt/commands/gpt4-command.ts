@@ -2,10 +2,10 @@ import { ChatCompletionRequestMessage, OpenAIApi } from 'openai';
 import { Command, ResultOrError } from './types.js';
 
 // Define a concrete Command class for making OpenAI requests
-export class OpenAIRequestCommand implements Command {
-  private model = 'gpt-3.5-turbo';
+export class OpenAIGPT4RequestCommand implements Command {
+  private model = 'gpt-4';
   public usedTokens?: number;
-  private costPer1KDollars = 0.002;
+  private costPer1KDollars = 0.03;
   constructor(
     private client: OpenAIApi,
     private params: ChatCompletionRequestMessage[],

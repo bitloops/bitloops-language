@@ -2,11 +2,15 @@
  * Real time grpc pub sub handlers
  */
 
+import { ChatCompletionRequestMessage } from 'openai';
 import { CodeSnippets } from '../common/code-snippets.js';
+import { getPubSubHandlerNameFromIntegrationEvent } from '../common/names.js';
+// import { GrpcPubSubHandlerBuilder } from '../../component-builders/api/grpc-pub-sub-handler.builder.js';
 
 const messageInstructionsPubSubHandlers = (
   protoFile: string,
   integrationEventFileContent: string,
+  integrationEventName: string,
   packageName: string,
 ): string => {
   if (!integrationEventFileContent) {
@@ -24,27 +28,211 @@ const messageInstructionsPubSubHandlers = (
   ${CodeSnippets.closeProto()}
   
   Given this integration event: 
-
   ${CodeSnippets.openTypescript()}
-  ${integrationEventFileContent}
+  ${CodeSnippets.sanitizeTypescriptImports(integrationEventFileContent)}
   ${CodeSnippets.closeTypescript()}
 
   Extract its data from the event.payload property, and map them to the respective grpc stream event defined in the protobuf file.
-  We have generated typescript code from the protobuf file, which can be used as:
-  import { <package-name> } from '../../proto/generated/<package-name>';
+  If the integration event has multiple versions, the handler maps the first event version to the grpc stream event.
+  Use default values for any properties you can't find in the event.payload.
 
+  We have generated typescript code from the protobuf file, which can be used as:
+  ${CodeSnippets.openTypescript()}
+  import { <package-name> } from '../../proto/generated/<package-name>';
+  ${CodeSnippets.closeTypescript()}
+  In order to create the response objects.
   Where package-name = ${packageName},
   
-  //to be continued...
+  The handler class will be named: ${getPubSubHandlerNameFromIntegrationEvent(integrationEventName)}
 `;
 };
 
-export const promptApiGrpcControllerOnEventMethod = (
-  protobuf: string,
-  integrationEvents: string[],
+const INTEGRATION_EVENT_FILE_CONTENT = `
+type TIntegrationSchemas = IntegrationTodoAddedSchemaV1;
+type ToIntegrationDataMapper = (
+  event: TodoAddedDomainEvent
+) => TIntegrationSchemas;
+export class TodoAddedIntegrationEvent extends Infra.EventBus
+  .IntegrationEvent<TIntegrationSchemas> {
+  public static readonly boundedContextId = 'todo';
+  static versions = ['v1'];
+  static versionMappers: Record<string, ToIntegrationDataMapper> = {
+    v1: TodoAddedIntegrationEvent.toIntegrationDatav1,
+  };
+  constructor(payload: TIntegrationSchemas, version: string) {
+    super(TodoAddedIntegrationEvent.boundedContextId, payload, version);
+  }
+  static create(event: TodoAddedDomainEvent): TodoAddedIntegrationEvent[] {
+    return TodoAddedIntegrationEvent.versions.map((version) => {
+      const mapper = TodoAddedIntegrationEvent.versionMappers[version];
+      const payload = mapper(event);
+      return new TodoAddedIntegrationEvent(payload, version);
+    });
+  }
+  static toIntegrationDatav1(
+    event: TodoAddedDomainEvent
+  ): IntegrationTodoAddedSchemaV1 {
+    const todoAdded = {
+      todoId: event.payload.aggregateId,
+      title: event.payload.title,
+      userId: event.payload.userId,
+    };
+    return todoAdded;
+  }
+}
+
+`;
+
+const PROTOBUF = `
+
+syntax = "proto3";
+
+package todo;
+
+service TodoService {
+  rpc Add(AddTodoRequest) returns (AddTodoResponse);
+  rpc ModifyTitle(ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
+  rpc Complete(CompleteTodoRequest) returns (CompleteTodoResponse);
+  rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
+  rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
+  rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
+  rpc On(OnTodoRequest) returns (stream OnEvent);
+}
+
+message InitializeConnectionRequest {}
+message InitializeConnectionResponse {
+  string subscriberId = 1;
+}
+
+message KeepSubscriptionAliveRequest {
+  string subscriberId = 1;
+}
+message KeepSubscriptionAliveResponse {
+  optional string renewedAuthToken = 1;
+}
+
+enum TODO_EVENTS {
+  ADDED = 0;
+  TITLE_MODIFIED = 1;
+  COMPLETED = 2;
+}
+
+message OnTodoRequest {
+  string subscriberId = 1;
+  repeated TODO_EVENTS events = 2;
+}
+
+message OnEvent {
+  oneof event {
+    Todo onAdded = 1;
+    Todo onTitleModified = 2;
+    Todo onCompleted = 3;
+  }
+}
+
+message ErrorResponse {
+  string code = 1;
+  string message = 2;
+}
+
+message AddTodoRequest {
+  string title = 1;
+}
+
+message AddTodoResponse {
+  oneof result {
+    AddTodoOKResponse ok = 1;
+    AddTodoErrorResponse error = 2;
+  }
+}
+
+message AddTodoErrorResponse {
+  oneof error {
+    ErrorResponse titleOutOfBoundsError = 1;
+    ErrorResponse unexpectedError = 2;
+  }
+}
+
+message AddTodoOKResponse {
+  string id = 1;
+}
+
+message ModifyTitleTodoRequest {
+  string id = 1;
+  string title = 2;
+}
+
+message ModifyTitleTodoResponse {
+  oneof result {
+    ModifyTitleTodoOKResponse ok = 1;
+    ModifyTitleTodoErrorResponse error = 2;
+  }
+}
+
+message ModifyTitleTodoErrorResponse {
+  oneof error {
+    ErrorResponse todoNotFoundError = 1;
+    ErrorResponse unexpectedError = 2;
+    ErrorResponse titleOutOfBoundsError = 3;
+  }
+}
+
+message ModifyTitleTodoOKResponse {}
+
+message CompleteTodoRequest {
+  string id = 1;
+}
+
+message CompleteTodoResponse {
+  oneof result {
+    CompleteTodoOKResponse ok = 1;
+    CompleteTodoErrorResponse error = 2;
+  }
+}
+
+message CompleteTodoErrorResponse {
+  oneof error {
+    ErrorResponse todoNotFoundError = 1;
+    ErrorResponse unexpectedError = 2;
+    ErrorResponse todoAlreadyCompletedError = 3;
+  }
+}
+
+message CompleteTodoOKResponse {}
+
+message GetAllTodosRequest {}
+
+message GetAllTodosResponse {
+  oneof result {
+    GetAllTodosOKResponse ok = 1;
+    GetAllTodosErrorResponse error = 2;
+  }
+}
+
+message GetAllTodosErrorResponse {
+  oneof error {
+    ErrorResponse unexpectedError = 1;
+  }
+}
+
+message GetAllTodosOKResponse {
+  repeated Todo todos = 1;
+}
+
+message Todo {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+  string userId = 4;
+}
+`;
+
+export const promptPubSubHandlers = (
+  protoFile: string,
+  integrationEventFileContent: string,
+  integrationEventName: string,
   packageName: string,
 ): ChatCompletionRequestMessage[] => [
-  promptContextMessage,
   {
     role: 'system',
     content: `  
@@ -53,27 +241,19 @@ export const promptApiGrpcControllerOnEventMethod = (
   },
   {
     role: 'user',
-    content:
-      messageInstructionsOnMethod(
-        PROTOBUF,
-        [
-          'TodoAddedIntegrationEvent',
-          'TodoTitleModifiedIntegrationEvent',
-          'TodoCompletedIntegrationEvent',
-        ],
-        'todo',
-        'TodoService',
-      ) +
-      ` 
-  You should use each rpc's response to return the response like this.
-  `,
+    content: messageInstructionsPubSubHandlers(
+      PROTOBUF,
+      INTEGRATION_EVENT_FILE_CONTENT,
+      'TodoAddedIntegrationEvent',
+      'todo',
+    ),
   },
   {
     role: 'assistant',
     content: `
     ${CodeSnippets.openTypescript()}
 import { Application, ok, Either } from '@bitloops/bl-boilerplate-core';
-import { TodoAddedIntegrationEvent } from '@src/lib/bounded-contexts/todo/todo/contracts/integration-events/todo-added.integration-event';
+import { TodoAddedIntegrationEvent } from '@lib/bounded-contexts/todo/todo/contracts/integration-events/todo-added.integration-event';
 import { todo } from '../../proto/generated/todo';
 import { Subscriptions, Subscribers } from '../todo.grpc.controller';
 
@@ -110,6 +290,7 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
           const todoObject = new todo.Todo({
             id: payload.todoId,
             title: payload.title,
+            userId: payload.userId,
             completed: false,
           });
           const message = new todo.OnEvent({
@@ -129,6 +310,11 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
   },
   {
     role: 'user',
-    content: messageInstructionsPubSubHandlers(protobuf, integrationEvents, packageName),
+    content: messageInstructionsPubSubHandlers(
+      protoFile,
+      integrationEventFileContent,
+      integrationEventName,
+      packageName,
+    ),
   },
 ];

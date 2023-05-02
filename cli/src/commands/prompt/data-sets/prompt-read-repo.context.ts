@@ -4,19 +4,18 @@ import { ContextInfo } from '../../../types.js';
 import { FileNameAndConcretion } from './common/concretions.js';
 import { FileNameToClassName } from './common/names.js';
 import { CodeSnippets } from './common/code-snippets.js';
+import { Concretion } from './common/concretions.js';
 
-export const promptReadRepoMessages = (
-  port: string,
-  contextInfo: ContextInfo,
-  concretion: FileNameAndConcretion,
-): ChatCompletionRequestMessage[] => {
-  const [fileName, concretionType] = concretion;
-  const { boundedContext, module } = contextInfo;
-
-  const messageInstructions = (bc: string, mod: string): string => {
-    return `
+const messageInstructions = (
+  bc: string,
+  mod: string,
+  fileName: string,
+  concretionType: Concretion,
+): string => {
+  const readRepoClassName = FileNameToClassName.repository(fileName, concretionType);
+  return `
     The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
-    The class name should be ${FileNameToClassName.repository(fileName, concretionType)}.
+    The class name should be ${readRepoClassName}.
   The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
 
   The method getAll returns empty array if nothing is found.
@@ -25,7 +24,15 @@ export const promptReadRepoMessages = (
   and verify that the jwt token is valid, and the userId is allowed to run the respective method.
   You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
   `;
-  };
+};
+
+export const promptReadRepoMessages = (
+  port: string,
+  contextInfo: ContextInfo,
+  concretion: FileNameAndConcretion,
+): ChatCompletionRequestMessage[] => {
+  const [fileName, concretionType] = concretion;
+  const { boundedContext, module } = contextInfo;
 
   return [
     promptContextMessage,
@@ -47,7 +54,7 @@ export interface CRUDReadRepoPort<ReadModel> {
   getById(id: string): Promise<Either<ReadModel | null, UnexpectedError>>;
 }
 ${CodeSnippets.closeTypescript()}
-${messageInstructions('todo', 'todo')}
+${messageInstructions('todo', 'todo', 'todo-read.repo-port.ts', 'Mongo')}
   `,
     },
     {
@@ -57,11 +64,11 @@ ${messageInstructions('todo', 'todo')}
 import { Inject, Injectable } from '@nestjs/common';
 import { Collection, MongoClient } from 'mongodb';
 import * as jwtwebtoken from 'jsonwebtoken';
-import { TodoReadRepoPort } from '@src/lib/bounded-contexts/todo/todo/ports/todo-read.repo-port';
+import { TodoReadRepoPort } from '@lib/bounded-contexts/todo/todo/ports/todo-read.repo-port';
 import {
   TodoReadModel,
   TTodoReadModelSnapshot,
-} from '@src/lib/bounded-contexts/todo/todo/domain/todo.read-model';
+} from '@lib/bounded-contexts/todo/todo/domain/todo.read-model';
 import { ConfigService } from '@nestjs/config';
 import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
 import {
@@ -76,7 +83,7 @@ const MONGO_DB_TODO_COLLECTION =
   process.env.MONGO_DB_TODO_COLLECTION || 'todos';
 
 @Injectable()
-export class TodoReadRepository implements TodoReadRepoPort {
+export class MongoTodoReadRepository implements TodoReadRepoPort {
   private collectionName = MONGO_DB_TODO_COLLECTION;
   private dbName = MONGO_DB_DATABASE;
   private collection: Collection;
@@ -154,7 +161,7 @@ export interface NotificationTemplateReadRepoPort
   >;
 }
 ${CodeSnippets.closeTypescript()}
-${messageInstructions('marketing', 'marketing')}
+${messageInstructions('marketing', 'marketing', 'notification-template-read.repo-port.ts', 'Mongo')}
   `,
     },
 
@@ -165,8 +172,8 @@ ${messageInstructions('marketing', 'marketing')}
     import { Injectable, Inject } from '@nestjs/common';
 import { Collection, MongoClient } from 'mongodb';
 import * as jwtwebtoken from 'jsonwebtoken';
-import { NotificationTemplateReadRepoPort } from '@src/lib/bounded-contexts/marketing/marketing/ports/notification-template-read.repo-port';
-import { NotificationTemplateReadModel } from '@src/lib/bounded-contexts/marketing/marketing/domain/notification-template.read-model';
+import { NotificationTemplateReadRepoPort } from '@lib/bounded-contexts/marketing/marketing/ports/notification-template-read.repo-port';
+import { NotificationTemplateReadModel } from '@lib/bounded-contexts/marketing/marketing/domain/notification-template.read-model';
 import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -177,7 +184,7 @@ import {
 } from '@bitloops/bl-boilerplate-core';
 
 @Injectable()
-export class NotificationTemplateReadRepository
+export class MongoNotificationTemplateReadRepository
   implements NotificationTemplateReadRepoPort
 {
   private collectionName =
@@ -236,7 +243,31 @@ export class NotificationTemplateReadRepository
       Application.Repo.Errors.Unexpected
     >
   > {
-    throw new Error('Method not implemented');
+    const ctx = asyncLocalStorage.getStore()?.get('context');
+    const { jwt } = ctx;
+    let jwtPayload: null | any = null;
+    try {
+      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
+    } catch (err) {
+      throw new Error('Invalid JWT!');
+    }
+    const userId = jwtPayload.sub;
+    if (!userId) {
+      throw new Error('Invalid userId');
+    }
+    const results = await this.collection
+      .find({ userId: { id: userId } })
+      .toArray();
+
+    return ok(
+      results.map((result) => {
+        const { _id, ...todo } = result as any;
+        return NotificationTemplateReadModel.fromPrimitives({
+          ...todo,
+          id: _id.toString(),
+        });
+      }),
+    );
   }
 
   @Application.Repo.Decorators.ReturnUnexpectedError()
@@ -287,7 +318,7 @@ export class NotificationTemplateReadRepository
     ${CodeSnippets.openTypescript()}
     ${port}
     ${CodeSnippets.closeTypescript()}
-    ${messageInstructions(boundedContext, module)}
+    ${messageInstructions(boundedContext, module, fileName, concretionType)}
     `,
     },
   ];

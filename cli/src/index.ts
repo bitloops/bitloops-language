@@ -38,30 +38,28 @@ const CURRENT_VERSION = version;
 
 // Check if current version is the latest
 const checkVersion = async (): Promise<void> => {
-  return await axios
-    .post(VERSION_CHECK_URL, { version: CURRENT_VERSION })
-    .then((res) => {
-      const latestVersion = res.data.version;
-      const latestVersionArray = latestVersion.split('.');
-      const currentVersionArray = CURRENT_VERSION.split('.');
-      if (
-        Number(latestVersionArray[0]) > Number(currentVersionArray[0]) ||
-        Number(latestVersionArray[1]) > Number(currentVersionArray[1]) ||
-        Number(latestVersionArray[2]) > Number(currentVersionArray[2])
-      ) {
-        console.log(
-          chalk.yellow('A new version of the Bitloops Language CLI is available: ') +
-            chalk.green(`v${latestVersion}`),
-        );
-        console.log(chalk.yellow('To update run:'));
-        console.log(chalk.yellow('npm install -g @bitloops/bitloops-language-cli'));
-        console.log('or');
-        console.log(chalk.yellow('yarn global add @bitloops/bitloops-language-cli'));
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  try {
+    const res = await axios.post(VERSION_CHECK_URL, { version: CURRENT_VERSION });
+    const latestVersion = res.data.version;
+    const latestVersionArray = latestVersion.split('.');
+    const currentVersionArray = CURRENT_VERSION.split('.');
+    if (
+      Number(latestVersionArray[0]) > Number(currentVersionArray[0]) ||
+      Number(latestVersionArray[1]) > Number(currentVersionArray[1]) ||
+      Number(latestVersionArray[2]) > Number(currentVersionArray[2])
+    ) {
+      console.log(
+        chalk.yellow('A new version of the Bitloops Language CLI is available: ') +
+          chalk.green(`v${latestVersion}`),
+      );
+      console.log(chalk.yellow('To update run:'));
+      console.log(chalk.yellow('npm install -g @bitloops/bitloops-language-cli'));
+      console.log('or');
+      console.log(chalk.yellow('yarn global add @bitloops/bitloops-language-cli'));
+    }
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 (async (): Promise<void> => {

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import cliProgress from 'cli-progress';
 import ora, { Ora } from 'ora';
 import { copyrightSnippet } from '../copyright.js';
 import { ConfigUtils } from '../../utils/config.js';
@@ -18,6 +19,7 @@ import {
   promptAiResultsThirdRound,
 } from '../../functions/promptAiResults.js';
 import { greenColor, purpleColor, redColor, stopSpinner } from '../../utils/oraUtils.js';
+import { writeStaticAssets } from '../../functions/writeStaticAssets.js';
 /**
  * TODO add a json or yaml config file, where the user can set settings for preferred repo adapters
  * for each port(file-name as a key), and e.g. MongoDB as value
@@ -64,7 +66,6 @@ const prompt = async (source: ICollection): Promise<void> => {
     answers.push(await inquirerPath(q, source));
   }
   const [sourceDirPath, targetDirPath] = answers;
-  console.log({ sourceDirPath, targetDirPath });
   if (!fs.existsSync(targetDirPath)) {
     fs.mkdirSync(targetDirPath);
   }
@@ -82,6 +83,10 @@ const prompt = async (source: ICollection): Promise<void> => {
   // Example usage
   let throbber: Ora;
   const client = new Client(apiKey);
+  // create a new progress bar with 50 ticks
+  const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  // progressBar.start(3, 0);
+
   try {
     const componentsInfo = extractComponentsFromFiles(transpiledFiles);
     const exposedGrpcComponents = await extractGrpcExposedComponents(componentsInfo);
@@ -90,22 +95,26 @@ const prompt = async (source: ICollection): Promise<void> => {
 
     await promptAiResults(client, componentsInfo, exposedGrpcComponents);
     let responses = await client.getResponses();
+    // progressBar.increment();
 
     promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
+    // progressBar.increment();
 
     await promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
+    // progressBar.increment();
 
     // console.log(responses);
+    // progressBar.stop();
     stopSpinner(throbber, greenColor('Generated.'), '🔨');
     // console.log(JSON.stringify(responses, null, 2));
     console.log(`Total cost: $${client.getTotalCost().toFixed(2)}`);
     await writeAIResults(responses, targetDirPath, exposedGrpcComponents);
+    await writeStaticAssets(targetDirPath);
   } catch (error) {
     const TAB = '\t';
     console.error(redColor(TAB + '❌ ' + error));
-    // console.log(error);
   }
 
   console.log();

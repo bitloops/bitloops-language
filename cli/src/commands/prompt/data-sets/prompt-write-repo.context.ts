@@ -2,7 +2,7 @@ import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
 import { ContextInfo } from '../../../types.js';
 import { FileNameToClassName } from './common/names.js';
-import { FileNameAndConcretion } from './common/concretions.js';
+import { Concretion, FileNameAndConcretion } from './common/concretions.js';
 import { CodeSnippets } from './common/code-snippets.js';
 const DEFAULT_PORT = `import { Application, Domain, Either } from '@bitloops/bl-boilerplate-core';
 import { EmailVO } from '../domain/email.value-object.js';
@@ -16,6 +16,21 @@ export interface UserWriteRepoPort
 }
 `;
 
+const messageInstructions = (
+  bc: string,
+  mod: string,
+  fileName: string,
+  concretionType: Concretion,
+): string => {
+  return `
+    The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
+    The class name should be: ${FileNameToClassName.repository(fileName, concretionType)}.
+The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
+The methods getById, update, save and delete should read the ctx(user context) from asyncLocalStorage,
+and verify that the jwt token is valid, and the userId is allowed to run the respective method.
+You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
+`;
+};
 export const promptWriteRepoMessages = (
   port = DEFAULT_PORT,
   contextInfo: ContextInfo,
@@ -23,17 +38,6 @@ export const promptWriteRepoMessages = (
 ): ChatCompletionRequestMessage[] => {
   const [fileName, concretionType] = concretion;
   const { boundedContext, module } = contextInfo;
-
-  const messageInstructions = (bc: string, mod: string): string => {
-    return `
-    The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
-    The class name should be ${FileNameToClassName.repository(fileName, concretionType)}.
-The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
-The methods getById, update, save and delete should read the ctx(user context) from asyncLocalStorage,
-and verify that the jwt token is valid, and the userId is allowed to run the respective method.
-You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
-`;
-  };
 
   return [
     promptContextMessage,
@@ -58,7 +62,7 @@ export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
   delete(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
 }
 ${CodeSnippets.closeTypescript()}
-${messageInstructions('todo', 'todo')}
+${messageInstructions('todo', 'todo', 'todo-write.repo-port.ts', 'Mongo')}
 `,
     },
     {
@@ -76,18 +80,18 @@ ${messageInstructions('todo', 'todo')}
   import { Injectable, Inject } from '@nestjs/common';
   import { Collection, MongoClient } from 'mongodb';
   import * as jwtwebtoken from 'jsonwebtoken';
-  import { TodoWriteRepoPort } from '@src/lib/bounded-contexts/todo/todo/ports/todo-write.repo-port';
-  import { TodoEntity } from '@src/lib/bounded-contexts/todo/todo/domain/todo.entity';
+  import { TodoWriteRepoPort } from '@lib/bounded-contexts/todo/todo/ports/todo-write.repo-port';
+  import { TodoEntity } from '@lib/bounded-contexts/todo/todo/domain/todo.entity';
   import { ConfigService } from '@nestjs/config';
   import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
-  import { StreamingDomainEventBusToken } from '@src/lib/bounded-contexts/todo/todo/constants';
+  import { StreamingDomainEventBusToken } from '@lib/bounded-contexts/todo/todo/constants';
   
   const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'todo';
   const MONGO_DB_TODO_COLLECTION =
     process.env.MONGO_DB_TODO_COLLECTION || 'todos';
   
   @Injectable()
-  export class TodoWriteRepository implements TodoWriteRepoPort {
+  export class MongoTodoWriteRepository implements TodoWriteRepoPort {
     private collectionName = MONGO_DB_TODO_COLLECTION;
     private dbName = MONGO_DB_DATABASE;
     private collection: Collection;
@@ -246,7 +250,7 @@ export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
   delete(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
 }
 ${CodeSnippets.closeTypescript()}
-${messageInstructions('marketing', 'marketing')}
+${messageInstructions('marketing', 'marketing', 'user-write.repo-port.ts', 'Mongo')}
 `,
     },
     {
@@ -264,18 +268,18 @@ ${messageInstructions('marketing', 'marketing')}
       import { Injectable, Inject } from '@nestjs/common';
       import { Collection, MongoClient } from 'mongodb';
       import * as jwtwebtoken from 'jsonwebtoken';
-      import { UserEntity } from '@src/lib/bounded-contexts/marketing/marketing/domain/user.entity';
-      import { UserWriteRepoPort } from '@src/lib/bounded-contexts/marketing/marketing/ports/user-write.repo-port';
+      import { UserEntity } from '@lib/bounded-contexts/marketing/marketing/domain/user.entity';
+      import { UserWriteRepoPort } from '@lib/bounded-contexts/marketing/marketing/ports/user-write.repo-port';
       import { ConfigService } from '@nestjs/config';
       import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
-      import { StreamingDomainEventBusToken } from '@src/lib/bounded-contexts/marketing/marketing/constants';
+      import { StreamingDomainEventBusToken } from '@lib/bounded-contexts/marketing/marketing/constants';
       
       const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'marketing';
       const MONGO_DB_TODO_COLLECTION =
         process.env.MONGO_DB_TODO_COLLECTION || 'users';
       
       @Injectable()
-      export class UserWriteRepository implements UserWriteRepoPort {
+      export class MongoUserWriteRepository implements UserWriteRepoPort {
         private collectionName = MONGO_DB_TODO_COLLECTION;
         private dbName = MONGO_DB_DATABASE;
         private collection: Collection;
@@ -388,7 +392,7 @@ ${messageInstructions('marketing', 'marketing')}
     ${CodeSnippets.openTypescript()}
     ${port}
     ${CodeSnippets.closeTypescript()}
-    ${messageInstructions(boundedContext, module)}
+    ${messageInstructions(boundedContext, module, fileName, concretionType)}
     `,
     },
   ];

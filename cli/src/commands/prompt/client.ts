@@ -1,7 +1,8 @@
 import { OpenAIApi, Configuration, ChatCompletionRequestMessage } from 'openai';
 import { OpenAIRequestCommand } from './commands/command.js';
 import { Invoker } from './invoker.js';
-import { OpenAICodeDavinciCommand } from './commands/code-davinci-command.js';
+import { OpenAIGPT4RequestCommand } from './commands/gpt4-command.js';
+// import { OpenAICodeDavinciCommand } from './commands/code-davinci-command.js';
 
 export class Client {
   private client: OpenAIApi;
@@ -13,23 +14,41 @@ export class Client {
   }
 
   makeOpenAIRequest(
-    key: string,
     params: ChatCompletionRequestMessage[],
-    isArray = false,
-    metadata?: any,
+    options: {
+      key: string;
+      isArray?: boolean;
+      fileName?: string;
+      metadata?: any;
+    },
   ): void {
-    const command = new OpenAIRequestCommand(this.client, params, metadata);
-    this.invoker.addCommand(key, command, isArray);
+    const { key, isArray, fileName, metadata } = options;
+    const command = new OpenAIRequestCommand(this.client, params, fileName ?? null, metadata);
+    this.invoker.addCommand(key, command, isArray ?? false);
   }
 
-  makeOpenAICodeDavinciRequest(
-    key: string,
+  makeGPT4Request(
     params: ChatCompletionRequestMessage[],
-    isArray = false,
+    options: {
+      key: string;
+      isArray?: boolean;
+      fileName?: string;
+      metadata?: any;
+    },
   ): void {
-    const command = new OpenAICodeDavinciCommand(this.client, params);
-    this.invoker.addCommand(key, command, isArray);
+    const { key, isArray, fileName, metadata } = options;
+    const command = new OpenAIGPT4RequestCommand(this.client, params, fileName ?? null, metadata);
+    this.invoker.addCommand(key, command, isArray ?? false);
   }
+
+  // makeOpenAICodeDavinciRequest(
+  //   key: string,
+  //   params: ChatCompletionRequestMessage[],
+  //   isArray = false,
+  // ): void {
+  //   const command = new OpenAICodeDavinciCommand(this.client, params);
+  //   this.invoker.addCommand(key, command, isArray);
+  // }
 
   async getResponses() {
     const responses = await this.invoker.executeCommands();

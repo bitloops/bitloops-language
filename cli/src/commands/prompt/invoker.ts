@@ -1,8 +1,9 @@
 import { TBoundedContextName, TModuleName } from '../../types.js';
-import { Command } from './commands/command.js';
+import { Command } from './commands/types.js';
 
 export const GENERATED_INFRA_KEYS = {
   API_GRPC_CONTROLLER: 'api.grpcControllers',
+  API_GRPC_PUBSUB_HANDLERS: 'api.grpcPubSubHandlers',
   API_PROTO_BUFF: 'api.protobuff',
   API_DTO: 'api.dtos',
   MODULE_DEFINITION: (boundedContextName: TBoundedContextName, moduleName: TModuleName): string =>
@@ -13,12 +14,13 @@ export const GENERATED_INFRA_KEYS = {
     `boundedContexts.${boundedContextName}.${moduleName}.services`,
 };
 
-type TGeneratedComponent = string;
+type TGeneratedComponent = { fileContent: string; fileName?: string };
 export type TGeneratedInfra = Partial<{
   api: {
     grpcControllers: TGeneratedComponent[];
     protobuff: TGeneratedComponent;
     dtos: TGeneratedComponent[];
+    grpcPubSubHandlers: TGeneratedComponent[];
   };
   boundedContexts: {
     [key: TBoundedContextName]: {
@@ -60,8 +62,12 @@ export class Invoker {
           // console.error(error);
           throw error;
         }
-
-        this.setNestedProperty(this.results, key, result);
+        const componentResult: TGeneratedComponent = { fileContent: result };
+        const fileName = command.fileName;
+        if (fileName !== null) {
+          componentResult.fileName = fileName;
+        }
+        this.setNestedProperty(this.results, key, componentResult);
       }),
     );
     this.cost = this.commands.reduce((total, { command }) => total + command.totalCost, this.cost);

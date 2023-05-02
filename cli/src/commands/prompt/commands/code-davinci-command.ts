@@ -1,20 +1,16 @@
 import { ChatCompletionRequestMessage, CreateCompletionRequestPrompt, OpenAIApi } from 'openai';
-
-// Define the Command interface
-export interface Command {
-  execute(): Promise<ResultOrError<string>>;
-  usedTokens?: number;
-  totalCost: number;
-}
-
-type ResultOrError<Result> = [Result, null] | [null, Error];
+import { Command, ResultOrError } from './types.js';
 
 // Define a concrete Command class for making OpenAI requests
 export class OpenAICodeDavinciCommand implements Command {
   private model = 'code-davinci-002';
   public usedTokens?: number;
   private costPer1KDollars = 0.02; // This is probably correct, but needs confirmation
-  constructor(private client: OpenAIApi, private params: ChatCompletionRequestMessage[]) {}
+  constructor(
+    private client: OpenAIApi,
+    private params: ChatCompletionRequestMessage[],
+    public fileName: string | null,
+  ) {}
 
   get totalCost(): number {
     if (!this.usedTokens) throw new Error('Cannot calculate total cost before executing command');
