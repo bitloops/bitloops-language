@@ -97,10 +97,12 @@ const prompt = async (source: ICollection): Promise<void> => {
     let responses = await client.getResponses();
     // progressBar.increment();
 
+    console.log('--Second round');
     promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
     // progressBar.increment();
 
+    console.log('--Third round');
     await promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
     // progressBar.increment();

@@ -38,6 +38,13 @@ export class OpenAIRequestCommand implements Command {
         usedTokens,
       });
       this.usedTokens = usedTokens;
+      if (finishReason === 'length') {
+        console.error('The response was incomplete:', {
+          thisParams: JSON.stringify(this.params, null, 2),
+          response: completion.data.choices[0].message.content,
+        });
+        return [null, new Error('The response was incomplete.')];
+      }
       return [completion.data.choices[0].message.content, null];
     } catch (error) {
       console.error('Error occurred: ');

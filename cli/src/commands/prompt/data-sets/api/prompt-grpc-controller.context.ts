@@ -46,28 +46,30 @@ const messageInstructionsCommand = (
     throw new Error('Should be called with either command');
   }
   return ` 
-  Create a grpc controller based on the proto file. 
+  Create a method for a grpc controller.
   Here's the protobuff file where you can find all the defined rpcs.
   ${CodeSnippets.openProto()}
   ${protoFile}
   ${CodeSnippets.closeProto()}
 
-  Ignore any rpc whose command is not provided. 
-
   Here is the provided command. 
   ${CodeSnippets.openTypescript()}
   ${command}
   ${CodeSnippets.closeTypescript()}
+  Use only the rpc related to the provided command.
+
   From the protobuf file we generate typescript code which you can use.
   For example you can assume that this will be imported.
+  ${CodeSnippets.openTypescript()}
   import { ${packageName} } from '../proto/generated/${packageName}';
+  ${CodeSnippets.closeTypescript()}
 
-  You can assume the necessary handlers are defined, and return a result.
+  You can assume the necessary handler is defined, and return a result.
   This result has an \`result.isOk\` boolean value so we don't need to try-catch.
   In case result.isOk === true -> The response data is under \`result.data\`,
   else the error object is under \`result.error\`.
   Each error object has code and message properties with string values.
-  Define only one key inside each ErrorResponse object, since we use oneof in the protobuf file.
+  Define only one key inside each ErrorResponse object, since we use oneof in the protobuf file for ErrorResponses.
   Preferably something like unexpectedError or systemUnavailableError. Whichever you find in the protobuf file is the one you should use.
 
 
@@ -80,7 +82,7 @@ const messageInstructionsCommand = (
   })
   ${CodeSnippets.closeTypescript()}
 
-  You should generate only the methods, and any imports they many need, 
+  You should generate only the method of the controller, and any needed imports 
   separated with ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}, in the following format.
   ${CodeSnippets.openTypescript()}
   <Imports>
@@ -88,7 +90,7 @@ const messageInstructionsCommand = (
   <Method>
   ${CodeSnippets.closeTypescript()}
   
-  Create only the method for the provided commands and ignore any remaining rpcs.
+  Create only the method for the provided command and ignore any remaining rpcs.
 `;
 };
 
@@ -110,23 +112,25 @@ const messageInstructionsQuery = (
     throw new Error('Should be called with either command');
   }
   return ` 
-  Create a grpc controller based on the proto file. 
+  Create the method for a grpc controller.
   Here's the protobuff file where you can find all the defined rpcs.
   ${CodeSnippets.openProto()}
   ${protoFile}
   ${CodeSnippets.closeProto()}
 
-  Ignore any rpc whose query is not provided. 
-
   Here is the provided query. 
   ${CodeSnippets.openTypescript()}
   ${query}
-  ${CodeSnippets.closeTypescript()}
+ ${CodeSnippets.closeTypescript()}
+  Use only the rpc related to the provided query.
+
   From the protobuf file we generate typescript code which you can use.
   For example you can assume that this will be imported.
+  ${CodeSnippets.openTypescript()}
   import { ${packageName} } from '../proto/generated/${packageName}';
+  ${CodeSnippets.closeTypescript()}
 
-  You can assume the necessary handlers are defined, and return a result.
+  You can assume the necessary handler is defined, and returns a result.
   This result has an \`result.isOk\` boolean value so we don't need to try-catch.
   In case result.isOk === true -> The response data is under \`result.data\`,
   else the error object is under \`result.error\`.
@@ -143,7 +147,7 @@ const messageInstructionsQuery = (
   })
   ${CodeSnippets.closeTypescript()}
 
-  You should generate only the methods, and any imports they many need, 
+  You should generate only the method of the controller, and any needed imports 
   separated with ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}, in the following format.
   ${CodeSnippets.openTypescript()}
   <Imports>
@@ -151,7 +155,7 @@ const messageInstructionsQuery = (
   <Method>
   ${CodeSnippets.closeTypescript()}
   
-  Create only the method for the provided queries and ignore any remaining rpcs.
+  Create only the method for the provided query and ignore any remaining rpcs.
 `;
 };
 
@@ -303,7 +307,6 @@ export const promptApiGrpcControllerCommand = (
   protoBuf: string,
   packageName: string,
 ): ChatCompletionRequestMessage[] => [
-  promptContextMessage,
   {
     role: 'system',
     content: `  
@@ -315,7 +318,7 @@ export const promptApiGrpcControllerCommand = (
     content:
       messageInstructionsCommand(COMMANDS[0], PROTOBUF, 'todo') +
       ` 
-  You should use each rpc's response to return the response like this.
+  You should use the rpc's response to return the response like this.
   ${CodeSnippets.openTypescript()}
     if (result.isOk) {
       return new ${packageName}.AddTodoResponse({
@@ -324,7 +327,7 @@ export const promptApiGrpcControllerCommand = (
     } else {
       return new ${packageName}.AddTodoResponse({
         error: new ${packageName}.AddTodoErrorResponse({
-          systemUnavailableError: new ${packageName}.ErrorResponse({
+          unexpectedError: new ${packageName}.ErrorResponse({
             code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
             message: error?.message || 'The system is unavailable.',
           }),
@@ -357,7 +360,7 @@ import { AddTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/add-tod
       const error = result.error;
       return new ${packageName}.AddTodoResponse({
         error: new ${packageName}.AddTodoErrorResponse({
-          systemUnavailableError: new ${packageName}.ErrorResponse({
+          unexpectedError: new ${packageName}.ErrorResponse({
             code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
             message: error?.message || 'The system is unavailable.',
           }),
@@ -380,7 +383,6 @@ export const promptApiGrpcControllerQuery = (
   protoBuf: string,
   packageName: string,
 ): ChatCompletionRequestMessage[] => [
-  promptContextMessage,
   {
     role: 'system',
     content: `  
@@ -406,7 +408,7 @@ export const promptApiGrpcControllerQuery = (
       console.error('Error while fetching todos:', error?.message);
       return new ${packageName}.GetAllTodosResponse({
         error: new ${packageName}.GetAllTodosErrorResponse({
-          systemUnavailableError: new ${packageName}.ErrorResponse({
+          unexpectedError: new ${packageName}.ErrorResponse({
             code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
             message: error?.message || 'The system is unavailable.',
           }),
@@ -454,7 +456,7 @@ export const promptApiGrpcControllerQuery = (
       console.error('Error while fetching todos:', error?.message);
       return new todo.GetAllTodosResponse({
         error: new todo.GetAllTodosErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
+          unexpectedError: new todo.ErrorResponse({
             code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
             message: error?.message || 'The system is unavailable.',
           }),

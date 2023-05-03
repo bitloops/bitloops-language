@@ -342,7 +342,9 @@ export const promptAiResultsSecondRound = (
 };
 
 /**
- *  Creates the grpc controllers.
+ *  Creates the grpc controllers,by adding controller commands/queries methods.
+ *  Add on-Event method of controller.
+ *  Generate Grpc PubSub handlers.
  */
 export const promptAiResultsThirdRound = async (
   client: Client,
@@ -367,7 +369,11 @@ export const promptAiResultsThirdRound = async (
         CodeSnippets.sanitizeProto(protobuf.fileContent),
         grpc.package,
       ),
-      { key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER, isArray: true },
+      {
+        key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER,
+        isArray: true,
+        metadata: 'Adding controller command method:' + slice[0],
+      },
     );
   }
   const queriesAtATimeNum = 1;
@@ -384,7 +390,11 @@ export const promptAiResultsThirdRound = async (
         CodeSnippets.sanitizeProto(protobuf.fileContent),
         grpc.package,
       ),
-      { key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER, isArray: true },
+      {
+        key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER,
+        isArray: true,
+        metadata: 'Adding controller query method',
+      },
     );
   }
 
@@ -398,7 +408,11 @@ export const promptAiResultsThirdRound = async (
       grpc.package,
       grpc['service-name'],
     ),
-    { key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER, isArray: true },
+    {
+      key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER,
+      isArray: true,
+      metadata: 'Adding on-Event method',
+    },
   );
 
   /**
@@ -422,6 +436,7 @@ export const promptAiResultsThirdRound = async (
         key: GENERATED_INFRA_KEYS.API_GRPC_PUBSUB_HANDLERS,
         isArray: true,
         fileName,
+        metadata: 'Adding pubsub integration event handler',
       },
     );
   }

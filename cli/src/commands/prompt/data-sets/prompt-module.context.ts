@@ -4,7 +4,7 @@ import { ContextInfo } from '../../../types.js';
 import { getNameFromToken } from './common/names.js';
 import { CONCRETIONS } from './common/concretions.js';
 import { CodeSnippets } from './common/code-snippets.js';
-const MARKETING_CONSTANTS_FILE = `export const EmailServicePortToken = Symbol('EmailServicePort');
+const MARKETING_CONSTANTS_FILE = `
 export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
 export const PubSubQueryBusToken = Symbol('PubSubQueryBusToken');
 export const StreamingDomainEventBusToken = Symbol('StreamingDomainEventBus');
@@ -14,6 +14,7 @@ export const StreamingIntegrationEventBusToken = Symbol(
 export const PubSubIntegrationEventBusToken = Symbol(
   'PubSubIntegrationEventBusToken',
 );
+export const EmailServicePortToken = Symbol('EmailServicePort');
 export const UserWriteRepoPortToken = Symbol('UserWriteRepoPort');
 export const NotificationTemplateReadRepoPortToken = Symbol(
   'NotificationTemplateReadRepoPort',
@@ -25,11 +26,17 @@ const MARKETING_CONCRETIONS = {
   [getNameFromToken('NotificationTemplateReadRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
 };
 
-const IAM_CONSTANTS_FILE = `export const StreamingIntegrationEventBusToken = Symbol(
-  'StreamingIntegrationEventBusToken',
+const IAM_CONSTANTS_FILE = `
+export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
+export const PubSubQueryBusToken = Symbol('PubSubQueryBusToken');
+export const StreamingIntegrationEventBusToken = Symbol(
+  'StreamingIntegrationEventBusToken'
 );
 export const StreamingDomainEventBusToken = Symbol(
-  'StreamingDomainEventBusToken',
+  'StreamingDomainEventBusToken'
+);
+export const PubSubIntegrationEventBusToken = Symbol(
+  'PubSubIntegrationEventBusToken'
 );
 export const UserWriteRepoPortToken = Symbol('UserWriteRepoPort');`;
 
@@ -64,10 +71,11 @@ const messageInstructions = (
     .join('\n')}
   This is how you import repositories and services
   ${CodeSnippets.openTypescript()}
-    import { <RepoClassName> } from './repositories/<repo-name-in-kebab-case>.repository';
+    import { <RepoClassName> } from './repositories/<repo-name>.repository';
 
-    import { <ServiceClassName> } from './services/<service-name-in-kebab-case>.service';
+    import { <ServiceClassName> } from './services/<service-name>.service';
   ${CodeSnippets.closeTypescript()}
+  Where <repo-name> and <service-name> are all in kebab-case. They start with the type, followed  by the name.
   `;
 };
 export const promptModuleMessages = (
@@ -96,27 +104,28 @@ export const promptModuleMessages = (
  ${CodeSnippets.openTypescript()}
 import { Module } from '@nestjs/common';
 import {
-  NatsStreamingCommandBus,
   JetstreamModule,
+  NatsPubSubQueryBus,
+  NatsPubSubIntegrationEventsBus,
+  NatsStreamingCommandBus,
   NatsStreamingDomainEventBus,
   NatsStreamingIntegrationEventBus,
-  NatsPubSubIntegrationEventsBus,
-  NatsPubSubQueryBus,
 } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
 import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
 import { MarketingModule as LibMarketingModule } from '@lib/bounded-contexts/marketing/marketing/marketing.module';
 import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/integration';
-import { StreamingCommandHandlers } from '@lib/bounded-contexts/marketing/marketing/application/command-handlers';
+import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-contexts/marketing/marketing/application/command-handlers'; 
+import { QueryHandlers } from '@lib/bounded-contexts/marketing/marketing/application/query-handlers';
 import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/domain';
 import {
+  UserWriteRepoPortToken,
   EmailServicePortToken,
   NotificationTemplateReadRepoPortToken,
+  PubSubQueryBusToken,
   PubSubIntegrationEventBusToken,
   StreamingCommandBusToken,
   StreamingDomainEventBusToken,
   StreamingIntegrationEventBusToken,
-  UserWriteRepoPortToken,
-  PubSubQueryBusToken,
 } from '@lib/bounded-contexts/marketing/marketing/constants';
 import { MongoUserWriteRepository } from './repositories/mongo-user-write.repository';
 import { MongoNotificationTemplateReadRepository } from './repositories/mongo-notification-template-read.repository';
@@ -136,6 +145,14 @@ const providers = [
     useClass: MockEmailService,
   },
   {
+    provide: PubSubQueryBusToken,
+    useClass: NatsPubSubQueryBus,
+  },
+  {
+    provide: PubSubIntegrationEventBusToken,
+    useClass: NatsPubSubIntegrationEventsBus,
+  },
+  {
     provide: StreamingCommandBusToken,
     useClass: NatsStreamingCommandBus,
   },
@@ -146,14 +163,6 @@ const providers = [
   {
     provide: StreamingIntegrationEventBusToken,
     useClass: NatsStreamingIntegrationEventBus,
-  },
-  {
-    provide: PubSubIntegrationEventBusToken,
-    useClass: NatsPubSubIntegrationEventsBus,
-  },
-  {
-    provide: PubSubQueryBusToken,
-    useClass: NatsPubSubQueryBus,
   }
 ];
 @Module({
@@ -167,6 +176,8 @@ const providers = [
       streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
       streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
       streamingCommandHandlers: [...StreamingCommandHandlers],
+      pubSubCommandHandlers: [...PubSubCommandHandlers],
+      pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],
   exports: [LibMarketingModule],
@@ -189,21 +200,29 @@ ${CodeSnippets.closeTypescript()}
       role: 'assistant',
       content: `
   ${CodeSnippets.openTypescript()}
-  import { Module } from '@nestjs/common';
-  import {
-    JetstreamModule,
-    NatsStreamingDomainEventBus,
-    NatsStreamingIntegrationEventBus,
-  } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
-  import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
-  import { PostgresModule } from '@bitloops/bl-boilerplate-infra-postgres';
-  import { AuthenticationModule as LibAuthenticationModule } from '@lib/bounded-contexts/iam/authentication/authentication.module';
-import { PubSubCommandHandlers } from '@lib/bounded-contexts/iam/authentication/application/command-handlers';
-import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/iam/authentication/application/event-handlers/domain';
+import { Module } from '@nestjs/common';
 import {
+  JetstreamModule,
+  NatsPubSubQueryBus,
+  NatsPubSubIntegrationEventsBus,
+  NatsStreamingCommandBus,
+  NatsStreamingDomainEventBus,
+  NatsStreamingIntegrationEventBus,
+} from '@bitloops/bl-boilerplate-infra-nest-jetstream';
+import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
+import { PostgresModule } from '@bitloops/bl-boilerplate-infra-postgres';
+import { AuthenticationModule as LibAuthenticationModule } from '@lib/bounded-contexts/iam/authentication/authentication.module';
+import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-contexts/iam/authentication/application/command-handlers';
+import { QueryHandlers } from '@lib/bounded-contexts/iam/authentication/application/query-handlers';
+import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/iam/authentication/application/event-handlers/domain';
+import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/iam/authentication/application/event-handlers/integration';
+import {
+  UserWriteRepoPortToken,
+  PubSubQueryBusToken,
+  PubSubIntegrationEventBusToken,
+  StreamingCommandBusToken,
   StreamingDomainEventBusToken,
   StreamingIntegrationEventBusToken,
-  UserWriteRepoPortToken,
 } from '@lib/bounded-contexts/iam/authentication/constants';
 import { PostgresUserWriteRepository } from './repositories/postgres-user-write.repository';
 
@@ -213,12 +232,24 @@ const providers = [
     useClass: PostgresUserWriteRepository,
   },
   {
-    provide: StreamingIntegrationEventBusToken,
-    useClass: NatsStreamingIntegrationEventBus,
+    provide: PubSubQueryBusToken,
+    useClass: NatsPubSubQueryBus,
+  },
+  {
+    provide: PubSubIntegrationEventBusToken,
+    useClass: NatsPubSubIntegrationEventsBus,
+  },
+  {
+    provide: StreamingCommandBusToken,
+    useClass: NatsStreamingCommandBus,
   },
   {
     provide: StreamingDomainEventBusToken,
     useClass: NatsStreamingDomainEventBus,
+  },
+  {
+    provide: StreamingIntegrationEventBusToken,
+    useClass: NatsStreamingIntegrationEventBus,
   },
 ];
 @Module({
@@ -229,8 +260,11 @@ const providers = [
     }),
     JetstreamModule.forFeature({
       moduleOfHandlers: AuthenticationModule,
+      streamingCommandHandlers: [...StreamingCommandHandlers],
       pubSubCommandHandlers: [...PubSubCommandHandlers],
       streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
+      streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
+      pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],
   exports: [LibAuthenticationModule],
