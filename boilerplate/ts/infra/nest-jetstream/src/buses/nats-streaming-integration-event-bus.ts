@@ -156,7 +156,7 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
   }
 
   static getStreamName(boundedContext: string) {
-    return `IntegrationEvents_${boundedContext}`;
+    return `Streams_IntegrationEvents_${boundedContext}`;
   }
 
   static getDurableName(subject: string, handler: Application.IHandleIntegrationEvent) {
