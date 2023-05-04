@@ -1,8 +1,8 @@
-import { GrpcControllerBuilder } from '../commands/prompt/component-builders/api/grpc-controller.builder.js';
+import { GrpcControllerBuilder } from '../commands/generate/component-builders/api/grpc-controller.builder.js';
 // import { GrpcPubSubHandlerBuilder } from '../commands/prompt/component-builders/api/grpc-pub-sub-handler.builder.js';
-import { CodeSnippets } from '../commands/prompt/data-sets/common/code-snippets.js';
-import { FileNameToClassName } from '../commands/prompt/data-sets/common/names.js';
-import { TGeneratedInfra } from '../commands/prompt/invoker.js';
+import { CodeSnippets } from '../commands/generate/data-sets/common/code-snippets.js';
+import { FileNameToClassName } from '../commands/generate/data-sets/common/names.js';
+import { TGeneratedInfra } from '../commands/generate/invoker.js';
 import { yieldModuleInfo } from '../utils/bounded-context-module.generator.js';
 import { ConfigUtils } from '../utils/config.js';
 import { ExposedGrpcComponents } from './promptAiResults.js';

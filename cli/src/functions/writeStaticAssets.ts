@@ -1,10 +1,10 @@
-import { generateApiModule } from '../commands/prompt/static-assets/apiModule.js';
-import { generateAuthenticationController } from '../commands/prompt/static-assets/authenticationController.js';
+import { generateApiModule } from '../commands/generate/static-assets/apiModule.js';
+import { generateAuthenticationController } from '../commands/generate/static-assets/authenticationController.js';
 import { mkdir } from 'fs/promises';
 import {
   generateAuthConfiguration,
   generateMainConfiguration,
-} from '../commands/prompt/static-assets/config.js';
+} from '../commands/generate/static-assets/config.js';
 import { writeTargetFile } from './writeTargetFile.js';
 
 export const writeStaticAssets = async (targetDirPath: string): Promise<void> => {

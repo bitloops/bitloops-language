@@ -25,7 +25,7 @@ import axios from 'axios';
 
 import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
-import prompt from './commands/prompt/prompt.js';
+import generate from './commands/generate/generate.js';
 import { loadJSON } from './utils/import-json.js';
 import path from 'path';
 const { version } = loadJSON(path.join(process.cwd(), 'package.json'));
@@ -85,11 +85,11 @@ const checkVersion = async (): Promise<void> => {
       .action(transpile);
 
     program
-      .command('prompt')
-      .description('Prompt for ai infrastructure code completion')
+      .command('generate')
+      .description('Generate infrastructure code using AI')
       .option('-s, --sourceDirPath <string>')
       .option('-t, --targetDirPath <string>')
-      .action(prompt);
+      .action(generate);
 
     program.command('copyright').description('Print copyright information').action(copyright);
 

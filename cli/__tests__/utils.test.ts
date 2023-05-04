@@ -1,7 +1,7 @@
 import {
   ClassNameToTargetFileName,
   FileNameToClassName,
-} from '../src/commands/prompt/data-sets/common/names.js';
+} from '../src/commands/generate/data-sets/common/names.js';
 
 describe('Utility transforming class names to target file names', () => {
   test('Should output expected repository file name', (): void => {

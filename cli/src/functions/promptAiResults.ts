@@ -1,34 +1,34 @@
-import { promptModuleMessages } from '../commands/prompt/data-sets/prompt-module.context.js';
-import { promptReadRepoMessages } from '../commands/prompt/data-sets/prompt-read-repo.context.js';
-import { promptWriteRepoMessages } from '../commands/prompt/data-sets/prompt-write-repo.context.js';
-import { GENERATED_INFRA_KEYS, TGeneratedInfra } from '../commands/prompt/invoker.js';
+import { promptModuleMessages } from '../commands/generate/data-sets/prompt-module.context.js';
+import { promptReadRepoMessages } from '../commands/generate/data-sets/prompt-read-repo.context.js';
+import { promptWriteRepoMessages } from '../commands/generate/data-sets/prompt-write-repo.context.js';
+import { GENERATED_INFRA_KEYS, TGeneratedInfra } from '../commands/generate/invoker.js';
 import {
   BoundedContextModulesInfo,
   yieldModuleInfo,
 } from '../utils/bounded-context-module.generator.js';
-import { Client } from '../commands/prompt/client.js';
+import { Client } from '../commands/generate/client.js';
 import {
   TranspiledTypescriptFileInfo,
   TranspiledTypescriptFilesAndContents,
 } from './readFilesContents.js';
-import { promptServiceMessages } from '../commands/prompt/data-sets/prompt-service.context.js';
+import { promptServiceMessages } from '../commands/generate/data-sets/prompt-service.context.js';
 // import { promptDtoMessages } from '../commands/prompt/data-sets/api/prompt-dto.context.js';
-import { promptProtoMessages } from '../commands/prompt/data-sets/api/prompt-proto.context.js';
+import { promptProtoMessages } from '../commands/generate/data-sets/api/prompt-proto.context.js';
 import { ConfigUtils } from '../utils/config.js';
-import { promptProtoRealTimeStreamsMessages } from '../commands/prompt/data-sets/api/prompt-proto-real-time.context.js';
-import { CodeSnippets } from '../commands/prompt/data-sets/common/code-snippets.js';
+import { promptProtoRealTimeStreamsMessages } from '../commands/generate/data-sets/api/prompt-proto-real-time.context.js';
+import { CodeSnippets } from '../commands/generate/data-sets/common/code-snippets.js';
 import {
   promptApiGrpcControllerCommand,
   promptApiGrpcControllerOnEventMethod,
   promptApiGrpcControllerQuery,
-} from '../commands/prompt/data-sets/api/prompt-grpc-controller.context.js';
+} from '../commands/generate/data-sets/api/prompt-grpc-controller.context.js';
 import { CasingUtils } from '../utils/casing.js';
 import {
   ClassNameToTargetFileName,
   FileNameToClassName,
   getPubSubHandlerNameFromIntegrationEvent,
-} from '../commands/prompt/data-sets/common/names.js';
-import { promptPubSubHandlers } from '../commands/prompt/data-sets/api/prompt-pub-sub-handlers.context.js';
+} from '../commands/generate/data-sets/common/names.js';
+import { promptPubSubHandlers } from '../commands/generate/data-sets/api/prompt-pub-sub-handlers.context.js';
 type ComponentsInfo = BoundedContextModulesInfo<{
   commandHandlers: TranspiledTypescriptFileInfo[];
   queryHandlers: TranspiledTypescriptFileInfo[];

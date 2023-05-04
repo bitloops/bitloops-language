@@ -47,7 +47,7 @@ const questions: Question[] = [
   },
 ];
 
-const prompt = async (source: ICollection): Promise<void> => {
+const generate = async (source: ICollection): Promise<void> => {
   console.log();
   console.log(copyrightSnippet);
   console.log();
@@ -122,4 +122,4 @@ const prompt = async (source: ICollection): Promise<void> => {
   console.log();
 };
 
-export default prompt;
+export default generate;
