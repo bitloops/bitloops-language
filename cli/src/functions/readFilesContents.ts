@@ -23,6 +23,7 @@ import * as path from 'path';
 import { getRecursivelyFileInDirectory } from './getRecursivelyFileInDirectory.js';
 import { TParserCoreInputData } from '@bitloops/bl-transpiler';
 import { BoundedContextModulesInfo } from '../utils/bounded-context-module.generator.js';
+import { CodeSnippets } from '../commands/generate/data-sets/common/code-snippets.js';
 
 const BL_SUFFIX = 'bl';
 
@@ -81,9 +82,10 @@ const getTypescriptFilesAndContents = async (
         contextFilePaths.map(async (contextFilePath) => {
           const fileContent = await fs.readFile(contextFilePath, 'utf-8');
           const fileName = contextFilePath.split('/').pop();
+          const fileContentWithoutLicense = CodeSnippets.removeLicenseCode(fileContent);
           return {
             fileName,
-            fileContent,
+            fileContent: fileContentWithoutLicense,
             filePath: contextFilePath,
           };
         }),

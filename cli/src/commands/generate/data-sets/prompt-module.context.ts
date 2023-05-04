@@ -1,7 +1,7 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
 import { ContextInfo } from '../../../types.js';
-import { getNameFromToken } from './common/names.js';
+import { FileNameToClassName, getNameFromToken } from './common/names.js';
 import { CONCRETIONS } from './common/concretions.js';
 import { CodeSnippets } from './common/code-snippets.js';
 const MARKETING_CONSTANTS_FILE = `
@@ -21,9 +21,9 @@ export const NotificationTemplateReadRepoPortToken = Symbol(
 );`;
 
 const MARKETING_CONCRETIONS = {
-  [getNameFromToken('EmailServicePortToken')]: CONCRETIONS.MOCK,
-  [getNameFromToken('UserWriteRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
-  [getNameFromToken('NotificationTemplateReadRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
+  'email.service-port.ts': CONCRETIONS.MOCK,
+  'user-write.repo-port.ts': CONCRETIONS.REPOSITORIES.MONGO,
+  'notification-template-read.repo-port.ts': CONCRETIONS.REPOSITORIES.MONGO,
 };
 
 const IAM_CONSTANTS_FILE = `
@@ -41,7 +41,7 @@ export const PubSubIntegrationEventBusToken = Symbol(
 export const UserWriteRepoPortToken = Symbol('UserWriteRepoPort');`;
 
 const IAM_CONCRETIONS = {
-  [getNameFromToken('UserWriteRepoPortToken')]: CONCRETIONS.REPOSITORIES.MONGO,
+  'user-write.repo-port.ts': CONCRETIONS.REPOSITORIES.PG,
 };
 
 const messageInstructions = (
@@ -66,16 +66,20 @@ const messageInstructions = (
 
   All buses-related concretions are imported from @bitloops/bl-boilerplate-infra-nest-jetstream.
 
+  The concretion for each service/repo port is:
   ${Object.entries(providerImplementations)
-    .map(([providerName, implType]) => `${providerName} has type ${implType}.`)
+    .map(([fileName, concretionType]) => `${fileName} has type ${concretionType}.`)
     .join('\n')}
-  This is how you import repositories and services
+
+  All repositories and services are imported this way:
   ${CodeSnippets.openTypescript()}
     import { <RepoClassName> } from './repositories/<repo-name>.repository';
 
     import { <ServiceClassName> } from './services/<service-name>.service';
   ${CodeSnippets.closeTypescript()}
-  Where <repo-name> and <service-name> are all in kebab-case. They start with the type, followed  by the name.
+  Where <repo-name> and <service-name> are all in kebab-case. They start with the type, followed  by the name:
+  For example, for <fileName> = 'user-write.repo-port.ts' and <concretionType> = 'Mongo', 
+  import { MongoUserWriteRepository } from 'repositories/mongo-user-write.repository' 
   `;
 };
 export const promptModuleMessages = (

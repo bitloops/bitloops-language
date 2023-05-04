@@ -16,17 +16,25 @@ export class CodeSnippets {
   }
 
   static sanitizeTypescript(promptResponse: string): string {
+    let code = promptResponse;
     const tsOpen = CodeSnippets.openTypescript();
-    if (!promptResponse.includes(tsOpen)) {
-      return promptResponse;
+    if (promptResponse.includes(tsOpen)) {
+      const tsClose = CodeSnippets.closeTypescript();
+      code = promptResponse.substring(
+        promptResponse.indexOf(tsOpen) + tsOpen.length,
+        promptResponse.lastIndexOf(tsClose),
+      );
     }
-    const tsClose = CodeSnippets.closeTypescript();
 
-    // Return code between tsOpen and tsClose
-    const code = promptResponse.substring(
-      promptResponse.indexOf(tsOpen) + tsOpen.length,
-      promptResponse.lastIndexOf(tsClose),
-    );
+    const backticksCount = (code.match(/```/g) || []).length;
+    if (backticksCount === 2) {
+      const backtickStart = '```typescript';
+      const backtickEnd = '```';
+      return code.substring(
+        code.indexOf(backtickStart) + backtickStart.length,
+        code.lastIndexOf(backtickEnd),
+      );
+    }
 
     return code;
   }
@@ -54,5 +62,10 @@ export class CodeSnippets {
     const sanitizedCode = code.replace(regex, '');
 
     return sanitizedCode;
+  }
+
+  static removeLicenseCode(code: string): string {
+    // Remove multi line comments, starting with /**  */, including new lines
+    return code.replace(/\/\*[\s\S]*?\*\//g, '');
   }
 }

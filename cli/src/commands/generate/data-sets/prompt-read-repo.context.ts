@@ -23,7 +23,10 @@ const messageInstructions = (
 
   The method getAll should read the ctx(user context) from asyncLocalStorage 
   and verify that the jwt token is valid, and the userId is allowed to run the respective method.
-  You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
+  You should use 
+  ${CodeSnippets.openTypescript()}
+  import * as jwtwebtoken from 'jsonwebtoken';
+  ${CodeSnippets.closeTypescript()}
   ` +
     /**
      * This is Overfitting in order for the todo to work,
@@ -31,7 +34,7 @@ const messageInstructions = (
      *
      */
     `
-    If the repo concerns a TodoReadModel, you will not use the static *fromPrimitives* method,
+    If the repo concerns a 'TodoReadModel', you will not use the static *fromPrimitives* method,
     but instead map the persisted data like this.
     ${CodeSnippets.openTypescript()}
       return ok(

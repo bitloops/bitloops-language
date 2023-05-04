@@ -1,5 +1,4 @@
 import fs from 'fs';
-import cliProgress from 'cli-progress';
 import ora, { Ora } from 'ora';
 import { copyrightSnippet } from '../copyright.js';
 import { ConfigUtils } from '../../utils/config.js';
@@ -81,36 +80,33 @@ const generate = async (source: ICollection): Promise<void> => {
   );
 
   // Example usage
-  let throbber: Ora;
+  // let throbber: Ora;
   const client = new Client(apiKey);
   // create a new progress bar with 50 ticks
-  const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  // progressBar.start(3, 0);
 
   try {
     const componentsInfo = extractComponentsFromFiles(transpiledFiles);
     const exposedGrpcComponents = await extractGrpcExposedComponents(componentsInfo);
 
-    throbber = ora(purpleColor('🔨 Waiting for ai generation to complete... ')).start();
+    // throbber = ora(purpleColor('🔨 Waiting for ai generation to complete... ')).start();
+    console.log(purpleColor('⚙️：'), 'Waiting for ai generation to complete...');
 
+    console.log('Generating bounded contexts...');
     await promptAiResults(client, componentsInfo, exposedGrpcComponents);
     let responses = await client.getResponses();
-    // progressBar.increment();
 
-    console.log('--Second round');
+    console.log('Generating protobuf file...');
     promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
-    // progressBar.increment();
 
-    console.log('--Third round');
+    console.log('Generating api...');
     await promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
-    // progressBar.increment();
 
     // console.log(responses);
-    // progressBar.stop();
-    stopSpinner(throbber, greenColor('Generated.'), '🔨');
+    // stopSpinner(throbber, greenColor('Generated.'), '🔨');
     // console.log(JSON.stringify(responses, null, 2));
+    console.log(greenColor('Generated.'), '🔨');
     console.log(`Total cost: $${client.getTotalCost().toFixed(2)}`);
     await writeAIResults(responses, targetDirPath, exposedGrpcComponents);
     await writeStaticAssets(targetDirPath);

@@ -1,5 +1,7 @@
+import { Presets, SingleBar } from 'cli-progress';
 import { TBoundedContextName, TModuleName } from '../../types.js';
 import { Command } from './commands/types.js';
+import { purpleColor } from '../../utils/oraUtils.js';
 
 export const GENERATED_INFRA_KEYS = {
   API_GRPC_CONTROLLER: 'api.grpcControllers',
@@ -54,12 +56,12 @@ export class Invoker {
   }
 
   async executeCommands(): Promise<TGeneratedInfra> {
+    const progressBar = this.initializeProgressBar();
     await Promise.all(
       this.commands.map(async ({ key, command }) => {
         const [result, error] = await command.execute();
-
         if (error) {
-          // console.error(error);
+          progressBar.stop();
           throw error;
         }
         const componentResult: TGeneratedComponent = { fileContent: result };
@@ -68,12 +70,30 @@ export class Invoker {
           componentResult.fileName = fileName;
         }
         this.setNestedProperty(this.results, key, componentResult);
+        progressBar.increment();
       }),
     );
+    progressBar.stop();
     this.cost = this.commands.reduce((total, { command }) => total + command.totalCost, this.cost);
-    // empty commands array
     this.commands = [];
     return this.results;
+  }
+
+  initializeProgressBar(): SingleBar {
+    const segments = this.commands.length;
+    const progressBar = new SingleBar(
+      {
+        format:
+          'Generation Progress |' +
+          purpleColor('{bar}') +
+          '| {percentage}% || {value}/{total} Files',
+      },
+      Presets.shades_classic,
+    );
+    progressBar.start(segments, 0, {
+      speed: 'N/A',
+    });
+    return progressBar;
   }
 
   getTotalTokens(): number {

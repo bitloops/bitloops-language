@@ -1,3 +1,4 @@
+import { CodeSnippets } from '../src/commands/generate/data-sets/common/code-snippets.js';
 import {
   ClassNameToTargetFileName,
   FileNameToClassName,
@@ -58,5 +59,73 @@ describe('Utiliity transforming input file name to class name', () => {
     const res = FileNameToClassName.integrationEvent(integrationEventFileName);
 
     expect(res).toBe('TodoModifiedTitleIntegrationEvent');
+  });
+});
+
+describe('Sanitizing typescript files', () => {
+  test('Should remove license code', () => {
+    const inputFile = `/**
+    *  Bitloops Language
+    *  Copyright (C) 2022 Bitloops S.A.
+    *
+    *  This program is free software: you can redistribute it and/or modify
+    *  it under the terms of the GNU General Public License as published by
+    *  the Free Software Foundation, either version 3 of the License, or
+    *  (at your option) any later version.
+    *
+    *  This program is distributed in the hope that it will be useful,
+    *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+    *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    *  GNU General Public License for more details.
+    *
+    *  You should have received a copy of the GNU General Public License
+    *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    *
+    *  For further information you can contact legal(at)bitloops.com.
+    */
+   export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
+   export const PubSubQueryBusToken = Symbol('PubSubQueryBusToken');
+   export const StreamingIntegrationEventBusToken = Symbol(
+     'StreamingIntegrationEventBusToken'
+   );
+   export const StreamingDomainEventBusToken = Symbol(
+     'StreamingDomainEventBusToken'
+   );
+   export const PubSubIntegrationEventBusToken = Symbol(
+     'PubSubIntegrationEventBusToken'
+   );
+   export const TodoWriteRepoPortToken = Symbol('TodoWriteRepoPortToken');
+   export const TodoReadRepoPortToken = Symbol('TodoReadRepoPortToken');`;
+
+    const result = CodeSnippets.removeLicenseCode(inputFile);
+    const exptectedResult = `
+   export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
+   export const PubSubQueryBusToken = Symbol('PubSubQueryBusToken');
+   export const StreamingIntegrationEventBusToken = Symbol(
+     'StreamingIntegrationEventBusToken'
+   );
+   export const StreamingDomainEventBusToken = Symbol(
+     'StreamingDomainEventBusToken'
+   );
+   export const PubSubIntegrationEventBusToken = Symbol(
+     'PubSubIntegrationEventBusToken'
+   );
+   export const TodoWriteRepoPortToken = Symbol('TodoWriteRepoPortToken');
+   export const TodoReadRepoPortToken = Symbol('TodoReadRepoPortToken');`;
+
+    expect(result).toBe(exptectedResult);
+  });
+
+  test('Should sanitize backticks in typescript code', () => {
+    const start = '```typescript';
+    const end = '```';
+
+    const inputCode = `${start}
+const a = 5;
+    ${end}
+    This is something`;
+    const result = CodeSnippets.sanitizeTypescript(inputCode);
+    const expectedResult = 'const a = 5;';
+    expect(result.trim()).toBe(expectedResult.trim());
   });
 });

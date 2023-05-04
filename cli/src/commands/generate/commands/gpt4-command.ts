@@ -28,15 +28,15 @@ export class OpenAIGPT4RequestCommand implements Command {
         messages: this.params,
         temperature: 0.2,
       });
-      console.log('completion usage: ', completion.data.usage);
+      // console.log('completion usage: ', completion.data.usage);
       // console.log(completion.data.choices[0].message.content);
 
       const finishReason = completion.data.choices[0].finish_reason;
       const usedTokens = completion.data.usage.total_tokens;
-      console.log({
-        finishReason,
-        usedTokens,
-      });
+      // console.log({
+      //   finishReason,
+      //   usedTokens,
+      // });
       this.usedTokens = usedTokens;
       return [completion.data.choices[0].message.content, null];
     } catch (error) {
@@ -49,7 +49,7 @@ export class OpenAIGPT4RequestCommand implements Command {
       }
       return [null, error];
     } finally {
-      if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
+      // if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
     }
   }
 }

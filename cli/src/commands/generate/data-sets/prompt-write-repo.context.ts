@@ -28,7 +28,10 @@ const messageInstructions = (
 The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
 The methods getById, update, save and delete should read the ctx(user context) from asyncLocalStorage,
 and verify that the jwt token is valid, and the userId is allowed to run the respective method.
-You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
+You should use 
+${CodeSnippets.openTypescript()}
+import * as jwtwebtoken from 'jsonwebtoken';
+${CodeSnippets.closeTypescript()}
 `;
 };
 export const promptWriteRepoMessages = (

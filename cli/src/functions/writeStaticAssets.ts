@@ -6,12 +6,18 @@ import {
   generateMainConfiguration,
 } from '../commands/generate/static-assets/config.js';
 import { writeTargetFile } from './writeTargetFile.js';
+import { generateMainFile } from '../commands/generate/static-assets/mainFile.js';
+import { generateAppModule } from '../commands/generate/static-assets/appModule.js';
+import { generateConfigYaml } from '../commands/generate/static-assets/configYaml.js';
 
 export const writeStaticAssets = async (targetDirPath: string): Promise<void> => {
   await Promise.all([
     writeApiModuleDefinition(targetDirPath),
     writeApiRestAuthController(targetDirPath),
     writeConfigFiles(targetDirPath),
+    writeMainFile(targetDirPath),
+    writeAppModule(targetDirPath),
+    writeConfigYaml(targetDirPath),
     createProtoGeneratedFolder(targetDirPath),
   ]);
 };
@@ -59,6 +65,41 @@ async function writeConfigFiles(targetDirPath: string): Promise<void> {
       filename: 'auth.configuration.ts',
     },
     fileContent: authConfigContent,
+  });
+}
+
+async function writeMainFile(targetDirPath: string): Promise<void> {
+  const mainFileContent = generateMainFile();
+  writeTargetFile({
+    projectPath: targetDirPath,
+    filePathObj: {
+      path: '',
+      filename: 'main.ts',
+    },
+    fileContent: mainFileContent,
+  });
+}
+
+async function writeAppModule(targetDirPath): Promise<void> {
+  const mainConfigContent = generateAppModule();
+  writeTargetFile({
+    projectPath: targetDirPath,
+    filePathObj: {
+      path: '',
+      filename: 'app.module.ts',
+    },
+    fileContent: mainConfigContent,
+  });
+}
+async function writeConfigYaml(targetDirPath): Promise<void> {
+  const mainConfigContent = generateConfigYaml();
+  writeTargetFile({
+    projectPath: targetDirPath,
+    filePathObj: {
+      path: '',
+      filename: 'config.yaml',
+    },
+    fileContent: mainConfigContent,
   });
 }
 async function createProtoGeneratedFolder(targetDirPath: string): Promise<any> {
