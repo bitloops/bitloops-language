@@ -29,6 +29,17 @@ export abstract class StatementNode extends IntermediateASTNode {
     return false;
   };
 
+  getExpression(): ExpressionNode | null {
+    const children = this.getChildren();
+    const expression = children.find(
+      (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
+    );
+    if (!expression) {
+      throw new Error('Expression not found');
+    }
+    return expression as ExpressionNode;
+  }
+
   isExpressionNode(): this is ExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TExpression;
   }

@@ -1,6 +1,8 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { structIdentifierKey } from '../../../../../../types.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { StructIdentifierNode } from '../../struct/StructIdentifierNode.js';
 import { EvaluationFieldListNode } from './EvaluationFieldList/EvaluationFieldListNode.js';
 import { EvaluationFieldNode } from './EvaluationFieldList/EvaluationFieldNode.js';
 import { EvaluationNode } from './EvaluationNode.js';
@@ -30,8 +32,12 @@ export class StructEvaluationNode extends EvaluationNode {
     });
   }
 
+  public override getIdentifierNode(): StructIdentifierNode {
+    return this.getChildNodeByType<StructIdentifierNode>(BitloopsTypesMapping.TStructIdentifier);
+  }
+
   public getInferredType(): string {
-    const structIdentifier = this.getIdentifierNode().getValue().identifier;
-    return structIdentifier;
+    const structIdentifier = this.getIdentifierNode().getValue();
+    return structIdentifier[structIdentifierKey];
   }
 }

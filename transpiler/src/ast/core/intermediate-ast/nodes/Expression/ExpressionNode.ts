@@ -22,17 +22,6 @@ export class ExpressionNode extends StatementNode {
   }
 
   get childrenIdentifiers(): string[] {
-    // if (this instanceof IdentifierExpressionNode) {
-    //   return [this.getValue()];
-    // }
-
-    // if (this instanceof MethodCallExpressionNode) {
-    //   return this.getExpression().childrenIdentifiers;
-    // }
-    // if (this instanceof MemberDotExpressionNode) {
-    //   return [...this.expression.childrenIdentifiers, this.identifierExpression.identifierName];
-    // }
-
     return [];
   }
 

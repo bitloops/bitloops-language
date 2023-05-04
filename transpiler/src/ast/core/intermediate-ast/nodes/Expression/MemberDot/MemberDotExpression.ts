@@ -46,13 +46,20 @@ export class MemberDotExpressionNode extends ExpressionNode {
     return identifier as IdentifierExpressionNode;
   }
 
-  // this.repo.getById
   getLeftMostExpression(): ExpressionNode {
     const expression = this.getExpressionValues();
     if (expression.isMemberDotExpression()) {
       return expression.getLeftMostExpression();
     }
     return expression;
+  }
+
+  getRightMostExpression(): IdentifierExpressionNode {
+    return this.getIdentifierExpression();
+  }
+
+  getLeftExpression(): ExpressionNode {
+    return this.getExpressionValues();
   }
 
   getLeftMostMemberDotExpression(): MemberDotExpressionNode {
@@ -92,7 +99,6 @@ export class MemberDotExpressionNode extends ExpressionNode {
       identifierName = leftMostExpression.getIdentifierName();
     }
 
-    // const identifierName = identifierLeftExpression.getIdentifierName();
     const identifierType = symbolTable.lookup(identifierName);
     if (!identifierType) {
       throw new MissingIdentifierError(identifierName, this.getMetadata());

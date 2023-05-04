@@ -7,7 +7,7 @@ const NAME = 'builtInClass';
 export class BuiltInClassEvaluationNode extends EvaluationNode {
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
-    this.nodeType = BitloopsTypesMapping.TDTOEvaluation;
+    this.nodeType = BitloopsTypesMapping.TBuiltInClassEvaluation;
     this.classNodeName = NAME;
   }
 

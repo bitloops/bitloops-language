@@ -82,6 +82,5 @@ export class IdentifierExpressionNode extends ExpressionNode {
     if (!identifierType) {
       throw new MissingIdentifierError(identifierName, this.getMetadata());
     }
-    // this.setType(identifierType.type);
   }
 }

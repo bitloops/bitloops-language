@@ -61,17 +61,15 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert('this.accountRepo', new MemberDotSymbolEntry('AccountWriteRepoPort'))
-              .insert(
-                'this.accountRepo.getById(accountId)',
-                new MethodCallSymbolEntry('AccountEntity'),
-              )
+              .insert('this.accountRepo.getById()', new MethodCallSymbolEntry('AccountEntity'))
               .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
               )
               .insertVariableSymbolEntry('result', 'string', true)
-              .insert('this.accountRepo.update(accountEntity)', new MethodCallSymbolEntry('void')),
+              .insert('accountEntity.withdrawAmount()', new MethodCallSymbolEntry('void'))
+              .insert('this.accountRepo.update()', new MethodCallSymbolEntry('void')),
           ),
       )
       .build(),
@@ -183,13 +181,13 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'this.integrationEventBus',
             new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
           )
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insert('accountRepo', new ClassTypeParameterSymbolEntry('AccountReadRepoPort'))
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
               .insert('query', new ParameterSymbolEntry('GetAccountQuery'))
               .insertVariableSymbolEntry('requestId', 'string', true)
-              .insert('this.accountRepo', new MemberDotSymbolEntry('AccountWriteRepoPort'))
+              .insert('this.accountRepo', new MemberDotSymbolEntry('AccountReadRepoPort'))
               .insert(
                 'this.accountRepo.getById(accountId)',
                 new MethodCallSymbolEntry('AccountEntity'),
