@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-// import { jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
@@ -25,22 +25,14 @@ import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
 import { validCommandHandlerCases } from './mocks/commandHandlerDeclaration/commandHandlerDeclaration.js';
+import { RandomUtils } from '../../../src/utils/RandomUtils.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-// beforeAll(() => {
-//   const mockUtils = jest.fn().mockImplementation(() => {
-//     return {
-//       getRandomIntWithNumberOfDigits: () => 123,
-//     };
-//   });
-//   jest.mock('../../../src/utils/RandomUtils', () => {
-//     return {
-//       RandomUtils: mockUtils,
-//     };
-//   });
-// });
+beforeAll(() => {
+  jest.spyOn(RandomUtils, 'getRandomIntWithNumberOfDigits').mockReturnValue(123);
+});
 
 describe('CommandHandler declaration is valid', () => {
   let resultTree: IntermediateASTTree;
