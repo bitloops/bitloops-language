@@ -13,7 +13,8 @@ const messageInstructions = (
   concretionType: Concretion,
 ): string => {
   const readRepoClassName = FileNameToClassName.repository(fileName, concretionType);
-  return `
+  return (
+    `
     The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
     The class name should be ${readRepoClassName}.
   The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
@@ -23,7 +24,27 @@ const messageInstructions = (
   The method getAll should read the ctx(user context) from asyncLocalStorage 
   and verify that the jwt token is valid, and the userId is allowed to run the respective method.
   You should use \`import * as jwtwebtoken from 'jsonwebtoken';\`
-  `;
+  ` +
+    /**
+     * This is Overfitting in order for the todo to work,
+     * Should change once fromPrimitives for ReadModels is fixed
+     *
+     */
+    `
+    If the repo concerns a TodoReadModel, you will not use the static *fromPrimitives* method,
+    but instead map the persisted data like this.
+    ${CodeSnippets.openTypescript()}
+      return ok(
+        todos.map((todo) => ({
+            id: todo._id.toString(),
+            userId: todo.userId.id,
+            title: todo.title.title,
+            completed: todo.completed,
+        }))
+      );
+    ${CodeSnippets.closeTypescript()}
+    `
+  );
 };
 
 export const promptReadRepoMessages = (
@@ -103,7 +124,27 @@ export class MongoTodoReadRepository implements TodoReadRepoPort {
   async getById(
     id: string,
   ): Promise<Either<TodoReadModel | null, Application.Repo.Errors.Unexpected>> {
-    throw new Error('Method not implemented.');
+    const ctx = asyncLocalStorage.getStore()?.get('context');
+    const { jwt } = ctx;
+    let jwtPayload: null | any = null;
+    try {
+      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
+    } catch (err) {
+      throw new Error('Invalid JWT!');
+    }
+    const userId = jwtPayload.sub;
+    if (!userId) {
+      throw new Error('Invalid userId');
+    }
+    const todo = await this.collection.findOne({
+      _id: id.toString() as any,
+    });
+    return ok({
+      id: todo._id.toString(),
+      userId: todo.userId.id,
+      title: todo.title.title,
+      completed: todo.completed,
+    })
   }
 
   @Application.Repo.Decorators.ReturnUnexpectedError()
