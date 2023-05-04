@@ -22,6 +22,10 @@ export class ThisExpressionNode extends ExpressionNode {
     return this.getValue()[ThisExpressionNode.nodeName];
   }
 
+  public getStringValue(): string {
+    return this.getIdentifierName();
+  }
+
   public override typeCheck(symbolTable: SymbolTable): void {
     const identifierName = this.getIdentifierName();
     const identifierType = symbolTable.lookup(identifierName);

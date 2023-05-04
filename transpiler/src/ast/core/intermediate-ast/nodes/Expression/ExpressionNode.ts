@@ -175,4 +175,13 @@ export class ExpressionNode extends StatementNode {
     }
     throw new Error('No expression found to infer type');
   }
+
+  getStringValue(): string {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        return child.getStringValue();
+      }
+    }
+    throw new Error('No expression found to get string value');
+  }
 }

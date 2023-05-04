@@ -90,6 +90,12 @@ export class MemberDotExpressionNode extends ExpressionNode {
     return false;
   }
 
+  public getStringValue(): string {
+    const expression = this.getExpression();
+    const leftStringValue = expression.getStringValue();
+    return leftStringValue + '.' + this.getIdentifierExpression().getIdentifierName();
+  }
+
   public typeCheck(symbolTable: SymbolTable): void {
     const leftMostExpression = this.getLeftMostExpression();
     let identifierName: string;

@@ -76,6 +76,10 @@ export class IdentifierExpressionNode extends ExpressionNode {
     return true;
   }
 
+  public getStringValue(): string {
+    return this.getIdentifierName();
+  }
+
   public override typeCheck(symbolTable: SymbolTable): void {
     const identifierName = this.getIdentifierName();
     const identifierType = symbolTable.lookup(identifierName);
