@@ -3,7 +3,7 @@ import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
-import { isArray, isObject } from '../../../helpers/typeGuards.js';
+import { isArray, isObject } from '../../../helpers/typeGuards/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
 import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpression.js';
 import { TVariableDeclarationStatement } from '../types.js';

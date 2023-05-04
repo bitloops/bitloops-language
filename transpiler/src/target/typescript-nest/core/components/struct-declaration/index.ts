@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { isUndefined, isArray } from '../../../../../helpers/typeGuards.js';
+import { isUndefined, isArray } from '../../../../../helpers/typeGuards/typeGuards.js';
 import {
   TStructDeclaration,
   TTargetDependenciesTypeScript,

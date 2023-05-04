@@ -69,6 +69,7 @@ import { MemberDotExpressionNode } from '../ast/core/intermediate-ast/nodes/Expr
 import { ExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { MethodCallExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 import { IdentifierExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
+import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -144,6 +145,10 @@ const getMemberDotTypeFromIntermediateASTTree = ({
   intermediateASTTree: IntermediateASTTree;
 }): string => {
   const { type: leftType } = leftExpressionType;
+  console.log(rightExpressionString, intermediateASTTree);
+  if (ClassTypeGuards.isEntity(leftType)) {
+    return '';
+  }
   return '';
 };
 
@@ -659,24 +664,38 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     for (const child of expression.getChildren()) {
       if (child instanceof ExpressionNode) {
         if (child.isMemberDotExpression()) {
-          this.addMemberDotExpression({ memberDotExpression: child, symbolTable });
+          this.addMemberDotExpression({
+            memberDotExpression: child,
+            symbolTable,
+            intermediateASTTree,
+          });
         } else if (child.isMethodCallExpression()) {
-          this.addMethodCallExpression(child, symbolTable);
+          this.addMethodCallExpression({
+            methodCallExpression: child,
+            symbolTable,
+            intermediateASTTree,
+          });
         }
       }
     }
   }
 
-  private addMethodCallExpression(
-    methodCallExpression: MethodCallExpressionNode,
-    parentScope: SymbolTable,
-  ): void {
+  private addMethodCallExpression({
+    methodCallExpression,
+    symbolTable,
+    intermediateASTTree,
+  }: {
+    methodCallExpression: MethodCallExpressionNode;
+    symbolTable: SymbolTable;
+    intermediateASTTree: IntermediateASTTree;
+  }): void {
     const expression = methodCallExpression.getExpressionValues();
     // TODO typeCheck
     if (expression.isMemberDotExpression()) {
       this.addMemberDotExpression({
         memberDotExpression: expression,
-        symbolTable: parentScope,
+        symbolTable,
+        intermediateASTTree,
         isMethodCall: true,
       });
     }
@@ -687,10 +706,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   private addMemberDotExpression({
     memberDotExpression,
     symbolTable,
+    intermediateASTTree,
     isMethodCall = false,
   }: {
     memberDotExpression: MemberDotExpressionNode;
     symbolTable: SymbolTable;
+    intermediateASTTree: IntermediateASTTree;
     isMethodCall?: boolean;
   }): string {
     const leftMostMemberDotExpression = memberDotExpression.getLeftExpression();
@@ -699,6 +720,8 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       const memberDotResult = this.addMemberDotExpression({
         memberDotExpression: leftMostMemberDotExpression,
         symbolTable,
+        intermediateASTTree,
+        isMethodCall,
       });
 
       if (isMethodCall) {
@@ -708,7 +731,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         );
         symbolTable.insert(
           methodCallSymbolEntryKey,
-          new MethodCallSymbolEntry(inferType({ node: memberDotExpression, symbolTable })),
+          new MethodCallSymbolEntry(
+            inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+          ),
         );
         return methodCallSymbolEntryKey;
       } else {
@@ -718,7 +743,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         );
         symbolTable.insert(
           memberDotSymbolEntryKey,
-          new MemberDotSymbolEntry(inferType({ node: memberDotExpression, symbolTable })),
+          new MemberDotSymbolEntry(
+            inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+          ),
         );
         return memberDotSymbolEntryKey;
       }
@@ -731,7 +758,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           );
           symbolTable.insert(
             methodCallSymbolEntryKey,
-            new MethodCallSymbolEntry(inferType({ node: memberDotExpression, symbolTable })),
+            new MethodCallSymbolEntry(
+              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+            ),
           );
           return methodCallSymbolEntryKey;
         } else {
@@ -741,7 +770,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           );
           symbolTable.insert(
             memberDotSymbolEntryKey,
-            new MemberDotSymbolEntry(inferType({ node: memberDotExpression, symbolTable })),
+            new MemberDotSymbolEntry(
+              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+            ),
           );
           return memberDotSymbolEntryKey;
         }
@@ -753,7 +784,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           );
           symbolTable.insert(
             methodCallSymbolEntryKey,
-            new MethodCallSymbolEntry(inferType({ node: memberDotExpression, symbolTable })),
+            new MethodCallSymbolEntry(
+              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+            ),
           );
           return methodCallSymbolEntryKey;
         } else {
@@ -763,7 +796,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           );
           symbolTable.insert(
             memberDotSymbolEntryKey,
-            new MemberDotSymbolEntry(inferType({ node: memberDotExpression, symbolTable })),
+            new MemberDotSymbolEntry(
+              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+            ),
           );
           return memberDotSymbolEntryKey;
         }

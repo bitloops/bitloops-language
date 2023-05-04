@@ -7,7 +7,8 @@ import {
   TMemberDotExpression,
   TDefinitionMethodOkErrorReturnType,
   TDefinitionMethodPrimaryReturnType,
-} from '../types.js';
+} from '../../types.js';
+import { ClassTypeGuards } from './ClassTypeGuards.js';
 
 const isUndefined = (variable) => {
   if (typeof variable === 'undefined') return true;
@@ -66,30 +67,11 @@ const getMemberDotExpressionLeftMostExpression = (value: {
   return leftExpression;
 };
 
-const isVO = (name: string): boolean => {
-  return name.endsWith('VO');
-};
-
-const isEntity = (name: string): boolean => {
-  return name.endsWith('Entity');
-};
-
-const isProps = (name: string): boolean => {
-  return name.endsWith('Props');
-};
-
-const isRepoPort = (name: string): boolean => {
-  return name.endsWith('RepoPort');
-};
-
 export {
   isUndefined,
   isArray,
   hasOkErrorReturnType,
   hasDefinitionMethodOkErrorReturnType,
   isExpression,
-  isVO,
-  isProps,
-  isEntity,
-  isRepoPort,
+  ClassTypeGuards,
 };

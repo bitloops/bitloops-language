@@ -20,7 +20,7 @@
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { PropsNode } from '../../../../../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { isVO } from '../../../../../helpers/typeGuards.js';
+import { ClassTypeGuards } from '../../../../../helpers/typeGuards/typeGuards.js';
 import {
   TTargetDependenciesTypeScript,
   fieldKey,
@@ -108,7 +108,7 @@ const buildGetterString = (
       type: BitloopsTypesMapping.TBitloopsPrimaryType,
     });
     const returnType = res.output;
-    if (isVO(returnType)) {
+    if (ClassTypeGuards.isVO(returnType)) {
       const voNode = model.getValueObjectByIdentifier(returnType);
       const propsNode = model.getPropsNodeOfValueObject(voNode);
       const propsName = propsNode.getValue().Props[PropsIdentifierKey];

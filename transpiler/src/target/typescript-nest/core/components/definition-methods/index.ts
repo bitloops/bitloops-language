@@ -21,7 +21,7 @@
 import { TDefinitionMethodInfo, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { hasDefinitionMethodOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
+import { hasDefinitionMethodOkErrorReturnType } from '../../../../../helpers/typeGuards/typeGuards.js';
 
 export const definitionMethodInfoToTargetLanguage = (
   value: TDefinitionMethodInfo,

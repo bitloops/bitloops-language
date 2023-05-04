@@ -26,6 +26,7 @@ import {
   mappingBitloopsBuiltInClassToLayer,
   TClassTypesValues,
 } from '../../../helpers/mappings.js';
+import { ClassTypeGuards } from '../../../helpers/typeGuards/typeGuards.js';
 import {
   TContextData,
   TDependencyChildTypescript,
@@ -197,87 +198,84 @@ const getClassTypeFromIdentifier = (
 ): {
   classType: TClassTypesValues;
 } => {
-  if (dependencyName.endsWith('DTO')) {
+  if (ClassTypeGuards.isDTO(dependencyName)) {
     return {
       classType: ClassTypes.DTO,
     };
-  } else if (dependencyName.endsWith('Entity')) {
+  } else if (ClassTypeGuards.isEntity(dependencyName)) {
     return {
       classType: ClassTypes.Entity,
     };
-  } else if (dependencyName.endsWith('VO')) {
+  } else if (ClassTypeGuards.isVO(dependencyName)) {
     return {
       classType: ClassTypes.ValueObject,
     };
-  } else if (dependencyName.endsWith('Props')) {
+  } else if (ClassTypeGuards.isProps(dependencyName)) {
     return {
       classType: ClassTypes.Props,
     };
-  } else if (dependencyName.endsWith('Error')) {
-    if (dependencyName.startsWith('DomainErrors'))
-      return {
-        classType: ClassTypes.DomainError,
-      };
-    else if (dependencyName.startsWith('ApplicationErrors')) {
-      return {
-        classType: ClassTypes.ApplicationError,
-      };
-    }
-    throw new Error('Error class must start with DomainErrors or ApplicationErrors');
-  } // TODO check Repo Adapter?
-  else if (dependencyName.endsWith('PackagePort')) {
+  } else if (ClassTypeGuards.isDomainError(dependencyName)) {
+    return {
+      classType: ClassTypes.DomainError,
+    };
+  } else if (ClassTypeGuards.isApplicationError(dependencyName)) {
+    return {
+      classType: ClassTypes.ApplicationError,
+    };
+  } else if (ClassTypeGuards.isPackagePort(dependencyName)) {
     return {
       classType: ClassTypes.PackagePort,
     };
-  } else if (dependencyName.endsWith('RepoPort')) {
+  } else if (ClassTypeGuards.isRepoPort(dependencyName)) {
     return {
       classType: ClassTypes.RepoPort,
     };
-  } else if (dependencyName.endsWith('Rule')) {
+  } else if (ClassTypeGuards.isDomainRule(dependencyName)) {
     return {
       classType: ClassTypes.DomainRule,
     };
-  } else if (dependencyName.endsWith('ReadModel')) {
+  } else if (ClassTypeGuards.isReadModel(dependencyName)) {
     return {
       classType: ClassTypes.ReadModel,
     };
-  } else if (dependencyName.endsWith('Command')) {
+  } else if (ClassTypeGuards.isCommand(dependencyName)) {
     return {
       classType: ClassTypes.Command,
     };
-  } else if (dependencyName.endsWith('Query')) {
+  } else if (ClassTypeGuards.isQuery(dependencyName)) {
     return {
       classType: ClassTypes.Query,
     };
-  } else if (dependencyName.endsWith('CommandHandler')) {
+  } else if (ClassTypeGuards.isCommandHandler(dependencyName)) {
+    // TODO is this right?
     return {
       classType: ClassTypes.Command,
     };
-  } else if (dependencyName.endsWith('QueryHandler')) {
+  } else if (ClassTypeGuards.isQueryHandler(dependencyName)) {
     return {
       classType: ClassTypes.Query,
     };
-  } else if (dependencyName.endsWith('DomainEvent')) {
+  } else if (ClassTypeGuards.isDomainEvent(dependencyName)) {
     return {
       classType: ClassTypes.DomainEvent,
     };
-  } else if (dependencyName.endsWith('IntegrationEvent')) {
+  } else if (ClassTypeGuards.isIntegrationEvent(dependencyName)) {
     return {
       classType: ClassTypes.IntegrationEvent,
     };
-  } else if (dependencyName.endsWith('ServicePort')) {
+  } else if (ClassTypeGuards.isServicePort(dependencyName)) {
     return {
       classType: ClassTypes.ServicePort,
     };
-  } else if (dependencyName.endsWith('DomainService')) {
+  } else if (ClassTypeGuards.isDomainService(dependencyName)) {
     return {
       classType: ClassTypes.DomainService,
     };
-  } else if (dependencyName.endsWith('Token')) {
+  } else if (ClassTypeGuards.isInjectionToken(dependencyName)) {
     return {
       classType: ClassTypes.InjectionToken,
     };
-  } else if (dependencyName.charAt(0)?.toUpperCase() === dependencyName.charAt(0)) {
+  } else if (ClassTypeGuards.isStruct(dependencyName)) {
     return {
       classType: ClassTypes.Struct,
     };
