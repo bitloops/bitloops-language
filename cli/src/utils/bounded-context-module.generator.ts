@@ -3,21 +3,31 @@ export type BoundedContextModulesInfo<Info> = {
     [module: string]: Info;
   };
 };
-/*
-type WhatYouYield="foo"
-type WhatYouReturn="bar"
-type WhatYouAccept="baz"
+/**
+ * Generator that iterates over the modules of each bounded context in a {@link BoundedContextModulesInfo} object.
+ * @typeParam Info The type of the module info object.
 
-function* myfun(): Generator<
-  WhatYouYield,
-  WhatYouReturn,
-  WhatYouAccept
-> {
-const myYield = "foo" //type of myYield is WhatYouYield
-const myAccepted = yield myYield; //type of myAccepted is WhatYouAccept
-return "baz" //type of this value is WhatYouReturn 
-}
-*/
+ * @param input A `BoundedContextModulesInfo` object.
+ * @returns A generator that yields an object with the module info, module name, and bounded context name.
+ *
+ * @example
+ *
+ * const modulesInfo: BoundedContextModulesInfo<MyModuleInfo> = {
+ *   users: {
+ *     auth: { ... },
+ *     profile: { ... },
+ *   },
+ *   products: {
+ *     catalog: { ... },
+ *     orders: { ... },
+ *   },
+ * };
+ *
+ * for (const { moduleInfo, moduleName, boundedContextName } of yieldModuleInfo(modulesInfo)) {
+ *   console.log(`${moduleName} in ${boundedContextName} has info:`, moduleInfo);
+ * }
+ * @see BoundedContextModulesInfo
+ */
 export function* yieldModuleInfo<Info>(
   input: BoundedContextModulesInfo<Info>,
 ): Generator<{ moduleInfo: Info; moduleName: string; boundedContextName: string }, void, unknown> {

@@ -1,24 +1,18 @@
 import fs from 'fs';
-import ora, { Ora } from 'ora';
 import { copyrightSnippet } from '../copyright.js';
 import { ConfigUtils } from '../../utils/config.js';
 import inquirer, { Question } from 'inquirer';
 import { inquirerFuzzy as inquirerPath } from '../../utils/inquirer.js';
-import { Client } from './client.js';
 import { getBoundedContextModules } from '../../functions/index.js';
 import { TBoundedContextName, TModuleName } from '../../types.js';
 import path from 'path';
 import { getTypescriptFilesAndContents } from '../../functions/readFilesContents.js';
 import { writeAIResults } from '../../functions/writeAiResults.js';
-import {
-  extractComponentsFromFiles,
-  extractGrpcExposedComponents,
-  promptAiResults,
-  promptAiResultsSecondRound,
-  promptAiResultsThirdRound,
-} from '../../functions/promptAiResults.js';
-import { greenColor, purpleColor, redColor, stopSpinner } from '../../utils/oraUtils.js';
+import { greenColor, redColor } from '../../utils/oraUtils.js';
 import { writeStaticAssets } from '../../functions/writeStaticAssets.js';
+import { extractComponentsFromFiles, extractGrpcExposedComponents } from './helpers/input-files.js';
+import { CliInfraCodeGenerator } from './cli-infra-code-generator.js';
+import { IInfraCodeGenerator } from './interfaces/infra-code-generator.js';
 /**
  * TODO add a json or yaml config file, where the user can set settings for preferred repo adapters
  * for each port(file-name as a key), and e.g. MongoDB as value
@@ -74,40 +68,33 @@ const generate = async (source: ICollection): Promise<void> => {
   const boundedContextModules: Record<TBoundedContextName, TModuleName[]> =
     getBoundedContextModules(sourceDirPathBoundedContext);
 
-  const transpiledFiles = await getTypescriptFilesAndContents(
-    boundedContextModules,
-    sourceDirPathBoundedContext,
-  );
-
-  // Example usage
   // let throbber: Ora;
-  const client = new Client(apiKey);
-  // create a new progress bar with 50 ticks
 
   try {
+    const transpiledFiles = await getTypescriptFilesAndContents(
+      boundedContextModules,
+      sourceDirPathBoundedContext,
+    );
+    const bitloopsProjectConfig = await ConfigUtils.readBitloopsProjectConfigFile();
     const componentsInfo = extractComponentsFromFiles(transpiledFiles);
-    const exposedGrpcComponents = await extractGrpcExposedComponents(componentsInfo);
+    const exposedGrpcComponents = await extractGrpcExposedComponents(
+      componentsInfo,
+      bitloopsProjectConfig,
+    );
 
     // throbber = ora(purpleColor('🔨 Waiting for ai generation to complete... ')).start();
-    console.log(purpleColor('⚙️：'), 'Waiting for ai generation to complete...');
+    console.log('🔨 Waiting for ai generation to complete... ');
 
-    console.log('Generating bounded contexts...');
-    await promptAiResults(client, componentsInfo, exposedGrpcComponents);
-    let responses = await client.getResponses();
+    const infraCodeGenerator: IInfraCodeGenerator = new CliInfraCodeGenerator(
+      apiKey,
+      bitloopsProjectConfig,
+    );
+    const responses = await infraCodeGenerator.generate({ componentsInfo, exposedGrpcComponents });
 
-    console.log('Generating protobuf file...');
-    promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
-    responses = await client.getResponses();
+    const totalCost = infraCodeGenerator.totalCost.toFixed(2);
 
-    console.log('Generating api...');
-    await promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
-    responses = await client.getResponses();
-
-    // console.log(responses);
-    // stopSpinner(throbber, greenColor('Generated.'), '🔨');
-    // console.log(JSON.stringify(responses, null, 2));
-    console.log(greenColor('Generated.'), '🔨');
-    console.log(`Total cost: $${client.getTotalCost().toFixed(2)}`);
+    console.log(greenColor('Generated.'), ' ✅');
+    console.log(`Total cost: $${totalCost}`);
     await writeAIResults(responses, targetDirPath, exposedGrpcComponents);
     await writeStaticAssets(targetDirPath);
   } catch (error) {

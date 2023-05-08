@@ -46,7 +46,7 @@ export class OpenAIRequestCommand implements Command {
         return [null, new Error('The response was incomplete.')];
       }
       return [completion.data.choices[0].message.content, null];
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error occurred: ');
       if (error.response) {
         console.log(error.response.status);
@@ -56,7 +56,7 @@ export class OpenAIRequestCommand implements Command {
       }
       return [null, error];
     } finally {
-      // if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
+      if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
     }
   }
 }

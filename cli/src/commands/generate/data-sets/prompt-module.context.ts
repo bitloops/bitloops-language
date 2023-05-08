@@ -1,7 +1,6 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { promptContextMessage } from './common/system.message.js';
 import { ContextInfo } from '../../../types.js';
-import { FileNameToClassName, getNameFromToken } from './common/names.js';
 import { CONCRETIONS } from './common/concretions.js';
 import { CodeSnippets } from './common/code-snippets.js';
 const MARKETING_CONSTANTS_FILE = `

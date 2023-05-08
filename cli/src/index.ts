@@ -26,15 +26,10 @@ import axios from 'axios';
 import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
 import generate from './commands/generate/generate.js';
-import { loadJSON } from './utils/import-json.js';
-import path from 'path';
-const { version } = loadJSON(path.join(process.cwd(), 'package.json'));
+import { LIB_VERSION } from './version.js';
 
 const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
-if (!version) {
-  throw new Error('Version not found');
-}
-const CURRENT_VERSION = version;
+const CURRENT_VERSION = LIB_VERSION;
 
 // Check if current version is the latest
 const checkVersion = async (): Promise<void> => {

@@ -2,10 +2,10 @@ import { GrpcControllerBuilder } from '../commands/generate/component-builders/a
 // import { GrpcPubSubHandlerBuilder } from '../commands/prompt/component-builders/api/grpc-pub-sub-handler.builder.js';
 import { CodeSnippets } from '../commands/generate/data-sets/common/code-snippets.js';
 import { FileNameToClassName } from '../commands/generate/data-sets/common/names.js';
+import { ExposedGrpcComponents } from '../commands/generate/interfaces/infra-code-generator.js';
 import { TGeneratedInfra } from '../commands/generate/invoker.js';
 import { yieldModuleInfo } from '../utils/bounded-context-module.generator.js';
 import { ConfigUtils } from '../utils/config.js';
-import { ExposedGrpcComponents } from './promptAiResults.js';
 import { writeTargetFile } from './writeTargetFile.js';
 
 export const writeAIResults = async (
@@ -62,7 +62,8 @@ export const writeAIResults = async (
   }
 
   if (responses.api?.protobuff) {
-    const { grpc } = await ConfigUtils.readBitloopsProjectConfigFile();
+    const { api } = await ConfigUtils.readBitloopsProjectConfigFile();
+    const { grpc } = api;
     writeTargetFile({
       projectPath: targetDirPath,
       filePathObj: {
@@ -85,7 +86,8 @@ export const writeAIResults = async (
     });
   }
   if (responses.api?.grpcControllers) {
-    const { grpc } = await ConfigUtils.readBitloopsProjectConfigFile();
+    const { api } = await ConfigUtils.readBitloopsProjectConfigFile();
+    const { grpc } = api;
     writeTargetFile({
       projectPath: targetDirPath,
       filePathObj: {

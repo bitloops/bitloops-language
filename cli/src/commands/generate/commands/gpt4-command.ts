@@ -31,7 +31,7 @@ export class OpenAIGPT4RequestCommand implements Command {
       // console.log('completion usage: ', completion.data.usage);
       // console.log(completion.data.choices[0].message.content);
 
-      const finishReason = completion.data.choices[0].finish_reason;
+      // const finishReason = completion.data.choices[0].finish_reason;
       const usedTokens = completion.data.usage.total_tokens;
       // console.log({
       //   finishReason,
@@ -39,7 +39,7 @@ export class OpenAIGPT4RequestCommand implements Command {
       // });
       this.usedTokens = usedTokens;
       return [completion.data.choices[0].message.content, null];
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error occurred: ');
       if (error.response) {
         console.log(error.response.status);
@@ -49,7 +49,7 @@ export class OpenAIGPT4RequestCommand implements Command {
       }
       return [null, error];
     } finally {
-      // if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
+      if (this.metadata) console.log('Finished executing command with metadata', this.metadata);
     }
   }
 }

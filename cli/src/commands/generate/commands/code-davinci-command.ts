@@ -48,7 +48,7 @@ export class OpenAICodeDavinciCommand implements Command {
       });
       this.usedTokens = usedTokens;
       return [completion.data.choices[0].text, null];
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error occurred: ');
       if (error.response) {
         console.log(error.response.status);

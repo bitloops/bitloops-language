@@ -1,6 +1,6 @@
 import { OpenAIApi, Configuration, ChatCompletionRequestMessage } from 'openai';
 import { OpenAIRequestCommand } from './commands/command.js';
-import { Invoker } from './invoker.js';
+import { Invoker, TGeneratedInfra } from './invoker.js';
 import { OpenAIGPT4RequestCommand } from './commands/gpt4-command.js';
 // import { OpenAICodeDavinciCommand } from './commands/code-davinci-command.js';
 
@@ -50,7 +50,7 @@ export class Client {
   //   this.invoker.addCommand(key, command, isArray);
   // }
 
-  async getResponses() {
+  async getResponses(): Promise<TGeneratedInfra> {
     const responses = await this.invoker.executeCommands();
     return responses;
   }
