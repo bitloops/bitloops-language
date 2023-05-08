@@ -100,7 +100,8 @@ const getEntityPrimitivesObject = (
   model: IntermediateASTTree,
   entityIdentifier: string,
 ): Record<string, any> => {
-  let entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
+  let entityNode: EntityDeclarationNode | RootEntityDeclarationNode;
+  entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
   if (entityNode === null) {
     entityNode = model.getRootEntityByIdentifier(entityIdentifier) as RootEntityDeclarationNode;
   }

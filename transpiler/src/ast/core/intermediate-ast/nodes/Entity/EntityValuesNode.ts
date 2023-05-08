@@ -27,6 +27,7 @@ export class EntityValuesNode extends IntermediateASTNode {
     const publicMethodsList = this.getChildNodeByType<PublicMethodDeclarationListNode>(
       BitloopsTypesMapping.TPublicMethods,
     );
+    if (!publicMethodsList) return [];
     const publicMethods = publicMethodsList.publicMethods;
     return publicMethods;
   }
@@ -35,6 +36,7 @@ export class EntityValuesNode extends IntermediateASTNode {
     const privateMethodsList = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
       BitloopsTypesMapping.TPrivateMethods,
     );
+    if (!privateMethodsList) return [];
     const privateMethods = privateMethodsList.getPrivateMethodNodes();
     return privateMethods;
   }

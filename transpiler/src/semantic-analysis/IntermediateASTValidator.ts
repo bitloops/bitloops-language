@@ -71,6 +71,7 @@ import { MethodCallExpressionNode } from '../ast/core/intermediate-ast/nodes/Exp
 import { IdentifierExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
+import { EvaluationFieldNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -109,6 +110,8 @@ export const inferType = ({
     const expressionType = inferType({ node: expression, symbolTable, intermediateASTTree });
     return expressionType;
   } else if (IntermediateASTNodeTypeGuards.isMemberDotExpression(node)) {
+    // eslint-disable-next-line no-debugger
+    debugger;
     const leftExpression = node.getLeftExpression();
     const rightMostExpression = node.getRightMostExpression();
     const leftExpressionString = leftExpression.getStringValue();
@@ -178,6 +181,15 @@ const getMemberDotTypeFromIntermediateASTTree = ({
       intermediateASTTree.getMethodDefinitionTypesOfRepoPort(repoPortNode);
     const methodDefinitionType = methodDefinitionTypes[rightExpressionString];
     return inferType({ node: methodDefinitionType });
+  }
+  if (ClassTypeGuards.isEntity(leftType)) {
+    // eslint-disable-next-line no-debugger
+    debugger;
+    const entityNode = intermediateASTTree.getEntityByIdentifier(leftType);
+    const publicMethodTypes = entityNode.getPublicMethodTypes();
+    const publicMethodType = publicMethodTypes[rightExpressionString];
+    // TODO add props as well
+    return inferType({ node: publicMethodType });
   }
   return '';
 };
@@ -737,15 +749,33 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     if (expression.isEvaluation()) {
       const evaluationExpression = expression as EvaluationNode;
       const evaluationFields = evaluationExpression.getEvaluationFields();
-      evaluationFields.forEach((evaluationField) => {
-        const evaluationFieldValue = evaluationField.getExpression();
-        this.addExpression({
-          expression: evaluationFieldValue,
-          symbolTable,
-          intermediateASTTree,
-        });
+      this.addFieldsOfEvaluation({
+        fieldNodes: evaluationFields,
+        symbolTable,
+        intermediateASTTree,
       });
+      const argumentNodes = evaluationExpression.getArguments();
+      this.addFieldsOfEvaluation({ fieldNodes: argumentNodes, symbolTable, intermediateASTTree });
     }
+  }
+
+  private addFieldsOfEvaluation({
+    fieldNodes,
+    symbolTable,
+    intermediateASTTree,
+  }: {
+    fieldNodes: ArgumentNode[] | EvaluationFieldNode[];
+    symbolTable: SymbolTable;
+    intermediateASTTree: IntermediateASTTree;
+  }): void {
+    fieldNodes.forEach((argument) => {
+      const argumentExpression = argument.getExpression();
+      this.addExpression({
+        expression: argumentExpression,
+        symbolTable,
+        intermediateASTTree,
+      });
+    });
   }
 
   private addCommandQueryBus(symbolTable: SymbolTable): void {

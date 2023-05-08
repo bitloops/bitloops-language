@@ -61,15 +61,25 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert('this.accountRepo', new MemberDotSymbolEntry('AccountWriteRepoPort'))
-              .insert('this.accountRepo.getById()', new MethodCallSymbolEntry('AccountEntity'))
-              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
+              .insert(
+                'this.accountRepo.getById()',
+                new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
+              )
+              .insertVariableSymbolEntry(
+                'accountEntity',
+                '(OK(AccountEntity), Errors(UnexpectedError))',
+                true,
+              )
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
               )
               .insertVariableSymbolEntry('result', 'string', true)
               .insert('accountEntity.withdrawAmount()', new MethodCallSymbolEntry('void'))
-              .insert('this.accountRepo.update()', new MethodCallSymbolEntry('void')),
+              .insert(
+                'this.accountRepo.update()',
+                new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
+              ),
           ),
       )
       .build(),

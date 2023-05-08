@@ -6,6 +6,7 @@ import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
+import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export class PublicMethodDeclarationNode extends IntermediateASTNode {
   private static classNodeName = 'publicMethod';
@@ -37,6 +38,16 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
 
   public getReturnOkErrorType(): ReturnOkErrorTypeNode | null {
     return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
+  }
+
+  public getBitloopsPrimaryType(): BitloopsPrimaryTypeNode | null {
+    return this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+  }
+
+  public getReturnType(): ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode {
+    return this.getReturnOkErrorType() ?? this.getBitloopsPrimaryType();
   }
 
   public returnsOkError(): boolean {

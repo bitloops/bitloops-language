@@ -1,3 +1,4 @@
+RepoPort AccountWriteRepoPort<AccountEntity> extends CRUDWriteRepoPort;
 
 CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     execute(command: WithdrawMoneyCommand): (OK(void), Errors(

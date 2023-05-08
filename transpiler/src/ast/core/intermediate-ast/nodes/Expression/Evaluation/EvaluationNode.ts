@@ -6,6 +6,8 @@ import { TInferredTypes } from '../../../../../../semantic-analysis/type-inferen
 import { IdentifierNode } from '../../identifier/IdentifierNode.js';
 import { EvaluationFieldNode } from './EvaluationFieldList/EvaluationFieldNode.js';
 import { EvaluationFieldListNode } from './EvaluationFieldList/EvaluationFieldListNode.js';
+import { ArgumentNode } from '../../ArgumentList/ArgumentNode.js';
+import { ArgumentListNode } from '../../ArgumentList/ArgumentListNode.js';
 
 export class EvaluationNode extends ExpressionNode {
   private static evaluationNodeName = 'evaluation';
@@ -39,8 +41,17 @@ export class EvaluationNode extends ExpressionNode {
     const evaluationFieldList = evaluationChild.getChildNodeByType<EvaluationFieldListNode>(
       BitloopsTypesMapping.TEvaluationFields,
     );
-
+    if (!evaluationFieldList) return [];
     return evaluationFieldList.getFields();
+  }
+
+  getArguments(): ArgumentNode[] {
+    const evaluationChild = this.getFirstChild() as EvaluationNode;
+    const argumentList = evaluationChild.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    if (!argumentList) return [];
+    return argumentList.arguments;
   }
 
   public getInferredType(): TInferredTypes {
