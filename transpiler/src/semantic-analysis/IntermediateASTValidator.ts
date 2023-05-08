@@ -71,6 +71,7 @@ import { MethodCallExpressionNode } from '../ast/core/intermediate-ast/nodes/Exp
 import { IdentifierExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
+import { TypeUtils } from '../utils/TypeUtils.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -104,7 +105,7 @@ export const inferType = ({
     return node.getInferredType();
   } else if (IntermediateASTNodeTypeGuards.isMethodCallExpression(node)) {
     const expression = node.getExpressionValues();
-    const expressionType = inferType({ node: expression, symbolTable });
+    const expressionType = inferType({ node: expression, symbolTable, intermediateASTTree });
     return expressionType;
   } else if (IntermediateASTNodeTypeGuards.isMemberDotExpression(node)) {
     const leftExpression = node.getLeftExpression();
@@ -148,9 +149,38 @@ const getMemberDotTypeFromIntermediateASTTree = ({
   intermediateASTTree: IntermediateASTTree;
 }): string => {
   const { type: leftType } = leftExpressionType;
-  console.log(rightExpressionString, intermediateASTTree);
-  if (ClassTypeGuards.isEntity(leftType)) {
-    return '';
+  if (ClassTypeGuards.isQuery(leftType)) {
+    const queryNode = intermediateASTTree.getQueryByIdentifier(leftType);
+    const fieldNodes = queryNode.getFieldNodes();
+    for (const fieldNode of fieldNodes) {
+      const fieldIdentifier = fieldNode.getIdentifierValue();
+      if (fieldIdentifier === rightExpressionString) {
+        const type = inferType({ node: fieldNode.getTypeNode() });
+        return type;
+      }
+    }
+  }
+  if (ClassTypeGuards.isQueryHandler(leftType)) {
+    const queryHandlerNode = intermediateASTTree.getQueryHandlerByIdentifier(leftType);
+    const parameterNodes = queryHandlerNode.getParameters();
+    for (const parameterNode of parameterNodes) {
+      const parameterIdentifier = parameterNode.getIdentifier();
+      if (parameterIdentifier === rightExpressionString) {
+        const type = inferType({ node: parameterNode.getType() });
+        return type;
+      }
+    }
+  }
+  if (ClassTypeGuards.isRepoPort(leftType)) {
+    const repoPortNode = intermediateASTTree.getRepoPortByIdentifier(leftType);
+    const methodDefinitionTypes =
+      intermediateASTTree.getMethodDefinitionTypesOfRepoPort(repoPortNode);
+    const methodDefinitionType = methodDefinitionTypes[rightExpressionString];
+    if (TypeUtils.isString(methodDefinitionType)) {
+      return methodDefinitionType;
+    } else {
+      return inferType({ node: methodDefinitionType });
+    }
   }
   return '';
 };
@@ -571,13 +601,19 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           if (typeAnnotation) {
             symbolTable.insert(
               identifier,
-              new VariableSymbolEntry(inferType({ node: typeAnnotation, symbolTable }), false),
+              new VariableSymbolEntry(
+                inferType({ node: typeAnnotation, symbolTable, intermediateASTTree }),
+                false,
+              ),
             );
           } else {
             //TODO maybe delete else because we have always type. Just type check
             symbolTable.insert(
               identifier,
-              new VariableSymbolEntry(inferType({ node: getExpressionValue, symbolTable }), false),
+              new VariableSymbolEntry(
+                inferType({ node: getExpressionValue, symbolTable, intermediateASTTree }),
+                false,
+              ),
             );
           }
         }
@@ -601,7 +637,10 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           });
           symbolTable.insert(
             identifier,
-            new VariableSymbolEntry(inferType({ node: expression, symbolTable }), true),
+            new VariableSymbolEntry(
+              inferType({ node: expression, symbolTable, intermediateASTTree }),
+              true,
+            ),
           );
         }
 

@@ -24,6 +24,10 @@ import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
 import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
 import { ClassTypeNode } from './nodes/ClassTypeNode.js';
+import { QueryDeclarationNode } from './nodes/query/QueryDeclarationNode.js';
+import { QueryHandlerNode } from './nodes/query/QueryHandlerNode.js';
+import { BitloopsPrimaryTypeNode } from './nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 
 type Policy = (node: IntermediateASTNode) => boolean;
 
@@ -256,6 +260,22 @@ export class IntermediateASTTree {
       BitloopsTypesMapping.TRepoPort,
     );
     return repoPortNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getQueryByIdentifier = (identifier: string): QueryDeclarationNode => {
+    const queryNodes = this.getRootChildrenNodesByType<QueryDeclarationNode>(
+      BitloopsTypesMapping.TQuery,
+    );
+    return queryNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getQueryHandlerByIdentifier = (identifier: string): QueryHandlerNode => {
+    const queryHandlerNodes = this.getRootChildrenNodesByType<QueryHandlerNode>(
+      BitloopsTypesMapping.TQueryHandler,
+    );
+    return queryHandlerNodes.find(
+      (node) => node.getIdentifier().getIdentifierName() === identifier,
+    );
   };
 
   public getPropsFieldTypeOfDomainCreateByFieldIdentifier(
@@ -783,5 +803,36 @@ export class IntermediateASTTree {
     }
 
     return identifiers;
+  }
+
+  public getMethodDefinitionTypesOfRepoPort(
+    repoPortNode: RepoPortNode,
+  ): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode | string> {
+    let methodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode | string> = {};
+
+    const methodDefinitionNodes = repoPortNode.getMethodDefinitionNodes();
+    for (const methodDefinitionNode of methodDefinitionNodes) {
+      const identifierNode = methodDefinitionNode.getIdentifierNode();
+      const typeNode = methodDefinitionNode.getTypeNode();
+      methodTypes[identifierNode.getIdentifierName()] = typeNode;
+    }
+    if (repoPortNode.isReadRepoPort()) {
+      if (repoPortNode.extendsCRUDReadRepoPort) {
+        const readMethodTypes = repoPortNode.getReadMethodTypes();
+        methodTypes = { ...methodTypes, ...readMethodTypes };
+      }
+    } else if (repoPortNode.isWriteRepoPort()) {
+      if (repoPortNode.extendsCRUDWriteRepoPort) {
+        const writeMethodTypes = repoPortNode.getWriteMethodTypes();
+        methodTypes = { ...methodTypes, ...writeMethodTypes };
+      }
+    }
+    const extendIdentifiers = repoPortNode.getExtendsRepoPortIdentifiersExcludingCRUDOnes();
+    for (const extendIdentifier of extendIdentifiers) {
+      const extendedRepoPortNode = this.getRepoPortByIdentifier(extendIdentifier);
+      return { ...methodTypes, ...this.getMethodDefinitionTypesOfRepoPort(extendedRepoPortNode) };
+    }
+
+    return methodTypes;
   }
 }
