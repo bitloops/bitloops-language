@@ -35,7 +35,7 @@ export abstract class StatementNode extends IntermediateASTNode {
       (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
     );
     if (!expression) {
-      throw new Error('Expression not found');
+      return null;
     }
     return expression as ExpressionNode;
   }

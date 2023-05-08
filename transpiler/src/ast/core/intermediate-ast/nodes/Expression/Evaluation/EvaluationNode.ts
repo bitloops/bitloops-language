@@ -4,6 +4,8 @@ import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ErrorEvaluationNode } from './ErrorEvaluation.js';
 import { TInferredTypes } from '../../../../../../semantic-analysis/type-inference/types.js';
 import { IdentifierNode } from '../../identifier/IdentifierNode.js';
+import { EvaluationFieldNode } from './EvaluationFieldList/EvaluationFieldNode.js';
+import { EvaluationFieldListNode } from './EvaluationFieldList/EvaluationFieldListNode.js';
 
 export class EvaluationNode extends ExpressionNode {
   private static evaluationNodeName = 'evaluation';
@@ -30,6 +32,15 @@ export class EvaluationNode extends ExpressionNode {
 
   getIdentifierNode(): IdentifierNode {
     return this.getChildNodeByType<IdentifierNode>(BitloopsTypesMapping.TIdentifier);
+  }
+
+  getEvaluationFields(): EvaluationFieldNode[] {
+    const evaluationChild = this.getFirstChild() as EvaluationNode;
+    const evaluationFieldList = evaluationChild.getChildNodeByType<EvaluationFieldListNode>(
+      BitloopsTypesMapping.TEvaluationFields,
+    );
+
+    return evaluationFieldList.getFields();
   }
 
   public getInferredType(): TInferredTypes {

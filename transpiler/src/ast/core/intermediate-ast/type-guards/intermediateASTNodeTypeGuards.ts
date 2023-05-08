@@ -6,6 +6,7 @@ import { LiteralNode } from '../nodes/Expression/Literal/LiteralNode.js';
 import { MemberDotExpressionNode } from '../nodes/Expression/MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from '../nodes/Expression/MethodCallExpression.js';
 import { ThisExpressionNode } from '../nodes/Expression/ThisExpressionNode.js';
+import { EqualityExpressionNode } from '../nodes/Expression/equalityExpressionNode.js';
 import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 
 export class IntermediateASTNodeTypeGuards {
@@ -35,5 +36,9 @@ export class IntermediateASTNodeTypeGuards {
 
   static isThisExpression(node: IntermediateASTNode): node is ThisExpressionNode {
     return node.getNodeType() === BitloopsTypesMapping.TThisExpression;
+  }
+
+  static isEqualityExpression(node: IntermediateASTNode): node is EqualityExpressionNode {
+    return node.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
   }
 }

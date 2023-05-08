@@ -6,7 +6,7 @@ DomainService MarketingNotificationDomainService (notificationTemplateRepo: Noti
         if (user.isFirstTodo()) {
           const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
               'firstTodo'
-            ).ifError(); //OR .ifError((err) => { return err });
+            ); //OR .ifError((err) => { return err });
           
           notificationTemplate = notificationTemplateResponse;
         } else {

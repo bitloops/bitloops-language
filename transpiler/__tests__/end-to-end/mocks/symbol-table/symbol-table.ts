@@ -54,7 +54,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'this.integrationEventBus',
             new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
           )
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
@@ -90,30 +90,31 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insert(
             'this.integrationEventBus',
             new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
+              .insert('this.accountRepo.getById()', new MethodCallSymbolEntry('AccountEntity'))
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
+              )
+              .insertChildScope(
+                'if1',
+                new SymbolTableBuilder().insertVariableSymbolEntry('message', 'string', true),
+              )
+              .insertVariableSymbolEntry('result', 'string', true)
+              .insert(
+                'accountEntity.withdrawAmount()',
+                new MethodCallSymbolEntry('(OK(void), Errors(DomainErrors.WithdrawMoneyError))'),
+              )
+              .insert('this.accountRepo.update()', new MethodCallSymbolEntry('void')),
           ),
       )
-      .insert('accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
-      .insertChildScope(
-        'execute',
-        new SymbolTableBuilder()
-          .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-          .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
-          .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
-          .insertChildScope(
-            'if0',
-            new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
-          )
-          .insertChildScope(
-            'if1',
-            new SymbolTableBuilder().insertVariableSymbolEntry('message', 'string', true),
-          )
-          .insertVariableSymbolEntry('result', 'string', true)
-          .insert(
-            'accountEntity.withdrawAmount(command.amount)',
-            new MethodCallSymbolEntry('(OK(void), Errors(DomainErrors.WithdrawMoneyError))'),
-          ),
-      )
-      .insert('this.accountRepo.update(accountEntity)', new MethodCallSymbolEntry('void'))
       .build(),
   },
   {
@@ -133,17 +134,13 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'this.integrationEventBus',
             new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
           )
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
-              .insert('this.accountRepo', new MemberDotSymbolEntry('AccountWriteRepoPort'))
-              .insert(
-                'this.accountRepo.getById(accountId)',
-                new MethodCallSymbolEntry('AccountEntity'),
-              )
+              .insert('this.accountRepo.getById()', new MethodCallSymbolEntry('AccountEntity'))
               .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
               .insertChildScope(
                 'if0',
@@ -157,7 +154,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                   .insertChildScope('default', new SymbolTableBuilder()),
               )
               .insert(
-                'accountEntity.withdrawAmount(command.amount)',
+                'accountEntity.withdrawAmount()',
                 new MethodCallSymbolEntry('(OK(void), Errors(DomainErrors.WithdrawMoneyError))'),
               ),
           ),
@@ -181,17 +178,14 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'this.integrationEventBus',
             new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
           )
-          .insert('accountRepo', new ClassTypeParameterSymbolEntry('AccountReadRepoPort'))
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountReadRepoPort'))
           .insertChildScope(
             'execute',
             new SymbolTableBuilder()
               .insert('query', new ParameterSymbolEntry('GetAccountQuery'))
+              .insert('query.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('requestId', 'string', true)
-              .insert('this.accountRepo', new MemberDotSymbolEntry('AccountReadRepoPort'))
-              .insert(
-                'this.accountRepo.getById(accountId)',
-                new MethodCallSymbolEntry('AccountEntity'),
-              )
+              .insert('this.accountRepo.getById()', new MethodCallSymbolEntry('AccountEntity'))
               .insertVariableSymbolEntry('account', 'AccountReadModel', true)
               .insertChildScope('if0', new SymbolTableBuilder())
               .insertChildScope('else0', new SymbolTableBuilder()),
@@ -228,7 +222,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                   .insert('todo.title.title', new MemberDotSymbolEntry('string'))
                   .insert('todo.completed', new MemberDotSymbolEntry('bool'))
                   .insertVariableSymbolEntry('event', 'TodoAddedDomainEvent', true)
-                  .insert('todo.addDomainEvent(event)', new MethodCallSymbolEntry('void')),
+                  .insert('todo.addDomainEvent()', new MethodCallSymbolEntry('void')),
               ),
           )
           .insertChildScope(
@@ -240,7 +234,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('this.title', new MemberDotSymbolEntry('TitleVO'))
               .insert('this.title.title', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('event', 'TodoCompletedDomainEvent', true)
-              .insert('todo.addDomainEvent(event)', new MethodCallSymbolEntry('void')),
+              .insert('todo.addDomainEvent()', new MethodCallSymbolEntry('void')),
           )
           .insertChildScope(
             'isCompleted',
@@ -289,9 +283,9 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'this',
             new ClassTypeThisSymbolEntry('SendEmailAfterMoneyDepositedDomainEventHandler'),
           )
-          .insert('commandBus', new ClassTypeParameterSymbolEntry('CommandBusPort'))
-          .insert('queryBus', new ClassTypeParameterSymbolEntry('QueryBusPort'))
-          .insert('customerService', new ClassTypeParameterSymbolEntry('CustomerServicePort'))
+          .insert('this.commandBus', new ClassTypeParameterSymbolEntry('CommandBusPort'))
+          .insert('this.queryBus', new ClassTypeParameterSymbolEntry('QueryBusPort'))
+          .insert('this.customerService', new ClassTypeParameterSymbolEntry('CustomerServicePort'))
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
@@ -299,7 +293,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('event.customerId', new ParameterSymbolEntry('string'))
               .insert('event.amount', new ParameterSymbolEntry('float'))
               .insertVariableSymbolEntry('command', 'SendEmailCommand', true)
-              .insert('this.commandBus.send(command)', new MethodCallSymbolEntry('void')),
+              .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
           ),
       )
       .build(),
@@ -317,8 +311,8 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         'MoneyDepositedIntegrationEventHandler',
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('MoneyDepositedIntegrationEventHandler'))
-          .insert('commandBus', new ClassTypeParameterSymbolEntry('CommandBusPort'))
-          .insert('queryBus', new ClassTypeParameterSymbolEntry('QueryBusPort'))
+          .insert('this.commandBus', new ClassTypeParameterSymbolEntry('CommandBusPort'))
+          .insert('this.queryBus', new ClassTypeParameterSymbolEntry('QueryBusPort'))
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
@@ -326,7 +320,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('event.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'string', true)
               .insertVariableSymbolEntry('command', 'IncrementDepositsCommand', true)
-              .insert('this.commandBus.send(command)', new ClassTypeParameterSymbolEntry('void')),
+              .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
           ),
       )
       .build(),
@@ -345,7 +339,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('MarketingNotificationDomainService'))
           .insert(
-            'notificationTemplateRepo',
+            'this.notificationTemplateRepo',
             new ClassTypeParameterSymbolEntry('NotificationTemplateReadRepoPort'),
           )
           .insertChildScope(
@@ -358,27 +352,23 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 'NotificationTemplateReadModel',
                 false,
               )
+              .insert('user.isFirstTodo()', new MethodCallSymbolEntry(bitloopsPrimitivesObj.bool))
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder()
                   .insert(
-                    'user.isFirstTodo()',
-                    new MethodCallSymbolEntry(bitloopsPrimitivesObj.bool),
-                  )
-                  .insert(
-                    "this.notificationTemplateRepo.getByType('firstTodo')",
+                    'this.notificationTemplateRepo.getByType()',
                     new MethodCallSymbolEntry('NotificationTemplateReadModel'),
                   )
-                  .insert(
-                    "this.notificationTemplateRepo.getByType('firstTodo').ifError()",
-                    new MethodCallSymbolEntry('NotificationTemplateReadModel'),
-                  )
+                  // .insert(
+                  //   'this.notificationTemplateRepo.getByType().ifError()',
+                  //   new MethodCallSymbolEntry('NotificationTemplateReadModel'),
+                  // )
                   .insertVariableSymbolEntry(
                     'notificationTemplateResponse',
                     'NotificationTemplateReadModel',
                     true,
-                  )
-                  .insertChildScope('if0', new SymbolTableBuilder()),
+                  ),
               )
               .insertChildScope('else0', new SymbolTableBuilder()),
           ),
@@ -397,7 +387,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'ValidEmailRule',
         new SymbolTableBuilder()
-          .insert('email', new ClassTypeParameterSymbolEntry(bitloopsPrimitivesObj.string))
+          .insert('email', new ParameterSymbolEntry(bitloopsPrimitivesObj.string))
           .insertVariableSymbolEntry('re', bitloopsPrimitivesObj.regex, true)
           .insert('re.test(email)', new MethodCallSymbolEntry(bitloopsPrimitivesObj.bool)),
       )

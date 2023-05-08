@@ -19,7 +19,7 @@
  */
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
-import { AssignmentExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/assignmentExprBuilder.js';
+import { AssignmentExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/assignmentExpressionBuilder.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';

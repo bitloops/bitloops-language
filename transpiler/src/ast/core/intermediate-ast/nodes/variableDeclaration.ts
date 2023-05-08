@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { AlreadyDefinedIdentifierError } from '../../types.js';
+import { BitloopsPrimaryTypeNode } from './BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ExpressionNode } from './Expression/ExpressionNode.js';
 import { IdentifierNode } from './identifier/IdentifierNode.js';
 import { TNodeMetadata } from './IntermediateASTNode.js';
@@ -32,6 +33,14 @@ export class VariableDeclarationNode extends StatementNode {
       throw new Error('Identifier not found');
     }
     return identifier as IdentifierNode;
+  }
+
+  getTypeAnnotation(): BitloopsPrimaryTypeNode {
+    const typeAnnotation = this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+
+    return typeAnnotation;
   }
 
   public typeCheck(symbolTable: SymbolTable): void {

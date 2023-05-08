@@ -24,7 +24,7 @@ import { EqualityExpressionBuilder } from '../builders/expressions/equalityBuild
 import { BooleanLiteralBuilder } from '../builders/expressions/literal/BooleanLiteralBuilder.js';
 import { AdditiveExpressionBuilder } from '../builders/expressions/additiveExpresssion.js';
 import { StringLiteralBuilder } from '../builders/expressions/literal/StringLiteralBuilder.js';
-import { AssignmentExpressionNodeBuilder } from '../builders/expressions/assignmentExprBuilder.js';
+import { AssignmentExpressionNodeBuilder } from '../builders/expressions/assignmentExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../builders/expressions/thisExpressionBuilder.js';
 import { ClassNodeBuilder } from '../builders/ClassBuilder.js';
 import { IsInstanceOfExpressionNodeBuilder } from '../builders/expressions/IsIntanceOfExpressionBuilder.js';

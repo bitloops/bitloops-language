@@ -34,7 +34,7 @@ describe('Symbol table cases', () => {
   const module = 'demo';
 
   SYMBOL_TABLE_TEST_CASES.forEach((testCase, index) => {
-    if (index !== 3) return; // TODO: remove this line to run all tests (it takes a long time
+    if (index !== 4) return; // TODO: remove this line to run all tests (it takes a long time
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -78,6 +78,11 @@ describe('Symbol table cases', () => {
       expect(result[boundedContext].getJsonValue()).toEqual(testCase.expectedSymbolTable);
     });
   });
+});
+
+describe('Validation checks table cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
 
   describe.skip('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {

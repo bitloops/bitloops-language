@@ -3,11 +3,13 @@ import { SymbolTable } from '../../../../../semantic-analysis/type-inference/Sym
 import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
+import { AssignmentExpressionNode } from './AssignmentExpression.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
+import { EqualityExpressionNode } from './equalityExpressionNode.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
 //   isMethodCallExpression(): this is MethodCallExpressionNode {
@@ -31,6 +33,14 @@ export class ExpressionNode extends StatementNode {
 
   isMethodCallExpression(): this is MethodCallExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TMethodCallExpression;
+  }
+
+  isAssingmentExpression(): this is AssignmentExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TAssignmentExpression;
+  }
+
+  isEqualityExpression(): this is EqualityExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
   }
 
   isThisMethodCallExpressionWithTwoMemberDots(): boolean {

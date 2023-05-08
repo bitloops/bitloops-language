@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { bitloopsPrimitivesObj } from '../../../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 export class EqualityExpressionNode extends ExpressionNode {
@@ -16,5 +17,17 @@ export class EqualityExpressionNode extends ExpressionNode {
       return expressions as ExpressionNode[];
     }
     return expressions[num] as ExpressionNode;
+  }
+
+  getLeftExpression(): ExpressionNode {
+    return (this.getExpressions(0) as ExpressionNode).getChildren()[0] as ExpressionNode;
+  }
+
+  getRightExpression(): ExpressionNode {
+    return (this.getExpressions(1) as ExpressionNode).getChildren()[0] as ExpressionNode;
+  }
+
+  getInferredType(): string {
+    return bitloopsPrimitivesObj.bool;
   }
 }
