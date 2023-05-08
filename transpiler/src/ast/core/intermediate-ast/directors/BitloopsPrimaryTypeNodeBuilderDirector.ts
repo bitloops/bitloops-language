@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TBitloopsIdentifier, TBitloopsPrimitives } from '../../../../types.js';
+import { ArrayPrimaryTypeBuilder } from '../builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
 import { BitloopsIdentifierTypeBuilder } from '../builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BitloopsPrimaryTypeBuilder } from '../builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
 import { PrimitiveTypeBuilder } from '../builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
@@ -41,9 +42,19 @@ export class BitloopsPrimaryTypeNodeBuilderDirector {
   }
 
   buildPrimitivePrimaryType(primitive: TBitloopsPrimitives): BitloopsPrimaryTypeNode {
-    const bitloopsIdentifierTypeNode = new PrimitiveTypeBuilder(this.metadata)
+    const bitloopsPrimitiveTypeNode = new PrimitiveTypeBuilder(this.metadata)
       .withType(primitive)
       .build();
-    return this.builder.withPrimaryType(bitloopsIdentifierTypeNode).build();
+    return this.builder.withPrimaryType(bitloopsPrimitiveTypeNode).build();
+  }
+
+  buildArrayIdentifierPrimaryType(identifier: TBitloopsIdentifier): BitloopsPrimaryTypeNode {
+    const identifierPrimaryTypeNode = this.buildIdentifierPrimaryType(identifier);
+    const arrayBitloopsPrimaryTypeNode = new ArrayPrimaryTypeBuilder(this.metadata)
+      .withPrimaryType(identifierPrimaryTypeNode)
+      .build();
+    return new BitloopsPrimaryTypeBuilder(this.metadata)
+      .withPrimaryType(arrayBitloopsPrimaryTypeNode)
+      .build();
   }
 }

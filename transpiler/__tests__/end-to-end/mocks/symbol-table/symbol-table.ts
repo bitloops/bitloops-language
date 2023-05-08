@@ -185,12 +185,21 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('query', new ParameterSymbolEntry('GetAccountQuery'))
               .insert('query.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('requestId', 'string', true)
-              .insert('this.accountRepo.getById()', new MethodCallSymbolEntry('AccountEntity'))
-              .insertVariableSymbolEntry('account', 'AccountReadModel', true)
+              .insert(
+                'this.accountRepo.getById()',
+                new MethodCallSymbolEntry('(OK(AccountReadModel), Errors(UnexpectedError))'),
+              )
+              .insertVariableSymbolEntry(
+                'account',
+                '(OK(AccountReadModel), Errors(UnexpectedError))',
+                true,
+              )
               .insertChildScope('if0', new SymbolTableBuilder())
               .insertChildScope('else0', new SymbolTableBuilder()),
           ),
       )
+      .insertChildScope('AccountReadRepoPort', new SymbolTableBuilder())
+      .insertChildScope('GetAccountQuery', new SymbolTableBuilder())
       .build(),
   },
   {

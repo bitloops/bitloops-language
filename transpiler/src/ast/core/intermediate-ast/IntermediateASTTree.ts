@@ -807,8 +807,8 @@ export class IntermediateASTTree {
 
   public getMethodDefinitionTypesOfRepoPort(
     repoPortNode: RepoPortNode,
-  ): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode | string> {
-    let methodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode | string> = {};
+  ): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
+    let methodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
 
     const methodDefinitionNodes = repoPortNode.getMethodDefinitionNodes();
     for (const methodDefinitionNode of methodDefinitionNodes) {

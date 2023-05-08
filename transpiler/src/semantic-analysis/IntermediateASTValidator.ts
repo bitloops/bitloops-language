@@ -71,7 +71,6 @@ import { MethodCallExpressionNode } from '../ast/core/intermediate-ast/nodes/Exp
 import { IdentifierExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
-import { TypeUtils } from '../utils/TypeUtils.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -100,6 +99,8 @@ export const inferType = ({
   if (!node) return null;
 
   if (IntermediateASTNodeTypeGuards.isBitloopsPrimaryType(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isReturnOkErrorType(node)) {
     return node.getInferredType();
   } else if (IntermediateASTNodeTypeGuards.isExpression(node)) {
     return node.getInferredType();
@@ -176,11 +177,7 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     const methodDefinitionTypes =
       intermediateASTTree.getMethodDefinitionTypesOfRepoPort(repoPortNode);
     const methodDefinitionType = methodDefinitionTypes[rightExpressionString];
-    if (TypeUtils.isString(methodDefinitionType)) {
-      return methodDefinitionType;
-    } else {
-      return inferType({ node: methodDefinitionType });
-    }
+    return inferType({ node: methodDefinitionType });
   }
   return '';
 };

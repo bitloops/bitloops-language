@@ -2,14 +2,6 @@ Query GetAccountQuery {
      string accountId;
 }
 
-// RepoPort TestfRepoPort<AccountReadModel> extends CRUDReadRepoPort {
-//      getByTypee(): string;
-// }
-
-// RepoPort TestRepoPort<AccountReadModel> extends TestfRepoPort {
-//      getByType(): bool;
-// }
-
 RepoPort AccountReadRepoPort<AccountReadModel> extends CRUDReadRepoPort;
 
 QueryHandler GetAccountQueryHandler (accountRepo: AccountReadRepoPort) {

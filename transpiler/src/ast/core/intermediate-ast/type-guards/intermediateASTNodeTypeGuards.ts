@@ -8,10 +8,15 @@ import { MethodCallExpressionNode } from '../nodes/Expression/MethodCallExpressi
 import { ThisExpressionNode } from '../nodes/Expression/ThisExpressionNode.js';
 import { EqualityExpressionNode } from '../nodes/Expression/equalityExpressionNode.js';
 import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
+import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 
 export class IntermediateASTNodeTypeGuards {
   static isBitloopsPrimaryType(node: IntermediateASTNode): node is BitloopsPrimaryTypeNode {
     return node.getNodeType() === BitloopsTypesMapping.TBitloopsPrimaryType;
+  }
+
+  static isReturnOkErrorType(node: IntermediateASTNode): node is ReturnOkErrorTypeNode {
+    return node.getNodeType() === BitloopsTypesMapping.TOkErrorReturnType;
   }
 
   static isExpression(node: IntermediateASTNode): node is ExpressionNode {

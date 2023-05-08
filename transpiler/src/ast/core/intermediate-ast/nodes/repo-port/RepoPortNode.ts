@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { ReturnOkErrorTypeNodeDirector } from '../../builders/returnOkErrorType/ReturnOkTypeNodeBuilderDirector.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
 import { ExtendsRepoPortsNode } from '../extendsRepoPortNode.js';
@@ -51,21 +52,30 @@ export class RepoPortNode extends ClassTypeNode {
     return entityIdentifierNode ?? null;
   }
 
-  public getWriteMethodTypes(): Record<string, string> {
+  public getWriteMethodTypes(): Record<string, ReturnOkErrorTypeNode> {
     const aggregateIdentifier = this.getEntityIdentifier().getIdentifierName();
     return {
-      save: '(OK(void), Errors(UnexpectedError))',
-      update: '(OK(void), Errors(UnexpectedError))',
-      delete: '(OK(void), Errors(UnexpectedError))',
-      getById: `(OK(${aggregateIdentifier}), Errors(UnexpectedError))`,
+      save: new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithVoidOkAndUnexpectedError(),
+      update: new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithVoidOkAndUnexpectedError(),
+      delete: new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithVoidOkAndUnexpectedError(),
+      getById:
+        new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithIdentifierOkAndUnexpectedError(
+          aggregateIdentifier,
+        ),
     };
   }
 
-  public getReadMethodTypes(): Record<string, string> {
+  public getReadMethodTypes(): Record<string, ReturnOkErrorTypeNode> {
     const readModelIdentifier = this.getReadModelIdentifier().getIdentifierName();
     return {
-      getAll: `(OK(${readModelIdentifier}[]), Errors(UnexpectedError))`,
-      getById: `(OK(${readModelIdentifier}), Errors(UnexpectedError))`,
+      getAll:
+        new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithArrayIdentifierOkAndUnexpectedError(
+          readModelIdentifier,
+        ),
+      getById:
+        new ReturnOkErrorTypeNodeDirector().buildReturnOkErrorWithIdentifierOkAndUnexpectedError(
+          readModelIdentifier,
+        ),
     };
   }
 
