@@ -3,12 +3,14 @@ import { SymbolTable } from '../../../../../semantic-analysis/type-inference/Sym
 import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
+import { BuiltInFunctionNode } from '../statements/builtinFunction/BuiltinFunctionNode.js';
 import { AssignmentExpressionNode } from './AssignmentExpression.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
+import { ToStringNode } from './ToString.js';
 import { EqualityExpressionNode } from './equalityExpressionNode.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
@@ -41,6 +43,14 @@ export class ExpressionNode extends StatementNode {
 
   isEqualityExpression(): this is EqualityExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
+  }
+
+  isToStringExpression(): this is ToStringNode {
+    return this.getNodeType() === BitloopsTypesMapping.TToStringExpression;
+  }
+
+  isBuiltInFunctionExpression(): this is BuiltInFunctionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TBuiltInFunction;
   }
 
   isThisMethodCallExpressionWithTwoMemberDots(): boolean {

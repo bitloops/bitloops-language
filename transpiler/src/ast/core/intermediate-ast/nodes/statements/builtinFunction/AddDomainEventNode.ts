@@ -1,5 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { bitloopsPrimitivesObj } from '../../../../../../types.js';
+import { ExpressionNode } from '../../Expression/ExpressionNode.js';
+import { ThisExpressionNode } from '../../Expression/ThisExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { ThisIdentifierNode } from '../../ThisIdentifier/ThisIdentifierNode.js';
+import { IdentifierNode } from '../../identifier/IdentifierNode.js';
 import { BuiltInFunctionNode } from './BuiltinFunctionNode.js';
 
 const classNodeName = 'addDomainEvent';
@@ -8,5 +13,30 @@ export class AddDomainEventNode extends BuiltInFunctionNode {
     super(metadata);
     this.setClassNodeName(classNodeName);
     this.setNodeType(BitloopsTypesMapping.TAddDomainEvent);
+  }
+
+  getRightExpression(): ExpressionNode {
+    const expressionNode = this.getChildren().find(
+      (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
+    ) as ExpressionNode;
+    return expressionNode;
+  }
+
+  getLeftExpression(): IdentifierNode | ThisExpressionNode {
+    const identifierNode = this.getChildren().find(
+      (child) => child.getNodeType() === BitloopsTypesMapping.TIdentifier,
+    ) as IdentifierNode;
+
+    if (identifierNode) {
+      return identifierNode;
+    } else {
+      return this.getChildren().find(
+        (child) => child.getNodeType() === BitloopsTypesMapping.TThisIdentifier,
+      ) as ThisIdentifierNode;
+    }
+  }
+
+  getInferredType(): string {
+    return bitloopsPrimitivesObj.void;
   }
 }

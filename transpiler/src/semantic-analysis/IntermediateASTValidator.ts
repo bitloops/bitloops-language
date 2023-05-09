@@ -131,10 +131,13 @@ export const inferType = ({
     return node.getInferredType();
   } else if (IntermediateASTNodeTypeGuards.isLiteral(node)) {
     return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isToStringMethod(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isAddDomainEvent(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isApplyRules(node)) {
+    return node.getInferredType();
   }
-  // else if (node.isIntegrationEventidentifier()) {
-  //   return node.getInferredType();
-  // }
   // else {
   //   throw new Error('Unsupported node type: ');
   // }
@@ -151,7 +154,9 @@ const getMemberDotTypeFromIntermediateASTTree = ({
   rightExpressionString: string;
   intermediateASTTree: IntermediateASTTree;
 }): string => {
-  const { type: leftType } = leftExpressionType;
+  let { type: leftType } = leftExpressionType;
+  //TODO remove this line!!!!!
+  if (!leftType) leftType = '';
   if (ClassTypeGuards.isQuery(leftType)) {
     const queryNode = intermediateASTTree.getQueryByIdentifier(leftType);
     const fieldNodes = queryNode.getFieldNodes();
@@ -764,6 +769,86 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             intermediateASTTree,
           });
         }
+
+        if (StatementNodeTypeGuards.isBuiltInFunctionStatement(statement)) {
+          const specificFunction = statement.getChildren()[0];
+          if (IntermediateASTNodeTypeGuards.isAddDomainEvent(specificFunction)) {
+            const leftExpression = specificFunction.getLeftExpression();
+            leftExpression.typeCheck(symbolTable);
+
+            const rightExpression = specificFunction.getRightExpression();
+            rightExpression.typeCheck(symbolTable);
+            this.addExpression({
+              expression: rightExpression,
+              symbolTable,
+              intermediateASTTree,
+            });
+
+            //Here add to symbol table the Add domain event statement
+            const leftExpressionKey = leftExpression.getIdentifierName();
+            // const rightExpressionKey = rightExpression.getStringValue();
+
+            const addDomainEventKey = this.appendMemberDot([leftExpressionKey, 'addDomainEvent()']);
+
+            symbolTable.insert(
+              addDomainEventKey,
+              new MethodCallSymbolEntry(inferType({ node: specificFunction, symbolTable })),
+            );
+          } else if (IntermediateASTNodeTypeGuards.isApplyRules(specificFunction)) {
+            const argumentNodes = specificFunction.getArguments();
+            argumentNodes.forEach((argument) => {
+              this.addExpression({
+                expression: argument.getExpression(),
+                symbolTable,
+                intermediateASTTree,
+              });
+            });
+          }
+        }
+
+        // if (child.isBuiltInFunctionExpression()) {
+        //   if (IntermediateASTNodeTypeGuards.isAddDomainEvent(child)) {
+        //     const leftExpression = child.getLeftExpression();
+        //     const rightExpression = child.getRightExpression();
+        //     let leftExpressionKey = '';
+        //     let rightExpressionKey = '';
+        //     // if (leftExpression.isMemberDotExpression()) {
+        //     //   leftExpressionKey = this.addMemberDotExpression({
+        //     //     memberDotExpression: leftExpression,
+        //     //     symbolTable,
+        //     //     intermediateASTTree,
+        //     //   });
+        //     // } else {
+        //     leftExpressionKey = leftExpression.getIdentifierName();
+        //     // }
+        //     if (rightExpression.isMemberDotExpression()) {
+        //       rightExpressionKey = this.addMemberDotExpression({
+        //         memberDotExpression: rightExpression,
+        //         symbolTable,
+        //         intermediateASTTree,
+        //       });
+        //     } else {
+        //       rightExpressionKey = this.rightExpressionToString(rightExpression);
+        //     }
+
+        //     const key = this.appendMemberDot([leftExpressionKey, rightExpressionKey]);
+        //     symbolTable.insert(
+        //       key,
+        //       new MethodCallSymbolEntry(
+        //         inferType({ node: child, symbolTable, intermediateASTTree }),
+        //       ),
+        //     );
+        //   } else if (IntermediateASTNodeTypeGuards.isApplyRules(child)) {
+        //     const expression = child.getExpression();
+        //     if (expression.isMemberDotExpression()) {
+        //       this.addMemberDotExpression({
+        //         memberDotExpression: expression,
+        //         symbolTable,
+        //         intermediateASTTree,
+        //       });
+        //     }
+        //   }
+        // }
       } catch (e) {
         // console.log(e);
         if (e instanceof ValidationError) {
@@ -884,10 +969,49 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable,
             intermediateASTTree,
           });
+        } else if (child.isToStringExpression()) {
+          this.addExpression({
+            expression: child.getExpression(),
+            symbolTable,
+            intermediateASTTree,
+          });
+
+          const key = child.getStringValue() + '.toString()';
+          symbolTable.insert(
+            key,
+            new MethodCallSymbolEntry(inferType({ node: child, symbolTable, intermediateASTTree })),
+          );
         }
       }
     }
   }
+
+  // private leftExpressionToString(leftExpression: ExpressionNode): string {
+  //   if (leftExpression.isThisExpression()) {
+  //     return SCOPE_NAMES.THIS;
+  //   } else if (leftExpression.isIdentifierExpression()) {
+  //     return leftExpression.getIdentifierName();
+  //   } else {
+  //     return '';
+  //   }
+  // }
+
+  // private rightExpressionToString(rightExpression: ExpressionNode): string {
+  //   if (rightExpression.isIdentifierExpression()) {
+  //     return rightExpression.getIdentifierName();
+  //   } else if (rightExpression.isThisExpression()) {
+  //     return SCOPE_NAMES.THIS;
+  //   } else if (rightExpression.isMemberDotExpression()) {
+  //     const leftMemberDotExpression = rightExpression.getLeftExpression();
+  //     const rightMemberDotExpression = rightExpression.getRightMostExpression();
+  //     const rightMemberDotString = this.appendMemberDot([
+  //       this.rightExpressionToString(leftMemberDotExpression),
+  //       this.rightExpressionToString(rightMemberDotExpression),
+  //     ]);
+  //     return rightMemberDotString;
+  //   }
+  //   return '';
+  // }
 
   private addMethodCallExpression({
     methodCallExpression,
@@ -1030,17 +1154,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     }
   }
 
-  // private addMemberDotToSymbolTable(
-  //   leftExpressionName: string,
-  //   rightExpressionNode: IdentifierExpressionNode,
-  //   parentScope: SymbolTable,
-  // ): void {
-  //   const memberDotSymbolEntryKey = this.getMemberDotSymbolEntryKey(
-  //     leftExpressionName,
-  //     rightExpressionNode,
-  //   );
-  //   parentScope.insert(memberDotSymbolEntryKey, new MemberDotSymbolEntry(inferType(null)));
-  // }
+  appendMemberDot(memberDotMembers: string[]): string {
+    return memberDotMembers.join('.');
+  }
 
   private getMemberDotSymbolEntryKey(
     leftExpressionName: string,
