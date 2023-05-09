@@ -545,13 +545,13 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insert('event', new ClassTypeParameterSymbolEntry('TodoCompletedDomainEvent'))
           .insertChildScope(
             'v1',
-            new SymbolTableBuilder().insertVariableSymbolEntry(
-              'todoCompleted',
-              'IntegrationTodoCompletedSchemaV1',
-              true,
-            ),
+            new SymbolTableBuilder()
+              .insertVariableSymbolEntry('todoCompleted', 'IntegrationTodoCompletedSchemaV1', true)
+              .insert('event.aggregateId', new MemberDotSymbolEntry('string'))
+              .insert('event.userId', new MemberDotSymbolEntry('string')),
           ),
       )
+      .insertChildScope('TodoCompletedDomainEvent', new SymbolTableBuilder())
       .build(),
   },
 ];
