@@ -1,0 +1,112 @@
+@startuml
+
+abstract FinancialStatement {
+    - id: Id
+    - FinancialTransactions: FinancialTransaction[]
+    + getId(): Id
+}
+
+class LedgerStatement {
+
+}
+
+' Should be a different abstract class? Or just have a type to figure out?
+abstract ExternalStatement {
+
+}
+
+class BankStatement {
+
+}
+
+class SupplierStatement {
+
+}
+
+class CustomerStatement {
+
+}
+
+abstract FinancialTransaction {
+    - id: Id
+    - date: Date
+    - description: string
+    - reference: string
+    - amount: Amount
+    - balance: number
+}
+
+class LedgerTransaction {
+
+}
+
+class ExternalTransaction {
+
+
+}
+
+class AdjustmentsReport {}
+
+' TODO possibly a VO
+class Match {
+    - id: Id
+    - type: MatchType // enum ACTUAL/ SUGGESTION
+    - ledgerTransactions: LedgerTransaction[]
+    - externalTransactions: ExternalTransaction[]
+    - createdBy: // enum AUTO/ MANUAL
+    + rejectMatch(): void 
+    RULES:
+    (1) The absolute sum of all credits/debits in records should be 0
+    (2) A Match cannot hold records with the same Id either in ledger or externalTransactions 
+    (3) A Match can have only transactions with status: RECONCILED only.
+    (4) A rejectMatch() could be called only to a SUGGESTION match only
+    (5) When a rejectMatch() is invoked all transactions (Both sides sould change status to UNRECONCILED)
+    ??? Does the above belong to the Match or the ReconciliationReport?
+}
+
+class ReconciliationReport {
+    - id: Id
+    - status: Status // enum CREATED/ SAVED /LOCKED 
+    - matches: Match[]
+    - ledgerStatement: LedgerStatement
+    - externalStatement: ExternalStatement
+    - timePeriod: Period // Value object (start, end)
+    - rejectSuggestedMatch(id : Id): void
+    - acceptSuggestedMatch(id: Id): void
+    - createManualMatch(ledgerTransactionIds: Id[], externalTransactionIds: Id[]): void 
+    - correctLedgerTransaction(id: Id): void
+    - correctExternalTransaction(id: Id): void
+    - create(ledgerStatementDocumentLocation: string, externalStatementDocumentLocation: string, previousReconciliationReportId: reconciliationReportId): ReconciliationReport
+    ??? handling document permissions?
+    RULES:
+    (1) A unique transaction can only exist in a single actual or suggestion match
+    (2) When ReconciliationReport is in LOCKED status all relevant transactions are locked too
+    (3) To create a manual match, only matches with unreconciled status can be used
+    (4) When a match is rejected it should be deleted from the list of the matches (after the status of all relevant transactions is UNRECONCILED)
+    (5) When there are no more suggested matches suggestedMatchesFinilizedEvent should be thrown
+    (6) A Transactions can be corrected/ deleted only if it has UNRECONCILED status 
+    (7) At the creation if previous reconciliation report not provided ask for the start and end dates
+
+}
+
+class TimePeriod-VO {
+    - startDate: Date
+    - endDate: Date
+    RULES:
+    (1) startDate cannot be after an end date
+
+}
+
+FinancialStatement <|-- LedgerStatement
+FinancialStatement <|-- ExternalStatement
+ExternalStatement <|-- BankStatement
+ExternalStatement <|-- SupplierStatement
+ExternalStatement <|-- CustomerStatement
+FinancialTransaction <|-- LedgerTransaction
+FinancialTransaction <|-- ExternalTransaction
+ReconciliationReport "1" o-- "0..*" Match
+ReconciliationReport <|-- LedgerStatement
+ReconciliationReport <|-- ExternalStatement
+FinancialStatement "1" o-- "0..*" FinancialTransaction
+
+@enduml
