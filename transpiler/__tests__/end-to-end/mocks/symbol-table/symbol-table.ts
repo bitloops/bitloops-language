@@ -17,6 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { SCOPE_NAMES } from '../../../../src/semantic-analysis/IntermediateASTValidator.js';
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
@@ -97,7 +98,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
           .insertChildScope(
-            'domainCreate',
+            SCOPE_NAMES.DOMAIN_CREATE,
             new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
           )
           .insertChildScope(
@@ -169,7 +170,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
           .insertChildScope(
-            'domainCreate',
+            SCOPE_NAMES.DOMAIN_CREATE,
             new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
           )
           .insertChildScope(
@@ -239,7 +240,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
           .insertChildScope(
-            'domainCreate',
+            SCOPE_NAMES.DOMAIN_CREATE,
             new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
           )
           .insertChildScope(
@@ -304,7 +305,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('TodoEntity'))
           .insertChildScope(
-            'domainCreate',
+            SCOPE_NAMES.DOMAIN_CREATE,
             new SymbolTableBuilder()
               .insert('props', new ParameterSymbolEntry('TodoProps'))
               .insertVariableSymbolEntry('todo', 'TodoEntity', false)
@@ -347,7 +348,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('TitleVO'))
           .insertChildScope(
-            'domainCreate',
+            SCOPE_NAMES.DOMAIN_CREATE,
             new SymbolTableBuilder()
               .insert('props', new ParameterSymbolEntry('TitleProps'))
               .insert('title', new VariableSymbolEntry('TitleVO', false)),
@@ -369,7 +370,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('this', new ClassTypeThisSymbolEntry('TitleVO'))
           .insertChildScope(
-            'domainCreate',
+            SCOPE_NAMES.DOMAIN_CREATE,
             new SymbolTableBuilder()
               .insert('props.title', new MemberDotSymbolEntry('string'))
               .insert('props', new ParameterSymbolEntry('TitleProps')),
@@ -483,7 +484,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 new SymbolTableBuilder()
                   .insert(
                     'this.notificationTemplateRepo.getByType()',
-                    new MethodCallSymbolEntry('NotificationTemplateReadModel'),
+                    new MethodCallSymbolEntry('(OK(NotificationTemplateReadModel), Errors())'),
                   )
                   // .insert(
                   //   'this.notificationTemplateRepo.getByType().ifError()',
@@ -497,6 +498,17 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               )
               .insertChildScope('else0', new SymbolTableBuilder()),
           ),
+      )
+      .insertChildScope('NotificationTemplateReadRepoPort', new SymbolTableBuilder())
+      .insertChildScope(
+        'UserEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('UserEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('UserProps')),
+          )
+          .insertChildScope('isFirstTodo', new SymbolTableBuilder()),
       )
       .build(),
   },

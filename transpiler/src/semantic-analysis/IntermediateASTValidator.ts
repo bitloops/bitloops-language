@@ -77,7 +77,7 @@ import { EventHandlerBusDependenciesNode } from '../ast/core/intermediate-ast/no
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
-const SCOPE_NAMES = {
+export const SCOPE_NAMES = {
   EXECUTE: 'execute',
   THIS: 'this',
   SWITCH: 'switch',

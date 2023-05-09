@@ -15,3 +15,15 @@ DomainService MarketingNotificationDomainService (notificationTemplateRepo: Noti
         return NotificationTemplateInput({ emailOrigin : emailOrigin, notificationTemplate : notificationTemplate });
     }
 }
+
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+  getByType(type: string): (OK(NotificationTemplateReadModel),Errors());
+};
+
+Root Entity UserEntity {
+  static create(props: UserProps): (OK(UserProps), Errors())  {
+  }
+
+  public isFirstTodo(): bool {
+  }
+}
