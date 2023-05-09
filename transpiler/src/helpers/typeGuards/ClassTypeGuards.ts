@@ -78,4 +78,8 @@ export class ClassTypeGuards {
   static isApplicationError(name: string): boolean {
     return name.endsWith('Error') && name.startsWith('ApplicationErrors');
   }
+
+  static isCommandBusPort(name: string): boolean {
+    return name.endsWith('CommandBusPort');
+  }
 }

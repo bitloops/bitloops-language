@@ -72,6 +72,7 @@ import { IdentifierExpressionNode } from '../ast/core/intermediate-ast/nodes/Exp
 import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
 import { EvaluationFieldNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
+import { EventHandlerBusDependenciesNode } from '../ast/core/intermediate-ast/nodes/DomainEventHandler/EventHandlerBusDependenciesNode.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -218,6 +219,17 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     const fieldTypes = propsNode.getFieldTypes();
     const fieldType = fieldTypes[rightExpressionString];
     return inferType({ node: fieldType });
+  }
+  if (ClassTypeGuards.isDomainEvent(leftType)) {
+    const domainEventNode = intermediateASTTree.getDomainEventByIdentifier(leftType);
+    const fieldTypes = domainEventNode.getFieldTypes();
+    const fieldType = fieldTypes[rightExpressionString];
+    return inferType({ node: fieldType });
+  }
+  if (ClassTypeGuards.isCommandBusPort(leftType)) {
+    const commandBusMethodType = EventHandlerBusDependenciesNode.getCommandBusMethodType();
+    const typeNode = commandBusMethodType[rightExpressionString];
+    return inferType({ node: typeNode });
   }
   return '';
 };

@@ -29,6 +29,7 @@ import { QueryHandlerNode } from './nodes/query/QueryHandlerNode.js';
 import { BitloopsPrimaryTypeNode } from './nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { CommandDeclarationNode } from './nodes/command/CommandDeclarationNode.js';
+import { DomainEventDeclarationNode } from './nodes/DomainEvent/DomainEventDeclarationNode.js';
 
 type Policy = (node: IntermediateASTNode) => boolean;
 
@@ -284,6 +285,13 @@ export class IntermediateASTTree {
     return queryHandlerNodes.find(
       (node) => node.getIdentifier().getIdentifierName() === identifier,
     );
+  };
+
+  public getDomainEventByIdentifier = (identifier: string): DomainEventDeclarationNode => {
+    const domainEventNodes = this.getRootChildrenNodesByType<DomainEventDeclarationNode>(
+      BitloopsTypesMapping.TDomainEvent,
+    );
+    return domainEventNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
   };
 
   public getPropsByIdentifier = (identifier: string): PropsNode => {

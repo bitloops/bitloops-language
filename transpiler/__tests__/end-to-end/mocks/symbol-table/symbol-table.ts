@@ -385,12 +385,13 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'handle',
             new SymbolTableBuilder()
               .insert('event', new ParameterSymbolEntry('DepositsIncrementedDomainEvent'))
-              .insert('event.customerId', new ParameterSymbolEntry('string'))
-              .insert('event.amount', new ParameterSymbolEntry('float'))
+              .insert('event.customerId', new MemberDotSymbolEntry('string'))
+              .insert('event.amount', new MemberDotSymbolEntry('float'))
               .insertVariableSymbolEntry('command', 'SendEmailCommand', true)
               .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
           ),
       )
+      .insertChildScope('DepositsIncrementedDomainEvent', new SymbolTableBuilder())
       .build(),
   },
   {
