@@ -112,6 +112,12 @@ class BankTransactionStatement {
     + getTransactions(): BankTransaction[]
 }
 
+class Reconciliation {
+    - ledger: Ledger
+    - bankTransanctionStatement: BankTransactionStatement
+    + run(): void
+}
+
 FinancialRecord <|-- LedgerEntry
 FinancialRecord <|-- BankTransaction
 FinancialRecord --> Amount
@@ -122,6 +128,8 @@ Ledger --> LedgerEntry
 BankTransactionStatement --> BankTransaction
 FinancialStatement <|-- Ledger
 FinancialStatement <|-- BankTransactionStatement
+Reconciliation --> Ledger
+Reconciliation --> BankTransactionStatement
 
 
 @enduml
