@@ -20,6 +20,7 @@
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
+  IntegrationEventParameterSymbolEntry,
   MemberDotSymbolEntry,
   MethodCallSymbolEntry,
   ParameterSymbolEntry,
@@ -412,12 +413,26 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insertChildScope(
             'handle',
             new SymbolTableBuilder()
-              .insert('event', new ParameterSymbolEntry('MoneyDepositedIntegrationEvent'))
+              .insert(
+                'event',
+                new IntegrationEventParameterSymbolEntry('MoneyDepositedIntegrationEvent', {
+                  boundedContext: 'Hello world',
+                  module: 'demo',
+                  eventVersion: 'v1',
+                }),
+              )
               .insert('event.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'string', true)
               .insertVariableSymbolEntry('command', 'IncrementDepositsCommand', true)
               .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
           ),
+      )
+      .insertChildScope('IntegrationMoneyDepositedSchemaV1', new SymbolTableBuilder())
+      .insertChildScope(
+        'MoneyDepositedIntegrationEvent',
+        new SymbolTableBuilder()
+          .insert('event', new ClassTypeParameterSymbolEntry('MoneyDepositedDomainEvent'))
+          .insertChildScope('v1', new SymbolTableBuilder()),
       )
       .build(),
   },

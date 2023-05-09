@@ -33,3 +33,9 @@ export type TInferredTypes =
   | TBitloopsIdentifier
   | TStandardVO
   | TArray;
+
+export type TIntegrationEventInfo = {
+  boundedContext: string;
+  module: string;
+  eventVersion: string;
+};

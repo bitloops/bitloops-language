@@ -52,6 +52,7 @@ import { DomainServiceEvaluationNode } from '../ast/core/intermediate-ast/nodes/
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
+  IntegrationEventParameterSymbolEntry,
   MemberDotSymbolEntry,
   MethodCallSymbolEntry,
   ParameterSymbolEntry,
@@ -92,10 +93,12 @@ export const inferType = ({
   node,
   symbolTable,
   intermediateASTTree,
+  core,
 }: {
   node: IntermediateASTNode;
   symbolTable?: SymbolTable;
   intermediateASTTree?: IntermediateASTTree;
+  core?: TBoundedContexts;
 }): TInferredTypes => {
   //For variables with no expressions return null type
   if (!node) return null;
@@ -108,7 +111,7 @@ export const inferType = ({
     return node.getInferredType();
   } else if (IntermediateASTNodeTypeGuards.isMethodCallExpression(node)) {
     const expression = node.getExpressionValues();
-    const expressionType = inferType({ node: expression, symbolTable, intermediateASTTree });
+    const expressionType = inferType({ node: expression, symbolTable, intermediateASTTree, core });
     return expressionType;
   } else if (IntermediateASTNodeTypeGuards.isMemberDotExpression(node)) {
     const leftExpression = node.getLeftExpression();
@@ -120,6 +123,7 @@ export const inferType = ({
       leftExpressionType,
       rightExpressionString,
       intermediateASTTree,
+      core,
     });
   } else if (IntermediateASTNodeTypeGuards.isThisExpression(node)) {
     const identifier = node.getIdentifierName();
@@ -146,10 +150,12 @@ const getMemberDotTypeFromIntermediateASTTree = ({
   leftExpressionType,
   rightExpressionString,
   intermediateASTTree,
+  core,
 }: {
   leftExpressionType: SymbolEntry;
   rightExpressionString: string;
   intermediateASTTree: IntermediateASTTree;
+  core?: TBoundedContexts;
 }): string => {
   const { type: leftType } = leftExpressionType;
   if (ClassTypeGuards.isQuery(leftType)) {
@@ -230,6 +236,18 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     const commandBusMethodType = EventHandlerBusDependenciesNode.getCommandBusMethodType();
     const typeNode = commandBusMethodType[rightExpressionString];
     return inferType({ node: typeNode });
+  }
+  if (ClassTypeGuards.isIntegrationEvent(leftType)) {
+    const { integrationEventInfo } = leftExpressionType as IntegrationEventParameterSymbolEntry;
+    const { eventVersion, boundedContext, module } = integrationEventInfo;
+    const ASTTree = core[boundedContext][module];
+    const integrationEventNode = ASTTree.getIntegrationEventByIdentifier(leftType);
+    const versionMapperSchemas = integrationEventNode.getIntegrationEventMapperSchemas();
+    const schemaType = versionMapperSchemas[eventVersion];
+    const schemaNode = ASTTree.getStructByIdentifier(schemaType.getIdentifierName());
+    const fieldTypes = schemaNode.getFieldTypes();
+    const fieldType = fieldTypes[rightExpressionString];
+    return inferType({ node: fieldType });
   }
   return '';
 };
@@ -336,10 +354,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             this.addCommandQueryBus(classTypeScope);
 
             const handle = node.getHandle();
+            const eventVersion = node.getEventVersionValue();
             this.createIntegrationEventHandleScope({
               handle,
+              eventVersion,
               classTypeScope,
               intermediateASTTree: ASTTree,
+              core,
             });
           } else if (ClassTypeNodeTypeGuards.isDomainService(node)) {
             classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
@@ -595,19 +616,28 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
 
   private createIntegrationEventHandleScope({
     handle,
+    eventVersion,
     classTypeScope,
     intermediateASTTree,
+    core,
   }: {
     handle: IntegrationEventHandlerHandleMethodNode;
+    eventVersion: string;
     classTypeScope: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    core: TBoundedContexts;
   }): void {
     const handleScope = classTypeScope.createChildScope(SCOPE_NAMES.HANDLE, handle);
     const handleParam = handle.getParameter();
     const paramName = handleParam.getIdentifier();
+    const boundedContextModuleNode = handleParam.getBoundedContextModule();
     handleScope.insert(
       paramName,
-      new ParameterSymbolEntry(handleParam.getIntegrationEventIdentifier()),
+      new IntegrationEventParameterSymbolEntry(handleParam.getIntegrationEventIdentifier(), {
+        boundedContext: boundedContextModuleNode.getBoundedContext().getName(),
+        module: boundedContextModuleNode.getModule().getName(),
+        eventVersion,
+      }),
     );
 
     const statements = handle.getStatements();
@@ -615,6 +645,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       statements: statements,
       symbolTable: handleScope,
       intermediateASTTree,
+      core,
     });
   }
 
@@ -622,10 +653,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     statements,
     symbolTable,
     intermediateASTTree,
+    core,
   }: {
     statements: StatementNode[];
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    core?: TBoundedContexts;
   }): SymbolTable {
     let ifCounter = 0;
     let elseCounter = 0;
@@ -644,6 +677,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               expression,
               symbolTable,
               intermediateASTTree,
+              core,
             });
           }
 
@@ -683,11 +717,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             expression: statement.getExpression(),
             symbolTable,
             intermediateASTTree,
+            core,
           });
           symbolTable.insert(
             identifier,
             new VariableSymbolEntry(
-              inferType({ node: expression, symbolTable, intermediateASTTree }),
+              inferType({ node: expression, symbolTable, intermediateASTTree, core }),
               true,
             ),
           );
@@ -700,6 +735,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             expression: conditionExpression,
             symbolTable,
             intermediateASTTree,
+            core,
           });
 
           const ifScope = symbolTable.createChildScope(SCOPE_NAMES.IF + ifCounter++, statement);
@@ -708,6 +744,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             statements: thenStatements,
             symbolTable: ifScope,
             intermediateASTTree,
+            core,
           });
           if (statement.hasElseBlock()) {
             const elseStatements = statement.getElseStatements();
@@ -716,6 +753,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               statements: elseStatements,
               symbolTable: elseScope,
               intermediateASTTree,
+              core,
             });
           }
         }
@@ -739,6 +777,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               statements: caseStatements,
               symbolTable: caseScope,
               intermediateASTTree,
+              core,
             });
           });
           const defaultCase = statement.getDefaultCase();
@@ -748,6 +787,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             statements: defaultStatements,
             symbolTable: defaultScope,
             intermediateASTTree,
+            core,
           });
         }
 
@@ -762,6 +802,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             expression: statement,
             symbolTable,
             intermediateASTTree,
+            core,
           });
         }
       } catch (e) {
@@ -841,10 +882,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     expression,
     symbolTable,
     intermediateASTTree,
+    core,
   }: {
     expression: ExpressionNode;
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    core?: TBoundedContexts;
   }): void {
     for (const child of expression.getChildren()) {
       if (child instanceof ExpressionNode) {
@@ -853,36 +896,42 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             memberDotExpression: child,
             symbolTable,
             intermediateASTTree,
+            core,
           });
         } else if (child.isMethodCallExpression()) {
           this.addMethodCallExpression({
             methodCallExpression: child,
             symbolTable,
             intermediateASTTree,
+            core,
           });
         } else if (child.isAssingmentExpression()) {
           this.addExpression({
             expression: child.getLeftExpression(),
             symbolTable,
             intermediateASTTree,
+            core,
           });
 
           this.addExpression({
             expression: child.getRightExpression(),
             symbolTable,
             intermediateASTTree,
+            core,
           });
         } else if (child.isEqualityExpression()) {
           this.addExpression({
             expression: child.getLeftExpression(),
             symbolTable,
             intermediateASTTree,
+            core,
           });
 
           this.addExpression({
             expression: child.getRightExpression(),
             symbolTable,
             intermediateASTTree,
+            core,
           });
         }
       }
@@ -893,10 +942,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     methodCallExpression,
     symbolTable,
     intermediateASTTree,
+    core,
   }: {
     methodCallExpression: MethodCallExpressionNode;
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    core?: TBoundedContexts;
   }): void {
     const expression = methodCallExpression.getExpressionValues();
     // TODO typeCheck
@@ -905,6 +956,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         memberDotExpression: expression,
         symbolTable,
         intermediateASTTree,
+        core,
         isMethodCall: true,
       });
     }
@@ -916,11 +968,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     memberDotExpression,
     symbolTable,
     intermediateASTTree,
+    core,
     isMethodCall = false,
   }: {
     memberDotExpression: MemberDotExpressionNode;
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    core?: TBoundedContexts;
     isMethodCall?: boolean;
   }): string {
     const leftMostMemberDotExpression = memberDotExpression.getLeftExpression();
@@ -930,6 +984,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         memberDotExpression: leftMostMemberDotExpression,
         symbolTable,
         intermediateASTTree,
+        core,
         isMethodCall: false,
       });
 
@@ -942,7 +997,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           symbolTable.insert(
             methodCallSymbolEntryKey,
             new MethodCallSymbolEntry(
-              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
             ),
           );
         }
@@ -957,7 +1012,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           symbolTable.insert(
             memberDotSymbolEntryKey,
             new MemberDotSymbolEntry(
-              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
             ),
           );
         }
@@ -974,7 +1029,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable.insert(
               methodCallSymbolEntryKey,
               new MethodCallSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
               ),
             );
           }
@@ -988,7 +1043,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable.insert(
               memberDotSymbolEntryKey,
               new MemberDotSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
               ),
             );
           }
@@ -1004,7 +1059,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable.insert(
               methodCallSymbolEntryKey,
               new MethodCallSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
               ),
             );
           }
@@ -1018,7 +1073,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable.insert(
               memberDotSymbolEntryKey,
               new MemberDotSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree }),
+                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
               ),
             );
           }

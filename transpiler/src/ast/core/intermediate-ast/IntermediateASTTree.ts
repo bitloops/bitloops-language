@@ -30,6 +30,8 @@ import { BitloopsPrimaryTypeNode } from './nodes/BitloopsPrimaryType/BitloopsPri
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { CommandDeclarationNode } from './nodes/command/CommandDeclarationNode.js';
 import { DomainEventDeclarationNode } from './nodes/DomainEvent/DomainEventDeclarationNode.js';
+import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
+import { StructNode } from './nodes/struct/StructNode.js';
 
 type Policy = (node: IntermediateASTNode) => boolean;
 
@@ -292,6 +294,20 @@ export class IntermediateASTTree {
       BitloopsTypesMapping.TDomainEvent,
     );
     return domainEventNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getIntegrationEventByIdentifier = (identifier: string): IntegrationEventNode => {
+    const integrationEventNodes = this.getRootChildrenNodesByType<IntegrationEventNode>(
+      BitloopsTypesMapping.TIntegrationEvent,
+    );
+    return integrationEventNodes.find(
+      (node) => node.getIdentifier().getIdentifierName() === identifier,
+    );
+  };
+
+  public getStructByIdentifier = (identifier: string): StructNode => {
+    const structNodes = this.getRootChildrenNodesByType<StructNode>(BitloopsTypesMapping.TStruct);
+    return structNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
   };
 
   public getPropsByIdentifier = (identifier: string): PropsNode => {

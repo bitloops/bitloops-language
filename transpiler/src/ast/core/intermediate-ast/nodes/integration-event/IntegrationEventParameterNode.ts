@@ -1,6 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterIdentifierNode } from '../ParameterList/ParameterIdentifierNode.js';
+import { BoundedContextModuleNode } from '../setup/BoundedContextModuleNode.js';
 import { IntegrationEventIdentifierNode } from './IntegrationEventIdentifierNode.js';
 
 export class IntegrationEventParameterNode extends IntermediateASTNode {
@@ -29,5 +30,11 @@ export class IntegrationEventParameterNode extends IntermediateASTNode {
 
   getIntegrationEventIdentifier(): string {
     return this.getType().getValue().integrationEventIdentifier;
+  }
+
+  getBoundedContextModule(): BoundedContextModuleNode {
+    return this.getChildNodeByType<BoundedContextModuleNode>(
+      BitloopsTypesMapping.TBoundedContextModule,
+    );
   }
 }

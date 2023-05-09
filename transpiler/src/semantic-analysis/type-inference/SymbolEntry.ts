@@ -1,4 +1,4 @@
-import { TInferredTypes } from './types.js';
+import { TIntegrationEventInfo, TInferredTypes } from './types.js';
 
 export class SymbolEntry {
   constructor(public type: TInferredTypes) {}
@@ -6,6 +6,12 @@ export class SymbolEntry {
 
 export class ParameterSymbolEntry extends SymbolEntry {
   constructor(type: TInferredTypes) {
+    super(type);
+  }
+}
+
+export class IntegrationEventParameterSymbolEntry extends SymbolEntry {
+  constructor(type: TInferredTypes, public integrationEventInfo: TIntegrationEventInfo) {
     super(type);
   }
 }

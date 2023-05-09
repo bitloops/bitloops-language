@@ -3,6 +3,7 @@ import { StringLiteralNode } from '../Expression/Literal/StringLiteralNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
+import { StructIdentifierNode } from '../struct/StructIdentifierNode.js';
 
 export class IntegrationVersionMapperNode extends IntermediateASTNode {
   private static classNodeName = 'integrationVersionMapper';
@@ -20,6 +21,10 @@ export class IntegrationVersionMapperNode extends IntermediateASTNode {
       BitloopsTypesMapping.TStatements,
     );
     return statementList.statements;
+  }
+
+  getSchemaType(): StructIdentifierNode {
+    return this.getChildNodeByType<StructIdentifierNode>(BitloopsTypesMapping.TStructIdentifier);
   }
 
   getVersionName(): string {

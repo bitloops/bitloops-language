@@ -10,6 +10,7 @@ import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
 import { EqualityExpressionNode } from './equalityExpressionNode.js';
+import { LiteralNode } from './Literal/LiteralNode.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
 //   isMethodCallExpression(): this is MethodCallExpressionNode {
@@ -167,6 +168,10 @@ export class ExpressionNode extends StatementNode {
 
   getEvaluation(): EvaluationNode {
     return this.getChildren()[0] as EvaluationNode;
+  }
+
+  getLiteralNode(): LiteralNode {
+    return this.getChildren()[0] as LiteralNode;
   }
 
   typeCheck(symbolTable: SymbolTable): void {

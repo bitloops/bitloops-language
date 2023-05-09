@@ -73,4 +73,11 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
   getEventVersion(): EvaluationFieldNode {
     return this.getChildNodeByType<EvaluationFieldNode>(BitloopsTypesMapping.TEvaluationField);
   }
+
+  getEventVersionValue(): string {
+    const evaluationFieldNode = this.getEventVersion();
+    const expression = evaluationFieldNode.getExpression();
+    const literalNode = expression.getLiteralNode();
+    return literalNode.getStringLiteralValue();
+  }
 }

@@ -3,6 +3,7 @@ import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryT
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { StructIdentifierNode } from '../struct/StructIdentifierNode.js';
 import { IntegrationEventIdentifierNode } from './IntegrationEventIdentifierNode.js';
 import { IntegrationVersionMapperListNode } from './IntegrationVersionMapperListNode.js';
 import { IntegrationVersionMapperNode } from './IntegrationVersionMapperNode.js';
@@ -56,5 +57,16 @@ export class IntegrationEventNode extends ClassTypeNode {
     );
 
     return integrationVersionMapperList.getIntegrationVersionMapperNodes();
+  }
+
+  public getIntegrationEventMapperSchemas(): Record<string, StructIdentifierNode> {
+    const integrationEventMapperNodes = this.getIntegrationEventMapperNodes();
+    const integrationEventMapperSchemas: Record<string, StructIdentifierNode> = {};
+    integrationEventMapperNodes.forEach((integrationEventMapperNode) => {
+      const version = integrationEventMapperNode.getVersionName();
+      const schema = integrationEventMapperNode.getSchemaType();
+      integrationEventMapperSchemas[version] = schema;
+    });
+    return integrationEventMapperSchemas;
   }
 }
