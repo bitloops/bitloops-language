@@ -1,9 +1,7 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
-import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { EntityIdentifierNode } from './EntityIdentifierNode.js';
 import { EntityValuesNode } from './EntityValuesNode.js';
 
@@ -37,19 +35,5 @@ export class EntityDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TEntityValues,
     ) as EntityValuesNode;
     return entityValues;
-  }
-
-  public getPublicMethodTypes(): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
-    const entityValues = this.getEntityValues();
-    const publicMethods = entityValues.getPublicMethods();
-    let publicMethodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
-    for (const publicMethod of publicMethods) {
-      const publicMethodType = publicMethod.getReturnType();
-      publicMethodTypes = {
-        ...publicMethodTypes,
-        [publicMethod.getMethodName()]: publicMethodType,
-      };
-    }
-    return publicMethodTypes;
   }
 }

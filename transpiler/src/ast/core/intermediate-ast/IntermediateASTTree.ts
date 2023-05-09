@@ -28,6 +28,7 @@ import { QueryDeclarationNode } from './nodes/query/QueryDeclarationNode.js';
 import { QueryHandlerNode } from './nodes/query/QueryHandlerNode.js';
 import { BitloopsPrimaryTypeNode } from './nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { CommandDeclarationNode } from './nodes/command/CommandDeclarationNode.js';
 
 type Policy = (node: IntermediateASTNode) => boolean;
 
@@ -269,6 +270,13 @@ export class IntermediateASTTree {
     return queryNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
   };
 
+  public getCommandByIdentifier = (identifier: string): CommandDeclarationNode => {
+    const commandNodes = this.getRootChildrenNodesByType<CommandDeclarationNode>(
+      BitloopsTypesMapping.TCommand,
+    );
+    return commandNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
   public getQueryHandlerByIdentifier = (identifier: string): QueryHandlerNode => {
     const queryHandlerNodes = this.getRootChildrenNodesByType<QueryHandlerNode>(
       BitloopsTypesMapping.TQueryHandler,
@@ -276,6 +284,11 @@ export class IntermediateASTTree {
     return queryHandlerNodes.find(
       (node) => node.getIdentifier().getIdentifierName() === identifier,
     );
+  };
+
+  public getPropsByIdentifier = (identifier: string): PropsNode => {
+    const propsNodes = this.getRootChildrenNodesByType<PropsNode>(BitloopsTypesMapping.TProps);
+    return propsNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
   };
 
   public getPropsFieldTypeOfDomainCreateByFieldIdentifier(

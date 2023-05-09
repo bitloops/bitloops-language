@@ -1,5 +1,10 @@
 RepoPort AccountWriteRepoPort<AccountEntity> extends CRUDWriteRepoPort;
 
+Command WithdrawMoneyCommand {
+    string accountId;
+    int32 amount;
+}
+
 CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
     execute(command: WithdrawMoneyCommand): (OK(void), Errors(
        ApplicationErrors.AccountNotFound
@@ -19,3 +24,16 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
        this.accountRepo.update(accountEntity);
    }
  }
+
+ Props AccountProps {
+    optional UUIDv4 id;
+    MoneyVO balance;
+}
+
+Root Entity AccountEntity {
+    static create(props: AccountProps): (OK(AccountEntity), Errors())  {
+    }
+
+    public withdrawAmount(amount: int32): (OK(void), Errors(DomainErrors.InvalidMonetaryValueError)) {
+    }
+}

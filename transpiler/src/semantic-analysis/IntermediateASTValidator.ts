@@ -110,8 +110,6 @@ export const inferType = ({
     const expressionType = inferType({ node: expression, symbolTable, intermediateASTTree });
     return expressionType;
   } else if (IntermediateASTNodeTypeGuards.isMemberDotExpression(node)) {
-    // eslint-disable-next-line no-debugger
-    debugger;
     const leftExpression = node.getLeftExpression();
     const rightMostExpression = node.getRightMostExpression();
     const leftExpressionString = leftExpression.getStringValue();
@@ -164,6 +162,18 @@ const getMemberDotTypeFromIntermediateASTTree = ({
       }
     }
   }
+  if (ClassTypeGuards.isCommand(leftType)) {
+    // same with query
+    const commandNode = intermediateASTTree.getCommandByIdentifier(leftType);
+    const fieldNodes = commandNode.getFieldNodes();
+    for (const fieldNode of fieldNodes) {
+      const fieldIdentifier = fieldNode.getIdentifierValue();
+      if (fieldIdentifier === rightExpressionString) {
+        const type = inferType({ node: fieldNode.getTypeNode() });
+        return type;
+      }
+    }
+  }
   if (ClassTypeGuards.isQueryHandler(leftType)) {
     const queryHandlerNode = intermediateASTTree.getQueryHandlerByIdentifier(leftType);
     const parameterNodes = queryHandlerNode.getParameters();
@@ -183,13 +193,31 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     return inferType({ node: methodDefinitionType });
   }
   if (ClassTypeGuards.isEntity(leftType)) {
-    // eslint-disable-next-line no-debugger
-    debugger;
-    const entityNode = intermediateASTTree.getEntityByIdentifier(leftType);
-    const publicMethodTypes = entityNode.getPublicMethodTypes();
+    const entityNode =
+      intermediateASTTree.getRootEntityByIdentifier(leftType) ??
+      intermediateASTTree.getEntityByIdentifier(leftType);
+    const entityValues = entityNode.getEntityValues();
+
+    const publicMethodTypes = entityValues.getPublicMethodTypes();
     const publicMethodType = publicMethodTypes[rightExpressionString];
-    // TODO add props as well
+    if (!publicMethodType) {
+      const propsIdentifier = entityValues.getPropsIdentifier();
+      const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
+      const fieldTypes = propsNode.getFieldTypes();
+      const fieldType = fieldTypes[rightExpressionString];
+      return inferType({ node: fieldType });
+    }
+    // TODO if none of them typeCheck??
     return inferType({ node: publicMethodType });
+  }
+  if (ClassTypeGuards.isVO(leftType)) {
+    // same with entity fields
+    const voNode = intermediateASTTree.getValueObjectByIdentifier(leftType);
+    const propsIdentifier = voNode.getPropsIdentifier();
+    const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
+    const fieldTypes = propsNode.getFieldTypes();
+    const fieldType = fieldTypes[rightExpressionString];
+    return inferType({ node: fieldType });
   }
   return '';
 };

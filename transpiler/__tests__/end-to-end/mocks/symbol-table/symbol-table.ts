@@ -59,8 +59,8 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'execute',
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
-              .insert('this.accountRepo', new MemberDotSymbolEntry('AccountWriteRepoPort'))
               .insert(
                 'this.accountRepo.getById()',
                 new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
@@ -75,11 +75,32 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
               )
               .insertVariableSymbolEntry('result', 'string', true)
-              .insert('accountEntity.withdrawAmount()', new MethodCallSymbolEntry('void'))
+              .insert(
+                'accountEntity.withdrawAmount()',
+                new MethodCallSymbolEntry(
+                  '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
+                ),
+              )
               .insert(
                 'this.accountRepo.update()',
                 new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
               ),
+          ),
+      )
+      .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
+      .insertChildScope('AccountProps', new SymbolTableBuilder())
+      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+      .insertChildScope(
+        'AccountEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+          .insertChildScope(
+            'domainCreate',
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+          )
+          .insertChildScope(
+            'withdrawAmount',
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
           ),
       )
       .build(),
