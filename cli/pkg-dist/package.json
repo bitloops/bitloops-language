@@ -1,5 +1,5 @@
 {
-  "name": "pkg-dist",
+  "name": "bitloops-cli",
   "version": "1.0.0",
   "description": "Bitloops Language CLI",
   "bin": "./index.cjs",
@@ -12,7 +12,9 @@
   "license": "GPL-3.0",
   "pkg": {
     "targets": [
-      "node16-macos-x64"
+      "node16-macos-x64",
+      "node16-linux-x64",
+      "node16-windows-x64"
     ],
     "outputPath": "./executables",
     "assets": [
