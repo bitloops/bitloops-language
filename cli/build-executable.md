@@ -15,13 +15,13 @@ yarn package
 ## Install bitloops-cli
 You can install it unix systems for now
 ```bash
-curl -sL https://github.com/bitloops/bitloops-language/releases/download/v3.0.0-bitloops-cli-beta/bitloops-cli-install.sh | bash
+curl -sL https://github.com/bitloops/bitloops/releases/download/v3.0.0-beta-bitloops-cli/bitloops-cli-install.sh | bash
 
 ```
 
 You can uninstall by running
 ```bash
-curl -sL https://github.com/bitloops/bitloops-language/releases/download/v3.0.0-bitloops-cli-beta/bitloops-cli-install.sh | bash -s -- --uninstall
+curl -sL https://github.com/bitloops/bitloops/releases/download/v3.0.0-beta-bitloops-cli/bitloops-cli-install.sh | bash -s -- --uninstall
 ```
 
 

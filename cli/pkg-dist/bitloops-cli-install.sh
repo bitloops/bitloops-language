@@ -35,8 +35,8 @@ fi
 # The download URL for the executable
 URL=""
 case "$MACHINE" in
-    linux) URL="https://github.com/bitloops/bitloops-language/releases/download/v3.0.0-bitloops-cli-beta/bitloops-cli.linux-x64" ;;
-    macos) URL="https://github.com/bitloops/bitloops-language/releases/download/v3.0.0-bitloops-cli-beta/bitloops-cli.macos-x64" ;;
+    linux) URL="https://github.com/bitloops/bitloops/releases/download/v3.0.0-beta-bitloops-cli/bitloops-cli.linux-x64" ;;
+    macos) URL="https://github.com/bitloops/bitloops/releases/download/v3.0.0-beta-bitloops-cli/bitloops-cli.macos-x64" ;;
 esac
 
 
