@@ -1,5 +1,4 @@
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
-import { ApplyRulesNode } from '../../../nodes/statements/builtinFunction/ApplyRulesStatementNode.js';
 import { IBuilder } from '../../IBuilder.js';
 import { AddDomainEventNode } from '../../../nodes/statements/builtinFunction/AddDomainEventNode.js';
 import { IdentifierNode } from '../../../nodes/identifier/IdentifierNode.js';
@@ -31,7 +30,7 @@ export class AddDomainEventNodeBuilder implements IBuilder<AddDomainEventNode> {
     return this;
   }
 
-  public build(): ApplyRulesNode {
+  public build(): AddDomainEventNode {
     this.addDomainEventNode.addChild(this.expressionNode);
     this.identifierNode ? this.addDomainEventNode.addChild(this.identifierNode) : null;
     this.thisIdentifierNode ? this.addDomainEventNode.addChild(this.thisIdentifierNode) : null;

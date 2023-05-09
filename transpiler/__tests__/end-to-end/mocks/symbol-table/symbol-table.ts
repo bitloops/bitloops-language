@@ -24,6 +24,7 @@ import {
   MemberDotSymbolEntry,
   MethodCallSymbolEntry,
   ParameterSymbolEntry,
+  VariableSymbolEntry,
 } from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
 import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
 import { bitloopsPrimitivesObj } from '../../../../src/types.js';
@@ -313,7 +314,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 'if0',
                 new SymbolTableBuilder()
                   .insert('todo.id', new MemberDotSymbolEntry('UUIDv4'))
-                  .insert('todo.id.toString()', new MemberDotSymbolEntry('UUIDv4'))
+                  .insert('todo.id.toString()', new MethodCallSymbolEntry('string'))
                   .insert('todo.title', new MemberDotSymbolEntry('TitleVO'))
                   .insert('todo.title.title', new MemberDotSymbolEntry('string'))
                   .insert('todo.completed', new MemberDotSymbolEntry('bool'))
@@ -326,17 +327,30 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('this.completed', new MemberDotSymbolEntry('bool'))
               .insert('this.id', new MemberDotSymbolEntry('UUIDv4'))
-              .insert('this.id.toString()', new MemberDotSymbolEntry('string'))
+              .insert('this.id.toString()', new MethodCallSymbolEntry('string'))
               .insert('this.title', new MemberDotSymbolEntry('TitleVO'))
               .insert('this.title.title', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('event', 'TodoCompletedDomainEvent', true)
-              .insert('todo.addDomainEvent()', new MethodCallSymbolEntry('void')),
+              .insert('this.addDomainEvent()', new MethodCallSymbolEntry('void')),
           )
           .insertChildScope(
             'isCompleted',
             new SymbolTableBuilder()
               .insert('this.completed', new MemberDotSymbolEntry('bool'))
               .insertVariableSymbolEntry('a', 'bool', true),
+          ),
+      )
+      .insertChildScope('TitleProps', new SymbolTableBuilder())
+      .insertChildScope('TodoProps', new SymbolTableBuilder())
+      .insertChildScope(
+        'TitleVO',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('TitleVO'))
+          .insertChildScope(
+            'domainCreate',
+            new SymbolTableBuilder()
+              .insert('props', new ParameterSymbolEntry('TitleProps'))
+              .insert('title', new VariableSymbolEntry('TitleVO', false)),
           ),
       )
       .build(),

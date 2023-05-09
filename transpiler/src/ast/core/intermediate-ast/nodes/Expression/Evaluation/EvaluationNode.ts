@@ -41,7 +41,9 @@ export class EvaluationNode extends ExpressionNode {
     const evaluationFieldList = evaluationChild.getChildNodeByType<EvaluationFieldListNode>(
       BitloopsTypesMapping.TEvaluationFields,
     );
+
     if (!evaluationFieldList) return [];
+
     return evaluationFieldList.getFields();
   }
 

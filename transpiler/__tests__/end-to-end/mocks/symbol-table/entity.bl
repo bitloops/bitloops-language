@@ -1,3 +1,20 @@
+Props TitleProps {
+    string title;
+}
+
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors()) {
+        title: TitleVO = TitleVO(props);
+        return title;
+    }
+}
+
+Props TodoProps {
+    optional UUIDv4 id;
+    TitleVO title;
+    bool completed;
+}
+
 Entity TodoEntity {
     static create(props: TodoProps): (OK(TodoEntity), Errors())  {
         todo: TodoEntity = TodoEntity(props);

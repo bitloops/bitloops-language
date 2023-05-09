@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { bitloopsPrimitivesObj } from '../../../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
@@ -8,5 +9,13 @@ export class ToStringNode extends ExpressionNode {
     super(metadata);
     this.nodeType = BitloopsTypesMapping.TToStringExpression;
     this.classNodeName = NAME;
+  }
+
+  getExpression(): ExpressionNode {
+    return this.getChildNodeByType(BitloopsTypesMapping.TExpression);
+  }
+
+  getInferredType(): string {
+    return bitloopsPrimitivesObj.string;
   }
 }

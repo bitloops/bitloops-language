@@ -6,9 +6,12 @@ import { LiteralNode } from '../nodes/Expression/Literal/LiteralNode.js';
 import { MemberDotExpressionNode } from '../nodes/Expression/MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from '../nodes/Expression/MethodCallExpression.js';
 import { ThisExpressionNode } from '../nodes/Expression/ThisExpressionNode.js';
+import { ToStringNode } from '../nodes/Expression/ToString.js';
 import { EqualityExpressionNode } from '../nodes/Expression/equalityExpressionNode.js';
 import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { AddDomainEventNode } from '../nodes/statements/builtinFunction/AddDomainEventNode.js';
+import { ApplyRulesNode } from '../nodes/statements/builtinFunction/ApplyRulesStatementNode.js';
 
 export class IntermediateASTNodeTypeGuards {
   static isBitloopsPrimaryType(node: IntermediateASTNode): node is BitloopsPrimaryTypeNode {
@@ -45,5 +48,17 @@ export class IntermediateASTNodeTypeGuards {
 
   static isEqualityExpression(node: IntermediateASTNode): node is EqualityExpressionNode {
     return node.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
+  }
+
+  static isAddDomainEvent(node: IntermediateASTNode): node is AddDomainEventNode {
+    return node.getNodeType() === BitloopsTypesMapping.TAddDomainEvent;
+  }
+
+  static isApplyRules(node: IntermediateASTNode): node is ApplyRulesNode {
+    return node.getNodeType() === BitloopsTypesMapping.TApplyRules;
+  }
+
+  static isToStringMethod(node: IntermediateASTNode): node is ToStringNode {
+    return node.getNodeType() === BitloopsTypesMapping.TToStringExpression;
   }
 }
