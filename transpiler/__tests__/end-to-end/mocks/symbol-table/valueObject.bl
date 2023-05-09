@@ -3,3 +3,7 @@ ValueObject TitleVO {
         applyRules(TitleOutOfBoundsRule(props.title));
     }
 }
+
+Props TitleProps {
+    string title;
+}

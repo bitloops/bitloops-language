@@ -254,6 +254,12 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     const fieldType = fieldTypes[rightExpressionString];
     return inferType({ node: fieldType });
   }
+  if (ClassTypeGuards.isProps(leftType)) {
+    const propsNode = intermediateASTTree.getPropsByIdentifier(leftType);
+    const fieldTypes = propsNode.getFieldTypes();
+    const fieldType = fieldTypes[rightExpressionString];
+    return inferType({ node: fieldType });
+  }
   return '';
 };
 

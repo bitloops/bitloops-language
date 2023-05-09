@@ -309,7 +309,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('props', new ParameterSymbolEntry('TodoProps'))
               .insertVariableSymbolEntry('todo', 'TodoEntity', false)
-              .insert('props.id', new MemberDotSymbolEntry('string'))
+              .insert('props.id', new MemberDotSymbolEntry('UUIDv4'))
               .insertVariableSymbolEntry('isNew', 'bool', true)
               .insertChildScope(
                 'if0',
@@ -376,6 +376,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('props', new ParameterSymbolEntry('TitleProps')),
           ),
       )
+      .insertChildScope('TitleProps', new SymbolTableBuilder())
       .build(),
   },
   {
