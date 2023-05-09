@@ -87,6 +87,21 @@ export class EvaluationBuilderDirector {
       },
     };
   }
+  buildPackageEvaluation(
+    packageIdentifier: string,
+    methodName: string,
+    argumentList: TArgumentList,
+  ): TEvaluation {
+    return {
+      evaluation: {
+        packageEvaluation: {
+          identifier: packageIdentifier,
+          methodName,
+          ...argumentList,
+        },
+      },
+    };
+  }
   /**
    *
    * @param standardVOIdentifier e.g 'Currency'

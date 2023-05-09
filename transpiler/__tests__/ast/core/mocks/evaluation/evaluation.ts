@@ -115,6 +115,16 @@ export const validEvaluationTestCases: Array<TestCase> = [
       [new EvaluationFieldBuilderDirector().buildStringEvaluationField('email', 'john@doe.com')],
     ),
   },
+  {
+    description: 'valid package adapter evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestEvaluation { GherkinPackage.encode(value) }',
+    evaluation: new EvaluationBuilderDirector().buildPackageEvaluation(
+      'GherkinPackage',
+      'encode',
+      new ArgumentListBuilderDirector().buildArgumentList(['value']),
+    ),
+  },
 ];
 
 export const validStandardVOEvaluationTestCases: Array<TestCase> = [

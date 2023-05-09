@@ -88,6 +88,8 @@ const BitloopsTypesMapping = {
   TDomainEventEvaluation: 'TDomainEventEvaluation',
   TQueryEvaluation: 'TQueryEvaluation',
   TReadModelEvaluation: 'TReadModelEvaluation',
+  TPackageEvaluation: 'TPackageEvaluation',
+  TPackageEvaluationMethod: 'TPackageEvaluationMethod',
   TIntegrationEventEvaluation: 'TIntegrationEventEvaluation',
   TEntityConstructorEvaluation: 'TEntityConstructorEvaluation',
   TEntity: 'TEntity',

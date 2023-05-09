@@ -144,6 +144,7 @@ import {
   regexLiteralEvaluation,
   readModelEvaluationVisitor,
   domainEventEvaluationVisitor,
+  packageEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -653,6 +654,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitReadModelEvaluation(ctx: BitloopsParser.ReadModelEvaluationContext): any {
     return readModelEvaluationVisitor(this, ctx);
+  }
+
+  visitPackageEvaluation(ctx: BitloopsParser.PackageEvaluationContext): any {
+    return packageEvaluationVisitor(this, ctx);
+  }
+
+  visitPackageIdentifier(ctx: BitloopsParser.PackageIdentifierContext): IdentifierNode {
+    const commandName = ctx.PackageIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const commandIdentifierNode = new IdentifierNodeBuilder(metadata).withName(commandName).build();
+    return commandIdentifierNode;
   }
 
   visitIntegrationEventEvaluation(ctx: BitloopsParser.IntegrationEventEvaluationContext): any {
