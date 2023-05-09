@@ -143,6 +143,7 @@ import { domainServiceEvaluationToTargetLanguage } from './components/statements
 import { getPortTokenToTargetLanguage } from './components/port-token/index.js';
 import { readModelEvaluationToTargetLanguage } from './components/statements/expression/evaluation/readModelEvaluation.js';
 import { domainEventEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEventEvaluation.js';
+import { packageEvaluationToTargetLanguage } from './components/statements/expression/evaluation/packageEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -571,6 +572,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TReadModelEvaluation: {
       res = readModelEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TPackageEvaluation: {
+      res = packageEvaluationToTargetLanguage(value);
       break;
     }
     default: {
