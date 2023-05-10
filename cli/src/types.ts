@@ -23,3 +23,8 @@ export type TModuleName = string;
 export type TBoundedContextName = string;
 
 export type BoundedContextModules = Record<TBoundedContextName, TModuleName[]>;
+
+export type ContextInfo = {
+  boundedContext: TBoundedContextName;
+  module: TModuleName;
+};

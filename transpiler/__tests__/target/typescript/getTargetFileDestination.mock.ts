@@ -82,7 +82,7 @@ export const SupportedTargetLanguageAndClassType: Array<{
     classType: 'Props',
     className: 'NameProps',
     targetLanguage: 'TypeScript',
-    path: 'bounded-contexts/hello-world/core/domain/',
+    path: 'lib/bounded-contexts/hello-world/core/domain/',
     filename: 'name.props.ts',
   },
   {
@@ -91,7 +91,7 @@ export const SupportedTargetLanguageAndClassType: Array<{
     classType: 'Props',
     className: 'NameProps',
     targetLanguage: 'TypeScript',
-    path: 'bounded-contexts/hello-world/iam/domain/',
+    path: 'lib/bounded-contexts/hello-world/iam/domain/',
     filename: 'name.props.ts',
   },
   {
@@ -100,7 +100,7 @@ export const SupportedTargetLanguageAndClassType: Array<{
     classType: 'ValueObject',
     className: 'Name',
     targetLanguage: 'TypeScript',
-    path: 'bounded-contexts/hello-world/async-notifications/domain/',
+    path: 'lib/bounded-contexts/hello-world/async-notifications/domain/',
     filename: 'name.value-object.ts',
   },
   {
@@ -109,7 +109,7 @@ export const SupportedTargetLanguageAndClassType: Array<{
     classType: ClassTypes.RootEntity,
     className: 'Member',
     targetLanguage: 'TypeScript',
-    path: 'bounded-contexts/hello-world/invoices/domain/',
+    path: 'lib/bounded-contexts/hello-world/invoices/domain/',
     filename: 'member.entity.ts',
   },
 ];

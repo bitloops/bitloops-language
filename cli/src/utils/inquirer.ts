@@ -14,7 +14,8 @@ export const inquirerFuzzy = async (q: Question, source): Promise<string> => {
         directoryOnly: true,
         default: q.default,
         message: q.message,
-        cwd: '.',
+        // If provided path is relative, it will be resolved based on cwd.
+        cwd: process.cwd(), //'.',
       },
     ],
     source,

@@ -1,20 +1,25 @@
+// https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/consistent-type-imports.md
 export default {
-  testEnvironment: 'jest-environment-node',
-  preset: 'ts-jest/presets/default-esm',
-  globals: {
-    'ts-jest': {
-      useESM: true,
-      compiler: 'ttypescript',
-    },
-    setupFiles: ['<rootDir>config.js'],
+  moduleFileExtensions: ['ts', 'js'],
+  transformIgnorePatterns: [],
+  transform: {
+    '^.+\\.(t|j)s$': [
+      '@swc/jest',
+      {
+        // SWC options
+        jsc: {
+          parser: {
+            syntax: 'typescript',
+          },
+          target: 'es2022',
+        },
+      },
+    ],
   },
+  testRegex: '(__tests__\\/)(.*)(test|spec)(\\.)(m)?ts$',
+  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.(m)?js$': '$1',
   },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec|steps))\\.(m)?ts$',
-  coverageDirectory: 'coverage',
-  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.mts', '!src/**/*.d.ts', '!src/**/*.d.mts'],
-  setupFilesAfterEnv: ['jest-extended/all'],
-  transform: {},
-  // "extensionsToTreatAsEsm": [".ts"]
+  // Other Jest options
 };
