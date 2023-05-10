@@ -1,5 +1,7 @@
 ## How to build executable
+
 ### Steps
+
 ```bash
 # Inside the cli project root folder
 yarn esbuild-single-cjs
@@ -13,27 +15,33 @@ yarn package
 ```
 
 ## Install bitloops-cli
+
 You can install it unix systems for now
+
 ```bash
-curl -sL https://github.com/bitloops/bitloops/releases/download/v3.0.0-beta-bitloops-cli/bitloops-cli-install.sh | bash
+curl -sL https://github.com/bitloops/bitloops/releases/download/v0.3.1-beta-bitloops-cli/bitloops-cli-install.sh | bash
 
 ```
 
 You can uninstall by running
+
 ```bash
-curl -sL https://github.com/bitloops/bitloops/releases/download/v3.0.0-beta-bitloops-cli/bitloops-cli-install.sh | bash -s -- --uninstall
+curl -sL https://github.com/bitloops/bitloops/releases/download/v0.3.1-beta-bitloops-cli/bitloops-cli-install.sh | bash -s -- --uninstall
 ```
 
-
 ## Further explanation
+
 ### Active issue regarding ESM issues of pkg
+
 https://github.com/vercel/pkg/issues/1291  
 Probably solution using esbuild, to convert the project into a single cjs file.
 
 Initially we try the simplest command
+
 ```bash
 yarn esbuild ./src/index.ts --bundle --platform=node --outfile=pkg-dist/index.cjs
 ```
+
 But the font files that figlet requires are not imported and cause issues.
 
 Based on the [esbuild documentation](https://esbuild.github.io/content-types/#external-file), it seems that the file loader would be the appropriate loader to use in this case. Here is an updated esbuild command that should work:
@@ -47,11 +55,9 @@ yarn esbuild-single-cjs
 
 In this command, we're specifying the file loader for both the .flf and .tlf file extensions that Figlet uses for its fonts. The --loader flag takes a colon-separated pair of extensions and loader names, and we're passing this flag twice to handle both file types.
 
-This creates a `dist/index.cjs` file that can be run with `node dist/index.cjs`.   
+This creates a `dist/index.cjs` file that can be run with `node dist/index.cjs`.
 
 Pkg has no option --asset, so we are forced to create a package.json and a pkg config, as it's the only place where assets to be included can be declared.
-
-
 
 ## Improvements
 

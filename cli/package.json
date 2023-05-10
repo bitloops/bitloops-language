@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bitloops-language-cli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Bitloops Language CLI",
   "type": "module",
   "engines": {
@@ -74,13 +74,13 @@
     "generate": "node --loader ts-node/esm/transpile-only src/index.ts generate",
     "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
     "caxa": "npx caxa --input \"/Users/vasilis/Code/Bitloops/bitloops-language-cli\"  --output \"/Users/vasilis/Code/Bitloops/bitloops-language-cli/dist/Bitloops Language.app\" -- \"{{caxa}}/node_modules/.bin/node\" \"{{caxa}}/lib/src/index.js\" \"transpile\"",
-    "esbuild-single-cjs": "yarn esbuild ./src/index.ts --bundle --platform=node --outfile=pkg-dist/index.cjs --external:figlet --external:path --loader:.flf=file --loader:.tlf=file",
+    "esbuild-single-cjs": "yarn build && yarn esbuild ./src/index.ts --bundle --platform=node --outfile=pkg-dist/index.cjs --external:figlet --external:path --loader:.flf=file --loader:.tlf=file",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.4.1",
+    "@bitloops/bl-transpiler": "^0.4.2",
     "axios": "^1.1.3",
     "chalk": "5.0.1",
     "cli-progress": "^3.12.0",
