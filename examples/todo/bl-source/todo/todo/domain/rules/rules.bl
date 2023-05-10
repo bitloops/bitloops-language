@@ -7,5 +7,5 @@ Rule TodoAlreadyCompletedRule(completed: bool, todoId: string) throws DomainErro
 }
 
 Rule TodoAlreadyUncompletedRule(completed: bool, todoId: string) throws DomainErrors.TodoAlreadyUncompletedError { 
-    isBrokenIf(completed);
+    isBrokenIf(NOT completed);
 }

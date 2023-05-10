@@ -3,6 +3,7 @@
     "target": "ES2022",
     "module": "Node16",
     "lib": ["ES2022"],
+    "strict": true,
     "moduleResolution": "Node16",
     "rootDir": ".",
     "outDir": "lib",
@@ -20,6 +21,10 @@
     "strictNullChecks": false,
     "allowJs": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*", "__tests__/**/*"],
+  "types": [
+    "@types/node"
+  ]
 }

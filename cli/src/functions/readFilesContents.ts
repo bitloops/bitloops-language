@@ -22,6 +22,8 @@ import * as path from 'path';
 
 import { getRecursivelyFileInDirectory } from './getRecursivelyFileInDirectory.js';
 import { TParserCoreInputData } from '@bitloops/bl-transpiler';
+import { BoundedContextModulesInfo } from '../utils/bounded-context-module.generator.js';
+import { CodeSnippets } from '../commands/generate/data-sets/common/code-snippets.js';
 
 const BL_SUFFIX = 'bl';
 
@@ -30,12 +32,13 @@ type BoundedContextModules = Record<string, string[]>;
 const getBitloopsFilesAndContents = async (
   boundedContextModules: BoundedContextModules,
   sourceDirPath: string,
+  suffix: 'bl' | 'ts' = BL_SUFFIX,
 ): Promise<TParserCoreInputData> => {
   const result: TParserCoreInputData = [];
   for (const [boundedContextName, modules] of Object.entries(boundedContextModules)) {
     for (const moduleName of modules) {
       const modulePath = path.join(sourceDirPath, boundedContextName, moduleName);
-      const contextFilePaths = getRecursivelyFileInDirectory(modulePath, BL_SUFFIX);
+      const contextFilePaths = getRecursivelyFileInDirectory(modulePath, suffix);
       const moduleInput = await Promise.all(
         contextFilePaths.map(async (contextFilePath) => {
           const fileContents = await fs.readFile(contextFilePath, 'utf-8');
@@ -54,4 +57,42 @@ const getBitloopsFilesAndContents = async (
   }
   return result;
 };
-export { getBitloopsFilesAndContents };
+
+export type TranspiledTypescriptFileInfo = {
+  fileName: string;
+  fileContent: string;
+  filePath: string;
+};
+export type TranspiledTypescriptFilesAndContents = BoundedContextModulesInfo<
+  TranspiledTypescriptFileInfo[]
+>;
+
+const getTypescriptFilesAndContents = async (
+  boundedContextModules: BoundedContextModules,
+  sourceDirPath: string,
+): Promise<TranspiledTypescriptFilesAndContents> => {
+  const result: TranspiledTypescriptFilesAndContents = {};
+  for (const [boundedContextName, modules] of Object.entries(boundedContextModules)) {
+    result[boundedContextName] = {};
+    for (const moduleName of modules) {
+      result[boundedContextName][moduleName] = [];
+      const modulePath = path.join(sourceDirPath, boundedContextName, moduleName);
+      const contextFilePaths = getRecursivelyFileInDirectory(modulePath, 'ts');
+      const moduleFiles = await Promise.all(
+        contextFilePaths.map(async (contextFilePath) => {
+          const fileContent = await fs.readFile(contextFilePath, 'utf-8');
+          const fileName = contextFilePath.split('/').pop();
+          const fileContentWithoutLicense = CodeSnippets.removeLicenseCode(fileContent);
+          return {
+            fileName,
+            fileContent: fileContentWithoutLicense,
+            filePath: contextFilePath,
+          };
+        }),
+      );
+      result[boundedContextName][moduleName] = moduleFiles;
+    }
+  }
+  return result;
+};
+export { getBitloopsFilesAndContents, getTypescriptFilesAndContents };

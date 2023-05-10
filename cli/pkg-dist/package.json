@@ -1,0 +1,27 @@
+{
+  "name": "bitloops-cli",
+  "version": "0.3.1",
+  "description": "Bitloops Language CLI",
+  "bin": "./index.cjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "yarn pkg ."
+  },
+  "keywords": [],
+  "author": "Bitloops S.A.",
+  "license": "GPL-3.0",
+  "pkg": {
+    "targets": [
+      "node16-macos-x64",
+      "node16-linux-x64",
+      "node16-windows-x64"
+    ],
+    "outputPath": "./executables",
+    "assets": [
+      "../node_modules/figlet/fonts/**/*.flf"
+    ]
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
