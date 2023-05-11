@@ -491,6 +491,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               expression: condition.expression,
               symbolTable: classTypeScope,
               intermediateASTTree: ASTTree,
+              ifErrorCounter: 0,
             });
           } else if (ClassTypeNodeTypeGuards.isIntegrationEvent(node)) {
             const param = node.getParameter();
