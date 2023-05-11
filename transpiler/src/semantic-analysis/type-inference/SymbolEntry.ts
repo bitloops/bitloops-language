@@ -49,14 +49,3 @@ export class MemberDotSymbolEntry extends SymbolEntry {
     super(type);
   }
 }
-
-// export class MethodSymbolEntry extends SymbolEntry {
-//   constructor(
-//     type: TInferredTypes,
-//     public parameters: ParameterSymbolEntry[],
-//     public accessModifier: 'public' | 'private',
-//     public isStatic: boolean = false,
-//   ) {
-//     super(type);
-//   }
-// }

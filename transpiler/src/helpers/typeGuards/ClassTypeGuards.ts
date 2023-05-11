@@ -82,4 +82,8 @@ export class ClassTypeGuards {
   static isCommandBusPort(name: string): boolean {
     return name.endsWith('CommandBusPort');
   }
+
+  static isRegex(name: string): boolean {
+    return name === 'regex';
+  }
 }

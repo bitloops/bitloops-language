@@ -14,4 +14,12 @@ export class RegexLiteralNode extends LiteralNode {
   getInferredType(): string {
     return bitloopsPrimitivesObj.regex;
   }
+
+  static getLiteralType(type: string): string {
+    const literalValue = {
+      test: bitloopsPrimitivesObj.bool,
+    };
+
+    return literalValue[type];
+  }
 }
