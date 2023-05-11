@@ -34,7 +34,7 @@ export const packagePortToTargetLanguage = (
   let res = `export interface ${PackagePortIdentifier} `;
   res += '{';
   const model = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TDefinitionMethods,
+    type: BitloopsTypesMapping.TSyncDefinitionMethods,
     value: methodDefinitionList,
   });
 

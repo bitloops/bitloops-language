@@ -1,3 +1,3 @@
 export interface GherkinPackagePort {
-  encode(value: string): Promise<Uint8Array>;
+  encode(value: string): Uint8Array;
 }

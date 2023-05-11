@@ -414,6 +414,6 @@ export const VALID_PACKAGE_EVALUATION_TEST_CASES = [
       'encode',
       new ArgumentListDirector().buildArgumentListWithIdentifierExpression('value'),
     ),
-    output: 'await GherkinPackage.encode(value)',
+    output: 'GherkinPackage.encode(value)',
   },
 ];

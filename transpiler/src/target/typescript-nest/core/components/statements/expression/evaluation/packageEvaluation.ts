@@ -49,7 +49,7 @@ export const packageEvaluationToTargetLanguage = (
   const packageDependency = PACKAGE_DEPENDENCIES(identifier);
 
   return {
-    output: `await ${identifier}.${methodName}${argumentListResult.output}`,
+    output: `${identifier}.${methodName}${argumentListResult.output}`,
     dependencies: [...argumentListResult.dependencies, ...packageDependency],
   };
 };
