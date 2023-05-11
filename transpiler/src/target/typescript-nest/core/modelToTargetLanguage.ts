@@ -66,6 +66,7 @@ import { DTOEvaluationToTargetLanguage } from './components/statements/expressio
 import {
   definitionMethodInfoToTargetLanguage,
   definitionMethodsToTargetLanguage,
+  syncDefinitionMethodsToTargetLanguage,
 } from './components/definition-methods/index.js';
 import { packagePortToTargetLanguage } from './components/package-port/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
@@ -329,6 +330,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDefinitionMethods: {
       res = definitionMethodsToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TSyncDefinitionMethods: {
+      res = syncDefinitionMethodsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPackagePort: {

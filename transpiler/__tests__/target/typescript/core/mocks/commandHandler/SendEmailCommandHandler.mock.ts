@@ -34,7 +34,7 @@ export class SendEmailCommandHandler
       content: command.content,
     };
     await this.emailService.send(emailToSend);
-    const res = await GherkinPackage.encode('aloha');
+    const res = GherkinPackage.encode('aloha');
     return ok();
   }
 }

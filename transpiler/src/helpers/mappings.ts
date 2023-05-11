@@ -74,6 +74,7 @@ const BitloopsTypesMapping = {
   TEvaluatePrimitive: 'TEvaluatePrimitive',
   TDefinitionMethodInfo: 'TDefinitionMethodInfo',
   TDefinitionMethods: 'TDefinitionMethods',
+  TSyncDefinitionMethods: 'TSyncDefinitionMethods',
   TReturnType: 'TReturnType',
   TPackagePort: 'TPackagePort',
   TPackagePortIdentifier: 'TPackagePortIdentifier',
