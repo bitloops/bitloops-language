@@ -90,6 +90,14 @@ export class IfErrorExpressionNode extends ExpressionNode {
     return anonymousFunction.getParameters()[0];
   }
 
+  public getInferredTypeOfParameter(symbolTable: SymbolTable): string {
+    const leftExpression = this.getExpressionValues();
+    const leftExpressionString = leftExpression.getStringValue();
+    const leftExpressionType = symbolTable.lookup(leftExpressionString);
+    const { type: leftType } = leftExpressionType;
+    return StringUtils.getSubstringsBetweenStrings(leftType, 'Errors(', ')')[0];
+  }
+
   public getInferredType(symbolTable?: SymbolTable): string {
     const leftExpression = this.getExpressionValues();
     const leftExpressionString = leftExpression.getStringValue();

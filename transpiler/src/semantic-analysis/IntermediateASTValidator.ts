@@ -1024,8 +1024,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             ifErrorCounter,
           });
         } else if (child.isIfErrorExpression()) {
+          const leftIfErrorExpression = child.getExpression();
           this.addExpression({
-            expression: child.getExpression(),
+            expression: leftIfErrorExpression,
             symbolTable,
             intermediateASTTree,
             core,
@@ -1041,15 +1042,16 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             SCOPE_NAMES.IF_ERROR + ifErrorCounter++,
             child,
           );
-          // method for parameters
-          const parameters = child.getParameters();
-          parameters.forEach((paramNode) => {
-            const paramName = paramNode.getIdentifier();
+
+          // const parameters = child.getParameters(); // TODO type check
+          const parameter = child.getParameter();
+          if (parameter) {
+            const paramName = parameter.getIdentifier();
             ifErrorScope.insert(
               paramName,
-              new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
+              new ParameterSymbolEntry(child.getInferredTypeOfParameter(symbolTable)),
             );
-          });
+          }
           const statementList = child.getStatementListNode();
           if (statementList) {
             this.createStatementListScope({

@@ -68,11 +68,12 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 'this.accountRepo.getById()',
                 new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
               )
-              .insertVariableSymbolEntry(
-                'accountEntity',
-                '(OK(AccountEntity), Errors(UnexpectedError))',
-                true,
+              .insert(
+                'this.accountRepo.getById().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
               )
+              .insertChildScope('ifError0', new SymbolTableBuilder())
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
@@ -87,6 +88,11 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert(
                 'this.accountRepo.update()',
                 new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
+              )
+              .insert('this.accountRepo.update().ifError()', new MethodCallSymbolEntry('void'))
+              .insertChildScope(
+                'ifError1',
+                new SymbolTableBuilder().insert('err', new ParameterSymbolEntry('UnexpectedError')),
               ),
           ),
       )
@@ -136,11 +142,15 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 'this.accountRepo.getById()',
                 new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
               )
-              .insertVariableSymbolEntry(
-                'accountEntity',
-                '(OK(AccountEntity), Errors(UnexpectedError))',
-                true,
+              .insert(
+                'this.accountRepo.getById().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
               )
+              .insertChildScope(
+                'ifError0',
+                new SymbolTableBuilder().insert('err', new ParameterSymbolEntry('UnexpectedError')),
+              )
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
@@ -159,7 +169,9 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert(
                 'this.accountRepo.update()',
                 new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
-              ),
+              )
+              .insert('this.accountRepo.update().ifError()', new MethodCallSymbolEntry('void'))
+              .insertChildScope('ifError1', new SymbolTableBuilder()),
           ),
       )
       .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
@@ -488,10 +500,11 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                     'this.notificationTemplateRepo.getByType()',
                     new MethodCallSymbolEntry('(OK(NotificationTemplateReadModel), Errors())'),
                   )
-                  // .insert(
-                  //   'this.notificationTemplateRepo.getByType().ifError()',
-                  //   new MethodCallSymbolEntry('NotificationTemplateReadModel'),
-                  // )
+                  .insert(
+                    'this.notificationTemplateRepo.getByType().ifError()',
+                    new MethodCallSymbolEntry('NotificationTemplateReadModel'),
+                  )
+                  .insertChildScope('ifError0', new SymbolTableBuilder())
                   .insertVariableSymbolEntry(
                     'notificationTemplateResponse',
                     'NotificationTemplateReadModel',
