@@ -661,10 +661,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
 
   visitPackageIdentifier(ctx: BitloopsParser.PackageIdentifierContext): IdentifierNode {
-    const commandName = ctx.PackageIdentifier().getText();
+    const packageName = ctx.PackageIdentifier().getText();
     const metadata = produceMetadata(ctx, this);
-    const commandIdentifierNode = new IdentifierNodeBuilder(metadata).withName(commandName).build();
-    return commandIdentifierNode;
+    const packageIdentifierNode = new IdentifierNodeBuilder(metadata).withName(packageName).build();
+    return packageIdentifierNode;
   }
 
   visitIntegrationEventEvaluation(ctx: BitloopsParser.IntegrationEventEvaluationContext): any {
