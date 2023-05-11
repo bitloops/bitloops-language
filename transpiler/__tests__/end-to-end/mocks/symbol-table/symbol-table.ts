@@ -527,7 +527,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
         new SymbolTableBuilder()
           .insert('email', new ParameterSymbolEntry(bitloopsPrimitivesObj.string))
           .insertVariableSymbolEntry('re', bitloopsPrimitivesObj.regex, true)
-          .insert('re.test(email)', new MethodCallSymbolEntry(bitloopsPrimitivesObj.bool)),
+          .insert('re.test()', new MethodCallSymbolEntry(bitloopsPrimitivesObj.bool)),
       )
       .build(),
   },
@@ -553,6 +553,23 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           ),
       )
       .insertChildScope('TodoCompletedDomainEvent', new SymbolTableBuilder())
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for rule with logical operators',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/rule-with-logical-operators.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'ValidNameRule',
+        new SymbolTableBuilder()
+          .insert('name', new ParameterSymbolEntry(bitloopsPrimitivesObj.string))
+          .insert('name.length', new MemberDotSymbolEntry(bitloopsPrimitivesObj.int32)),
+      )
       .build(),
   },
 ];

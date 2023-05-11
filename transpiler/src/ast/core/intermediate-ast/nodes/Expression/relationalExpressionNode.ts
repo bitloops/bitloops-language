@@ -17,4 +17,12 @@ export class RelationalExpressionNode extends ExpressionNode {
     }
     return expressions[num] as ExpressionNode;
   }
+
+  getLeftExpression(): ExpressionNode {
+    return (this.getExpressions(0) as ExpressionNode).getChildren()[0] as ExpressionNode;
+  }
+
+  getRightExpression(): ExpressionNode {
+    return (this.getExpressions(1) as ExpressionNode).getChildren()[0] as ExpressionNode;
+  }
 }

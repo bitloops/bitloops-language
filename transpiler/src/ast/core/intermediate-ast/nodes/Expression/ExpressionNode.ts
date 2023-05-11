@@ -7,12 +7,15 @@ import { BuiltInFunctionNode } from '../statements/builtinFunction/BuiltinFuncti
 import { AssignmentExpressionNode } from './AssignmentExpression.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
+import { LogicalExpressionNode } from './Logical/LogicalExpressionNode.js';
+import { LogicalNotExpressionNode } from './Logical/LogicalNotExpression.js';
 import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
 import { ToStringNode } from './ToString.js';
 import { EqualityExpressionNode } from './equalityExpressionNode.js';
 import { LiteralNode } from './Literal/LiteralNode.js';
+import { RelationalExpressionNode } from './relationalExpressionNode.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
 //   isMethodCallExpression(): this is MethodCallExpressionNode {
@@ -44,6 +47,10 @@ export class ExpressionNode extends StatementNode {
 
   isEqualityExpression(): this is EqualityExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
+  }
+
+  isRelationalExpression(): this is RelationalExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TRelationalExpression;
   }
 
   isToStringExpression(): this is ToStringNode {
@@ -114,6 +121,14 @@ export class ExpressionNode extends StatementNode {
 
   isEvaluation(): this is EvaluationNode {
     return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
+  }
+
+  isLogicalExpression(): this is LogicalExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TLogicalExpression;
+  }
+
+  isLogicalNotExpression(): this is LogicalNotExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TNotExpression;
   }
 
   /**

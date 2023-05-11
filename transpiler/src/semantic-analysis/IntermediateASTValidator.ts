@@ -74,6 +74,7 @@ import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
 import { EvaluationFieldNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { EventHandlerBusDependenciesNode } from '../ast/core/intermediate-ast/nodes/DomainEventHandler/EventHandlerBusDependenciesNode.js';
+import { RegexLiteralNode } from '../ast/core/intermediate-ast/nodes/Expression/Literal/RegexLiteralNode.js';
 // import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 // import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
@@ -260,6 +261,12 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     const fieldType = fieldTypes[rightExpressionString];
     return inferType({ node: fieldType });
   }
+
+  if (ClassTypeGuards.isRegex(leftType)) {
+    const regexType = RegexLiteralNode.getLiteralType(rightExpressionString);
+    return regexType;
+  }
+
   return '';
 };
 
@@ -472,6 +479,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             const statements = node.getStatements();
             this.createStatementListScope({
               statements: statements,
+              symbolTable: classTypeScope,
+              intermediateASTTree: ASTTree,
+            });
+
+            const condition = node.getIsBrokenCondition().getCondition();
+            this.addExpression({
+              expression: condition.expression,
               symbolTable: classTypeScope,
               intermediateASTTree: ASTTree,
             });
@@ -852,50 +866,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             });
           }
         }
-
-        // if (child.isBuiltInFunctionExpression()) {
-        //   if (IntermediateASTNodeTypeGuards.isAddDomainEvent(child)) {
-        //     const leftExpression = child.getLeftExpression();
-        //     const rightExpression = child.getRightExpression();
-        //     let leftExpressionKey = '';
-        //     let rightExpressionKey = '';
-        //     // if (leftExpression.isMemberDotExpression()) {
-        //     //   leftExpressionKey = this.addMemberDotExpression({
-        //     //     memberDotExpression: leftExpression,
-        //     //     symbolTable,
-        //     //     intermediateASTTree,
-        //     //   });
-        //     // } else {
-        //     leftExpressionKey = leftExpression.getIdentifierName();
-        //     // }
-        //     if (rightExpression.isMemberDotExpression()) {
-        //       rightExpressionKey = this.addMemberDotExpression({
-        //         memberDotExpression: rightExpression,
-        //         symbolTable,
-        //         intermediateASTTree,
-        //       });
-        //     } else {
-        //       rightExpressionKey = this.rightExpressionToString(rightExpression);
-        //     }
-
-        //     const key = this.appendMemberDot([leftExpressionKey, rightExpressionKey]);
-        //     symbolTable.insert(
-        //       key,
-        //       new MethodCallSymbolEntry(
-        //         inferType({ node: child, symbolTable, intermediateASTTree }),
-        //       ),
-        //     );
-        //   } else if (IntermediateASTNodeTypeGuards.isApplyRules(child)) {
-        //     const expression = child.getExpression();
-        //     if (expression.isMemberDotExpression()) {
-        //       this.addMemberDotExpression({
-        //         memberDotExpression: expression,
-        //         symbolTable,
-        //         intermediateASTTree,
-        //       });
-        //     }
-        //   }
-        // }
       } catch (e) {
         // console.log(e);
         if (e instanceof ValidationError) {
@@ -1023,6 +993,44 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable,
             intermediateASTTree,
             core,
+          });
+        } else if (child.isLogicalExpression()) {
+          const logicalExpression = child.getExpressionValue();
+          if (logicalExpression.isLogicalNotExpression()) {
+            const expression = logicalExpression.getChildren()[0] as ExpressionNode;
+            this.addExpression({
+              expression,
+              symbolTable,
+              intermediateASTTree,
+            });
+          } else {
+            const leftExpression = logicalExpression.getLeftExpression();
+            const rightExpression = logicalExpression.getRightExpression();
+            this.addExpression({
+              expression: leftExpression,
+              symbolTable,
+              intermediateASTTree,
+            });
+
+            this.addExpression({
+              expression: rightExpression,
+              symbolTable,
+              intermediateASTTree,
+            });
+          }
+        } else if (child.isRelationalExpression()) {
+          const leftExpression = child.getLeftExpression();
+          const rightExpression = child.getRightExpression();
+          this.addExpression({
+            expression: leftExpression,
+            symbolTable,
+            intermediateASTTree,
+          });
+
+          this.addExpression({
+            expression: rightExpression,
+            symbolTable,
+            intermediateASTTree,
           });
         } else if (child.isToStringExpression()) {
           this.addExpression({
