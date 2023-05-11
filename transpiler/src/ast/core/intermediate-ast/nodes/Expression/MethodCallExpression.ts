@@ -85,6 +85,12 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return argumentList;
   }
 
+  public getStringValue(): string {
+    const expression = this.getExpression();
+    const leftStringValue = expression.getStringValue();
+    return leftStringValue + '()';
+  }
+
   public override typeCheck(symbolTable: SymbolTable): void {
     const expressionNode = this.getExpressionValues();
     expressionNode.typeCheck(symbolTable);

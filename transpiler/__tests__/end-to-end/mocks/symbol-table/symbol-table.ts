@@ -208,11 +208,12 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
                 'this.accountRepo.getById()',
                 new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
               )
-              .insertVariableSymbolEntry(
-                'accountEntity',
-                '(OK(AccountEntity), Errors(UnexpectedError))',
-                true,
+              .insert(
+                'this.accountRepo.getById().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
               )
+              .insertChildScope('ifError0', new SymbolTableBuilder())
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
               .insertChildScope(
                 'if0',
                 new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),

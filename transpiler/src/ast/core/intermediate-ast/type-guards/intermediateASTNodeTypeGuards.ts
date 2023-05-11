@@ -12,6 +12,7 @@ import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { AddDomainEventNode } from '../nodes/statements/builtinFunction/AddDomainEventNode.js';
 import { ApplyRulesNode } from '../nodes/statements/builtinFunction/ApplyRulesStatementNode.js';
+import { IfErrorExpressionNode } from '../nodes/Expression/IfErrorExpressionNode.js';
 
 export class IntermediateASTNodeTypeGuards {
   static isBitloopsPrimaryType(node: IntermediateASTNode): node is BitloopsPrimaryTypeNode {
@@ -40,6 +41,10 @@ export class IntermediateASTNodeTypeGuards {
 
   static isMemberDotExpression(node: IntermediateASTNode): node is MemberDotExpressionNode {
     return node.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
+  }
+
+  static isIfErrorExpression(node: IntermediateASTNode): node is IfErrorExpressionNode {
+    return node.getNodeType() === BitloopsTypesMapping.TIfErrorExpression;
   }
 
   static isThisExpression(node: IntermediateASTNode): node is ThisExpressionNode {

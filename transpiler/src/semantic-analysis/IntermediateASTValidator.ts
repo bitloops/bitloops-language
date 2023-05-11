@@ -87,6 +87,7 @@ export const SCOPE_NAMES = {
   ELSE: 'else',
   DOMAIN_CREATE: 'domainCreate',
   HANDLE: 'handle',
+  IF_ERROR: 'ifError',
 };
 
 export const inferType = ({
@@ -125,6 +126,8 @@ export const inferType = ({
       intermediateASTTree,
       core,
     });
+  } else if (IntermediateASTNodeTypeGuards.isIfErrorExpression(node)) {
+    return node.getInferredType(symbolTable);
   } else if (IntermediateASTNodeTypeGuards.isThisExpression(node)) {
     const identifier = node.getIdentifierName();
     const expressionType = identifier;
@@ -674,6 +677,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     let ifCounter = 0;
     let elseCounter = 0;
     let switchCounter = 0;
+    let ifErrorCounter = 0;
     for (const statement of statements) {
       try {
         if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
@@ -684,11 +688,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           const getExpressionValue = statement.getExpressionValues();
           const expression = statement.getExpression();
           if (expression) {
-            this.addExpression({
+            ifErrorCounter = this.addExpression({
               expression,
               symbolTable,
               intermediateASTTree,
               core,
+              ifErrorCounter,
             });
           }
 
@@ -722,13 +727,15 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             expression,
             symbolTable,
             intermediateASTTree,
+            ifErrorCounter,
           });
 
-          this.addExpression({
+          ifErrorCounter = this.addExpression({
             expression: statement.getExpression(),
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
           symbolTable.insert(
             identifier,
@@ -742,11 +749,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         if (StatementNodeTypeGuards.isIfStatement(statement)) {
           const conditionExpression = statement.getConditionExpression();
           conditionExpression.typeCheck(symbolTable);
-          this.addExpression({
+          ifErrorCounter = this.addExpression({
             expression: conditionExpression,
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
 
           const ifScope = symbolTable.createChildScope(SCOPE_NAMES.IF + ifCounter++, statement);
@@ -809,11 +817,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
 
         if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
           statement.typeCheck(symbolTable);
-          this.addExpression({
+          ifErrorCounter = this.addExpression({
             expression: statement,
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
         }
 
@@ -825,10 +834,11 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
 
             const rightExpression = specificFunction.getRightExpression();
             rightExpression.typeCheck(symbolTable);
-            this.addExpression({
+            ifErrorCounter = this.addExpression({
               expression: rightExpression,
               symbolTable,
               intermediateASTTree,
+              ifErrorCounter,
             });
 
             //Here add to symbol table the Add domain event statement
@@ -848,6 +858,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
                 expression: argument.getExpression(),
                 symbolTable,
                 intermediateASTTree,
+                ifErrorCounter,
               });
             });
           }
@@ -913,10 +924,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     expression,
     symbolTable,
     intermediateASTTree,
+    ifErrorCounter,
   }: {
     expression: ExpressionNode;
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    ifErrorCounter: number;
   }): void {
     if (expression.isEvaluation()) {
       const evaluationExpression = expression as EvaluationNode;
@@ -925,9 +938,15 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         fieldNodes: evaluationFields,
         symbolTable,
         intermediateASTTree,
+        ifErrorCounter,
       });
       const argumentNodes = evaluationExpression.getArguments();
-      this.addFieldsOfEvaluation({ fieldNodes: argumentNodes, symbolTable, intermediateASTTree });
+      this.addFieldsOfEvaluation({
+        fieldNodes: argumentNodes,
+        symbolTable,
+        intermediateASTTree,
+        ifErrorCounter,
+      });
     }
   }
 
@@ -935,10 +954,12 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     fieldNodes,
     symbolTable,
     intermediateASTTree,
+    ifErrorCounter,
   }: {
     fieldNodes: ArgumentNode[] | EvaluationFieldNode[];
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
+    ifErrorCounter: number;
   }): void {
     fieldNodes.forEach((argument) => {
       const argumentExpression = argument.getExpression();
@@ -946,6 +967,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         expression: argumentExpression,
         symbolTable,
         intermediateASTTree,
+        ifErrorCounter,
       });
     });
   }
@@ -974,12 +996,14 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     symbolTable,
     intermediateASTTree,
     core,
+    ifErrorCounter,
   }: {
     expression: ExpressionNode;
     symbolTable: SymbolTable;
     intermediateASTTree: IntermediateASTTree;
     core?: TBoundedContexts;
-  }): void {
+    ifErrorCounter: number;
+  }): number {
     for (const child of expression.getChildren()) {
       if (child instanceof ExpressionNode) {
         if (child.isMemberDotExpression()) {
@@ -1002,6 +1026,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
 
           this.addExpression({
@@ -1009,6 +1034,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
         } else if (child.isEqualityExpression()) {
           this.addExpression({
@@ -1016,6 +1042,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
 
           this.addExpression({
@@ -1023,12 +1050,50 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             symbolTable,
             intermediateASTTree,
             core,
+            ifErrorCounter,
           });
+        } else if (child.isIfErrorExpression()) {
+          this.addExpression({
+            expression: child.getExpression(),
+            symbolTable,
+            intermediateASTTree,
+            core,
+            ifErrorCounter,
+          });
+
+          const key = child.getStringValue() + '.ifError()';
+          symbolTable.insert(
+            key,
+            new MethodCallSymbolEntry(inferType({ node: child, symbolTable, intermediateASTTree })),
+          );
+          const ifErrorScope = symbolTable.createChildScope(
+            SCOPE_NAMES.IF_ERROR + ifErrorCounter++,
+            child,
+          );
+          // method for parameters
+          const parameters = child.getParameters();
+          parameters.forEach((paramNode) => {
+            const paramName = paramNode.getIdentifier();
+            ifErrorScope.insert(
+              paramName,
+              new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
+            );
+          });
+          const statementList = child.getStatementListNode();
+          if (statementList) {
+            this.createStatementListScope({
+              statements: statementList.statements,
+              symbolTable: ifErrorScope,
+              intermediateASTTree,
+            });
+          }
         } else if (child.isToStringExpression()) {
           this.addExpression({
             expression: child.getExpression(),
             symbolTable,
             intermediateASTTree,
+            core,
+            ifErrorCounter,
           });
 
           const key = child.getStringValue() + '.toString()';
@@ -1039,6 +1104,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         }
       }
     }
+    return ifErrorCounter;
   }
 
   // private leftExpressionToString(leftExpression: ExpressionNode): string {

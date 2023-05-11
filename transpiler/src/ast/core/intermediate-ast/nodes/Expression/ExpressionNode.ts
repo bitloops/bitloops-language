@@ -13,6 +13,7 @@ import { ThisExpressionNode } from './ThisExpressionNode.js';
 import { ToStringNode } from './ToString.js';
 import { EqualityExpressionNode } from './equalityExpressionNode.js';
 import { LiteralNode } from './Literal/LiteralNode.js';
+import { IfErrorExpressionNode } from './IfErrorExpressionNode.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
 //   isMethodCallExpression(): this is MethodCallExpressionNode {
@@ -52,6 +53,10 @@ export class ExpressionNode extends StatementNode {
 
   isBuiltInFunctionExpression(): this is BuiltInFunctionNode {
     return this.getNodeType() === BitloopsTypesMapping.TBuiltInFunction;
+  }
+
+  isIfErrorExpression(): this is IfErrorExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TIfErrorExpression;
   }
 
   isThisMethodCallExpressionWithTwoMemberDots(): boolean {
