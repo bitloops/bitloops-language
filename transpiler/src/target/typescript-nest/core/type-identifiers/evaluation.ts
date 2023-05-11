@@ -30,6 +30,7 @@ import {
   TDomainEventEvaluation,
   TReadModelEvaluation,
   TDomainServiceEvaluation,
+  TPackageEvaluation,
 } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
@@ -84,6 +85,10 @@ export class EvaluationTypeIdentifiers {
     evaluation: TEvaluationValues,
   ): evaluation is TStandardVOEvaluation {
     return 'standardVO' in evaluation;
+  }
+
+  static isPackageEvaluation(evaluation: TEvaluationValues): evaluation is TPackageEvaluation {
+    return 'packageEvaluation' in evaluation;
   }
 
   static isDomainEventEvaluation(

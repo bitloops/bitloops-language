@@ -177,6 +177,17 @@ export const getTargetFileName = (className: string, classType: TClassTypesValue
   return `${classNameKebabCase}.${classTypeKebabCase}`;
 };
 
+/**
+ *
+ * @param packageAdapter ends with Package
+ * @returns destination file name where the package adapter should be.
+ * @used Used for imports of package adapters
+ */
+export const getPackageAdapterFileName = (packageAdapter: string): string => {
+  const name = packageAdapter.replace('Package', '');
+  return `${kebabCase(name)}.package`;
+};
+
 // TODO maybe this should change name and remove integrationEvent case to other function
 const getFilePathRelativeToModule = (
   classType: TClassTypesValues,

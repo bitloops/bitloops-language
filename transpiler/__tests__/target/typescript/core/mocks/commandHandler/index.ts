@@ -12,6 +12,7 @@ import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate
 import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
+import { ArgumentDirector } from '../../builders/argument.js';
 
 export const VALID_COMMAND_HANDLER_TEST_CASES = [
   {
@@ -177,6 +178,20 @@ export const VALID_COMMAND_HANDLER_TEST_CASES = [
             'send',
           ),
           new ArgumentListDirector().buildArgumentListWithIdentifierExpression('emailToSend'),
+        ),
+        new ConstDeclarationBuilderDirector().buildConstDeclaration(
+          'res',
+          new ExpressionBuilderDirector().buildEvaluationExpression(
+            new EvaluationBuilderDirector().buildPackageEvaluation(
+              'GherkinPackage',
+              'encode',
+              new ArgumentListDirector().buildArgumentListWithArgs([
+                new ArgumentDirector().buildArgument(
+                  new ExpressionBuilderDirector().buildStringLiteralExpression('aloha'),
+                ),
+              ]),
+            ),
+          ),
         ),
         new ReturnStatementBuilderDirector().buildReturnOKEmpty(),
       ],

@@ -29,6 +29,9 @@ import { DomainServiceEvaluationBuilderDirector } from './domainServiceEvaluatio
 import { ReadModelEvaluationBuilderDirector } from './domainEvaluation/readModelEvaluation.js';
 import { DomainEventIdentifierNode } from '../../../../../src/ast/core/intermediate-ast/nodes/DomainEvent/DomainEventIdentifierNode.js';
 import { DomainEventEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/DomainEventEvaluationNodeBuilder.js';
+import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
+import { PackageMethodNameBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/PackageMethodNameBuilder.js';
+import { PackageEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/PackageEvaluationNodeBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -251,5 +254,23 @@ export class EvaluationBuilderDirector {
       .withEvaluation(domainServiceEvaluationNode)
       .build();
     return evaluationNode;
+  }
+
+  buildPackageEvaluation(
+    packageIdentifier: string,
+    methodName: string,
+    argumentList: ArgumentListNode,
+  ): EvaluationNode {
+    const identifier = new IdentifierNodeBuilder().withName(packageIdentifier).build();
+    const methodNameNode = new PackageMethodNameBuilder(null).withName(methodName).build();
+    return new EvaluationBuilder()
+      .withEvaluation(
+        new PackageEvaluationNodeBuilder()
+          .withPackageIdentifier(identifier)
+          .withMethodName(methodNameNode)
+          .withArgumentsList(argumentList)
+          .build(),
+      )
+      .build();
   }
 }

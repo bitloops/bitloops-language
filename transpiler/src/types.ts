@@ -269,7 +269,8 @@ export type TEvaluationValues =
   | TDomainEventEvaluation
   | TStandardVOEvaluation
   | TDomainServiceEvaluation
-  | TReadModelEvaluation;
+  | TReadModelEvaluation
+  | TPackageEvaluation;
 
 export type TMethodCallExpression = {
   methodCallExpression: TExpression & TArgumentList;
@@ -367,6 +368,12 @@ type TDomainEvaluationName =
 
 export type TReadModelEvaluation = {
   readModelEvaluation: TDomainEvaluation;
+};
+export type TPackageEvaluation = {
+  packageEvaluation: {
+    identifier: string;
+    methodName: string;
+  } & TArgumentList;
 };
 
 export type TDomainEvaluationExpression = TEvaluationFields | TExpression;

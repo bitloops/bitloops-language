@@ -5,6 +5,7 @@ import { Inject } from '@nestjs/common';
 import { EmailDomainServiceToken } from '../../constants';
 import { EmailDomainService } from '../../domain/services/email.domain-service';
 import { EmailToSend } from '../../structs/email-to-send.struct';
+import { GherkinPackage } from '@packages/gherkin.package';
 export type SendEmailCommandHandlerResponse = Either<void, void>;
 export class SendEmailCommandHandler
   implements Application.ICommandHandler<SendEmailCommand, void>
@@ -33,6 +34,7 @@ export class SendEmailCommandHandler
       content: command.content,
     };
     await this.emailService.send(emailToSend);
+    const res = await GherkinPackage.encode('aloha');
     return ok();
   }
 }

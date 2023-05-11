@@ -274,6 +274,7 @@ evaluation
     | domainEventEvaluation
     | domainServiceEvaluation
     | readModelEvaluation
+    | packageEvaluation
     ;
 
 domainServiceEvaluation
@@ -495,6 +496,10 @@ readModelIdentifier
     : ReadModelIdentifier
     ;
 
+packageIdentifier
+    : PackageIdentifier
+    ;
+
 
 readModelDeclaration
     : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
@@ -649,6 +654,10 @@ propsEvaluation
 
 readModelEvaluation
     : readModelIdentifier Dot Create domainEvaluationInput  //TODO: here could be a another element, syntax wise the same with domainEvaluationInput
+    ;
+
+packageEvaluation
+    : packageIdentifier Dot regularIdentifier methodArguments  
     ;
 
 domainErrorDeclaration

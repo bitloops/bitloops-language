@@ -115,6 +115,12 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
       value: evaluation,
     });
   }
+  if (EvaluationTypeIdentifiers.isPackageEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TPackageEvaluation,
+      value: evaluation,
+    });
+  }
 
   if (EvaluationTypeIdentifiers.isStandardVOEvaluation(evaluation)) {
     return modelToTargetLanguage({
