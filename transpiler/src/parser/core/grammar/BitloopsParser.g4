@@ -776,10 +776,6 @@ elementList
     : expression (Comma expression)*
     ;
 
-// arguments
-//     : OpenParen (argumentList Comma?)? CloseParen
-//     ;
-
 argumentList
     : argument (Comma argument)*
     ;

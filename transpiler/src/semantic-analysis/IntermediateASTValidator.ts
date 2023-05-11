@@ -68,7 +68,6 @@ import { PrivateMethodDeclarationNode } from '../ast/core/intermediate-ast/nodes
 import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
 import { MemberDotExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/MemberDot/MemberDotExpression.js';
 import { ExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
-import { MethodCallExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/MethodCallExpression.js';
 import { IdentifierExpressionNode } from '../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 import { ClassTypeGuards } from '../helpers/typeGuards/ClassTypeGuards.js';
 import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationNode.js';
@@ -164,9 +163,7 @@ const getMemberDotTypeFromIntermediateASTTree = ({
   intermediateASTTree: IntermediateASTTree;
   core?: TBoundedContexts;
 }): string => {
-  let { type: leftType } = leftExpressionType;
-  //TODO remove this line!!!!!
-  if (!leftType) leftType = '';
+  const { type: leftType } = leftExpressionType;
   if (ClassTypeGuards.isQuery(leftType)) {
     const queryNode = intermediateASTTree.getQueryByIdentifier(leftType);
     const fieldNodes = queryNode.getFieldNodes();
@@ -734,8 +731,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
 
         if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
           const expression = statement.getExpressionValues();
-          statement.typeCheck(symbolTable);
-          expression.typeCheck(symbolTable); //this is not needed(it is inside constDeclarationNode)
+          //TODO uncomment
+          // statement.typeCheck(symbolTable);
+          // expression.typeCheck(symbolTable); //this is not needed(it is inside constDeclarationNode)
           const identifier = statement.getIdentifier().getIdentifierName();
 
           this.addEvaluationFields({
@@ -985,12 +983,16 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
             core,
           });
         } else if (child.isMethodCallExpression()) {
-          this.addMethodCallExpression({
-            methodCallExpression: child,
-            symbolTable,
-            intermediateASTTree,
-            core,
-          });
+          const expression = child.getExpressionValues();
+          if (expression.isMemberDotExpression()) {
+            this.addMemberDotExpression({
+              memberDotExpression: expression,
+              symbolTable,
+              intermediateASTTree,
+              core,
+              isMethodCall: true,
+            });
+          }
         } else if (child.isAssingmentExpression()) {
           this.addExpression({
             expression: child.getLeftExpression(),
@@ -1128,54 +1130,52 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     return ifErrorCounter;
   }
 
-  // private leftExpressionToString(leftExpression: ExpressionNode): string {
-  //   if (leftExpression.isThisExpression()) {
-  //     return SCOPE_NAMES.THIS;
-  //   } else if (leftExpression.isIdentifierExpression()) {
-  //     return leftExpression.getIdentifierName();
-  //   } else {
-  //     return '';
-  //   }
-  // }
-
-  // private rightExpressionToString(rightExpression: ExpressionNode): string {
-  //   if (rightExpression.isIdentifierExpression()) {
-  //     return rightExpression.getIdentifierName();
-  //   } else if (rightExpression.isThisExpression()) {
-  //     return SCOPE_NAMES.THIS;
-  //   } else if (rightExpression.isMemberDotExpression()) {
-  //     const leftMemberDotExpression = rightExpression.getLeftExpression();
-  //     const rightMemberDotExpression = rightExpression.getRightMostExpression();
-  //     const rightMemberDotString = this.appendMemberDot([
-  //       this.rightExpressionToString(leftMemberDotExpression),
-  //       this.rightExpressionToString(rightMemberDotExpression),
-  //     ]);
-  //     return rightMemberDotString;
-  //   }
-  //   return '';
-  // }
-
-  private addMethodCallExpression({
-    methodCallExpression,
+  private insertMemberDotOrMethodCallToSymbolTable({
+    isMethodCall,
+    memberDotResult,
+    rightMostExpression,
     symbolTable,
+    memberDotExpression,
     intermediateASTTree,
     core,
   }: {
-    methodCallExpression: MethodCallExpressionNode;
+    isMethodCall: boolean;
+    memberDotResult: string;
+    rightMostExpression: IdentifierExpressionNode;
     symbolTable: SymbolTable;
+    memberDotExpression: MemberDotExpressionNode;
     intermediateASTTree: IntermediateASTTree;
-    core?: TBoundedContexts;
-  }): void {
-    const expression = methodCallExpression.getExpressionValues();
-    // TODO typeCheck
-    if (expression.isMemberDotExpression()) {
-      this.addMemberDotExpression({
-        memberDotExpression: expression,
-        symbolTable,
-        intermediateASTTree,
-        core,
-        isMethodCall: true,
-      });
+    core: TBoundedContexts;
+  }): string {
+    if (isMethodCall) {
+      const methodCallSymbolEntryKey = this.getMethodCallSymbolEntryKey(
+        memberDotResult,
+        rightMostExpression,
+      );
+      if (!symbolTable.lookup(methodCallSymbolEntryKey)) {
+        symbolTable.insert(
+          methodCallSymbolEntryKey,
+          new MethodCallSymbolEntry(
+            inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
+          ),
+        );
+      }
+      return methodCallSymbolEntryKey;
+    } else {
+      const memberDotSymbolEntryKey = this.getMemberDotSymbolEntryKey(
+        memberDotResult,
+        rightMostExpression,
+      );
+      //add it to symbol table if it doesn't exist
+      if (!symbolTable.lookup(memberDotSymbolEntryKey)) {
+        symbolTable.insert(
+          memberDotSymbolEntryKey,
+          new MemberDotSymbolEntry(
+            inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
+          ),
+        );
+      }
+      return memberDotSymbolEntryKey;
     }
   }
 
@@ -1196,6 +1196,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   }): string {
     const leftMostMemberDotExpression = memberDotExpression.getLeftExpression();
     const rightMostExpression = memberDotExpression.getRightMostExpression();
+
     if (leftMostMemberDotExpression.isMemberDotExpression()) {
       const memberDotResult = this.addMemberDotExpression({
         memberDotExpression: leftMostMemberDotExpression,
@@ -1205,97 +1206,73 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         isMethodCall: false,
       });
 
-      if (isMethodCall) {
-        const methodCallSymbolEntryKey = this.getMethodCallSymbolEntryKey(
-          memberDotResult,
-          rightMostExpression,
-        );
-        if (!symbolTable.lookup(methodCallSymbolEntryKey)) {
-          symbolTable.insert(
-            methodCallSymbolEntryKey,
-            new MethodCallSymbolEntry(
-              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
-            ),
-          );
-        }
-        return methodCallSymbolEntryKey;
-      } else {
-        const memberDotSymbolEntryKey = this.getMemberDotSymbolEntryKey(
-          memberDotResult,
-          rightMostExpression,
-        );
-        //add it to symbol table if it doesn't exist
-        if (!symbolTable.lookup(memberDotSymbolEntryKey)) {
-          symbolTable.insert(
-            memberDotSymbolEntryKey,
-            new MemberDotSymbolEntry(
-              inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
-            ),
-          );
-        }
-        return memberDotSymbolEntryKey;
-      }
+      return this.insertMemberDotOrMethodCallToSymbolTable({
+        memberDotResult,
+        isMethodCall,
+        rightMostExpression,
+        symbolTable,
+        memberDotExpression,
+        intermediateASTTree,
+        core,
+      });
+    } else if (leftMostMemberDotExpression.isMethodCallExpression()) {
+      const memberDotExpression = leftMostMemberDotExpression.getMemberDotExpression();
+      const memberDotResult = this.addMemberDotExpression({
+        memberDotExpression,
+        symbolTable,
+        intermediateASTTree,
+        core,
+        isMethodCall: true,
+      });
+      return this.insertMemberDotOrMethodCallToSymbolTable({
+        memberDotResult,
+        isMethodCall,
+        rightMostExpression,
+        symbolTable,
+        memberDotExpression,
+        intermediateASTTree,
+        core,
+      });
+    } else if (leftMostMemberDotExpression.isIfErrorExpression()) {
+      // this.addExpression({
+      //   expression: leftMostMemberDotExpression,
+      //   symbolTable,
+      //   intermediateASTTree,
+      //   core,
+      //   ifErrorCounter: 0,
+      // });
+      return '';
+      // const memberDotExpression = leftMostMemberDotExpression.getMemberDotExpression();
+      // return this.insertMemberDotOrMethodCallToSymbolTable({
+      //   memberDotResult: memberDotExpression,
+      //   isMethodCall,
+      //   rightMostExpression,
+      //   symbolTable,
+      //   memberDotExpression,
+      //   intermediateASTTree,
+      //   core,
+      // });
     } else {
       if (leftMostMemberDotExpression.isThisExpression()) {
-        if (isMethodCall) {
-          const methodCallSymbolEntryKey = this.getMethodCallSymbolEntryKey(
-            leftMostMemberDotExpression.getIdentifierName(),
-            rightMostExpression,
-          );
-          if (!symbolTable.lookup(methodCallSymbolEntryKey)) {
-            symbolTable.insert(
-              methodCallSymbolEntryKey,
-              new MethodCallSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
-              ),
-            );
-          }
-          return methodCallSymbolEntryKey;
-        } else {
-          const memberDotSymbolEntryKey = this.getMemberDotSymbolEntryKey(
-            leftMostMemberDotExpression.getIdentifierName(),
-            rightMostExpression,
-          );
-          if (!symbolTable.lookup(memberDotSymbolEntryKey)) {
-            symbolTable.insert(
-              memberDotSymbolEntryKey,
-              new MemberDotSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
-              ),
-            );
-          }
-          return memberDotSymbolEntryKey;
-        }
+        return this.insertMemberDotOrMethodCallToSymbolTable({
+          memberDotResult: leftMostMemberDotExpression.getIdentifierName(),
+          isMethodCall,
+          rightMostExpression,
+          symbolTable,
+          memberDotExpression,
+          intermediateASTTree,
+          core,
+        });
       } else if (leftMostMemberDotExpression.isIdentifierExpression()) {
-        if (isMethodCall) {
-          const methodCallSymbolEntryKey = this.getMethodCallSymbolEntryKey(
-            leftMostMemberDotExpression.getIdentifierName(),
-            rightMostExpression,
-          );
-          if (!symbolTable.lookup(methodCallSymbolEntryKey)) {
-            symbolTable.insert(
-              methodCallSymbolEntryKey,
-              new MethodCallSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
-              ),
-            );
-          }
-          return methodCallSymbolEntryKey;
-        } else {
-          const memberDotSymbolEntryKey = this.getMemberDotSymbolEntryKey(
-            leftMostMemberDotExpression.getIdentifierName(),
-            rightMostExpression,
-          );
-          if (!symbolTable.lookup(memberDotSymbolEntryKey)) {
-            symbolTable.insert(
-              memberDotSymbolEntryKey,
-              new MemberDotSymbolEntry(
-                inferType({ node: memberDotExpression, symbolTable, intermediateASTTree, core }),
-              ),
-            );
-          }
-          return memberDotSymbolEntryKey;
-        }
+        return this.insertMemberDotOrMethodCallToSymbolTable({
+          memberDotResult: leftMostMemberDotExpression.getIdentifierName(),
+          isMethodCall,
+          rightMostExpression,
+          symbolTable,
+          memberDotExpression,
+          intermediateASTTree,
+          core,
+        });
       } else {
         throw new Error('Invalid left expression of member dot expression');
       }
@@ -1335,15 +1312,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
       this.validateClassTypeNodesSetup(ASTTree, fileId);
     }
   }
-
-  //isn't being used right now
-  // private validateNodes(ASTTree: IntermediateASTTree, boundedContextName: string): void {
-  // ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-  //   const validationRes = node.validate(this.symbolTableCore[boundedContextName]);
-  //   if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
-  //     this.addError(validationRes);
-  // });
-  // }
 
   private validateClassTypeNodesCore(ASTTree: IntermediateASTTree, boundedContext: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {

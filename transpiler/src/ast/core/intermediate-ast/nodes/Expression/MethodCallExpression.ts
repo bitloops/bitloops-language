@@ -53,6 +53,14 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return leftMostExpression;
   }
 
+  getMemberDotExpression(): MemberDotExpressionNode {
+    const expression = this.getExpressionValues();
+    if (!expression.isMemberDotExpression()) {
+      return null;
+    }
+    return expression;
+  }
+
   isThisDependencyMethodCall(dependencyIdentifier: string): boolean {
     if (!this.isThisMethodCall()) {
       return false;

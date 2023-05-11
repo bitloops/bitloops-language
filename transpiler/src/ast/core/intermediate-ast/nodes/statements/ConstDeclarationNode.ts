@@ -51,8 +51,8 @@ export class ConstDeclarationNode extends StatementNode {
       throw new AlreadyDefinedIdentifierError(identifierName, this.getMetadata());
     }
 
+    //TODO here get the identifierExpression/thisExpression
     const expression = this.getExpressionValues();
     expression.typeCheck(symbolTable);
-    // this.setType(identifierType.type);
   }
 }

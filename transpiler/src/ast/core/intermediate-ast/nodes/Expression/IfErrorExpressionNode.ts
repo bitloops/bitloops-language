@@ -10,6 +10,7 @@ import { ReturnErrorStatementNode } from '../statements/ReturnErrorStatementNode
 import { ReturnStatementNode } from '../statements/ReturnStatementNode.js';
 import { StatementListNode } from '../statements/StatementList.js';
 import { ExpressionNode } from './ExpressionNode.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
 
 export class IfErrorExpressionNode extends ExpressionNode {
   private static NAME = 'ifErrorExpression';
@@ -88,6 +89,17 @@ export class IfErrorExpressionNode extends ExpressionNode {
     const anonymousFunction = this.getAnonymousFunction();
     if (!anonymousFunction) return null;
     return anonymousFunction.getParameters()[0];
+  }
+
+  getMemberDotExpression(): MemberDotExpressionNode {
+    const expression = this.getExpressionValues();
+    if (expression.isMethodCallExpression()) {
+      return expression.getMemberDotExpression();
+    }
+    if (!expression.isMemberDotExpression()) {
+      return null;
+    }
+    return expression;
   }
 
   public getInferredTypeOfParameter(symbolTable: SymbolTable): string {
