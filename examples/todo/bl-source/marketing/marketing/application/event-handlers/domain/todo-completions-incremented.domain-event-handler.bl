@@ -1,7 +1,7 @@
 DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWriteRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
 
     handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors(ApplicationErrors.UserNotFoundError)) {
-      const user = event.payload;
+      const user = event;
 
       const userId = UUIDv4(user.aggregateId);
       const userFound = this.userRepo.getById(userId);
