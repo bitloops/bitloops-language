@@ -281,6 +281,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   }
 
   validate(ast: IntermediateAST): void | ValidationError[] {
+    this.errors = [];
     this.createSymbolTable(ast.core);
     this.validateCore(ast.core);
     this.validateSetup(ast.setup);
