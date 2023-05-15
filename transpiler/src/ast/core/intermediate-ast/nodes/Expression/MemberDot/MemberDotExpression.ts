@@ -51,6 +51,10 @@ export class MemberDotExpressionNode extends ExpressionNode {
     if (expression.isMemberDotExpression()) {
       return expression.getLeftMostExpression();
     }
+
+    if (expression.isMethodCallExpression()) {
+      return expression.getMemberDotExpression().getLeftMostExpression();
+    }
     return expression;
   }
 
@@ -66,6 +70,9 @@ export class MemberDotExpressionNode extends ExpressionNode {
     const expression = this.getExpressionValues();
     if (expression.isMemberDotExpression()) {
       return expression.getLeftMostMemberDotExpression();
+    } else if (expression.isMethodCallExpression()) {
+      const memberDotExpression = expression.getMemberDotExpression();
+      return memberDotExpression.getLeftMostMemberDotExpression();
     }
     return this;
   }

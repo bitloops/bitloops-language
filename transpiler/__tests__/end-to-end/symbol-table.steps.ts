@@ -84,7 +84,7 @@ describe('Validation checks table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  describe.skip('Missing identifiers test cases', () => {
+  describe('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
@@ -129,7 +129,7 @@ describe('Validation checks table cases', () => {
     });
   });
 
-  describe.skip('constant reassingment identifiers test cases', () => {
+  describe('constant reassingment identifiers test cases', () => {
     SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
@@ -174,7 +174,7 @@ describe('Validation checks table cases', () => {
     });
   });
 
-  describe.skip('Already declared variables test cases', () => {
+  describe('Already declared variables test cases', () => {
     SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();

@@ -1,3 +1,10 @@
+RepoPort AccountWriteRepoPort<AccountEntity> extends CRUDWriteRepoPort;
+
+Command WithdrawMoneyCommand {
+    string accountId;
+    int32 amount;
+}
+
 IntegrationEvent TodoCompletedIntegrationEvent(event: TodoCompletedDomainEvent) {  
     'v1' : IntegrationTodoCompletedSchemaV1 {
         const todoCompleted = IntegrationTodoCompletedSchemaV1({

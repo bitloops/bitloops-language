@@ -732,9 +732,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
 
         if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
           const expression = statement.getExpressionValues();
-          //TODO uncomment
-          // statement.typeCheck(symbolTable);
-          // expression.typeCheck(symbolTable); //this is not needed(it is inside constDeclarationNode)
+          statement.typeCheck(symbolTable);
           const identifier = statement.getIdentifier().getIdentifierName();
 
           this.addEvaluationFields({
