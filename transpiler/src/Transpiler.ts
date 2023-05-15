@@ -6,7 +6,7 @@ import {
   IIntermediateASTParser,
   IIntermediateASTValidator,
   IntermediateAST,
-  IntermediateASTError,
+  ValidationErrors,
   ValidationError,
   TBoundedContextName,
 } from './ast/core/types.js';
@@ -14,14 +14,13 @@ import { isParserErrors } from './parser/core/guards/index.js';
 import {
   IOriginalParser,
   OriginalAST,
-  type OriginalParserError,
+  type ParserSyntacticErrors,
   TParserInputData,
 } from './parser/index.js';
-import { ITargetGenerator, TargetGeneratorError, TOutputTargetContent } from './target/types.js';
+import { ITargetGenerator, TOutputTargetContent } from './target/types.js';
 import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
-import type { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
+import type { TranspilerErrors, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
 import { SymbolTable } from './semantic-analysis/type-inference/SymbolTable.js';
-import { TranspilerError } from './parser/core/types.js';
 
 export default class Transpiler {
   constructor(
@@ -34,7 +33,7 @@ export default class Transpiler {
   public transpile(
     transpileInputData: TParserInputData,
     options: TTranspileOptions,
-  ): TTranspileOutput | TTranspileError[] {
+  ): TTranspileOutput | TranspilerErrors {
     const intermediateModel = this.bitloopsCodeToIntermediateModel(transpileInputData);
     if (isOriginalParserOrIntermediateASTError(intermediateModel)) {
       return intermediateModel;
@@ -46,16 +45,12 @@ export default class Transpiler {
       options,
     );
 
-    if (isTargetGeneratorError(targetCode)) {
-      return targetCode;
-    }
-
     return targetCode;
   }
 
   public bitloopsCodeToIntermediateModel(
     transpileInputData: TParserInputData,
-  ): IntermediateAST | OriginalParserError | IntermediateASTError {
+  ): IntermediateAST | ParserSyntacticErrors | ValidationErrors {
     const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData);
     if (isParserErrors(originalAST)) {
       return originalAST;
@@ -69,7 +64,7 @@ export default class Transpiler {
 
   public getSymbolTable(
     inputData: TParserInputData,
-  ): Record<TBoundedContextName, SymbolTable> | TranspilerError[] {
+  ): Record<TBoundedContextName, SymbolTable> | TranspilerErrors {
     const originalAST = this.bitloopsCodeToOriginalAST(inputData);
     if (isParserErrors(originalAST)) {
       return originalAST;
@@ -81,7 +76,7 @@ export default class Transpiler {
 
   private bitloopsCodeToOriginalAST(
     parseInputData: TParserInputData,
-  ): OriginalAST | OriginalParserError {
+  ): OriginalAST | ParserSyntacticErrors {
     return this.parser.parse(parseInputData);
   }
 
@@ -92,7 +87,7 @@ export default class Transpiler {
   private intermediateASTModelToTargetLanguage(
     ASTModel: IntermediateAST,
     options: TTranspileOptions,
-  ): TOutputTargetContent | TargetGeneratorError[] {
+  ): TOutputTargetContent {
     return this.intermediateASTModelToTargetLanguageGenerator.generate(ASTModel, options);
   }
 
@@ -112,8 +107,8 @@ export default class Transpiler {
 
   // TODO: remove duplication of transpile errors
   static isTranspileError(
-    value: TOutputTargetContent | TTranspileError[],
-  ): value is TTranspileError[] {
+    value: TOutputTargetContent | TranspilerErrors,
+  ): value is TranspilerErrors {
     if (
       !isParserErrors(value) &&
       !isIntermediateASTValidationErrors(value) &&
@@ -124,7 +119,7 @@ export default class Transpiler {
     return true;
   }
 
-  static isTranspilerError(value: any): value is TTranspileError[] {
-    return Array.isArray(value) && value.every((v) => v instanceof TranspilerError);
+  static isTranspilerError(value: any): value is TranspilerErrors {
+    return Array.isArray(value) && value.every((v) => v instanceof Error);
   }
 }

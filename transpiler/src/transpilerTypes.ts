@@ -1,6 +1,6 @@
-import { IntermediateASTError } from './ast/core/types.js';
-import { type OriginalParserError } from './parser/index.js';
-import { TargetGeneratorError, TOutputTargetContent } from './target/types.js';
+import { ValidationErrors } from './ast/core/types.js';
+import { type ParserSyntacticErrors } from './parser/index.js';
+import { TOutputTargetContent } from './target/types.js';
 
 export type TTranspileOptions = {
   targetLanguage: string;
@@ -10,4 +10,4 @@ export type TTranspileOptions = {
 
 export type TTranspileOutput = TOutputTargetContent;
 
-export type TTranspileError = OriginalParserError | IntermediateASTError | TargetGeneratorError;
+export type TranspilerErrors = ParserSyntacticErrors | ValidationErrors;

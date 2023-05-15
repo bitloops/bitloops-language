@@ -23,14 +23,13 @@ import { formatString } from './codeFormatting.js';
 import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
 import {
   IIntermediateASTToTarget,
-  TargetGeneratorError,
   TTargetCoreContent,
   TTargetCoreFinalContent,
 } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 
 export class IntermediateASTToTarget implements IIntermediateASTToTarget {
-  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError {
+  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] {
     const { core } = params;
     const result: TTargetCoreContent[] = [];
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {

@@ -1,12 +1,12 @@
 import { isIntermediateASTValidationErrors } from './ast/core/guards/index.js';
 import { IntermediateASTParser } from './ast/core/index.js';
 import { isParserErrors } from './parser/core/guards/index.js';
-import type {
-  OriginalValidatorError,
-  TParserCoreInputData,
-  TParserSetupInputData,
-} from './parser/core/types.js';
-import { BitloopsParser, type OriginalParserError, type TParserInputData } from './parser/index.js';
+import type { TParserCoreInputData, TParserSetupInputData } from './parser/core/types.js';
+import {
+  BitloopsParser,
+  type ParserSyntacticErrors,
+  type TParserInputData,
+} from './parser/index.js';
 import { SemanticAnalyzer } from './semantic-analysis/IntermediateASTValidator.js';
 import { TargetGenerator } from './target/index.js';
 import { getTargetFileDestination } from './target/typescript-nest/helpers/getTargetFileDestination.js';
@@ -35,7 +35,6 @@ export {
   TTranspileOutput,
   getTargetFileDestination,
   isParserErrors,
-  OriginalParserError,
+  ParserSyntacticErrors,
   isIntermediateASTValidationErrors,
-  OriginalValidatorError,
 };

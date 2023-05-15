@@ -1,4 +1,3 @@
-import { TranspilerError } from '../../parser/core/types.js';
 import { OriginalAST } from '../../parser/index.js';
 import { SymbolTable } from '../../semantic-analysis/type-inference/SymbolTable.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
@@ -21,13 +20,13 @@ export type IntermediateASTSetup = {
   [fileId: string]: IntermediateASTTree;
 };
 
-export type IntermediateASTError = ValidationError[];
+export type ValidationErrors = ValidationError[];
 export interface IIntermediateASTParser {
   parse: (ast: OriginalAST) => IntermediateAST;
   complete: (ast: IntermediateAST) => IntermediateAST;
 }
 
-export class ValidationError extends TranspilerError {
+export class ValidationError extends Error {
   private _metadata: TNodeMetadata;
   private _message: string;
   constructor(message: string, metadata: TNodeMetadata) {

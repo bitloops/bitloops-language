@@ -5,7 +5,7 @@ import { TClassName, TTargetDependenciesTypeScript } from '../types.js';
 import { TClassTypesValues } from '../helpers/mappings.js';
 
 export interface IIntermediateASTToTarget {
-  ASTToTarget(params: IntermediateAST): TTargetCoreContent[] | TargetGeneratorError;
+  ASTToTarget(params: IntermediateAST): TTargetCoreContent[];
   formatCode(targetContent: TTargetCoreFinalContent[], config?: any): TTargetCoreFinalContent[];
   generateImports(params: TTargetCoreContent[]): TTargetCoreFinalContent[];
 }
@@ -13,7 +13,7 @@ export interface IIntermediateSetupASTToTarget {
   generateSetupFiles: (
     params: IntermediateAST,
     options: TTranspileOptions,
-  ) => TTargetSetupContent[] | TargetSetupGeneratorError;
+  ) => TTargetSetupContent[];
 }
 
 export type TOutputTargetContent = {
@@ -57,8 +57,5 @@ export interface ITargetGenerator {
     className: string,
     targetLanguage: string,
   ): { path: string; filename: string };
-  generate: (
-    intermediateAST: IntermediateAST,
-    options: TTranspileOptions,
-  ) => TOutputTargetContent | TargetGeneratorError[];
+  generate: (intermediateAST: IntermediateAST, options: TTranspileOptions) => TOutputTargetContent;
 }

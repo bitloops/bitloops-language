@@ -22,6 +22,6 @@ export { BitloopsParser } from './core/index.js';
 export type {
   IOriginalParser,
   OriginalAST,
-  OriginalParserError,
+  ParserSyntacticErrors as ParserSyntacticErrors,
   TParserInputData,
 } from './core/types.js';
