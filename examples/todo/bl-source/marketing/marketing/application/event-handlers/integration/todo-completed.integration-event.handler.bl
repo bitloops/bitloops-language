@@ -3,7 +3,7 @@ IntegrationEventHandler TodoCompletedIntegrationEventHandler() {
     eventVersion: 'v1';
     
     handle(event: [todo][todo]TodoCompletedIntegrationEvent): (OK(void),Errors()) {
-      const userId = event.payload.userId;
+      const userId = event.userId;
 
       const command = IncrementTodosCommand.create({
         id: userId,

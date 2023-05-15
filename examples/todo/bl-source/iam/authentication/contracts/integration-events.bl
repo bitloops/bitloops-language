@@ -6,8 +6,8 @@ Struct IntegrationUserChangedEmailSchemaV1 {
 IntegrationEvent UserChangedEmailIntegrationEvent(event: UserChangedEmailDomainEvent) {  
     'v1' : IntegrationUserChangedEmailSchemaV1 {
         const userChangedEmail = IntegrationUserChangedEmailSchemaV1({
-            userId: event.payload.aggregateId,
-            userEmail: event.payload.email,
+            userId: event.aggregateId,
+            userEmail: event.email,
         });
         return userChangedEmail;
     }
