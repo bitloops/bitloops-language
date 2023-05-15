@@ -59,6 +59,10 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
     return !!child;
   }
 
+  getBuiltInClassName(): string {
+    return this.getValue().type.builtInClassType;
+  }
+
   getPrimitiveTypeNode(): PrimitiveTypeNode {
     if (this.isPrimitiveType()) {
       return this;

@@ -715,7 +715,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier person is not defined.'],
+    errorMessages: ['Identifier person not defined.'],
   },
   {
     description: 'Should return error that identifier returned from function is not defined',
@@ -725,7 +725,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier person is not defined.'],
+    errorMessages: ['Identifier person not defined.'],
   },
   {
     description: 'Should return error that argument name in method is not defined',
@@ -735,7 +735,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier id is not defined.'],
+    errorMessages: ['Identifier id not defined.'],
   },
   {
     description: 'Should return error that identifier in switch expression is not defined',
@@ -745,7 +745,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier animal is not defined.'],
+    errorMessages: ['Identifier animal not defined.'],
   },
   {
     description: 'Should return error identifier used inside if condition is not defined',
@@ -755,7 +755,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier res is not defined.'],
+    errorMessages: ['Identifier res not defined.'],
   },
   {
     description: 'Should return error that identifier in switch case expression is not defined',
@@ -765,7 +765,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier bird is not defined.'],
+    errorMessages: ['Identifier bird not defined.'],
   },
   {
     description:
@@ -776,7 +776,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier account is not defined.'],
+    errorMessages: ['Identifier account not defined.'],
   },
   {
     description:
@@ -787,7 +787,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier hello is not defined.'],
+    errorMessages: ['Identifier hello not defined.'],
   },
   {
     description: 'Should return error that this identifier in member dot expression is not defined',
@@ -797,7 +797,7 @@ export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCa
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier this is not defined.'],
+    errorMessages: ['Identifier this not defined.'],
   },
 ];
 
@@ -810,7 +810,7 @@ export const SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES: SymbolTableErrorTestCase[
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier accountId is already defined.'],
+    errorMessages: ['Identifier accountId is already defined.'],
   },
   {
     description: 'Should return error that variable declaration is already defined',
@@ -820,7 +820,7 @@ export const SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES: SymbolTableErrorTestCase[
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: ['The identifier accountId is already defined.'],
+    errorMessages: ['Identifier accountId is already defined.'],
   },
 ];
 

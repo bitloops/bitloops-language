@@ -74,8 +74,6 @@ import { EvaluationNode } from '../ast/core/intermediate-ast/nodes/Expression/Ev
 import { EvaluationFieldNode } from '../ast/core/intermediate-ast/nodes/Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { EventHandlerBusDependenciesNode } from '../ast/core/intermediate-ast/nodes/DomainEventHandler/EventHandlerBusDependenciesNode.js';
 import { RegexLiteralNode } from '../ast/core/intermediate-ast/nodes/Expression/Literal/RegexLiteralNode.js';
-// import { IntermediateASTNodeTypeGuards } from '../ast/core/intermediate-ast/type-guards/intermediateASTNodeTypeGuards.js';
-// import { BitloopsPrimaryTypeDirector } from '../../__tests__/ast/core/builders/bitloopsPrimaryTypeDirector.js';
 
 export const SCOPE_NAMES = {
   EXECUTE: 'execute',
@@ -120,6 +118,9 @@ export const inferType = ({
     const leftExpressionString = leftExpression.getStringValue();
     const rightExpressionString = rightMostExpression.getStringValue();
     const leftExpressionType = symbolTable.lookup(leftExpressionString);
+    if (!leftExpressionType)
+      throw new Error(`${rightExpressionString} is not defined in ${leftExpressionString} `);
+
     return getMemberDotTypeFromIntermediateASTTree({
       leftExpressionType,
       rightExpressionString,
@@ -145,9 +146,7 @@ export const inferType = ({
   } else if (IntermediateASTNodeTypeGuards.isApplyRules(node)) {
     return node.getInferredType();
   }
-  // else {
-  //   throw new Error('Unsupported node type: ');
-  // }
+
   console.log('Unsupported node type: ', node.getClassNodeName(), node.getValue());
   return null;
 };
@@ -176,7 +175,6 @@ const getMemberDotTypeFromIntermediateASTTree = ({
     }
   }
   if (ClassTypeGuards.isCommand(leftType)) {
-    // same with query
     const commandNode = intermediateASTTree.getCommandByIdentifier(leftType);
     const fieldNodes = commandNode.getFieldNodes();
     for (const fieldNode of fieldNodes) {
@@ -1235,25 +1233,6 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         intermediateASTTree,
         core,
       });
-    } else if (leftMostMemberDotExpression.isIfErrorExpression()) {
-      // this.addExpression({
-      //   expression: leftMostMemberDotExpression,
-      //   symbolTable,
-      //   intermediateASTTree,
-      //   core,
-      //   ifErrorCounter: 0,
-      // });
-      return '';
-      // const memberDotExpression = leftMostMemberDotExpression.getMemberDotExpression();
-      // return this.insertMemberDotOrMethodCallToSymbolTable({
-      //   memberDotResult: memberDotExpression,
-      //   isMethodCall,
-      //   rightMostExpression,
-      //   symbolTable,
-      //   memberDotExpression,
-      //   intermediateASTTree,
-      //   core,
-      // });
     } else {
       if (leftMostMemberDotExpression.isThisExpression()) {
         return this.insertMemberDotOrMethodCallToSymbolTable({

@@ -28,4 +28,12 @@ export class ParameterNode extends IntermediateASTNode {
     const parameterType = this.getType();
     return parameterType.isRepoPort();
   }
+
+  typeCheck(): void {
+    // const parameterType = this.getType();
+    //TODO check if it is found on tree
+    // if (isNotFound(parameterType)) {
+    //   throw new MissingIdentifierError(parameterType.getIdentifierName(), this.getMetadata());
+    // }
+  }
 }

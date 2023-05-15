@@ -46,13 +46,13 @@ export class ValidationError extends Error {
 
 export class MissingIdentifierError extends ValidationError {
   constructor(identifier: string, metadata: TNodeMetadata) {
-    super(`The identifier ${identifier} is not defined.`, metadata);
+    super(`Identifier ${identifier} not defined.`, metadata);
   }
 }
 
 export class AlreadyDefinedIdentifierError extends ValidationError {
   constructor(identifier: string, metadata: TNodeMetadata) {
-    super(`The identifier ${identifier} is already defined.`, metadata);
+    super(`Identifier ${identifier} is already defined.`, metadata);
   }
 }
 
