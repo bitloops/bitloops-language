@@ -170,7 +170,7 @@ methodDefinitionList
     ;
 
 methodDefinition
-    : identifier parameterList? returnMethodType SemiColon
+    : identifier parameterList returnMethodType SemiColon
     ;
 
 typeAnnotation
@@ -378,7 +378,7 @@ domainRuleBody
 ;
 
 domainRuleDeclaration
-: Rule domainRuleIdentifier parameterList? Throws errorIdentifier OpenBrace domainRuleBody CloseBrace
+: Rule domainRuleIdentifier parameterList Throws errorIdentifier OpenBrace domainRuleBody CloseBrace
 ;
 
 aggregateDeclaration
@@ -437,7 +437,7 @@ queryDeclaration
     ;
 
 commandHandler
-    : CommandHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    : CommandHandler commandHandlerIdentifier parameterList OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 commandHandlerIdentifier
@@ -445,7 +445,7 @@ commandHandlerIdentifier
     ;
 
 queryHandler
-    : QueryHandler queryHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    : QueryHandler queryHandlerIdentifier parameterList OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 queryHandlerIdentifier
@@ -660,11 +660,11 @@ packageEvaluation
     ;
 
 domainErrorDeclaration
-    : DomainError domainErrorIdentifier parameterList? '{' evaluationFieldList? '}' SemiColon?
+    : DomainError domainErrorIdentifier parameterList '{' evaluationFieldList? '}' SemiColon?
     ;
 
 applicationErrorDeclaration
-    : ApplicationError applicationErrorIdentifier parameterList? '{' evaluationFieldList? '}' SemiColon?
+    : ApplicationError applicationErrorIdentifier parameterList '{' evaluationFieldList? '}' SemiColon?
     ;
 
 domainErrorIdentifier
@@ -743,11 +743,11 @@ staticKeyword
     ;
 
 privateMethodDeclaration
-    : Private staticKeyword? identifier parameterList? returnMethodType OpenBrace functionBody CloseBrace
+    : Private staticKeyword? identifier parameterList returnMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? staticKeyword? identifier parameterList? returnMethodType OpenBrace functionBody CloseBrace    
+    : Public? staticKeyword? identifier parameterList returnMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnMethodType

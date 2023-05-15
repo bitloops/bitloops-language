@@ -1,5 +1,6 @@
 import { isIntermediateASTValidationErrors } from './ast/core/guards/index.js';
 import { IntermediateASTParser } from './ast/core/index.js';
+import type { ValidationErrors } from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import type { TParserCoreInputData, TParserSetupInputData } from './parser/core/types.js';
 import {
@@ -11,7 +12,7 @@ import { SemanticAnalyzer } from './semantic-analysis/IntermediateASTValidator.j
 import { TargetGenerator } from './target/index.js';
 import { getTargetFileDestination } from './target/typescript-nest/helpers/getTargetFileDestination.js';
 import Transpiler from './Transpiler.js';
-import type { TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
+import type { TranspilerErrors, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
 
 const parser = new BitloopsParser();
 const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -34,7 +35,9 @@ export {
   Transpiler,
   TTranspileOutput,
   getTargetFileDestination,
-  isParserErrors,
+  TranspilerErrors,
   ParserSyntacticErrors,
+  ValidationErrors,
+  isParserErrors,
   isIntermediateASTValidationErrors,
 };
