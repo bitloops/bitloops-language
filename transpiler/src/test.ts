@@ -28,4 +28,10 @@ transpiler.bitloopsCodeToIntermediateModel({
       module: 'world',
     },
   ],
+  setup: [
+    {
+      fileContents: 'Config.setLanguage(TypeScript-Nest);',
+      fileId: 'config',
+    },
+  ],
 });

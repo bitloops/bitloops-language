@@ -33,7 +33,7 @@ export const packageEvaluationVisitor = (
   const packageIdentifier: IdentifierNode = thisVisitor.visit(ctx.packageIdentifier());
 
   const methodName = ctx.regularIdentifier().getText();
-  console.log({ methodName, rest: ctx.regularIdentifier() });
+  // console.log({ methodName, rest: ctx.regularIdentifier() });
   // const identifier = thisVisitor.visit(ctx.regularIdentifier());
 
   // // this won't need to build a new IdentifierExpressionBuilder
