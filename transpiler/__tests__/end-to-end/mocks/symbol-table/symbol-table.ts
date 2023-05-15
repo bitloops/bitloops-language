@@ -607,9 +607,68 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'geEmailToBeSent',
             new SymbolTableBuilder()
               .insert('user', new ParameterSymbolEntry('UserEntity'))
-              .insert('user.getEmail()', new MethodCallSymbolEntry('(OK(EmailEntity), Errors())'))
+              .insert('user.getEmail()', new MethodCallSymbolEntry('EmailEntity'))
               .insert('user.getEmail().getAddress()', new MethodCallSymbolEntry('string'))
               .insertVariableSymbolEntry('emailOrigin', bitloopsPrimitivesObj.string, true),
+          ),
+      )
+      .insertChildScope('NotificationTemplateReadRepoPort', new SymbolTableBuilder())
+      .insertChildScope(
+        'UserEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('UserEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('UserProps')),
+          )
+          .insertChildScope(
+            'getEmail',
+            new SymbolTableBuilder().insert('num', new ParameterSymbolEntry('int32')),
+          ),
+      )
+      .insertChildScope(
+        'EmailEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('EmailEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('EmailProps')),
+          )
+          .insertChildScope('getAddress', new SymbolTableBuilder()),
+      )
+      .build(),
+  },
+  {
+    description:
+      'Should create symbol table for domain service with 2 methodCalls in a row and left is ifError',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-service-2-method-calls-if-error.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'MarketingNotificationDomainService',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('MarketingNotificationDomainService'))
+          .insert(
+            'this.notificationTemplateRepo',
+            new ClassTypeParameterSymbolEntry('NotificationTemplateReadRepoPort'),
+          )
+          .insertChildScope(
+            'geEmailToBeSent',
+            new SymbolTableBuilder()
+              .insert('user', new ParameterSymbolEntry('UserEntity'))
+              .insert('user.getEmail()', new MethodCallSymbolEntry('(OK(EmailEntity), Errors())'))
+              .insert('user.getEmail().ifError()', new MethodCallSymbolEntry('EmailEntity'))
+              .insertChildScope('ifError0', new SymbolTableBuilder())
+              .insert('userEmail', new VariableSymbolEntry('EmailEntity', true))
+              .insert(
+                'userEmail.getAddress()',
+                new MethodCallSymbolEntry(bitloopsPrimitivesObj.string),
+              )
+              .insert('emailAddress', new VariableSymbolEntry(bitloopsPrimitivesObj.string, true)),
           ),
       )
       .insertChildScope('NotificationTemplateReadRepoPort', new SymbolTableBuilder())

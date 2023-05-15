@@ -1142,6 +1142,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     isMethodCall: boolean;
     memberDotResult: string;
     rightMostExpression: IdentifierExpressionNode;
+    leftExpression: MemberDotExpressionNode;
     symbolTable: SymbolTable;
     memberDotExpression: MemberDotExpressionNode;
     intermediateASTTree: IntermediateASTTree;
@@ -1211,14 +1212,15 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         isMethodCall,
         rightMostExpression,
         symbolTable,
+        leftExpression: leftMostMemberDotExpression,
         memberDotExpression,
         intermediateASTTree,
         core,
       });
     } else if (leftMostMemberDotExpression.isMethodCallExpression()) {
-      const memberDotExpression = leftMostMemberDotExpression.getMemberDotExpression();
+      const memberDot = leftMostMemberDotExpression.getMemberDotExpression();
       const memberDotResult = this.addMemberDotExpression({
-        memberDotExpression,
+        memberDotExpression: memberDot,
         symbolTable,
         intermediateASTTree,
         core,
@@ -1229,6 +1231,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
         isMethodCall,
         rightMostExpression,
         symbolTable,
+        leftExpression: memberDot,
         memberDotExpression,
         intermediateASTTree,
         core,
@@ -1258,6 +1261,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           memberDotResult: leftMostMemberDotExpression.getIdentifierName(),
           isMethodCall,
           rightMostExpression,
+          leftExpression: null,
           symbolTable,
           memberDotExpression,
           intermediateASTTree,
@@ -1268,6 +1272,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
           memberDotResult: leftMostMemberDotExpression.getIdentifierName(),
           isMethodCall,
           rightMostExpression,
+          leftExpression: null,
           symbolTable,
           memberDotExpression,
           intermediateASTTree,
