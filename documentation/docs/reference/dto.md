@@ -83,8 +83,8 @@ For `HelloWorldRequestDTO`:
 
 ```typescript
 HelloWorldRequestDTO({
-  name: "John Doe",
-  email: "johndoe@somewhere.com",
+  name: 'John Doe',
+  email: 'johndoe@somewhere.com',
 });
 ```
 
@@ -92,7 +92,7 @@ As the parameter `email` is optional, it could also be:
 
 ```typescript
 HelloWorldRequestDTO({
-  name: "John Doe",
+  name: 'John Doe',
 });
 ```
 
@@ -100,13 +100,13 @@ For `HelloWorldResponseDTO`:
 
 ```typescript
 HelloWorldResponseDTO({
-  message: "OK",
+  message: 'OK',
 });
 ```
 
 If a parameter is missing and it is not optional, appropriate errors will be thrown in the controllers.
 
-Finally, a DTO can have nested [Structs](./mapper.md) in it as follows:
+Finally, a DTO can have nested [Structs](./struct.md) in it as follows:
 
 ```typescript
 

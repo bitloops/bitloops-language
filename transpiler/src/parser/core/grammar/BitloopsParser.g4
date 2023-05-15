@@ -126,7 +126,6 @@ regularIdentifier
     | regularErrorTypeEvaluation                                # RegularErrorTypeEvaluationString
     // This has to be here since it is declared as a reserved word in Lexer, it doesnt match as Identifier
     | Execute                                                   # ExecuteExpression
-    | Delete                                                    # DeleteKeyword
     | Handle                                                    # HandleKeywordIdentifier
     | EntityIdentifier                                          # EntityIdentifierString
     | ValueObjectIdentifier                                     # ValueObjectIdentifierString
@@ -275,6 +274,7 @@ evaluation
     | domainEventEvaluation
     | domainServiceEvaluation
     | readModelEvaluation
+    | packageEvaluation
     ;
 
 domainServiceEvaluation
@@ -495,6 +495,10 @@ readModelIdentifier
     : ReadModelIdentifier
     ;
 
+packageIdentifier
+    : PackageIdentifier
+    ;
+
 
 readModelDeclaration
     : ReadModel readModelIdentifier OpenBrace fieldList CloseBrace SemiColon?
@@ -649,6 +653,10 @@ propsEvaluation
 
 readModelEvaluation
     : readModelIdentifier Dot Create domainEvaluationInput  //TODO: here could be a another element, syntax wise the same with domainEvaluationInput
+    ;
+
+packageEvaluation
+    : packageIdentifier Dot regularIdentifier methodArguments  
     ;
 
 domainErrorDeclaration

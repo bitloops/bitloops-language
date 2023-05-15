@@ -33,7 +33,10 @@ import {
   TDependencyParentTypescript,
 } from '../../../types.js';
 import { deepClone } from '../../../utils/deepClone.js';
-import { getFilePathRelativeToModule } from '../helpers/getTargetFileDestination.js';
+import {
+  getFilePathRelativeToModule,
+  getTargetFileName,
+} from '../helpers/getTargetFileDestination.js';
 import { findRelativeDiffForImport } from '../utils/findRelativeDiff.js';
 
 export const getParentDependencies = (
@@ -187,9 +190,13 @@ export const getValueAndFileNameOfImport = (
       fileName: 'constants',
     };
   }
+  if (!classType) {
+    throw new Error('Class type not defined');
+  }
+  const fileName = getTargetFileName(dependencyString, classType);
   return {
     value: dependencyString,
-    fileName: dependencyString,
+    fileName, //: dependencyString,
   };
 };
 

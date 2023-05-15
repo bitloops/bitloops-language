@@ -1,5 +1,5 @@
 Command UncompleteTodoCommand {
-    string todoId;
+    string id;
 }
 
 CommandHandler UncompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
@@ -8,14 +8,14 @@ CommandHandler UncompleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
        | DomainErrors.TodoAlreadyUncompletedError
        )) {
        
-       const todoId = UUIDv4(command.todoId);
+       const todoId = UUIDv4(command.id);
        const todoEntity = this.todoRepo.getById(todoId);
        if(todoEntity is Error){
         return Error(todoEntity);
         }
 
        if(NOT todoEntity) {
-           return ApplicationErrors.TodoNotFoundError(command.todoId);
+           return ApplicationErrors.TodoNotFoundError(command.id);
        }
 
        todoEntity.uncomplete();

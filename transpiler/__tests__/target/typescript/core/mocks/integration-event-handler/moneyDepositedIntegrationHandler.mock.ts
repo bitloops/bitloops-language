@@ -2,7 +2,7 @@ import { Application, Infra, Either } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { StreamingCommandBusToken } from '../../../constants';
-import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts/integration-events/MoneyDepositedIntegrationEvent';
+import { MoneyDepositedIntegrationEvent } from '../../../../../banking/banking/contracts/integration-events/money-deposited.integration-event';
 export class MoneyDepositedIntegrationHandler implements Application.IHandleIntegrationEvent {
   constructor(
     @Inject(StreamingCommandBusToken)

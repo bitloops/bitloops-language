@@ -2,8 +2,8 @@ import { Application, Infra, Either } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Inject } from '@nestjs/common';
 import { StreamingCommandBusToken } from '../../../constants';
-import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/MoneyDepositedToAccountDomainEvent';
-import { MarketingNotificationDomainService } from '../../../domain/services/MarketingNotificationDomainService';
+import { MoneyDepositedToAccountDomainEvent } from '../../../domain/events/money-deposited-to-account.domain-event';
+import { MarketingNotificationDomainService } from '../../../domain/services/marketing-notification.domain-service';
 export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleDomainEvent {
   constructor(
     @Inject(StreamingCommandBusToken)

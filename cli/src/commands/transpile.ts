@@ -34,6 +34,7 @@ import {
 import { Question } from 'inquirer';
 import { transpileCode } from '../functions/transpile.js';
 import { writeTranspiledCode } from '../functions/generateTargetFiles.js';
+import path from 'path';
 
 interface ICollection {
   targetLanguage: string;
@@ -67,8 +68,9 @@ const transpile = async (source: ICollection): Promise<void> => {
     answers.push(await inquirerPath(q, source));
   }
   const [sourceDirPath, targetDirPath] = answers;
-  if (!fs.existsSync(targetDirPath)) {
-    fs.mkdirSync(targetDirPath);
+  const libTargetDirPath = path.join(targetDirPath, 'lib');
+  if (!fs.existsSync(libTargetDirPath)) {
+    fs.mkdirSync(libTargetDirPath);
   } else {
     const overwriteAccepted = await inquirerSimpleConfirm(
       'Overwrite',
@@ -78,7 +80,7 @@ const transpile = async (source: ICollection): Promise<void> => {
     if (!overwriteAccepted) {
       return;
     }
-    await deleteFolderContent(targetDirPath);
+    await deleteFolderContent(libTargetDirPath);
   }
   let throbber: Ora;
 
@@ -127,7 +129,7 @@ const transpile = async (source: ICollection): Promise<void> => {
   } catch (err) {
     console.log(err);
     console.error(redColor(TAB + '❌ ' + err));
-    throbber.stop();
+    throbber?.stop();
   }
 };
 

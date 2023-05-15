@@ -56,4 +56,14 @@ Root Entity TodoEntity {
         });
         this.addDomainEvent(event);
     }   
+
+    public delete(): (OK(void), Errors()) {
+        const event = TodoDeletedDomainEvent.create({ 
+            aggregateId: this.id.toString(),
+            userId: this.userId.id.toString(),
+            title: this.title.title,
+            completed: this.completed
+        });
+        this.addDomainEvent(event);
+    }
 }

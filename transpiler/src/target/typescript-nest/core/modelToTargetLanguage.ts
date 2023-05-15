@@ -66,6 +66,7 @@ import { DTOEvaluationToTargetLanguage } from './components/statements/expressio
 import {
   definitionMethodInfoToTargetLanguage,
   definitionMethodsToTargetLanguage,
+  syncDefinitionMethodsToTargetLanguage,
 } from './components/definition-methods/index.js';
 import { packagePortToTargetLanguage } from './components/package-port/index.js';
 import { domainCreate, domainCreateEntity } from './components/domain/index.js';
@@ -141,9 +142,9 @@ import { integrationEventHandlerHandleMethod } from './components/integration-ev
 import { integrationEventParameterToTargetLanguage } from './components/integration-event/integrationEventParameter.js';
 import { domainServiceEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainServiceEvaluation.js';
 import { getPortTokenToTargetLanguage } from './components/port-token/index.js';
-import { getMetadataToTargetLanguage } from './components/metadata/index.js';
 import { readModelEvaluationToTargetLanguage } from './components/statements/expression/evaluation/readModelEvaluation.js';
 import { domainEventEvaluationToTargetLanguage } from './components/statements/expression/evaluation/domainEventEvaluation.js';
+import { packageEvaluationToTargetLanguage } from './components/statements/expression/evaluation/packageEvaluation.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -329,6 +330,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TDefinitionMethods: {
       res = definitionMethodsToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TSyncDefinitionMethods: {
+      res = syncDefinitionMethodsToTargetLanguage(value);
       break;
     }
     case BitloopsTypesMapping.TPackagePort: {
@@ -574,8 +579,8 @@ const modelToTargetLanguage = (props: {
       res = readModelEvaluationToTargetLanguage(value);
       break;
     }
-    case BitloopsTypesMapping.TMetadata: {
-      res = getMetadataToTargetLanguage(value);
+    case BitloopsTypesMapping.TPackageEvaluation: {
+      res = packageEvaluationToTargetLanguage(value);
       break;
     }
     default: {

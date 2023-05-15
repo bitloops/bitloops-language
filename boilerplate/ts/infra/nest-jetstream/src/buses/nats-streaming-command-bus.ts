@@ -133,7 +133,7 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
   }
 
   static getStreamName(boundedContext: string) {
-    return `Commands_${boundedContext}`;
+    return `Streams_Commands_${boundedContext}`;
   }
 
   static getDurableName(

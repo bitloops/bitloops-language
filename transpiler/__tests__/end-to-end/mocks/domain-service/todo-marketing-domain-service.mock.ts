@@ -1,8 +1,8 @@
 import { Application, Either, fail, ok } from '@bitloops/bl-boilerplate-core';
-import { NotificationTemplateReadModel } from '../NotificationTemplateReadModel';
-import { UserEntity } from '../UserEntity';
-import { NotificationTemplateInput } from '../../structs/NotificationTemplateInput';
-import { NotificationTemplateReadRepoPort } from '../../ports/NotificationTemplateReadRepoPort';
+import { NotificationTemplateReadModel } from '../notification-template.read-model';
+import { UserEntity } from '../user.entity';
+import { NotificationTemplateInput } from '../../structs/notification-template-input.struct';
+import { NotificationTemplateReadRepoPort } from '../../ports/notification-template-read.repo-port';
 export class MarketingNotificationDomainService {
   constructor(private notificationTemplateRepo: NotificationTemplateReadRepoPort) {}
   public async getNotificationTemplateToBeSent(

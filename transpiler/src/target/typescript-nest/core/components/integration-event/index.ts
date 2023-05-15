@@ -19,12 +19,10 @@
  */
 import {
   bitloopsPrimaryTypeKey,
-  MetadataTypeNames,
   TContextData,
   TDependenciesTypeScript,
   TIntegrationEvent,
   TIntegrationVersionMapper,
-  TMetadata,
   TTargetDependenciesTypeScript,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
@@ -37,18 +35,6 @@ const INTEGRATION_EVENT_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     type: 'absolute',
     default: false,
     value: 'Infra',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'Domain',
-    from: '@bitloops/bl-boilerplate-core',
-  },
-  {
-    type: 'absolute',
-    default: false,
-    value: 'asyncLocalStorage',
     from: '@bitloops/bl-boilerplate-core',
   },
 ];
@@ -96,11 +82,10 @@ export const integrationEventToTargetLanguage = (
 
   result += `type ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName} = ${integrationSchemas};`;
   result += `type ${INTEGRATION_EVENT_CONSTANTS.integrationDataMapperTypeName} = (${eventInputParameterValue}: ${eventInputParameterType}) => ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName};`;
-  result += `export class ${integrationEventIdentifier} implements Infra.EventBus.IntegrationEvent<${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}> { `;
+  result += `export class ${integrationEventIdentifier} extends Infra.EventBus.IntegrationEvent<${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}> { `;
   result += `public static readonly ${INTEGRATION_EVENT_CONSTANTS.boundedContextIdFieldName} = '${contextData.boundedContext}';`;
   result += `static ${INTEGRATION_EVENT_CONSTANTS.versionsFieldName} = ${versions};`;
   result += `static ${INTEGRATION_EVENT_CONSTANTS.versionMappersFieldName}: Record<string, ${INTEGRATION_EVENT_CONSTANTS.integrationDataMapperTypeName}> = ${versionMappers};`;
-  result += `public metadata: ${MetadataTypeNames.IntegrationEvent};`;
   result += generateConstructor(integrationEventIdentifier);
   result += generateCreate(eventInputParameterType, integrationEventIdentifier);
   result += versionMapperMethods.output;
@@ -116,17 +101,9 @@ export const integrationEventToTargetLanguage = (
 
 const generateConstructor = (integrationEventIdentifier: string): string => {
   const contextId = `${integrationEventIdentifier}.${INTEGRATION_EVENT_CONSTANTS.boundedContextIdFieldName}`;
-  const metadata: TMetadata = {
-    contextId,
-    metadataType: MetadataTypeNames.IntegrationEvent,
-  };
-  const metadataProperty = modelToTargetLanguage({
-    type: BitloopsTypesMapping.TMetadata,
-    value: metadata,
-  });
   return (
-    `constructor(public payload: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string) {` +
-    metadataProperty.output +
+    `constructor(payload: ${INTEGRATION_EVENT_CONSTANTS.integrationSchemasTypeName}, version: string) {` +
+    `   super(${contextId}, payload, version);` +
     '}'
   );
 };

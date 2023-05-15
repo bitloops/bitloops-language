@@ -65,3 +65,31 @@ export const definitionMethodsToTargetLanguage = (
   }
   return { output: res, dependencies };
 };
+
+export const syncDefinitionMethodsToTargetLanguage = (
+  methodDefinitionList: TDefinitionMethodInfo[],
+): TTargetDependenciesTypeScript => {
+  let res = '';
+  let dependencies = [];
+  for (const method of methodDefinitionList) {
+    const { methodDefinition } = method;
+    const definitionMethodInfo = definitionMethodInfoToTargetLanguage(method);
+    res += `${methodDefinition.identifier}${definitionMethodInfo.output}`;
+    const returnType = hasDefinitionMethodOkErrorReturnType(methodDefinition)
+      ? modelToTargetLanguage({
+          type: BitloopsTypesMapping.TOkErrorReturnType,
+          value: { returnType: methodDefinition.returnType },
+        })
+      : modelToTargetLanguage({
+          type: BitloopsTypesMapping.TBitloopsPrimaryType,
+          value: { type: methodDefinition.type },
+        });
+    res += `:${returnType.output};`;
+    dependencies = [
+      ...dependencies,
+      ...returnType.dependencies,
+      ...definitionMethodInfo.dependencies,
+    ];
+  }
+  return { output: res, dependencies };
+};

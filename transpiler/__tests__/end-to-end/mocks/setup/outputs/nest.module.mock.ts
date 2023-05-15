@@ -21,10 +21,10 @@ import { Module, Provider } from '@nestjs/common';
 import {
   PubSubCommandHandlers,
   StreamingCommandHandlers,
-} from './application/commandHandlers/index';
-import { QueryHandlers } from './application/queryHandlers/index';
-import { StreamingDomainEventHandlers } from './application/handlers/domain/index';
-import { StreamingIntegrationEventHandlers } from './application/handlers/integration/index';
+} from './application/command-handlers/index';
+import { QueryHandlers } from './application/query-handlers/index';
+import { StreamingDomainEventHandlers } from './application/event-handlers/domain/index';
+import { StreamingIntegrationEventHandlers } from './application/event-handlers/integration/index';
 
 @Module({})
 export class HelloWorldModule {

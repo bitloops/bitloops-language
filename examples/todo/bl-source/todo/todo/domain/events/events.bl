@@ -21,3 +21,8 @@ DomainEvent TodoUncompletedDomainEvent<TodoEntity> {
     string title;
     bool completed;
 }
+DomainEvent TodoDeletedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+    bool completed;
+}

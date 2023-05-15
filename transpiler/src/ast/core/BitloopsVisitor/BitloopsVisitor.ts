@@ -145,6 +145,7 @@ import {
   regexLiteralEvaluation,
   readModelEvaluationVisitor,
   domainEventEvaluationVisitor,
+  packageEvaluationVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -489,11 +490,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
       value: 'execute',
     };
   }
-  visitDeleteKeyword(_ctx: BitloopsParser.DeleteKeywordContext) {
-    return {
-      value: 'delete',
-    };
-  }
 
   visitHandleKeywordIdentifier(_ctx: BitloopsParser.HandleKeywordIdentifierContext) {
     return {
@@ -671,6 +667,17 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitReadModelEvaluation(ctx: BitloopsParser.ReadModelEvaluationContext): any {
     return readModelEvaluationVisitor(this, ctx);
+  }
+
+  visitPackageEvaluation(ctx: BitloopsParser.PackageEvaluationContext): any {
+    return packageEvaluationVisitor(this, ctx);
+  }
+
+  visitPackageIdentifier(ctx: BitloopsParser.PackageIdentifierContext): IdentifierNode {
+    const packageName = ctx.PackageIdentifier().getText();
+    const metadata = produceMetadata(ctx, this);
+    const packageIdentifierNode = new IdentifierNodeBuilder(metadata).withName(packageName).build();
+    return packageIdentifierNode;
   }
 
   visitIntegrationEventEvaluation(ctx: BitloopsParser.IntegrationEventEvaluationContext): any {

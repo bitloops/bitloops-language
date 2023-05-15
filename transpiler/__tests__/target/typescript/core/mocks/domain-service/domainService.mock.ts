@@ -1,7 +1,7 @@
 import { Either, ok } from '@bitloops/bl-boilerplate-core';
-import { AccountEntity } from '../AccountEntity';
-import { NotificationResponse } from '../../structs/NotificationResponse';
-import { NotificationTemplateReadRepoPort } from '../../ports/NotificationTemplateReadRepoPort';
+import { AccountEntity } from '../account.entity';
+import { NotificationResponse } from '../../structs/notification-response.struct';
+import { NotificationTemplateReadRepoPort } from '../../ports/notification-template-read.repo-port';
 export class MarketingNotificationService {
   constructor(private notificationTemplateRepoPort: NotificationTemplateReadRepoPort) {}
   public async getNotificationTemplateToBeSent(

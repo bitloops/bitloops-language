@@ -51,7 +51,7 @@ export const VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES: TestCase[] = [
           ),
         ),
       ),
-    output: "this.addDomainEventClass(new AccountCreatedDomainEvent({name: 'John Doe'}));",
+    output: "this.addDomainEvent(new AccountCreatedDomainEvent({name: 'John Doe'}));",
   },
   {
     description: 'valid add domain event with identifier',
@@ -60,6 +60,6 @@ export const VALID_BUILTIN_FUNCTION_STATEMENT_TEST_CASES: TestCase[] = [
         new ExpressionBuilderDirector().buildIdentifierExpression('accountEvent'),
         'account',
       ),
-    output: 'account.addDomainEventClass(accountEvent);',
+    output: 'account.addDomainEvent(accountEvent);',
   },
 ];

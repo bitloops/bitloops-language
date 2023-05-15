@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bitloops-language-cli",
-  "version": "0.2.2",
+  "version": "0.3.1",
   "description": "Bitloops Language CLI",
   "type": "module",
   "engines": {
@@ -19,17 +19,21 @@
     "url": "https://github.com/bitloops/bitloops-language"
   },
   "devDependencies": {
+    "@swc/core": "^1.3.56",
+    "@swc/jest": "^0.2.26",
+    "@types/cli-progress": "^3.11.0",
     "@types/eslint": "^8.4.6",
     "@types/figlet": "^1.5.5",
     "@types/inquirer": "^9.0.1",
     "@types/jest": "~27.5",
     "@types/lodash": "^4.14.184",
-    "@types/node": "~16",
+    "@types/node": "^18.16.1",
     "@typescript-eslint/eslint-plugin": "~5.26",
     "@typescript-eslint/parser": "~5.26",
     "bitloops-gherkin": "^1.0.0",
     "copyfiles": "^2.4.1",
     "env-cmd": "^10.1.0",
+    "esbuild": "^0.17.18",
     "eslint": "~8.16",
     "eslint-config-prettier": "~8.5",
     "eslint-plugin-jest": "~26.2",
@@ -39,7 +43,6 @@
     "jest-cucumber": "^3.0.1",
     "jest-extended": "^3.0.2",
     "jest-ts-auto-mock": "^2.1.0",
-    "pkg": "^5.8.0",
     "prettier": "^2.7.1",
     "rimraf": "~3.0",
     "ts-auto-mock": "^3.6.2",
@@ -55,45 +58,39 @@
     "start": "node lib/src/index.js",
     "clean": "rimraf coverage lib tmp",
     "prepare": "tsc",
-    "prebuild": "npm run lint",
+    "add-version": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "prebuild": "npm run add-version && npm run lint",
     "build:watch": "tsc -w -p tsconfig.json",
     "build": "npm run clean && tsc -p tsconfig.release.json",
     "build:dev": "yarn clean && tsc -p . && chmod +x lib/src/index.js",
     "install:local": "yarn build && npm i -g",
-    "lint": "eslint --quiet . --ext .ts --ext .mts --ext .cts",
+    "lint": "eslint --fix --quiet . --ext .ts --ext .mts --ext .cts",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "prettier": "prettier --config .prettierrc --write .",
     "test:watch": "jest --watch",
     "ts-node-esm": "node --loader ts-node/esm",
     "transpile": "node --loader ts-node/esm src/index.ts transpile",
+    "generate": "node --loader ts-node/esm/transpile-only src/index.ts generate",
     "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
-    "package": "pkg ./dist/bitloops-language.bundle.js --targets node16-macos-x64 --output ./dist/bitloops-language --assets *.flf",
     "caxa": "npx caxa --input \"/Users/vasilis/Code/Bitloops/bitloops-language-cli\"  --output \"/Users/vasilis/Code/Bitloops/bitloops-language-cli/dist/Bitloops Language.app\" -- \"{{caxa}}/node_modules/.bin/node\" \"{{caxa}}/lib/src/index.js\" \"transpile\"",
+    "esbuild-single-cjs": "yarn build && yarn esbuild ./src/index.ts --bundle --platform=node --outfile=pkg-dist/index.cjs --external:figlet --external:path --loader:.flf=file --loader:.tlf=file",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
-  },
-  "pkg": {
-    "assets": [
-      "./node_modules/**"
-    ],
-    "targets": [
-      "node16-macos-x64",
-      "node16-macos-arm64",
-      "node16-linux-x64",
-      "node16-win-x64"
-    ]
   },
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.3.1",
+    "@bitloops/bl-transpiler": "^0.4.2",
     "axios": "^1.1.3",
     "chalk": "5.0.1",
+    "cli-progress": "^3.12.0",
     "commander": "^9.4.0",
     "figlet": "1.5.2",
     "inquirer": "9.1.1",
     "inquirer-path": "^1.0.0-beta5",
-    "ora": "^6.1.2"
+    "openai": "^3.2.1",
+    "ora": "^6.1.2",
+    "zod": "^3.21.4"
   },
   "volta": {
     "node": "16.13.0"

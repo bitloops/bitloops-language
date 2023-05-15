@@ -1,9 +1,17 @@
 ---
 sidebar_position: 1
-sidebar_label: Layered Architecture
-title: "Layered Architecture: Building Scalable & Maintainable Software Systems"
-description: Unlock the power of Layered Architecture with this comprehensive review. Learn how to design software systems with clear separation of concerns and modular components, making them easier to understand, maintain and scale. Whether you're a developer, architect, or project manager, this article will equip you with the knowledge and insights you need to create layered software architectures that meet your business needs and deliver an excellent user experience. 
-keywords: [hexagonal architecture, onion architecture, layered architecture, software design pattern, software architecture, software architecture paradigm]
+sidebar_label: Layered
+title: 'Layered Architecture: Building Scalable & Maintainable Software Systems'
+description: Unlock the power of Layered Architecture with this comprehensive review. Learn how to design software systems with clear separation of concerns and modular components, making them easier to understand, maintain and scale. Whether you're a developer, architect, or project manager, this article will equip you with the knowledge and insights you need to create layered software architectures that meet your business needs and deliver an excellent user experience.
+keywords:
+  [
+    hexagonal architecture,
+    onion architecture,
+    layered architecture,
+    software design pattern,
+    software architecture,
+    software architecture paradigm,
+  ]
 ---
 
 # :cake:Layered Architecture
@@ -11,58 +19,61 @@ keywords: [hexagonal architecture, onion architecture, layered architecture, sof
 Layered Architecture is a software design pattern that is widely used in modern software development. It is a logical and structured approach to software design that separates different functional modules of an application into four separate horizontal layers, each with a specific set of responsibilities. This separation of concerns makes the code more modular, maintainable, and scalable, and enables easier testing and debugging.
 
 This particular architectural pattern has influenced the development of various other architectural patterns, including:
-- [Hexagonal Architecture (also known as Ports and Adapters)](./hexagonal-architecture.md)
-- [Onion Architecture](./onion-architecture.md) 
-- Clean Architecture
 
-These patterns have emerged in response to the need to clarify further the concept of layered architecture, and they have each added their own unique features and benefits. However, all these patterns have in common the goal to provide a more modular, flexible, and maintainable approach to building software systems. 
+- [Hexagonal Architecture (also known as Ports and Adapters)](./hexagonal-architecture.md)
+- [Onion Architecture](./onion-architecture.md)
+- [Clean Architecture](./clean-architecture.md)
+
+These patterns have emerged in response to the need to clarify further the concept of layered architecture, and they have each added their own unique features and benefits. However, all these patterns have in common the goal to provide a more modular, flexible, and maintainable approach to building software systems.
 
 Therefore, we strongly recommend understanding the core principles of layered architecture and its relationship to these other patterns, as it will help you better understand these other software architecture patterns, and help you make informed decisions about which approach is best suited to your specific needs and requirements.
 
 In this article, we will **focus on the over-arching Layered Architecture**, explaining its key principles, benefits, and implementation strategies. We will also discuss some real-world examples of successful implementation and highlight the advantages of using Layered Architecture in modern software development.
 
-
 ## What exactly is layered architecture?
 
 Layered architecture is a common pattern used in software design, where the application is divided into different layers based on their functionality. In a four-layered architecture, the layers are typically divided into:
+
 - Presentation
 - Application
 - Domain
-- Infrastructure 
+- Infrastructure
 
-These layers are arranged in a hierarchical order, where each layer provides services to the layer above it and uses services from the layer below it, and each layer is responsible for handling specific tasks and has limited communication with the other layers. 
+These layers are arranged in a hierarchical order, where each layer provides services to the layer above it and uses services from the layer below it, and each layer is responsible for handling specific tasks and has limited communication with the other layers.
 
 This helps to improve modularity and allows for better separation of concerns. The architecture is called "layered" because it resembles a layered cake, where each layer is independent of the others but builds on them to form a complete and cohesive application.
 
 ### Presentation Layer
-The presentation layer is the topmost layer of the architecture, responsible for handling the user interface and displaying data to the user. This layer interacts with the application layer to retrieve the data and provides a visual representation of the data to the user. In web applications, this layer is often implemented using HTML, CSS, and JavaScript. 
+
+The presentation layer is the topmost layer of the architecture, responsible for handling the user interface and displaying data to the user. This layer interacts with the application layer to retrieve the data and provides a visual representation of the data to the user. In web applications, this layer is often implemented using HTML, CSS, and JavaScript.
 
 ### Application Layer
-The application layer is responsible for handling business logic and coordinating interactions between different components. This layer receives input from the presentation layer and processes it before passing it down to the domain layer. It is also responsible for communicating with external systems and services. Think of this layer as the maestro in an orchestra, that guides the musicians on what, when and how to play their instrument, but who doesn't actually play any instrument himself. Similarly, the Application Layer doesn't do anything per se, but it tells the domain layer what and when it should do something. 
+
+The application layer is responsible for handling business logic and coordinating interactions between different components. This layer receives input from the presentation layer and processes it before passing it down to the domain layer. It is also responsible for communicating with external systems and services. Think of this layer as the maestro in an orchestra, that guides the musicians on what, when and how to play their instrument, but who doesn't actually play any instrument himself. Similarly, the Application Layer doesn't do anything per se, but it tells the domain layer what and when it should do something.
 
 ### Domain Layer
-The domain layer contains the business logic and rules of the application. This layer represents the core of the application and defines how the application processes data and interacts with the external world. It is responsible for ensuring the consistency and validity of the data and defines the behavior of the application. Here is where you'll find the algorithms, the programming compoenents, the functions, etc. Its really the heart of the application and generally what adds most value to the application itself. 
+
+The domain layer contains the business logic and rules of the application. This layer represents the core of the application and defines how the application processes data and interacts with the external world. It is responsible for ensuring the consistency and validity of the data and defines the behavior of the application. Here is where you'll find the algorithms, the programming compoenents, the functions, etc. Its really the heart of the application and generally what adds most value to the application itself.
 
 ### Infrastructure Layer
-The infrastructure layer is responsible for handling external dependencies and providing services to the other layers. This layer interacts with databases, file systems, and other external systems. It also provides services such as logging, caching, and authentication to the other layers. By separating infrastructure concerns from the rest of the application, it becomes easier to maintain and replace external dependencies without affecting the core functionality of the application.
 
+The infrastructure layer is responsible for handling external dependencies and providing services to the other layers. This layer interacts with databases, file systems, and other external systems. It also provides services such as logging, caching, and authentication to the other layers. By separating infrastructure concerns from the rest of the application, it becomes easier to maintain and replace external dependencies without affecting the core functionality of the application.
 
 ## Advantages of Layered Architecture
 
-Layered architecture offers several advantages that make it a popular choice for large and complex software systems. 
+Layered architecture offers several advantages that make it a popular choice for large and complex software systems.
 
 1. Modular structure: By dividing the application into different layers, developers can isolate specific functionalities and easily modify or replace them without affecting other parts of the system. This allows for more agile development and easier maintenance.
 
-2. Separation of concerns: Each layer is responsible for a specific set of tasks, and there is limited communication between the layers. This helps to ensure that the code is organized and easy to understand, making it easier to test and debug. This ensures a clear separation of the application's functionality and the underlying technology, allowing for better scalability, as additional layers can be added to handle increased functionality without affecting the existing layers. 
+2. Separation of concerns: Each layer is responsible for a specific set of tasks, and there is limited communication between the layers. This helps to ensure that the code is organized and easy to understand, making it easier to test and debug. This ensures a clear separation of the application's functionality and the underlying technology, allowing for better scalability, as additional layers can be added to handle increased functionality without affecting the existing layers.
 
 > For example, the presentation layer can be implemented using different technologies, such as a web-based user interface or a mobile app, without affecting the business or data access layers. This flexibility makes it easier to adapt the application to different environments or requirements.
 
 3. Code reusability: Because each layer has a well-defined interface, it is possible to reuse code across different applications or even different layers of the same application. This can save developers time and effort by reducing the amount of code they need to write and maintain.
 
-In large and  complex software systems, layered architecture is particularly important. These systems often involve multiple teams of developers working on different parts of the system simultaneously. Layered architecture helps to promote modularity and separation of concerns, making it easier for teams to work independently without stepping on each other's toes. It also makes it easier to manage and maintain the codebase over time, as the structure of the system is well-defined and easy to understand.
+In large and complex software systems, layered architecture is particularly important. These systems often involve multiple teams of developers working on different parts of the system simultaneously. Layered architecture helps to promote modularity and separation of concerns, making it easier for teams to work independently without stepping on each other's toes. It also makes it easier to manage and maintain the codebase over time, as the structure of the system is well-defined and easy to understand.
 
 Additionally, layered architecture helps to ensure that the system remains robust and reliable. By dividing the application into different layers, developers can focus on specific functionalities and ensure that they are working correctly. This helps to reduce the likelihood of bugs or errors that could cause the system to fail. It also makes it easier to identify and fix issues when they do occur, as the problem is likely to be isolated to a specific layer rather than affecting the entire system.
-
 
 ## Implementing Layered Architecture
 
@@ -80,9 +91,7 @@ Implementing Layered Architecture involves defining the interfaces and responsib
 
 6. Monitor and maintain the layers: Once the application is in production, monitor and maintain the layers. Ensure that the layers are stable, scalable, and secure. Make any necessary changes to the layers to optimize performance, improve security, or fix bugs.
 
-In summary, implementing a layered architecture is definitely a bit more work than simply not thinking about this, however, its very clear that most developers follow a similar thought process when starting a new project. Therefore, its worth investing just a bit more time into this design process as it will help you build better quality software going forward. 
-
-
+In summary, implementing a layered architecture is definitely a bit more work than simply not thinking about this, however, its very clear that most developers follow a similar thought process when starting a new project. Therefore, its worth investing just a bit more time into this design process as it will help you build better quality software going forward.
 
 ## Use cases and real-world examples
 
@@ -106,10 +115,10 @@ The importance of using layered architecture in modern software development cann
 
 We encourage developers to start implementing layered architecture in their own software projects. By doing so, they can reap the many benefits that this design pattern has to offer, including improved software quality, easier maintenance, and increased scalability. With careful planning and implementation, layered architecture can be a powerful tool in the development of successful software systems.
 
-
 ### Additional resources
 
 Here are a few additional references with regards to Layered Architecture:
+
 - [The Layered Architecture Pattern in Software Architecture](https://medium.com/kayvan-kaseb/the-layered-architecture-pattern-in-software-architecture-324922d381ad) - Article by Kayvan Kaseb
 - [Layered Architecture](https://herbertograca.com/2017/08/03/layered-architecture/) - Article by Herberto Graça
 - [Software Architecture Patterns — Layered Architecture](https://priyalwalpita.medium.com/software-architecture-patterns-layered-architecture-a3b89b71a057) - Article by Priyal Walpita

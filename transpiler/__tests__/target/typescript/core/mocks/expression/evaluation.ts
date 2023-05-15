@@ -405,3 +405,15 @@ export const VALID_READ_MODEL_EVALUATION_TEST_CASES = [
     output: 'UserEmailReadModel.fromPrimitives(userEmail)',
   },
 ];
+
+export const VALID_PACKAGE_EVALUATION_TEST_CASES = [
+  {
+    description: 'Valid domain service evaluation',
+    evaluation: new EvaluationBuilderDirector().buildPackageEvaluation(
+      'GherkinPackage',
+      'encode',
+      new ArgumentListDirector().buildArgumentListWithIdentifierExpression('value'),
+    ),
+    output: 'GherkinPackage.encode(value)',
+  },
+];

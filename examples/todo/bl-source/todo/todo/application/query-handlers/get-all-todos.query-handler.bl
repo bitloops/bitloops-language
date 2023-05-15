@@ -1,7 +1,7 @@
-Query GetAllTodosQuery {}
+Query GetTodosQuery {}
 
-QueryHandler GetAllTodosQueryHandler (todoRepo: TodoReadRepoPort) {
-    execute (query: GetAllTodosQuery): (OK(TodoReadModel[]), Errors()) {
+QueryHandler GetTodosQueryHandler (todoRepo: TodoReadRepoPort) {
+    execute (query: GetTodosQuery): (OK(TodoReadModel[]), Errors()) {
       const todos = this.todoRepo.getAll();
       if(todos is Error){
         return Error(todos);
