@@ -17,6 +17,7 @@ import { IfStatementBuilder } from '../builders/statements/ifStatement/IfStateme
 import { AssignmentExpressionNode } from '../nodes/Expression/AssignmentExpression.js';
 import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';
 import { ExpressionBuilderDirector } from '../directors/expressionNodeBuilderDirector.js';
+import { IdentifierExpressionNode } from '../nodes/Expression/IdentifierExpression.js';
 
 export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransformer<IfErrorExpressionNode> {
   constructor(protected tree: IntermediateASTTree, protected node: IfErrorExpressionNode) {
@@ -116,8 +117,12 @@ export class IfErrorExpressionNodeTransformer extends NodeModelToTargetASTTransf
   private buildIfIsErrorStatement(resultExpressionName: ExpressionNode): IfStatementNode {
     const statementList = this.node.getStatementListNode();
 
+    const expressionCopy = new ExpressionBuilderDirector().buildIdentifierExpression(
+      (resultExpressionName.getChildren()[0] as IdentifierExpressionNode).getIdentifierName(),
+    );
+    // This line mutates statementList for some reason, unless we copy the node passed
     const isInstanceOfExpression =
-      new ExpressionBuilderDirector().buildInstanceOfErrorWithExpression(resultExpressionName);
+      new ExpressionBuilderDirector().buildInstanceOfErrorWithExpression(expressionCopy);
     const condition = new ConditionNodeBuilder().withExpression(isInstanceOfExpression).build();
     const thenStatements = new ThenStatementsNodeBuilder(null)
       .withStatements(statementList)

@@ -122,6 +122,17 @@ export class IntermediateASTTree {
     }
   }
 
+  public validateParentRefs(): void {
+    this.traverse(this.rootNode, (node) => {
+      const nodeChildren = node.getChildren();
+      for (const child of nodeChildren) {
+        if (child.getParent() !== node) {
+          throw new Error('Invalid parent ref for child');
+        }
+      }
+    });
+  }
+
   public traverseBFS(
     currentNode: IntermediateASTNode,
     cb?: (node: IntermediateASTNode) => any,

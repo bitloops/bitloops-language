@@ -1,0 +1,22 @@
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+  getByType(typ: string): (OK(NotificationTemplateReadModel),Errors());
+};
+
+ReadModel NotificationTemplateReadModel {
+  string id;
+  string template;
+}
+
+Struct NotificationTemplateInput {
+  string emailOrigin;
+  NotificationTemplateReadModel notificationTemplate;
+}
+
+DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+  public getNotificationTemplateToBeSent(): (OK(NotificationTemplateInput), Errors()) {
+        const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
+            'firstTodo'
+          ).ifError();
+  }
+}

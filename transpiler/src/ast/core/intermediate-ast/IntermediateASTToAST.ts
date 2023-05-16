@@ -49,6 +49,7 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
           }
         });
         treeUpdated.buildValueRecursiveBottomUp(rootNode);
+        treeUpdated.validateParentRefs();
 
         if (!boundedContexts) {
           boundedContexts = {

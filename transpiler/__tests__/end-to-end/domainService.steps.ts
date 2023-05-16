@@ -75,7 +75,7 @@ describe('Valid Domain service End To End', () => {
         },
       ];
 
-      expect(targetCode.core[5]).toEqual(expectedOutput[0]);
+      expect(targetCode.core[testCase.outputIndex]).toEqual(expectedOutput[0]);
     });
   });
 });
