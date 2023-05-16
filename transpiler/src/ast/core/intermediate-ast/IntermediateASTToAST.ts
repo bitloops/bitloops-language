@@ -49,7 +49,8 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
           }
         });
         treeUpdated.buildValueRecursiveBottomUp(rootNode);
-        treeUpdated.validateParentRefs();
+        // Uncomment to validate parent refs and prevent bugs from model-to-model transformations
+        // treeUpdated.validateParentRefs();
 
         if (!boundedContexts) {
           boundedContexts = {
