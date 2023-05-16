@@ -67,6 +67,12 @@ const getMemberDotExpressionLeftMostExpression = (value: {
   return leftExpression;
 };
 
+const isString = (value: any): value is string => {
+  if (typeof value === 'string') return true;
+  if (value === 'string') return true;
+  return false;
+};
+
 export {
   isUndefined,
   isArray,
@@ -74,4 +80,5 @@ export {
   hasDefinitionMethodOkErrorReturnType,
   isExpression,
   ClassTypeGuards,
+  isString,
 };

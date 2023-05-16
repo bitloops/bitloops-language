@@ -19,7 +19,6 @@ type identifierNode =
   | PackagePortIdentifierNode
   | IdentifierNode;
 
-//TODO delete
 export class identifierValidationError extends IntermediateASTNodeValidationError {
   constructor(name: string, node: identifierNode, bcName?: string) {
     const bc = bcName ? ` in bounded context ${bcName}` : '';

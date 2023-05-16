@@ -33,8 +33,7 @@ describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  SYMBOL_TABLE_TEST_CASES.forEach((testCase, _index) => {
-    // if (index !== 12) return; // TODO: remove this line to run all tests (it takes a long time
+  SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -75,7 +74,9 @@ describe('Symbol table cases', () => {
       }
       // console.log(JSON.stringify(result[boundedContext].getJsonValue(), null, 2));
       // console.log(JSON.stringify(testCase.expectedSymbolTable), null, 2);
-      expect(result[boundedContext].getJsonValue()).toEqual(testCase.expectedSymbolTable);
+      expect(result.symbolTables[boundedContext].getJsonValue()).toEqual(
+        testCase.expectedSymbolTable,
+      );
     });
   });
 });
@@ -121,10 +122,10 @@ describe('Validation checks table cases', () => {
 
         // when
         const result = transpiler.getSymbolTable(input);
-        if (!Transpiler.isTranspilerError(result)) {
-          throw new Error('Transpiler should return error');
+        if (Transpiler.isTranspilerError(result)) {
+          throw new Error('Transpiler should NOT return error');
         }
-        expect(result.map((x) => x.message)).toEqual(testCase.errorMessages);
+        expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
       });
     });
   });
@@ -166,10 +167,10 @@ describe('Validation checks table cases', () => {
 
         // when
         const result = transpiler.getSymbolTable(input);
-        if (!Transpiler.isTranspilerError(result)) {
-          throw new Error('Transpiler should return error');
+        if (Transpiler.isTranspilerError(result)) {
+          throw new Error('Transpiler should NOT return error');
         }
-        expect(result.map((x) => x.message)).toEqual(testCase.errorMessages);
+        expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
       });
     });
   });
@@ -211,10 +212,10 @@ describe('Validation checks table cases', () => {
 
         // when
         const result = transpiler.getSymbolTable(input);
-        if (!Transpiler.isTranspilerError(result)) {
-          throw new Error('Transpiler should return error');
+        if (Transpiler.isTranspilerError(result)) {
+          throw new Error('Transpiler should NOT return error');
         }
-        expect(result.map((x) => x.message)).toEqual(testCase.errorMessages);
+        expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
       });
     });
   });

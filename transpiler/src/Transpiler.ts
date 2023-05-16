@@ -6,9 +6,7 @@ import {
   IIntermediateASTParser,
   IIntermediateASTValidator,
   IntermediateAST,
-  ValidationErrors,
   ValidationError,
-  TBoundedContextName,
 } from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import {
@@ -20,7 +18,7 @@ import {
 import { ITargetGenerator, TOutputTargetContent } from './target/types.js';
 import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
 import type { TranspilerErrors, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
-import { SymbolTable } from './semantic-analysis/type-inference/SymbolTable.js';
+import { TSymbolTableSemantics } from './semantic-analysis/type-inference/types.js';
 
 export default class Transpiler {
   constructor(
@@ -50,7 +48,7 @@ export default class Transpiler {
 
   public bitloopsCodeToIntermediateModel(
     transpileInputData: TParserInputData,
-  ): IntermediateAST | ParserSyntacticErrors | ValidationErrors {
+  ): IntermediateAST | TranspilerErrors {
     const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData);
     if (isParserErrors(originalAST)) {
       return originalAST;
@@ -64,7 +62,7 @@ export default class Transpiler {
 
   public getSymbolTable(
     inputData: TParserInputData,
-  ): Record<TBoundedContextName, SymbolTable> | TranspilerErrors {
+  ): ParserSyntacticErrors | TSymbolTableSemantics {
     const originalAST = this.bitloopsCodeToOriginalAST(inputData);
     if (isParserErrors(originalAST)) {
       return originalAST;

@@ -1,5 +1,5 @@
 import { OriginalAST } from '../../parser/index.js';
-import { SymbolTable } from '../../semantic-analysis/type-inference/SymbolTable.js';
+import { TSymbolTableSemantics } from '../../semantic-analysis/type-inference/types.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
@@ -64,9 +64,7 @@ export class ConstVariableReassingedError extends ValidationError {
 
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | ValidationError[];
-  getSymbolTable: (
-    ast: IntermediateAST,
-  ) => Record<TBoundedContextName, SymbolTable> | ValidationError[];
+  getSymbolTable: (ast: IntermediateAST) => TSymbolTableSemantics;
 }
 
 export type TVariableDeclarationStatement = ConstDeclarationNode | VariableDeclarationNode;

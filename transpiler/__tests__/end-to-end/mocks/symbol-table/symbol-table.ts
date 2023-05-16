@@ -17,7 +17,6 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { SCOPE_NAMES } from '../../../../src/semantic-analysis/IntermediateASTValidator.js';
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
@@ -28,6 +27,7 @@ import {
   VariableSymbolEntry,
 } from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
 import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
+import { SCOPE_NAMES } from '../../../../src/semantic-analysis/type-inference/TypeInferenceValidator.js';
 import { bitloopsPrimitivesObj } from '../../../../src/types.js';
 import { FileUtil } from '../../../../src/utils/file.js';
 import { SymbolTableBuilder } from '../../builder/SymbolTableBuilder.js';

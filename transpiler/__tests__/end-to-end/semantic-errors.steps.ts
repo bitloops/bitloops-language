@@ -37,8 +37,7 @@ describe('Semantic core error End To End', () => {
     targetLanguage: SupportedLanguages.TypeScriptNest,
   };
 
-  SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase, _index) => {
-    // if (index !== 10) return;
+  SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();

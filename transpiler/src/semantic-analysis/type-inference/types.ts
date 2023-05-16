@@ -20,6 +20,8 @@
 
 import { mappingBitloopsBuiltInClassToLayer } from '../../helpers/mappings.js';
 import { TBitloopsIdentifier, TStandardVO, bitloopsPrimitivesObj } from '../../types.js';
+import { ValidationError, TBoundedContextName } from '../../ast/core/types.js';
+import { SymbolTable } from './SymbolTable.js';
 
 export const InferredTypes = {
   ...mappingBitloopsBuiltInClassToLayer,
@@ -38,4 +40,9 @@ export type TIntegrationEventInfo = {
   boundedContext: string;
   module: string;
   eventVersion: string;
+};
+
+export type TSymbolTableSemantics = {
+  symbolTables: Record<TBoundedContextName, SymbolTable>;
+  semanticErrors: ValidationError[];
 };
