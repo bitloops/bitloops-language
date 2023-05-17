@@ -26,7 +26,6 @@ import { ValidationError } from '../../src/ast/core/types.js';
 import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
-import { SemanticAnalyzer } from '../../src/semantic-analysis/IntermediateASTValidator.js';
 import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
 
 describe('Semantic core error End To End', () => {
@@ -39,13 +38,11 @@ describe('Semantic core error End To End', () => {
 
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
-    const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
-      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
@@ -98,13 +95,11 @@ describe('Semantic bounded context errors End To End', () => {
     const boundedContext = 'Demo';
     const module = 'Todo';
     const parser = new BitloopsParser();
-    const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
-      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );

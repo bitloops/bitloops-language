@@ -35,13 +35,11 @@ describe('Symbol table cases', () => {
 
   SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
-    const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
-      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
@@ -94,7 +92,6 @@ describe('Validation checks table cases', () => {
 
       const transpiler = new Transpiler(
         parser,
-        validator,
         originalLanguageASTToIntermediateModelTransformer,
         intermediateASTModelToTargetLanguageGenerator,
       );
@@ -139,7 +136,6 @@ describe('Validation checks table cases', () => {
 
       const transpiler = new Transpiler(
         parser,
-        validator,
         originalLanguageASTToIntermediateModelTransformer,
         intermediateASTModelToTargetLanguageGenerator,
       );
@@ -184,7 +180,6 @@ describe('Validation checks table cases', () => {
 
       const transpiler = new Transpiler(
         parser,
-        validator,
         originalLanguageASTToIntermediateModelTransformer,
         intermediateASTModelToTargetLanguageGenerator,
       );
