@@ -16,4 +16,8 @@ export class ThenStatementsNode extends IntermediateASTNode {
     );
     return statementList.statements;
   }
+
+  getStatementList(): StatementListNode {
+    return this.getChildNodeByType<StatementListNode>(BitloopsTypesMapping.TStatements);
+  }
 }

@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandlerBusDependenciesNode } from '../DomainEventHandler/EventHandlerBusDependenciesNode.js';
@@ -56,6 +57,10 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
     return parameterListNode.getParameters();
   }
 
+  getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
   getHandle(): IntegrationEventHandlerHandleMethodNode {
     const handle = this.getChildNodeByType<IntegrationEventHandlerHandleMethodNode>(
       BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod,
@@ -79,5 +84,16 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
     const expression = evaluationFieldNode.getExpression();
     const literalNode = expression.getLiteralNode();
     return literalNode.getStringLiteralValue();
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
+
+    symbolTableManager.addCommandQueryBus();
+
+    const handle = this.getHandle();
+    handle.addToSymbolTable(symbolTableManager);
   }
 }

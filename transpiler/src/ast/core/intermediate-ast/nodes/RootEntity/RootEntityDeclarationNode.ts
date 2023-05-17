@@ -6,6 +6,7 @@ import { EntityIdentifierNode } from '../Entity/EntityIdentifierNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 //fix this and entity to be extendable from a base class
 export class RootEntityDeclarationNode extends ClassTypeNode {
@@ -47,5 +48,11 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TEntityValues,
     ) as EntityValuesNode;
     return entityValues;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const entityValues = this.getEntityValues();
+    entityValues.addToSymbolTable(symbolTableManager);
   }
 }

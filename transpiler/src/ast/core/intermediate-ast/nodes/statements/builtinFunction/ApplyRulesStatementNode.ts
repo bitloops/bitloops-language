@@ -15,13 +15,18 @@ export class ApplyRulesNode extends BuiltInFunctionNode {
   }
 
   getArguments(): ArgumentNode[] {
+    const argumentNode = this.getArgumentList();
+    return argumentNode.arguments;
+  }
+
+  getArgumentList(): ArgumentListNode {
     const aplliedRuleNode = this.getChildren()[0] as AppliedRuleNode;
     const argumentNode = aplliedRuleNode
       .getChildren()
       .find(
         (node) => node.getNodeType() === BitloopsTypesMapping.TArgumentList,
       ) as ArgumentListNode;
-    return argumentNode.arguments;
+    return argumentNode;
   }
 
   getInferredType(): string {

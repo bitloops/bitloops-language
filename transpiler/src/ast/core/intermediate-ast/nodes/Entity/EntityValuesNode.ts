@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
@@ -34,6 +35,12 @@ export class EntityValuesNode extends IntermediateASTNode {
     return publicMethods;
   }
 
+  getPublicMethodList(): PublicMethodDeclarationListNode | null {
+    return this.getChildNodeByType<PublicMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPublicMethods,
+    );
+  }
+
   getPrivateMethods(): PrivateMethodDeclarationNode[] {
     const privateMethodsList = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
       BitloopsTypesMapping.TPrivateMethods,
@@ -41,6 +48,12 @@ export class EntityValuesNode extends IntermediateASTNode {
     if (!privateMethodsList) return [];
     const privateMethods = privateMethodsList.getPrivateMethodNodes();
     return privateMethods;
+  }
+
+  getPrivateMethodList(): PrivateMethodDeclarationListNode | null {
+    return this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
   }
 
   public getPublicMethodTypes(): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
@@ -63,5 +76,20 @@ export class EntityValuesNode extends IntermediateASTNode {
     const bitloopsIdentifierNode = parameterType.getBitloopsIdentifierTypeNode();
     const propsIdentifier = bitloopsIdentifierNode.getIdentifierName();
     return propsIdentifier;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const domainCreate = this.getDomainCreateMethod();
+    domainCreate.addToSymbolTable(symbolTableManager);
+
+    const publicMethodList = this.getPublicMethodList();
+    if (publicMethodList) {
+      publicMethodList.addToSymbolTable(symbolTableManager);
+    }
+
+    const privateMethodList = this.getPrivateMethodList();
+    if (privateMethodList) {
+      privateMethodList.addToSymbolTable(symbolTableManager);
+    }
   }
 }

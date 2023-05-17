@@ -9,7 +9,7 @@ import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotE
 import { TVariableDeclarationStatement } from '../types.js';
 import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
-import { VariableDeclarationNode } from './nodes/variableDeclaration.js';
+import { VariableDeclarationNode } from './nodes/statements/variableDeclaration.js';
 import { EntityEvaluationNode } from './nodes/Expression/Evaluation/EntityEvaluation.js';
 import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueObjectEvaluation.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';

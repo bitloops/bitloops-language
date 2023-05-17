@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
 import { ParameterNode } from './ParameterList/ParameterNode.js';
 import { ReturnOkErrorTypeNode } from './returnOkErrorType/ReturnOkErrorTypeNode.js';
@@ -19,6 +20,10 @@ export class ExecuteNode extends IntermediateASTNode {
     return statementList.statements;
   }
 
+  getStatementList(): StatementListNode {
+    return this.getChildNodeByType<StatementListNode>(BitloopsTypesMapping.TStatements);
+  }
+
   getParameter(): ParameterNode {
     const parameterNode = this.getChildNodeByType<ParameterNode>(BitloopsTypesMapping.TParameter);
     return parameterNode;
@@ -31,17 +36,14 @@ export class ExecuteNode extends IntermediateASTNode {
     return [returnOkErrorTypeNode];
   }
 
-  // addToSymbolTable(classA: ClassA): void {
-  //   const symbolTable = classA.getSymbolTable();
-  //   const executeScope = symbolTable.createChildScope(SCOPE_NAMES.EXECUTE, this);
-  //   const executeParameter = this.getParameter();
-  //   if (executeParameter) {
-  //     executeParameter.addToSymbolTable(executeScope);
-  //     // const paramName = paramNode.getIdentifier();
-  //     // executeScope.insert(
-  //     //   paramName,
-  //     //   new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
-  //     // );
-  //   }
-  // }
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.createSymbolTableChildScope(SymbolTableManager.SCOPE_NAMES.EXECUTE, this);
+    const executeParameter = this.getParameter();
+    if (executeParameter) {
+      executeParameter.addToSymbolTable(symbolTableManager);
+    }
+
+    const statementList = this.getStatementList();
+    statementList.addToSymbolTable(symbolTableManager);
+  }
 }

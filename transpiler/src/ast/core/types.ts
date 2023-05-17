@@ -3,7 +3,7 @@ import { TSymbolTableSemantics } from '../../semantic-analysis/type-inference/ty
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
-import { VariableDeclarationNode } from './intermediate-ast/nodes/variableDeclaration.js';
+import { VariableDeclarationNode } from './intermediate-ast/nodes/statements/variableDeclaration.js';
 
 export type IntermediateAST = {
   core: TBoundedContexts;

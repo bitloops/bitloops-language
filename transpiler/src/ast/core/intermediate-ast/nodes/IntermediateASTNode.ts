@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ValidationError } from '../../types.js';
 import { StatementListNode } from './statements/StatementList.js';
 
@@ -174,6 +175,8 @@ export abstract class IntermediateASTNode {
     return;
   }
 
+  abstract addToSymbolTable(symbolTableManager: SymbolTableManager): void;
+
   static isIntermediateASTNodeValidationError(
     value: void | IntermediateASTNodeValidationError,
   ): value is IntermediateASTNodeValidationError {
@@ -213,5 +216,18 @@ export abstract class IntermediateASTNode {
   ): T | null {
     const children = this.getChildren();
     return (children.find((child) => child.getClassNodeName() === classNodeName) as T) ?? null;
+  }
+
+  protected getFirstParentNodeByType<T extends IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T | null {
+    let parent = this.getParent();
+    while (!parent.isRoot()) {
+      if (parent.getNodeType() === nodeType) {
+        return parent as T;
+      }
+      parent = parent.getParent();
+    }
+    return null;
   }
 }

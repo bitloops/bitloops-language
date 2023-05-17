@@ -2,7 +2,7 @@ import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
 import { StatementNode } from '../nodes/statements/Statement.js';
 import { SwitchStatementNode } from '../nodes/statements/SwitchStatement/SwitchStatementNode.js';
 import { IfStatementNode } from '../nodes/statements/ifStatement/IfStatementNode.js';
-import { VariableDeclarationNode } from '../nodes/variableDeclaration.js';
+import { VariableDeclarationNode } from '../nodes/statements/variableDeclaration.js';
 import { ConstDeclarationNode } from '../nodes/statements/ConstDeclarationNode.js';
 import { ReturnStatementNode } from '../nodes/statements/ReturnStatementNode.js';
 import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';

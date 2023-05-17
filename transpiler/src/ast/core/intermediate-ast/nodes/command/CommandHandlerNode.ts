@@ -25,6 +25,7 @@ import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ExecuteNode } from '../ExecuteNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class CommandHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.CommandHandler;
@@ -74,24 +75,14 @@ export class CommandHandlerNode extends ClassTypeNode {
     return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
   }
 
-  // addToSymbolTable(classA: ClassA): void {
-  //   const symbolTable = classA.getSymbolTable();
-  //   classA.addClassTypeThis(symbolTable);
-  //   // inside addClassTypeThis: symbolTable.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-  //   classA.addIntegrationEventBus(symbolTable);
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    symbolTableManager.addIntegrationEventBus();
 
-  //   const parameterList = this.getParameterList();
-  //   //TODO find a way to distinct paramaters from classTypeParameters
-  //   parameterList.addToSymbolTable(classA);
-  //   //inside: this.createClassTypeParamsScope(params, classTypeScope);
-  //   const execute = this.getExecute();
-  //   execute.addToSymbolTable(classA);
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
 
-  //   const statements = node.getStatements();
-  //   this.createStatementListScope({
-  //     statements: statements,
-  //     symbolTable: executeScope,
-  //     intermediateASTTree: ASTTree,
-  //   });
-  // }
+    const execute = this.getExecute();
+    execute.addToSymbolTable(symbolTableManager);
+  }
 }

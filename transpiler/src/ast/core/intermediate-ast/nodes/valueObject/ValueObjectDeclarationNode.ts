@@ -1,6 +1,8 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TPropsIdentifier } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
+import { ConstDeclarationListNode } from '../ConstDeclarationListNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { PrivateMethodDeclarationListNode } from '../methods/PrivateMethodDeclarationListNode.js';
@@ -29,6 +31,12 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
       return [];
     }
     return constants;
+  }
+
+  public getConstDeclarationList(): ConstDeclarationListNode | null {
+    return this.getChildNodeByType<ConstDeclarationListNode>(
+      BitloopsTypesMapping.TConstDeclarationList,
+    );
   }
 
   public getIdentifierValue(): string {
@@ -66,5 +74,32 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
     );
     const privatecMethods = privateMethodsList.getPrivateMethodNodes();
     return privatecMethods;
+  }
+
+  getMethodList(): PrivateMethodDeclarationListNode {
+    return this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const constDeclarationList = this.getConstDeclarationList();
+    if (constDeclarationList) {
+      constDeclarationList.addToSymbolTable(symbolTableManager);
+    }
+    // constants.forEach((constant) => {
+    //   const constantName = constant.getIdentifier().getValue().identifier;
+    //   classTypeScope.insert(
+    //     constantName,
+    //     new VariableSymbolEntry(inferType({ node: constant.getExpressionValues() }), true),
+    //   );
+    // });
+
+    const create = this.getCreateNode();
+    create.addToSymbolTable(symbolTableManager);
+
+    const methods = this.getMethodList();
+    methods.addToSymbolTable(symbolTableManager);
   }
 }

@@ -10,6 +10,7 @@ import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNod
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
 import { PrivateMethodDeclarationNode } from '../methods/PrivateMethodDeclarationNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class DomainServiceNode extends ClassTypeNode {
   private static classType = ClassTypes.DomainService;
@@ -88,6 +89,10 @@ export class DomainServiceNode extends ClassTypeNode {
     return parameterList.getParameters();
   }
 
+  public getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
   public getPublicMethods(): PublicMethodDeclarationNode[] {
     const publicMethodList = this.getChildNodeByType<PublicMethodDeclarationListNode>(
       BitloopsTypesMapping.TPublicMethods,
@@ -97,6 +102,12 @@ export class DomainServiceNode extends ClassTypeNode {
     return publicMethods;
   }
 
+  public getPublicMethodList(): PublicMethodDeclarationListNode {
+    return this.getChildNodeByType<PublicMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPublicMethods,
+    );
+  }
+
   public getPrivateMethods(): PrivateMethodDeclarationNode[] {
     const privateMethodList = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
       BitloopsTypesMapping.TPrivateMethods,
@@ -104,5 +115,23 @@ export class DomainServiceNode extends ClassTypeNode {
 
     const privateMethods = privateMethodList.getPrivateMethodNodes();
     return privateMethods;
+  }
+
+  public getPrivateMethodList(): PrivateMethodDeclarationListNode {
+    return this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
+
+    const publicMethodList = this.getPublicMethodList();
+    publicMethodList.addToSymbolTable(symbolTableManager);
+
+    const privateMethodList = this.getPrivateMethodList();
+    privateMethodList.addToSymbolTable(symbolTableManager);
   }
 }

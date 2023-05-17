@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode } from '../IntermediateASTNode.js';
-import { VariableDeclarationNode } from '../variableDeclaration.js';
+import { VariableDeclarationNode } from './variableDeclaration.js';
 import { ConstDeclarationNode } from './ConstDeclarationNode.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 

@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { IntermediateASTNode, TNodeMetadata } from './IntermediateASTNode.js';
 import { ParameterNode } from './ParameterList/ParameterNode.js';
 import { StatementNode } from './statements/Statement.js';
@@ -23,5 +24,22 @@ export class EventHandleNode extends IntermediateASTNode {
       BitloopsTypesMapping.TParameter,
     );
     return parameterNode;
+  }
+
+  getParameter(): ParameterNode {
+    return this.getChildNodeByType<ParameterNode>(BitloopsTypesMapping.TParameter);
+  }
+
+  getStatementList(): StatementListNode {
+    return this.getChildNodeByType<StatementListNode>(BitloopsTypesMapping.TStatements);
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.createSymbolTableChildScope(SymbolTableManager.SCOPE_NAMES.HANDLE, this);
+    const parameter = this.getParameter();
+    parameter.addToSymbolTable(symbolTableManager);
+
+    const statementList = this.getStatementList();
+    statementList.addToSymbolTable(symbolTableManager);
   }
 }

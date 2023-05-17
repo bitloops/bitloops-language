@@ -59,10 +59,10 @@ import {
 } from './SymbolEntry.js';
 import { SymbolTable } from './SymbolTable.js';
 import { TInferredTypes } from './types.js';
+import { SymbolTableManager } from './SymbolTableManager.js';
 
 export const SCOPE_NAMES = {
   EXECUTE: 'execute',
-  THIS: 'this',
   SWITCH: 'switch',
   CASE: 'case',
   DEFAULT: 'default',
@@ -295,158 +295,19 @@ export class TypeInferenceValidator {
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       const globalScope = new SymbolTable();
       this.symbolTable[boundedContextName] = globalScope;
-
       for (const ASTTree of Object.values(boundedContext)) {
+        const symbolTableManager = new SymbolTableManager(ASTTree, core);
         const classTypeNodes = ASTTree.getClassTypeNodes();
         classTypeNodes.forEach((node) => {
           try {
             const identifierNode = node.getIdentifier();
             const name = identifierNode.getIdentifierName();
             const classTypeScope = globalScope.createChildScope(name, node);
-            //   const typeInferenceVisitor = new TypeInferenceVisitor({
-            //     symbolTable: classTypeScope,
-            //     errors: this.errors,
-            //   });
-            //   node.setTypeInferenceSymbolTable(typeInferenceVisitor);
 
-            if (ClassTypeNodeTypeGuards.isCommandHandler(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              this.addIntegrationEventBus(classTypeScope);
+            symbolTableManager.setClassTypeSymbolTable(classTypeScope);
+            node.addToSymbolTable(symbolTableManager);
 
-              const params = node.getParameters();
-              this.createClassTypeParamsScope(params, classTypeScope);
-              //TODO move to method
-              const execute = node.getExecute();
-              const executeScope = classTypeScope.createChildScope(SCOPE_NAMES.EXECUTE, execute);
-              const executeParams = node.getMethodParameters();
-              executeParams.forEach((paramNode) => {
-                const paramName = paramNode.getIdentifier();
-                executeScope.insert(
-                  paramName,
-                  new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
-                );
-              });
-              const statements = node.getStatements();
-              this.createStatementListScope({
-                statements: statements,
-                symbolTable: executeScope,
-                intermediateASTTree: ASTTree,
-              });
-            } else if (ClassTypeNodeTypeGuards.isQueryHandler(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              this.addIntegrationEventBus(classTypeScope);
-
-              const params = node.getParameters();
-              this.createClassTypeParamsScope(params, classTypeScope);
-              //TODO move to method
-              const execute = node.getExecute();
-              const executeScope = classTypeScope.createChildScope(SCOPE_NAMES.EXECUTE, execute);
-              const executeParams = node.getMethodParameters();
-              executeParams.forEach((paramNode) => {
-                const paramName = paramNode.getIdentifier();
-                executeScope.insert(
-                  paramName,
-                  new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
-                );
-              });
-              const statements = node.getStatements();
-              this.createStatementListScope({
-                statements: statements,
-                symbolTable: executeScope,
-                intermediateASTTree: ASTTree,
-              });
-            } else if (ClassTypeNodeTypeGuards.isDomainEventHandler(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              this.addCommandQueryBus(classTypeScope);
-              const params = node.getParameters();
-              this.createClassTypeParamsScope(params, classTypeScope);
-
-              const handle = node.getHandle();
-              this.createHandleScope({ handle, classTypeScope, intermediateASTTree: ASTTree });
-            } else if (ClassTypeNodeTypeGuards.isIntegrationEventHandler(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              const params = node.getParameters();
-              this.createClassTypeParamsScope(params, classTypeScope);
-              this.addCommandQueryBus(classTypeScope);
-
-              const handle = node.getHandle();
-              const eventVersion = node.getEventVersionValue();
-              this.createIntegrationEventHandleScope({
-                handle,
-                eventVersion,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-                core,
-              });
-            } else if (ClassTypeNodeTypeGuards.isDomainService(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              const params = node.getParameters();
-              this.createClassTypeParamsScope(params, classTypeScope);
-              const publicMethods = node.getPublicMethods();
-              this.createPublicMethodScope({
-                publicMethods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-              const privateMethods = node.getPrivateMethods();
-              this.createPrivateMethodScope({
-                privateMethods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-            } else if (ClassTypeNodeTypeGuards.isRootEntity(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              const entityValue = node.getEntityValues();
-
-              const domainCreate = entityValue.getDomainCreateMethod();
-
-              this.appendDomainCreateMethodToSymbolTable({
-                classTypeScope,
-                domainCreate,
-                intermediateASTTree: ASTTree,
-              });
-
-              //methods
-              const publicMethods = entityValue.getPublicMethods();
-              this.createPublicMethodScope({
-                publicMethods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-
-              const privateMethods = entityValue.getPrivateMethods();
-              this.createPrivateMethodScope({
-                privateMethods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-            } else if (ClassTypeNodeTypeGuards.isEntity(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              const entityValue = node.getEntityValues();
-
-              const domainCreate = entityValue.getDomainCreateMethod();
-
-              this.appendDomainCreateMethodToSymbolTable({
-                classTypeScope,
-                domainCreate,
-                intermediateASTTree: ASTTree,
-              });
-
-              //methods
-              const publicMethods = entityValue.getPublicMethods();
-              this.createPublicMethodScope({
-                publicMethods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-
-              const privateMethods = entityValue.getPrivateMethods();
-              this.createPrivateMethodScope({
-                privateMethods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-            } else if (ClassTypeNodeTypeGuards.isValueObject(node)) {
+            if (ClassTypeNodeTypeGuards.isValueObject(node)) {
               classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
               const constants = node.getConstants();
               constants.forEach((constant) => {
@@ -518,166 +379,6 @@ export class TypeInferenceValidator {
     }
   }
 
-  private appendDomainCreateMethodToSymbolTable(params: {
-    classTypeScope: SymbolTable;
-    domainCreate: DomainCreateNode;
-    intermediateASTTree: IntermediateASTTree;
-  }): void {
-    const { classTypeScope, domainCreate, intermediateASTTree } = params;
-    const domainCreateScope = classTypeScope.createChildScope(
-      SCOPE_NAMES.DOMAIN_CREATE,
-      domainCreate,
-    );
-    const domainCreateParam = domainCreate.getParameterNode();
-    const domainCreateParamName = domainCreateParam.getIdentifier();
-    domainCreateScope.insert(
-      domainCreateParamName,
-      new ParameterSymbolEntry(inferType({ node: domainCreateParam.getType() })),
-    );
-    const domainCreateStatements = domainCreate.getStatements();
-    this.createStatementListScope({
-      statements: domainCreateStatements,
-      symbolTable: domainCreateScope,
-      intermediateASTTree,
-    });
-  }
-
-  private createPublicMethodScope({
-    publicMethods,
-    classTypeScope,
-    intermediateASTTree,
-  }: {
-    publicMethods: PublicMethodDeclarationNode[];
-    classTypeScope: SymbolTable;
-    intermediateASTTree: IntermediateASTTree;
-  }): void {
-    publicMethods.forEach((method) => {
-      const methodName = method.getMethodName();
-      const methodScope = classTypeScope.createChildScope(methodName, method);
-      const methodParams = method.getMethodParameters();
-      for (const param of methodParams) {
-        const paramName = param.getIdentifier();
-        methodScope.insert(
-          paramName,
-          new ParameterSymbolEntry(inferType({ node: param.getType() })),
-        );
-      }
-      const methodStatements = method.getStatements();
-      this.createStatementListScope({
-        statements: methodStatements,
-        symbolTable: methodScope,
-        intermediateASTTree,
-      });
-    });
-  }
-
-  private createPrivateMethodScope({
-    privateMethods,
-    classTypeScope,
-    intermediateASTTree,
-  }: {
-    privateMethods: PrivateMethodDeclarationNode[];
-    classTypeScope: SymbolTable;
-    intermediateASTTree: IntermediateASTTree;
-  }): void {
-    privateMethods.forEach((method) => {
-      const methodName = method.getIdentifier();
-      const methodScope = classTypeScope.createChildScope(methodName, method);
-      const methodParams = method.getMethodParameters();
-      for (const param of methodParams) {
-        const paramName = param.getIdentifier();
-        methodScope.insert(
-          paramName,
-          new ParameterSymbolEntry(inferType({ node: param.getType() })),
-        );
-      }
-      const methodStatements = method.getStatements();
-      this.createStatementListScope({
-        statements: methodStatements,
-        symbolTable: methodScope,
-        intermediateASTTree,
-      });
-    });
-  }
-
-  private createClassTypeParamsScope(params: ParameterNode[], classTypeScope: SymbolTable): void {
-    params.forEach((paramNode) => {
-      const paramName = paramNode.getIdentifier();
-      classTypeScope.insert(
-        SCOPE_NAMES.THIS + '.' + paramName,
-        new ClassTypeParameterSymbolEntry(inferType({ node: paramNode.getType() })),
-      );
-    });
-  }
-
-  private addParametersToSymbolTable(parameters: ParameterNode[], symbolTable: SymbolTable): void {
-    parameters.forEach((param) => {
-      const paramName = param.getIdentifier();
-      symbolTable.insert(paramName, new ParameterSymbolEntry(inferType({ node: param.getType() })));
-    });
-  }
-
-  private createHandleScope({
-    handle,
-    classTypeScope,
-    intermediateASTTree,
-  }: {
-    handle: EventHandleNode;
-    classTypeScope: SymbolTable;
-    intermediateASTTree: IntermediateASTTree;
-  }): void {
-    const handleScope = classTypeScope.createChildScope(SCOPE_NAMES.HANDLE, handle);
-    const handleParams = handle.getParameters();
-    handleParams.forEach((paramNode) => {
-      const paramName = paramNode.getIdentifier();
-      handleScope.insert(
-        paramName,
-        new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
-      );
-    });
-    const statements = handle.getStatements();
-    this.createStatementListScope({
-      statements: statements,
-      symbolTable: handleScope,
-      intermediateASTTree,
-    });
-  }
-
-  private createIntegrationEventHandleScope({
-    handle,
-    eventVersion,
-    classTypeScope,
-    intermediateASTTree,
-    core,
-  }: {
-    handle: IntegrationEventHandlerHandleMethodNode;
-    eventVersion: string;
-    classTypeScope: SymbolTable;
-    intermediateASTTree: IntermediateASTTree;
-    core: TBoundedContexts;
-  }): void {
-    const handleScope = classTypeScope.createChildScope(SCOPE_NAMES.HANDLE, handle);
-    const handleParam = handle.getParameter();
-    const paramName = handleParam.getIdentifier();
-    const boundedContextModuleNode = handleParam.getBoundedContextModule();
-    handleScope.insert(
-      paramName,
-      new IntegrationEventParameterSymbolEntry(handleParam.getIntegrationEventIdentifier(), {
-        boundedContext: boundedContextModuleNode.getBoundedContext().getName(),
-        module: boundedContextModuleNode.getModule().getName(),
-        eventVersion,
-      }),
-    );
-
-    const statements = handle.getStatements();
-    this.createStatementListScope({
-      statements: statements,
-      symbolTable: handleScope,
-      intermediateASTTree,
-      core,
-    });
-  }
-
   private createStatementListScope({
     statements,
     symbolTable,
@@ -689,204 +390,58 @@ export class TypeInferenceValidator {
     intermediateASTTree: IntermediateASTTree;
     core?: TBoundedContexts;
   }): SymbolTable {
-    let ifCounter = 0;
-    let elseCounter = 0;
-    let switchCounter = 0;
     let ifErrorCounter = 0;
     for (const statement of statements) {
-      try {
-        if (StatementNodeTypeGuards.isVariableDeclarationStatement(statement)) {
-          const identifier = statement.getIdentifier().getIdentifierName();
-          statement.typeCheck(symbolTable);
-          const typeAnnotation = statement.getTypeAnnotation();
+      if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
+        statement.typeCheck(symbolTable);
+        ifErrorCounter = this.addExpression({
+          expression: statement,
+          symbolTable,
+          intermediateASTTree,
+          core,
+          ifErrorCounter,
+        });
+      }
 
-          const getExpressionValue = statement.getExpressionValues();
-          const expression = statement.getExpression();
-          if (expression) {
-            ifErrorCounter = this.addExpression({
-              expression,
-              symbolTable,
-              intermediateASTTree,
-              core,
-              ifErrorCounter,
-            });
-          }
+      if (StatementNodeTypeGuards.isBuiltInFunctionStatement(statement)) {
+        const specificFunction = statement.getChildren()[0];
+        if (IntermediateASTNodeTypeGuards.isAddDomainEvent(specificFunction)) {
+          const leftExpression = specificFunction.getLeftExpression();
+          leftExpression.typeCheck(symbolTable);
 
-          if (typeAnnotation) {
-            symbolTable.insert(
-              identifier,
-              new VariableSymbolEntry(
-                inferType({ node: typeAnnotation, symbolTable, intermediateASTTree }),
-                false,
-              ),
-            );
-          } else {
-            //TODO maybe delete else because we have always type. Just type check
-            symbolTable.insert(
-              identifier,
-              new VariableSymbolEntry(
-                inferType({ node: getExpressionValue, symbolTable, intermediateASTTree }),
-                false,
-              ),
-            );
-          }
-        }
-
-        if (StatementNodeTypeGuards.isConstantDeclarationStatement(statement)) {
-          const expression = statement.getExpressionValues();
-          statement.typeCheck(symbolTable);
-          const identifier = statement.getIdentifier().getIdentifierName();
-
-          this.addEvaluationFields({
-            expression,
-            symbolTable,
-            intermediateASTTree,
-            ifErrorCounter,
-          });
-
+          const rightExpression = specificFunction.getRightExpression();
+          rightExpression.typeCheck(symbolTable);
           ifErrorCounter = this.addExpression({
-            expression: statement.getExpression(),
+            expression: rightExpression,
             symbolTable,
             intermediateASTTree,
-            core,
             ifErrorCounter,
           });
+
+          //Here add to symbol table the Add domain event statement
+          const leftExpressionKey = leftExpression.getIdentifierName();
+          // const rightExpressionKey = rightExpression.getStringValue();
+
+          const addDomainEventKey = this.appendMemberDot([leftExpressionKey, 'addDomainEvent()']);
+
           symbolTable.insert(
-            identifier,
-            new VariableSymbolEntry(
-              inferType({ node: expression, symbolTable, intermediateASTTree, core }),
-              true,
-            ),
+            addDomainEventKey,
+            new MethodCallSymbolEntry(inferType({ node: specificFunction, symbolTable })),
           );
-        }
-
-        if (StatementNodeTypeGuards.isIfStatement(statement)) {
-          const conditionExpression = statement.getConditionExpression();
-          conditionExpression.typeCheck(symbolTable);
-          ifErrorCounter = this.addExpression({
-            expression: conditionExpression,
-            symbolTable,
-            intermediateASTTree,
-            core,
-            ifErrorCounter,
-          });
-
-          const ifScope = symbolTable.createChildScope(SCOPE_NAMES.IF + ifCounter++, statement);
-          const thenStatements = statement.getThenStatements();
-          this.createStatementListScope({
-            statements: thenStatements,
-            symbolTable: ifScope,
-            intermediateASTTree,
-            core,
-          });
-          if (statement.hasElseBlock()) {
-            const elseStatements = statement.getElseStatements();
-            const elseScope = symbolTable.createChildScope('else' + elseCounter++, statement);
-            this.createStatementListScope({
-              statements: elseStatements,
-              symbolTable: elseScope,
-              intermediateASTTree,
-              core,
-            });
-          }
-        }
-
-        if (StatementNodeTypeGuards.isSwitchStatement(statement)) {
-          const switchExpression = statement.getExpression();
-          switchExpression.typeCheck(symbolTable);
-
-          const switchScope = symbolTable.createChildScope(
-            SCOPE_NAMES.SWITCH + switchCounter++,
-            statement,
-          );
-          const switchCases = statement.getCases();
-          switchCases.forEach((switchCase, index) => {
-            const switchCaseExpression = switchCase.getExpression();
-            switchCaseExpression.typeCheck(switchScope);
-
-            const caseScope = switchScope.createChildScope(SCOPE_NAMES.CASE + index, switchCase);
-            const caseStatements = switchCase.getStatements();
-            this.createStatementListScope({
-              statements: caseStatements,
-              symbolTable: caseScope,
-              intermediateASTTree,
-              core,
-            });
-          });
-          const defaultCase = statement.getDefaultCase();
-          const defaultScope = switchScope.createChildScope(SCOPE_NAMES.DEFAULT, defaultCase);
-          const defaultStatements = defaultCase.getStatements();
-          this.createStatementListScope({
-            statements: defaultStatements,
-            symbolTable: defaultScope,
-            intermediateASTTree,
-            core,
-          });
-        }
-
-        if (StatementNodeTypeGuards.isReturnStatement(statement)) {
-          const expression = statement.getExpressionValues();
-          expression.typeCheck(symbolTable);
-        }
-
-        if (StatementNodeTypeGuards.isExpressionStatement(statement)) {
-          statement.typeCheck(symbolTable);
-          ifErrorCounter = this.addExpression({
-            expression: statement,
-            symbolTable,
-            intermediateASTTree,
-            core,
-            ifErrorCounter,
-          });
-        }
-
-        if (StatementNodeTypeGuards.isBuiltInFunctionStatement(statement)) {
-          const specificFunction = statement.getChildren()[0];
-          if (IntermediateASTNodeTypeGuards.isAddDomainEvent(specificFunction)) {
-            const leftExpression = specificFunction.getLeftExpression();
-            leftExpression.typeCheck(symbolTable);
-
-            const rightExpression = specificFunction.getRightExpression();
-            rightExpression.typeCheck(symbolTable);
-            ifErrorCounter = this.addExpression({
-              expression: rightExpression,
+        } else if (IntermediateASTNodeTypeGuards.isApplyRules(specificFunction)) {
+          const argumentNodes = specificFunction.getArguments();
+          argumentNodes.forEach((argument) => {
+            this.addExpression({
+              expression: argument.getExpression(),
               symbolTable,
               intermediateASTTree,
               ifErrorCounter,
             });
-
-            //Here add to symbol table the Add domain event statement
-            const leftExpressionKey = leftExpression.getIdentifierName();
-            // const rightExpressionKey = rightExpression.getStringValue();
-
-            const addDomainEventKey = this.appendMemberDot([leftExpressionKey, 'addDomainEvent()']);
-
-            symbolTable.insert(
-              addDomainEventKey,
-              new MethodCallSymbolEntry(inferType({ node: specificFunction, symbolTable })),
-            );
-          } else if (IntermediateASTNodeTypeGuards.isApplyRules(specificFunction)) {
-            const argumentNodes = specificFunction.getArguments();
-            argumentNodes.forEach((argument) => {
-              this.addExpression({
-                expression: argument.getExpression(),
-                symbolTable,
-                intermediateASTTree,
-                ifErrorCounter,
-              });
-            });
-          }
-        }
-      } catch (e) {
-        // console.log(e);
-        if (e instanceof ValidationError) {
-          this.addError(e);
-          break;
-        } else {
-          throw e;
+          });
         }
       }
     }
+
     return symbolTable;
   }
 
@@ -940,25 +495,6 @@ export class TypeInferenceValidator {
         ifErrorCounter,
       });
     });
-  }
-
-  private addCommandQueryBus(symbolTable: SymbolTable): void {
-    const commandBusKey = this.appendThis('commandBus');
-    const queryBusKey = this.appendThis('queryBus');
-    symbolTable.insert(commandBusKey, new ClassTypeParameterSymbolEntry('CommandBusPort'));
-    symbolTable.insert(queryBusKey, new ClassTypeParameterSymbolEntry('QueryBusPort'));
-  }
-
-  private addIntegrationEventBus(symbolTable: SymbolTable): void {
-    const integrationEventBusKey = this.appendThis('integrationEventBus');
-    symbolTable.insert(
-      integrationEventBusKey,
-      new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
-    );
-  }
-
-  private appendThis(identifier: string): string {
-    return 'this.' + identifier;
   }
 
   private addExpression({
@@ -1259,10 +795,6 @@ export class TypeInferenceValidator {
         throw new Error('Invalid left expression of member dot expression');
       }
     }
-  }
-
-  appendMemberDot(memberDotMembers: string[]): string {
-    return memberDotMembers.join('.');
   }
 
   private getMemberDotSymbolEntryKey(

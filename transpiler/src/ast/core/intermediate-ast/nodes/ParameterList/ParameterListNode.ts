@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from './ParameterNode.js';
 
@@ -15,5 +16,19 @@ export class ParameterListNode extends IntermediateASTNode {
 
   getParameters(): ParameterNode[] {
     return this.getChildren() as ParameterNode[];
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const params = this.getParameters();
+    params.forEach((paramNode) => {
+      paramNode.addToSymbolTable(symbolTableManager);
+    });
+  }
+
+  addClassTypeParametersToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const params = this.getParameters();
+    params.forEach((paramNode) => {
+      paramNode.addClassTypeParameterToSymbolTable(symbolTableManager);
+    });
   }
 }

@@ -1,4 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import {
+  ClassTypeParameterSymbolEntry,
+  ParameterSymbolEntry,
+} from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterIdentifierNode } from './ParameterIdentifierNode.js';
@@ -29,16 +35,23 @@ export class ParameterNode extends IntermediateASTNode {
     return parameterType.isRepoPort();
   }
 
-  typeCheck(): void {
-    // const parameterType = this.getType();
-    //TODO check if it is found on tree
-    // if (isNotFound(parameterType)) {
-    //   throw new MissingIdentifierError(parameterType.getIdentifierName(), this.getMetadata());
-    // }
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const symbolTable = symbolTableManager.getSymbolTable();
+    const paramName = this.getIdentifier();
+    symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType()));
   }
 
-  // addToSymbolTable(classA: ClassA): void {
-  //   const paramName = this.getIdentifier();
-  //   executeScope.insert(paramName, new ParameterSymbolEntry(inferType({ node: this.getType() })));
-  // }
+  addClassTypeParameterToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const symbolTable = symbolTableManager.getSymbolTable();
+    const paramName = this.getIdentifier();
+    symbolTable.insert(
+      SymbolTableManager.THIS + '.' + paramName,
+      new ClassTypeParameterSymbolEntry(this.getInferredType()),
+    );
+  }
+
+  getInferredType(): TInferredTypes {
+    const parameterType = this.getType();
+    return parameterType.getInferredType();
+  }
 }

@@ -1,7 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { SCOPE_NAMES } from '../../../../../../semantic-analysis/type-inference/TypeInferenceValidator.js';
 import { ExpressionNode } from '../../Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StatementNode } from '../Statement.js';
+import { StatementListNode } from '../StatementList.js';
 import { ConditionNode } from './ConditionNode.js';
 import { ElseStatementsNode } from './ElseStatements.js';
 import { ThenStatementsNode } from './ThenStatements.js';
@@ -23,6 +26,12 @@ export class IfStatementNode extends StatementNode {
     return thenNode.getStatements();
   }
 
+  getThenStatementList(): StatementListNode {
+    const thenNode = this.getThenNode();
+    if (!thenNode) throw new Error('No then node found');
+    return thenNode.getStatementList();
+  }
+
   hasElseBlock(): boolean {
     return !!this.getElseNode();
   }
@@ -32,6 +41,12 @@ export class IfStatementNode extends StatementNode {
     return elseNode.getStatements();
   }
 
+  getElseStatementList(): StatementListNode {
+    const elseNode = this.getElseNode();
+    if (!elseNode) throw new Error('No then node found');
+    return elseNode.getStatementListNode();
+  }
+
   public getConditionNode(): ConditionNode {
     return this.getChildNodeByType<ConditionNode>(BitloopsTypesMapping.TCondition);
   }
@@ -39,7 +54,32 @@ export class IfStatementNode extends StatementNode {
   private getThenNode(): ThenStatementsNode {
     return this.getChildNodeByType<ThenStatementsNode>(BitloopsTypesMapping.TThenStatements);
   }
-  private getElseNode(): ThenStatementsNode {
+  private getElseNode(): ElseStatementsNode {
     return this.getChildNodeByType<ElseStatementsNode>(BitloopsTypesMapping.TElseStatements);
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const conditionExpression = this.getConditionExpression();
+    const symbolTable = symbolTableManager.getSymbolTable();
+    conditionExpression.typeCheck(symbolTable);
+    conditionExpression.addToSymbolTable(symbolTableManager);
+
+    const ifCounter = symbolTableManager.increaseIfCounter();
+    const scopeName = SCOPE_NAMES.IF + ifCounter;
+
+    symbolTableManager.createSymbolTableChildScope(scopeName, this);
+
+    const thenStatementList = this.getThenStatementList();
+    thenStatementList.addToSymbolTable(symbolTableManager);
+
+    if (this.hasElseBlock()) {
+      const elseStatementList = this.getElseStatementList();
+      const elseCounter = symbolTableManager.increaseElseCounter();
+
+      const scopeName = SCOPE_NAMES.ELSE + elseCounter;
+
+      symbolTableManager.createSymbolTableChildScope(scopeName, this);
+      elseStatementList.addToSymbolTable(symbolTableManager);
+    }
   }
 }

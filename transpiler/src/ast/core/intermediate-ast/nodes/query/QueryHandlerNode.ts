@@ -25,6 +25,7 @@ import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ExecuteNode } from '../ExecuteNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class QueryHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.QueryHandler;
@@ -69,5 +70,20 @@ export class QueryHandlerNode extends ClassTypeNode {
     const parameter = commandHandlerExecute.getParameter();
     if (!parameter) return [];
     return [parameter];
+  }
+
+  getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    symbolTableManager.addIntegrationEventBus();
+
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
+
+    const execute = this.getExecute();
+    execute.addToSymbolTable(symbolTableManager);
   }
 }
