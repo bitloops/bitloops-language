@@ -21,7 +21,6 @@ import Transpiler from '../../src/Transpiler.js';
 import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
-import { SemanticAnalyzer } from '../../src/semantic-analysis/IntermediateASTValidator.js';
 import {
   SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES,
   SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES,
@@ -86,7 +85,6 @@ describe('Validation checks table cases', () => {
   describe('Missing identifiers test cases', () => {
     SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
-      const validator = new SemanticAnalyzer();
       const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
       const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
@@ -130,7 +128,6 @@ describe('Validation checks table cases', () => {
   describe('constant reassingment identifiers test cases', () => {
     SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
-      const validator = new SemanticAnalyzer();
       const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
       const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
@@ -174,7 +171,6 @@ describe('Validation checks table cases', () => {
   describe('Already declared variables test cases', () => {
     SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
-      const validator = new SemanticAnalyzer();
       const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
       const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
